@@ -337,7 +337,7 @@ function deleteDirectory($directoryId)
 {
     global $pearDB;
     $mediadir = "./img/media/";
-    
+
     $directoryId = (int) $directoryId;
     /*
      * Purge images of the directory
@@ -420,4 +420,13 @@ function getListDirectory($filter = null)
     }
     $dbresult->closeCursor();
     return $list_dir;
+}
+
+function isCorrectMIMEType($file)
+{
+    $mimeType = mime_content_type($file['tmp_name']);
+    if ($mimeType !== 'image/png') {
+        return false;
+    }
+    return true;
 }

@@ -111,6 +111,8 @@ if ($o == IMAGE_ADD) {
             "class" => "btc bt_success"
         )
     );
+    $form->registerRule('isCorrectMIMEType', 'callback', 'isCorrectMIMEType');
+    $form->addRule('filename', _('Invalid MIME type'), 'isCorrectMIMEType');
 } elseif ($o == IMAGE_MODIFY) {
     $form->addElement('header', 'title', _("Modify Image"));
     $form->addElement('text', 'img_name', _("Image Name"), $attrsText);
