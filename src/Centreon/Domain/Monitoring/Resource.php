@@ -69,17 +69,17 @@ class Resource
      * @var string|null
      */
     private $name;
-    
+
     /**
      * @var string|null
      */
     private $alias;
-    
+
     /**
      * @var string|null
      */
     private $fqdn;
-    
+
     /**
      * @var \Centreon\Domain\Monitoring\Icon|null
      */

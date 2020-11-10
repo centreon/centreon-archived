@@ -93,7 +93,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     private $hostConcordances = [
         'h.name' => 'h.name',
         'h.alias' => 'h.alias',
-        'h.address' => 'h.address',
+        'h.fqdn' => 'h.address',
         'information' => 'h.output',
     ];
 
@@ -103,7 +103,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     private $serviceConcordances = [
         'h.name' => 'sh.name',
         'h.alias' => 'sh.alias',
-        'h.address' => 'sh.address',
+        'h.fqdn' => 'sh.address',
         's.description' => 's.description',
         's.group' => 'sg.name',
         's.group.id' => 'ssg.servicegroup_id',
@@ -700,7 +700,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         } catch (RequestParametersTranslatorException $ex) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
-
+      //  var_dump($searchRequest); exit;
         $sql .= $searchRequest;
         $sql .= !is_null($searchRequest) ? ' AND' : ' WHERE';
 
@@ -760,7 +760,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         // prevent duplication
         $sql .= ' GROUP BY h.host_id';
-
         return $sql;
     }
 
