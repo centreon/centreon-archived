@@ -38,8 +38,11 @@ if (file_exists(_CENTREON_PATH_ . '/.env.local.php')) {
     $localEnv = @include _CENTREON_PATH_ . '/.env.local.php';
 }
 
+//caution password here
 if (empty($localEnv)
-       	|| !isset($localEnv['APP_SECRET'])) {
+	|| !isset($localEnv['APP_SECRET'])
+	&& isset($password)
+) {
     exit();
 }
 define("SECOND_KEY", base64_encode('api_remote_credentials'));
