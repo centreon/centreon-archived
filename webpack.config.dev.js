@@ -26,7 +26,6 @@ module.exports = merge(baseConfig, devConfig, {
   },
   resolve: {
     alias: {
-      react: path.resolve('./node_modules/react'),
       'react-dom': '@hot-loader/react-dom',
       'react-router-dom': path.resolve('./node_modules/react-router-dom'),
       '@material-ui/core': path.resolve('./node_modules/@material-ui/core'),

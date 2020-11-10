@@ -17,6 +17,11 @@ module.exports = merge(baseConfig, extractCssConfig, {
     publicPath: './static/',
     library: ['name'],
   },
+  resolve: {
+    alias: {
+      react: path.resolve('./node_modules/react'),
+    },
+  },
   optimization: {
     runtimeChunk: true,
   },

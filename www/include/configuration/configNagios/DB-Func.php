@@ -251,7 +251,6 @@ function insertNagios($ret = array(), $brokerTab = array())
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-
     $rq = "INSERT INTO cfg_nagios ("
         . "`nagios_id` , `nagios_name` , `use_timezone`, `nagios_server_id`, `log_file` , `cfg_dir` , "
         . "`temp_file` , "
@@ -1002,8 +1001,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'0', ";
     }
 
-    if (isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2) {
-        $rq .= "'" . $ret["debug_verbosity"]["debug_verbosity"] . "',  ";
+    if (isset($ret["debug_verbosity"]) && $ret["debug_verbosity"] != 2) {
+        $rq .= "'" . $ret["debug_verbosity"] . "',  ";
     } else {
         $rq .= "'2', ";
     }
@@ -2021,8 +2020,8 @@ function updateNagios($nagios_id = null)
         $rq .= "debug_level = NULL, ";
     }
 
-    if (isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2) {
-        $rq .= "debug_verbosity = '" . $ret["debug_verbosity"]["debug_verbosity"] . "',  ";
+    if (isset($ret["debug_verbosity"]) && $ret["debug_verbosity"] != 2) {
+        $rq .= "debug_verbosity = '" . $ret["debug_verbosity"] . "',  ";
     } else {
         $rq .= "debug_verbosity = '2', ";
     }

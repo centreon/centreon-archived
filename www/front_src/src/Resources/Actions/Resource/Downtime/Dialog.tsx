@@ -1,7 +1,9 @@
+/* eslint-disable class-methods-use-this */
 import * as React from 'react';
 
-import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range';
-import MomentUtils from '@date-io/moment';
+import dayjs from 'dayjs';
+
+import DayjsAdapter from '@date-io/dayjs';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -20,6 +22,7 @@ import {
 import { Alert } from '@material-ui/lab';
 
 import { Dialog, TextField, SelectField, Loader } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import {
   labelCancel,
@@ -47,8 +50,6 @@ import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
 
 interface Props {
-  locale: string | null;
-  timezone: string | null;
   resources: Array<Resource>;
   canConfirm: boolean;
   onCancel;
@@ -74,18 +75,16 @@ const pickerCommonProps = {
 
 const datePickerProps = {
   ...pickerCommonProps,
-  format: 'LL',
+  format: 'L',
 } as Omit<DatePickerProps, 'onChange'>;
 
 const timePickerProps = {
   ...pickerCommonProps,
+  format: 'HH:mm',
   ampm: false,
-  format: 'LT',
 } as Omit<TimePickerProps, 'onChange'>;
 
 const DialogDowntime = ({
-  locale,
-  timezone,
   resources,
   canConfirm,
   onCancel,
@@ -98,6 +97,7 @@ const DialogDowntime = ({
   loading,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { locale, timezone } = useUserContext();
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
 
   const open = resources.length > 0;
@@ -108,15 +108,17 @@ const DialogDowntime = ({
     setFieldValue(field, value);
   };
 
-  React.useEffect(() => {
-    moment.locale(locale);
-  }, [locale]);
-
-  React.useEffect(() => {
-    moment.tz.setDefault(timezone);
-  }, [timezone]);
-
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
+
+  class Adapter extends DayjsAdapter {
+    public format(date, formatString): string {
+      return dayjs(date).tz(timezone).format(formatString);
+    }
+
+    public date(value): dayjs.Dayjs {
+      return dayjs(value).tz(timezone);
+    }
+  }
 
   return (
     <Dialog
@@ -132,11 +134,7 @@ const DialogDowntime = ({
     >
       {loading && <Loader fullContent />}
       {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
-      <MuiPickersUtilsProvider
-        libInstance={moment}
-        utils={MomentUtils}
-        locale={locale}
-      >
+      <MuiPickersUtilsProvider utils={Adapter} locale={locale.substring(0, 2)}>
         <Grid direction="column" container spacing={1}>
           <Grid item>
             <FormHelperText>{t(labelFrom)}</FormHelperText>
@@ -146,6 +144,7 @@ const DialogDowntime = ({
                   aria-label={t(labelStartDate)}
                   value={values.dateStart}
                   onChange={changeDate('dateStart')}
+                  inputMode="text"
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeStartDate),
                   }}

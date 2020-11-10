@@ -1,18 +1,30 @@
 import * as React from 'react';
 
-import { Provider } from 'react-redux';
-import { pick, pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
+import 'dayjs/locale/en';
+import 'dayjs/locale/pt';
+import 'dayjs/locale/fr';
+import 'dayjs/locale/es';
 
-import { useRequest, getData, Loader } from '@centreon/ui';
+import dayjs from 'dayjs';
+import timezonePlugin from 'dayjs/plugin/timezone';
+import utcPlugin from 'dayjs/plugin/utc';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import { Provider } from 'react-redux';
+import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
+
+import { useRequest, getData, Loader } from '@centreon/ui';
+import { Context, useUser, useAcl } from '@centreon/ui-context';
+
 import App from '../App';
 import createStore from '../store';
-import Context from './UserContext';
 import { userEndpoint, translationEndpoint, aclEndpoint } from './endpoint';
 import { User, Actions } from './models';
-import useUser from './useUser';
-import useAcl from './useAcl';
+
+dayjs.extend(localizedFormat);
+dayjs.extend(utcPlugin);
+dayjs.extend(timezonePlugin);
 
 const store = createStore();
 
@@ -57,7 +69,11 @@ const AppProvider = (): JSX.Element | null => {
       getAcl(aclEndpoint),
     ])
       .then(([retrievedUser, retrievedTranslations, retrievedAcl]) => {
-        setUser(pick(['username', 'locale', 'timezone'], retrievedUser));
+        setUser({
+          username: retrievedUser.username,
+          locale: retrievedUser.locale || 'en',
+          timezone: retrievedUser.timezone,
+        });
         setActionAcl(retrievedAcl);
 
         initializeI18n({ retrievedUser, retrievedTranslations });

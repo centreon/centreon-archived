@@ -14,9 +14,8 @@ import {
 
 import { Typography, Paper, makeStyles } from '@material-ui/core';
 
-import { useIntersectionObserver } from '@centreon/ui';
+import { useIntersectionObserver, useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { getFormattedDate } from '../../../../dateTime';
 import { TimelineEvent } from '../models';
 import { TimelineEventByType } from '../Event';
 
@@ -49,6 +48,7 @@ const Events = ({
   onLoadMore,
 }: Props): JSX.Element => {
   const classes = useStyles();
+  const { toDate } = useLocaleDateTimeFormat();
 
   const maxPage = Math.ceil(total / limit);
 
@@ -56,7 +56,7 @@ const Events = ({
     reduceBy<TimelineEvent, Array<TimelineEvent>>(
       (acc, event) => acc.concat(event),
       [],
-      pipe(prop('date'), getFormattedDate),
+      pipe(prop('date'), toDate),
     ),
     toPairs,
     sortWith([descend(head)]),
