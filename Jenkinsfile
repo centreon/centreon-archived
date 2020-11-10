@@ -97,14 +97,6 @@ try {
             ]
           ])
         }
-
-        if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
-          unstash 'git-sources'
-          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-          withSonarQubeEnv('SonarQube') {
-            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-          }
-        }
       }
     },
     'centos8': {
@@ -117,6 +109,21 @@ try {
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests stage failure.');
+    }
+  }
+
+  stage('Static code analysis') {
+    node {
+      if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE') || (env.CHANGE_ID)) {
+        unstash 'git-sources'
+        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+        withSonarQubeEnv('SonarQube') {
+          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+        }
+      }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Static Analysis failure. Check sonarQube report for details.');
     }
   }
 
