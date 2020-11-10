@@ -27,16 +27,17 @@ use FOS\RestBundle\Context\Context;
 use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\PlatformTopology\Platform;
-use Centreon\Domain\PlatformTopology\PlatformTopologyService;
-use Centreon\Application\Controller\PlatformTopologyController;
+use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\PlatformTopology\PlatformRelation;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Application\PlatformTopology\PlatformJsonGraph;
 use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
+use Centreon\Domain\PlatformTopology\PlatformTopologyService;
+use Centreon\Application\Controller\PlatformTopologyController;
 use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Centreon\Domain\Exception\EntityNotFoundException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -107,7 +108,7 @@ class PlatformTopologyControllerTest extends TestCase
             ->setType(Platform::TYPE_CENTRAL)
             ->setAddress('192.168.1.1')
             ->setServerId(1)
-            ->setRelation(Platform::NORMAL_RELATION);
+            ->setRelation(PlatformRelation::NORMAL_RELATION);
 
         $this->pollerPlatform = (new Platform())
             ->setId(2)
@@ -118,7 +119,7 @@ class PlatformTopologyControllerTest extends TestCase
             ->setParentAddress('192.168.1.1')
             ->setParentId(1)
             ->setServerId(2)
-            ->setRelation(Platform::NORMAL_RELATION);
+            ->setRelation(PlatformRelation::NORMAL_RELATION);
 
         $this->centralJsonGraphFormat = new PlatformJsonGraph($this->centralPlatform);
         $this->pollerJsonGraphFormat = new PlatformJsonGraph($this->pollerPlatform);

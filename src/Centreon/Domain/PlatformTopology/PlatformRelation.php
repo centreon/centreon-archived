@@ -28,6 +28,20 @@ namespace Centreon\Domain\PlatformTopology;
  */
 class PlatformRelation
 {
+
+    /**
+     * Broker relation types
+     */
+    public const NORMAL_RELATION = 'normal';
+    public const PEER_RETENTION_RELATION = 'peer_retention';
+
+    /**
+     * Available relation types
+     */
+    private const AVAILABLE_RELATIONS = [
+        self::NORMAL_RELATION,
+        self::PEER_RETENTION_RELATION
+    ];
     /**
      * Source node in relation
      *
@@ -92,6 +106,9 @@ class PlatformRelation
      */
     public function setRelation(string $relation): self
     {
+        if (!in_array($relation, self::AVAILABLE_RELATIONS)) {
+            throw new \InvalidArgumentException(sprintf(_("The type of relation '%s' is not allowed"), $relation));
+        }
         $this->relation = $relation;
 
         return $this;

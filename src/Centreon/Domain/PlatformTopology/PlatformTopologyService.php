@@ -31,7 +31,6 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
-use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
@@ -599,10 +598,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     self::BROKER_PEER_RETENTION
                 );
 
-                $platform->setRelation(Platform::NORMAL_RELATION);
+                $platform->setRelation(PlatformRelation::NORMAL_RELATION);
                 foreach ($brokerConfigurations as $brokerConfiguration) {
                     if ($brokerConfiguration->getConfigurationValue() === "yes") {
-                        $platform->setRelation(Platform::PEER_RETENTION_RELATION);
+                        $platform->setRelation(PlatformRelation::PEER_RETENTION_RELATION);
                         break;
                     }
                 }
