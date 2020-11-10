@@ -176,3 +176,5 @@ export const labelSubmit = 'Submit';
 export const labelStatusSubmitted = 'Status submitted';
 export const labelOutput = 'Output';
 export const labelNoResourceFound = 'No resource found';
+export const labelFqdn = 'FQDN';
+export const labelAlias = 'Alias';

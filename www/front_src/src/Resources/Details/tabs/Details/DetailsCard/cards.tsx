@@ -21,6 +21,8 @@ import {
   labelLastNotification,
   labelCurrentNotificationNumber,
   labelNo,
+  labelFqdn,
+  labelAlias,
 } from '../../../../translatedLabels';
 
 type Lines = Array<{ key: string; line: JSX.Element | null }>;
@@ -95,6 +97,26 @@ const getDetailCardLines = ({
   });
 
   return [
+    {
+      title: labelFqdn,
+      field: details.fqdn,
+      getLines: (): Lines => [
+        {
+          key: 'fqdn',
+          line: <DetailsLine line={details.fqdn} />,
+        },
+      ],
+    },
+    {
+      title: labelAlias,
+      field: details.alias,
+      getLines: (): Lines => [
+        {
+          key: 'fqdn',
+          line: <DetailsLine line={details.alias} />,
+        },
+      ],
+    },
     {
       title: labelPoller,
       field: details.poller_name,
