@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { prop } from 'ramda';
-import { AreaClosed, LinePath, curveBasis } from '@visx/visx';
+import { AreaClosed, LinePath, curveBasis, scaleLinear } from '@visx/visx';
 
 import { fade } from '@material-ui/core';
 import { isNil } from 'lodash';
@@ -39,13 +39,19 @@ const Lines = ({
           filled,
           unit,
           highlight,
+          invert,
         }) => {
           const getYScale = (): ScaleLinear<number, number> => {
-            if (hasMoreThanTwoUnits || unit !== secondUnit) {
-              return leftScale;
-            }
+            const isLeftScale = hasMoreThanTwoUnits || unit !== secondUnit;
+            const scale = isLeftScale ? leftScale : rightScale;
 
-            return rightScale;
+            return invert
+              ? scaleLinear<number>({
+                  domain: scale.domain().reverse(),
+                  range: scale.range().reverse(),
+                  nice: true,
+                })
+              : scale;
           };
 
           const yScale = getYScale();
@@ -66,7 +72,9 @@ const Lines = ({
             return (
               <AreaClosed<TimeValue>
                 yScale={yScale}
+                y0={yScale(0)}
                 key={metric}
+                fillRule="nonzero"
                 fill={
                   transparency
                     ? fade(areaColor, 1 - transparency * 0.01)

@@ -90,6 +90,7 @@ const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
   transparency: ds_data.ds_transparency,
   lineColor: ds_data.ds_color_line,
   filled: ds_data.ds_filled,
+  invert: ds_data.ds_invert,
   unit,
   display: true,
   highlight: undefined,
