@@ -9,7 +9,7 @@ import { labelUrl } from '../../translatedLabels';
 
 const UrlColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
   const endpoint = path<string | undefined>(
-    ['links', 'externals', 'notes'],
+    ['links', 'externals', 'notes_url'],
     row,
   );
 
