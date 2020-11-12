@@ -3487,10 +3487,12 @@ components:
           example: "Ping"
         alias:
           type: string
+          nullable: true
           description: "Resource alias"
           example: null
         fqdn:
           type: string
+          nullable: true
           description: "Resource fqdn"
           example: null
         links:
@@ -3535,6 +3537,7 @@ components:
               example: "Central"
             alias:
               type: string
+              nullable: true
               description: "Parent resource alias"
               example: "Host"
             fqdn:
