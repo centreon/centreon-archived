@@ -18,7 +18,12 @@ const UrlColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
   }
 
   return (
-    <a href={endpoint}>
+    <a
+      href={endpoint}
+      onClick={(e): void => {
+        e.stopPropagation();
+      }}
+    >
       <IconButton
         title={labelUrl}
         ariaLabel={labelUrl}
