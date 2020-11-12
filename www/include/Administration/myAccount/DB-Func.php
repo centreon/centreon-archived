@@ -143,6 +143,7 @@ function updateContact($contact_id = null)
           'contact_pager = :contactPager, ' .
           'default_page = :defaultPage, ' .
           'contact_js_effects = :contactJsEffects, ' .
+          'show_deprecated_pages = :showDeprecatedPages, ' .
           'contact_autologin_key = :contactAutologinKey';
     $password_encrypted = null;
     if (!empty($ret['contact_passwd'])) {
@@ -182,6 +183,7 @@ function updateContact($contact_id = null)
     );
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
     $stmt->bindValue(':contactJsEffects', isset($ret['contact_js_effects']) ? 1 : 0, \PDO::PARAM_STR);
+    $stmt->bindValue(':showDeprecatedPages', isset($ret['show_deprecated_pages']) ? 1 : 0, \PDO::PARAM_STR);
     $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
     if (!is_null($password_encrypted)) {
         $stmt->bindValue(':contactPasswd', $password_encrypted, \PDO::PARAM_STR);
