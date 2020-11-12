@@ -40,11 +40,13 @@ Centreon\Domain\Monitoring\Resource:
         alias:
             type: string
             groups:
+                - 'resource_main'
                 - 'resource_parent'
                 - 'resource_details'
         fqdn:
             type: string
             groups:
+                - 'resource_main'
                 - 'resource_parent'
                 - 'resource_details'
         icon:
