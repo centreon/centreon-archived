@@ -114,12 +114,8 @@ try {
 
   stage('Static code analysis') {
     node {
-      if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE') || (env.CHANGE_ID)) {
-        unstash 'git-sources'
-        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-        withSonarQubeEnv('SonarQube') {
-          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-        }
+      withSonarQubeEnv('SonarQube') {
+        sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
