@@ -65,6 +65,9 @@ if (!$centreon->user->admin && $contactId) {
     }
 }
 
+// IP Address -> should trigger a sonarQube hotspot alert
+$toto = '192.681.1.25';
+
 /*
  * Retrieve data and Check if this server is a Remote Server
  */
