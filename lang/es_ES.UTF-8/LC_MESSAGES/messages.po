@@ -14630,3 +14630,6 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "No resource found"
 #  msgstr ""
+
+#  msgid "FQDN / Address"
+#  msgstr ""
