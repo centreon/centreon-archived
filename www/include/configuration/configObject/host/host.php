@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -87,47 +87,53 @@ $hgs = $acl->getHostGroupAclConf(null, 'broker');
 $aclHostString = $acl->getHostsString('ID', $dbmon);
 $aclPollerString = $acl->getPollerString();
 
+const HOST_ADD = 'a';
+const HOST_WATCH = 'w';
+const HOST_MODIFY = 'c';
+const HOST_MASSIVE_CHANGE = 'mc';
+const HOST_ACTIVATION = 's';
+const HOST_MASSIVE_ACTIVATION = 'ms';
+const HOST_DEACTIVATION = 'u';
+const HOST_MASSIVE_DEACTIVATION = 'mu';
+const HOST_DUPLICATION = 'm';
+const HOST_DELETION = 'd';
+const HOST_SERVICE_DEPLOYMENT = 'dp';
+
 switch ($o) {
-    case "a":
+    case HOST_ADD:
+    case HOST_WATCH:
+    case HOST_MODIFY:
+    case HOST_MASSIVE_CHANGE:
         require_once($path . "formHost.php");
-        break; #Add a host
-    case "w":
-        require_once($path . "formHost.php");
-        break; #Watch a host
-    case "c":
-        require_once($path . "formHost.php");
-        break; #Modify a host
-    case "mc":
-        require_once($path . "formHost.php");
-        break; # Massive Change
-    case "s":
+        break;
+    case HOST_ACTIVATION:
         enableHostInDB($host_id);
         require_once($path . "listHost.php");
         break; #Activate a host
-    case "ms":
+    case HOST_MASSIVE_ACTIVATION:
         enableHostInDB(null, $select ?? []);
         require_once($path . "listHost.php");
         break;
-    case "u":
+    case HOST_DEACTIVATION:
         disableHostInDB($host_id);
         require_once($path . "listHost.php");
         break; #Desactivate a host
-    case "mu":
+    case HOST_MASSIVE_DEACTIVATION:
         disableHostInDB(null, $select ?? []);
         require_once($path . "listHost.php");
         break;
-    case "m":
+    case HOST_DUPLICATION:
         multipleHostInDB($select ?? [], $dupNbr);
         $hgs = $acl->getHostGroupAclConf(null, 'broker');
         $aclHostString = $acl->getHostsString('ID', $dbmon);
         $aclPollerString = $acl->getPollerString();
         require_once($path . "listHost.php");
-        break; #Duplicate n hosts
-    case "d":
+        break;
+    case HOST_DELETION:
         deleteHostInDB($select ?? []);
         require_once($path . "listHost.php");
-        break; #Delete n hosts
-    case "dp":
+        break;
+    case HOST_SERVICE_DEPLOYMENT:
         applytpl($select ?? []);
         require_once($path . "listHost.php");
         break; #Deploy service n hosts
