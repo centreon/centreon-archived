@@ -68,7 +68,7 @@ if (!$centreon->user->admin && $contactId) {
  * Retrieve data and Check if this server is a Remote Server
  */
 $result = [];
-$dbResult = $pearDB->query("SELECT * FROM `informations`");
+$dbResult = $pearDB->query("SELECT * FROM `informations` WHERE `key` = 'password'");
 while ($row = $dbResult->fetch(\PDO::FETCH_ASSOC)) {
     $result[$row['key']] = $row['value'];
 }
