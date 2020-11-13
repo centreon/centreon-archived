@@ -59,7 +59,8 @@ if (!$centreon->user->admin && $contactId) {
     ];
     $contacts = $acl->getContactAclConf($aclOptions);
     if (!count($contacts)) {
-        include_once _CENTREON_PATH_ . "/www/include/core/errors/alt_error.php";
+        include_once _CENTREON_PATH_ . 
+        "/www/include/core/errors/alt_error.php";
         return null;
     }
 }
