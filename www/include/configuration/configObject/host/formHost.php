@@ -167,7 +167,7 @@ if (($o === HOST_MODIFY || $o === HOST_WATCH) && isset($host_id)) {
          * We don't taking into account the POST data sent from the interface in order the retrieve the original value of
          * all passwords.
          */
-        $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId);
+        $aMacros = $hostObj->getMacros($host_id, $aTemplates, $cmdId);
 
         /**
          * If a password has been modified from the interface, we retrieve the old password existing in the repository
@@ -199,7 +199,7 @@ if (($o === HOST_MODIFY || $o === HOST_WATCH) && isset($host_id)) {
     }
 
     // We taking into account the POST data sent from the interface
-    $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId, $_POST);
+    $aMacros = $hostObj->getMacros($host_id, $aTemplates, $cmdId, $_POST);
 
     // We hide all passwords in the jsData property to prevent them from appearing in the HTML code.
     foreach ($aMacros as $index => $macroValues) {

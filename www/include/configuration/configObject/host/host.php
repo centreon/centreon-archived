@@ -43,13 +43,19 @@ $host_id = filter_var(
     FILTER_VALIDATE_INT
 );
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+if ($host_id === false) {
+    throw new InvalidArgumentException('Host id has not been defined correctly (' . ($_GET['host_id'] ?? $_POST['host_id']) . ') from page ' . $p);
+}
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+$select = filter_var_array(
+    $_GET["select"] ?? $_POST["select"] ?? [],
+    FILTER_VALIDATE_INT
+);
+
+$dupNbr = filter_var_array(
+    $_GET["dupNbr"] ?? $_POST["dupNbr"] ?? [],
+    FILTER_VALIDATE_INT
+);
 
 /*
  * Path to the configuration dir
