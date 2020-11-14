@@ -68,6 +68,4 @@ $pearDB = $dependencyInjector['configuration_db'];
 $conf = getWikiConfig($pearDB);
 $WikiURL = $conf['kb_wiki_url'];
 
-$proc = new procedures($pearDB);
-
 header("Location: $WikiURL/index.php?title=" . htmlentities($_GET["object"], ENT_QUOTES) . "&action=edit");
