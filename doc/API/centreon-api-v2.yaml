@@ -466,6 +466,8 @@ paths:
 
         * id
         * name
+        * alias
+        * fqdn
         * type
         * status_code
         * status
@@ -490,6 +492,7 @@ paths:
         * h.name
         * h.alias
         * h.address
+        * h.fqdn
         * s.description
         * s.group
         * s.group.id
@@ -3483,6 +3486,16 @@ components:
           type: string
           description: "Resource name"
           example: "Ping"
+        alias:
+          type: string
+          nullable: true
+          description: "Resource alias"
+          example: null
+        fqdn:
+          type: string
+          nullable: true
+          description: "Resource fqdn"
+          example: null
         links:
           $ref: '#/components/schemas/Monitoring.ResourceLinks'
         icon:
@@ -3523,6 +3536,15 @@ components:
               type: string
               description: "Parent resource name"
               example: "Central"
+            alias:
+              type: string
+              nullable: true
+              description: "Parent resource alias"
+              example: "Host"
+            fqdn:
+              type: string
+              description: "Parent resource fqdn"
+              example: "127.0.0.1"
             links:
               $ref: '#/components/schemas/Monitoring.ResourceLinks'
             status:
