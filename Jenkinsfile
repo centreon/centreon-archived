@@ -119,8 +119,11 @@ try {
     timeout(time: 10, unit: 'MINUTES') {
       def qualityGate = waitForQualityGate()
       if (qualityGate.status != 'OK') {
-        error('Quality gate failure: ${qualityGate.status}.')
+        currentBuild.result = 'FAIL'
       }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Quality gate failure: ${qualityGate.status}.');
     }
   }
 
