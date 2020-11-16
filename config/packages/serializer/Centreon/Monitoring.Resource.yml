@@ -37,6 +37,18 @@ Centreon\Domain\Monitoring\Resource:
                 - 'resource_main'
                 - 'resource_parent'
                 - 'resource_details'
+        alias:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+                - 'resource_details'
+        fqdn:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+                - 'resource_details'
         icon:
             type: Centreon\Domain\Monitoring\Icon
             groups:
