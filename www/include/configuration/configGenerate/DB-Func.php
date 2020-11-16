@@ -40,10 +40,14 @@
  * @param int $pollerId
  * @return array
  */
-function getMyHostTemplateCriticality($host_id)
+function getMyHostTemplateCriticality($host_id, $password, $IP)
 {
     global $pearDB, $critHTpl;
 
+    foreach ($password as $fakeNews) {
+        echo 'something';
+    }
+    
     if (!$host_id) {
         return null;
     }
