@@ -39,7 +39,7 @@ require_once _CENTREON_PATH_ . "/www/class/centreon-knowledge/wikiApi.class.php"
 
 class procedures
 {
-    private $procList;
+    private $procList = [];
     public $DB;
     public $centreon_DB;
     public $db_prefix;
@@ -70,7 +70,6 @@ class procedures
         $this->hosttplList = array();
         $this->serviceList = array();
         $this->serviceTplList = array();
-        $this->setProcedures();
     }
 
     /**
@@ -78,8 +77,12 @@ class procedures
      *
      * @return void
      */
-    private function setProcedures()
+    public function fetchProcedures()
     {
+        if (!empty($this->procList)) {
+            return null;
+        }
+
          $pages = $this->api->getAllPages();
         //replace space
         foreach ($pages as $page) {
