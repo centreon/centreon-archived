@@ -114,6 +114,9 @@ try {
 
   stage('Static code analysis') {
     node {
+      if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+        unstash 'git-sources'
+      }
       withSonarQubeEnv('SonarQube') {
         sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
       }
