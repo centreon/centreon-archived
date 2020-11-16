@@ -48,6 +48,11 @@ function getMyHostTemplateCriticality($host_id)
         return null;
     }
 
+<<<<<<< Updated upstream
+=======
+    $password = 'toto';
+
+>>>>>>> Stashed changes
     $rq = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '" . $host_id . "' ORDER BY `order`";
     $dbResult = $pearDB->query($rq);
     while ($row = $dbResult->fetch()) {
