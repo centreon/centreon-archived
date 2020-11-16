@@ -251,7 +251,6 @@ function insertNagios($ret = array(), $brokerTab = array())
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-
     $rq = "INSERT INTO cfg_nagios ("
         . "`nagios_id` , `nagios_name` , `use_timezone`, `nagios_server_id`, `log_file` , `cfg_dir` , "
         . "`temp_file` , "
@@ -1002,8 +1001,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'0', ";
     }
 
-    if (isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2) {
-        $rq .= "'" . $ret["debug_verbosity"]["debug_verbosity"] . "',  ";
+    if (isset($ret["debug_verbosity"]) && $ret["debug_verbosity"] != 2) {
+        $rq .= "'" . $ret["debug_verbosity"] . "',  ";
     } else {
         $rq .= "'2', ";
     }
@@ -1131,14 +1130,21 @@ function insertNagios($ret = array(), $brokerTab = array())
     } else {
         $rq .= "'0', ";
     }
+
     /* Add whitelist macros to send to Centreon Broker */
-    $macrosFilter = trim(
-        join(
-            ',',
-            array_map(function ($value) { return CentreonDB::escape($value); }, $_REQUEST['macros_filter'])
-        )
-    );
-    $rq .= "'" . $macrosFilter . "')";
+    if (isset($_REQUEST['macros_filter'])) {
+        $macrosFilter = trim(
+            join(
+                ',',
+                array_map(function ($value) {
+                    return CentreonDB::escape($value);
+                }, $_REQUEST['macros_filter'])
+            )
+        );
+        $rq .= "'" . $macrosFilter . "')";
+    } else {
+        $rq .= "NULL)";
+    }
 
     $dbResult = $pearDB->query($rq);
     $dbResult = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
@@ -2021,8 +2027,8 @@ function updateNagios($nagios_id = null)
         $rq .= "debug_level = NULL, ";
     }
 
-    if (isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2) {
-        $rq .= "debug_verbosity = '" . $ret["debug_verbosity"]["debug_verbosity"] . "',  ";
+    if (isset($ret["debug_verbosity"]) && $ret["debug_verbosity"] != 2) {
+        $rq .= "debug_verbosity = '" . $ret["debug_verbosity"] . "',  ";
     } else {
         $rq .= "debug_verbosity = '2', ";
     }
@@ -2102,13 +2108,19 @@ function updateNagios($nagios_id = null)
     }
 
     /* Add whitelist macros to send to Centreon Broker */
-    $macrosFilter = trim(
-        join(
-            ',',
-            array_map(function ($value) { return CentreonDB::escape($value); }, $_REQUEST['macros_filter'])
-        )
-    );
-    $rq .= "macros_filter = '" . $macrosFilter . "', ";
+    if (isset($_REQUEST['macros_filter'])) {
+        $macrosFilter = trim(
+            join(
+                ',',
+                array_map(function ($value) {
+                    return CentreonDB::escape($value);
+                }, $_REQUEST['macros_filter'])
+            )
+        );
+        $rq .= "macros_filter = '" . $macrosFilter . "', ";
+    } else {
+        $rq .= "macros_filter = NULL, ";
+    }
 
     $rq .= "nagios_activate = '" . $ret["nagios_activate"]["nagios_activate"] . "' ";
     $rq .= "WHERE nagios_id = '" . $nagios_id . "'";

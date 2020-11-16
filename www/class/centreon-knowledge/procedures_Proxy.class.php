@@ -43,7 +43,6 @@ class procedures_Proxy
     private $hflag;
     private $sflag;
     private $proc;
-    public $url;
     private $wikiUrl;
     private $hostObj;
     private $serviceObj;
@@ -51,10 +50,8 @@ class procedures_Proxy
     /**
      * procedures_Proxy constructor.
      * @param $pearDB
-     * @param $host_name
-     * @param null $service_description
      */
-    public function __construct($pearDB, $host_name, $service_description = null)
+    public function __construct($pearDB)
     {
         $this->DB = $pearDB;
         $this->hflag = 0;
@@ -64,21 +61,11 @@ class procedures_Proxy
 
         $conf = getWikiConfig($this->DB);
         $this->wikiUrl = $conf['kb_wiki_url'];
-        $this->proc = new procedures(
-            $this->DB
-        );
-
-        if (isset($host_name)) {
-            if (isset($service_description)) {
-                $this->returnServiceWikiUrl($this->DB->escape($host_name), $this->DB->escape($service_description));
-            } else {
-                $this->returnHostWikiUrl($this->DB->escape($host_name));
-            }
-        }
+        $this->proc = new procedures($this->DB);
     }
 
     /**
-     * @param $hostName
+     * @param string $hostName
      * @return int
      */
     private function getHostId($hostName)
@@ -95,8 +82,8 @@ class procedures_Proxy
     }
 
     /**
-     * @param $hostName
-     * @param $serviceDescription
+     * @param string $hostName
+     * @param string $serviceDescription
      * @return mixed
      */
     private function getServiceId($hostName, $serviceDescription)
@@ -135,9 +122,9 @@ class procedures_Proxy
     }
 
     /**
-     * @param $host_name
+     * @param string $hostName
      */
-    private function returnHostWikiUrl($host_name)
+    public function getHostUrl($hostName)
     {
         $this->proc->setHostInformations();
 
@@ -146,30 +133,28 @@ class procedures_Proxy
         /*
          * Check if host has a procedure directly on Host
          */
-        if (isset($procList["Host_:_" . $host_name])) {
-            $this->url = $this->wikiUrl . "/index.php?title=Host_:_" . $host_name;
-            return;
+        if (isset($procList["Host_:_" . $hostName])) {
+            return $this->wikiUrl . "/index.php?title=Host_:_" . $hostName;
         }
 
         /*
          * Check if host can get a procedure on templates
          */
-        $hostId = $this->getHostId($host_name);
+        $hostId = $this->getHostId($hostName);
         $templates = $this->hostObj->getTemplateChain($hostId);
         foreach ($templates as $template) {
             $templateName = $template['host_name'];
             if (isset($procList["Host-Template_:_" . $templateName])) {
-                $this->url = $this->wikiUrl . "/index.php?title=Host-Template_:_" . $templateName;
-                return;
+                return $this->wikiUrl . "/index.php?title=Host-Template_:_" . $templateName;
             }
         }
     }
 
     /**
-     * @param $host_name
-     * @param $service_description
+     * @param string $hostName
+     * @param string $serviceDescription
      */
-    private function returnServiceWikiUrl($host_name, $service_description)
+    public function getServiceUrl($hostName, $serviceDescription)
     {
         if ($this->hflag != 0) {
             $this->proc->setHostInformations();
@@ -182,26 +167,24 @@ class procedures_Proxy
         /*
          * Check Service
          */
-        $service_description = str_replace(' ', '_', $service_description);
+        $serviceDescription = str_replace(' ', '_', $serviceDescription);
 
-        if (isset($procList["Service_:_" . trim($host_name . "_/_" . $service_description)])) {
-            $this->url = $this->wikiUrl . "/index.php?title=Service_:_" . $host_name . "_/_" . $service_description;
-            return;
+        if (isset($procList["Service_:_" . trim($hostName . "_/_" . $serviceDescription)])) {
+            return $this->wikiUrl . "/index.php?title=Service_:_" . $hostName . "_/_" . $serviceDescription;
         }
 
         /*
          * Check service Template
          */
-        $serviceId = $this->getServiceId($host_name, $service_description);
+        $serviceId = $this->getServiceId($hostName, $serviceDescription);
         $templates = $this->serviceObj->getTemplatesChain($serviceId);
         foreach ($templates as $templateId) {
             $templateDescription = $this->serviceObj->getServiceDesc($templateId);
             if (isset($procList["Service-Template_:_" . $templateDescription])) {
-                $this->url = $this->wikiUrl . "/index.php?title=Service-Template_:_" . $templateDescription;
-                return;
+                return $this->wikiUrl . "/index.php?title=Service-Template_:_" . $templateDescription;
             }
         }
 
-        $this->returnHostWikiUrl($host_name);
+        return $this->getHostUrl($hostName);
     }
 }

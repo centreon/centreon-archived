@@ -70,18 +70,20 @@ try {
 }
 
 $WikiURL = $conf['kb_wiki_url'];
+$proxy = new procedures_Proxy($pearDB);
 
 /*
  * Check if user want host or service procedures
  */
+$url = null;
 if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
-    $proxy = new procedures_Proxy($pearDB, $_GET["host_name"], $_GET["service_description"]);
+    $url = $proxy->getServiceUrl($_GET["host_name"], $_GET["service_description"]);
 } elseif (isset($_GET["host_name"])) {
-    $proxy = new procedures_Proxy($pearDB, $_GET["host_name"], null);
+    $url = $proxy->getHostUrl($_GET["host_name"]);
 }
 
-if ($proxy->url != "") {
-    header("Location: " . $proxy->url);
+if (!empty($url)) {
+    header("Location: " . $url);
 } else {
     if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
         header("Location: $WikiURL/?title=Service_:_" . $_GET["host_name"] . "_/_" . $_GET["service_description"]);
