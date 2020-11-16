@@ -253,6 +253,7 @@ const Graph = ({
             leftScale={leftScale}
             rightScale={rightScale}
             xScale={xScale}
+            graphHeight={graphHeight}
           />
           <MemoizedBar
             x={0}

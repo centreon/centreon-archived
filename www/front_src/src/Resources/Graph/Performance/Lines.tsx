@@ -12,9 +12,10 @@ import { getTime, getUnits } from './timeSeries';
 interface Props {
   lines: Array<Line>;
   timeSeries: Array<TimeValue>;
-  leftScale;
-  rightScale;
+  leftScale: ScaleLinear<number, number>;
+  rightScale: ScaleLinear<number, number>;
   xScale;
+  graphHeight: number;
 }
 
 const Lines = ({
@@ -23,6 +24,7 @@ const Lines = ({
   rightScale,
   timeSeries,
   lines,
+  graphHeight,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -72,7 +74,7 @@ const Lines = ({
             return (
               <AreaClosed<TimeValue>
                 yScale={yScale}
-                y0={yScale(0)}
+                y0={Math.min(yScale(0), graphHeight)}
                 key={metric}
                 fillRule="nonzero"
                 fill={
