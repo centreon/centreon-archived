@@ -80,7 +80,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'severity_level' => 'resource.severity_level',
         'in_downtime' => 'resource.in_downtime',
         'acknowledged' => 'resource.acknowledged',
-        'impacted_resources_count' => 'resource.impacted_resources_count',
         'last_status_change' => 'resource.last_status_change',
         'tries' => 'resource.tries',
         'last_check' => 'resource.last_check',
@@ -219,7 +218,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.severity_level, resource.severity_name, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
             . 'resource.active_checks, resource.passive_checks,'
-            . 'resource.impacted_resources_count, resource.last_status_change, '
+            . 'resource.last_status_change, '
             . 'resource.last_notification, resource.notification_number, '
             . 'resource.tries, resource.last_check, resource.next_check, '
             . 'resource.information, resource.performance_data, '
@@ -464,7 +463,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.passive_checks AS `passive_checks`,
             service_cvl.value AS `severity_level`,
             sc.sc_name AS `severity_name`,
-            0 AS `impacted_resources_count`,
             s.last_state_change AS `last_status_change`,
             s.last_notification AS `last_notification`,
             s.notification_number AS `notification_number`,
@@ -653,10 +651,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.passive_checks AS `passive_checks`,
             host_cvl.value AS `severity_level`,
             hc.hc_comment AS `severity_name`,
-            (SELECT COUNT(DISTINCT host_s.service_id)
-                FROM `:dbstg`.`services` AS host_s
-                WHERE host_s.host_id = h.host_id AND host_s.enabled = 1
-            ) AS `impacted_resources_count`,
             h.last_state_change AS `last_status_change`,
             h.last_notification AS `last_notification`,
             h.notification_number AS `notification_number`,
