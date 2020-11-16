@@ -251,7 +251,7 @@ class WikiApi
             'format' => 'json',
             'action' => 'query',
             'list' => 'allpages',
-            'aplimit' => '10'
+            'aplimit' => '200'
         );
 
         $pages = array();
