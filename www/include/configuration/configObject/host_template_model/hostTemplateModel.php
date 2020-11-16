@@ -46,16 +46,6 @@ if ($host_id === false) {
     throw new InvalidArgumentException('Host id has not been defined correctly (' . ($_GET['host_id'] ?? $_POST['host_id']) . ') from page ' . $p);
 }
 
-$select = filter_var_array(
-    $_GET["select"] ?? $_POST["select"] ?? [],
-    FILTER_VALIDATE_INT
-);
-
-$dupNbr = filter_var_array(
-    $_GET["dupNbr"] ?? $_POST["dupNbr"] ?? [],
-    FILTER_VALIDATE_INT
-);
-
 /* Path to the configuration dir */
 $path = "./include/configuration/configObject/host_template_model/";
 $path2 = "./include/configuration/configObject/host/";
@@ -63,6 +53,15 @@ $path2 = "./include/configuration/configObject/host/";
 /* PHP functions */
 require_once $path2 . "DB-Func.php";
 require_once "./include/common/common-Func.php";
+
+$select = filter_var_array(
+    getSelectOption(),
+    FILTER_VALIDATE_INT
+);
+$dupNbr = filter_var_array(
+    getDuplicateNumberOption(),
+    FILTER_VALIDATE_INT
+);
 
 $hostObj = new CentreonHost($pearDB);
 $lockedElements = $hostObj->getLockedHostTemplates();

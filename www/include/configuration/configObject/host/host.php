@@ -47,16 +47,6 @@ if ($host_id === false) {
     throw new InvalidArgumentException('Host id has not been defined correctly (' . ($_GET['host_id'] ?? $_POST['host_id']) . ') from page ' . $p);
 }
 
-$select = filter_var_array(
-    $_GET["select"] ?? $_POST["select"] ?? [],
-    FILTER_VALIDATE_INT
-);
-
-$dupNbr = filter_var_array(
-    $_GET["dupNbr"] ?? $_POST["dupNbr"] ?? [],
-    FILTER_VALIDATE_INT
-);
-
 /*
  * Path to the configuration dir
  */
@@ -69,6 +59,15 @@ $path = "./include/configuration/configObject/host/";
  */
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
+
+$select = filter_var_array(
+    getSelectOption(),
+    FILTER_VALIDATE_INT
+);
+$dupNbr = filter_var_array(
+    getDuplicateNumberOption(),
+    FILTER_VALIDATE_INT
+);
 
 if (isset($_POST["o1"]) && isset($_POST["o2"])) {
     if ($_POST["o1"] != "") {

@@ -2322,3 +2322,43 @@ function validateGeoCoords()
     }
     return false;
 }
+
+/**
+ * Get the select option.
+ *
+ * @return array<int, int>
+ */
+function getSelectOption()
+{
+    if (isset($_GET["select"])) {
+        return is_array($_GET["select"])
+            ? $_GET["select"]
+            : [];
+    } elseif (isset($_POST["select"])) {
+        return is_array($_POST["select"])
+            ? $_POST["select"]
+            : [];
+    } else {
+        return [];
+    }
+}
+
+/**
+ * Get the duplicate number option.
+ *
+ * @return array<int, int>
+ */
+function getDuplicateNumberOption()
+{
+    if (isset($_GET["dupNbr"])) {
+        return is_array($_GET["dupNbr"])
+            ? $_GET["dupNbr"]
+            : [];
+    } elseif (isset($_POST["dupNbr"])) {
+        return is_array($_POST["dupNbr"])
+            ? $_POST["dupNbr"]
+            : [];
+    } else {
+        return [];
+    }
+}
