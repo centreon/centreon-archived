@@ -13,6 +13,7 @@ interface Props {
   lines: Array<Line>;
   timeSeries: Array<TimeValue>;
   graphWidth: number;
+  graphHeight: number;
   base: number;
   leftScale: ScaleLinear<number, number>;
   rightScale: ScaleLinear<number, number>;
@@ -42,6 +43,7 @@ const YAxes = ({
   base,
   leftScale,
   rightScale,
+  graphHeight,
 }: Props): JSX.Element => {
   const formatTick = ({ unit }) => (value): string => {
     if (isNil(value)) {
@@ -56,6 +58,8 @@ const YAxes = ({
   const hasMoreThanTwoUnits = !isNil(thirdUnit);
   const hasTwoUnits = !isNil(secondUnit) && !hasMoreThanTwoUnits;
 
+  const ticksCount = Math.ceil(graphHeight / 30);
+
   return (
     <>
       {!hasMoreThanTwoUnits && <UnitLabel x={5} unit={firstUnit} />}
@@ -68,6 +72,7 @@ const YAxes = ({
           dx: -2,
         })}
         tickFormat={formatTick({ unit: hasMoreThanTwoUnits ? '' : firstUnit })}
+        numTicks={ticksCount}
         tickLength={2}
         scale={leftScale}
       />
@@ -79,6 +84,7 @@ const YAxes = ({
             tickFormat={formatTick({ unit: secondUnit })}
             tickLength={2}
             scale={rightScale}
+            numTicks={ticksCount}
           />
           <UnitLabel unit={secondUnit} x={graphWidth - 20} />
         </>

@@ -56,6 +56,7 @@ const Axes = ({
         lines={lines}
         timeSeries={timeSeries}
         graphWidth={graphWidth}
+        graphHeight={graphHeight}
         base={base}
         leftScale={leftScale}
         rightScale={rightScale}
