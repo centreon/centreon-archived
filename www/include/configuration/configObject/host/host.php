@@ -44,7 +44,9 @@ $host_id = filter_var(
 );
 
 if ($host_id === false) {
-    throw new InvalidArgumentException('Host id has not been defined correctly (' . ($_GET['host_id'] ?? $_POST['host_id']) . ') from page ' . $p);
+    throw new InvalidArgumentException(
+        'Host id has not been defined correctly (' . ($_GET['host_id'] ?? $_POST['host_id']) . ') from page ' . $p
+    );
 }
 
 /*

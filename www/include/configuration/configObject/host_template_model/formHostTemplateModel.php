@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -106,8 +107,8 @@ if (($o === HOST_TEMPLATE_MODIFY || $o === HOST_TEMPLATE_WATCH) && isset($host_i
 
     if (isset($_REQUEST['macroInput'])) {
         /**
-         * We don't taking into account the POST data sent from the interface in order the retrieve the original value of
-         * all passwords.
+         * We don't taking into account the POST data sent from the interface in order the retrieve the original value
+         * of all passwords.
          */
         $macroArray = $hostObj->getMacros($host_id, $aTemplates, $cmdId);
 

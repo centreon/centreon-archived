@@ -64,10 +64,11 @@ function myDecodeService($arg)
 
 if (!$centreon->user->admin && isset($service_id)) {
     $checkres = $pearDB->query(
-            "SELECT service_id
-            FROM $aclDbName.centreon_acl
-            WHERE service_id = " . $pearDB->escape($service_id) . "
-            AND group_id IN (" . $acl->getAccessGroupsString() . ")");
+        "SELECT service_id
+        FROM $aclDbName.centreon_acl
+        WHERE service_id = " . $pearDB->escape($service_id) . "
+        AND group_id IN (" . $acl->getAccessGroupsString() . ")"
+    );
     if (!$checkres->rowCount()) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");
@@ -126,7 +127,8 @@ if (($o == SERVICE_MODIFY || $o == SERVICE_WATCH) && $service_id) {
         INNER JOIN service_categories_relation scr
             ON scr.sc_id = sc.sc_id
         WHERE scr.service_service_id = :service_id AND sc.level IS NOT NULL
-        ORDER BY sc.level ASC LIMIT 1');
+        ORDER BY sc.level ASC LIMIT 1'
+    );
     $statement->bindValue(':service_id', $service_id, \PDO::PARAM_INT);
     $statement->execute();
     if ($statement->rowCount()) {
@@ -150,8 +152,8 @@ if (($o == SERVICE_MODIFY || $o == SERVICE_WATCH) && $service_id) {
 
     if (isset($_REQUEST['macroInput'])) {
         /**
-         * We don't taking into account the POST data sent from the interface in order the retrieve the original value of
-         * all passwords.
+         * We don't taking into account the POST data sent from the interface in order the retrieve the original value
+         * of all passwords.
          */
         $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
 

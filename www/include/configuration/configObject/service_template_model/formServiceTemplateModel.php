@@ -116,8 +116,8 @@ if (($o == SERVICE_TEMPLATE_MODIFY || $o == SERVICE_TEMPLATE_WATCH) && isset($se
 
     if (isset($_REQUEST['macroInput'])) {
         /**
-         * We don't taking into account the POST data sent from the interface in order the retrieve the original value of
-         * all passwords.
+         * We don't taking into account the POST data sent from the interface in order the retrieve the original value
+         * of all passwords.
          */
         $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
 
@@ -847,7 +847,7 @@ $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array(
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
 /*
- * Criticality 
+ * Criticality
  */
 $criticality = new CentreonCriticality($pearDB);
 $critList = $criticality->getList(null, "level", 'ASC', null, null, true);

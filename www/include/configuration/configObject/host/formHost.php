@@ -157,15 +157,15 @@ if (($o === HOST_MODIFY || $o === HOST_WATCH) && isset($host_id)) {
         $host['criticality_id'] = $cr['hc_id'];
     }
 
-    $aTemplates = $hostObj->getTemplateChain($host_id,array(), -1, true, "host_name,host_id,command_command_id");
+    $aTemplates = $hostObj->getTemplateChain($host_id, array(), -1, true, "host_name,host_id,command_command_id");
     if (!isset($cmdId)) {
         $cmdId = "";
     }
 
     if (isset($_REQUEST['macroInput'])) {
         /**
-         * We don't taking into account the POST data sent from the interface in order the retrieve the original value of
-         * all passwords.
+         * We don't taking into account the POST data sent from the interface in order the retrieve the original value
+         * of all passwords.
          */
         $aMacros = $hostObj->getMacros($host_id, $aTemplates, $cmdId);
 
@@ -237,7 +237,8 @@ if ($o === HOST_MASSIVE_CHANGE) {
 $DBRESULT = $pearDB->query(
     "SELECT id, name FROM nagios_server " .
     ($aclPollerString != "''" ? $acl->queryBuilder('WHERE', 'id', $aclPollerString) : "") .
-    " ORDER BY name");
+    " ORDER BY name"
+);
 while ($nsServer = $DBRESULT->fetch()) {
     $nsServers[$nsServer["id"]] = $nsServer["name"];
 }
@@ -378,7 +379,7 @@ $attrTimezones = array(
     'multiple' => false,
     'linkedObject' => 'centreonGMT'
 );
-$form->addElement('select2', 'host_location', _("Timezone / Location"),array(), $attrTimezones);
+$form->addElement('select2', 'host_location', _("Timezone / Location"), array(), $attrTimezones);
 
 $form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 /*
