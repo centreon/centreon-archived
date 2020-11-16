@@ -25,10 +25,8 @@ stage('Source') {
       checkout scm
     }
     // git repository is stored for the Sonar analysis below.
-    if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
-      sh 'tar czf centreon-web-git.tar.gz centreon-web'
-      stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
-    }
+    sh 'tar czf centreon-web-git.tar.gz centreon-web'
+    stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
     sh "./centreon-build/jobs/web/${serie}/mon-web-source.sh"
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
@@ -97,6 +95,11 @@ try {
             ]
           ])
         }
+        unstash 'git-sources'
+        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+        withSonarQubeEnv('SonarQube') {
+          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+        }
       }
     },
     'centos8': {
@@ -112,17 +115,12 @@ try {
     }
   }
 
-  stage('Static code analysis') {
-    node {
-      if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
-        unstash 'git-sources'
+  stage('SonarQube quality gate') {
+    timeout(time: 10, unit: 'MINUTES') {
+      def qualityGate = waitForQualityGate()
+      if (qualityGate.status != 'OK') {
+        error('Quality gate failure: ${qualityGate.status}.')
       }
-      withSonarQubeEnv('SonarQube') {
-        sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-      }
-    }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Static Analysis failure. Check sonarQube report for details.');
     }
   }
 
