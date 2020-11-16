@@ -40,6 +40,11 @@ if (!isset($oreon)) {
     exit();
 }
 
+/**
+ * Global variable use to retrieve all the files from an archive.
+ */
+$filestoUpload = [];
+
 function sanitizeFilename($filename)
 {
     $cleanstr = str_replace(
@@ -422,12 +427,129 @@ function getListDirectory($filter = null)
     return $list_dir;
 }
 
-function isCorrectMIMEType($file)
+/**
+ * Check MIME Type of file
+ *
+ * @param array $file
+ * @return boolean
+ */
+function isCorrectMIMEType(array $file): bool
 {
     $mimeType = mime_content_type($file['tmp_name']);
-    var_dump($mimeType);
-    if (!preg_match('/(^image\/)|(^application\/zip$)/', $mimeType)) {
+    if (!preg_match('/(^image\/)|(^application(\/zip)|(\/x-gzip)$)/', $mimeType)) {
         return false;
+    } else {
+        $dir = sys_get_temp_dir() . '/pendingMedia';
+        switch ($mimeType) {
+            case 'application/zip':
+                $zip = new ZipArchive();
+
+                if (isArchiveFilesCorrectMIMEType($dir, $file['tmp_name'], $zip) === true) {
+                    return true;
+                }
+                break;
+            case 'application/x-gzip':
+                $newName = $file['tmp_name'] . '.tgz';
+                rename($file['tmp_name'], $newName);
+                $tar = new PharData($newName);
+
+                if (isArchiveFilesCorrectMIMEType($dir, null, null, $tar) === true) {
+                    unlink($newName);
+                    return true;
+                };
+                break;
+            default:
+                return true;
+        }
+    }
+}
+
+
+/**
+ * Remove a directory and its content
+ *
+ * @param string $dir
+ * @return void
+ */
+function removeRecursiveDir(string $dir): void
+{
+    if (is_dir($dir)) {
+        $objects = scandir($dir);
+        foreach ($objects as $object) {
+            if ($object != "." && $object != "..") {
+                if (is_dir($dir . DIRECTORY_SEPARATOR . $object) && !is_link($dir . DIRECTORY_SEPARATOR . $object)) {
+                    removeRecursiveDir($dir . DIRECTORY_SEPARATOR . $object);
+                } else {
+                    unlink($dir . DIRECTORY_SEPARATOR . $object);
+                }
+            }
+        }
+        rmdir($dir);
+    }
+}
+
+/**
+ * Extract an archive and check the MIME Type of every files
+ *
+ * @param string $dir
+ * @param string $filename
+ * @param ZipArchive $zip
+ * @param PharData $tar
+ * @return boolean
+ */
+function isArchiveFilesCorrectMIMEType(
+    string $dir,
+    string $filename = null,
+    ZipArchive $zip = null,
+    PharData $tar = null
+): bool {
+    global $filestoUpload;
+    $files = [];
+    if (file_exists($dir)) {
+        removeRecursiveDir($dir);
+    }
+
+    if (isset($zip)) {
+        if ($zip->open($filename) === true && $zip->extractTo($dir) === true) {
+            $files = array_diff(scandir($dir), ['..', '.']);
+        } else {
+            return false;
+        }
+    }
+
+    if (isset($tar)) {
+        if ($tar->extractTo($dir) === true) {
+            $files = array_diff(scandir($dir), ['..', '.']);
+        } else {
+            return false;
+        }
+    }
+
+    $fileInfo = [];
+    foreach ($files as $file) {
+        if (preg_match('/^image\//', mime_content_type($dir . '/' . $file))) {
+            $fileInfo['filename'] = [
+                'name' => $file,
+                'tmp_name' => $file,
+                'size' => filesize($dir . '/' . $file)
+            ];
+            stashFileForUpload($fileInfo);
+        } else {
+            $filestoUpload = [];
+            return false;
+        }
     }
     return true;
+}
+
+/**
+ * stash valid files before upload
+ *
+ * @param array $file
+ * @return void
+ */
+function stashFileForUpload($file): void
+{
+    global $filestoUpload;
+    $filestoUpload[] = $file;
 }

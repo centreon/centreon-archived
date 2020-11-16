@@ -76,12 +76,32 @@ class CentreonImageManager extends centreonFileManager
 
         if ($parentUpload) {
             if ($insert) {
-                $img_ids[] = $this->insertImg(
-                    $this->destinationPath,
-                    $this->destinationDir,
-                    $this->newFile,
-                    $this->comment
-                );
+                $img_ids[] = $this->insertImg();
+                return $img_ids;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Upload file from Temp Directory
+     *
+     * @param string $tempDirectory
+     * @param boolean $insert
+     * @return array|bool
+     */
+    public function uploadFromDirectory(string $tempDirectory, $insert = true)
+    {
+        $tempFullPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempDirectory;
+        if (!parent::fileExist()) {
+            $this->moveImage(
+                $tempFullPath . DIRECTORY_SEPARATOR . $this->rawFile['tmp_name'],
+                $this->destinationPath . DIRECTORY_SEPARATOR . $this->rawFile['name']
+            );
+            rmdir($tempFullPath);
+            if ($insert) {
+                $img_ids[] = $this->insertImg();
                 return $img_ids;
             }
         } else {
@@ -115,7 +135,7 @@ class CentreonImageManager extends centreonFileManager
         if (!empty($this->originalFile) && !empty($this->tmpFile)) {
             $this->deleteImg($this->mediaPath . $img_info["dir_alias"] . '/' . $img_info["img_path"]);
             $this->upload(false);
-            
+
             $stmt = $this->dbConfig->prepare(
                 "UPDATE view_img SET img_path  = :path WHERE img_id = :imgId"
             );
@@ -154,7 +174,7 @@ class CentreonImageManager extends centreonFileManager
         $stmt->bindParam(':dirId', $dirId);
         $stmt->bindParam(':imgId', $imgId);
         $stmt->execute();
-        
+
         return true;
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -48,7 +49,7 @@ if (!isset($centreon)) {
 $img = array("img_path" => null);
 if ($o == IMAGE_MODIFY || $o == IMAGE_WATCH) {
     $result = $pearDB->query("SELECT * FROM view_img WHERE img_id = $imageId LIMIT 1");
-    
+
     # Set base value
     $img = array_map("myDecode", $result->fetchRow());
 
@@ -112,7 +113,7 @@ if ($o == IMAGE_ADD) {
         )
     );
     $form->registerRule('isCorrectMIMEType', 'callback', 'isCorrectMIMEType');
-    $form->addRule('filename', _('Invalid MIME type'), 'isCorrectMIMEType');
+    $form->addRule('filename', _('Invalid Image Format.'), 'isCorrectMIMEType');
 } elseif ($o == IMAGE_MODIFY) {
     $form->addElement('header', 'title', _("Modify Image"));
     $form->addElement('text', 'img_name', _("Image Name"), $attrsText);
@@ -232,22 +233,51 @@ if ($form->validate()) {
     $imgId = $form->getElement('img_id')->getValue();
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
-    $oImageUploader = new CentreonImageManager(
-        $dependencyInjector,
-        $_FILES,
-        './img/media/',
-        $imgPath,
-        $imgComment
-    );
-    if ($form->getSubmitValue("submitA")) {
-        $valid = $oImageUploader->upload();
-    } elseif ($form->getSubmitValue("submitC")) {
-        $imgName = $form->getElement('img_name')->getValue();
-        $valid = $oImageUploader->update($imgId, $imgName);
-    }
-    $form->freeze();
-    if (false === $valid) {
-        $form->setElementError('filename', "An image is not uploaded.");
+
+    /**
+     * If an archive .zip or .tgz is uploaded
+     */
+    if (!empty($filestoUpload)) {
+        foreach ($filestoUpload as $file) {
+            $oImageUploader = new CentreonImageManager(
+                $dependencyInjector,
+                $file,
+                './img/media/',
+                $imgPath,
+                $imgComment
+            );
+            if ($form->getSubmitValue("submitA")) {
+                $valid = $oImageUploader->uploadFromDirectory('pendingMedia');
+            } elseif ($form->getSubmitValue("submitC")) {
+                $imgName = $form->getElement('img_name')->getValue();
+                $valid = $oImageUploader->update($imgId, $imgName);
+            }
+            $form->freeze();
+            if (false === $valid) {
+                $form->setElementError('filename', "Images already uploaded.");
+            }
+        }
+    /**
+     * If a single image is uploaded
+     */
+    } else {
+        $oImageUploader = new CentreonImageManager(
+            $dependencyInjector,
+            $_FILES,
+            './img/media/',
+            $imgPath,
+            $imgComment
+        );
+        if ($form->getSubmitValue("submitA")) {
+            $valid = $oImageUploader->upload();
+        } elseif ($form->getSubmitValue("submitC")) {
+            $imgName = $form->getElement('img_name')->getValue();
+            $valid = $oImageUploader->update($imgId, $imgName);
+        }
+        $form->freeze();
+        if (false === $valid) {
+            $form->setElementError('filename', "An image is not uploaded.");
+        }
     }
 }
 $action = $form->getSubmitValue("action");
