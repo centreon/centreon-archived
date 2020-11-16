@@ -125,17 +125,16 @@ function hidePasswordInCommand(
             $patternMacrosPassword = implode('|', array_keys($macrosPassword));
             $patternMacrosPassword = str_replace(['$', '~'], ['\$', '\~'], $patternMacrosPassword);
             foreach ($configurationToken as $index => $token) {
-                if (preg_match_all('~' . $patternMacrosPassword . '~', $token, $matches, PREG_SET_ORDER)) {
-                    if (
-                        array_key_exists($matches[0][0], $macrosPassword)
-                        && $macrosPassword[$matches[0][0]] !== null
-                    ) {
-                        $monitoringToken[$index] = str_replace(
-                            $macrosPassword[$matches[0][0]],
-                            $replacementValue,
-                            $monitoringToken[$index]
-                        );
-                    }
+                if (
+                    preg_match_all('~' . $patternMacrosPassword . '~', $token, $matches, PREG_SET_ORDER)
+                    && array_key_exists($matches[0][0], $macrosPassword)
+                    && $macrosPassword[$matches[0][0]] !== null
+                ) {
+                    $monitoringToken[$index] = str_replace(
+                        $macrosPassword[$matches[0][0]],
+                        $replacementValue,
+                        $monitoringToken[$index]
+                    );
                 }
             }
             return implode(' ', $monitoringToken);
