@@ -208,7 +208,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector = new StatementCollector();
         $request = 'SELECT SQL_CALC_FOUND_ROWS '
-            . 'resource.id, resource.type, resource.name, resource.action_url, resource.alias,  resource.fqdn, '
+            . 'resource.id, resource.type, resource.name, resource.alias, resource.fqdn, '
             . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
             . 'resource.command_line, resource.timezone, '
