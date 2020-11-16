@@ -94,6 +94,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     private $hostConcordances = [
         'h.name' => 'h.name',
         'h.alias' => 'h.alias',
+        'h.address' => 'h.address',
         'h.fqdn' => 'h.address',
         'information' => 'h.output',
     ];
@@ -104,6 +105,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     private $serviceConcordances = [
         'h.name' => 'sh.name',
         'h.alias' => 'sh.alias',
+        'h.address' => 'sh.address',
         'h.fqdn' => 'sh.address',
         's.description' => 's.description',
         's.group' => 'sg.name',

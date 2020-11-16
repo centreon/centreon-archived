@@ -491,6 +491,7 @@ paths:
         * h.group.id
         * h.name
         * h.alias
+        * h.address
         * h.fqdn
         * s.description
         * s.group
