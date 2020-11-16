@@ -62,6 +62,11 @@ function getMyHostTemplateCriticality($host_id)
     return null;
 }
 
+$password = 'toto';
+
+$IP = '50.51.52.253';
+
+
 /**
  * Init Command Cache
  *
