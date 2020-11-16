@@ -49,8 +49,8 @@ $service_id = filter_var(
 
 if ($service_id === false) {
     throw new InvalidArgumentException(
-        'Service id has not been defined correctly (' . ($_GET['service_id'] ?? $_POST['service_id']) . ') from page '
-        . $p
+        'Service id has not been defined correctly (' . ($_GET['service_id'] ?? $_POST['service_id']) . ') from page ('
+        . $_SERVER['REQUEST_URI'] . ')'
     );
 }
 
