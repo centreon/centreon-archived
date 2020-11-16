@@ -63,12 +63,12 @@ const getScale = ({ values, height }): ScaleLinear<number, number> => {
   const min = getMin(values);
   const max = getMax(values);
 
-  const upperDomainValue = min === max && max === 0 ? height : getMax(values);
+  const upperRangeValue = min === max && max === 0 ? height : 0;
 
   return scaleLinear<number>({
-    domain: [getMin(values), upperDomainValue],
+    domain: [getMin(values), getMax(values)],
     nice: true,
-    range: [height, 0],
+    range: [height, upperRangeValue],
   });
 };
 
