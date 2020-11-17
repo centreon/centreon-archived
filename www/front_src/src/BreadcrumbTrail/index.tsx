@@ -21,7 +21,6 @@ const useStyles = makeStyles({
 interface Props {
   breadcrumbsByPath: BreadcrumbsByPath;
   path: string;
-  children: React.ReactNode;
 }
 
 const getBreadcrumbs = ({
@@ -57,9 +56,8 @@ const BreadcrumbTrail = ({ breadcrumbsByPath, path }: Props): JSX.Element => {
     >
       {breadcrumbs.map((breadcrumb, index) => (
         <Breadcrumb
-          key={`${breadcrumb.label}-${breadcrumb.index}`}
+          key={breadcrumb.label}
           breadcrumb={breadcrumb}
-          index={index}
           last={index === breadcrumbs.length - 1}
         />
       ))}
