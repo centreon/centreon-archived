@@ -36,6 +36,7 @@
     "less-loader": "^4.0.5",
     "react-test-renderer": "^16.3.1",
     "redux-mock-store": "^1.5.1",
+    "stack-utils": "1.0.1",
     "style-loader": "^0.20.2",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "webpack": "^4.12.0",
