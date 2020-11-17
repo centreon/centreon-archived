@@ -27,6 +27,6 @@ namespace Centreon\Domain\PlatformTopology;
  *
  * @package Centreon\Domain\PlatformTopology
  */
-class PlatformTopologyException extends \Exception
+class PlatformException extends \Exception
 {
 }
