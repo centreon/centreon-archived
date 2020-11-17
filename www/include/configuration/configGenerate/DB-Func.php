@@ -45,16 +45,17 @@ function getMyHostTemplateCriticality($host_id)
     global $pearDB, $critHTpl;
 
     if (!$host_id) {
+
         return null;
     }
 
-    $rq = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '" . $host_id . "' ORDER BY `order`";
+    $rq = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id . "' ORDER BY `order`";
     $dbResult = $pearDB->query($rq);
     while ($row = $dbResult->fetch()) {
         if (isset($critHTpl[$row['host_tpl_id']]) && $critHTpl[$row['host_tpl_id']]) {
             return $critHTpl[$row['host_tpl_id']];
         } else {
-            if ($result_field = getMyHostTemplateCriticality($row['host_tpl_id'])) {
+             if ($result_field = getMyHostTemplateCriticality($row['host_tpl_id'])) {
                 return $result_field;
             }
         }
@@ -103,7 +104,8 @@ function intCmdParam($DB, $pollerId)
                                  ORDER BY service_register, service_template_model_stm_id");
     while ($data = $dbResult->fetch()) {
         if ($data["service_register"] == 1) {
-            if ($data["command_command_id_arg"] && !$data["command_command_id"]) {
+            if ($data["command_command_id_arg"]
+                && !$data["command_command_id"]) {
                 $cache["svc"][$data["service_id"]] =
                     db2str(getInfoInSvcTpl($data["service_template_model_stm_id"], "cmd", $cache)) .
                     db2str($data["command_command_id_arg"]);
@@ -114,6 +116,7 @@ function intCmdParam($DB, $pollerId)
                         "arg",
                         $cache
                     ));
+                $password = 'tata';
             } elseif ($data["command_command_id"] && $data["command_command_id_arg"]) {
                 $cache["svc"][$data["service_id"]] = $commands[$data["command_command_id"]] .
                     db2str($data["command_command_id_arg"]);
