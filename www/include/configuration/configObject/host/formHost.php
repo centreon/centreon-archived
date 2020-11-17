@@ -1030,12 +1030,8 @@ $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
 
 if (is_array($select)) {
-    $select_str = null;
-    foreach ($select as $key => $value) {
-        $select_str .= $key . ",";
-    }
     $select_pear = $form->addElement('hidden', 'select');
-    $select_pear->setValue($select_str);
+    $select_pear->setValue(implode(',', array_keys($select)));
 }
 
 /*
@@ -1187,11 +1183,8 @@ if ($form->validate() && $from_list_menu == false) {
     } elseif ($form->getSubmitValue("submitC")) {
         updateHostInDB($hostObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        $select = explode(",", $select);
-        foreach ($select as $key => $value) {
-            if ($value) {
-                updateHostInDB($value, true);
-            }
+        foreach ($select as $hostIdToUpdate) {
+            updateHostInDB($hostIdToUpdate, true);
         }
     }
     $o = HOST_WATCH;

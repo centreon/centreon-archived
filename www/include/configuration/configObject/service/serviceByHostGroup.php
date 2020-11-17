@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -57,7 +58,7 @@ require_once("./class/centreonDB.class.php");
 
 $pearDBO = new CentreonDB("centstorage");
 
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 $select = filter_var_array(

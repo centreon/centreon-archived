@@ -2330,18 +2330,25 @@ function validateGeoCoords()
  */
 function getSelectOption()
 {
+    $stringToArray = function (string $value): array {
+        if (strpos($value, ',') !== false) {
+            return explode(',', $value);
+        }
+        return [];
+    };
     if (isset($_GET["select"])) {
         return is_array($_GET["select"])
             ? $_GET["select"]
-            : [];
+            : $stringToArray($_GET["select"]);
     } elseif (isset($_POST["select"])) {
         return is_array($_POST["select"])
             ? $_POST["select"]
-            : [];
+            : $stringToArray($_POST["select"]);
     } else {
         return [];
     }
 }
+
 
 /**
  * Get the duplicate number option.
