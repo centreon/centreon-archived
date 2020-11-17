@@ -62,8 +62,8 @@ const styles = createStyles({
 // Extends Window interface
 declare global {
   interface Window {
-    fullscreenSearch: string;
-    fullscreenHash: string;
+    fullscreenSearch: string | null;
+    fullscreenHash: string | null;
   }
 }
 
@@ -115,8 +115,8 @@ class App extends Component<Props, State> {
     }
 
     // remove fullscreen parameters to keep normal routing
-    delete window.fullscreenSearch;
-    delete window.fullscreenHash;
+    window.fullscreenSearch = null;
+    window.fullscreenHash = null;
   };
 
   // keep alive (redirect to login page if session is expired)

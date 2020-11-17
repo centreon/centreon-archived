@@ -1,3 +1,5 @@
+import { CancelToken } from 'axios';
+
 import { getData, buildListingEndpoint } from '@centreon/ui';
 
 import { monitoringEndpoint } from '../../../../api/endpoint';
@@ -16,7 +18,9 @@ const buildListServicesEndpoint = ({ parameters, hostId }): string => {
   });
 };
 
-const listServices = (cancelToken) => (hostId): Promise<ServiceListing> => {
+const listServices = (cancelToken: CancelToken) => (
+  hostId: number,
+): Promise<ServiceListing> => {
   return getData<ServiceListing>(cancelToken)(
     buildListServicesEndpoint({
       parameters: {
