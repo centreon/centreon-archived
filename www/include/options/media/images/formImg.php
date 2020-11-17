@@ -233,12 +233,34 @@ if ($form->validate()) {
     $imgId = $form->getElement('img_id')->getValue();
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
+    $filesToUpload = getFilesFromTempDirectory('pendingMedia');
 
     /**
      * If an archive .zip or .tgz is uploaded
      */
-    if (!empty($filestoUpload)) {
-        foreach ($filestoUpload as $file) {
+    if (empty($filesToUpload)) {
+        $oImageUploader = new CentreonImageManager(
+            $dependencyInjector,
+            $_FILES,
+            './img/media/',
+            $imgPath,
+            $imgComment
+        );
+        if ($form->getSubmitValue("submitA")) {
+            $valid = $oImageUploader->upload();
+        } elseif ($form->getSubmitValue("submitC")) {
+            $imgName = $form->getElement('img_name')->getValue();
+            $valid = $oImageUploader->update($imgId, $imgName);
+        }
+        $form->freeze();
+        if (false === $valid) {
+            $form->setElementError('filename', "An image is not uploaded.");
+        }
+    /**
+     * If a single image is uploaded
+     */
+    } else {
+        foreach ($filesToUpload as $file) {
             $oImageUploader = new CentreonImageManager(
                 $dependencyInjector,
                 $file,
@@ -257,27 +279,7 @@ if ($form->validate()) {
                 $form->setElementError('filename', "Images already uploaded.");
             }
         }
-    /**
-     * If a single image is uploaded
-     */
-    } else {
-        $oImageUploader = new CentreonImageManager(
-            $dependencyInjector,
-            $_FILES,
-            './img/media/',
-            $imgPath,
-            $imgComment
-        );
-        if ($form->getSubmitValue("submitA")) {
-            $valid = $oImageUploader->upload();
-        } elseif ($form->getSubmitValue("submitC")) {
-            $imgName = $form->getElement('img_name')->getValue();
-            $valid = $oImageUploader->update($imgId, $imgName);
-        }
-        $form->freeze();
-        if (false === $valid) {
-            $form->setElementError('filename', "An image is not uploaded.");
-        }
+        removeRecursiveTempDirectory(sys_get_temp_dir() . '/pendingMedia');
     }
 }
 $action = $form->getSubmitValue("action");

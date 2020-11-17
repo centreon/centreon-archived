@@ -33,12 +33,6 @@
  *
  */
 
-/**
- * Created by PhpStorm.
- * User: loic
- * Date: 31/10/17
- * Time: 11:55
- */
 class CentreonImageManager extends centreonFileManager
 {
     protected $legalExtensions;
@@ -99,7 +93,6 @@ class CentreonImageManager extends centreonFileManager
                 $tempFullPath . DIRECTORY_SEPARATOR . $this->rawFile['tmp_name'],
                 $this->destinationPath . DIRECTORY_SEPARATOR . $this->rawFile['name']
             );
-            rmdir($tempFullPath);
             if ($insert) {
                 $img_ids[] = $this->insertImg();
                 return $img_ids;

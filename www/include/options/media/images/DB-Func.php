@@ -40,11 +40,6 @@ if (!isset($oreon)) {
     exit();
 }
 
-/**
- * Global variable use to retrieve all the files from an archive.
- */
-$filestoUpload = [];
-
 function sanitizeFilename($filename)
 {
     $cleanstr = str_replace(
@@ -443,20 +438,28 @@ function isCorrectMIMEType(array $file): bool
         switch ($mimeType) {
             case 'application/zip':
                 $zip = new ZipArchive();
-
-                if (isArchiveFilesCorrectMIMEType($dir, $file['tmp_name'], $zip) === true) {
+                if (isValidMIMETypeFromArchive($dir, $file['tmp_name'], $zip) === true) {
                     return true;
+                } else {
+                    removeRecursiveTempDirectory($dir);
+                    return false;
                 }
                 break;
             case 'application/x-gzip':
+                /**
+                 * Append an extension to temp file to be able to instanciate a PharData object
+                 */
                 $newName = $file['tmp_name'] . '.tgz';
                 rename($file['tmp_name'], $newName);
                 $tar = new PharData($newName);
-
-                if (isArchiveFilesCorrectMIMEType($dir, null, null, $tar) === true) {
+                if (isValidMIMETypeFromArchive($dir, null, null, $tar) === true) {
                     unlink($newName);
                     return true;
-                };
+                } else {
+                    unlink($newName);
+                    removeRecursiveTempDirectory($dir);
+                    return false;
+                }
                 break;
             default:
                 return true;
@@ -471,14 +474,14 @@ function isCorrectMIMEType(array $file): bool
  * @param string $dir
  * @return void
  */
-function removeRecursiveDir(string $dir): void
+function removeRecursiveTempDirectory(string $dir): void
 {
     if (is_dir($dir)) {
         $objects = scandir($dir);
         foreach ($objects as $object) {
             if ($object != "." && $object != "..") {
                 if (is_dir($dir . DIRECTORY_SEPARATOR . $object) && !is_link($dir . DIRECTORY_SEPARATOR . $object)) {
-                    removeRecursiveDir($dir . DIRECTORY_SEPARATOR . $object);
+                    removeRecursiveTempDirectory($dir . DIRECTORY_SEPARATOR . $object);
                 } else {
                     unlink($dir . DIRECTORY_SEPARATOR . $object);
                 }
@@ -497,16 +500,15 @@ function removeRecursiveDir(string $dir): void
  * @param PharData $tar
  * @return boolean
  */
-function isArchiveFilesCorrectMIMEType(
+function isValidMIMETypeFromArchive(
     string $dir,
     string $filename = null,
     ZipArchive $zip = null,
     PharData $tar = null
 ): bool {
-    global $filestoUpload;
     $files = [];
     if (file_exists($dir)) {
-        removeRecursiveDir($dir);
+        removeRecursiveTempDirectory($dir);
     }
 
     if (isset($zip)) {
@@ -515,9 +517,7 @@ function isArchiveFilesCorrectMIMEType(
         } else {
             return false;
         }
-    }
-
-    if (isset($tar)) {
+    } elseif (isset($tar)) {
         if ($tar->extractTo($dir) === true) {
             $files = array_diff(scandir($dir), ['..', '.']);
         } else {
@@ -525,31 +525,27 @@ function isArchiveFilesCorrectMIMEType(
         }
     }
 
-    $fileInfo = [];
     foreach ($files as $file) {
-        if (preg_match('/^image\//', mime_content_type($dir . '/' . $file))) {
-            $fileInfo['filename'] = [
-                'name' => $file,
-                'tmp_name' => $file,
-                'size' => filesize($dir . '/' . $file)
-            ];
-            stashFileForUpload($fileInfo);
-        } else {
-            $filestoUpload = [];
+        if (!preg_match('/^image\//', mime_content_type($dir . '/' . $file))) {
             return false;
         }
     }
     return true;
 }
 
-/**
- * stash valid files before upload
- *
- * @param array $file
- * @return void
- */
-function stashFileForUpload($file): void
+function getFilesFromTempDirectory(string $tempDirectory): array
 {
-    global $filestoUpload;
-    $filestoUpload[] = $file;
+    $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempDirectory;
+    $files = array_diff(scandir($directory), ['..', '.']);
+    $filesInfo = [];
+    foreach ($files as $file) {
+        $filesInfo[] = [
+            'filename' => [
+                'name' => $file,
+                'tmp_name' => $file,
+                'size' => filesize($directory . DIRECTORY_SEPARATOR . $file)
+            ]
+        ];
+    }
+    return $filesInfo;
 }
