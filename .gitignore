@@ -40,12 +40,12 @@ coverage-report/
 centreon-build/
 secret
 
-###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
-/public/bundles/
-/var/
-###< symfony/framework-bundle ###
-/bin/.phpunit/
-/doc/en/_build/
+#symfony/framework-bundle
+.env.local
+.env.local.php
+.env.*.local
+public/bundles/
+var/
+bin/.phpunit/
+doc/en/_build/
+symfony/
