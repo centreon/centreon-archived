@@ -18,20 +18,21 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\PlatformTopology\Platform;
 
 interface PlatformTopologyRepositoryInterface
 {
     /**
      * Register a new platform to topology
      *
-     * @param PlatformTopology $platformTopology
+     * @param Platform $platformTopology
      */
-    public function addPlatformToTopology(PlatformTopology $platformTopology): void;
+    public function addPlatformToTopology(Platform $platformTopology): void;
 
     /**
      * Search for already registered servers using same name or address
@@ -49,26 +50,41 @@ interface PlatformTopologyRepositoryInterface
      * Search for platform's ID using its address
      *
      * @param string $serverAddress
-     * @return PlatformTopology|null
+     * @return Platform|null
      * @throws \Exception
      */
-    public function findPlatformTopologyByAddress(string $serverAddress): ?PlatformTopology;
+    public function findPlatformByAddress(string $serverAddress): ?Platform;
 
     /**
      * Search for platform's name and address using its type
      *
      * @param string $serverType
-     * @return PlatformTopology|null
+     * @return Platform|null
      * * @throws \Exception
      */
-    public function findPlatformTopologyByType(string $serverType): ?PlatformTopology;
+    public function findPlatformByType(string $serverType): ?Platform;
 
     /**
      * Search for local platform's monitoring Id using its name
      *
      * @param string $serverName
-     * @return PlatformTopology|null
+     * @return Platform|null
      * @throws \Exception
      */
-    public function findLocalMonitoringIdFromName(string $serverName): ?PlatformTopology;
+    public function findLocalMonitoringIdFromName(string $serverName): ?Platform;
+
+    /**
+     * Search for the global topology of the platform
+     *
+     * @return Platform[]|null
+     */
+    public function getPlatformTopology(): ?array;
+
+    /**
+     * Search for the address of a topology using its Id
+     *
+     * @param integer $serverId
+     * @return Platform|null
+     */
+    public function findPlatform(int $serverId): ?Platform;
 }

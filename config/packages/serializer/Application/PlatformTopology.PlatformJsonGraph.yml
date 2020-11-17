@@ -1,0 +1,11 @@
+Centreon\Application\PlatformTopology\PlatformJsonGraph:
+  properties:
+    label:
+      type: string
+      groups: [platform_topology_json_graph]
+    type:
+      type: string
+      groups: [platform_topology_json_graph]
+    metadata:
+      type: array
+      groups: [platform_topology_json_graph]

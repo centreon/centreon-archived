@@ -18,13 +18,14 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology;
 
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
-use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
@@ -47,7 +48,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function addPlatformToTopology(PlatformTopology $platformTopology): void
+    public function addPlatformToTopology(Platform $platform): void
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
@@ -55,12 +56,12 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
                 VALUES (:address, :name, :type, :parentId, :serverId, :hostname)
             ')
         );
-        $statement->bindValue(':address', $platformTopology->getAddress(), \PDO::PARAM_STR);
-        $statement->bindValue(':name', $platformTopology->getName(), \PDO::PARAM_STR);
-        $statement->bindValue(':type', $platformTopology->getType(), \PDO::PARAM_STR);
-        $statement->bindValue(':parentId', $platformTopology->getParentId(), \PDO::PARAM_INT);
-        $statement->bindValue(':serverId', $platformTopology->getServerId(), \PDO::PARAM_INT);
-        $statement->bindValue(':hostname', $platformTopology->getHostname(), \PDO::PARAM_STR);
+        $statement->bindValue(':address', $platform->getAddress(), \PDO::PARAM_STR);
+        $statement->bindValue(':name', $platform->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':type', $platform->getType(), \PDO::PARAM_STR);
+        $statement->bindValue(':parentId', $platform->getParentId(), \PDO::PARAM_INT);
+        $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
+        $statement->bindValue(':hostname', $platform->getHostname(), \PDO::PARAM_STR);
         $statement->execute();
     }
 
@@ -86,7 +87,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function findPlatformTopologyByAddress(string $serverAddress): ?PlatformTopology
+    public function findPlatformByAddress(string $serverAddress): ?Platform
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
@@ -97,25 +98,25 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':address', $serverAddress, \PDO::PARAM_STR);
         $statement->execute();
 
-        $platformTopology = null;
+        $platform = null;
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             /**
-             * @var PlatformTopology $platformTopology
+             * @var Platform $platform
              */
-            $platformTopology = EntityCreator::createEntityByArray(
-                PlatformTopology::class,
+            $platform = EntityCreator::createEntityByArray(
+                Platform::class,
                 $result
             );
         }
 
-        return $platformTopology;
+        return $platform;
     }
 
     /**
      * @inheritDoc
      */
-    public function findPlatformTopologyByType(string $serverType): ?PlatformTopology
+    public function findPlatformByType(string $serverType): ?Platform
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
@@ -126,25 +127,25 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':type', $serverType, \PDO::PARAM_STR);
         $statement->execute();
 
-        $platformTopology = null;
+        $platform = null;
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             /**
-             * @var PlatformTopology $platformTopology
+             * @var Platform $platform
              */
-            $platformTopology = EntityCreator::createEntityByArray(
-                PlatformTopology::class,
+            $platform = EntityCreator::createEntityByArray(
+                Platform::class,
                 $result
             );
         }
 
-        return $platformTopology;
+        return $platform;
     }
 
     /**
      * @inheritDoc
      */
-    public function findLocalMonitoringIdFromName(string $serverName): ?PlatformTopology
+    public function findLocalMonitoringIdFromName(string $serverName): ?Platform
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
@@ -156,18 +157,56 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':name', $serverName, \PDO::PARAM_STR);
         $statement->execute();
 
-        $platformTopology = null;
+        $platform = null;
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             /**
-             * @var PlatformTopology $platformTopology
+             * @var Platform $platform
              */
-            $platformTopology = EntityCreator::createEntityByArray(
-                PlatformTopology::class,
+            $platform = EntityCreator::createEntityByArray(
+                Platform::class,
                 $result
             );
         }
 
+        return $platform;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPlatformTopology(): array
+    {
+        $statement = $this->db->query('SELECT * FROM `platform_topology`');
+
+        $platformTopology = [];
+        if ($statement !== false) {
+            foreach ($statement as $topology) {
+                /**
+                 * @var Platform $platform
+                 */
+                $platform = EntityCreator::createEntityByArray(Platform::class, $topology);
+                $platformTopology[] = $platform;
+            }
+        }
+
         return $platformTopology;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findPlatform(int $serverId): ?Platform
+    {
+        $statement = $this->db->prepare('SELECT * FROM `platform_topology` WHERE id = :serverId');
+        $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $platform = null;
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $platform = EntityCreator::createEntityByArray(Platform::class, $result);
+        }
+
+        return $platform;
     }
 }
