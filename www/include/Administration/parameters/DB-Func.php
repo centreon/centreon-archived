@@ -943,6 +943,10 @@ function updateKnowledgeBaseData($db, $form, $centreon)
     if (isset($ret["kb_wiki_password"]) && $ret["kb_wiki_password"] === CentreonAuth::PWS_OCCULTATION) {
         unset($ret["kb_wiki_password"]);
     }
+    
+    if (isset($ret["kb_db_password"]) && $ret["kb_db_password"] === CentreonAuth::PWS_OCCULTATION) {
+        unset($ret["kb_db_password"]);
+    }
 
     foreach ($ret as $key => $value) {
         if (preg_match('/^kb_/', $key)) {
