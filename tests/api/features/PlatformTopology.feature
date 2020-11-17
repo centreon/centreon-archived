@@ -5,7 +5,7 @@ Feature:
 
     Background:
         Given a running instance of Centreon Web API
-    #   And the endpoints are described in Centreon Web API documentation
+    #    And the endpoints are described in Centreon Web API documentation
 
     Scenario: Register servers in Platform Topology
         Given I am logged in
@@ -291,4 +291,48 @@ Feature:
         And the response should be equal to:
             """
             {"message":"Cannot register the 'poller' platform : 'inconsistent_parent_type'@'6.6.6.1' behind a 'poller' platform"}
+            """
+
+        # Actually we can't have server_id because the register is not fully complete (wizard not executed)
+        # So we can't test pollers or remote edges.
+        When I send a GET request to "/beta/platform/topology"
+        Then the response code should be "200"
+        And the JSON should be equal to:
+            """
+            {
+                "graph": {
+                    "label": "centreon-topology",
+                    "metadata": {
+                        "version": "1.0.0"
+                    },
+                    "nodes": {
+                        "1": {
+                            "type": "central",
+                            "label": "Central",
+                            "metadata": {
+                                "centreon-id": "1",
+                                "hostname": "central.test.localhost.localdomain",
+                                "address": "1.1.1.10"
+                            }
+                        },
+                        "2": {
+                            "type": "poller",
+                            "label": "my_poller",
+                            "metadata": {
+                                "hostname": "poller.test.localhost.localdomain",
+                                "address": "1.1.1.1"
+                            }
+                        },
+                        "3": {
+                            "type": "poller",
+                            "label": "my_poller_2",
+                            "metadata": {
+                                "hostname": "poller2.test.localhost.localdomain",
+                                "address": "1.1.1.2"
+                            }
+                        }
+                    },
+                    "edges": []
+                }
+            }
             """

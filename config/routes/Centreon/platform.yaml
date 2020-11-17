@@ -8,3 +8,9 @@ centreon_application_platformtopology_addplatformtotopology:
   path: /platform/topology
   controller: 'Centreon\Application\Controller\PlatformTopologyController::addPlatformToTopology'
   condition: "request.attributes.get('version') >= 2.0"
+
+centreon_application_platformtopology_getcompleteplatformtopology:
+  methods: GET
+  path: /platform/topology
+  controller: 'Centreon\Application\Controller\PlatformTopologyController::getPlatformJsonGraph'
+  condition: "request.attributes.get('version') >= 2.0"
