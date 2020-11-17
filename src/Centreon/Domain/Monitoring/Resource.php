@@ -71,6 +71,16 @@ class Resource
     private $name;
 
     /**
+     * @var string|null
+     */
+    private $alias;
+
+    /**
+     * @var string|null
+     */
+    private $fqdn;
+
+    /**
      * @var \Centreon\Domain\Monitoring\Icon|null
      */
     private $icon;
@@ -317,6 +327,44 @@ class Resource
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAlias(): ?string
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @param string|null $alias
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setAlias(?string $alias): self
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFqdn(): ?string
+    {
+        return $this->fqdn;
+    }
+
+    /**
+     * @param string|null $fqdn
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setFqdn(?string $fqdn): self
+    {
+        $this->fqdn = $fqdn;
 
         return $this;
     }
