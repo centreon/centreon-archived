@@ -41,7 +41,6 @@ if (!isset($centreon)) {
 global $form_service_type;
 $form_service_type = "BYHOST";
 
-
 $service_id = filter_var(
     $_GET['service_id'] ?? $_POST['service_id'] ?? 0,
     FILTER_VALIDATE_INT
@@ -73,14 +72,18 @@ $dupNbr = filter_var_array(
  */
 $linkType = '';
 
-/*
- * Check if a service is a service by hostgroup or not
- */
-$DBRESULT = $pearDB->query('SELECT * FROM host_service_relation WHERE service_service_id = ' . $service_id);
-while ($data = $DBRESULT->fetchRow()) {
-    if (isset($data["hostgroup_hg_id"]) && $data["hostgroup_hg_id"] != "") {
-        $linkType = 'Group';
-        $form_service_type = "BYHOSTGROUP";
+if ($service_id !== false) {
+    /*
+     * Check if a service is a service by hostgroup or not
+     */
+    $statement = $pearDB->prepare('SELECT * FROM host_service_relation WHERE service_service_id = :service_id');
+    $statement->bindValue(':service_id', $service_id, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($data = $statement->fetch()) {
+        if (isset($data["hostgroup_hg_id"]) && $data["hostgroup_hg_id"] != "") {
+            $linkType = 'Group';
+            $form_service_type = "BYHOSTGROUP";
+        }
     }
 }
 
