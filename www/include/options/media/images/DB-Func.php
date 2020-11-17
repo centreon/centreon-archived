@@ -431,36 +431,49 @@ function getListDirectory($filter = null)
 function isCorrectMIMEType(array $file): bool
 {
     $mimeType = mime_content_type($file['tmp_name']);
+
     if (!preg_match('/(^image\/)|(^application(\/zip)|(\/x-gzip)$)/', $mimeType)) {
         return false;
     } else {
         $dir = sys_get_temp_dir() . '/pendingMedia';
         switch ($mimeType) {
+            /*
+             * .zip archive
+             */
             case 'application/zip':
                 $zip = new ZipArchive();
                 if (isValidMIMETypeFromArchive($dir, $file['tmp_name'], $zip) === true) {
                     return true;
                 } else {
+                    // remove the pending images from tmp
                     removeRecursiveTempDirectory($dir);
                     return false;
                 }
                 break;
+            /*
+             *.tgz archive
+             */
             case 'application/x-gzip':
-                /**
+                /*
                  * Append an extension to temp file to be able to instanciate a PharData object
                  */
                 $newName = $file['tmp_name'] . '.tgz';
                 rename($file['tmp_name'], $newName);
                 $tar = new PharData($newName);
                 if (isValidMIMETypeFromArchive($dir, null, null, $tar) === true) {
+                    //remove the .tgz from tmp
                     unlink($newName);
                     return true;
                 } else {
+                    //remove the .tgz and the pending images from tmp
                     unlink($newName);
                     removeRecursiveTempDirectory($dir);
                     return false;
                 }
                 break;
+            /*
+             * single image
+             */
             default:
                 return true;
         }
@@ -507,6 +520,10 @@ function isValidMIMETypeFromArchive(
     PharData $tar = null
 ): bool {
     $files = [];
+
+    /**
+     * Remove Pending images directory to avoid images duplication problems.
+     */
     if (file_exists($dir)) {
         removeRecursiveTempDirectory($dir);
     }
@@ -533,6 +550,12 @@ function isValidMIMETypeFromArchive(
     return true;
 }
 
+/**
+ * Format all the pending images as an array usable by CentreonImageManager
+ *
+ * @param string $tempDirectory
+ * @return array
+ */
 function getFilesFromTempDirectory(string $tempDirectory): array
 {
     $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempDirectory;

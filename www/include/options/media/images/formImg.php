@@ -233,10 +233,13 @@ if ($form->validate()) {
     $imgId = $form->getElement('img_id')->getValue();
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
+    /**
+     * Check if an archive has been extracted into pendingMedia folder
+     */
     $filesToUpload = getFilesFromTempDirectory('pendingMedia');
 
     /**
-     * If an archive .zip or .tgz is uploaded
+     * If a single image is uploaded
      */
     if (empty($filesToUpload)) {
         $oImageUploader = new CentreonImageManager(
@@ -257,7 +260,7 @@ if ($form->validate()) {
             $form->setElementError('filename', "An image is not uploaded.");
         }
     /**
-     * If a single image is uploaded
+     * If an archive .zip or .tgz is uploaded
      */
     } else {
         foreach ($filesToUpload as $file) {
@@ -279,6 +282,9 @@ if ($form->validate()) {
                 $form->setElementError('filename', "Images already uploaded.");
             }
         }
+        /**
+         * Remove the folder after upload complete
+         */
         removeRecursiveTempDirectory(sys_get_temp_dir() . '/pendingMedia');
     }
 }
