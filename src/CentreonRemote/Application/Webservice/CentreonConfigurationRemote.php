@@ -4,7 +4,7 @@ namespace CentreonRemote\Application\Webservice;
 
 use Centreon\Domain\Entity\Task;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
-use Centreon\Domain\PlatformTopology\PlatformTopology;
+use Centreon\Domain\PlatformTopology\Platform;
 use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
 
 /**
@@ -458,7 +458,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             );
             $this->setCentreonInstanceAsCentral();
             $this->updateServerInPlatformTopology([
-                'type' => PlatformTopology::TYPE_REMOTE,
+                'type' => Platform::TYPE_REMOTE,
                 'server_name' => $serverName,
                 'nagios_id' => $serverId,
                 'address' => $serverIP,
@@ -474,7 +474,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $additionalRemotes = $pollerConfigurationBridge->getAdditionalRemoteServers();
             $pollerConfigurationService->linkPollerToAdditionalRemoteServers($pollers[0], $additionalRemotes);
             $this->updateServerInPlatformTopology([
-                'type' => PlatformTopology::TYPE_POLLER,
+                'type' => Platform::TYPE_POLLER,
                 'server_name' => $serverName,
                 'nagios_id' => $serverId,
                 'address' => $serverIP,
@@ -482,7 +482,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             ]);
         } else {
             $this->updateServerInPlatformTopology([
-                'type' => PlatformTopology::TYPE_POLLER,
+                'type' => Platform::TYPE_POLLER,
                 'server_name' => $serverName,
                 'nagios_id' => $serverId,
                 'address' => $serverIP,
