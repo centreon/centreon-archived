@@ -36,7 +36,7 @@ interface DetailCardLines {
 const DetailsLine = ({ line }: { line?: string }): JSX.Element => {
   return (
     <Typography component="div">
-      <Box fontWeight={500} lineHeight={1}>
+      <Box fontWeight={500} lineHeight={1} style={{ fontSize: 15 }}>
         {line}
       </Box>
     </Typography>
