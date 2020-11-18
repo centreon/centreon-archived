@@ -20,7 +20,7 @@ interface ResourcesWithAcknowledgeParams {
   cancelToken: CancelToken;
 }
 
-const acknowledgeResources = (cancelToken) => ({
+const acknowledgeResources = (cancelToken: CancelToken) => ({
   resources,
   params,
 }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
@@ -53,7 +53,7 @@ interface ResourcesWithDowntimeParams {
   cancelToken: CancelToken;
 }
 
-const setDowntimeOnResources = (cancelToken) => ({
+const setDowntimeOnResources = (cancelToken: CancelToken) => ({
   resources,
   params,
 }: ResourcesWithDowntimeParams): Promise<Array<AxiosResponse>> => {
