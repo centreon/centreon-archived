@@ -62,6 +62,10 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
   );
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
+  const timelineEndpoint = path<string>(
+    ['links', 'endpoints', 'timeline'],
+    details,
+  );
 
   const [selectedTimePeriod, setSelectedTimePeriod] = React.useState<
     TimePeriod
@@ -113,7 +117,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
             graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
             toggableLegend
-            timelineEndpoint={}
+            timelineEndpoint={timelineEndpoint}
           />
         </div>
       </Paper>

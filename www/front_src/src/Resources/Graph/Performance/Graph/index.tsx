@@ -39,6 +39,7 @@ import formatMetricValue from '../formatMetricValue';
 import Axes from './Axes';
 import Lines from '../Lines';
 import Annotations from './Annotations';
+import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -58,6 +59,7 @@ interface Props {
   base: number;
   lines: Array<LineModel>;
   xAxisTickFormat: string;
+  timeline?: Array<TimelineEvent>;
 }
 
 const getScale = ({ values, height }): ScaleLinear<number, number> => {
@@ -80,6 +82,7 @@ const Graph = ({
   base,
   lines,
   xAxisTickFormat,
+  timeline,
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
 
@@ -265,7 +268,11 @@ const Graph = ({
             onMouseMove={displayTooltip}
             onMouseLeave={hideTooltip}
           />
-          <Annotations xScale={xScale} />
+          <Annotations
+            xScale={xScale}
+            graphHeight={graphHeight}
+            timeline={timeline as Array<TimelineEvent>}
+          />
           {tooltipData && (
             <Line
               from={{ x: tooltipLineLeft, y: 0 }}

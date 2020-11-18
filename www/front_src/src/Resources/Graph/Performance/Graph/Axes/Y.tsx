@@ -28,7 +28,7 @@ const UnitLabel = ({ x, unit }: UnitLabelProps): JSX.Element => {
   return (
     <text
       x={x}
-      y={0}
+      y={-8}
       fontSize={commonTickLabelProps.fontSize}
       fontFamily={commonTickLabelProps.fontFamily}
     >
@@ -62,7 +62,7 @@ const YAxes = ({
 
   return (
     <>
-      {!hasMoreThanTwoUnits && <UnitLabel x={5} unit={firstUnit} />}
+      {!hasMoreThanTwoUnits && <UnitLabel x={0} unit={firstUnit} />}
       <AxisLeft
         orientation="left"
         tickLabelProps={(): {} => ({
@@ -86,7 +86,7 @@ const YAxes = ({
             scale={rightScale}
             numTicks={ticksCount}
           />
-          <UnitLabel unit={secondUnit} x={graphWidth - 20} />
+          <UnitLabel unit={secondUnit} x={graphWidth} />
         </>
       )}
     </>

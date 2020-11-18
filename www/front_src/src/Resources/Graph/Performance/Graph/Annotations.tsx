@@ -1,52 +1,97 @@
 import * as React from 'react';
 
-import { Line, Point, Group, LineShape } from '@visx/visx';
-import { Annotation } from 'react-annotation';
+import { Line } from '@visx/visx';
+import { propEq, filter } from 'ramda';
+import { ScaleTime } from 'd3-scale';
+import { useTranslation } from 'react-i18next';
 
-import { useTheme, Tooltip } from '@material-ui/core';
+import {
+  useTheme,
+  Tooltip,
+  Typography,
+  Paper,
+  makeStyles,
+} from '@material-ui/core';
 import IconComment from '@material-ui/icons/Comment';
 
-const Annotations = ({ xScale }): JSX.Element => {
+import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
+import { labelBy } from '../../../translatedLabels';
+import truncate from '../../../truncate';
+
+const useStyles = makeStyles((theme) => ({
+  tooltip: {
+    backgroundColor: 'transparent',
+  },
+  tooltipContent: {
+    padding: theme.spacing(1),
+  },
+}));
+
+interface Props {
+  xScale: ScaleTime<number, number>;
+  timeline: Array<TimelineEvent>;
+  graphHeight: number;
+}
+
+const Annotations = ({ xScale, timeline, graphHeight }: Props): JSX.Element => {
   const theme = useTheme();
+  const { t } = useTranslation();
+  const classes = useStyles();
 
-  // const xDomain = xScale.invert(x - margin.left);
+  const comments = filter(propEq('type', 'comment'), timeline);
 
-  // const index = bisectDate(getDates(timeSeries), xDomain, 1);
-
-  console.log(xScale(new Date('2020-11-16T17:05:00+01:00')));
   return (
     <>
-      {/* <Annotation
-        x={0}
-        y={0}
-        dy={0}
-        dx={0}
-        // color="#9610ff"
-        title="Annotations :)"
-        label="Longer text to show text wrapping"
-        radius={14}
-        text="A"
-        
-      > */}
-      <Tooltip title="plop">
-        <IconComment
-          fontSize="small"
-          viewBox="0 0"
-          height={20}
-          y={-30}
-          x={0}
-          color="primary"
-        />
-      </Tooltip>
-      {/* </Annotation> */}
-      <Line
-        from={{ x: 100, y: 0 }}
-        to={{ x: 100, y: 240 }}
-        stroke={theme.palette.primary.main}
-        strokeWidth={1}
-        strokeOpacity={0.6}
-        pointerEvents="none"
-      />
+      {comments.map((comment) => {
+        const iconHeight = 20;
+        const yMargin = -30;
+        const xMargin = -15;
+
+        const x = xScale(new Date(comment.date));
+
+        return (
+          <g key={comment.id}>
+            <Tooltip
+              classes={{ tooltip: classes.tooltip }}
+              title={
+                <Paper className={classes.tooltipContent}>
+                  <Typography variant="caption">
+                    {`${truncate(comment.content)} ${t(labelBy)} ${
+                      comment.contact?.name
+                    }`}
+                  </Typography>
+                </Paper>
+              }
+            >
+              <svg
+                y={yMargin}
+                x={x + xMargin}
+                height={iconHeight}
+                width={iconHeight}
+              >
+                <rect
+                  width={iconHeight}
+                  height={iconHeight}
+                  fill="transparent"
+                />
+                <IconComment
+                  height={iconHeight}
+                  width={iconHeight}
+                  color="primary"
+                />
+              </svg>
+            </Tooltip>
+            <Line
+              from={{ x, y: yMargin + iconHeight + 2 }}
+              to={{ x, y: graphHeight }}
+              stroke={theme.palette.primary.main}
+              strokeWidth={1}
+              strokeOpacity={0.5}
+              pointerEvents="none"
+            />
+          </g>
+        );
+      })}
     </>
   );
 };
