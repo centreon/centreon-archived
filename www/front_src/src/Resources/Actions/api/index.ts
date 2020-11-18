@@ -1,4 +1,3 @@
-import formatISO from 'date-fns/formatISO';
 import axios, { AxiosResponse, CancelToken } from 'axios';
 import { map, pick } from 'ramda';
 
@@ -21,7 +20,7 @@ interface ResourcesWithAcknowledgeParams {
   cancelToken: CancelToken;
 }
 
-const acknowledgeResources = (cancelToken) => ({
+const acknowledgeResources = (cancelToken: CancelToken) => ({
   resources,
   params,
 }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
@@ -54,7 +53,7 @@ interface ResourcesWithDowntimeParams {
   cancelToken: CancelToken;
 }
 
-const setDowntimeOnResources = (cancelToken) => ({
+const setDowntimeOnResources = (cancelToken: CancelToken) => ({
   resources,
   params,
 }: ResourcesWithDowntimeParams): Promise<Array<AxiosResponse>> => {
@@ -65,8 +64,8 @@ const setDowntimeOnResources = (cancelToken) => ({
       downtime: {
         with_services: params.downtimeAttachedResources,
         is_fixed: params.fixed,
-        start_time: formatISO(params.startTime),
-        end_time: formatISO(params.endTime),
+        start_time: params.startTime,
+        end_time: params.endTime,
         duration: params.duration,
         comment: params.comment,
       },

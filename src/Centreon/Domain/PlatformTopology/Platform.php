@@ -18,15 +18,18 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology;
+
+use Centreon\Domain\PlatformTopology\PlatformRelation;
 
 /**
  * Class designed to retrieve servers to be added using the wizard
  *
  */
-class PlatformTopology
+class Platform
 {
     public const TYPE_CENTRAL = 'central';
     public const TYPE_POLLER = 'poller';
@@ -89,6 +92,11 @@ class PlatformTopology
      * @var bool
      */
     private $isLinkedToAnotherServer = false;
+
+    /**
+     * @var PlatformRelation Communication type between topology and parent
+     */
+    private $relation = null;
 
     /**
      * @return int|null
@@ -278,7 +286,7 @@ class PlatformTopology
 
     /**
      * @param int|null $serverId nagios_server ID
-     * @return PlatformTopology
+     * @return Platform
      */
     public function setServerId(?int $serverId): self
     {
@@ -301,6 +309,30 @@ class PlatformTopology
     public function setLinkedToAnotherServer(bool $isLinked): self
     {
         $this->isLinkedToAnotherServer = $isLinked;
+        return $this;
+    }
+
+    /**
+     * @return PlatformRelation
+     */
+    public function getRelation(): ?PlatformRelation
+    {
+        return $this->relation;
+    }
+
+    /**
+     * @param string|null $relationType
+     * @return self
+     */
+    public function setRelation(?string $relationType): self
+    {
+        if ($this->getParentId() !== null) {
+            $this->relation = (new PlatformRelation())
+                ->setSource($this->getId())
+                ->setRelation($relationType)
+                ->setTarget($this->getParentId());
+        }
+
         return $this;
     }
 }

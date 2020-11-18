@@ -22,7 +22,6 @@ import {
   labelCurrentNotificationNumber,
   labelNo,
 } from '../../../../translatedLabels';
-import { getFormattedDate, getFormattedTime } from '../../../../dateTime';
 import { ResourceDetails } from '../../../models';
 
 type Lines = Array<{ key: string; line: JSX.Element | null }>;
@@ -65,20 +64,28 @@ const ActiveLine = (): JSX.Element => {
   );
 };
 
-const getDetailCardLines = (
-  details: ResourceDetails,
-): Array<DetailCardLines> => {
+interface DetailCardLineProps {
+  details: ResourceDetails;
+  toDate: (date: string | Date) => string;
+  toTime: (date: string | Date) => string;
+}
+
+const getDetailCardLines = ({
+  details,
+  toDate,
+  toTime,
+}: DetailCardLineProps): Array<DetailCardLines> => {
   const getDateTimeLines = ({ label, field }): DetailCardLines => ({
     title: label,
     field,
     getLines: (): Lines => [
       {
         key: `${label}_date`,
-        line: <DetailsLine line={getFormattedDate(field)} />,
+        line: <DetailsLine line={toDate(field)} />,
       },
       {
         key: `${label}_time`,
-        line: <DetailsLine key="tries" line={getFormattedTime(field)} />,
+        line: <DetailsLine key="tries" line={toTime(field)} />,
       },
     ],
   });

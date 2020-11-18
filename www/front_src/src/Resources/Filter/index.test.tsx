@@ -72,7 +72,14 @@ const webAccessServiceGroup = {
   name: 'Web-access',
 };
 
-const filtersParams = [
+type FilterParameter = [
+  string,
+  string,
+  Record<string, unknown>,
+  (() => void) | undefined,
+];
+
+const filtersParams: Array<FilterParameter> = [
   [labelResource, labelHost, { resourceTypes: ['host'] }, undefined],
   [
     labelState,
@@ -226,7 +233,7 @@ describe(Filter, () => {
 
       const endpoint = getListingEndpoint({ search: fieldSearchValue });
 
-      expect(endpoint).toContain(
+      expect(decodeURIComponent(endpoint)).toContain(
         `search={"$and":[{"${searchableField}":{"$rg":"${search}"}}]}`,
       );
 
@@ -262,7 +269,7 @@ describe(Filter, () => {
       (searchableField) => `{"${searchableField}":{"$rg":"${searchValue}"}}`,
     );
 
-    expect(endpoint).toContain(
+    expect(decodeURIComponent(endpoint)).toContain(
       `search={"$or":[${searchableFieldExpressions}]}`,
     );
 

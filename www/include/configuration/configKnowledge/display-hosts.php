@@ -99,9 +99,8 @@ try {
         1 => "<font color='green'> " . _("Wiki page defined") . " </font>"
     ];
     $line = [0 => "list_one", 1 => "list_two"];
-    $proc = new procedures(
-        $pearDB
-    );
+    $proc = new procedures($pearDB);
+    $proc->fetchProcedures();
     $proc->setHostInformations();
     $proc->setServiceInformations();
 

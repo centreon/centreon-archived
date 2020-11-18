@@ -3,9 +3,10 @@ import * as React from 'react';
 import axios from 'axios';
 
 import { render, RenderResult, waitFor } from '@testing-library/react';
+
+import { useUser, useAcl } from '@centreon/ui-context';
+
 import AppProvider from '.';
-import { useUserContext as mockUseUserContext } from './UserContext';
-import { UserContext } from './models';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -34,12 +35,8 @@ const retrievedTranslations = {
   },
 };
 
-let userContext: UserContext | null = null;
-
 jest.mock('../App', () => {
   const ComponentWithUserContext = (): JSX.Element => {
-    userContext = mockUseUserContext();
-
     return <></>;
   };
 
@@ -67,20 +64,12 @@ describe(AppProvider, () => {
       });
   });
 
-  afterEach(() => {
-    userContext = null;
-  });
-
   it('populates the userContext', async () => {
     renderComponent();
 
-    await waitFor(() =>
-      expect(userContext).toEqual({
-        ...retrievedUser,
-        acl: {
-          actions: retrievedActionsAcl,
-        },
-      }),
-    );
+    await waitFor(() => {
+      expect(useAcl().setActionAcl).toHaveBeenCalledWith(retrievedActionsAcl);
+      expect(useUser().setUser).toHaveBeenCalledWith(retrievedUser);
+    });
   });
 });

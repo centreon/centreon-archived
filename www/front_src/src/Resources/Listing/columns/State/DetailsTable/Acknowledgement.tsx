@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
 
 import { makeStyles } from '@material-ui/core';
 
-import { ColumnType } from '@centreon/ui';
+import { ColumnType, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import {
   labelAuthor,
@@ -15,7 +15,6 @@ import {
   labelSticky,
 } from '../../../../translatedLabels';
 import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
-import { getFormattedDateTime } from '../../../../dateTime';
 
 const useStyles = makeStyles({
   comment: {
@@ -27,10 +26,8 @@ const useStyles = makeStyles({
 });
 
 interface AcknowledgementDetails {
-  author_name: string;
-  entry_time: string;
-  is_persistent_comment: string;
-  is_sticky: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  id: number;
   comment: string;
 }
 
@@ -38,6 +35,7 @@ type Props = Pick<DetailsTableProps, 'endpoint'>;
 
 const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
   const classes = useStyles();
+  const { toDateTime } = useLocaleDateTimeFormat();
 
   const columns = [
     {
@@ -51,7 +49,7 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
       id: 'entry_time',
       label: labelEntryTime,
       type: ColumnType.string,
-      getContent: ({ entry_time }): string => getFormattedDateTime(entry_time),
+      getContent: ({ entry_time }): string => toDateTime(entry_time),
       width: 150,
     },
     {
