@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import IconComment from '@material-ui/icons/Comment';
 
+import { useLocaleDateTimeFormat } from '@centreon/ui/src';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { labelBy } from '../../../translatedLabels';
 import truncate from '../../../truncate';
@@ -37,6 +38,7 @@ const Annotations = ({ xScale, timeline, graphHeight }: Props): JSX.Element => {
   const theme = useTheme();
   const { t } = useTranslation();
   const classes = useStyles();
+  const { toDateTime } = useLocaleDateTimeFormat();
 
   const comments = filter(propEq('type', 'comment'), timeline);
 
@@ -55,6 +57,9 @@ const Annotations = ({ xScale, timeline, graphHeight }: Props): JSX.Element => {
               classes={{ tooltip: classes.tooltip }}
               title={
                 <Paper className={classes.tooltipContent}>
+                  <Typography variant="body2">
+                    {toDateTime(comment.date)}
+                  </Typography>
                   <Typography variant="caption">
                     {`${truncate(comment.content)} ${t(labelBy)} ${
                       comment.contact?.name
