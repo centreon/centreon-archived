@@ -26,7 +26,6 @@ class CfgCentreonBroker
                 'cache_directory'        => '@centreonbroker_varlib@',
                 'command_file'           => '@centreonbroker_varlib@/command.sock',
                 'daemon'                 => 1,
-                'pool_size'              => null,
             ],
             [
                 'config_id'              => 2,
@@ -39,7 +38,6 @@ class CfgCentreonBroker
                 'event_queue_max_size'   => 100000,
                 'cache_directory'        => '@centreonbroker_varlib@',
                 'daemon'                 => 1,
-                'pool_size'              => null,
             ],
             [
                 'config_id'              => 3,
@@ -52,7 +50,6 @@ class CfgCentreonBroker
                 'event_queue_max_size'   => 100000,
                 'cache_directory'        => '@monitoring_var_lib@',
                 'daemon'                 => 0,
-                'pool_size'              => null,
             ],
         ];
     }
