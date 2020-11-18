@@ -38,6 +38,7 @@ import {
 import formatMetricValue from '../formatMetricValue';
 import Axes from './Axes';
 import Lines from '../Lines';
+import Annotations from './Annotations';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -48,7 +49,7 @@ const MemoizedGridColumns = React.memo(GridColumns, propsAreEqual);
 const MemoizedGridRows = React.memo(GridRows, propsAreEqual);
 const MemoizedLines = React.memo(Lines, propsAreEqual);
 
-const margin = { top: 10, right: 45, bottom: 30, left: 45 };
+const margin = { top: 30, right: 45, bottom: 30, left: 45 };
 
 interface Props {
   width: number;
@@ -264,6 +265,7 @@ const Graph = ({
             onMouseMove={displayTooltip}
             onMouseLeave={hideTooltip}
           />
+          <Annotations xScale={xScale} />
           {tooltipData && (
             <Line
               from={{ x: tooltipLineLeft, y: 0 }}

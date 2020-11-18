@@ -1,7 +1,17 @@
 import * as React from 'react';
 
 import { ParentSize } from '@visx/visx';
-import { map, prop, propEq, find, reject, sortBy, isEmpty, isNil } from 'ramda';
+import {
+  map,
+  prop,
+  propEq,
+  find,
+  reject,
+  sortBy,
+  isEmpty,
+  isNil,
+  path,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
@@ -51,6 +61,7 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
+  timelineEndpoint = undefined,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
@@ -60,7 +71,9 @@ const PerformanceGraph = ({
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
 
-  const { sendRequest, sending } = useRequest<GraphData>({
+  const { sendRequest: sendGetGraphDataRequest, sending } = useRequest<
+    GraphData
+  >({
     request: getData,
   });
 
@@ -69,7 +82,7 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendRequest(endpoint).then((graphData) => {
+    sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);
