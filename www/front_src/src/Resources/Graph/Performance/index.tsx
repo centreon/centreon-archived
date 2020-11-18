@@ -1,17 +1,7 @@
 import * as React from 'react';
 
 import { ParentSize } from '@visx/visx';
-import {
-  map,
-  prop,
-  propEq,
-  find,
-  reject,
-  sortBy,
-  isEmpty,
-  isNil,
-  path,
-} from 'ramda';
+import { map, prop, propEq, find, reject, sortBy, isEmpty, isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
