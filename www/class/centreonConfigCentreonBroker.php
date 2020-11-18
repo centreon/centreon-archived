@@ -646,9 +646,11 @@ class CentreonConfigCentreonBroker
                 \PDO::PARAM_INT
             );
             $stmt->bindValue(':command_file', $values['command_file'], \PDO::PARAM_STR);
-            empty($values['pool_size'])
-                ? $stmt->bindValue(':pool_size', null, \PDO::PARAM_NULL)
-                : $stmt->bindValue(':pool_size', (int)$values['pool_size'], \PDO::PARAM_INT);
+            $stmt->bindValue(
+                ':pool_size',
+                !empty($values['pool_size']) ? (int)$values['pool_size'] : null,
+                \PDO::PARAM_INT
+            );
             $stmt->execute();
         } catch (\PDOException $e) {
             return false;

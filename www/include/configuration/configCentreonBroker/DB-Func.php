@@ -122,23 +122,24 @@ function getCentreonBrokerInformation($id)
     $query = "SELECT config_name, config_filename, ns_nagios_server, stats_activate,
                     config_write_timestamp, config_write_thread_id, config_activate, event_queue_max_size,
                     cache_directory, command_file, daemon, pool_size
-                  FROM cfg_centreonbroker 
+                  FROM cfg_centreonbroker
                   WHERE config_id = " . $id;
     try {
         $res = $pearDB->query($query);
     } catch (\PDOException $e) {
-        return array(
+        return [
             "name" => '',
             "filename" => '',
             "write_timestamp" => '1',
             "write_thread_id" => '1',
             "activate_watchdog" => '1',
             "activate" => '1',
-            "event_queue_max_size" => ''
-        );
+            "event_queue_max_size" => '',
+            "pool_size" => null,
+        ];
     }
     $row = $res->fetch();
-    $brokerConf = array(
+    $brokerConf = [
         "id" => $id,
         "name" => $row['config_name'],
         "filename" => $row['config_filename'],
@@ -152,8 +153,8 @@ function getCentreonBrokerInformation($id)
         "cache_directory" => $row['cache_directory'],
         "command_file" => $row['command_file'],
         "daemon" => $row['daemon'],
-        "pool_size" => $row['pool_size']
-    );
+        "pool_size" => $row['pool_size'],
+    ];
 
     return $brokerConf;
 }
@@ -253,6 +254,8 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
 }
 
 /**
+ * Rule to check if given value is positive and numeric
+ *
  * @param $size
  * @return bool
  */

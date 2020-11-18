@@ -32,6 +32,7 @@ class CfgCentreonBroker
                 'cache_directory'        => '/var/lib/centreon-broker',
                 'stats_activate'         => '1',
                 'daemon'                 => '1',
+                'pool_size'              => null,
             ],
             'module' => [
                 'config_name'            => "{$configName}-module",
@@ -45,6 +46,7 @@ class CfgCentreonBroker
                 'cache_directory'        => '/var/lib/centreon-engine',
                 'stats_activate'         => '1',
                 'daemon'                 => '0',
+                'pool_size'              => null,
             ],
             'rrd' => [
                 'config_name'            => "{$configName}-rrd",
@@ -58,6 +60,7 @@ class CfgCentreonBroker
                 'cache_directory'        => '/var/lib/centreon-broker',
                 'stats_activate'         => '1',
                 'daemon'                 => '1',
+                'pool_size'              => null,
             ]
         ];
     }

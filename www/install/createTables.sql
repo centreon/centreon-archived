@@ -422,6 +422,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',
   `daemon` TINYINT(1),
+  `pool_size` int(11) DEFAULT NULL,
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
