@@ -113,6 +113,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
             graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
             toggableLegend
+            timelineEndpoint={}
           />
         </div>
       </Paper>
