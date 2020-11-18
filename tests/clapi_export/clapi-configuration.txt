@@ -417,6 +417,7 @@ CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.json
 CENTBROKERCFG;SETPARAM;central-broker-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-broker-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-broker-master;daemon;1
+CENTBROKERCFG;SETPARAM;central-broker-master;pool_size;
 CENTBROKERCFG;ADDINPUT;central-broker-master;central-broker-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-broker-master;0;type;ipv4
 CENTBROKERCFG;SETINPUT;central-broker-master;0;negotiation;yes
@@ -475,6 +476,7 @@ CENTBROKERCFG;SETPARAM;central-module-master;filename;central-module.json
 CENTBROKERCFG;SETPARAM;central-module-master;cache_directory;/var/lib/centreon-engine
 CENTBROKERCFG;SETPARAM;central-module-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-module-master;daemon;0
+CENTBROKERCFG;SETPARAM;central-module-master;pool_size;
 CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
 CENTBROKERCFG;SETLOGGER;central-module-master;0;type;file
 CENTBROKERCFG;SETLOGGER;central-module-master;0;config;yes
@@ -498,6 +500,7 @@ CENTBROKERCFG;SETPARAM;central-rrd-master;filename;central-rrd.json
 CENTBROKERCFG;SETPARAM;central-rrd-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-rrd-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
+CENTBROKERCFG;SETPARAM;central-rrd-master;pool_size;
 CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;type;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;one_peer_retention_mode;no
