@@ -14,7 +14,8 @@ import {
 } from '@material-ui/core';
 import IconComment from '@material-ui/icons/Comment';
 
-import { useLocaleDateTimeFormat } from '@centreon/ui/src';
+import { useLocaleDateTimeFormat } from '@centreon/ui';
+
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { labelBy } from '../../../translatedLabels';
 import truncate from '../../../truncate';
