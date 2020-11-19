@@ -24,6 +24,7 @@ import {
   labelFqdn,
   labelAlias,
 } from '../../../../translatedLabels';
+import { ResourceDetails } from '../../../models';
 
 type Lines = Array<{ key: string; line: JSX.Element | null }>;
 
@@ -65,11 +66,17 @@ const ActiveLine = (): JSX.Element => {
   );
 };
 
+interface DetailCardLineProps {
+  details: ResourceDetails;
+  toDate: (date: string | Date) => string;
+  toTime: (date: string | Date) => string;
+}
+
 const getDetailCardLines = ({
   details,
   toDate,
   toTime,
-}): Array<DetailCardLines> => {
+}: DetailCardLineProps): Array<DetailCardLines> => {
   const getDateTimeLines = ({ label, field }): DetailCardLines => ({
     title: label,
     field,

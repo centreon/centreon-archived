@@ -201,7 +201,12 @@ const ParentResourceColumn = ({
   );
 };
 
-export const getColumns = ({ actions, t }): Array<Column> => [
+interface ColumnsProps {
+  actions;
+  t: (value: string) => string;
+}
+
+export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   {
     id: 'severity',
     label: 'S',

@@ -1,14 +1,17 @@
 import * as React from 'react';
 
-import { Area, Line, YAxis } from 'recharts';
+import { Area, YAxis, Line } from 'recharts';
 import { pipe, uniq, prop, map, isNil } from 'ramda';
 
 import { fade } from '@material-ui/core';
 
 import { fontFamily } from '.';
 import formatMetricValue from './formatMetricValue';
+import { Line as LineModel } from './models';
 
-const formatTick = ({ unit, base }) => (value): string => {
+const formatTick = ({ unit, base }: { unit: string; base?: number }) => (
+  value: number,
+): string => {
   if (isNil(value)) {
     return '';
   }
@@ -16,7 +19,15 @@ const formatTick = ({ unit, base }) => (value): string => {
   return formatMetricValue({ value, unit, base }) as string;
 };
 
-const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
+interface GraphLinesProps {
+  lines: Array<LineModel>;
+  base?: number;
+}
+
+const getGraphLines = ({
+  lines,
+  base,
+}: GraphLinesProps): Array<JSX.Element> => {
   const getUnits = (): Array<string> => {
     return pipe(map(prop('unit')), uniq)(lines);
   };
