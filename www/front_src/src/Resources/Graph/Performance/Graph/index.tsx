@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, isNil, isEmpty, identity } from 'ramda';
+import { equals, isNil, isEmpty, identity, min, max } from 'ramda';
 import {
   Line,
   Bar,
@@ -34,6 +34,8 @@ import {
   getMetricValuesForUnit,
   getMetrics,
   getMetricValuesForLines,
+  getSortedStackedLines,
+  getStackedMetricValues,
 } from '../timeSeries';
 import formatMetricValue from '../formatMetricValue';
 import Axes from './Axes';
@@ -59,14 +61,18 @@ interface Props {
   xAxisTickFormat: string;
 }
 
-const getScale = ({ values, height }): ScaleLinear<number, number> => {
-  const min = getMin(values);
-  const max = getMax(values);
+const getScale = ({
+  values,
+  height,
+  stackedValues,
+}): ScaleLinear<number, number> => {
+  const minValue = min(getMin(values), getMin(stackedValues));
+  const maxValue = max(getMax(values), getMax(stackedValues));
 
-  const upperRangeValue = min === max && max === 0 ? height : 0;
+  const upperRangeValue = minValue === maxValue && maxValue === 0 ? height : 0;
 
   return scaleLinear<number>({
-    domain: [getMin(values), getMax(values)],
+    domain: [minValue, maxValue],
     nice: true,
     range: [height, upperRangeValue],
   });
@@ -118,7 +124,12 @@ const Graph = ({
       ? getMetricValuesForUnit({ lines, timeSeries, unit: firstUnit })
       : getMetricValuesForLines({ lines, timeSeries });
 
-    return getScale({ height: graphHeight, values });
+    const stackedValues = getStackedMetricValues({
+      lines: getSortedStackedLines(lines),
+      timeSeries,
+    });
+
+    return getScale({ height: graphHeight, values, stackedValues });
   }, [timeSeries, lines, firstUnit, graphHeight]);
 
   const rightScale = React.useMemo(() => {
@@ -128,7 +139,12 @@ const Graph = ({
       unit: secondUnit,
     });
 
-    return getScale({ height: graphHeight, values });
+    const stackedValues = getStackedMetricValues({
+      lines: getSortedStackedLines(lines),
+      timeSeries,
+    });
+
+    return getScale({ height: graphHeight, values, stackedValues });
   }, [timeSeries, lines, secondUnit, graphHeight]);
 
   const bisectDate = bisector(identity).left;
