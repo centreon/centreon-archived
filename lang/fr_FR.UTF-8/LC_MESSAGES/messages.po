@@ -15850,3 +15850,6 @@ msgstr "Erreur lors de l'ajout d'une entrée dans le journal des actions"
 
 msgid "PENDING"
 msgstr "EN ATTENTE"
+
+msgid "FQDN / Address"
+msgstr "FQDN / Adresse"

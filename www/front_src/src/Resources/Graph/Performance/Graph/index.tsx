@@ -178,7 +178,7 @@ const Graph = ({
           })}
         </Typography>
         {metricsToDisplay.map((metric) => {
-          const value = timeValue[metric];
+          const value = timeValue[metric] as number;
 
           const { color, name, unit } = getLineForMetric({
             lines,
