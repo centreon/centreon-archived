@@ -212,9 +212,12 @@ const getStackedMetricValues = ({ lines, timeSeries }): Array<number> => {
 };
 
 const getSortedStackedLines = (lines: Array<Line>): Array<Line> => {
-  const rejectNonStackedLines = (): Array<Line> =>
-    reject(({ stackOrder }: Line): boolean => isNil(stackOrder), lines);
-  return pipe(rejectNonStackedLines, sortBy(prop('stackOrder')))();
+  return pipe(
+    reject(({ stackOrder }: Line): boolean => isNil(stackOrder)) as (
+      lines,
+    ) => Array<Line>,
+    sortBy(prop('stackOrder')),
+  )(lines);
 };
 
 interface GetSpecificTimeSeries {
@@ -229,11 +232,11 @@ const getSpecificTimeSeries = ({
   const stackedMetrics = map(prop('metric'), lines);
 
   return map(
-    ({ timeTick, ...other }) => ({
+    ({ timeTick, ...metricsValue }): TimeValue => ({
       ...reduce(
         (acc, metric): Omit<TimeValue, 'timePick'> => ({
           ...acc,
-          [metric]: other[metric],
+          [metric]: metricsValue[metric],
         }),
         {},
         stackedMetrics,

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { prop, difference, min, max } from 'ramda';
+import { prop, difference, min, max, map, nth } from 'ramda';
 import {
   AreaClosed,
   LinePath,
@@ -31,10 +31,15 @@ interface Props {
   graphHeight: number;
 }
 
+interface GetStackedYScale {
+  leftScale: ScaleLinear<number, number>;
+  rightScale: ScaleLinear<number, number>;
+}
+
 const getStackedYScale = ({
   leftScale,
   rightScale,
-}): ScaleLinear<number, number> => {
+}: GetStackedYScale): ScaleLinear<number, number> => {
   const minDomain = min(
     getMin(leftScale.domain()),
     getMin(rightScale.domain()),
@@ -50,6 +55,17 @@ const getStackedYScale = ({
     range: leftScale.range(),
   });
 };
+
+interface GetFillColor {
+  transparency: number;
+  areaColor: string;
+}
+
+const getFillColor = ({
+  transparency,
+  areaColor,
+}: GetFillColor): string | undefined =>
+  transparency ? fade(areaColor, 1 - transparency * 0.01) : undefined;
 
 const Lines = ({
   xScale,
@@ -77,29 +93,24 @@ const Lines = ({
     <>
       <AreaStack
         data={stackedTimeSeries}
-        keys={stackedLines.map((line) => line.metric)}
+        keys={map(prop('metric'), stackedLines)}
         x={(d): number => xScale(getTime(d.data)) ?? 0}
         y0={(d): number => stackedYScale(d[0]) ?? 0}
         y1={(d): number => stackedYScale(d[1]) ?? 0}
+        curve={curveBasis}
       >
         {({ stacks, path }): Array<JSX.Element> => {
           return stacks.map((stack, index) => {
-            const {
-              areaColor,
-              transparency,
-              lineColor,
-              highlight,
-            } = stackedLines[index];
+            const { areaColor, transparency, lineColor, highlight } = nth(
+              index,
+              stackedLines,
+            ) as Line;
             return (
               <path
-                key={`stack-${stack.key}`}
+                key={`stack-${prop('key', stack)}`}
                 d={path(stack) || ''}
                 stroke={lineColor}
-                fill={
-                  transparency
-                    ? fade(areaColor, 1 - transparency * 0.01)
-                    : undefined
-                }
+                fill={getFillColor({ transparency, areaColor })}
                 strokeWidth={highlight ? 2 : 1}
                 opacity={highlight === false ? 0.3 : 1}
               />
@@ -153,11 +164,7 @@ const Lines = ({
                   y0={Math.min(yScale(0), graphHeight)}
                   key={metric}
                   fillRule="nonzero"
-                  fill={
-                    transparency
-                      ? fade(areaColor, 1 - transparency * 0.01)
-                      : undefined
-                  }
+                  fill={getFillColor({ transparency, areaColor })}
                   {...props}
                 />
               );
