@@ -255,7 +255,7 @@ function updateContactGroup($cgId = null, $params = array())
 
     $cgName = $centreon->checkIllegalChar(filter_var($ret["cg_name"], FILTER_SANITIZE_STRING));
     $cgAlias = filter_var($ret["cg_alias"], FILTER_SANITIZE_STRING);
-    $cgComment = filter_var($ret["cg_comment"], FILTER_SANITIZE_STRING) ?: '';
+    $cgComment = filter_var($ret["cg_comment"], FILTER_SANITIZE_STRING);
     $cgActivate = filter_var($ret["cg_activate"]["cg_activate"], FILTER_SANITIZE_STRING) ?: '1'; //enum
 
     $stmt = $pearDB->prepare(
