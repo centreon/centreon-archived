@@ -220,6 +220,24 @@ const getSortedStackedLines = (lines: Array<Line>): Array<Line> => {
   )(lines);
 };
 
+const getInvertedStackedLines = (lines: Array<Line>): Array<Line> => {
+  return pipe(
+    reject(({ invert }: Line): boolean => isNil(invert)) as (
+      lines,
+    ) => Array<Line>,
+    getSortedStackedLines,
+  )(lines);
+};
+
+const getNonInvertedStackedLines = (lines: Array<Line>): Array<Line> => {
+  return pipe(
+    filter(({ invert }: Line): boolean => isNil(invert)) as (
+      lines,
+    ) => Array<Line>,
+    getSortedStackedLines,
+  )(lines);
+};
+
 interface GetSpecificTimeSeries {
   lines: Array<Line>;
   timeSeries: Array<TimeValue>;
@@ -264,4 +282,6 @@ export {
   getSortedStackedLines,
   getSpecificTimeSeries,
   getStackedMetricValues,
+  getInvertedStackedLines,
+  getNonInvertedStackedLines,
 };

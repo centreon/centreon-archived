@@ -1,13 +1,7 @@
 import * as React from 'react';
 
-import { prop, difference, min, max, map, nth } from 'ramda';
-import {
-  AreaClosed,
-  LinePath,
-  curveBasis,
-  scaleLinear,
-  AreaStack,
-} from '@visx/visx';
+import { prop, difference, min, max } from 'ramda';
+import { AreaClosed, LinePath, curveBasis, scaleLinear } from '@visx/visx';
 
 import { fade } from '@material-ui/core';
 import { isNil } from 'lodash';
@@ -20,7 +14,10 @@ import {
   getSpecificTimeSeries,
   getMin,
   getMax,
+  getNonInvertedStackedLines,
+  getInvertedStackedLines,
 } from './timeSeries';
+import StackedLines from './StackedLines';
 
 interface Props {
   lines: Array<Line>;
@@ -61,7 +58,7 @@ interface GetFillColor {
   areaColor: string;
 }
 
-const getFillColor = ({
+export const getFillColor = ({
   transparency,
   areaColor,
 }: GetFillColor): string | undefined =>
@@ -80,8 +77,16 @@ const Lines = ({
   const hasMoreThanTwoUnits = !isNil(thirdUnit);
 
   const stackedLines = getSortedStackedLines(lines);
-  const stackedTimeSeries = getSpecificTimeSeries({
-    lines: stackedLines,
+
+  const nonInvertedStackedLines = getNonInvertedStackedLines(lines);
+  const nonInvertedStackedTimeSeries = getSpecificTimeSeries({
+    lines: nonInvertedStackedLines,
+    timeSeries,
+  });
+
+  const invertedStackedLines = getInvertedStackedLines(lines);
+  const invertedStackedTimeSeries = getSpecificTimeSeries({
+    lines: invertedStackedLines,
     timeSeries,
   });
 
@@ -91,33 +96,18 @@ const Lines = ({
 
   return (
     <>
-      <AreaStack
-        data={stackedTimeSeries}
-        keys={map(prop('metric'), stackedLines)}
-        x={(d): number => xScale(getTime(d.data)) ?? 0}
-        y0={(d): number => stackedYScale(d[0]) ?? 0}
-        y1={(d): number => stackedYScale(d[1]) ?? 0}
-        curve={curveBasis}
-      >
-        {({ stacks, path }): Array<JSX.Element> => {
-          return stacks.map((stack, index) => {
-            const { areaColor, transparency, lineColor, highlight } = nth(
-              index,
-              stackedLines,
-            ) as Line;
-            return (
-              <path
-                key={`stack-${prop('key', stack)}`}
-                d={path(stack) || ''}
-                stroke={lineColor}
-                fill={getFillColor({ transparency, areaColor })}
-                strokeWidth={highlight ? 2 : 1}
-                opacity={highlight === false ? 0.3 : 1}
-              />
-            );
-          });
-        }}
-      </AreaStack>
+      <StackedLines
+        stackedLines={nonInvertedStackedLines}
+        stackedTimeSeries={nonInvertedStackedTimeSeries}
+        stackedYScale={stackedYScale}
+        xScale={xScale}
+      />
+      <StackedLines
+        stackedLines={invertedStackedLines}
+        stackedTimeSeries={invertedStackedTimeSeries}
+        stackedYScale={stackedYScale}
+        xScale={xScale}
+      />
       <>
         {nonStackedLines.map(
           ({
