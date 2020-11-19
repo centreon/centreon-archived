@@ -253,36 +253,6 @@ class Service
     }
 
     /**
-     * @return int
-     */
-    public function getServiceType(): int
-    {
-        return $this->serviceType;
-    }
-
-    /**
-     * @param int $serviceType
-     * @return $this
-     * @see Service::serviceType
-     * @throws \InvalidArgumentException When the service type is not recognized
-     */
-    public function setServiceType(int $serviceType): Service
-    {
-        $allowedServiceType = [
-            self::TYPE_TEMPLATE,
-            self::TYPE_SERVICE,
-            self::TYPE_META_SERVICE,
-            self::TYPE_BUSINESS_ACTIVITY,
-            self::TYPE_ANOMALY_DETECTION
-        ];
-        if (!in_array($serviceType, $allowedServiceType)) {
-            throw new \InvalidArgumentException('This service type is not recognized');
-        }
-        $this->serviceType = $serviceType;
-        return $this;
-    }
-
-    /**
      * @return ExtendedService
      */
     public function getExtendedService(): ExtendedService
