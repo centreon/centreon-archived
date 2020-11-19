@@ -14,6 +14,9 @@ import {
   propEq,
   uniq,
   find,
+  sortBy,
+  add,
+  isEmpty,
 } from 'ramda';
 
 import { Metric, TimeValue, GraphData, Line } from '../models';
@@ -185,6 +188,62 @@ const getMetricValuesForLines = ({ lines, timeSeries }): Array<number> => {
   )(lines);
 };
 
+const getStackedMetricValues = ({ lines, timeSeries }): Array<number> => {
+  const getTimeSeriesValuesForMetric = (metric): Array<number> => {
+    return map((timeValue) => getValueForMetric(timeValue)(metric), timeSeries);
+  };
+
+  const metricsValues = pipe(
+    map(prop('metric')) as (metric) => Array<string>,
+    map(getTimeSeriesValuesForMetric) as () => Array<Array<number>>,
+  )(lines as Array<Line>);
+
+  if (isEmpty(metricsValues) || isNil(metricsValues)) {
+    return [];
+  }
+
+  return metricsValues[0].map((value, index): number =>
+    reduce(
+      (acc: number, metricValue: Array<number>) => add(metricValue[index], acc),
+      0,
+      metricsValues,
+    ),
+  );
+};
+
+const getSortedStackedLines = (lines: Array<Line>): Array<Line> => {
+  const rejectNonStackedLines = (): Array<Line> =>
+    reject(({ stackOrder }: Line): boolean => isNil(stackOrder), lines);
+  return pipe(rejectNonStackedLines, sortBy(prop('stackOrder')))();
+};
+
+interface GetSpecificTimeSeries {
+  lines: Array<Line>;
+  timeSeries: Array<TimeValue>;
+}
+
+const getSpecificTimeSeries = ({
+  lines,
+  timeSeries,
+}: GetSpecificTimeSeries): Array<TimeValue> => {
+  const stackedMetrics = map(prop('metric'), lines);
+
+  return map(
+    ({ timeTick, ...other }) => ({
+      ...reduce(
+        (acc, metric): Omit<TimeValue, 'timePick'> => ({
+          ...acc,
+          [metric]: other[metric],
+        }),
+        {},
+        stackedMetrics,
+      ),
+      timeTick,
+    }),
+    timeSeries,
+  );
+};
+
 export {
   getTimeSeries,
   getLineData,
@@ -199,4 +258,7 @@ export {
   getDates,
   getLineForMetric,
   getMetricValuesForLines,
+  getSortedStackedLines,
+  getSpecificTimeSeries,
+  getStackedMetricValues,
 };
