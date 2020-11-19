@@ -98,7 +98,7 @@ const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
   display: true,
   highlight: undefined,
   stackOrder: equals(ds_data.ds_stack, '1')
-    ? parseInt(ds_data.ds_order, 10)
+    ? parseInt(ds_data.ds_order || '0', 10)
     : null,
 });
 
