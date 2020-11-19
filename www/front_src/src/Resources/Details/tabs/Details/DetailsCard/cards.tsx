@@ -21,6 +21,8 @@ import {
   labelLastNotification,
   labelCurrentNotificationNumber,
   labelNo,
+  labelFqdn,
+  labelAlias,
 } from '../../../../translatedLabels';
 import { getFormattedDate, getFormattedTime } from '../../../../dateTime';
 import { ResourceDetails } from '../../../models';
@@ -36,7 +38,7 @@ interface DetailCardLines {
 const DetailsLine = ({ line }: { line?: string }): JSX.Element => {
   return (
     <Typography component="div">
-      <Box fontWeight={500} lineHeight={1}>
+      <Box fontWeight={500} lineHeight={1} style={{ fontSize: 15 }}>
         {line}
       </Box>
     </Typography>
@@ -95,6 +97,26 @@ const getDetailCardLines = (
   });
 
   return [
+    {
+      title: labelFqdn,
+      field: details.fqdn,
+      getLines: (): Lines => [
+        {
+          key: 'fqdn',
+          line: <DetailsLine line={details.fqdn} />,
+        },
+      ],
+    },
+    {
+      title: labelAlias,
+      field: details.alias,
+      getLines: (): Lines => [
+        {
+          key: 'fqdn',
+          line: <DetailsLine line={details.alias} />,
+        },
+      ],
+    },
     {
       title: labelPoller,
       field: details.poller_name,
