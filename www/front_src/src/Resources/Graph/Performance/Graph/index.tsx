@@ -49,6 +49,7 @@ const MemoizedBar = React.memo(Bar, propsAreEqual);
 const MemoizedGridColumns = React.memo(GridColumns, propsAreEqual);
 const MemoizedGridRows = React.memo(GridRows, propsAreEqual);
 const MemoizedLines = React.memo(Lines, propsAreEqual);
+const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 
 const margin = { top: 30, right: 45, bottom: 30, left: 45 };
 
@@ -268,7 +269,7 @@ const Graph = ({
             onMouseMove={displayTooltip}
             onMouseLeave={hideTooltip}
           />
-          <Annotations
+          <MemoizedAnnotations
             xScale={xScale}
             graphHeight={graphHeight}
             timeline={timeline as Array<TimelineEvent>}
