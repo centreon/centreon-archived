@@ -4,8 +4,8 @@ interface DsData {
   ds_color_area: string;
   ds_transparency: number;
   ds_invert: boolean;
-  ds_stack: string;
-  ds_order: string;
+  ds_stack: string | null;
+  ds_order: string | null;
 }
 
 export interface Metric {
