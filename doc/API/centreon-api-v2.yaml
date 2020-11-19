@@ -2446,7 +2446,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /platform/topology/:
     get:
       tags:
         - Topology

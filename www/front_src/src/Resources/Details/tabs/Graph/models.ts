@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { find, propEq } from 'ramda';
 
-import { timeFormat, dateTimeFormat } from '@centreon/ui';
+import { timeFormat, dateFormat } from '@centreon/ui';
 
 import {
   labelLast24h,
@@ -29,14 +29,14 @@ const last7Days: TimePeriod = {
   name: labelLast7Days,
   id: 'last_7_days',
   getStart: (): Date => dayjs(Date.now()).subtract(7, 'day').toDate(),
-  dateTimeFormat,
+  dateTimeFormat: dateFormat,
 };
 
 const last31Days: TimePeriod = {
   name: labelLast31Days,
   id: 'last_31_days',
   getStart: (): Date => dayjs(Date.now()).subtract(31, 'day').toDate(),
-  dateTimeFormat,
+  dateTimeFormat: dateFormat,
 };
 
 const timePeriods: Array<TimePeriod> = [last24hPeriod, last7Days, last31Days];

@@ -1,97 +1,97 @@
 import * as React from 'react';
 
-import { Area, YAxis, Line } from 'recharts';
-import { pipe, uniq, prop, map, isNil } from 'ramda';
+import { prop } from 'ramda';
+import { AreaClosed, LinePath, curveBasis, scaleLinear } from '@visx/visx';
 
 import { fade } from '@material-ui/core';
+import { isNil } from 'lodash';
+import { ScaleLinear } from 'd3-scale';
+import { Line, TimeValue } from './models';
+import { getTime, getUnits } from './timeSeries';
 
-import { fontFamily } from '.';
-import formatMetricValue from './formatMetricValue';
-import { Line as LineModel } from './models';
-
-const formatTick = ({ unit, base }: { unit: string; base?: number }) => (
-  value: number,
-): string => {
-  if (isNil(value)) {
-    return '';
-  }
-
-  return formatMetricValue({ value, unit, base }) as string;
-};
-
-interface GraphLinesProps {
-  lines: Array<LineModel>;
-  base?: number;
+interface Props {
+  lines: Array<Line>;
+  timeSeries: Array<TimeValue>;
+  leftScale: ScaleLinear<number, number>;
+  rightScale: ScaleLinear<number, number>;
+  xScale;
+  graphHeight: number;
 }
 
-const getGraphLines = ({
+const Lines = ({
+  xScale,
+  leftScale,
+  rightScale,
+  timeSeries,
   lines,
-  base,
-}: GraphLinesProps): Array<JSX.Element> => {
-  const getUnits = (): Array<string> => {
-    return pipe(map(prop('unit')), uniq)(lines);
-  };
+  graphHeight,
+}: Props): JSX.Element => {
+  const [, secondUnit, thirdUnit] = getUnits(lines);
 
-  const multipleYAxes = getUnits().length < 3;
+  const hasMoreThanTwoUnits = !isNil(thirdUnit);
 
-  const getYAxes = (): Array<JSX.Element> => {
-    const props = { tick: { fontSize: 12, fontFamily } };
-
-    if (multipleYAxes) {
-      return getUnits().map((unit, index) => {
-        return (
-          <YAxis
-            yAxisId={unit}
-            key={unit}
-            orientation={index === 0 ? 'left' : 'right'}
-            tickFormatter={formatTick({ unit, base })}
-            {...props}
-          />
-        );
-      });
-    }
-
-    return [
-      <YAxis
-        key="single-y-axis"
-        tickFormatter={formatTick({ unit: '', base })}
-        {...props}
-      />,
-    ];
-  };
-
-  return [
-    ...getYAxes(),
-    ...lines.map(
-      ({
-        metric,
-        areaColor,
-        transparency,
-        lineColor,
-        filled,
-        unit,
-        highlight,
-      }) => {
-        const props = {
-          dot: false,
-          dataKey: metric,
+  return (
+    <>
+      {lines.map(
+        ({
+          metric,
+          areaColor,
+          transparency,
+          lineColor,
+          filled,
           unit,
-          stroke: lineColor,
-          yAxisId: multipleYAxes ? unit : undefined,
-          isAnimationActive: false,
-          fill: transparency ? fade(areaColor, transparency * 0.01) : undefined,
-          strokeWidth: highlight ? 2 : 1,
-          opacity: highlight === false ? 0.3 : 1,
-        };
+          highlight,
+          invert,
+        }) => {
+          const getYScale = (): ScaleLinear<number, number> => {
+            const isLeftScale = hasMoreThanTwoUnits || unit !== secondUnit;
+            const scale = isLeftScale ? leftScale : rightScale;
 
-        if (filled) {
-          return <Area key={metric} {...props} />;
-        }
+            return invert
+              ? scaleLinear<number>({
+                  domain: scale.domain().reverse(),
+                  range: scale.range().reverse(),
+                  nice: true,
+                })
+              : scale;
+          };
 
-        return <Line key={metric} {...props} />;
-      },
-    ),
-  ];
+          const yScale = getYScale();
+
+          const props = {
+            data: timeSeries,
+            unit,
+            stroke: lineColor,
+            strokeWidth: highlight ? 2 : 1,
+            opacity: highlight === false ? 0.3 : 1,
+            y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
+            x: (timeValue): number => xScale(getTime(timeValue)) as number,
+            curve: curveBasis,
+            defined: (value): boolean => !isNil(value[metric]),
+          };
+
+          if (filled) {
+            return (
+              <AreaClosed<TimeValue>
+                yScale={yScale}
+                y0={Math.min(yScale(0), graphHeight)}
+                key={metric}
+                fillRule="nonzero"
+                fill={
+                  transparency
+                    ? fade(areaColor, 1 - transparency * 0.01)
+                    : undefined
+                }
+                {...props}
+              />
+            );
+          }
+
+          return <LinePath<TimeValue> key={metric} {...props} />;
+        },
+      )}
+    </>
+  );
 };
 
-export default getGraphLines;
+export default Lines;

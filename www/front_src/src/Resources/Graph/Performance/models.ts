@@ -3,6 +3,7 @@ interface DsData {
   ds_filled: boolean;
   ds_color_area: string;
   ds_transparency: number;
+  ds_invert: boolean;
 }
 
 export interface Metric {
@@ -20,6 +21,7 @@ export interface GraphData {
 }
 
 export interface TimeValue {
+  timeTick: string;
   [field: string]: string | number;
 }
 
@@ -34,4 +36,5 @@ export interface Line {
   filled: boolean;
   transparency: number;
   highlight?: boolean;
+  invert: boolean;
 }
