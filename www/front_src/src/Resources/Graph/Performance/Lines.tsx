@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { prop, difference } from 'ramda';
+import { prop, difference, min, max } from 'ramda';
 import {
   AreaClosed,
   LinePath,
@@ -18,6 +18,8 @@ import {
   getUnits,
   getSortedStackedLines,
   getSpecificTimeSeries,
+  getMin,
+  getMax,
 } from './timeSeries';
 
 interface Props {
@@ -28,6 +30,26 @@ interface Props {
   xScale;
   graphHeight: number;
 }
+
+const getStackedYScale = ({
+  leftScale,
+  rightScale,
+}): ScaleLinear<number, number> => {
+  const minDomain = min(
+    getMin(leftScale.domain()),
+    getMin(rightScale.domain()),
+  );
+  const maxDomain = max(
+    getMax(leftScale.domain()),
+    getMax(rightScale.domain()),
+  );
+
+  return scaleLinear<number>({
+    domain: [minDomain, maxDomain],
+    nice: true,
+    range: leftScale.range(),
+  });
+};
 
 const Lines = ({
   xScale,
@@ -47,6 +69,8 @@ const Lines = ({
     timeSeries,
   });
 
+  const stackedYScale = getStackedYScale({ leftScale, rightScale });
+
   const nonStackedLines = difference(lines, stackedLines);
 
   return (
@@ -55,8 +79,8 @@ const Lines = ({
         data={stackedTimeSeries}
         keys={stackedLines.map((line) => line.metric)}
         x={(d): number => xScale(getTime(d.data)) ?? 0}
-        y0={(d): number => leftScale(d[0]) ?? 0}
-        y1={(d): number => leftScale(d[1]) ?? 0}
+        y0={(d): number => stackedYScale(d[0]) ?? 0}
+        y1={(d): number => stackedYScale(d[1]) ?? 0}
       >
         {({ stacks, path }): Array<JSX.Element> => {
           return stacks.map((stack, index) => {
