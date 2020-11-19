@@ -5,6 +5,7 @@ import { Line } from '@visx/visx';
 import { makeStyles, Tooltip, Paper, Typography } from '@material-ui/core';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { ScaleTime } from 'd3-scale';
 
 const useStyles = makeStyles((theme) => ({
   tooltip: {

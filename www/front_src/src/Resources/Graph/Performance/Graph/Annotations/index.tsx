@@ -3,7 +3,7 @@ import * as React from 'react';
 import { ScaleTime } from 'd3-scale';
 
 import { TimelineEvent } from '../../../../Details/tabs/Timeline/models';
-import CommentAnnotations from './Comments';
+import CommentAnnotations from './Events/Comments';
 
 export interface Props {
   xScale: ScaleTime<number, number>;
