@@ -94,6 +94,9 @@ const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
   unit,
   display: true,
   highlight: undefined,
+  stackOrder: equals(ds_data.ds_stack, '1')
+    ? parseInt(ds_data.ds_order, 10)
+    : null,
 });
 
 const getLineData = (graphData: GraphData): Array<Line> => {
