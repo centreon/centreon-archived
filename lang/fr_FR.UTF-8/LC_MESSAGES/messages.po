@@ -6939,6 +6939,12 @@ msgstr "Impossible"
 msgid "Add Image(s)"
 msgstr "Ajout d'image(s)"
 
+msgid "Invalid Image Format."
+msgstr "Format d'image invalide."
+
+msgid "Images already uploaded."
+msgstr "Images déjà uploadés."
+
 #: centreon-web/www/include/options/media/images/formImg.php:89
 #: centreon-web/www/include/options/media/images/formImg.php:108
 msgid "Existing or new directory"
