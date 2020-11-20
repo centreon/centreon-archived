@@ -163,11 +163,6 @@ class Resource
     /**
      * @var string|null
      */
-    private $actionUrl;
-
-    /**
-     * @var string|null
-     */
     private $chartUrl;
 
     /**
