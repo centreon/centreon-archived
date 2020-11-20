@@ -5,6 +5,6 @@ Feature: The Centreon homepage
   @focus
   Scenario: login with valid credentials
     Given I am on the login page
-    When I fill in inputs credentials files user data
+    When I type the user credentials
     And I press "Connect"
-    Then I should see "Header content"
+    Then I should see the Header

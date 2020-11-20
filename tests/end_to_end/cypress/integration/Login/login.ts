@@ -4,7 +4,7 @@ Given('I am on the login page', () => {
   cy.visit('http://localhost:3400');
 });
 
-When('I fill in inputs credentials files user data', () => {
+When('I type the user credentials', () => {
   cy.fixture('users/admin.json')
     .as('user')
     .then((user) => {
@@ -17,6 +17,6 @@ And('I press "Connect"', () => {
   cy.get('form').submit();
 });
 
-Then('I should see "Header content"', () => {
+Then('I should see the Header', () => {
   cy.get('header[class^="header"]').should('be.visible');
 });
