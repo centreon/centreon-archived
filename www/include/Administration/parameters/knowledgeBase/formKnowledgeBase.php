@@ -49,6 +49,8 @@ $DBRESULT->closeCursor();
 
 $attrsAdvSelect = null;
 
+$password = 'toto';
+
 /*
  * Form begin
  */
