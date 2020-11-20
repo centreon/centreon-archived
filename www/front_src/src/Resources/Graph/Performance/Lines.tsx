@@ -46,10 +46,13 @@ const getStackedYScale = ({
     getMax(rightScale.domain()),
   );
 
+  const minRange = min(getMin(leftScale.range()), getMin(rightScale.range()));
+  const maxRange = max(getMax(leftScale.range()), getMax(rightScale.range()));
+
   return scaleLinear<number>({
     domain: [minDomain, maxDomain],
     nice: true,
-    range: leftScale.range(),
+    range: [maxRange, minRange],
   });
 };
 
