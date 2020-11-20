@@ -68,7 +68,7 @@ class Service
     private $isLocked;
 
     /**
-     * @var int Service type
+     * @var int
      * @see Service::TYPE_TEMPLATE          (0)
      * @see Service::TYPE_SERVICE           (1)
      * @see Service::TYPE_META_SERVICE      (2)
@@ -76,11 +76,6 @@ class Service
      * @see Service::TYPE_ANOMALY_DETECTION (3)
      */
     private $serviceType;
-
-    /**
-     * @var bool Indicates whether or not this service is registered
-     */
-    private $isRegistered;
 
     /**
      * @var bool Indicates whether or not this service is activated
@@ -96,7 +91,7 @@ class Service
     public function __construct()
     {
         $this->isLocked = false;
-        $this->isRegistered = true;
+        $this->serviceType = self::TYPE_SERVICE;
         $this->isActivated = true;
         $this->extendedService = new ExtendedService();
     }
@@ -206,24 +201,6 @@ class Service
     public function setLocked(bool $isLocked): Service
     {
         $this->isLocked = $isLocked;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRegistered(): bool
-    {
-        return $this->isRegistered;
-    }
-
-    /**
-     * @param bool $isRegistered
-     * @return Service
-     */
-    public function setRegistered(bool $isRegistered): Service
-    {
-        $this->isRegistered = $isRegistered;
         return $this;
     }
 
