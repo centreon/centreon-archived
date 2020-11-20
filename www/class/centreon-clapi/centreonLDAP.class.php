@@ -347,7 +347,7 @@ class CentreonLDAP extends CentreonObject
                 $contactObj = new CentreonContact($this->dependencyInjector);
                 $params[2] = $contactObj->getContactID($params[2]);
             }
-            if (strtolower($params[1]) == 'ldap_default_cg') {
+            if (strtolower($params[1]) === 'ldap_default_cg') {
                 $contactGroupObj = new CentreonContactGroup($this->dependencyInjector);
                 $params[2] = $contactGroupObj->getContactGroupID($params[2]);
             }

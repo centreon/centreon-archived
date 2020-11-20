@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -78,17 +78,17 @@ class CentreonContactGroup extends CentreonObject
     /**
      * Get contact group ID
      *
-     * @param null $contactGroupName
-     * @return mixed
+     * @param string|null $contactGroupName
+     * @return int
      * @throws CentreonClapiException
      */
     public function getContactGroupID($contactGroupName = null)
     {
         $cgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($contactGroupName));
-        if (!count($cgIds)) {
-            throw new CentreonClapiException("Unknown contact: " . $contactGroupName);
+        if (count($cgIds) !== 1) {
+            throw new CentreonClapiException("Unknown contact group: " . $contactGroupName);
         }
-        return $cgIds[0];
+        return (int) $cgIds[0];
     }
 
     /**
