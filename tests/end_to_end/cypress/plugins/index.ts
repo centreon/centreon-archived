@@ -1,4 +1,6 @@
-const webpackPreprocessor = require('@cypress/webpack-preprocessor');
+/* eslint-disable global-require */
+
+import webpackPreprocessor from '@cypress/webpack-preprocessor';
 
 module.exports = (on) => {
   const options = {
