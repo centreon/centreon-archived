@@ -14,7 +14,7 @@ import {
   getSpecificTimeSeries,
   getMin,
   getMax,
-  getNonInvertedStackedLines,
+  getNotInvertedStackedLines,
   getInvertedStackedLines,
 } from './timeSeries';
 import StackedLines from './StackedLines';
@@ -81,9 +81,9 @@ const Lines = ({
 
   const stackedLines = getSortedStackedLines(lines);
 
-  const nonInvertedStackedLines = getNonInvertedStackedLines(lines);
-  const nonInvertedStackedTimeSeries = getSpecificTimeSeries({
-    lines: nonInvertedStackedLines,
+  const notInvertedStackedLines = getNotInvertedStackedLines(lines);
+  const notInvertedStackedTimeSeries = getSpecificTimeSeries({
+    lines: notInvertedStackedLines,
     timeSeries,
   });
 
@@ -100,8 +100,8 @@ const Lines = ({
   return (
     <>
       <StackedLines
-        stackedLines={nonInvertedStackedLines}
-        stackedTimeSeries={nonInvertedStackedTimeSeries}
+        stackedLines={notInvertedStackedLines}
+        stackedTimeSeries={notInvertedStackedTimeSeries}
         stackedYScale={stackedYScale}
         xScale={xScale}
       />

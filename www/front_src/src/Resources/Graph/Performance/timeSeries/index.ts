@@ -230,7 +230,7 @@ const getInvertedStackedLines = (lines: Array<Line>): Array<Line> => {
   )(lines);
 };
 
-const getNonInvertedStackedLines = (lines: Array<Line>): Array<Line> => {
+const getNotInvertedStackedLines = (lines: Array<Line>): Array<Line> => {
   return pipe(
     filter(({ invert }: Line): boolean => isNil(invert)) as (
       lines,
@@ -287,6 +287,6 @@ export {
   getSpecificTimeSeries,
   getStackedMetricValues,
   getInvertedStackedLines,
-  getNonInvertedStackedLines,
+  getNotInvertedStackedLines,
   hasUnitStackedLines,
 };
