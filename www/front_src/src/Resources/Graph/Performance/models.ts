@@ -3,7 +3,7 @@ interface DsData {
   ds_filled: boolean;
   ds_color_area: string;
   ds_transparency: number;
-  ds_invert: boolean;
+  ds_invert: string | null;
   ds_stack: string | null;
   ds_order: string | null;
 }
@@ -38,6 +38,6 @@ export interface Line {
   filled: boolean;
   transparency: number;
   highlight?: boolean;
-  invert: boolean;
+  invert: string | null;
   stackOrder: number | null;
 }
