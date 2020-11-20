@@ -49,7 +49,6 @@ build/coverage/*
 public/bundles/
 var/
 bin/.phpunit/
-doc/en/_build/
 symfony/
 
 src/Centreon*
