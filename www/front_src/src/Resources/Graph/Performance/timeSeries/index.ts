@@ -17,6 +17,7 @@ import {
   sortBy,
   add,
   isEmpty,
+  any,
 } from 'ramda';
 
 import { Metric, TimeValue, GraphData, Line } from '../models';
@@ -238,6 +239,9 @@ const getNonInvertedStackedLines = (lines: Array<Line>): Array<Line> => {
   )(lines);
 };
 
+const hasUnitStackedLines = ({ lines, unit }): boolean =>
+  pipe(getSortedStackedLines, any(propEq('unit', unit)))(lines);
+
 interface GetSpecificTimeSeries {
   lines: Array<Line>;
   timeSeries: Array<TimeValue>;
@@ -284,4 +288,5 @@ export {
   getStackedMetricValues,
   getInvertedStackedLines,
   getNonInvertedStackedLines,
+  hasUnitStackedLines,
 };

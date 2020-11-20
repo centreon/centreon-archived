@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, isNil, isEmpty, identity, min, max } from 'ramda';
+import { equals, isNil, isEmpty, identity, min, max, not } from 'ramda';
 import {
   Line,
   Bar,
@@ -36,6 +36,7 @@ import {
   getMetricValuesForLines,
   getSortedStackedLines,
   getStackedMetricValues,
+  hasUnitStackedLines,
 } from '../timeSeries';
 import formatMetricValue from '../formatMetricValue';
 import Axes from './Axes';
@@ -124,10 +125,17 @@ const Graph = ({
       ? getMetricValuesForUnit({ lines, timeSeries, unit: firstUnit })
       : getMetricValuesForLines({ lines, timeSeries });
 
-    const stackedValues = getStackedMetricValues({
-      lines: getSortedStackedLines(lines),
-      timeSeries,
-    });
+    const firstUnitHasStackedLines =
+      isNil(thirdUnit) && not(isNil(firstUnit))
+        ? hasUnitStackedLines({ lines, unit: firstUnit })
+        : false;
+
+    const stackedValues = firstUnitHasStackedLines
+      ? getStackedMetricValues({
+          lines: getSortedStackedLines(lines),
+          timeSeries,
+        })
+      : [0];
 
     return getScale({ height: graphHeight, values, stackedValues });
   }, [timeSeries, lines, firstUnit, graphHeight]);
@@ -139,10 +147,16 @@ const Graph = ({
       unit: secondUnit,
     });
 
-    const stackedValues = getStackedMetricValues({
-      lines: getSortedStackedLines(lines),
-      timeSeries,
-    });
+    const secondUnitHasStackedLines = isNil(secondUnit)
+      ? false
+      : hasUnitStackedLines({ lines, unit: secondUnit });
+
+    const stackedValues = secondUnitHasStackedLines
+      ? getStackedMetricValues({
+          lines: getSortedStackedLines(lines),
+          timeSeries,
+        })
+      : [0];
 
     return getScale({ height: graphHeight, values, stackedValues });
   }, [timeSeries, lines, secondUnit, graphHeight]);
