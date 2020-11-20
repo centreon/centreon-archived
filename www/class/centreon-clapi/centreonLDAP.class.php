@@ -467,7 +467,11 @@ class CentreonLDAP extends CentreonObject
                         $contactName = $contactObj->getParameters($configuration['ari_value'], 'contact_name');
                         $configuration['ari_value'] = $contactName['contact_name'];
                     }
-
+                    if ($configuration['ari_name'] === 'ldap_default_cg') {
+                        $contactGroupObj = new \Centreon_Object_Contact_Group($this->dependencyInjector);
+                        $contactGroupName = $contactGroupObj->getParameters($configuration['ari_value'], 'cg_name');
+                        $configuration['ari_value'] = $contactGroupName['cg_name'];
+                    }
                     echo $this->action . $this->delim . "SETPARAM" . $this->delim
                         . $ldap['ar_name'] . $this->delim
                         . $configuration['ari_name'] . $this->delim
