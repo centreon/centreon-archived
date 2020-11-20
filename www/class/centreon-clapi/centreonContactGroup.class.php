@@ -76,6 +76,22 @@ class CentreonContactGroup extends CentreonObject
     }
 
     /**
+     * Get contact group ID
+     *
+     * @param null $contactGroupName
+     * @return mixed
+     * @throws CentreonClapiException
+     */
+    public function getContactGroupID($contactGroupName = null)
+    {
+        $cgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($contactGroupName));
+        if (!count($cgIds)) {
+            throw new CentreonClapiException("Unknown contact: " . $contactGroupName);
+        }
+        return $cgIds[0];
+    }
+
+    /**
      * @param null $parameters
      * @param array $filters
      */
