@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import { filter, propEq } from 'ramda';
-
 import { ScaleTime } from 'd3-scale';
-import Annotation from './Annotation';
+
+import LineAnnotation from '../Annotation/Line';
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
 
 interface Props {
@@ -17,7 +17,7 @@ interface Props {
   iconSize: number;
 }
 
-const EventAnnotations = ({
+const LineAnnotations = ({
   type,
   xScale,
   timeline,
@@ -35,7 +35,7 @@ const EventAnnotations = ({
         const content = getContent(event);
 
         return (
-          <Annotation
+          <LineAnnotation
             key={event.id}
             icon={icon}
             content={content}
@@ -51,4 +51,4 @@ const EventAnnotations = ({
   );
 };
 
-export default EventAnnotations;
+export default LineAnnotations;
