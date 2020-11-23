@@ -528,7 +528,7 @@ paths:
     get:
       tags:
         - Resource
-      summary: "Get a host resources information"
+      summary: "Get information on host resources"
       description: "Return a single host with full details of its resources status."
       parameters:
         - $ref: '#/components/parameters/HostId'
@@ -3542,20 +3542,20 @@ components:
         poller_name:
           type: string
           nullable: true
-          description: "Name of the monitoring server of the Host"
+          description: "Name of the monitoring server of the host"
           example: "Central"
         timezone:
           type: string
-          description: "Timezone used by Host"
+          description: "Timezone used by the host"
           example: "Europe/Paris"
         flapping:
           type: boolean
-          description: "Host is flapping or not"
+          description: "Is host flapping"
           example: false
         percent_state_change:
           type: number
           format: float
-          description: "Percent of Host state changing"
+          description: "Percent of Host state change"
           example: 20.10
         criticality:
           type: number
@@ -3566,12 +3566,12 @@ components:
         chart_url:
           type: string
           nullable: true
-          description: "Url of chart"
+          description: "Chart URL"
         last_notification:
           type: string
           nullable: true
           format: date-time
-          description: "DateTime of the last notification"
+          description: "Last notification date and time in ISO format"
           example: "2020-02-18T00:00:00"
         notification_number:
           type: number
@@ -3583,21 +3583,21 @@ components:
           type: string
           nullable: true
           format: date-time
-          description: "next planned check"
+          description: "Next planned check"
           example: "2020-11-23T10:26:19+01:00"
-        perofrmance_data:
+        performance_data:
           type: string
-          description: "Details of performances"
+          description: "Details of performance"
           example: "rta=0,098ms;3000,000;5000,000;0; pl=0%;80;100;0;100 rtmax=0,098ms;;;; rtmin=0,098ms;;;;"
         execution_time:
           type: number
           format: float
-          description: "duration of check"
+          description: "Check duration"
           example: 0.005618
         latency:
           type: number
           format: float
-          description: "Latency of the host"
+          description: "Host Latency"
           example: 0.117
         downtimes:
           type: array
