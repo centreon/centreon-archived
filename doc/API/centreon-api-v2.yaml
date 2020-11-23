@@ -477,7 +477,6 @@ paths:
         * severity_level
         * in_downtime
         * acknowledged
-        * impacted_resources_count
         * last_status_change
         * tries
         * last_check
@@ -3693,10 +3692,6 @@ components:
               type: string
               description: "Name of the severity"
               example: "severity 1"
-        impacted_resources_count:
-          type: integer
-          description: "count of impacted resources"
-          example: 4
         duration:
           type: string
           nullable: true
