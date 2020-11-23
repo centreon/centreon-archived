@@ -528,7 +528,7 @@ paths:
     get:
       tags:
         - Resource
-      summary: "Get a host resources informations"
+      summary: "Get a host resources information"
       description: "Return a single host with full details of its resources status."
       parameters:
         - $ref: '#/components/parameters/HostId'
