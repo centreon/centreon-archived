@@ -341,13 +341,13 @@ describe('timeSeries', () => {
     });
   });
 
-  describe('getSpecificTimeSeries', () => {
+  describe('getTimeSeriesForLines', () => {
     it('returns the specific time series for the given lines and the fiven time series', () => {
       const lines = timeSeries.getLineData(graphData);
       const series = timeSeries.getTimeSeries(graphData);
 
       expect(
-        timeSeries.getSpecificTimeSeries({
+        timeSeries.getTimeSeriesForLines({
           lines: timeSeries.getSortedStackedLines(lines),
           timeSeries: series,
         }),

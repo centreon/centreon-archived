@@ -247,11 +247,11 @@ interface GetSpecificTimeSeries {
   timeSeries: Array<TimeValue>;
 }
 
-const getSpecificTimeSeries = ({
+const getTimeSeriesForLines = ({
   lines,
   timeSeries,
 }: GetSpecificTimeSeries): Array<TimeValue> => {
-  const stackedMetrics = map(prop('metric'), lines);
+  const metrics = map(prop('metric'), lines);
 
   return map(
     ({ timeTick, ...metricsValue }): TimeValue => ({
@@ -261,7 +261,7 @@ const getSpecificTimeSeries = ({
           [metric]: metricsValue[metric],
         }),
         {},
-        stackedMetrics,
+        metrics,
       ),
       timeTick,
     }),
@@ -284,7 +284,7 @@ export {
   getLineForMetric,
   getMetricValuesForLines,
   getSortedStackedLines,
-  getSpecificTimeSeries,
+  getTimeSeriesForLines,
   getStackedMetricValues,
   getInvertedStackedLines,
   getNotInvertedStackedLines,

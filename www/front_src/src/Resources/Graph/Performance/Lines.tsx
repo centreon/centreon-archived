@@ -11,7 +11,7 @@ import {
   getTime,
   getUnits,
   getSortedStackedLines,
-  getSpecificTimeSeries,
+  getTimeSeriesForLines,
   getMin,
   getMax,
   getNotInvertedStackedLines,
@@ -56,7 +56,7 @@ const getStackedYScale = ({
   });
 };
 
-interface GetFillColor {
+interface FillColor {
   transparency: number;
   areaColor: string;
 }
@@ -64,7 +64,7 @@ interface GetFillColor {
 export const getFillColor = ({
   transparency,
   areaColor,
-}: GetFillColor): string | undefined =>
+}: FillColor): string | undefined =>
   transparency ? fade(areaColor, 1 - transparency * 0.01) : undefined;
 
 const Lines = ({
@@ -82,37 +82,37 @@ const Lines = ({
   const stackedLines = getSortedStackedLines(lines);
 
   const notInvertedStackedLines = getNotInvertedStackedLines(lines);
-  const notInvertedStackedTimeSeries = getSpecificTimeSeries({
+  const notInvertedStackedTimeSeries = getTimeSeriesForLines({
     lines: notInvertedStackedLines,
     timeSeries,
   });
 
   const invertedStackedLines = getInvertedStackedLines(lines);
-  const invertedStackedTimeSeries = getSpecificTimeSeries({
+  const invertedStackedTimeSeries = getTimeSeriesForLines({
     lines: invertedStackedLines,
     timeSeries,
   });
 
   const stackedYScale = getStackedYScale({ leftScale, rightScale });
 
-  const nonStackedLines = difference(lines, stackedLines);
+  const regularLines = difference(lines, stackedLines);
 
   return (
     <>
       <StackedLines
-        stackedLines={notInvertedStackedLines}
-        stackedTimeSeries={notInvertedStackedTimeSeries}
-        stackedYScale={stackedYScale}
+        lines={notInvertedStackedLines}
+        timeSeries={notInvertedStackedTimeSeries}
+        yScale={stackedYScale}
         xScale={xScale}
       />
       <StackedLines
-        stackedLines={invertedStackedLines}
-        stackedTimeSeries={invertedStackedTimeSeries}
-        stackedYScale={stackedYScale}
+        lines={invertedStackedLines}
+        timeSeries={invertedStackedTimeSeries}
+        yScale={stackedYScale}
         xScale={xScale}
       />
       <>
-        {nonStackedLines.map(
+        {regularLines.map(
           ({
             metric,
             areaColor,

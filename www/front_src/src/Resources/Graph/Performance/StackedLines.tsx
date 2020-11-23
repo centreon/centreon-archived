@@ -7,38 +7,38 @@ import { Line } from './models';
 import { getFillColor } from './Lines';
 import { getTime } from './timeSeries';
 
-interface StackedLines {
-  stackedTimeSeries;
-  stackedLines;
-  stackedYScale;
+interface Props {
+  timeSeries;
+  lines;
+  yScale;
   xScale;
 }
 
 const StackLines = ({
-  stackedTimeSeries,
-  stackedLines,
-  stackedYScale,
+  timeSeries,
+  lines,
+  yScale,
   xScale,
-}: StackedLines): JSX.Element => (
+}: Props): JSX.Element => (
   <AreaStack
-    data={stackedTimeSeries}
-    keys={map(prop('metric'), stackedLines)}
+    data={timeSeries}
+    keys={map(prop('metric'), lines)}
     x={(d): number => xScale(getTime(d.data)) ?? 0}
-    y0={(d): number => stackedYScale(d[0]) ?? 0}
-    y1={(d): number => stackedYScale(d[1]) ?? 0}
+    y0={(d): number => yScale(d[0]) ?? 0}
+    y1={(d): number => yScale(d[1]) ?? 0}
     curve={curveBasis}
     defined={(d): boolean => {
       return pipe(
         map(prop('metric')) as (lines) => Array<string>,
         all((metric) => pipe(path(['data', metric]), isNil, not)(d)),
-      )(stackedLines);
+      )(lines);
     }}
   >
     {({ stacks, path: linePath }): Array<JSX.Element> => {
       return stacks.map((stack, index) => {
         const { areaColor, transparency, lineColor, highlight } = nth(
           index,
-          stackedLines,
+          lines,
         ) as Line;
         return (
           <path
