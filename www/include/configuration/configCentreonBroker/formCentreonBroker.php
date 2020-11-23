@@ -104,6 +104,8 @@ $form->addElement('text', 'cache_directory', _("Cache directory"), $attrsText);
 $form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $attrsText);
 $command = $form->addElement('text', 'command_file', _('Command file'), $attrsText);
 
+$form->addElement('text', 'pool_size', _('Pool size'), $attrsText);
+
 $timestamp = array();
 $timestamp[] = $form->createElement('radio', 'write_timestamp', null, _("Yes"), 1);
 $timestamp[] = $form->createElement('radio', 'write_timestamp', null, _("No"), 0);
@@ -181,11 +183,13 @@ $redirect->setValue($o);
  * Form Rules
  */
 $form->registerRule('exist', 'callback', 'testExistence');
+$form->registerRule('isPositiveNumeric', 'callback', 'isPositiveNumeric');
 $form->addRule('name', _("Mandatory name"), 'required');
 $form->addRule('name', _("Name is already in use"), 'exist');
 $form->addRule('filename', _("Mandatory filename"), 'required');
 $form->addRule('cache_directory', _("Mandatory cache directory"), 'required');
 $form->addRule('event_queue_max_size', _('Value must be numeric'), 'numeric');
+$form->addRule('pool_size', _('Value must be a positive numeric'), 'isPositiveNumeric');
 
 if ($o == "w") {
     if ($centreon->user->access->page($p) != 2) {
@@ -193,7 +197,7 @@ if ($o == "w") {
             "button",
             "change",
             _("Modify"),
-            array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'")
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&id=" . $ndo2db_id . "'")
         );
     }
     $form->freeze();

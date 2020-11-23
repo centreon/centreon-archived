@@ -225,3 +225,10 @@ services:
 
     Centreon\Domain\ActionLog\Interfaces\ActionLogServiceInterface:
         class: Centreon\Domain\ActionLog\ActionLogService
+
+    # Broker
+    Centreon\Domain\Broker\Interfaces\BrokerServiceInterface:
+        class: Centreon\Domain\Broker\BrokerService
+
+    Centreon\Domain\Broker\Interfaces\BrokerServiceRepositoryInterface:
+        class: Centreon\Infrastructure\Broker\BrokerRepositoryRDB

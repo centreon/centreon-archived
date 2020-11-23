@@ -34,6 +34,7 @@ import StateColumn from './State';
 import GraphColumn from './Graph';
 import useAclQuery from '../../Actions/Resource/aclQuery';
 import truncate from '../../truncate';
+import UrlColumn from './Url';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -200,7 +201,12 @@ const ParentResourceColumn = ({
   );
 };
 
-export const getColumns = ({ actions, t }): Array<Column> => [
+interface ColumnsProps {
+  actions;
+  t: (value: string) => string;
+}
+
+export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   {
     id: 'severity',
     label: 'S',
@@ -238,6 +244,15 @@ export const getColumns = ({ actions, t }): Array<Column> => [
     Component: ParentResourceColumn,
     sortable: false,
     width: 200,
+  },
+  {
+    id: 'url',
+    label: '',
+    type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
+    Component: UrlColumn,
+    sortable: false,
+    width: 50,
   },
   {
     id: 'graph',

@@ -80,7 +80,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'severity_level' => 'resource.severity_level',
         'in_downtime' => 'resource.in_downtime',
         'acknowledged' => 'resource.acknowledged',
-        'impacted_resources_count' => 'resource.impacted_resources_count',
         'last_status_change' => 'resource.last_status_change',
         'tries' => 'resource.tries',
         'last_check' => 'resource.last_check',
@@ -95,6 +94,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'h.name' => 'h.name',
         'h.alias' => 'h.alias',
         'h.address' => 'h.address',
+        'h.fqdn' => 'h.address',
         'information' => 'h.output',
     ];
 
@@ -105,6 +105,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'h.name' => 'sh.name',
         'h.alias' => 'sh.alias',
         'h.address' => 'sh.address',
+        'h.fqdn' => 'sh.address',
         's.description' => 's.description',
         's.group' => 'sg.name',
         's.group.id' => 'ssg.servicegroup_id',
@@ -206,11 +207,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $collector = new StatementCollector();
         $request = 'SELECT SQL_CALC_FOUND_ROWS '
-            . 'resource.id, resource.type, resource.name, '
+            . 'resource.id, resource.type, resource.name, resource.alias, resource.fqdn, '
             . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
             . 'resource.command_line, resource.timezone, '
             . 'resource.parent_id, resource.parent_name, resource.parent_type, ' // parent
+            . 'resource.parent_alias, resource.parent_fqdn, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
             . 'resource.action_url, resource.notes_url, ' // external urls
             // parent status
@@ -219,7 +221,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.severity_level, resource.severity_name, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
             . 'resource.active_checks, resource.passive_checks,'
-            . 'resource.impacted_resources_count, resource.last_status_change, '
+            . 'resource.last_status_change, '
             . 'resource.last_notification, resource.notification_number, '
             . 'resource.tries, resource.last_check, resource.next_check, '
             . 'resource.information, resource.performance_data, '
@@ -417,6 +419,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             'service' AS `type`,
             sh.host_id AS `host_id`,
             s.description AS `name`,
+            NULL AS `alias`,
+            NULL AS `fqdn`,
             s.icon_image_alt AS `icon_name`,
             s.icon_image AS `icon_url`,
             s.action_url AS `action_url`,
@@ -425,6 +429,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             NULL AS `timezone`,
             sh.host_id AS `parent_id`,
             sh.name AS `parent_name`,
+            sh.alias AS `parent_alias`,
+            sh.address AS `parent_fqdn`,
             'host' AS `parent_type`,
             sh.icon_image_alt AS `parent_icon_name`,
             sh.icon_image AS `parent_icon_url`,
@@ -464,7 +470,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.passive_checks AS `passive_checks`,
             service_cvl.value AS `severity_level`,
             sc.sc_name AS `severity_name`,
-            0 AS `impacted_resources_count`,
             s.last_state_change AS `last_status_change`,
             s.last_notification AS `last_notification`,
             s.notification_number AS `notification_number`,
@@ -618,6 +623,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             'host' AS `type`,
             h.host_id AS `host_id`,
             h.name AS `name`,
+            h.alias AS `alias`,
+            h.address AS `fqdn`,
             h.icon_image_alt AS `icon_name`,
             h.icon_image AS `icon_url`,
             h.action_url AS `action_url`,
@@ -626,6 +633,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.timezone AS `timezone`,
             NULL AS `parent_id`,
             NULL AS `parent_name`,
+            NULL AS `parent_alias`,
+            NULL AS `parent_fqdn`,
             NULL AS `parent_type`,
             NULL AS `parent_icon_name`,
             NULL AS `parent_icon_url`,
@@ -653,10 +662,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.passive_checks AS `passive_checks`,
             host_cvl.value AS `severity_level`,
             hc.hc_comment AS `severity_name`,
-            (SELECT COUNT(DISTINCT host_s.service_id)
-                FROM `:dbstg`.`services` AS host_s
-                WHERE host_s.host_id = h.host_id AND host_s.enabled = 1
-            ) AS `impacted_resources_count`,
             h.last_state_change AS `last_status_change`,
             h.last_notification AS `last_notification`,
             h.notification_number AS `notification_number`,
@@ -755,7 +760,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         // prevent duplication
         $sql .= ' GROUP BY h.host_id';
-
         return $sql;
     }
 

@@ -26,10 +26,8 @@ const useStyles = makeStyles({
 });
 
 interface AcknowledgementDetails {
-  author_name: string;
-  entry_time: string;
-  is_persistent_comment: string;
-  is_sticky: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  id: number;
   comment: string;
 }
 

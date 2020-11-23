@@ -15077,3 +15077,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "No resource found"
 #  msgstr ""
+
+#  msgid "FQDN / Address"
+#  msgstr ""

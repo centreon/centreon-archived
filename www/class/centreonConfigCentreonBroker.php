@@ -620,39 +620,38 @@ class CentreonConfigCentreonBroker
     public function insertConfig($values)
     {
         $objMain = new CentreonMainCfg();
-        $writeTimestamps = isset($values['write_timestamp']['write_timestamp']) ?
-            $this->db->escape($values['write_timestamp']['write_timestamp']) :
-            '1';
-        $writeThread = isset($values['write_thread_id']['write_thread_id']) ?
-            $this->db->escape($values['write_thread_id']['write_thread_id']) :
-            '1';
-        $statsActivate = isset($values['stats_activate']['stats_activate']) ?
-            $this->db->escape($values['stats_activate']['stats_activate']) :
-            '1';
-        $commandFile = isset($values['command_file']['command_file']) ?
-            $this->db->escape($values['command_file']['command_file']) :
-            '';
-
         // Insert the Centreon Broker configuration
         $query = "INSERT INTO cfg_centreonbroker "
             . "(config_name, config_filename, ns_nagios_server, config_activate, daemon, config_write_timestamp, "
             . "config_write_thread_id, stats_activate, cache_directory, "
-            . "event_queue_max_size, command_file) "
-            . "VALUES (
-                '" . $this->db->escape($values['name']) . "',
-                '" . $this->db->escape($values['filename']) . "',
-                " . $this->db->escape($values['ns_nagios_server']) . ",
-                '" . $this->db->escape($values['activate']['activate']) . "',
-                '" . $this->db->escape($values['activate_watchdog']['activate_watchdog']) . "',
-                '" . $writeTimestamps . "',
-                '" . $writeThread . "',
-                '" . $statsActivate . "',
-                '" . $this->db->escape($values['cache_directory']) . "',
-                " . $this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
-                '" . $commandFile . "' "
-            . ")";
+            . "event_queue_max_size, command_file, pool_size) "
+            . "VALUES (:config_name, :config_filename, :ns_nagios_server, :config_activate, :daemon, "
+            . ":config_write_timestamp, :config_write_thread_id, :stats_activate, :cache_directory, "
+            . ":event_queue_max_size, :command_file, :pool_size)";
+
         try {
-            $this->db->query($query);
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
+            $stmt->bindValue(':config_filename', $values['filename'], \PDO::PARAM_STR);
+            $stmt->bindValue(':ns_nagios_server', $values['ns_nagios_server'], \PDO::PARAM_STR);
+            $stmt->bindValue(':config_activate', $values['activate']['activate'], \PDO::PARAM_STR);
+            $stmt->bindValue(':daemon', $values['activate_watchdog']['activate_watchdog'], \PDO::PARAM_STR);
+            $stmt->bindValue(':config_write_timestamp', $values['write_timestamp']['write_timestamp'], \PDO::PARAM_STR);
+            $stmt->bindValue(':config_write_thread_id', $values['write_thread_id']['write_thread_id'], \PDO::PARAM_STR);
+            $stmt->bindValue(':stats_activate', $values['stats_activate']['stats_activate'], \PDO::PARAM_STR);
+            $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
+            $stmt->bindValue(
+                ':event_queue_max_size',
+                (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
+                \PDO::PARAM_INT
+            );
+            $stmt->bindValue(':command_file', $values['command_file'], \PDO::PARAM_STR);
+            $stmt->bindValue(
+                ':pool_size',
+                !empty($values['pool_size']) ? (int)$values['pool_size'] : null,
+                \PDO::PARAM_INT
+            );
+            $stmt->execute();
         } catch (\PDOException $e) {
             return false;
         }
@@ -683,23 +682,36 @@ class CentreonConfigCentreonBroker
      * @param array $values The post array
      * @return bool
      */
-    public function updateConfig(int $id, $values)
+    public function updateConfig(int $id, array $values)
     {
         // Insert the Centreon Broker configuration
-        $query = "UPDATE cfg_centreonbroker SET config_name = '" . $this->db->escape($values['name'])
-            . "', config_filename = '" . $this->db->escape($values['filename'])
-            . "', ns_nagios_server = " . $this->db->escape($values['ns_nagios_server'])
-            . ", config_activate = '" . $this->db->escape($values['activate']['activate'])
-            . "', daemon = '" . $this->db->escape($values['activate_watchdog']['activate_watchdog'])
-            . "', config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp'])
-            . "', config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id'])
-            . "', stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate'])
-            . "', cache_directory = '" . $this->db->escape($values['cache_directory'])
-            . "', event_queue_max_size = " . (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])
-            . ", command_file = '" . $this->db->escape($values['command_file'])
-            . "' WHERE config_id = " . $id;
+        $query = "UPDATE cfg_centreonbroker SET config_name = :config_name, config_filename = :config_filename, "
+            . "ns_nagios_server = :ns_nagios_server, config_activate = :config_activate, daemon = :daemon, "
+            . "config_write_timestamp = :config_write_timestamp, config_write_thread_id = :config_write_thread_id, "
+            . "stats_activate = :stats_activate, cache_directory = :cache_directory, "
+            . "event_queue_max_size = :event_queue_max_size, command_file = :command_file , "
+            . "pool_size = :pool_size WHERE config_id = " . $id;
         try {
-            $this->db->query($query);
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
+            $stmt->bindValue(':config_filename', $values['filename'], \PDO::PARAM_STR);
+            $stmt->bindValue(':ns_nagios_server', $values['ns_nagios_server'], \PDO::PARAM_STR);
+            $stmt->bindValue(':config_activate', $values['activate']['activate'], \PDO::PARAM_STR);
+            $stmt->bindValue(':daemon', $values['activate_watchdog']['activate_watchdog'], \PDO::PARAM_STR);
+            $stmt->bindValue(':config_write_timestamp', $values['write_timestamp']['write_timestamp'], \PDO::PARAM_STR);
+            $stmt->bindValue(':config_write_thread_id', $values['write_thread_id']['write_thread_id'], \PDO::PARAM_STR);
+            $stmt->bindValue(':stats_activate', $values['stats_activate']['stats_activate'], \PDO::PARAM_STR);
+            $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
+            $stmt->bindValue(
+                ':event_queue_max_size',
+                (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
+                \PDO::PARAM_INT
+            );
+            $stmt->bindValue(':command_file', $values['command_file'], \PDO::PARAM_STR);
+            empty($values['pool_size'])
+                ? $stmt->bindValue(':pool_size', null, \PDO::PARAM_NULL)
+                : $stmt->bindValue(':pool_size', (int)$values['pool_size'], \PDO::PARAM_INT);
+            $stmt->execute();
         } catch (\PDOException $e) {
             return false;
         }

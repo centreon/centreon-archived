@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
@@ -25,9 +26,9 @@ namespace Centreon\Domain\PlatformTopology\Interfaces;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
-use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
+use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\PlatformTopology\PlatformConflictException;
+use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\PlatformInformation\PlatformInformationException;
 use Centreon\Domain\Repository\RepositoryException;
 
@@ -36,14 +37,23 @@ interface PlatformTopologyServiceInterface
     /**
      * Add new server
      *
-     * @param PlatformTopology $platformTopology
-     * @throws PlatformTopologyConflictException
+     * @param Platform $platform
+     * @throws PlatformConflictException
      * @throws MonitoringServerException
      * @throws EngineException
-     * @throws PlatformTopologyException
+     * @throws PlatformException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
      * @throws RepositoryException
      */
-    public function addPlatformToTopology(PlatformTopology $platformTopology): void;
+    public function addPlatformToTopology(Platform $platform): void;
+
+    /**
+     * Get a topology with detailed nodes
+     *
+     * @return Platform[]
+     * @throws PlatformException
+     * @throws EntityNotFoundException
+     */
+    public function getPlatformTopology(): array;
 }
