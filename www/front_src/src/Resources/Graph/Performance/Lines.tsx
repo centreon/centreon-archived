@@ -24,7 +24,7 @@ interface Props {
   timeSeries: Array<TimeValue>;
   leftScale: ScaleLinear<number, number>;
   rightScale: ScaleLinear<number, number>;
-  xScale;
+  xScale: ScaleLinear<number, number>;
   graphHeight: number;
 }
 

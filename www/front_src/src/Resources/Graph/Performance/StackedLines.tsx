@@ -2,16 +2,17 @@ import * as React from 'react';
 
 import { map, nth, pipe, path, all, not, isNil, prop } from 'ramda';
 import { AreaStack, curveBasis } from '@visx/visx';
+import { ScaleLinear } from 'd3-scale';
 
-import { Line } from './models';
+import { Line, TimeValue } from './models';
 import { getFillColor } from './Lines';
 import { getTime } from './timeSeries';
 
 interface Props {
-  timeSeries;
-  lines;
-  yScale;
-  xScale;
+  timeSeries: Array<TimeValue>;
+  lines: Array<Line>;
+  yScale: ScaleLinear<number, number>;
+  xScale: ScaleLinear<number, number>;
 }
 
 const StackLines = ({
