@@ -85,7 +85,7 @@ class HostTemplate
     private $parentIds = [];
 
     /**
-     * @var bool Indicates whether the host is activated or not.
+     * @var bool Indicates whether the host template is activated or not.
      */
     private $isActivated = true;
 
@@ -186,7 +186,7 @@ class HostTemplate
     private $snmpVersion;
 
     /**
-     * @var Image|null Define the image that should be associated with this template
+     * @var Image|null Define the image that should be associated with this template.
      */
     private $icon;
 
@@ -202,7 +202,7 @@ class HostTemplate
     private $statusMapImage;
 
     /**
-     * @var string|null Define an optional URL that can be used to provide more information about the host template.
+     * @var string|null Define an optional URL that can be used to provide more information about the host.
      * <br>
      * This can be very useful if you want to make detailed information on the host template, emergency contact methods,
      * etc. available to other support staff.<br>
@@ -211,8 +211,7 @@ class HostTemplate
     private $urlNotes;
 
     /**
-     * @var string|null Define an optional URL that can be used to provide more actions to be performed on the host
-     * template.
+     * @var string|null Define an optional URL that can be used to provide more actions to be performed on the host.
      */
     private $actionUrl;
 
