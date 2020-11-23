@@ -5,7 +5,7 @@ import { AreaClosed, LinePath, curveBasis, scaleLinear } from '@visx/visx';
 
 import { fade } from '@material-ui/core';
 import { isNil } from 'lodash';
-import { ScaleLinear } from 'd3-scale';
+import { ScaleLinear, ScaleTime } from 'd3-scale';
 import { Line, TimeValue } from './models';
 import {
   getTime,
@@ -24,7 +24,7 @@ interface Props {
   timeSeries: Array<TimeValue>;
   leftScale: ScaleLinear<number, number>;
   rightScale: ScaleLinear<number, number>;
-  xScale: ScaleLinear<number, number>;
+  xScale: ScaleTime<number, number>;
   graphHeight: number;
 }
 
