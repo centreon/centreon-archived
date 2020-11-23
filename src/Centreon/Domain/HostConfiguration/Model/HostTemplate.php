@@ -85,11 +85,6 @@ class HostTemplate
     private $parentIds = [];
 
     /**
-     * @var GeographicalCoordinates|null
-     */
-    private $geographicalCoordinates;
-
-    /**
      * @var bool Indicates whether the host is activated or not.
      */
     private $isActivated = true;
@@ -363,24 +358,6 @@ class HostTemplate
                 return is_int($value);
             }
         );
-        return $this;
-    }
-
-    /**
-     * @return GeographicalCoordinates|null
-     */
-    public function getGeographicalCoordinates(): ?GeographicalCoordinates
-    {
-        return $this->geographicalCoordinates;
-    }
-
-    /**
-     * @param GeographicalCoordinates|null $geographicalCoordinates
-     * @return HostTemplate
-     */
-    public function setGeographicalCoordinates(?GeographicalCoordinates $geographicalCoordinates): HostTemplate
-    {
-        $this->geographicalCoordinates = $geographicalCoordinates;
         return $this;
     }
 

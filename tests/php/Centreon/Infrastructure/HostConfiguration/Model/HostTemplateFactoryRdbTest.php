@@ -68,7 +68,6 @@ class HostTemplateFactoryRdbTest extends TestCase
             'host_snmp_community' => 'community',
             'host_snmp_version' => '1',
             'host_comment' => 'comment',
-            'geo_coords' => '48.0000,12.0000',
             'host_locked' => 0,
             'host_activate' => 1,
             'ehi_notes' => 'notes',
@@ -128,7 +127,6 @@ class HostTemplateFactoryRdbTest extends TestCase
         );
         $this->assertEquals($this->rdbData['host_snmp_community'], $hostTemplate->getSnmpCommunity());
         $this->assertEquals($this->rdbData['host_snmp_version'], $hostTemplate->getSnmpVersion());
-        $this->assertEquals($this->rdbData['geo_coords'], $hostTemplate->getGeographicalCoordinates());
         $this->assertEquals((bool) $this->rdbData['host_locked'], $hostTemplate->isLocked());
         $this->assertEquals((bool) $this->rdbData['host_activate'], $hostTemplate->isActivated());
         $this->assertEquals($this->rdbData['ehi_notes'], $hostTemplate->getNotes());

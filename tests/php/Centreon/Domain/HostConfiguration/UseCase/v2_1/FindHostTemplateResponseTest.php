@@ -48,7 +48,6 @@ class FindHostTemplateResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($hostTemplate->getDisplayName(), $hostTemplates[0]['display_name']);
         $this->assertEquals($hostTemplate->getAddress(), $hostTemplates[0]['address']);
         $this->assertEquals($hostTemplate->getComment(), $hostTemplates[0]['comment']);
-        $this->assertEquals($hostTemplate->getGeographicalCoordinates(), $hostTemplates[0]['geographical_coordinates']);
         $this->assertEquals($hostTemplate->isActivated(), $hostTemplates[0]['is_activated']);
         $this->assertEquals($hostTemplate->isLocked(), $hostTemplates[0]['is_locked']);
         $this->assertEquals($hostTemplate->getActiveChecksStatus(), $hostTemplates[0]['active_checks_status']);

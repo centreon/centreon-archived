@@ -51,7 +51,6 @@ class FindHostTemplatesResponse
                 'display_name' => $hostTemplate->getDisplayName(),
                 'address' => $hostTemplate->getAddress(),
                 'comment' => $hostTemplate->getComment(),
-                'geographical_coordinates' => (string) $hostTemplate->getGeographicalCoordinates(),
                 'is_activated' => $hostTemplate->isActivated(),
                 'is_locked' => $hostTemplate->isLocked(),
                 'active_checks_status' => $hostTemplate->getActiveChecksStatus(),

@@ -68,7 +68,7 @@ class HostTemplateV21Test extends TestCase
                 'Failed asserting the property ' . $reflectionProperty->getName()
             );
         }
-        $this->assertEquals(29, $numberOfProperties);
+        $this->assertEquals(28, $numberOfProperties);
     }
 
     /**

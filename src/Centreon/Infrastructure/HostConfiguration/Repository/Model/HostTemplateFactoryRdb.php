@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\Repository\Model;
 
-use Centreon\Domain\HostConfiguration\Model\GeographicalCoordinates;
 use Centreon\Domain\HostConfiguration\Model\HostTemplate;
 use Centreon\Domain\Media\Model\Image;
 use Centreon\Domain\HostConfiguration\Exception\HostTemplateFactoryException;
@@ -34,9 +33,6 @@ use Centreon\Domain\HostConfiguration\Exception\HostTemplateFactoryException;
  */
 class HostTemplateFactoryRdb
 {
-    private const LATITUDE = 0;
-    private const LONGITUDE = 1;
-
     /**
      * Create a HostTemplate entity from database data.
      *
@@ -97,22 +93,7 @@ class HostTemplateFactoryRdb
         if (!empty($data['parents'])) {
             $hostTemplate->setParentIds(explode(',', $data['parents']));
         }
-
-        if (
-            ($latitude = self::extractCoordinates($data['geo_coords'], self::LATITUDE)) !== null
-            && ($longitude = self::extractCoordinates($data['geo_coords'], self::LONGITUDE)) !== null
-        ) {
-            $hostTemplate->setGeographicalCoordinates(new GeographicalCoordinates($latitude, $longitude));
-        }
         return $hostTemplate;
-    }
-
-    private static function extractCoordinates(?string $geographicalCoordinates, int $whichCoordinate): ?string
-    {
-        if ($geographicalCoordinates !== null && strpos($geographicalCoordinates, ',') !== false) {
-            return explode(',', $geographicalCoordinates)[$whichCoordinate];
-        }
-        return null;
     }
 
     /**

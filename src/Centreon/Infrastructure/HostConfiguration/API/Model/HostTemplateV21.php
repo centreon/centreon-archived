@@ -62,11 +62,6 @@ class HostTemplateV21
     public $comment;
 
     /**
-     * @var string|null
-     */
-    public $geographicalCoordinates;
-
-    /**
      * @var bool
      */
     public $isActivated;
@@ -190,7 +185,6 @@ class HostTemplateV21
             $newHostTemplate->alias = $hostTemplate['alias'];
             $newHostTemplate->displayName = $hostTemplate['display_name'];
             $newHostTemplate->address = $hostTemplate['address'];
-            $newHostTemplate->geographicalCoordinates = $hostTemplate['geographical_coordinates'];
             $newHostTemplate->isActivated = $hostTemplate['is_activated'];
             $newHostTemplate->isLocked = $hostTemplate['is_locked'];
             $newHostTemplate->activeChecksStatus = $hostTemplate['active_checks_status'];
