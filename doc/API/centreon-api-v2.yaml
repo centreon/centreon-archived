@@ -539,6 +539,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Monitoring.Resource.Host'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts:
     get:
       tags:
