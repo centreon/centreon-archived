@@ -1524,7 +1524,7 @@ msgid "Invalid Image Format."
 msgstr "Format d'image invalide."
 
 msgid "Images already uploaded."
-msgstr "Images déjà téléversées."
+msgstr "Images déjà chargées."
 
 #: centreon-web/www/install/smarty_translate.php:168
 msgid "Dissociate this view ?"
