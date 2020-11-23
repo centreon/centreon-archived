@@ -104,6 +104,8 @@ if ($o == IMAGE_ADD) {
     );
     $form->addElement('file', 'filename', _("Image or archive"));
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+    $form->registerRule('isCorrectMIMEType', 'callback', 'isCorrectMIMEType');
+    $form->addRule('filename', _('Invalid Image Format.'), 'isCorrectMIMEType');
 } elseif ($o == IMAGE_MODIFY) {
     $form->addElement('header', 'title', _("Modify Image"));
     $form->addElement('text', 'img_name', _("Image Name"), $attrsText);
@@ -126,6 +128,8 @@ if ($o == IMAGE_ADD) {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $form->setDefaults($img);
     $form->addRule('img_name', _("Compulsory image name"), 'required');
+    $form->registerRule('isCorrectMIMEType', 'callback', 'isCorrectMIMEType');
+    $form->addRule('filename', _('Invalid Image Format.'), 'isCorrectMIMEType');
 } elseif ($o == IMAGE_WATCH) {
     $form->addElement('header', 'title', _("View Image"));
     $form->addElement('text', 'img_name', _("Image Name"), $attrsText);
@@ -209,16 +213,53 @@ if ($form->validate()) {
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
 
-    $oImageUploader = new CentreonImageManager($_FILES, './img/media/', $imgPath, $imgComment);
-    if ($form->getSubmitValue("submitA")) {
-        $valid = $oImageUploader->upload();
-    } elseif ($form->getSubmitValue("submitC")) {
-        $imgName = $form->getElement('img_name')->getValue();
-        $valid = $oImageUploader->update($imgId, $imgName);
-    }
-    $form->freeze();
-    if (false === $valid) {
-        $form->setElementError('filename', "An image is not uploaded.");
+     /**
+     * Check if an archive has been extracted into pendingMedia folder
+     */
+    $filesToUpload = getFilesFromTempDirectory('pendingMedia');
+
+    /**
+     * If a single image is uploaded
+     */
+    if (empty($filesToUpload)) {
+        $oImageUploader = new CentreonImageManager(
+            $_FILES,
+            './img/media/',
+            $imgPath,
+            $imgComment
+        );
+        if ($form->getSubmitValue("submitA")) {
+            $valid = $oImageUploader->upload();
+        } elseif ($form->getSubmitValue("submitC")) {
+            $imgName = $form->getElement('img_name')->getValue();
+            $valid = $oImageUploader->update($imgId, $imgName);
+        }
+        $form->freeze();
+        if (false === $valid) {
+            $form->setElementError('filename', "An image is not uploaded.");
+        }
+    /**
+     * If an archive .zip or .tgz is uploaded
+     */
+    } else {
+        foreach ($filesToUpload as $file) {
+            $oImageUploader = new CentreonImageManager(
+                $file,
+                './img/media/',
+                $imgPath,
+                $imgComment
+            );
+            if ($form->getSubmitValue("submitA")) {
+                $valid = $oImageUploader->uploadFromDirectory('pendingMedia');
+            } elseif ($form->getSubmitValue("submitC")) {
+                $imgName = $form->getElement('img_name')->getValue();
+                $valid = $oImageUploader->update($imgId, $imgName);
+            }
+            $form->freeze();
+            if (false === $valid) {
+                $form->setElementError('filename', "Images already uploaded.");
+            }
+        }
     }
 }
 $action = $form->getSubmitValue("action");
