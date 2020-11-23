@@ -1520,6 +1520,12 @@ msgstr "Supprimer"
 msgid "Cancel"
 msgstr "Annuler"
 
+msgid "Invalid Image Format."
+msgstr "Format d'image invalide."
+
+msgid "Images already uploaded."
+msgstr "Images déjà chargées."
+
 #: centreon-web/www/install/smarty_translate.php:168
 msgid "Dissociate this view ?"
 msgstr "Supprimer l'associatino de cette vue ?"
