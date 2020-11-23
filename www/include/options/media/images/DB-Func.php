@@ -472,7 +472,7 @@ function isCorrectMIMEType($file)
     if (!preg_match('/(^image\/)|(^application(\/zip)|(\/x-gzip)$)/', $mimeType)) {
         return false;
     } else {
-        $dir = sys_get_temp_dir() . '/pendingMedia';
+        $dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'pendingMedia';
         switch ($mimeType) {
             /*
              * .zip archive
@@ -552,7 +552,7 @@ function removeRecursiveTempDirectory($dir)
  */
 function isValidMIMETypeFromArchive($dir, $filename = null, $zip = null, $tar = null)
 {
-    $files = [];
+    $files = array();
 
     /**
      * Remove Pending images directory to avoid images duplication problems.
@@ -563,20 +563,20 @@ function isValidMIMETypeFromArchive($dir, $filename = null, $zip = null, $tar = 
 
     if (isset($zip)) {
         if ($zip->open($filename) === true && $zip->extractTo($dir) === true) {
-            $files = array_diff(scandir($dir), ['..', '.']);
+            $files = array_diff(scandir($dir), array('..', '.'));
         } else {
             return false;
         }
     } elseif (isset($tar)) {
         if ($tar->extractTo($dir) === true) {
-            $files = array_diff(scandir($dir), ['..', '.']);
+            $files = array_diff(scandir($dir), array('..', '.'));
         } else {
             return false;
         }
     }
 
     foreach ($files as $file) {
-        if (!preg_match('/^image\//', mime_content_type($dir . '/' . $file))) {
+        if (!preg_match('/^image\//', mime_content_type($dir . DIRECTORY_SEPARATOR . $file))) {
             return false;
         }
     }
@@ -592,16 +592,16 @@ function isValidMIMETypeFromArchive($dir, $filename = null, $zip = null, $tar = 
 function getFilesFromTempDirectory($tempDirectory)
 {
     $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempDirectory;
-    $files = array_diff(scandir($directory), ['..', '.']);
-    $filesInfo = [];
+    $files = array_diff(scandir($directory), array('..', '.'));
+    $filesInfo = array();
     foreach ($files as $file) {
-        $filesInfo[] = [
-            'filename' => [
+        $filesInfo[] = array(
+            'filename' => array(
                 'name' => $file,
                 'tmp_name' => $file,
                 'size' => filesize($directory . DIRECTORY_SEPARATOR . $file)
-            ]
-        ];
+            )
+        );
     }
     return $filesInfo;
 }
