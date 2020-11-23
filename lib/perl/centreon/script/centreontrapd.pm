@@ -889,7 +889,7 @@ sub substitute_string {
     $str =~ s/\$aR/$self->{trap_data}->{var}->[1]/g;
     $str =~ s/\$ar/$self->{trap_data}->{var}->[1]/g;
 
-    # $o (Trap OD)
+    # $o (Trap OID)
     $str =~ s/\$o/$self->{trap_data}->{var}->[3]/g;
 
     # Clean OID
