@@ -28,7 +28,7 @@ interface Props {
   graphHeight: number;
 }
 
-interface GetStackedYScale {
+interface YScales {
   leftScale: ScaleLinear<number, number>;
   rightScale: ScaleLinear<number, number>;
 }
@@ -36,7 +36,7 @@ interface GetStackedYScale {
 const getStackedYScale = ({
   leftScale,
   rightScale,
-}: GetStackedYScale): ScaleLinear<number, number> => {
+}: YScales): ScaleLinear<number, number> => {
   const minDomain = min(
     getMin(leftScale.domain()),
     getMin(rightScale.domain()),
