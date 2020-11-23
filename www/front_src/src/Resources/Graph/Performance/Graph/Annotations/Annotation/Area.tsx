@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { Bar } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
+import { max } from 'ramda';
 
 import { fade } from '@material-ui/core';
 
@@ -30,7 +31,7 @@ const AreaAnnotation = ({
 
   const xIconMargin = -iconSize / 2;
 
-  const xStart = xScale(new Date(startDate));
+  const xStart = max(xScale(new Date(startDate)), 0);
   const xEnd = endDate ? xScale(new Date(endDate)) : xScale.range()[1];
 
   const area = (

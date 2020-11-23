@@ -87,7 +87,7 @@ const PerformanceGraph = ({
     }
 
     sendGetTimelineRequest({
-      endpoint: timelineEndpoint,
+      endpoint: 'http://localhost:5000/mock/timeline',
       parameters: {
         limit: 100,
       },
