@@ -29,7 +29,7 @@ const useRefreshInterval = jest.fn(() => ({
 }));
 
 const useUserContext = jest.fn(() => ({
-  alias: 'admin alias',
+  alias: 'admin',
   name: 'admin',
   locale: 'en',
   timezone: 'Europe/Paris',

@@ -73,7 +73,7 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockUserContext = {
-  alias: 'admin alias',
+  alias: 'admin',
   name: 'admin',
   locale: 'en',
   timezone: 'Europe/Paris',
