@@ -99,7 +99,7 @@ const DowntimeForm = ({
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
 
-  const { name, downtime } = useUserContext();
+  const { alias, downtime } = useUserContext();
   const { toIsoString } = useLocaleDateTimeFormat();
 
   const {
@@ -159,7 +159,7 @@ const DowntimeForm = ({
   });
 
   React.useEffect(() => {
-    form.setFieldValue('comment', `${t(labelDowntimeBy)} ${name}`);
+    form.setFieldValue('comment', `${t(labelDowntimeBy)} ${alias}`);
   }, []);
 
   return (

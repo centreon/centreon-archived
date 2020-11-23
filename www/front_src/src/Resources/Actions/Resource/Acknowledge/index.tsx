@@ -36,7 +36,7 @@ const AcknowledgeForm = ({
   const { t } = useTranslation();
   const { showMessage } = useSnackbar();
 
-  const { name } = useUserContext();
+  const { alias } = useUserContext();
 
   const {
     sendRequest: sendAcknowledgeResources,
@@ -67,7 +67,7 @@ const AcknowledgeForm = ({
   });
 
   React.useEffect(() => {
-    form.setFieldValue('comment', `${t(labelAcknowledgedBy)} ${name}`);
+    form.setFieldValue('comment', `${t(labelAcknowledgedBy)} ${alias}`);
   }, []);
 
   return (
