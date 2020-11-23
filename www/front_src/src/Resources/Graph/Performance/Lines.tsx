@@ -81,9 +81,9 @@ const Lines = ({
 
   const stackedLines = getSortedStackedLines(lines);
 
-  const notInvertedStackedLines = getNotInvertedStackedLines(lines);
-  const notInvertedStackedTimeSeries = getTimeSeriesForLines({
-    lines: notInvertedStackedLines,
+  const regularStackedLines = getNotInvertedStackedLines(lines);
+  const regularStackedTimeSeries = getTimeSeriesForLines({
+    lines: regularStackedLines,
     timeSeries,
   });
 
@@ -100,8 +100,8 @@ const Lines = ({
   return (
     <>
       <StackedLines
-        lines={notInvertedStackedLines}
-        timeSeries={notInvertedStackedTimeSeries}
+        lines={regularStackedLines}
+        timeSeries={regularStackedTimeSeries}
         yScale={stackedYScale}
         xScale={xScale}
       />
