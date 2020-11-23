@@ -1,11 +1,6 @@
 import { KeyValuePair } from 'ramda';
 
-export interface User {
-  locale: string;
-  timezone: string;
-  name: string;
-  alias: string;
-}
+import { User } from '@centreon/ui-context';
 
 export type UserContext = {
   acl: Acl;
