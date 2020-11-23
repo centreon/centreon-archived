@@ -1,8 +1,16 @@
-import { buildListingEndpoint } from '@centreon/ui';
+import { buildListingEndpoint, ListingParameters } from '@centreon/ui';
 
 import { resourcesEndpoint } from '../../api/endpoint';
 
-const buildResourcesEndpoint = (parameters): string => {
+export type ListResourcesProps = {
+  states: Array<string>;
+  resourceTypes: Array<string>;
+  statuses: Array<string>;
+  hostGroupIds: Array<number>;
+  serviceGroupIds: Array<number>;
+} & ListingParameters;
+
+const buildResourcesEndpoint = (parameters: ListResourcesProps): string => {
   return buildListingEndpoint({
     baseEndpoint: resourcesEndpoint,
     parameters,

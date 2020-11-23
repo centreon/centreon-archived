@@ -466,6 +466,8 @@ paths:
 
         * id
         * name
+        * alias
+        * fqdn
         * type
         * status_code
         * status
@@ -489,6 +491,7 @@ paths:
         * h.name
         * h.alias
         * h.address
+        * h.fqdn
         * s.description
         * s.group
         * s.group.id
@@ -2442,6 +2445,82 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - Topology
+      summary: "Get a platform topology"
+      description: "Get a platform topology in Json Graph Format"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["graph", "nodes", "edges"]
+                properties:
+                  graph:
+                    type: object
+                    description: General informations about schema
+                    properties:
+                      label:
+                        type: string
+                        description: type of Json Graph
+                        example: "centreon-topology"
+                      metadata:
+                        type: object
+                        properties:
+                          version:
+                            type: string
+                            description: Version of the topology
+                            example: "1.0.0"
+                      nodes:
+                        type: object
+                        minItems: 1
+                        properties:
+                          id:
+                            properties:
+                              type:
+                                type: string
+                                description: Server Type of a platform
+                                example: "central"
+                              label:
+                                type: string
+                                description: logical name of a platform
+                                example: "Central"
+                              metadata:
+                                type: object
+                                properties:
+                                  centreon-id:
+                                    type: string
+                                    description: id of a platform as known in centreon database
+                                    example: "1"
+                                  hostname:
+                                    type: string
+                                    description: physical name of a platform
+                                    example: "localhost.localdomain"
+                      edges:
+                        type: array
+                        minItems: 0
+                        items:
+                          type: object
+                          properties:
+                            source:
+                              type: string
+                              description: children platform id as known in the topology
+                              example: "91"
+                            relation:
+                              type: string
+                              description: broker communication type
+                              example: "peer_retention"
+                            target:
+                              type: string
+                              description: parent platform id as known in the topology
+                              example: "1"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     Token:
@@ -3482,6 +3561,16 @@ components:
           type: string
           description: "Resource name"
           example: "Ping"
+        alias:
+          type: string
+          nullable: true
+          description: "Resource alias"
+          example: null
+        fqdn:
+          type: string
+          nullable: true
+          description: "Resource fqdn"
+          example: null
         links:
           $ref: '#/components/schemas/Monitoring.ResourceLinks'
         icon:
@@ -3522,6 +3611,15 @@ components:
               type: string
               description: "Parent resource name"
               example: "Central"
+            alias:
+              type: string
+              nullable: true
+              description: "Parent resource alias"
+              example: "Host"
+            fqdn:
+              type: string
+              description: "Parent resource fqdn"
+              example: "127.0.0.1"
             links:
               $ref: '#/components/schemas/Monitoring.ResourceLinks'
             status:

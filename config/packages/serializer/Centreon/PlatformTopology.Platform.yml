@@ -1,4 +1,4 @@
-Centreon\Domain\PlatformTopology\PlatformTopology:
+Centreon\Domain\PlatformTopology\Platform:
   properties:
     address:
       type: string
