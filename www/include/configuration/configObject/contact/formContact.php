@@ -39,7 +39,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!$centreon->user->admin && $contactId) {
+if (!$centreon->user->admin && isset($contactId)) {
     $aclOptions = array(
         'fields' => array('contact_id', 'contact_name'),
         'keys' => array('contact_id'),
@@ -68,7 +68,7 @@ $cgs = $acl->getContactGroupAclConf(
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
-$initialValues = array();
+$initialValues = [];
 
 /*
  * Check if this server is a Remote Server to hide some part of form
@@ -83,14 +83,14 @@ if ($result === false) {
 }
 $dbResult->closeCursor();
 
-$cct = array();
+$cct = [];
 if (($o === MODIFY_CONTACT || $o === WATCH_CONTACT) && $contactId) {
     /**
      * Init Tables informations
      */
-    $cct["contact_hostNotifCmds"] = array();
-    $cct["contact_svNotifCmds"] = array();
-    $cct["contact_cgNotif"] = array();
+    $cct["contact_hostNotifCmds"] = [];
+    $cct["contact_svNotifCmds"] = [];
+    $cct["contact_cgNotif"] = [];
 
     $dbResult = $pearDB->prepare("SELECT * FROM contact WHERE contact_id = :contactId LIMIT 1");
     $dbResult->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
@@ -118,26 +118,27 @@ if (($o === MODIFY_CONTACT || $o === WATCH_CONTACT) && $contactId) {
     /**
      * Get LDAP auth information
      */
-    $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'ldap_auth_enable'");
-    while ($ldap_auths = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'ldap_auth_enable'");
+    while ($ldap_auths = $dbResult->fetchRow()) {
         $ldap_auth[$ldap_auths["key"]] = myDecode($ldap_auths["value"]);
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     /**
      * Get ACL information for this user
      */
-    $DBRESULT = $pearDB->query("SELECT acl_group_id 
-                                FROM `acl_group_contacts_relations` 
-                                WHERE `contact_contact_id` = '" . (int) $contactId . "'");
-    for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
+    $dbResult = $pearDB->query(
+        "SELECT acl_group_id
+        FROM `acl_group_contacts_relations`
+        WHERE `contact_contact_id` = '" . (int) $contactId . "'");
+    for ($i = 0; $data = $dbResult->fetchRow(); $i++) {
         if (!$centreon->user->admin && !isset($allowedAclGroups[$data['acl_group_id']])) {
             $initialValues['contact_acl_groups'] = $data['acl_group_id'];
         } else {
             $cct["contact_acl_groups"][$i] = $data["acl_group_id"];
         }
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 }
 
 /**
@@ -151,14 +152,14 @@ if ($o === MASSIVE_CHANGE) {
 /**
  * Contact Groups come from DB -> Store in $notifCcts Array
  */
-$notifCgs = array();
+$notifCgs = [];
 
 $cg = new CentreonContactgroup($pearDB);
 $notifCgs = $cg->getListContactgroup(false);
 
 if (
-    $centreon->optGen['ldap_auth_enable'] == 1
-    && $cct['contact_auth_type'] == 'ldap'
+    $centreon->optGen['ldap_auth_enable'] === 1
+    && $cct['contact_auth_type'] === 'ldap'
     && isset($cct['ar_id'])
     && $cct['ar_id']
 ) {
@@ -171,20 +172,21 @@ if (
 /**
  * Contacts Templates
  */
-$strRestrinction = "";
+$strRestriction = "";
 if (isset($contactId)) {
-    $strRestrinction = " AND contact_id != '" . (int) $contactId . "'";
+    $strRestriction = " AND contact_id != '" . (int) $contactId . "'";
 }
 
 $contactTpl = array(null => "           ");
-$DBRESULT = $pearDB->query("SELECT contact_id, contact_name
-                            FROM contact
-                            WHERE contact_register = '0' $strRestrinction 
-                            ORDER BY contact_name");
-while ($contacts = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query(
+    "SELECT contact_id, contact_name
+    FROM contact
+    WHERE contact_register = '0' " . $strRestriction .
+    " ORDER BY contact_name");
+while ($contacts = $dbResult->fetchRow()) {
     $contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 /**
  * Template / Style for Quickform input
@@ -396,7 +398,7 @@ if ($centreon->user->admin) {
  * ACL configurations
  */
 if ($o === MASSIVE_CHANGE) {
-    $mc_mod_cg = array();
+    $mc_mod_cg = [];
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_acl', null, _("Incremental"), '0');
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_acl', null, _("Replacement"), '1');
     $form->addGroup($mc_mod_cg, 'mc_mod_acl', _("Update mode"), '&nbsp;');
@@ -409,7 +411,7 @@ $attrAclgroup1 = array_merge(
     $attrAclgroups,
     array('defaultDatasetRoute' => $defaultDatasetRoute)
 );
-$form->addElement('select2', 'contact_acl_groups', _("Access list groups"), array(), $attrAclgroup1);
+$form->addElement('select2', 'contact_acl_groups', _("Access list groups"), [], $attrAclgroup1);
 
 /**
  * Include GMT Class
@@ -429,15 +431,15 @@ $attrTimezones = array(
     'multiple' => false,
     'linkedObject' => 'centreonGMT'
 );
-$form->addElement('select2', 'contact_location', _("Timezone / Location"), array(), $attrTimezones);
+$form->addElement('select2', 'contact_location', _("Timezone / Location"), [], $attrTimezones);
 
 $auth_type = array(null => null);
 if ($o !== MASSIVE_CHANGE) {
-    $auth_type = array();
+    $auth_type = [];
 }
 
 $auth_type["local"] = "Centreon";
-if ($centreon->optGen['ldap_auth_enable'] == 1) {
+if ($centreon->optGen['ldap_auth_enable'] === 1) {
     $auth_type["ldap"] = "LDAP";
     $dnElement = $form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
     if (!$centreon->user->admin) {
@@ -522,13 +524,13 @@ $attrTimeperiod1 = array_merge(
     $attrTimeperiods,
     array('defaultDatasetRoute' => $defaultDatasetRoute)
 );
-$form->addElement('select2', 'timeperiod_tp_id', _("Host Notification Period"), array(), $attrTimeperiod1);
+$form->addElement('select2', 'timeperiod_tp_id', _("Host Notification Period"), [], $attrTimeperiod1);
 
 
 unset($hostNotifOpt);
 
 if ($o === MASSIVE_CHANGE) {
-    $mc_mod_hcmds = array();
+    $mc_mod_hcmds = [];
     $mc_mod_hcmds[] = $form->createElement('radio', 'mc_mod_hcmds', null, _("Incremental"), '0');
     $mc_mod_hcmds[] = $form->createElement('radio', 'mc_mod_hcmds', null, _("Replacement"), '1');
     $form->addGroup($mc_mod_hcmds, 'mc_mod_hcmds', _("Update mode"), '&nbsp;');
@@ -546,7 +548,7 @@ $attrCommand1 = array_merge(
         'availableDatasetRoute' => $availableDatasetRoute
     )
 );
-$form->addElement('select2', 'contact_hostNotifCmds', _("Host Notification Commands"), array(), $attrCommand1);
+$form->addElement('select2', 'contact_hostNotifCmds', _("Host Notification Commands"), [], $attrCommand1);
 
 /** * *****************************
  * Service notifications
@@ -611,10 +613,10 @@ $attrTimeperiod2 = array_merge(
     $attrTimeperiods,
     array('defaultDatasetRoute' => $defaultAttrTimeperiod2Route)
 );
-$form->addElement('select2', 'timeperiod_tp_id2', _("Service Notification Period"), array(), $attrTimeperiod2);
+$form->addElement('select2', 'timeperiod_tp_id2', _("Service Notification Period"), [], $attrTimeperiod2);
 
 if ($o === MASSIVE_CHANGE) {
-    $mc_mod_svcmds = array();
+    $mc_mod_svcmds = [];
     $mc_mod_svcmds[] = $form->createElement('radio', 'mc_mod_svcmds', null, _("Incremental"), '0');
     $mc_mod_svcmds[] = $form->createElement('radio', 'mc_mod_svcmds', null, _("Replacement"), '1');
     $form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
@@ -633,7 +635,7 @@ $attrCommand2 = array_merge(
         'availableDatasetRoute' => $availableCommand2Route
     )
 );
-$form->addElement('select2', 'contact_svNotifCmds', _("Service Notification Commands"), array(), $attrCommand2);
+$form->addElement('select2', 'contact_svNotifCmds', _("Service Notification Commands"), [], $attrCommand2);
 
 /**
  * Further informations
@@ -685,7 +687,7 @@ if ($o !== MASSIVE_CHANGE) {
     $ret = $form->getSubmitValues();
     $form->addRule('contact_name', _("Compulsory Name"), 'required');
     $form->addRule('contact_alias', _("Compulsory Alias"), 'required');
-    if ($isRemote == false) {
+    if ($isRemote === false) {
         $form->addRule('contact_email', _("Valid Email"), 'required');
     }
     $form->addRule('contact_oreon', _("Required Field"), 'required');
@@ -697,7 +699,7 @@ if ($o !== MASSIVE_CHANGE) {
 
     if ((isset($ret["contact_enable_notifications"]["contact_enable_notifications"])
         && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1)
-        && ($isRemote == false)
+        && ($isRemote === false)
     ) {
         if (isset($ret["contact_template_id"]) && $ret["contact_template_id"] == '') {
             $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
@@ -774,7 +776,7 @@ if ($o === WATCH_CONTACT) {
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
+if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] === 'ldap') {
     $tpl->assign("ldap_group", _("Group Ldap"));
     if (isset($cgLdap)) {
         $tpl->assign("ldapGroups", $cgLdap);
@@ -783,7 +785,7 @@ if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == '
 
 $valid = false;
 
-if ($form->validate() && $from_list_menu == false) {
+if ($form->validate() && $from_list_menu === false) {
     $cctObj = $form->getElement('contact_id');
     if (!$centreon->user->admin && $contactId) {
         $form->removeElement('contact_admin');
@@ -840,7 +842,7 @@ if ($valid) {
     /*
      * Apply a template definition
      */
-    $contactAuthType = isset($cct['contact_auth_type']) ? $cct['contact_auth_type'] : null;
+    $contactAuthType = $cct['contact_auth_type'] ?? null;
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -854,7 +856,7 @@ if ($valid) {
     }
     $tpl->assign('auth_type', $contactAuthType);
 
-    if ($isRemote == false) {
+    if ($isRemote === false) {
         $tpl->display("formContact.ihtml");
     } else {
         $tpl->display("formContactLight.ihtml");
