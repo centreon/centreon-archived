@@ -26,7 +26,6 @@ const AcknowledgementAnnotations = (props: Props): JSX.Element => {
     <EventAnnotations
       type="acknowledgement"
       icon={icon}
-      iconSize={iconSize}
       color={color}
       {...props}
     />
