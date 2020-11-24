@@ -546,8 +546,8 @@ paths:
     get:
       tags:
         - Resource
-      summary: "Get information on service resources"
-      description: "Return a single service with full details of its resources status."
+      summary: "Get information on service resource"
+      description: "Return a single service with full details as resource."
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
