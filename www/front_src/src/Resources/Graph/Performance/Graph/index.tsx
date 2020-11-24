@@ -19,7 +19,7 @@ import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@material-ui/core';
+import { Button, ClickAwayListener } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
 import { TimeValue, Line as LineModel } from '../models';
@@ -222,105 +222,107 @@ const Graph = ({
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
   return (
-    <div
-      style={{
-        position: 'relative',
-      }}
-    >
-      {tooltipOpen && tooltipData && (
-        <TooltipWithBounds
-          key={Math.random()}
-          top={tooltipTop}
-          left={tooltipLeft}
-          style={{ ...defaultStyles, opacity: 0.8, padding: 12 }}
-        >
-          {tooltipData}
-        </TooltipWithBounds>
-      )}
-      <svg width={width} height={height} ref={containerRef}>
-        <Group left={margin.left} top={margin.top}>
-          <MemoizedGridRows
-            scale={leftScale}
-            width={graphWidth}
-            height={graphHeight}
-            stroke={grey[100]}
-          />
-          <MemoizedGridColumns
-            scale={xScale}
-            width={graphWidth}
-            height={graphHeight}
-            stroke={grey[100]}
-          />
-          <MemoizedAxes
-            base={base}
-            graphHeight={graphHeight}
-            graphWidth={graphWidth}
-            lines={lines}
-            leftScale={leftScale}
-            rightScale={rightScale}
-            xScale={xScale}
-            xAxisTickFormat={xAxisTickFormat}
-            timeSeries={timeSeries}
-          />
-          <MemoizedAnnotations
-            xScale={xScale}
-            graphHeight={graphHeight}
-            timeline={timeline as Array<TimelineEvent>}
-          />
-          <MemoizedLines
-            timeSeries={timeSeries}
-            lines={lines}
-            leftScale={leftScale}
-            rightScale={rightScale}
-            xScale={xScale}
-            graphHeight={graphHeight}
-          />
-          <MemoizedBar
-            x={0}
-            y={0}
-            width={graphWidth}
-            height={graphHeight}
-            fill="transparent"
-            onClick={displayAddCommentTooltip}
-            onMouseMove={displayTooltip}
-            onMouseLeave={hideTooltip}
-          />
-          {tooltipData && (
-            <Line
-              from={{ x: tooltipLineLeft, y: 0 }}
-              to={{ x: tooltipLineLeft, y: graphHeight }}
-              stroke={grey[300]}
-              strokeWidth={2}
-              pointerEvents="none"
+    <ClickAwayListener onClickAway={hideAddCommentTooltip}>
+      <div
+        style={{
+          position: 'relative',
+        }}
+      >
+        {tooltipOpen && tooltipData && (
+          <TooltipWithBounds
+            key={Math.random()}
+            top={tooltipTop}
+            left={tooltipLeft}
+            style={{ ...defaultStyles, opacity: 0.8, padding: 12 }}
+          >
+            {tooltipData}
+          </TooltipWithBounds>
+        )}
+        <svg width={width} height={height} ref={containerRef}>
+          <Group left={margin.left} top={margin.top}>
+            <MemoizedGridRows
+              scale={leftScale}
+              width={graphWidth}
+              height={graphHeight}
+              stroke={grey[100]}
             />
-          )}
-        </Group>
-      </svg>
-      {addCommentTooltipOpen && (
-        <Button
-          size="small"
-          color="primary"
-          style={{
-            position: 'absolute',
-            left: addCommentTooltipLeft,
-            top: addCommentTooltipTop,
-            backgroundColor: 'white',
-            fontSize: 10,
-          }}
-          onClick={prepareAddComment}
-        >
-          {t(labelAddComment)}
-        </Button>
-      )}
-      {addingComment && (
-        <DialogAddComment
-          onAddComment={confirmAddComment}
-          onClose={() => {
-            setAddingComment(false);
-          }}
-        />
-      )}
-    </div>
+            <MemoizedGridColumns
+              scale={xScale}
+              width={graphWidth}
+              height={graphHeight}
+              stroke={grey[100]}
+            />
+            <MemoizedAxes
+              base={base}
+              graphHeight={graphHeight}
+              graphWidth={graphWidth}
+              lines={lines}
+              leftScale={leftScale}
+              rightScale={rightScale}
+              xScale={xScale}
+              xAxisTickFormat={xAxisTickFormat}
+              timeSeries={timeSeries}
+            />
+            <MemoizedAnnotations
+              xScale={xScale}
+              graphHeight={graphHeight}
+              timeline={timeline as Array<TimelineEvent>}
+            />
+            <MemoizedLines
+              timeSeries={timeSeries}
+              lines={lines}
+              leftScale={leftScale}
+              rightScale={rightScale}
+              xScale={xScale}
+              graphHeight={graphHeight}
+            />
+            <MemoizedBar
+              x={0}
+              y={0}
+              width={graphWidth}
+              height={graphHeight}
+              fill="transparent"
+              onClick={displayAddCommentTooltip}
+              onMouseMove={displayTooltip}
+              onMouseLeave={hideTooltip}
+            />
+            {tooltipData && (
+              <Line
+                from={{ x: tooltipLineLeft, y: 0 }}
+                to={{ x: tooltipLineLeft, y: graphHeight }}
+                stroke={grey[300]}
+                strokeWidth={2}
+                pointerEvents="none"
+              />
+            )}
+          </Group>
+        </svg>
+        {addCommentTooltipOpen && (
+          <Button
+            size="small"
+            color="primary"
+            style={{
+              position: 'absolute',
+              left: addCommentTooltipLeft,
+              top: addCommentTooltipTop,
+              backgroundColor: 'white',
+              fontSize: 10,
+            }}
+            onClick={prepareAddComment}
+          >
+            {t(labelAddComment)}
+          </Button>
+        )}
+        {addingComment && (
+          <DialogAddComment
+            onAddComment={confirmAddComment}
+            onClose={() => {
+              setAddingComment(false);
+            }}
+          />
+        )}
+      </div>
+    </ClickAwayListener>
   );
 };
 
