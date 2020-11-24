@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, isNil, isEmpty, identity } from 'ramda';
+import { equals, isNil, identity, isEmpty } from 'ramda';
 import {
   Line,
   Bar,
@@ -17,29 +17,30 @@ import {
 } from '@visx/visx';
 import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
+import { useTranslation } from 'react-i18next';
 
-import { Typography } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-
-import { useLocaleDateTimeFormat, dateTimeFormat } from '@centreon/ui';
 
 import { TimeValue, Line as LineModel } from '../models';
 import {
   getTime,
   getMin,
   getMax,
-  getLineForMetric,
   getDates,
   getUnits,
   getMetricValuesForUnit,
-  getMetrics,
   getMetricValuesForLines,
+  getMetrics,
+  getLineForMetric,
 } from '../timeSeries';
-import formatMetricValue from '../formatMetricValue';
 import Axes from './Axes';
 import Lines from '../Lines';
 import Annotations from './Annotations';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
+import MetricsTooltip from './MetricsTooltip';
+import { labelAddComment } from '../../../translatedLabels';
+import DialogAddComment from './DialogAddComment';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -85,7 +86,8 @@ const Graph = ({
   xAxisTickFormat,
   timeline,
 }: Props): JSX.Element => {
-  const { format } = useLocaleDateTimeFormat();
+  const { t } = useTranslation();
+  const [addingComment, setAddingComment] = React.useState(false);
 
   const {
     tooltipData,
@@ -95,6 +97,13 @@ const Graph = ({
     showTooltip,
     hideTooltip,
   } = useTooltip();
+  const {
+    tooltipLeft: addCommentTooltipLeft,
+    tooltipTop: addCommentTooltipTop,
+    tooltipOpen: addCommentTooltipOpen,
+    showTooltip: showAddCommentTooltip,
+    hideTooltip: hideAddCommentTooltip,
+  } = useTooltip();
 
   const { containerRef, containerBounds } = useTooltipInPortal({
     detectBounds: true,
@@ -103,6 +112,28 @@ const Graph = ({
 
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
+
+  const hideAddCommentTooltipOnEspcapePress = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape') {
+      hideAddCommentTooltip();
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener(
+      'keydown',
+      hideAddCommentTooltipOnEspcapePress,
+      false,
+    );
+
+    return (): void => {
+      document.removeEventListener(
+        'keydown',
+        hideAddCommentTooltipOnEspcapePress,
+        false,
+      );
+    };
+  }, []);
 
   const xScale = React.useMemo(
     () =>
@@ -136,78 +167,57 @@ const Graph = ({
     return getScale({ height: graphHeight, values });
   }, [timeSeries, lines, secondUnit, graphHeight]);
 
-  const bisectDate = bisector(identity).left;
-
-  const getTooltipData = (index: number): JSX.Element | undefined => {
-    const timeValue = timeSeries[index] as TimeValue;
-
-    const metrics = getMetrics(timeValue);
-
-    const metricsToDisplay = metrics.filter((metric) => {
-      const line = getLineForMetric({ lines, metric });
-
-      return !isNil(timeValue[metric]) && !isNil(line);
-    });
-
-    if (isEmpty(metricsToDisplay)) {
-      return undefined;
-    }
-
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Typography variant="caption">
-          {format({
-            date: new Date(timeValue.timeTick),
-            formatString: dateTimeFormat,
-          })}
-        </Typography>
-        {metricsToDisplay.map((metric) => {
-          const value = timeValue[metric];
-
-          const { color, name, unit } = getLineForMetric({
-            lines,
-            metric,
-          }) as LineModel;
-
-          const formattedValue = formatMetricValue({ value, unit, base });
-
-          return (
-            <Typography
-              key={metric}
-              variant="caption"
-              style={{
-                color,
-              }}
-            >
-              {`${name} ${formattedValue}`}
-            </Typography>
-          );
-        })}
-      </div>
-    );
-  };
-
   const displayTooltip = React.useCallback(
     (event) => {
       const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
       const xDomain = xScale.invert(x - margin.left);
-
+      const bisectDate = bisector(identity).left;
       const index = bisectDate(getDates(timeSeries), xDomain, 1);
+      const timeValue = timeSeries[index];
+
+      const metrics = getMetrics(timeValue);
+
+      const metricsToDisplay = metrics.filter((metric) => {
+        const line = getLineForMetric({ lines, metric });
+
+        return !isNil(timeValue[metric]) && !isNil(line);
+      });
 
       showTooltip({
         tooltipLeft: x,
         tooltipTop: y,
-        tooltipData: getTooltipData(index),
+        tooltipData: isEmpty(metricsToDisplay) ? undefined : (
+          <MetricsTooltip
+            timeValue={timeValue}
+            lines={lines}
+            base={base}
+            metrics={metricsToDisplay}
+          />
+        ),
       });
     },
     [showTooltip, containerBounds, lines],
   );
+
+  const displayAddCommentTooltip = (event): void => {
+    const { x, y } = localPoint(event) || { x: 0, y: 0 };
+
+    showAddCommentTooltip({
+      tooltipLeft: x,
+      tooltipTop: y,
+    });
+  };
+
+  const prepareAddComment = (): void => {
+    setAddingComment(true);
+    hideAddCommentTooltip();
+  };
+
+  const confirmAddComment = (): void => {
+    setAddingComment(false);
+    console.log('add comment');
+  };
 
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
@@ -271,6 +281,7 @@ const Graph = ({
             width={graphWidth}
             height={graphHeight}
             fill="transparent"
+            onClick={displayAddCommentTooltip}
             onMouseMove={displayTooltip}
             onMouseLeave={hideTooltip}
           />
@@ -285,6 +296,30 @@ const Graph = ({
           )}
         </Group>
       </svg>
+      {addCommentTooltipOpen && (
+        <Button
+          size="small"
+          color="primary"
+          style={{
+            position: 'absolute',
+            left: addCommentTooltipLeft,
+            top: addCommentTooltipTop,
+            backgroundColor: 'white',
+            fontSize: 10,
+          }}
+          onClick={prepareAddComment}
+        >
+          {t(labelAddComment)}
+        </Button>
+      )}
+      {addingComment && (
+        <DialogAddComment
+          onAddComment={confirmAddComment}
+          onClose={() => {
+            setAddingComment(false);
+          }}
+        />
+      )}
     </div>
   );
 };
