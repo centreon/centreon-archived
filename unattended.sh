@@ -38,6 +38,7 @@ case "$rhrelease" in
     PHP_BIN="/opt/rh/rh-php72/root/bin/php"
     PHP_ETC="/etc/opt/rh/rh-php72/php.d"
     OS_SPEC_SERVICES="rh-php72-php-fpm httpd24-httpd"
+    PKG_MGR="yum"
     ;;
   '8')
     # CentOS 8 specific part
@@ -48,6 +49,7 @@ case "$rhrelease" in
     PHP_BIN="/bin/php"
     PHP_ETC="/etc/php.d"
     OS_SPEC_SERVICES="php-fpm httpd"
+    PKG_MGR="dnf"
     ;;
   *)
     error_and_exit "This unattended installation script only supports CentOS 7 and CentOS 8. Please check https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/introduction.html for alternative installation methods."
@@ -98,12 +100,12 @@ fi
 #
 
 print_step_begin "Centreon official repositories installation"
-yum -q clean all
+$PKG_MGR -q clean all
 
 if [[ $rhrelease == 7 ]]; then
   rpm -q centos-release-scl > /dev/null 2>&1
   if [ "x$?" '!=' x0 ] ; then
-    yum -q install -y centos-release-scl
+    $PKG_MGR -q install -y centos-release-scl
     if [ "x$?" '!=' x0 ] ; then
       error_and_exit "Could not install Software Collections repository (package centos-release-scl)"
     fi
@@ -111,7 +113,7 @@ if [[ $rhrelease == 7 ]]; then
 fi
 rpm -q centreon-release-$CENTREON_MAJOR_VERSION > /dev/null 2>&1
 if [ "x$?" '!=' x0 ] ; then
-  yum -q install -y --nogpgcheck $RELEASE_RPM_URL
+  $PKG_MGR -q install -y --nogpgcheck $RELEASE_RPM_URL
   if [ "x$?" '!=' x0 ] ; then
     error_and_exit "Could not install Centreon repository"
   fi
@@ -123,7 +125,7 @@ print_step_end
 #
 
 print_step_begin "Centreon installation"
-yum -q install -y centreon
+$PKG_MGR -q install -y centreon
 if [ "x$?" '!=' x0 ] ; then
   error_and_exit "Could not install Centreon (package centreon)"
 fi
