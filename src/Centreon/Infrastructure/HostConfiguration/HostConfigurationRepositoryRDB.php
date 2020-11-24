@@ -71,12 +71,12 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                         :retain_status_information, :retain_nonstatus_information, :notifications_status)'
             );
             $statement = $this->db->prepare($request);
-            $statement->bindValue(':name', $host->getName(), \PDO::PARAM_STR);
-            $statement->bindValue(':alias', $host->getAlias(), \PDO::PARAM_STR);
-            $statement->bindValue(':display_name', $host->getDisplayName(), \PDO::PARAM_STR);
-            $statement->bindValue(':ip_address', $host->getIpAddress(), \PDO::PARAM_STR);
+            $statement->bindValue(':name', $this->truncateIfTooLong($host->getName(), 200), \PDO::PARAM_STR);
+            $statement->bindValue(':alias', $this->truncateIfTooLong($host->getAlias(), 200), \PDO::PARAM_STR);
+            $statement->bindValue(':display_name', $this->truncateIfTooLong($host->getDisplayName()), \PDO::PARAM_STR);
+            $statement->bindValue(':ip_address', $this->truncateIfTooLong($host->getIpAddress()), \PDO::PARAM_STR);
             $statement->bindValue(':comment', $host->getComment(), \PDO::PARAM_STR);
-            $statement->bindValue(':geo_coords', $host->getGeoCoords(), \PDO::PARAM_STR);
+            $statement->bindValue(':geo_coords', $this->truncateIfTooLong($host->getGeoCoords(), 32), \PDO::PARAM_STR);
             $statement->bindValue(':is_activate', $host->isActivated(), \PDO::PARAM_STR);
             $statement->bindValue(':host_register', $host->getType(), \PDO::PARAM_STR);
 
@@ -518,5 +518,20 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $namesFound[] = $result['host_name'];
         }
         return $namesFound;
+    }
+
+    /**
+     * Truncate a string if it was too long compared to the requested size.
+     *
+     * @param string $dataToSaved String to ckeck
+     * @param int $size Size requested
+     * @return string Return the string (truncated if necessary)
+     */
+    private function truncateIfTooLong(string $dataToSaved, int $size = 255): string
+    {
+        if (strlen($dataToSaved) > $size) {
+            substr($dataToSaved, 0, $size);
+        }
+        return $dataToSaved;
     }
 }

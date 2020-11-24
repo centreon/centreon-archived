@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration;
 
 use Centreon\Domain\ActionLog\ActionLog;
+use Centreon\Domain\ActionLog\ActionLogException;
 use Centreon\Domain\ActionLog\Interfaces\ActionLogServiceInterface;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
@@ -109,60 +110,12 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                 $host->getMonitoringServer()->setId($engineConfiguration->getMonitoringServerId());
             }
             $hostId = $this->hostConfigurationRepository->addHost($host);
-            $defaultStatus = 'Default';
 
-            // We create the list of changes concerning the creation of the host
-            $actionsDetails = [
-                'Host name' => $host->getName() ?? '',
-                'Host alias' => $host->getAlias() ?? '',
-                'Host IP address' => $host->getIpAddress() ?? '',
-                'Monitoring server name' => $host->getMonitoringServer()->getName() ?? '',
-                'Create services linked to templates' => 'true',
-                'Is activated' => $host->isActivated() ? 'true' : 'false',
+            $host->setId($hostId);
+            $this->sendAddHostAction($host);
 
-                // We don't have these properties in the host object yet, so we display these default values
-                'Active checks enabled' => $defaultStatus,
-                'Passive checks enabled' => $defaultStatus,
-                'Notifications enabled' => $defaultStatus,
-                'Obsess over host' => $defaultStatus,
-                'Check freshness' => $defaultStatus,
-                'Flap detection enabled' => $defaultStatus,
-                'Retain status information' => $defaultStatus,
-                'Retain nonstatus information' => $defaultStatus,
-                'Event handler enabled' => $defaultStatus,
-            ];
-            if (!empty($host->getTemplates())) {
-                $templateNames = [];
-                foreach ($host->getTemplates() as $template) {
-                    if (!empty($template->getName())) {
-                        $templateNames[] = $template->getName();
-                    }
-                }
-                $actionsDetails = array_merge($actionsDetails, ['Templates selected' => implode(', ', $templateNames)]);
-            }
-
-            if (!empty($host->getMacros())) {
-                $macroDetails = [];
-                foreach ($host->getMacros() as $macro) {
-                    if (!empty($macro->getName())) {
-                        // We remove the symbol characters in the macro name
-                        $macroDetails[substr($macro->getName(), 2, strlen($macro->getName()) - 3)] =
-                            $macro->isPassword() ? '*****' : $macro->getValue() ?? '';
-                    }
-                }
-                $actionsDetails = array_merge($actionsDetails, [
-                    'Macro names' => implode(', ', array_keys($macroDetails)),
-                    'Macro values' => implode(', ', array_values($macroDetails))
-                ]);
-            }
-            $this->actionLogService->addAction(
-                // The userId is set to 0 because it is not yet possible to determine who initiated the action.
-                // We will see later how to get it back.
-                new ActionLog('host', $hostId, $host->getName(), ActionLog::ACTION_TYPE_ADD, 0),
-                $actionsDetails
-            );
             return $hostId;
-        } catch (HostConfigurationException $ex) {
+        } catch (HostConfigurationException | ActionLogException $ex) {
             throw $ex;
         } catch (RepositoryException $ex) {
             throw new HostConfigurationException($ex->getMessage(), 0, $ex);
@@ -293,5 +246,67 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         } catch (\Throwable $ex) {
             throw new HostConfigurationException(_('Error when searching for already used host names'));
         }
+    }
+
+    /**
+     * Send an action of type Add
+     * @param Host $host
+     * @throws ActionLogException
+     * @throws \Exception
+     */
+    private function sendAddHostAction(Host $host): void
+    {
+        $defaultStatus = 'Default';
+
+        // We create the list of changes concerning the creation of the host
+        $actionsDetails = [
+            'Host name' => $host->getName() ?? '',
+            'Host alias' => $host->getAlias() ?? '',
+            'Host IP address' => $host->getIpAddress() ?? '',
+            'Monitoring server name' => $host->getMonitoringServer()->getName() ?? '',
+            'Create services linked to templates' => 'true',
+            'Is activated' => $host->isActivated() ? 'true' : 'false',
+
+            // We don't have these properties in the host object yet, so we display these default values
+            'Active checks enabled' => $defaultStatus,
+            'Passive checks enabled' => $defaultStatus,
+            'Notifications enabled' => $defaultStatus,
+            'Obsess over host' => $defaultStatus,
+            'Check freshness' => $defaultStatus,
+            'Flap detection enabled' => $defaultStatus,
+            'Retain status information' => $defaultStatus,
+            'Retain nonstatus information' => $defaultStatus,
+            'Event handler enabled' => $defaultStatus,
+        ];
+        if (!empty($host->getTemplates())) {
+            $templateNames = [];
+            foreach ($host->getTemplates() as $template) {
+                if (!empty($template->getName())) {
+                    $templateNames[] = $template->getName();
+                }
+            }
+            $actionsDetails = array_merge($actionsDetails, ['Templates selected' => implode(', ', $templateNames)]);
+        }
+
+        if (!empty($host->getMacros())) {
+            $macroDetails = [];
+            foreach ($host->getMacros() as $macro) {
+                if (!empty($macro->getName())) {
+                    // We remove the symbol characters in the macro name
+                    $macroDetails[substr($macro->getName(), 2, strlen($macro->getName()) - 3)] =
+                        $macro->isPassword() ? '*****' : $macro->getValue() ?? '';
+                }
+            }
+            $actionsDetails = array_merge($actionsDetails, [
+                'Macro names' => implode(', ', array_keys($macroDetails)),
+                'Macro values' => implode(', ', array_values($macroDetails))
+            ]);
+        }
+        $this->actionLogService->addAction(
+        // The userId is set to 0 because it is not yet possible to determine who initiated the action.
+        // We will see later how to get it back.
+            new ActionLog('host', $host->getId(), $host->getName(), ActionLog::ACTION_TYPE_ADD, 0),
+            $actionsDetails
+        );
     }
 }

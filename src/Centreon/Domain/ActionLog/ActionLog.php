@@ -22,6 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ActionLog;
 
+/**
+ * This class is designed to represent an action to save changes in Centreon.
+ *
+ * @package Centreon\Domain\ActionLog
+ */
 class ActionLog
 {
     public const ACTION_TYPE_ADD = 'a';
@@ -73,6 +78,7 @@ class ActionLog
      * @param string $actionType Action type (see ActionLog::ACTION_TYPE_ADD, etc...)
      * @param int $contactId Id of the contact who added this action log
      * @param \DateTime|null $creationDate If null, the creation date will be the same as the entity's creation date.
+     * @throws \Exception
      *
      * @see ActionLog::ACTION_TYPE_ADD
      * @see ActionLog::ACTION_TYPE_DELETE

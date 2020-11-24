@@ -22,10 +22,14 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
+use Centreon\Domain\ActionLog\ActionLogException;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostConfigurationException;
 use Centreon\Domain\HostConfiguration\HostMacro;
 
+/**
+ * @package Centreon\Domain\HostConfiguration\Interfaces
+ */
 interface HostConfigurationServiceInterface
 {
     /**
@@ -34,6 +38,7 @@ interface HostConfigurationServiceInterface
      * @param Host $host
      * @return int Returns the host id
      * @throws HostConfigurationException
+     * @throws ActionLogException
      */
     public function addHost(Host $host): int;
 
