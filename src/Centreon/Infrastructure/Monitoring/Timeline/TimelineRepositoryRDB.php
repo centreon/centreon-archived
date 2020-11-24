@@ -22,20 +22,21 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring\Timeline;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineRepositoryInterface;
-use Centreon\Domain\RequestParameters\RequestParameters;
-use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Domain\Security\AccessGroup;
-use Centreon\Domain\Entity\EntityCreator;
-use Centreon\Infrastructure\DatabaseConnection;
-use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
-use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\Timeline\TimelineContact;
+use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Monitoring\Timeline\TimelineContact;
+use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
+use Centreon\Infrastructure\RequestParameters\Interfaces\NormalizerInterface;
+use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineRepositoryInterface;
 
 /**
  * Database repository for timeline events.
@@ -123,7 +124,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         $this->sqlRequestTranslator->setConcordanceArray([
             'type' => 'log.type',
             'content' => 'log.content',
-            'date' => 'log.date',
+            'date' => 'log.date'
         ]);
 
         $collector = new StatementCollector();
@@ -171,6 +172,17 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         $request .= implode('UNION ALL ', $subRequests);
 
         $request .= ') AS `log` ';
+
+        $this->sqlRequestTranslator->addNormalizer(
+            'date',
+            new class implements NormalizerInterface
+            {
+                public function normalize($valueToNormalize)
+                {
+                    return (new \Datetime($valueToNormalize))->getTimestamp();
+                }
+            }
+        );
 
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
