@@ -27,7 +27,7 @@ This allows to manage scenarios written in .feature format (Gerkhin syntax).
 
 ### Create the Centreon Docker testing environment
 
-> cypress:build:docker
+> npm run cypress:build:docker
 
 optional parameters :
 
@@ -37,17 +37,17 @@ optional parameters :
 
 ### Start and Stop dockers testing environment
 
-> cypress:env:start or cypress:env:stop
+> npm run cypress:env:start or npm run cypress:env:stop
 
 These 2 commands allow to launch the scripts to start or stop the Dockers built by the previous command
 
 ## Open the Cypress dashboard or Run by CLI
 
-> cypress:open
+> npm run cypress:open
 
 This command allows to open a Cypress UI to manipulate and execute the tests manually.
 
-> cypress:run
+> npm run cypress:run
 
 This command allows to execute the tests automatically with several possible parameters.
 
