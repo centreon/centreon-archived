@@ -35,6 +35,8 @@ export interface ResourceDetails {
   performance_data?: string;
   command_line?: string;
   type: 'service' | 'host';
+  fqdn?: string;
+  alias?: string;
 }
 
 export interface DetailsUrlQueryParameters {

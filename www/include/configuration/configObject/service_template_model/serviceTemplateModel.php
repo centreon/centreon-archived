@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,21 +38,10 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = null;
-isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = null;
-$sG ? $service_id = $sG : $service_id = $sP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+$service_id = filter_var(
+    $_GET['service_id'] ?? $_POST['service_id'] ?? 0,
+    FILTER_VALIDATE_INT
+);
 
 if ($o == "c" && $service_id == null) {
     $o = "";
@@ -69,6 +59,15 @@ $path2 = "./include/configuration/configObject/service/";
 require_once $path2 . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+$select = filter_var_array(
+    getSelectOption(),
+    FILTER_VALIDATE_INT
+);
+$dupNbr = filter_var_array(
+    getDuplicateNumberOption(),
+    FILTER_VALIDATE_INT
+);
+
 $serviceObj = new CentreonService($pearDB);
 $lockedElements = $serviceObj->getLockedServiceTemplates();
 
@@ -77,43 +76,48 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
+const SERVICE_TEMPLATE_ADD = 'a';
+const SERVICE_TEMPLATE_WATCH = 'w';
+const SERVICE_TEMPLATE_MODIFY = 'c';
+const SERVICE_TEMPLATE_MASSIVE_CHANGE = 'mc';
+const SERVICE_TEMPLATE_ACTIVATION = 's';
+const SERVICE_TEMPLATE_MASSIVE_ACTIVATION = 'ms';
+const SERVICE_TEMPLATE_DEACTIVATION = 'u';
+const SERVICE_TEMPLATE_MASSIVE_DEACTIVATION = 'mu';
+const SERVICE_TEMPLATE_DUPLICATION = 'm';
+const SERVICE_TEMPLATE_DELETION = 'd';
+
 switch ($o) {
-    case "a":
+    case SERVICE_TEMPLATE_ADD:
+    case SERVICE_TEMPLATE_WATCH:
+    case SERVICE_TEMPLATE_MODIFY:
+    case SERVICE_TEMPLATE_MASSIVE_CHANGE:
         require_once($path . "formServiceTemplateModel.php");
-        break; #Add a Service Template Model
-    case "w":
-        require_once($path . "formServiceTemplateModel.php");
-        break; #Watch a Service Template Model
-    case "c":
-        require_once($path . "formServiceTemplateModel.php");
-        break; #Modify a Service Template Model
-    case "mc":
-        require_once($path . "formServiceTemplateModel.php");
-        break; #Massive change
-    case "s":
+        break;
+    case SERVICE_TEMPLATE_ACTIVATION:
         enableServiceInDB($service_id);
         require_once($path . "listServiceTemplateModel.php");
-        break; #Activate a Service Template Model
-    case "ms":
+        break;
+    case SERVICE_TEMPLATE_MASSIVE_ACTIVATION:
         enableServiceInDB(null, isset($select) ? $select : array());
         require_once($path . "listServiceTemplateModel.php");
         break;
-    case "u":
+    case SERVICE_TEMPLATE_DEACTIVATION:
         disableServiceInDB($service_id);
         require_once($path . "listServiceTemplateModel.php");
-        break; #Desactivate a Service Template Model
-    case "mu":
+        break;
+    case SERVICE_TEMPLATE_MASSIVE_DEACTIVATION:
         disableServiceInDB(null, isset($select) ? $select : array());
         require_once($path . "listServiceTemplateModel.php");
         break;
-    case "m":
+    case SERVICE_TEMPLATE_DUPLICATION:
         multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
         require_once($path . "listServiceTemplateModel.php");
-        break; #Duplicate n Service Template Models
-    case "d":
+        break;
+    case SERVICE_TEMPLATE_DELETION:
         deleteServiceInDB(isset($select) ? $select : array());
         require_once($path . "listServiceTemplateModel.php");
-        break; #Delete n Service Template Models
+        break;
     default:
         require_once($path . "listServiceTemplateModel.php");
         break;

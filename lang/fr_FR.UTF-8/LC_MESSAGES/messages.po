@@ -6939,6 +6939,12 @@ msgstr "Impossible"
 msgid "Add Image(s)"
 msgstr "Ajout d'image(s)"
 
+msgid "Invalid Image Format."
+msgstr "Format d'image invalide."
+
+msgid "Images already uploaded."
+msgstr "Images déjà uploadés."
+
 #: centreon-web/www/include/options/media/images/formImg.php:89
 #: centreon-web/www/include/options/media/images/formImg.php:108
 msgid "Existing or new directory"
@@ -10288,14 +10294,6 @@ msgstr "Valeur de la macro"
 msgid "Impossible to change server due to parentship with other hosts"
 msgstr ""
 "Impossible de changer le serveur à cause d'une relation avec d'autres hôtes"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1043
-msgid "Some hosts parent has not the same instance"
-msgstr "Certains hôtes parents ne sont pas supervisés par le même ordonnanceur"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1044
-msgid "Some hosts child has not the same instance"
-msgstr "Certains hôtes enfants ne sont pas supervisés par le même ordonnanceur"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1050
 msgid "_Module_ is not a legal expression"
@@ -15850,3 +15848,6 @@ msgstr "Erreur lors de l'ajout d'une entrée dans le journal des actions"
 
 msgid "PENDING"
 msgstr "EN ATTENTE"
+
+msgid "FQDN / Address"
+msgstr "FQDN / Adresse"
