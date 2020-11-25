@@ -136,9 +136,9 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       )}
       <Grid container spacing={2} alignItems="stretch">
         {getDetailCardLines(details).map(
-          ({ title, field, getLines }) =>
+          ({ title, field, xs = 6, getLines }) =>
             !isNil(field) && (
-              <Grid key={title} item xs={6}>
+              <Grid key={title} item xs={xs}>
                 <DetailsCard title={t(title)} lines={getLines()} />
               </Grid>
             ),

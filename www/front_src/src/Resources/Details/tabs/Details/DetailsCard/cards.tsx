@@ -32,6 +32,7 @@ type Lines = Array<{ key: string; line: JSX.Element | null }>;
 interface DetailCardLines {
   title: string;
   field?: string | number | boolean;
+  xs?: 6 | 12;
   getLines: () => Lines;
 }
 
@@ -100,6 +101,7 @@ const getDetailCardLines = (
     {
       title: labelFqdn,
       field: details.fqdn,
+      xs: 12,
       getLines: (): Lines => [
         {
           key: 'fqdn',
