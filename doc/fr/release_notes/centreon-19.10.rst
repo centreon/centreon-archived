@@ -1,4 +1,39 @@
 =====================
+Centreon Web 19.10.17
+=====================
+
+Enhancements
+------------
+
+* [Remote Server] Add the possibility to configure mail for users
+* [Remote Server] Hide the "Configure host / service" buttons from monitoring legacy pages
+
+Bug fixes
+---------
+
+* [Administration] 'options' table for centreon database is sometimes empty
+* [Administration] Quiet SSH for Engine statistics collection
+* [Administration] Script centreon-backup errors
+* [CLAPI] Export clapi duplicates contacts
+* [Core/Partitioning] Partitioning starts at epoch
+* [Core] Perl lib db query bad looping parameters
+* [Core] Too much rows in extended_service_informations tables
+* [Custom Views] Select2 popin error on custom view sharing
+* [Event logs] Inoperative filters when exporting
+* [Graphs] Performance graph legend does not update dynamically
+* [Reporting] Dashboard won't build when having service by hostgroup
+
+Security fixes
+--------------
+
+* [Administration] Password in plain text in "Administration > Logs"
+* [Apache] Lack of click diversion protection (Clickjacking)
+* [Core] Update moment.js library
+* [Media] Broken authentication of uploaded files
+* [Monitoring] Blind SQL Injection in "Monitoring > Downtimes > Downtimes"
+* [Custom Views] List of user accounts in custom view
+
+=====================
 Centreon Web 19.10.16
 =====================
 
