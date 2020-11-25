@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Schedule checks on resources",
+    "title": "Add comment on multiple resources",
     "type": "object",
     "required": ["resources"],
     "additionalProperties": false,
