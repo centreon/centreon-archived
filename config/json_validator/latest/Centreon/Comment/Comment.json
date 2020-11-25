@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Submit result to a host or service",
+    "title": "Add comment to a host or a service",
     "type": "object",
     "required": ["comment"],
     "additionalProperties": false,

@@ -3596,7 +3596,6 @@ components:
                 nullable: true
                 description: "Performance data result of the check sent"
                 example: "'used'=453849088B;;;0;1927262208"
-<<<<<<< HEAD
     Monitoring.Resource.Host:
       allOf:
         - $ref: "#/components/schemas/Monitoring.ResourceMain"
@@ -3673,7 +3672,6 @@ components:
             $ref: "#/components/schemas/Downtime.Host"
         acknowledgement:
           $ref: "#/components/schemas/Acknowledgement.Host"
-=======
     Comment.Host:
       type: object
       required: [comment]
@@ -3736,7 +3734,6 @@ components:
                 type: string
                 description: "Comment to add to the monitored resource"
                 example: "Resource is not-OK but it is expected"
->>>>>>> feat(api): add endpoints to API to add comment on resources
     Monitoring.Resource.Disacknowledge.Host:
       type: object
       properties:
