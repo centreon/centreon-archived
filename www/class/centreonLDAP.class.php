@@ -1110,8 +1110,10 @@ class CentreonLdapAdmin
      */
     public function setGeneralOptions($arId, $options)
     {
+        $isUpdate = !empty($arId);
+
         $gopt = $this->getGeneralOptions($arId);
-        if (isset($gopt["bind_pass"]) && $gopt["bind_pass"] === CentreonAuth::PWS_OCCULTATION && $arId == 0) {
+        if (isset($gopt["bind_pass"]) && $gopt["bind_pass"] === CentreonAuth::PWS_OCCULTATION && !$isUpdate) {
             unset($gopt["bind_pass"]);
         }
         if (!count($gopt)
@@ -1151,7 +1153,7 @@ class CentreonLdapAdmin
             );
         }
         $knownParameters = $this->getLdapParameters();
-        if (isset($options["bind_pass"]) && $options["bind_pass"] === CentreonAuth::PWS_OCCULTATION) {
+        if (isset($options["bind_pass"]) && $options["bind_pass"] === CentreonAuth::PWS_OCCULTATION && $isUpdate) {
             unset($options["bind_pass"]);
         }
         foreach ($options as $key => $value) {
