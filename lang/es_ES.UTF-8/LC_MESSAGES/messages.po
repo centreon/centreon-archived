@@ -9808,14 +9808,6 @@ msgstr "Valor de la macro"
 msgid "Impossible to change server due to parentship with other hosts"
 msgstr "No se puede cambiar el servidor debido a una relación con otros hosts"
 
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1043
-msgid "Some hosts parent has not the same instance"
-msgstr "Algunos hosts principales no son supervisados ​​por el mismo programador"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1044
-msgid "Some hosts child has not the same instance"
-msgstr "Algunos anfitriones secundarios no son supervisados ​​por el mismo programador"
-
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1050
 msgid "_Module_ is not a legal expression"
 msgstr "_Module_ no es una expresión permitida"
