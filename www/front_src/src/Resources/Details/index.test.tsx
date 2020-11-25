@@ -432,7 +432,11 @@ describe(Details, () => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: performanceGraphData })
-        .mockResolvedValueOnce({ data: performanceGraphData });
+        .mockResolvedValueOnce({
+          data: retrievedTimeline,
+        })
+        .mockResolvedValueOnce({ data: performanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedTimeline });
 
       const { getByText, getAllByText } = renderDetails({
         openTabId: graphTabId,
