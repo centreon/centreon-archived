@@ -109,6 +109,13 @@ class CommentController extends AbstractController
         $hasHostRights = $contact->hasRole(Contact::ROLE_HOST_ADD_COMMENT);
         $hasServiceRights = $contact->hasRole(Contact::ROLE_SERVICE_ADD_COMMENT);
 
+        /**
+         * If the user has no rights at all, do not go further
+         */
+        if (!$hasHostRights && !$hasServiceRights) {
+            return false;
+        }
+
         foreach ($resources as $resource) {
             if (
                 ($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
