@@ -49,9 +49,10 @@ const useDetails = (): DetailsState => {
     selectedResourceParentId,
     setSelectedResourceParentId,
   ] = React.useState<number>();
-  const [selectedResourceType, setSelectedResourceType] = React.useState<
-    string
-  >();
+  const [
+    selectedResourceType,
+    setSelectedResourceType,
+  ] = React.useState<string>();
   const [
     selectedResourceParentType,
     setSelectedResourceParentType,

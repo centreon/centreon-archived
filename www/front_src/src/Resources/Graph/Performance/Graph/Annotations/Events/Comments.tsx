@@ -6,7 +6,7 @@ import { useTheme } from '@material-ui/core';
 import IconComment from '@material-ui/icons/Comment';
 
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
-import { labelBy } from '../../../../../translatedLabels';
+import { labelBy, labelComment } from '../../../../../translatedLabels';
 import truncate from '../../../../../truncate';
 import { Props } from '..';
 import EventAnnotations from '.';
@@ -22,7 +22,12 @@ const CommentAnnotations = (props: Props): JSX.Element => {
   };
 
   const icon = (
-    <IconComment height={iconSize} width={iconSize} color="primary" />
+    <IconComment
+      aria-label={t(labelComment)}
+      height={iconSize}
+      width={iconSize}
+      color="primary"
+    />
   );
 
   return (

@@ -337,7 +337,7 @@ function deleteDirectory($directoryId)
 {
     global $pearDB;
     $mediadir = "./img/media/";
-    
+
     $directoryId = (int) $directoryId;
     /*
      * Purge images of the directory
@@ -420,4 +420,155 @@ function getListDirectory($filter = null)
     }
     $dbresult->closeCursor();
     return $list_dir;
+}
+
+/**
+ * Check MIME Type of file
+ *
+ * @param array $file
+ * @return boolean
+ */
+function isCorrectMIMEType(array $file): bool
+{
+    $mimeType = mime_content_type($file['tmp_name']);
+
+    if (!preg_match('/(^image\/)|(^application(\/zip)|(\/x-gzip)$)/', $mimeType)) {
+        return false;
+    } else {
+        $dir = sys_get_temp_dir() . '/pendingMedia';
+        switch ($mimeType) {
+            /*
+             * .zip archive
+             */
+            case 'application/zip':
+                $zip = new ZipArchive();
+                if (isValidMIMETypeFromArchive($dir, $file['tmp_name'], $zip) === true) {
+                    return true;
+                } else {
+                    // remove the pending images from tmp
+                    removeRecursiveTempDirectory($dir);
+                    return false;
+                }
+                break;
+            /*
+             *.tgz archive
+             */
+            case 'application/x-gzip':
+                /*
+                 * Append an extension to temp file to be able to instanciate a PharData object
+                 */
+                $newName = $file['tmp_name'] . '.tgz';
+                rename($file['tmp_name'], $newName);
+                $tar = new PharData($newName);
+                if (isValidMIMETypeFromArchive($dir, null, null, $tar) === true) {
+                    //remove the .tgz from tmp
+                    unlink($newName);
+                    return true;
+                } else {
+                    //remove the .tgz and the pending images from tmp
+                    unlink($newName);
+                    removeRecursiveTempDirectory($dir);
+                    return false;
+                }
+                break;
+            /*
+             * single image
+             */
+            default:
+                return true;
+        }
+    }
+}
+
+
+/**
+ * Remove a directory and its content
+ *
+ * @param string $dir
+ * @return void
+ */
+function removeRecursiveTempDirectory(string $dir): void
+{
+    if (is_dir($dir)) {
+        $objects = scandir($dir);
+        foreach ($objects as $object) {
+            if ($object !== "." && $object !== "..") {
+                if (is_dir($dir . DIRECTORY_SEPARATOR . $object) && !is_link($dir . DIRECTORY_SEPARATOR . $object)) {
+                    removeRecursiveTempDirectory($dir . DIRECTORY_SEPARATOR . $object);
+                } else {
+                    unlink($dir . DIRECTORY_SEPARATOR . $object);
+                }
+            }
+        }
+        rmdir($dir);
+    }
+}
+
+/**
+ * Extract an archive and check the MIME Type of every files
+ *
+ * @param string $dir
+ * @param string $filename
+ * @param ZipArchive $zip
+ * @param PharData $tar
+ * @return boolean
+ */
+function isValidMIMETypeFromArchive(
+    string $dir,
+    string $filename = null,
+    ZipArchive $zip = null,
+    PharData $tar = null
+): bool {
+    $files = [];
+
+    /**
+     * Remove Pending images directory to avoid images duplication problems.
+     */
+    if (file_exists($dir)) {
+        removeRecursiveTempDirectory($dir);
+    }
+
+    if (isset($zip)) {
+        if ($zip->open($filename) === true && $zip->extractTo($dir) === true) {
+            $files = array_diff(scandir($dir), ['..', '.']);
+        } else {
+            return false;
+        }
+    } elseif (isset($tar)) {
+        if ($tar->extractTo($dir) === true) {
+            $files = array_diff(scandir($dir), ['..', '.']);
+        } else {
+            return false;
+        }
+    }
+
+    foreach ($files as $file) {
+        if (!preg_match('/^image\//', mime_content_type($dir . '/' . $file))) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Format all the pending images as an array usable by CentreonImageManager
+ *
+ * @param string $tempDirectory
+ * @return array
+ */
+function getFilesFromTempDirectory(string $tempDirectory): array
+{
+    $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempDirectory;
+    $files = array_diff(scandir($directory), ['..', '.']);
+    $filesInfo = [];
+    foreach ($files as $file) {
+        $filesInfo[] = [
+            'filename' => [
+                'name' => $file,
+                'tmp_name' => $file,
+                'size' => filesize($directory . DIRECTORY_SEPARATOR . $file)
+            ]
+        ];
+    }
+    return $filesInfo;
 }
