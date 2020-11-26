@@ -700,7 +700,8 @@ if ($o !== MASSIVE_CHANGE) {
     }
     $form->addRule('contact_auth_type', _("Required Field"), 'required');
 
-    if ((isset($ret["contact_enable_notifications"]["contact_enable_notifications"])
+    if (
+        (isset($ret["contact_enable_notifications"]["contact_enable_notifications"])
         && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1)
         && ($isRemote === false)
     ) {
