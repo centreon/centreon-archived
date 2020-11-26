@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, isNil, identity, isEmpty } from 'ramda';
+import { equals, isNil, isEmpty, identity, min, max, not } from 'ramda';
 import {
   Line,
   Bar,
@@ -19,28 +19,34 @@ import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { useTranslation } from 'react-i18next';
 
-import { Button, ClickAwayListener } from '@material-ui/core';
+import { Typography, Button, ClickAwayListener } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
+
+import { useLocaleDateTimeFormat, dateTimeFormat } from '@centreon/ui';
 
 import { TimeValue, Line as LineModel } from '../models';
 import {
   getTime,
   getMin,
   getMax,
+  getLineForMetric,
   getDates,
   getUnits,
   getMetricValuesForUnit,
-  getMetricValuesForLines,
   getMetrics,
-  getLineForMetric,
+  getMetricValuesForLines,
+  getSortedStackedLines,
+  getStackedMetricValues,
+  hasUnitStackedLines,
 } from '../timeSeries';
+import formatMetricValue from '../formatMetricValue';
 import Axes from './Axes';
 import Lines from '../Lines';
 import Annotations from './Annotations';
-import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
+import DialogAddComment from './DialogAddComment';
 import MetricsTooltip from './MetricsTooltip';
 import { labelAddComment } from '../../../translatedLabels';
-import DialogAddComment from './DialogAddComment';
+import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -64,14 +70,18 @@ interface Props {
   timeline?: Array<TimelineEvent>;
 }
 
-const getScale = ({ values, height }): ScaleLinear<number, number> => {
-  const min = getMin(values);
-  const max = getMax(values);
+const getScale = ({
+  values,
+  height,
+  stackedValues,
+}): ScaleLinear<number, number> => {
+  const minValue = min(getMin(values), getMin(stackedValues));
+  const maxValue = max(getMax(values), getMax(stackedValues));
 
-  const upperRangeValue = min === max && max === 0 ? height : 0;
+  const upperRangeValue = minValue === maxValue && maxValue === 0 ? height : 0;
 
   return scaleLinear<number>({
-    domain: [getMin(values), getMax(values)],
+    domain: [minValue, maxValue],
     nice: true,
     range: [height, upperRangeValue],
   });
@@ -88,6 +98,7 @@ const Graph = ({
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const [addingComment, setAddingComment] = React.useState(false);
+  const { format } = useLocaleDateTimeFormat();
 
   const {
     tooltipData,
@@ -154,7 +165,19 @@ const Graph = ({
       ? getMetricValuesForUnit({ lines, timeSeries, unit: firstUnit })
       : getMetricValuesForLines({ lines, timeSeries });
 
-    return getScale({ height: graphHeight, values });
+    const firstUnitHasStackedLines =
+      isNil(thirdUnit) && not(isNil(firstUnit))
+        ? hasUnitStackedLines({ lines, unit: firstUnit })
+        : false;
+
+    const stackedValues = firstUnitHasStackedLines
+      ? getStackedMetricValues({
+          lines: getSortedStackedLines(lines),
+          timeSeries,
+        })
+      : [0];
+
+    return getScale({ height: graphHeight, values, stackedValues });
   }, [timeSeries, lines, firstUnit, graphHeight]);
 
   const rightScale = React.useMemo(() => {
@@ -164,7 +187,18 @@ const Graph = ({
       unit: secondUnit,
     });
 
-    return getScale({ height: graphHeight, values });
+    const secondUnitHasStackedLines = isNil(secondUnit)
+      ? false
+      : hasUnitStackedLines({ lines, unit: secondUnit });
+
+    const stackedValues = secondUnitHasStackedLines
+      ? getStackedMetricValues({
+          lines: getSortedStackedLines(lines),
+          timeSeries,
+        })
+      : [0];
+
+    return getScale({ height: graphHeight, values, stackedValues });
   }, [timeSeries, lines, secondUnit, graphHeight]);
 
   const displayTooltip = React.useCallback(

@@ -28,11 +28,9 @@ const useStyles = makeStyles({
 });
 
 interface DowntimeDetails {
-  author_name: string;
-  is_fixed: boolean;
-  start_time: string;
-  end_time: string;
   comment: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  id: number;
 }
 
 type Props = Pick<DetailsTableProps, 'endpoint'>;

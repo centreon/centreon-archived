@@ -14,6 +14,10 @@ import {
   propEq,
   uniq,
   find,
+  sortBy,
+  add,
+  isEmpty,
+  any,
 } from 'ramda';
 
 import { Metric, TimeValue, GraphData, Line } from '../models';
@@ -94,6 +98,9 @@ const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
   unit,
   display: true,
   highlight: undefined,
+  stackOrder: equals(ds_data.ds_stack, '1')
+    ? parseInt(ds_data.ds_order || '0', 10)
+    : null,
 });
 
 const getLineData = (graphData: GraphData): Array<Line> => {
@@ -182,6 +189,86 @@ const getMetricValuesForLines = ({ lines, timeSeries }): Array<number> => {
   )(lines);
 };
 
+const getStackedMetricValues = ({ lines, timeSeries }): Array<number> => {
+  const getTimeSeriesValuesForMetric = (metric): Array<number> => {
+    return map((timeValue) => getValueForMetric(timeValue)(metric), timeSeries);
+  };
+
+  const metricsValues = pipe(
+    map(prop('metric')) as (metric) => Array<string>,
+    map(getTimeSeriesValuesForMetric) as () => Array<Array<number>>,
+  )(lines as Array<Line>);
+
+  if (isEmpty(metricsValues) || isNil(metricsValues)) {
+    return [];
+  }
+
+  return metricsValues[0].map((value, index): number =>
+    reduce(
+      (acc: number, metricValue: Array<number>) => add(metricValue[index], acc),
+      0,
+      metricsValues,
+    ),
+  );
+};
+
+const getSortedStackedLines = (lines: Array<Line>): Array<Line> => {
+  return pipe(
+    reject(({ stackOrder }: Line): boolean => isNil(stackOrder)) as (
+      lines,
+    ) => Array<Line>,
+    sortBy(prop('stackOrder')),
+  )(lines);
+};
+
+const getInvertedStackedLines = (lines: Array<Line>): Array<Line> => {
+  return pipe(
+    reject(({ invert }: Line): boolean => isNil(invert)) as (
+      lines,
+    ) => Array<Line>,
+    getSortedStackedLines,
+  )(lines);
+};
+
+const getNotInvertedStackedLines = (lines: Array<Line>): Array<Line> => {
+  return pipe(
+    filter(({ invert }: Line): boolean => isNil(invert)) as (
+      lines,
+    ) => Array<Line>,
+    getSortedStackedLines,
+  )(lines);
+};
+
+const hasUnitStackedLines = ({ lines, unit }): boolean =>
+  pipe(getSortedStackedLines, any(propEq('unit', unit)))(lines);
+
+interface GetSpecificTimeSeries {
+  lines: Array<Line>;
+  timeSeries: Array<TimeValue>;
+}
+
+const getTimeSeriesForLines = ({
+  lines,
+  timeSeries,
+}: GetSpecificTimeSeries): Array<TimeValue> => {
+  const metrics = map(prop('metric'), lines);
+
+  return map(
+    ({ timeTick, ...metricsValue }): TimeValue => ({
+      ...reduce(
+        (acc, metric): Omit<TimeValue, 'timePick'> => ({
+          ...acc,
+          [metric]: metricsValue[metric],
+        }),
+        {},
+        metrics,
+      ),
+      timeTick,
+    }),
+    timeSeries,
+  );
+};
+
 export {
   getTimeSeries,
   getLineData,
@@ -196,4 +283,10 @@ export {
   getDates,
   getLineForMetric,
   getMetricValuesForLines,
+  getSortedStackedLines,
+  getTimeSeriesForLines,
+  getStackedMetricValues,
+  getInvertedStackedLines,
+  getNotInvertedStackedLines,
+  hasUnitStackedLines,
 };

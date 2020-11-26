@@ -117,10 +117,6 @@ Centreon\Domain\Monitoring\Resource:
             type: Centreon\Domain\Monitoring\ResourceSeverity
             groups:
                 - 'resource_main'
-        impactedResourcesCount:
-            type: int
-            groups:
-                - 'resource_main'
         chartUrl:
             type: string
             groups:

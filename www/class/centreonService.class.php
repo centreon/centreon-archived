@@ -492,17 +492,7 @@ class CentreonService
                 if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
                     $arr[$i]['macroInput_#index#'] = $matches[1];
                     $arr[$i]['macroValue_#index#'] = $row['svc_macro_value'];
-
-                    $valPassword = null;
-                    if (isset($row['is_password'])) {
-                        if ($row['is_password'] === '1') {
-                            $valPassword = '1';
-                        } else {
-                            $valPassword = null;
-                        }
-                    }
-                    $arr[$i]['macroPassword_#index#'] = $valPassword;
-
+                    $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : null;
                     $arr[$i]['macroDescription_#index#'] = $row['description'];
                     $arr[$i]['macroDescription'] = $row['description'];
                     if (!is_null($template)) {

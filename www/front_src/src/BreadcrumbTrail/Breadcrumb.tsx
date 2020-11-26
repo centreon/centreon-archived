@@ -17,7 +17,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  index: number;
   last: boolean;
   breadcrumb: BreadcrumbModel;
 }
