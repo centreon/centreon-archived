@@ -156,10 +156,12 @@ class CommentController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
+        $now = new \DateTime('now');
+
         foreach ($results['resources'] as $commentResource) {
-            $date = $commentResource['date'] ?? 'now';
+            $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
             $result = (new Comment($commentResource['id'], $commentResource['comment']))
-                ->setDate(new \DateTime($date))
+                ->setDate($date)
                 ->setParentResourceId($commentResource['parent']['id']);
             if ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
                 $this->commentService
