@@ -44,9 +44,10 @@ const AreaAnnotation = ({
     />
   );
 
-  const header = `${labelFrom} ${toDateTime(startDate)} ${labelTo} ${toDateTime(
-    endDate,
-  )}`;
+  const from = `${labelFrom} ${toDateTime(startDate)}`;
+  const to = endDate ? `${labelTo} ${toDateTime(endDate)}` : '';
+
+  const header = `${from}${to}`;
 
   return (
     <Annotation

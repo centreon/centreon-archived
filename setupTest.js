@@ -6,6 +6,9 @@ import dayjs from 'dayjs';
 import timezonePlugin from 'dayjs/plugin/timezone';
 import utcPlugin from 'dayjs/plugin/utc';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
+import ResizeObserver from 'resize-observer-polyfill';
+
+window.ResizeObserver = ResizeObserver;
 
 jest.setTimeout(10000);
 
