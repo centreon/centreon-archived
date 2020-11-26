@@ -171,6 +171,11 @@ function insertContactGroupInDB($ret = array())
     return $cg_id;
 }
 
+/**
+ * @param $ret
+ * @return int
+ * @throws Exception
+ */
 function insertContactGroup($ret)
 {
     global $form, $pearDB, $centreon;
@@ -179,19 +184,23 @@ function insertContactGroup($ret)
         $ret = $form->getSubmitValues();
     }
 
-    $ret["cg_name"] = $centreon->checkIllegalChar($ret["cg_name"]);
+    $cgName = $centreon->checkIllegalChar(filter_var($ret["cg_name"], FILTER_SANITIZE_STRING));
+    $cgAlias = filter_var($ret["cg_alias"], FILTER_SANITIZE_STRING);
+    $cgComment = filter_var($ret["cg_comment"], FILTER_SANITIZE_STRING);
+    $cgActivate = $ret["cg_activate"]["cg_activate"] === '0' ? '0' : '1'; //enum
 
-    $rq = "INSERT INTO `contactgroup` (`cg_name`, `cg_alias`, `cg_comment`, `cg_activate`) ";
-    $rq .= "VALUES ('" . CentreonDB::escape($ret["cg_name"]) . "', '" . CentreonDB::escape($ret["cg_alias"]) . "', '" . CentreonDB::escape($ret["cg_comment"]) . "', '" . $ret["cg_activate"]["cg_activate"] . "')";
-    $DBRESULT = $pearDB->query($rq);
+    $stmt = $pearDB->prepare(
+        "INSERT INTO `contactgroup` (`cg_name`, `cg_alias`, `cg_comment`, `cg_activate`) VALUES (?, ?, ?, ?)"
+    );
+    $pearDB->execute($stmt, array($cgName, $cgAlias, $cgComment, $cgActivate));
 
-    $DBRESULT = $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
-    $cg_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
+    $cgId = $dbResult->fetchRow();
     
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id["MAX(cg_id)"], CentreonDB::escape($ret["cg_name"]), "a", $fields);
-    return ($cg_id["MAX(cg_id)"]);
+    $centreon->CentreonLogAction->insertLog("contactgroup", $cgId["MAX(cg_id)"], $cgName, "a", $fields);
+    return (int)$cgId["MAX(cg_id)"];
 }
 
 function updateContactGroupInDB($cg_id = null, $params = array())
@@ -205,10 +214,10 @@ function updateContactGroupInDB($cg_id = null, $params = array())
     updateContactGroupAclGroups($cg_id, $params);
 }
 
-function updateContactGroup($cg_id = null, $params = array())
+function updateContactGroup($cgId = null, $params = array())
 {
     global $form, $pearDB, $centreon;
-    if (!$cg_id) {
+    if (!$cgId) {
         return;
     }
     $ret = array();
@@ -218,19 +227,20 @@ function updateContactGroup($cg_id = null, $params = array())
         $ret = $form->getSubmitValues();
     }
 
-    $ret["cg_name"] = $centreon->checkIllegalChar($ret["cg_name"]);
+    $cgName = $centreon->checkIllegalChar(filter_var($ret["cg_name"], FILTER_SANITIZE_STRING));
+    $cgAlias = filter_var($ret["cg_alias"], FILTER_SANITIZE_STRING);
+    $cgComment = filter_var($ret["cg_comment"], FILTER_SANITIZE_STRING);
+    $cgActivate = $ret["cg_activate"]["cg_activate"] === '0' ? '0' : '1'; //enum
 
-    $rq = "UPDATE `contactgroup` ";
-    $rq .= "SET `cg_name` = '" . CentreonDB::escape($ret["cg_name"]) . "', " .
-            "`cg_alias` = '" . CentreonDB::escape($ret["cg_alias"]) . "', " .
-            "`cg_comment` = '" . CentreonDB::escape($ret["cg_comment"]) . "', " .
-            "`cg_activate` = '" . $ret["cg_activate"]["cg_activate"] . "' " .
-            "WHERE `cg_id` = '" . intval($cg_id) . "'";
-    $DBRESULT = $pearDB->query($rq);
-    
+    $stmt = $pearDB->prepare(
+        "UPDATE `contactgroup` SET `cg_name` = ?, `cg_alias` = ?, `cg_comment` = ?, `cg_activate` = ?
+        WHERE `cg_id` = " . (int)$cgId
+    );
+    $pearDB->execute($stmt, array($cgName, $cgAlias, $cgComment, $cgActivate));
+
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("contactgroup", $cg_id, CentreonDB::escape($ret["cg_name"]), "c", $fields);
+    $centreon->CentreonLogAction->insertLog("contactgroup", $cgId, $cgName, "c", $fields);
 }
 
 function updateContactGroupContacts($cg_id, $ret = array())
