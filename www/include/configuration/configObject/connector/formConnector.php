@@ -177,7 +177,7 @@ try {
         $connectorValues['command_id'] = isset($tab['command_id']) ? $tab['command_id'] : null;
         $connectorValues['command_line'] = $tab['command_line'];
         $connectorId = (int)$tab['connector_id'];
-    
+
         if (!empty($connectorValues['name'])) {
             if ($form->getSubmitValue("submitA")) {
                 $connectorId = $cntObj->create($connectorValues, true);
