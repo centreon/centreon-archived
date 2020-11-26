@@ -114,6 +114,7 @@ if (($o === MODIFY_CONTACT || $o === WATCH_CONTACT) && $contactId) {
     foreach ($tmp as $key => $value) {
         $cct["contact_svNotifOpts"][trim($value)] = 1;
     }
+    $dbResult->closeCursor();
 
     /**
      * Get LDAP auth information
