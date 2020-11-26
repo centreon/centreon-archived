@@ -1108,12 +1108,12 @@ class CentreonLdapAdmin
      * @param  array $options The list of options
      * @return int | auth ressource id
      */
-    public function setGeneralOptions($arId, $options)
+    public function setGeneralOptions($arId = 0, array $options)
     {
-        $isUpdate = !empty($arId);
+        $isUpdate = ((int) $arId !== 0);
 
         $gopt = $this->getGeneralOptions($arId);
-        if (isset($gopt["bind_pass"]) && $gopt["bind_pass"] === CentreonAuth::PWS_OCCULTATION && !$isUpdate) {
+        if (isset($gopt["bind_pass"]) && $gopt["bind_pass"] === CentreonAuth::PWS_OCCULTATION && $isUpdate === false) {
             unset($gopt["bind_pass"]);
         }
         if (!count($gopt)
