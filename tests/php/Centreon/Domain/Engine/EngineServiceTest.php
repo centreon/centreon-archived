@@ -138,26 +138,26 @@ class EngineServiceTest extends TestCase
     /**
     * Testing the addServiceComment EngineService function in a nominal case.
     */
-   public function testServiceComment()
-   {
-       $this->entityValidator->expects($this->once())
+    public function testServiceComment()
+    {
+        $this->entityValidator->expects($this->once())
            ->method('validate')
            ->willReturn(new ConstraintViolationList());
 
-       /**
-        * Creating the command to check that the code
-        * will send the same to the sendExternalCommand
-        * repository function
-        */
-       $command = sprintf(
+        /**
+         * Creating the command to check that the code
+         * will send the same to the sendExternalCommand
+         * repository function
+         */
+        $command = sprintf(
             'ADD_SVC_COMMENT;%s;%s;1;%s;%s',
             $this->host->getName(),
             $this->service->getDescription(),
             $this->adminContact->getAlias(),
             $this->serviceComment->getComment()
-       );
+        );
 
-       $this->engineRepository->expects($this->once())
+        $this->engineRepository->expects($this->once())
            ->method('sendExternalCommand')
            ->with(
                $this->matchesRegularExpression(
@@ -165,15 +165,15 @@ class EngineServiceTest extends TestCase
                )
            );
 
-       $engineService = new EngineService(
-           $this->engineRepository,
-           $this->engineConfigurationService,
-           $this->entityValidator
-       );
+        $engineService = new EngineService(
+            $this->engineRepository,
+            $this->engineConfigurationService,
+            $this->entityValidator
+        );
 
-       $engineService->filterByContact($this->adminContact);
-       $this->assertNull($engineService->addServiceComment($this->serviceComment, $this->service));
-   }
+        $engineService->filterByContact($this->adminContact);
+        $this->assertNull($engineService->addServiceComment($this->serviceComment, $this->service));
+    }
 
     /**
      * Testing the submitHostResult EngineService function in a nominal case.
