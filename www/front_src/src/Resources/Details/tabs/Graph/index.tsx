@@ -67,9 +67,10 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     details,
   );
 
-  const [selectedTimePeriod, setSelectedTimePeriod] = React.useState<
-    TimePeriod
-  >(defaultTimePeriod);
+  const [
+    selectedTimePeriod,
+    setSelectedTimePeriod,
+  ] = React.useState<TimePeriod>(defaultTimePeriod);
 
   const getQueryParams = (timePeriod): string => {
     const now = new Date(Date.now()).toISOString();

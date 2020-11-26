@@ -156,16 +156,6 @@ class Resource
     private $severity;
 
     /**
-     * @var int
-     */
-    private $impactedResourcesCount = 0;
-
-    /**
-     * @var string|null
-     */
-    private $actionUrl;
-
-    /**
      * @var string|null
      */
     private $chartUrl;
@@ -652,25 +642,6 @@ class Resource
     public function setSeverity(?ResourceSeverity $severity): self
     {
         $this->severity = $severity;
-
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getImpactedResourcesCount(): ?int
-    {
-        return $this->impactedResourcesCount;
-    }
-
-    /**
-     * @param int|null $impactedResourcesCount
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setImpactedResourcesCount(?int $impactedResourcesCount): self
-    {
-        $this->impactedResourcesCount = $impactedResourcesCount ?: 0;
 
         return $this;
     }

@@ -42,7 +42,8 @@ class Broker extends AbstractObject
         command_file,
         cache_directory,
         stats_activate,
-        daemon
+        daemon,
+        pool_size
     ';
     protected $attributesWrite = [
         'config_id',
@@ -56,7 +57,8 @@ class Broker extends AbstractObject
         'command_file',
         'cache_directory',
         'stats_activate',
-        'daemon'
+        'daemon',
+        'pool_size',
     ];
     protected $stmtBroker = null;
 

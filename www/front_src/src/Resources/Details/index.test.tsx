@@ -58,6 +58,8 @@ import {
   labelDetails,
   labelCopyLink,
   labelServices,
+  labelFqdn,
+  labelAlias,
 } from '../translatedLabels';
 import {
   graphTabId,
@@ -99,6 +101,8 @@ const retrievedDetails = {
       },
     },
   },
+  fqdn: 'central.centreon.com',
+  alias: 'Central-Centreon',
   poller_name: 'Poller',
   acknowledged: false,
   checked: true,
@@ -338,6 +342,10 @@ describe(Details, () => {
     expect(getByText('CRITICAL')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
 
+    expect(getByText(labelFqdn)).toBeInTheDocument();
+    expect(getByText('central.centreon.com')).toBeInTheDocument();
+    expect(getByText(labelAlias)).toBeInTheDocument();
+    expect(getByText('Central-Centreon')).toBeInTheDocument();
     expect(getByText(labelStatusInformation)).toBeInTheDocument();
     expect(getByText('OK - 127.0.0.1 rta 0.100ms lost 0%')).toBeInTheDocument();
     expect(getByText('OK - 127.0.0.1 rta 0.99ms lost 0%')).toBeInTheDocument();
@@ -424,7 +432,11 @@ describe(Details, () => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: performanceGraphData })
-        .mockResolvedValueOnce({ data: performanceGraphData });
+        .mockResolvedValueOnce({
+          data: retrievedTimeline,
+        })
+        .mockResolvedValueOnce({ data: performanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedTimeline });
 
       const { getByText, getAllByText } = renderDetails({
         openTabId: graphTabId,

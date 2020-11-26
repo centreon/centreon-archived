@@ -1,3 +1,5 @@
+import { Status } from '../../../models';
+
 export interface WithName {
   name: string;
 }

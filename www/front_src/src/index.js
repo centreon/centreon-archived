@@ -28,6 +28,9 @@ import AppProvider from './Provider';
   window.ReactI18Next = await import(
     /* webpackChunkName: "external" */ 'react-i18next'
   );
+  window.CentreonUiContext = await import(
+    /* webpackChunkName: "external" */ '@centreon/ui-context'
+  );
 
   window.ReactDOM.render(<AppProvider />, document.getElementById('root'));
 })();
