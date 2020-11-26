@@ -27,10 +27,10 @@ namespace Centreon\Domain\HostConfiguration\Exception;
  *
  * @package Centreon\Domain\HostConfiguration\Exception
  */
-class HostTemplateException extends \Exception
+class HostTemplateArgumentException extends \InvalidArgumentException
 {
-    public static function searchHostTemplatesException(\Exception $ex): self
+    public static function badNotificationOptions(int $options): self
     {
-        return new self(_('Error when searching for host templates'), 0, $ex);
+        return new self(sprintf(_('Invalid notification option (%d)'), $options));
     }
 }

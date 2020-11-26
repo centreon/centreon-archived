@@ -77,7 +77,7 @@ class HostTemplateFactoryRdb
             ->setUrlNotes($data['ehi_notes_url'])
             ->setActionUrl($data['ehi_action_url'])
             ->setActiveChecksStatus((int) $data['host_active_checks_enabled'])
-            ->setPassiveChecksStatus((int) $data['host_active_checks_enabled'])
+            ->setPassiveChecksStatus((int) $data['host_passive_checks_enabled'])
             ->setFirstNotificationDelay(self::getIntOrNUll($data['host_first_notification_delay']))
             ->setRecoveryNotificationDelay(self::getIntOrNUll($data['host_recovery_notification_delay']))
             ->setMaxCheckAttempts(self::getIntOrNUll($data['host_max_check_attempts']))

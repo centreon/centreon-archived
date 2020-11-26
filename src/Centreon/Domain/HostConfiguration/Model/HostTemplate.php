@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Model;
 
+use Centreon\Domain\HostConfiguration\Exception\HostTemplateArgumentException;
 use Centreon\Domain\Media\Model\Image;
 
 /**
@@ -620,9 +621,7 @@ class HostTemplate
             $notificationOptions < 0
             || ($notificationOptions & $sumOfAllOptions) !== $notificationOptions
         ) {
-            throw new \InvalidArgumentException(
-                sprintf(_('Invalid notification option (%d)'), $notificationOptions)
-            );
+            throw HostTemplateArgumentException::badNotificationOptions($notificationOptions);
         }
         $this->notificationOptions = $notificationOptions;
         return $this;

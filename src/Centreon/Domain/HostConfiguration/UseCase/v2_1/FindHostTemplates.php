@@ -56,7 +56,7 @@ class FindHostTemplates
         try {
             $hostTemplates = $this->configurationReadRepository->findHostTemplates();
         } catch (\Exception $ex) {
-            throw HostTemplateException::searchHostTemplatesException();
+            throw HostTemplateException::searchHostTemplatesException($ex);
         }
         $response = new FindHostTemplatesResponse();
         $response->setHostTemplates($hostTemplates);

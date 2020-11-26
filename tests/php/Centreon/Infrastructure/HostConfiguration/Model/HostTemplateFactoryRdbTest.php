@@ -58,7 +58,7 @@ class HostTemplateFactoryRdbTest extends TestCase
             'host_check_interval' => 2,
             'host_retry_check_interval' => 1,
             'host_active_checks_enabled' => 2,
-            'host_passive_checks_enabled' => 2,
+            'host_passive_checks_enabled' => 1,
             'host_notification_interval' => 1,
             'host_recovery_notification_delay' => 1,
             'host_notification_options' => 'd,u,r,f,s',
@@ -100,7 +100,7 @@ class HostTemplateFactoryRdbTest extends TestCase
         );
         $this->assertEquals(
             $this->rdbData['host_passive_checks_enabled'],
-            $hostTemplate->getPassiveChecksStatus() === HostTemplate::STATUS_DEFAULT
+            $hostTemplate->getPassiveChecksStatus() === HostTemplate::STATUS_ENABLE
         );
         $this->assertEquals($this->rdbData['host_notification_interval'], $hostTemplate->getNotificationInterval());
         $this->assertEquals(

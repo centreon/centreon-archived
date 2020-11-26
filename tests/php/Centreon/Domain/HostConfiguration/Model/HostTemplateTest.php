@@ -22,9 +22,10 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\HostConfiguration\Model;
 
-use Centreon\Domain\HostConfiguration\Model\HostTemplate;
-use Centreon\Domain\Media\Model\Image;
 use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Media\Model\Image;
+use Centreon\Domain\HostConfiguration\Model\HostTemplate;
+use Centreon\Domain\HostConfiguration\Exception\HostTemplateArgumentException;
 
 /**
  * This class is designed to test certain methods of the HostTemplate entity, especially those with exceptions.
@@ -36,8 +37,8 @@ class HostTemplateTest extends TestCase
     public function testBadNotificationOptionException(): void
     {
         $optionsValueToTest = 32;
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Invalid notification option (%d)', $optionsValueToTest));
+        $this->expectException(HostTemplateArgumentException::class);
+        $this->expectExceptionMessage(HostTemplateArgumentException::badNotificationOptions($optionsValueToTest)->getMessage());
         $hostTemplate = new HostTemplate();
         $hostTemplate->setNotificationOptions($optionsValueToTest);
     }
