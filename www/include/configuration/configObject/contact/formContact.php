@@ -183,7 +183,8 @@ $dbResult = $pearDB->query(
     "SELECT contact_id, contact_name
     FROM contact
     WHERE contact_register = '0' " . $strRestriction .
-    " ORDER BY contact_name");
+    " ORDER BY contact_name"
+);
 while ($contacts = $dbResult->fetchRow()) {
     $contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
 }
