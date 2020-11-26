@@ -201,9 +201,24 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
+    public function findMultipleHosts(array $hostIds): array
+    {
+        return $this->monitoringRepository->findMultipleHosts($hostIds);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findOneService(int $hostId, int $serviceId): ?Service
     {
         return $this->monitoringRepository->findOneService($hostId, $serviceId);
+    }
+    /**
+     * @inheritDoc
+     */
+    public function findMultipleServices(array $serviceIds): array
+    {
+        return $this->monitoringRepository->findMultipleServices($serviceIds);
     }
 
     /**

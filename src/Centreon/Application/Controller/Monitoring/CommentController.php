@@ -34,6 +34,7 @@ use Centreon\Domain\Monitoring\Comment\Comment;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Comment\Interfaces\CommentServiceInterface;
 
 class CommentController extends AbstractController
@@ -45,9 +46,12 @@ class CommentController extends AbstractController
      */
     private $commentService;
 
-    public function __construct(CommentServiceInterface $commentService)
-    {
+    public function __construct(
+        CommentServiceInterface $commentService,
+        MonitoringServiceInterface $monitoringService
+    ) {
         $this->commentService = $commentService;
+        $this->monitoringService = $monitoringService;
     }
 
     /**
@@ -156,26 +160,53 @@ class CommentController extends AbstractController
         );
 
         /**
-         * If user has no rights to submit result for host and/or service
+         * If user has no rights to add a comment for host and/or service
          * return view with unauthorized HTTP header response
          */
         if (!$this->hasCommentRightsForResources($contact, $results['resources'])) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
+        /**
+         * Dissect the results to extract the hostids and serviceids from it
+         */
+        $hostIds = [];
+        $serviceIds = [];
+        $comments = [];
+
         $now = new \DateTime('now');
 
-        foreach ($results['resources'] as $commentResource) {
+        foreach ($results['resources'] as $index => $commentResource) {
             $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
-            $result = (new Comment($commentResource['id'], $commentResource['comment']))
+            $comments[$index] = (new Comment($commentResource['id'], $commentResource['comment']))
                 ->setDate($date)
                 ->setParentResourceId($commentResource['parent']['id']);
-            if ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
-                $this->commentService
-                    ->addServiceComment($result);
-            } elseif ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
-                $this->commentService
-                    ->addHostComment($result);
+
+            if ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
+                $hostIds[$index] = $commentResource['id'];
+            } elseif ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
+                $serviceIds[$index] = [
+                    'host_id' => $commentResource['parent']['id'],
+                    'service_id' => $commentResource['id']
+                ];
+            }
+        }
+
+        /**
+         * Retrieving all services and hosts
+         */
+        $hosts = $this->monitoringService->findMultipleHosts($hostIds);
+        $services = $this->monitoringService->findMultipleServices($serviceIds);
+
+        if (!empty($hosts)) {
+            foreach ($hosts as $key => $host) {
+                $this->commentService->addHostComment($comments[$key], $host);
+            }
+        }
+
+        if (!empty($services)) {
+            foreach ($services as $key => $service) {
+                $this->commentService->addServiceComment($comments[$key], $service);
             }
         }
 

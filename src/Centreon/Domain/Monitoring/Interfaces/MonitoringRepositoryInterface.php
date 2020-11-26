@@ -85,6 +85,14 @@ interface MonitoringRepositoryInterface
     public function findOneHost(int $hostId): ?Host;
 
     /**
+     * Find all hosts from an array of hostIds
+     *
+     * @param array $hostIds
+     * @return Host[]
+     */
+    public function findMultipleHosts(array $hostIds): ?array;
+
+    /**
      * Find one service based on its id and according to ACL.
      *
      * @param int $hostId Host id of the service
@@ -93,6 +101,14 @@ interface MonitoringRepositoryInterface
      * @throws \Exception
      */
     public function findOneService(int $hostId, int $serviceId): ?Service;
+
+    /**
+     * Find all services from an array of serviceIds
+     *
+     * @param array $serviceIds
+     * @return Services[]
+     */
+    public function findMultipleServices(array $serviceIds): array;
 
     /**
      * Find all services grouped by service groups

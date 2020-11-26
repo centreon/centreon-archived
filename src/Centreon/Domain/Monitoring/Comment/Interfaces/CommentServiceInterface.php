@@ -32,16 +32,17 @@ interface CommentServiceInterface extends ContactFilterInterface
     /**
      * Function allowing contact to add a comment to a service
      *
-     * @param  Comment $comment
-     * @return void
+     * @param  Comment $comment Comment to add to the service
+     * @param Service $service Service that will receive the comment
      */
-    public function addServiceComment(Comment $comment): void;
+    public function addServiceComment(Comment $comment, Service $service): void;
 
     /**
      * Function allowing contact to add a comment to a host
      *
-     * @param  Comment $comment
+     * @param  Comment $comment Comment to add to the host
+     * @param Host $host Host that will receive the comment
      * @return void
      */
-    public function addHostComment(Comment $comment): void;
+    public function addHostComment(Comment $comment, Host $host): void;
 }
