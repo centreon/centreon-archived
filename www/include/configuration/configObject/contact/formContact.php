@@ -131,7 +131,8 @@ if (($o === MODIFY_CONTACT || $o === WATCH_CONTACT) && $contactId) {
     $dbResult = $pearDB->query(
         "SELECT acl_group_id
         FROM `acl_group_contacts_relations`
-        WHERE `contact_contact_id` = '" . (int) $contactId . "'");
+        WHERE `contact_contact_id` = '" . (int) $contactId . "'"
+    );
     for ($i = 0; $data = $dbResult->fetchRow(); $i++) {
         if (!$centreon->user->admin && !isset($allowedAclGroups[$data['acl_group_id']])) {
             $initialValues['contact_acl_groups'] = $data['acl_group_id'];
