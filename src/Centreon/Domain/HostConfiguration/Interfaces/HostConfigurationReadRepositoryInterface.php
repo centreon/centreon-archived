@@ -58,7 +58,14 @@ interface HostConfigurationReadRepositoryInterface
      * @return HostTemplate[]
      */
     public function findHostTemplates(): array;
-
+    
+    /**
+     * Find all host groups.
+     *
+     * @return HostGroup[]
+     */
+    public function findHostGroups(): array;
+    
     /**
      * Indicates if a hostname is already in use.
      *
