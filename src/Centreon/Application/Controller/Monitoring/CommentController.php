@@ -161,16 +161,12 @@ class CommentController extends AbstractController
             $result = (new Comment($commentResource['id'], $commentResource['comment']))
                 ->setDate(new \DateTime($date))
                 ->setParentResourceId($commentResource['parent']['id']);
-            try {
-                if ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
-                    $this->commentService
-                        ->addServiceComment($result);
-                } elseif ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
-                    $this->commentService
-                        ->addHostComment($result);
-                }
-            } catch (EntityNotFoundException $e) {
-                throw $e;
+            if ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
+                $this->commentService
+                    ->addServiceComment($result);
+            } elseif ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
+                $this->commentService
+                    ->addHostComment($result);
             }
         }
 
