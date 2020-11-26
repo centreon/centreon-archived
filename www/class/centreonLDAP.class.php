@@ -1153,7 +1153,7 @@ class CentreonLdapAdmin
             );
         }
         $knownParameters = $this->getLdapParameters();
-        if (isset($options["bind_pass"]) && $options["bind_pass"] === CentreonAuth::PWS_OCCULTATION && $isUpdate) {
+        if (isset($options["bind_pass"]) && $options["bind_pass"] === CentreonAuth::PWS_OCCULTATION && $isUpdate === true) {
             unset($options["bind_pass"]);
         }
         foreach ($options as $key => $value) {
