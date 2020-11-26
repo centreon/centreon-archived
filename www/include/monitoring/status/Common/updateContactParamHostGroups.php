@@ -39,7 +39,7 @@ if (!isset($_GET['uid']) || !isset($_GET['hostgroups'])) {
 }
 
 // sanitize parameter
-$hostGroup = filter_var($_GET['hostgroups'], FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$hostGroup = filter_var($_GET['hostgroups'], FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
 
 require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";

@@ -39,7 +39,7 @@ if (!isset($_GET['uid']) || !isset($_GET['instance_id'])) {
 }
 
 // sanitize parameter
-$instanceId = filter_var($_GET['instance_id'], FILTER_VALIDATE_INT, ['options' => ['default' => -1]]);
+$instanceId = filter_var($_GET['instance_id'], FILTER_VALIDATE_INT, array('options' => array('default' => -1)));
 
 require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
