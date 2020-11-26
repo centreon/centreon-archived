@@ -177,13 +177,15 @@ try {
         $connectorValues['command_id'] = isset($tab['command_id']) ? $tab['command_id'] : null;
         $connectorValues['command_line'] = $tab['command_line'];
         $connectorId = (int)$tab['connector_id'];
-
-        if ($form->getSubmitValue("submitA")) {
-            $connectorId = $cntObj->create($connectorValues, true);
-        } elseif ($form->getSubmitValue("submitC")) {
-            $cntObj->update((int)$connectorId, $connectorValues);
+    
+        if (!empty($connectorValues['name'])) {
+            if ($form->getSubmitValue("submitA")) {
+                $connectorId = $cntObj->create($connectorValues, true);
+            } elseif ($form->getSubmitValue("submitC")) {
+                $cntObj->update((int)$connectorId, $connectorValues);
+            }
+            $valid = true;
         }
-        $valid = true;
     }
 
     if ($valid) {
