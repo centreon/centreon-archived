@@ -68,13 +68,13 @@ class CommentController extends AbstractController
      *
      * @param Request $request
      * @param string $jsonValidatorFile
-     * @return array $results
+     * @return array $receivedData
      * @throws InvalidArgumentException
      */
     private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
     {
-        $results = json_decode((string) $request->getContent(), true);
-        if (!is_array($results)) {
+        $receivedData = json_decode((string) $request->getContent(), true);
+        if (!is_array($receivedData)) {
             throw new \InvalidArgumentException(_('Error when decoding sent data'));
         }
 
@@ -98,7 +98,7 @@ class CommentController extends AbstractController
             throw new \InvalidArgumentException($message);
         }
 
-        return $results;
+        return $receivedData;
     }
 
     /**
@@ -161,7 +161,7 @@ class CommentController extends AbstractController
        /*
         * Validate the content of the POST request against the JSON schema validator
         */
-        $results = $this->validateAndRetrievePostData(
+        $receivedData = $this->validateAndRetrievePostData(
             $request,
             'config/json_validator/latest/Centreon/Comment/CommentResources.json'
         );
@@ -170,7 +170,7 @@ class CommentController extends AbstractController
          * If user has no rights to add a comment for host and/or service
          * return view with unauthorized HTTP header response
          */
-        if (!$this->hasCommentRightsForResources($contact, $results['resources'])) {
+        if (!$this->hasCommentRightsForResources($contact, $receivedData['resources'])) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
@@ -183,7 +183,7 @@ class CommentController extends AbstractController
 
         $now = new \DateTime();
 
-        foreach ($results['resources'] as $index => $commentResource) {
+        foreach ($receivedData['resources'] as $index => $commentResource) {
             $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
             $comments[$index] = (new Comment($commentResource['id'], $commentResource['comment']))
                 ->setDate($date)
@@ -242,12 +242,12 @@ class CommentController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $results = $this->validateAndRetrievePostData(
+        $receivedData = $this->validateAndRetrievePostData(
             $request,
             'config/json_validator/latest/Centreon/Comment/Comment.json'
         );
 
-        if (!empty($results)) {
+        if (!empty($receivedData)) {
             /**
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
@@ -264,8 +264,8 @@ class CommentController extends AbstractController
                     )
                 );
             }
-            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime();
-            $result = (new Comment($hostId, $results['comment']))
+            $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
+            $result = (new Comment($hostId, $receivedData['comment']))
                 ->setDate($date);
 
             try {
@@ -305,12 +305,12 @@ class CommentController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $results = $this->validateAndRetrievePostData(
+        $receivedData = $this->validateAndRetrievePostData(
             $request,
             'config/json_validator/latest/Centreon/Comment/Comment.json'
         );
 
-        if (!empty($results)) {
+        if (!empty($receivedData)) {
             /**
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
@@ -342,9 +342,9 @@ class CommentController extends AbstractController
             }
             $service->setHost($host);
 
-            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime();
+            $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
 
-            $result = (new Comment($serviceId, $results['comment']))
+            $result = (new Comment($serviceId, $receivedData['comment']))
                 ->setDate($date)
                 ->setParentResourceId($hostId);
 
