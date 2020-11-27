@@ -249,9 +249,18 @@ class CommentController extends AbstractController
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $date = $commentResource['date'] ?? 'now';
+            $host = $this->monitoringService->findOneHost($hostId);
+            if (is_null($host)) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _('Host %d not found'),
+                        $hostId
+                    )
+                );
+            }
+            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime('now');
             $result = (new Comment($hostId, $results['comment']))
-                ->setDate(new \DateTime($date));
+                ->setDate($date);
 
             try {
                 $this->commentService
@@ -300,17 +309,36 @@ class CommentController extends AbstractController
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $date = $commentResource['date'] ?? 'now';
-            $result = (new Comment($serviceId, $results['comment']))
-                ->setDate(new \DateTime($date))
-                ->setParentResourceId($hostId);
-            try {
-                $this->commentService
-                    ->filterByContact($contact)
-                    ->addServiceComment($result);
-            } catch (EntityNotFoundException $e) {
-                    throw $e;
+            $host = $this->monitoringService->findOneHost($hostId);
+            if (is_null($host)) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _('Host %d not found'),
+                        $hostId
+                    )
+                );
             }
+
+            $service = $this->monitoringService->findOneService($hostId, $serviceId);
+            if (is_null($service)) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _('Service %d not found'),
+                        $serviceId
+                    )
+                );
+            }
+            $service->setHost($host);
+
+            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime('now');
+
+            $result = (new Comment($serviceId, $results['comment']))
+                ->setDate($date)
+                ->setParentResourceId($hostId);
+
+            $this->commentService
+                ->filterByContact($contact)
+                ->addServiceComment($result, $service);
         }
 
         return $this->view(null, Response::HTTP_NO_CONTENT);
