@@ -335,7 +335,7 @@ class CommentController extends AbstractController
             }
             $service->setHost($host);
 
-            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime('now');
+            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime();
 
             $result = (new Comment($serviceId, $results['comment']))
                 ->setDate($date)
