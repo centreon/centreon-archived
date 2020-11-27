@@ -104,7 +104,7 @@ describe(PerformanceGraph, () => {
     mockedAxios.get.mockReset();
   });
 
-  it('displays comment annotations', async () => {
+  it('displays event annotations', async () => {
     const endpoint = 'endpoint';
     const graphHeight = 200;
     const timelineEndpoint = 'timeline';
