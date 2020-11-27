@@ -252,7 +252,10 @@ class CommentController extends AbstractController
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $host = $this->monitoringService->findOneHost($hostId);
+            $host = $this->monitoringService
+                ->filterByContact($contact)
+                ->findOneHost($hostId);
+
             if (is_null($host)) {
                 throw new EntityNotFoundException(
                     sprintf(
@@ -312,7 +315,10 @@ class CommentController extends AbstractController
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $host = $this->monitoringService->findOneHost($hostId);
+            $host = $this->monitoringService
+                ->filterByContact($contact)
+                ->findOneHost($hostId);
+
             if (is_null($host)) {
                 throw new EntityNotFoundException(
                     sprintf(
@@ -322,7 +328,10 @@ class CommentController extends AbstractController
                 );
             }
 
-            $service = $this->monitoringService->findOneService($hostId, $serviceId);
+            $service = $this->monitoringService
+                ->filterByContact($contact)
+                ->findOneService($hostId, $serviceId);
+
             if (is_null($service)) {
                 throw new EntityNotFoundException(
                     sprintf(
