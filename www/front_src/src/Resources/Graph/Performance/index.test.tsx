@@ -9,6 +9,7 @@ import {
   labelAcknowledgement,
   labelDowntime,
 } from '../../translatedLabels';
+import { Resource } from '../../models';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -114,6 +115,7 @@ describe(PerformanceGraph, () => {
         endpoint={endpoint}
         graphHeight={graphHeight}
         timelineEndpoint={timelineEndpoint}
+        resource={{} as Resource}
       />,
     );
 
