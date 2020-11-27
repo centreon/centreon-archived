@@ -6,7 +6,7 @@ import { useTheme } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
-import { labelBy } from '../../../../../translatedLabels';
+import { labelBy, labelAcknowledgement } from '../../../../../translatedLabels';
 import truncate from '../../../../../truncate';
 import { Props } from '..';
 import EventAnnotations from '.';
@@ -25,6 +25,7 @@ const AcknowledgementAnnotations = (props: Props): JSX.Element => {
 
   const icon = (
     <IconAcknowledge
+      aria-label={t(labelAcknowledgement)}
       height={iconSize}
       width={iconSize}
       style={{
