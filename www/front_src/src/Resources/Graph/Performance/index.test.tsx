@@ -4,7 +4,11 @@ import axios from 'axios';
 import { render, screen } from '@testing-library/react';
 
 import PerformanceGraph from '.';
-import { labelComment } from '../../translatedLabels';
+import {
+  labelComment,
+  labelAcknowledgement,
+  labelDowntime,
+} from '../../translatedLabels';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -12,7 +16,7 @@ const graphData = {
   global: {},
   metrics: [
     {
-      data: [0, 1],
+      data: [0, 1, 2, 0.5],
       ds_data: {
         ds_color_line: '#fff',
         ds_filled: false,
@@ -24,7 +28,7 @@ const graphData = {
       legend: 'Round-Trip-Time Average (ms)',
     },
     {
-      data: [0.5, 3],
+      data: [0.5, 3, 1, 3],
       ds_data: {
         ds_color_line: '#000',
         ds_filled: true,
@@ -36,7 +40,12 @@ const graphData = {
       legend: 'Time (ms)',
     },
   ],
-  times: ['2020-11-05T10:35:00Z', '2020-11-05T10:40:00Z'],
+  times: [
+    '2020-11-05T10:35:00Z',
+    '2020-11-05T10:40:00Z',
+    '2020-11-05T10:45:00Z',
+    '2020-11-05T10:50:00Z',
+  ],
 };
 
 const timeline = {
@@ -45,15 +54,36 @@ const timeline = {
       type: 'comment',
       id: 5,
       date: '2020-11-05T10:35:00Z',
-      author_name: 'admin',
+      contact: {
+        name: 'admin',
+      },
       content: 'Plop',
     },
     {
       type: 'comment',
-      id: 5,
+      id: 6,
       date: '2020-11-05T10:40:00Z',
-      author_name: 'admin',
+      contact: {
+        name: 'admin',
+      },
       content: 'Plop',
+    },
+    {
+      type: 'acknowledgement',
+      id: 7,
+      date: '2020-11-05T10:45:00Z',
+      content: 'Acknowledged',
+      contact: {
+        name: 'admin',
+      },
+    },
+    {
+      type: 'downtime',
+      id: 8,
+      date: '2020-11-05T10:45:00Z',
+      content: 'Downtime',
+      start_date: '2020-11-05T10:35:00Z',
+      end_date: '2020-11-05T10:50:00Z',
     },
   ],
   meta: {
@@ -87,8 +117,18 @@ describe(PerformanceGraph, () => {
       />,
     );
 
-    const annotations = await screen.findAllByLabelText(labelComment);
+    const commentAnnotations = await screen.findAllByLabelText(labelComment);
 
-    expect(annotations).toHaveLength(2);
+    expect(commentAnnotations).toHaveLength(2);
+
+    const acknowledgementAnnotations = await screen.findAllByLabelText(
+      labelAcknowledgement,
+    );
+
+    expect(acknowledgementAnnotations).toHaveLength(1);
+
+    const downtimeAnnotations = await screen.findAllByLabelText(labelDowntime);
+
+    expect(downtimeAnnotations).toHaveLength(1);
   });
 });
