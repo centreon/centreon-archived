@@ -20,10 +20,10 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\Common;
+namespace Tests\Centreon\Common\Assertion;
 
 use PHPUnit\Framework\TestCase;
-use Centreon\Domain\Common\Assertion\Assertion;
+use Centreon\Common\Assertion\Assertion;
 
 class TestAssertion extends TestCase
 {

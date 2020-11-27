@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Common\Assertion;
+namespace Centreon\Common\Assertion;
 
 use Assert\Assertion as Assert;
 
