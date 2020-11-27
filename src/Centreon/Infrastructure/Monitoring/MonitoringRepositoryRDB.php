@@ -551,6 +551,11 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $hosts = [];
+
+        if (empty($hostIds)) {
+            return $hosts;
+        }
+
         $collector = new StatementCollector();
 
         $accessGroupFilter = $this->isAdmin()
@@ -706,6 +711,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         $collector = new StatementCollector();
 
+        $services = [];
+
+        if (empty($serviceIds)) {
+            return $services;
+        }
+
         $accessGroupFilter = $this->isAdmin()
             ? ' '
             : ' INNER JOIN `:dbstg`.`centreon_acl` acl
@@ -763,8 +774,6 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
-
-        $services = [];
 
         if ($statement->execute()) {
             while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
