@@ -45,7 +45,12 @@ class CommentController extends AbstractController
      * @var CommentServiceInterface
      */
     private $commentService;
-
+    /**
+     * Monitoring 
+     *
+     * @var MonitoringServiceInterface
+     */
+    private $monitoringService;
     public function __construct(
         CommentServiceInterface $commentService,
         MonitoringServiceInterface $monitoringService
@@ -174,7 +179,7 @@ class CommentController extends AbstractController
         $serviceIds = [];
         $comments = [];
 
-        $now = new \DateTime('now');
+        $now = new \DateTime();
 
         foreach ($results['resources'] as $index => $commentResource) {
             $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
@@ -258,7 +263,7 @@ class CommentController extends AbstractController
                     )
                 );
             }
-            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime('now');
+            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime();
             $result = (new Comment($hostId, $results['comment']))
                 ->setDate($date);
 
@@ -330,7 +335,7 @@ class CommentController extends AbstractController
             }
             $service->setHost($host);
 
-            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime('now');
+            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime();
 
             $result = (new Comment($serviceId, $results['comment']))
                 ->setDate($date)
