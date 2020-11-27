@@ -263,7 +263,7 @@ class CommentController extends AbstractController
                     )
                 );
             }
-            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime('now');
+            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime();
             $result = (new Comment($hostId, $results['comment']))
                 ->setDate($date);
 
