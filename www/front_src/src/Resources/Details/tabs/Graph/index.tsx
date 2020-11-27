@@ -15,6 +15,7 @@ import {
 } from './models';
 import PerformanceGraph from '../../../Graph/Performance';
 import { TabProps } from '..';
+import { ResourceDetails } from '../../models';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -119,6 +120,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
             xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
             toggableLegend
             timelineEndpoint={timelineEndpoint}
+            resource={details as ResourceDetails}
           />
         </div>
       </Paper>

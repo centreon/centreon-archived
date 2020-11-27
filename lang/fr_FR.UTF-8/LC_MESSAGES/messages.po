@@ -15851,3 +15851,6 @@ msgstr "EN ATTENTE"
 
 msgid "FQDN / Address"
 msgstr "FQDN / Adresse"
+
+msgid "Comment added"
+msgstr "Commentaire ajouté"

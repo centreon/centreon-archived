@@ -19,10 +19,8 @@ import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { useTranslation } from 'react-i18next';
 
-import { Typography, Button, ClickAwayListener } from '@material-ui/core';
+import { Button, ClickAwayListener } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-
-import { useLocaleDateTimeFormat, dateTimeFormat } from '@centreon/ui';
 
 import { TimeValue, Line as LineModel } from '../models';
 import {
@@ -39,7 +37,6 @@ import {
   getStackedMetricValues,
   hasUnitStackedLines,
 } from '../timeSeries';
-import formatMetricValue from '../formatMetricValue';
 import Axes from './Axes';
 import Lines from '../Lines';
 import Annotations from './Annotations';
@@ -47,6 +44,9 @@ import DialogAddComment from './DialogAddComment';
 import MetricsTooltip from './MetricsTooltip';
 import { labelAddComment } from '../../../translatedLabels';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
+import { Resource } from '../../../models';
+import { ResourceDetails } from '../../../Details/models';
+import { CommentParameters } from '../../../Actions/api';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -68,6 +68,8 @@ interface Props {
   lines: Array<LineModel>;
   xAxisTickFormat: string;
   timeline?: Array<TimelineEvent>;
+  resource: Resource | ResourceDetails;
+  onAddComment: (commentParameters: CommentParameters) => void;
 }
 
 const getScale = ({
@@ -95,10 +97,12 @@ const Graph = ({
   lines,
   xAxisTickFormat,
   timeline,
+  resource,
+  onAddComment,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const [addingComment, setAddingComment] = React.useState(false);
-  const { format } = useLocaleDateTimeFormat();
+  const [commentDate, setCommentDate] = React.useState<Date>();
 
   const {
     tooltipData,
@@ -201,14 +205,20 @@ const Graph = ({
     return getScale({ height: graphHeight, values, stackedValues });
   }, [timeSeries, lines, secondUnit, graphHeight]);
 
+  const bisectDate = bisector(identity).left;
+
+  const getTimeValue = (x: number): TimeValue => {
+    const date = xScale.invert(x - margin.left);
+    const index = bisectDate(getDates(timeSeries), date, 1);
+
+    return timeSeries[index];
+  };
+
   const displayTooltip = React.useCallback(
     (event) => {
       const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
-      const xDomain = xScale.invert(x - margin.left);
-      const bisectDate = bisector(identity).left;
-      const index = bisectDate(getDates(timeSeries), xDomain, 1);
-      const timeValue = timeSeries[index];
+      const timeValue = getTimeValue(x);
 
       const metrics = getMetrics(timeValue);
 
@@ -237,6 +247,11 @@ const Graph = ({
   const displayAddCommentTooltip = (event): void => {
     const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
+    const { timeTick } = getTimeValue(x);
+    const date = new Date(timeTick);
+
+    setCommentDate(date);
+
     showAddCommentTooltip({
       tooltipLeft: x,
       tooltipTop: y,
@@ -248,9 +263,9 @@ const Graph = ({
     hideAddCommentTooltip();
   };
 
-  const confirmAddComment = (): void => {
+  const confirmAddComment = (comment): void => {
     setAddingComment(false);
-    console.log('add comment');
+    onAddComment(comment);
   };
 
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
@@ -350,7 +365,9 @@ const Graph = ({
         {addingComment && (
           <DialogAddComment
             onAddComment={confirmAddComment}
-            onClose={() => {
+            date={commentDate as Date}
+            resource={resource}
+            onClose={(): void => {
               setAddingComment(false);
             }}
           />

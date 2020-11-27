@@ -37,7 +37,7 @@ const MetricsTooltip = ({
         })}
       </Typography>
       {metrics.map((metric) => {
-        const value = timeValue[metric];
+        const value = timeValue[metric] as number;
 
         const { color, name, unit } = getLineForMetric({
           lines,

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData, timeFormat, ListingModel } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { getTimeSeries, getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
@@ -17,6 +18,8 @@ import Graph from './Graph';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { listTimelineEvents } from '../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../Details/tabs/Timeline/api/decoders';
+import { Resource } from '../../models';
+import { ResourceDetails } from '../../Details/models';
 
 interface Props {
   endpoint?: string;
@@ -24,6 +27,7 @@ interface Props {
   graphHeight: number;
   toggableLegend?: boolean;
   timelineEndpoint?: string;
+  resource: Resource | ResourceDetails;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -56,9 +60,11 @@ const PerformanceGraph = ({
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
   timelineEndpoint = undefined,
+  resource,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
+  const { username } = useUserContext();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
@@ -157,6 +163,19 @@ const PerformanceGraph = ({
     setLineData(map((line) => ({ ...line, highlight: undefined }), lineData));
   };
 
+  const addCommentToTimeline = ({ date, comment }): void => {
+    setTimeline([
+      ...(timeline as Array<TimelineEvent>),
+      {
+        id: Math.random(),
+        type: 'comment',
+        date,
+        content: comment,
+        contact: { name: username },
+      },
+    ]);
+  };
+
   return (
     <div className={classes.container}>
       <Typography variant="body1" color="textPrimary">
@@ -173,6 +192,8 @@ const PerformanceGraph = ({
             base={base as number}
             xAxisTickFormat={xAxisTickFormat}
             timeline={timeline}
+            resource={resource}
+            onAddComment={addCommentToTimeline}
           />
         )}
       </ParentSize>
