@@ -4,7 +4,11 @@ import axios from 'axios';
 import { render, screen } from '@testing-library/react';
 
 import PerformanceGraph from '.';
-import { labelComment, labelAcknowledgement } from '../../translatedLabels';
+import {
+  labelComment,
+  labelAcknowledgement,
+  labelDowntime,
+} from '../../translatedLabels';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -73,6 +77,14 @@ const timeline = {
         name: 'admin',
       },
     },
+    {
+      type: 'downtime',
+      id: 8,
+      date: '2020-11-05T10:45:00Z',
+      content: 'Downtime',
+      start_date: '2020-11-05T10:35:00Z',
+      end_date: '2020-11-05T10:50:00Z',
+    },
   ],
   meta: {
     page: 1,
@@ -114,5 +126,9 @@ describe(PerformanceGraph, () => {
     );
 
     expect(acknowledgementAnnotations).toHaveLength(1);
+
+    const downtimeAnnotations = await screen.findAllByLabelText(labelDowntime);
+
+    expect(downtimeAnnotations).toHaveLength(1);
   });
 });
