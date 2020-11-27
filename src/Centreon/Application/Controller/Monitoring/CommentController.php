@@ -45,7 +45,12 @@ class CommentController extends AbstractController
      * @var CommentServiceInterface
      */
     private $commentService;
-
+    /**
+     * Monitoring 
+     *
+     * @var MonitoringServiceInterface
+     */
+    private $monitoringService;
     public function __construct(
         CommentServiceInterface $commentService,
         MonitoringServiceInterface $monitoringService
