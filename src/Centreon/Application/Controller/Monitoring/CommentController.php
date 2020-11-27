@@ -45,12 +45,14 @@ class CommentController extends AbstractController
      * @var CommentServiceInterface
      */
     private $commentService;
+
     /**
-     * Monitoring 
+     * Monitoring
      *
      * @var MonitoringServiceInterface
      */
     private $monitoringService;
+
     public function __construct(
         CommentServiceInterface $commentService,
         MonitoringServiceInterface $monitoringService
@@ -203,16 +205,12 @@ class CommentController extends AbstractController
         $hosts = $this->monitoringService->findMultipleHosts($hostIds);
         $services = $this->monitoringService->findMultipleServices($serviceIds);
 
-        if (!empty($hosts)) {
-            foreach ($hosts as $key => $host) {
-                $this->commentService->addHostComment($comments[$key], $host);
-            }
+        foreach ($hosts as $key => $host) {
+            $this->commentService->addHostComment($comments[$key], $host);
         }
 
-        if (!empty($services)) {
-            foreach ($services as $key => $service) {
-                $this->commentService->addServiceComment($comments[$key], $service);
-            }
+        foreach ($services as $key => $service) {
+            $this->commentService->addServiceComment($comments[$key], $service);
         }
 
         return $this->view(null, Response::HTTP_NO_CONTENT);
@@ -254,7 +252,10 @@ class CommentController extends AbstractController
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $host = $this->monitoringService->findOneHost($hostId);
+            $host = $this->monitoringService
+                ->filterByContact($contact)
+                ->findOneHost($hostId);
+
             if (is_null($host)) {
                 throw new EntityNotFoundException(
                     sprintf(
@@ -314,7 +315,10 @@ class CommentController extends AbstractController
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $host = $this->monitoringService->findOneHost($hostId);
+            $host = $this->monitoringService
+                ->filterByContact($contact)
+                ->findOneHost($hostId);
+
             if (is_null($host)) {
                 throw new EntityNotFoundException(
                     sprintf(
@@ -324,7 +328,10 @@ class CommentController extends AbstractController
                 );
             }
 
-            $service = $this->monitoringService->findOneService($hostId, $serviceId);
+            $service = $this->monitoringService
+                ->filterByContact($contact)
+                ->findOneService($hostId, $serviceId);
+
             if (is_null($service)) {
                 throw new EntityNotFoundException(
                     sprintf(
