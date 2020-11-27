@@ -179,7 +179,7 @@ class CommentController extends AbstractController
         $serviceIds = [];
         $comments = [];
 
-        $now = new \DateTime('now');
+        $now = new \DateTime();
 
         foreach ($results['resources'] as $index => $commentResource) {
             $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
