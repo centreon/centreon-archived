@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Tests\Centreon\Domain\Common;
 
 use PHPUnit\Framework\TestCase;
-use \Centreon\Domain\Common\Assertion\Assertion;
+use Centreon\Domain\Common\Assertion\Assertion;
 
 class TestAssertion extends TestCase
 {
