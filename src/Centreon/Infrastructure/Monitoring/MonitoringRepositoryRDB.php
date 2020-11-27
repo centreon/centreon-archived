@@ -577,11 +577,11 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         if (is_array($hostIds)) {
             $idsListKey = [];
-            foreach ($hostIds as $x => $id) {
-                $key = ":id{$x}";
+            foreach ($hostIds as $index => $id) {
+                $key = ":id{$index}";
                 $idsListKey[] = $key;
                 $collector->addValue($key, $id, \PDO::PARAM_INT);
-                unset($x, $id);
+                unset($index, $id);
             }
             $request .= ' WHERE h.host_id IN (' . implode(',', $idsListKey) . ')';
         }
@@ -744,14 +744,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         if (is_array($serviceIds)) {
             $idsListKey = [];
-            foreach ($serviceIds as $x => $hostServiceIds) {
-                $hostKey = ":host_id{$x}";
+            foreach ($serviceIds as $index => $hostServiceIds) {
+                $hostKey = ":host_id{$index}";
                 $hostIdsListKey[] = $hostKey;
-                $serviceKey = ":service_id{$x}";
+                $serviceKey = ":service_id{$index}";
                 $serviceIdsListKey[] = $serviceKey;
                 $collector->addValue($serviceKey, $hostServiceIds['service_id'], \PDO::PARAM_INT);
                 $collector->addValue($hostKey, $hostServiceIds['host_id'], \PDO::PARAM_INT);
-                unset($x, $hostServiceIds);
+                unset($index, $hostServiceIds);
             }
             $request .= ' AND srv.service_id IN (' . implode(',', $serviceIdsListKey) . ')';
             $request .= ' AND srv.host_id IN (' . implode(',', $hostIdsListKey) . ')';

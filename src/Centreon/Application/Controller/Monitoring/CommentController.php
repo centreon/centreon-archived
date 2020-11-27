@@ -203,16 +203,12 @@ class CommentController extends AbstractController
         $hosts = $this->monitoringService->findMultipleHosts($hostIds);
         $services = $this->monitoringService->findMultipleServices($serviceIds);
 
-        if (!empty($hosts)) {
-            foreach ($hosts as $key => $host) {
-                $this->commentService->addHostComment($comments[$key], $host);
-            }
+        foreach ($hosts as $key => $host) {
+            $this->commentService->addHostComment($comments[$key], $host);
         }
 
-        if (!empty($services)) {
-            foreach ($services as $key => $service) {
-                $this->commentService->addServiceComment($comments[$key], $service);
-            }
+        foreach ($services as $key => $service) {
+            $this->commentService->addServiceComment($comments[$key], $service);
         }
 
         return $this->view(null, Response::HTTP_NO_CONTENT);
