@@ -34,6 +34,7 @@ use Centreon\Domain\Monitoring\Comment\Comment;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Comment\Interfaces\CommentServiceInterface;
 
 class CommentController extends AbstractController
@@ -45,9 +46,12 @@ class CommentController extends AbstractController
      */
     private $commentService;
 
-    public function __construct(CommentServiceInterface $commentService)
-    {
+    public function __construct(
+        CommentServiceInterface $commentService,
+        MonitoringServiceInterface $monitoringService
+    ) {
         $this->commentService = $commentService;
+        $this->monitoringService = $monitoringService;
     }
 
     /**
@@ -109,6 +113,13 @@ class CommentController extends AbstractController
         $hasHostRights = $contact->hasRole(Contact::ROLE_HOST_ADD_COMMENT);
         $hasServiceRights = $contact->hasRole(Contact::ROLE_SERVICE_ADD_COMMENT);
 
+        /**
+         * If the user has no rights at all, do not go further
+         */
+        if (!$hasHostRights && !$hasServiceRights) {
+            return false;
+        }
+
         foreach ($resources as $resource) {
             if (
                 ($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
@@ -149,28 +160,53 @@ class CommentController extends AbstractController
         );
 
         /**
-         * If user has no rights to submit result for host and/or service
+         * If user has no rights to add a comment for host and/or service
          * return view with unauthorized HTTP header response
          */
         if (!$this->hasCommentRightsForResources($contact, $results['resources'])) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        foreach ($results['resources'] as $commentResource) {
-            $date = $commentResource['date'] ?? 'now';
-            $result = (new Comment($commentResource['id'], $commentResource['comment']))
-                ->setDate(new \DateTime($date))
+        /**
+         * Dissect the results to extract the hostids and serviceids from it
+         */
+        $hostIds = [];
+        $serviceIds = [];
+        $comments = [];
+
+        $now = new \DateTime('now');
+
+        foreach ($results['resources'] as $index => $commentResource) {
+            $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
+            $comments[$index] = (new Comment($commentResource['id'], $commentResource['comment']))
+                ->setDate($date)
                 ->setParentResourceId($commentResource['parent']['id']);
-            try {
-                if ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
-                    $this->commentService
-                        ->addServiceComment($result);
-                } elseif ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
-                    $this->commentService
-                        ->addHostComment($result);
-                }
-            } catch (EntityNotFoundException $e) {
-                throw $e;
+
+            if ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
+                $hostIds[$index] = $commentResource['id'];
+            } elseif ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
+                $serviceIds[$index] = [
+                    'host_id' => $commentResource['parent']['id'],
+                    'service_id' => $commentResource['id']
+                ];
+            }
+        }
+
+        /**
+         * Retrieving all services and hosts
+         */
+        $hosts = $this->monitoringService->findMultipleHosts($hostIds);
+        $services = $this->monitoringService->findMultipleServices($serviceIds);
+
+        if (!empty($hosts)) {
+            foreach ($hosts as $key => $host) {
+                $this->commentService->addHostComment($comments[$key], $host);
+            }
+        }
+
+        if (!empty($services)) {
+            foreach ($services as $key => $service) {
+                $this->commentService->addServiceComment($comments[$key], $service);
             }
         }
 
@@ -213,9 +249,18 @@ class CommentController extends AbstractController
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $date = $commentResource['date'] ?? 'now';
+            $host = $this->monitoringService->findOneHost($hostId);
+            if (is_null($host)) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _('Host %d not found'),
+                        $hostId
+                    )
+                );
+            }
+            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime('now');
             $result = (new Comment($hostId, $results['comment']))
-                ->setDate(new \DateTime($date));
+                ->setDate($date);
 
             try {
                 $this->commentService
@@ -264,17 +309,36 @@ class CommentController extends AbstractController
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $date = $commentResource['date'] ?? 'now';
-            $result = (new Comment($serviceId, $results['comment']))
-                ->setDate(new \DateTime($date))
-                ->setParentResourceId($hostId);
-            try {
-                $this->commentService
-                    ->filterByContact($contact)
-                    ->addServiceComment($result);
-            } catch (EntityNotFoundException $e) {
-                    throw $e;
+            $host = $this->monitoringService->findOneHost($hostId);
+            if (is_null($host)) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _('Host %d not found'),
+                        $hostId
+                    )
+                );
             }
+
+            $service = $this->monitoringService->findOneService($hostId, $serviceId);
+            if (is_null($service)) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _('Service %d not found'),
+                        $serviceId
+                    )
+                );
+            }
+            $service->setHost($host);
+
+            $date = ($results['date'] !== null) ? new \DateTime($results['date']) : new \DateTime('now');
+
+            $result = (new Comment($serviceId, $results['comment']))
+                ->setDate($date)
+                ->setParentResourceId($hostId);
+
+            $this->commentService
+                ->filterByContact($contact)
+                ->addServiceComment($result, $service);
         }
 
         return $this->view(null, Response::HTTP_NO_CONTENT);

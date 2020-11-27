@@ -106,7 +106,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
     /**
      * @inheritDoc
      */
-    public function addServiceComment(Comment $comment): void
+    public function addServiceComment(Comment $comment, Service $service): void
     {
         // We validate the check instance
         $errors = $this->validator->validate(
@@ -119,37 +119,13 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
             throw new ValidationFailedException($errors);
         }
 
-        $host = $this->monitoringRepository->findOneHost($comment->getParentResourceId());
-        if (is_null($host)) {
-            throw new EntityNotFoundException(
-                sprintf(
-                    _('Host %d not found'),
-                    $comment->getParentResourceId()
-                )
-            );
-        }
-
-        $service = $this->monitoringRepository->findOneService(
-            $comment->getParentResourceId(),
-            $comment->getResourceId()
-        );
-        if (is_null($service)) {
-            throw new EntityNotFoundException(
-                sprintf(
-                    _('Service %d not found'),
-                    $comment->getResourceId()
-                )
-            );
-        }
-        $service->setHost($host);
-
         $this->engineService->addServiceComment($comment, $service);
     }
 
     /**
      * @inheritDoc
      */
-    public function addHostComment(Comment $comment): void
+    public function addHostComment(Comment $comment, Host $host): void
     {
         // We validate the SubmitResult instance instance
         $errors = $this->validator->validate(
@@ -160,16 +136,6 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
 
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
-        }
-
-        $host = $this->monitoringRepository->findOneHost($comment->getResourceId());
-        if (is_null($host)) {
-            throw new EntityNotFoundException(
-                sprintf(
-                    _('Host %d not found'),
-                    $comment->getResourceId()
-                )
-            );
         }
 
         $this->engineService->addHostComment($comment, $host);

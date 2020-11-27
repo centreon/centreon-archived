@@ -30,6 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Monitoring\Comment\CommentService;
 use Centreon\Application\Controller\Monitoring\CommentController;
+use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Test\Api\Context\CommentContext;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -46,6 +47,7 @@ class CommentControllerTest extends TestCase
     protected $serviceCommentJson;
     protected $serviceResult;
     protected $commentService;
+    protected $monitoringService;
 
     protected $container;
 
@@ -55,7 +57,7 @@ class CommentControllerTest extends TestCase
     {
         $timezone = new \DateTimeZone('Europe/Paris');
         $dateTime = new \DateTime('now');
-        $date = $dateTime->format('Y-m-d\TH:i:s.u');
+        $date = $dateTime->format(\DateTime::ATOM);
 
         $this->adminContact = (new Contact())
             ->setId(1)
@@ -111,6 +113,7 @@ class CommentControllerTest extends TestCase
         ]);
 
         $this->commentService = $this->createMock(CommentService::class);
+        $this->monitoringService = $this->createMock(MonitoringService::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authorizationChecker->expects($this->once())
@@ -155,7 +158,7 @@ class CommentControllerTest extends TestCase
      */
     public function testaddResourcesCommentBadJsonFormat()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->once())
@@ -171,7 +174,7 @@ class CommentControllerTest extends TestCase
      */
     public function testCommentResourcesBadJsonProperties()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
@@ -190,7 +193,7 @@ class CommentControllerTest extends TestCase
             ->method('filterByContact')
             ->willReturn($this->commentService);
 
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
@@ -206,7 +209,7 @@ class CommentControllerTest extends TestCase
      */
     public function testAddHostCommentBadJsonFormat()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->once())
@@ -221,7 +224,7 @@ class CommentControllerTest extends TestCase
      */
     public function testAddHostCommentBadJsonProperties()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
@@ -236,15 +239,20 @@ class CommentControllerTest extends TestCase
     public function testAddHostCommentSuccess()
     {
         $this->commentService->expects($this->any())
-        ->method('filterByContact')
-        ->willReturn($this->commentService);
+            ->method('filterByContact')
+            ->willReturn($this->commentService);
 
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
             ->method('getContent')
             ->willReturn($this->hostCommentJson);
+
+        $this->request->expects($this->any())
+            ->method('findOneHost')
+            ->willReturn($this->hostResource);
+
         $view = $commentController->addHostComment($this->request, $this->hostResource->getId());
 
         $this->assertEquals($view, View::create(null, Response::HTTP_NO_CONTENT));
@@ -255,7 +263,7 @@ class CommentControllerTest extends TestCase
      */
     public function testAddServiceCommentBadJsonFormat()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->once())
@@ -274,7 +282,7 @@ class CommentControllerTest extends TestCase
      */
     public function testAddServiceCommentBadJsonProperties()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
@@ -296,12 +304,20 @@ class CommentControllerTest extends TestCase
         ->method('filterByContact')
         ->willReturn($this->commentService);
 
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
             ->method('getContent')
             ->willReturn($this->serviceCommentJson);
+
+        $this->request->expects($this->any())
+            ->method('findOneHost')
+            ->willReturn($this->hostResource);
+
+        $this->request->expects($this->any())
+            ->method('findOneService')
+            ->willReturn($this->serviceResource);
 
         $view = $commentController->addServiceComment(
             $this->request,
