@@ -41,8 +41,10 @@ class Assertion
             $maxLength,
             function (array $parameters) {
                 return sprintf(
-                    _('[%s] The value "%s" is too long, it should have no more than %d characters,'
-                    . ' but has %d characters'),
+                    _(
+                        '[%s] The value "%s" is too long, it should have no more than %d characters,'
+                        . ' but has %d characters'
+                    ),
                     $parameters['propertyPath'],
                     $parameters['value'],
                     $parameters['maxLength'],
@@ -64,16 +66,18 @@ class Assertion
      */
     public static function minLength(string $value, int $minLength, string $propertyPath = null): void
     {
-        Assert::maxLength(
+        Assert::minLength(
             $value,
             $minLength,
             function (array $parameters) {
                 return sprintf(
-                    _('[%s] The value "%s" is too short, it should have at least %d characters,'
-                    . ' but only has %d characters'),
+                    _(
+                        '[%s] The value "%s" is too short, it should have at least %d characters,'
+                        . ' but only has %d characters'
+                    ),
                     $parameters['propertyPath'],
                     $parameters['value'],
-                    $parameters['maxLength'],
+                    $parameters['minLength'],
                     \mb_strlen($parameters['value'], $parameters['encoding'])
                 );
             },
