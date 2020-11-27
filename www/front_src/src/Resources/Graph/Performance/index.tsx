@@ -4,14 +4,23 @@ import { ParentSize } from '@visx/visx';
 import { map, prop, propEq, find, reject, sortBy, isEmpty, isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Typography, Theme } from '@material-ui/core';
+import {
+  makeStyles,
+  Typography,
+  Theme,
+  FormControlLabel,
+  Switch,
+} from '@material-ui/core';
 
 import { useRequest, getData, timeFormat, ListingModel } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
 import { getTimeSeries, getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
-import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import {
+  labelNoDataForThisPeriod,
+  labelEventAnnotations,
+} from '../../translatedLabels';
 import LoadingSkeleton from './LoadingSkeleton';
 import Legend from './Legend';
 import Graph from './Graph';
@@ -34,7 +43,8 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
   container: {
     display: 'grid',
     flexDirection: 'column',
-    gridTemplateRows: ({ graphHeight }): string => `auto ${graphHeight}px auto`,
+    gridTemplateRows: ({ graphHeight }): string =>
+      `auto ${graphHeight}px auto auto`,
     gridGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
@@ -71,6 +81,9 @@ const PerformanceGraph = ({
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
+  const [eventAnnotationsActive, setEventAnnotationsActive] = React.useState(
+    false,
+  );
 
   const {
     sendRequest: sendGetGraphDataRequest,
@@ -176,6 +189,12 @@ const PerformanceGraph = ({
     ]);
   };
 
+  const changeEventAnnotationsActive = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): void => {
+    setEventAnnotationsActive(event.target.checked);
+  };
+
   return (
     <div className={classes.container}>
       <Typography variant="body1" color="textPrimary">
@@ -194,9 +213,24 @@ const PerformanceGraph = ({
             timeline={timeline}
             resource={resource}
             onAddComment={addCommentToTimeline}
+            eventAnnotationsActive={eventAnnotationsActive}
           />
         )}
       </ParentSize>
+      <div>
+        <FormControlLabel
+          control={
+            <Switch
+              color="primary"
+              size="small"
+              onChange={changeEventAnnotationsActive}
+            />
+          }
+          label={
+            <Typography variant="body2">{labelEventAnnotations}</Typography>
+          }
+        />
+      </div>
       <div className={classes.legend}>
         <Legend
           lines={sortedLines}

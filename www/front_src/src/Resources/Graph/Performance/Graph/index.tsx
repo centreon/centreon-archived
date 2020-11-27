@@ -70,6 +70,7 @@ interface Props {
   timeline?: Array<TimelineEvent>;
   resource: Resource | ResourceDetails;
   onAddComment: (commentParameters: CommentParameters) => void;
+  eventAnnotationsActive: boolean;
 }
 
 const getScale = ({
@@ -98,6 +99,7 @@ const Graph = ({
   xAxisTickFormat,
   timeline,
   resource,
+  eventAnnotationsActive,
   onAddComment,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -312,11 +314,13 @@ const Graph = ({
               xAxisTickFormat={xAxisTickFormat}
               timeSeries={timeSeries}
             />
-            <MemoizedAnnotations
-              xScale={xScale}
-              graphHeight={graphHeight}
-              timeline={timeline as Array<TimelineEvent>}
-            />
+            {eventAnnotationsActive && (
+              <MemoizedAnnotations
+                xScale={xScale}
+                graphHeight={graphHeight}
+                timeline={timeline as Array<TimelineEvent>}
+              />
+            )}
             <MemoizedLines
               timeSeries={timeSeries}
               lines={lines}

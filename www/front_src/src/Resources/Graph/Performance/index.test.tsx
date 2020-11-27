@@ -1,14 +1,20 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+
+import userEvent from '@testing-library/user-event';
+
+import { ThemeProvider } from '@centreon/ui';
 
 import PerformanceGraph from '.';
 import {
   labelComment,
   labelAcknowledgement,
   labelDowntime,
+  labelEventAnnotations,
 } from '../../translatedLabels';
+import { Resource } from '../../models';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -32,7 +38,7 @@ const graphData = {
       ds_data: {
         ds_color_line: '#000',
         ds_filled: true,
-        ds_color_area: '#001',
+        ds_color_area: '#000',
         ds_transparency: 80,
       },
       metric: 'time',
@@ -104,31 +110,34 @@ describe(PerformanceGraph, () => {
     mockedAxios.get.mockReset();
   });
 
-  it('displays comment annotations', async () => {
+  it('displays event annotations when the corresponding switch is active', async () => {
     const endpoint = 'endpoint';
     const graphHeight = 200;
     const timelineEndpoint = 'timeline';
 
     render(
-      <PerformanceGraph
-        endpoint={endpoint}
-        graphHeight={graphHeight}
-        timelineEndpoint={timelineEndpoint}
-      />,
+      <ThemeProvider>
+        <PerformanceGraph
+          endpoint={endpoint}
+          graphHeight={graphHeight}
+          timelineEndpoint={timelineEndpoint}
+          resource={{} as Resource}
+        />
+      </ThemeProvider>,
     );
 
-    const commentAnnotations = await screen.findAllByLabelText(labelComment);
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
 
-    expect(commentAnnotations).toHaveLength(2);
+    expect(screen.queryByLabelText(labelComment)).toBeNull();
+    expect(screen.queryByLabelText(labelAcknowledgement)).toBeNull();
+    expect(screen.queryByLabelText(labelDowntime)).toBeNull();
 
-    const acknowledgementAnnotations = await screen.findAllByLabelText(
-      labelAcknowledgement,
-    );
+    userEvent.click(screen.getByText(labelEventAnnotations));
 
-    expect(acknowledgementAnnotations).toHaveLength(1);
-
-    const downtimeAnnotations = await screen.findAllByLabelText(labelDowntime);
-
-    expect(downtimeAnnotations).toHaveLength(1);
+    expect(screen.getAllByLabelText(labelComment)).toHaveLength(2);
+    expect(screen.getAllByLabelText(labelAcknowledgement)).toHaveLength(1);
+    expect(screen.getAllByLabelText(labelDowntime)).toHaveLength(1);
   });
 });
