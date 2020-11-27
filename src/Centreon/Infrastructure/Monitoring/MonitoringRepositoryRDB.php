@@ -718,8 +718,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         $request =
             'SELECT DISTINCT srv.*,
-              h.host_id AS `host_host_id`, h.name AS `host_name`, h.alias AS `host_alias`, h.instance_id AS `host_poller_id`,
-              srv.state AS `status_code`,
+              h.host_id AS `host_host_id`, h.name AS `host_name`, h.alias AS `host_alias`,
+              h.instance_id AS `host_poller_id`, srv.state AS `status_code`,
               CASE
                 WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
                 WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
