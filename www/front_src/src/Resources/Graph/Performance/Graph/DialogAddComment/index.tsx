@@ -20,10 +20,10 @@ import {
   labelComment,
   labelRequired,
   labelCommentAdded,
-} from '../../../translatedLabels';
-import { commentResources } from '../../../Actions/api';
-import { Resource } from '../../../models';
-import { ResourceDetails } from '../../../Details/models';
+} from '../../../../translatedLabels';
+import { commentResources } from '../../../../Actions/api';
+import { Resource } from '../../../../models';
+import { ResourceDetails } from '../../../../Details/models';
 
 interface Props {
   onClose: () => void;
