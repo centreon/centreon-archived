@@ -344,10 +344,13 @@ class CentreonLDAP extends CentreonObject
             );
         } elseif (isset($this->baseParams[strtolower($params[1])])) {
             if (strtolower($params[1]) == 'ldap_contact_tmpl') {
+                if (empty($params[2])) {
+                    throw new CentreonClapiException(self::MISSINGPARAMETER);
+                }
                 $contactObj = new CentreonContact($this->dependencyInjector);
                 $params[2] = $contactObj->getContactID($params[2]);
             }
-            if (strtolower($params[1]) === 'ldap_default_cg') {
+            if (strtolower($params[1]) === 'ldap_default_cg' && !empty($params[2])) {
                 $contactGroupObj = new CentreonContactGroup($this->dependencyInjector);
                 $params[2] = $contactGroupObj->getContactGroupID($params[2]);
             }

@@ -2,18 +2,22 @@ import * as React from 'react';
 
 import { useTheme } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
+import { useTranslation } from 'react-i18next';
 
 import { Props } from '..';
 import EventAnnotations from '../EventAnnotations';
 import { iconSize } from '../Annotation';
+import { labelAcknowledgement } from '../../../../../translatedLabels';
 
 const AcknowledgementAnnotations = (props: Props): JSX.Element => {
+  const { t } = useTranslation();
   const theme = useTheme();
 
   const color = theme.palette.action.acknowledged;
 
   const icon = (
     <IconAcknowledge
+      aria-label={t(labelAcknowledgement)}
       height={iconSize}
       width={iconSize}
       style={{
