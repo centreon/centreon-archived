@@ -26,7 +26,9 @@ use Exception;
 use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Monitoring\Host;
 use JsonSchema\Constraints\Constraint;
+use Centreon\Domain\Monitoring\Service;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Symfony\Component\HttpFoundation\Response;
@@ -177,41 +179,28 @@ class CommentController extends AbstractController
         /**
          * Dissect the results to extract the hostids and serviceids from it
          */
-        $hostIds = [];
-        $serviceIds = [];
+        $resourceIds = [];
         $comments = [];
 
         $now = new \DateTime();
 
         foreach ($receivedData['resources'] as $index => $commentResource) {
             $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
-            $comments[$index] = (new Comment($commentResource['id'], $commentResource['comment']))
+            $comments[$commentResource['id']] = (new Comment($commentResource['id'], $commentResource['comment']))
                 ->setDate($date)
                 ->setParentResourceId($commentResource['parent']['id']);
 
             if ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
-                $hostIds[$index] = $commentResource['id'];
+                $resourceIds['host'][] = $commentResource['id'];
             } elseif ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
-                $serviceIds[$index] = [
+                $resourceIds['service'][] = [
                     'host_id' => $commentResource['parent']['id'],
                     'service_id' => $commentResource['id']
                 ];
             }
         }
 
-        /**
-         * Retrieving all services and hosts
-         */
-        $hosts = $this->monitoringService->findMultipleHosts($hostIds);
-        $services = $this->monitoringService->findMultipleServices($serviceIds);
-
-        foreach ($hosts as $key => $host) {
-            $this->commentService->addHostComment($comments[$key], $host);
-        }
-
-        foreach ($services as $key => $service) {
-            $this->commentService->addServiceComment($comments[$key], $service);
-        }
+        $this->commentService->addResourcesComment($comments, $resourceIds);
 
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
@@ -234,6 +223,7 @@ class CommentController extends AbstractController
          * @var Contact $contact
          */
         $contact = $this->getUser();
+        $this->commentService->filterByContact($contact);
 
         /**
          * Checking that user is allowed to add a comment for a host resource
@@ -252,29 +242,12 @@ class CommentController extends AbstractController
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $host = $this->monitoringService
-                ->filterByContact($contact)
-                ->findOneHost($hostId);
-
-            if (is_null($host)) {
-                throw new EntityNotFoundException(
-                    sprintf(
-                        _('Host %d not found'),
-                        $hostId
-                    )
-                );
-            }
             $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
-            $result = (new Comment($hostId, $receivedData['comment']))
+            $comment = (new Comment($hostId, $receivedData['comment']))
                 ->setDate($date);
-
-            try {
-                $this->commentService
-                    ->filterByContact($contact)
-                    ->addHostComment($result);
-            } catch (EntityNotFoundException $e) {
-                throw $e;
-            }
+            $host = new Host();
+            $host->setId($hostId);
+            $this->commentService->addHostComment($comment, $host);
         }
 
         return $this->view(null, Response::HTTP_NO_CONTENT);
@@ -301,6 +274,7 @@ class CommentController extends AbstractController
          * @var Contact $contact
          */
         $contact = $this->getUser();
+        $this->commentService->filterByContact($contact);
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ADD_COMMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
@@ -315,42 +289,18 @@ class CommentController extends AbstractController
              * At this point we made sure that the mapping will work since we validate
              * the JSON sent with the JSON validator.
              */
-            $host = $this->monitoringService
-                ->filterByContact($contact)
-                ->findOneHost($hostId);
-
-            if (is_null($host)) {
-                throw new EntityNotFoundException(
-                    sprintf(
-                        _('Host %d not found'),
-                        $hostId
-                    )
-                );
-            }
-
-            $service = $this->monitoringService
-                ->filterByContact($contact)
-                ->findOneService($hostId, $serviceId);
-
-            if (is_null($service)) {
-                throw new EntityNotFoundException(
-                    sprintf(
-                        _('Service %d not found'),
-                        $serviceId
-                    )
-                );
-            }
-            $service->setHost($host);
-
             $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
-
-            $result = (new Comment($serviceId, $receivedData['comment']))
+            $comment = (new Comment($serviceId, $receivedData['comment']))
                 ->setDate($date)
                 ->setParentResourceId($hostId);
 
-            $this->commentService
-                ->filterByContact($contact)
-                ->addServiceComment($result, $service);
+            $service = new Service();
+            $host = new Host();
+
+            $host->setId($hostId);
+            $service->setId($serviceId)->setHost($host);
+
+            $this->commentService->addServiceComment($comment, $service);
         }
 
         return $this->view(null, Response::HTTP_NO_CONTENT);

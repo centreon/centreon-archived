@@ -30,9 +30,11 @@ use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\Comment\Interfaces\CommentServiceInterface;
+use Centreon\Domain\Monitoring\MonitoringService;
 
 /**
  * Monitoring class used to manage result submitting to services, hosts and resources
@@ -65,22 +67,30 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
     private $accessGroupRepository;
 
     /**
-     * SubmitResultService constructor.
+     * @var MonitoringServiceInterface
+     */
+    private $monitoringService;
+
+    /**
+     * CommentService constructor.
      *
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param EngineServiceInterface $engineService
+     * @param MonitoringServiceInterface $monitoringService
      * @param EntityValidator $validator
      */
     public function __construct(
         AccessGroupRepositoryInterface $accessGroupRepository,
         MonitoringRepositoryInterface $monitoringRepository,
         EngineServiceInterface $engineService,
+        MonitoringServiceInterface $monitoringService,
         EntityValidator $validator
     ) {
         $this->accessGroupRepository = $accessGroupRepository;
         $this->monitoringRepository = $monitoringRepository;
         $this->engineService = $engineService;
+        $this->monitoringService = $monitoringService;
         $this->validator = $validator;
     }
 
@@ -119,7 +129,34 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
             throw new ValidationFailedException($errors);
         }
 
-        $this->engineService->addServiceComment($comment, $service);
+        $hostComment = $this->monitoringService
+            ->filterByContact($this->contact)
+            ->findOneHost($service->getHost()->getId());
+
+        if (is_null($hostComment)) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Host %d not found'),
+                    $service->getHost()->getId()
+                )
+            );
+        }
+
+        $serviceComment = $this->monitoringService
+            ->filterByContact($this->contact)
+            ->findOneService($hostComment->getId(), $service->getId());
+
+        if (is_null($serviceComment)) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Service %d not found'),
+                    $service->getId()
+                )
+            );
+        }
+        $serviceComment->setHost($hostComment);
+
+        $this->engineService->addServiceComment($comment, $serviceComment);
     }
 
     /**
@@ -138,6 +175,52 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
             throw new ValidationFailedException($errors);
         }
 
-        $this->engineService->addHostComment($comment, $host);
+        $hostComment = $this->monitoringService
+            ->filterByContact($this->contact)
+            ->findOneHost($host->getId());
+
+        if (is_null($hostComment)) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Host %d not found'),
+                    $host->getId()
+                )
+            );
+        }
+
+        $this->engineService->addHostComment($comment, $hostComment);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addResourcesComment(array $comments, array $resourceIds): void
+    {
+        /**
+         * Retrieving at this point all the host and services entities linked to
+         * the resource ids provided
+         */
+        if ($this->contact->isAdmin()) {
+            $hosts = $this->monitoringRepository->findHostsByIdsForAdminUser($resourceIds['host']);
+            $services = $this->monitoringRepository->findServicesByIdsForAdminUser($resourceIds['service']);
+        } else {
+            $accessGroups = $this->accessGroupRepository->findByContact($this->contact);
+
+            $hosts = $this->monitoringRepository
+                ->filterByAccessGroups($accessGroups)
+                ->findHostsByIdsForNonAdminUser($resourceIds['host']);
+
+            $services = $this->monitoringRepository
+                ->filterByAccessGroups($accessGroups)
+                ->findServicesByIdsForNonAdminUser($resourceIds['service']);
+        }
+
+        foreach ($hosts as $key => $host) {
+            $this->addHostComment($comments[$host->getId()], $host);
+        }
+
+        foreach ($services as $key => $service) {
+            $this->addServiceComment($comments[$service->getId()], $service);
+        }
     }
 }
