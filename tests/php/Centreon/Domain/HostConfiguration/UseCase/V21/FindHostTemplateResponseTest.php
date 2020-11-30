@@ -20,9 +20,9 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\HostConfiguration\UseCase\v2_1;
+namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
 
-use Centreon\Domain\HostConfiguration\UseCase\v2_1\FindHostTemplatesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplatesResponse;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;
 
 /**
@@ -31,11 +31,19 @@ use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;
 class FindHostTemplateResponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * We test the transformation of an entity into an array.
-     *
-     * @throws \Exception
+     * We test the transformation of an empty response into an array.
      */
-    public function testResponse(): void
+    public function testEmptyResponse(): void
+    {
+        $response = new FindHostTemplatesResponse();
+        $hostTemplates = $response->getHostTemplates();
+        $this->assertCount(0, $hostTemplates);
+    }
+
+    /**
+     * We test the transformation of an entity into an array.
+     */
+    public function testNotEmptyResponse(): void
     {
         $hostTemplate = HostTemplateTest::createEntity();
         $response = new FindHostTemplatesResponse();
@@ -66,19 +74,24 @@ class FindHostTemplateResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($hostTemplate->getStalkingOptions(), $hostTemplates[0]['stalking_options']);
         $this->assertEquals($hostTemplate->getSnmpCommunity(), $hostTemplates[0]['snmp_community']);
         $this->assertEquals($hostTemplate->getSnmpVersion(), $hostTemplates[0]['snmp_version']);
-        $this->assertEquals([
+        if ($hostTemplate->getIcon() !== null) {
+            $this->assertEquals([
                 'id' => $hostTemplate->getIcon()->getId(),
                 'name' => $hostTemplate->getIcon()->getName(),
                 'path' => $hostTemplate->getIcon()->getPath(),
                 'comment' => $hostTemplate->getIcon()->getComment()
             ], $hostTemplates[0]['icon']);
+        }
 
-        $this->assertEquals([
+        if ($hostTemplate->getStatusMapImage() !== null) {
+            $this->assertEquals([
                 'id' => $hostTemplate->getStatusMapImage()->getId(),
                 'name' => $hostTemplate->getStatusMapImage()->getName(),
                 'path' => $hostTemplate->getStatusMapImage()->getPath(),
                 'comment' => $hostTemplate->getStatusMapImage()->getComment()
             ], $hostTemplates[0]['status_map_image']);
+        }
+
         $this->assertEquals($hostTemplate->getAlternativeIcon(), $hostTemplates[0]['alternative_icon']);
         $this->assertEquals($hostTemplate->getUrlNotes(), $hostTemplates[0]['url_notes']);
         $this->assertEquals($hostTemplate->getActionUrl(), $hostTemplates[0]['action_url']);

@@ -47,6 +47,23 @@ class HostTemplate
                  STALKING_OPTION_DOWN = 2,
                  STALKING_OPTION_UNREACHABLE = 4;
 
+    public const MAX_NAME_LENGTH = 200,
+                 MAX_ALIAS_LENGTH = 200,
+                 MAX_DISPLAY_NAME_LENGTH = 255,
+                 MAX_ADDRESS_LENGTH = 255,
+                 MAX_COMMENTS_LENGTH = 65535,
+                 MAX_SNMP_COMMUNITY_LENGTH = 255,
+                 MAX_ALTERNATIF_ICON_TEXT = 200,
+                 MAX_URL_NOTES = 65535,
+                 MAX_ACTION_URL = 65535,
+                 MAX_NOTES = 65535,
+                 MIN_CHECK_ATTEMPS = 1,
+                 MIN_CHECK_INTERVAL = 1,
+                 MIN_RETRY_CHECK_INTERVAL = 1,
+                 MIN_NOTIFICATION_INTERVAL = 0,
+                 MIN_FIRST_NOTIFICATION_DELAY = 0,
+                 MIN_RECOVERY_NOTIFICATION_DELAY = 0;
+
     private const AVAILABLE_STATUS = [
         self::STATUS_ENABLE, self::STATUS_DISABLE, self::STATUS_DEFAULT
     ];
@@ -265,7 +282,7 @@ class HostTemplate
     public function setName(?string $name): self
     {
         if ($name !== null) {
-            Assertion::maxLength($name, 200, 'HostTemplate::name');
+            Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'HostTemplate::name');
         }
         $this->name = $name;
         return $this;
@@ -287,7 +304,7 @@ class HostTemplate
     public function setAlias(?string $alias): self
     {
         if ($alias !== null) {
-            Assertion::maxLength($alias, 200, 'HostTemplate::alias');
+            Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'HostTemplate::alias');
         }
         $this->alias = $alias;
         return $this;
@@ -309,7 +326,7 @@ class HostTemplate
     public function setDisplayName(?string $displayName): self
     {
         if ($displayName !== null) {
-            Assertion::maxLength($displayName, 255, 'HostTemplate::displayName');
+            Assertion::maxLength($displayName, self::MAX_DISPLAY_NAME_LENGTH, 'HostTemplate::displayName');
         }
         $this->displayName = $displayName;
         return $this;
@@ -331,7 +348,7 @@ class HostTemplate
     public function setAddress(?string $address): self
     {
         if ($address !== null) {
-            Assertion::maxLength($address, 255, 'HostTemplate::address');
+            Assertion::maxLength($address, self::MAX_ADDRESS_LENGTH, 'HostTemplate::address');
         }
         $this->address = $address;
         return $this;
@@ -353,7 +370,7 @@ class HostTemplate
     public function setComment(?string $comment): self
     {
         if ($comment !== null) {
-            Assertion::maxLength($comment, 65535, 'HostTemplate::comment');
+            Assertion::maxLength($comment, self::MAX_COMMENTS_LENGTH, 'HostTemplate::comment');
         }
         $this->comment = $comment;
         return $this;
@@ -433,9 +450,7 @@ class HostTemplate
     public function setActiveChecksStatus(int $activeChecksStatus): HostTemplate
     {
         if (!in_array($activeChecksStatus, self::AVAILABLE_STATUS)) {
-            throw new \InvalidArgumentException(
-                sprintf(_('This active checks status (%d) is not allowed'), $activeChecksStatus)
-            );
+            throw HostTemplateArgumentException::badActiveChecksStatus($activeChecksStatus);
         }
         $this->activeChecksStatus = $activeChecksStatus;
         return $this;
@@ -456,9 +471,7 @@ class HostTemplate
     public function setPassiveChecksStatus(int $passiveChecksStatus): HostTemplate
     {
         if (!in_array($passiveChecksStatus, self::AVAILABLE_STATUS)) {
-            throw new \InvalidArgumentException(
-                sprintf(_('This passive checks status (%d) is not allowed'), $passiveChecksStatus)
-            );
+            throw HostTemplateArgumentException::badPassiveChecksStatus($passiveChecksStatus);
         }
         $this->passiveChecksStatus = $passiveChecksStatus;
         return $this;
@@ -475,11 +488,12 @@ class HostTemplate
     /**
      * @param int|null $maxCheckAttempts
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setMaxCheckAttempts(?int $maxCheckAttempts): HostTemplate
     {
-        if ($maxCheckAttempts !== null && $maxCheckAttempts < 1) {
-            throw new \InvalidArgumentException(_('The max check attempts must be greater than 0'));
+        if ($maxCheckAttempts !== null) {
+            Assertion::min($maxCheckAttempts, self::MIN_CHECK_ATTEMPS, 'HostTemplate::maxCheckAttempts');
         }
         $this->maxCheckAttempts = $maxCheckAttempts;
         return $this;
@@ -496,11 +510,12 @@ class HostTemplate
     /**
      * @param int|null $checkInterval
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setCheckInterval(?int $checkInterval): HostTemplate
     {
-        if ($checkInterval !== null && $checkInterval < 1) {
-            throw new \InvalidArgumentException(_('The check interval must be greater than 0'));
+        if ($checkInterval !== null) {
+            Assertion::min($checkInterval, self::MIN_CHECK_INTERVAL, 'HostTemplate::checkInterval');
         }
         $this->checkInterval = $checkInterval;
         return $this;
@@ -517,11 +532,12 @@ class HostTemplate
     /**
      * @param int|null $retryCheckInterval
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setRetryCheckInterval(?int $retryCheckInterval): HostTemplate
     {
-        if ($retryCheckInterval !== null && $retryCheckInterval < 1) {
-            throw new \InvalidArgumentException(_('The retry check interval must be greater than 0'));
+        if ($retryCheckInterval !== null) {
+            Assertion::min($retryCheckInterval, self::MIN_RETRY_CHECK_INTERVAL, 'HostTemplate::retryCheckInterval');
         }
         $this->retryCheckInterval = $retryCheckInterval;
         return $this;
@@ -542,9 +558,7 @@ class HostTemplate
     public function setNotificationsStatus(int $notificationsStatus): HostTemplate
     {
         if (!in_array($notificationsStatus, self::AVAILABLE_STATUS)) {
-            throw new \InvalidArgumentException(
-                sprintf(_('This notifications status (%d) is not allowed'), $notificationsStatus)
-            );
+            HostTemplateArgumentException::badNotificationStatus($notificationsStatus);
         }
         $this->notificationsStatus = $notificationsStatus;
         return $this;
@@ -561,12 +575,15 @@ class HostTemplate
     /**
      * @param int|null $notificationInterval
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setNotificationInterval(?int $notificationInterval): HostTemplate
     {
-        if ($notificationInterval !== null && $notificationInterval < 0) {
-            throw new \InvalidArgumentException(
-                _('The notification interval must be greater than or equal to 0')
+        if ($notificationInterval !== null) {
+            Assertion::greaterOrEqualThan(
+                $notificationInterval,
+                self::MIN_NOTIFICATION_INTERVAL,
+                'HostTemplate::notificationInterval'
             );
         }
         $this->notificationInterval = $notificationInterval;
@@ -584,12 +601,15 @@ class HostTemplate
     /**
      * @param int|null $firstNotificationDelay
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setFirstNotificationDelay(?int $firstNotificationDelay): HostTemplate
     {
-        if ($firstNotificationDelay !== null && $firstNotificationDelay < 0) {
-            throw new \InvalidArgumentException(
-                _('The first notification delay must be greater than or equal to 0')
+        if ($firstNotificationDelay !== null) {
+            Assertion::greaterOrEqualThan(
+                $firstNotificationDelay,
+                self::MIN_FIRST_NOTIFICATION_DELAY,
+                'HostTemplate::firstNotificationDelay'
             );
         }
         $this->firstNotificationDelay = $firstNotificationDelay;
@@ -607,12 +627,15 @@ class HostTemplate
     /**
      * @param int|null $recoveryNotificationDelay
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setRecoveryNotificationDelay(?int $recoveryNotificationDelay): HostTemplate
     {
-        if ($recoveryNotificationDelay !== null && $recoveryNotificationDelay < 0) {
-            throw new \InvalidArgumentException(
-                _('The first notification delay must be greater than or equal to 0')
+        if ($recoveryNotificationDelay !== null) {
+            Assertion::greaterOrEqualThan(
+                $recoveryNotificationDelay,
+                self::MIN_RECOVERY_NOTIFICATION_DELAY,
+                'HostTemplate::recoveryNotificationDelay'
             );
         }
         $this->recoveryNotificationDelay = $recoveryNotificationDelay;
@@ -630,6 +653,7 @@ class HostTemplate
     /**
      * @param int $notificationOptions
      * @return HostTemplate
+     * @throws \InvalidArgumentException
      */
     public function setNotificationOptions(int $notificationOptions): HostTemplate
     {
@@ -638,10 +662,7 @@ class HostTemplate
             | HostTemplate::NOTIFICATION_OPTION_RECOVERY
             | HostTemplate::NOTIFICATION_OPTION_FLAPPING
             | HostTemplate::NOTIFICATION_OPTION_DOWNTIME_SCHEDULED;
-        if (
-            $notificationOptions < 0
-            || ($notificationOptions & $sumOfAllOptions) !== $notificationOptions
-        ) {
+        if ($notificationOptions < 0 || ($notificationOptions & $sumOfAllOptions) !== $notificationOptions) {
             throw HostTemplateArgumentException::badNotificationOptions($notificationOptions);
         }
         $this->notificationOptions = $notificationOptions;
@@ -664,7 +685,7 @@ class HostTemplate
     public function setSnmpCommunity(?string $snmpCommunity): HostTemplate
     {
         if ($snmpCommunity !== null) {
-            Assertion::maxLength($snmpCommunity, 255, 'HostTemplate::snmpCommunity');
+            Assertion::maxLength($snmpCommunity, self::MAX_SNMP_COMMUNITY_LENGTH, 'HostTemplate::snmpCommunity');
         }
         $this->snmpCommunity = $snmpCommunity;
         return $this;
@@ -681,11 +702,12 @@ class HostTemplate
     /**
      * @param string|null $snmpVersion The SNMP versions available are 1, 2c and 3.
      * @return HostTemplate
+     * @throws \InvalidArgumentException
      */
     public function setSnmpVersion(?string $snmpVersion): HostTemplate
     {
         if ($snmpVersion !== null && !in_array($snmpVersion, ['1', '2c', '3'])) {
-            throw new \InvalidArgumentException(sprintf(_('This SNMP version (%s) is not allowed'), $snmpVersion));
+            throw HostTemplateArgumentException::badSnmpVersion($snmpVersion);
         }
         $this->snmpVersion = $snmpVersion;
         return $this;
@@ -725,7 +747,7 @@ class HostTemplate
     public function setAlternativeIcon(?string $alternativeIcon): HostTemplate
     {
         if ($alternativeIcon !== null) {
-            Assertion::maxLength($alternativeIcon, 200, 'HostTemplate::alternativeIcon');
+            Assertion::maxLength($alternativeIcon, self::MAX_ALTERNATIF_ICON_TEXT, 'HostTemplate::alternativeIcon');
         }
         $this->alternativeIcon = $alternativeIcon;
         return $this;
@@ -765,7 +787,7 @@ class HostTemplate
     public function setUrlNotes(?string $urlNotes): HostTemplate
     {
         if ($urlNotes !== null) {
-            Assertion::maxLength($urlNotes, 65535, 'HostTemplate::urlNotes');
+            Assertion::maxLength($urlNotes, self::MAX_URL_NOTES, 'HostTemplate::urlNotes');
         }
         $this->urlNotes = $urlNotes;
         return $this;
@@ -787,7 +809,7 @@ class HostTemplate
     public function setActionUrl(?string $actionUrl): HostTemplate
     {
         if ($actionUrl !== null) {
-            Assertion::maxLength($actionUrl, 65535, 'HostTemplate::actionUrl');
+            Assertion::maxLength($actionUrl, self::MAX_ACTION_URL, 'HostTemplate::actionUrl');
         }
         $this->actionUrl = $actionUrl;
         return $this;
@@ -809,7 +831,7 @@ class HostTemplate
     public function setNotes(?string $notes): HostTemplate
     {
         if ($notes !== null) {
-            Assertion::maxLength($notes, 65535, 'HostTemplate::notes');
+            Assertion::maxLength($notes, self::MAX_NOTES, 'HostTemplate::notes');
         }
         $this->notes = $notes;
         return $this;
@@ -826,6 +848,7 @@ class HostTemplate
     /**
      * @param int $stalkingOptions
      * @return HostTemplate
+     * @throws \InvalidArgumentException
      */
     public function setStalkingOptions(int $stalkingOptions): HostTemplate
     {
@@ -833,9 +856,7 @@ class HostTemplate
             | HostTemplate::STALKING_OPTION_DOWN
             | HostTemplate::STALKING_OPTION_UNREACHABLE;
         if ($stalkingOptions < 0 || ($stalkingOptions & $sumOfAllOptions) !== $stalkingOptions) {
-            throw new \InvalidArgumentException(
-                sprintf(_('Invalid stalking option (%d)'), $stalkingOptions)
-            );
+            throw HostTemplateArgumentException::badStalkingOptions($stalkingOptions);
         }
         $this->stalkingOptions = $stalkingOptions;
         return $this;

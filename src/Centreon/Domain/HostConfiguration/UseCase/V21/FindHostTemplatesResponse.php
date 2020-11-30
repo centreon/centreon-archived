@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\UseCase\v2_1;
+namespace Centreon\Domain\HostConfiguration\UseCase\V21;
 
 use Centreon\Domain\HostConfiguration\Model\HostTemplate;
 use Centreon\Domain\Media\Model\Image;
@@ -28,14 +28,14 @@ use Centreon\Domain\Media\Model\Image;
 /**
  * This class is a DTO for the FindHostTemplates use case.
  *
- * @package Centreon\Domain\HostConfiguration\UseCase\v2_1
+ * @package Centreon\Domain\HostConfiguration\UseCase\V21
  */
 class FindHostTemplatesResponse
 {
     /**
      * @var array<int, array<string, mixed>>
      */
-    private $hostTemplates;
+    private $hostTemplates = [];
 
     /**
      * @param HostTemplate[] $hostTemplates

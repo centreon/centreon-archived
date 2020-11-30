@@ -29,8 +29,68 @@ namespace Centreon\Domain\HostConfiguration\Exception;
  */
 class HostTemplateArgumentException extends \InvalidArgumentException
 {
+    /**
+     * @param int $options
+     * @return self
+     */
     public static function badNotificationOptions(int $options): self
     {
         return new self(sprintf(_('Invalid notification option (%d)'), $options));
+    }
+
+    /**
+     * @param int $options
+     * @return self
+     */
+    public static function badStalkingOptions(int $options): self
+    {
+        return new self(sprintf(_('Invalid stalking option (%d)'), $options));
+    }
+
+    /**
+     * @param string $snmpVersion
+     * @return self
+     */
+    public static function badSnmpVersion(string $snmpVersion): self
+    {
+        return new self(sprintf(_('This SNMP version (%s) is not allowed'), $snmpVersion));
+    }
+
+    /**
+     * @param int $activeChecksStatus
+     * @return self
+     */
+    public static function badActiveChecksStatus(int $activeChecksStatus): self
+    {
+        return new self(sprintf(_('This active checks status (%d) is not allowed'), $activeChecksStatus));
+    }
+
+    /**
+     * @param int $passiveChecksStatus
+     * @return self
+     */
+    public static function badPassiveChecksStatus(int $passiveChecksStatus): self
+    {
+        return new self(sprintf(_('This passive checks status (%d) is not allowed'), $passiveChecksStatus));
+    }
+
+    /**
+     * @param int $notificationStatus
+     * @return self
+     */
+    public static function badNotificationStatus(int $notificationStatus): self
+    {
+        return new self(sprintf(_('This notifications status (%d) is not allowed'), $notificationStatus));
+    }
+
+    /**
+     * @param int $notificationInterval
+     * @return self
+     */
+    public static function badNotificationInterval(int $notificationInterval): self
+    {
+        return new self(
+            sprintf(_('The notification interval must be greater than or equal to 0'), $notificationInterval)
+        );
     }
 }
