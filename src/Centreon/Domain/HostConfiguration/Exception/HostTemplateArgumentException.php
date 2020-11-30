@@ -31,7 +31,7 @@ class HostTemplateArgumentException extends \InvalidArgumentException
 {
     /**
      * @param int $options
-     * @return static
+     * @return self
      */
     public static function badNotificationOptions(int $options): self
     {
@@ -40,7 +40,7 @@ class HostTemplateArgumentException extends \InvalidArgumentException
 
     /**
      * @param int $options
-     * @return static
+     * @return self
      */
     public static function badStalkingOptions(int $options): self
     {
@@ -49,7 +49,7 @@ class HostTemplateArgumentException extends \InvalidArgumentException
 
     /**
      * @param string $snmpVersion
-     * @return static
+     * @return self
      */
     public static function badSnmpVersion(string $snmpVersion): self
     {
@@ -58,7 +58,7 @@ class HostTemplateArgumentException extends \InvalidArgumentException
 
     /**
      * @param int $activeChecksStatus
-     * @return static
+     * @return self
      */
     public static function badActiveChecksStatus(int $activeChecksStatus): self
     {
@@ -67,7 +67,7 @@ class HostTemplateArgumentException extends \InvalidArgumentException
 
     /**
      * @param int $passiveChecksStatus
-     * @return static
+     * @return self
      */
     public static function badPassiveChecksStatus(int $passiveChecksStatus): self
     {
@@ -76,7 +76,7 @@ class HostTemplateArgumentException extends \InvalidArgumentException
 
     /**
      * @param int $notificationStatus
-     * @return static
+     * @return self
      */
     public static function badNotificationStatus(int $notificationStatus): self
     {
@@ -85,12 +85,12 @@ class HostTemplateArgumentException extends \InvalidArgumentException
 
     /**
      * @param int $notificationInterval
-     * @return static
+     * @return self
      */
     public static function badNotificationInterval(int $notificationInterval): self
     {
-        return new self(sprintf(_('The notification interval must be greater than or equal to 0'), $notificationInterval));
+        return new self(
+            sprintf(_('The notification interval must be greater than or equal to 0'), $notificationInterval)
+        );
     }
-
-
 }

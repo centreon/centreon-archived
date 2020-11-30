@@ -46,7 +46,7 @@ class HostTemplateTest extends TestCase
             | HostTemplate::NOTIFICATION_OPTION_RECOVERY
             | HostTemplate::NOTIFICATION_OPTION_FLAPPING
             | HostTemplate::NOTIFICATION_OPTION_DOWNTIME_SCHEDULED
-        )+1;
+        ) + 1;
         $this->expectException(HostTemplateArgumentException::class);
         $this->expectExceptionMessage(
             HostTemplateArgumentException::badNotificationOptions($optionsValueToTest)->getMessage()
@@ -64,7 +64,7 @@ class HostTemplateTest extends TestCase
             HostTemplate::STALKING_OPTION_UP
             | HostTemplate::STALKING_OPTION_DOWN
             | HostTemplate::STALKING_OPTION_UNREACHABLE
-        )+1;
+        ) + 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
             HostTemplateArgumentException::badStalkingOptions($optionsValueToTest)->getMessage()

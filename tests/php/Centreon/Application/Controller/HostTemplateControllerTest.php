@@ -43,7 +43,7 @@ use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;
 class HostTemplateControllerTest extends TestCase
 {
     /**
-     * @var RequestParametersInterface|\PHPUnit\Framework\MockObject\MockObject 
+     * @var RequestParametersInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $requestParammeters;
 
@@ -51,12 +51,13 @@ class HostTemplateControllerTest extends TestCase
      * @var FindHostTemplates|\PHPUnit\Framework\MockObject\MockObject
      */
     private $findHostTemplate;
+
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|ContainerInterface
+     * @var ContainerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $container;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->requestParammeters = $this->createMock(RequestParametersInterface::class);
         $this->requestParammeters->expects($this->any())
@@ -70,14 +71,15 @@ class HostTemplateControllerTest extends TestCase
                     "total" => 0
                 ]
             );
+
         $this->findHostTemplate = $this->createMock(FindHostTemplates::class);
 
         $adminContact = (new Contact())
             ->setId(1)
             ->setName('admin')
             ->setAdmin(true)
-            ->setTimezone(new \DateTimeZone('Europe/Paris'))
-            ->addTopologyRule(Contact::ROLE_API_CONFIGURATION);
+            ->setTimezone(new \DateTimeZone('Europe/Paris'));
+        $adminContact->addTopologyRule(Contact::ROLE_API_CONFIGURATION);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authorizationChecker->expects($this->any())
@@ -107,8 +109,8 @@ class HostTemplateControllerTest extends TestCase
                 $tokenStorage
             );
     }
-    
-    public function testFindHostTemplates()
+
+    public function testFindHostTemplates(): void
     {
         $controller = new HostTemplateController();
         $controller->setContainer($this->container);

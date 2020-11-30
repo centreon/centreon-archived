@@ -36,7 +36,7 @@ class AssertionException extends \InvalidArgumentException
      * @param int $valueLength Length of the tested value
      * @param int $maxLength Maximum length of the expected value in characters
      * @param string|null $propertyPath Property's path (ex: Host::name)
-     * @return static
+     * @return self
      */
     public static function maxLength(string $value, int $valueLength, int $maxLength, string $propertyPath = null): self
     {
@@ -61,7 +61,7 @@ class AssertionException extends \InvalidArgumentException
      * @param int $valueLength Length of the tested value
      * @param int $minLength Minimum length of the expected value in characters
      * @param string|null $propertyPath Property's path (ex: Host::name)
-     * @return static
+     * @return self
      */
     public static function minLength(string $value, int $valueLength, int $minLength, string $propertyPath = null): self
     {
@@ -85,7 +85,7 @@ class AssertionException extends \InvalidArgumentException
      * @param int $value Tested value
      * @param int $minValue Minimum value
      * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
-     * @return static
+     * @return self
      */
     public static function min(int $value, int $minValue, string $propertyPath = null): self
     {
@@ -105,7 +105,7 @@ class AssertionException extends \InvalidArgumentException
      * @param int $value Tested value
      * @param int $maxValue Maximum value
      * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
-     * @return static
+     * @return self
      */
     public static function max(int $value, int $maxValue, string $propertyPath = null): self
     {
@@ -125,7 +125,7 @@ class AssertionException extends \InvalidArgumentException
      * @param int $value Tested value
      * @param int $limit Limit value
      * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
-     * @return static
+     * @return self
      */
     public static function greaterOrEqualThan(int $value, int $limit, string $propertyPath = null): self
     {

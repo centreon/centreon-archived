@@ -36,7 +36,7 @@ class TestAssertion extends TestCase
      */
     private $propertyName;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->propertyName = 'Class::property';
     }

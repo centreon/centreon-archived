@@ -40,9 +40,13 @@ class Assertion
             $value,
             $maxLength,
             function (array $parameters) {
+                $length = \mb_strlen($parameters['value'], $parameters['encoding']);
+                if ($length === false) {
+                    $length = strlen($parameters['value']);
+                }
                 return AssertionException::maxLength(
                     $parameters['value'],
-                    \mb_strlen($parameters['value'], $parameters['encoding']),
+                    $length,
                     $parameters['maxLength'],
                     $parameters['propertyPath']
                 )->getMessage();
