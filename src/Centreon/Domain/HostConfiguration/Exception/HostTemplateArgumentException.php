@@ -73,4 +73,24 @@ class HostTemplateArgumentException extends \InvalidArgumentException
     {
         return new self(sprintf(_('This passive checks status (%d) is not allowed'), $passiveChecksStatus));
     }
+
+    /**
+     * @param int $notificationStatus
+     * @return static
+     */
+    public static function badNotificationStatus(int $notificationStatus): self
+    {
+        return new self(sprintf(_('This notifications status (%d) is not allowed'), $notificationStatus));
+    }
+
+    /**
+     * @param int $notificationInterval
+     * @return static
+     */
+    public static function badNotificationInterval(int $notificationInterval): self
+    {
+        return new self(sprintf(_('The notification interval must be greater than or equal to 0'), $notificationInterval));
+    }
+
+
 }

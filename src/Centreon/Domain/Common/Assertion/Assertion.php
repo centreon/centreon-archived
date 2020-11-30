@@ -27,10 +27,10 @@ use Assert\Assertion as Assert;
 class Assertion
 {
     /**
-     * Assert that string value is not longer than $maxLength bits.
+     * Assert that string value is not longer than $maxLength characters.
      *
      * @param string $value Value to test
-     * @param int $maxLength Max length in bits
+     * @param int $maxLength Maximum length of the expected value in characters
      * @param string|null $propertyPath Property's path (ex: Host::name)
      * @throws \Assert\AssertionFailedException
      */
@@ -40,16 +40,12 @@ class Assertion
             $value,
             $maxLength,
             function (array $parameters) {
-                return sprintf(
-                    _(
-                        '[%s] The value "%s" is too long, it should have no more than %d characters,'
-                        . ' but has %d characters'
-                    ),
-                    $parameters['propertyPath'],
+                return AssertionException::maxLength(
                     $parameters['value'],
+                    \mb_strlen($parameters['value'], $parameters['encoding']),
                     $parameters['maxLength'],
-                    \mb_strlen($parameters['value'], $parameters['encoding'])
-                );
+                    $parameters['propertyPath']
+                )->getMessage();
             },
             $propertyPath,
             'UTF-8'
@@ -57,10 +53,10 @@ class Assertion
     }
 
     /**
-     * Assert that a string is at least $minLength bits long.
+     * Assert that a string is at least $minLength characters long.
      *
      * @param string $value Value to test
-     * @param int $minLength Min length in bits
+     * @param int $minLength Minimum length of the expected value in characters
      * @param string|null $propertyPath Property's path (ex: Host::name)
      * @throws \Assert\AssertionFailedException
      */
@@ -86,8 +82,78 @@ class Assertion
         );
     }
 
+    /**
+     * Assert that a value is at least as big as a given limit.
+     *
+     * @param int $value Value to test
+     * @param int $minValue Minimum value
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @throws \Assert\AssertionFailedException
+     */
     public static function min(int $value, int $minValue, string $propertyPath = null): void
     {
-        Assert::min($value, )
+        Assert::min(
+            $value,
+            $minValue,
+            function (array $parameters) {
+                return sprintf(
+                    _('[%s] The value "%d" was expected to be at least %d'),
+                    $parameters['propertyPath'],
+                    $parameters['value'],
+                    $parameters['minValue']
+                );
+            },
+            $propertyPath
+        );
+    }
+
+    /**
+     * Assert that a number is smaller as a given limit.
+     *
+     * @param int $value Value to test
+     * @param int $maxValue Maximum value
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function max(int $value, int $maxValue, string $propertyPath = null): void
+    {
+        Assert::max(
+            $value,
+            $maxValue,
+            function (array $parameters) {
+                return sprintf(
+                    _('[%s] The value "%d" was expected to be at most %d'),
+                    $parameters['propertyPath'],
+                    $parameters['value'],
+                    $parameters['maxValue']
+                );
+            },
+            $propertyPath
+        );
+    }
+
+    /**
+     * Determines if the value is greater or equal than given limit.
+     *
+     * @param int $value Value to test
+     * @param int $limit Limit value (>=)
+     * @param string|null $propertyPath
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function greaterOrEqualThan(int $value, int $limit, string $propertyPath = null): void
+    {
+        Assert::greaterOrEqualThan(
+            $value,
+            $limit,
+            function (array $parameters) {
+                return sprintf(
+                    _('[%s] The value "%d" is not greater or equal than %d'),
+                    $parameters['propertyPath'],
+                    $parameters['value'],
+                    $parameters['limit']
+                );
+            },
+            $propertyPath
+        );
     }
 }
