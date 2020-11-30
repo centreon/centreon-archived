@@ -4,25 +4,20 @@ import {
   buildListingEndpoint,
   ListingModel,
   getData,
-  SearchParameter,
+  ListingParameters,
 } from '@centreon/ui';
+
 import { TimelineEvent } from '../models';
 
-interface Parameters {
-  search: SearchParameter | undefined;
-  page: number;
-  limit: number;
-}
-
-interface TimelineParams {
+interface ListTimeLineEventsProps {
   endpoint: string;
-  parameters: Parameters;
+  parameters: ListingParameters;
 }
 
 const buildListTimelineEventsEndpoint = ({
   endpoint,
   parameters,
-}: TimelineParams): string =>
+}: ListTimeLineEventsProps): string =>
   buildListingEndpoint({
     baseEndpoint: endpoint,
     parameters,
@@ -31,7 +26,7 @@ const buildListTimelineEventsEndpoint = ({
 const listTimelineEvents = (cancelToken: CancelToken) => ({
   endpoint,
   parameters,
-}: TimelineParams): Promise<ListingModel<TimelineEvent>> => {
+}: ListTimeLineEventsProps): Promise<ListingModel<TimelineEvent>> => {
   return getData<ListingModel<TimelineEvent>>(cancelToken)(
     buildListTimelineEventsEndpoint({ endpoint, parameters }),
   );

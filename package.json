@@ -87,6 +87,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.11.1",
+    "@visx/visx": "^1.1.0",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "clsx": "^1.1.1",

@@ -296,6 +296,7 @@ describe(Listing, () => {
       data: {
         result: [
           {
+            id: 0,
             author_name: 'admin',
             start_time: '2020-02-28T08:16:16Z',
             end_time: '2020-02-28T08:18:16Z',
@@ -338,6 +339,7 @@ describe(Listing, () => {
       data: {
         result: [
           {
+            id: 0,
             author_name: 'admin',
             entry_time: '2020-02-28T08:16:00Z',
             is_persistent_comment: true,

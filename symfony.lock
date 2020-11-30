@@ -2,6 +2,9 @@
     "adlawson/vfs": {
         "version": "0.12.1"
     },
+    "beberlei/assert": {
+        "version": "v3.3.0"
+    },
     "behat/behat": {
         "version": "v3.7.0"
     },
@@ -408,6 +411,9 @@
     },
     "symfony/dependency-injection": {
         "version": "v4.4.9"
+    },
+    "symfony/deprecation-contracts": {
+        "version": "v2.2.0"
     },
     "symfony/dom-crawler": {
         "version": "v4.4.9"

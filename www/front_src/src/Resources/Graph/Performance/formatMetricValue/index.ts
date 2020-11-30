@@ -1,17 +1,17 @@
 import numeral from 'numeral';
 import { isNil } from 'ramda';
 
-interface FormatMetricValueParams {
-  base?: number;
-  value?: number | null;
+interface FormatMetricValueProps {
+  value: number | null;
   unit: string;
+  base?: number;
 }
 
 const formatMetricValue = ({
   value,
   unit,
   base = 1000,
-}: FormatMetricValueParams): string | null => {
+}: FormatMetricValueProps): string | null => {
   if (isNil(value)) {
     return null;
   }

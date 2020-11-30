@@ -62,11 +62,7 @@ const getListingEndpoint = ({
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
-interface UseSelector {
-  mockImplementation: (callback) => void;
-}
-
-const mockAppStateSelector = (useSelector: UseSelector): void => {
+const mockAppStateSelector = (useSelector: jest.Mock): void => {
   const appState = {
     intervals: {
       AjaxTimeReloadMonitoring: 60,

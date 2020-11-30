@@ -466,6 +466,8 @@ paths:
 
         * id
         * name
+        * alias
+        * fqdn
         * type
         * status_code
         * status
@@ -475,7 +477,6 @@ paths:
         * severity_level
         * in_downtime
         * acknowledged
-        * impacted_resources_count
         * last_status_change
         * tries
         * last_check
@@ -490,6 +491,7 @@ paths:
         * h.name
         * h.alias
         * h.address
+        * h.fqdn
         * s.description
         * s.group
         * s.group.id
@@ -517,6 +519,45 @@ paths:
                       $ref: '#/components/schemas/Monitoring.ResourceMain'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}:
+    get:
+      tags:
+        - Resource
+      summary: "Get information on host resources"
+      description: "Return a single host with full details of its resources status."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitoring.ResourceFull'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}/services/{service_id}:
+    get:
+      tags:
+        - Resource
+      summary: "Get information on service resource"
+      description: "Return a single service with full details as resource."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitoring.ResourceFull'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -2443,6 +2484,82 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - Topology
+      summary: "Get a platform topology"
+      description: "Get a platform topology in Json Graph Format"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["graph", "nodes", "edges"]
+                properties:
+                  graph:
+                    type: object
+                    description: General informations about schema
+                    properties:
+                      label:
+                        type: string
+                        description: type of Json Graph
+                        example: "centreon-topology"
+                      metadata:
+                        type: object
+                        properties:
+                          version:
+                            type: string
+                            description: Version of the topology
+                            example: "1.0.0"
+                      nodes:
+                        type: object
+                        minItems: 1
+                        properties:
+                          id:
+                            properties:
+                              type:
+                                type: string
+                                description: Server Type of a platform
+                                example: "central"
+                              label:
+                                type: string
+                                description: logical name of a platform
+                                example: "Central"
+                              metadata:
+                                type: object
+                                properties:
+                                  centreon-id:
+                                    type: string
+                                    description: id of a platform as known in centreon database
+                                    example: "1"
+                                  hostname:
+                                    type: string
+                                    description: physical name of a platform
+                                    example: "localhost.localdomain"
+                      edges:
+                        type: array
+                        minItems: 0
+                        items:
+                          type: object
+                          properties:
+                            source:
+                              type: string
+                              description: children platform id as known in the topology
+                              example: "91"
+                            relation:
+                              type: string
+                              description: broker communication type
+                              example: "peer_retention"
+                            target:
+                              type: string
+                              description: parent platform id as known in the topology
+                              example: "1"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     Token:
@@ -3431,6 +3548,82 @@ components:
                 nullable: true
                 description: "Performance data result of the check sent"
                 example: "'used'=453849088B;;;0;1927262208"
+    Monitoring.ResourceFull:
+      allOf:
+        - $ref: "#/components/schemas/Monitoring.ResourceMain"
+      type: object
+      properties:
+        command_line:
+          type: string
+          nullable: true
+          description: "Check command of the host"
+          example: "/usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 -w 3000.0,80% -c 5000.0,100% -p 1"
+        poller_name:
+          type: string
+          nullable: true
+          description: "Name of the monitoring server of the host"
+          example: "Central"
+        timezone:
+          type: string
+          description: "Timezone used by the host"
+          example: "Europe/Paris"
+        flapping:
+          type: boolean
+          description: "Is host flapping"
+          example: false
+        percent_state_change:
+          type: number
+          format: float
+          description: "Percent of Host state change"
+          example: 20.10
+        criticality:
+          type: number
+          nullable: true
+          format: integer
+          description: "Criticality level"
+          example: 1
+        chart_url:
+          type: string
+          nullable: true
+          description: "Chart URL"
+        last_notification:
+          type: string
+          nullable: true
+          format: date-time
+          description: "Last notification date and time in ISO format"
+          example: "2020-02-18T00:00:00"
+        notification_number:
+          type: number
+          nullable: true
+          format: integer
+          description: "Number of notifications"
+          example: 3
+        next_check:
+          type: string
+          nullable: true
+          format: date-time
+          description: "Next planned check"
+          example: "2020-11-23T10:26:19+01:00"
+        performance_data:
+          type: string
+          description: "Details of performance"
+          example: "rta=0,098ms;3000,000;5000,000;0; pl=0%;80;100;0;100 rtmax=0,098ms;;;; rtmin=0,098ms;;;;"
+        execution_time:
+          type: number
+          format: float
+          description: "Check duration"
+          example: 0.005618
+        latency:
+          type: number
+          format: float
+          description: "Host Latency"
+          example: 0.117
+        downtimes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Downtime.Host"
+        acknowledgement:
+          $ref: "#/components/schemas/Acknowledgement.Host"
     Monitoring.Resource.Disacknowledge.Host:
       type: object
       properties:
@@ -3483,17 +3676,22 @@ components:
           type: string
           description: "Resource name"
           example: "Ping"
+        alias:
+          type: string
+          nullable: true
+          description: "Resource alias"
+          example: null
+        fqdn:
+          type: string
+          nullable: true
+          description: "Resource fqdn"
+          example: null
         links:
           $ref: '#/components/schemas/Monitoring.ResourceLinks'
         icon:
           type: object
           nullable: true
           properties:
-            id:
-              type: integer
-              format: int32
-              description: "ID of the image"
-              example: 12
             name:
               type: string
               description: "Name of the icon"
@@ -3523,6 +3721,15 @@ components:
               type: string
               description: "Parent resource name"
               example: "Central"
+            alias:
+              type: string
+              nullable: true
+              description: "Parent resource alias"
+              example: "Host"
+            fqdn:
+              type: string
+              description: "Parent resource fqdn"
+              example: "127.0.0.1"
             links:
               $ref: '#/components/schemas/Monitoring.ResourceLinks'
             status:
@@ -3595,10 +3802,6 @@ components:
               type: string
               description: "Name of the severity"
               example: "severity 1"
-        impacted_resources_count:
-          type: integer
-          description: "count of impacted resources"
-          example: 4
         duration:
           type: string
           nullable: true
@@ -3687,19 +3890,19 @@ components:
               nullable: true
               description: "current resource downtimes endpoint"
               example: "/centreon/api/beta/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
-          externals:
-              type: object
-              properties:
-                action_url:
-                  type: string
-                  nullable: true
-                  description: "URL that can be used to provide more actions to be performed on the resource"
-                  example: "http://mediawiki/resource/name"
-                notes_url:
-                  type: string
-                  nullable: true
-                  description: "URL that can be used to provide more information on the resource"
-                  example: "http://mediawiki/resource/name"
+        externals:
+            type: object
+            properties:
+              action_url:
+                type: string
+                nullable: true
+                description: "URL that can be used to provide more actions to be performed on the resource"
+                example: "http://mediawiki/resource/name"
+              notes_url:
+                type: string
+                nullable: true
+                description: "URL that can be used to provide more information on the resource"
+                example: "http://mediawiki/resource/name"
     Monitoring.ResourceStatus:
       type: object
       properties:

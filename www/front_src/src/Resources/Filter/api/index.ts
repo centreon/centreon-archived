@@ -15,13 +15,13 @@ import { RawFilter, Filter } from '../models';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
 
-interface CustomFiltersParams {
+interface ListCustomFiltersProps {
   limit: number;
   page: number;
 }
 
 const buildListCustomFiltersEndpoint = (
-  parameters: CustomFiltersParams,
+  parameters: ListCustomFiltersProps,
 ): string =>
   buildListingEndpoint({
     baseEndpoint: filterEndpoint,
@@ -38,24 +38,21 @@ const listCustomFilters = (cancelToken: CancelToken) => (): Promise<
 type RawFilterWithoutId = Omit<RawFilter, 'id'>;
 
 const createFilter = (cancelToken: CancelToken) => (
-  parameters: Pick<RawFilter, 'name' | 'criterias'>,
+  rawFilter: RawFilterWithoutId,
 ): Promise<RawFilter> => {
   return postData<RawFilterWithoutId, RawFilter>(cancelToken)({
     endpoint: filterEndpoint,
-    data: parameters,
+    data: rawFilter,
   });
 };
 
-interface FilterParams {
-  id: number | string;
-}
-
-interface UpdateFilterParams extends FilterParams {
-  rawFilter: Pick<RawFilter, 'name' | 'criterias'>;
+interface UpdateFilterProps {
+  id: number;
+  rawFilter: RawFilterWithoutId;
 }
 
 const updateFilter = (cancelToken: CancelToken) => (
-  parameters: UpdateFilterParams,
+  parameters: UpdateFilterProps,
 ): Promise<RawFilter> => {
   return putData<RawFilterWithoutId, RawFilter>(cancelToken)({
     endpoint: `${filterEndpoint}/${parameters.id}`,
@@ -64,15 +61,12 @@ const updateFilter = (cancelToken: CancelToken) => (
 };
 
 interface PatchFilterProps {
-  order: number;
-}
-
-interface PatchFilterParams extends FilterParams {
+  id?: number;
   order: number;
 }
 
 const patchFilter = (cancelToken: CancelToken) => (
-  parameters: PatchFilterParams,
+  parameters: PatchFilterProps,
 ): Promise<Filter> => {
   return patchData<PatchFilterProps, Filter>(cancelToken)({
     endpoint: `${filterEndpoint}/${parameters.id}`,
@@ -80,9 +74,9 @@ const patchFilter = (cancelToken: CancelToken) => (
   });
 };
 
-const deleteFilter = (cancelToken: CancelToken) => (
-  parameters: FilterParams,
-): Promise<void> => {
+const deleteFilter = (cancelToken: CancelToken) => (parameters: {
+  id: number;
+}): Promise<void> => {
   return deleteData<void>(cancelToken)(`${filterEndpoint}/${parameters.id}`);
 };
 

@@ -1,45 +1,19 @@
 import * as React from 'react';
 
-import {
-  ComposedChart,
-  XAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-} from 'recharts';
-import {
-  pipe,
-  map,
-  prop,
-  propEq,
-  find,
-  path,
-  reject,
-  sortBy,
-  isEmpty,
-  isNil,
-} from 'ramda';
+import { ParentSize } from '@visx/visx';
+import { map, prop, propEq, find, reject, sortBy, isEmpty, isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
-import {
-  useRequest,
-  getData,
-  useLocaleDateTimeFormat,
-  timeFormat,
-  dateTimeFormat,
-} from '@centreon/ui';
+import { useRequest, getData, timeFormat } from '@centreon/ui';
 
-import getTimeSeries, { getLineData } from './timeSeries';
+import { getTimeSeries, getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import LoadingSkeleton from './LoadingSkeleton';
 import Legend from './Legend';
-import getGraphLines from './Lines';
-import formatMetricValue from './formatMetricValue';
-
-const fontFamily = 'Roboto, sans-serif';
+import Graph from './Graph';
 
 interface Props {
   endpoint?: string;
@@ -63,10 +37,6 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
     alignItems: 'center',
     height: '100%',
   },
-  graph: {
-    width: '100%',
-    height: '100%',
-  },
   legend: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -84,7 +54,6 @@ const PerformanceGraph = ({
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
-  const { format } = useLocaleDateTimeFormat();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
@@ -125,25 +94,6 @@ const PerformanceGraph = ({
   const sortedLines = sortBy(prop('name'), lineData);
   const displayedLines = reject(propEq('display', false), sortedLines);
 
-  const formatTooltipValue = (
-    value,
-    metric,
-    { unit },
-  ): Array<string | null> => {
-    const legendName = pipe(
-      find(propEq('metric', metric)),
-      path(['name']),
-    )(lineData) as string;
-
-    return [formatMetricValue({ value, unit, base }), legendName];
-  };
-
-  const formatXAxisTick = (tick): string =>
-    format({ date: new Date(tick), formatString: xAxisTickFormat });
-
-  const formatTooltipTime = (tick): string =>
-    format({ date: new Date(tick), formatString: dateTimeFormat });
-
   const getLineByMetric = (metric): LineModel => {
     return find(propEq('metric', metric), lineData) as LineModel;
   };
@@ -175,27 +125,19 @@ const PerformanceGraph = ({
       <Typography variant="body1" color="textPrimary">
         {title}
       </Typography>
-      <ResponsiveContainer className={classes.graph}>
-        <ComposedChart data={timeSeries} stackOffset="sign">
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="timeTick"
-            tickFormatter={formatXAxisTick}
-            tick={{ fontSize: 13 }}
-          />
 
-          {getGraphLines({ lines: displayedLines, base })}
-
-          <Tooltip
-            labelFormatter={formatTooltipTime}
-            formatter={formatTooltipValue}
-            contentStyle={{ fontFamily }}
-            wrapperStyle={{ opacity: 0.7 }}
-            isAnimationActive={false}
-            filterNull
+      <ParentSize>
+        {({ width, height }): JSX.Element => (
+          <Graph
+            width={width}
+            height={height}
+            timeSeries={timeSeries}
+            lines={displayedLines}
+            base={base as number}
+            xAxisTickFormat={xAxisTickFormat}
           />
-        </ComposedChart>
-      </ResponsiveContainer>
+        )}
+      </ParentSize>
       <div className={classes.legend}>
         <Legend
           lines={sortedLines}
@@ -210,4 +152,3 @@ const PerformanceGraph = ({
 };
 
 export default PerformanceGraph;
-export { fontFamily };

@@ -42,7 +42,7 @@ export interface DetailsTableProps {
   columns: Array<DetailsTableColumn>;
 }
 
-const DetailsTable = <TDetails extends unknown>({
+const DetailsTable = <TDetails extends { id: number }>({
   endpoint,
   columns,
 }: DetailsTableProps): JSX.Element => {
@@ -83,8 +83,8 @@ const DetailsTable = <TDetails extends unknown>({
             </TableRow>
           )}
           {success &&
-            details?.map((detail, index) => (
-              <TableRow key={index.toString()}>
+            details?.map((detail) => (
+              <TableRow key={detail.id}>
                 {columns.map(({ label, getContent, width }) => (
                   <TableCell key={label} style={{ maxWidth: width }}>
                     <span>{getContent?.(detail)}</span>

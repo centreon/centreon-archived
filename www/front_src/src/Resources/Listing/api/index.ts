@@ -2,12 +2,12 @@ import { CancelToken } from 'axios';
 
 import { getData } from '@centreon/ui';
 
-import { buildResourcesEndpoint } from './endpoint';
-import { ListResourcesEndpointParams, ResourceListing } from '../../models';
+import { buildResourcesEndpoint, ListResourcesProps } from './endpoint';
+import { ResourceListing } from '../../models';
 
 const listResources = (cancelToken: CancelToken) => (
-  endpointParams: ListResourcesEndpointParams,
+  parameters: ListResourcesProps,
 ): Promise<ResourceListing> =>
-  getData<ResourceListing>(cancelToken)(buildResourcesEndpoint(endpointParams));
+  getData<ResourceListing>(cancelToken)(buildResourcesEndpoint(parameters));
 
 export { listResources };

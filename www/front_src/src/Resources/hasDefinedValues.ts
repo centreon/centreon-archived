@@ -1,9 +1,12 @@
 import { pipe, isNil, isEmpty, not, reject, values } from 'ramda';
 
-import { ResourceUris } from './models';
-
-const hasDefinedValues = (object: ResourceUris): boolean => {
-  return pipe(values, reject(isNil), isEmpty, not)(object);
+const hasDefinedValues = <TValue>(object: TValue): boolean => {
+  return pipe(
+    values,
+    reject(isNil),
+    isEmpty,
+    not,
+  )(object as Record<string, unknown>);
 };
 
 export default hasDefinedValues;
