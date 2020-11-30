@@ -4625,7 +4625,7 @@ components:
               creation_time:
                 type: string
                 format: date-time
-                description: "Creation of dataset on a ISO Format"
+                description: "Creation of dataset on an ISO Format"
                 example: "2020-11-24T09:13:04+01:00"
               event_time:
                 type: string
