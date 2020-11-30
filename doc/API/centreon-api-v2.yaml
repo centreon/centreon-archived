@@ -537,7 +537,27 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Monitoring.Resource.Host'
+                $ref: '#/components/schemas/Monitoring.ResourceFull'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}/services/{service_id}:
+    get:
+      tags:
+        - Resource
+      summary: "Get information on service resource"
+      description: "Return a single service with full details as resource."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitoring.ResourceFull'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -3528,7 +3548,7 @@ components:
                 nullable: true
                 description: "Performance data result of the check sent"
                 example: "'used'=453849088B;;;0;1927262208"
-    Monitoring.Resource.Host:
+    Monitoring.ResourceFull:
       allOf:
         - $ref: "#/components/schemas/Monitoring.ResourceMain"
       type: object
