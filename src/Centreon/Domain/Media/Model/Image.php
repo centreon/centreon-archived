@@ -31,6 +31,10 @@ use Centreon\Domain\Common\Assertion\Assertion;
  */
 class Image
 {
+    public const MAX_NAME_LENGTH = 255,
+                 MAX_PATH_LENGTH = 255,
+                 MAX_COMMENTS_LENGTH = 65535;
+
     /**
      * @var int|null
      */
@@ -84,7 +88,7 @@ class Image
      */
     public function setName(string $name): Image
     {
-        Assertion::maxLength($name, 255, 'Image::name');
+        Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'Image::name');
         $this->name = $name;
         return $this;
     }
@@ -104,7 +108,7 @@ class Image
      */
     public function setPath(string $path): Image
     {
-        Assertion::maxLength($path, 255, 'Image::path');
+        Assertion::maxLength($path, self::MAX_PATH_LENGTH, 'Image::path');
         $this->path = $path;
         return $this;
     }
@@ -125,7 +129,7 @@ class Image
     public function setComment(?string $comment): Image
     {
         if ($comment !== null) {
-            Assertion::maxLength($comment, 65535, 'Image::comment');
+            Assertion::maxLength($comment, self::MAX_COMMENTS_LENGTH, 'Image::comment');
         }
         $this->comment = $comment;
         return $this;
