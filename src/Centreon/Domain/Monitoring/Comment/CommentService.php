@@ -201,18 +201,27 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
          * the resource ids provided
          */
         if ($this->contact->isAdmin()) {
-            $hosts = $this->monitoringRepository->findHostsByIdsForAdminUser($resourceIds['host']);
-            $services = $this->monitoringRepository->findServicesByIdsForAdminUser($resourceIds['service']);
+            if (!empty($resourceIds['host'])) {
+                $hosts = $this->monitoringRepository->findHostsByIdsForAdminUser($resourceIds['host']);
+            }
+
+            if (!empty($resourceIds['services'])) {
+                $services = $this->monitoringRepository->findServicesByIdsForAdminUser($resourceIds['service']);
+            }
         } else {
             $accessGroups = $this->accessGroupRepository->findByContact($this->contact);
 
-            $hosts = $this->monitoringRepository
-                ->filterByAccessGroups($accessGroups)
-                ->findHostsByIdsForNonAdminUser($resourceIds['host']);
+            if (!empty($resourcesId['host'])) {
+                $hosts = $this->monitoringRepository
+                    ->filterByAccessGroups($accessGroups)
+                    ->findHostsByIdsForNonAdminUser($resourceIds['host']);
+            }
 
-            $services = $this->monitoringRepository
-                ->filterByAccessGroups($accessGroups)
-                ->findServicesByIdsForNonAdminUser($resourceIds['service']);
+            if (!empty($resourcesIds['service'])) {
+                $services = $this->monitoringRepository
+                    ->filterByAccessGroups($accessGroups)
+                    ->findServicesByIdsForNonAdminUser($resourceIds['service']);
+            }
         }
 
         foreach ($hosts as $key => $host) {
