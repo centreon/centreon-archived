@@ -2566,7 +2566,7 @@ paths:
         - Gorgone
       parameters:
         - $ref: '#/components/parameters/PollerId'
-        - $ref: '#/components/parameters/Token'
+        - $ref: '#/components/parameters/GorgoneToken'
       responses:
         '200':
             description: "OK"
@@ -2869,7 +2869,7 @@ components:
         type: integer
         format: int64
         example: 5
-    Token:
+    GorgoneToken:
       in: path
       name: token
       description: "Gorgone Token"
