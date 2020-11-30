@@ -189,7 +189,7 @@ class SqlRequestParametersTranslatorTest extends TestCase
         ]);
         $sqlRequestParametersTranslator->addNormalizer(
             'event.date',
-            new class() implements NormalizerInterface
+            new class implements NormalizerInterface
             {
                 public function normalize($valueToNormalize)
                 {
