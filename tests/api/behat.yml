@@ -35,7 +35,7 @@ default:
     comment:
       paths: [ "%paths.base%/features/Comment.feature" ]
       contexts:
-        - Centreon\Test\Api\Context\CommentContextt
+        - Centreon\Test\Api\Context\CommentContext
     acknowledgement:
       paths: [ "%paths.base%/features/Acknowledgement.feature" ]
       contexts:
