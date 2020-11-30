@@ -20,9 +20,9 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\HostConfiguration\UseCase\v2_1;
+namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
 
-use Centreon\Domain\HostConfiguration\UseCase\v2_1\FindHostTemplatesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplatesResponse;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;
 
 /**
@@ -31,11 +31,19 @@ use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;
 class FindHostTemplateResponseTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * We test the transformation of an entity into an array.
-     *
-     * @throws \Exception
+     * We test the transformation of an empty response into an array.
      */
-    public function testResponse(): void
+    public function testEmptyResponse(): void
+    {
+        $response = new FindHostTemplatesResponse();
+        $hostTemplates = $response->getHostTemplates();
+        $this->assertCount(0, $hostTemplates);
+    }
+    
+    /**
+     * We test the transformation of an entity into an array.
+     */
+    public function testNotEmptyResponse(): void
     {
         $hostTemplate = HostTemplateTest::createEntity();
         $response = new FindHostTemplatesResponse();

@@ -20,11 +20,11 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\HostConfiguration\UseCase\v2_1;
+namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
 
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Model\HostTemplate;
-use Centreon\Domain\HostConfiguration\UseCase\v2_1\FindHostTemplates;
+use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplates;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;
 
