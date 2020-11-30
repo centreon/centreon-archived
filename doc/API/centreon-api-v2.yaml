@@ -4630,7 +4630,7 @@ components:
               event_time:
                 type: string
                 format: date-time
-                description: "Time when event occured on a ISO Format"
+                description: "Time when event occured on an ISO Format"
                 example: "2020-11-24T09:11:00+01:00"
               id:
                 type: number
