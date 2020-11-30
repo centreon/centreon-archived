@@ -85,4 +85,9 @@ class Assertion
             'UTF-8'
         );
     }
+
+    public static function min(int $value, int $minValue, string $propertyPath = null): void
+    {
+        Assert::min($value, )
+    }
 }

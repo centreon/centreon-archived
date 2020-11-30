@@ -39,7 +39,7 @@ class FindHostTemplateResponseTest extends \PHPUnit\Framework\TestCase
         $hostTemplates = $response->getHostTemplates();
         $this->assertCount(0, $hostTemplates);
     }
-    
+
     /**
      * We test the transformation of an entity into an array.
      */

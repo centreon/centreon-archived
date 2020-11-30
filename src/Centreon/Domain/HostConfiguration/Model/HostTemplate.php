@@ -433,9 +433,7 @@ class HostTemplate
     public function setActiveChecksStatus(int $activeChecksStatus): HostTemplate
     {
         if (!in_array($activeChecksStatus, self::AVAILABLE_STATUS)) {
-            throw new \InvalidArgumentException(
-                sprintf(_('This active checks status (%d) is not allowed'), $activeChecksStatus)
-            );
+            throw HostTemplateArgumentException::badActiveChecksStatus($activeChecksStatus);
         }
         $this->activeChecksStatus = $activeChecksStatus;
         return $this;
@@ -456,9 +454,7 @@ class HostTemplate
     public function setPassiveChecksStatus(int $passiveChecksStatus): HostTemplate
     {
         if (!in_array($passiveChecksStatus, self::AVAILABLE_STATUS)) {
-            throw new \InvalidArgumentException(
-                sprintf(_('This passive checks status (%d) is not allowed'), $passiveChecksStatus)
-            );
+            throw HostTemplateArgumentException::badPassiveChecksStatus($passiveChecksStatus);
         }
         $this->passiveChecksStatus = $passiveChecksStatus;
         return $this;
@@ -630,6 +626,7 @@ class HostTemplate
     /**
      * @param int $notificationOptions
      * @return HostTemplate
+     * @throw \InvalidArgumentException
      */
     public function setNotificationOptions(int $notificationOptions): HostTemplate
     {
@@ -638,10 +635,7 @@ class HostTemplate
             | HostTemplate::NOTIFICATION_OPTION_RECOVERY
             | HostTemplate::NOTIFICATION_OPTION_FLAPPING
             | HostTemplate::NOTIFICATION_OPTION_DOWNTIME_SCHEDULED;
-        if (
-            $notificationOptions < 0
-            || ($notificationOptions & $sumOfAllOptions) !== $notificationOptions
-        ) {
+        if ($notificationOptions < 0 || ($notificationOptions & $sumOfAllOptions) !== $notificationOptions) {
             throw HostTemplateArgumentException::badNotificationOptions($notificationOptions);
         }
         $this->notificationOptions = $notificationOptions;
@@ -681,11 +675,12 @@ class HostTemplate
     /**
      * @param string|null $snmpVersion The SNMP versions available are 1, 2c and 3.
      * @return HostTemplate
+     * @throw \InvalidArgumentException
      */
     public function setSnmpVersion(?string $snmpVersion): HostTemplate
     {
         if ($snmpVersion !== null && !in_array($snmpVersion, ['1', '2c', '3'])) {
-            throw new \InvalidArgumentException(sprintf(_('This SNMP version (%s) is not allowed'), $snmpVersion));
+            throw HostTemplateArgumentException::badSnmpVersion($snmpVersion);
         }
         $this->snmpVersion = $snmpVersion;
         return $this;
@@ -826,6 +821,7 @@ class HostTemplate
     /**
      * @param int $stalkingOptions
      * @return HostTemplate
+     * @throw \InvalidArgumentException
      */
     public function setStalkingOptions(int $stalkingOptions): HostTemplate
     {
@@ -833,9 +829,7 @@ class HostTemplate
             | HostTemplate::STALKING_OPTION_DOWN
             | HostTemplate::STALKING_OPTION_UNREACHABLE;
         if ($stalkingOptions < 0 || ($stalkingOptions & $sumOfAllOptions) !== $stalkingOptions) {
-            throw new \InvalidArgumentException(
-                sprintf(_('Invalid stalking option (%d)'), $stalkingOptions)
-            );
+            throw HostTemplateArgumentException::badStalkingOptions($stalkingOptions);
         }
         $this->stalkingOptions = $stalkingOptions;
         return $this;
