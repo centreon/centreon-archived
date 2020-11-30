@@ -47,7 +47,6 @@ const fillEntities = (): Array<Resource> => {
     id: index,
     name: `E${index}`,
     status: {
-      code: 0,
       name: 'OK',
       severity_code: 5,
     },
@@ -73,6 +72,9 @@ const fillEntities = (): Array<Resource> => {
         configuration: index % 7 === 0 ? 'uri' : null,
         logs: index % 4 === 0 ? 'uri' : null,
         reporting: index % 3 === 0 ? 'uri' : null,
+      },
+      externals: {
+        notes_url: 'https://centreon.com',
       },
     },
     passive_checks: index % 8 === 0,
