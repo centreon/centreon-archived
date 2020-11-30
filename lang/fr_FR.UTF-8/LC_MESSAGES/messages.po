@@ -10295,14 +10295,6 @@ msgid "Impossible to change server due to parentship with other hosts"
 msgstr ""
 "Impossible de changer le serveur à cause d'une relation avec d'autres hôtes"
 
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1043
-msgid "Some hosts parent has not the same instance"
-msgstr "Certains hôtes parents ne sont pas supervisés par le même ordonnanceur"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1044
-msgid "Some hosts child has not the same instance"
-msgstr "Certains hôtes enfants ne sont pas supervisés par le même ordonnanceur"
-
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1050
 msgid "_Module_ is not a legal expression"
 msgstr "_Module_ n'est pas une expression autorisée"
@@ -15859,3 +15851,9 @@ msgstr "EN ATTENTE"
 
 msgid "FQDN / Address"
 msgstr "FQDN / Adresse"
+
+msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
+msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas avoir plus de %d caractères, mais a %d caractères"
+
+msgid "[%s] The value \"%s\" is too short, it should have at least %d characters, but only has %d characters"
+msgstr "[%s] La valeur \"%s\" est trop courte, elle devrait avoir au moins %d caractères, mais n'a que %d caractères"
