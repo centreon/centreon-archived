@@ -52,6 +52,10 @@ class HostTemplateTest extends TestCase
         $hostTemplate->setStalkingOptions($optionsValueToTest);
     }
 
+    /**
+     * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
+     */
     public static function createEntity(): HostTemplate
     {
         return (new HostTemplate())

@@ -169,47 +169,5 @@ class HostTemplateV21
     /**
      * @var int[]
      */
-    public $parents;
-
-    /**
-     * @param FindHostTemplatesResponse $response
-     * @return HostTemplateV21[]
-     */
-    public static function createFromResponse(FindHostTemplatesResponse $response): array
-    {
-        $hostTemplates = [];
-        foreach ($response->getHostTemplates() as $hostTemplate) {
-            $newHostTemplate = new self();
-            $newHostTemplate->id = $hostTemplate['id'];
-            $newHostTemplate->name = $hostTemplate['name'];
-            $newHostTemplate->alias = $hostTemplate['alias'];
-            $newHostTemplate->displayName = $hostTemplate['display_name'];
-            $newHostTemplate->address = $hostTemplate['address'];
-            $newHostTemplate->isActivated = $hostTemplate['is_activated'];
-            $newHostTemplate->isLocked = $hostTemplate['is_locked'];
-            $newHostTemplate->activeChecksStatus = $hostTemplate['active_checks_status'];
-            $newHostTemplate->passiveChecksStatus = $hostTemplate['passive_checks_status'];
-            $newHostTemplate->maxCheckAttemps = $hostTemplate['max_check_attemps'];
-            $newHostTemplate->checkInterval = $hostTemplate['check_interval'];
-            $newHostTemplate->retryCheckInterval = $hostTemplate['retry_check_interval'];
-            $newHostTemplate->notificationsStatus = $hostTemplate['notifications_status'];
-            $newHostTemplate->notificationInterval = $hostTemplate['notification_interval'];
-            $newHostTemplate->firstNotificationDelay = $hostTemplate['first_notification_delay'];
-            $newHostTemplate->recoveryNotificationDelay = $hostTemplate['recovery_notification_delay'];
-            $newHostTemplate->notificationOptions = $hostTemplate['notification_options'];
-            $newHostTemplate->stalkingOptions = $hostTemplate['stalking_options'];
-            $newHostTemplate->snmpCommunity = $hostTemplate['snmp_community'];
-            $newHostTemplate->snmpVersion = $hostTemplate['snmp_version'];
-            $newHostTemplate->icon = $hostTemplate['icon'];
-            $newHostTemplate->alternativeIcon = $hostTemplate['alternative_icon'];
-            $newHostTemplate->statusMapImage = $hostTemplate['status_map_image'];
-            $newHostTemplate->urlNotes = $hostTemplate['url_notes'];
-            $newHostTemplate->actionUrl = $hostTemplate['action_url'];
-            $newHostTemplate->notes = $hostTemplate['notes'];
-            $newHostTemplate->parents = $hostTemplate['parent_ids'];
-
-            $hostTemplates[] = $newHostTemplate;
-        }
-        return $hostTemplates;
-    }
+    public $parentIds;
 }

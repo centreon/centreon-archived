@@ -78,13 +78,13 @@ class HostTemplateFactoryRdb
             ->setActionUrl($data['ehi_action_url'])
             ->setActiveChecksStatus((int) $data['host_active_checks_enabled'])
             ->setPassiveChecksStatus((int) $data['host_passive_checks_enabled'])
-            ->setFirstNotificationDelay(self::getIntOrNUll($data['host_first_notification_delay']))
-            ->setRecoveryNotificationDelay(self::getIntOrNUll($data['host_recovery_notification_delay']))
-            ->setMaxCheckAttempts(self::getIntOrNUll($data['host_max_check_attempts']))
-            ->setCheckInterval(self::getIntOrNUll($data['host_check_interval']))
-            ->setRetryCheckInterval(self::getIntOrNUll($data['host_retry_check_interval']))
+            ->setFirstNotificationDelay(self::getIntOrNull($data['host_first_notification_delay']))
+            ->setRecoveryNotificationDelay(self::getIntOrNull($data['host_recovery_notification_delay']))
+            ->setMaxCheckAttempts(self::getIntOrNull($data['host_max_check_attempts']))
+            ->setCheckInterval(self::getIntOrNull($data['host_check_interval']))
+            ->setRetryCheckInterval(self::getIntOrNull($data['host_retry_check_interval']))
             ->setNotificationOptions(self::convertNotificationOptions($data['host_notification_options']))
-            ->setNotificationInterval(self::getIntOrNUll($data['host_notification_interval']))
+            ->setNotificationInterval(self::getIntOrNull($data['host_notification_interval']))
             ->setStalkingOptions(self::convertStalkingOptions($data['host_stalking_options']))
             ->setSnmpCommunity($data['host_snmp_community'])
             ->setSnmpVersion($data['host_snmp_version'])
@@ -100,7 +100,7 @@ class HostTemplateFactoryRdb
      * @param int|string|null $property
      * @return int|null
      */
-    private static function getIntOrNUll($property): ?int
+    private static function getIntOrNull($property): ?int
     {
         return ($property !== null) ? (int) $property : null;
     }

@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Model;
 
+use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\HostConfiguration\Exception\HostTemplateArgumentException;
 use Centreon\Domain\Media\Model\Image;
 
@@ -259,9 +260,13 @@ class HostTemplate
     /**
      * @param string|null $name
      * @return self
+     * @throws \Assert\AssertionFailedException
      */
     public function setName(?string $name): self
     {
+        if ($name !== null) {
+            Assertion::maxLength($name, 200, 'HostTemplate::name');
+        }
         $this->name = $name;
         return $this;
     }
@@ -277,9 +282,13 @@ class HostTemplate
     /**
      * @param string|null $alias
      * @return self
+     * @throws \Assert\AssertionFailedException
      */
     public function setAlias(?string $alias): self
     {
+        if ($alias !== null) {
+            Assertion::maxLength($alias, 200, 'HostTemplate::alias');
+        }
         $this->alias = $alias;
         return $this;
     }
@@ -295,9 +304,13 @@ class HostTemplate
     /**
      * @param string|null $displayName
      * @return self
+     * @throws \Assert\AssertionFailedException
      */
     public function setDisplayName(?string $displayName): self
     {
+        if ($displayName !== null) {
+            Assertion::maxLength($displayName, 255, 'HostTemplate::displayName');
+        }
         $this->displayName = $displayName;
         return $this;
     }
@@ -313,9 +326,13 @@ class HostTemplate
     /**
      * @param string|null $address
      * @return self
+     * @throws \Assert\AssertionFailedException
      */
     public function setAddress(?string $address): self
     {
+        if ($address !== null) {
+            Assertion::maxLength($address, 255, 'HostTemplate::address');
+        }
         $this->address = $address;
         return $this;
     }
@@ -331,9 +348,13 @@ class HostTemplate
     /**
      * @param string|null $comment
      * @return self
+     * @throws \Assert\AssertionFailedException
      */
     public function setComment(?string $comment): self
     {
+        if ($comment !== null) {
+            Assertion::maxLength($comment, 65535, 'HostTemplate::comment');
+        }
         $this->comment = $comment;
         return $this;
     }
@@ -638,9 +659,13 @@ class HostTemplate
     /**
      * @param string|null $snmpCommunity
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setSnmpCommunity(?string $snmpCommunity): HostTemplate
     {
+        if ($snmpCommunity !== null) {
+            Assertion::maxLength($snmpCommunity, 255, 'HostTemplate::snmpCommunity');
+        }
         $this->snmpCommunity = $snmpCommunity;
         return $this;
     }
@@ -695,9 +720,13 @@ class HostTemplate
     /**
      * @param string|null $alternativeIcon
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setAlternativeIcon(?string $alternativeIcon): HostTemplate
     {
+        if ($alternativeIcon !== null) {
+            Assertion::maxLength($alternativeIcon, 200, 'HostTemplate::alternativeIcon');
+        }
         $this->alternativeIcon = $alternativeIcon;
         return $this;
     }
@@ -731,9 +760,13 @@ class HostTemplate
     /**
      * @param string|null $urlNotes
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setUrlNotes(?string $urlNotes): HostTemplate
     {
+        if ($urlNotes !== null) {
+            Assertion::maxLength($urlNotes, 65535, 'HostTemplate::urlNotes');
+        }
         $this->urlNotes = $urlNotes;
         return $this;
     }
@@ -749,9 +782,13 @@ class HostTemplate
     /**
      * @param string|null $actionUrl
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setActionUrl(?string $actionUrl): HostTemplate
     {
+        if ($actionUrl !== null) {
+            Assertion::maxLength($actionUrl, 65535, 'HostTemplate::actionUrl');
+        }
         $this->actionUrl = $actionUrl;
         return $this;
     }
@@ -767,9 +804,13 @@ class HostTemplate
     /**
      * @param string|null $notes
      * @return HostTemplate
+     * @throws \Assert\AssertionFailedException
      */
     public function setNotes(?string $notes): HostTemplate
     {
+        if ($notes !== null) {
+            Assertion::maxLength($notes, 65535, 'HostTemplate::notes');
+        }
         $this->notes = $notes;
         return $this;
     }
