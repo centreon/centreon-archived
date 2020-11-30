@@ -24,7 +24,11 @@ namespace Centreon\Infrastructure\RequestParameters;
 
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Infrastructure\RequestParameters\Interfaces\NormalizerInterface;
 
+/**
+ * @package Centreon\Infrastructure\RequestParameters
+ */
 class SqlRequestParametersTranslator
 {
     private $aggregateOperators = [
@@ -39,6 +43,11 @@ class SqlRequestParametersTranslator
     private $concordanceArray = [];
 
     private $searchValues = [];
+
+    /**
+     * @var array<string, NormalizerInterface>
+     */
+    private $normalizers = [];
 
     /**
      * @var RequestParametersInterface
@@ -75,21 +84,19 @@ class SqlRequestParametersTranslator
                     // Recursive call until to read key/value data
                     $databaseSubQuery = $this->createDatabaseQuery($searchRequests, $key);
                 }
-            } else {
-                if (is_int($key) && (is_object($searchRequests) || is_array($searchRequests))) {
-                    // It's a list of object to process
-                    $searchRequests = (array) $searchRequests;
-                    if (!empty($searchRequests)) {
-                        // Recursive call until to read key/value data
-                        $databaseSubQuery = $this->createDatabaseQuery($searchRequests, $aggregateOperator);
-                    }
-                } elseif (!is_int($key)) {
-                    // It's a pair on key/value to translate into a database query
-                    if (is_object($searchRequests)) {
-                        $searchRequests = (array) $searchRequests;
-                    }
-                    $databaseSubQuery = $this->createQueryOnKeyValue($key, $searchRequests);
+            } elseif (is_int($key) && (is_object($searchRequests) || is_array($searchRequests))) {
+                // It's a list of object to process
+                $searchRequests = (array) $searchRequests;
+                if (!empty($searchRequests)) {
+                    // Recursive call until to read key/value data
+                    $databaseSubQuery = $this->createDatabaseQuery($searchRequests, $aggregateOperator);
                 }
+            } elseif (!is_int($key)) {
+                // It's a pair on key/value to translate into a database query
+                if (is_object($searchRequests)) {
+                    $searchRequests = (array) $searchRequests;
+                }
+                $databaseSubQuery = $this->createQueryOnKeyValue($key, $searchRequests);
             }
             if (!empty($databaseQuery)) {
                 if (is_null($aggregateOperator)) {
@@ -209,6 +216,10 @@ class SqlRequestParametersTranslator
         }
 
         if ($mixedValue === null) {
+            $mixedValue = $this->normalizeValue($key, $mixedValue);
+        }
+
+        if ($mixedValue === null) {
             if ($searchOperator === RequestParameters::OPERATOR_EQUAL) {
                 $bindKey = 'NULL';
             } elseif ($searchOperator === RequestParameters::OPERATOR_NOT_EQUAL) {
@@ -228,6 +239,7 @@ class SqlRequestParametersTranslator
             if (is_array($mixedValue)) {
                 $bindKey = '(';
                 foreach ($mixedValue as $index => $newValue) {
+                    $newValue = $this->normalizeValue($key, $newValue);
                     $type = \PDO::PARAM_STR;
                     if (is_int($newValue)) {
                         $type = \PDO::PARAM_INT;
@@ -243,6 +255,7 @@ class SqlRequestParametersTranslator
                 }
                 $bindKey .= ')';
             } else {
+                $mixedValue = $this->normalizeValue($key, $mixedValue);
                 $type = \PDO::PARAM_STR;
                 if (is_int($mixedValue)) {
                     $type = \PDO::PARAM_INT;
@@ -274,6 +287,7 @@ class SqlRequestParametersTranslator
             $bindKey = ':value_' . (count($this->searchValues) + 1);
             $this->searchValues[$bindKey] = [$type => $mixedValue];
         } else {
+            $mixedValue = $this->normalizeValue($key, $mixedValue);
             $type = \PDO::PARAM_STR;
             if (is_int($mixedValue)) {
                 $type = \PDO::PARAM_INT;
@@ -397,5 +411,49 @@ class SqlRequestParametersTranslator
     public function setSearchValues(array $searchValues): void
     {
         $this->searchValues = $searchValues;
+    }
+
+    /**
+     * Add a normalizer for a property name to be declared in the search parameters.
+     * <code>
+     * $sqlRequestTranslator = new SqlRequestParametersTranslator(new RequestParameters());
+     * $sqlRequestTranslator->addNormalizer(
+     *      'name',
+     *      new class() implements NormalizerInterface
+     *      {
+     *          public function normalize($valueToNormalize)
+     *          {
+     *              if ($valueToNormalize === "localhost") {
+     *                  return "127.0.0.1";
+     *              }
+     *              return $valueToNormalize;
+     *          }
+     *      }
+     * );
+     * </code>
+     * @param string $propertyName Property name for which the normalizer is applied
+     * @param NormalizerInterface $normalizer Normalizer to applied
+     */
+    public function addNormalizer(string $propertyName, NormalizerInterface $normalizer): void
+    {
+        if (empty($propertyName)) {
+            throw new \InvalidArgumentException(_('The property name of the normalizer cannot be empty.'));
+        }
+        $this->normalizers[$propertyName] = $normalizer;
+    }
+
+    /**
+     * Normalize a value.
+     *
+     * @param string $propertyName Property name to be normalized if it exists
+     * @param string|bool|int|null $valueToNormalize Value to be normalized
+     * @return string|bool|int|null
+     */
+    private function normalizeValue(string $propertyName, $valueToNormalize)
+    {
+        if (array_key_exists($propertyName, $this->normalizers)) {
+            return $this->normalizers[$propertyName]->normalize($valueToNormalize);
+        }
+        return $valueToNormalize;
     }
 }
