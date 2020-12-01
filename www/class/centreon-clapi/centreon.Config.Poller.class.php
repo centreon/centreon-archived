@@ -427,7 +427,7 @@ class CentreonConfigPoller
      */
     public function cfgMove($variables)
     {
-        global $pearDB, $pearDBO;
+        global $pearDB, $pearDBO, $dependencyInjector;
 
         $pearDB = $this->_DB;
         $pearDBO = $this->_DBC;
@@ -445,20 +445,27 @@ class CentreonConfigPoller
          */
         $this->testPollerId($variables);
 
-        $poller_id = $this->getPollerId($variables);
+        $pollerId = (int) $this->getPollerId($variables);
 
-        /* Get Apache user name */
-        $apacheUser = $this->getApacheUser();
+        $statement = $pearDB->prepare("SELECT * FROM `nagios_server` WHERE `id` = :pollerId");
+        $statement->bindValue(':pollerId', $pollerId, \PDO::PARAM_INT);
+        $statement->execute();
+        $host = $statement->fetchRow();
+        $statement->closeCursor();
 
         /**
          * Move files.
          */
-        $DBRESULT_Servers = $this->_DB->query(
-            "SELECT `cfg_dir` FROM `cfg_nagios` WHERE `nagios_server_id` = '"
-            . $this->_DB->escape($poller_id) . "' LIMIT 1"
-        );
-        $Nagioscfg = $DBRESULT_Servers->fetchRow();
-        $DBRESULT_Servers->closeCursor();
+        $msg_copy = "";
+        if (isset($host['localhost']) && $host['localhost'] == 1) {
+            /* Get Apache user name */
+            $apacheUser = $this->getApacheUser();
+
+            $statement = $pearDB->prepare("SELECT `cfg_dir` FROM `cfg_nagios` WHERE `nagios_server_id` = :pollerId");
+            $statement->bindValue(':pollerId', $pollerId, \PDO::PARAM_INT);
+            $statement->execute();
+            $Nagioscfg = $statement->fetchRow();
+            $statement->closeCursor();
 
         $DBRESULT_Servers = $this->_DB->query(
             "SELECT * FROM `nagios_server` WHERE `id` = '"
@@ -543,6 +550,64 @@ class CentreonConfigPoller
                 $msg_copy .= _("OK: All configuration files copied with success.");
             }
         } else {
+            /**
+             * Get Parent Remote Servers of the Poller
+             */
+            $statementRemotes = $pearDB->prepare(
+                'SELECT ns.id
+                FROM nagios_server AS ns
+                JOIN platform_topology AS pt ON (ns.id = pt.server_id)
+                WHERE ns.id = :pollerId
+                AND pt.type = "remote"
+                UNION
+                SELECT ns1.id
+                FROM nagios_server AS ns1
+                JOIN platform_topology AS pt ON (ns1.id = pt.server_id)
+                JOIN nagios_server AS ns2 ON ns1.id = ns2.remote_id
+                WHERE ns2.id = :pollerId
+                AND pt.type = "remote"
+                UNION
+                SELECT ns1.id
+                FROM nagios_server AS ns1
+                JOIN platform_topology AS pt ON (ns1.id = pt.server_id)
+                JOIN rs_poller_relation AS rspr ON rspr.remote_server_id = ns1.id
+                WHERE rspr.poller_server_id = :pollerId
+                AND pt.type = "remote"'
+            );
+            $statementRemotes->bindValue(':pollerId', $pollerId, \PDO::PARAM_INT);
+            $statementRemotes->execute();
+            $remotesResults = $statementRemotes->fetchAll(\PDO::FETCH_ASSOC);
+
+            /**
+             * If the poller is linked to one or many remotes
+             */
+            foreach ($remotesResults as $remote) {
+                $linkedStatement = $pearDB->prepare(
+                    'SELECT id
+                    FROM nagios_server
+                    WHERE remote_id = :remoteId
+                    UNION
+                    SELECT poller_server_id AS id
+                    FROM rs_poller_relation
+                    WHERE remote_server_id = :remoteId'
+                );
+                $linkedStatement->bindValue(':remoteId', $remote['id'], \PDO::PARAM_INT);
+                $linkedStatement->execute();
+                $linkedResults = $linkedStatement->fetchAll(\PDO::FETCH_ASSOC);
+
+                $exportParams = [
+                    'server' => $remote['id'],
+                    'pollers' => []
+                ];
+
+                if (!empty($linkedResults)) {
+                    $exportParams['pollers'] = array_column($linkedResults, 'id');
+                } else {
+                    $exportParams['pollers'] = [$remote['id']];
+                }
+
+                $dependencyInjector['centreon.taskservice']->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);
+            }
             exec("echo 'SENDCFGFILE:" . $host['id'] . "' >> " . $this->centcore_pipe, $stdout, $return);
             if (!isset($msg_copy)) {
                 $msg_copy = "";
