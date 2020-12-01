@@ -24,6 +24,11 @@ namespace Centreon\Domain\Common\Assertion;
 
 use Assert\Assertion as Assert;
 
+/**
+ * This class is designed to allow the translation of error messages and provide them with a unique format.
+ *
+ * @package Centreon\Domain\Common\Assertion
+ */
 class Assertion
 {
     /**
@@ -40,13 +45,13 @@ class Assertion
             $value,
             $maxLength,
             function (array $parameters) {
-                $length = \mb_strlen($parameters['value'], $parameters['encoding']);
-                if ($length === false) {
-                    $length = strlen($parameters['value']);
-                }
                 return AssertionException::maxLength(
                     $parameters['value'],
-                    $length,
+                    self::calculateStringLengthOrFails(
+                        $parameters['value'],
+                        $parameters['encoding'],
+                        $parameters['propertyPath']
+                    ),
                     $parameters['maxLength'],
                     $parameters['propertyPath']
                 )->getMessage();
@@ -70,16 +75,16 @@ class Assertion
             $value,
             $minLength,
             function (array $parameters) {
-                return sprintf(
-                    _(
-                        '[%s] The value "%s" is too short, it should have at least %d characters,'
-                        . ' but only has %d characters'
-                    ),
-                    $parameters['propertyPath'],
+                return AssertionException::minLength(
                     $parameters['value'],
+                    self::calculateStringLengthOrFails(
+                        $parameters['value'],
+                        $parameters['encoding'],
+                        $parameters['propertyPath']
+                    ),
                     $parameters['minLength'],
-                    \mb_strlen($parameters['value'], $parameters['encoding'])
-                );
+                    $parameters['propertyPath']
+                )->getMessage();
             },
             $propertyPath,
             'UTF-8'
@@ -100,12 +105,11 @@ class Assertion
             $value,
             $minValue,
             function (array $parameters) {
-                return sprintf(
-                    _('[%s] The value "%d" was expected to be at least %d'),
-                    $parameters['propertyPath'],
+                return AssertionException::min(
                     $parameters['value'],
-                    $parameters['minValue']
-                );
+                    $parameters['minValue'],
+                    $parameters['propertyPath']
+                )->getMessage();
             },
             $propertyPath
         );
@@ -125,12 +129,11 @@ class Assertion
             $value,
             $maxValue,
             function (array $parameters) {
-                return sprintf(
-                    _('[%s] The value "%d" was expected to be at most %d'),
-                    $parameters['propertyPath'],
+                return AssertionException::max(
                     $parameters['value'],
-                    $parameters['maxValue']
-                );
+                    $parameters['maxValue'],
+                    $parameters['propertyPath']
+                )->getMessage();
             },
             $propertyPath
         );
@@ -141,7 +144,7 @@ class Assertion
      *
      * @param int $value Value to test
      * @param int $limit Limit value (>=)
-     * @param string|null $propertyPath
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
      * @throws \Assert\AssertionFailedException
      */
     public static function greaterOrEqualThan(int $value, int $limit, string $propertyPath = null): void
@@ -150,14 +153,37 @@ class Assertion
             $value,
             $limit,
             function (array $parameters) {
-                return sprintf(
-                    _('[%s] The value "%d" is not greater or equal than %d'),
-                    $parameters['propertyPath'],
+                return AssertionException::greaterOrEqualThan(
                     $parameters['value'],
-                    $parameters['limit']
-                );
+                    $parameters['limit'],
+                    $parameters['propertyPath']
+                )->getMessage();
             },
             $propertyPath
         );
+    }
+
+    /**
+     * Calculates the string length or fails.
+     *
+     * @param string $value Value for which we have to calculate the length
+     * @param string $encoding Encoding used for calculation
+     * @param string $propertyPath Property's path (ex: Host::name)
+     * @return int Calculated length
+     */
+    private static function calculateStringLengthOrFails(string $value, string $encoding, string $propertyPath): int
+    {
+        $length = \mb_strlen($value, $encoding);
+        if ($length === false) {
+            throw new \RuntimeException(
+                sprintf(
+                    _('[%s] Error when calculating string length of "%s" in %s'),
+                    $propertyPath,
+                    $value,
+                    $encoding
+                )
+            );
+        }
+        return $length;
     }
 }
