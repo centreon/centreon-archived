@@ -47,5 +47,5 @@ Feature:
     """
 
     Then the response code should be 204
-    And the content of file "/var/log/centreon-engine/centengine.log" should match "/ADD_HOST_COMMENT;Test host"
+    And the content of file "/var/log/centreon-engine/centengine.log" should match "/ADD_HOST_COMMENT;test/"
     And the content of file "/var/log/centreon-engine/centengine.log" should match "/ADD_SVC_COMMENT;test;test_service_1/" (tries: 3)
