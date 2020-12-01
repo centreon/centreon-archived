@@ -173,6 +173,12 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
 
         $request .= ') AS `log` ';
 
+        /**
+         * Here the search filter provides a date in ISO8601.
+         * But the date on which we do filter (stored as ctime) is a timestamp.
+         * Therefore we need to normalize the data provided in the search parameter
+         * and translate it into a timestamp filtering search.
+         */
         $this->sqlRequestTranslator->addNormalizer(
             'date',
             new class implements NormalizerInterface
