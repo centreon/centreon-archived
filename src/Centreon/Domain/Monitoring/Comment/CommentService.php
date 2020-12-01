@@ -205,7 +205,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
                 $hosts = $this->monitoringRepository->findHostsByIdsForAdminUser($resourceIds['host']);
             }
 
-            if (!empty($resourceIds['services'])) {
+            if (!empty($resourceIds['service'])) {
                 $services = $this->monitoringRepository->findServicesByIdsForAdminUser($resourceIds['service']);
             }
         } else {
