@@ -1275,6 +1275,10 @@ function prepare_apache_config() {
 #
 # Section add by Centreon Install Setup
 #
+Header set X-Frame-Options: "sameorigin"
+ServerSignature Off
+ServerTokens Prod
+TraceEnable Off
 
 Alias /centreon $INSTALL_DIR_CENTREON/www/
 
