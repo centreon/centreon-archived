@@ -1039,45 +1039,51 @@ UNION
 
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
-        SELECT h.instance_id, s.service_id FROM hosts h, services s where h.host_id = s.host_id AND h.instance_id IN ($pollersSearch)
+        SELECT h.instance_id, s.service_id FROM hosts h, services s
+        WHERE h.host_id = s.host_id AND h.instance_id IN ($pollersSearch)
     ) AS subtable ON log_action.action_type = 'd' AND log_action.object_id = subtable.service_id
 WHERE log_action.object_type = 'service' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
 UNION
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
-        SELECT nagios_server_id as instance_id, service_service_id as service_id FROM {$conf_centreon['db']}.ns_host_relation nhr, {$conf_centreon['db']}.host_service_relation hsr
-         WHERE nagios_server_id IN ($pollersSearch)
-               AND hsr.host_host_id = nhr.host_host_id
+        SELECT nagios_server_id as instance_id, service_service_id as service_id
+        FROM {$conf_centreon['db']}.ns_host_relation nhr, {$conf_centreon['db']}.host_service_relation hsr
+        WHERE nagios_server_id IN ($pollersSearch)
+            AND hsr.host_host_id = nhr.host_host_id
     ) AS subtable ON log_action.object_id = subtable.service_id
 WHERE log_action.object_type = 'service' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
 UNION
 
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
-        SELECT h.instance_id, servicegroup_id FROM services_servicegroups sg INNER JOIN hosts h ON h.host_id = sg.host_id AND h.instance_id IN ($pollersSearch)
+        SELECT h.instance_id, servicegroup_id FROM services_servicegroups sg 
+        INNER JOIN hosts h ON h.host_id = sg.host_id AND h.instance_id IN ($pollersSearch)
     ) AS subtable ON log_action.action_type = 'd' AND log_action.object_id = subtable.servicegroup_id
 WHERE log_action.object_type = 'servicegroup' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
 UNION
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
-        SELECT nhr.nagios_server_id as instance_id, servicegroup_sg_id as servicegroup_id FROM {$conf_centreon['db']}.servicegroup_relation sgr, {$conf_centreon['db']}.ns_host_relation nhr
-         WHERE nhr.nagios_server_id IN ($pollersSearch)
-               AND sgr.host_host_id = nhr.host_host_id
+        SELECT nhr.nagios_server_id as instance_id, servicegroup_sg_id as servicegroup_id
+        FROM {$conf_centreon['db']}.servicegroup_relation sgr, {$conf_centreon['db']}.ns_host_relation nhr
+        WHERE nhr.nagios_server_id IN ($pollersSearch)
+            AND sgr.host_host_id = nhr.host_host_id
     ) AS subtable ON log_action.object_id = subtable.servicegroup_id
 WHERE log_action.object_type = 'servicegroup' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
 UNION
 
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
-        SELECT h.instance_id, hostgroup_id FROM hosts_hostgroups hg INNER JOIN hosts h ON h.host_id = hg.host_id AND h.instance_id IN ($pollersSearch)
+        SELECT h.instance_id, hostgroup_id FROM hosts_hostgroups hg
+        INNER JOIN hosts h ON h.host_id = hg.host_id AND h.instance_id IN ($pollersSearch)
     ) AS subtable ON log_action.action_type = 'd' AND log_action.object_id = subtable.hostgroup_id
 WHERE log_action.object_type = 'hostgroup' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
 UNION
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
-        SELECT nhr.nagios_server_id as instance_id, hostgroup_hg_id as hostgroup_id FROM {$conf_centreon['db']}.hostgroup_relation hr, {$conf_centreon['db']}.ns_host_relation nhr
-         WHERE nhr.nagios_server_id IN ($pollersSearch)
-               AND hr.host_host_id = nhr.host_host_id
+        SELECT nhr.nagios_server_id as instance_id, hostgroup_hg_id as hostgroup_id
+        FROM {$conf_centreon['db']}.hostgroup_relation hr, {$conf_centreon['db']}.ns_host_relation nhr
+        WHERE nhr.nagios_server_id IN ($pollersSearch)
+            AND hr.host_host_id = nhr.host_host_id
     ) AS subtable ON log_action.object_id = subtable.hostgroup_id
 WHERE log_action.object_type = 'hostgroup' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
 REQUEST;
