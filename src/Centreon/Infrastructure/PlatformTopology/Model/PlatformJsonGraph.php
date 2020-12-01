@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Application\PlatformTopology;
+namespace Centreon\Infrastructure\PlatformTopology\Model;
 
 use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\PlatformTopology\PlatformRelation;
