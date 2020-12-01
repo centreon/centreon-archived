@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformRelation;
 use Centreon\Domain\PlatformTopology\PlatformException;
-use Centreon\Application\PlatformTopology\PlatformJsonGraph;
+use Centreon\Infrastructure\PlatformTopology\Model\PlatformJsonGraph;
 use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Application\Controller\PlatformTopologyController;
