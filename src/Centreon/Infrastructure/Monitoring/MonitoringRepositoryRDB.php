@@ -574,8 +574,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               END AS `status_severity_code`
             FROM `:dbstg`.services srv
             LEFT JOIN `:dbstg`.hosts h
-              ON h.host_id = srv.host_id'
-            . ' WHERE srv.enabled = \'1\'
+              ON h.host_id = srv.host_id
+              WHERE srv.enabled = \'1\'
               AND h.enabled = \'1\'';
 
 
@@ -601,7 +601,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
 
-        if ($statement->execute()) {
+        if ($statement->execute() !== false) {
             while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
                 $service = EntityCreator::createEntityByArray(
                     Service::class,
@@ -613,7 +613,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 $services[] = $service;
             }
         } else {
-            throw new \Exception(_('Bad SQL request'));
+            throw new \Exception(_('Failed to find services'));
         }
 
         return $services;
@@ -659,7 +659,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
 
-        if ($statement->execute()) {
+        if ($statement->execute() !== false) {
             while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
                 $host = EntityCreator::createEntityByArray(
                     Host::class,
@@ -668,7 +668,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 $hosts[] = $host;
             }
         } else {
-            throw new \Exception(_('Bad SQL request'));
+            throw new \Exception(_('Failed to find hosts'));
         }
 
         return $hosts;
@@ -724,7 +724,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
 
-        if ($statement->execute()) {
+        if ($statement->execute() !== false) {
             while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
                 $host = EntityCreator::createEntityByArray(
                     Host::class,
@@ -733,7 +733,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 $hosts[] = $host;
             }
         } else {
-            throw new \Exception(_('Bad SQL request'));
+            throw new \Exception(_('Failed to find hosts'));
         }
 
         return $hosts;
@@ -898,7 +898,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
 
-        if ($statement->execute()) {
+        if ($statement->execute() !== false) {
             while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
                 $service = EntityCreator::createEntityByArray(
                     Service::class,
@@ -910,7 +910,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 $services[] = $service;
             }
         } else {
-            throw new \Exception(_('Bad SQL request'));
+            throw new \Exception(_('Failed to find services'));
         }
 
         return $services;

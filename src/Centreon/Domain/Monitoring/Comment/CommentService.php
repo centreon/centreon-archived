@@ -118,7 +118,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
      */
     public function addServiceComment(Comment $comment, Service $service): void
     {
-        // We validate the check instance
+        // We validate the comment entity sent
         $errors = $this->validator->validate(
             $comment,
             null,
@@ -164,7 +164,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
      */
     public function addHostComment(Comment $comment, Host $host): void
     {
-        // We validate the SubmitResult instance instance
+        // We validate the comment entity sent
         $errors = $this->validator->validate(
             $comment,
             null,

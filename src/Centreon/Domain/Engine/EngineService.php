@@ -570,10 +570,12 @@ class EngineService extends AbstractCentreonService implements
             throw new EngineException(_('The contact alias is empty'));
         }
         if ($host == null) {
-            throw new EngineException(_('Host of comment not found'));
+            throw new EngineException(_('Host not found'));
         }
         if (empty($host->getName())) {
-            throw new EngineException(_('Host name can not be empty'));
+            throw new EngineException(
+                sprintf(_('Host name can not be empty for host (id: %d)'), $host->getId())
+            );
         }
 
         $preCommand = sprintf(

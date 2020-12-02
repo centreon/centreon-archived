@@ -1751,7 +1751,7 @@ paths:
       tags:
         - Comment
       summary: "Add comment to resources"
-      description: "And comment(s) to a single or multiple resources"
+      description: "Add at least one comment to a single or to multiple resources"
       requestBody:
         required: true
         content:

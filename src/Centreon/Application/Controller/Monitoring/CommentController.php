@@ -239,8 +239,7 @@ class CommentController extends AbstractController
 
         if (!empty($receivedData)) {
             /**
-             * At this point we made sure that the mapping will work since we validate
-             * the JSON sent with the JSON validator.
+             * At this point we validate the JSON sent with the JSON validator.
              */
             $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
             $comment = (new Comment($hostId, $receivedData['comment']))
@@ -286,8 +285,7 @@ class CommentController extends AbstractController
 
         if (!empty($receivedData)) {
             /**
-             * At this point we made sure that the mapping will work since we validate
-             * the JSON sent with the JSON validator.
+             * At this point we validate the JSON sent with the JSON validator.
              */
             $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
             $comment = (new Comment($serviceId, $receivedData['comment']))
