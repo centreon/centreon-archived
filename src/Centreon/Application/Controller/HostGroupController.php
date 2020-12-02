@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\HostConfiguration\UseCase\v2_1\FindHostTemplates;
+use Centreon\Domain\HostConfiguration\UseCase\v2_1\FindHostGroups;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostTemplateV21;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostGroupV21;
 use FOS\RestBundle\View\View;
 
 /**
@@ -36,19 +36,19 @@ class HostGroupController extends AbstractController
 {
     /**
      * @param RequestParametersInterface $requestParameters
-     * @param FindHostTemplates $findHostTemplate
+     * @param FindHostGroups $findHostGroup
      * @return View
      * @throws \Exception
      */
     public function findHostGroups(
         RequestParametersInterface $requestParameters,
-        FindHostTemplates $findHostTemplate
+        FindHostGroups $findHostGroup
     ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $response = $findHostTemplate->execute();
+        $response = $findHostGroup->execute();
         return $this->view(
             [
-                'result' => HostTemplateV21::createFromResponse($response),
+                'result' => HostGroupV21::createFromResponse($response),
                 'meta' => $requestParameters->toArray()
             ]
         );

@@ -25,6 +25,7 @@ namespace Centreon\Domain\HostConfiguration\Interfaces;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\HostConfiguration\Model\HostTemplate;
+use Centreon\Domain\HostConfiguration\Model\HostGroup;
 
 /**
  * This interface gathers all the reading operations on the repository.

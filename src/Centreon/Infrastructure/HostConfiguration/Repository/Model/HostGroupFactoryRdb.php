@@ -37,14 +37,14 @@ class HostGroupFactoryRdb
      * Create a HostGroup entity from database data.
      *
      * @param array<string, mixed> $data
-     * @return HostTemplate
+     * @return HostGroup
      * @throw \InvalidArgumentException
-     * @throws HostTemplateFactoryException
+     * @throws HostGroupFactoryException
      */
     public static function create(array $data): HostGroup
     {
         $hostGroup = new HostGroup();
-        if (isset($data['icon_id'])) {
+        if (isset($data['hg_icon_image'])) {
             $hostGroup->setIcon(
                 (new Image())
                     ->setId((int) $data['icon_id'])
@@ -53,30 +53,17 @@ class HostGroupFactoryRdb
                     ->setPath(str_replace('//', '/', ($data['icon_path'])))
             );
         }
-        
-        
-        if (isset($data['smi_id'])) {
-            $hostGroup->setStatusMapImage(
+
+        if (isset($data['hg_map_icon_image'])) {
+            $hostGroup->setIconMap(
                 (new Image())
-                    ->setId((int) $data['smi_id'])
-                    ->setName($data['smi_name'])
-                    ->setComment($data['smi_comment'])
-                    ->setPath(str_replace('//', '/', $data['smi_path']))
+                    ->setId((int) $data['imap_id'])
+                    ->setName($data['imap_name'])
+                    ->setComment($data['imap_comment'])
+                    ->setPath(str_replace('//', '/', $data['imap_path']))
             );
         }
-    
-    
 
-
-    hg_icon_image: Icon of the host group
-hg_map_icon_image: MAP icon
- 
- hg_rrd_retention: RRD retention length for the resources in the host group
-       geo_coords: Geocoordinates
-       hg_comment: Comment
-      hg_activate:
-        
-        
         $hostGroup
             ->setId((int) $data['hg_id'])
             ->setName($data['hg_name'])
@@ -84,29 +71,10 @@ hg_map_icon_image: MAP icon
             ->setNotes($data['hg_notes'])
             ->setNotesUrl($data['hg_notes_url'])
             ->setActionUrl($data['hg_action_url'])
-            
-            
-            
-            
-            
-           
-            ->setComment($data['host_comment'])
-          
-            ->setActionUrl($data['ehi_action_url'])
-            ->setActiveChecksStatus((int) $data['host_active_checks_enabled'])
-            ->setPassiveChecksStatus((int) $data['host_active_checks_enabled'])
-            ->setFirstNotificationDelay(self::getIntOrNUll($data['host_first_notification_delay']))
-            ->setRecoveryNotificationDelay(self::getIntOrNUll($data['host_recovery_notification_delay']))
-            ->setMaxCheckAttempts(self::getIntOrNUll($data['host_max_check_attempts']))
-            ->setCheckInterval(self::getIntOrNUll($data['host_check_interval']))
-            ->setRetryCheckInterval(self::getIntOrNUll($data['host_retry_check_interval'])
-            
-            ->setNotificationOptions(self::convertNotificationOptions($data['host_notification_options']))
-            ->setNotificationInterval(self::getIntOrNUll($data['host_notification_interval']))
-            ->setStalkingOptions(self::convertStalkingOptions($data['host_stalking_options']))
-            ->setSnmpCommunity($data['host_snmp_community'])
-            ->setSnmpVersion($data['host_snmp_version'])
-            ->setComment($data['host_comment']);
+            ->setRrd($data['hg_rrd_retention'])
+            ->setGeoCoords($data['geo_coords'])
+            ->setComment($data['hg_comment'])
+            ->setActivated($data['hg_activate']);
         
         return $hostGroup;
     }
@@ -115,94 +83,8 @@ hg_map_icon_image: MAP icon
      * @param int|string|null $property
      * @return int|null
      */
-    private static function getIntOrNUll($property): ?int
+    private static function getIntOrNull($property): ?int
     {
         return ($property !== null) ? (int) $property : null;
-    }
-
-    /**
-     * Convert the notification options from string to integer.
-     *
-     * HostTemplate::NOTIFICATION_OPTION_DOWN                => d<br>
-     * HostTemplate::NOTIFICATION_OPTION_UNREACHABLE         => u<br>
-     * HostTemplate::NOTIFICATION_OPTION_RECOVERY            => r<br>
-     * HostTemplate::NOTIFICATION_OPTION_FLAPPING            => f<br>
-     * HostTemplate::NOTIFICATION_OPTION_DOWNTIME_SCHEDULED  => s<br>
-     * HostTemplate::NOTIFICATION_OPTION_NONE                => n
-     *
-     * @param string|null $options
-     * @return int
-     * @throws HostTemplateFactoryException
-     */
-    private static function convertNotificationOptions(?string $options): int
-    {
-        if (empty($options)) {
-            // The null value corresponds to all options
-            return HostTemplate::NOTIFICATION_OPTION_DOWN
-                | HostTemplate::NOTIFICATION_OPTION_UNREACHABLE
-                | HostTemplate::NOTIFICATION_OPTION_RECOVERY
-                | HostTemplate::NOTIFICATION_OPTION_FLAPPING
-                | HostTemplate::NOTIFICATION_OPTION_DOWNTIME_SCHEDULED;
-        }
-        $optionToDefine = 0;
-        $optionsTags = explode(',', $options);
-        $optionsNotAllowed = array_diff($optionsTags, ['d','u','r','f','s',]);
-        if (!empty($optionsNotAllowed)) {
-            throw HostTemplateFactoryException::notificationOptionsNotAllowed(implode(',', $optionsNotAllowed));
-        }
-        if (in_array('n', $optionsTags)) {
-            $optionToDefine = 0;
-        } else {
-            if (in_array('d', $optionsTags)) {
-                $optionToDefine |= HostTemplate::NOTIFICATION_OPTION_DOWN;
-            }
-            if (in_array('u', $optionsTags)) {
-                $optionToDefine |= HostTemplate::NOTIFICATION_OPTION_UNREACHABLE;
-            }
-            if (in_array('r', $optionsTags)) {
-                $optionToDefine |= HostTemplate::NOTIFICATION_OPTION_RECOVERY;
-            }
-            if (in_array('f', $optionsTags)) {
-                $optionToDefine |= HostTemplate::NOTIFICATION_OPTION_FLAPPING;
-            }
-            if (in_array('s', $optionsTags)) {
-                $optionToDefine |= HostTemplate::NOTIFICATION_OPTION_DOWNTIME_SCHEDULED;
-            }
-        }
-        return $optionToDefine;
-    }
-
-    /**
-     * Converts the stalking options from string to integer.
-     *
-     * HostTemplate::STALKING_OPTION_UP           => o<br>
-     * HostTemplate::STALKING_OPTION_DOWN         => d<br>
-     * HostTemplate::STALKING_OPTION_UNREACHABLE  => u
-     *
-     * @param string|null $options
-     * @return int
-     * @throws HostTemplateFactoryException
-     */
-    private static function convertStalkingOptions(?string $options): int
-    {
-        if (empty($options)) {
-            return 0;
-        }
-        $optionToDefine = 0;
-        $optionsTags = explode(',', $options);
-        $optionsNotAllowed = array_diff($optionsTags, ['o','d','u']);
-        if (!empty($optionsNotAllowed)) {
-            throw HostTemplateFactoryException::stalkingOptionsNotAllowed(implode(',', $optionsNotAllowed));
-        }
-        if (in_array('o', $optionsTags)) {
-            $optionToDefine |= HostTemplate::STALKING_OPTION_UP;
-        }
-        if (in_array('d', $optionsTags)) {
-            $optionToDefine |= HostTemplate::STALKING_OPTION_DOWN;
-        }
-        if (in_array('u', $optionsTags)) {
-            $optionToDefine |= HostTemplate::STALKING_OPTION_UNREACHABLE;
-        }
-        return $optionToDefine;
     }
 }

@@ -31,10 +31,11 @@ use Centreon\Domain\HostConfiguration\UseCase\v2_1\FindHostGroupsResponse;
  */
 class HostGroupV21
 {
+
     /**
-     * @var int|null;
+     * @var int|null
      */
-    public $id;
+    private $id;
 
     /**
      * @var string|null
@@ -49,112 +50,12 @@ class HostGroupV21
     /**
      * @var string|null
      */
-    public $displayName;
+    public $notes;
 
     /**
      * @var string|null
      */
-    public $address;
-
-    /**
-     * @var string|null
-     */
-    public $comment;
-
-    /**
-     * @var bool
-     */
-    public $isActivated;
-
-    /**
-     * @var bool
-     */
-    public $isLocked;
-
-    /**
-     * @var int
-     */
-    public $activeChecksStatus;
-
-    /**
-     * @var int
-     */
-    public $passiveChecksStatus;
-
-    /**
-     * @var int|null
-     */
-    public $maxCheckAttemps;
-
-    /**
-     * @var int|null
-     */
-    public $checkInterval;
-
-    /**
-     * @var int|null
-     */
-    public $retryCheckInterval;
-
-    /**
-     * @var int
-     */
-    public $notificationsStatus;
-
-    /**
-     * @var int|null
-     */
-    public $notificationInterval;
-
-    /**
-     * @var int|null
-     */
-    public $firstNotificationDelay;
-
-    /**
-     * @var int|null
-     */
-    public $recoveryNotificationDelay;
-
-    /**
-     * @var int
-     */
-    public $notificationOptions;
-
-    /**
-     * @var int
-     */
-    public $stalkingOptions;
-
-    /**
-     * @var string|null
-     */
-    public $snmpCommunity;
-
-    /**
-     * @var string|null
-     */
-    public $snmpVersion;
-
-    /**
-     * @var int|null
-     */
-    public $icon;
-
-    /**
-     * @var string|null
-     */
-    public $alternativeIcon;
-
-    /**
-     * @var int|null
-     */
-    public $statusMapImage;
-
-    /**
-     * @var string|null
-     */
-    public $urlNotes;
+    public $notesUrl;
 
     /**
      * @var string|null
@@ -164,52 +65,58 @@ class HostGroupV21
     /**
      * @var string|null
      */
-    public $notes;
+    public $icon;
 
     /**
-     * @var int[]
+     * @var string|null
      */
-    public $parents;
+    public $iconMap;
 
     /**
-     * @param FindHostTemplatesResponse $response
-     * @return HostTemplateV21[]
+     * @var string|null
      */
-    public static function createFromResponse(FindHostTemplatesResponse $response): array
+    public $rrd;
+
+    /**
+     * @var string|null
+     */
+    public $geoCoords;
+
+    /**
+     * @var string|null
+     */
+    public $comment;
+
+    /**icon
+     * @var bool
+     * @EntityDescriptor(column="is_activated", modifier="setActivted")
+     */
+    public $isActivated = true;
+
+    /**
+     * @param FindHostGroupsResponse $response
+     * @return HostGroupV21[]
+     */
+    public static function createFromResponse(FindHostGroupsResponse $response): array
     {
-        $hostTemplates = [];
-        foreach ($response->getHostTemplates() as $hostTemplate) {
-            $newHostTemplate = new self();
-            $newHostTemplate->id = $hostTemplate['id'];
-            $newHostTemplate->name = $hostTemplate['name'];
-            $newHostTemplate->alias = $hostTemplate['alias'];
-            $newHostTemplate->displayName = $hostTemplate['display_name'];
-            $newHostTemplate->address = $hostTemplate['address'];
-            $newHostTemplate->isActivated = $hostTemplate['is_activated'];
-            $newHostTemplate->isLocked = $hostTemplate['is_locked'];
-            $newHostTemplate->activeChecksStatus = $hostTemplate['active_checks_status'];
-            $newHostTemplate->passiveChecksStatus = $hostTemplate['passive_checks_status'];
-            $newHostTemplate->maxCheckAttemps = $hostTemplate['max_check_attemps'];
-            $newHostTemplate->checkInterval = $hostTemplate['check_interval'];
-            $newHostTemplate->retryCheckInterval = $hostTemplate['retry_check_interval'];
-            $newHostTemplate->notificationsStatus = $hostTemplate['notifications_status'];
-            $newHostTemplate->notificationInterval = $hostTemplate['notification_interval'];
-            $newHostTemplate->firstNotificationDelay = $hostTemplate['first_notification_delay'];
-            $newHostTemplate->recoveryNotificationDelay = $hostTemplate['recovery_notification_delay'];
-            $newHostTemplate->notificationOptions = $hostTemplate['notification_options'];
-            $newHostTemplate->stalkingOptions = $hostTemplate['stalking_options'];
-            $newHostTemplate->snmpCommunity = $hostTemplate['snmp_community'];
-            $newHostTemplate->snmpVersion = $hostTemplate['snmp_version'];
-            $newHostTemplate->icon = $hostTemplate['icon'];
-            $newHostTemplate->alternativeIcon = $hostTemplate['alternative_icon'];
-            $newHostTemplate->statusMapImage = $hostTemplate['status_map_image'];
-            $newHostTemplate->urlNotes = $hostTemplate['url_notes'];
-            $newHostTemplate->actionUrl = $hostTemplate['action_url'];
-            $newHostTemplate->notes = $hostTemplate['notes'];
-            $newHostTemplate->parents = $hostTemplate['parent_ids'];
+        $hostGroups = [];
+        foreach ($response->getHostGroups() as $hostGroup) {
+            $newHostGroup = new self();
+            $newHostGroup->id = $hostGroup['id'];
+            $newHostGroup->name = $hostGroup['name'];
+            $newHostGroup->alias = $hostGroup['alias'];
+            $newHostGroup->notes = $hostGroup['notes'];
+            $newHostGroup->notesUrl = $hostGroup['notes-url'];
+            $newHostGroup->actionUrl = $hostGroup['action_url'];
+            $newHostGroup->icon = $hostGroup['icon'];
+            $newHostGroup->iconMap = $hostGroup['icon_map'];
+            $newHostGroup->rrd = $hostGroup['rrd'];
+            $newHostGroup->geoCoords = $hostGroup['geo_coords'];
+            $newHostGroup->comment = $hostGroup['comment'];
+            $newHostGroup->isActivated = $hostGroup['is_activated'];
 
-            $hostTemplates[] = $newHostTemplate;
+            $hostGroups[] = $newHostGroup;
         }
-        return $hostTemplates;
+        return $hostGroups;
     }
 }

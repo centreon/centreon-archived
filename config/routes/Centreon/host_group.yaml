@@ -1,5 +1,5 @@
 centreon_application_find_host_templates:
   methods: GET
   path: /configuration/hosts/groups
-  controller: 'Centreon\Application\Controller\HostGroupsController::findHostGroups'
+  controller: 'Centreon\Application\Controller\HostGroupController::findHostGroups'
   condition: "request.attributes.get('version.is_beta') == true"

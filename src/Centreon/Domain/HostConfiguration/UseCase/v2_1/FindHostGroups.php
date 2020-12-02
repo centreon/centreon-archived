@@ -56,7 +56,7 @@ class FindHostGroups
         try {
             $hostGroups = $this->configurationReadRepository->findHostGroups();
         } catch (\Exception $ex) {
-            throw HostTemplateException::searchHostGroupsException();
+            throw HostGroupException::searchHostGroupsException();
         }
         $response = new FindHostGroupsResponse();
         $response->setHostGroups($hostGroups);
