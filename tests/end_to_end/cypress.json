@@ -6,6 +6,7 @@
   "video": true,
   "execTimeout": 120000,
   "env": {
-    "DOCKER_URL": "http://localhost:3400"
+    "DOCKER_URL": "http://localhost:3400",
+    "TAGS": "not @ignore"
   }
 }
