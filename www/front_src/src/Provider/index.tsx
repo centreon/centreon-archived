@@ -21,6 +21,7 @@ import {
   useAcl,
   useDowntime,
   useRefreshInterval,
+  User,
 } from '@centreon/ui-context';
 
 import App from '../App';
@@ -29,6 +30,7 @@ import {
   parametersEndpoint,
   translationEndpoint,
   aclEndpoint,
+  userEndpoint,
 } from './endpoint';
 import { Parameters, Actions } from './models';
 
@@ -45,6 +47,9 @@ const AppProvider = (): JSX.Element | null => {
   const { actionAcl, setActionAcl } = useAcl();
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
+  const { sendRequest: getUser } = useRequest<User>({
+    request: getData,
+  });
   const { sendRequest: getParameters } = useRequest<Parameters>({
     request: getData,
   });
@@ -76,23 +81,26 @@ const AppProvider = (): JSX.Element | null => {
 
   React.useEffect(() => {
     Promise.all([
+      getUser(userEndpoint),
       getParameters(parametersEndpoint),
       getTranslations(translationEndpoint),
       getAcl(aclEndpoint),
     ])
-      .then(([retrievedParameters, retrievedTranslations, retrievedAcl]) => {
+      .then(([retrievedUser, retrievedParameters, retrievedTranslations, retrievedAcl]) => {
         setUser({
-          alias: retrievedParameters.user.alias,
-          name: retrievedParameters.user.name,
-          locale: retrievedParameters.user.locale || 'en',
-          timezone: retrievedParameters.user.timezone,
+          alias: retrievedUser.alias,
+          name: retrievedUser.name,
+          locale: retrievedUser.locale || 'en',
+          timezone: retrievedUser.timezone,
         });
-        setDowntime(retrievedParameters.downtime);
+        setDowntime({
+            default_duration: retrievedParameters.default_duration,
+          });
         setRefreshInterval(retrievedParameters.refresh_interval);
         setActionAcl(retrievedAcl);
 
         initializeI18n({
-          retrievedUser: retrievedParameters.user,
+          retrievedUser,
           retrievedTranslations,
         });
 

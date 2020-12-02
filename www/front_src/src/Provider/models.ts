@@ -26,11 +26,7 @@ interface Acl {
 type Translation = KeyValuePair<string, string>;
 export type Translations = KeyValuePair<string, Translation>;
 
-interface DowntimeParameters {
-  default_duration: number;
-}
 export interface Parameters {
-  user: User;
-  downtime: DowntimeParameters;
+  default_duration: number;
   refresh_interval: number;
 }
