@@ -124,7 +124,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         $this->sqlRequestTranslator->setConcordanceArray([
             'type' => 'log.type',
             'content' => 'log.content',
-            'date' => 'log.date'
+            'date' => 'log.date',
         ]);
 
         $collector = new StatementCollector();
