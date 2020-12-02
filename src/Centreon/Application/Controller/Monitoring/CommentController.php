@@ -161,7 +161,7 @@ class CommentController extends AbstractController
         $this->commentService->filterByContact($contact);
 
        /*
-        * Validate the content of the POST request against the JSON schema validator
+        * Validate the content of the request against the JSON schema validator
         */
         $receivedData = $this->validateAndRetrievePostData(
             $request,
