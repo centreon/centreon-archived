@@ -37,6 +37,7 @@
 namespace CentreonClapi;
 
 use Centreon\Domain\Entity\Task;
+use CentreonRemote\ServiceProvider;
 
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
@@ -601,7 +602,7 @@ class CentreonConfigPoller
                     $exportParams['pollers'] = [$remote['id']];
                 }
 
-                $dependencyInjector['centreon.taskservice']->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);
+                $dependencyInjector[ServiceProvider::CENTREON_TASKSERVICE]->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);
             }
             exec("echo 'SENDCFGFILE:" . $host['id'] . "' >> " . $this->centcore_pipe, $stdout, $return);
 
