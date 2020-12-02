@@ -687,15 +687,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         $collector = new StatementCollector();
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id IS NULL
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter =
+            ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id IS NULL
+            INNER JOIN `:db`.`acl_groups` acg
+                ON acg.acl_group_id = acl.group_id
+                AND acg.acl_group_activate = \'1\'
+                AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT h.*,
@@ -842,15 +841,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $services;
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter =
+            ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+            INNER JOIN `:db`.`acl_groups` acg
+                ON acg.acl_group_id = acl.group_id
+                AND acg.acl_group_activate = \'1\'
+                AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT DISTINCT srv.*,
