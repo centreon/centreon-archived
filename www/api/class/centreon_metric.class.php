@@ -129,7 +129,11 @@ class CentreonMetric extends CentreonWebService
             ORDER BY CONCAT(h.name," - ", s.description, " - ",  m.metric_name) COLLATE utf8_general_ci ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+            if (
+                !is_numeric($this->arguments['page'])
+                || !is_numeric($this->arguments['page_limit'])
+                || $this->arguments['page_limit'] < 1
+            ) {
                 throw new \RestBadRequestException('400 Bad Request, limit error');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
@@ -192,7 +196,11 @@ class CentreonMetric extends CentreonWebService
             'ORDER BY m.metric_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+            if (
+                !is_numeric($this->arguments['page'])
+                || !is_numeric($this->arguments['page_limit'])
+                || $this->arguments['page_limit'] < 1
+            ) {
                 throw new \RestBadRequestException('400 Bad Request, limit error');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
