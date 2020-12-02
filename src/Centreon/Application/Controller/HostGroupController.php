@@ -24,7 +24,7 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostGroups;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostGroupV21;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostGroupV21Factory;
 use FOS\RestBundle\View\View;
 
 /**
@@ -48,7 +48,7 @@ class HostGroupController extends AbstractController
         $response = $findHostGroup->execute();
         return $this->view(
             [
-                'result' => HostGroupV21::createFromResponse($response),
+                'result' => HostGroupV21Factory::createFromResponse($response),
                 'meta' => $requestParameters->toArray()
             ]
         );

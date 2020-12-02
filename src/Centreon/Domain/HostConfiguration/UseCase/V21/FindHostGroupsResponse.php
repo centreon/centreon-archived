@@ -26,9 +26,9 @@ use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Media\Model\Image;
 
 /**
- * This class is a DTO for the FindHostTemplates use case.
+ * This class is a DTO for the FindHostGroups use case.
  *
- * @package Centreon\Domain\HostConfiguration\UseCase\v2_1
+ * @package Centreon\Domain\HostConfiguration\UseCase\V21
  */
 class FindHostGroupsResponse
 {
@@ -44,7 +44,7 @@ class FindHostGroupsResponse
     public function setHostGroups(array $hostGroups): void
     {
         foreach ($hostGroups as $hostGroup) {
-            $this->$hostGroups[] = [
+            $this->hostGroups[] = [
                 'id' => $hostGroup->getId(),
                 'name' => $hostGroup->getName(),
                 'alias' => $hostGroup->getAlias(),
@@ -55,8 +55,8 @@ class FindHostGroupsResponse
                 'icon_map' => $this->imageToArray($hostGroup->getIcon()),
                 'rrd' => $hostGroup->getRrd(),
                 'geo_coords' => $hostGroup->getGeoCoords(),
-                'comment' => $hostGroup->getComment(),
-                'is_activated' => $hostGroup->isActivated()
+                'is_activated' => $hostGroup->isActivated(),
+                'comment' => $hostGroup->getComment()
             ];
         }
     }

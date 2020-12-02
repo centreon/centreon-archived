@@ -590,20 +590,19 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     public function findHostGroups(): array
     {
         $request = $this->translateDbName(
-            'SELECT SQL_CALC_FOUND_ROWS hg.*, ext.*, icon.img_id AS icon_id, icon.img_name AS icon_name,
+            'SELECT SQL_CALC_FOUND_ROWS hg.*, icon.img_id AS icon_id, icon.img_name AS icon_name,
                 CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
                 icon.img_comment AS icon_comment, imap.img_id AS imap_id, imap.img_name AS imap_name,
-                imap.img_path AS imap_path, imap.img_comment AS imap_comment,
-                GROUP_CONCAT(DISTINCT htr.host_tpl_id) AS parents
+                imap.img_path AS imap_path, imap.img_comment AS imap_comment
             FROM `:db`.hostgroup hg
             LEFT JOIN `:db`.view_img icon
-                ON icon.img_id = ext.ehi_icon_image
+                ON icon.img_id = hg.hg_icon_image
             LEFT JOIN `centreon`.view_img_dir_relation iconR
                 ON iconR.img_img_id = icon.img_id
             LEFT JOIN `centreon`.view_img_dir iconD
                 ON iconD.dir_id = iconR.dir_dir_parent_id
             LEFT JOIN `:db`.view_img imap
-                ON imap.img_id = ext.ehi_statusmap_image'
+                ON imap.img_id = hg.hg_map_icon_image'
         );
         
         // Search
@@ -613,12 +612,12 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             ? $searchRequest . ' AND host_register = \'0\' GROUP BY h.host_id'
             : ' WHERE host_register = \'0\' GROUP BY h.host_id';
 */
+
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest)
             ? $sortRequest
             : ' ORDER BY hg.hg_id ASC';
-
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
         $statement = $this->db->query($request);

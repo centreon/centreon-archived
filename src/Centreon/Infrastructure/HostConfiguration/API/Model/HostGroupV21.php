@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\API\Model;
 
-use Centreon\Domain\HostConfiguration\UseCase\v2_1\FindHostGroupsResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostGroupsResponse;
 
 /**
  * This class is designed to represent the formatted response of the API request.
@@ -35,7 +35,7 @@ class HostGroupV21
     /**
      * @var int|null
      */
-    private $id;
+    public $id;
 
     /**
      * @var string|null
@@ -86,37 +86,9 @@ class HostGroupV21
      * @var string|null
      */
     public $comment;
-
-    /**icon
-     * @var bool
-     * @EntityDescriptor(column="is_activated", modifier="setActivted")
-     */
-    public $isActivated = true;
-
+    
     /**
-     * @param FindHostGroupsResponse $response
-     * @return HostGroupV21[]
+     * @var bool
      */
-    public static function createFromResponse(FindHostGroupsResponse $response): array
-    {
-        $hostGroups = [];
-        foreach ($response->getHostGroups() as $hostGroup) {
-            $newHostGroup = new self();
-            $newHostGroup->id = $hostGroup['id'];
-            $newHostGroup->name = $hostGroup['name'];
-            $newHostGroup->alias = $hostGroup['alias'];
-            $newHostGroup->notes = $hostGroup['notes'];
-            $newHostGroup->notesUrl = $hostGroup['notes-url'];
-            $newHostGroup->actionUrl = $hostGroup['action_url'];
-            $newHostGroup->icon = $hostGroup['icon'];
-            $newHostGroup->iconMap = $hostGroup['icon_map'];
-            $newHostGroup->rrd = $hostGroup['rrd'];
-            $newHostGroup->geoCoords = $hostGroup['geo_coords'];
-            $newHostGroup->comment = $hostGroup['comment'];
-            $newHostGroup->isActivated = $hostGroup['is_activated'];
-
-            $hostGroups[] = $newHostGroup;
-        }
-        return $hostGroups;
-    }
+    public $isActivated;
 }

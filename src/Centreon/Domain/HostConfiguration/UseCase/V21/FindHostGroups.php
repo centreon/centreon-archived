@@ -24,6 +24,7 @@ namespace Centreon\Domain\HostConfiguration\UseCase\V21;
 
 use Centreon\Domain\HostConfiguration\Exception\HostGroupException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationReadRepositoryInterface;
+use Centreon\Domain\HostConfiguration\UseCase\V21\FindGroupsResponse;
 
 /**
  * This class is designed to represent a use case to find all host templates

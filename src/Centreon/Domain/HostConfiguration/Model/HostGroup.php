@@ -222,7 +222,7 @@ class HostGroup
      * @param Image|null $icon
      * @return HostTemplate
      */
-    public function setIcon(?Image $icon): HostTemplate
+    public function setIcon(?Image $icon): HostGroup
     {
         $this->icon = $icon;
         return $this;
@@ -240,7 +240,7 @@ class HostGroup
      * @param Image|null $iconMap
      * @return HostTemplate
      */
-    public function setIconMap(?Image $iconMap): HostTemplate
+    public function setIconMap(?Image $iconMap): HostGroup
     {
         $this->iconMap = $iconMap;
         return $this;
