@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,7 +36,7 @@
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonLDAP.class.php";
-require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
+require_once __DIR__ . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
 {
@@ -47,7 +47,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
     {
         parent::__construct();
     }
-    
+
     /**
      *
      * @return array
@@ -57,8 +57,12 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
         global $centreon;
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            if(!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])){
-                throw new \RestBadRequestException('Error, limit must be numerical');
+            if (
+                !is_numeric($this->arguments['page'])
+                || !is_numeric($this->arguments['page_limit'])
+                || $this->arguments['page_limit'] < 1
+            ) {
+                throw new \RestBadRequestException('Error, limit must be an integer greater than zero');
             }
             $limit = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $offset = $this->arguments['page_limit'];
@@ -90,7 +94,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             ),
             false
         );
-       
+
 
         $contactgroupList = array();
         foreach ($aclCgs['items'] as $id => $contactgroup) {
@@ -115,7 +119,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
         } else {
             $ldapCgs = $cg->getLdapContactgroups($ldapFilter);
         }
- 
+
         foreach ($ldapCgs as $key => $value) {
             $sTemp = $value;
             if (!$this->unique_key($sTemp, $contactgroupList)) {
@@ -131,7 +135,7 @@ class CentreonConfigurationContactgroup extends CentreonConfigurationObjects
             'total' => $aclCgs['total']
         );
     }
-    
+
     protected function unique_key($val, &$array)
     {
 
