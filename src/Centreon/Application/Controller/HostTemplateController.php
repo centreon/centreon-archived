@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\HostConfiguration\UseCase\v2_1\FindHostTemplates;
+use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplates;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostTemplateV21;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostTemplateV21Factory;
 use FOS\RestBundle\View\View;
 
 /**
@@ -48,7 +48,7 @@ class HostTemplateController extends AbstractController
         $response = $findHostTemplate->execute();
         return $this->view(
             [
-                'result' => HostTemplateV21::createFromResponse($response),
+                'result' => HostTemplateV21Factory::createFromResponse($response),
                 'meta' => $requestParameters->toArray()
             ]
         );

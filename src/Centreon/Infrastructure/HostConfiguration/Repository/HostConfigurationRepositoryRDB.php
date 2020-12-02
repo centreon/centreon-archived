@@ -320,7 +320,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     /**
      * @inheritDoc
      */
-    public function findAndAddHostTemplates(Host $host): void
+    public function findHostTemplatesRecursively(Host $host): array
     {
         $request = $this->translateDbName(
             'WITH RECURSIVE template AS (
@@ -349,7 +349,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->execute();
 
         /**
-         * Add a host template by browsing all templates recursively until you find the parent template.
+         * Add a host template by browsing all templates recursively until we find the parent template.
          *
          * @param int $hostParentId Id of the host template for which we want to add the given template.
          * @param Host $hostTemplate Host template to be added
@@ -367,18 +367,19 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 }
             };
 
-        $host->clearTemplates();
+        $hostTemplates = [];
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $hostTemplate = EntityCreator::createEntityByArray(
                 Host::class,
                 $record
             );
             if ((int) $record['template_host_id'] === $host->getId()) {
-                $host->addTemplate($hostTemplate);
+                $hostTemplates[] = $hostTemplate;
             } else {
-                $addTemplateToHost((int) $record['template_host_id'], $hostTemplate, $host->getTemplates());
+                $addTemplateToHost((int) $record['template_host_id'], $hostTemplate, $hostTemplates);
             }
         }
+        return $hostTemplates;
     }
 
     /**

@@ -419,6 +419,23 @@ jQuery(function() {
         }
     });
 
+    /**
+    * Mechanism to clear the password input field when it gets focus
+    * and recover its previous value when it lost focus if no new value has been defined.
+    */
+    jQuery('ul#macro').find('input[id^=\'macroValue_\']').on('click', function () {
+    if ($(this).closest('div').find('input[type=\'checkbox\']:checked').val() === '1') {
+      // It's a password input
+      const actualValue = $(this).val();
+      $(this).val('');
+      $(this).one('focusout', function() {
+        if ($(this).val().length === 0) {
+          $(this).val(actualValue);
+        }
+      });
+    }
+    });
+
     jQuery(".onemacro").each(function(idx,elem) {
         var from = jQuery(elem).find('input[name^=macroFrom]').val();
         if (from === "direct") {
@@ -543,8 +560,7 @@ jQuery(function() {
 
             jQuery(".onemacro").each(function(idx, elem) {
                 var from = jQuery(elem).find('input[name^=macroFrom]').val();
-                if (from === "direct") {
-                } else if (from === "fromTpl") {
+                if (from === "fromTpl") {
                     jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
                     jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
                 } else {

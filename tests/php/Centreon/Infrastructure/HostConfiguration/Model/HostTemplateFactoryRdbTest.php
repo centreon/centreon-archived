@@ -27,10 +27,13 @@ use Centreon\Domain\HostConfiguration\Exception\HostTemplateFactoryException;
 use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostTemplateFactoryRdb;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @package Tests\Centreon\Infrastructure\HostConfiguration\Model
+ */
 class HostTemplateFactoryRdbTest extends TestCase
 {
     /**
-     * @param array $rdbData
+     * @var array<string, string|int> $rdbData
      */
     private $rdbData;
 
@@ -46,7 +49,7 @@ class HostTemplateFactoryRdbTest extends TestCase
         | HostTemplate::STALKING_OPTION_DOWN
         | HostTemplate::STALKING_OPTION_UNREACHABLE;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->rdbData = [
             'host_id' => 10,
@@ -58,7 +61,7 @@ class HostTemplateFactoryRdbTest extends TestCase
             'host_check_interval' => 2,
             'host_retry_check_interval' => 1,
             'host_active_checks_enabled' => 2,
-            'host_passive_checks_enabled' => 2,
+            'host_passive_checks_enabled' => 1,
             'host_notification_interval' => 1,
             'host_recovery_notification_delay' => 1,
             'host_notification_options' => 'd,u,r,f,s',
@@ -83,7 +86,7 @@ class HostTemplateFactoryRdbTest extends TestCase
      *
      * @throws HostTemplateFactoryException
      */
-    public function testAllPropertiesOnCreate()
+    public function testAllPropertiesOnCreate(): void
     {
         $hostTemplate = HostTemplateFactoryRdb::create($this->rdbData);
         $this->assertEquals($this->rdbData['host_id'], $hostTemplate->getId());
@@ -100,7 +103,7 @@ class HostTemplateFactoryRdbTest extends TestCase
         );
         $this->assertEquals(
             $this->rdbData['host_passive_checks_enabled'],
-            $hostTemplate->getPassiveChecksStatus() === HostTemplate::STATUS_DEFAULT
+            $hostTemplate->getPassiveChecksStatus() === HostTemplate::STATUS_ENABLE
         );
         $this->assertEquals($this->rdbData['host_notification_interval'], $hostTemplate->getNotificationInterval());
         $this->assertEquals(
@@ -140,7 +143,7 @@ class HostTemplateFactoryRdbTest extends TestCase
      *
      * @throws HostTemplateFactoryException
      */
-    public function testBadNotificationOptions()
+    public function testBadNotificationOptions(): void
     {
         $this->rdbData['host_notification_options'] = 'd,u,c,r,f,s,x';
         $this->expectException(HostTemplateFactoryException::class);
@@ -153,7 +156,7 @@ class HostTemplateFactoryRdbTest extends TestCase
      *
      * @throws HostTemplateFactoryException
      */
-    public function testBadStalkingOptions()
+    public function testBadStalkingOptions(): void
     {
         $this->rdbData['host_stalking_options'] = 'o,c,d,u,x';
         $this->expectException(HostTemplateFactoryException::class);

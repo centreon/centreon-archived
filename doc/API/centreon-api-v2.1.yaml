@@ -3080,11 +3080,12 @@ components:
         snmp_version:
           type: string
           nullable: true
+          enum: [1, 2c, 3]
           description: |
             Version of the SNMP agent.
 
             The value can be `1`, `2c` or `3`
-          example: "3"
+          example: "2c"
         icon:
           $ref: '#/components/schemas/Media.Image'
           nullable: true
@@ -3092,6 +3093,7 @@ components:
         alternative_icon:
           type: string
           nullable: true
+          maxLength: 200
           description: "Define an optional string that is used in the alternative description of the icon image"
         status_map_image:
           $ref: '#/components/schemas/Media.Image'
@@ -3100,14 +3102,17 @@ components:
         url_notes:
           type: string
           nullable: true
+          maxLength: 65535
           description: "Define an optional URL that can be used to provide more information about the host."
         action_url:
           type: string
           nullable: true
+          maxLength: 65535
           description: "Define an optional URL that can be used to provide more actions to be performed on the host."
         notes:
           type: string
           nullable: true
+          maxLength: 65535
           description: "Define an optional notes."
         parents:
           type: array
@@ -3123,12 +3128,15 @@ components:
         name:
           type: string
           description: "Image name"
+          maxLength: 255
         path:
           type: string
+          maxLength: 255
           description: "Image path"
         comment:
           type: string
           nullable: true
+          maxLength: 65535
           description: "Image comments"
     User.Filter:
       type: object

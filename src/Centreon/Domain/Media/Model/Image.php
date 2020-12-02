@@ -22,8 +22,19 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Media\Model;
 
+use Centreon\Domain\Common\Assertion\Assertion;
+
+/**
+ * This class is designed to represent an image or icon
+ *
+ * @package Centreon\Domain\Media\Model
+ */
 class Image
 {
+    public const MAX_NAME_LENGTH = 255,
+                 MAX_PATH_LENGTH = 255,
+                 MAX_COMMENTS_LENGTH = 65535;
+
     /**
      * @var int|null
      */
@@ -73,9 +84,11 @@ class Image
     /**
      * @param string $name
      * @return Image
+     * @throws \Assert\AssertionFailedException
      */
     public function setName(string $name): Image
     {
+        Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'Image::name');
         $this->name = $name;
         return $this;
     }
@@ -91,9 +104,11 @@ class Image
     /**
      * @param string $path
      * @return Image
+     * @throws \Assert\AssertionFailedException
      */
     public function setPath(string $path): Image
     {
+        Assertion::maxLength($path, self::MAX_PATH_LENGTH, 'Image::path');
         $this->path = $path;
         return $this;
     }
@@ -109,9 +124,13 @@ class Image
     /**
      * @param string|null $comment
      * @return Image
+     * @throws \Assert\AssertionFailedException
      */
     public function setComment(?string $comment): Image
     {
+        if ($comment !== null) {
+            Assertion::maxLength($comment, self::MAX_COMMENTS_LENGTH, 'Image::comment');
+        }
         $this->comment = $comment;
         return $this;
     }

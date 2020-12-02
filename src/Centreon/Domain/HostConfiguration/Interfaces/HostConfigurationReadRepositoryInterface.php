@@ -44,14 +44,15 @@ interface HostConfigurationReadRepositoryInterface
     public function findHost(int $hostId): ?Host;
 
     /**
-     * Find and add all host templates in the given host.
+     * Recursively find all host templates.
      *
      * **The priority order of host templates is maintained!**
      *
-     * @param Host $host Host for which we want to find and add all host templates
+     * @param Host $host Host for which we want to find all host templates recursively
+     * @return Host[]
      * @throws \Throwable
      */
-    public function findAndAddHostTemplates(Host $host): void;
+    public function findHostTemplatesRecursively(Host $host): array;
 
     /**
      * Find all host templates.

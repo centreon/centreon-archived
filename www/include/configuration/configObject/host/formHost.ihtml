@@ -498,8 +498,25 @@ jQuery(function() {
 
     });
 
-    jQuery(".onemacro").each(function(idx,elem){
-        var from = jQuery(elem).find('input[name^=macroFrom]').val();
+    /**
+     * Mechanism to clear the password input field when it gets focus
+     * and recover its previous value when it lost focus if no new value has been defined.
+     */
+    jQuery('ul#macro').find('input[id^=\'macroValue_\']').on('click', function () {
+        if ($(this).closest('div').find('input[type=\'checkbox\']:checked').val() === '1') {
+            // It's a password input
+            const actualValue = $(this).val();
+            $(this).val('');
+            $(this).one('focusout', function() {
+                if ($(this).val().length === 0) {
+                    $(this).val(actualValue);
+                }
+            });
+        }
+    });
+
+    jQuery(".onemacro").each(function(idx,elem) {
+    	var from = jQuery(elem).find('input[name^=macroFrom]').val();
         if (from === "direct") {
         } else if(from === "fromTpl"){
             jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#ffcb6b',border : '1px solid #ffa600'});
@@ -643,9 +660,9 @@ function clonerefreshListener(el){
                             jQuery(elem).find("input[name^='macroInput']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
                             jQuery(elem).find("input[name^='macroValue']").css({'background-color' : '#b6fca7',border : '1px solid #50ce36'});
                         }
-                        
+
                         if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
-                            jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
+                        	jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
                         }
 
                         {/literal}{if $form.frozen == false}{literal}
@@ -654,7 +671,7 @@ function clonerefreshListener(el){
                             if (jQuery(elem).find("input[name^='macroTplValToDisplay']").val() == "1"){
                                 var tplValueField = jQuery(elem).find("input[name^='macroTplValue']");
                                 var tplValue = tplValueField.val();
-                                
+
                                 var tplInputField = jQuery(elem).find("input[name^='macroInput']");
                                 var tplInput = tplInputField.val();
 
@@ -674,7 +691,7 @@ function clonerefreshListener(el){
                             jQuery(elem).find("input[name^='macroInput']").css("background","white");
                             jQuery(elem).find("input[name^='macroValue']").css("background","white");
                         });
-                        
+
                         jQuery(elem).find("input[name^='macroValue']").on("input",function(){
                             jQuery(elem).find('input[name^=macroFrom]').val("direct");
                             jQuery(elem).find("input[name^='macroInput']").css("background","white");

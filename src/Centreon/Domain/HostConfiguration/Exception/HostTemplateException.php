@@ -29,8 +29,8 @@ namespace Centreon\Domain\HostConfiguration\Exception;
  */
 class HostTemplateException extends \Exception
 {
-    public static function searchHostTemplatesException(): self
+    public static function searchHostTemplatesException(\Exception $ex): self
     {
-        return new self(_('Error when searching for host templates'));
+        return new self(_('Error when searching for host templates'), 0, $ex);
     }
 }

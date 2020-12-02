@@ -20,15 +20,16 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\UseCase\v2_1;
+namespace Centreon\Domain\HostConfiguration\UseCase\V21;
 
 use Centreon\Domain\HostConfiguration\Exception\HostTemplateException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationReadRepositoryInterface;
+use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplatesResponse;
 
 /**
  * This class is designed to represent a use case to find all host templates
  *
- * @package Centreon\Domain\HostConfiguration\UseCase
+ * @package Centreon\Domain\HostConfiguration\UseCase\V21
  */
 class FindHostTemplates
 {
@@ -56,7 +57,7 @@ class FindHostTemplates
         try {
             $hostTemplates = $this->configurationReadRepository->findHostTemplates();
         } catch (\Exception $ex) {
-            throw HostTemplateException::searchHostTemplatesException();
+            throw HostTemplateException::searchHostTemplatesException($ex);
         }
         $response = new FindHostTemplatesResponse();
         $response->setHostTemplates($hostTemplates);
