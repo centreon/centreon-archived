@@ -184,7 +184,7 @@ class CommentController extends AbstractController
 
         $now = new \DateTime();
 
-        foreach ($receivedData['resources'] as $index => $commentResource) {
+        foreach ($receivedData['resources'] as $commentResource) {
             $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
             $comments[$commentResource['id']] = (new Comment($commentResource['id'], $commentResource['comment']))
                 ->setDate($date)
