@@ -86,26 +86,33 @@ const AppProvider = (): JSX.Element | null => {
       getTranslations(translationEndpoint),
       getAcl(aclEndpoint),
     ])
-      .then(([retrievedUser, retrievedParameters, retrievedTranslations, retrievedAcl]) => {
-        setUser({
-          alias: retrievedUser.alias,
-          name: retrievedUser.name,
-          locale: retrievedUser.locale || 'en',
-          timezone: retrievedUser.timezone,
-        });
-        setDowntime({
+      .then(
+        ([
+          retrievedUser,
+          retrievedParameters,
+          retrievedTranslations,
+          retrievedAcl,
+        ]) => {
+          setUser({
+            alias: retrievedUser.alias,
+            name: retrievedUser.name,
+            locale: retrievedUser.locale || 'en',
+            timezone: retrievedUser.timezone,
+          });
+          setDowntime({
             default_duration: retrievedParameters.default_duration,
           });
-        setRefreshInterval(retrievedParameters.refresh_interval);
-        setActionAcl(retrievedAcl);
+          setRefreshInterval(retrievedParameters.refresh_interval);
+          setActionAcl(retrievedAcl);
 
-        initializeI18n({
-          retrievedUser,
-          retrievedTranslations,
-        });
+          initializeI18n({
+            retrievedUser,
+            retrievedTranslations,
+          });
 
-        setDataLoaded(true);
-      })
+          setDataLoaded(true);
+        },
+      )
       .catch((error) => {
         if (pathEq(['response', 'status'], 401)(error)) {
           window.location.href = 'index.php?disconnect=1';
