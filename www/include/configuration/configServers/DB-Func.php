@@ -997,11 +997,11 @@ function updateServer(int $id, array $data): void
 }
 
 /**
- * Get if a service or an host has been changed for pollers.
+ * Get poller state if a service or an host has changed.
  *
  * @param array         $pollers     Listing of pollers
  *
- * @return array Return true if the configuration has changed
+ * @return an array of id => boolean. True if the configuration has changed
  * @global array      $conf_centreon Database configuration
  * @global CentreonDB $pearDBO       DB connector for centreon_storage database
  */
