@@ -22,12 +22,12 @@ default:
         - Centreon\Test\Api\Context\AuthenticationContext
     user_filter:
       paths: [ "%paths.base%/features/UserFilter.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\UserFilterContext
     user_parameters:
       paths: [ "%paths.base%/features/UserParameters.feature" ]
       contexts:
         - Centreon\Test\Api\Context\UserParametersContext
-      contexts:
-        - Centreon\Test\Api\Context\UserFilterContext
     check:
       paths: [ "%paths.base%/features/Check.feature" ]
       contexts:
