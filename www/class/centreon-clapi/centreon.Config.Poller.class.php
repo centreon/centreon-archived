@@ -435,6 +435,7 @@ class CentreonConfigPoller
      */
     public function cfgMove($variables = null)
     {
+        global $pearDB, $pearDBO;
         $pearDB = $this->DB;
         $pearDBO = $this->DBC;
 
