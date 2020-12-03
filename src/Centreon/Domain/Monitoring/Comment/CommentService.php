@@ -26,15 +26,16 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Centreon\Domain\Monitoring\Comment\CommentException;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\Comment\Interfaces\CommentServiceInterface;
-use Centreon\Domain\Monitoring\MonitoringService;
 
 /**
  * Monitoring class used to manage result submitting to services, hosts and resources
@@ -207,7 +208,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
                 try {
                     $hosts = $this->monitoringRepository->findHostsByIdsForAdminUser($resourceIds['host']);
                 } catch (\Throwable $ex) {
-                    throw new \Exception(_('Error when searching for hosts'));
+                    throw new CommentException(_('Error when searching for hosts'), 0, $ex);
                 }
             }
 
@@ -215,7 +216,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
                 try {
                     $services = $this->monitoringRepository->findServicesByIdsForAdminUser($resourceIds['service']);
                 } catch (\Throwable $ex) {
-                    throw new \Exception(_('Error when searching for services'));
+                    throw new CommentException(_('Error when searching for services'), 0, $ex);
                 }
             }
         } else {
@@ -227,7 +228,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
                         ->filterByAccessGroups($accessGroups)
                         ->findHostsByIdsForNonAdminUser($resourceIds['host']);
                 } catch (\Throwable $ex) {
-                    throw new \Exception(_('Error when searching for hosts'));
+                    throw new CommentException(_('Error when searching for hosts'), 0, $ex);
                 }
             }
 
@@ -237,7 +238,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
                         ->filterByAccessGroups($accessGroups)
                         ->findServicesByIdsForNonAdminUser($resourceIds['service']);
                 } catch (\Throwable $ex) {
-                    throw new \Exception(_('Error when searching for services'));
+                    throw new CommentException(_('Error when searching for services'), 0, $ex);
                 }
             }
         }
