@@ -11,7 +11,8 @@ Feature:
     Given I am logged in
     And the following CLAPI import data:
     """
-    Test user;tuser;tuser@mail.com;userpassword;1;1;en_US;local"
+    CONTACT;ADD;Test user;tuser;tuser@mail.com;userpassword;1;1;en_US;local"
+    CONTACT;setparam;tuser;timezone;Europe/Paris
     """
     And the configuration is generated and exported
 
@@ -21,4 +22,5 @@ Feature:
     And the JSON node "alias" should be equal to the string "tuser"
     And the JSON node "email" should be equal to the string "tuser@email.com"
     And the JSON node "locale" should be equal to the string "en_US"
+    And the JSON node "timezone" should be equal to the string "Europe/Paris"
 
