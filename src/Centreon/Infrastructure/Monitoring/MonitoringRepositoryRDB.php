@@ -600,22 +600,18 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
+        $statement->execute();
 
-        if ($statement->execute() !== false) {
-            while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-                $service = EntityCreator::createEntityByArray(
-                    Service::class,
-                    $row
-                );
-                $service->setHost(
-                    EntityCreator::createEntityByArray(Host::class, $row, 'host_')
-                );
-                $services[] = $service;
-            }
-        } else {
-            throw new \Exception(_('Failed to find services'));
+        while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $service = EntityCreator::createEntityByArray(
+                Service::class,
+                $row
+            );
+            $service->setHost(
+                EntityCreator::createEntityByArray(Host::class, $row, 'host_')
+            );
+            $services[] = $service;
         }
-
         return $services;
     }
 
@@ -658,17 +654,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
+        $statement->execute();
 
-        if ($statement->execute() !== false) {
-            while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-                $host = EntityCreator::createEntityByArray(
-                    Host::class,
-                    $row
-                );
-                $hosts[] = $host;
-            }
-        } else {
-            throw new \Exception(_('Failed to find hosts'));
+        while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $host = EntityCreator::createEntityByArray(
+                Host::class,
+                $row
+            );
+            $hosts[] = $host;
         }
 
         return $hosts;
@@ -723,17 +716,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
+        $statement->execute();
 
-        if ($statement->execute() !== false) {
-            while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-                $host = EntityCreator::createEntityByArray(
-                    Host::class,
-                    $row
-                );
-                $hosts[] = $host;
-            }
-        } else {
-            throw new \Exception(_('Failed to find hosts'));
+        while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $host = EntityCreator::createEntityByArray(
+                Host::class,
+                $row
+            );
+            $hosts[] = $host;
         }
 
         return $hosts;
@@ -897,20 +887,17 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         $statement = $this->db->prepare($request);
         $collector->bind($statement);
+        $statement->execute();
 
-        if ($statement->execute() !== false) {
-            while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-                $service = EntityCreator::createEntityByArray(
-                    Service::class,
-                    $row
-                );
-                $service->setHost(
-                    EntityCreator::createEntityByArray(Host::class, $row, 'host_')
-                );
-                $services[] = $service;
-            }
-        } else {
-            throw new \Exception(_('Failed to find services'));
+        while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $service = EntityCreator::createEntityByArray(
+                Service::class,
+                $row
+            );
+            $service->setHost(
+                EntityCreator::createEntityByArray(Host::class, $row, 'host_')
+            );
+            $services[] = $service;
         }
 
         return $services;

@@ -196,31 +196,49 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
      */
     public function addResourcesComment(array $comments, array $resourceIds): void
     {
+        $hosts = [];
+        $services = [];
         /**
          * Retrieving at this point all the host and services entities linked to
          * the resource ids provided
          */
         if ($this->contact->isAdmin()) {
             if (!empty($resourceIds['host'])) {
-                $hosts = $this->monitoringRepository->findHostsByIdsForAdminUser($resourceIds['host']);
+                try {
+                    $hosts = $this->monitoringRepository->findHostsByIdsForAdminUser($resourceIds['host']);
+                } catch (\Throwable $ex) {
+                    throw new \Exception(_('Error when searching for hosts'));
+                }
             }
 
             if (!empty($resourceIds['service'])) {
-                $services = $this->monitoringRepository->findServicesByIdsForAdminUser($resourceIds['service']);
+                try {
+                    $services = $this->monitoringRepository->findServicesByIdsForAdminUser($resourceIds['service']);
+                } catch (\Throwable $ex) {
+                    throw new \Exception(_('Error when searching for services'));
+                }
             }
         } else {
             $accessGroups = $this->accessGroupRepository->findByContact($this->contact);
 
             if (!empty($resourcesId['host'])) {
-                $hosts = $this->monitoringRepository
-                    ->filterByAccessGroups($accessGroups)
-                    ->findHostsByIdsForNonAdminUser($resourceIds['host']);
+                try {
+                    $hosts = $this->monitoringRepository
+                        ->filterByAccessGroups($accessGroups)
+                        ->findHostsByIdsForNonAdminUser($resourceIds['host']);
+                } catch (\Throwable $ex) {
+                    throw new \Exception(_('Error when searching for hosts'));
+                }
             }
 
             if (!empty($resourcesIds['service'])) {
-                $services = $this->monitoringRepository
-                    ->filterByAccessGroups($accessGroups)
-                    ->findServicesByIdsForNonAdminUser($resourceIds['service']);
+                try {
+                    $services = $this->monitoringRepository
+                        ->filterByAccessGroups($accessGroups)
+                        ->findServicesByIdsForNonAdminUser($resourceIds['service']);
+                } catch (\Throwable $ex) {
+                    throw new \Exception(_('Error when searching for services'));
+                }
             }
         }
 
