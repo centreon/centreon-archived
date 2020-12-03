@@ -43,26 +43,34 @@ $searchStr = '';
 $search = null;
 
 if (isset($_POST['searchACLR'])) {
-    $search = $_POST['searchACLR'];
+    $search = filter_var($_POST['searchACLR'], FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($_GET['searchACLR'])) {
-    $search = $_GET['searchACLR'];
+    $search = filter_var($_GET['searchACLR'], FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
 }
 
 if ($search) {
-    $searchStr = "AND (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
-        . "%' OR acl_res_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
+    $searchStr = "AND (acl_res_name LIKE :search OR acl_res_alias LIKE :search)";
 }
-$rq = 'SELECT SQL_CALC_FOUND_ROWS acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, ' .
-    'all_servicegroups, acl_res_activate FROM acl_resources '
-    . 'WHERE locked = 0 '
-    . $searchStr . ' '
-    . 'ORDER BY acl_res_name '
-    . 'LIMIT ' . $num * $limit . ', ' . $limit;
-$dbResult = $pearDB->query($rq);
+$rq = "
+    SELECT SQL_CALC_FOUND_ROWS acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups,
+    all_servicegroups, acl_res_activate FROM acl_resources
+    WHERE locked = 0
+    $searchStr
+    ORDER BY acl_res_name
+    LIMIT :num, :limit
+";
+$statement = $pearDB->prepare($rq);
+if ($search) {
+    $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
+}
+$statement->bindValue(':num', $num * $limit, \PDO::PARAM_INT);
+$statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
+$statement->execute();
+
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
@@ -98,7 +106,7 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
-for ($i = 0; $resources = $dbResult->fetchRow(); $i++) {
+for ($i = 0; $resources = $statement->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $resources['acl_res_id'] . "]");
 
     if ($resources["acl_res_activate"]) {
