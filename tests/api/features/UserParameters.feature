@@ -11,16 +11,15 @@ Feature:
     Given I am logged in
     And the following CLAPI import data:
     """
-    CONTACT;ADD;Test user;tuser;tuser@mail.com;userpassword;1;1;en_US;local"
-    CONTACT;setparam;tuser;timezone;Europe/Paris
+    CONTACT;setparam;admin;timezone;Europe/Paris
     """
     And the configuration is generated and exported
 
     When I send a GET request to '/beta/configuration/users/current/parameters'
     Then the response code should be "200"
-    And the JSON node "name" should be equal to the string "Test user"
-    And the JSON node "alias" should be equal to the string "tuser"
-    And the JSON node "email" should be equal to the string "tuser@email.com"
+    And the JSON node "name" should be equal to the string "admin admin"
+    And the JSON node "alias" should be equal to the string "admin"
+    And the JSON node "email" should be equal to the string "admin@centreon.com"
     And the JSON node "locale" should be equal to the string "en_US"
     And the JSON node "timezone" should be equal to the string "Europe/Paris"
 
