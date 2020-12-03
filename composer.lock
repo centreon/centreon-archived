@@ -4,8 +4,73 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "db1f238292d01c989ce1788967be778b",
+    "content-hash": "fddaea7577a8c563cde3906e6497375c",
     "packages": [
+        {
+            "name": "beberlei/assert",
+            "version": "v3.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/assert.git",
+                "reference": "5367e3895976b49704ae671f75bc5f0ba1b986ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/5367e3895976b49704ae671f75bc5f0ba1b986ab",
+                "reference": "5367e3895976b49704ae671f75bc5f0ba1b986ab",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-intl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-simplexml": "*",
+                "php": "^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "*",
+                "phpstan/phpstan": "*",
+                "phpunit/phpunit": ">=6.0.0",
+                "yoast/phpunit-polyfills": "^0.1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Assert\\": "lib/Assert"
+                },
+                "files": [
+                    "lib/Assert/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Richard Quadling",
+                    "email": "rquadling@gmail.com",
+                    "role": "Collaborator"
+                }
+            ],
+            "description": "Thin assertion library for input validation in business models.",
+            "keywords": [
+                "assert",
+                "assertion",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/beberlei/assert/issues",
+                "source": "https://github.com/beberlei/assert/tree/v3.3.0"
+            },
+            "time": "2020-11-13T20:02:54+00:00"
+        },
         {
             "name": "curl/curl",
             "version": "1.9.3",
@@ -238,36 +303,31 @@
         },
         {
             "name": "doctrine/instantiator",
-            "version": "1.3.1",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "f350df0268e904597e3bd9c4685c53e0e333feea"
+                "reference": "d56bf6102915de5702778fe20f2de3b2fe570b5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/f350df0268e904597e3bd9c4685c53e0e333feea",
-                "reference": "f350df0268e904597e3bd9c4685c53e0e333feea",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/d56bf6102915de5702778fe20f2de3b2fe570b5b",
+                "reference": "d56bf6102915de5702778fe20f2de3b2fe570b5b",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1 || ^8.0"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^6.0",
+                "doctrine/coding-standard": "^8.0",
                 "ext-pdo": "*",
                 "ext-phar": "*",
-                "phpbench/phpbench": "^0.13",
-                "phpstan/phpstan-phpunit": "^0.11",
-                "phpstan/phpstan-shim": "^0.11",
-                "phpunit/phpunit": "^7.0"
+                "phpbench/phpbench": "^0.13 || 1.0.0-alpha2",
+                "phpstan/phpstan": "^0.12",
+                "phpstan/phpstan-phpunit": "^0.12",
+                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.2.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
@@ -281,7 +341,7 @@
                 {
                     "name": "Marco Pivetta",
                     "email": "ocramius@gmail.com",
-                    "homepage": "http://ocramius.github.com/"
+                    "homepage": "https://ocramius.github.io/"
                 }
             ],
             "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
@@ -292,7 +352,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/instantiator/issues",
-                "source": "https://github.com/doctrine/instantiator/tree/1.3.x"
+                "source": "https://github.com/doctrine/instantiator/tree/1.4.0"
             },
             "funding": [
                 {
@@ -308,7 +368,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-29T17:27:14+00:00"
+            "time": "2020-11-10T18:47:58+00:00"
         },
         {
             "name": "doctrine/lexer",
@@ -2329,6 +2389,73 @@
             "time": "2020-10-27T10:05:40+00:00"
         },
         {
+            "name": "symfony/deprecation-contracts",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/deprecation-contracts.git",
+                "reference": "5fa56b4074d1ae755beb55617ddafe6f5d78f665"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/5fa56b4074d1ae755beb55617ddafe6f5d78f665",
+                "reference": "5fa56b4074d1ae755beb55617ddafe6f5d78f665",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                },
+                "thanks": {
+                    "name": "symfony/contracts",
+                    "url": "https://github.com/symfony/contracts"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "function.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "A generic function and convention to trigger deprecation notices",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/deprecation-contracts/tree/master"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-09-07T11:33:47+00:00"
+        },
+        {
             "name": "symfony/dotenv",
             "version": "v4.4.16",
             "source": {
@@ -2816,16 +2943,16 @@
         },
         {
             "name": "symfony/flex",
-            "version": "v1.9.10",
+            "version": "v1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/flex.git",
-                "reference": "7335ec033995aa34133e621627333368f260b626"
+                "reference": "e38520236bdc911c2f219634b485bc328746e980"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/flex/zipball/7335ec033995aa34133e621627333368f260b626",
-                "reference": "7335ec033995aa34133e621627333368f260b626",
+                "url": "https://api.github.com/repos/symfony/flex/zipball/e38520236bdc911c2f219634b485bc328746e980",
+                "reference": "e38520236bdc911c2f219634b485bc328746e980",
                 "shasum": ""
             },
             "require": {
@@ -2863,7 +2990,7 @@
             "description": "Composer plugin for Symfony",
             "support": {
                 "issues": "https://github.com/symfony/flex/issues",
-                "source": "https://github.com/symfony/flex/tree/v1.9.10"
+                "source": "https://github.com/symfony/flex/tree/v1.10.0"
             },
             "funding": [
                 {
@@ -2879,7 +3006,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-14T17:41:54+00:00"
+            "time": "2020-11-05T10:56:45+00:00"
         },
         {
             "name": "symfony/framework-bundle",
@@ -3425,16 +3552,16 @@
         },
         {
             "name": "symfony/maker-bundle",
-            "version": "v1.23.0",
+            "version": "v1.24.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/maker-bundle.git",
-                "reference": "ffaee624a20a462ec2da82942d3c9d8fc8dd1421"
+                "reference": "40b49abf01810453f73e3e239759f1736607f029"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/ffaee624a20a462ec2da82942d3c9d8fc8dd1421",
-                "reference": "ffaee624a20a462ec2da82942d3c9d8fc8dd1421",
+                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/40b49abf01810453f73e3e239759f1736607f029",
+                "reference": "40b49abf01810453f73e3e239759f1736607f029",
                 "shasum": ""
             },
             "require": {
@@ -3444,6 +3571,7 @@
                 "symfony/config": "^3.4|^4.0|^5.0",
                 "symfony/console": "^3.4|^4.0|^5.0",
                 "symfony/dependency-injection": "^3.4|^4.0|^5.0",
+                "symfony/deprecation-contracts": "^2.2",
                 "symfony/filesystem": "^3.4|^4.0|^5.0",
                 "symfony/finder": "^3.4|^4.0|^5.0",
                 "symfony/framework-bundle": "^3.4|^4.0|^5.0",
@@ -3464,7 +3592,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-main": "1.0-dev"
                 }
             },
             "autoload": {
@@ -3492,7 +3620,7 @@
             ],
             "support": {
                 "issues": "https://github.com/symfony/maker-bundle/issues",
-                "source": "https://github.com/symfony/maker-bundle/tree/v1.23.0"
+                "source": "https://github.com/symfony/maker-bundle/tree/v1.24.1"
             },
             "funding": [
                 {
@@ -3508,7 +3636,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-28T15:35:16+00:00"
+            "time": "2020-11-25T17:19:22+00:00"
         },
         {
             "name": "symfony/mime",
@@ -5729,36 +5857,36 @@
         },
         {
             "name": "behat/behat",
-            "version": "v3.7.0",
+            "version": "v3.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Behat.git",
-                "reference": "08052f739619a9e9f62f457a67302f0715e6dd13"
+                "reference": "fbb065457d523d9856d4b50775b4151a7598b510"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/08052f739619a9e9f62f457a67302f0715e6dd13",
-                "reference": "08052f739619a9e9f62f457a67302f0715e6dd13",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/fbb065457d523d9856d4b50775b4151a7598b510",
+                "reference": "fbb065457d523d9856d4b50775b4151a7598b510",
                 "shasum": ""
             },
             "require": {
                 "behat/gherkin": "^4.6.0",
                 "behat/transliterator": "^1.2",
                 "ext-mbstring": "*",
-                "php": ">=5.3.3",
+                "php": "^7.2 || ^8.0",
                 "psr/container": "^1.0",
-                "symfony/config": "^2.7.51 || ^3.0 || ^4.0 || ^5.0",
-                "symfony/console": "^2.7.51 || ^2.8.33 || ^3.3.15 || ^3.4.3 || ^4.0.3 || ^5.0",
-                "symfony/dependency-injection": "^2.7.51 || ^3.0 || ^4.0 || ^5.0",
-                "symfony/event-dispatcher": "^2.7.51 || ^3.0 || ^4.0 || ^5.0",
-                "symfony/translation": "^2.7.51 || ^3.0 || ^4.0 || ^5.0",
-                "symfony/yaml": "^2.7.51 || ^3.0 || ^4.0 || ^5.0"
+                "symfony/config": "^4.4 || ^5.0",
+                "symfony/console": "^4.4 || ^5.0",
+                "symfony/dependency-injection": "^4.4 || ^5.0",
+                "symfony/event-dispatcher": "^4.4 || ^5.0",
+                "symfony/translation": "^4.4 || ^5.0",
+                "symfony/yaml": "^4.4 || ^5.0"
             },
             "require-dev": {
                 "container-interop/container-interop": "^1.2",
                 "herrera-io/box": "~1.6.1",
-                "phpunit/phpunit": "^4.8.36 || ^6.5.14 || ^7.5.20",
-                "symfony/process": "~2.5 || ^3.0 || ^4.0 || ^5.0"
+                "phpunit/phpunit": "^8.5 || ^9.0",
+                "symfony/process": "^4.4 || ^5.0"
             },
             "suggest": {
                 "ext-dom": "Needed to output test results in JUnit format."
@@ -5769,7 +5897,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.6.x-dev"
+                    "dev-master": "3.8.x-dev"
                 }
             },
             "autoload": {
@@ -5789,7 +5917,7 @@
                     "homepage": "http://everzet.com"
                 }
             ],
-            "description": "Scenario-oriented BDD framework for PHP 5.3",
+            "description": "Scenario-oriented BDD framework for PHP",
             "homepage": "http://behat.org/",
             "keywords": [
                 "Agile",
@@ -5807,9 +5935,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Behat/Behat/issues",
-                "source": "https://github.com/Behat/Behat/tree/v3.7.0"
+                "source": "https://github.com/Behat/Behat/tree/v3.8.1"
             },
-            "time": "2020-06-03T13:08:44+00:00"
+            "time": "2020-11-07T15:55:18+00:00"
         },
         {
             "name": "behat/gherkin",
@@ -6245,7 +6373,7 @@
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
                 "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
-            "time": "2020-09-28T13:55:42+00:00"
+            "time": "2020-11-23T07:48:55+00:00"
         },
         {
             "name": "dflydev/fig-cookies",
@@ -6666,16 +6794,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.10.1",
+            "version": "1.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "969b211f9a51aa1f6c01d1d2aef56d3bd91598e5"
+                "reference": "776f831124e9c62e1a2c601ecc52e776d8bb7220"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/969b211f9a51aa1f6c01d1d2aef56d3bd91598e5",
-                "reference": "969b211f9a51aa1f6c01d1d2aef56d3bd91598e5",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/776f831124e9c62e1a2c601ecc52e776d8bb7220",
+                "reference": "776f831124e9c62e1a2c601ecc52e776d8bb7220",
                 "shasum": ""
             },
             "require": {
@@ -6712,7 +6840,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.x"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.10.2"
             },
             "funding": [
                 {
@@ -6720,20 +6848,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-06-29T13:22:24+00:00"
+            "time": "2020-11-13T09:40:50+00:00"
         },
         {
             "name": "nyholm/psr7",
-            "version": "1.3.1",
+            "version": "1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Nyholm/psr7.git",
-                "reference": "21b71a31eab5c0c2caf967b9c0fd97020254ed75"
+                "reference": "a272953743c454ac4af9626634daaf5ab3ce1173"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Nyholm/psr7/zipball/21b71a31eab5c0c2caf967b9c0fd97020254ed75",
-                "reference": "21b71a31eab5c0c2caf967b9c0fd97020254ed75",
+                "url": "https://api.github.com/repos/Nyholm/psr7/zipball/a272953743c454ac4af9626634daaf5ab3ce1173",
+                "reference": "a272953743c454ac4af9626634daaf5ab3ce1173",
                 "shasum": ""
             },
             "require": {
@@ -6747,9 +6875,9 @@
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "http-interop/http-factory-tests": "dev-master",
+                "http-interop/http-factory-tests": "^0.8",
                 "php-http/psr7-integration-tests": "^1.0",
-                "phpunit/phpunit": "^7.5",
+                "phpunit/phpunit": "^7.5 || 8.5 || 9.4",
                 "symfony/error-handler": "^4.4"
             },
             "type": "library",
@@ -6778,14 +6906,14 @@
                 }
             ],
             "description": "A fast PHP7 implementation of PSR-7",
-            "homepage": "http://tnyholm.se",
+            "homepage": "https://tnyholm.se",
             "keywords": [
                 "psr-17",
                 "psr-7"
             ],
             "support": {
                 "issues": "https://github.com/Nyholm/psr7/issues",
-                "source": "https://github.com/Nyholm/psr7/tree/1.3.1"
+                "source": "https://github.com/Nyholm/psr7/tree/1.3.2"
             },
             "funding": [
                 {
@@ -6797,7 +6925,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-06-13T15:59:10+00:00"
+            "time": "2020-11-14T17:35:34+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -7147,16 +7275,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.52",
+            "version": "0.12.57",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "e96dd5e7ae9aefed663bc7e285ad96792b67eadc"
+                "reference": "f9909d1d0c44b4cbaf72babcf80e8f14d6fdd55b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e96dd5e7ae9aefed663bc7e285ad96792b67eadc",
-                "reference": "e96dd5e7ae9aefed663bc7e285ad96792b67eadc",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/f9909d1d0c44b4cbaf72babcf80e8f14d6fdd55b",
+                "reference": "f9909d1d0c44b4cbaf72babcf80e8f14d6fdd55b",
                 "shasum": ""
             },
             "require": {
@@ -7187,7 +7315,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.52"
+                "source": "https://github.com/phpstan/phpstan/tree/0.12.57"
             },
             "funding": [
                 {
@@ -7203,7 +7331,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-25T07:23:44+00:00"
+            "time": "2020-11-21T12:53:28+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

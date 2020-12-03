@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\Platform;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Application\PlatformTopology\PlatformJsonGraph;
+use Centreon\Infrastructure\PlatformTopology\Model\PlatformJsonGraph;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
