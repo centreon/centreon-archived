@@ -38,6 +38,10 @@ namespace CentreonClapi;
 
 use Centreon\Domain\Entity\Task;
 use CentreonRemote\ServiceProvider;
+use CentreonRemote\Domain\Service\TaskService;
+use Centreon\Domain\Service\AppKeyGeneratorService;
+use Centreon\Infrastructure\Service\CentcoreCommandService;
+use Centreon\Infrastructure\Service\CentreonDBManagerService;
 
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
@@ -431,8 +435,6 @@ class CentreonConfigPoller
      */
     public function cfgMove($variables = null)
     {
-        global $pearDB, $pearDBO, $dependencyInjector;
-
         $pearDB = $this->DB;
         $pearDBO = $this->DBC;
 
@@ -602,7 +604,10 @@ class CentreonConfigPoller
                     $exportParams['pollers'] = [$remote['id']];
                 }
 
-                $dependencyInjector[ServiceProvider::CENTREON_TASKSERVICE]->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);
+                $this->dependencyInjector[ServiceProvider::CENTREON_TASKSERVICE]->addTask(
+                    Task::TYPE_EXPORT,
+                    ['params' => $exportParams]
+                );
             }
             exec("echo 'SENDCFGFILE:" . $host['id'] . "' >> " . $this->centcore_pipe, $stdout, $return);
 
