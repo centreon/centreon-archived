@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,7 +35,7 @@
  */
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
+require_once __DIR__ . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationMeta extends CentreonConfigurationObjects
 {
@@ -78,8 +79,12 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
             'ORDER BY meta_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
-                throw new \RestBadRequestException('Error, limit must be numerical');
+            if (
+                !is_numeric($this->arguments['page'])
+                || !is_numeric($this->arguments['page_limit'])
+                || $this->arguments['page_limit'] < 1
+            ) {
+                throw new \RestBadRequestException('Error, limit must be an integer greater than zero');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $queryMeta .= 'LIMIT :offset,:limit';

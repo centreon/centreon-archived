@@ -13,7 +13,7 @@
     "@cypress/webpack-preprocessor": "^5.4.8",
     "@types/cypress-cucumber-preprocessor": "^3.0.0",
     "@types/node": "^14.14.6",
-    "cypress": "^5.6.0",
+    "cypress": "^6.0.0",
     "cypress-cucumber-preprocessor": "^4.0.0",
     "eslint-plugin-cypress": "^2.11.2"
   },

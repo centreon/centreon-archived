@@ -2560,6 +2560,47 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /gorgone/pollers/{poller_id}/responses/{token}:
+    get:
+      tags:
+        - Gorgone
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+        - $ref: '#/components/parameters/GorgoneToken'
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Gorgone.Response'
+                  type: object
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /gorgone/pollers/{poller_id}/commands/{command_name}:
+    post:
+      tags:
+        - Gorgone
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+        - $ref: '#/components/parameters/CommandName'
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    token:
+                      type: string
+                      description: "Token used to retrieve the data linked to the command"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     Token:
@@ -2819,6 +2860,29 @@ components:
         type: integer
         format: int64
         example: 1
+    PollerId:
+      in: path
+      name: poller_id
+      description: "ID of the poller"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 5
+    GorgoneToken:
+      in: path
+      name: token
+      description: "Gorgone Token"
+      required: true
+      schema:
+        type: string
+    CommandName:
+      in: path
+      name: command_name
+      description: "Gorgone Command"
+      required: true
+      schema:
+        type: string
   responses:
     Unauthorized:
       description: "Unauthorized"
@@ -4543,3 +4607,45 @@ components:
             - To link a remote server to a Central
             - To link a poller to a remote server
           example: "1.1.1.1"
+    Gorgone.Response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: "Message returned by Gorgone"
+          example: "Logs found"
+        token:
+          type: string
+          description: "Token used to identify the command"
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              creation_time:
+                type: string
+                format: date-time
+                description: "Creation of dataset in ISO Format"
+                example: "2020-11-24T09:13:04+01:00"
+              event_time:
+                type: string
+                format: date-time
+                description: "Time when event occured in ISO Format"
+                example: "2020-11-24T09:11:00+01:00"
+              id:
+                type: number
+                format: integer
+                description: "Id of the Event"
+                example: 1
+              token:
+                type: string
+                description: "Token used to identify the command"
+              code:
+                type: number
+                format: integer
+                description: "Return code of response"
+                example: 2
+              data:
+                type: string
+                description: "Data on JSON Format"
+                example: "{\"action\":\"getthumbprint\",\"data\":{\"thumbprint\":\"xxxx_xxxxxxxxx\"},\"message\":\"ok\"}"
