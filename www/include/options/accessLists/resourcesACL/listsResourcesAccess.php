@@ -38,18 +38,26 @@ if (!isset($centreon)) {
 }
 
 include("./include/common/autoNumLimit.php");
+$num = (int) $num;
+$limit = (int) $limit;
 
 $searchStr = "";
 $search = '';
 if (isset($_POST['searchACLR']) && $_POST['searchACLR']) {
-    $search = $_POST['searchACLR'];
-    $searchStr = "WHERE (acl_res_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
-        . "%' OR acl_res_alias LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
+    $search = filter_var($_POST['searchACLR'], FILTER_SANITIZE_STRING);
+    $searchStr = "WHERE (acl_res_name LIKE ? OR acl_res_alias LIKE ?)";
 }
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_resources ".$searchStr);
-$tmp = $DBRESULT->fetchRow();
+$statement = $pearDB->prepare("SELECT COUNT(*) FROM acl_resources " . $searchStr);
+
+if ($search) {
+    $result = $pearDB->execute($statement, array('%' . $search . '%', '%' . $search . '%'));
+} else {
+    $result = $pearDB->execute($statement, array());
+}
+
+$tmp = $result->fetchRow();
 $rows = $tmp["COUNT(*)"];
-$DBRESULT->free();
+$result->free();
 
 include("./include/common/checkPagination.php");
 
@@ -73,12 +81,16 @@ $tpl->assign("headerMenu_options", _("Options"));
 
 $searchStr = "";
 if (isset($search) && $search) {
-    $searchStr = "AND (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")
-        ."%' OR acl_res_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+    $searchStr = "AND (acl_res_name LIKE ? OR acl_res_alias LIKE ?)";
 }
-$DBRESULT = $pearDB->query("SELECT acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, "
+$statement = $pearDB->prepare("SELECT acl_res_id, acl_res_name, acl_res_alias, all_hosts, all_hostgroups, "
     . "all_servicegroups, acl_res_activate FROM acl_resources WHERE locked = 0 $searchStr "
-    . "ORDER BY acl_res_name LIMIT ".$num * $limit.", ".$limit);
+    . "ORDER BY acl_res_name LIMIT ?, ?");
+if ($search) {
+    $result = $pearDB->execute($statement, array('%' . $search . '%', '%' . $search . '%', $num * $limit, $limit));
+} else {
+    $result = $pearDB->execute($statement, array($num * $limit, $limit));
+}
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -93,7 +105,7 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
-for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $resources = $result->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $resources['acl_res_id'] . "]");
 
     if ($resources["acl_res_activate"]) {
