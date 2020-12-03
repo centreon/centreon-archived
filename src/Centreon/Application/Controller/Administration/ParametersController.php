@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Application\Controller\Administration;
@@ -50,6 +51,11 @@ class ParametersController extends AbstractController
         self::DEFAULT_DOWNTIME_DURATION => 'monitoring_default_downtime_duration'
     ];
 
+    /**
+     * Parameters constructor.
+     *
+     * @param OptionServiceInterface $optionService
+     */
     public function __construct(OptionServiceInterface $optionService)
     {
         $this->optionService = $optionService;

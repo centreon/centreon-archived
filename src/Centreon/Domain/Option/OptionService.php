@@ -53,7 +53,7 @@ class OptionService implements OptionServiceInterface
         try {
             $optionsFound = $this->repository->findAllOptions();
         } catch (\Throwable $ex) {
-            throw new \Exception(_('Error when retrieving selected options'));
+            throw new \Exception(_('Error when retrieving selected options'), 0, $ex);
         }
         $requestedOptions = [];
         foreach ($optionsFound as $option) {

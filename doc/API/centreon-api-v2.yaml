@@ -301,6 +301,7 @@ paths:
                     example: Europe/Paris
                   locale:
                     type: string
+                    nullable: true
                     description: Locale of the current user
                     example: en_US
         '500':
