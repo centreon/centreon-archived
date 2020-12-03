@@ -21,5 +21,5 @@ Feature:
     And the JSON node "alias" should be equal to the string "admin"
     And the JSON node "email" should be equal to the string "admin@centreon.com"
     And the JSON node "locale" should be equal to the string "en_US"
-    And the JSON node "timezone" should be equal to the string "Europe\\\/Paris"
+    And the JSON node "timezone" should contain "Paris"
 
