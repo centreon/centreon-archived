@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller\Administration;
 
-
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use FOS\RestBundle\View\View;
