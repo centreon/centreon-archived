@@ -23,13 +23,7 @@ stage('Source') {
 
 try {
   stage('Unit tests') {
-    parallel 'centos6': {
-      node {
-        sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/3.4/mon-web-unittest.sh centos6'
-      }
-    },
-    'centos7': {
+    parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
         sh './centreon-build/jobs/web/3.4/mon-web-unittest.sh centos7'
@@ -54,13 +48,7 @@ try {
   }
 
   stage('Package') {
-    parallel 'centos6': {
-      node {
-        sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/3.4/mon-web-package.sh centos6'
-      }
-    },
-    'centos7': {
+    parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
         sh './centreon-build/jobs/web/3.4/mon-web-package.sh centos7'
@@ -72,13 +60,7 @@ try {
   }
 
   stage('Bundle') {
-    parallel 'centos6': {
-      node {
-        sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/3.4/mon-web-bundle.sh centos6'
-      }
-    },
-    'centos7': {
+    parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
         sh './centreon-build/jobs/web/3.4/mon-web-bundle.sh centos7'
@@ -90,17 +72,7 @@ try {
   }
 
   stage('Critical tests') {
-    parallel 'centos6': {
-      node {
-        sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6 @critical'
-        junit 'xunit-reports/**/*.xml'
-        if (currentBuild.result == 'UNSTABLE')
-          currentBuild.result = 'FAILURE'
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
-      }
-    },
-    'centos7': {
+    parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
         sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 @critical'
@@ -117,17 +89,7 @@ try {
 
   if (env.BRANCH_NAME == '2.8.x') {
     stage('Acceptance tests') {
-      parallel 'centos6': {
-        node {
-          sh 'setup_centreon_build.sh'
-          sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6 ~@critical'
-          junit 'xunit-reports/**/*.xml'
-          if (currentBuild.result == 'UNSTABLE')
-            currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
-        }
-      },
-      'centos7': {
+      parallel 'centos7': {
         node {
           sh 'setup_centreon_build.sh'
           sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 ~@critical'
