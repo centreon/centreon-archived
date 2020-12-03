@@ -3,9 +3,32 @@ import * as React from 'react';
 import { pick, map, path, isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Paper, Theme, makeStyles } from '@material-ui/core';
+import {
+  Paper,
+  Theme,
+  makeStyles,
+  FormControlLabel,
+  Switch,
+  Typography,
+} from '@material-ui/core';
+import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
 
-import { SelectField } from '@centreon/ui';
+import {
+  SelectField,
+  IconButton,
+  useRequest,
+  ListingModel,
+  ContentWithCircularLoading,
+} from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
+
+import PerformanceGraph from '../../../Graph/Performance';
+import { TabProps } from '..';
+import { ResourceDetails } from '../../models';
+import { labelSave, labelEventAnnotations } from '../../../translatedLabels';
+import { TimelineEvent } from '../Timeline/models';
+import { listTimelineEvents } from '../Timeline/api';
+import { listTimelineEventsDecoder } from '../Timeline/api/decoders';
 
 import {
   timePeriods,
@@ -13,9 +36,7 @@ import {
   last24hPeriod,
   TimePeriod,
 } from './models';
-import PerformanceGraph from '../../../Graph/Performance';
-import { TabProps } from '..';
-import { ResourceDetails } from '../../models';
+import exportToPng from './exportToPng';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -28,6 +49,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   periodSelect: {
     width: 250,
+  },
+  exportToPngButton: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    margin: theme.spacing(0, 1, 1, 2),
   },
   graphContainer: {
     display: 'grid',
@@ -54,6 +80,26 @@ const defaultTimePeriod = last24hPeriod;
 const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const performanceGraphRef = React.createRef<HTMLDivElement>();
+  const { username } = useUserContext();
+
+  const { sendRequest: sendGetTimelineRequest } = useRequest<
+    ListingModel<TimelineEvent>
+  >({
+    request: listTimelineEvents,
+    decoder: listTimelineEventsDecoder,
+  });
+
+  const [eventAnnotationsActive, setEventAnnotationsActive] = React.useState(
+    false,
+  );
+  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
+  const [exporting, setExporting] = React.useState(false);
+
+  const [
+    selectedTimePeriod,
+    setSelectedTimePeriod,
+  ] = React.useState<TimePeriod>(defaultTimePeriod);
 
   const translatedTimePeriodSelectOptions = timePeriodSelectOptions.map(
     (timePeriod) => ({
@@ -68,10 +114,29 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     details,
   );
 
-  const [
-    selectedTimePeriod,
-    setSelectedTimePeriod,
-  ] = React.useState<TimePeriod>(defaultTimePeriod);
+  const retrieveTimeline = (): void => {
+    if (isNil(timelineEndpoint)) {
+      setTimeline([]);
+      return;
+    }
+
+    sendGetTimelineRequest({
+      endpoint: timelineEndpoint,
+      parameters: {
+        limit: 100,
+      },
+    }).then(({ result }) => {
+      setTimeline(result);
+    });
+  };
+
+  React.useEffect(() => {
+    if (isNil(endpoint)) {
+      return;
+    }
+
+    retrieveTimeline();
+  }, [endpoint]);
 
   const getQueryParams = (timePeriod): string => {
     const now = new Date(Date.now()).toISOString();
@@ -102,6 +167,35 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     return `${endpoint}${periodQueryParams}`;
   };
 
+  const changeEventAnnotationsActive = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): void => {
+    setEventAnnotationsActive(event.target.checked);
+  };
+
+  const addCommentToTimeline = ({ date, comment }): void => {
+    setTimeline([
+      ...(timeline as Array<TimelineEvent>),
+      {
+        id: Math.random(),
+        type: 'comment',
+        date,
+        content: comment,
+        contact: { name: username },
+      },
+    ]);
+  };
+
+  const convertToPng = (): void => {
+    setExporting(true);
+    exportToPng({
+      element: performanceGraphRef.current as HTMLElement,
+      title: `${details?.name}-performance`,
+    }).finally(() => {
+      setExporting(false);
+    });
+  };
+
   return (
     <div className={classes.container}>
       <Paper className={classes.header}>
@@ -113,7 +207,38 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
         />
       </Paper>
       <Paper className={classes.graphContainer}>
-        <div className={`${classes.graph} ${classes.performance}`}>
+        <div className={classes.exportToPngButton}>
+          <FormControlLabel
+            disabled={isNil(timeline)}
+            control={
+              <Switch
+                color="primary"
+                size="small"
+                onChange={changeEventAnnotationsActive}
+              />
+            }
+            label={
+              <Typography variant="body2">{labelEventAnnotations}</Typography>
+            }
+          />
+          <ContentWithCircularLoading
+            loading={exporting}
+            loadingIndicatorSize={16}
+            alignCenter={false}
+          >
+            <IconButton
+              disabled={isNil(timeline)}
+              title={t(labelSave)}
+              onClick={convertToPng}
+            >
+              <SaveAsImageIcon style={{ fontSize: 18 }} />
+            </IconButton>
+          </ContentWithCircularLoading>
+        </div>
+        <div
+          className={`${classes.graph} ${classes.performance}`}
+          ref={performanceGraphRef}
+        >
           <PerformanceGraph
             endpoint={getEndpoint()}
             graphHeight={280}
@@ -121,6 +246,9 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
             toggableLegend
             timelineEndpoint={timelineEndpoint}
             resource={details as ResourceDetails}
+            eventAnnotationsActive={eventAnnotationsActive}
+            timeline={timeline}
+            onAddComment={addCommentToTimeline}
           />
         </div>
       </Paper>

@@ -2,12 +2,10 @@ import * as React from 'react';
 
 import axios from 'axios';
 import { render, screen, waitFor } from '@testing-library/react';
-
 import userEvent from '@testing-library/user-event';
 
 import { ThemeProvider } from '@centreon/ui';
 
-import PerformanceGraph from '.';
 import {
   labelComment,
   labelAcknowledgement,
@@ -15,6 +13,8 @@ import {
   labelEventAnnotations,
 } from '../../translatedLabels';
 import { Resource } from '../../models';
+
+import PerformanceGraph from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -54,50 +54,43 @@ const graphData = {
   ],
 };
 
-const timeline = {
-  result: [
-    {
-      type: 'comment',
-      id: 5,
-      date: '2020-11-05T10:35:00Z',
-      contact: {
-        name: 'admin',
-      },
-      content: 'Plop',
+const timeline = [
+  {
+    type: 'comment',
+    id: 5,
+    date: '2020-11-05T10:35:00Z',
+    contact: {
+      name: 'admin',
     },
-    {
-      type: 'comment',
-      id: 6,
-      date: '2020-11-05T10:40:00Z',
-      contact: {
-        name: 'admin',
-      },
-      content: 'Plop',
-    },
-    {
-      type: 'acknowledgement',
-      id: 7,
-      date: '2020-11-05T10:45:00Z',
-      content: 'Acknowledged',
-      contact: {
-        name: 'admin',
-      },
-    },
-    {
-      type: 'downtime',
-      id: 8,
-      date: '2020-11-05T10:45:00Z',
-      content: 'Downtime',
-      start_date: '2020-11-05T10:35:00Z',
-      end_date: '2020-11-05T10:50:00Z',
-    },
-  ],
-  meta: {
-    page: 1,
-    limit: 10,
-    total: 5,
+    content: 'Plop',
   },
-};
+  {
+    type: 'comment',
+    id: 6,
+    date: '2020-11-05T10:40:00Z',
+    contact: {
+      name: 'admin',
+    },
+    content: 'Plop',
+  },
+  {
+    type: 'acknowledgement',
+    id: 7,
+    date: '2020-11-05T10:45:00Z',
+    content: 'Acknowledged',
+    contact: {
+      name: 'admin',
+    },
+  },
+  {
+    type: 'downtime',
+    id: 8,
+    date: '2020-11-05T10:45:00Z',
+    content: 'Downtime',
+    start_date: '2020-11-05T10:35:00Z',
+    end_date: '2020-11-05T10:50:00Z',
+  },
+];
 
 describe(PerformanceGraph, () => {
   beforeEach(() => {
@@ -113,21 +106,21 @@ describe(PerformanceGraph, () => {
   it('displays event annotations when the corresponding switch is active', async () => {
     const endpoint = 'endpoint';
     const graphHeight = 200;
-    const timelineEndpoint = 'timeline';
 
     render(
       <ThemeProvider>
         <PerformanceGraph
           endpoint={endpoint}
           graphHeight={graphHeight}
-          timelineEndpoint={timelineEndpoint}
+          timeline={timeline}
           resource={{} as Resource}
+          onAddComment={jest.fn()}
         />
       </ThemeProvider>,
     );
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+      expect(mockedAxios.get).toHaveBeenCalled();
     });
 
     expect(screen.queryByLabelText(labelComment)).toBeNull();
