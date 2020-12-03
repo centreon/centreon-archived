@@ -43,23 +43,32 @@ $searchStr = '';
 $search = null;
 
 if (isset($_POST['searchACLG'])) {
-    $search = $_POST['searchACLG'];
+    $search = filter_var($_POST['searchACLG'], FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($_GET['searchACLG'])) {
-    $search = $_GET['searchACLG'];
+    $search = filter_var($_GET['searchACLG'], FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
 }
 
 if ($search) {
-    $searchStr .= "WHERE (acl_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR acl_group_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
+    $searchStr .= "WHERE (acl_group_name LIKE :search OR acl_group_alias LIKE :search)";
 }
 
-$rq = "SELECT SQL_CALC_FOUND_ROWS acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups " .
-    $searchStr . "ORDER BY acl_group_name LIMIT " . $num * $limit . ", " . $limit;
-$dbResult = $pearDB->query($rq);
+$rq = "
+    SELECT SQL_CALC_FOUND_ROWS acl_group_id, acl_group_name, acl_group_alias, acl_group_activate
+    FROM acl_groups
+    $searchStr
+    ORDER BY acl_group_name LIMIT :num, :limit
+";
+$statement = $pearDB->prepare($rq);
+if ($search) {
+    $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
+}
+$statement->bindValue(':num', $num * $limit, \PDO::PARAM_INT);
+$statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
+$statement->execute();
 
 $search = tidySearchKey($search, $advanced_search);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -92,7 +101,7 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
-for ($i = 0; $group = $dbResult->fetchRow(); $i++) {
+for ($i = 0; $group = $statement->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $group['acl_group_id'] . "]");
     if ($group["acl_group_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&acl_group_id=" . $group['acl_group_id'] . "&o=u&limit=" . $limit .
