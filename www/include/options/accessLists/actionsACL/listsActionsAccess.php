@@ -65,7 +65,7 @@ $rq = "
 
 $statement = $pearDB->prepare($rq);
 if ($search) {
-    $statement->bindValue(':search', '%' . $search .'%', \PDO::PARAM_STR);
+    $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
 }
 $statement->bindValue(':num', $num * $limit, \PDO::PARAM_INT);
 $statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
