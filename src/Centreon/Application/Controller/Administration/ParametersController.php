@@ -70,7 +70,6 @@ class ParametersController extends AbstractController
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         $parameters = [];
-        $options = [];
 
         $options = $this->optionService->findSelectedOptions([
             self::DEFAULT_DOWNTIME_DURATION,
