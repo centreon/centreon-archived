@@ -1,4 +1,4 @@
-centreon_application_find_host_templates:
+centreon_application_find_host_groups:
   methods: GET
   path: /configuration/hosts/groups
   controller: 'Centreon\Application\Controller\HostGroupController::findHostGroups'

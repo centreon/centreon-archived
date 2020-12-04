@@ -62,13 +62,6 @@ interface HostConfigurationReadRepositoryInterface
     public function findHostTemplates(): array;
     
     /**
-     * Find all host groups.
-     *
-     * @return HostGroup[]
-     */
-    public function findHostGroups(): array;
-    
-    /**
      * Indicates if a hostname is already in use.
      *
      * @param string $hostName Hostname to be found

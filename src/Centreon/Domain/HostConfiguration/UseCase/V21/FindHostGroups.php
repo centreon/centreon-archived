@@ -23,8 +23,8 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\UseCase\V21;
 
 use Centreon\Domain\HostConfiguration\Exception\HostGroupException;
-use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationReadRepositoryInterface;
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindGroupsResponse;
+use Centreon\Domain\HostConfiguration\Interfaces\HostGroupReadRepositoryInterface;
+use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostGroupsResponse;
 
 /**
  * This class is designed to represent a use case to find all host templates
@@ -34,14 +34,14 @@ use Centreon\Domain\HostConfiguration\UseCase\V21\FindGroupsResponse;
 class FindHostGroups
 {
     /**
-     * @var HostConfigurationReadRepositoryInterface
+     * @var HostGroupReadRepositoryInterface
      */
     private $configurationReadRepository;
 
     /**
-     * @param HostConfigurationReadRepositoryInterface $configurationReadRepository
+     * @param HostGroupReadRepositoryInterface $configurationReadRepository
      */
-    public function __construct(HostConfigurationReadRepositoryInterface $configurationReadRepository)
+    public function __construct(HostGroupReadRepositoryInterface $configurationReadRepository)
     {
         $this->configurationReadRepository = $configurationReadRepository;
     }
