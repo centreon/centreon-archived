@@ -15466,6 +15466,9 @@ msgstr "Aucun résultat trouvé"
 msgid "Error when decoding sent data"
 msgstr "Erreur lors du décodage des données envoyées"
 
+msgid "Error when retrieving selected options"
+msgstr "Erreur lors de la récupération des options selectionnées"
+
 msgid "Filter id %d not found"
 msgstr "Filtre id %s non trouvé"
 
