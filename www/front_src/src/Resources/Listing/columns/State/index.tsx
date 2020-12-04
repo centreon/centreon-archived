@@ -6,13 +6,14 @@ import { Grid } from '@material-ui/core';
 
 import { ComponentColumnProps } from '@centreon/ui';
 
-import DowntimeDetailsTable from './DetailsTable/Downtime';
-import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
 import { labelInDowntime, labelAcknowledged } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import HoverChip from '../HoverChip';
 import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
+
+import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
+import DowntimeDetailsTable from './DetailsTable/Downtime';
 
 interface StateChipProps {
   endpoint: string;

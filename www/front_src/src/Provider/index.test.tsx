@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import axios from 'axios';
-
 import { render, RenderResult, waitFor } from '@testing-library/react';
 
 import { useUser, useAcl } from '@centreon/ui-context';

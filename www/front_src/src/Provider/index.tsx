@@ -19,6 +19,7 @@ import { Context, useUser, useAcl } from '@centreon/ui-context';
 
 import App from '../App';
 import createStore from '../store';
+
 import { userEndpoint, translationEndpoint, aclEndpoint } from './endpoint';
 import { User, Actions } from './models';
 
