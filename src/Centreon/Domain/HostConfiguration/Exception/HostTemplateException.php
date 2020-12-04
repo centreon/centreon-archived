@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,17 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces;
+namespace Centreon\Domain\HostConfiguration\Exception;
 
 /**
- * This interface gathers all the writing and reading operations on the repository
+ * This class is designed to contain all exceptions for the context of the host template.
  *
- * @package Centreon\Domain\HostConfiguration\Interfaces
+ * @package Centreon\Domain\HostConfiguration\Exception
  */
-interface HostConfigurationRepositoryInterface extends
-    HostConfigurationReadRepositoryInterface,
-    HostConfigurationWriteRepositoryInterface
+class HostTemplateException extends \Exception
 {
+    public static function searchHostTemplatesException(\Exception $ex): self
+    {
+        return new self(_('Error when searching for host templates'), 0, $ex);
+    }
 }

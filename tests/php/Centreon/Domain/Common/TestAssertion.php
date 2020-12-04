@@ -22,14 +22,21 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\Common;
 
+use Centreon\Domain\Common\Assertion\AssertionException;
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Common\Assertion\Assertion;
 
+/**
+ * @package Tests\Centreon\Domain\Common
+ */
 class TestAssertion extends TestCase
 {
-    private string $propertyName;
+    /**
+     * @var string
+     */
+    private $propertyName;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->propertyName = 'Class::property';
     }
@@ -37,38 +44,141 @@ class TestAssertion extends TestCase
     /**
      * Test the maxLength assertion
      */
-    public function testMaxLength(): void
+    public function testMaxLengthException(): void
     {
         $propertyValue = 'test_value_too_long';
-        $maxLength = 10;
-        $expectedExceptionMessage = sprintf(
-            _('[%s] The value "%s" is too long, it should have no more than %d characters, but has %d characters'),
-            $this->propertyName,
+        $maxLength = strlen($propertyValue) - 1;
+        $expectedExceptionMessage = AssertionException::maxLength(
             $propertyValue,
+            mb_strlen($propertyValue, 'UTF-8'),
             $maxLength,
-            mb_strlen($propertyValue, 'UTF-8')
-        );
+            $this->propertyName
+        )->getMessage();
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
         Assertion::maxLength($propertyValue, $maxLength, $this->propertyName);
     }
 
     /**
+     * Test no exception on maxLength assertion
+     */
+    public function testNoExceptionMaxLength(): void
+    {
+        $propertyValue = 'test_value_too_long';
+        Assertion::maxLength($propertyValue, strlen($propertyValue), $this->propertyName);
+        $this->expectNotToPerformAssertions();
+    }
+
+    /**
      * Test the minLength assertion
      */
-    public function testMinLength(): void
+    public function testMinLengthException(): void
     {
         $propertyValue = 'test_value_too_short';
-        $minLength = 50;
-        $expectedExceptionMessage = sprintf(
-            _('[%s] The value "%s" is too short, it should have at least %d characters, but only has %d characters'),
-            $this->propertyName,
+        $minLength = strlen($propertyValue) + 1;
+        $expectedExceptionMessage = AssertionException::minLength(
             $propertyValue,
+            mb_strlen($propertyValue, 'UTF-8'),
             $minLength,
-            mb_strlen($propertyValue, 'UTF-8')
-        );
+            $this->propertyName
+        )->getMessage();
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
         Assertion::minLength($propertyValue, $minLength, $this->propertyName);
+    }
+
+    /**
+     * Test no exception on minLength assertion
+     */
+    public function testNoExceptionMinLength(): void
+    {
+        $propertyValue = 'test_value_too_long';
+        Assertion::minLength($propertyValue, strlen($propertyValue), $this->propertyName);
+        $this->expectNotToPerformAssertions();
+    }
+
+    /**
+     * Test the min assertion
+     */
+    public function testMinException(): void
+    {
+        $propertyValue = 49;
+        $minLength = $propertyValue + 1;
+        $expectedExceptionMessage = AssertionException::min(
+            $propertyValue,
+            $minLength,
+            $this->propertyName
+        )->getMessage();
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+        Assertion::min($propertyValue, $minLength, $this->propertyName);
+    }
+
+    /**
+     * Test no exception on min assertion
+     */
+    public function testNoExceptionMin(): void
+    {
+        $propertyValue = 49;
+        $minLength = $propertyValue;
+        Assertion::min($propertyValue, $minLength, $this->propertyName);
+        $this->expectNotToPerformAssertions();
+    }
+
+    /**
+     * Test the max assertion
+     */
+    public function testMaxException(): void
+    {
+        $propertyValue = 49;
+        $minLength = $propertyValue - 1;
+        $expectedExceptionMessage = AssertionException::max(
+            $propertyValue,
+            $minLength,
+            $this->propertyName
+        )->getMessage();
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+        Assertion::max($propertyValue, $minLength, $this->propertyName);
+    }
+
+    /**
+     * Test no exception on max assertion
+     */
+    public function testNoExceptionMax(): void
+    {
+        $propertyValue = 49;
+        $minLength = $propertyValue;
+        Assertion::max($propertyValue, $minLength, $this->propertyName);
+        $this->expectNotToPerformAssertions();
+    }
+
+    /**
+     * Test the greaterOrEqualThan exception
+     */
+    public function testGreaterOrEqualThan(): void
+    {
+        $propertyValue = 1;
+        $minLength = $propertyValue + 1;
+        $expectedExceptionMessage = sprintf(
+            _('[%s] The value "%d" is not greater or equal than %d'),
+            $this->propertyName,
+            $propertyValue,
+            $minLength
+        );
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+        Assertion::greaterOrEqualThan($propertyValue, $minLength, $this->propertyName);
+    }
+
+    /**
+     * Test no exception on greaterOrEqualThan assertion
+     */
+    public function testNoExceptionGreaterOrEqualThan(): void
+    {
+        $propertyValue = 49;
+        $minLength = $propertyValue;
+        Assertion::greaterOrEqualThan($propertyValue, $minLength, $this->propertyName);
+        $this->expectNotToPerformAssertions();
     }
 }

@@ -24,13 +24,18 @@ namespace Centreon\Domain\Common\Assertion;
 
 use Assert\Assertion as Assert;
 
+/**
+ * This class is designed to allow the translation of error messages and provide them with a unique format.
+ *
+ * @package Centreon\Domain\Common\Assertion
+ */
 class Assertion
 {
     /**
-     * Assert that string value is not longer than $maxLength bits.
+     * Assert that string value is not longer than $maxLength characters.
      *
      * @param string $value Value to test
-     * @param int $maxLength Max length in bits
+     * @param int $maxLength Maximum length of the expected value in characters
      * @param string|null $propertyPath Property's path (ex: Host::name)
      * @throws \Assert\AssertionFailedException
      */
@@ -40,16 +45,16 @@ class Assertion
             $value,
             $maxLength,
             function (array $parameters) {
-                return sprintf(
-                    _(
-                        '[%s] The value "%s" is too long, it should have no more than %d characters,'
-                        . ' but has %d characters'
-                    ),
-                    $parameters['propertyPath'],
+                return AssertionException::maxLength(
                     $parameters['value'],
+                    self::calculateStringLengthOrFails(
+                        $parameters['value'],
+                        $parameters['encoding'],
+                        $parameters['propertyPath']
+                    ),
                     $parameters['maxLength'],
-                    \mb_strlen($parameters['value'], $parameters['encoding'])
-                );
+                    $parameters['propertyPath']
+                )->getMessage();
             },
             $propertyPath,
             'UTF-8'
@@ -57,10 +62,10 @@ class Assertion
     }
 
     /**
-     * Assert that a string is at least $minLength bits long.
+     * Assert that a string is at least $minLength characters long.
      *
      * @param string $value Value to test
-     * @param int $minLength Min length in bits
+     * @param int $minLength Minimum length of the expected value in characters
      * @param string|null $propertyPath Property's path (ex: Host::name)
      * @throws \Assert\AssertionFailedException
      */
@@ -70,19 +75,115 @@ class Assertion
             $value,
             $minLength,
             function (array $parameters) {
-                return sprintf(
-                    _(
-                        '[%s] The value "%s" is too short, it should have at least %d characters,'
-                        . ' but only has %d characters'
-                    ),
-                    $parameters['propertyPath'],
+                return AssertionException::minLength(
                     $parameters['value'],
+                    self::calculateStringLengthOrFails(
+                        $parameters['value'],
+                        $parameters['encoding'],
+                        $parameters['propertyPath']
+                    ),
                     $parameters['minLength'],
-                    \mb_strlen($parameters['value'], $parameters['encoding'])
-                );
+                    $parameters['propertyPath']
+                )->getMessage();
             },
             $propertyPath,
             'UTF-8'
         );
+    }
+
+    /**
+     * Assert that a value is at least as big as a given limit.
+     *
+     * @param int $value Value to test
+     * @param int $minValue Minimum value
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function min(int $value, int $minValue, string $propertyPath = null): void
+    {
+        Assert::min(
+            $value,
+            $minValue,
+            function (array $parameters) {
+                return AssertionException::min(
+                    $parameters['value'],
+                    $parameters['minValue'],
+                    $parameters['propertyPath']
+                )->getMessage();
+            },
+            $propertyPath
+        );
+    }
+
+    /**
+     * Assert that a number is smaller as a given limit.
+     *
+     * @param int $value Value to test
+     * @param int $maxValue Maximum value
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function max(int $value, int $maxValue, string $propertyPath = null): void
+    {
+        Assert::max(
+            $value,
+            $maxValue,
+            function (array $parameters) {
+                return AssertionException::max(
+                    $parameters['value'],
+                    $parameters['maxValue'],
+                    $parameters['propertyPath']
+                )->getMessage();
+            },
+            $propertyPath
+        );
+    }
+
+    /**
+     * Determines if the value is greater or equal than given limit.
+     *
+     * @param int $value Value to test
+     * @param int $limit Limit value (>=)
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function greaterOrEqualThan(int $value, int $limit, string $propertyPath = null): void
+    {
+        Assert::greaterOrEqualThan(
+            $value,
+            $limit,
+            function (array $parameters) {
+                return AssertionException::greaterOrEqualThan(
+                    $parameters['value'],
+                    $parameters['limit'],
+                    $parameters['propertyPath']
+                )->getMessage();
+            },
+            $propertyPath
+        );
+    }
+
+    /**
+     * Calculates the string length or fails.
+     *
+     * @param string $value Value for which we have to calculate the length
+     * @param string $encoding Encoding used for calculation
+     * @param string $propertyPath Property's path (ex: Host::name)
+     * @return int Calculated length
+     */
+    private static function calculateStringLengthOrFails(string $value, string $encoding, string $propertyPath): int
+    {
+        $length = \mb_strlen($value, $encoding);
+        if ($length === false) {
+            throw new \RuntimeException(
+                sprintf(
+                    _('[%s] Error when calculating string length of "%s" in %s'),
+                    $propertyPath,
+                    $value,
+                    $encoding
+                )
+            );
+        }
+        return $length;
     }
 }
