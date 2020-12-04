@@ -79,7 +79,13 @@ class UserController extends AbstractController
             'locale' => $user->getLocale()
         ];
 
-        return $this->view($userParameters);
+        return $this->view([
+            'name' => $user->getName(),
+            'alias' => $user->getAlias(),
+            'email' => $user->getEmail(),
+            'timezone' => $user->getTimezone()->getName(),
+            'locale' => $user->getLocale()
+        ]);
     }
 
     /**
