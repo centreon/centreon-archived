@@ -1,55 +1,63 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give Centreon 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of Centreon choice, provided that 
- * Centreon also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  */
 
 if (!isset($centreon)) {
     exit();
 }
-    
+
 include("./include/common/autoNumLimit.php");
+$num = (int) $num;
+$limit = (int) $limit;
 
 $searchStr = "";
 $search = '';
 if (isset($_POST['searchACLA']) && $_POST['searchACLA']) {
-    $search = $_POST['searchACLA'];
-    $searchStr = "WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")
-        . "%' OR acl_action_description LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
+    $search = filter_var($_POST['searchACLA'], FILTER_SANITIZE_STRING);
+    $searchStr = "WHERE (acl_action_name LIKE ? OR acl_action_description LIKE ?)";
 }
-$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_actions ".$searchStr);
-$tmp = $DBRESULT->fetchRow();
+$statement = $pearDB->prepare("SELECT COUNT(*) FROM acl_actions " . $searchStr);
+if ($search) {
+    $result = $pearDB->execute($statement, array('%' . $search . '%', '%' . $search . '%'));
+} else {
+    $result = $pearDB->execute($statement, array());
+}
+
+$tmp = $result->fetchRow();
 $rows = $tmp["COUNT(*)"];
-$DBRESULT->free();
+$result->free();
 
 include("./include/common/checkPagination.php");
 
@@ -68,12 +76,16 @@ $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
 $searchStr = "";
-if (isset($search) && $search) {
-    $searchStr = "WHERE (acl_action_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")
-        . "%' OR acl_action_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
+if ($search) {
+    $searchStr = "WHERE (acl_action_name LIKE ? OR acl_action_description LIKE ?)";
 }
-$DBRESULT = $pearDB->query("SELECT acl_action_id, acl_action_name, acl_action_description, acl_action_activate
-    FROM acl_actions $searchStr ORDER BY acl_action_name LIMIT ".$num * $limit.", ".$limit);
+$statement = $pearDB->prepare("SELECT acl_action_id, acl_action_name, acl_action_description, acl_action_activate
+    FROM acl_actions $searchStr ORDER BY acl_action_name LIMIT ?, ?");
+if ($search) {
+    $result = $pearDB->execute($statement, array('%' . $search . '%', '%' . $search . '%', $num * $limit, $limit));
+} else {
+    $result = $pearDB->execute($statement, array($num * $limit, $limit));
+}
 
 $search = tidySearchKey($search, $advanced_search);
 
@@ -88,7 +100,7 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
-for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $topo = $result->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[".$topo['acl_action_id']."]");
 
     if ($topo["acl_action_activate"]) {
