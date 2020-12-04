@@ -243,11 +243,11 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
             }
         }
 
-        foreach ($hosts as $key => $host) {
+        foreach ($hosts as $host) {
             $this->addHostComment($comments[$host->getId()], $host);
         }
 
-        foreach ($services as $key => $service) {
+        foreach ($services as $service) {
             $this->addServiceComment($comments[$service->getId()], $service);
         }
     }

@@ -237,17 +237,15 @@ class CommentController extends AbstractController
             'config/json_validator/latest/Centreon/Comment/Comment.json'
         );
 
-        if (!empty($receivedData)) {
-            /**
-             * At this point we validate the JSON sent with the JSON validator.
-             */
-            $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
-            $comment = (new Comment($hostId, $receivedData['comment']))
-                ->setDate($date);
-            $host = new Host();
-            $host->setId($hostId);
-            $this->commentService->addHostComment($comment, $host);
-        }
+        /**
+         * At this point we validate the JSON sent with the JSON validator.
+         */
+        $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
+        $comment = (new Comment($hostId, $receivedData['comment']))
+            ->setDate($date);
+        $host = new Host();
+        $host->setId($hostId);
+        $this->commentService->addHostComment($comment, $host);
 
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
@@ -283,23 +281,21 @@ class CommentController extends AbstractController
             'config/json_validator/latest/Centreon/Comment/Comment.json'
         );
 
-        if (!empty($receivedData)) {
-            /**
-             * At this point we validate the JSON sent with the JSON validator.
-             */
-            $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
-            $comment = (new Comment($serviceId, $receivedData['comment']))
-                ->setDate($date)
-                ->setParentResourceId($hostId);
+        /**
+         * At this point we validate the JSON sent with the JSON validator.
+         */
+        $date = ($receivedData['date'] !== null) ? new \DateTime($receivedData['date']) : new \DateTime();
+        $comment = (new Comment($serviceId, $receivedData['comment']))
+            ->setDate($date)
+            ->setParentResourceId($hostId);
 
-            $service = new Service();
-            $host = new Host();
+        $service = new Service();
+        $host = new Host();
 
-            $host->setId($hostId);
-            $service->setId($serviceId)->setHost($host);
+        $host->setId($hostId);
+        $service->setId($serviceId)->setHost($host);
 
-            $this->commentService->addServiceComment($comment, $service);
-        }
+        $this->commentService->addServiceComment($comment, $service);
 
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }

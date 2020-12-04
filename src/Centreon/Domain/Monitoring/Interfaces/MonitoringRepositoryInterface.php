@@ -90,7 +90,7 @@ interface MonitoringRepositoryInterface
      * @param array $hostIds
      * @return Host[]
      */
-    public function findHostsByIdsForNonAdminUser(array $hostIds): ?array;
+    public function findHostsByIdsForNonAdminUser(array $hostIds): array;
 
     /**
      * Find all hosts from an array of hostIds for an admin user
@@ -98,7 +98,7 @@ interface MonitoringRepositoryInterface
      * @param array $hostIds
      * @return Host[]
      */
-    public function findHostsByIdsForAdminUser(array $hostIds): ?array;
+    public function findHostsByIdsForAdminUser(array $hostIds): array;
 
     /**
      * Find one service based on its id and according to ACL.

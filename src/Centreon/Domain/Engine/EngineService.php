@@ -105,7 +105,7 @@ class EngineService extends AbstractCentreonService implements
             $acknowledgement->getComment()
         );
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-        $commandFull = $this->createCommandHeader($host->getPollerId(), null) . $commandToSend;
+        $commandFull = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
 
@@ -132,7 +132,7 @@ class EngineService extends AbstractCentreonService implements
             $acknowledgement->getComment()
         );
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId(), null) . $commandToSend;
+        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
 
@@ -149,7 +149,7 @@ class EngineService extends AbstractCentreonService implements
             $host->getName()
         );
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-        $commandFull = $this->createCommandHeader($host->getPollerId(), null) . $commandToSend;
+        $commandFull = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
 
@@ -169,7 +169,7 @@ class EngineService extends AbstractCentreonService implements
         );
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
 
-        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId(), null) . $commandToSend;
+        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
 
@@ -219,7 +219,7 @@ class EngineService extends AbstractCentreonService implements
                 $downtime->getComment()
             );
             $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-            $commands[] = $this->createCommandHeader($host->getPollerId(), null) . $commandToSend;
+            $commands[] = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
         }
         $this->engineRepository->sendExternalCommands($commands);
     }
@@ -271,7 +271,7 @@ class EngineService extends AbstractCentreonService implements
             $downtime->getComment()
         );
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-        $command = $this->createCommandHeader($service->getHost()->getPollerId(), null) . $commandToSend;
+        $command = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
 
         $this->engineRepository->sendExternalCommand($command);
     }
@@ -327,7 +327,7 @@ class EngineService extends AbstractCentreonService implements
         );
 
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-        $commandFull = $this->createCommandHeader($host->getPollerId(), null) . $commandToSend;
+        $commandFull = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
 
@@ -346,7 +346,7 @@ class EngineService extends AbstractCentreonService implements
         $suffix = ($downtime->getServiceId() === null) ? 'HOST' : 'SVC';
         $preCommand = sprintf('DEL_%s_DOWNTIME;%d', $suffix, $downtime->getInternalId());
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-        $commandFull = $this->createCommandHeader($host->getPollerId(), null) . $commandToSend;
+        $commandFull = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
 
@@ -384,7 +384,7 @@ class EngineService extends AbstractCentreonService implements
                 $check->getCheckTime()->getTimestamp()
             );
             $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
-            $commands[] = $this->createCommandHeader($host->getPollerId(), null) . $commandToSend;
+            $commands[] = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
         }
         $this->engineRepository->sendExternalCommands($commands);
     }
@@ -423,7 +423,7 @@ class EngineService extends AbstractCentreonService implements
             $check->getCheckTime()->getTimestamp()
         );
 
-        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId(), null) . $command;
+        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
 
@@ -458,7 +458,7 @@ class EngineService extends AbstractCentreonService implements
             $result->getPerformanceData()
         );
 
-        $commandFull = $this->createCommandHeader($host->getPollerId(), null) . $command;
+        $commandFull = $this->createCommandHeader($host->getPollerId()) . $command;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
 
@@ -498,7 +498,7 @@ class EngineService extends AbstractCentreonService implements
             $result->getPerformanceData()
         );
 
-        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId(), null) . $command;
+        $commandFull = $this->createCommandHeader($service->getHost()->getPollerId()) . $command;
         $this->engineRepository->sendExternalCommand($commandFull);
     }
 
@@ -569,9 +569,7 @@ class EngineService extends AbstractCentreonService implements
         if (empty($this->contact->getAlias())) {
             throw new EngineException(_('The contact alias is empty'));
         }
-        if ($host == null) {
-            throw new EngineException(_('Host not found'));
-        }
+
         if (empty($host->getName())) {
             throw new EngineException(
                 sprintf(_('Host name can not be empty for host (id: %d)'), $host->getId())
@@ -597,7 +595,7 @@ class EngineService extends AbstractCentreonService implements
      * @return string Returns the new generated command header
      * @throws \Exception
      */
-    private function createCommandHeader(int $pollerId, ?\DateTime $date): string
+    private function createCommandHeader(int $pollerId, \DateTime $date = null): string
     {
         return sprintf(
             "%s:%d:[%d] ",

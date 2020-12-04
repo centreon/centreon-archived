@@ -120,7 +120,7 @@ class Comment
      *
      * @return \DateTime
      */
-    public function getDate()
+    public function getDate(): \DateTime
     {
         return $this->date;
     }
@@ -128,10 +128,10 @@ class Comment
     /**
      * Set date of the comment
      *
-     * @param \DateTime|null $date Date of the comment
+     * @param \DateTime $date Date of the comment
      * @return Comment
      */
-    public function setDate(?\DateTime $date)
+    public function setDate(\DateTime $date)
     {
         $this->date = is_null($date) ? new \DateTime() : $date;
         return $this;

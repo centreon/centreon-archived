@@ -578,21 +578,18 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               WHERE srv.enabled = \'1\'
               AND h.enabled = \'1\'';
 
-
-        if (is_array($serviceIds)) {
-            $idsListKey = [];
-            foreach ($serviceIds as $index => $hostServiceIds) {
-                $hostKey = ":host_id{$index}";
-                $hostIdsListKey[] = $hostKey;
-                $serviceKey = ":service_id{$index}";
-                $serviceIdsListKey[] = $serviceKey;
-                $collector->addValue($serviceKey, $hostServiceIds['service_id'], \PDO::PARAM_INT);
-                $collector->addValue($hostKey, $hostServiceIds['host_id'], \PDO::PARAM_INT);
-                unset($index, $hostServiceIds);
-            }
-            $request .= ' AND srv.service_id IN (' . implode(',', $serviceIdsListKey) . ')';
-            $request .= ' AND srv.host_id IN (' . implode(',', $hostIdsListKey) . ')';
+        $idsListKey = [];
+        foreach ($serviceIds as $index => $hostServiceIds) {
+            $hostKey = ":host_id{$index}";
+            $hostIdsListKey[] = $hostKey;
+            $serviceKey = ":service_id{$index}";
+            $serviceIdsListKey[] = $serviceKey;
+            $collector->addValue($serviceKey, $hostServiceIds['service_id'], \PDO::PARAM_INT);
+            $collector->addValue($hostKey, $hostServiceIds['host_id'], \PDO::PARAM_INT);
+            unset($index, $hostServiceIds);
         }
+        $request .= ' AND srv.service_id IN (' . implode(',', $serviceIdsListKey) . ')';
+        $request .= ' AND srv.host_id IN (' . implode(',', $hostIdsListKey) . ')';
 
         $request .= ' GROUP BY srv.service_id';
 
@@ -639,16 +636,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               AND h.enabled = \'1\'
               AND h.name NOT LIKE \'_Module_BAM%\'';
 
-        if (is_array($hostIds)) {
-            $idsListKey = [];
-            foreach ($hostIds as $index => $id) {
-                $key = ":id{$index}";
-                $idsListKey[] = $key;
-                $collector->addValue($key, $id, \PDO::PARAM_INT);
-                unset($index, $id);
-            }
-            $request .= ' WHERE h.host_id IN (' . implode(',', $idsListKey) . ')';
+        $idsListKey = [];
+        foreach ($hostIds as $index => $id) {
+            $key = ":id{$index}";
+            $idsListKey[] = $key;
+            $collector->addValue($key, $id, \PDO::PARAM_INT);
+            unset($index, $id);
         }
+        $request .= ' WHERE h.host_id IN (' . implode(',', $idsListKey) . ')';
 
         $request = $this->translateDbName($request);
 
@@ -657,11 +652,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $host = EntityCreator::createEntityByArray(
+            $host[] = EntityCreator::createEntityByArray(
                 Host::class,
                 $row
             );
-            $hosts[] = $host;
         }
 
         return $hosts;
@@ -670,7 +664,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
-    public function findHostsByIdsForNonAdminUser(array $hostIds): ?array
+    public function findHostsByIdsForNonAdminUser(array $hostIds): array
     {
         $hosts = [];
 
@@ -701,17 +695,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               AND h.name NOT LIKE \'_Module_BAM%\''
             . $accessGroupFilter;
 
-        if (is_array($hostIds)) {
-            $idsListKey = [];
-            foreach ($hostIds as $index => $id) {
-                $key = ":id{$index}";
-                $idsListKey[] = $key;
-                $collector->addValue($key, $id, \PDO::PARAM_INT);
-                unset($index, $id);
-            }
-            $request .= ' WHERE h.host_id IN (' . implode(',', $idsListKey) . ')';
+        $idsListKey = [];
+        foreach ($hostIds as $index => $id) {
+            $key = ":id{$index}";
+            $idsListKey[] = $key;
+            $collector->addValue($key, $id, \PDO::PARAM_INT);
         }
 
+        $request .= ' WHERE h.host_id IN (' . implode(',', $idsListKey) . ')';
         $request = $this->translateDbName($request);
 
         $statement = $this->db->prepare($request);
@@ -719,11 +710,10 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $host = EntityCreator::createEntityByArray(
+            $host[] = EntityCreator::createEntityByArray(
                 Host::class,
                 $row
             );
-            $hosts[] = $host;
         }
 
         return $hosts;
@@ -865,21 +855,18 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             . ' WHERE srv.enabled = \'1\'
               AND h.enabled = \'1\'';
 
-
-        if (is_array($serviceIds)) {
-            $idsListKey = [];
-            foreach ($serviceIds as $index => $hostServiceIds) {
-                $hostKey = ":host_id{$index}";
-                $hostIdsListKey[] = $hostKey;
-                $serviceKey = ":service_id{$index}";
-                $serviceIdsListKey[] = $serviceKey;
-                $collector->addValue($serviceKey, $hostServiceIds['service_id'], \PDO::PARAM_INT);
-                $collector->addValue($hostKey, $hostServiceIds['host_id'], \PDO::PARAM_INT);
-                unset($index, $hostServiceIds);
-            }
-            $request .= ' AND srv.service_id IN (' . implode(',', $serviceIdsListKey) . ')';
-            $request .= ' AND srv.host_id IN (' . implode(',', $hostIdsListKey) . ')';
+        $idsListKey = [];
+        foreach ($serviceIds as $index => $hostServiceIds) {
+            $hostKey = ":host_id{$index}";
+            $hostIdsListKey[] = $hostKey;
+            $serviceKey = ":service_id{$index}";
+            $serviceIdsListKey[] = $serviceKey;
+            $collector->addValue($serviceKey, $hostServiceIds['service_id'], \PDO::PARAM_INT);
+            $collector->addValue($hostKey, $hostServiceIds['host_id'], \PDO::PARAM_INT);
+            unset($index, $hostServiceIds);
         }
+        $request .= ' AND srv.service_id IN (' . implode(',', $serviceIdsListKey) . ')';
+        $request .= ' AND srv.host_id IN (' . implode(',', $hostIdsListKey) . ')';
 
         $request .= ' GROUP BY srv.service_id';
 
