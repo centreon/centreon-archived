@@ -71,14 +71,6 @@ class UserController extends AbstractController
 
         $user = $this->getUser();
 
-        $userParameters = [
-            'name' => $user->getName(),
-            'alias' => $user->getAlias(),
-            'email' => $user->getEmail(),
-            'timezone' => $user->getTimezone()->getName(),
-            'locale' => $user->getLocale()
-        ];
-
         return $this->view([
             'name' => $user->getName(),
             'alias' => $user->getAlias(),
