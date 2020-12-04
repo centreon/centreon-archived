@@ -674,12 +674,13 @@ function getMyHostExtendedInfoImage($host_id = null, $field, $flag1stLevel = nul
                         }
                     }
                 } else {
-                    if ($result_field = getMyHostExtendedInfoImage(
-                        $row['host_tpl_id'],
-                        $field,
-                        null,
-                        $row['host_tpl_id']
-                    )
+                    if (
+                        $result_field = getMyHostExtendedInfoImage(
+                            $row['host_tpl_id'],
+                            $field,
+                            null,
+                            $row['host_tpl_id']
+                        )
                     ) {
                         return $result_field;
                     }
@@ -1858,7 +1859,8 @@ function host_has_one_or_more_GraphService($host_id, $search = 0)
     $services = getMyHostServices($host_id, $search);
 
     foreach ($services as $svc_id => $svc_name) {
-        if (service_has_graph($host_id, $svc_id) &&
+        if (
+            service_has_graph($host_id, $svc_id) &&
             ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_id][$svc_id])))
         ) {
             return true;
@@ -2206,7 +2208,7 @@ function cleanString($str)
     return $str;
 }
 
-// Global Function 
+// Global Function
 
 function get_my_first_allowed_root_menu($lcaTStr)
 {
@@ -2239,7 +2241,8 @@ function reset_search_page($url)
     if (!isset($url)) {
         return;
     }
-    if (isset($_GET['search'])
+    if (
+        isset($_GET['search'])
         && isset($centreon->historySearch[$url])
         && $_GET['search'] != $centreon->historySearch[$url]
         && !isset($_GET['num'])
@@ -2247,10 +2250,7 @@ function reset_search_page($url)
     ) {
         $_POST['num'] = 0;
         $_GET['num'] = 0;
-    } elseif (isset($_GET["search"])
-        && isset($_POST["search"])
-        && $_GET["search"] === $_POST["search"]
-    ) {
+    } elseif (isset($_GET["search"]) && isset($_POST["search"]) && $_GET["search"] === $_POST["search"]) {
         //if the user change the search filter, we reset the num argument sent in the hybride POST and GET request
         $_POST['num'] = $_GET['num'] = 0;
     }
@@ -2297,4 +2297,51 @@ function validateGeoCoords()
         return true;
     }
     return false;
+}
+
+/**
+ * Get the select option.
+ *
+ * @return array<int, int>
+ */
+function getSelectOption()
+{
+    $stringToArray = function (string $value): array {
+        if (strpos($value, ',') !== false) {
+            return explode(',', $value);
+        }
+        return [];
+    };
+    if (isset($_GET["select"])) {
+        return is_array($_GET["select"])
+            ? $_GET["select"]
+            : $stringToArray($_GET["select"]);
+    } elseif (isset($_POST["select"])) {
+        return is_array($_POST["select"])
+            ? $_POST["select"]
+            : $stringToArray($_POST["select"]);
+    } else {
+        return [];
+    }
+}
+
+
+/**
+ * Get the duplicate number option.
+ *
+ * @return array<int, int>
+ */
+function getDuplicateNumberOption()
+{
+    if (isset($_GET["dupNbr"])) {
+        return is_array($_GET["dupNbr"])
+            ? $_GET["dupNbr"]
+            : [];
+    } elseif (isset($_POST["dupNbr"])) {
+        return is_array($_POST["dupNbr"])
+            ? $_POST["dupNbr"]
+            : [];
+    } else {
+        return [];
+    }
 }

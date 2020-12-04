@@ -941,7 +941,8 @@ class CentreonHost
         $i = 1;
         $queryValues = array();
         foreach ($templates as $templateId) {
-            if (!isset($templateId)
+            if (
+                !isset($templateId)
                 || !$templateId
                 || isset($stored[$templateId])
                 || !$this->hasNoInfiniteLoop($hostId, $templateId)
@@ -1015,10 +1016,11 @@ class CentreonHost
         if (!isset($cmdId)) {
             $cmdId = "";
         }
-        $aMacros = $this->getMacros($host_id, false, $aTemplates, $cmdId);
+        $aMacros = $this->getMacros($host_id, $aTemplates, $cmdId);
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
-                if ($input == $macro['macroInput_#index#'] &&
+                if (
+                    $input == $macro['macroInput_#index#'] &&
                     $macroValue[$ind] == $macro["macroValue_#index#"] &&
                     $macroPassword[$ind] == $macro['macroPassword_#index#']
                 ) {
@@ -1054,14 +1056,14 @@ class CentreonHost
 
     /**
      * This method get the macro attached to the host
-     *
      * @param int $iHostId
-     * @param int $bIsTemplate
-     * @param array $aListTemplate
+     * @param $aListTemplate
      * @param int $iIdCommande
+     * @param array $form
      * @return array
+     * @throws Exception
      */
-    public function getMacros($iHostId, $bIsTemplate, $aListTemplate, $iIdCommande, $form = array())
+    public function getMacros($iHostId, $aListTemplate, $iIdCommande, $form = array())
     {
         $macroArray = $this->getMacroFromForm($form, "direct");
         $aMacroTemplate[] = $this->getMacroFromForm($form, "fromTpl");
