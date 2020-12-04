@@ -7,17 +7,18 @@ import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField, useRequest, ListingModel } from '@centreon/ui';
 
+import PerformanceGraph from '../../../Graph/Performance';
+import { TabProps } from '..';
+import { listTimelineEvents } from '../Timeline/api';
+import { TimelineEvent } from '../Timeline/models';
+import { listTimelineEventsDecoder } from '../Timeline/api/decoders';
+
 import {
   timePeriods,
   getTimePeriodById,
   last24hPeriod,
   TimePeriod,
 } from './models';
-import PerformanceGraph from '../../../Graph/Performance';
-import { TabProps } from '..';
-import { listTimelineEvents } from '../Timeline/api';
-import { TimelineEvent } from '../Timeline/models';
-import { listTimelineEventsDecoder } from '../Timeline/api/decoders';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -172,7 +173,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
             graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
             toggableLegend
-            timeline={timeline}
+            timeline={timeline as Array<TimelineEvent>}
           />
         </div>
       </Paper>

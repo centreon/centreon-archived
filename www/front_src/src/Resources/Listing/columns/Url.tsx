@@ -1,10 +1,11 @@
 import * as React from 'react';
 
+import { path, isNil, isEmpty } from 'ramda';
+
 import IconLink from '@material-ui/icons/Link';
 
 import { IconButton, ComponentColumnProps } from '@centreon/ui';
 
-import { path, isNil, isEmpty } from 'ramda';
 import { labelUrl } from '../../translatedLabels';
 
 const UrlColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {

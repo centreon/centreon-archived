@@ -1,4 +1,5 @@
 import { ListingModel } from '@centreon/ui';
+
 import { Status } from '../../../models';
 
 export interface Service {

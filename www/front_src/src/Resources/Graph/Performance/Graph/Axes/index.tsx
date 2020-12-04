@@ -1,10 +1,12 @@
 import * as React from 'react';
 
 import { AxisBottom } from '@visx/visx';
+import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
-import { ScaleLinear, ScaleTime } from 'd3-scale';
+
 import { Line, TimeValue } from '../../models';
+
 import YAxes from './Y';
 
 const commonTickLabelProps = {

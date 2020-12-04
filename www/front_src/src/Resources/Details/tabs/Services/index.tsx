@@ -1,19 +1,20 @@
 import * as React from 'react';
 
 import { isNil, isEmpty } from 'ramda';
-import { Skeleton } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 
+import { Skeleton } from '@material-ui/lab';
 import { makeStyles, Paper, Typography } from '@material-ui/core';
 
 import { useRequest, StatusChip } from '@centreon/ui';
 
 import { TabProps, detailsTabId } from '..';
+import { useResourceContext } from '../../../Context';
+import { labelNoResultsFound } from '../../../translatedLabels';
+
 import { listServices } from './api';
 import { listServicesDecoder } from './api/decoders';
 import { Service } from './models';
-import { useResourceContext } from '../../../Context';
-import { labelNoResultsFound } from '../../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   services: {
