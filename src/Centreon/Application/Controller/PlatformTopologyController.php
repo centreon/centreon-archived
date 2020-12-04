@@ -179,4 +179,22 @@ class PlatformTopologyController extends AbstractController
             return $this->view(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
     }
+
+    /**
+     * @param int $serverId
+     * @return View
+     */
+    public function deletePlatform(int $serverId): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        try {
+            $this->platformTopologyService->deletePlatform($serverId);
+            return $this->view(null, Response::HTTP_NO_CONTENT);
+        } catch (EntityNotFoundException $ex) {
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $ex) {
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
 }

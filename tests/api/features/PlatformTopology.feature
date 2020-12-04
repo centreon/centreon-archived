@@ -336,3 +336,40 @@ Feature:
                 }
             }
             """
+
+        When I send a DELETE request to "/beta/platform/topology/3"
+        Then I wait for "600" seconds
+        Then the response code should be "204"
+        When I send a GET request to "/beta/platform/topology"
+        Then the response code should be "200"
+        And the JSON should be equal to:
+            """
+            {
+                "graph": {
+                    "label": "centreon-topology",
+                    "metadata": {
+                        "version": "1.0.0"
+                    },
+                    "nodes": {
+                        "1": {
+                            "type": "central",
+                            "label": "Central",
+                            "metadata": {
+                                "centreon-id": "1",
+                                "hostname": "central.test.localhost.localdomain",
+                                "address": "1.1.1.10"
+                            }
+                        },
+                        "2": {
+                            "type": "poller",
+                            "label": "my_poller",
+                            "metadata": {
+                                "hostname": "poller.test.localhost.localdomain",
+                                "address": "1.1.1.1"
+                            }
+                        },
+                    },
+                    "edges": []
+                }
+            }
+            """

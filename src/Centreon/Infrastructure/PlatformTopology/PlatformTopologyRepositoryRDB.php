@@ -24,8 +24,10 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\PlatformTopology;
 
 use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
@@ -208,5 +210,100 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         }
 
         return $platform;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deletePlatform(int $serverId): void
+    {
+        try {
+            /**
+             * Search for children Platform
+             */
+            $childrenPlatforms = $this->findChildrenPlatforms($serverId);
+            if(!empty($childrenPlatforms)){
+                /**
+                 * If children platform are found, look for a Central to link the children platform
+                 */
+                $topLevelPlatform = $this->findTopLevelPlatform();
+                if ($topLevelPlatform === null) {
+                    throw new EntityNotFoundException(_('No top level Platform found to link the children platform.'));
+                }
+
+                $statementChangeParentId = $this->db->prepare(
+                    'UPDATE `platform_topology` SET parent_id = :centralId WHERE id = :platformId'
+                );
+                $statementChangeParentId->bindValue(':centralId', $topLevelPlatform->getId(), \PDO::PARAM_INT);
+
+                foreach ($childrenPlatforms as $platform) {
+                    $statementChangeParentId->bindValue(':platformId', $platform->getId(), \PDO::PARAM_INT);
+                    $statementChangeParentId->execute();
+                }
+            }
+
+            /**
+             * Then safely delete the platform without removing its children
+             */
+            $statement = $this->db->prepare('DELETE FROM `platform_topology` WHERE id = :serverId');
+            $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
+            $statement->execute();
+        } catch (EntityNotFoundException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            throw new RepositoryException(_('An error occured while deleting the Platform.'));
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    private function findTopLevelPlatform(): ?Platform
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName('
+                SELECT * FROM `:db`.platform_topology
+                WHERE `parent_id` IS NULL
+            ')
+        );
+        $statement->execute();
+
+        $platform = null;
+
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var Platform $platform
+             */
+            $platform = EntityCreator::createEntityByArray(
+                Platform::class,
+                $result
+            );
+        }
+
+        return $platform;
+    }
+    /**
+     * Find the children Platforms of another Platform
+     *
+     * @param integer $serverId
+     * @return Platform[]
+     */
+    private function findChildrenPlatforms(int $serverId): array
+    {
+            $statement = $this->db->prepare('SELECT * FROM `platform_topology` WHERE parent_id = :parentId');
+            $statement->bindValue(':parentId', $serverId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            $childrenPlatforms = [];
+            if ($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
+                foreach($result as $platform) {
+                    /**
+                     * @var Platform[] $childrenPlatforms
+                     */
+                    $childrenPlatforms[] = EntityCreator::createEntityByArray(Platform::class, $platform);
+                }
+            }
+
+            return $childrenPlatforms;
     }
 }

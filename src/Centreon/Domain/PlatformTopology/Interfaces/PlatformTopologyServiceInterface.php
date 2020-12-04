@@ -56,4 +56,13 @@ interface PlatformTopologyServiceInterface
      * @throws EntityNotFoundException
      */
     public function getPlatformTopology(): array;
+
+    /**
+     * Delete a platform
+     *
+     * @param integer $platformId
+     * @throws PlatformException
+     * @throws EntityNotFoundException
+     */
+    public function deletePlatform(int $platformId): void;
 }

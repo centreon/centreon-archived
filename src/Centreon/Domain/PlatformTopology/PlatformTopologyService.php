@@ -609,4 +609,21 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
         return $platformTopology;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function deletePlatform(int $serverId): void
+    {
+        try {
+            if ($this->platformTopologyRepository->findPlatform($serverId) === null) {
+                throw new EntityNotFoundException(_('Platform not found.'));
+            }
+            $this->platformTopologyRepository->deletePlatform($serverId);
+        } catch (EntityNotFoundException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            throw new PlatformException($ex->getMessage(), 0, $ex);
+        }
+    }
 }

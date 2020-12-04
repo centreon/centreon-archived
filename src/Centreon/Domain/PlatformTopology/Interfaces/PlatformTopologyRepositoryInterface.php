@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\Repository\RepositoryException;
 
 interface PlatformTopologyRepositoryInterface
 {
@@ -87,4 +88,13 @@ interface PlatformTopologyRepositoryInterface
      * @return Platform|null
      */
     public function findPlatform(int $serverId): ?Platform;
+
+    /**
+     * Delete a server
+     *
+     * @param integer $serverId
+     * @throws EntityNotFoundException
+     * @throws RepositoryException
+     */
+    public function deletePlatform(int $serverId): void;
 }
