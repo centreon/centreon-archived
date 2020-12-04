@@ -337,8 +337,7 @@ Feature:
             }
             """
 
-        When I send a DELETE request to "/beta/platform/topology/3"
-        Then I wait for "600" seconds
+        When I send a DELETE request to "/beta/platform/topology/3" 
         Then the response code should be "204"
         When I send a GET request to "/beta/platform/topology"
         Then the response code should be "200"
@@ -367,7 +366,7 @@ Feature:
                                 "hostname": "poller.test.localhost.localdomain",
                                 "address": "1.1.1.1"
                             }
-                        },
+                        }
                     },
                     "edges": []
                 }
