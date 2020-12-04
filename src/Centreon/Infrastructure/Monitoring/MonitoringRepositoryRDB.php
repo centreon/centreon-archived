@@ -586,7 +586,6 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $serviceIdsListKey[] = $serviceKey;
             $collector->addValue($serviceKey, $hostServiceIds['service_id'], \PDO::PARAM_INT);
             $collector->addValue($hostKey, $hostServiceIds['host_id'], \PDO::PARAM_INT);
-            unset($index, $hostServiceIds);
         }
         $request .= ' AND srv.service_id IN (' . implode(',', $serviceIdsListKey) . ')';
         $request .= ' AND srv.host_id IN (' . implode(',', $hostIdsListKey) . ')';
@@ -641,7 +640,6 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $key = ":id{$index}";
             $idsListKey[] = $key;
             $collector->addValue($key, $id, \PDO::PARAM_INT);
-            unset($index, $id);
         }
         $request .= ' WHERE h.host_id IN (' . implode(',', $idsListKey) . ')';
 
@@ -652,7 +650,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $host[] = EntityCreator::createEntityByArray(
+            $hosts[] = EntityCreator::createEntityByArray(
                 Host::class,
                 $row
             );
@@ -863,7 +861,6 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $serviceIdsListKey[] = $serviceKey;
             $collector->addValue($serviceKey, $hostServiceIds['service_id'], \PDO::PARAM_INT);
             $collector->addValue($hostKey, $hostServiceIds['host_id'], \PDO::PARAM_INT);
-            unset($index, $hostServiceIds);
         }
         $request .= ' AND srv.service_id IN (' . implode(',', $serviceIdsListKey) . ')';
         $request .= ' AND srv.host_id IN (' . implode(',', $hostIdsListKey) . ')';
