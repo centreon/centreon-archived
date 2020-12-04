@@ -67,6 +67,8 @@ class UserController extends AbstractController
      */
     public function getUserParameters(): View
     {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
         $user = $this->getUser();
 
         $userParameters = [

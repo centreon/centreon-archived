@@ -304,6 +304,8 @@ paths:
                     nullable: true
                     description: Locale of the current user
                     example: en_US
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /users/filters/{page_name}:
@@ -2658,6 +2660,8 @@ paths:
                       type: string
                       description: Default monitoring refresh interval
                       example: 15
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
