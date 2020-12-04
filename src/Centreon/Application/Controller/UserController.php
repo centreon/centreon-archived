@@ -60,6 +60,25 @@ class UserController extends AbstractController
 
         return $this->view($actions);
     }
+    /**
+     * Entry point to get configured parameters for the current user
+     *
+     * @return View
+     */
+    public function getUserParameters(): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $user = $this->getUser();
+
+        return $this->view([
+            'name' => $user->getName(),
+            'alias' => $user->getAlias(),
+            'email' => $user->getEmail(),
+            'timezone' => $user->getTimezone()->getName(),
+            'locale' => $user->getLocale()
+        ]);
+    }
 
     /**
      * Get authorization for a specific role of the current user
