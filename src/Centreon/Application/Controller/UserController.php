@@ -48,6 +48,7 @@ class UserController extends AbstractController
                 'disacknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT),
                 'downtime' => $this->getAuthorizationForRole(Contact::ROLE_ADD_HOST_DOWNTIME),
                 'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_HOST_SUBMIT_RESULT),
+                'comment' => $this->getAuthorizationForRole(Contact::ROLE_HOST_ADD_COMMENT),
             ],
             'service' => [
                 'check' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_CHECK),
@@ -55,6 +56,7 @@ class UserController extends AbstractController
                 'disacknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT),
                 'downtime' => $this->getAuthorizationForRole(Contact::ROLE_ADD_SERVICE_DOWNTIME),
                 'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_SUBMIT_RESULT),
+                'comment' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_ADD_COMMENT),
             ],
         ];
 

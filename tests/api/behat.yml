@@ -36,6 +36,10 @@ default:
       paths: [ "%paths.base%/features/SubmitResult.feature" ]
       contexts:
         - Centreon\Test\Api\Context\SubmitResultContext
+    comment:
+      paths: [ "%paths.base%/features/Comment.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\CommentContext
     acknowledgement:
       paths: [ "%paths.base%/features/Acknowledgement.feature" ]
       contexts:

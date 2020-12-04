@@ -374,6 +374,12 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             case 'host_submit_result':
                 $contact->addRole(Contact::ROLE_HOST_SUBMIT_RESULT);
                 break;
+            case 'host_comment':
+                $contact->addRole(Contact::ROLE_HOST_ADD_COMMENT);
+                break;
+            case 'service_comment':
+                $contact->addRole(Contact::ROLE_SERVICE_ADD_COMMENT);
+                break;
         }
     }
 
