@@ -133,7 +133,7 @@ class Comment
      */
     public function setDate(\DateTime $date)
     {
-        $this->date = is_null($date) ? new \DateTime() : $date;
+        $this->date = $date;
         return $this;
     }
 }
