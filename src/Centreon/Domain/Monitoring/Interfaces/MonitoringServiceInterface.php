@@ -22,15 +22,15 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Interfaces;
 
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\HostGroup;
+use Centreon\Domain\Monitoring\ServiceGroup;
+use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
+use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\HostConfiguration\HostConfigurationException;
 use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
-use Centreon\Domain\Monitoring\Host;
-use Centreon\Domain\Monitoring\HostGroup;
-use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\ServiceGroup;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 
 interface MonitoringServiceInterface extends ContactFilterInterface

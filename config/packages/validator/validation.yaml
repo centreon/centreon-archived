@@ -41,6 +41,19 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
                 type: boolean
                 groups: [add_host_acks, add_host_ack, ack_resource]
 
+# Used to validate the Comment entity
+Centreon\Domain\Monitoring\Comment:
+    properties:
+        date:
+            - Type:
+                type: DateTime
+                groups: [add_host_comment, add_service_comment]
+        comment:
+            - Type:
+                type: string
+                groups: [add_host_comment, add_service_comment]
+            - NotNull: ~
+
 # Used to validate the Downtime entity
 Centreon\Domain\Downtime\Downtime:
     properties:
