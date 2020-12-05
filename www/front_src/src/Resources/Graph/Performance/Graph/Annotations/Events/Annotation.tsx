@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 import { Line } from '@visx/visx';
+import { ScaleTime } from 'd3-scale';
 
 import { makeStyles, Tooltip, Paper, Typography } from '@material-ui/core';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
-import { ScaleTime } from 'd3-scale';
 
 const useStyles = makeStyles((theme) => ({
   tooltip: {

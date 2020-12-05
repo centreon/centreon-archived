@@ -40,9 +40,9 @@ import {
 } from '../timeSeries';
 import formatMetricValue from '../formatMetricValue';
 import Lines from '../Lines';
-import Annotations from './Annotations';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 
+import Annotations from './Annotations';
 import Axes from './Axes';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>

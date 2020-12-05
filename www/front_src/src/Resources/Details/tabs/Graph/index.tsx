@@ -126,7 +126,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     }
 
     retrieveTimeline();
-  }, [endpoint]);
+  }, [endpoint, selectedTimePeriod]);
 
   const getGraphQueryParameters = (timePeriod): string => {
     const [start, end] = getIntervalDates(timePeriod);
