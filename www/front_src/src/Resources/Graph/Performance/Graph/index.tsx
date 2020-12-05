@@ -45,8 +45,6 @@ import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import Annotations from './Annotations';
 import Axes from './Axes';
 
-import Axes from './Axes';
-
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
 
