@@ -4,7 +4,6 @@ import mockDate from 'mockdate';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { last, pick, map } from 'ramda';
-
 import {
   render,
   RenderResult,
@@ -47,28 +46,31 @@ import {
   labelCritical,
   labelUnknown,
 } from '../translatedLabels';
-import Actions from '.';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
-import useActions from './useActions';
 import useFilter from '../Filter/useFilter';
 import Context, { ResourceContext } from '../Context';
 import { mockAppStateSelector, cancelTokenRequestParam } from '../testUtils';
 import { Resource } from '../models';
+import useDetails from '../Details/useDetails';
+
 import {
   acknowledgeEndpoint,
   downtimeEndpoint,
   checkEndpoint,
 } from './api/endpoint';
-import useDetails from '../Details/useDetails';
+import useActions from './useActions';
 import { disacknowledgeEndpoint } from './Resource/Disacknowledge/api';
 import { submitStatusEndpoint } from './Resource/SubmitStatus/api';
+
+import Actions from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const onRefresh = jest.fn();
 
 jest.mock('react-redux', () => ({
+  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
 }));
 

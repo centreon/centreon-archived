@@ -11,6 +11,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import React, { Component } from 'react';
+
 import classnames from 'classnames';
 import * as yup from 'yup';
 import numeral from 'numeral';

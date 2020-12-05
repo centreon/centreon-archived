@@ -1,12 +1,13 @@
 import axios, { AxiosResponse, CancelToken } from 'axios';
 import { map, pick } from 'ramda';
 
+import { Resource } from '../../models';
+
 import {
   acknowledgeEndpoint,
   downtimeEndpoint,
   checkEndpoint,
 } from './endpoint';
-import { Resource } from '../../models';
 
 interface AcknowledgeParams {
   acknowledgeAttachedResources?: boolean;

@@ -3,7 +3,9 @@
 /* eslint-disable react/prop-types */
 
 import React from 'react';
+
 import { Switch, Route, withRouter } from 'react-router-dom';
+
 import ReactRouter from '../ReactRouter';
 import LegacyRoute from '../../route-components/legacyRoute';
 
