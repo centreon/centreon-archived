@@ -6,6 +6,7 @@
 /* eslint-disable import/no-named-as-default */
 
 import React, { Component } from 'react';
+
 import { Field, reduxForm as connectForm } from 'redux-form';
 import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
@@ -15,7 +16,6 @@ import InputField from '../../form-fields/InputField';
 import SelectField from '../../form-fields/SelectField';
 import RadioField from '../../form-fields/PreselectedRadioField';
 import CheckboxField from '../../form-fields/CheckboxField';
-
 import { validateFieldRequired } from '../../../helpers/validators';
 
 class RemoteServerFormStepOne extends Component {

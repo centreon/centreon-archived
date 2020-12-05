@@ -6,24 +6,23 @@ import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
-import { useRequest, getData, timeFormat, ListingModel } from '@centreon/ui';
+import { useRequest, getData, timeFormat } from '@centreon/ui';
+
+import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 
 import { getTimeSeries, getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
-import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import LoadingSkeleton from './LoadingSkeleton';
 import Legend from './Legend';
 import Graph from './Graph';
-import { TimelineEvent } from '../../Details/tabs/Timeline/models';
-import { listTimelineEvents } from '../../Details/tabs/Timeline/api';
-import { listTimelineEventsDecoder } from '../../Details/tabs/Timeline/api/decoders';
 
 interface Props {
   endpoint?: string;
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
-  timelineEndpoint?: string;
+  timeline?: Array<TimelineEvent>;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -55,7 +54,7 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
-  timelineEndpoint = undefined,
+  timeline,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
@@ -64,7 +63,6 @@ const PerformanceGraph = ({
   const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
-  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
 
   const {
     sendRequest: sendGetGraphDataRequest,
@@ -72,29 +70,6 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
-
-  const { sendRequest: sendGetTimelineRequest } = useRequest<
-    ListingModel<TimelineEvent>
-  >({
-    request: listTimelineEvents,
-    decoder: listTimelineEventsDecoder,
-  });
-
-  const retrieveTimeline = (): void => {
-    if (isNil(timelineEndpoint)) {
-      setTimeline([]);
-      return;
-    }
-
-    sendGetTimelineRequest({
-      endpoint: timelineEndpoint,
-      parameters: {
-        limit: 100,
-      },
-    }).then(({ result }) => {
-      setTimeline(result);
-    });
-  };
 
   React.useEffect(() => {
     if (isNil(endpoint)) {
@@ -107,8 +82,6 @@ const PerformanceGraph = ({
       setTitle(graphData.global.title);
       setBase(graphData.global.base);
     });
-
-    retrieveTimeline();
   }, [endpoint]);
 
   const loading =

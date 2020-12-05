@@ -5,6 +5,7 @@
 /* eslint-disable no-plusplus */
 
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 

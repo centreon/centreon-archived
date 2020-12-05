@@ -1,10 +1,11 @@
 import * as React from 'react';
 
 import { filter, propEq } from 'ramda';
-
 import { ScaleTime } from 'd3-scale';
-import Annotation from './Annotation';
+
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
+
+import Annotation from './Annotation';
 
 interface Props {
   type: string;

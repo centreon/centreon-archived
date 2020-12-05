@@ -7,6 +7,7 @@
 /* eslint-disable react/destructuring-assignment */
 
 import React, { Component } from 'react';
+
 import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';

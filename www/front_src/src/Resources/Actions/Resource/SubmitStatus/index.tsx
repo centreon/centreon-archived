@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { Grid } from '@material-ui/core';
+
 import {
   useSnackbar,
   Dialog,
@@ -11,7 +13,6 @@ import {
   TextField,
 } from '@centreon/ui';
 
-import { Grid } from '@material-ui/core';
 import { Resource } from '../../../models';
 import {
   labelCancel,
@@ -29,6 +30,7 @@ import {
   labelCritical,
   labelUnknown,
 } from '../../../translatedLabels';
+
 import { submitResourceStatus } from './api';
 
 interface Props {

@@ -2,7 +2,9 @@
 /* eslint-disable react/prefer-stateless-function */
 
 import React, { Component } from 'react';
+
 import classnames from 'classnames';
+
 import styles from './footer.scss';
 
 class Footer extends Component {

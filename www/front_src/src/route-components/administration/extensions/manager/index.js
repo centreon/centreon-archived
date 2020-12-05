@@ -8,8 +8,10 @@
 /* eslint-disable react/destructuring-assignment */
 
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
 import { batchActions } from 'redux-batched-actions';
+
 import {
   TopFilters,
   Wrapper,
@@ -18,8 +20,8 @@ import {
   ExtensionDetailsPopup,
   ExtensionDeletePopup,
 } from '@centreon/ui';
-import Hook from '../../../../components/Hook';
 
+import Hook from '../../../../components/Hook';
 import axios from '../../../../axios';
 import { fetchNavigationData } from '../../../../redux/actions/navigationActions';
 import { fetchExternalComponents } from '../../../../redux/actions/externalComponentsActions';

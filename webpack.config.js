@@ -1,7 +1,8 @@
+const path = require('path');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const { merge } = require('webpack-merge');
-const path = require('path');
 
 const baseConfig = require('@centreon/frontend-core/webpack/base');
 const extractCssConfig = require('@centreon/frontend-core/webpack/patch/extractCss');

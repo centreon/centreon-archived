@@ -9,6 +9,7 @@ import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
 import { labelBy, labelComment } from '../../../../../translatedLabels';
 import truncate from '../../../../../truncate';
 import { Props } from '..';
+
 import EventAnnotations from '.';
 
 const CommentAnnotations = (props: Props): JSX.Element => {

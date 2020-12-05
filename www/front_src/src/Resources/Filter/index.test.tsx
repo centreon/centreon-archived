@@ -36,11 +36,7 @@ import {
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../Actions/useActions';
-import useFilter from './useFilter';
 import Context, { ResourceContext } from '../Context';
-
-import Filter from '.';
-import { Filter as FilterModel } from './models';
 import useLoadResources from '../Listing/useLoadResources';
 import {
   defaultStates,
@@ -51,11 +47,17 @@ import {
 } from '../testUtils';
 import useDetails from '../Details/useDetails';
 
+import { Filter as FilterModel } from './models';
+import useFilter from './useFilter';
+
+import Filter from '.';
+
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const filterStorageKey = 'centreon-resource-status-filter';
 
 jest.mock('react-redux', () => ({
+  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
 }));
 

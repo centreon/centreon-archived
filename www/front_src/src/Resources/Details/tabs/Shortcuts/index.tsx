@@ -6,11 +6,12 @@ import { path, isNil } from 'ramda';
 import { makeStyles, Paper } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import ShortcutsSection from './ShortcutsSection';
 import hasDefinedValues from '../../../hasDefinedValues';
 import { labelHost, labelService } from '../../../translatedLabels';
 import { TabProps } from '..';
 import { ResourceUris } from '../../../models';
+
+import ShortcutsSection from './ShortcutsSection';
 
 const useStyles = makeStyles((theme) => {
   return {
