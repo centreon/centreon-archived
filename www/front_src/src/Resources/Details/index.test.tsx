@@ -435,12 +435,12 @@ describe(Details, () => {
   });
 
   it.each([
-    [labelLast24h, '2020-06-20T06:00:00.000Z'],
-    [labelLast7Days, '2020-06-14T06:00:00.000Z'],
-    [labelLast31Days, '2020-05-21T06:00:00.000Z'],
+    [labelLast24h, '2020-06-20T06:00:00.000Z', 20],
+    [labelLast7Days, '2020-06-14T06:00:00.000Z', 100],
+    [labelLast31Days, '2020-05-21T06:00:00.000Z', 500],
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected`,
-    async (period, startIsoString) => {
+    async (period, startIsoString, timelineEventsLimit) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: performanceGraphData })
@@ -474,6 +474,7 @@ describe(Details, () => {
           buildListTimelineEventsEndpoint({
             endpoint: retrievedDetails.links.endpoints.timeline,
             parameters: {
+              limit: timelineEventsLimit,
               search: {
                 conditions: [
                   {

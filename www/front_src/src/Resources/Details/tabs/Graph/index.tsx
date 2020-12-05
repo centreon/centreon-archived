@@ -103,6 +103,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     sendGetTimelineRequest({
       endpoint: timelineEndpoint,
       parameters: {
+        limit: selectedTimePeriod.timelineEventsLimit,
         search: {
           conditions: [
             {
