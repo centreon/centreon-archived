@@ -23,6 +23,9 @@ namespace Centreon\Domain\RequestParameters\Interfaces;
 
 use Centreon\Domain\RequestParameters\RequestParameters;
 
+/**
+ * @package Centreon\Domain\RequestParameters\Interfaces
+ */
 interface RequestParametersInterface
 {
     /**
@@ -38,7 +41,7 @@ interface RequestParametersInterface
      *
      * @param string $keyToFind Name of the search parameter
      * @param array $parameters List of parameters
-     * @return string|null Returns the value of the search parameter
+     * @return bool Returns true if the parameter exists
      */
     public function hasSearchParameter(string $keyToFind, array $parameters): bool;
 

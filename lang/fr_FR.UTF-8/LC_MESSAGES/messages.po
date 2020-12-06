@@ -15466,6 +15466,9 @@ msgstr "Aucun résultat trouvé"
 msgid "Error when decoding sent data"
 msgstr "Erreur lors du décodage des données envoyées"
 
+msgid "Error when retrieving selected options"
+msgstr "Erreur lors de la récupération des options selectionnées"
+
 msgid "Filter id %d not found"
 msgstr "Filtre id %s non trouvé"
 
@@ -15851,3 +15854,15 @@ msgstr "EN ATTENTE"
 
 msgid "FQDN / Address"
 msgstr "FQDN / Adresse"
+
+msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
+msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas avoir plus de %d caractères, mais a %d caractères"
+
+msgid "[%s] The value \"%s\" is too short, it should have at least %d characters, but only has %d characters"
+msgstr "[%s] La valeur \"%s\" est trop courte, elle devrait avoir au moins %d caractères, mais n'a que %d caractères"
+
+msgid "Error when searching for services"
+msgstr "Erreur lors de la recherche des services"
+
+msgid "Error when searching for hosts"
+msgstr "Erreur lors de la recherche des hôtes"

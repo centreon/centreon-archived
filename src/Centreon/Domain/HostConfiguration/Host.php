@@ -337,6 +337,26 @@ class Host
     }
 
     /**
+     * Clear and add all host templates.
+     *
+     * @param Host[] $hostTemplates
+     * @return Host
+     * @throws \InvalidArgumentException
+     */
+    public function setTemplates(array $hostTemplates): Host
+    {
+        $this->clearTemplates();
+        foreach ($hostTemplates as $hostTemplate) {
+            if ($hostTemplate->getType() !== Host::TYPE_HOST_TEMPLATE) {
+                throw new \InvalidArgumentException(_('This host is not a host template'));
+            }
+            $this->templates[] = $hostTemplate;
+        }
+
+        return $this;
+    }
+
+    /**
      * Clear all templates.
      *
      * @return Host

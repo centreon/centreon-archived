@@ -9,18 +9,20 @@ import {
   Matcher,
 } from '@testing-library/react';
 import axios from 'axios';
-
 import { partition, where, contains, head, split, pipe, identity } from 'ramda';
-import Listing from '.';
-import { getColumns } from './columns';
+
 import { Resource } from '../models';
 import Context, { ResourceContext } from '../Context';
 import useActions from '../Actions/useActions';
 import useDetails from '../Details/useDetails';
-import useListing from './useListing';
 import useFilter from '../Filter/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
+
+import useListing from './useListing';
+import { getColumns } from './columns';
+
+import Listing from '.';
 
 const columns = getColumns({
   actions: { onAcknowledge: jest.fn() },
@@ -30,6 +32,7 @@ const columns = getColumns({
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('react-redux', () => ({
+  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
 }));
 

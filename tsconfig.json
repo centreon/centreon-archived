@@ -6,9 +6,9 @@
       "./types",
       "./node_modules/@types"
     ],
-    "module": "esnext"
+    "module": "esnext",
   },
   "include": [
     "./www/front_src/src"
-  ],
+  ]
 }

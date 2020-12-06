@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { useTheme } from '@material-ui/core';
 import IconComment from '@material-ui/icons/Comment';
 
@@ -10,6 +12,7 @@ import { iconSize } from '../Annotation';
 
 const CommentAnnotations = (props: Props): JSX.Element => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const icon = (
     <IconComment

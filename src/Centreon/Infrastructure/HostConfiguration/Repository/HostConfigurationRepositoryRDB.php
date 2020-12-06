@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\HostConfiguration;
+namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\HostConfiguration\ExtendedHost;
@@ -31,9 +31,15 @@ use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
+use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostTemplateFactoryRdb;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
+/**
+ * This class is designed to represent the MariaDb repository to manage host and host template
+ *
+ * @package Centreon\Infrastructure\HostConfiguration
+ */
 class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements HostConfigurationRepositoryInterface
 {
 
@@ -314,7 +320,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     /**
      * @inheritDoc
      */
-    public function findAndAddHostTemplates(Host $host): void
+    public function findHostTemplatesRecursively(Host $host): array
     {
         $request = $this->translateDbName(
             'WITH RECURSIVE template AS (
@@ -343,7 +349,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->execute();
 
         /**
-         * Add a host template by browsing all templates recursively until you find the parent template.
+         * Add a host template by browsing all templates recursively until we find the parent template.
          *
          * @param int $hostParentId Id of the host template for which we want to add the given template.
          * @param Host $hostTemplate Host template to be added
@@ -361,18 +367,19 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 }
             };
 
-        $host->clearTemplates();
+        $hostTemplates = [];
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $hostTemplate = EntityCreator::createEntityByArray(
                 Host::class,
                 $record
             );
             if ((int) $record['template_host_id'] === $host->getId()) {
-                $host->addTemplate($hostTemplate);
+                $hostTemplates[] = $hostTemplate;
             } else {
-                $addTemplateToHost((int) $record['template_host_id'], $hostTemplate, $host->getTemplates());
+                $addTemplateToHost((int) $record['template_host_id'], $hostTemplate, $hostTemplates);
             }
         }
+        return $hostTemplates;
     }
 
     /**
@@ -518,5 +525,62 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $namesFound[] = $result['host_name'];
         }
         return $namesFound;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostTemplates(): array
+    {
+        $request = $this->translateDbName(
+            'SELECT SQL_CALC_FOUND_ROWS h.*, ext.*, icon.img_id AS icon_id, icon.img_name AS icon_name, 
+                CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
+                icon.img_comment AS icon_comment, smi.img_id AS smi_id, smi.img_name AS smi_name, 
+                smi.img_path AS smi_path, smi.img_comment AS smi_comment,
+                GROUP_CONCAT(DISTINCT htr.host_tpl_id) AS parents
+            FROM `:db`.host h
+            LEFT JOIN `:db`.extended_host_information ext
+                ON h.host_id = ext.host_host_id
+            LEFT JOIN `:db`.view_img icon
+                ON icon.img_id = ext.ehi_icon_image
+            LEFT JOIN `centreon`.view_img_dir_relation iconR
+                ON iconR.img_img_id = icon.img_id
+            LEFT JOIN `centreon`.view_img_dir iconD
+                ON iconD.dir_id = iconR.dir_dir_parent_id
+            LEFT JOIN `:db`.view_img smi
+                ON smi.img_id = ext.ehi_statusmap_image
+            LEFT JOIN centreon.host_template_relation htr
+                ON htr.host_host_id = h.host_id
+            LEFT JOIN centreon.options AS opt
+                ON opt.key = \'nagios_path_img\''
+        );
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        $request .= !is_null($searchRequest)
+            ? $searchRequest . ' AND host_register = \'0\' GROUP BY h.host_id'
+            : ' WHERE host_register = \'0\' GROUP BY h.host_id';
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+        $request .= !is_null($sortRequest)
+            ? $sortRequest
+            : ' ORDER BY h.host_id ASC';
+
+        // Pagination
+        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+        $statement = $this->db->query($request);
+
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        if ($result !== false && ($total = $result->fetchColumn()) !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
+        }
+
+        $hostTemplates = [];
+        if ($statement !== false) {
+            while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                $hostTemplates[] = HostTemplateFactoryRdb::create($result);
+            }
+        }
+        return $hostTemplates;
     }
 }

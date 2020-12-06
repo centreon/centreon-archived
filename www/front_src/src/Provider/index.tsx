@@ -4,7 +4,6 @@ import 'dayjs/locale/en';
 import 'dayjs/locale/pt';
 import 'dayjs/locale/fr';
 import 'dayjs/locale/es';
-
 import dayjs from 'dayjs';
 import timezonePlugin from 'dayjs/plugin/timezone';
 import utcPlugin from 'dayjs/plugin/utc';
@@ -19,6 +18,7 @@ import { Context, useUser, useAcl } from '@centreon/ui-context';
 
 import App from '../App';
 import createStore from '../store';
+
 import { userEndpoint, translationEndpoint, aclEndpoint } from './endpoint';
 import { User, Actions } from './models';
 

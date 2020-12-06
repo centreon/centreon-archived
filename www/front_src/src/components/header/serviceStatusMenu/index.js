@@ -11,6 +11,7 @@
 /* eslint-disable react/jsx-filename-extension */
 
 import React, { Component } from 'react';
+
 import classnames from 'classnames';
 import * as yup from 'yup';
 import PropTypes from 'prop-types';

@@ -48,6 +48,7 @@ class UserController extends AbstractController
                 'disacknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT),
                 'downtime' => $this->getAuthorizationForRole(Contact::ROLE_ADD_HOST_DOWNTIME),
                 'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_HOST_SUBMIT_RESULT),
+                'comment' => $this->getAuthorizationForRole(Contact::ROLE_HOST_ADD_COMMENT),
             ],
             'service' => [
                 'check' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_CHECK),
@@ -55,10 +56,30 @@ class UserController extends AbstractController
                 'disacknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT),
                 'downtime' => $this->getAuthorizationForRole(Contact::ROLE_ADD_SERVICE_DOWNTIME),
                 'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_SUBMIT_RESULT),
+                'comment' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_ADD_COMMENT),
             ],
         ];
 
         return $this->view($actions);
+    }
+    /**
+     * Entry point to get configured parameters for the current user
+     *
+     * @return View
+     */
+    public function getUserParameters(): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $user = $this->getUser();
+
+        return $this->view([
+            'name' => $user->getName(),
+            'alias' => $user->getAlias(),
+            'email' => $user->getEmail(),
+            'timezone' => $user->getTimezone()->getName(),
+            'locale' => $user->getLocale()
+        ]);
     }
 
     /**
