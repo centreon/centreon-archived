@@ -12,31 +12,31 @@ import {
   Switch,
 } from '@material-ui/core';
 
-import { useRequest, getData, timeFormat, ListingModel } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { useRequest, getData, timeFormat } from '@centreon/ui';
 
-import { getTimeSeries, getLineData } from './timeSeries';
-import { GraphData, TimeValue, Line as LineModel } from './models';
 import {
   labelNoDataForThisPeriod,
   labelEventAnnotations,
 } from '../../translatedLabels';
-import LoadingSkeleton from './LoadingSkeleton';
-import Legend from './Legend';
-import Graph from './Graph';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
-import { listTimelineEvents } from '../../Details/tabs/Timeline/api';
-import { listTimelineEventsDecoder } from '../../Details/tabs/Timeline/api/decoders';
 import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
+import { CommentParameters } from '../../Actions/api';
+
+import Graph from './Graph';
+import Legend from './Legend';
+import LoadingSkeleton from './LoadingSkeleton';
+import { GraphData, TimeValue, Line as LineModel } from './models';
+import { getTimeSeries, getLineData } from './timeSeries';
 
 interface Props {
   endpoint?: string;
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
-  timelineEndpoint?: string;
+  onAddComment: (comment: CommentParameters) => void;
   resource: Resource | ResourceDetails;
+  timeline?: Array<TimelineEvent>;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -69,18 +69,17 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
-  timelineEndpoint = undefined,
+  onAddComment,
   resource,
+  timeline,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
-  const { username } = useUserContext();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
-  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const [eventAnnotationsActive, setEventAnnotationsActive] = React.useState(
     false,
   );
@@ -91,29 +90,6 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
-
-  const { sendRequest: sendGetTimelineRequest } = useRequest<
-    ListingModel<TimelineEvent>
-  >({
-    request: listTimelineEvents,
-    decoder: listTimelineEventsDecoder,
-  });
-
-  const retrieveTimeline = (): void => {
-    if (isNil(timelineEndpoint)) {
-      setTimeline([]);
-      return;
-    }
-
-    sendGetTimelineRequest({
-      endpoint: timelineEndpoint,
-      parameters: {
-        limit: 100,
-      },
-    }).then(({ result }) => {
-      setTimeline(result);
-    });
-  };
 
   React.useEffect(() => {
     if (isNil(endpoint)) {
@@ -126,8 +102,6 @@ const PerformanceGraph = ({
       setTitle(graphData.global.title);
       setBase(graphData.global.base);
     });
-
-    retrieveTimeline();
   }, [endpoint]);
 
   const loading =
@@ -176,19 +150,6 @@ const PerformanceGraph = ({
     setLineData(map((line) => ({ ...line, highlight: undefined }), lineData));
   };
 
-  const addCommentToTimeline = ({ date, comment }): void => {
-    setTimeline([
-      ...(timeline as Array<TimelineEvent>),
-      {
-        id: Math.random(),
-        type: 'comment',
-        date,
-        content: comment,
-        contact: { name: username },
-      },
-    ]);
-  };
-
   const changeEventAnnotationsActive = (
     event: React.ChangeEvent<HTMLInputElement>,
   ): void => {
@@ -212,7 +173,7 @@ const PerformanceGraph = ({
             xAxisTickFormat={xAxisTickFormat}
             timeline={timeline}
             resource={resource}
-            onAddComment={addCommentToTimeline}
+            onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}
           />
         )}

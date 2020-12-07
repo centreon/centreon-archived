@@ -1,18 +1,5 @@
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-
-import {
-  ContentWithCircularLoading,
-  TextField,
-  IconButton,
-  useRequest,
-  ConfirmDialog,
-  useSnackbar,
-  Severity,
-} from '@centreon/ui';
-
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -26,6 +13,19 @@ import {
   omit,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+
+import DeleteIcon from '@material-ui/icons/Delete';
+import { makeStyles } from '@material-ui/core';
+
+import {
+  ContentWithCircularLoading,
+  TextField,
+  IconButton,
+  useRequest,
+  ConfirmDialog,
+  useSnackbar,
+  Severity,
+} from '@centreon/ui';
 
 import {
   labelDelete,

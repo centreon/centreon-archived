@@ -1,12 +1,13 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { propEq } from 'ramda';
+
+import { Alert } from '@material-ui/lab';
+import { FormControlLabel, Checkbox, Grid } from '@material-ui/core';
 
 import { Severity, useSnackbar, useRequest, Dialog } from '@centreon/ui';
 
-import { propEq } from 'ramda';
-import { Alert } from '@material-ui/lab';
-import { FormControlLabel, Checkbox, Grid } from '@material-ui/core';
 import {
   labelCancel,
   labelDisacknowledgeServices,
@@ -14,8 +15,9 @@ import {
   labelDisacknowledgementCommandSent,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
-import { disacknowledgeResources } from './api';
 import useAclQuery from '../aclQuery';
+
+import { disacknowledgeResources } from './api';
 
 interface Props {
   resources: Array<Resource>;

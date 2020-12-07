@@ -15,9 +15,9 @@ import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 import { pipe } from 'ramda';
 
-import { ThemeProvider } from '@centreon/ui';
-
 import { withStyles, createStyles } from '@material-ui/core';
+
+import { ThemeProvider } from '@centreon/ui';
 
 import Header from './components/header';
 import { history } from './store';
@@ -27,7 +27,6 @@ import Footer from './components/footer';
 import MainRouter from './components/mainRouter';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
-
 import footerStyles from './components/footer/footer.scss';
 
 const styles = createStyles({

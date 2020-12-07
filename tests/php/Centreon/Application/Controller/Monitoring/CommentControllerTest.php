@@ -185,7 +185,7 @@ class CommentControllerTest extends TestCase
     }
 
     /**
-     * Testing with a correct JSON POST data and successful add a comment to a resource
+     * Testing with a correct JSON POST data and successfully adding a comment to a resource
      */
     public function testAddResourcesCommentSuccess()
     {
@@ -205,7 +205,7 @@ class CommentControllerTest extends TestCase
     }
 
     /**
-     * Tesring with wrongly formatted JSON POST data for addHostComment
+     * Testing with wrongly formatted JSON POST data for addHostComment
      */
     public function testAddHostCommentBadJsonFormat()
     {
@@ -234,7 +234,7 @@ class CommentControllerTest extends TestCase
         $commentController->addHostComment($this->request, $this->hostResource->getId());
     }
     /**
-     * Testing with a correct JSON POST data and successful add a comment for a host resource
+     * Testing with a correct JSON POST data and successfully adding a comment for a host resource
      */
     public function testAddHostCommentSuccess()
     {
@@ -259,7 +259,7 @@ class CommentControllerTest extends TestCase
     }
 
     /**
-     * Tesring with wrongly formatted JSON POST data for addServiceComment
+     * Testing with wrongly formatted JSON POST data for addServiceComment
      */
     public function testAddServiceCommentBadJsonFormat()
     {
@@ -296,7 +296,7 @@ class CommentControllerTest extends TestCase
         );
     }
     /**
-     * Testing with a correct JSON POST data and successful add comment for a service resource
+     * Testing with a correct JSON POST data and successfully adding comment for a service resource
      */
     public function testAddServiceCommentSuccess()
     {

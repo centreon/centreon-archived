@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
+
 import {
   labelAcknowledged,
   labelInDowntime,
@@ -19,6 +20,7 @@ import {
   labelUnhandledProblems,
   labelResourceProblems,
 } from '../translatedLabels';
+
 import { Filter, CriteriaValue } from './models';
 
 interface FilterModelsContext {

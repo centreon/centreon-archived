@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { useTheme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+
+import { useTheme } from '@material-ui/core';
 
 import { labelDowntime } from '../../../../../translatedLabels';
 import IconDowntime from '../../../../../icons/Downtime';
-
 import { Props } from '..';
 import EventAnnotations from '../EventAnnotations';
 import { iconSize } from '../Annotation';

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { isNil, find, propEq, any, invertObj, path } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
-import DetailsTab from './Details';
+
 import {
   labelDetails,
   labelGraph,
@@ -11,12 +11,14 @@ import {
   labelShortcuts,
   labelServices,
 } from '../../translatedLabels';
-import GraphTab from './Graph';
 import { ResourceDetails } from '../models';
+import hasDefinedValues from '../../hasDefinedValues';
+
+import DetailsTab from './Details';
+import GraphTab from './Graph';
 import { Tab, TabId } from './models';
 import TimelineTab from './Timeline';
 import ShortcutsTab from './Shortcuts';
-import hasDefinedValues from '../../hasDefinedValues';
 import ServicesTab from './Services';
 
 const detailsTabId = 0;
