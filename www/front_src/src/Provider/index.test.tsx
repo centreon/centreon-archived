@@ -14,17 +14,16 @@ import AppProvider from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const retrievedParameters = {
-  user: {
-    timezone: 'Europe/Paris',
-    locale: 'fr_FR.UTF8',
-    name: 'Admin',
-    alias: 'Admin alias',
-  },
-  downtime: {
-    default_duration: 1458,
-  },
-  refresh_interval: 15,
+const retrievedUser = {
+  timezone: 'Europe/Paris',
+  locale: 'fr_FR.UTF8',
+  name: 'Admin',
+  alias: 'Admin alias',
+};
+
+const retrievedDefaultParameters = {
+  monitoring_default_downtime_duration: 1458,
+  monitoring_default_refresh_interval: 15,
 };
 
 const retrievedActionsAcl = {
@@ -65,7 +64,10 @@ describe(AppProvider, () => {
   beforeEach(() => {
     mockedAxios.get
       .mockResolvedValueOnce({
-        data: retrievedParameters,
+        data: retrievedUser,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedDefaultParameters,
       })
       .mockResolvedValueOnce({
         data: retrievedTranslations,
@@ -80,12 +82,13 @@ describe(AppProvider, () => {
 
     await waitFor(() => {
       expect(useAcl().setActionAcl).toHaveBeenCalledWith(retrievedActionsAcl);
-      expect(useUser().setUser).toHaveBeenCalledWith(retrievedParameters.user);
-      expect(useDowntime().setDowntime).toHaveBeenCalledWith(
-        retrievedParameters.downtime,
-      );
+      expect(useUser().setUser).toHaveBeenCalledWith(retrievedUser);
+      expect(useDowntime().setDowntime).toHaveBeenCalledWith({
+        default_duration:
+          retrievedDefaultParameters.monitoring_default_downtime_duration,
+      });
       expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
-        retrievedParameters.refresh_interval,
+        retrievedDefaultParameters.monitoring_default_refresh_interval,
       );
     });
   });
