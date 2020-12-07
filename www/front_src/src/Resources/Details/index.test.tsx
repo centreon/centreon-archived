@@ -59,6 +59,7 @@ import {
   labelFqdn,
   labelAlias,
   labelAcknowledgement,
+  labelEventAnnotations,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -502,7 +503,7 @@ describe(Details, () => {
       .mockResolvedValueOnce({
         data: retrievedTimeline,
       });
-    const { findAllByLabelText } = renderDetails({
+    const { findAllByLabelText, queryByLabelText, getByText } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -513,6 +514,11 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
+
+    expect(queryByLabelText(labelComment)).toBeNull();
+    expect(queryByLabelText(labelAcknowledgement)).toBeNull();
+
+    userEvent.click(getByText(labelEventAnnotations));
 
     const commentAnnotations = await findAllByLabelText(labelComment);
     const acknowledgementAnnotations = await findAllByLabelText(
