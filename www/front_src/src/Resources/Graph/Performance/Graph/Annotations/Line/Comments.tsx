@@ -13,6 +13,7 @@ import { iconSize } from '../Annotation';
 const CommentAnnotations = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const icon = (
     <IconComment

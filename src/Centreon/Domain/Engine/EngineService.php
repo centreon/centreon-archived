@@ -569,11 +569,11 @@ class EngineService extends AbstractCentreonService implements
         if (empty($this->contact->getAlias())) {
             throw new EngineException(_('The contact alias is empty'));
         }
-        if ($host == null) {
-            throw new EngineException(_('Host of comment not found'));
-        }
+
         if (empty($host->getName())) {
-            throw new EngineException(_('Host name can not be empty'));
+            throw new EngineException(
+                sprintf(_('Host name can not be empty for host (id: %d)'), $host->getId())
+            );
         }
 
         $preCommand = sprintf(
@@ -595,7 +595,7 @@ class EngineService extends AbstractCentreonService implements
      * @return string Returns the new generated command header
      * @throws \Exception
      */
-    private function createCommandHeader(int $pollerId, ?\DateTime $date): string
+    private function createCommandHeader(int $pollerId, \DateTime $date = null): string
     {
         return sprintf(
             "%s:%d:[%d] ",

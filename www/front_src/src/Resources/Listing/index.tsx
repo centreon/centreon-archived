@@ -14,11 +14,12 @@ import {
   labelOf,
   labelNoResultsFound,
 } from '../translatedLabels';
-import { getColumns } from './columns';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
-import useLoadResources from './useLoadResources';
 import { Resource } from '../models';
+
+import useLoadResources from './useLoadResources';
+import { getColumns } from './columns';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();

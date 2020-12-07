@@ -5,6 +5,7 @@
 /* eslint-disable no-underscore-dangle */
 
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
 

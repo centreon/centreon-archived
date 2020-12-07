@@ -85,12 +85,20 @@ interface MonitoringRepositoryInterface
     public function findOneHost(int $hostId): ?Host;
 
     /**
-     * Find all hosts from an array of hostIds
+     * Find all hosts from an array of hostIds for a non admin user
      *
      * @param array $hostIds
      * @return Host[]
      */
-    public function findMultipleHosts(array $hostIds): ?array;
+    public function findHostsByIdsForNonAdminUser(array $hostIds): array;
+
+    /**
+     * Find all hosts from an array of hostIds for an admin user
+     *
+     * @param array $hostIds
+     * @return Host[]
+     */
+    public function findHostsByIdsForAdminUser(array $hostIds): array;
 
     /**
      * Find one service based on its id and according to ACL.
@@ -103,12 +111,20 @@ interface MonitoringRepositoryInterface
     public function findOneService(int $hostId, int $serviceId): ?Service;
 
     /**
-     * Find all services from an array of serviceIds
+     * Find all services from an array of serviceIds for a non admin user
      *
      * @param array $serviceIds
      * @return Services[]
      */
-    public function findMultipleServices(array $serviceIds): array;
+    public function findServicesByIdsForNonAdminUser(array $serviceIds): array;
+
+    /**
+     * Find all services from an array of serviceIds for an admin user
+     *
+     * @param array $serviceIds
+     * @return Services[]
+     */
+    public function findServicesByIdsForAdminUser(array $serviceIds): array;
 
     /**
      * Find all services grouped by service groups

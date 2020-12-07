@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 
 import React, { Component } from 'react';
+
 import { Field, reduxForm as connectForm } from 'redux-form';
 import Select from 'react-select';
 import { withTranslation } from 'react-i18next';

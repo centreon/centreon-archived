@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { prop, isEmpty, cond, always, T, isNil, concat, path } from 'ramda';
 
 import {
   makeStyles,
@@ -18,20 +19,19 @@ import {
   SearchParameter,
 } from '@centreon/ui';
 
-import { prop, isEmpty, cond, always, T, isNil, concat, path } from 'ramda';
-
-import { types } from './Event';
-import { TimelineEvent, Type } from './models';
-import { listTimelineEventsDecoder } from './api/decoders';
-import { listTimelineEvents } from './api';
 import {
   labelEvent,
   labelNoResultsFound,
   labelRefresh,
 } from '../../../translatedLabels';
+import { TabProps } from '..';
+
+import { types } from './Event';
+import { TimelineEvent, Type } from './models';
+import { listTimelineEventsDecoder } from './api/decoders';
+import { listTimelineEvents } from './api';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
-import { TabProps } from '..';
 
 type TimelineListing = ListingModel<TimelineEvent>;
 

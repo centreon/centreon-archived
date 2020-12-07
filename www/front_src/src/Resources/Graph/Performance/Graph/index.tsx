@@ -37,16 +37,17 @@ import {
   getStackedMetricValues,
   hasUnitStackedLines,
 } from '../timeSeries';
-import Axes from './Axes';
 import Lines from '../Lines';
-import Annotations from './Annotations';
-import DialogAddComment from './DialogAddComment';
-import MetricsTooltip from './MetricsTooltip';
 import { labelAddComment } from '../../../translatedLabels';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
+
+import MetricsTooltip from './MetricsTooltip';
+import DialogAddComment from './DialogAddComment';
+import Annotations from './Annotations';
+import Axes from './Axes';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);

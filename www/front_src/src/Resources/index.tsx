@@ -3,8 +3,8 @@ import * as React from 'react';
 import { isNil } from 'ramda';
 
 import { withSnackbar, ListingPage } from '@centreon/ui';
-
 import WithPanel from '@centreon/ui/src/Panel/WithPanel';
+
 import Context from './Context';
 import Filter from './Filter';
 import Listing from './Listing';

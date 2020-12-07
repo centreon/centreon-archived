@@ -3,8 +3,9 @@ import * as React from 'react';
 import { filter, propEq, isNil } from 'ramda';
 import { ScaleTime } from 'd3-scale';
 
-import LineAnnotation from './Annotation/Line';
 import { TimelineEvent } from '../../../../Details/tabs/Timeline/models';
+
+import LineAnnotation from './Annotation/Line';
 import AreaAnnotation from './Annotation/Area';
 
 interface Props {

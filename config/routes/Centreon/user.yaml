@@ -3,3 +3,9 @@ centreon_application_user_getActionsAuthorization:
   path: /users/acl/actions
   controller: 'Centreon\Application\Controller\UserController::getActionsAuthorization'
   condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_user_getParameters:
+  methods: GET
+  path: /configuration/users/current/parameters
+  controller: 'Centreon\Application\Controller\UserController::getUserParameters'
+  condition: "request.attributes.get('version.is_beta') == true"

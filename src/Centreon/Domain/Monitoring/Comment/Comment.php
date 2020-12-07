@@ -71,7 +71,7 @@ class Comment
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getParentResourceId(): ?int
     {
@@ -106,6 +106,11 @@ class Comment
      */
     public function setComment(string $comment): Comment
     {
+        if (empty($comment)) {
+            throw new \InvalidArgumentException(
+                "Comment can not be empty"
+            );
+        }
         $this->comment = $comment;
         return $this;
     }
@@ -113,9 +118,9 @@ class Comment
     /**
      * Get date of the comment
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDate()
+    public function getDate(): ?\DateTime
     {
         return $this->date;
     }
@@ -123,10 +128,10 @@ class Comment
     /**
      * Set date of the comment
      *
-     * @param \DateTime|null $date Date of the comment
+     * @param \DateTime $date Date of the comment
      * @return Comment
      */
-    public function setDate(?\DateTime $date)
+    public function setDate(\DateTime $date)
     {
         $this->date = $date;
         return $this;
