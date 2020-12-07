@@ -325,7 +325,6 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             $statement = $this->db->prepare($this->translateDbName($query));
             foreach ($requestParameters as $token => $bindValues) {
                 foreach ($bindValues as $paramType => $value) {
-                    var_dump($token, $value, $paramType);
                     $statement->bindValue($token, $value, $paramType);
                 }
             }
