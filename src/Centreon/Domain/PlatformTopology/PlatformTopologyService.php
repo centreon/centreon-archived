@@ -415,7 +415,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     private function searchAlreadyRegisteredTopLevelPlatformByType(string $type): void
     {
-        $foundAlreadyRegisteredPlatformByType = $this->platformTopologyRepository->findPlatformByType($type);
+        $foundAlreadyRegisteredPlatformByType = $this->platformTopologyRepository->findTopPlatformByType($type);
         if (null !== $foundAlreadyRegisteredPlatformByType) {
             throw new PlatformConflictException(
                 sprintf(
