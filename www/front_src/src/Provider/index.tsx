@@ -25,13 +25,14 @@ import {
 
 import App from '../App';
 import createStore from '../store';
+
 import {
   parametersEndpoint,
   translationEndpoint,
   aclEndpoint,
   userEndpoint,
 } from './endpoint';
-import { Parameters, Actions } from './models';
+import { DefaultParameters, Actions } from './models';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -49,7 +50,7 @@ const AppProvider = (): JSX.Element | null => {
   const { sendRequest: getUser } = useRequest<User>({
     request: getData,
   });
-  const { sendRequest: getParameters } = useRequest<Parameters>({
+  const { sendRequest: getParameters } = useRequest<DefaultParameters>({
     request: getData,
   });
   const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
@@ -99,9 +100,17 @@ const AppProvider = (): JSX.Element | null => {
             timezone: retrievedUser.timezone,
           });
           setDowntime({
-            default_duration: retrievedParameters.default_duration,
+            default_duration: parseInt(
+              retrievedParameters.monitoring_default_downtime_duration,
+              10,
+            ),
           });
-          setRefreshInterval(retrievedParameters.refresh_interval);
+          setRefreshInterval(
+            parseInt(
+              retrievedParameters.monitoring_default_refresh_interval,
+              10,
+            ),
+          );
           setActionAcl(retrievedAcl);
 
           initializeI18n({
