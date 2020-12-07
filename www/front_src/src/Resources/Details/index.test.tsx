@@ -18,10 +18,8 @@ import {
   getUrlQueryParameters,
   buildListingEndpoint,
 } from '@centreon/ui';
-
 import copyToClipboard from '@centreon/ui/src/utils/copy';
 
-import Details from '.';
 import {
   labelMore,
   labelFrom,
@@ -61,6 +59,11 @@ import {
   labelFqdn,
   labelAlias,
 } from '../translatedLabels';
+import Context, { ResourceContext } from '../Context';
+import { cancelTokenRequestParam } from '../testUtils';
+import useListing from '../Listing/useListing';
+import { resourcesEndpoint, monitoringEndpoint } from '../api/endpoint';
+
 import {
   graphTabId,
   timelineTabId,
@@ -68,15 +71,12 @@ import {
   servicesTabId,
 } from './tabs';
 import { TabId } from './tabs/models';
-import Context, { ResourceContext } from '../Context';
-import { cancelTokenRequestParam } from '../testUtils';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
-
-import useListing from '../Listing/useListing';
 import useDetails from './useDetails';
 import { getTypeIds } from './tabs/Timeline/Event';
-import { resourcesEndpoint, monitoringEndpoint } from '../api/endpoint';
 import { DetailsUrlQueryParameters } from './models';
+
+import Details from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

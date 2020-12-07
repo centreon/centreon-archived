@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import axios from 'axios';
-
 import {
   RenderResult,
   render,
@@ -12,11 +11,12 @@ import {
 import { omit, head, prop } from 'ramda';
 import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
 
-import EditFilterPanel from '.';
 import Context, { ResourceContext } from '../../Context';
 import useFilter from '../useFilter';
 import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
+
+import EditFilterPanel from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

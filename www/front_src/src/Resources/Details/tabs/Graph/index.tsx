@@ -7,14 +7,15 @@ import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField } from '@centreon/ui';
 
+import PerformanceGraph from '../../../Graph/Performance';
+import { TabProps } from '..';
+
 import {
   timePeriods,
   getTimePeriodById,
   last24hPeriod,
   TimePeriod,
 } from './models';
-import PerformanceGraph from '../../../Graph/Performance';
-import { TabProps } from '..';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {

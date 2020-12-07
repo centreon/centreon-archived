@@ -55,14 +55,15 @@ interface HostConfigurationServiceInterface
     public function getNumberOfHosts(): int;
 
     /**
-     * Find and add all host templates in the given host.
+     * Find host templates recursively.
      *
      * **The priority order of host templates is maintained!**
      *
-     * @param Host $host Host for which we want to find and add all host templates
+     * @param Host $host Host for which we want to find all host templates recursively
+     * @return Host[]
      * @throws HostConfigurationException
      */
-    public function findAndAddHostTemplates(Host $host): void;
+    public function findHostTemplatesRecursively(Host $host): array;
 
     /**
      * Find all host macros for the host.

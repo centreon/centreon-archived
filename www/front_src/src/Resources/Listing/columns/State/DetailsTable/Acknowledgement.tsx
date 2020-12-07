@@ -14,6 +14,7 @@ import {
   labelPersistent,
   labelSticky,
 } from '../../../../translatedLabels';
+
 import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
 
 const useStyles = makeStyles({

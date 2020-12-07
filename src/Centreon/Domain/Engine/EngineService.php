@@ -38,6 +38,8 @@ use Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResultService;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationRepositoryInterface;
+use Centreon\Domain\Monitoring\Comment\Comment;
+use Centreon\Domain\Monitoring\Comment\CommentService;
 
 /**
  * This class is designed to send external command for Engine
@@ -501,19 +503,105 @@ class EngineService extends AbstractCentreonService implements
     }
 
     /**
+     * @inheritDoc
+     */
+    public function addServiceComment(Comment $comment, Service $service): void
+    {
+        // We validate the comment instance
+        $errors = $this->validator->validate(
+            $comment,
+            null,
+            CommentService::VALIDATION_GROUPS_SERVICE_ADD_COMMENT
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        if (empty($this->contact->getAlias())) {
+            throw new EngineException(_('The contact alias is empty'));
+        }
+
+        if ($service->getHost() == null) {
+            throw new EngineException(
+                sprintf(_('The host of service (id: %d) is not defined'), $service->getId())
+            );
+        }
+        if (empty($service->getHost()->getName())) {
+            throw new EngineException(
+                sprintf(_('Host name of service (id: %d) can not be empty'), $service->getId())
+            );
+        }
+        if (empty($service->getDescription())) {
+            throw new EngineException(
+                sprintf(_('The description of service (id: %d) can not be empty'), $service->getId())
+            );
+        }
+        $preCommand = sprintf(
+            'ADD_SVC_COMMENT;%s;%s;1;%s;%s',
+            $service->getHost()->getName(),
+            $service->getDescription(),
+            $this->contact->getAlias(),
+            $comment->getComment()
+        );
+        $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
+        $command = $this->createCommandHeader($service->getHost()->getPollerId(), $comment->getDate()) . $commandToSend;
+
+        $this->engineRepository->sendExternalCommand($command);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addHostComment(Comment $comment, Host $host): void
+    {
+        // We validate the comment instance
+        $errors = $this->validator->validate(
+            $comment,
+            null,
+            CommentService::VALIDATION_GROUPS_HOST_ADD_COMMENT
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        if (empty($this->contact->getAlias())) {
+            throw new EngineException(_('The contact alias is empty'));
+        }
+
+        if (empty($host->getName())) {
+            throw new EngineException(
+                sprintf(_('Host name can not be empty for host (id: %d)'), $host->getId())
+            );
+        }
+
+        $preCommand = sprintf(
+            'ADD_HOST_COMMENT;%s;1;%s;%s',
+            $host->getName(),
+            $this->contact->getAlias(),
+            $comment->getComment()
+        );
+        $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
+        $command = $this->createCommandHeader($host->getPollerId(), $comment->getDate()) . $commandToSend;
+        $this->engineRepository->sendExternalCommand($command);
+    }
+
+    /**
      * Create the command header for external commands
      *
      * @param int $pollerId Id of the poller
+     * @param \DateTime|null $date date of the command
      * @return string Returns the new generated command header
      * @throws \Exception
      */
-    private function createCommandHeader(int $pollerId): string
+    private function createCommandHeader(int $pollerId, \DateTime $date = null): string
     {
         return sprintf(
             "%s:%d:[%d] ",
             'EXTERNALCMD',
             $pollerId,
-            (new \DateTime())->getTimestamp()
+            $date ? $date->getTimestamp() : (new \DateTime())->getTimestamp()
         );
     }
 }

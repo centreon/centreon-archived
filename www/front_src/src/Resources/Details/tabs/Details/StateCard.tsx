@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Card, CardContent, Typography, makeStyles } from '@material-ui/core';
+
 import { labelComment } from '../../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({

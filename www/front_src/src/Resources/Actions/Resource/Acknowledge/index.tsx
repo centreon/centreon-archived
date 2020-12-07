@@ -3,19 +3,20 @@ import * as React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { isNil } from 'ramda';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
-import { isNil } from 'ramda';
 import {
   labelRequired,
   labelAcknowledgeCommandSent,
   labelAcknowledgedBy,
 } from '../../../translatedLabels';
-import DialogAcknowledge from './Dialog';
 import { Resource } from '../../../models';
 import { acknowledgeResources } from '../../api';
+
+import DialogAcknowledge from './Dialog';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),
