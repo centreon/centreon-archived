@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Provider } from 'react-redux';
-import { pick, pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
+import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 
 import { useRequest, getData, Loader } from '@centreon/ui';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
@@ -9,19 +9,31 @@ import { initReactI18next } from 'react-i18next';
 import App from '../App';
 import createStore from '../store';
 import Context from './UserContext';
-import { userEndpoint, translationEndpoint, aclEndpoint } from './endpoint';
-import { User, Actions } from './models';
+import {
+  userEndpoint,
+  translationEndpoint,
+  aclEndpoint,
+  parametersEndpoint,
+} from './endpoint';
+import { User, Actions, DefaultParameters } from './models';
 import useUser from './useUser';
 import useAcl from './useAcl';
+import useDowntime from './useDowntime';
+import useRefreshInterval from './useRefreshInterval';
 
 const store = createStore();
 
 const AppProvider = (): JSX.Element | null => {
   const { user, setUser } = useUser();
+  const { downtime, setDowntime } = useDowntime();
+  const { refreshInterval, setRefreshInterval } = useRefreshInterval();
   const { actionAcl, setActionAcl } = useAcl();
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
+    request: getData,
+  });
+  const { sendRequest: getParameters } = useRequest<DefaultParameters>({
     request: getData,
   });
   const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
@@ -53,17 +65,45 @@ const AppProvider = (): JSX.Element | null => {
   React.useEffect(() => {
     Promise.all([
       getUser(userEndpoint),
+      getParameters(parametersEndpoint),
       getTranslations(translationEndpoint),
       getAcl(aclEndpoint),
     ])
-      .then(([retrievedUser, retrievedTranslations, retrievedAcl]) => {
-        setUser(pick(['username', 'locale', 'timezone'], retrievedUser));
-        setActionAcl(retrievedAcl);
+      .then(
+        ([
+          retrievedUser,
+          retrievedParameters,
+          retrievedTranslations,
+          retrievedAcl,
+        ]) => {
+          setUser({
+            alias: retrievedUser.alias,
+            name: retrievedUser.name,
+            locale: retrievedUser.locale || 'en',
+            timezone: retrievedUser.timezone,
+          });
+          setDowntime({
+            default_duration: parseInt(
+              retrievedParameters.monitoring_default_downtime_duration,
+              10,
+            ),
+          });
+          setRefreshInterval(
+            parseInt(
+              retrievedParameters.monitoring_default_refresh_interval,
+              10,
+            ),
+          );
+          setActionAcl(retrievedAcl);
 
-        initializeI18n({ retrievedUser, retrievedTranslations });
+          initializeI18n({
+            retrievedUser,
+            retrievedTranslations,
+          });
 
-        setDataLoaded(true);
-      })
+          setDataLoaded(true);
+        },
+      )
       .catch((error) => {
         if (pathEq(['response', 'status'], 401)(error)) {
           window.location.href = 'index.php?disconnect=1';
@@ -82,6 +122,8 @@ const AppProvider = (): JSX.Element | null => {
         acl: {
           actions: actionAcl,
         },
+        downtime,
+        refreshInterval,
       }}
     >
       <Provider store={store}>

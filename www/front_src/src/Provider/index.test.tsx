@@ -10,9 +10,15 @@ import { UserContext } from './models';
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
-  username: 'admin',
   timezone: 'Europe/Paris',
-  locale: 'en-EN',
+  locale: 'fr_FR.UTF8',
+  name: 'Admin',
+  alias: 'Admin alias',
+};
+
+const retrievedDefaultParameters = {
+  monitoring_default_downtime_duration: 1458,
+  monitoring_default_refresh_interval: 15,
 };
 
 const retrievedActionsAcl = {
@@ -60,6 +66,9 @@ describe(AppProvider, () => {
         data: retrievedUser,
       })
       .mockResolvedValueOnce({
+        data: retrievedDefaultParameters,
+      })
+      .mockResolvedValueOnce({
         data: retrievedTranslations,
       })
       .mockResolvedValueOnce({
@@ -80,6 +89,12 @@ describe(AppProvider, () => {
         acl: {
           actions: retrievedActionsAcl,
         },
+        downtime: {
+          default_duration:
+            retrievedDefaultParameters.monitoring_default_downtime_duration,
+        },
+        refreshInterval:
+          retrievedDefaultParameters.monitoring_default_refresh_interval,
       }),
     );
   });
