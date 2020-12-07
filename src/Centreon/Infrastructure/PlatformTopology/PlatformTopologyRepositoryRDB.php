@@ -232,9 +232,11 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
                 }
 
                 $statementChangeParentId = $this->db->prepare(
-                    'UPDATE `platform_topology` SET parent_id = :centralId WHERE id = :platformId'
+                    $this->translateDbName(
+                        'UPDATE `:db`.`platform_topology` SET parent_id = :topLevelPlatformId WHERE id = :platformId'
+                    )
                 );
-                $statementChangeParentId->bindValue(':centralId', $topLevelPlatform->getId(), \PDO::PARAM_INT);
+                $statementChangeParentId->bindValue(':topLevelPlatformId', $topLevelPlatform->getId(), \PDO::PARAM_INT);
 
                 foreach ($childrenPlatforms as $platform) {
                     $statementChangeParentId->bindValue(':platformId', $platform->getId(), \PDO::PARAM_INT);
@@ -245,7 +247,9 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             /**
              * Then safely delete the platform without removing its children
              */
-            $statement = $this->db->prepare('DELETE FROM `platform_topology` WHERE id = :serverId');
+            $statement = $this->db->prepare(
+                $this->translateDbName('DELETE FROM `:db`.`platform_topology` WHERE id = :serverId')
+            );
             $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
             $statement->execute();
         } catch (EntityNotFoundException $ex) {
@@ -291,7 +295,9 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
      */
     private function findChildrenPlatforms(int $serverId): array
     {
-            $statement = $this->db->prepare('SELECT * FROM `platform_topology` WHERE parent_id = :parentId');
+            $statement = $this->db->prepare(
+                $this->translateDbName('SELECT * FROM `:db`.`platform_topology` WHERE parent_id = :parentId')
+            );
             $statement->bindValue(':parentId', $serverId, \PDO::PARAM_INT);
             $statement->execute();
 
