@@ -75,7 +75,8 @@ jest.mock('react-redux', () => ({
 jest.mock('../icons/Downtime');
 
 const mockUserContext = {
-  username: 'admin',
+  alias: 'admin',
+  name: 'admin',
   locale: 'en',
   timezone: 'Europe/Paris',
 
@@ -97,6 +98,11 @@ const mockUserContext = {
       },
     },
   },
+
+  downtime: {
+    default_duration: 7200,
+  },
+  refresh_interval: 15,
 };
 
 jest.mock('../../Provider/UserContext');
@@ -374,7 +380,7 @@ describe(Actions, () => {
     await findByText(labelDowntimeByAdmin);
 
     fireEvent.click(getByLabelText(labelFixed));
-    fireEvent.change(getByDisplayValue('3600'), {
+    fireEvent.change(getByDisplayValue('7200'), {
       target: { value: '' },
     });
 

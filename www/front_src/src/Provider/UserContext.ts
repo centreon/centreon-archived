@@ -2,7 +2,8 @@ import * as React from 'react';
 import { UserContext } from './models';
 
 const defaultUser = {
-  username: '',
+  alias: '',
+  name: '',
   locale: navigator.language,
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 };
@@ -26,9 +27,17 @@ const defaultAcl = {
   },
 };
 
+const defaultDowntime = {
+  default_duration: 7200,
+};
+
+const defaultRefreshInterval = 15;
+
 const defaultContext = {
   ...defaultUser,
   acl: defaultAcl,
+  downtime: defaultDowntime,
+  refreshInterval: defaultRefreshInterval,
 };
 
 const Context = React.createContext<UserContext>(defaultContext);

@@ -94,7 +94,7 @@ const DowntimeForm = ({
   const showSuccess = (message): void =>
     showMessage({ message, severity: Severity.success });
 
-  const { locale, timezone, username } = useUserContext();
+  const { locale, timezone, downtime, alias } = useUserContext();
 
   const {
     sendRequest: sendSetDowntimeOnResources,
@@ -104,18 +104,20 @@ const DowntimeForm = ({
   });
 
   const currentDate = new Date();
-  const twoHoursMs = 2 * 60 * 60 * 1000;
-  const twoHoursLaterDate = new Date(currentDate.getTime() + twoHoursMs);
+  const defaultDowntimeDurationMs = downtime.default_duration * 1000;
+  const defaultEndDate = new Date(
+    currentDate.getTime() + defaultDowntimeDurationMs,
+  );
 
   const form = useFormik({
     initialValues: {
       dateStart: currentDate,
       timeStart: currentDate,
-      dateEnd: twoHoursLaterDate,
-      timeEnd: twoHoursLaterDate,
+      dateEnd: defaultEndDate,
+      timeEnd: defaultEndDate,
       fixed: true,
       duration: {
-        value: 3600,
+        value: downtime.default_duration,
         unit: 'seconds',
       },
       comment: '',
@@ -147,7 +149,7 @@ const DowntimeForm = ({
   });
 
   React.useEffect(() => {
-    form.setFieldValue('comment', `${t(labelDowntimeBy)} ${username}`);
+    form.setFieldValue('comment', `${t(labelDowntimeBy)} ${alias}`);
   }, []);
 
   return (

@@ -3,11 +3,14 @@ import { KeyValuePair } from 'ramda';
 export interface User {
   locale: string;
   timezone: string;
-  username: string;
+  alias: string;
+  name: string;
 }
 
 export type UserContext = {
   acl: Acl;
+  downtime: Downtime;
+  refreshInterval: number;
 } & User;
 
 export interface ActionAcl {
@@ -29,3 +32,12 @@ interface Acl {
 
 type Translation = KeyValuePair<string, string>;
 export type Translations = KeyValuePair<string, Translation>;
+
+export interface DefaultParameters {
+  monitoring_default_downtime_duration: string;
+  monitoring_default_refresh_interval: string;
+}
+
+export interface Downtime {
+  default_duration: number;
+}
