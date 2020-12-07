@@ -15707,6 +15707,18 @@ msgstr "Impossible de trouver la clef de déchiffrement. Veuillez vérifer le fi
 msgid "No Platform Topology found."
 msgstr "Aucune Topologie trouvée."
 
+#: api/platform/topology
+msgid "No top level Platform found to link the children platforms."
+msgstr "Aucune Platform de haut niveau trouvée pour lier les platformes enfants."
+
+#: api/platform/topology
+msgid "An error occured while deleting the Platform."
+msgstr "Une erreur est subvenue lors de la suppression de la plateforme."
+
+#: api/platform/topology
+msgid "Platform not found."
+msgstr "Plateforme non trouvée."
+
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 

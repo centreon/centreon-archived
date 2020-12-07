@@ -224,11 +224,11 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             $childrenPlatforms = $this->findChildrenPlatforms($serverId);
             if (!empty($childrenPlatforms)) {
                 /**
-                 * If children platform are found, look for a Central to link the children platform
+                 * If children platform are found, look for a Top Parent platform to link the children platforms
                  */
                 $topLevelPlatform = $this->findTopLevelPlatform();
                 if ($topLevelPlatform === null) {
-                    throw new EntityNotFoundException(_('No top level Platform found to link the children platform.'));
+                    throw new EntityNotFoundException(_('No top level Platform found to link the children platforms.'));
                 }
 
                 $statementChangeParentId = $this->db->prepare(
