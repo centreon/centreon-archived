@@ -622,7 +622,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
             $childrenPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId($serverId);
 
-            if (!empty($childrenPlatforms)){
+            if (!empty($childrenPlatforms)) {
                 /**
                  * If children platform are found, look for a Top Parent platform to link the children platforms
                  */
@@ -655,7 +655,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     {
         try {
             $this->platformTopologyRepository->updatePlatformParameters($serverId, $parameters);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw new PlatformException($ex->getMessage(), 0, $ex);
         }
     }

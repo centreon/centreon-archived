@@ -285,8 +285,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $requestParameters = [];
         $query = 'UPDATE `:db`.`platform_topology` SET ';
 
-        $arrayKeyLast = function($array) {
-            return array_keys($array)[count($array)-1];
+        $arrayKeyLast = function ($array) {
+            return array_keys($array)[count($array) - 1];
         };
 
         foreach ($parameters as $column => $value) {
@@ -324,7 +324,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         try {
             $statement = $this->db->prepare($this->translateDbName($query));
             foreach ($requestParameters as $token => $bindValues) {
-                foreach($bindValues as $paramType => $value) {
+                foreach ($bindValues as $paramType => $value) {
                     var_dump($token, $value, $paramType);
                     $statement->bindValue($token, $value, $paramType);
                 }

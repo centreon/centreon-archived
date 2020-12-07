@@ -25,6 +25,7 @@ namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\Exception\EntityNotFoundException;
 
 interface PlatformTopologyRepositoryInterface
 {
@@ -108,7 +109,7 @@ interface PlatformTopologyRepositoryInterface
     /**
      * Find the children Platforms of another Platform.
      *
-     * @param integer $serverId
+     * @param integer $parentId
      * @return Platform[]
      */
     public function findChildrenPlatformsByParentId(int $parentId): array;
