@@ -1,10 +1,6 @@
 import { KeyValuePair } from 'ramda';
 
-export interface User {
-  locale: string;
-  timezone: string;
-  username: string;
-}
+import { User } from '@centreon/ui-context';
 
 export type UserContext = {
   acl: Acl;
@@ -29,3 +25,8 @@ interface Acl {
 
 type Translation = KeyValuePair<string, string>;
 export type Translations = KeyValuePair<string, Translation>;
+
+export interface DefaultParameters {
+  monitoring_default_downtime_duration: string;
+  monitoring_default_refresh_interval: string;
+}
