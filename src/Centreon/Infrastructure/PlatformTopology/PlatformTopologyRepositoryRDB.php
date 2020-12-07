@@ -222,7 +222,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
              * Search for children Platform
              */
             $childrenPlatforms = $this->findChildrenPlatforms($serverId);
-            if(!empty($childrenPlatforms)){
+            if (!empty($childrenPlatforms)) {
                 /**
                  * If children platform are found, look for a Central to link the children platform
                  */
@@ -295,14 +295,14 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             $statement->execute();
 
             $childrenPlatforms = [];
-            if ($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
-                foreach($result as $platform) {
-                    /**
-                     * @var Platform[] $childrenPlatforms
-                     */
-                    $childrenPlatforms[] = EntityCreator::createEntityByArray(Platform::class, $platform);
-                }
+        if ($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
+            foreach ($result as $platform) {
+                /**
+                 * @var Platform[] $childrenPlatforms
+                 */
+                $childrenPlatforms[] = EntityCreator::createEntityByArray(Platform::class, $platform);
             }
+        }
 
             return $childrenPlatforms;
     }
