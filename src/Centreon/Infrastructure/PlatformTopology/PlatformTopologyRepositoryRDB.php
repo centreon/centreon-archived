@@ -287,6 +287,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
 
         return $platform;
     }
+
     /**
      * Find the children Platforms of another Platform
      *
