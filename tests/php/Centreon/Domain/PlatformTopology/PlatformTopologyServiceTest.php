@@ -454,4 +454,52 @@ class PlatformTopologyServiceTest extends TestCase
         $this->assertEquals(null, $centralRelation);
         $this->assertEquals('peer_retention', $pollerRelation->getRelation());
     }
+
+    public function testDeletePlatformTopologySuccess(): void
+    {
+        $this->platformTopologyRepository
+            ->expects($this->once())
+            ->method('findPlatform')
+            ->willReturn($this->platform);
+
+        $this->platformTopologyRepository
+            ->expects($this->once())
+            ->method('deletePlatform')
+            ->willReturn(null);
+
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->platformInformationService,
+            $this->proxyService,
+            $this->engineConfigurationService,
+            $this->monitoringServerService,
+            $this->brokerRepository,
+            $this->platformTopologyRegisterRepository
+        );
+
+        $this->assertEquals(null, $platformTopologyService->deletePlatform($this->platform->getId()));
+    }
+
+    public function testDeletePlatformTopologyWithBadId(): void
+    {
+        $this->platformTopologyRepository
+            ->expects($this->once())
+            ->method('findPlatform')
+            ->willReturn(null);
+
+        $platformTopologyService = new PlatformTopologyService(
+            $this->platformTopologyRepository,
+            $this->platformInformationService,
+            $this->proxyService,
+            $this->engineConfigurationService,
+            $this->monitoringServerService,
+            $this->brokerRepository,
+            $this->platformTopologyRegisterRepository
+        );
+
+        $this->expectException(EntityNotFoundException::class);
+        $this->expectExceptionMessage('Platform not found.');
+
+        $platformTopologyService->deletePlatform($this->platform->getId());
+    }
 }

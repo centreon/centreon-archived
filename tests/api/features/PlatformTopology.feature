@@ -337,7 +337,7 @@ Feature:
             }
             """
 
-        When I send a DELETE request to "/beta/platform/topology/3" 
+        When I send a DELETE request to "/beta/platform/topology/3"
         Then the response code should be "204"
         When I send a GET request to "/beta/platform/topology"
         Then the response code should be "200"
