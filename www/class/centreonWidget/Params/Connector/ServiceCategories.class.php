@@ -48,6 +48,7 @@ class CentreonWidgetParamsConnectorServiceCategories extends CentreonWidgetParam
 
         if (!isset($tab)) {
             $query = "SELECT sc_id, sc_name FROM service_categories WHERE sc_activate = '1' ";
+            $query .= $this->acl->queryBuilder('AND', 'sc_id', $this->acl->getServiceCategoriesString());
             $query .= " ORDER BY sc_name ";
             $res = $this->db->query($query);
             $tab = array(null => null);

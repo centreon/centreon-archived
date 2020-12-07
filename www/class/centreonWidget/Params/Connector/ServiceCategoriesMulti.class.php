@@ -33,29 +33,23 @@
  *
  */
 
-require_once __DIR__ . "/../List.class.php";
+require_once __DIR__ . "/../Select2.class.php";
 
-class CentreonWidgetParamsConnectorHostCategories extends CentreonWidgetParamsList
+class CentreonWidgetParamsConnectorServiceCategoriesMulti extends CentreonWidgetParamsSelect2
 {
     public function __construct($db, $quickform, $userId)
     {
         parent::__construct($db, $quickform, $userId);
     }
 
-    public function getListValues($paramId)
+    public function getParameters()
     {
-        static $tab;
-
-        if (!isset($tab)) {
-            $query = "SELECT hc_id, hc_name FROM hostcategories WHERE hc_activate = '1' ";
-            $query .= $this->acl->queryBuilder('AND', 'hc_id', $this->acl->getHostCategoriesString());
-            $query .= " ORDER BY hc_name ";
-            $res = $this->db->query($query);
-            $tab = array(null => null);
-            while ($row = $res->fetchRow()) {
-                $tab[$row['hc_id']] = $row['hc_name'];
-            }
-        }
-        return $tab;
+        $path = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory&action=list';
+        return array(
+            'datasourceOrigin' => 'ajax',
+            'availableDatasetRoute' => $path,
+            'multiple' => true,
+            'linkedObject' => 'centreonServicecategories'
+        );
     }
 }
