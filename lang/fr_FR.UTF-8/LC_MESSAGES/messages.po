@@ -15713,11 +15713,11 @@ msgstr "Aucune platforme de haut niveau trouvée pour lier les platformes enfant
 
 #: api/platform/topology
 msgid "An error occured while deleting the Platform."
-msgstr "Une erreur est subvenue lors de la suppression de la plateforme."
+msgstr "Une erreur est suevenue lors de la suppression de la plateforme."
 
 #: api/platform/topology
 msgid "Platform not found."
-msgstr "plateforme non trouvée."
+msgstr "Plateforme non trouvée."
 
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
