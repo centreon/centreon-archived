@@ -60,7 +60,7 @@ import {
   labelAlias,
   labelAcknowledgement,
   labelDowntime,
-  labelEventAnnotations,
+  labelDisplayEvents,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -523,7 +523,7 @@ describe(Details, () => {
     expect(queryByLabelText(labelAcknowledgement)).toBeNull();
     expect(queryByLabelText(labelDowntime)).toBeNull();
 
-    userEvent.click(getByText(labelEventAnnotations));
+    userEvent.click(getByText(labelDisplayEvents));
 
     const commentAnnotations = await findAllByLabelText(labelComment);
     const acknowledgementAnnotations = await findAllByLabelText(

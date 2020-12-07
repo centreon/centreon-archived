@@ -15869,3 +15869,9 @@ msgstr "Erreur lors de la recherche des services"
 
 msgid "Error when searching for hosts"
 msgstr "Erreur lors de la recherche des hôtes"
+
+msgid "Display events"
+msgstr "Afficher les évènements"
+
+msgid "Export to png"
+msgstr "Exporter comme png"

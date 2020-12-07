@@ -25,7 +25,10 @@ import { useUserContext } from '@centreon/ui-context';
 import PerformanceGraph from '../../../Graph/Performance';
 import { TabProps } from '..';
 import { ResourceDetails } from '../../models';
-import { labelSave, labelEventAnnotations } from '../../../translatedLabels';
+import {
+  labelDisplayEvents,
+  labelExportToPng,
+} from '../../../translatedLabels';
 import { TimelineEvent } from '../Timeline/models';
 import { listTimelineEvents } from '../Timeline/api';
 import { listTimelineEventsDecoder } from '../Timeline/api/decoders';
@@ -224,7 +227,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
               />
             }
             label={
-              <Typography variant="body2">{labelEventAnnotations}</Typography>
+              <Typography variant="body2">{labelDisplayEvents}</Typography>
             }
           />
           <ContentWithCircularLoading
@@ -234,7 +237,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
           >
             <IconButton
               disabled={isNil(timeline)}
-              title={t(labelSave)}
+              title={t(labelExportToPng)}
               onClick={convertToPng}
             >
               <SaveAsImageIcon style={{ fontSize: 18 }} />
