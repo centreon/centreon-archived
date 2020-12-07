@@ -16,6 +16,7 @@ export interface TimePeriod {
   name: string;
   getStart: () => Date;
   dateTimeFormat: string;
+  timelineEventsLimit: number;
 }
 
 const last24hPeriod: TimePeriod = {
@@ -23,6 +24,7 @@ const last24hPeriod: TimePeriod = {
   id: 'last_24_h',
   getStart: (): Date => dayjs(Date.now()).subtract(24, 'hour').toDate(),
   dateTimeFormat: timeFormat,
+  timelineEventsLimit: 20,
 };
 
 const last7Days: TimePeriod = {
@@ -30,6 +32,7 @@ const last7Days: TimePeriod = {
   id: 'last_7_days',
   getStart: (): Date => dayjs(Date.now()).subtract(7, 'day').toDate(),
   dateTimeFormat: dateFormat,
+  timelineEventsLimit: 100,
 };
 
 const last31Days: TimePeriod = {
@@ -37,6 +40,7 @@ const last31Days: TimePeriod = {
   id: 'last_31_days',
   getStart: (): Date => dayjs(Date.now()).subtract(31, 'day').toDate(),
   dateTimeFormat: dateFormat,
+  timelineEventsLimit: 500,
 };
 
 const timePeriods: Array<TimePeriod> = [last24hPeriod, last7Days, last31Days];

@@ -1,8 +1,9 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { useTheme } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
-import { useTranslation } from 'react-i18next';
 
 import { Props } from '..';
 import EventAnnotations from '../EventAnnotations';

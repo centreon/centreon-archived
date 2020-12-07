@@ -21,13 +21,14 @@ import {
   labelDisacknowledge,
   labelSubmitStatus,
 } from '../../translatedLabels';
-import AcknowledgeForm from './Acknowledge';
-import DowntimeForm from './Downtime';
 import { useResourceContext } from '../../Context';
-import useAclQuery from './aclQuery';
 import { checkResources } from '../api';
 import { Resource } from '../../models';
 import ActionButton from '../ActionButton';
+
+import useAclQuery from './aclQuery';
+import DowntimeForm from './Downtime';
+import AcknowledgeForm from './Acknowledge';
 import DisacknowledgeForm from './Disacknowledge';
 import SubmitStatusForm from './SubmitStatus';
 

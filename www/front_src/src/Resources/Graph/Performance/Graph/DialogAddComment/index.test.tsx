@@ -4,11 +4,11 @@ import axios from 'axios';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DialogAddComment from '.';
 import { Resource } from '../../../../models';
 import { labelComment, labelAdd } from '../../../../translatedLabels';
 import { commentEndpoint } from '../../../../Actions/api/endpoint';
-import { cancelTokenRequestParam } from '../../../../testUtils';
+
+import DialogAddComment from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -61,7 +61,7 @@ describe(DialogAddComment, () => {
             },
           ],
         },
-        cancelTokenRequestParam,
+        expect.anything(),
       );
 
       expect(onAddComment).toHaveBeenCalledWith(commentParameters);

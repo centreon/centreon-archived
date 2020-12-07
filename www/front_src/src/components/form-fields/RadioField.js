@@ -3,8 +3,11 @@
 /* eslint-disable react/jsx-filename-extension */
 
 import React from 'react';
+
 import classnames from 'classnames';
+
 import styles from '../../styles/partials/form/_form.scss';
+
 import { prepareInputProps } from './utils';
 import fieldHoc from './hoc';
 

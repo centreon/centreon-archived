@@ -174,10 +174,10 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     /**
      * @inheritDoc
      */
-    public function findAndAddHostTemplates(Host $host): void
+    public function findHostTemplatesRecursively(Host $host): array
     {
         try {
-            $this->hostConfigurationRepository->findAndAddHostTemplates($host);
+            return $this->hostConfigurationRepository->findHostTemplatesRecursively($host);
         } catch (\Throwable $ex) {
             throw new HostConfigurationException(_('Error when searching for host templates'), 0, $ex);
         }

@@ -45,4 +45,13 @@ interface CommentServiceInterface extends ContactFilterInterface
      * @return void
      */
     public function addHostComment(Comment $comment, Host $host): void;
+
+    /**
+     * Function allowing contact to add multiple comments to multiple resources
+     *
+     * @param Comment[] $comments Comments added for each resources
+     * @param array $resourceIds IDs of the resources
+     * @return void
+     */
+    public function addResourcesComment(array $comments, array $resourceIds): void;
 }

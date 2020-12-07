@@ -5,9 +5,12 @@
 /* eslint-disable react/prop-types */
 
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
 import classnames from 'classnames';
+
 import { history } from '../../store';
+
 import styles from './progressbar.scss';
 
 class ProgressBar extends Component {

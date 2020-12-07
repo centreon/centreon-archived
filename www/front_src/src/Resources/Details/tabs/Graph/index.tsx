@@ -114,16 +114,36 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     details,
   );
 
+  const getIntervalDates = (timePeriod): Array<string> => {
+    return [
+      timePeriod.getStart().toISOString(),
+      new Date(Date.now()).toISOString(),
+    ];
+  };
+
   const retrieveTimeline = (): void => {
     if (isNil(timelineEndpoint)) {
       setTimeline([]);
       return;
     }
 
+    const [start, end] = getIntervalDates(selectedTimePeriod);
+
     sendGetTimelineRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        limit: 100,
+        limit: selectedTimePeriod.timelineEventsLimit,
+        search: {
+          conditions: [
+            {
+              field: 'date',
+              values: {
+                $gt: start,
+                $lt: end,
+              },
+            },
+          ],
+        },
       },
     }).then(({ result }) => {
       setTimeline(result);
@@ -136,17 +156,16 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     }
 
     retrieveTimeline();
-  }, [endpoint]);
+  }, [endpoint, selectedTimePeriod]);
 
-  const getQueryParams = (timePeriod): string => {
-    const now = new Date(Date.now()).toISOString();
-    const start = timePeriod.getStart().toISOString();
+  const getGraphQueryParameters = (timePeriod): string => {
+    const [start, end] = getIntervalDates(timePeriod);
 
-    return `?start=${start}&end=${now}`;
+    return `?start=${start}&end=${end}`;
   };
 
   const [periodQueryParams, setPeriodQueryParams] = React.useState(
-    getQueryParams(selectedTimePeriod),
+    getGraphQueryParameters(selectedTimePeriod),
   );
 
   const changeSelectedPeriod = (event): void => {
@@ -155,7 +174,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
 
     setSelectedTimePeriod(timePeriod);
 
-    const queryParamsForSelectedPeriodId = getQueryParams(timePeriod);
+    const queryParamsForSelectedPeriodId = getGraphQueryParameters(timePeriod);
     setPeriodQueryParams(queryParamsForSelectedPeriodId);
   };
 
@@ -244,7 +263,6 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
             graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
             toggableLegend
-            timelineEndpoint={timelineEndpoint}
             resource={details as ResourceDetails}
             eventAnnotationsActive={eventAnnotationsActive}
             timeline={timeline}

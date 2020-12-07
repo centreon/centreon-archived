@@ -6,8 +6,9 @@ import { ScaleLinear } from 'd3-scale';
 
 import { getUnits } from '../../timeSeries';
 import formatMetricValue from '../../formatMetricValue';
-import { commonTickLabelProps } from '.';
 import { Line, TimeValue } from '../../models';
+
+import { commonTickLabelProps } from '.';
 
 interface Props {
   lines: Array<Line>;

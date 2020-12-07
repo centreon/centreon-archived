@@ -9,6 +9,7 @@ import { fade } from '@material-ui/core';
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
 import { labelFrom, labelTo } from '../../../../../translatedLabels';
+
 import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
 type Props = {
