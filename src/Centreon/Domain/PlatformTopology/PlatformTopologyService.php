@@ -617,12 +617,45 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     {
         try {
             if ($this->platformTopologyRepository->findPlatform($serverId) === null) {
-                throw new EntityNotFoundException(_('Platform not found.'));
+                throw new EntityNotFoundException(_('Platform not found'));
+            }
+
+            $childrenPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId($serverId);
+
+            if (!empty($childrenPlatforms)){
+                /**
+                 * If children platform are found, look for a Top Parent platform to link the children platforms
+                 */
+                $topLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatform();
+
+                if ($topLevelPlatform === null) {
+                    throw new EntityNotFoundException(_('No top level Platform found to link the children platforms'));
+                }
+
+                /**
+                 * Update children parent_id
+                 */
+                foreach ($childrenPlatforms as $platform) {
+                    $this->updatePlatformParameters($platform->getId(), ['parent_id' => $topLevelPlatform->getId()]);
+                }
             }
             $this->platformTopologyRepository->deletePlatform($serverId);
         } catch (EntityNotFoundException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
+            throw new PlatformException($ex->getMessage(), 0, $ex);
+        }
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function updatePlatformParameters(int $serverId, array $parameters): void
+    {
+        try {
+            $this->platformTopologyRepository->updatePlatformParameters($serverId, $parameters);
+        } catch(\Exception $ex) {
             throw new PlatformException($ex->getMessage(), 0, $ex);
         }
     }

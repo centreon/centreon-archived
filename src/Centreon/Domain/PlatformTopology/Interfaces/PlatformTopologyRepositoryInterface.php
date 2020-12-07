@@ -97,4 +97,28 @@ interface PlatformTopologyRepositoryInterface
      * @throws RepositoryException
      */
     public function deletePlatform(int $serverId): void;
+
+    /**
+     * Find the Top Level Platform.
+     *
+     * @return Platform|null
+     */
+    public function findTopLevelPlatform(): ?Platform;
+
+    /**
+     * Find the children Platforms of another Platform.
+     *
+     * @param integer $serverId
+     * @return Platform[]
+     */
+    public function findChildrenPlatformsByParentId(int $parentId): array;
+
+    /**
+     * Update a platform with given parameters.
+     *
+     * @param integer $serverId
+     * @param array<string, mixed> $parameters
+     * @return void
+     */
+    public function updatePlatformParameters(int $serverId, array $parameters): void;
 }

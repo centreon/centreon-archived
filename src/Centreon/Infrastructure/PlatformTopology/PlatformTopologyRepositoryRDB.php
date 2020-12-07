@@ -218,52 +218,20 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     public function deletePlatform(int $serverId): void
     {
         try {
-            /**
-             * Search for children Platform
-             */
-            $childrenPlatforms = $this->findChildrenPlatforms($serverId);
-            if (!empty($childrenPlatforms)) {
-                /**
-                 * If children platform are found, look for a Top Parent platform to link the children platforms
-                 */
-                $topLevelPlatform = $this->findTopLevelPlatform();
-                if ($topLevelPlatform === null) {
-                    throw new EntityNotFoundException(_('No top level Platform found to link the children platforms.'));
-                }
-
-                $statementChangeParentId = $this->db->prepare(
-                    $this->translateDbName(
-                        'UPDATE `:db`.`platform_topology` SET parent_id = :topLevelPlatformId WHERE id = :platformId'
-                    )
-                );
-                $statementChangeParentId->bindValue(':topLevelPlatformId', $topLevelPlatform->getId(), \PDO::PARAM_INT);
-
-                foreach ($childrenPlatforms as $platform) {
-                    $statementChangeParentId->bindValue(':platformId', $platform->getId(), \PDO::PARAM_INT);
-                    $statementChangeParentId->execute();
-                }
-            }
-
-            /**
-             * Then safely delete the platform without removing its children
-             */
             $statement = $this->db->prepare(
                 $this->translateDbName('DELETE FROM `:db`.`platform_topology` WHERE id = :serverId')
             );
             $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
             $statement->execute();
-        } catch (EntityNotFoundException $ex) {
-            throw $ex;
         } catch (\Exception $ex) {
             throw new RepositoryException(_('An error occured while deleting the Platform.'));
         }
     }
 
     /**
-     * Find the Top Level Platform
-     * @return Platform|null
+     * @inheritDoc
      */
-    private function findTopLevelPlatform(): ?Platform
+    public function findTopLevelPlatform(): ?Platform
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
@@ -289,20 +257,17 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     }
 
     /**
-     * Find the children Platforms of another Platform
-     *
-     * @param integer $serverId
-     * @return Platform[]
+     * @inheritDoc
      */
-    private function findChildrenPlatforms(int $serverId): array
+    public function findChildrenPlatformsByParentId(int $parentId): array
     {
-            $statement = $this->db->prepare(
-                $this->translateDbName('SELECT * FROM `:db`.`platform_topology` WHERE parent_id = :parentId')
-            );
-            $statement->bindValue(':parentId', $serverId, \PDO::PARAM_INT);
-            $statement->execute();
+        $statement = $this->db->prepare(
+            $this->translateDbName('SELECT * FROM `:db`.`platform_topology` WHERE parent_id = :parentId')
+        );
+        $statement->bindValue(':parentId', $parentId, \PDO::PARAM_INT);
+        $statement->execute();
 
-            $childrenPlatforms = [];
+        $childrenPlatforms = [];
         if ($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
             foreach ($result as $platform) {
                 /**
@@ -312,6 +277,61 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             }
         }
 
-            return $childrenPlatforms;
+        return $childrenPlatforms;
+    }
+
+    public function updatePlatformParameters(int $serverId, array $parameters): void
+    {
+        $requestParameters = [];
+        $query = 'UPDATE `:db`.`platform_topology` SET ';
+
+        $arrayKeyLast = function($array) {
+            return array_keys($array)[count($array)-1];
+        };
+
+        foreach ($parameters as $column => $value) {
+            /*
+             *  Set PDO Param type.
+             */
+            switch ($column) {
+                case 'address':
+                case 'hostname':
+                case 'name':
+                case 'type':
+                    $requestParameters[':' . $column] = [
+                        \PDO::PARAM_STR => $value
+                    ];
+                    break;
+                case 'parent_id':
+                case 'server_id':
+                    $requestParameters[':' . $column] = [
+                        \PDO::PARAM_INT => $value
+                    ];
+                    break;
+            }
+
+            /**
+             * Build query.
+             */
+            if ($column === $arrayKeyLast($parameters)) {
+                $query .= "$column = :$column";
+            } else {
+                $query .= "$column = :$column, ";
+            }
+        }
+        $query .=  ' WHERE id = ' . $serverId;
+
+        try {
+            $statement = $this->db->prepare($this->translateDbName($query));
+            foreach ($requestParameters as $token => $bindValues) {
+                foreach($bindValues as $paramType => $value) {
+                    var_dump($token, $value, $paramType);
+                    $statement->bindValue($token, $value, $paramType);
+                }
+            }
+            $statement->execute();
+        } catch (\Exception $ex) {
+            throw new RepositoryException(_('An error occured while updating platform'));
+        }
     }
 }
