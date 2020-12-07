@@ -498,7 +498,7 @@ class PlatformTopologyServiceTest extends TestCase
         );
 
         $this->expectException(EntityNotFoundException::class);
-        $this->expectExceptionMessage('Platform not found.');
+        $this->expectExceptionMessage('Platform not found');
 
         $platformTopologyService->deletePlatform($this->platform->getId());
     }
