@@ -501,7 +501,7 @@ describe(Details, () => {
     },
   );
 
-  it.only('displays event annotations when the corresponding switch is triggered and the Graph tab is clicked', async () => {
+  it('displays event annotations when the corresponding switch is triggered and the Graph tab is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: performanceGraphData })
