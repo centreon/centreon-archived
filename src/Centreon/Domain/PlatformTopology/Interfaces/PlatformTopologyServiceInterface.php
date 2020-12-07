@@ -58,7 +58,7 @@ interface PlatformTopologyServiceInterface
     public function getPlatformTopology(): array;
 
     /**
-     * Delete a platform
+     * Delete a Platform.
      *
      * @param integer $platformId
      * @throws PlatformException
@@ -67,7 +67,7 @@ interface PlatformTopologyServiceInterface
     public function deletePlatform(int $platformId): void;
 
     /**
-     * Update a platform with given parameters
+     * Update a platform with given parameters.
      *
      * @param integer $serverId
      * @param array<string, mixed> $parameters

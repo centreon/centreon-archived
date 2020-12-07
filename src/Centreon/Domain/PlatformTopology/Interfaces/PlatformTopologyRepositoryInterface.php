@@ -91,7 +91,7 @@ interface PlatformTopologyRepositoryInterface
     public function findPlatform(int $serverId): ?Platform;
 
     /**
-     * Delete a server
+     * Delete a Platform.
      *
      * @param integer $serverId
      * @throws EntityNotFoundException
@@ -115,7 +115,7 @@ interface PlatformTopologyRepositoryInterface
     public function findChildrenPlatformsByParentId(int $parentId): array;
 
     /**
-     * Update a platform with given parameters.
+     * Update a Platform with given parameters.
      *
      * @param integer $serverId
      * @param array<string, mixed> $parameters
