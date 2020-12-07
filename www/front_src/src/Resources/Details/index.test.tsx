@@ -450,9 +450,7 @@ describe(Details, () => {
     async (period, startIsoString, timelineEventsLimit) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
-        .mockResolvedValueOnce({
-          data: retrievedTimeline,
-        })
+        .mockResolvedValueOnce({ data: retrievedTimeline })
         .mockResolvedValueOnce({ data: performanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline })
         .mockResolvedValueOnce({ data: performanceGraphData });
@@ -504,10 +502,11 @@ describe(Details, () => {
   it('displays event annotations when the corresponding switch is triggered and the Graph tab is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
-      .mockResolvedValueOnce({ data: performanceGraphData })
       .mockResolvedValueOnce({
         data: retrievedTimeline,
-      });
+      })
+      .mockResolvedValueOnce({ data: performanceGraphData });
+
     const { findAllByLabelText, queryByLabelText, getByText } = renderDetails({
       openTabId: graphTabId,
     });

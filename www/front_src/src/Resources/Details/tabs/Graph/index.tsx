@@ -101,6 +101,8 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     setSelectedTimePeriod,
   ] = React.useState<TimePeriod>(defaultTimePeriod);
 
+  const [endpoint, setEndpoint] = React.useState<string>();
+
   const translatedTimePeriodSelectOptions = timePeriodSelectOptions.map(
     (timePeriod) => ({
       ...timePeriod,
@@ -108,7 +110,10 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     }),
   );
 
-  const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
+  const baseEndpoint = path(
+    ['links', 'endpoints', 'performance_graph'],
+    details,
+  );
   const timelineEndpoint = path<string>(
     ['links', 'endpoints', 'timeline'],
     details,
@@ -151,39 +156,21 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
   };
 
   React.useEffect(() => {
-    if (isNil(endpoint)) {
+    if (isNil(details)) {
       return;
     }
 
+    const [start, end] = getIntervalDates(selectedTimePeriod);
+    const periodQueryParams = `?start=${start}&end=${end}`;
+    setEndpoint(`${baseEndpoint}${periodQueryParams}`);
     retrieveTimeline();
-  }, [endpoint, selectedTimePeriod]);
-
-  const getGraphQueryParameters = (timePeriod): string => {
-    const [start, end] = getIntervalDates(timePeriod);
-
-    return `?start=${start}&end=${end}`;
-  };
-
-  const [periodQueryParams, setPeriodQueryParams] = React.useState(
-    getGraphQueryParameters(selectedTimePeriod),
-  );
+  }, [baseEndpoint, selectedTimePeriod, details]);
 
   const changeSelectedPeriod = (event): void => {
     const timePeriodId = event.target.value;
     const timePeriod = getTimePeriodById(timePeriodId);
 
     setSelectedTimePeriod(timePeriod);
-
-    const queryParamsForSelectedPeriodId = getGraphQueryParameters(timePeriod);
-    setPeriodQueryParams(queryParamsForSelectedPeriodId);
-  };
-
-  const getEndpoint = (): string | undefined => {
-    if (isNil(endpoint)) {
-      return undefined;
-    }
-
-    return `${endpoint}${periodQueryParams}`;
   };
 
   const changeEventAnnotationsActive = (
@@ -259,7 +246,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
           ref={performanceGraphRef}
         >
           <PerformanceGraph
-            endpoint={getEndpoint()}
+            endpoint={endpoint}
             graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
             toggableLegend

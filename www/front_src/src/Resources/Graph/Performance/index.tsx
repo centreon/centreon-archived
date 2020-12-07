@@ -69,7 +69,7 @@ const PerformanceGraph = ({
   const { t } = useTranslation();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
-  const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
+  const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
 
@@ -93,8 +93,7 @@ const PerformanceGraph = ({
     });
   }, [endpoint]);
 
-  const loading =
-    sendingGetGraphDataRequest || isNil(timeline) || isNil(endpoint);
+  const loading = isNil(lineData) || isNil(timeline) || isNil(endpoint);
 
   if (loading) {
     return <LoadingSkeleton />;

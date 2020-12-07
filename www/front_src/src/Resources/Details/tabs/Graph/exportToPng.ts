@@ -13,9 +13,8 @@ const exportToPng = ({ element, title }: Props): Promise<void> => {
     downloadLink.download = `${title}-${new Date().toISOString()}.png`;
     downloadLink.href = canvasUrl;
 
-    document.body.appendChild(downloadLink);
     downloadLink.click();
-    document.body.removeChild(downloadLink);
+    downloadLink.remove();
   });
 };
 
