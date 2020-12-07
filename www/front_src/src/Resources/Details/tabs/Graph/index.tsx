@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField, useRequest, ListingModel } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context/src';
 
 import PerformanceGraph from '../../../Graph/Performance';
 import { TabProps } from '..';
@@ -58,6 +59,7 @@ const defaultTimePeriod = last24hPeriod;
 const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const { username } = useUserContext();
 
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
@@ -158,6 +160,19 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     return `${endpoint}${periodQueryParams}`;
   };
 
+  const addCommentToTimeline = ({ date, comment }): void => {
+    setTimeline([
+      ...(timeline as Array<TimelineEvent>),
+      {
+        id: Math.random(),
+        type: 'comment',
+        date,
+        content: comment,
+        contact: { name: username },
+      },
+    ]);
+  };
+
   return (
     <div className={classes.container}>
       <Paper className={classes.header}>
@@ -177,6 +192,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
             toggableLegend
             resource={details as ResourceDetails}
             timeline={timeline as Array<TimelineEvent>}
+            onAddComment={addCommentToTimeline}
           />
         </div>
       </Paper>
