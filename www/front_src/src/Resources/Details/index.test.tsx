@@ -64,6 +64,7 @@ import {
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import { resourcesEndpoint, monitoringEndpoint } from '../api/endpoint';
+import useListing from '../Listing/useListing';
 
 import {
   graphTabId,
