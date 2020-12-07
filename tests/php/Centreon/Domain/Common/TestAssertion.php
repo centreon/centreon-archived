@@ -181,4 +181,29 @@ class TestAssertion extends TestCase
         Assertion::greaterOrEqualThan($propertyValue, $minLength, $this->propertyName);
         $this->expectNotToPerformAssertions();
     }
+
+    /**
+     * Test the notEmpty assertion
+     */
+    public function testNotEmptyException(): void
+    {
+        $propertyValue = '';
+        $expectedExceptionMessage = AssertionException::notEmpty(
+            $propertyValue,
+            $this->propertyName
+        )->getMessage();
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+        Assertion::notEmpty($propertyValue, $this->propertyName);
+    }
+
+    /**
+     * Test no exception on notEmpty assertion
+     */
+    public function testNoExceptionNotEmpty(): void
+    {
+        $propertyValue = 'test_value_too_long';
+        Assertion::notEmpty($propertyValue, $this->propertyName);
+        $this->expectNotToPerformAssertions();
+    }
 }
