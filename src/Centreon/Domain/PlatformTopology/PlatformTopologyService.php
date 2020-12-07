@@ -578,7 +578,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
          * @var Platform[] $platformTopology
          */
         $platformTopology = $this->platformTopologyRepository->getPlatformTopology();
-        if ($platformTopology === null) {
+        if (empty($platformTopology)) {
             throw new EntityNotFoundException(_('No Platform Topology found.'));
         }
 
