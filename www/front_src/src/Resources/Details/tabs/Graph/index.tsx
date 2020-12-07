@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField, useRequest, ListingModel } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context/src';
+import { useUserContext } from '@centreon/ui-context';
 
 import PerformanceGraph from '../../../Graph/Performance';
 import { TabProps } from '..';
