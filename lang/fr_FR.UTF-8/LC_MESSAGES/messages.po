@@ -15708,8 +15708,8 @@ msgid "No Platform Topology found."
 msgstr "Aucune Topologie trouvée."
 
 #: api/platform/topology
-msgid "No top level Platform found to link the children platforms"
-msgstr "Aucune platforme de haut niveau trouvée pour lier les platformes enfants"
+msgid "No top level Platform found to link the child platforms"
+msgstr "Aucune platforme principale trouvée pour lier les plateformes enfants"
 
 #: api/platform/topology
 msgid "An error occured while deleting the Platform"

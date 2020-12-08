@@ -118,7 +118,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function findTopPlatformByType(string $serverType): ?Platform
+    public function findTopLevelPlatformByType(string $serverType): ?Platform
     {
         $statement = $this->db->prepare(
             $this->translateDbName('

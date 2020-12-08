@@ -64,7 +64,7 @@ interface PlatformTopologyRepositoryInterface
      * @return Platform|null
      * * @throws \Exception
      */
-    public function findTopPlatformByType(string $serverType): ?Platform;
+    public function findTopLevelPlatformByType(string $serverType): ?Platform;
 
     /**
      * Search for local platform's monitoring Id using its name

@@ -415,14 +415,14 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     private function searchAlreadyRegisteredTopLevelPlatformByType(string $type): void
     {
-        $foundAlreadyRegisteredPlatformByType = $this->platformTopologyRepository->findTopPlatformByType($type);
-        if (null !== $foundAlreadyRegisteredPlatformByType) {
+        $foundAlreadyRegisteredTopLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatformByType($type);
+        if (null !== $foundAlreadyRegisteredTopLevelPlatform) {
             throw new PlatformConflictException(
                 sprintf(
                     _("A '%s': '%s'@'%s' is already registered"),
                     $type,
-                    $foundAlreadyRegisteredPlatformByType->getName(),
-                    $foundAlreadyRegisteredPlatformByType->getAddress()
+                    $foundAlreadyRegisteredTopLevelPlatform->getName(),
+                    $foundAlreadyRegisteredTopLevelPlatform->getAddress()
                 )
             );
         }
@@ -619,23 +619,27 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             if ($this->platformTopologyRepository->findPlatform($serverId) === null) {
                 throw new EntityNotFoundException(_('Platform not found'));
             }
+            /**
+             * @var Platform[] $childPlatforms
+             */
+            $childPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId($serverId);
 
-            $childrenPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId($serverId);
-
-            if (!empty($childrenPlatforms)) {
+            if (!empty($childPlatforms)) {
                 /**
-                 * If children platform are found, look for a Top Parent platform to link the children platforms
+                 * If at least one children platform was found, find the Top Parent platform and link children platform(s) to it.
+                 *
+                 * @var Platform $topLevelPlatform
                  */
                 $topLevelPlatform = $this->findTopLevelPlatform();
 
                 if ($topLevelPlatform === null) {
-                    throw new EntityNotFoundException(_('No top level Platform found to link the children platforms'));
+                    throw new EntityNotFoundException(_('No top level Platform found to link the child platforms'));
                 }
 
                 /**
                  * Update children parent_id
                  */
-                foreach ($childrenPlatforms as $platform) {
+                foreach ($childPlatforms as $platform) {
                     $this->updatePlatformParameters($platform->getId(), ['parent_id' => $topLevelPlatform->getId()]);
                 }
             }
