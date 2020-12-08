@@ -280,6 +280,9 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         return $childrenPlatforms;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function updatePlatformParameters(Platform $platform): void
     {
         try {

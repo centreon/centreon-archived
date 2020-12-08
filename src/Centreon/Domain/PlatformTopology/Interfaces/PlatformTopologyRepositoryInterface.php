@@ -115,7 +115,7 @@ interface PlatformTopologyRepositoryInterface
     public function findChildrenPlatformsByParentId(int $parentId): array;
 
     /**
-     * Update a Platform with given parameters.
+     * Update a Platform.
      *
      * @param Platform $platform
      */
