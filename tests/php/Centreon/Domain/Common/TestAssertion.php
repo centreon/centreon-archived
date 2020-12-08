@@ -206,4 +206,28 @@ class TestAssertion extends TestCase
         Assertion::notEmpty($propertyValue, $this->propertyName);
         $this->expectNotToPerformAssertions();
     }
+
+    /**
+     * Test the notEmpty assertion
+     */
+    public function testNotNullException(): void
+    {
+        $propertyValue = null;
+        $expectedExceptionMessage = AssertionException::notNull(
+            $this->propertyName
+        )->getMessage();
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+        Assertion::notNull($propertyValue, $this->propertyName);
+    }
+
+    /**
+     * Test no exception on notNull assertion
+     */
+    public function testNoExceptionNotNull(): void
+    {
+        $propertyValue = 'test_value_too_long';
+        Assertion::notNull($propertyValue, $this->propertyName);
+        $this->expectNotToPerformAssertions();
+    }
 }

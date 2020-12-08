@@ -182,6 +182,24 @@ class Assertion
     }
 
     /**
+     * Assert that value is not null.
+     *
+     * @param mixed $value Value to test
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function notNull($value, string $propertyPath = null): void
+    {
+        Assert::notEmpty(
+            $value,
+            function (array $parameters) {
+                return AssertionException::notNull($parameters['propertyPath']);
+            },
+            $propertyPath
+        );
+    }
+
+    /**
      * Calculates the string length or fails.
      *
      * @param string $value Value for which we have to calculate the length
