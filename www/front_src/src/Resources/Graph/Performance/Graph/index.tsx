@@ -45,7 +45,7 @@ import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 
 import MetricsTooltip from './MetricsTooltip';
-import DialogAddComment from './DialogAddComment';
+import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
 import Axes from './Axes';
 
@@ -368,8 +368,8 @@ const Graph = ({
           </Button>
         )}
         {addingComment && (
-          <DialogAddComment
-            onAddComment={confirmAddComment}
+          <AddCommentForm
+            onSuccess={confirmAddComment}
             date={commentDate as Date}
             resource={resource}
             onClose={(): void => {

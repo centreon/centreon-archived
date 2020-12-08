@@ -27,14 +27,14 @@ import { ResourceDetails } from '../../../../Details/models';
 
 interface Props {
   onClose: () => void;
-  onAddComment: (comment) => void;
+  onSuccess: (comment) => void;
   date: Date;
   resource: Resource | ResourceDetails;
 }
 
-const DialogAddComment = ({
+const AddCommentForm = ({
   onClose,
-  onAddComment,
+  onSuccess,
   resource,
   date,
 }: Props): JSX.Element => {
@@ -65,7 +65,7 @@ const DialogAddComment = ({
         message: t(labelCommentAdded),
         severity: Severity.success,
       });
-      onAddComment(parameters);
+      onSuccess(parameters);
     });
   };
 
@@ -107,4 +107,4 @@ const DialogAddComment = ({
   );
 };
 
-export default DialogAddComment;
+export default AddCommentForm;

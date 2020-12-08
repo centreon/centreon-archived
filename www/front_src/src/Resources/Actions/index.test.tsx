@@ -45,12 +45,13 @@ import {
   labelWarning,
   labelCritical,
   labelUnknown,
+  labelAddComment,
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
 import useFilter from '../Filter/useFilter';
 import Context, { ResourceContext } from '../Context';
-import { mockAppStateSelector, cancelTokenRequestParam } from '../testUtils';
+import { mockAppStateSelector } from '../testUtils';
 import { Resource } from '../models';
 import useDetails from '../Details/useDetails';
 
@@ -87,6 +88,7 @@ const mockUserContext = {
         disacknowledgement: true,
         check: true,
         submit_status: true,
+        comment: true,
       },
       host: {
         downtime: true,
@@ -94,6 +96,7 @@ const mockUserContext = {
         disacknowledgement: true,
         check: true,
         submit_status: true,
+        comment: true,
       },
     },
   },
@@ -294,7 +297,7 @@ describe(Actions, () => {
             with_services: true,
           },
         },
-        cancelTokenRequestParam,
+        expect.anything(),
       ),
     );
   });
@@ -456,7 +459,7 @@ describe(Actions, () => {
             with_services: true,
           },
         },
-        cancelTokenRequestParam,
+        expect.anything(),
       ),
     );
   });
@@ -482,7 +485,7 @@ describe(Actions, () => {
         {
           resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
-        cancelTokenRequestParam,
+        expect.anything(),
       );
     });
   });
@@ -538,7 +541,7 @@ describe(Actions, () => {
             },
           ],
         },
-        cancelTokenRequestParam,
+        expect.anything(),
       );
     });
 
@@ -567,6 +570,7 @@ describe(Actions, () => {
             acknowledgement: false,
             disacknowledgement: false,
             submit_status: false,
+            comment: false,
           },
           host: {
             downtime: false,
@@ -574,6 +578,7 @@ describe(Actions, () => {
             acknowledgement: false,
             disacknowledgement: false,
             submit_status: false,
+            comment: false,
           },
         },
       },
@@ -599,6 +604,7 @@ describe(Actions, () => {
       'aria-disabled',
       'true',
     );
+    expect(getByText(labelAddComment)).toHaveAttribute('aria-disabled', 'true');
   });
 
   const cannotDowntimeServicesAcl = {
@@ -818,6 +824,56 @@ describe(Actions, () => {
       expect(getByText(labelSubmitStatus)).toHaveAttribute(
         'aria-disabled',
         'true',
+      );
+    });
+  });
+
+  it('disables the comment action when the ACL are not sufficient or more than one resource is selected', async () => {
+    const { getByText } = renderActions();
+
+    mockedUserContext.mockReset().mockReturnValue({
+      ...mockUserContext,
+      acl: {
+        actions: {
+          ...mockUserContext.acl.actions,
+          host: {
+            ...mockUserContext.acl.actions.host,
+            comment: false,
+          },
+        },
+      },
+    });
+
+    act(() => {
+      context.setSelectedResources([host, service]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelAddComment)).toHaveAttribute(
+        'aria-disabled',
+        'true',
+      );
+    });
+
+    act(() => {
+      context.setSelectedResources([host]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelAddComment)).toHaveAttribute(
+        'aria-disabled',
+        'true',
+      );
+    });
+
+    act(() => {
+      context.setSelectedResources([service]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelAddComment)).toHaveAttribute(
+        'aria-disabled',
+        'false',
       );
     });
   });
