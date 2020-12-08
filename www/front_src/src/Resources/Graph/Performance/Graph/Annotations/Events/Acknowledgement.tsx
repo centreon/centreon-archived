@@ -9,6 +9,7 @@ import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
 import { labelBy, labelAcknowledgement } from '../../../../../translatedLabels';
 import truncate from '../../../../../truncate';
 import { Props } from '..';
+
 import EventAnnotations from '.';
 
 const AcknowledgementAnnotations = (props: Props): JSX.Element => {
