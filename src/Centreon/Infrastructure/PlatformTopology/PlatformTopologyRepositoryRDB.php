@@ -224,7 +224,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
             $statement->execute();
         } catch (\Exception $ex) {
-            throw new RepositoryException(_('An error occured while deleting the Platform.'));
+            throw new RepositoryException(_('An error occured while deleting the Platform'));
         }
     }
 

@@ -15708,16 +15708,16 @@ msgid "No Platform Topology found."
 msgstr "Aucune Topologie trouvée."
 
 #: api/platform/topology
-msgid "No top level Platform found to link the children platforms."
-msgstr "Aucune platforme de haut niveau trouvée pour lier les platformes enfants."
+msgid "No top level Platform found to link the children platforms"
+msgstr "Aucune platforme de haut niveau trouvée pour lier les platformes enfants"
 
 #: api/platform/topology
-msgid "An error occured while deleting the Platform."
-msgstr "Une erreur est suevenue lors de la suppression de la plateforme."
+msgid "An error occured while deleting the Platform"
+msgstr "Une erreur est survenue lors de la suppression de la plateforme"
 
 #: api/platform/topology
-msgid "Platform not found."
-msgstr "Plateforme non trouvée."
+msgid "Platform not found"
+msgstr "Plateforme non trouvée"
 
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
