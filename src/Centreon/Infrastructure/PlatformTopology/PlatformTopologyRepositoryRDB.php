@@ -281,31 +281,28 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
      */
     public function updatePlatformParameters(Platform $platform): void
     {
-        try {
-            $statement = $this->db->prepare(
-                $this->translateDbName(
-                    "
-                    UPDATE `:db`.`platform_topology` SET
-                    `address` = :address,
-                    `hostname` = :hostname,
-                    `name` = :name,
-                    `type` = :type,
-                    `parent_id` = :parentId,
-                    `server_id` = :serverId
-                    WHERE id = :id
-                    "
-                )
-            );
-            $statement->bindValue(':address', $platform->getAddress(), \PDO::PARAM_STR);
-            $statement->bindValue(':hostname', $platform->getHostname(), \PDO::PARAM_STR);
-            $statement->bindValue(':name', $platform->getName(), \PDO::PARAM_STR);
-            $statement->bindValue(':type', $platform->getType(), \PDO::PARAM_STR);
-            $statement->bindValue(':parentId', $platform->getParentId(), \PDO::PARAM_INT);
-            $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
-            $statement->bindValue(':id', $platform->getId(), \PDO::PARAM_INT);
-            $statement->execute();
-        } catch (\Exception $ex) {
-            throw $ex;
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                "
+                UPDATE `:db`.`platform_topology` SET
+                `address` = :address,
+                `hostname` = :hostname,
+                `name` = :name,
+                `type` = :type,
+                `parent_id` = :parentId,
+                `server_id` = :serverId
+                WHERE id = :id
+                "
+            )
+        );
+        $statement->bindValue(':address', $platform->getAddress(), \PDO::PARAM_STR);
+        $statement->bindValue(':hostname', $platform->getHostname(), \PDO::PARAM_STR);
+        $statement->bindValue(':name', $platform->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':type', $platform->getType(), \PDO::PARAM_STR);
+        $statement->bindValue(':parentId', $platform->getParentId(), \PDO::PARAM_INT);
+        $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
+        $statement->bindValue(':id', $platform->getId(), \PDO::PARAM_INT);
+        $statement->execute();
         }
     }
 }
