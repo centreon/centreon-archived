@@ -117,9 +117,7 @@ interface PlatformTopologyRepositoryInterface
     /**
      * Update a Platform with given parameters.
      *
-     * @param integer $serverId
-     * @param array<string, mixed> $parameters
-     * @return void
+     * @param Platform $platform
      */
-    public function updatePlatformParameters(int $serverId, array $parameters): void;
+    public function updatePlatformParameters(Platform $platform): void;
 }

@@ -64,16 +64,15 @@ interface PlatformTopologyServiceInterface
      * @throws PlatformException
      * @throws EntityNotFoundException
      */
-    public function deletePlatform(int $platformId): void;
+    public function deletePlatformAndReallocateChildren(int $platformId): void;
 
     /**
      * Update a platform with given parameters.
      *
-     * @param integer $serverId
-     * @param array<string, mixed> $parameters
+     * @param Platform
      * @throws PlatformException
      */
-    public function updatePlatformParameters(int $serverId, array $parameters): void;
+    public function updatePlatformParameters(Platform $platform): void;
 
     /**
      * Find the top level platform of the topology.

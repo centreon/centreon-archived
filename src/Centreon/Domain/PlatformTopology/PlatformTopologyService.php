@@ -613,7 +613,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * @inheritDoc
      */
-    public function deletePlatform(int $serverId): void
+    public function deletePlatformAndReallocateChildren(int $serverId): void
     {
         try {
             if ($this->platformTopologyRepository->findPlatform($serverId) === null) {
@@ -641,24 +641,27 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                  * Update children parent_id
                  */
                 foreach ($childPlatforms as $platform) {
-                    $this->updatePlatformParameters($platform->getId(), ['parent_id' => $topLevelPlatform->getId()]);
+                    $platform->setParentId($topLevelPlatform->getId());
+                    $this->updatePlatformParameters($platform);
                 }
             }
             $this->platformTopologyRepository->deletePlatform($serverId);
         } catch (EntityNotFoundException $ex) {
             throw $ex;
+        } catch (PlatformException $ex) {
+            throw $ex;
         } catch (\Exception $ex) {
-            throw new PlatformException($ex->getMessage(), 0, $ex);
+            throw new PlatformException("An error occured while deleting the Platform", 0, $ex);
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function updatePlatformParameters(int $serverId, array $parameters): void
+    public function updatePlatformParameters(Platform $platform): void
     {
         try {
-            $this->platformTopologyRepository->updatePlatformParameters($serverId, $parameters);
+            $this->platformTopologyRepository->updatePlatformParameters($platform);
         } catch (\Exception $ex) {
             throw new PlatformException($ex->getMessage(), 0, $ex);
         }
@@ -669,10 +672,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function findTopLevelPlatform(): ?Platform
     {
-        try {
             return $this->platformTopologyRepository->findTopLevelPlatform();
-        } catch (\Exception $ex) {
-            throw new PlatformException($ex->getMessage(), 0, $ex);
-        }
     }
 }

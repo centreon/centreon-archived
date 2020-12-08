@@ -189,7 +189,7 @@ class PlatformTopologyController extends AbstractController
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         try {
-            $this->platformTopologyService->deletePlatform($serverId);
+            $this->platformTopologyService->deletePlatformAndReallocateChildren($serverId);
             return $this->view(null, Response::HTTP_NO_CONTENT);
         } catch (EntityNotFoundException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);

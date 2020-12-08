@@ -224,7 +224,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
             $statement->execute();
         } catch (\Exception $ex) {
-            throw new RepositoryException(_('An error occured while deleting the Platform'));
+            throw $ex;
         }
     }
 
@@ -280,57 +280,35 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         return $childrenPlatforms;
     }
 
-    public function updatePlatformParameters(int $serverId, array $parameters): void
+    public function updatePlatformParameters(Platform $platform): void
     {
         $requestParameters = [];
-        $query = 'UPDATE `:db`.`platform_topology` SET ';
-
-        $arrayKeyLast = function ($array) {
-            return array_keys($array)[count($array) - 1];
-        };
-
-        foreach ($parameters as $column => $value) {
-            /*
-             *  Set PDO Param type.
-             */
-            switch ($column) {
-                case 'address':
-                case 'hostname':
-                case 'name':
-                case 'type':
-                    $requestParameters[':' . $column] = [
-                        \PDO::PARAM_STR => $value
-                    ];
-                    break;
-                case 'parent_id':
-                case 'server_id':
-                    $requestParameters[':' . $column] = [
-                        \PDO::PARAM_INT => $value
-                    ];
-                    break;
-            }
-
-            /**
-             * Build query.
-             */
-            if ($column === $arrayKeyLast($parameters)) {
-                $query .= "$column = :$column";
-            } else {
-                $query .= "$column = :$column, ";
-            }
-        }
-        $query .=  ' WHERE id = ' . $serverId;
 
         try {
-            $statement = $this->db->prepare($this->translateDbName($query));
-            foreach ($requestParameters as $token => $bindValues) {
-                foreach ($bindValues as $paramType => $value) {
-                    $statement->bindValue($token, $value, $paramType);
-                }
-            }
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    "
+                    UPDATE `:db`.`platform_topology` SET
+                    `address` = :address,
+                    `hostname` = :hostname,
+                    `name` = :name,
+                    `type` = :type,
+                    `parent_id` = :parentId,
+                    `server_id` = :serverId
+                    WHERE id = :id
+                    "
+                )
+            );
+            $statement->bindValue(':address', $platform->getAddress(), \PDO::PARAM_STR);
+            $statement->bindValue(':hostname', $platform->getHostname(), \PDO::PARAM_STR);
+            $statement->bindValue(':name', $platform->getName(), \PDO::PARAM_STR);
+            $statement->bindValue(':type', $platform->getType(), \PDO::PARAM_STR);
+            $statement->bindValue(':parentId', $platform->getParentId(), \PDO::PARAM_INT);
+            $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
+            $statement->bindValue(':id', $platform->getId(), \PDO::PARAM_INT);
             $statement->execute();
         } catch (\Exception $ex) {
-            throw new RepositoryException(_('An error occured while updating platform'));
+            throw $ex;
         }
     }
 }
