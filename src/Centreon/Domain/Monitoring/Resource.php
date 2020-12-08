@@ -22,14 +22,15 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Monitoring\Icon;
-use Centreon\Domain\Monitoring\ResourceStatus;
-use Centreon\Domain\Monitoring\ResourceSeverity;
-use Centreon\Domain\Monitoring\ResourceLinks;
-use Centreon\Domain\Downtime\Downtime;
-use Centreon\Domain\Acknowledgement\Acknowledgement;
 use DateTime;
 use CentreonDuration;
+use Centreon\Domain\Monitoring\Icon;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Monitoring\ResourceGroup;
+use Centreon\Domain\Monitoring\ResourceLinks;
+use Centreon\Domain\Monitoring\ResourceStatus;
+use Centreon\Domain\Monitoring\ResourceSeverity;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 
 /**
  * Class representing a record of a resource in the repository.
@@ -219,6 +220,13 @@ class Resource
      * @var Acknowledgement|null
      */
     private $acknowledgement;
+
+    /**
+     * Groups to which belongs the resource
+     *
+     * @var ResourceGroup[]
+     */
+    private $groups = [];
 
     /**
      * Resource constructor.
@@ -902,6 +910,30 @@ class Resource
     public function setAcknowledgement(?Acknowledgement $acknowledgement): self
     {
         $this->acknowledgement = $acknowledgement;
+        return $this;
+    }
+
+
+    /**
+     * Get groups to which belongs the resource.
+     *
+     * @return ResourceGroup[]
+     */
+    public function getGroups(): array
+    {
+        return $this->groups;
+    }
+
+    /**
+     * Set groups to which belongs the resource
+     *
+     * @param ResourceGroup[] $groups
+     * @return Resource
+     */
+    public function setGroups(array $groups): self
+    {
+        $this->groups = $groups;
+
         return $this;
     }
 }
