@@ -175,7 +175,7 @@ class Assertion
         Assert::notEmpty(
             $value,
             function (array $parameters) {
-                return AssertionException::notEmpty($parameters['value'], $parameters['propertyPath']);
+                return AssertionException::notEmpty($parameters['propertyPath']);
             },
             $propertyPath
         );

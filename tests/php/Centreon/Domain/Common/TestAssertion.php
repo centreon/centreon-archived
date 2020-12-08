@@ -189,7 +189,6 @@ class TestAssertion extends TestCase
     {
         $propertyValue = '';
         $expectedExceptionMessage = AssertionException::notEmpty(
-            $propertyValue,
             $this->propertyName
         )->getMessage();
         $this->expectException(\InvalidArgumentException::class);

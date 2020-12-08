@@ -142,17 +142,15 @@ class AssertionException extends \InvalidArgumentException
     /**
      * Exception when the value is empty.
      *
-     * @param string $value Tested value
      * @param string|null $propertyPath Property's path (ex: Host::name)
      * @return self
      */
-    public static function notEmpty(string $value, string $propertyPath = null): self
+    public static function notEmpty(string $propertyPath = null): self
     {
         return new self(
             sprintf(
-                _('[%s] The value "%s" is empty, but non empty value was expected'),
-                $propertyPath,
-                $value
+                _('[%s] The value is empty, but non empty value was expected'),
+                $propertyPath
             )
         );
     }
