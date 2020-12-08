@@ -663,7 +663,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         try {
             $this->platformTopologyRepository->updatePlatformParameters($platform);
         } catch (\Exception $ex) {
-            throw new PlatformException($ex->getMessage(), 0, $ex);
+            throw new PlatformException('An error occured while updating the Platform', 0, $ex);
         }
     }
 
