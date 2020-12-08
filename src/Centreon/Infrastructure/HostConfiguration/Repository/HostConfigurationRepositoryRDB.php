@@ -32,7 +32,6 @@ use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostTemplateFactoryRdb;
-use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostGroupFactoryRdb;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 

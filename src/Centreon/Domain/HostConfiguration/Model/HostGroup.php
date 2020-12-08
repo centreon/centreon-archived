@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Model;
 
+use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Media\Model\Image;
 
 /**
@@ -31,13 +32,16 @@ use Centreon\Domain\Media\Model\Image;
  */
 class HostGroup
 {
-    public const STATUS_ENABLE = 1,
-        STATUS_DISABLE = 0,
-        STATUS_DEFAULT = 2;
     
-    private const AVAILABLE_STATUS = [
-        self::STATUS_ENABLE, self::STATUS_DISABLE, self::STATUS_DEFAULT
-    ];
+    public const MAX_NAME_LENGTH = 200,
+        MAX_ALIAS_LENGTH = 200,
+        MAX_NOTES = 255,
+        MAX_NOTES_URL = 255,
+        MAX_ACTION_URL = 255,
+        MAX_GEO_COORDS = 32,
+        MAX_RRD = 99999999999,
+        MIN_RRD = 0,
+        MAX_COMMENTS_LENGTH = 65535;
     /**
      * @var int|null
      */
@@ -83,7 +87,7 @@ class HostGroup
     private $iconMap;
     
     /**
-     * @var string|null
+     * @var int|null
      */
     private $rrd;
     
@@ -131,9 +135,13 @@ class HostGroup
     /**
      * @param string $name
      * @return HostGroup
+     * @throws \Assert\AssertionFailedException
      */
     public function setName(string $name): HostGroup
     {
+        if ($name !== null) {
+            Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'HostGroup::name');
+        }
         $this->name = $name;
         return $this;
     }
@@ -149,9 +157,13 @@ class HostGroup
     /**
      * @param string|null $alias
      * @return HostGroup
+     * @throws \Assert\AssertionFailedException
      */
     public function setAlias(?string $alias): HostGroup
     {
+        if ($alias !== null) {
+            Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'HostGroup::alias');
+        }
         $this->alias = $alias;
         return $this;
     }
@@ -167,9 +179,13 @@ class HostGroup
     /**
      * @param string|null $notes
      * @return HostGroup
+     * @throws \Assert\AssertionFailedException
      */
     public function setNotes(?string $notes): HostGroup
     {
+        if ($notes !== null) {
+            Assertion::maxLength($notes, self::MAX_NOTES, 'HostGroup::notes');
+        }
         $this->notes = $notes;
         return $this;
     }
@@ -185,9 +201,13 @@ class HostGroup
     /**
      * @param string|null $notesUrl
      * @return HostGroup
+     * @throws \Assert\AssertionFailedException
      */
     public function setNotesUrl(?string $notesUrl): HostGroup
     {
+        if ($notesUrl !== null) {
+            Assertion::maxLength($notesUrl, self::MAX_NOTES_URL, 'HostGroup::notesUrl');
+        }
         $this->notesUrl = $notesUrl;
         return $this;
     }
@@ -203,9 +223,13 @@ class HostGroup
     /**
      * @param string|null $actionUrl
      * @return HostGroup
+     * @throws \Assert\AssertionFailedException
      */
     public function setActionUrl(?string $actionUrl): HostGroup
     {
+        if ($actionUrl !== null) {
+            Assertion::maxLength($actionUrl, self::MAX_ACTION_URL, 'HostGroup::actionUrl');
+        }
         $this->actionUrl = $actionUrl;
         return $this;
     }
@@ -220,7 +244,7 @@ class HostGroup
     
     /**
      * @param Image|null $icon
-     * @return HostTemplate
+     * @return HostGroup
      */
     public function setIcon(?Image $icon): HostGroup
     {
@@ -229,16 +253,16 @@ class HostGroup
     }
     
     /**
-     * @return string|null
+     * @return Image|null
      */
-    public function getIconMap(): ?string
+    public function getIconMap(): ?Image
     {
         return $this->iconMap;
     }
     
     /**
      * @param Image|null $iconMap
-     * @return HostTemplate
+     * @return HostGroup
      */
     public function setIconMap(?Image $iconMap): HostGroup
     {
@@ -247,19 +271,24 @@ class HostGroup
     }
     
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getRrd(): ?string
+    public function getRrd(): ?int
     {
         return $this->rrd;
     }
     
     /**
-     * @param string|null $rrd
+     * @param int|null $rrd
      * @return HostGroup
+     * @throws \Assert\AssertionFailedException
      */
-    public function setRrd(?string $rrd): HostGroup
+    public function setRrd(?int $rrd): HostGroup
     {
+        if ($rrd !== null) {
+            Assertion::max($rrd, self::MAX_RRD, 'HostGroup::rrd');
+            Assertion::min($rrd, self::MIN_RRD, 'HostGroup::rrd');
+        }
         $this->rrd = $rrd;
         return $this;
     }
@@ -275,9 +304,13 @@ class HostGroup
     /**
      * @param string|null $geoCoords
      * @return HostGroup
+     * @throws \Assert\AssertionFailedException
      */
     public function setGeoCoords(?string $geoCoords): HostGroup
     {
+        if ($geoCoords !== null) {
+            Assertion::maxLength($geoCoords, self::MAX_GEO_COORDS, 'HostGroup::geoCoords');
+        }
         $this->geoCoords = $geoCoords;
         return $this;
     }
@@ -293,9 +326,13 @@ class HostGroup
     /**
      * @param string|null $comment
      * @return HostGroup
+     * @throws \Assert\AssertionFailedException
      */
     public function setComment(?string $comment): HostGroup
     {
+        if ($comment !== null) {
+            Assertion::maxLength($comment, self::MAX_COMMENTS_LENGTH, 'HostGroup::comment');
+        }
         $this->comment = $comment;
         return $this;
     }

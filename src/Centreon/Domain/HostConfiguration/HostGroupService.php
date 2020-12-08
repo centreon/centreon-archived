@@ -56,7 +56,7 @@ class HostGroupService implements HostGroupServiceInterface
     /**
      * @inheritDoc
      */
-    public function findHostGroup(int $hgId): ?HostGroup
+    public function findHostGroup(int $hgId): array
     {
         try {
             return $this->hostGroupRepository->findHostGroup($hgId);

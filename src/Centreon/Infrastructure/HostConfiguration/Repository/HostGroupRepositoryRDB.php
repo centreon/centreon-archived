@@ -74,30 +74,21 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             empty($hostGroup->getAlias())
                 ? $statement->bindValue(':alias', null, \PDO::PARAM_NULL)
                 : $statement->bindValue(':alias', $hostGroup->getAlias(), \PDO::PARAM_STR);
-            
+
             $statement->bindValue(':notes', $hostGroup->getNotes(), \PDO::PARAM_STR);
             $statement->bindValue(':notesUrl', $hostGroup->getNotesUrl(), \PDO::PARAM_STR);
             $statement->bindValue(':actionUrl', $hostGroup->getActionUrl(), \PDO::PARAM_STR);
             $statement->bindValue(':icon', $hostGroup->getIcon(), \PDO::PARAM_STR);
             $statement->bindValue(':iconMap', $hostGroup->getIconMap(), \PDO::PARAM_STR);
-            $statement->bindValue(':rrd', $hostGroup->getRrd(), \PDO::PARAM_STR);
+            $statement->bindValue(':rrd', $hostGroup->getRrd(), \PDO::PARAM_INT);
             $statement->bindValue(':geo_coords', $hostGroup->getGeoCoords(), \PDO::PARAM_STR);
             $statement->bindValue(':comment', $hostGroup->getComment(), \PDO::PARAM_STR);
             $statement->bindValue(':is_activate', $hostGroup->isActivated(), \PDO::PARAM_STR);
             $statement->execute();
-            
-            $hostGroupId = (int)$this->db->lastInsertId();
-            
-            /*
-            if ($host->getMonitoringServer() !== null) {
-                $this->addMonitoringServer($hostId, $host->getMonitoringServer());
-            }
 
-            $this->addHostTemplate($hostId, $host->getTemplates());
-            */
-            
+            $hostGroupId = (int)$this->db->lastInsertId();
             $this->db->commit();
-            
+
             return $hostGroupId;
         } catch (\Exception $ex) {
             $this->db->rollBack();

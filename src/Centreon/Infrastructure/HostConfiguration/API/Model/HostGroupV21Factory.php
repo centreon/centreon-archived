@@ -44,7 +44,7 @@ class HostGroupV21Factory
             $newHostGroup->name = $hostGroup['name'];
             $newHostGroup->alias = $hostGroup['alias'];
             $newHostGroup->notes = $hostGroup['notes'];
-            $newHostGroup->notesUrl = $hostGroup['notes-url'];
+            $newHostGroup->notesUrl = $hostGroup['notes_url'];
             $newHostGroup->actionUrl = $hostGroup['action_url'];
             $newHostGroup->icon = $hostGroup['icon'];
             $newHostGroup->iconMap = $hostGroup['icon_map'];

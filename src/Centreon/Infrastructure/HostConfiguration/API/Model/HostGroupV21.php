@@ -73,7 +73,7 @@ class HostGroupV21
     public $iconMap;
 
     /**
-     * @var string|null
+     * @var int|null
      */
     public $rrd;
 

@@ -71,7 +71,7 @@ class HostGroupFactoryRdb
             ->setNotes($data['hg_notes'])
             ->setNotesUrl($data['hg_notes_url'])
             ->setActionUrl($data['hg_action_url'])
-            ->setRrd($data['hg_rrd_retention'])
+            ->setRrd(self::getIntOrNull($data['hg_rrd_retention']))
             ->setGeoCoords($data['geo_coords'])
             ->setComment($data['hg_comment'])
             ->setActivated((bool) $data['hg_activate']);

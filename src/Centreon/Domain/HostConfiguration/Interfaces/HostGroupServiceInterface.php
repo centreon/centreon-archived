@@ -29,13 +29,13 @@ interface HostGroupServiceInterface
 {
 
     /**
-     * Find a host.
+     * Find a host group.
      *
      * @param int $hgId Host Id to be found
-     * @return HostGroup|null Returns a host otherwise null
+     * @return array
      * @throws HostGroupException
      */
-    public function findHostGroup(int $hgId): ?HostGroup;
+    public function findHostGroup(int $hgId): array;
 
     /**
      * Returns the number of host.

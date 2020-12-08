@@ -35,7 +35,7 @@ class FindHostGroupsResponse
     /**
      * @var array<int, array<string, mixed>>
      */
-    private $hostGroups;
+    private $hostGroups = [];
 
     /**
      * @param HostGroup[] $hostGroups
@@ -49,7 +49,7 @@ class FindHostGroupsResponse
                 'name' => $hostGroup->getName(),
                 'alias' => $hostGroup->getAlias(),
                 'notes' => $hostGroup->getNotes(),
-                'notes-url' => $hostGroup->getNotesUrl(),
+                'notes_url' => $hostGroup->getNotesUrl(),
                 'action_url' => $hostGroup->getActionUrl(),
                 'icon' => $this->imageToArray($hostGroup->getIcon()),
                 'icon_map' => $this->imageToArray($hostGroup->getIcon()),
