@@ -672,6 +672,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function findTopLevelPlatform(): ?Platform
     {
-            return $this->platformTopologyRepository->findTopLevelPlatform();
+        return $this->platformTopologyRepository->findTopLevelPlatform();
     }
 }

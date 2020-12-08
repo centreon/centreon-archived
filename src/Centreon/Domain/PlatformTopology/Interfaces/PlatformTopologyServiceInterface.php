@@ -58,7 +58,7 @@ interface PlatformTopologyServiceInterface
     public function getPlatformTopology(): array;
 
     /**
-     * Delete a Platform.
+     * Delete a Platform and allocate its children to top level platform.
      *
      * @param integer $platformId
      * @throws PlatformException

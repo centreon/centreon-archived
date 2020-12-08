@@ -282,8 +282,6 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
 
     public function updatePlatformParameters(Platform $platform): void
     {
-        $requestParameters = [];
-
         try {
             $statement = $this->db->prepare(
                 $this->translateDbName(
