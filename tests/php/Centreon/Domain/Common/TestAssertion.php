@@ -207,7 +207,7 @@ class TestAssertion extends TestCase
     }
 
     /**
-     * Test the notEmpty assertion
+     * Test the notNull assertion
      */
     public function testNotNullException(): void
     {
