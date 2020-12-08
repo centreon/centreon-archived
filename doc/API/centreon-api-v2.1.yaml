@@ -128,6 +128,31 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/hosts/groups:
+    get:
+      tags:
+        - Host group
+      summary: "List all host groups"
+      description: |
+        List of all host group configurations
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.Host.Group'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/icons:
     get:
       tags:
@@ -3119,6 +3144,69 @@ components:
           description: "Host template parent ids"
           items:
             type: integer
+    Configuration.Host.Group:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "Host group id"
+          example: 1
+        name:
+          type: string
+          maxLength: 200
+          description: "Host group name"
+          example: "MySQL-Servers"
+        alias:
+          type: string
+          nullable: true
+          maxLength: 200
+          description: "Host group alias"
+          example: "All MySQL Servers"
+        notes:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: "Define an optional string of notes pertaining to the host group"
+          example: "my notes"
+        notes_url:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: "Define an optional URL that can be used to provide more information about the host group"
+          example: "notes url"
+        action_url:
+          type: string
+          nullable: true
+          maxLength: 255
+          description: "Define an optional URL that can be used to provide more actions to be performed on the host group. You will see the link to the action URL in the host group details"
+          example: "action url"
+        icon:
+          $ref: '#/components/schemas/Media.Image'
+          nullable: true
+          description: "Define the image that should be associated with this host group"
+        icon_map:
+          $ref: '#/components/schemas/Media.Image'
+          nullable: true
+          description: "Define an image that should be associated with this host group in the statusmap CGI in monitoring engine"
+        geocoords:
+          type: string
+          nullable: true
+          maxLength: 32
+          description: "Geographical coordinates use by Centreon Map module to position element on map"
+          example: "48.51,2.20"
+        rrd:
+          type: integer
+          nullable: true
+          description: "RRD retention duration in days of all the services that are in this host group"
+          example: 2
+        comment:
+          type: string
+          nullable: true
+          maxLength: 65535
+          description: "Comments on this host group"
+        is_activated:
+          type: boolean
+          description: "Indicates whether the host group is activated or not"
     Media.Image:
       type: object
       properties:
