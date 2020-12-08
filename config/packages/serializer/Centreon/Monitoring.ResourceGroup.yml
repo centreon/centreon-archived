@@ -1,0 +1,10 @@
+Centreon\Domain\Monitoring\ResourceGroup:
+    properties:
+        id:
+            type: integer
+            groups:
+                - 'Default'
+        name:
+            type: string
+            groups:
+                - 'Default'
