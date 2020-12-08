@@ -58,46 +58,53 @@ class HostGroup
     private $alias;
     
     /**
-     * @var string|null Define an optional URL that can be used to provide more information about the host.
-     * <br>
-     * This can be very useful if you want to make detailed information on the host template, emergency contact methods,
-     * etc. available to other support staff.<br>
-     * Any valid URL can be used.
-     */
-    private $notesUrl;
-    
-    /**
-     * @var string|null Define an optional URL that can be used to provide more actions to be performed on the host.
-     */
-    private $actionUrl;
-    
-    /**
-     * @var string|null Define an optional notes.
+     * @var string|null Define an optional string of notes pertaining to the host group.
      */
     private $notes;
     
     /**
-     * @var Image|null Define the image that should be associated with this group.
+     * @var string|null Define an optional URL that can be used to provide more information about the host group.
+     * <br> Any valid URL can be used.
+     * <br> This can be very useful if you want to make detailed information on the host group,
+     * emergency contact methods, etc. available to other support staff.
+     */
+    private $notesUrl;
+    
+    /**
+     * @var string|null Define an optional URL that can be used to provide more actions to be performed on
+     * the host group. You will see the link to the action URL in the host group details.
+     */
+    private $actionUrl;
+
+    /**
+     * @var Image|null Define the image that should be associated with this host group.
+     * This image will be displayed in the various places. The image will look best if it is 40x40 pixels in size.
      */
     private $icon;
     
     /**
-     * @var Image|null Define the map image that should be associated with this group.
+     * @var Image|null Define an image that should be associated with this host group in the statusmap CGI
+     * in monitoring engine. <br>
+     * You can choose a JPEG, PNG, and GIF image. The GD2 image format is preferred, as other image formats
+     * must be converted first when the statusmap image is generated. <br>
+     * The image will look best if it is 40x40 pixels in size.
      */
     private $iconMap;
     
     /**
-     * @var int|null
-     */
-    private $rrd;
-    
-    /**
-     * @var string|null
+     * @var string|null Geographical coordinates use by Centreon Map module to position element on map. <br>
+     * Define "Latitude,Longitude", for example for Paris coordinates set "48.51,2.20"
      */
     private $geoCoords;
     
     /**
-     * @var string|null
+     * @var int|null RRD retention duration of all the services that are in this host group.
+     * If service is in multiple host groups, the highest retention value will be used.
+     */
+    private $rrd;
+
+    /**
+     * @var string|null Comments on this host group.
      */
     private $comment;
     
