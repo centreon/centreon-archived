@@ -73,10 +73,7 @@ const PerformanceGraph = ({
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
 
-  const {
-    sendRequest: sendGetGraphDataRequest,
-    sending: sendingGetGraphDataRequest,
-  } = useRequest<GraphData>({
+  const { sendRequest: sendGetGraphDataRequest } = useRequest<GraphData>({
     request: getData,
   });
 
@@ -93,9 +90,7 @@ const PerformanceGraph = ({
     });
   }, [endpoint]);
 
-  const loading = isNil(lineData) || isNil(timeline) || isNil(endpoint);
-
-  if (loading) {
+  if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return <LoadingSkeleton />;
   }
 
