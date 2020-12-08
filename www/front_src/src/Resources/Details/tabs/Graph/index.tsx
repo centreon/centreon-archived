@@ -5,10 +5,13 @@ import { useTranslation } from 'react-i18next';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
-import { SelectField } from '@centreon/ui';
+import { SelectField, useRequest, ListingModel } from '@centreon/ui';
 
 import PerformanceGraph from '../../../Graph/Performance';
 import { TabProps } from '..';
+import { listTimelineEvents } from '../Timeline/api';
+import { TimelineEvent } from '../Timeline/models';
+import { listTimelineEventsDecoder } from '../Timeline/api/decoders';
 
 import {
   timePeriods,
@@ -55,6 +58,20 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
+  const { sendRequest: sendGetTimelineRequest } = useRequest<
+    ListingModel<TimelineEvent>
+  >({
+    request: listTimelineEvents,
+    decoder: listTimelineEventsDecoder,
+  });
+
+  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
+
+  const [
+    selectedTimePeriod,
+    setSelectedTimePeriod,
+  ] = React.useState<TimePeriod>(defaultTimePeriod);
+
   const translatedTimePeriodSelectOptions = timePeriodSelectOptions.map(
     (timePeriod) => ({
       ...timePeriod,
@@ -63,21 +80,63 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
   );
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
+  const timelineEndpoint = path<string>(
+    ['links', 'endpoints', 'timeline'],
+    details,
+  );
 
-  const [
-    selectedTimePeriod,
-    setSelectedTimePeriod,
-  ] = React.useState<TimePeriod>(defaultTimePeriod);
+  const getIntervalDates = (timePeriod): Array<string> => {
+    return [
+      timePeriod.getStart().toISOString(),
+      new Date(Date.now()).toISOString(),
+    ];
+  };
 
-  const getQueryParams = (timePeriod): string => {
-    const now = new Date(Date.now()).toISOString();
-    const start = timePeriod.getStart().toISOString();
+  const retrieveTimeline = (): void => {
+    if (isNil(timelineEndpoint)) {
+      setTimeline([]);
+      return;
+    }
 
-    return `?start=${start}&end=${now}`;
+    const [start, end] = getIntervalDates(selectedTimePeriod);
+
+    sendGetTimelineRequest({
+      endpoint: timelineEndpoint,
+      parameters: {
+        limit: selectedTimePeriod.timelineEventsLimit,
+        search: {
+          conditions: [
+            {
+              field: 'date',
+              values: {
+                $gt: start,
+                $lt: end,
+              },
+            },
+          ],
+        },
+      },
+    }).then(({ result }) => {
+      setTimeline(result);
+    });
+  };
+
+  React.useEffect(() => {
+    if (isNil(endpoint)) {
+      return;
+    }
+
+    retrieveTimeline();
+  }, [endpoint, selectedTimePeriod]);
+
+  const getGraphQueryParameters = (timePeriod): string => {
+    const [start, end] = getIntervalDates(timePeriod);
+
+    return `?start=${start}&end=${end}`;
   };
 
   const [periodQueryParams, setPeriodQueryParams] = React.useState(
-    getQueryParams(selectedTimePeriod),
+    getGraphQueryParameters(selectedTimePeriod),
   );
 
   const changeSelectedPeriod = (event): void => {
@@ -86,7 +145,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
 
     setSelectedTimePeriod(timePeriod);
 
-    const queryParamsForSelectedPeriodId = getQueryParams(timePeriod);
+    const queryParamsForSelectedPeriodId = getGraphQueryParameters(timePeriod);
     setPeriodQueryParams(queryParamsForSelectedPeriodId);
   };
 
@@ -115,6 +174,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
             graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
             toggableLegend
+            timeline={timeline as Array<TimelineEvent>}
           />
         </div>
       </Paper>

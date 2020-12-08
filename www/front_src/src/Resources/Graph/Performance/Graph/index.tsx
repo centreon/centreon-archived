@@ -40,7 +40,9 @@ import {
 } from '../timeSeries';
 import formatMetricValue from '../formatMetricValue';
 import Lines from '../Lines';
+import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 
+import Annotations from './Annotations';
 import Axes from './Axes';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
@@ -51,8 +53,9 @@ const MemoizedBar = React.memo(Bar, propsAreEqual);
 const MemoizedGridColumns = React.memo(GridColumns, propsAreEqual);
 const MemoizedGridRows = React.memo(GridRows, propsAreEqual);
 const MemoizedLines = React.memo(Lines, propsAreEqual);
+const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 
-const margin = { top: 10, right: 45, bottom: 30, left: 45 };
+const margin = { top: 30, right: 45, bottom: 30, left: 45 };
 
 interface Props {
   width: number;
@@ -61,6 +64,7 @@ interface Props {
   base: number;
   lines: Array<LineModel>;
   xAxisTickFormat: string;
+  timeline?: Array<TimelineEvent>;
 }
 
 const getScale = ({
@@ -87,6 +91,7 @@ const Graph = ({
   base,
   lines,
   xAxisTickFormat,
+  timeline,
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
 
@@ -294,6 +299,11 @@ const Graph = ({
             fill="transparent"
             onMouseMove={displayTooltip}
             onMouseLeave={hideTooltip}
+          />
+          <MemoizedAnnotations
+            xScale={xScale}
+            graphHeight={graphHeight}
+            timeline={timeline as Array<TimelineEvent>}
           />
           {tooltipData && (
             <Line

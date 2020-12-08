@@ -9,6 +9,7 @@ import { makeStyles, Typography, Theme } from '@material-ui/core';
 import { useRequest, getData, timeFormat } from '@centreon/ui';
 
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 
 import { getTimeSeries, getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
@@ -21,6 +22,7 @@ interface Props {
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
+  timeline?: Array<TimelineEvent>;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -52,6 +54,7 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
+  timeline,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
@@ -61,7 +64,10 @@ const PerformanceGraph = ({
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
 
-  const { sendRequest, sending } = useRequest<GraphData>({
+  const {
+    sendRequest: sendGetGraphDataRequest,
+    sending: sendingGetGraphDataRequest,
+  } = useRequest<GraphData>({
     request: getData,
   });
 
@@ -70,7 +76,7 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendRequest(endpoint).then((graphData) => {
+    sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);
@@ -78,7 +84,10 @@ const PerformanceGraph = ({
     });
   }, [endpoint]);
 
-  if (sending || isNil(endpoint)) {
+  const loading =
+    sendingGetGraphDataRequest || isNil(timeline) || isNil(endpoint);
+
+  if (loading) {
     return <LoadingSkeleton />;
   }
 
@@ -136,6 +145,7 @@ const PerformanceGraph = ({
             lines={displayedLines}
             base={base as number}
             xAxisTickFormat={xAxisTickFormat}
+            timeline={timeline}
           />
         )}
       </ParentSize>
