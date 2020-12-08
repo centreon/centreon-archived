@@ -71,7 +71,15 @@ interface PlatformTopologyServiceInterface
      *
      * @param integer $serverId
      * @param array<string, mixed> $parameters
-     * @return void
+     * @throws PlatformException
      */
     public function updatePlatformParameters(int $serverId, array $parameters): void;
+
+    /**
+     * Find the top level platform of the topology.
+     *
+     * @return Platform|null
+     * @throws PlatformException
+     */
+    public function findTopLevelPlatform(): ?Platform;
 }

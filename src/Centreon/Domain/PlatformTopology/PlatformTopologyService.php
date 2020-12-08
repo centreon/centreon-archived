@@ -626,7 +626,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 /**
                  * If children platform are found, look for a Top Parent platform to link the children platforms
                  */
-                $topLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatform();
+                $topLevelPlatform = $this->findTopLevelPlatform();
 
                 if ($topLevelPlatform === null) {
                     throw new EntityNotFoundException(_('No top level Platform found to link the children platforms'));
@@ -647,7 +647,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
     }
 
-
     /**
      * @inheritDoc
      */
@@ -655,6 +654,18 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     {
         try {
             $this->platformTopologyRepository->updatePlatformParameters($serverId, $parameters);
+        } catch (\Exception $ex) {
+            throw new PlatformException($ex->getMessage(), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findTopLevelPlatform(): ?Platform
+    {
+        try {
+            return $this->platformTopologyRepository->findTopLevelPlatform();
         } catch (\Exception $ex) {
             throw new PlatformException($ex->getMessage(), 0, $ex);
         }
