@@ -4,6 +4,10 @@ const setUser = jest.fn();
 
 const setActionAcl = jest.fn();
 
+const setDowntime = jest.fn();
+
+const setRefreshInterval = jest.fn();
+
 const useUser = jest.fn(() => ({
   user: 'admin',
   setUser,
@@ -14,8 +18,19 @@ const useAcl = jest.fn(() => ({
   setActionAcl,
 }));
 
+const useDowntime = jest.fn(() => ({
+  downtime: {},
+  setDowntime,
+}));
+
+const useRefreshInterval = jest.fn(() => ({
+  refreshInterval: 0,
+  setRefreshInterval,
+}));
+
 const useUserContext = jest.fn(() => ({
-  username: 'admin',
+  alias: 'admin',
+  name: 'admin',
   locale: 'en',
   timezone: 'Europe/Paris',
 
@@ -37,10 +52,22 @@ const useUserContext = jest.fn(() => ({
       },
     },
   },
+
+  downtime: {
+    default_duration: 7200,
+  },
+  refresh_interval: 15,
 }));
 
 const Context = {
   Provider: () => <></>,
 };
 
-export { useUserContext, useUser, useAcl, Context };
+export {
+  useUserContext,
+  useUser,
+  useAcl,
+  useDowntime,
+  useRefreshInterval,
+  Context,
+};

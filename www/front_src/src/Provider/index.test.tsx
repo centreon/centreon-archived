@@ -1,19 +1,29 @@
 import * as React from 'react';
 
 import axios from 'axios';
-
 import { render, RenderResult, waitFor } from '@testing-library/react';
 
-import { useUser, useAcl } from '@centreon/ui-context';
+import {
+  useUser,
+  useAcl,
+  useDowntime,
+  useRefreshInterval,
+} from '@centreon/ui-context';
 
 import AppProvider from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
-  username: 'admin',
   timezone: 'Europe/Paris',
-  locale: 'en-EN',
+  locale: 'fr_FR.UTF8',
+  name: 'Admin',
+  alias: 'Admin alias',
+};
+
+const retrievedDefaultParameters = {
+  monitoring_default_downtime_duration: 1458,
+  monitoring_default_refresh_interval: 15,
 };
 
 const retrievedActionsAcl = {
@@ -57,6 +67,9 @@ describe(AppProvider, () => {
         data: retrievedUser,
       })
       .mockResolvedValueOnce({
+        data: retrievedDefaultParameters,
+      })
+      .mockResolvedValueOnce({
         data: retrievedTranslations,
       })
       .mockResolvedValueOnce({
@@ -70,6 +83,13 @@ describe(AppProvider, () => {
     await waitFor(() => {
       expect(useAcl().setActionAcl).toHaveBeenCalledWith(retrievedActionsAcl);
       expect(useUser().setUser).toHaveBeenCalledWith(retrievedUser);
+      expect(useDowntime().setDowntime).toHaveBeenCalledWith({
+        default_duration:
+          retrievedDefaultParameters.monitoring_default_downtime_duration,
+      });
+      expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
+        retrievedDefaultParameters.monitoring_default_refresh_interval,
+      );
     });
   });
 });

@@ -39,8 +39,9 @@ import {
   hasUnitStackedLines,
 } from '../timeSeries';
 import formatMetricValue from '../formatMetricValue';
-import Axes from './Axes';
 import Lines from '../Lines';
+
+import Axes from './Axes';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);

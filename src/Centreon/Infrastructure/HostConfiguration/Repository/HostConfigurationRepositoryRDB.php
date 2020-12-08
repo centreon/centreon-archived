@@ -36,7 +36,7 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
 /**
- * This class is designed to represent the MariaDb repository to manage host, host group and host template
+ * This class is designed to represent the MariaDb repository to manage host and host template
  *
  * @package Centreon\Infrastructure\HostConfiguration
  */
@@ -315,7 +315,8 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         }
         return null;
     }
-    
+
+
     /**
      * @inheritDoc
      */
@@ -532,9 +533,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     public function findHostTemplates(): array
     {
         $request = $this->translateDbName(
-            'SELECT SQL_CALC_FOUND_ROWS h.*, ext.*, icon.img_id AS icon_id, icon.img_name AS icon_name, 
+            'SELECT SQL_CALC_FOUND_ROWS h.*, ext.*, icon.img_id AS icon_id, icon.img_name AS icon_name,
                 CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
-                icon.img_comment AS icon_comment, smi.img_id AS smi_id, smi.img_name AS smi_name, 
+                icon.img_comment AS icon_comment, smi.img_id AS smi_id, smi.img_name AS smi_name,
                 smi.img_path AS smi_path, smi.img_comment AS smi_comment,
                 GROUP_CONCAT(DISTINCT htr.host_tpl_id) AS parents
             FROM `:db`.host h
@@ -582,5 +583,4 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         }
         return $hostTemplates;
     }
-
 }
