@@ -217,15 +217,11 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
      */
     public function deletePlatform(int $serverId): void
     {
-        try {
-            $statement = $this->db->prepare(
-                $this->translateDbName('DELETE FROM `:db`.`platform_topology` WHERE id = :serverId')
-            );
-            $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
-            $statement->execute();
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
+        $statement = $this->db->prepare(
+            $this->translateDbName('DELETE FROM `:db`.`platform_topology` WHERE id = :serverId')
+        );
+        $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
+        $statement->execute();
     }
 
     /**

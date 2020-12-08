@@ -646,9 +646,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 }
             }
             $this->platformTopologyRepository->deletePlatform($serverId);
-        } catch (EntityNotFoundException $ex) {
-            throw $ex;
-        } catch (PlatformException $ex) {
+        } catch (EntityNotFoundException | PlatformException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
             throw new PlatformException("An error occured while deleting the Platform", 0, $ex);
