@@ -625,7 +625,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $collector = new StatementCollector();
 
         $request =
-            'SELECT h.*,
+            'SELECT DISTINCT h.*,
             i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
@@ -682,7 +682,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
-            'SELECT h.*,
+            'SELECT DISTINCT h.*,
             i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
