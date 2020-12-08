@@ -708,7 +708,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $host[] = EntityCreator::createEntityByArray(
+            $hosts[] = EntityCreator::createEntityByArray(
                 Host::class,
                 $row
             );
