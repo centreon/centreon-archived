@@ -626,7 +626,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
             if (!empty($childPlatforms)) {
                 /**
-                 * If at least one children platform was found, find the Top Parent platform and link children platform(s) to it.
+                 * If at least one children platform was found,
+                 * find the Top Parent platform and link children platform(s) to it.
                  *
                  * @var Platform $topLevelPlatform
                  */
