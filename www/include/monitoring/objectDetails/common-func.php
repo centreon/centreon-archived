@@ -53,6 +53,9 @@ function hidePasswordInCommand(
 ): string {
     global $pearDB;
 
+    // Remove $ARGx$
+    $commandName = strtok($commandName, '!');
+
     $pearDBStorage = new CentreonDB('centstorage');
 
     // Get executed command lines
