@@ -43,6 +43,7 @@ import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
+import useAclQuery from '../../../Actions/Resource/aclQuery';
 
 import MetricsTooltip from './MetricsTooltip';
 import AddCommentForm from './AddCommentForm';
@@ -106,6 +107,7 @@ const Graph = ({
   const { t } = useTranslation();
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
+  const { canComment } = useAclQuery();
 
   const {
     tooltipData,
@@ -248,6 +250,10 @@ const Graph = ({
   );
 
   const displayAddCommentTooltip = (event): void => {
+    if (!canComment([resource])) {
+      return;
+    }
+
     const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
     const { timeTick } = getTimeValue(x);
