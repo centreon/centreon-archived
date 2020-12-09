@@ -918,7 +918,7 @@ class CentreonHost
         if (!isset($cmdId)) {
             $cmdId = "";
         }
-        $aMacros = $this->getMacros($host_id, false, $aTemplates, $cmdId);
+        $aMacros = $this->getMacros($host_id, $aTemplates, $cmdId);
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
                 if ($input == $macro['macroInput_#index#'] &&
@@ -959,12 +959,11 @@ class CentreonHost
      * This method get the macro attached to the host
      *
      * @param int $iHostId
-     * @param int $bIsTemplate
      * @param array $aListTemplate
      * @param int $iIdCommande
      * @return array
      */
-    public function getMacros($iHostId, $bIsTemplate, $aListTemplate, $iIdCommande, $form = array())
+    public function getMacros($iHostId, $aListTemplate, $iIdCommande, $form = array())
     {
         $macroArray = $this->getMacroFromForm($form, "direct");
         $aMacroTemplate[] = $this->getMacroFromForm($form, "fromTpl");
@@ -1033,18 +1032,16 @@ class CentreonHost
             }
         }
 
-        if (count($aMacroTemplate) > 0) {
-            foreach ($aMacroTemplate as $key => $macr) {
-                foreach ($macr as $mm) {
-                    $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
-                    $mm['macroFrom_#index#'] = 'fromTpl';
-                    $mm['source'] = 'fromTpl';
-                    $aTempMacro[] = $mm;
-                }
+        foreach ($aMacroTemplate as $key => $macr) {
+            foreach ($macr as $mm) {
+                $mm['macroOldValue_#index#'] = $mm["macroValue_#index#"];
+                $mm['macroFrom_#index#'] = 'fromTpl';
+                $mm['source'] = 'fromTpl';
+                $aTempMacro[] = $mm;
             }
         }
 
-        if (count($aMacroInCommande) > 0) {
+        if (!empty($aMacroInCommande)) {
             $macroCommande = $aMacroInCommande;
             for ($i = 0; $i < count($macroCommande); $i++) {
                 $macroCommande[$i]['macroOldValue_#index#'] = $macroCommande[$i]["macroValue_#index#"];

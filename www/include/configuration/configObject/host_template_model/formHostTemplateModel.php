@@ -139,7 +139,7 @@ if (($o == "c" || $o == "w") && $host_id) {
         $cmdId = "";
     }
 
-    $macroArray = $hostObj->getMacros($host_id, true, $aTemplates, $cmdId, $_POST);
+    $macroArray = $hostObj->getMacros($host_id, $aTemplates, $cmdId, $_POST);
 }
 
 

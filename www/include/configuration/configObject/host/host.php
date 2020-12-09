@@ -53,35 +53,13 @@ $host_id = filter_var(
 
 // select can be an array of integer or a string of integers separated by comma
 $select = filter_var_array(
-    call_user_func(function () {
-        $selectValue = array();
-        if (isset($_GET["select"])) {
-            $selectValue = $_GET["select"];
-        } elseif (isset($_POST["select"])) {
-            $selectValue = $_POST["select"];
-        }
-
-        // when the data is sent from the form, the format is "1,2,5"
-        // so we need to split it by comma, and validate that each element is an integer
-        if (!is_array($selectValue)) {
-            $selectValue = array_filter(explode(',', $selectValue));
-        }
-        return $selectValue;
-    }),
+    getSelectOption(),
     FILTER_VALIDATE_INT
 );
 
 // If one data is not correctly typed in array, it will be set to false
 $dupNbr = filter_var_array(
-    call_user_func(function () {
-        if (isset($_GET["dupNbr"])) {
-            return $_GET["dupNbr"];
-        } elseif (isset($_POST["dupNbr"])) {
-            return $_POST["dupNbr"];
-        } else {
-            return array();
-        }
-    }),
+    getDuplicateNumberOption(),
     FILTER_VALIDATE_INT
 );
 
