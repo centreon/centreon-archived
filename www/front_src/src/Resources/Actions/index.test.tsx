@@ -454,7 +454,7 @@ describe(Actions, () => {
           resources: map(pick(['type', 'id', 'parent']), selectedResources),
           downtime: {
             comment: labelDowntimeByAdmin,
-            duration: 3600,
+            duration: 7200,
             start_time: formatISO(now),
             end_time: formatISO(twoHoursFromNow),
             is_fixed: true,
