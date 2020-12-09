@@ -15868,10 +15868,10 @@ msgid "Error when searching for hosts"
 msgstr "Erreur lors de la recherche des hôtes"
 
 msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
-msgstr "[%s] La valeur est trop longue, elle ne devrait pas comporter plus de %d caractères mais n'en comporte que %d"
+msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas comporter plus de %d caractères mais n'en comporte que %d"
 
 msgid "[%s] The value \"%s\" is too short, it should have at least %d characters, but only has %d characters"
-msgstr "[%s] La valeur est trop courte, elle devrait comporter au moins %d caractères mais n'en a que %d"
+msgstr "[%s] La valeur \"%s\" est trop courte, elle devrait comporter au moins %d caractères mais n'en a que %d"
 
 msgid "[%s] The value \"%d\" was expected to be at least %d"
 msgstr "[%s] La valeur \"%d\" devait être au moins égale à %d"

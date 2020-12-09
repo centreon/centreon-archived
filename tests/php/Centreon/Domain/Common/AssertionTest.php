@@ -29,7 +29,7 @@ use Centreon\Domain\Common\Assertion\Assertion;
 /**
  * @package Tests\Centreon\Domain\Common
  */
-class TestAssertion extends TestCase
+class AssertionTest extends TestCase
 {
     /**
      * @var string

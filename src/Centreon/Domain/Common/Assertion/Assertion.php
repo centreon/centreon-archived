@@ -190,7 +190,7 @@ class Assertion
      */
     public static function notNull($value, string $propertyPath = null): void
     {
-        Assert::notEmpty(
+        Assert::notNull(
             $value,
             function (array $parameters) {
                 return AssertionException::notNull($parameters['propertyPath']);
