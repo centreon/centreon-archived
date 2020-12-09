@@ -21,6 +21,7 @@ import {
   useDowntime,
   useRefreshInterval,
   User,
+  Actions,
 } from '@centreon/ui-context';
 
 import App from '../App';
@@ -32,7 +33,7 @@ import {
   aclEndpoint,
   userEndpoint,
 } from './endpoint';
-import { DefaultParameters, Actions } from './models';
+import { DefaultParameters } from './models';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
