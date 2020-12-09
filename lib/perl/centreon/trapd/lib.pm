@@ -749,7 +749,7 @@ sub readtrap {
     my $variable_fix;
     while (defined(my $line = <$input>)) {
         push(@rawtrap, $line);
-        $line =~ s(`)('\\'')g;	# Replace any back ticks with regular single quote
+        $line =~ s(`)(')g;	# Replace any back ticks with regular single quote
 
         # Remove escape from quotes if enabled
         if ($args{config}->{remove_backslash_from_quotes} == 1) {
@@ -800,6 +800,9 @@ sub readtrap {
             if ($temp2 eq "") {
                 $temp2 = "(null)";
             }
+
+            # Replace single quotes in case of running external commands
+            $temp2 =~ s/'/'\\''/g;
 
             # Have quotes around it?
             if ($temp2 =~ /^\"/ && $temp2 =~ /\"$/) {
