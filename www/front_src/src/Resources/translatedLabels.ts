@@ -179,3 +179,4 @@ export const labelNoResourceFound = 'No resource found';
 export const labelFqdn = 'FQDN / Address';
 export const labelAlias = 'Alias';
 export const labelUrl = 'URL';
+export const labelGroups = 'Groups';
