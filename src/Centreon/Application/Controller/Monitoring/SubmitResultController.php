@@ -161,8 +161,12 @@ class SubmitResultController extends AbstractController
         foreach ($results['resources'] as $submitResource) {
             $result = (new SubmitResult($submitResource['id'], $submitResource['status']))
                 ->setOutput($submitResource['output'])
-                ->setPerformanceData($submitResource['performance_data'])
-                ->setParentResourceId($submitResource['parent']['id']);
+                ->setPerformanceData($submitResource['performance_data']);
+
+            if (isset($submitResource['parent']['id'])) {
+                $result->setParentResourceId($submitResource['parent']['id']);
+            }
+
             try {
                 if ($submitResource['type'] === ResourceEntity::TYPE_SERVICE) {
                     $this->submitResultService
