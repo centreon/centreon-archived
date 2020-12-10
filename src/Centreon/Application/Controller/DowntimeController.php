@@ -539,7 +539,8 @@ class DowntimeController extends AbstractController
     public function findDowntimesByHost(
         RequestParametersInterface $requestParameters,
         int $hostId,
-        Request $request): View
+        Request $request
+    ): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
         $isBeta = (bool) $request->attributes->get('version.is_beta');
