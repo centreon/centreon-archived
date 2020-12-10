@@ -1,4 +1,6 @@
 parameters:
+  bootstrapFiles:
+    - constants.php
   paths:
     - %currentWorkingDirectory%/src/Centreon
 services:

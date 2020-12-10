@@ -114,6 +114,10 @@
             "security-checker security:check": "script",
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
-        }
+        },
+        "test": "phpunit",
+        "test:ci": "@test --log-junit ./phpunit-result.xml --coverage-clover ./coverage-result.xml",
+        "codestyle": "phpcs --standard=./ruleset.xml ./",
+        "codestyle:ci": "@codestyle --report=checkstyle --report-file=./checkstyle-be.xml"
     }
 }

@@ -1,39 +1,93 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: frontend tests
+name: Frontend
 
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+    paths:
+      - 'www/front_src/**'
+      - 'package*.json'
+      - '.eslintrc.js'
+      - 'babel.config.js'
+      - 'jest.config.js'
+      - 'tsconfig.json'
+      - 'webpack*.js'
 
 jobs:
-  build:
+
+  fe-dependencies:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [14.x]
-
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - name: Cache node modules
+      id: npm-cache
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
       with:
-        node-version: ${{ matrix.node-version }}
+        # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: node_modules
+        key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+
     - run: npm ci
-    #- run: npm run build --if-present
-    - run: npm run eslint -- -o checkstyle-fe.xml -f checkstyle
-    - uses: tinovyatkin/action-eslint@v1
-      if: ${{ github.event_name == 'pull_request' }}
+      if: steps.npm-cache.outputs.cache-hit != 'true'
+
+
+  fe-style:
+
+    needs: fe-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+    - name: Load npm dependencies
+      uses: actions/cache@v2
       with:
-        repo-token: ${{secrets.GITHUB_TOKEN}}
-        check-name: build # this is the check name from above 👆 where to post annotations
-    - run: npm t -- --ci --reporters=jest-junit --runInBand
+        path: node_modules
+        key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+
+    - run: npm run eslint -- -o checkstyle-fe.xml -f junit
+      continue-on-error: true
+
     - uses: actions/upload-artifact@v2
       with:
-        name: junit-artifact
-        path: junit.xml
+        name: checkstyle-artifact
+        path: checkstyle-fe.xml
+
+    - name: Checkout Private GitHub Action Repo
+      uses: actions/checkout@v2
+      with:
+        repository: kduret/custom-github-action
+        path: my-action
+        ref: master
+        token: ${{ secrets.custom_github_action }} # stored in GitHub secrets
+
+    - name: Annotate PR from ESLINT result
+      run: |
+        ./my-action/cs2pr.php --prefix=ESLINT checkstyle-fe.xml
+
+
+  fe-unit-tests:
+
+    needs: fe-dependencies
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+    - name: Load npm dependencies
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+
+    - run: npm t -- --ci --reporters=jest-junit --maxWorkers=100%

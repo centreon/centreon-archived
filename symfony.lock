@@ -53,8 +53,23 @@
     "clue/stream-filter": {
         "version": "v1.4.1"
     },
+    "composer/package-versions-deprecated": {
+        "version": "1.11.99.1"
+    },
+    "composer/semver": {
+        "version": "3.2.4"
+    },
+    "composer/xdebug-handler": {
+        "version": "1.4.5"
+    },
     "curl/curl": {
         "version": "1.9.3"
+    },
+    "dave-liddament/sarb": {
+        "version": "0.8.0"
+    },
+    "dealerdirect/phpcodesniffer-composer-installer": {
+        "version": "v0.7.0"
     },
     "dflydev/fig-cookies": {
         "version": "v2.0.1"
@@ -89,6 +104,18 @@
     "friends-of-behat/mink-extension": {
         "version": "2.3.1"
     },
+    "friendsofphp/php-cs-fixer": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.2",
+            "ref": "cc05ab6abf6894bddb9bbd6a252459010ebe040b"
+        },
+        "files": [
+            "./.php_cs.dist"
+        ]
+    },
     "friendsofsymfony/rest-bundle": {
         "version": "2.2",
         "recipe": {
@@ -112,6 +139,9 @@
     },
     "instaclick/php-webdriver": {
         "version": "1.4.7"
+    },
+    "jean85/pretty-package-versions": {
+        "version": "1.5.1"
     },
     "jms/metadata": {
         "version": "1.7.0"
@@ -160,6 +190,15 @@
             "./config/packages/nelmio_cors.yaml"
         ]
     },
+    "nette/finder": {
+        "version": "v2.5.2"
+    },
+    "nette/robot-loader": {
+        "version": "v3.3.1"
+    },
+    "nette/utils": {
+        "version": "v3.2.0"
+    },
     "nikic/php-parser": {
         "version": "v4.5.0"
     },
@@ -199,6 +238,9 @@
     "php": {
         "version": "7.2"
     },
+    "php-cs-fixer/diff": {
+        "version": "v1.3.1"
+    },
     "php-http/curl-client": {
         "version": "2.1.0"
     },
@@ -234,6 +276,9 @@
     },
     "phpspec/prophecy": {
         "version": "v1.10.3"
+    },
+    "phpstan/phpdoc-parser": {
+        "version": "0.4.9"
     },
     "phpstan/phpstan": {
         "version": "0.12.28"
@@ -293,6 +338,9 @@
     },
     "psr/log": {
         "version": "1.1.3"
+    },
+    "psr/simple-cache": {
+        "version": "1.0.1"
     },
     "ralouphie/getallheaders": {
         "version": "3.0.3"
@@ -360,6 +408,9 @@
             "./config/packages/security_checker.yaml"
         ]
     },
+    "slevomat/coding-standard": {
+        "version": "6.4.1"
+    },
     "smarty/smarty": {
         "version": "v2.6.31"
     },
@@ -374,6 +425,9 @@
         "files": [
             "./phpcs.xml.dist"
         ]
+    },
+    "staabm/annotate-pull-request-from-checkstyle": {
+        "version": "1.4.0"
     },
     "symfony/browser-kit": {
         "version": "v4.4.9"
@@ -408,6 +462,9 @@
     },
     "symfony/dependency-injection": {
         "version": "v4.4.9"
+    },
+    "symfony/deprecation-contracts": {
+        "version": "v2.2.0"
     },
     "symfony/dom-crawler": {
         "version": "v4.4.9"
@@ -527,6 +584,9 @@
     },
     "symfony/polyfill-php80": {
         "version": "v1.17.0"
+    },
+    "symfony/process": {
+        "version": "v4.4.17"
     },
     "symfony/profiler-pack": {
         "version": "v1.0.4"
@@ -656,6 +716,30 @@
     "symfony/yaml": {
         "version": "v4.4.9"
     },
+    "symplify/autowire-array-parameter": {
+        "version": "8.3.48"
+    },
+    "symplify/coding-standard": {
+        "version": "8.3.48"
+    },
+    "symplify/console-color-diff": {
+        "version": "8.3.48"
+    },
+    "symplify/easy-coding-standard": {
+        "version": "8.3.48"
+    },
+    "symplify/package-builder": {
+        "version": "8.3.48"
+    },
+    "symplify/set-config-resolver": {
+        "version": "8.3.48"
+    },
+    "symplify/smart-file-system": {
+        "version": "8.3.48"
+    },
+    "symplify/symplify-kernel": {
+        "version": "8.3.48"
+    },
     "theseer/tokenizer": {
         "version": "1.1.3"
     },
@@ -664,6 +748,9 @@
     },
     "webmozart/assert": {
         "version": "1.8.0"
+    },
+    "webmozart/path-util": {
+        "version": "2.3.0"
     },
     "willdurand/jsonp-callback-validator": {
         "version": "v1.1.0"
