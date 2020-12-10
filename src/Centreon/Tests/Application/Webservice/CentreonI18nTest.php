@@ -51,7 +51,7 @@ class CentreonI18nTest extends TestCase
 {
     use Traits\WebServiceAuthorizePublicTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $this->container = new Container([

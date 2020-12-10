@@ -53,8 +53,8 @@ use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
 class ModuleSourceTest extends TestCase
 {
 
-    use TestCaseExtensionTrait,
-        SourceDependencyTrait;
+    use TestCaseExtensionTrait;
+    use SourceDependencyTrait;
 
     public static $moduleName = 'test-module';
     public static $moduleNameMissing = 'missing-module';
@@ -84,7 +84,7 @@ class ModuleSourceTest extends TestCase
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
@@ -143,7 +143,7 @@ class ModuleSourceTest extends TestCase
         ;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();

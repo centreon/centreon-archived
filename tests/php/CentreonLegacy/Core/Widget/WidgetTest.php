@@ -28,7 +28,7 @@ class WidgetTest extends \PHPUnit\Framework\TestCase
     private $information;
     private $utils;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new ServiceContainer();
 
@@ -113,7 +113,7 @@ class WidgetTest extends \PHPUnit\Framework\TestCase
             ->willReturn('/');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->container->terminate();
         $this->container = null;

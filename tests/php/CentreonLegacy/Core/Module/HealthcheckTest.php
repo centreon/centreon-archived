@@ -37,7 +37,7 @@ class HealthcheckTest extends TestCase
 
     protected $isModuleFs;
 
-    public function setUp()
+    public function setUp(): void
     {
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
@@ -82,7 +82,7 @@ class HealthcheckTest extends TestCase
         $this->setRequirementMockMethodValue();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();

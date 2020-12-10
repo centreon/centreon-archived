@@ -55,7 +55,7 @@ class CentreonPaginationServiceTest extends TestCase
      */
     protected $service;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new Container;
         $this->setUpCentreonDbManager($this->container);

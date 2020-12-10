@@ -58,7 +58,7 @@ class TopologyWebserviceTest extends TestCase
         TestCaseExtensionTrait,
         Dependency\CentreonDbManagerDependencyTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $this->container = new Container;

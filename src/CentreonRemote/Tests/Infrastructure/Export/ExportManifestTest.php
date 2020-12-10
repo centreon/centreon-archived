@@ -58,7 +58,7 @@ class ExportManifestTest extends TestCase
     /**
      * Set up datasets and mocks
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $parser = $this->getMockBuilder(ExportParserJson::class)
             ->setMethods([

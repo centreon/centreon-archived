@@ -42,7 +42,7 @@ class EscalationWebserviceTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $container = new Container();

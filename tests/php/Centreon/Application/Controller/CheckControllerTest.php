@@ -55,7 +55,7 @@ class CheckControllerTest extends TestCase
     protected $request;
     protected $serializer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $timezone = new \DateTimeZone('Europe/Paris');
 

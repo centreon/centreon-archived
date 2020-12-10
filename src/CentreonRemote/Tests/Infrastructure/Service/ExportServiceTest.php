@@ -51,7 +51,7 @@ class ExportServiceTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->container = new Container();
 
@@ -102,7 +102,7 @@ class ExportServiceTest extends TestCase
         $this->export = new ExportService(new ContainerWrap($this->container));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();

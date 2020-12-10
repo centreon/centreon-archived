@@ -55,7 +55,7 @@ class CentreonModuleServiceTest extends TestCase
     use TestCaseExtensionTrait,
         SourceDependencyTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->service = $this->getMockBuilder(CentreonModuleService::class)
             ->setMethods([

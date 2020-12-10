@@ -51,7 +51,7 @@ class CentreonDBAdapterTest extends TestCase
 
     use TestCaseExtensionTrait;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->db = new CentreonDB;
         $this->manager = new CentreonDBManagerService;

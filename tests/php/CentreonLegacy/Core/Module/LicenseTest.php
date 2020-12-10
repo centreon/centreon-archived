@@ -31,7 +31,7 @@ use CentreonLegacy\Core\Module\Healthcheck;
 class LicenseTest extends TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new ServiceContainer();
         $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK] = $this->createMock(Healthcheck::class);
@@ -39,7 +39,7 @@ class LicenseTest extends TestCase
         $this->service = new Module\License(new Container($this->container));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->container->terminate();
         $this->container = null;

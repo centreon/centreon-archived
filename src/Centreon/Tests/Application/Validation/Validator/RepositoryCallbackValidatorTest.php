@@ -57,7 +57,7 @@ class RepositoryCallbackValidatorTest extends TestCase
 
     use Dependency\CentreonDbManagerDependencyTrait;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new Container;
         $this->executionContext = $this->createMock(ExecutionContext::class);

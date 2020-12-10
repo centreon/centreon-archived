@@ -47,7 +47,7 @@ class SourceAbstractTest extends TestCase
 
     const RESULT_SUCCESS = 'OK';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->source = $this->getMockBuilder(SourceAbstract::class)
             ->disableOriginalConstructor()

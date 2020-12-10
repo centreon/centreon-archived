@@ -46,7 +46,7 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class AutoloadServiceProviderTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->checkPoint = (new CheckPoint)
             ->add('finder.files')

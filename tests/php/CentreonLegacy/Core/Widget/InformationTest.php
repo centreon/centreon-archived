@@ -31,7 +31,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
     private $utils;
     private $configuration;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new ServiceContainer();
 
@@ -70,7 +70,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->container->terminate();
         $this->container = null;

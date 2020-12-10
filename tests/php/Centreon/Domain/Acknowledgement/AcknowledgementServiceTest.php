@@ -57,7 +57,7 @@ class AcknowledgementServiceTest extends TestCase
 
     protected $violationList;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adminContact = (new Contact())
             ->setId(1)

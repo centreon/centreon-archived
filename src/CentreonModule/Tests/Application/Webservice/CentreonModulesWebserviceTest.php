@@ -64,7 +64,7 @@ class CentreonModulesWebserviceTest extends TestCase
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->webservice = $this->createPartialMock(CentreonModulesWebservice::class, [
             'loadDb',
