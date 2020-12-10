@@ -222,7 +222,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
         } else {
             $accessGroups = $this->accessGroupRepository->findByContact($this->contact);
 
-            if (!empty($resourcesId['host'])) {
+            if (!empty($resourceIds['host'])) {
                 try {
                     $hosts = $this->monitoringRepository
                         ->filterByAccessGroups($accessGroups)
@@ -232,7 +232,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
                 }
             }
 
-            if (!empty($resourcesIds['service'])) {
+            if (!empty($resourceIds['service'])) {
                 try {
                     $services = $this->monitoringRepository
                         ->filterByAccessGroups($accessGroups)
