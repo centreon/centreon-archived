@@ -2,6 +2,10 @@
 
 MANDATORY_OPTIONS="u:t:h:n:"
 OPTIONAL_OPTIONS=("help","root:","node-address:","insecure","template:")
+USERNAME_API=""
+CURRENT_NODE_TYPE=""
+TARGET_NODE_ADDRESS=""
+CURRENT_NODE_NAME=""
 ###########################################################
 #                                                         #
 #                    COMMON FUNCTIONS                     #
@@ -15,7 +19,7 @@ function parse_command_options() {
   while getopts $MANDATORY_OPTIONS opt; do
     case ${opt} in
       u)
-        if [[ ! USERNAME_API ]];
+        if [[ ! $USERNAME_API ]];
         then
           USERNAME_API="$OPTARG"
         else
@@ -24,28 +28,31 @@ function parse_command_options() {
         fi
         ;;
       t)
-        if [[ ! CURRENT_NODE_TYPE ]];
+        if [[ ! $CURRENT_NODE_TYPE ]];
         then
           CURRENT_NODE_TYPE=$OPTARG
         else
           err "duplicate flag -t"
           exit 1
+        fi
         ;;
       h)
-        if [[ ! TARGET_NODE_ADDRESS ]];
+        if [[ ! $TARGET_NODE_ADDRESS ]];
         then
           TARGET_NODE_ADDRESS=$OPTARG
         else
           err "duplicate flag -h"
           exit 1
+        fi
         ;;
       n)
-        if [[ ! CURRENT_NODE_NAME ]];
+        if [[ ! $CURRENT_NODE_NAME ]];
         then
           CURRENT_NODE_NAME=$OPTARG
         else
           err "duplicate flag -n"
           exit 1
+        fi
         ;;
     esac
   done
@@ -73,8 +80,9 @@ function get_api_token() {
   then
     err "${API_RESPONSE}"
     exit 1
+  else
+    echo $API_TOKEN
   fi
-  echo $API_TOKEN
 }
 #========= end of function get_api_token()
 
@@ -150,4 +158,5 @@ echo "${TARGET_NODE_ADDRESS} : Please enter your password "
 read API_TARGET_PASSWORD
 stty echo
 API_TOKEN=$(get_api_token "$API_TARGET_PASSWORD")
-exit 0
+
+
