@@ -477,7 +477,9 @@ class PlatformTopologyServiceTest extends TestCase
             $this->platformTopologyRegisterRepository
         );
 
-        $this->assertEquals(null, $platformTopologyService->deletePlatform($this->platform->getId()));
+        $this->assertEquals(null, $platformTopologyService->deletePlatformAndReallocateChildren(
+            $this->platform->getId()
+        ));
     }
 
     public function testDeletePlatformTopologyWithBadId(): void
@@ -500,6 +502,6 @@ class PlatformTopologyServiceTest extends TestCase
         $this->expectException(EntityNotFoundException::class);
         $this->expectExceptionMessage('Platform not found');
 
-        $platformTopologyService->deletePlatform($this->platform->getId());
+        $platformTopologyService->deletePlatformAndReallocateChildren($this->platform->getId());
     }
 }
