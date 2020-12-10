@@ -6,6 +6,7 @@ USERNAME_API=""
 CURRENT_NODE_TYPE=""
 TARGET_NODE_ADDRESS=""
 CURRENT_NODE_NAME=""
+API_TOKEN=""
 ###########################################################
 #                                                         #
 #                    COMMON FUNCTIONS                     #
@@ -80,8 +81,6 @@ function get_api_token() {
   then
     err "${API_RESPONSE}"
     exit 1
-  else
-    echo $API_TOKEN
   fi
 }
 #========= end of function get_api_token()
@@ -95,7 +94,28 @@ function err() {
 
 
 #========= begin of function parse_fqdn()
+function parse_fqdn() {
+    # My shell variable
+  f="https://www.cyberciti.biz/faq/copy-command/"
 
+  ## Remove protocol part of url  ##
+  f="${f#http://}"
+  f="${f#https://}"
+  f="${f#ftp://}"
+  f="${f#scp://}"
+  f="${f#scp://}"
+  f="${f#sftp://}"
+
+  ## Remove username and/or username:password part of URL  ##
+  f="${f#*:*@}"
+  f="${f#*@}"
+
+  ## Remove rest of urls ##
+  f=${f%%/*}
+
+  ## Show domain name only ##
+  echo "$f"
+}
 #========= end of function parse_fqdn()
 
 
@@ -151,12 +171,10 @@ EOF
 
 parse_command_options "$@"
 
-
 ### If all mandatory flag are present, Ask for TARGET_NODE API Password to get token
 stty -echo
 echo "${TARGET_NODE_ADDRESS} : Please enter your password "
 read API_TARGET_PASSWORD
 stty echo
-API_TOKEN=$(get_api_token "$API_TARGET_PASSWORD")
-
-
+get_api_token "$API_TARGET_PASSWORD"
+parse_fqdn
