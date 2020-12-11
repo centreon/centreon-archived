@@ -82,6 +82,8 @@ const PerformanceGraph = ({
       return;
     }
 
+    setLineData(undefined);
+
     sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
