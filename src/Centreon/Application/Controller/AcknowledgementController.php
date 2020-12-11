@@ -129,7 +129,7 @@ class AcknowledgementController extends AbstractController
                     ? ['pagination' => $requestParameters->toArray()]
                     : $requestParameters->toArray()
             ]
-    )->setContext($context);
+        )->setContext($context);
     }
 
     /**
@@ -145,8 +145,7 @@ class AcknowledgementController extends AbstractController
         RequestParametersInterface $requestParameters,
         int $hostId,
         Request $request
-    ): View
-    {
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
         $isBeta = (bool) $request->attributes->get('version.is_beta');
         $hostsAcknowledgements = $this->acknowledgementService
@@ -162,7 +161,7 @@ class AcknowledgementController extends AbstractController
                     ? ['pagination' => $requestParameters->toArray()]
                     : $requestParameters->toArray()
             ]
-    )->setContext($context);
+        )->setContext($context);
     }
 
     /**

@@ -540,8 +540,7 @@ class DowntimeController extends AbstractController
         RequestParametersInterface $requestParameters,
         int $hostId,
         Request $request
-    ): View
-    {
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
         $isBeta = (bool) $request->attributes->get('version.is_beta');
         /**
