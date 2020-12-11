@@ -207,7 +207,6 @@ if (($o === HOST_MODIFY || $o === HOST_WATCH) && isset($host_id)) {
     // We hide all passwords in the jsData property to prevent them from appearing in the HTML code.
     foreach ($aMacros as $index => $macroValues) {
         if ($macroValues['macroPassword_#index#'] === 1) {
-            $macroPasswords[$index]['old_password'] = $aMacros[$index]['macroOldValue_#index#'];
             $macroPasswords[$index]['password'] = $aMacros[$index]['macroValue_#index#'];
             // It's a password macro
             $aMacros[$index]['macroOldValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
