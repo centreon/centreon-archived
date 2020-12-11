@@ -92,56 +92,55 @@ function get_api_token() {
 # log "DEBUG" "This is a DEBUG_LOG_LEVEL message"
 # log "INFO" "This is a INFO_LOG_LEVEL message"
 #
-function log(){
- TIMESTAMP=$(date --rfc-3339=seconds)
+function log() {
+  TIMESTAMP=$(date --rfc-3339=seconds)
 
- if [[ -z "${1}" || -z "${2}" ]]
- then
-	echo "${TIMESTAMP} - ERROR : Missing argument"
-	echo "${TIMESTAMP} - ERROR : Usage log \"INFO\" \"Message log\" "
-	exit 1
- fi
+  if [[ -z "${1}" || -z "${2}" ]]
+  then
+  echo "${TIMESTAMP} - ERROR : Missing argument"
+  echo "${TIMESTAMP} - ERROR : Usage log \"INFO\" \"Message log\" "
+  exit 1
+  fi
 
- # get the message log level
- log_message_level="${1}"
+  # get the message log level
+  log_message_level="${1}"
 
- # get the log message
- log_message="${2}"
+  # get the log message
+  log_message="${2}"
 
- # check if the log_message_level is greater than the runtime_log_level
- [[ ${SUPPORTED_LOG_LEVEL[$log_message_level]} ]] || return 1
+  # check if the log_message_level is greater than the runtime_log_level
+  [[ ${SUPPORTED_LOG_LEVEL[$log_message_level]} ]] || return 1
 
- (( ${SUPPORTED_LOG_LEVEL[$log_message_level]} < ${SUPPORTED_LOG_LEVEL[$runtime_log_level]} )) && return 2
+  (( ${SUPPORTED_LOG_LEVEL[$log_message_level]} < ${SUPPORTED_LOG_LEVEL[$runtime_log_level]} )) && return 2
 
- echo -e "${TIMESTAMP} - $log_message_level - $log_message"
-
+  echo -e "${TIMESTAMP} - $log_message_level - $log_message"
 }
 #========= end of function log()
 
 
 #========= begin of function parse_fqdn()
 function parse_fqdn() {
-# extract the protocol
-$PARSED_URL[$SCHEME]="$(echo $1 | grep :// | sed -e's,^\(.*://\).*,\1,g')"
-# remove the protocol
-url="$(echo ${1/$PARSED_URL[$SCHEME]/})"
-# extract the user (if any)
-user="$(echo $url | grep @ | cut -d@ -f1)"
-# extract the host and port
-hostport="$(echo ${url/$user@/} | cut -d/ -f1)"
-# by request host without port
-$PARSED_URL[$HOST]="$(echo $hostport | sed -e 's,:.*,,g')"
-# by request - try to extract the port
-$PARSED_URL[$PORT]="$(echo $hostport | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
-# extract the path (if any)
-path="$(echo $url | grep / | cut -d/ -f2-)"
+  # extract the protocol
+  $PARSED_URL[$SCHEME]="$(echo $1 | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+  # remove the protocol
+  url="$(echo ${1/$PARSED_URL[$SCHEME]/})"
+  # extract the user (if any)
+  user="$(echo $url | grep @ | cut -d@ -f1)"
+  # extract the host and port
+  hostport="$(echo ${url/$user@/} | cut -d/ -f1)"
+  # by request host without port
+  $PARSED_URL[$HOST]="$(echo $hostport | sed -e 's,:.*,,g')"
+  # by request - try to extract the port
+  $PARSED_URL[$PORT]="$(echo $hostport | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
+  # extract the path (if any)
+  path="$(echo $url | grep / | cut -d/ -f2-)"
 
-echo "  url: $url"
-echo "  proto: $proto"
-echo "  user: $user"
-echo "  host: $host"
-echo "  port: $port"
-echo "  path: $path"
+  echo "  url: $url"
+  echo "  proto: $proto"
+  echo "  user: $user"
+  echo "  host: $host"
+  echo "  port: $port"
+  echo "  path: $path"
 }
 #========= end of function parse_fqdn()
 
