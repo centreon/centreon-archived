@@ -1254,6 +1254,10 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
             parent_id = :parent
             WHERE server_id = :serverId
         ");
+        // do not override platform IP with localhost value
+        if ($type === 'central' && $pollerIp === '127.0.0.1') {
+            $pollerIp = $platform['address'];
+        }
     } else {
         $statement = $pearDB->prepare("
             INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
