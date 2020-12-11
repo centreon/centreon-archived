@@ -1,8 +1,7 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { isEmpty } from 'lodash';
 
 import {
   Grid,
@@ -137,7 +136,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       <Grid container spacing={2} alignItems="stretch">
         {getDetailCardLines({ details, toDate, toTime }).map(
           ({ title, field, xs = 6, getLines }) => {
-            const displayCard = !isNil(field) || !isEmpty(field);
+            const displayCard = !isNil(field) && !isEmpty(field);
 
             return (
               displayCard && (
