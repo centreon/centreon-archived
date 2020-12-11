@@ -22,21 +22,29 @@ runtime_log_level="INFO"
 function parse_command_options() {
   while getopts $MANDATORY_OPTIONS opt; do
     case ${opt} in
+      # Get username of API TARGET
       u)
         set_variable "USERNAME_API" "$OPTARG"
         ;;
+      # Get the platform type
       t)
         set_variable "CURRENT_NODE_TYPE" "$OPTARG"
+        # If Remote call endpoint to register remote
         ;;
+      # Get the TARGET Node ADDRESS
       h)
         set_variable "TARGET_NODE_ADDRESS" "$OPTARG"
+        #Explode the Address
+        parse_fqdn "$TARGET_NODE_ADDRESS"
         ;;
+      # Get the name of the platform
       n)
         set_variable "CURRENT_NODE_NAME" "$OPTARG"
         ;;
     esac
   done
 
+  # Return an error if mandatory parameters are missing
   if [[ ! $USERNAME_API \
     || ! $CURRENT_NODE_TYPE \
     || ! $TARGET_NODE_ADDRESS \
@@ -51,7 +59,7 @@ function parse_command_options() {
 
 
 #========= begin of function set_variable()
-set_variable()
+function set_variable()
 {
   local varname=$1
   shift
@@ -62,7 +70,6 @@ set_variable()
     exit 1
   fi
 }
-
 #========= end of function set_variable()
 
 
@@ -92,55 +99,51 @@ function get_api_token() {
 # log "DEBUG" "This is a DEBUG_LOG_LEVEL message"
 # log "INFO" "This is a INFO_LOG_LEVEL message"
 #
-function log() {
-  TIMESTAMP=$(date --rfc-3339=seconds)
+function log(){
+ TIMESTAMP=$(date --rfc-3339=seconds)
 
-  if [[ -z "${1}" || -z "${2}" ]]
-  then
-  echo "${TIMESTAMP} - ERROR : Missing argument"
-  echo "${TIMESTAMP} - ERROR : Usage log \"INFO\" \"Message log\" "
-  exit 1
-  fi
+ if [[ -z "${1}" || -z "${2}" ]]
+ then
+	echo "${TIMESTAMP} - ERROR : Missing argument"
+	echo "${TIMESTAMP} - ERROR : Usage log \"INFO\" \"Message log\" "
+	exit 1
+ fi
 
-  # get the message log level
-  log_message_level="${1}"
+ # get the message log level
+ log_message_level="${1}"
 
-  # get the log message
-  log_message="${2}"
+ # get the log message
+ log_message="${2}"
 
-  # check if the log_message_level is greater than the runtime_log_level
-  [[ ${SUPPORTED_LOG_LEVEL[$log_message_level]} ]] || return 1
+ # check if the log_message_level is greater than the runtime_log_level
+ [[ ${SUPPORTED_LOG_LEVEL[$log_message_level]} ]] || return 1
 
-  (( ${SUPPORTED_LOG_LEVEL[$log_message_level]} < ${SUPPORTED_LOG_LEVEL[$runtime_log_level]} )) && return 2
+ (( ${SUPPORTED_LOG_LEVEL[$log_message_level]} < ${SUPPORTED_LOG_LEVEL[$runtime_log_level]} )) && return 2
 
-  echo -e "${TIMESTAMP} - $log_message_level - $log_message"
+ echo -e "${TIMESTAMP} - $log_message_level - $log_message"
+
 }
 #========= end of function log()
 
 
 #========= begin of function parse_fqdn()
 function parse_fqdn() {
-  # extract the protocol
-  $PARSED_URL[$SCHEME]="$(echo $1 | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+  PARSED_URL[SCHEME]="$(echo $1 | grep :// | sed -e's,^\(.*://\).*,\1,g')"
   # remove the protocol
-  url="$(echo ${1/$PARSED_URL[$SCHEME]/})"
+  url="$(echo ${1/${PARSED_URL[SCHEME]}/})"
   # extract the user (if any)
-  user="$(echo $url | grep @ | cut -d@ -f1)"
-  # extract the host and port
-  hostport="$(echo ${url/$user@/} | cut -d/ -f1)"
-  # by request host without port
-  $PARSED_URL[$HOST]="$(echo $hostport | sed -e 's,:.*,,g')"
-  # by request - try to extract the port
-  $PARSED_URL[$PORT]="$(echo $hostport | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
-  # extract the path (if any)
-  path="$(echo $url | grep / | cut -d/ -f2-)"
+  userpass="$(echo $url | grep @ | cut -d@ -f1)"
+  pass="$(echo $userpass | grep : | cut -d: -f2)"
+  if [ -n "$pass" ]; then
+    user="$(echo $userpass | grep : | cut -d: -f1)"
+  else
+      user=$userpass
+  fi
 
-  echo "  url: $url"
-  echo "  proto: $proto"
-  echo "  user: $user"
-  echo "  host: $host"
-  echo "  port: $port"
-  echo "  path: $path"
+  # extract the host
+  PARSED_URL[HOST]="$(echo ${url/$user@/} | cut -d: -f1)"
+  # by request - try to extract the port
+  PARSED_URL[PORT]="$(echo ${url/PARSED_URL[HOST]/} | grep : | cut -d: -f2)"
 }
 #========= end of function parse_fqdn()
 
@@ -188,6 +191,41 @@ EOF
 #========= end of function usage()
 
 
+#========= begin of get_api_password()
+function get_api_password() {
+  stty -echo
+  echo "${TARGET_NODE_ADDRESS} : Please enter your password "
+  read -r API_TARGET_PASSWORD
+  stty echo
+}
+#========= end of get_api_password()
+
+#========= begin of set_proxy_parameters()
+function set_proxy_parameters() {
+  PROXY_USAGE=false
+  echo "Are you using a Proxy (y/n)"
+  read -r PROXY_RESPONSE
+
+  if [[ $PROXY_RESPONSE == 'y' ]];
+  then
+    PROXY_USAGE=true
+    echo "Proxy host: "
+    read -r PROXY_HOST
+    echo "Proxy port: "
+    read -r PROXY_PORT
+    echo "proxy username (press enter if no username/password are required): "
+    read -r PROXY_USERNAME
+    if [[ $PROXY_USERNAME ]];
+    then
+      stty -echo
+      echo "proxy password: "
+      read -r PROXY_PASSWORD
+      stty echo
+    fi
+  fi
+}
+#========= end of set_proxy_parameters()
+
 
 ###########################################################
 #                                                         #
@@ -195,11 +233,22 @@ EOF
 #                                                         #
 ###########################################################
 
+# Get all the flag and assign them to variable
 parse_command_options "$@"
-parse_fqdn "$TARGET_NODE_ADDRESS"
-### If all mandatory flag are present, Ask for TARGET_NODE API Password to get token
-stty -echo
-echo "${TARGET_NODE_ADDRESS} : Please enter your password "
-read -r API_TARGET_PASSWORD
-stty echo
+
+# Ask for API TARGET Password
+get_api_password
+
+# Ask for Proxy
+set_proxy_parameters
+
+# Get the API TARGET Token
 get_api_token "$API_TARGET_PASSWORD"
+
+# Ask for IP to use
+
+# Prepare Payload
+
+# Display Summary
+
+# Send cURL to POST Register
