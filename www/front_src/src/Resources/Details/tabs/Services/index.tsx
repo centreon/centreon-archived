@@ -11,10 +11,8 @@ import { useRequest, StatusChip } from '@centreon/ui';
 import { TabProps, detailsTabId } from '..';
 import { useResourceContext } from '../../../Context';
 import { labelNoResultsFound } from '../../../translatedLabels';
-
-import { listServices } from './api';
-import { listServicesDecoder } from './api/decoders';
-import { Service } from './models';
+import { listResources } from '../../../Listing/api';
+import { Resource } from '../../../models';
 
 const useStyles = makeStyles((theme) => ({
   services: {
@@ -74,11 +72,10 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     selectedResourceId,
   } = useResourceContext();
 
-  const [services, setServices] = React.useState<Array<Service>>();
+  const [services, setServices] = React.useState<Array<Resource>>();
 
   const { sendRequest } = useRequest({
-    request: listServices,
-    decoder: listServicesDecoder,
+    request: listResources,
   });
 
   React.useEffect(() => {
@@ -86,7 +83,19 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
       return;
     }
 
-    sendRequest(details.id).then(({ result }) => setServices(result));
+    sendRequest({
+      limit: 100,
+      search: {
+        conditions: [
+          {
+            field: 'h.name',
+            values: {
+              $eq: details.name,
+            },
+          },
+        ],
+      },
+    }).then(({ result }) => setServices(result));
   }, [details]);
 
   React.useEffect(() => {
@@ -120,7 +129,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
 
     return (
       <>
-        {services.map(({ id, status, name, output, duration }) => {
+        {services.map(({ id, status, name, information, duration }) => {
           return (
             <Paper key={id} className={classes.service}>
               <StatusChip
@@ -135,7 +144,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
                 >
                   {name}
                 </Typography>
-                <Typography variant="body2">{output}</Typography>
+                <Typography variant="body2">{information}</Typography>
               </div>
               {duration && <Typography variant="body2">{duration}</Typography>}
             </Paper>

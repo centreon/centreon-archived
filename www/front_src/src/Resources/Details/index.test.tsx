@@ -62,7 +62,7 @@ import {
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
-import { resourcesEndpoint, monitoringEndpoint } from '../api/endpoint';
+import { resourcesEndpoint } from '../api/endpoint';
 
 import {
   graphTabId,
@@ -261,22 +261,22 @@ const retrievedServices = {
   result: [
     {
       id: 3,
-      display_name: 'Ping',
+      name: 'Ping',
       status: {
         severity_code: 5,
         name: 'Ok',
       },
-      output: 'OK - 127.0.0.1 rta 0ms lost 0%',
+      information: 'OK - 127.0.0.1 rta 0ms lost 0%',
       duration: '22m',
     },
     {
       id: 4,
-      display_name: 'Disk',
+      name: 'Disk',
       status: {
         severity_code: 6,
         name: 'Unknown',
       },
-      output: 'No output',
+      information: 'No output',
       duration: '21m',
     },
   ],
@@ -880,9 +880,19 @@ describe(Details, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       buildListingEndpoint({
-        baseEndpoint: `${monitoringEndpoint}/hosts/${resourceId}/services`,
+        baseEndpoint: resourcesEndpoint,
         parameters: {
           limit: 100,
+          search: {
+            conditions: [
+              {
+                field: 'h.name',
+                values: {
+                  $eq: retrievedDetails.name,
+                },
+              },
+            ],
+          },
         },
       }),
       expect.anything(),
