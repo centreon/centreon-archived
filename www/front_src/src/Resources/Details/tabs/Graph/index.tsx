@@ -84,7 +84,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const performanceGraphRef = React.createRef<HTMLDivElement>();
-  const { username } = useUserContext();
+  const { alias } = useUserContext();
 
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
@@ -190,7 +190,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
         type: 'comment',
         date,
         content: comment,
-        contact: { name: username },
+        contact: { name: alias },
       },
     ]);
   };
