@@ -59,6 +59,7 @@ import {
   labelFqdn,
   labelAlias,
   labelAcknowledgement,
+  labelDowntime,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -157,10 +158,14 @@ const retrievedDetails = {
 
 const performanceGraphData = {
   global: {},
-  times: ['2020-06-20T06:55:00Z', '2020-06-21T06:55:00Z'],
+  times: [
+    '2020-06-19T07:30:00Z',
+    '2020-06-20T06:55:00Z',
+    '2020-06-21T06:55:00Z',
+  ],
   metrics: [
     {
-      data: [0, 1],
+      data: [2, 0, 1],
       ds_data: {
         ds_color_line: '#fff',
         ds_filled: false,
@@ -511,16 +516,18 @@ describe(Details, () => {
     });
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
+      expect(mockedAxios.get).toHaveBeenCalledTimes(3);
     });
 
     const commentAnnotations = await findAllByLabelText(labelComment);
     const acknowledgementAnnotations = await findAllByLabelText(
       labelAcknowledgement,
     );
+    const downtimeAnnotations = await findAllByLabelText(labelDowntime);
 
     expect(commentAnnotations).toHaveLength(1);
     expect(acknowledgementAnnotations).toHaveLength(1);
+    expect(downtimeAnnotations).toHaveLength(2);
   });
 
   it('copies the command line to clipboard when the copy button is clicked', async () => {
