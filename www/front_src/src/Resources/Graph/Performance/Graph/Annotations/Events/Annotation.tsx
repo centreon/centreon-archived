@@ -38,8 +38,8 @@ const Annotation = ({
   const classes = useStyles();
   const { toDateTime } = useLocaleDateTimeFormat();
 
-  const yMargin = -30;
-  const xMargin = -15;
+  const yMargin = -32;
+  const xMargin = -10;
 
   const x = xScale(new Date(date));
 

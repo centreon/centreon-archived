@@ -58,6 +58,7 @@ import {
   labelServices,
   labelFqdn,
   labelAlias,
+  labelAcknowledgement,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -514,8 +515,12 @@ describe(Details, () => {
     });
 
     const commentAnnotations = await findAllByLabelText(labelComment);
+    const acknowledgementAnnotations = await findAllByLabelText(
+      labelAcknowledgement,
+    );
 
     expect(commentAnnotations).toHaveLength(1);
+    expect(acknowledgementAnnotations).toHaveLength(1);
   });
 
   it('copies the command line to clipboard when the copy button is clicked', async () => {
