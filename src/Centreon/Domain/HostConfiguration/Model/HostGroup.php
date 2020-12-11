@@ -32,7 +32,6 @@ use Centreon\Domain\Media\Model\Image;
  */
 class HostGroup
 {
-    
     public const MAX_NAME_LENGTH = 200,
         MAX_ALIAS_LENGTH = 200,
         MAX_NOTES = 255,
@@ -46,22 +45,22 @@ class HostGroup
      * @var int|null
      */
     private $id;
-    
+
     /**
      * @var string|null
      */
     private $name;
-    
+
     /**
      * @var string|null
      */
     private $alias;
-    
+
     /**
      * @var string|null Define an optional string of notes pertaining to the host group.
      */
     private $notes;
-    
+
     /**
      * @var string|null Define an optional URL that can be used to provide more information about the host group.
      * <br> Any valid URL can be used.
@@ -69,7 +68,7 @@ class HostGroup
      * emergency contact methods, etc. available to other support staff.
      */
     private $notesUrl;
-    
+
     /**
      * @var string|null Define an optional URL that can be used to provide more actions to be performed on
      * the host group. You will see the link to the action URL in the host group details.
@@ -81,7 +80,7 @@ class HostGroup
      * This image will be displayed in the various places. The image will look best if it is 40x40 pixels in size.
      */
     private $icon;
-    
+
     /**
      * @var Image|null Define an image that should be associated with this host group in the statusmap CGI
      * in monitoring engine. <br>
@@ -90,13 +89,13 @@ class HostGroup
      * The image will look best if it is 40x40 pixels in size.
      */
     private $iconMap;
-    
+
     /**
      * @var string|null Geographical coordinates use by Centreon Map module to position element on map. <br>
      * Define "Latitude,Longitude", for example for Paris coordinates set "48.51,2.20"
      */
     private $geoCoords;
-    
+
     /**
      * @var int|null RRD retention duration of all the services that are in this host group.
      * If service is in multiple host groups, the highest retention value will be used.
@@ -107,12 +106,12 @@ class HostGroup
      * @var string|null Comments on this host group.
      */
     private $comment;
-    
+
     /**
      * @var bool Indicates whether the host group is activated or not.
      */
     private $isActivated = true;
-    
+
     /**
      * @return int|null
      */
@@ -120,7 +119,7 @@ class HostGroup
     {
         return $this->id;
     }
-    
+
     /**
      * @param int|null $id
      * @return HostGroup
@@ -130,7 +129,7 @@ class HostGroup
         $this->id = $id;
         return $this;
     }
-    
+
     /**
      * @return string
      */
@@ -138,7 +137,7 @@ class HostGroup
     {
         return $this->name;
     }
-    
+
     /**
      * @param string $name
      * @return HostGroup
@@ -152,7 +151,7 @@ class HostGroup
         $this->name = $name;
         return $this;
     }
-    
+
     /**
      * @return string|null
      */
@@ -160,7 +159,7 @@ class HostGroup
     {
         return $this->alias;
     }
-    
+
     /**
      * @param string|null $alias
      * @return HostGroup
@@ -174,7 +173,7 @@ class HostGroup
         $this->alias = $alias;
         return $this;
     }
-    
+
     /**
      * @return string|null
      */
@@ -182,7 +181,7 @@ class HostGroup
     {
         return $this->notes;
     }
-    
+
     /**
      * @param string|null $notes
      * @return HostGroup
@@ -196,7 +195,7 @@ class HostGroup
         $this->notes = $notes;
         return $this;
     }
-    
+
     /**
      * @return string|null
      */
@@ -204,7 +203,7 @@ class HostGroup
     {
         return $this->notesUrl;
     }
-    
+
     /**
      * @param string|null $notesUrl
      * @return HostGroup
@@ -218,7 +217,7 @@ class HostGroup
         $this->notesUrl = $notesUrl;
         return $this;
     }
-    
+
     /**
      * @return string|null
      */
@@ -226,7 +225,7 @@ class HostGroup
     {
         return $this->actionUrl;
     }
-    
+
     /**
      * @param string|null $actionUrl
      * @return HostGroup
@@ -240,7 +239,7 @@ class HostGroup
         $this->actionUrl = $actionUrl;
         return $this;
     }
-    
+
     /**
      * @return Image|null
      */
@@ -248,7 +247,7 @@ class HostGroup
     {
         return $this->icon;
     }
-    
+
     /**
      * @param Image|null $icon
      * @return HostGroup
@@ -258,7 +257,7 @@ class HostGroup
         $this->icon = $icon;
         return $this;
     }
-    
+
     /**
      * @return Image|null
      */
@@ -266,7 +265,7 @@ class HostGroup
     {
         return $this->iconMap;
     }
-    
+
     /**
      * @param Image|null $iconMap
      * @return HostGroup
@@ -276,7 +275,7 @@ class HostGroup
         $this->iconMap = $iconMap;
         return $this;
     }
-    
+
     /**
      * @return int|null
      */
@@ -284,7 +283,7 @@ class HostGroup
     {
         return $this->rrd;
     }
-    
+
     /**
      * @param int|null $rrd
      * @return HostGroup
@@ -299,7 +298,7 @@ class HostGroup
         $this->rrd = $rrd;
         return $this;
     }
-    
+
     /**
      * @return string|null
      */
@@ -307,7 +306,7 @@ class HostGroup
     {
         return $this->geoCoords;
     }
-    
+
     /**
      * @param string|null $geoCoords
      * @return HostGroup
@@ -321,7 +320,7 @@ class HostGroup
         $this->geoCoords = $geoCoords;
         return $this;
     }
-    
+
     /**
      * @return string|null
      */
@@ -329,7 +328,7 @@ class HostGroup
     {
         return $this->comment;
     }
-    
+
     /**
      * @param string|null $comment
      * @return HostGroup
@@ -343,7 +342,7 @@ class HostGroup
         $this->comment = $comment;
         return $this;
     }
-    
+
     /**
      * @return bool
      */

@@ -61,7 +61,6 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
     {
         try {
             $this->db->beginTransaction();
-            
             $request = $this->translateDbName(
                 'INSERT INTO `:db`.hostgroup
                 (hg_name, hg_alias, hg_notes, hg_notes_url, hg_action_url, hg_icon_image, hg_map_icon_image,
@@ -95,7 +94,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             throw $ex;
         }
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -192,7 +191,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             LEFT JOIN `:db`.view_img imap
                 ON imap.img_id = hg.hg_map_icon_image'
         );
-        
+
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest)
@@ -221,7 +220,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         }
         return $hostGroups;
     }
-    
+
     /**
      * Add a host group.
      *

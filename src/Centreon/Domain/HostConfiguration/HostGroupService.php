@@ -52,7 +52,7 @@ class HostGroupService implements HostGroupServiceInterface
         $this->hostGroupRepository = $hostGroupRepository;
         $this->actionLogService = $actionLogService;
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -76,7 +76,7 @@ class HostGroupService implements HostGroupServiceInterface
             throw new HostConfigurationException(_('Error while searching for the number of host group'), 0, $ex);
         }
     }
-    
+
     /**
      * @inheritDoc
      */

@@ -86,7 +86,7 @@ class HostGroupV21
      * @var string|null
      */
     public $comment;
-    
+
     /**
      * @var bool
      */

@@ -31,14 +31,13 @@ use Centreon\Domain\HostConfiguration\Model\HostGroup;
  */
 interface HostGroupReadRepositoryInterface
 {
-    
     /**
      * Find all host groups.
      *
      * @return HostGroup[]
      */
     public function findHostGroups(): array;
-    
+
     /**
      * Indicates if a host group name is already in use.
      *
@@ -53,5 +52,4 @@ interface HostGroupReadRepositoryInterface
      * @return int Number of hosts
      */
     public function getNumberOfHostGroups(): int;
-    
 }

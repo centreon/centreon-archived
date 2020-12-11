@@ -75,7 +75,6 @@ class HostGroupFactoryRdb
             ->setGeoCoords($data['geo_coords'])
             ->setComment($data['hg_comment'])
             ->setActivated((bool) $data['hg_activate']);
-        
         return $hostGroup;
     }
 
