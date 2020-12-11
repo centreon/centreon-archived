@@ -6,9 +6,9 @@ import { useTheme } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 
 import { Props } from '..';
-import EventAnnotations from '../EventAnnotations';
 import { iconSize } from '../Annotation';
 import { labelAcknowledgement } from '../../../../../translatedLabels';
+import EventAnnotations from '../EventAnnotations';
 
 const AcknowledgementAnnotations = (props: Props): JSX.Element => {
   const { t } = useTranslation();
