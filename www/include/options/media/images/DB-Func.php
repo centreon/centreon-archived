@@ -592,16 +592,19 @@ function isValidMIMETypeFromArchive($dir, $filename = null, $zip = null, $tar = 
 function getFilesFromTempDirectory($tempDirectory)
 {
     $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempDirectory;
-    $files = array_diff(scandir($directory), array('..', '.'));
     $filesInfo = array();
-    foreach ($files as $file) {
-        $filesInfo[] = array(
-            'filename' => array(
-                'name' => $file,
-                'tmp_name' => $file,
-                'size' => filesize($directory . DIRECTORY_SEPARATOR . $file)
-            )
-        );
+    if (is_dir($directory)) {
+        $files = array_diff(scandir($directory), array('..', '.'));
+
+        foreach ($files as $file) {
+            $filesInfo[] = array(
+                'filename' => array(
+                    'name' => $file,
+                    'tmp_name' => $file,
+                    'size' => filesize($directory . DIRECTORY_SEPARATOR . $file)
+                )
+            );
+        }
     }
     return $filesInfo;
 }
