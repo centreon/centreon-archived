@@ -37,7 +37,6 @@ export interface ResourceDetails extends NamedEntity {
   fqdn?: string;
   alias?: string;
   groups?: Array<NamedEntity>;
-  categories?: Array<NamedEntity>;
 }
 
 export interface DetailsUrlQueryParameters {
