@@ -76,7 +76,8 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockUserContext = {
-  username: 'admin',
+  alias: 'admin',
+  name: 'admin',
   locale: 'en',
   timezone: 'Europe/Paris',
 
@@ -100,6 +101,11 @@ const mockUserContext = {
       },
     },
   },
+
+  downtime: {
+    default_duration: 7200,
+  },
+  refresh_interval: 15,
 };
 
 jest.mock('@centreon/ui-context', () => ({
@@ -382,7 +388,7 @@ describe(Actions, () => {
     await findByText(labelDowntimeByAdmin);
 
     fireEvent.click(getByLabelText(labelFixed));
-    fireEvent.change(getByDisplayValue('3600'), {
+    fireEvent.change(getByDisplayValue('7200'), {
       target: { value: '' },
     });
 
@@ -452,7 +458,7 @@ describe(Actions, () => {
           resources: map(pick(['type', 'id', 'parent']), selectedResources),
           downtime: {
             comment: labelDowntimeByAdmin,
-            duration: 3600,
+            duration: 7200,
             start_time: '2020-01-01T00:00:00Z',
             end_time: '2020-01-01T02:00:00Z',
             is_fixed: true,
