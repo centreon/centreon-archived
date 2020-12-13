@@ -86,7 +86,7 @@ class MonitoringServiceTest extends TestCase
 
         $repository = $this->createMock(MonitoringRepositoryInterface::class);
         $repository->expects(self::any())
-            ->method('findServicesByHost')
+            ->method('findServicesByHostWithRequestParameters')
             ->with($hostId)
             ->willReturn([$service]); // values returned for the all next tests
 

@@ -53,7 +53,7 @@ jobs:
     - id: files
       uses: jitterbit/get-changed-files@v1
     - run: |
-        ./vendor/bin/phpcs --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml ${{ steps.files.outputs.added }} ${{ steps.files.outputs.modified }}
+        ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml ${{ steps.files.outputs.added }} ${{ steps.files.outputs.modified }}
       continue-on-error: true
     - run: |
         ./vendor/bin/phpstan analyse -c phpstan.neon --level 8 --no-interaction --no-progress --error-format=checkstyle ${{ steps.files.outputs.added }} ${{ steps.files.outputs.modified }} > phpstan.xml

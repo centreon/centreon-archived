@@ -54,7 +54,7 @@ jobs:
         path: node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
 
-    - run: npm run eslint -- -o checkstyle-fe.xml -f junit
+    - run: npm run eslint -- -o checkstyle-fe.xml -f checkstyle
       continue-on-error: true
 
     - uses: actions/upload-artifact@v2
