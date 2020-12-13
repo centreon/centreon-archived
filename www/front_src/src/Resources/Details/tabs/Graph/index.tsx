@@ -1,36 +1,24 @@
 import * as React from 'react';
 
-import { pick, map, path, isNil } from 'ramda';
-import { useTranslation } from 'react-i18next';
+import { path, isNil } from 'ramda';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
-import { SelectField, useRequest, ListingModel } from '@centreon/ui';
+import { useRequest, ListingModel } from '@centreon/ui';
 
 import PerformanceGraph from '../../../Graph/Performance';
 import { TabProps } from '..';
 import { listTimelineEvents } from '../Timeline/api';
 import { TimelineEvent } from '../Timeline/models';
 import { listTimelineEventsDecoder } from '../Timeline/api/decoders';
-
-import {
-  timePeriods,
-  getTimePeriodById,
-  last24hPeriod,
-  TimePeriod,
-} from './models';
+import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
+import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     display: 'grid',
     gridTemplateRows: 'auto 1fr',
     gridRowGap: theme.spacing(2),
-  },
-  header: {
-    padding: theme.spacing(2),
-  },
-  periodSelect: {
-    width: 250,
   },
   graphContainer: {
     display: 'grid',
@@ -40,23 +28,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   graph: {
     margin: 'auto',
     height: '100%',
-  },
-  performance: {
-    width: '100%',
-  },
-  status: {
-    marginTop: theme.spacing(2),
     width: '100%',
   },
 }));
 
-const timePeriodSelectOptions = map(pick(['id', 'name']), timePeriods);
-
-const defaultTimePeriod = last24hPeriod;
-
 const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
-  const { t } = useTranslation();
 
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
@@ -67,17 +44,12 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
 
-  const [
+  const {
     selectedTimePeriod,
-    setSelectedTimePeriod,
-  ] = React.useState<TimePeriod>(defaultTimePeriod);
-
-  const translatedTimePeriodSelectOptions = timePeriodSelectOptions.map(
-    (timePeriod) => ({
-      ...timePeriod,
-      name: t(timePeriod.name),
-    }),
-  );
+    changeSelectedTimePeriod,
+    periodQueryParameters,
+    getIntervalDates,
+  } = useTimePeriod();
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
   const timelineEndpoint = path<string>(
@@ -85,20 +57,13 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     details,
   );
 
-  const getIntervalDates = (timePeriod): Array<string> => {
-    return [
-      timePeriod.getStart().toISOString(),
-      new Date(Date.now()).toISOString(),
-    ];
-  };
-
   const retrieveTimeline = (): void => {
     if (isNil(timelineEndpoint)) {
       setTimeline([]);
       return;
     }
 
-    const [start, end] = getIntervalDates(selectedTimePeriod);
+    const [start, end] = getIntervalDates();
 
     sendGetTimelineRequest({
       endpoint: timelineEndpoint,
@@ -129,46 +94,22 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     retrieveTimeline();
   }, [endpoint, selectedTimePeriod]);
 
-  const getGraphQueryParameters = (timePeriod): string => {
-    const [start, end] = getIntervalDates(timePeriod);
-
-    return `?start=${start}&end=${end}`;
-  };
-
-  const [periodQueryParams, setPeriodQueryParams] = React.useState(
-    getGraphQueryParameters(selectedTimePeriod),
-  );
-
-  const changeSelectedPeriod = (event): void => {
-    const timePeriodId = event.target.value;
-    const timePeriod = getTimePeriodById(timePeriodId);
-
-    setSelectedTimePeriod(timePeriod);
-
-    const queryParamsForSelectedPeriodId = getGraphQueryParameters(timePeriod);
-    setPeriodQueryParams(queryParamsForSelectedPeriodId);
-  };
-
   const getEndpoint = (): string | undefined => {
     if (isNil(endpoint)) {
       return undefined;
     }
 
-    return `${endpoint}${periodQueryParams}`;
+    return `${endpoint}${periodQueryParameters}`;
   };
 
   return (
     <div className={classes.container}>
-      <Paper className={classes.header}>
-        <SelectField
-          className={classes.periodSelect}
-          options={translatedTimePeriodSelectOptions}
-          selectedOptionId={selectedTimePeriod.id}
-          onChange={changeSelectedPeriod}
-        />
-      </Paper>
+      <TimePeriodSelect
+        selectedTimePeriodId={selectedTimePeriod.id}
+        onChange={changeSelectedTimePeriod}
+      />
       <Paper className={classes.graphContainer}>
-        <div className={`${classes.graph} ${classes.performance}`}>
+        <div className={classes.graph}>
           <PerformanceGraph
             endpoint={getEndpoint()}
             graphHeight={280}

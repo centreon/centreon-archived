@@ -179,3 +179,6 @@ export const labelNoResourceFound = 'No resource found';
 export const labelFqdn = 'FQDN / Address';
 export const labelAlias = 'Alias';
 export const labelUrl = 'URL';
+export const labelSwitchToGraph = 'Switch to graph mode';
+export const labelSwitchToList = 'Switch to list mode';
+export const labelNoDataFor = 'No data for';

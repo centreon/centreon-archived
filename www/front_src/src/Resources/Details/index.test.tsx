@@ -16,7 +16,6 @@ import {
   ThemeProvider,
   setUrlQueryParameters,
   getUrlQueryParameters,
-  buildListingEndpoint,
 } from '@centreon/ui';
 import copyToClipboard from '@centreon/ui/src/utils/copy';
 
@@ -63,6 +62,7 @@ import {
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
 import { resourcesEndpoint } from '../api/endpoint';
+import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 import {
   graphTabId,
@@ -879,20 +879,22 @@ describe(Details, () => {
     });
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      buildListingEndpoint({
-        baseEndpoint: resourcesEndpoint,
-        parameters: {
-          limit: 100,
-          search: {
-            conditions: [
-              {
-                field: 'h.name',
-                values: {
-                  $eq: retrievedDetails.name,
-                },
+      buildResourcesEndpoint({
+        limit: 100,
+        resourceTypes: ['service'],
+        statuses: [],
+        states: [],
+        hostGroupIds: [],
+        serviceGroupIds: [],
+        search: {
+          conditions: [
+            {
+              field: 'h.name',
+              values: {
+                $eq: retrievedDetails.name,
               },
-            ],
-          },
+            },
+          ],
         },
       }),
       expect.anything(),
