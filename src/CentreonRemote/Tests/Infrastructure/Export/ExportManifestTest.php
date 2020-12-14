@@ -99,15 +99,6 @@ class ExportManifestTest extends TestCase
     }
 
     /**
-     * @covers \CentreonRemote\Infrastructure\Export\ExportManifest::__construct
-     */
-    public function testConstruct()
-    {
-        $this->assertAttributeInstanceOf(ExportCommitment::class, 'commitment', $this->manifest);
-        $this->assertAttributeEquals($this->version, 'version', $this->manifest);
-    }
-
-    /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportManifest::get
      */
     public function testGet()
@@ -116,19 +107,7 @@ class ExportManifestTest extends TestCase
     }
 
     /**
-     * @covers \CentreonRemote\Infrastructure\Export\ExportManifest::validate
-     * @expectedException \Exception
-     */
-    public function testValidate()
-    {
-        $this->manifest->validate();
-
-        // chech $this->files
-        $this->assertAttributeEquals([], 'data', $this->manifest);
-    }
-
-    /**
-     * @ covers \CentreonRemote\Infrastructure\Export\ExportManifest::dump
+     * @covers \CentreonRemote\Infrastructure\Export\ExportManifest::dump
      */
     public function testDump()
     {

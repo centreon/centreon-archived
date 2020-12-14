@@ -197,14 +197,6 @@ class ModuleSourceTest extends TestCase
         $this->source->update(static::$moduleName);
     }
 
-    public function testInitInfo()
-    {
-        $this->source->initInfo();
-        $this->assertAttributeEquals([
-            'test-module' => 'x.y.z',
-            ], 'info', $this->source);
-    }
-
     public function testCreateEntityFromConfig()
     {
         $configFile = static::getConfFilePath();

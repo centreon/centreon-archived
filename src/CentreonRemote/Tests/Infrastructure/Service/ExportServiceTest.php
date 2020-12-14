@@ -109,23 +109,6 @@ class ExportServiceTest extends TestCase
     }
 
     /**
-     * @covers \CentreonRemote\Infrastructure\Service\ExportService::__construct
-     */
-    public function testConstruct()
-    {
-        $this->assertAttributeInstanceOf(ExporterService::class, 'exporter', $this->export);
-        $this->assertAttributeInstanceOf(ExporterCacheService::class, 'cache', $this->export);
-        $this->assertAttributeInstanceOf(CentreonACL::class, 'acl', $this->export);
-        $this->assertAttributeInstanceOf(
-            \Centreon\Infrastructure\Service\CentreonDBManagerService::class,
-            'db',
-            $this->export
-        );
-
-        $this->assertAttributeEquals('x.y', 'version', $this->export);
-    }
-
-    /**
      * @covers \CentreonRemote\Infrastructure\Service\ExportService::export
      */
     public function testExport()

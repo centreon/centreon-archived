@@ -176,14 +176,6 @@ class WidgetSourceTest extends TestCase
         $this->assertFalse($result->isUpdated());
     }
 
-    public function testInitInfo()
-    {
-        $this->source->initInfo();
-        $this->assertAttributeEquals([
-            'test-widget' => 'x.y.z',
-            ], 'info', $this->source);
-    }
-
     public static function getConfFilePath(): string
     {
         return 'vfs://widgets/' . static::$widgetName . '/' . WidgetSource::CONFIG_FILE;
