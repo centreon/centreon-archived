@@ -1,2 +1,2 @@
 area/backend:
-  - "*.php"
+  - "**/*.php"
