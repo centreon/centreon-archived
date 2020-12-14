@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -111,35 +112,32 @@ class TopologyWebserviceTest extends TestCase
         $checkpoint->assert($this);
     }
 
-    /**
-     * @expectedException \RestBadRequestException
-     */
     public function testGetGetTopologyByPageWithoutResult()
     {
         $_GET['topology_page'] = 1;
         $this->db->addResultSet("SELECT * FROM `topology` WHERE `topology_page` = :id", []);
 
+        $this->expectException(\RestBadRequestException::class);
+
         $this->webservice->getGetTopologyByPage();
     }
 
-    /**
-     * @expectedException \RestBadRequestException
-     */
     public function testGetGetTopologyByPageWithoutTopologyPage()
     {
         if (isset($_GET['topology_page'])) {
             unset($_GET['topology_page']);
         }
 
+        $this->expectException(\RestBadRequestException::class);
+
         $this->webservice->getGetTopologyByPage();
     }
 
-    /**
-     * @expectedException \RestBadRequestException
-     */
     public function testGetNavigationListWithoutAuth()
     {
         $this->container[ServiceProvider::CENTREON_USER] = null;
+
+        $this->expectException(\RestBadRequestException::class);
 
         $this->webservice->getNavigationList();
     }

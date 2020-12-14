@@ -292,11 +292,6 @@ class PlatformTopologyServiceTest extends TestCase
             ->method('findEngineConfigurationByName')
             ->willReturn($this->engineConfiguration);
 
-        $this->platformTopologyRepository
-            ->expects($this->once())
-            ->method('addPlatformToTopology')
-            ->willReturn(null);
-
         $platformTopologyService = new PlatformTopologyService(
             $this->platformTopologyRepository,
             $this->platformInformationService,
@@ -331,8 +326,8 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->platformTopologyRepository
             ->expects($this->once())
-            ->method('findPlatformAddressById')
-            ->willReturn('1.1.1.1');
+            ->method('findPlatform')
+            ->willReturn($this->registeredParent);
 
         $platformTopologyService = new PlatformTopologyService(
             $this->platformTopologyRepository,

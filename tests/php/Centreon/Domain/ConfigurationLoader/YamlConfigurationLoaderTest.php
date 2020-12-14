@@ -65,7 +65,7 @@ class YamlConfigurationLoaderTest extends TestCase
     public function testLoadWithLoop()
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessageRegExp("/^Loop detected in file.*child5\.yaml$/");
+        $this->expectExceptionMessageMatches("/^Loop detected in file.*child5\.yaml$/");
         $gcl = new YamlConfigurationLoader(__DIR__ . '/root_file_with_loop.yaml');
         $gcl->load();
     }
@@ -76,7 +76,7 @@ class YamlConfigurationLoaderTest extends TestCase
     public function testFileNotFound()
     {
         $this->expectException(FileNotFoundException::class);
-        $this->expectExceptionMessageRegExp("/^The configuration file '.*no_file\.yaml' does not exists$/");
+        $this->expectExceptionMessageMatches("/^The configuration file '.*no_file\.yaml' does not exists$/");
         $gcl = new YamlConfigurationLoader(__DIR__ . '/no_file.yaml');
         $gcl->load();
     }
