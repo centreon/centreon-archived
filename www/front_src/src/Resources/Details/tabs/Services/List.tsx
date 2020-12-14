@@ -7,6 +7,8 @@ import { Paper, Typography, makeStyles } from '@material-ui/core';
 
 import { StatusChip } from '@centreon/ui';
 
+import { Resource } from '../../../models';
+
 const useStyles = makeStyles((theme) => ({
   serviceCard: {
     padding: theme.spacing(1),
@@ -24,6 +26,12 @@ const useStyles = makeStyles((theme) => ({
     gridGap: theme.spacing(1),
   },
 }));
+
+interface Props {
+  services: Array<Resource>;
+  onSelectService: () => void;
+  infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
+}
 
 const ServiceList = ({
   services,

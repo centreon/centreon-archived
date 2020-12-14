@@ -9,14 +9,14 @@ import { timeFormat } from '@centreon/ui';
 
 import { labelNoDataFor } from '../../../translatedLabels';
 import PerformanceGraph from '../../../Graph/Performance';
-import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
 import { Resource } from '../../../models';
-import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
 
 import { useStyles } from '.';
 
 interface Props {
   services: Array<Resource>;
+  infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
+  periodQueryParameters: string;
 }
 
 const ServiceGraphs = ({

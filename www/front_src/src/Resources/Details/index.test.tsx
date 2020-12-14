@@ -880,7 +880,8 @@ describe(Details, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       buildResourcesEndpoint({
-        limit: 100,
+        limit: 30,
+        page: 1,
         resourceTypes: ['service'],
         statuses: [],
         states: [],

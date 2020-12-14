@@ -7,7 +7,7 @@ import { makeStyles, Paper, Typography, List } from '@material-ui/core';
 import GraphIcon from '@material-ui/icons/BarChart';
 import ListIcon from '@material-ui/icons/List';
 
-import { useRequest, IconButton } from '@centreon/ui';
+import { useRequest, IconButton, ListingModel } from '@centreon/ui';
 
 import { TabProps, detailsTabId } from '..';
 import { useResourceContext } from '../../../Context';
@@ -48,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ServicesTab = ({ details }: TabProps): JSX.Element => {
-  const classes = useStyles();
   const { t } = useTranslation();
 
   const {
@@ -60,7 +59,6 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     selectedResourceId,
   } = useResourceContext();
 
-  const [services, setServices] = React.useState<Array<Resource>>();
   const [graphMode, setGraphMode] = React.useState<boolean>(false);
 
   const {
@@ -73,9 +71,15 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     request: listResources,
   });
 
-  const sendListingRequest = ({ atPage }) => {
+  const limit = graphMode ? 6 : 30;
+
+  const sendListingRequest = ({
+    atPage,
+  }: {
+    atPage?: number;
+  }): Promise<ListingModel<Resource>> => {
     return sendRequest({
-      limit: 100,
+      limit,
       page: atPage,
       resourceTypes: ['service'],
       search: {
@@ -91,11 +95,11 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     });
   };
 
-  React.useEffect(() => {
-    if (selectedResourceId !== details?.id) {
-      setServices(undefined);
-    }
-  }, [selectedResourceId]);
+  // React.useEffect(() => {
+  //   if (selectedResourceId !== details?.id) {
+  //     setServices(undefined);
+  //   }
+  // }, [selectedResourceId]);
 
   const selectService = (serviceId): void => {
     setOpenDetailsTabId(detailsTabId);
@@ -105,18 +109,22 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     setSelectedResourceType('service');
   };
 
+  const labelSwitch = graphMode ? labelSwitchToList : labelSwitchToGraph;
+  const switchIcon = graphMode ? <ListIcon /> : <GraphIcon />;
+
   return (
     <>
       <IconButton
-        title={t(graphMode ? labelSwitchToGraph : labelSwitchToList)}
-        ariaLabel={t(graphMode ? labelSwitchToGraph : labelSwitchToList)}
+        title={t(labelSwitch)}
+        ariaLabel={t(labelSwitch)}
         onClick={(): void => {
           setGraphMode(!graphMode);
         }}
       >
-        {graphMode ? <GraphIcon /> : <ListIcon />}
+        {switchIcon}
       </IconButton>
-      <InfiniteScroll
+      <InfiniteScroll<Resource>
+        preventReloadWhen={details?.type === 'service'}
         sendListingRequest={sendListingRequest}
         details={details}
         loadingSkeleton={<LoadingSkeleton />}
@@ -130,7 +138,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
         }
         reloadDependencies={[]}
         loading={sending}
-        limit={2}
+        limit={limit}
       >
         {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
           return graphMode ? (

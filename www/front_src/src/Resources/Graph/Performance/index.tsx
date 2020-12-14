@@ -88,7 +88,7 @@ const PerformanceGraph = ({
     sendingGetGraphDataRequest || isNil(timeline) || isNil(endpoint);
 
   if (loading) {
-    return <LoadingSkeleton />;
+    return <LoadingSkeleton graphHeight={graphHeight} />;
   }
 
   if (isEmpty(timeSeries) || isEmpty(lineData)) {

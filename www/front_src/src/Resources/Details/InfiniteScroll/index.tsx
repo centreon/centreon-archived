@@ -6,11 +6,12 @@ import { always, isNil, isEmpty, cond, T, concat } from 'ramda';
 import { CircularProgress, Button, makeStyles } from '@material-ui/core';
 import IconRefresh from '@material-ui/icons/Refresh';
 
-import { useIntersectionObserver } from '@centreon/ui';
+import { useIntersectionObserver, ListingModel } from '@centreon/ui';
 
 import { labelRefresh } from '../../translatedLabels';
 import NoResultsMessage from '../NoResultsMessage';
 import { ResourceDetails } from '../models';
+import { useResourceContext } from '../../Context';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -30,18 +31,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props {
+interface Props<TEntity> {
   limit: number;
   filter?: JSX.Element;
   details?: ResourceDetails;
   reloadDependencies?: Array<unknown>;
-  sendListingRequest: (parameters: { atPage?: number }) => Promise<unknown>;
+  sendListingRequest: (parameters: {
+    atPage?: number;
+  }) => Promise<ListingModel<TEntity>>;
   loadingSkeleton: JSX.Element;
   loading: boolean;
   children: (props) => JSX.Element;
+  preventReloadWhen?: boolean;
 }
 
-const InfiniteScroll = ({
+const InfiniteScroll = <TEntity extends { id: number }>({
   limit,
   details,
   filter,
@@ -49,12 +53,15 @@ const InfiniteScroll = ({
   sendListingRequest,
   loadingSkeleton,
   loading,
+  preventReloadWhen = false,
   children,
-}: Props): JSX.Element => {
+}: Props<TEntity>): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
 
-  const [entities, setEntities] = React.useState([]);
+  const { selectedResourceId } = useResourceContext();
+
+  const [entities, setEntities] = React.useState<Array<TEntity>>();
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
@@ -63,7 +70,7 @@ const InfiniteScroll = ({
     { atPage } = {
       atPage: page,
     },
-  ) => {
+  ): Promise<ListingModel<TEntity>> => {
     return sendListingRequest({ atPage })
       .then((retrievedListing) => {
         const { meta } = retrievedListing;
@@ -88,10 +95,9 @@ const InfiniteScroll = ({
       setEntities(undefined);
     }
 
-    if (page !== 1 || isNil(details)) {
+    if (page !== 1 || isNil(details) || preventReloadWhen) {
       return;
     }
-
     reload();
   }, [details]);
 
@@ -131,8 +137,8 @@ const InfiniteScroll = ({
 
   return (
     <div className={classes.container}>
-      {filter}
       <div className={classes.entities}>
+        {filter}
         {cond([
           [always(isNil(entities)), always(loadingSkeleton)],
           [isEmpty, always(<NoResultsMessage />)],
