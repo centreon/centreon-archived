@@ -283,16 +283,14 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     {
         $statement = $this->db->prepare(
             $this->translateDbName(
-                "
-                UPDATE `:db`.`platform_topology` SET
+                "UPDATE `:db`.`platform_topology` SET
                 `address` = :address,
                 `hostname` = :hostname,
                 `name` = :name,
                 `type` = :type,
                 `parent_id` = :parentId,
                 `server_id` = :serverId
-                WHERE id = :id
-                "
+                WHERE id = :id"
             )
         );
         $statement->bindValue(':address', $platform->getAddress(), \PDO::PARAM_STR);
