@@ -14,3 +14,11 @@ centreon_application_platformtopology_getcompleteplatformtopology:
   path: /platform/topology
   controller: 'Centreon\Application\Controller\PlatformTopologyController::getPlatformJsonGraph'
   condition: "request.attributes.get('version') >= 2.0"
+
+centreon_application_platformtopology_deleteplatform:
+  methods: DELETE
+  path: /platform/topology/{serverId}
+  requirements:
+    serverId: '\d+'
+  controller: 'Centreon\Application\Controller\PlatformTopologyController::deletePlatform'
+  condition: "request.attributes.get('version') >= 2.0"

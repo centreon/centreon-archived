@@ -29,11 +29,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\Platform;
 use Symfony\Component\HttpFoundation\Response;
-use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformRelation;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Infrastructure\PlatformTopology\Model\PlatformJsonGraph;
-use Centreon\Domain\Broker\Interfaces\BrokerServiceInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Application\Controller\PlatformTopologyController;
 use Centreon\Domain\PlatformTopology\PlatformConflictException;
@@ -291,6 +289,23 @@ class PlatformTopologyControllerTest extends TestCase
                 ],
                 Response::HTTP_OK
             )->setContext($context)
+        );
+    }
+
+    public function testDeletePlatformTopologySuccess(): void
+    {
+        $this->platformTopologyService
+            ->expects($this->once())
+            ->method('deletePlatform')
+            ->willReturn(null);
+        $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
+        $platformTopologyController->setContainer($this->container);
+
+        $view = $platformTopologyController->deletePlatform($this->pollerPlatform->getId());
+
+        $this->assertEquals(
+            $view,
+            View::create(null, Response::HTTP_NO_CONTENT)
         );
     }
 }
