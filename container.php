@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -17,9 +18,6 @@
  * For more information : contact@centreon.com
  *
  */
-
-// Creating container
-use Pimple\Container;
 
 $dependencyInjector = \Centreon\LegacyContainer::getInstance();
 
