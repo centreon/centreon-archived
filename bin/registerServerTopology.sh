@@ -74,10 +74,12 @@ function set_variable() {
 
 #========= begin of function get_api_token()
 function get_api_token() {
-  API_RESPONSE=$(curl -X POST -H "Content-Type: application/json" \
+  API_RESPONSE=$(curl -s -X POST -H "Content-Type: application/json" \
     -d '{"security":{"credentials":{"login":"'"${USERNAME_API}"'", "password":"'"$1"'"}}}' \
     "${TARGET_NODE_ADDRESS}/centreon/api/latest/login")
+
   API_TOKEN=$( echo "${API_RESPONSE}" | grep -o '"token":"[^"]*' | cut -d'"' -f4)
+
   if [[ ! $API_TOKEN ]];
   then
     log "ERROR" "${API_RESPONSE}"
@@ -260,19 +262,25 @@ hostname: ${HOSTNAME}
 type: ${CURRENT_NODE_TYPE}
 address: ${CURRENT_NODE_ADDRESS}
 
-
 EOD
+echo 'Do you want to register this server with those information? (y/n) '
+read -r IS_VALID
+
+if [[ $IS_VALID != 'y' ]];
+then
+  log "INFO" "Registration aborted"
+  exit 0
+fi
 }
 #========= end of prepare_register_payload()
 
 
 #========= begin of register_server()
 function register_server() {
-  API_RESPONSE=$(curl -v -X POST -H "Content-Type: application/json" -H "X-AUTH-TOKEN: ${API_TOKEN}"\
+  API_RESPONSE=$(curl -s -X POST -i -H "Content-Type: application/json" -H "X-AUTH-TOKEN: ${API_TOKEN}" \
     -d "${PAYLOAD}" \
     "${TARGET_NODE_ADDRESS}/centreon/api/latest/platform/topology")
-  IS_REGISTER=$(echo ${API_RESPONSE} |grep "201 Created")
-  echo ${IS_REGISTER}
+  echo $("${API_RESPONSE}"| grep "HTTP/" | awk {'print $2'})
 }
 #========= begin of register_server()
 
@@ -294,6 +302,7 @@ set_proxy_parameters
 
 # Ask for IP to use
 get_current_node_ip
+
 # Get the API TARGET Token
 get_api_token "$API_TARGET_PASSWORD"
 
