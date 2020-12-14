@@ -182,9 +182,6 @@ class CheckControllerTest extends TestCase
         $this->checkService->expects($this->any())
             ->method('filterByContact')
             ->willReturn($this->checkService);
-        $this->checkService->expects($this->any())
-            ->method('checkResource')
-            ->willReturn(null);
 
         $this->serializer->expects($this->once())
             ->method('deserialize')
