@@ -40,17 +40,18 @@ if (!isset($centreon)) {
 global $form_service_type;
 $form_service_type = "BYHOSTGROUP";
 
-isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = null;
-isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = null;
-$sG ? $service_id = $sG : $service_id = $sP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+$service_id = filter_var(
+    call_user_func(function () {
+        if (isset($_GET["service_id"])) {
+            return $_GET["service_id"];
+        } elseif (isset($_POST["service_id"])) {
+            return $_POST["service_id"];
+        } else {
+            return null;
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
 /*
  * Pear library
@@ -74,6 +75,18 @@ $pearDBO = new CentreonDB("centstorage");
 require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+// select can be an array of integer or a string of integers separated by comma
+$select = filter_var_array(
+    getSelectOption(),
+    FILTER_VALIDATE_INT
+);
+
+// If one data is not correctly typed in array, it will be set to false
+$dupNbr = filter_var_array(
+    getDuplicateNumberOption(),
+    FILTER_VALIDATE_INT
+);
+
 if (isset($_POST["o1"]) && isset($_POST["o2"])) {
     if ($_POST["o1"] != "") {
         $o = $_POST["o1"];
@@ -91,51 +104,58 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 $acl = $centreon->user->access;
 $acldbname = $acl->getNameDBAcl();
 
+define('SERVICE_ADD', 'a');
+define('SERVICE_WATCH', 'w');
+define('SERVICE_MODIFY', 'c');
+define('SERVICE_MASSIVE_CHANGE', 'mc');
+define('SERVICE_DIVISION', 'dv');
+define('SERVICE_MOVE_TO_HOST', 'mvH');
+define('SERVICE_ACTIVATION', 's');
+define('SERVICE_MASSIVE_ACTIVATION', 'ms');
+define('SERVICE_DEACTIVATION', 'u');
+define('SERVICE_MASSIVE_DEACTIVATION', 'mu');
+define('SERVICE_DUPLICATION', 'm');
+define('SERVICE_DELETION', 'd');
+
 switch ($o) {
-    case "a":
-        require_once($path."formService.php");
-        break; #Add a service
-    case "w":
-        require_once($path."formService.php");
-        break; #Watch a service
-    case "c":
-        require_once($path."formService.php");
-        break; #Modify a service
-    case "mc":
-        require_once($path."formService.php");
-        break; #Massive change
-    case "dv":
+    case SERVICE_ADD:
+    case SERVICE_WATCH:
+    case SERVICE_MODIFY:
+    case SERVICE_MASSIVE_CHANGE:
+        require_once($path . "formService.php");
+        break;
+    case SERVICE_DIVISION:
         divideGroupedServiceInDB(null, isset($select) ? $select : array());
-        require_once($path."listServiceByHostGroup.php");
-        break; # Divide service linked to n hostgroups
-    case "mvH":
+        require_once($path . "listServiceByHostGroup.php");
+        break;
+    case SERVICE_MOVE_TO_HOST:
         divideGroupedServiceInDB(null, isset($select) ? $select : array(), 1);
-        require_once($path."listServiceByHostGroup.php");
-        break; # Divide service linked to n hostgroups
-    case "s":
+        require_once($path . "listServiceByHostGroup.php");
+        break;
+    case SERVICE_ACTIVATION:
         enableServiceInDB($service_id);
-        require_once($path."listServiceByHostGroup.php");
-        break; #Activate a service
-    case "ms":
+        require_once($path . "listServiceByHostGroup.php");
+        break;
+    case SERVICE_MASSIVE_ACTIVATION:
         enableServiceInDB(null, isset($select) ? $select : array());
-        require_once($path."listServiceByHostGroup.php");
+        require_once($path . "listServiceByHostGroup.php");
         break;
-    case "u":
+    case SERVICE_DEACTIVATION:
         disableServiceInDB($service_id);
-        require_once($path."listServiceByHostGroup.php");
+        require_once($path . "listServiceByHostGroup.php");
         break; #Desactivate a service
-    case "mu":
+    case SERVICE_MASSIVE_DEACTIVATION:
         disableServiceInDB(null, isset($select) ? $select : array());
-        require_once($path."listServiceByHostGroup.php");
+        require_once($path . "listServiceByHostGroup.php");
         break;
-    case "m":
+    case SERVICE_DUPLICATION:
         multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listServiceByHostGroup.php");
-        break; #Duplicate n services
-    case "d":
+        require_once($path . "listServiceByHostGroup.php");
+        break;
+    case SERVICE_DELETION:
         deleteServiceInDB(isset($select) ? $select : array());
         require_once($path."listServiceByHostGroup.php");
-        break; #Delete n services
+        break;
     default:
         require_once($path."listServiceByHostGroup.php");
         break;
