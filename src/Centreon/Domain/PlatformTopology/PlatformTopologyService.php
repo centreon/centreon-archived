@@ -649,7 +649,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         } catch (EntityNotFoundException | PlatformException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
-            throw new PlatformException("An error occured while deleting the Platform", 0, $ex);
+            throw new PlatformException("An error occured while deleting the platform", 0, $ex);
         }
     }
 
@@ -661,7 +661,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         try {
             $this->platformTopologyRepository->updatePlatformParameters($platform);
         } catch (\Exception $ex) {
-            throw new PlatformException('An error occured while updating the Platform', 0, $ex);
+            throw new PlatformException('An error occured while updating the platform', 0, $ex);
         }
     }
 

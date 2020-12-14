@@ -181,6 +181,8 @@ class PlatformTopologyController extends AbstractController
     }
 
     /**
+     * Delete a platform from the topology.
+     *
      * @param int $serverId
      * @return View
      */
