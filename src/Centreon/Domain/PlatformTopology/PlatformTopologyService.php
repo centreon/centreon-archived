@@ -634,7 +634,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $topLevelPlatform = $this->findTopLevelPlatform();
 
                 if ($topLevelPlatform === null) {
-                    throw new EntityNotFoundException(_('No top level Platform found to link the child platforms'));
+                    throw new EntityNotFoundException(_('No top level platform found to link the child platforms'));
                 }
 
                 /**
