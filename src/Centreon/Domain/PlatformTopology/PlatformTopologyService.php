@@ -415,14 +415,14 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     private function searchAlreadyRegisteredTopLevelPlatformByType(string $type): void
     {
-        $foundAlreadyRegisteredPlatformByType = $this->platformTopologyRepository->findPlatformByType($type);
-        if (null !== $foundAlreadyRegisteredPlatformByType) {
+        $foundAlreadyRegisteredTopLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatformByType($type);
+        if (null !== $foundAlreadyRegisteredTopLevelPlatform) {
             throw new PlatformConflictException(
                 sprintf(
                     _("A '%s': '%s'@'%s' is already registered"),
                     $type,
-                    $foundAlreadyRegisteredPlatformByType->getName(),
-                    $foundAlreadyRegisteredPlatformByType->getAddress()
+                    $foundAlreadyRegisteredTopLevelPlatform->getName(),
+                    $foundAlreadyRegisteredTopLevelPlatform->getAddress()
                 )
             );
         }
@@ -578,7 +578,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
          * @var Platform[] $platformTopology
          */
         $platformTopology = $this->platformTopologyRepository->getPlatformTopology();
-        if ($platformTopology === null) {
+        if (empty($platformTopology)) {
             throw new EntityNotFoundException(_('No Platform Topology found.'));
         }
 
@@ -608,5 +608,68 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             }
         }
         return $platformTopology;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deletePlatformAndReallocateChildren(int $serverId): void
+    {
+        try {
+            if ($this->platformTopologyRepository->findPlatform($serverId) === null) {
+                throw new EntityNotFoundException(_('Platform not found'));
+            }
+            /**
+             * @var Platform[] $childPlatforms
+             */
+            $childPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId($serverId);
+
+            if (!empty($childPlatforms)) {
+                /**
+                 * If at least one children platform was found,
+                 * find the Top Parent platform and link children platform(s) to it.
+                 *
+                 * @var Platform $topLevelPlatform
+                 */
+                $topLevelPlatform = $this->findTopLevelPlatform();
+
+                if ($topLevelPlatform === null) {
+                    throw new EntityNotFoundException(_('No top level platform found to link the child platforms'));
+                }
+
+                /**
+                 * Update children parent_id
+                 */
+                foreach ($childPlatforms as $platform) {
+                    $platform->setParentId($topLevelPlatform->getId());
+                    $this->updatePlatformParameters($platform);
+                }
+            }
+            $this->platformTopologyRepository->deletePlatform($serverId);
+        } catch (EntityNotFoundException | PlatformException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            throw new PlatformException(_('An error occured while deleting the platform'), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updatePlatformParameters(Platform $platform): void
+    {
+        try {
+            $this->platformTopologyRepository->updatePlatformParameters($platform);
+        } catch (\Exception $ex) {
+            throw new PlatformException(_('An error occured while updating the platform'), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findTopLevelPlatform(): ?Platform
+    {
+        return $this->platformTopologyRepository->findTopLevelPlatform();
     }
 }

@@ -56,4 +56,29 @@ interface PlatformTopologyServiceInterface
      * @throws EntityNotFoundException
      */
     public function getPlatformTopology(): array;
+
+    /**
+     * Delete a Platform and allocate its children to top level platform.
+     *
+     * @param integer $platformId
+     * @throws PlatformException
+     * @throws EntityNotFoundException
+     */
+    public function deletePlatformAndReallocateChildren(int $platformId): void;
+
+    /**
+     * Update a platform with given parameters.
+     *
+     * @param Platform
+     * @throws PlatformException
+     */
+    public function updatePlatformParameters(Platform $platform): void;
+
+    /**
+     * Find the top level platform of the topology.
+     *
+     * @return Platform|null
+     * @throws PlatformException
+     */
+    public function findTopLevelPlatform(): ?Platform;
 }
