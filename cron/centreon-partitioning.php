@@ -63,9 +63,7 @@ try {
     foreach ($tables as $table) {
         $config = new Config($centstorageDb, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml', $centreonDb);
         $mysqlTable = $config->getTable($table);
-        if ($partEngine->isPartitioned($mysqlTable, $centstorageDb)) {
-            $partEngine->updateParts($mysqlTable, $centstorageDb);
-        }
+        $partEngine->updateParts($mysqlTable, $centstorageDb);
     }
 } catch (\Exception $e) {
     echo "[" . date(DATE_RFC822) . "] " . $e->getMessage();
