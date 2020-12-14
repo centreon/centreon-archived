@@ -143,7 +143,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
 
         $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
             ->disableOriginalConstructor()
-            ->setMethods(array('exists'))
+            ->addMethods(array('exists'))
             ->getMock();
         $filesystem->expects($this->any())
             ->method('exists')
@@ -152,7 +152,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
 
         $finder = $this->getMockBuilder('\Symfony\Component\Finder\Finder')
             ->disableOriginalConstructor()
-            ->setMethods(array('directories', 'depth', 'in'))
+            ->addMethods(array('directories', 'depth', 'in'))
             ->getMock();
         $finder->expects($this->any())
             ->method('directories')

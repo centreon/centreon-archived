@@ -61,7 +61,7 @@ class ExportManifestTest extends TestCase
     protected function setUp(): void
     {
         $parser = $this->getMockBuilder(ExportParserJson::class)
-            ->setMethods([
+            ->addMethods([
                 'parse',
                 'dump',
             ])
@@ -83,7 +83,7 @@ class ExportManifestTest extends TestCase
         $this->commitment = new ExportCommitment(1, [2, 3], null, $parser);
         $this->manifest = $this
             ->getMockBuilder(ExportManifest::class)
-            ->setMethods([
+            ->addMethods([
                 'getFile',
             ])
             ->setConstructorArgs([

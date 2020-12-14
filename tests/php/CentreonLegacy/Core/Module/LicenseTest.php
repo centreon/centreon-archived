@@ -63,7 +63,7 @@ class LicenseTest extends TestCase
         $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK] = $this
             ->getMockBuilder(Healthcheck::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->addMethods([
                 'check',
             ])
             ->getMock();
@@ -86,7 +86,7 @@ class LicenseTest extends TestCase
         $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK] = $this
             ->getMockBuilder(Healthcheck::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->addMethods([
                 'getLicenseExpiration',
             ])
             ->getMock();

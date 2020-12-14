@@ -98,7 +98,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
 
         $this->information = $this->getMockBuilder('CentreonLegacy\Core\Widget\Information')
             ->disableOriginalConstructor()
-            ->setMethods(array('getConfiguration', 'getTypes', 'isInstalled', 'getIdByName', 'getParameterIdByName'))
+            ->addMethods(array('getConfiguration', 'getTypes', 'isInstalled', 'getIdByName', 'getParameterIdByName'))
             ->getMock();
 
         $this->information->expects($this->any())

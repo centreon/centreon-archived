@@ -58,7 +58,7 @@ class CentreonModuleServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->service = $this->getMockBuilder(CentreonModuleService::class)
-            ->setMethods([
+            ->addMethods([
                 'initSources',
             ])
             ->setConstructorArgs([new ContainerWrap(new Container)])
@@ -75,7 +75,7 @@ class CentreonModuleServiceTest extends TestCase
             $sources[$type] = $this
                 ->getMockBuilder($class)
                 ->disableOriginalConstructor()
-                ->setMethods([
+                ->addMethods([
                     'getList',
                     'getDetail',
                     'install',

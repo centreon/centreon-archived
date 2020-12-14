@@ -46,7 +46,7 @@ class WebServiceAbstractTest extends TestCase
     {
         $this->webservice = $this->getMockBuilder(WebServiceAbstract::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->addMethods([
                 'getName',
             ])
             ->getMockForAbstractClass();
@@ -78,7 +78,7 @@ class WebServiceAbstractTest extends TestCase
     {
         $webservice = $this->getMockBuilder(WebServiceAbstract::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->addMethods([
                 'payloadRaw',
             ])
             ->getMockForAbstractClass();
@@ -96,7 +96,7 @@ class WebServiceAbstractTest extends TestCase
     {
         $webservice = $this->getMockBuilder(WebServiceAbstract::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->addMethods([
                 'payloadRaw',
             ])
             ->getMockForAbstractClass();

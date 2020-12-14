@@ -114,21 +114,20 @@ class ModuleSourceTest extends TestCase
         $this->containerWrap = new ContainerWrap($container);
 
         $this->source = $this->getMockBuilder(ModuleSource::class)
-            ->setMethods([
+            ->addMethods([
                 'getPath',
                 'getModuleConf',
             ])
             ->setConstructorArgs([
                 $this->containerWrap,
             ])
-            ->getMock()
-        ;
+            ->getMock();
         $this->source
             ->method('getPath')
             ->will($this->returnCallback(function () {
-                    $result = 'vfs://modules/';
+                $result = 'vfs://modules/';
 
-                    return $result;
+                return $result;
             }))
         ;
         $this->source
