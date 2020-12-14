@@ -1,2 +1,2 @@
 /.github    @kduret
-*.php       centreon/centreon-php
+*.php       @centreon/centreon-php
