@@ -15874,12 +15874,6 @@ msgstr "FQDN / Adresse"
 msgid "Comment added"
 msgstr "Commentaire ajouté"
 
-msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
-msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas avoir plus de %d caractères, mais a %d caractères"
-
-msgid "[%s] The value \"%s\" is too short, it should have at least %d characters, but only has %d characters"
-msgstr "[%s] La valeur \"%s\" est trop courte, elle devrait avoir au moins %d caractères, mais n'a que %d caractères"
-
 msgid "Error when searching for services"
 msgstr "Erreur lors de la recherche des services"
 
