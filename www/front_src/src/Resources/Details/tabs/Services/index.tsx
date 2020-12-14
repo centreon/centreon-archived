@@ -3,11 +3,11 @@ import * as React from 'react';
 import { isNil, isEmpty, always, ifElse, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Paper, Typography } from '@material-ui/core';
+import { makeStyles, Paper, Typography, List } from '@material-ui/core';
 import GraphIcon from '@material-ui/icons/BarChart';
 import ListIcon from '@material-ui/icons/List';
 
-import { useRequest } from '@centreon/ui';
+import { useRequest, IconButton } from '@centreon/ui';
 
 import { TabProps, detailsTabId } from '..';
 import { useResourceContext } from '../../../Context';
@@ -18,6 +18,9 @@ import {
 } from '../../../translatedLabels';
 import { listResources } from '../../../Listing/api';
 import { Resource } from '../../../models';
+import InfiniteScroll from '../../InfiniteScroll';
+import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
+import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -60,30 +63,33 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
   const [services, setServices] = React.useState<Array<Resource>>();
   const [graphMode, setGraphMode] = React.useState<boolean>(false);
 
-  const { sendRequest } = useRequest({
+  const {
+    selectedTimePeriod,
+    changeSelectedTimePeriod,
+    periodQueryParameters,
+  } = useTimePeriod();
+
+  const { sendRequest, sending } = useRequest({
     request: listResources,
   });
 
-  React.useEffect(() => {
-    if (isNil(details) || details.type === 'service') {
-      return;
-    }
-
-    sendRequest({
+  const sendListingRequest = ({ atPage }) => {
+    return sendRequest({
       limit: 100,
+      page: atPage,
       resourceTypes: ['service'],
       search: {
         conditions: [
           {
             field: 'h.name',
             values: {
-              $eq: details.name,
+              $eq: details?.name,
             },
           },
         ],
       },
-    }).then(({ result }) => setServices(result));
-  }, [details]);
+    });
+  };
 
   React.useEffect(() => {
     if (selectedResourceId !== details?.id) {
@@ -99,41 +105,51 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     setSelectedResourceType('service');
   };
 
-  if (isNil(details) || isNil(services)) {
-    return <LoadingSkeleton />;
-  }
-
-  if (isEmpty(services)) {
-    return (
-      <Paper className={classes.noResultContainer}>
-        <Typography align="center" variant="body1">
-          {t(labelNoResultsFound)}
-        </Typography>
-      </Paper>
-    );
-  }
-
-  return ifElse(
-    equals(true),
-    always(
-      <Listing
-        list={<ServiceGraphs services={services} />}
-        switchButtonLabel={labelSwitchToList}
-        switchButtonIcon={<ListIcon />}
-        onSwitchButtonClick={(): void => setGraphMode(false)}
-      />,
-    ),
-    always(
-      <Listing
-        list={
-          <ServiceList services={services} onSelectService={selectService} />
+  return (
+    <>
+      <IconButton
+        title={t(graphMode ? labelSwitchToGraph : labelSwitchToList)}
+        ariaLabel={t(graphMode ? labelSwitchToGraph : labelSwitchToList)}
+        onClick={(): void => {
+          setGraphMode(!graphMode);
+        }}
+      >
+        {graphMode ? <GraphIcon /> : <ListIcon />}
+      </IconButton>
+      <InfiniteScroll
+        sendListingRequest={sendListingRequest}
+        details={details}
+        loadingSkeleton={<LoadingSkeleton />}
+        filter={
+          graphMode ? (
+            <TimePeriodSelect
+              selectedTimePeriodId={selectedTimePeriod.id}
+              onChange={changeSelectedTimePeriod}
+            />
+          ) : undefined
         }
-        switchButtonLabel={labelSwitchToGraph}
-        switchButtonIcon={<GraphIcon />}
-        onSwitchButtonClick={(): void => setGraphMode(true)}
-      />,
-    ),
-  )(graphMode);
+        reloadDependencies={[]}
+        loading={sending}
+        limit={2}
+      >
+        {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
+          return graphMode ? (
+            <ServiceGraphs
+              services={entities}
+              infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+              periodQueryParameters={periodQueryParameters}
+            />
+          ) : (
+            <ServiceList
+              services={entities}
+              onSelectService={selectService}
+              infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+            />
+          );
+        }}
+      </InfiniteScroll>
+    </>
+  );
 };
 
 export default ServicesTab;

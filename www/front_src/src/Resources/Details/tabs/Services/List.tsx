@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { equals, last } from 'ramda';
 
 import { Paper, Typography, makeStyles } from '@material-ui/core';
 
@@ -24,31 +25,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ServiceList = ({ services, onSelectService }): JSX.Element => {
+const ServiceList = ({
+  services,
+  onSelectService,
+  infiniteScrollTriggerRef,
+}): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  return services.map(({ id, name, status, information, duration }) => {
+  return services.map((service) => {
+    const isLastService = equals(last(services), service);
+    const { id, name, status, information, duration } = service;
+
     return (
-      <Paper key={id} className={classes.serviceCard}>
-        <div className={classes.serviceDetails}>
-          <StatusChip
-            label={t(status.name)}
-            severityCode={status.severity_code}
-          />
-          <div className={classes.description}>
-            <Typography
-              variant="body1"
-              onClick={(): void => onSelectService(id)}
-              style={{ cursor: 'pointer' }}
-            >
-              {name}
-            </Typography>
-            <Typography variant="body2">{information}</Typography>
+      <div key={id}>
+        <Paper className={classes.serviceCard}>
+          <div className={classes.serviceDetails}>
+            <StatusChip
+              label={t(status.name)}
+              severityCode={status.severity_code}
+            />
+            <div className={classes.description}>
+              <Typography
+                variant="body1"
+                onClick={(): void => onSelectService(id)}
+                style={{ cursor: 'pointer' }}
+              >
+                {name}
+              </Typography>
+              <Typography variant="body2">{information}</Typography>
+            </div>
+            {duration && <Typography variant="body2">{duration}</Typography>}
           </div>
-          {duration && <Typography variant="body2">{duration}</Typography>}
-        </div>
-      </Paper>
+        </Paper>
+        {isLastService && <div ref={infiniteScrollTriggerRef} />}
+      </div>
     );
   });
 };

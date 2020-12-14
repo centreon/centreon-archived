@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { path, isNil } from 'ramda';
+import { path, isNil, equals, last } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Paper, Typography } from '@material-ui/core';
@@ -19,46 +19,44 @@ interface Props {
   services: Array<Resource>;
 }
 
-const ServiceGraphs = ({ services }: Props): JSX.Element => {
+const ServiceGraphs = ({
+  services,
+  infiniteScrollTriggerRef,
+  periodQueryParameters,
+}: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
 
-  const {
-    selectedTimePeriod,
-    changeSelectedTimePeriod,
-    periodQueryParameters,
-  } = useTimePeriod();
-
   return (
     <>
-      <TimePeriodSelect
-        selectedTimePeriodId={selectedTimePeriod.id}
-        onChange={changeSelectedTimePeriod}
-      />
       {services.map((service) => {
         const { id, name } = service;
+        const isLastService = equals(last(services), service);
 
-        const graphEndpoint = path(
+        const endpoint = path(
           ['links', 'endpoints', 'performance_graph'],
           service,
         );
 
         return (
-          <Paper key={id} className={classes.serviceCard}>
-            {isNil(graphEndpoint) ? (
-              <Typography variant="body1" color="textPrimary">
-                {`${t(labelNoDataFor)} ${name}`}
-              </Typography>
-            ) : (
-              <PerformanceGraph
-                endpoint={`${graphEndpoint}${periodQueryParameters}`}
-                graphHeight={120}
-                xAxisTickFormat={timeFormat}
-                toggableLegend
-                timeline={[]}
-              />
-            )}
-          </Paper>
+          <div key={id}>
+            <Paper className={classes.serviceCard}>
+              {isNil(endpoint) ? (
+                <Typography variant="body1" color="textPrimary">
+                  {`${t(labelNoDataFor)} ${name}`}
+                </Typography>
+              ) : (
+                <PerformanceGraph
+                  endpoint={`${endpoint}${periodQueryParameters}`}
+                  graphHeight={120}
+                  xAxisTickFormat={timeFormat}
+                  toggableLegend
+                  timeline={[]}
+                />
+              )}
+            </Paper>
+            {isLastService && <div ref={infiniteScrollTriggerRef} />}
+          </div>
         );
       })}
     </>
