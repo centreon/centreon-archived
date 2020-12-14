@@ -122,7 +122,6 @@ function log() {
   (( ${SUPPORTED_LOG_LEVEL[$log_message_level]} < ${SUPPORTED_LOG_LEVEL[$runtime_log_level]} )) && return 2
 
   echo -e "${TIMESTAMP} - $log_message_level - $log_message"
-
 }
 #========= end of function log()
 
@@ -195,7 +194,7 @@ EOF
 #========= begin of get_api_password()
 function get_api_password() {
   stty -echo
-  echo "${TARGET_NODE_ADDRESS} : Please enter your password "
+  echo "${TARGET_NODE_ADDRESS} : Please enter your password"
   read -r API_TARGET_PASSWORD
   stty echo
 }
@@ -277,10 +276,24 @@ fi
 
 #========= begin of register_server()
 function register_server() {
-  API_RESPONSE=$(curl -s -X POST -i -H "Content-Type: application/json" -H "X-AUTH-TOKEN: ${API_TOKEN}" \
+  IFS=$'\n' API_RESPONSE=($(curl -s -X POST -i -H "Content-Type: application/json" -H "X-AUTH-TOKEN: ${API_TOKEN}" \
     -d "${PAYLOAD}" \
-    "${TARGET_NODE_ADDRESS}/centreon/api/latest/platform/topology")
-  echo $("${API_RESPONSE}"| grep "HTTP/" | awk {'print $2'})
+    "${TARGET_NODE_ADDRESS}/centreon/api/latest/platform/topology" | grep -E "(HTTP/|message)"))
+
+  HTTP_CODE="$(echo ${API_RESPONSE[0]} | cut -d ' ' -f2)"
+  RESPONSE_MESSAGE=${API_RESPONSE[1]}
+
+  if [[ $HTTP_CODE == "201" ]];
+  then
+    log "INFO" "The CURRENT NODE ${CURRENT_NODE_TYPE}: '${CURRENT_NODE_NAME}@${CURRENT_NODE_ADDRESS} linked to TARGET NODE: ${TARGET_NODE_ADDRESS} has been added"
+  elif [[ $RESPONSE_MESSAGE != "" ]];
+  then
+    log "ERROR" "${RESPONSE_MESSAGE}"
+    exit 1
+  else
+    log "ERROR" "An error occurred while contacting the API using: '${TARGET_NODE_ADDRESS}/centreon/api/latest/platform/topology' "
+    exit 1
+  fi
 }
 #========= begin of register_server()
 
@@ -311,3 +324,4 @@ prepare_register_payload
 
 # Send cURL to POST Register
 register_server
+exit 0
