@@ -29,7 +29,7 @@ function parse_command_options() {
       # Get the platform type
       t)
         set_variable "CURRENT_NODE_TYPE" "$OPTARG"
-        # If Remote call endpoint to register remote
+        # TODO: If Remote call endpoint to register remote
         ;;
       # Get the TARGET Node ADDRESS
       h)
@@ -73,6 +73,7 @@ function set_variable() {
 
 
 #========= begin of function get_api_token()
+# Get the X-AUTH-TOKEN used in register request
 function get_api_token() {
   API_RESPONSE=$(curl -s -X POST -H "Content-Type: application/json" \
     -d '{"security":{"credentials":{"login":"'"${USERNAME_API}"'", "password":"'"$1"'"}}}' \
@@ -127,6 +128,7 @@ function log() {
 
 
 #========= begin of function parse_fqdn()
+# Parse the -h flag to explode it as SCHEME HOST PORT
 function parse_fqdn() {
   PARSED_URL[SCHEME]="$(echo $1 | grep :// | sed -e's,^\(.*://\).*,\1,g')"
   # remove the protocol
@@ -149,6 +151,7 @@ function parse_fqdn() {
 
 
 #========= begin of function usage()
+# Display the usage message
 function usage() {
   cat << EOF
   This script will register a platform (CURRENT NODE) on another (TARGET NODE).
@@ -200,39 +203,14 @@ function get_api_password() {
 }
 #========= end of get_api_password()
 
-#========= begin of set_proxy_parameters()
-function set_proxy_parameters() {
-  PROXY_USAGE=false
-  echo "Are you using a Proxy (y/n)"
-  read -r PROXY_RESPONSE
-
-  if [[ $PROXY_RESPONSE == 'y' ]];
-  then
-    PROXY_USAGE=true
-    echo "Proxy host: "
-    read -r PROXY_HOST
-    echo "Proxy port: "
-    read -r PROXY_PORT
-    echo "proxy username (press enter if no username/password are required): "
-    read -r PROXY_USERNAME
-    if [[ $PROXY_USERNAME ]];
-    then
-      stty -echo
-      echo "proxy password: "
-      read -r PROXY_PASSWORD
-      stty echo
-    fi
-  fi
-}
-#========= end of set_proxy_parameters()
-
-
 #========= begin of get_current_node_ip()
 function get_current_node_ip() {
   CURRENT_NODE_ADDRESS=$(hostname -I)
 
   ips=$(echo $CURRENT_NODE_ADDRESS | tr " " "\n")
+
   echo "Which IP do you want to use as CURRENT NODE IP ?"
+
   select addr in $ips
   do
     CURRENT_NODE_ADDRESS="$addr"
@@ -243,38 +221,41 @@ function get_current_node_ip() {
 
 
 #========= begin of prepare_register_payload()
+# Format all the information in JSON Format and display a reminder of all sent information
 function prepare_register_payload() {
   PAYLOAD='{"name":"'"${CURRENT_NODE_NAME}"'","hostname":"'"${HOSTNAME}"'","type":"'"${CURRENT_NODE_TYPE}"'","address":"'"${CURRENT_NODE_ADDRESS}"'","parent_address":"'"${PARSED_URL[HOST]}"'"}'
 
-cat << EOD
+  cat << EOD
 
-Summary of the information that will be send:
+  Summary of the information that will be send:
 
-Api Connection:
-username: ${USERNAME_API}
-password: ******
-target server: ${PARSED_URL[HOST]}
+  Api Connection:
+  username: ${USERNAME_API}
+  password: ******
+  target server: ${PARSED_URL[HOST]}
 
-Pending Registration Server:
-name: ${CURRENT_NODE_NAME}
-hostname: ${HOSTNAME}
-type: ${CURRENT_NODE_TYPE}
-address: ${CURRENT_NODE_ADDRESS}
+  Pending Registration Server:
+  name: ${CURRENT_NODE_NAME}
+  hostname: ${HOSTNAME}
+  type: ${CURRENT_NODE_TYPE}
+  address: ${CURRENT_NODE_ADDRESS}
 
 EOD
-echo 'Do you want to register this server with those information? (y/n) '
-read -r IS_VALID
 
-if [[ $IS_VALID != 'y' ]];
-then
-  log "INFO" "Registration aborted"
-  exit 0
-fi
+  echo 'Do you want to register this server with those information? (y/n) '
+  read -r IS_VALID
+
+  if [[ $IS_VALID != 'y' ]];
+  then
+    log "INFO" "Registration aborted"
+    exit 0
+  fi
 }
 #========= end of prepare_register_payload()
 
 
 #========= begin of register_server()
+# Send the request to register the server
 function register_server() {
   IFS=$'\n' API_RESPONSE=($(curl -s -X POST -i -H "Content-Type: application/json" -H "X-AUTH-TOKEN: ${API_TOKEN}" \
     -d "${PAYLOAD}" \
@@ -309,9 +290,6 @@ parse_command_options "$@"
 
 # Ask for API TARGET Password
 get_api_password
-
-# Ask for Proxy
-set_proxy_parameters
 
 # Ask for IP to use
 get_current_node_ip
