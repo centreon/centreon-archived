@@ -233,7 +233,7 @@ class Resource
      */
     public function getShortType(): ?string
     {
-        return $this->type ? $this->type{0} : null;
+        return $this->type ? $this->type[0] : null;
     }
 
     /**
