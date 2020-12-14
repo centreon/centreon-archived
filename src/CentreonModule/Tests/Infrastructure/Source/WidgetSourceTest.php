@@ -111,7 +111,7 @@ class WidgetSourceTest extends TestCase
         $containerWrap = new ContainerWrap($container);
 
         $this->source = $this->getMockBuilder(WidgetSource::class)
-            ->addMethods([
+            ->onlyMethods([
                 'getPath',
             ])
             ->setConstructorArgs([

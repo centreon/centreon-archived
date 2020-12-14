@@ -43,7 +43,7 @@ class ExportCommitmentTest extends TestCase
     protected function setUp(): void
     {
         $parser = $this->getMockBuilder(ExportParserYaml::class)
-            ->addMethods(['parse', 'dump'])
+            ->onlyMethods(['parse', 'dump'])
             ->getMock();
 
         $this->commitment = new ExportCommitment(

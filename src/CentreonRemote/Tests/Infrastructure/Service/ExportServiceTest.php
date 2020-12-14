@@ -58,7 +58,7 @@ class ExportServiceTest extends TestCase
         // Exporter
         $this->container['centreon_remote.exporter'] = $this->getMockBuilder(ExporterService::class)
             ->disableOriginalConstructor()
-            ->addMethods([
+            ->onlyMethods([
                 'get',
             ])
             ->getMock();
@@ -177,7 +177,7 @@ class ExportServiceTest extends TestCase
         // Exporter
         $container['centreon_remote.exporter'] = $this->getMockBuilder(ExporterService::class)
             ->disableOriginalConstructor()
-            ->addMethods([
+            ->onlyMethods([
                 'get',
             ])
             ->getMock();

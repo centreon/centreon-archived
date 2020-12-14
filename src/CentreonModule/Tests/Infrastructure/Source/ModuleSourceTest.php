@@ -114,7 +114,7 @@ class ModuleSourceTest extends TestCase
         $this->containerWrap = new ContainerWrap($container);
 
         $this->source = $this->getMockBuilder(ModuleSource::class)
-            ->addMethods([
+            ->onlyMethods([
                 'getPath',
                 'getModuleConf',
             ])

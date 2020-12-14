@@ -51,7 +51,7 @@ class SourceAbstractTest extends TestCase
     {
         $this->source = $this->getMockBuilder(SourceAbstract::class)
             ->disableOriginalConstructor()
-            ->addMethods([
+            ->onlyMethods([
                 'initInfo',
                 'getDetail',
             ])

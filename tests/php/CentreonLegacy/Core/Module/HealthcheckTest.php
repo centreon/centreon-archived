@@ -59,7 +59,7 @@ class HealthcheckTest extends TestCase
         $this->container[ServiceProvider::CONFIGURATION] = $this
             ->getMockBuilder(Configuration::class)
             ->disableOriginalConstructor()
-            ->addMethods([
+            ->onlyMethods([
                 'getModulePath',
             ])
             ->getMock();
@@ -74,7 +74,7 @@ class HealthcheckTest extends TestCase
             ->setConstructorArgs([
                 new Container($this->container),
             ])
-            ->addMethods([
+            ->onlyMethods([
                 'getRequirements',
             ])
             ->getMock();

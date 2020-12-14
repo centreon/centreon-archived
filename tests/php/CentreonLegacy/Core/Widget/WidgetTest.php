@@ -96,7 +96,7 @@ class WidgetTest extends \PHPUnit\Framework\TestCase
 
         $this->information = $this->getMockBuilder('CentreonLegacy\Core\Widget\Information')
             ->disableOriginalConstructor()
-            ->addMethods(array('getConfiguration'))
+            ->onlyMethods(array('getConfiguration'))
             ->getMock();
 
         $this->information->expects($this->any())
@@ -105,7 +105,7 @@ class WidgetTest extends \PHPUnit\Framework\TestCase
 
         $this->utils = $this->getMockBuilder('CentreonLegacy\Core\Utils\Utils')
             ->disableOriginalConstructor()
-            ->addMethods(array('buildPath'))
+            ->onlyMethods(array('buildPath'))
             ->getMock();
 
         $this->utils->expects($this->any())

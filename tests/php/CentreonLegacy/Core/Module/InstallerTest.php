@@ -48,7 +48,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
         );
         $this->information = $this->getMockBuilder('CentreonLegacy\Core\Module\Information')
             ->disableOriginalConstructor()
-            ->addMethods(array('getConfiguration'))
+            ->onlyMethods(array('getConfiguration'))
             ->getMock();
 
         $this->information->expects($this->any())
@@ -70,7 +70,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
     {
         $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
             ->disableOriginalConstructor()
-            ->addMethods(array('exists'))
+            ->onlyMethods(array('exists'))
             ->getMock();
         $filesystem->expects($this->any())
             ->method('exists')
