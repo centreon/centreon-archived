@@ -24,6 +24,7 @@ namespace Centreon\Domain\HostConfiguration;
 
 use Centreon\Domain\ActionLog\ActionLog;
 use Centreon\Domain\ActionLog\Interfaces\ActionLogServiceInterface;
+use Centreon\Domain\HostConfiguration\Exception\HostGroupException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroupRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroupServiceInterface;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
@@ -61,7 +62,7 @@ class HostGroupService implements HostGroupServiceInterface
         try {
             return $this->hostGroupRepository->findHostGroup($hgId);
         } catch (\Throwable $ex) {
-            throw new HostGroupException(_('Error while searching for the host group'), 0, $ex);
+            throw HostGroupException::searchHostGroupsException($ex);
         }
     }
 
@@ -73,7 +74,7 @@ class HostGroupService implements HostGroupServiceInterface
         try {
             return $this->hostGroupRepository->getNumberOfHostGroups();
         } catch (\Throwable $ex) {
-            throw new HostConfigurationException(_('Error while searching for the number of host group'), 0, $ex);
+            throw HostGroupException::countHostGroupsException($ex);
         }
     }
 
@@ -131,7 +132,7 @@ class HostGroupService implements HostGroupServiceInterface
         try {
             return $this->hostGroupRepository->findHostGroupNamesAlreadyUsed($namesToCheck);
         } catch (\Throwable $ex) {
-            throw new HostGroupException(_('Error when searching for already used host names'));
+            throw HostGroupException::searchUsedHostGroupsNameException($ex);
         }
     }
 }
