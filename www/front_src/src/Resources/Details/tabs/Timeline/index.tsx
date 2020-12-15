@@ -25,6 +25,7 @@ import {
   labelRefresh,
 } from '../../../translatedLabels';
 import { TabProps } from '..';
+import InfiniteScroll from '../../InfiniteScroll';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -63,8 +64,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TimelineTab = ({ details }: TabProps): JSX.Element => {
-  const classes = useStyles();
-
   const { t } = useTranslation();
 
   const translatedTypes = types.map((type) => ({
@@ -72,14 +71,10 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     name: t(type.name),
   })) as Array<Type>;
 
-  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
     translatedTypes,
   );
-  const [page, setPage] = React.useState(1);
-  const [total, setTotal] = React.useState(0);
-  const [limit] = React.useState(30);
-  const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
+  const limit = 6;
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
     request: listTimelineEvents,
@@ -103,11 +98,11 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
 
   const timelineEndpoint = path(['links', 'endpoints', 'timeline'], details);
 
-  const listTimeline = (
-    { atPage } = {
-      atPage: page,
-    },
-  ): Promise<TimelineListing> => {
+  const listTimeline = ({
+    atPage,
+  }: {
+    atPage?: number;
+  }): Promise<TimelineListing> => {
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
@@ -115,123 +110,41 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
         limit,
         search: getSearch(),
       },
-    })
-      .then((retrievedListing) => {
-        const { meta } = retrievedListing;
-        setTotal(meta.total);
-
-        return retrievedListing;
-      })
-      .finally(() => {
-        setLoadingMoreEvents(false);
-      });
-  };
-
-  const reload = (): void => {
-    setPage(1);
-    listTimeline({ atPage: 1 }).then(({ result }) => {
-      setTimeline(result);
     });
   };
-
-  React.useEffect(() => {
-    if (isNil(details)) {
-      setTimeline(undefined);
-    }
-
-    if (page !== 1 || isNil(details)) {
-      return;
-    }
-
-    reload();
-  }, [details]);
-
-  React.useEffect(() => {
-    if (isNil(timeline) || page === 1) {
-      return;
-    }
-
-    listTimeline().then(({ result }) => {
-      setTimeline(concat(timeline, result));
-    });
-  }, [page]);
-
-  React.useEffect(() => {
-    if (isNil(details) || isNil(timeline)) {
-      return;
-    }
-
-    setTimeline(undefined);
-
-    reload();
-  }, [selectedTypes]);
 
   const changeSelectedTypes = (_, typeIds): void => {
     setSelectedTypes(typeIds);
   };
 
-  const loadMoreEvents = (): void => {
-    setLoadingMoreEvents(true);
-    setPage(page + 1);
-  };
-
   return (
-    <div className={classes.container}>
-      <Paper className={classes.filterContainer}>
-        <div className={classes.filterAutocomplete}>
-          <MultiAutocompleteField
-            label={t(labelEvent)}
-            onChange={changeSelectedTypes}
-            value={selectedTypes}
-            options={translatedTypes}
-            fullWidth
-            limitTags={3}
+    <InfiniteScroll
+      details={details}
+      sendListingRequest={listTimeline}
+      loading={sending}
+      limit={limit}
+      loadingSkeleton={<LoadingSkeleton />}
+      reloadDependencies={[selectedTypes]}
+      filter={
+        <MultiAutocompleteField
+          label={t(labelEvent)}
+          onChange={changeSelectedTypes}
+          value={selectedTypes}
+          options={translatedTypes}
+          fullWidth
+          limitTags={3}
+        />
+      }
+    >
+      {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
+        return (
+          <Events
+            timeline={entities}
+            infiniteScrollTriggerRef={infiniteScrollTriggerRef}
           />
-        </div>
-      </Paper>
-      <div className={classes.events}>
-        {cond([
-          [always(isNil(timeline)), always(<LoadingSkeleton />)],
-          [
-            isEmpty,
-            always(
-              <Paper className={classes.noResultContainer}>
-                <Typography align="center" variant="body1">
-                  {t(labelNoResultsFound)}
-                </Typography>
-              </Paper>,
-            ),
-          ],
-          [
-            T,
-            always(
-              <>
-                {page > 1 && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    startIcon={<IconRefresh />}
-                    onClick={reload}
-                  >
-                    {labelRefresh}
-                  </Button>
-                )}
-                <Events
-                  timeline={timeline as Array<TimelineEvent>}
-                  total={total}
-                  limit={limit}
-                  page={page}
-                  loading={sending}
-                  onLoadMore={loadMoreEvents}
-                />
-              </>,
-            ),
-          ],
-        ])(timeline)}
-      </div>
-      {loadingMoreEvents && <CircularProgress />}
-    </div>
+        );
+      }}
+    </InfiniteScroll>
   );
 };
 

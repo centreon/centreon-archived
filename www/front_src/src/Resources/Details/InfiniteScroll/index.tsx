@@ -41,15 +41,15 @@ interface Props<TEntity> {
   }) => Promise<ListingModel<TEntity>>;
   loadingSkeleton: JSX.Element;
   loading: boolean;
-  children: (props) => JSX.Element;
   preventReloadWhen?: boolean;
+  children: (props) => JSX.Element;
 }
 
 const InfiniteScroll = <TEntity extends { id: number }>({
   limit,
   details,
   filter,
-  reloadDependencies,
+  reloadDependencies = [],
   sendListingRequest,
   loadingSkeleton,
   loading,
@@ -120,6 +120,13 @@ const InfiniteScroll = <TEntity extends { id: number }>({
 
     reload();
   }, reloadDependencies);
+
+  React.useEffect(() => {
+    if (selectedResourceId !== details?.id) {
+      setEntities(undefined);
+      setPage(1);
+    }
+  }, [selectedResourceId]);
 
   const maxPage = Math.ceil(total / limit);
 

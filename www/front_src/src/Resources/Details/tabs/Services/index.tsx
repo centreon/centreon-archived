@@ -1,9 +1,8 @@
 import * as React from 'react';
 
-import { isNil, isEmpty, always, ifElse, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Paper, Typography, List } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import GraphIcon from '@material-ui/icons/BarChart';
 import ListIcon from '@material-ui/icons/List';
 
@@ -12,7 +11,6 @@ import { useRequest, IconButton, ListingModel } from '@centreon/ui';
 import { TabProps, detailsTabId } from '..';
 import { useResourceContext } from '../../../Context';
 import {
-  labelNoResultsFound,
   labelSwitchToGraph,
   labelSwitchToList,
 } from '../../../translatedLabels';
@@ -24,7 +22,6 @@ import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
-import Listing from './Listing';
 import LoadingSkeleton from './LoadingSkeleton';
 
 const useStyles = makeStyles((theme) => ({
@@ -56,7 +53,6 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     setSelectedResourceParentId,
     setSelectedResourceParentType,
     setOpenDetailsTabId,
-    selectedResourceId,
   } = useResourceContext();
 
   const [graphMode, setGraphMode] = React.useState<boolean>(false);
@@ -94,12 +90,6 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
       },
     });
   };
-
-  // React.useEffect(() => {
-  //   if (selectedResourceId !== details?.id) {
-  //     setServices(undefined);
-  //   }
-  // }, [selectedResourceId]);
 
   const selectService = (serviceId): void => {
     setOpenDetailsTabId(detailsTabId);
