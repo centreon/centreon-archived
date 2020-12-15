@@ -1,6 +1,7 @@
 #!/bin/bash
 
-USERNAME_API=""
+# Set value empty to prevent already set value while re executing the script
+API_USERNAME=""
 CURRENT_NODE_TYPE=""
 CURRENT_NODE_ADDRESS=""
 TARGET_NODE_ADDRESS=""
@@ -9,6 +10,7 @@ ROOT_FOLDER=""
 INSECURE=""
 TEMPLATE_FILE=""
 API_TOKEN=""
+
 declare -A SUPPORTED_LOG_LEVEL=([DEBUG]=0 [INFO]=1 [WARNING]=2 [ERROR]=3)
 declare -A PARSED_URL=([SCHEME]="http" [HOST]="" [PORT]="80")
 runtime_log_level="INFO"
@@ -41,7 +43,7 @@ function parse_command_options() {
           shift 2
           ;;
         -u|--user)
-          set_variable "USERNAME_API" "$2"
+          set_variable "API_USERNAME" "$2"
           shift 2
           ;;
         --root)
@@ -58,6 +60,7 @@ function parse_command_options() {
           ;;
         --template)
           set_variable "TEMPLATE_FILE" "$2"
+          set_variable_from_template "$TEMPLATE_FILE"
           shift 2
           ;;
         --help)
@@ -73,7 +76,7 @@ function parse_command_options() {
   done
 
   # Return an error if mandatory parameters are missing
-  if [[ ! $USERNAME_API \
+  if [[ ! $API_USERNAME \
     || ! $CURRENT_NODE_TYPE \
     || ! $TARGET_NODE_ADDRESS \
     || ! $CURRENT_NODE_NAME \
@@ -104,7 +107,7 @@ function set_variable() {
 # Get the X-AUTH-TOKEN used in register request
 function get_api_token() {
   API_RESPONSE=$(curl -s -X POST -H "Content-Type: application/json" \
-    -d '{"security":{"credentials":{"login":"'"${USERNAME_API}"'", "password":"'"$1"'"}}}' \
+    -d '{"security":{"credentials":{"login":"'"${API_USERNAME}"'", "password":"'"$1"'"}}}' \
     "${TARGET_NODE_ADDRESS}/centreon/api/latest/login")
 
   API_TOKEN=$( echo "${API_RESPONSE}" | grep -o '"token":"[^"]*' | cut -d'"' -f4)
@@ -269,7 +272,7 @@ function prepare_register_payload() {
   Summary of the information that will be send:
 
   Api Connection:
-  username: ${USERNAME_API}
+  username: ${API_USERNAME}
   password: ******
   target server: ${PARSED_URL[HOST]}
 
@@ -305,7 +308,7 @@ function register_server() {
 
   if [[ $HTTP_CODE == "201" ]];
   then
-    log "INFO" "The CURRENT NODE ${CURRENT_NODE_TYPE}: '${CURRENT_NODE_NAME}@${CURRENT_NODE_ADDRESS} linked to TARGET NODE: ${TARGET_NODE_ADDRESS} has been added"
+    log "INFO" "The CURRENT NODE ${CURRENT_NODE_TYPE}: '${CURRENT_NODE_NAME}@${CURRENT_NODE_ADDRESS}' linked to TARGET NODE: ${TARGET_NODE_ADDRESS} has been added"
   elif [[ $RESPONSE_MESSAGE != "" ]];
   then
     log "ERROR" "${RESPONSE_MESSAGE}"
@@ -318,6 +321,38 @@ function register_server() {
 #========= begin of register_server()
 
 
+#========= begin of set_variable_from_template()
+function set_variable_from_template() {
+  file="$1"
+  while read line ; do
+      varname=$(echo "${line}" | grep "=" | cut -d "=" -f1)
+      varvalue=$(echo "${line}" | grep "=" | cut -d "=" -f2)
+      if [[ $varvalue != "" ]];
+      then
+        set_variable "$varname" "$varvalue"
+      fi
+  done < "${file}"
+
+  if [[ $TARGET_NODE_ADDRESS != "" ]];
+  then
+    parse_fqdn "$TARGET_NODE_ADDRESS"
+  fi
+
+  if [[ ! $API_USERNAME \
+    || ! $CURRENT_NODE_TYPE \
+    || ! $TARGET_NODE_ADDRESS \
+    || ! $CURRENT_NODE_NAME \
+    || ! $CURRENT_NODE_ADDRESS \
+  ]]; then
+    log "ERROR" "Missing Parameters: please fill all the template's mandatory fields"
+    usage
+    exit 1
+  fi
+
+  PAYLOAD='{"name":"'"${CURRENT_NODE_NAME}"'","hostname":"'"${HOSTNAME}"'","type":"'"${CURRENT_NODE_TYPE}"'","address":"'"${CURRENT_NODE_ADDRESS}"'","parent_address":"'"${PARSED_URL[HOST]}"'"}'
+}
+#========= end of set_variable_from_template()
+
 ###########################################################
 #                                                         #
 #                    SCRIPT EXECUTION                     #
@@ -327,20 +362,21 @@ function register_server() {
 # Get all the flag and assign them to variable
 parse_command_options "$@"
 
-# Ask for API TARGET Password
-get_api_password
-
-# Ask for IP to use
-if [[ $CURRENT_NODE_ADDRESS == "" ]];
+if [[ ! $TEMPLATE_FILE ]];
 then
-  get_current_node_ip
+  # Ask for API TARGET Password
+  get_api_password
+
+  if [[ ! $CURRENT_NODE_ADDRESS ]];
+  then
+    get_current_node_ip
+  fi
+  # Prepare Payload & Display Summary
+  prepare_register_payload
 fi
 
 # Get the API TARGET Token
 get_api_token "$API_TARGET_PASSWORD"
-
-# Prepare Payload & Display Summary
-prepare_register_payload
 
 # Send cURL to POST Register
 register_server
