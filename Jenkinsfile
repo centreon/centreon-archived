@@ -91,7 +91,7 @@ try {
             checkStyle(pattern: 'codestyle-be.xml'),
             checkStyle(pattern: 'phpstan.xml')
           ],
-          referenceJobName: 'centreon-web/master'
+          referenceJobName: 'centreon-web/MON-6419-github-violations'
         )
         recordIssues(
           enabledForFailure: true,
