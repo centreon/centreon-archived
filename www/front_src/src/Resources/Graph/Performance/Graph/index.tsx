@@ -65,6 +65,8 @@ interface Props {
   lines: Array<LineModel>;
   xAxisTickFormat: string;
   timeline?: Array<TimelineEvent>;
+  onTooltipDisplay?: (timeSeriesIndex: number) => void;
+  externalTooltipTimeseriesIndex?: number;
 }
 
 const getScale = ({
@@ -92,6 +94,8 @@ const Graph = ({
   lines,
   xAxisTickFormat,
   timeline,
+  externalTooltipTimeseriesIndex,
+  onTooltipDisplay,
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
 
@@ -236,6 +240,8 @@ const Graph = ({
         tooltipTop: y,
         tooltipData: getTooltipData(index),
       });
+
+      onTooltipDisplay?.(index);
     },
     [showTooltip, containerBounds, lines],
   );

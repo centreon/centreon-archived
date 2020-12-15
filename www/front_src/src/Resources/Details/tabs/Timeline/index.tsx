@@ -1,16 +1,9 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { prop, isEmpty, cond, always, T, isNil, concat, path } from 'ramda';
+import { prop, isEmpty, path } from 'ramda';
 
-import {
-  makeStyles,
-  Paper,
-  Typography,
-  CircularProgress,
-  Button,
-} from '@material-ui/core';
-import IconRefresh from '@material-ui/icons/Refresh';
+import { makeStyles, Paper } from '@material-ui/core';
 
 import {
   useRequest,
@@ -19,11 +12,7 @@ import {
   SearchParameter,
 } from '@centreon/ui';
 
-import {
-  labelEvent,
-  labelNoResultsFound,
-  labelRefresh,
-} from '../../../translatedLabels';
+import { labelEvent } from '../../../translatedLabels';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
 
@@ -37,33 +26,13 @@ import LoadingSkeleton from './LoadingSkeleton';
 type TimelineListing = ListingModel<TimelineEvent>;
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    width: '100%',
-    height: '100%',
-    display: 'grid',
-    alignItems: 'center',
-    justifyItems: 'center',
-    alignContent: 'flex-start',
-    gridGap: theme.spacing(1),
-  },
-  filterContainer: {
-    width: '100%',
-  },
-  filterAutocomplete: {
-    margin: theme.spacing(2),
-  },
-  noResultContainer: {
-    padding: theme.spacing(1),
-  },
-  events: {
-    display: 'grid',
-    gridAutoFlow: 'row',
-    gridGap: theme.spacing(1),
-    width: '100%',
+  filter: {
+    padding: theme.spacing(2),
   },
 }));
 
 const TimelineTab = ({ details }: TabProps): JSX.Element => {
+  const classes = useStyles();
   const { t } = useTranslation();
 
   const translatedTypes = types.map((type) => ({
@@ -126,14 +95,16 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       loadingSkeleton={<LoadingSkeleton />}
       reloadDependencies={[selectedTypes]}
       filter={
-        <MultiAutocompleteField
-          label={t(labelEvent)}
-          onChange={changeSelectedTypes}
-          value={selectedTypes}
-          options={translatedTypes}
-          fullWidth
-          limitTags={3}
-        />
+        <Paper className={classes.filter}>
+          <MultiAutocompleteField
+            label={t(labelEvent)}
+            onChange={changeSelectedTypes}
+            value={selectedTypes}
+            options={translatedTypes}
+            fullWidth
+            limitTags={3}
+          />
+        </Paper>
       }
     >
       {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
