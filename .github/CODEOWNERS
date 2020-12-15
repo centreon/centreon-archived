@@ -1,5 +1,35 @@
-/.github/ /.git* /.project /Jenkinsfile /selinux/ /project/ *.sh *.md                                                                        @centreon/centreon-ci
+/.github/       @centreon/centreon-ci
+/.git*          @centreon/centreon-ci
+/.project       @centreon/centreon-ci
+/Jenkinsfile    @centreon/centreon-ci
+/selinux/       @centreon/centreon-ci
+/project/       @centreon/centreon-ci
+*.sh            @centreon/centreon-ci
+*.md            @centreon/centreon-ci
 
-/src/ /config/ /composer.* /tests/api/ /tests/php/ /tests/clapi_export/ /features/ /www/ /tmpl/ /bin/ /*.xml /phpstan.neon *.php             @centreon/centreon-php
+/src/                  @centreon/centreon-php
+/config/               @centreon/centreon-php
+/composer.*            @centreon/centreon-php
+/tests/api/            @centreon/centreon-php
+/tests/php/            @centreon/centreon-php
+/tests/clapi_export/   @centreon/centreon-php
+/features/             @centreon/centreon-php
+/www/                  @centreon/centreon-php
+/tmpl/                 @centreon/centreon-php
+/bin/                  @centreon/centreon-php
+/*.xml                 @centreon/centreon-php
+/phpstan.neon          @centreon/centreon-php
+*.php                  @centreon/centreon-php
 
-/www/front_src/ package.json package-lock.json webpack* babel.config.js tsconfig.json .prettierrc.js .eslint* .csslintrc *.ts *.tsx *.jsx    @centreon/centreon-frontend
+/www/front_src/     @centreon/centreon-frontend
+package.json        @centreon/centreon-frontend
+package-lock.json   @centreon/centreon-frontend
+webpack*            @centreon/centreon-frontend
+babel.config.js     @centreon/centreon-frontend
+tsconfig.json       @centreon/centreon-frontend
+.prettierrc.js      @centreon/centreon-frontend
+.eslint*            @centreon/centreon-frontend
+.csslintrc          @centreon/centreon-frontend
+*.ts                @centreon/centreon-frontend
+*.tsx               @centreon/centreon-frontend
+*.jsx               @centreon/centreon-frontend
