@@ -168,7 +168,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
         type: 'comment',
         date,
         content: comment,
-        contact: { name: username },
+        contact: { name: alias },
       },
     ]);
   };
