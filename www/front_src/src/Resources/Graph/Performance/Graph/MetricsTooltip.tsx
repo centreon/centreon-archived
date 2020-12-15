@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Typography } from '@material-ui/core';
+import { Typography, makeStyles } from '@material-ui/core';
 
 import { useLocaleDateTimeFormat, dateTimeFormat } from '@centreon/ui';
 
@@ -15,21 +15,24 @@ interface Props {
   metrics: Array<string>;
 }
 
+const useStyles = makeStyles(() => ({
+  tooltip: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+}));
+
 const MetricsTooltip = ({
   lines,
   timeValue,
   base,
   metrics,
 }: Props): JSX.Element | null => {
+  const classes = useStyles();
   const { format } = useLocaleDateTimeFormat();
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+    <div className={classes.tooltip}>
       <Typography variant="caption">
         {format({
           date: new Date(timeValue.timeTick),

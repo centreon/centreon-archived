@@ -83,7 +83,7 @@ const defaultTimePeriod = last24hPeriod;
 const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const performanceGraphRef = React.createRef<HTMLDivElement>();
+  const performanceGraphRef = React.useRef<HTMLDivElement>();
   const { alias } = useUserContext();
 
   const { sendRequest: sendGetTimelineRequest } = useRequest<
@@ -182,6 +182,16 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     setEventAnnotationsActive(event.target.checked);
   };
 
+  const convertToPng = (): void => {
+    setExporting(true);
+    exportToPng({
+      element: performanceGraphRef.current as HTMLElement,
+      title: `${details?.name}-performance`,
+    }).finally(() => {
+      setExporting(false);
+    });
+  };
+
   const addCommentToTimeline = ({ date, comment }): void => {
     setTimeline([
       ...(timeline as Array<TimelineEvent>),
@@ -193,16 +203,6 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
         contact: { name: alias },
       },
     ]);
-  };
-
-  const convertToPng = (): void => {
-    setExporting(true);
-    exportToPng({
-      element: performanceGraphRef.current as HTMLElement,
-      title: `${details?.name}-performance`,
-    }).finally(() => {
-      setExporting(false);
-    });
   };
 
   return (
@@ -227,7 +227,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
               />
             }
             label={
-              <Typography variant="body2">{labelDisplayEvents}</Typography>
+              <Typography variant="body2">{t(labelDisplayEvents)}</Typography>
             }
           />
           <ContentWithCircularLoading
@@ -246,7 +246,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
         </div>
         <div
           className={`${classes.graph} ${classes.performance}`}
-          ref={performanceGraphRef}
+          ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
         >
           <PerformanceGraph
             endpoint={endpoint}

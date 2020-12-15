@@ -108,25 +108,28 @@ class AcknowledgementController extends AbstractController
      * Entry point to find the hosts acknowledgements.
      *
      * @param RequestParametersInterface $requestParameters
+     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function findHostsAcknowledgements(RequestParametersInterface $requestParameters): View
+    public function findHostsAcknowledgements(RequestParametersInterface $requestParameters, Request $request): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
-
+        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $hostsAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findHostsAcknowledgements();
 
         $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_HOST);
 
-        return $this->view([
-            'result' => $hostsAcknowledgements,
-            'meta' => [
-                'pagination' => $requestParameters->toArray(),
-            ],
-        ])->setContext($context);
+        return $this->view(
+            [
+                'result' => $hostsAcknowledgements,
+                'meta' => !$isBeta
+                    ? ['pagination' => $requestParameters->toArray()]
+                    : $requestParameters->toArray()
+            ]
+        )->setContext($context);
     }
 
     /**
@@ -134,76 +137,91 @@ class AcknowledgementController extends AbstractController
      *
      * @param RequestParametersInterface $requestParameters
      * @param int $hostId
+     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function findAcknowledgementsByHost(RequestParametersInterface $requestParameters, int $hostId): View
-    {
+    public function findAcknowledgementsByHost(
+        RequestParametersInterface $requestParameters,
+        int $hostId,
+        Request $request
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
-
+        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $hostsAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findAcknowledgementsByHost($hostId);
 
         $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_HOST);
 
-        return $this->view([
-            'result' => $hostsAcknowledgements,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
+        return $this->view(
+            [
+                'result' => $hostsAcknowledgements,
+                'meta' => !$isBeta
+                    ? ['pagination' => $requestParameters->toArray()]
+                    : $requestParameters->toArray()
             ]
-        ])->setContext($context);
+        )->setContext($context);
     }
 
     /**
      * Entry point to find the services acknowledgements.
      *
      * @param RequestParametersInterface $requestParameters
+     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function findServicesAcknowledgements(RequestParametersInterface $requestParameters): View
+    public function findServicesAcknowledgements(RequestParametersInterface $requestParameters, Request $request): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
-
+        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findServicesAcknowledgements();
         $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
 
-        return $this->view([
-            'result' => $servicesAcknowledgements,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
+        return $this->view(
+            [
+                'result' => $servicesAcknowledgements,
+                'meta' => !$isBeta
+                    ? ['pagination' => $requestParameters->toArray()]
+                    : $requestParameters->toArray()
             ]
-        ])->setContext($context);
+        )->setContext($context);
     }
 
     /**
      * Entry point to find acknowledgements linked to a service.
      *
      * @param RequestParametersInterface $requestParameters
+     * @param int $hostId
+     * @param int $serviceId
+     * @param Request $request
      * @return View
      * @throws \Exception
      */
     public function findAcknowledgementsByService(
         RequestParametersInterface $requestParameters,
         int $hostId,
-        int $serviceId
+        int $serviceId,
+        Request $request
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
-
+        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findAcknowledgementsByService($hostId, $serviceId);
         $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
 
-        return $this->view([
-            'result' => $servicesAcknowledgements,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
+        return $this->view(
+            [
+                'result' => $servicesAcknowledgements,
+                'meta' => !$isBeta
+                    ? ['pagination' => $requestParameters->toArray()]
+                    : $requestParameters->toArray()
             ]
-        ])->setContext($context);
+        )->setContext($context);
     }
 
     /**
@@ -377,6 +395,8 @@ class AcknowledgementController extends AbstractController
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
+     * @param int $hostId
+     * @param int $serviceId
      * @return View
      * @throws \Exception
      */
@@ -503,25 +523,28 @@ class AcknowledgementController extends AbstractController
      * Entry point to find all acknowledgements.
      *
      * @param RequestParametersInterface $requestParameters
+     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function findAcknowledgements(RequestParametersInterface $requestParameters): View
+    public function findAcknowledgements(RequestParametersInterface $requestParameters, Request $request): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
-
+        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $acknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findAcknowledgements();
 
         $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
 
-        return $this->view([
-            'result' => $acknowledgements,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
+        return $this->view(
+            [
+                'result' => $acknowledgements,
+                'meta' => !$isBeta
+                    ? ['pagination' => $requestParameters->toArray()]
+                    : $requestParameters->toArray()
             ]
-        ])->setContext($context);
+        )->setContext($context);
     }
 
     /**

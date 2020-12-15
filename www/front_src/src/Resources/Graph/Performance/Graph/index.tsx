@@ -13,14 +13,21 @@ import {
   useTooltipInPortal,
   localPoint,
   TooltipWithBounds,
-  defaultStyles,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { useTranslation } from 'react-i18next';
 
-import { Button, ClickAwayListener } from '@material-ui/core';
+import {
+  Button,
+  ClickAwayListener,
+  makeStyles,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
+
+import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import { TimeValue, Line as LineModel } from '../models';
 import {
@@ -62,6 +69,30 @@ const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 
 const margin = { top: 30, right: 45, bottom: 30, left: 45 };
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    position: 'relative',
+  },
+  overlay: {
+    cursor: 'crosshair',
+  },
+  tooltip: {
+    opacity: 0.8,
+    padding: 12,
+  },
+  addCommentTooltip: {
+    position: 'absolute',
+    fontSize: 10,
+    display: 'grid',
+    gridAutoFlow: 'row',
+    justifyItems: 'center',
+    padding: theme.spacing(0.5),
+  },
+  addCommentButton: {
+    fontSize: 10,
+  },
+}));
+
 interface Props {
   width: number;
   height: number;
@@ -101,10 +132,13 @@ const Graph = ({
   xAxisTickFormat,
   timeline,
   resource,
-  eventAnnotationsActive,
   onAddComment,
+  eventAnnotationsActive,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
+  const classes = useStyles();
+  const { format } = useLocaleDateTimeFormat();
+
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
   const { canComment } = useAclQuery();
@@ -281,17 +315,13 @@ const Graph = ({
 
   return (
     <ClickAwayListener onClickAway={hideAddCommentTooltip}>
-      <div
-        style={{
-          position: 'relative',
-        }}
-      >
+      <div className={classes.container}>
         {tooltipOpen && tooltipData && (
           <TooltipWithBounds
             key={Math.random()}
             top={tooltipTop}
             left={tooltipLeft}
-            style={{ ...defaultStyles, opacity: 0.8, padding: 12 }}
+            className={classes.tooltip}
           >
             {tooltipData}
           </TooltipWithBounds>
@@ -342,6 +372,7 @@ const Graph = ({
               width={graphWidth}
               height={graphHeight}
               fill="transparent"
+              className={classes.overlay}
               onClick={displayAddCommentTooltip}
               onMouseMove={displayTooltip}
               onMouseLeave={hideTooltip}
@@ -358,20 +389,28 @@ const Graph = ({
           </Group>
         </svg>
         {addCommentTooltipOpen && (
-          <Button
-            size="small"
-            color="primary"
+          <Paper
+            className={classes.addCommentTooltip}
             style={{
-              position: 'absolute',
               left: addCommentTooltipLeft,
               top: addCommentTooltipTop,
-              backgroundColor: 'white',
-              fontSize: 10,
             }}
-            onClick={prepareAddComment}
           >
-            {t(labelAddComment)}
-          </Button>
+            <Typography variant="caption">
+              {format({
+                date: new Date(commentDate as Date),
+                formatString: dateTimeFormat,
+              })}
+            </Typography>
+            <Button
+              size="small"
+              color="primary"
+              className={classes.addCommentButton}
+              onClick={prepareAddComment}
+            >
+              {t(labelAddComment)}
+            </Button>
+          </Paper>
         )}
         {addingComment && (
           <AddCommentForm
