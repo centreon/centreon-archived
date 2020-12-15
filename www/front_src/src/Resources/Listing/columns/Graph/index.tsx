@@ -57,7 +57,9 @@ const GraphColumn = ({
           <PerformanceGraph
             endpoint={endpoint}
             graphHeight={150}
+            resource={row}
             timeline={[]}
+            onAddComment={(): void => undefined}
           />
         </Paper>
       </HoverChip>

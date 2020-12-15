@@ -8,20 +8,25 @@ import { makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData, timeFormat } from '@centreon/ui';
 
-import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
+import { Resource } from '../../models';
+import { ResourceDetails } from '../../Details/models';
+import { CommentParameters } from '../../Actions/api';
+import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
-import { getTimeSeries, getLineData } from './timeSeries';
-import { GraphData, TimeValue, Line as LineModel } from './models';
-import LoadingSkeleton from './LoadingSkeleton';
-import Legend from './Legend';
 import Graph from './Graph';
+import Legend from './Legend';
+import LoadingSkeleton from './LoadingSkeleton';
+import { GraphData, TimeValue, Line as LineModel } from './models';
+import { getTimeSeries, getLineData } from './timeSeries';
 
 interface Props {
   endpoint?: string;
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
+  onAddComment: (comment: CommentParameters) => void;
+  resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
 }
 
@@ -54,6 +59,8 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
+  onAddComment,
+  resource,
   timeline,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
@@ -146,6 +153,8 @@ const PerformanceGraph = ({
             base={base as number}
             xAxisTickFormat={xAxisTickFormat}
             timeline={timeline}
+            resource={resource}
+            onAddComment={onAddComment}
           />
         )}
       </ParentSize>

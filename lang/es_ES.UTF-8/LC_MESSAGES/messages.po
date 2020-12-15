@@ -14628,3 +14628,6 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "FQDN / Address"
 #  msgstr ""
+
+#  msgid "Comment added"
+#  msgstr ""

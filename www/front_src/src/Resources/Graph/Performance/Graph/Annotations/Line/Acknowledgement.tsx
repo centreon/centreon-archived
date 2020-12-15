@@ -5,14 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 
-import { labelAcknowledgement } from '../../../../../translatedLabels';
 import { Props } from '..';
-import EventAnnotations from '../EventAnnotations';
 import { iconSize } from '../Annotation';
+import { labelAcknowledgement } from '../../../../../translatedLabels';
+import EventAnnotations from '../EventAnnotations';
 
 const AcknowledgementAnnotations = (props: Props): JSX.Element => {
-  const theme = useTheme();
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const color = theme.palette.action.acknowledged;
 

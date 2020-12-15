@@ -6,12 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField, useRequest, ListingModel } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import PerformanceGraph from '../../../Graph/Performance';
 import { TabProps } from '..';
 import { listTimelineEvents } from '../Timeline/api';
 import { TimelineEvent } from '../Timeline/models';
 import { listTimelineEventsDecoder } from '../Timeline/api/decoders';
+import { ResourceDetails } from '../../models';
 
 import {
   timePeriods,
@@ -57,6 +59,7 @@ const defaultTimePeriod = last24hPeriod;
 const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const { alias } = useUserContext();
 
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
@@ -157,6 +160,19 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     return `${endpoint}${periodQueryParams}`;
   };
 
+  const addCommentToTimeline = ({ date, comment }): void => {
+    setTimeline([
+      ...(timeline as Array<TimelineEvent>),
+      {
+        id: Math.random(),
+        type: 'comment',
+        date,
+        content: comment,
+        contact: { name: alias },
+      },
+    ]);
+  };
+
   return (
     <div className={classes.container}>
       <Paper className={classes.header}>
@@ -174,7 +190,9 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
             graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
             toggableLegend
+            resource={details as ResourceDetails}
             timeline={timeline as Array<TimelineEvent>}
+            onAddComment={addCommentToTimeline}
           />
         </div>
       </Paper>

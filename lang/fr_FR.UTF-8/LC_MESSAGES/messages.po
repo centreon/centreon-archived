@@ -15871,6 +15871,9 @@ msgstr "EN ATTENTE"
 msgid "FQDN / Address"
 msgstr "FQDN / Adresse"
 
+msgid "Comment added"
+msgstr "Commentaire ajouté"
+
 msgid "Error when searching for services"
 msgstr "Erreur lors de la recherche des services"
 
