@@ -61,7 +61,10 @@ $tables = array(
 
 try {
     foreach ($tables as $table) {
-        $config = new Config($centstorageDb, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml', $centreonDb);
+        $config = new Config(
+            $centstorageDb, _CENTREON_PATH_ . '/config/partition.d/partitioning-' . $table . '.xml',
+            $centreonDb
+        );
         $mysqlTable = $config->getTable($table);
         $partEngine->updateParts($mysqlTable, $centstorageDb);
     }
