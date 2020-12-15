@@ -223,10 +223,10 @@ function get_current_node_ip() {
 
     if [[ $choice -ge 0 && $choice -le $count_available_ips-1 ]];
     then
-          return 0
-      else
-        get_current_node_ip
-      fi
+      CURRENT_NODE_ADDRESS=${ips[$choice]}
+    else
+      get_current_node_ip
+    fi
     done
   fi
 }
