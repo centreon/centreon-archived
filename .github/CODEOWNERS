@@ -1,0 +1,5 @@
+/.github/ /.git* /.project /Jenkinsfile /selinux/ /project/ *.sh *.md                                                                        @centreon/centreon-ci
+
+/src/ /config/ /composer.* /tests/api/ /tests/php/ /tests/clapi_export/ /features/ /www/ /tmpl/ /bin/ /*.xml /phpstan.neon *.php             @centreon/centreon-php
+
+/www/front_src/ package.json package-lock.json webpack* babel.config.js tsconfig.json .prettierrc.js .eslint* .csslintrc *.ts *.tsx *.jsx    @centreon/centreon-frontend
