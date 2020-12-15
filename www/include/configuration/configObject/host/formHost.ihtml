@@ -506,10 +506,10 @@ jQuery(function() {
         if (jQuery(this).closest('div').find('input[type=\'checkbox\']:checked').val() === '1') {
             // It's a password input
             const actualValue = jQuery(this).val();
-			jQuery(this).val('');
-			jQuery(this).one('focusout', function() {
+            jQuery(this).val('');
+            jQuery(this).one('focusout', function() {
                 if (jQuery(this).val().length === 0) {
-					jQuery(this).val(actualValue);
+                    jQuery(this).val(actualValue);
                 }
             });
         }
