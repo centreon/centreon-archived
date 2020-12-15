@@ -1,8 +1,8 @@
 #!/bin/bash
 
-MANDATORY_OPTIONS="u:t:h:n:"
 USERNAME_API=""
 CURRENT_NODE_TYPE=""
+CURRENT_NODE_ADDRESS=""
 TARGET_NODE_ADDRESS=""
 CURRENT_NODE_NAME=""
 API_TOKEN=""
@@ -20,29 +20,54 @@ runtime_log_level="INFO"
 # This function will parse the flag passed to the command and assign them to variables
 # If mandatories options are missing an error is returned
 function parse_command_options() {
-  while getopts $MANDATORY_OPTIONS opt; do
-    case ${opt} in
-      # Get username of API TARGET
-      u)
-        set_variable "USERNAME_API" "$OPTARG"
-        ;;
-      # Get the platform type
-      t)
-        set_variable "CURRENT_NODE_TYPE" "$OPTARG"
-        # TODO: If Remote call endpoint to register remote
-        ;;
-      # Get the TARGET Node ADDRESS
-      h)
-        set_variable "TARGET_NODE_ADDRESS" "$OPTARG"
-        #Explode the Address
-        parse_fqdn "$TARGET_NODE_ADDRESS"
-        ;;
-      # Get the name of the platform
-      n)
-        set_variable "CURRENT_NODE_NAME" "$OPTARG"
-        ;;
+  while (($# > 0)); do
+    case $1 in
+        -t|--type)
+          set_variable "CURRENT_NODE_TYPE" "$2"
+          # TODO: If Remote call endpoint to register remote
+          shift 2
+          ;;
+        -n|--name)
+          set_variable "CURRENT_NODE_NAME" "$2"
+          shift 2
+          ;;
+        -h|--host)
+          set_variable "TARGET_NODE_ADDRESS" "$2"
+          #Explode the Address
+          parse_fqdn "$TARGET_NODE_ADDRESS"
+          shift 2
+          ;;
+        -u|--user)
+          set_variable "USERNAME_API" "$2"
+          shift 2
+          ;;
+        --root)
+          set_variable "ROOT_FOLDER" "$2"
+          shift 2
+          ;;
+        --node-address)
+          set_variable "CURRENT_NODE_ADDRESS" "$2"
+          shift 2
+          ;;
+        --insecure)
+          set_variable "INSECURE" true
+          shift 1
+          ;;
+        --template)
+          set_variable "TEMPLATE_FILE" "$2"
+          shift 2
+          ;;
+        --help)
+          usage
+          exit 0
+          ;;
+        *)
+          log "ERROR" "Unrecognized parameter ${1}"
+          usage
+          exit 1
+          ;;
     esac
-  done
+done
 
   # Return an error if mandatory parameters are missing
   if [[ ! $USERNAME_API \
@@ -205,7 +230,6 @@ function get_api_password() {
 
 #========= begin of get_current_node_ip()
 function get_current_node_ip() {
-  if [[ $CURRENT_NODE_ADDRESS == "" ]];
   CURRENT_NODE_ADDRESS=$(hostname -I)
 
   ips=($CURRENT_NODE_ADDRESS)
@@ -227,7 +251,6 @@ function get_current_node_ip() {
     else
       get_current_node_ip
     fi
-    done
   fi
 }
 #========= end of get_current_node_ip()
@@ -305,7 +328,10 @@ parse_command_options "$@"
 get_api_password
 
 # Ask for IP to use
-get_current_node_ip
+if [[ $CURRENT_NODE_ADDRESS == "" ]];
+then
+  get_current_node_ip
+fi
 
 # Get the API TARGET Token
 get_api_token "$API_TARGET_PASSWORD"
