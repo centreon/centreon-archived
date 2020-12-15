@@ -227,7 +227,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
               />
             }
             label={
-              <Typography variant="body2">{labelDisplayEvents}</Typography>
+              <Typography variant="body2">{t(labelDisplayEvents)}</Typography>
             }
           />
           <ContentWithCircularLoading
