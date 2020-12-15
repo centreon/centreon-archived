@@ -12,6 +12,7 @@ if (env.BRANCH_NAME.startsWith('release-')) {
 } else {
   env.BUILD = 'CI'
 }
+
 def apiFeatureFiles = []
 def featureFiles = []
 
