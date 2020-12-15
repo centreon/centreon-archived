@@ -208,14 +208,22 @@ function get_current_node_ip() {
   CURRENT_NODE_ADDRESS=$(hostname -I)
 
   ips=$(echo $CURRENT_NODE_ADDRESS | tr " " "\n")
-
-  echo "Which IP do you want to use as CURRENT NODE IP ?"
-
-  select addr in $ips
-  do
-    CURRENT_NODE_ADDRESS="$addr"
-    return 0
-  done
+  count_available_ips=${#ips[*]}
+  echo $count_available_ips
+  if [[ $count_available_ips -gt 1 ]];
+  then
+    echo "Which IP do you want to use as CURRENT NODE IP ?"
+    select addr in $ips
+    do
+      CURRENT_NODE_ADDRESS="$addr"
+      if [[ $CURRENT_NODE_ADDRESS -ge 1 || $CURRENT_NODE_ADDRESS -le $count_available_ips ]];
+      then
+          return 0
+      else
+        get_current_node_ip
+      fi
+    done
+  fi
 }
 #========= end of get_current_node_ip()
 
