@@ -205,19 +205,24 @@ function get_api_password() {
 
 #========= begin of get_current_node_ip()
 function get_current_node_ip() {
+  if [[ $CURRENT_NODE_ADDRESS == "" ]];
   CURRENT_NODE_ADDRESS=$(hostname -I)
 
-  ips=$(echo $CURRENT_NODE_ADDRESS | tr " " "\n")
-  count_available_ips=${#ips[*]}
-  echo $count_available_ips
+  ips=($CURRENT_NODE_ADDRESS)
+  count_available_ips=${#ips[@]}
+
   if [[ $count_available_ips -gt 1 ]];
   then
     echo "Which IP do you want to use as CURRENT NODE IP ?"
-    select addr in $ips
+    for i in "${!ips[@]}";
     do
-      CURRENT_NODE_ADDRESS="$addr"
-      if [[ $CURRENT_NODE_ADDRESS -ge 1 || $CURRENT_NODE_ADDRESS -le $count_available_ips ]];
-      then
+      printf "%s) %s\n" "$i" "${ips[$i]}"
+    done
+
+    read -r choice
+
+    if [[ $choice -ge 0 && $choice -le $count_available_ips-1 ]];
+    then
           return 0
       else
         get_current_node_ip
