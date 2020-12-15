@@ -40,7 +40,8 @@ set_include_path(implode(PATH_SEPARATOR, array(
 )));
 
 // Centreon Autoload
-spl_autoload_register(function ($sClass) {
+spl_autoload_register(function ($sClass)
+{
     $fileName = $sClass;
     $fileName{0} = strtolower($fileName{0});
     $fileNameType1 = __DIR__ . "/www/class/" . $fileName . ".class.php";
