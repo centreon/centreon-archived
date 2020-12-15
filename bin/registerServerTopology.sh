@@ -5,6 +5,9 @@ CURRENT_NODE_TYPE=""
 CURRENT_NODE_ADDRESS=""
 TARGET_NODE_ADDRESS=""
 CURRENT_NODE_NAME=""
+ROOT_FOLDER=""
+INSECURE=""
+TEMPLATE_FILE=""
 API_TOKEN=""
 declare -A SUPPORTED_LOG_LEVEL=([DEBUG]=0 [INFO]=1 [WARNING]=2 [ERROR]=3)
 declare -A PARSED_URL=([SCHEME]="http" [HOST]="" [PORT]="80")
@@ -67,7 +70,7 @@ function parse_command_options() {
           exit 1
           ;;
     esac
-done
+  done
 
   # Return an error if mandatory parameters are missing
   if [[ ! $USERNAME_API \
