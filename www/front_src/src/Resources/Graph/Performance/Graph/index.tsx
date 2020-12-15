@@ -18,8 +18,16 @@ import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { useTranslation } from 'react-i18next';
 
-import { Button, ClickAwayListener, makeStyles } from '@material-ui/core';
+import {
+  Button,
+  ClickAwayListener,
+  makeStyles,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
+
+import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import { TimeValue, Line as LineModel } from '../models';
 import {
@@ -71,11 +79,16 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0.8,
     padding: 12,
   },
-  addCommentButton: {
+  addCommentTooltip: {
     position: 'absolute',
-    backgroundColor: 'white',
     fontSize: 10,
-    boxShadow: theme.shadows[1],
+    display: 'grid',
+    gridAutoFlow: 'row',
+    justifyItems: 'center',
+    padding: theme.spacing(0.5),
+  },
+  addCommentButton: {
+    fontSize: 10,
   },
 }));
 
@@ -121,6 +134,7 @@ const Graph = ({
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
+  const { format } = useLocaleDateTimeFormat();
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
@@ -365,18 +379,28 @@ const Graph = ({
           </Group>
         </svg>
         {addCommentTooltipOpen && (
-          <Button
-            size="small"
-            color="primary"
-            className={classes.addCommentButton}
+          <Paper
+            className={classes.addCommentTooltip}
             style={{
               left: addCommentTooltipLeft,
               top: addCommentTooltipTop,
             }}
-            onClick={prepareAddComment}
           >
-            {t(labelAddComment)}
-          </Button>
+            <Typography variant="caption">
+              {format({
+                date: new Date(commentDate as Date),
+                formatString: dateTimeFormat,
+              })}
+            </Typography>
+            <Button
+              size="small"
+              color="primary"
+              className={classes.addCommentButton}
+              onClick={prepareAddComment}
+            >
+              {t(labelAddComment)}
+            </Button>
+          </Paper>
         )}
         {addingComment && (
           <DialogAddComment
