@@ -13,13 +13,12 @@ import {
   useTooltipInPortal,
   localPoint,
   TooltipWithBounds,
-  defaultStyles,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { useTranslation } from 'react-i18next';
 
-import { Button, ClickAwayListener } from '@material-ui/core';
+import { Button, ClickAwayListener, makeStyles } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
 import { TimeValue, Line as LineModel } from '../models';
@@ -60,6 +59,25 @@ const MemoizedLines = React.memo(Lines, propsAreEqual);
 const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 
 const margin = { top: 30, right: 45, bottom: 30, left: 45 };
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    position: 'relative',
+  },
+  overlay: {
+    cursor: 'crosshair',
+  },
+  tooltip: {
+    opacity: 0.8,
+    padding: 12,
+  },
+  addCommentButton: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    fontSize: 10,
+    boxShadow: theme.shadows[1],
+  },
+}));
 
 interface Props {
   width: number;
@@ -102,6 +120,8 @@ const Graph = ({
   onAddComment,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
+  const classes = useStyles();
+
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
 
@@ -273,17 +293,13 @@ const Graph = ({
 
   return (
     <ClickAwayListener onClickAway={hideAddCommentTooltip}>
-      <div
-        style={{
-          position: 'relative',
-        }}
-      >
+      <div className={classes.container}>
         {tooltipOpen && tooltipData && (
           <TooltipWithBounds
             key={Math.random()}
             top={tooltipTop}
             left={tooltipLeft}
-            style={{ ...defaultStyles, opacity: 0.8, padding: 12 }}
+            className={classes.tooltip}
           >
             {tooltipData}
           </TooltipWithBounds>
@@ -332,6 +348,7 @@ const Graph = ({
               width={graphWidth}
               height={graphHeight}
               fill="transparent"
+              className={classes.overlay}
               onClick={displayAddCommentTooltip}
               onMouseMove={displayTooltip}
               onMouseLeave={hideTooltip}
@@ -351,12 +368,10 @@ const Graph = ({
           <Button
             size="small"
             color="primary"
+            className={classes.addCommentButton}
             style={{
-              position: 'absolute',
               left: addCommentTooltipLeft,
               top: addCommentTooltipTop,
-              backgroundColor: 'white',
-              fontSize: 10,
             }}
             onClick={prepareAddComment}
           >
