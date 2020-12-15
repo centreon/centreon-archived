@@ -83,7 +83,7 @@ const defaultTimePeriod = last24hPeriod;
 const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const performanceGraphRef = React.createRef<HTMLDivElement>();
+  const performanceGraphRef = React.useRef<HTMLDivElement>();
   const { alias } = useUserContext();
 
   const { sendRequest: sendGetTimelineRequest } = useRequest<
@@ -246,7 +246,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
         </div>
         <div
           className={`${classes.graph} ${classes.performance}`}
-          ref={performanceGraphRef}
+          ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
         >
           <PerformanceGraph
             endpoint={endpoint}
