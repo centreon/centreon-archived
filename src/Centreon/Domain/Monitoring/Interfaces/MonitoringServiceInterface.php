@@ -65,14 +65,6 @@ interface MonitoringServiceInterface extends ContactFilterInterface
     public function findOneHost(int $hostId): ?Host;
 
     /**
-     * Find all hosts from an array of hostIds
-     *
-     * @param array $hostIds
-     * @return Host[]
-     */
-    public function findMultipleHosts(array $hostIds): array;
-
-    /**
      * Find a service based on his ID and a host ID.
      *
      * @param int $hostId Host ID for which the service belongs
@@ -81,23 +73,6 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function findOneService(int $hostId, int $serviceId): ?Service;
-
-    /**
-     * Find a services based on a list of ids
-     *
-     * @param array $serviceIds Services to find
-     * Expected
-     * [
-     *   [0] => [
-     *      'host_id' => int,
-     *      'service_id' => int
-     *   ],
-     *   ...
-     * ]
-     * @return Service[]
-     * @throws \Exception
-     */
-    public function findMultipleServices(array $serviceIds): array;
 
     /**
      * Find all service groups.
