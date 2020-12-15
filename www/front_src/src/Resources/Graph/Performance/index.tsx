@@ -8,11 +8,11 @@ import { makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData, timeFormat } from '@centreon/ui';
 
-import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
+import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
 import Graph from './Graph';
 import Legend from './Legend';
@@ -25,8 +25,8 @@ interface Props {
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
-  resource: Resource | ResourceDetails;
   eventAnnotationsActive?: boolean;
+  resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
   onAddComment: (commentParameters: CommentParameters) => void;
 }

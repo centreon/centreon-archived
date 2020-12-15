@@ -84,7 +84,7 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const performanceGraphRef = React.createRef<HTMLDivElement>();
-  const { username } = useUserContext();
+  const { alias } = useUserContext();
 
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
@@ -182,19 +182,6 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     setEventAnnotationsActive(event.target.checked);
   };
 
-  const addCommentToTimeline = ({ date, comment }): void => {
-    setTimeline([
-      ...(timeline as Array<TimelineEvent>),
-      {
-        id: Math.random(),
-        type: 'comment',
-        date,
-        content: comment,
-        contact: { name: username },
-      },
-    ]);
-  };
-
   const convertToPng = (): void => {
     setExporting(true);
     exportToPng({
@@ -203,6 +190,19 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
     }).finally(() => {
       setExporting(false);
     });
+  };
+
+  const addCommentToTimeline = ({ date, comment }): void => {
+    setTimeline([
+      ...(timeline as Array<TimelineEvent>),
+      {
+        id: Math.random(),
+        type: 'comment',
+        date,
+        content: comment,
+        contact: { name: alias },
+      },
+    ]);
   };
 
   return (
