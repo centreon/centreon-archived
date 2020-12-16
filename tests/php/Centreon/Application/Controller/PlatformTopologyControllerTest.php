@@ -290,10 +290,6 @@ class PlatformTopologyControllerTest extends TestCase
 
     public function testDeletePlatformTopologySuccess(): void
     {
-        $this->platformTopologyService
-            ->expects($this->once())
-            ->method('deletePlatform')
-            ->willReturn(null);
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
