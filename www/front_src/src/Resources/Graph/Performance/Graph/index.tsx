@@ -69,7 +69,7 @@ interface Props {
   lines: Array<LineModel>;
   xAxisTickFormat: string;
   timeline?: Array<TimelineEvent>;
-  onTooltipDisplay?: (position: TooltipPosition) => void;
+  onTooltipDisplay?: (position?: TooltipPosition) => void;
   tooltipPosition?: TooltipPosition;
 }
 
@@ -258,16 +258,12 @@ const Graph = ({
     }
 
     if (isNil(tooltipPosition)) {
+      hideTooltip();
       return;
     }
 
     const { x, index } = tooltipPosition;
     const tooltipDataForIndex = getTooltipData(index);
-
-    if (isNil(tooltipDataForIndex)) {
-      hideTooltip();
-      return;
-    }
 
     showTooltip({
       tooltipLeft: x,
@@ -279,7 +275,7 @@ const Graph = ({
   const closeTooltip = (): void => {
     hideTooltip();
     setIsMouseOver(false);
-    onTooltipDisplay?.(undefined);
+    onTooltipDisplay?.();
   };
 
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
@@ -351,8 +347,8 @@ const Graph = ({
             <Line
               from={{ x: tooltipLineLeft, y: 0 }}
               to={{ x: tooltipLineLeft, y: graphHeight }}
-              stroke={grey[300]}
-              strokeWidth={2}
+              stroke={grey[400]}
+              strokeWidth={1}
               pointerEvents="none"
             />
           )}
