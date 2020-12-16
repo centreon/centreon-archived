@@ -86,6 +86,7 @@ try {
         recordIssues(
           enabledForFailure: true,
           aggregatingResults: true,
+          ignoreFailedBuilds: false,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
           tools: [
             checkStyle(pattern: 'codestyle-be.xml'),
@@ -96,6 +97,7 @@ try {
         recordIssues(
           enabledForFailure: true,
           failOnError: true,
+          ignoreFailedBuilds: false,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
           tools: [esLint(pattern: 'codestyle-fe.xml')],
           referenceJobName: 'centreon-web/master'
