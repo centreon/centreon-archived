@@ -2334,7 +2334,7 @@ function getSelectOption()
         if (strpos($value, ',') !== false) {
             return explode(',', $value);
         }
-        return [];
+        return [$value];
     };
     if (isset($_GET["select"])) {
         return is_array($_GET["select"])
