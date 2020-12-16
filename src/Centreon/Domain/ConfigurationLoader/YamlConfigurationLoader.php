@@ -24,7 +24,6 @@ namespace Centreon\Domain\ConfigurationLoader;
 
 use Symfony\Component\Yaml\Tag\TaggedValue;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 /**
  * This class is designed to load a Yaml configuration file taking into account a custom tag to load other files.
@@ -54,7 +53,6 @@ class YamlConfigurationLoader
      * Loads the configuration file defined in the constructor and returns its equivalent in the form of an array.
      *
      * @return array Configuration data
-     * @throws \FileNotFoundException
      */
     public function load(): array
     {
@@ -75,7 +73,6 @@ class YamlConfigurationLoader
      * @param string $historyLoadedFile History of analyzed configuration files
      *
      * @return array Returns the configuration data including other configuration data from the include files
-     * @throws \FileNotFoundException
      */
     private function iterateConfiguration(
         array $configuration,
@@ -130,12 +127,11 @@ class YamlConfigurationLoader
      * @param string $yamlFile Yaml configuration file to load
      *
      * @return array Returns the configuration data in the form of an array
-     * @throws FileNotFoundException
      */
     private function loadFile(string $yamlFile): array
     {
         if (!file_exists($yamlFile)) {
-            throw new FileNotFoundException('The configuration file \'' . $yamlFile . '\' does not exists');
+            throw new \Exception('The configuration file \'' . $yamlFile . '\' does not exists');
         }
 
         return (array)Yaml::parseFile($yamlFile, Yaml::PARSE_CUSTOM_TAGS);

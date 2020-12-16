@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ConfigurationLoader;
 
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use PHPUnit\Framework\TestCase;
 
 class YamlConfigurationLoaderTest extends TestCase
@@ -71,11 +70,11 @@ class YamlConfigurationLoaderTest extends TestCase
     }
 
     /***
-     * This test is designed to test the FileNotFound Exception
+     * This test is designed to test the Exception
      */
     public function testFileNotFound()
     {
-        $this->expectException(FileNotFoundException::class);
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessageMatches("/^The configuration file '.*no_file\.yaml' does not exists$/");
         $gcl = new YamlConfigurationLoader(__DIR__ . '/no_file.yaml');
         $gcl->load();
