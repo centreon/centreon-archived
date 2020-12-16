@@ -6,10 +6,11 @@ CURRENT_NODE_TYPE=""
 CURRENT_NODE_ADDRESS=""
 TARGET_NODE_ADDRESS=""
 CURRENT_NODE_NAME=""
-ROOT_FOLDER=""
+ROOT_CENTREON_FOLDER=""
 INSECURE=""
 TEMPLATE_FILE=""
 API_TOKEN=""
+RESPONSE_MESSAGE=""
 
 declare -A SUPPORTED_LOG_LEVEL=([DEBUG]=0 [INFO]=1 [WARNING]=2 [ERROR]=3)
 declare -A PARSED_URL=([SCHEME]="http" [HOST]="" [PORT]="80")
@@ -38,7 +39,6 @@ function parse_command_options() {
           ;;
         -h|--host)
           set_variable "TARGET_NODE_ADDRESS" "$2"
-          #Explode the Address
           parse_fqdn "$TARGET_NODE_ADDRESS"
           shift 2
           ;;
@@ -47,7 +47,7 @@ function parse_command_options() {
           shift 2
           ;;
         --root)
-          set_variable "ROOT_FOLDER" "$2"
+          set_variable "ROOT_CENTREON_FOLDER" "$2"
           shift 2
           ;;
         --node-address)
@@ -106,9 +106,9 @@ function set_variable() {
 #========= begin of function get_api_token()
 # Get the X-AUTH-TOKEN used in register request
 function get_api_token() {
-  API_RESPONSE=$(curl -s -X POST -H "Content-Type: application/json" \
+  API_RESPONSE=$(curl -s -X POST ${INSECURE:+--insecure} -H "Content-Type: application/json" \
     -d '{"security":{"credentials":{"login":"'"${API_USERNAME}"'", "password":"'"$1"'"}}}' \
-    "${TARGET_NODE_ADDRESS}/centreon/api/latest/login")
+    "${TARGET_NODE_ADDRESS}/${ROOT_CENTREON_FOLDER}/api/latest/login")
 
   API_TOKEN=$( echo "${API_RESPONSE}" | grep -o '"token":"[^"]*' | cut -d'"' -f4)
 
@@ -192,14 +192,14 @@ function usage() {
   After executing the script, please use the wizard on your Central to complete your installation.
 
   Global Options:
-    -u <mandatory>              username of your centreon-web account on the TARGET NODE.
-    -h <mandatory>              URL of the TARGET NODE
-    -t <mandatory>              the server type you want to register (CURRENT NODE):
+    -u [--user] <mandatory>              username of your centreon-web account on the TARGET NODE.
+    -h [--host] <mandatory>              URL of the TARGET NODE
+    -t [--type] <mandatory>              the server type you want to register (CURRENT NODE):
               - Poller
               - Remote
               - MAP
               - MBI
-    -n <mandatory>              name of the CURRENT NODE that will be displayed on the TARGET NODE
+    -n [--name] <mandatory>              name of the CURRENT NODE that will be displayed on the TARGET NODE
 
     --help <optional>           get information about the parameters available
     --root <optional>           your Centreon root path on TARGET NODE (by default "centreon")
@@ -211,14 +211,9 @@ function usage() {
               - CURRENT_NODE_TYPE        <mandatory> string
               - TARGET_NODE_ADDRESS      <mandatory> string (PARENT NODE ADDRESS)
               - CURRENT_NODE_NAME        <mandatory> string (CURRENT NODE NAME)
-              - PROXY_USAGE              <mandatory> boolean
+              - CURRENT_NODE_ADDRESS     <mandatory> string (CURRENT NODE IP OR FQDN)
               - ROOT_CENTREON_FOLDER     <optional> string (CENTRAL ROOT CENTREON FOLDER)
-              - CURRENT_NODE_ADDRESS     <optional> string (CURRENT NODE IP OR FQDN)
               - INSECURE                 <optional> boolean
-              - PROXY_HOST               <optional> string
-              - PROXY_PORT               <optional> integer
-              - PROXY_USERNAME           <optional> string
-              - PROXY_PASSWORD           <optional> string
 
 EOF
 }
@@ -299,9 +294,9 @@ EOD
 #========= begin of register_server()
 # Send the request to register the server
 function register_server() {
-  IFS=$'\n' API_RESPONSE=($(curl -s -X POST -i -H "Content-Type: application/json" -H "X-AUTH-TOKEN: ${API_TOKEN}" \
+  IFS=$'\n' API_RESPONSE=($(curl -s -X POST ${INSECURE:+--insecure} -i -H "Content-Type: application/json" -H "X-AUTH-TOKEN: ${API_TOKEN}" \
     -d "${PAYLOAD}" \
-    "${TARGET_NODE_ADDRESS}/centreon/api/latest/platform/topology" | grep -E "(HTTP/|message)"))
+    "${TARGET_NODE_ADDRESS}/${ROOT_CENTREON_FOLDER}/api/latest/platform/topology" | grep -E "(HTTP/|message)"))
 
   HTTP_CODE="$(echo ${API_RESPONSE[0]} | cut -d ' ' -f2)"
   RESPONSE_MESSAGE=${API_RESPONSE[1]}
@@ -323,20 +318,8 @@ function register_server() {
 
 #========= begin of set_variable_from_template()
 function set_variable_from_template() {
-  file="$1"
-  while read line ; do
-      varname=$(echo "${line}" | grep "=" | cut -d "=" -f1)
-      varvalue=$(echo "${line}" | grep "=" | cut -d "=" -f2)
-      if [[ $varvalue != "" ]];
-      then
-        set_variable "$varname" "$varvalue"
-      fi
-  done < "${file}"
 
-  if [[ $TARGET_NODE_ADDRESS != "" ]];
-  then
-    parse_fqdn "$TARGET_NODE_ADDRESS"
-  fi
+  source "$1"
 
   if [[ ! $API_USERNAME \
     || ! $CURRENT_NODE_TYPE \
@@ -347,6 +330,8 @@ function set_variable_from_template() {
     log "ERROR" "Missing Parameters: please fill all the template's mandatory fields"
     usage
     exit 1
+  else
+    parse_fqdn "$TARGET_NODE_ADDRESS"
   fi
 
   PAYLOAD='{"name":"'"${CURRENT_NODE_NAME}"'","hostname":"'"${HOSTNAME}"'","type":"'"${CURRENT_NODE_TYPE}"'","address":"'"${CURRENT_NODE_ADDRESS}"'","parent_address":"'"${PARSED_URL[HOST]}"'"}'
@@ -373,6 +358,11 @@ then
   fi
   # Prepare Payload & Display Summary
   prepare_register_payload
+fi
+
+if [[ ! $ROOT_CENTREON_FOLDER ]]
+then
+  ROOT_CENTREON_FOLDER="centreon"
 fi
 
 # Get the API TARGET Token
