@@ -207,7 +207,7 @@ function usage() {
     --insecure <optional>       allow self-signed certificate
     --template <optional>       provide the path of a register topology configuration file to automate the script
               - API_USERNAME             <mandatory> string
-              - API_TARGET_PASSWORD             <mandatory> string
+              - API_TARGET_PASSWORD      <mandatory> string
               - CURRENT_NODE_TYPE        <mandatory> string
               - TARGET_NODE_ADDRESS      <mandatory> string (PARENT NODE ADDRESS)
               - CURRENT_NODE_NAME        <mandatory> string (CURRENT NODE NAME)
