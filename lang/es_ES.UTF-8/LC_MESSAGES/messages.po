@@ -14631,3 +14631,9 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Comment added"
 #  msgstr ""
+
+#  msgid "Display events"
+#  msgstr ""
+
+#  msgid "Export to png"
+#  msgstr ""

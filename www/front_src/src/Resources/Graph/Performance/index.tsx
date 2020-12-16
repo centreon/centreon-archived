@@ -25,9 +25,10 @@ interface Props {
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
-  onAddComment: (comment: CommentParameters) => void;
+  eventAnnotationsActive?: boolean;
   resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
+  onAddComment: (commentParameters: CommentParameters) => void;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -59,22 +60,20 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
-  onAddComment,
-  resource,
+  eventAnnotationsActive = false,
   timeline,
+  resource,
+  onAddComment,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
-  const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
+  const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
 
-  const {
-    sendRequest: sendGetGraphDataRequest,
-    sending: sendingGetGraphDataRequest,
-  } = useRequest<GraphData>({
+  const { sendRequest: sendGetGraphDataRequest } = useRequest<GraphData>({
     request: getData,
   });
 
@@ -82,6 +81,8 @@ const PerformanceGraph = ({
     if (isNil(endpoint)) {
       return;
     }
+
+    setLineData(undefined);
 
     sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
@@ -91,10 +92,7 @@ const PerformanceGraph = ({
     });
   }, [endpoint]);
 
-  const loading =
-    sendingGetGraphDataRequest || isNil(timeline) || isNil(endpoint);
-
-  if (loading) {
+  if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return <LoadingSkeleton />;
   }
 
@@ -155,6 +153,7 @@ const PerformanceGraph = ({
             timeline={timeline}
             resource={resource}
             onAddComment={onAddComment}
+            eventAnnotationsActive={eventAnnotationsActive}
           />
         )}
       </ParentSize>

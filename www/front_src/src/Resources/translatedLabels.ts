@@ -182,3 +182,5 @@ export const labelAlias = 'Alias';
 export const labelUrl = 'URL';
 export const labelAddComment = 'Add a comment';
 export const labelCommentAdded = 'Comment added';
+export const labelDisplayEvents = 'Display events';
+export const labelExportToPng = 'Export to png';

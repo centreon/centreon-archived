@@ -15880,6 +15880,12 @@ msgstr "Erreur lors de la recherche des services"
 msgid "Error when searching for hosts"
 msgstr "Erreur lors de la recherche des hôtes"
 
+msgid "Display events"
+msgstr "Afficher les évènements"
+
+msgid "Export to png"
+msgstr "Exporter comme png"
+
 msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
 msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas comporter plus de %d caractères mais n'en comporte que %d"
 

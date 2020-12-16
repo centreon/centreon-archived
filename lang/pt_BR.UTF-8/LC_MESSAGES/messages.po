@@ -15074,3 +15074,9 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Comment added"
 #  msgstr ""
+
+#  msgid "Display events"
+#  msgstr ""
+
+#  msgid "Export to png"
+#  msgstr ""
