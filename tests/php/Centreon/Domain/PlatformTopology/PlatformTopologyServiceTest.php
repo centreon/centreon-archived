@@ -457,11 +457,6 @@ class PlatformTopologyServiceTest extends TestCase
             ->method('findPlatform')
             ->willReturn($this->platform);
 
-        $this->platformTopologyRepository
-            ->expects($this->once())
-            ->method('deletePlatform')
-            ->willReturn(null);
-
         $platformTopologyService = new PlatformTopologyService(
             $this->platformTopologyRepository,
             $this->platformInformationService,
