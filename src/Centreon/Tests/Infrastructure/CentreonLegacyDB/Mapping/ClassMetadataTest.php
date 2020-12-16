@@ -43,7 +43,7 @@ use PDO;
 
 class ClassMetadataTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->metadata = new ClassMetadata;
         EntityMock::loadMetadata($this->metadata);

@@ -31,7 +31,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
     private $utils;
     private $configuration;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new ServiceContainer();
 
@@ -70,7 +70,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->container->terminate();
         $this->container = null;
@@ -83,7 +83,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
 
         $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
             ->disableOriginalConstructor()
-            ->setMethods(array('exists'))
+            ->onlyMethods(array('exists'))
             ->getMock();
         $filesystem->expects($this->any())
             ->method('exists')
@@ -226,7 +226,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
 
         $finder = $this->getMockBuilder('\Symfony\Component\Finder\Finder')
             ->disableOriginalConstructor()
-            ->setMethods(array('directories', 'depth', 'in'))
+            ->onlyMethods(array('directories', 'depth', 'in'))
             ->getMock();
         $finder->expects($this->any())
             ->method('directories')
@@ -245,7 +245,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
 
         $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
             ->disableOriginalConstructor()
-            ->setMethods(array('exists'))
+            ->onlyMethods(array('exists'))
             ->getMock();
         $filesystem->expects($this->any())
             ->method('exists')
@@ -309,7 +309,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
 
         $finder = $this->getMockBuilder('\Symfony\Component\Finder\Finder')
             ->disableOriginalConstructor()
-            ->setMethods(array('directories', 'depth', 'in'))
+            ->onlyMethods(array('directories', 'depth', 'in'))
             ->getMock();
         $finder->expects($this->any())
             ->method('directories')
@@ -328,7 +328,7 @@ class InformationTest extends \PHPUnit\Framework\TestCase
 
         $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
             ->disableOriginalConstructor()
-            ->setMethods(array('exists'))
+            ->onlyMethods(array('exists'))
             ->getMock();
         $filesystem->expects($this->any())
             ->method('exists')

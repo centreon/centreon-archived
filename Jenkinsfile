@@ -62,21 +62,6 @@ try {
           cloverReportDir: '.',
           cloverReportFileName: 'coverage-be.xml'
         ])
-        recordIssues(
-          enabledForFailure: true,
-          aggregatingResults: true,
-          tools: [
-            checkStyle(pattern: 'codestyle-be.xml'),
-            checkStyle(pattern: 'phpstan.xml')
-          ],
-          referenceJobName: 'centreon-web/master'
-        )
-        recordIssues(
-          enabledForFailure: true,
-          failOnError: true,
-          tools: [esLint(pattern: 'codestyle-fe.xml')],
-          referenceJobName: 'centreon-web/master'
-        )
 
         if (env.CHANGE_ID) { // pull request to comment with coding style issues
           ViolationsToGitHub([
@@ -97,6 +82,24 @@ try {
             ]
           ])
         }
+
+        recordIssues(
+          enabledForFailure: true,
+          aggregatingResults: true,
+          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+          tools: [
+            checkStyle(pattern: 'codestyle-be.xml'),
+            checkStyle(pattern: 'phpstan.xml')
+          ],
+          referenceJobName: 'centreon-web/master'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          failOnError: true,
+          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+          tools: [esLint(pattern: 'codestyle-fe.xml')],
+          referenceJobName: 'centreon-web/master'
+        )
 
         if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
           unstash 'git-sources'

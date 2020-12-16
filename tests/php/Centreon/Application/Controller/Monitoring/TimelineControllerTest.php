@@ -54,7 +54,7 @@ class TimelineControllerTest extends TestCase
 
     protected $requestParameters;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $timezone = new \DateTimeZone('Europe/Paris');
 
