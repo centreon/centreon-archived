@@ -52,7 +52,7 @@ class FindHostGroupsResponse
                 'notes_url' => $hostGroup->getNotesUrl(),
                 'action_url' => $hostGroup->getActionUrl(),
                 'icon' => $this->imageToArray($hostGroup->getIcon()),
-                'icon_map' => $this->imageToArray($hostGroup->getIcon()),
+                'icon_map' => $this->imageToArray($hostGroup->getIconMap()),
                 'rrd' => $hostGroup->getRrd(),
                 'geo_coords' => $hostGroup->getGeoCoords(),
                 'is_activated' => $hostGroup->isActivated(),
