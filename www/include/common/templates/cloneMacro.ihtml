@@ -27,6 +27,7 @@
                 </span>
             {/foreach}
             <input type='hidden' id='macroTplValue_#index#' name='macroTplValue_#index#' value="" />
+            <input type='hidden' id='macroOriginalName_#index#' name='macroOriginalName_#index#' value="" />
             <input type='hidden' id='macroTplValToDisplay_#index#' name='macroTplValToDisplay_#index#' value="0" />
             <input type='hidden' id='macroDescription_#index#' name='macroDescription_#index#' value="" />
             <input type='hidden' id='macroTpl_#index#' name='macroTpl_#index#' value="" />

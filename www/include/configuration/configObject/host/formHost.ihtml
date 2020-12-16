@@ -503,13 +503,13 @@ jQuery(function() {
      * and recover its previous value when it lost focus if no new value has been defined.
      */
     jQuery('ul#macro').find('input[id^=\'macroValue_\']').on('click', function () {
-        if ($(this).closest('div').find('input[type=\'checkbox\']:checked').val() === '1') {
+        if (jQuery(this).closest('div').find('input[type=\'checkbox\']:checked').val() === '1') {
             // It's a password input
-            const actualValue = $(this).val();
-            $(this).val('');
-            $(this).one('focusout', function() {
-                if ($(this).val().length === 0) {
-                    $(this).val(actualValue);
+            const actualValue = jQuery(this).val();
+            jQuery(this).val('');
+            jQuery(this).one('focusout', function() {
+                if (jQuery(this).val().length === 0) {
+                    jQuery(this).val(actualValue);
                 }
             });
         }
