@@ -96,7 +96,7 @@ function set_variable() {
   if [ -z "${!varname}" ]; then
     eval "$varname=\"$*\""
   else
-    log "ERROR" "duplicate flag -${opt}"
+    log "ERROR" "duplicate flag $1"
     exit 1
   fi
 }
