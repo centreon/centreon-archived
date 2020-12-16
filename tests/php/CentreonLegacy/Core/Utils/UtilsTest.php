@@ -35,7 +35,7 @@ use Centreon\Test\Mock;
 class UtilsTest extends TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
@@ -51,7 +51,7 @@ class UtilsTest extends TestCase
         $this->service = new Utils\Utils(new Container($this->container));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();

@@ -51,14 +51,14 @@ class ExportServiceTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->container = new Container();
 
         // Exporter
         $this->container['centreon_remote.exporter'] = $this->getMockBuilder(ExporterService::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->onlyMethods([
                 'get',
             ])
             ->getMock();
@@ -102,27 +102,10 @@ class ExportServiceTest extends TestCase
         $this->export = new ExportService(new ContainerWrap($this->container));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();
-    }
-
-    /**
-     * @covers \CentreonRemote\Infrastructure\Service\ExportService::__construct
-     */
-    public function testConstruct()
-    {
-        $this->assertAttributeInstanceOf(ExporterService::class, 'exporter', $this->export);
-        $this->assertAttributeInstanceOf(ExporterCacheService::class, 'cache', $this->export);
-        $this->assertAttributeInstanceOf(CentreonACL::class, 'acl', $this->export);
-        $this->assertAttributeInstanceOf(
-            \Centreon\Infrastructure\Service\CentreonDBManagerService::class,
-            'db',
-            $this->export
-        );
-
-        $this->assertAttributeEquals('x.y', 'version', $this->export);
     }
 
     /**
@@ -177,7 +160,7 @@ class ExportServiceTest extends TestCase
         // Exporter
         $container['centreon_remote.exporter'] = $this->getMockBuilder(ExporterService::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->onlyMethods([
                 'get',
             ])
             ->getMock();

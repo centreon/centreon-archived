@@ -59,7 +59,7 @@ class ServiceProviderTest extends TestCase
     protected $container;
     protected $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new ServiceProvider();
         $this->container = new Container;

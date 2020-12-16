@@ -52,7 +52,7 @@ class CentreonDBManagerServiceTest extends TestCase
      */
     protected $service;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->db1 = new CentreonDB('database_1');
         $this->db2 = new CentreonDB('database_2');

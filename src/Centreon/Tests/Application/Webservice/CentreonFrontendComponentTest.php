@@ -61,7 +61,7 @@ class CentreonFrontendComponentTest extends TestCase
         'hooks' => ['list of hooks'],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $container = new Container;

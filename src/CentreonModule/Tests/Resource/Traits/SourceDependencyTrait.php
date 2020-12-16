@@ -79,7 +79,7 @@ trait SourceDependencyTrait
             return function ($moduleName, $moduleId) {
                 $service = $this->getMockBuilder(Module\Remover::class)
                     ->disableOriginalConstructor()
-                    ->setMethods([
+                    ->onlyMethods([
                         'remove',
                     ])
                     ->getMock();

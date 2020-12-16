@@ -237,10 +237,6 @@ class PlatformTopologyControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($this->goodJsonPlatform);
 
-        $this->platformTopologyService->expects($this->any())
-            ->method('addPlatformToTopology')
-            ->willReturn(null);
-
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
 
