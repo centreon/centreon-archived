@@ -57,6 +57,10 @@ const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 
 const margin = { top: 30, right: 45, bottom: 30, left: 45 };
 
+interface TooltipPosition {
+  index: number;
+  x: number;
+}
 interface Props {
   width: number;
   height: number;
@@ -65,8 +69,8 @@ interface Props {
   lines: Array<LineModel>;
   xAxisTickFormat: string;
   timeline?: Array<TimelineEvent>;
-  onTooltipDisplay?: (timeSeriesIndex: number) => void;
-  externalTooltipTimeseriesIndex?: number;
+  onTooltipDisplay?: (position: TooltipPosition) => void;
+  tooltipPosition?: TooltipPosition;
 }
 
 const getScale = ({
@@ -94,7 +98,7 @@ const Graph = ({
   lines,
   xAxisTickFormat,
   timeline,
-  externalTooltipTimeseriesIndex,
+  tooltipPosition,
   onTooltipDisplay,
 }: Props): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
@@ -107,6 +111,7 @@ const Graph = ({
     showTooltip,
     hideTooltip,
   } = useTooltip();
+  const [isMouseOver, setIsMouseOver] = React.useState(false);
 
   const { containerRef, containerBounds } = useTooltipInPortal({
     detectBounds: true,
@@ -229,6 +234,7 @@ const Graph = ({
 
   const displayTooltip = React.useCallback(
     (event) => {
+      setIsMouseOver(true);
       const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
       const xDomain = xScale.invert(x - margin.left);
@@ -241,10 +247,40 @@ const Graph = ({
         tooltipData: getTooltipData(index),
       });
 
-      onTooltipDisplay?.(index);
+      onTooltipDisplay?.({ index, x });
     },
     [showTooltip, containerBounds, lines],
   );
+
+  React.useEffect(() => {
+    if (isMouseOver) {
+      return;
+    }
+
+    if (isNil(tooltipPosition)) {
+      return;
+    }
+
+    const { x, index } = tooltipPosition;
+    const tooltipDataForIndex = getTooltipData(index);
+
+    if (isNil(tooltipDataForIndex)) {
+      hideTooltip();
+      return;
+    }
+
+    showTooltip({
+      tooltipLeft: x,
+      tooltipTop: 10,
+      tooltipData: tooltipDataForIndex,
+    });
+  }, [tooltipPosition]);
+
+  const closeTooltip = (): void => {
+    hideTooltip();
+    setIsMouseOver(false);
+    onTooltipDisplay?.(undefined);
+  };
 
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
@@ -304,7 +340,7 @@ const Graph = ({
             height={graphHeight}
             fill="transparent"
             onMouseMove={displayTooltip}
-            onMouseLeave={hideTooltip}
+            onMouseLeave={closeTooltip}
           />
           <MemoizedAnnotations
             xScale={xScale}

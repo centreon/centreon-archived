@@ -27,6 +27,7 @@ const ServiceGraphs = ({
   const { t } = useTranslation();
   const classes = useStyles();
 
+  const [tooltipPosition, setTooltipPosition] = React.useState<number>();
   return (
     <>
       {services.map((service) => {
@@ -52,6 +53,8 @@ const ServiceGraphs = ({
                   xAxisTickFormat={timeFormat}
                   toggableLegend
                   timeline={[]}
+                  onTooltipDisplay={setTooltipPosition}
+                  tooltipPosition={tooltipPosition}
                 />
               )}
             </Paper>

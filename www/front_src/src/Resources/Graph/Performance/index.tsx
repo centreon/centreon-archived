@@ -55,6 +55,8 @@ const PerformanceGraph = ({
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
   timeline,
+  tooltipPosition,
+  onTooltipDisplay,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
@@ -146,6 +148,8 @@ const PerformanceGraph = ({
             base={base as number}
             xAxisTickFormat={xAxisTickFormat}
             timeline={timeline}
+            onTooltipDisplay={onTooltipDisplay}
+            tooltipPosition={tooltipPosition}
           />
         )}
       </ParentSize>
