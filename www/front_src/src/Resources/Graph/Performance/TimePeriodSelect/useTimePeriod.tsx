@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
-
 import {
   last24hPeriod,
   TimePeriod,
@@ -24,7 +22,7 @@ interface Props {
 const useTimePeriod = ({
   defaultSelectedTimePeriodId = last24hPeriod.id,
   onTimePeriodChange,
-}): TimePeriodState => {
+}: Props): TimePeriodState => {
   const defaultTimePeriod = getTimePeriodById(defaultSelectedTimePeriodId);
 
   const [
