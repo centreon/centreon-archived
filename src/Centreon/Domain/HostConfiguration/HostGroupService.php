@@ -28,7 +28,6 @@ use Centreon\Domain\HostConfiguration\Exception\HostGroupException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroupRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroupServiceInterface;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
-use Centreon\Domain\Repository\RepositoryException;
 
 class HostGroupService implements HostGroupServiceInterface
 {
@@ -57,10 +56,10 @@ class HostGroupService implements HostGroupServiceInterface
     /**
      * @inheritDoc
      */
-    public function findHostGroup(int $hgId): array
+    public function findHostGroups(int $hgId): array
     {
         try {
-            return $this->hostGroupRepository->findHostGroup($hgId);
+            return $this->hostGroupRepository->findHostGroups($hgId);
         } catch (\Throwable $ex) {
             throw HostGroupException::searchHostGroupsException($ex);
         }
@@ -75,64 +74,6 @@ class HostGroupService implements HostGroupServiceInterface
             return $this->hostGroupRepository->getNumberOfHostGroups();
         } catch (\Throwable $ex) {
             throw HostGroupException::countHostGroupsException($ex);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function changeActivationStatus(HostGroup $hostGroup, bool $shouldBeActivated): void
-    {
-        try {
-            if ($hostGroup->getId() === null) {
-                throw new HostConfigurationException(_('Host id cannot be null'));
-            }
-            if ($hostGroup->getName() === null) {
-                throw new HostConfigurationException(_('Host name cannot be null'));
-            }
-            $loadedHost = $this->findHostGroup($hostGroup->getId());
-            if ($loadedHost === null) {
-                throw new HostGroupException(sprintf(_('Host Group %d not found'), $hostGroup->getId()));
-            }
-            if ($loadedHost->getId() ===  null) {
-                throw new HostConfigurationException(_('Host id cannot be null'));
-            }
-            $this->hostGroupRepository->changeActivationStatus($loadedHost->getId(), $shouldBeActivated);
-            $this->actionLogService->addAction(
-            // The userId is set to 0 because it is not yet possible to determine who initiated the action.
-            // We will see later how to get it back.
-                new ActionLog(
-                    'hostGroup',
-                    $hostGroup->getId(),
-                    $hostGroup->getName(),
-                    $shouldBeActivated ? ActionLog::ACTION_TYPE_ENABLE : ActionLog::ACTION_TYPE_DISABLE,
-                    0
-                )
-            );
-        } catch (HostGroupException $ex) {
-            throw $ex;
-        } catch (\Throwable $ex) {
-            throw new HostGroupException(
-                sprintf(
-                    _('Error when changing host group status (%d to %s)'),
-                    $hostGroup->getId(),
-                    $shouldBeActivated ? 'true' : 'false'
-                ),
-                0,
-                $ex
-            );
-        }
-    }
-
-    /**
-    * @inheritDoc
-    */
-    public function findHostGroupNamesAlreadyUsed(array $namesToCheck): array
-    {
-        try {
-            return $this->hostGroupRepository->findHostGroupNamesAlreadyUsed($namesToCheck);
-        } catch (\Throwable $ex) {
-            throw HostGroupException::searchUsedHostGroupsNameException($ex);
         }
     }
 }

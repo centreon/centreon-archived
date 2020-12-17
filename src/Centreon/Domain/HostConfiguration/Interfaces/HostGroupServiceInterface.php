@@ -35,7 +35,7 @@ interface HostGroupServiceInterface
      * @return array
      * @throws HostGroupException
      */
-    public function findHostGroup(int $hgId): array;
+    public function findHostGroups(int $hgId): array;
 
     /**
      * Returns the number of host.
@@ -53,13 +53,5 @@ interface HostGroupServiceInterface
      * @throws HostGroupException
      */
     public function changeActivationStatus(HostGroup $hg, bool $shouldBeActivated): void;
-
-    /**
-     * Find host group names already used by hosts.
-     *
-     * @param string[] $namesToCheck List of names to find
-     * @return string[] Return the host names found
-     * @throws HostGroupException
-     */
-    public function findHostGroupNamesAlreadyUsed(array $namesToCheck): array;
+    
 }

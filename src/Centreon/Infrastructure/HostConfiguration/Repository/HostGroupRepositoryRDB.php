@@ -140,40 +140,6 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
     /**
      * @inheritDoc
      */
-    public function findHostGroupNamesAlreadyUsed(array $namesToCheck): array
-    {
-        if (empty($namesToCheck)) {
-            return [];
-        }
-
-        $names = [];
-        foreach ($namesToCheck as $name) {
-            $names[] = (string) $name;
-        }
-
-        if (empty($names)) {
-            return [];
-        }
-
-        $statement = $this->db->prepare(
-            $this->translateDbName(
-                sprintf(
-                    'SELECT host_name FROM `:db`.host WHERE host_name IN (%s?)',
-                    str_repeat('?,', count($names) - 1)
-                )
-            )
-        );
-        $statement->execute($names);
-        $namesFound = [];
-        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            $namesFound[] = $result['host_name'];
-        }
-        return $namesFound;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function findHostGroups(): array
     {
         $request = $this->translateDbName(
