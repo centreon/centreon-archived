@@ -41,12 +41,4 @@ interface HostGroupWriteRepositoryInterface
      * @throws \Exception
      */
     public function addHostGroup(HostGroup $hg): int;
-
-    /**
-     * Change the activation status of host.
-     *
-     * @param int $hgId Host id for which we want to change the activation status
-     * @param bool $shouldBeActivated TRUE to activate a host
-     */
-    public function changeActivationStatus(int $hgId, bool $shouldBeActivated): void;
 }

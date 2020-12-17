@@ -44,14 +44,4 @@ interface HostGroupServiceInterface
      * @throws HostGroupException
      */
     public function getNumberOfHostGroups(): int;
-    
-    /**
-     * Change the activation status of host.
-     *
-     * @param HostGroup $hg Host for which we want to change the activation status
-     * @param bool $shouldBeActivated TRUE to activate a host
-     * @throws HostGroupException
-     */
-    public function changeActivationStatus(HostGroup $hg, bool $shouldBeActivated): void;
-    
 }
