@@ -7,6 +7,8 @@ import {
   Severity,
 } from '../models';
 
+import { TimePeriodId } from './tabs/Graph/models';
+
 export interface ResourceDetails {
   id: number;
   name: string;
@@ -41,10 +43,11 @@ export interface ResourceDetails {
 
 export interface ServicesTabParameters {
   graphMode: boolean;
+  selectedTimePeriodId?: TimePeriodId;
 }
 
 export interface GraphTabParameters {
-  eventsDisplayed: boolean;
+  selectedTimePeriodId?: TimePeriodId;
 }
 export interface TabParameters {
   services?: ServicesTabParameters;

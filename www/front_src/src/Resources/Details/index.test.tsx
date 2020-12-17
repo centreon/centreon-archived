@@ -11,6 +11,7 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { isNil } from 'lodash';
 
 import {
   ThemeProvider,
@@ -67,6 +68,7 @@ import useListing from '../Listing/useListing';
 import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
+import { last7Days, last31Days } from './tabs/Graph/models';
 import {
   graphTabId,
   timelineTabId,
@@ -453,12 +455,12 @@ describe(Details, () => {
   });
 
   it.each([
-    [labelLast24h, '2020-06-20T06:00:00.000Z', 20],
-    [labelLast7Days, '2020-06-14T06:00:00.000Z', 100],
-    [labelLast31Days, '2020-05-21T06:00:00.000Z', 500],
+    [labelLast24h, '2020-06-20T06:00:00.000Z', 20, undefined],
+    [labelLast7Days, '2020-06-14T06:00:00.000Z', 100, last7Days.id],
+    [labelLast31Days, '2020-05-21T06:00:00.000Z', 500, last31Days.id],
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected`,
-    async (period, startIsoString, timelineEventsLimit) => {
+    async (period, startIsoString, timelineEventsLimit, periodId) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
@@ -506,6 +508,12 @@ describe(Details, () => {
           }),
           expect.anything(),
         );
+
+        if (!isNil(periodId)) {
+          expect(context.tabParameters.graph).toEqual({
+            selectedTimePeriodId: periodId,
+          });
+        }
       });
     },
   );
@@ -833,12 +841,13 @@ describe(Details, () => {
       context.setSelectedResourceParentType(undefined);
       context.setSelectedResourceType('host');
       context.setGraphTabParameters({
-        eventsDisplayed: true,
+        selectedTimePeriodId: last7Days.id,
       });
     });
 
     act(() => {
       context.setServicesTabParameters({
+        selectedTimePeriodId: last31Days.id,
         graphMode: true,
       });
     });
@@ -852,10 +861,11 @@ describe(Details, () => {
         tab: 'details',
         tabParameters: {
           graph: {
-            eventsDisplayed: true,
+            selectedTimePeriodId: last7Days.id,
           },
           services: {
             graphMode: true,
+            selectedTimePeriodId: last31Days.id,
           },
         },
         type: 'host',
@@ -987,7 +997,7 @@ describe(Details, () => {
         data: retrievedTimeline,
       });
 
-    const { getByLabelText, findByText } = renderDetails({
+    const { getByLabelText, findByText, getAllByText } = renderDetails({
       openTabId: servicesTabId,
     });
 
@@ -1005,9 +1015,13 @@ describe(Details, () => {
 
     await findByText(retrievedPerformanceGraphData.global.title);
 
-    const queryParameters = getUrlQueryParameters()
-      .details as DetailsUrlQueryParameters;
+    expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
-    expect(queryParameters.tabParameters?.services?.graphMode).toEqual(true);
+    userEvent.click(head(getAllByText(labelLast24h)) as HTMLElement);
+    userEvent.click(last(getAllByText(labelLast7Days)) as HTMLElement);
+
+    expect(context.tabParameters?.services?.selectedTimePeriodId).toEqual(
+      last7Days.id,
+    );
   });
 });

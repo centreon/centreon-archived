@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
+import { isNil, path } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 import GraphIcon from '@material-ui/icons/BarChart';
@@ -20,6 +20,7 @@ import { Resource } from '../../../models';
 import InfiniteScroll from '../../InfiniteScroll';
 import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
 import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
+import { TimePeriodId } from '../Graph/models';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -67,7 +68,18 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     changeSelectedTimePeriod,
     periodQueryParameters,
     getIntervalDates,
-  } = useTimePeriod();
+  } = useTimePeriod({
+    defaultSelectedTimePeriodId: path(
+      ['services', 'selectedTimePeriodId'],
+      tabParameters,
+    ),
+    onTimePeriodChange: (timePeriodId: TimePeriodId) => {
+      setServicesTabParameters({
+        graphMode,
+        selectedTimePeriodId: timePeriodId,
+      });
+    },
+  });
 
   const { sendRequest, sending } = useRequest({
     request: listResources,
@@ -110,6 +122,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
 
     setServicesTabParameters({
       graphMode: mode,
+      selectedTimePeriodId: selectedTimePeriod.id,
     });
 
     setGraphMode(mode);

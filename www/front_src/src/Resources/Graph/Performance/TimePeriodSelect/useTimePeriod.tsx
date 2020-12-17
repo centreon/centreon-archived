@@ -1,9 +1,12 @@
 import * as React from 'react';
 
+import { isNil } from 'ramda';
+
 import {
   last24hPeriod,
   TimePeriod,
   getTimePeriodById,
+  TimePeriodId,
 } from '../../../Details/tabs/Graph/models';
 
 interface TimePeriodState {
@@ -13,11 +16,21 @@ interface TimePeriodState {
   getIntervalDates: () => [string, string];
 }
 
-const useTimePeriod = (): TimePeriodState => {
+interface Props {
+  defaultSelectedTimePeriodId?: TimePeriodId;
+  onTimePeriodChange?: (TimePeriodId) => void;
+}
+
+const useTimePeriod = ({
+  defaultSelectedTimePeriodId = last24hPeriod.id,
+  onTimePeriodChange,
+}): TimePeriodState => {
+  const defaultTimePeriod = getTimePeriodById(defaultSelectedTimePeriodId);
+
   const [
     selectedTimePeriod,
     setSelectedTimePeriod,
-  ] = React.useState<TimePeriod>(last24hPeriod);
+  ] = React.useState<TimePeriod>(defaultTimePeriod);
 
   const getIntervalDates = (timePeriod): [string, string] => {
     return [
@@ -41,6 +54,7 @@ const useTimePeriod = (): TimePeriodState => {
     const timePeriod = getTimePeriodById(timePeriodId);
 
     setSelectedTimePeriod(timePeriod);
+    onTimePeriodChange?.(timePeriod.id);
 
     const queryParamsForSelectedPeriodId = getGraphQueryParameters(timePeriod);
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
