@@ -657,25 +657,6 @@ class Resource
     /**
      * @return string|null
      */
-    public function getActionUrl(): ?string
-    {
-        return $this->actionUrl;
-    }
-
-    /**
-     * @param string|null $actionUrl
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setActionUrl(?string $actionUrl): self
-    {
-        $this->actionUrl = $actionUrl ?: null;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
     public function getChartUrl(): ?string
     {
         return $this->chartUrl;
@@ -928,7 +909,7 @@ class Resource
      * Set groups to which belongs the resource
      *
      * @param ResourceGroup[] $groups
-     * @return Resource
+     * @return self
      */
     public function setGroups(array $groups): self
     {

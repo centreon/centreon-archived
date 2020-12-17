@@ -73,9 +73,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     }
 
     /**
-     * {@inheritDoc}
-     * @param Contact $contact
-     * @return self
+     * @inheritDoc
      */
     public function filterByContact($contact): self
     {
@@ -224,8 +222,8 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      * Validates input for resource based on groups
      * @param EntityValidator $validator
      * @param ResourceEntity $resource
-     * @param array $contextGroups
-     * @return ConstraintViolationListInterface
+     * @param array<string, mixed> $contextGroups
+     * @return ConstraintViolationListInterface<mixed>
      */
     public static function validateResource(
         EntityValidator $validator,
