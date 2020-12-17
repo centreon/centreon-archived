@@ -56,10 +56,10 @@ class HostGroupService implements HostGroupServiceInterface
     /**
      * @inheritDoc
      */
-    public function findHostGroups(int $hgId): array
+    public function findHostGroups(): array
     {
         try {
-            return $this->hostGroupRepository->findHostGroups($hgId);
+            return $this->hostGroupRepository->findHostGroups();
         } catch (\Throwable $ex) {
             throw HostGroupException::searchHostGroupsException($ex);
         }

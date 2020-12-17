@@ -31,11 +31,10 @@ interface HostGroupServiceInterface
     /**
      * Find a host group.
      *
-     * @param int $hgId Host Id to be found
      * @return array
      * @throws HostGroupException
      */
-    public function findHostGroups(int $hgId): array;
+    public function findHostGroups(): array;
 
     /**
      * Returns the number of host.
