@@ -67,10 +67,10 @@ class FindHostGroupResponseTest extends \PHPUnit\Framework\TestCase
         if ($hostGroup->getIconMap() !== null) {
             $this->assertEquals(
                 [
-                    'id' => $hostGroup->getIcon()->getId(),
-                    'name' => $hostGroup->getIcon()->getName(),
-                    'path' => $hostGroup->getIcon()->getPath(),
-                    'comment' => $hostGroup->getIcon()->getComment()
+                    'id' => $hostGroup->getIconMap()->getId(),
+                    'name' => $hostGroup->getIconMap()->getName(),
+                    'path' => $hostGroup->getIconMap()->getPath(),
+                    'comment' => $hostGroup->getIconMap()->getComment()
                 ],
                 $hostGroups[0]['icon_map']
             );
