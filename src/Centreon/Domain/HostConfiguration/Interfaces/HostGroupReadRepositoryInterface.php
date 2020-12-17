@@ -34,9 +34,10 @@ interface HostGroupReadRepositoryInterface
     /**
      * Find all host groups.
      *
+     * @param int $hgId Host group id to be found
      * @return HostGroup[]
      */
-    public function findHostGroups(): array;
+    public function findHostGroups(int $hgId): array;
 
     /**
      * Indicates if a host group name is already in use.
