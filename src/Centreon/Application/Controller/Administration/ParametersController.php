@@ -39,8 +39,9 @@ class ParametersController extends AbstractController
      */
     private $optionService;
 
-    private const DEFAULT_DOWNTIME_DURATION = 'monitoring_dwt_duration';
-    private const DEFAULT_REFRESH_INTERVAL = 'AjaxTimeReloadMonitoring';
+    private const DEFAULT_DOWNTIME_DURATION = 'monitoring_dwt_duration',
+                  DEFAULT_DOWNTIME_DURATION_SCALE = 'monitoring_dwt_duration_scale',
+                  DEFAULT_REFRESH_INTERVAL = 'AjaxTimeReloadMonitoring';
 
     /**
      * Needed to make response "more readable"
@@ -70,16 +71,58 @@ class ParametersController extends AbstractController
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         $parameters = [];
+        $downtimeDuration = '';
+        $downtimeScale = '';
+        $refreshInterval = '';
 
         $options = $this->optionService->findSelectedOptions([
             self::DEFAULT_DOWNTIME_DURATION,
+            self::DEFAULT_DOWNTIME_DURATION_SCALE,
             self::DEFAULT_REFRESH_INTERVAL
         ]);
 
         foreach ($options as $option) {
-            $parameters[self::KEY_NAME_CONCORDANCE[$option->getName()]] = $option->getValue();
+            switch ($option->getName()) {
+                case self::DEFAULT_DOWNTIME_DURATION:
+                    $downtimeDuration = $option->getValue();
+                    break;
+                case self::DEFAULT_DOWNTIME_DURATION_SCALE:
+                    $downtimeScale = $option->getValue();
+                    break;
+                case self::DEFAULT_REFRESH_INTERVAL:
+                    $refreshInterval = $option->getValue();
+                    break;
+                default:
+                    break;
+            }
         }
 
+        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_DURATION]] =
+            $this->convertToSeconds((int) $downtimeDuration, $downtimeScale);
+
+        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_REFRESH_INTERVAL]] = (int) $refreshInterval;
+
         return $this->view($parameters);
+    }
+
+    /**
+     * Converts the combination stored in DB into seconds
+     *
+     * @param integer $duration
+     * @param string $scale
+     * @return integer
+     */
+    private function convertToSeconds(int $duration, string $scale): int
+    {
+        switch ($scale) {
+            case 'm':
+                return ($duration * 60);
+            case 'h':
+                return ($duration * 3600);
+            case 'd':
+                return ($duration * 86400);
+            default:
+                return $duration;
+        }
     }
 }
