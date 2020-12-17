@@ -913,6 +913,11 @@ class Resource
      */
     public function setGroups(array $groups): self
     {
+        foreach ($groups as $group) {
+            if (!($group instanceof ResourceGroup)) {
+                throw new \InvalidArgumentException(_('One of the elements provided is not a ResourceGroup type'));
+            }
+        }
         $this->groups = $groups;
 
         return $this;

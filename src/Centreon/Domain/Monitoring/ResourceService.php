@@ -167,6 +167,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function enrichServiceWithDetails(ResourceEntity $resource): void
     {
+        if ($resource->getParent() === null) {
+            throw new ResourceException(_('Parent of resource type service cannot be null'));
+        }
+
         $downtimes = $this->monitoringRepository->findDowntimes(
             $resource->getParent()->getId(),
             $resource->getId()
