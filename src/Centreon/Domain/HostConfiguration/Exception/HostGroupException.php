@@ -33,12 +33,12 @@ class HostGroupException extends \Exception
     {
         return new self(_('Error when searching for host groups'), 0, $ex);
     }
-    
+
     public static function countHostGroupsException(\Exception $ex): self
     {
         return new self(_('Error while searching for the number of host group'), 0, $ex);
     }
-    
+
     public static function searchUsedHostGroupsNameException(\Exception $ex): self
     {
         return new self(_('Error when searching for already used host group names'), 0, $ex);
