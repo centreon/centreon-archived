@@ -765,7 +765,6 @@ sub readtrap {
             next;
         }
 
-
         chomp ($temp1);       # Variable NAME
         chomp ($temp2);       # Variable VALUE
         chomp ($line);
