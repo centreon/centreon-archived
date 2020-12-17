@@ -158,8 +158,10 @@ const retrievedDetails = {
   },
 };
 
-const performanceGraphData = {
-  global: {},
+const retrievedPerformanceGraphData = {
+  global: {
+    title: 'Ping graph',
+  },
   times: [
     '2020-06-19T07:30:00Z',
     '2020-06-20T06:55:00Z',
@@ -345,6 +347,9 @@ describe(Details, () => {
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+    act(() => {
+      context.clearSelectedResource();
+    });
   });
 
   it('displays resource details information', async () => {
@@ -456,10 +461,10 @@ describe(Details, () => {
     async (period, startIsoString, timelineEventsLimit) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline })
-        .mockResolvedValueOnce({ data: performanceGraphData })
-        .mockResolvedValueOnce({ data: retrievedTimeline })
-        .mockResolvedValueOnce({ data: performanceGraphData });
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedTimeline });
 
       const { getByText, getAllByText } = renderDetails({
         openTabId: graphTabId,
@@ -508,10 +513,10 @@ describe(Details, () => {
   it('displays event annotations when the corresponding switch is triggered and the Graph tab is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({
         data: retrievedTimeline,
-      })
-      .mockResolvedValueOnce({ data: performanceGraphData });
+      });
 
     const { findAllByLabelText, queryByLabelText, getByText } = renderDetails({
       openTabId: graphTabId,
@@ -976,10 +981,13 @@ describe(Details, () => {
         data: retrievedServices,
       })
       .mockResolvedValueOnce({
-        data: performanceGraphData,
+        data: retrievedPerformanceGraphData,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedTimeline,
       });
 
-    const { getByText, getByLabelText } = renderDetails({
+    const { getByLabelText, findByText } = renderDetails({
       openTabId: servicesTabId,
     });
 
@@ -995,14 +1003,7 @@ describe(Details, () => {
       getByLabelText(labelSwitchToGraph).firstElementChild as HTMLElement,
     );
 
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `ping-performance?start=2020-06-20T06:00:00.000Z&end=${currentDateIsoString}`,
-        expect.anything(),
-      );
-    });
-
-    expect(getByText('No data for Disk')).toBeInTheDocument();
+    await findByText(retrievedPerformanceGraphData.global.title);
 
     const queryParameters = getUrlQueryParameters()
       .details as DetailsUrlQueryParameters;
