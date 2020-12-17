@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   selectedTimePeriodId: string;
   onChange: (event) => void;
+  disabled?: boolean;
 }
 
 const timePeriodSelectOptions = map(pick(['id', 'name']), timePeriods);
@@ -25,6 +26,7 @@ const timePeriodSelectOptions = map(pick(['id', 'name']), timePeriods);
 const TimePeriodSelect = ({
   selectedTimePeriodId,
   onChange,
+  disabled = false,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
@@ -39,6 +41,7 @@ const TimePeriodSelect = ({
   return (
     <Paper className={classes.header}>
       <SelectField
+        disabled={disabled}
         options={translatedTimePeriodSelectOptions}
         selectedOptionId={selectedTimePeriodId}
         onChange={onChange}

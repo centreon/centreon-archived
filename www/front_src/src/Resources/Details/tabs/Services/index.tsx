@@ -66,6 +66,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     selectedTimePeriod,
     changeSelectedTimePeriod,
     periodQueryParameters,
+    getIntervalDates,
   } = useTimePeriod();
 
   const { sendRequest, sending } = useRequest({
@@ -117,12 +118,14 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
   const labelSwitch = graphMode ? labelSwitchToList : labelSwitchToGraph;
   const switchIcon = graphMode ? <ListIcon /> : <GraphIcon />;
 
+  const loading = isNil(details) || sending;
+
   return (
     <>
       <IconButton
         title={t(labelSwitch)}
         ariaLabel={t(labelSwitch)}
-        disabled={isNil(details) || sending}
+        disabled={loading}
         onClick={switchMode}
       >
         {switchIcon}
@@ -137,6 +140,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
             <TimePeriodSelect
               selectedTimePeriodId={selectedTimePeriod.id}
               onChange={changeSelectedTimePeriod}
+              disabled={loading}
             />
           ) : undefined
         }
@@ -150,6 +154,8 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
               services={entities}
               infiniteScrollTriggerRef={infiniteScrollTriggerRef}
               periodQueryParameters={periodQueryParameters}
+              getIntervalDates={getIntervalDates}
+              selectedTimePeriod={selectedTimePeriod}
             />
           ) : (
             <ServiceList

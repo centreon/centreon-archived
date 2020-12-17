@@ -1,63 +1,49 @@
 import * as React from 'react';
 
-import { path, isNil, equals, last } from 'ramda';
-import { useTranslation } from 'react-i18next';
+import { path, isNil, equals, last, pipe, not } from 'ramda';
 
-import { Paper, Typography } from '@material-ui/core';
-
-import { timeFormat } from '@centreon/ui';
-
-import { labelNoDataFor } from '../../../translatedLabels';
-import PerformanceGraph from '../../../Graph/Performance';
 import { Resource } from '../../../models';
-
-import { useStyles } from '.';
+import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
+import { TimePeriod } from '../Graph/models';
 
 interface Props {
   services: Array<Resource>;
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
   periodQueryParameters: string;
+  getIntervalDates: () => [string, string];
+  selectedTimePeriod: TimePeriod;
 }
 
 const ServiceGraphs = ({
   services,
   infiniteScrollTriggerRef,
   periodQueryParameters,
+  getIntervalDates,
+  selectedTimePeriod,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
-  const classes = useStyles();
+  const [tooltipX, setTooltipX] = React.useState<number>();
 
-  const [tooltipPosition, setTooltipPosition] = React.useState<number>();
+  const servicesWithGraph = services.filter(
+    pipe(path(['links', 'endpoints', 'performance_graph']), isNil, not),
+  );
+
   return (
     <>
-      {services.map((service) => {
-        const { id, name } = service;
-        const isLastService = equals(last(services), service);
-
-        const endpoint = path(
-          ['links', 'endpoints', 'performance_graph'],
-          service,
-        );
+      {servicesWithGraph.map((service) => {
+        const { id } = service;
+        const isLastService = equals(last(servicesWithGraph), service);
 
         return (
           <div key={id}>
-            <Paper className={classes.serviceCard}>
-              {isNil(endpoint) ? (
-                <Typography variant="body1" color="textPrimary">
-                  {`${t(labelNoDataFor)} ${name}`}
-                </Typography>
-              ) : (
-                <PerformanceGraph
-                  endpoint={`${endpoint}${periodQueryParameters}`}
-                  graphHeight={120}
-                  xAxisTickFormat={timeFormat}
-                  toggableLegend
-                  timeline={[]}
-                  onTooltipDisplay={setTooltipPosition}
-                  tooltipPosition={tooltipPosition}
-                />
-              )}
-            </Paper>
+            <ExportablePerformanceGraphWithTimeline
+              resource={service}
+              graphHeight={120}
+              periodQueryParameters={periodQueryParameters}
+              getIntervalDates={getIntervalDates}
+              selectedTimePeriod={selectedTimePeriod}
+              onTooltipDisplay={setTooltipX}
+              tooltipX={tooltipX}
+            />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>
         );

@@ -29,6 +29,8 @@ interface Props {
   resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
   onAddComment: (commentParameters: CommentParameters) => void;
+  tooltipX?: number;
+  onTooltipDisplay?: (x?: number) => void;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -62,7 +64,7 @@ const PerformanceGraph = ({
   toggableLegend = false,
   eventAnnotationsActive = false,
   timeline,
-  tooltipPosition,
+  tooltipX,
   onTooltipDisplay,
   resource,
   onAddComment,
@@ -154,7 +156,7 @@ const PerformanceGraph = ({
             xAxisTickFormat={xAxisTickFormat}
             timeline={timeline}
             onTooltipDisplay={onTooltipDisplay}
-            tooltipPosition={tooltipPosition}
+            tooltipX={tooltipX}
             resource={resource}
             onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}
