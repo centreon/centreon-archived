@@ -48,6 +48,8 @@ if (!$centreon->user->admin) {
     }
 }
 
+define('PASSWORD_REPLACEMENT_VALUE', '**********');
+
 $hostObj = new CentreonHost($pearDB);
 
 $initialValues = array();
@@ -127,6 +129,10 @@ function allInSameInstance($hosts, $instanceId)
  * Database retrieve information for Host
  */
 $host = array();
+
+// Used to store all macro passwords
+$macroPasswords = array();
+
 if (($o == HOST_MODIFY || $o == HOST_WATCH) && $host_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '" . $host_id . "' AND ehi.host_host_id = host.host_id LIMIT 1");
 
@@ -266,7 +272,56 @@ if (($o == HOST_MODIFY || $o == HOST_WATCH) && $host_id) {
         $cmdId = "";
     }
 
-    $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId, $_POST);
+    if (isset($_REQUEST['macroInput'])) {
+        /**
+         * We don't taking into account the POST data sent from the interface in order the retrieve the original value
+         * of all passwords.
+         */
+        $aMacros = $hostObj->getMacros($host_id, $aTemplates, $cmdId);
+
+        /**
+         * If a password has been modified from the interface, we retrieve the old password existing in the repository
+         * (giving by the $aMacros variable) to inject it before saving.
+         * Passwords will be saved using the $_REQUEST variable.
+         */
+        foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+            if (
+                !isset($_REQUEST['macroFrom'][$index])
+                || !isset($_REQUEST['macroPassword'][$index])
+                || $_REQUEST['macroPassword'][$index] !== '1'                      // Not a password
+                || $_REQUEST['macroValue'][$index] !== PASSWORD_REPLACEMENT_VALUE  // The password has not changed
+            ) {
+                continue;
+            }
+            foreach ($aMacros as $macroAlreadyExist) {
+                if (
+                    $macroAlreadyExist['macroInput_#index#'] === $macroName
+                    && $_REQUEST['macroFrom'][$index] === $macroAlreadyExist['source']
+                ) {
+                    /**
+                     * if the password has not been changed, we replace the password coming from the interface with
+                     * the original value (from the repository) before saving.
+                     */
+                    $_REQUEST['macroValue'][$index] = $macroAlreadyExist['macroValue_#index#'];
+                }
+            }
+        }
+    }
+
+    // We taking into account the POST data sent from the interface
+    $aMacros = $hostObj->getMacros($host_id, $aTemplates, $cmdId, $_POST);
+
+    // We hide all passwords in the jsData property to prevent them from appearing in the HTML code.
+    foreach ($aMacros as $index => $macroValues) {
+        if ($macroValues['macroPassword_#index#'] === 1) {
+            $macroPasswords[$index]['password'] = $aMacros[$index]['macroValue_#index#'];
+            // It's a password macro
+            $aMacros[$index]['macroOldValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
+            $aMacros[$index]['macroValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
+            // Keep the original name of the input field in case its name changes.
+            $aMacros[$index]['macroOriginalName_#index#'] = $aMacros[$index]['macroInput_#index#'];
+        }
+    }
 }
 /*
  * Preset values of macros
@@ -1018,12 +1073,8 @@ $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
 
 if (is_array($select)) {
-    $select_str = null;
-    foreach ($select as $key => $value) {
-        $select_str .= $key . ",";
-    }
     $select_pear = $form->addElement('hidden', 'select');
-    $select_pear->setValue($select_str);
+    $select_pear->setValue(implode(',', array_keys($select)));
 }
 
 /*
@@ -1168,9 +1219,30 @@ if ($form->validate() && $from_list_menu == false) {
     if ($form->getSubmitValue("submitA")) {
         $hostObj->setValue(insertHostInDB());
     } elseif ($form->getSubmitValue("submitC")) {
+        /*
+         * Before saving, we check if a password macro has changed its name to be able to give it the right password
+         * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
+         */
+        foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+            if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
+                $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
+                if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
+                    /*
+                     * The password has not been changed along with the name, so its value is equal to the wildcard.
+                     * We will therefore recover the password stored for its original name.
+                     */
+                    foreach ($aMacros as $indexMacro => $macroDetails) {
+                        if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
+                            $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         updateHostInDB($hostObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        foreach ($select as $key => $value) {
+        foreach ($select as $value) {
             if ($value) {
                 updateHostInDB($value, true);
             }

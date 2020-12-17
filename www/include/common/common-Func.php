@@ -2091,3 +2091,49 @@ function get_child($id_page, $lcaTStr)
     $redirect = $DBRESULT->fetchRow();
     return $redirect;
 }
+
+/**
+ * Get the select option.
+ *
+ * @return array<int, int>
+ */
+function getSelectOption()
+{
+    $stringToArray = function ($value) {
+        if (strpos($value, ',') !== false) {
+            return explode(',', $value);
+        }
+        return array($value);
+    };
+    if (isset($_GET["select"])) {
+        return is_array($_GET["select"])
+            ? $_GET["select"]
+            : $stringToArray($_GET["select"]);
+    } elseif (isset($_POST["select"])) {
+        return is_array($_POST["select"])
+            ? $_POST["select"]
+            : $stringToArray($_POST["select"]);
+    } else {
+        return array();
+    }
+}
+
+/**
+ * Get the duplicate number option.
+ *
+ * @return array<int, int>
+ */
+function getDuplicateNumberOption()
+{
+    if (isset($_GET["dupNbr"])) {
+        return is_array($_GET["dupNbr"])
+            ? $_GET["dupNbr"]
+            : array();
+    } elseif (isset($_POST["dupNbr"])) {
+        return is_array($_POST["dupNbr"])
+            ? $_POST["dupNbr"]
+            : array();
+    } else {
+        return array();
+    }
+}
