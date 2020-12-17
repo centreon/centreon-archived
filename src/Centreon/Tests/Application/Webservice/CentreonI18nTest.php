@@ -51,7 +51,7 @@ class CentreonI18nTest extends TestCase
 {
     use Traits\WebServiceAuthorizePublicTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $this->container = new Container([
@@ -84,9 +84,6 @@ class CentreonI18nTest extends TestCase
         $this->assertEquals($value, $this->webservice->getTranslation());
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testGetTranslationWithException()
     {
         $this->container->offsetGet(ServiceProvider::CENTREON_I18N_SERVICE)
@@ -94,6 +91,8 @@ class CentreonI18nTest extends TestCase
             ->will($this->returnCallback(function () {
                 throw new \Exception('');
             }));
+
+        $this->expectException(\Exception::class);
 
         $this->webservice->getTranslation();
     }

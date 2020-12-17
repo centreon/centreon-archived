@@ -54,7 +54,13 @@ const GraphColumn = ({
         label={labelGraph}
       >
         <Paper className={classes.graph}>
-          <PerformanceGraph endpoint={endpoint} graphHeight={150} />
+          <PerformanceGraph
+            endpoint={endpoint}
+            graphHeight={150}
+            resource={row}
+            timeline={[]}
+            onAddComment={(): void => undefined}
+          />
         </Paper>
       </HoverChip>
     );

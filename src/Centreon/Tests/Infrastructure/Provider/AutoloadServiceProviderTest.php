@@ -46,7 +46,7 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class AutoloadServiceProviderTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->checkPoint = (new CheckPoint)
             ->add('finder.files')
@@ -118,8 +118,7 @@ class AutoloadServiceProviderTest extends TestCase
 
         $container = new Container;
         $container['finder'] = $this->finder;
-        
-        
+
         AutoloadServiceProvider::register($container);
 
         $this->checkPoint->assert($this);
@@ -129,8 +128,7 @@ class AutoloadServiceProviderTest extends TestCase
     }
 
     /**
-     * @expectedException \Exception
-     * @expectedExceptionCode \Centreon\Infrastructure\Provider\AutoloadServiceProvider::ERR_TWICE_LOADED
+     * Test service register with duplicated files loaded
      */
     public function testRegisterWithException()
     {
@@ -148,8 +146,10 @@ class AutoloadServiceProviderTest extends TestCase
 
         $container = new Container;
         $container['finder'] = $this->finder;
-        
-        
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(AutoloadServiceProvider::ERR_TWICE_LOADED);
+
         AutoloadServiceProvider::register($container);
     }
 }

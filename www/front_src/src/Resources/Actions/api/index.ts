@@ -7,6 +7,7 @@ import {
   acknowledgeEndpoint,
   downtimeEndpoint,
   checkEndpoint,
+  commentEndpoint,
 } from './endpoint';
 
 interface AcknowledgeParams {
@@ -51,13 +52,12 @@ interface DowntimeParams {
 interface ResourcesWithDowntimeParams {
   resources: Array<Resource>;
   params: DowntimeParams;
-  cancelToken: CancelToken;
 }
 
 const setDowntimeOnResources = (cancelToken: CancelToken) => ({
   resources,
   params,
-}: ResourcesWithDowntimeParams): Promise<Array<AxiosResponse>> => {
+}: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
   return axios.post(
     downtimeEndpoint,
     {
@@ -83,7 +83,7 @@ interface ResourcesWithRequestParams {
 const checkResources = ({
   resources,
   cancelToken,
-}: ResourcesWithRequestParams): Promise<Array<AxiosResponse>> => {
+}: ResourcesWithRequestParams): Promise<AxiosResponse> => {
   return axios.post(
     checkEndpoint,
     {
@@ -93,4 +93,36 @@ const checkResources = ({
   );
 };
 
-export { acknowledgeResources, setDowntimeOnResources, checkResources };
+export interface CommentParameters {
+  date: string;
+  comment: string;
+}
+
+interface ResourcesWithCommentParams {
+  resources: Array<Resource>;
+  parameters: CommentParameters;
+}
+
+const commentResources = (cancelToken: CancelToken) => ({
+  resources,
+  parameters,
+}: ResourcesWithCommentParams): Promise<AxiosResponse> => {
+  return axios.post(
+    commentEndpoint,
+    {
+      resources: resources.map((resource) => ({
+        ...pick(['id', 'type', 'parent'], resource),
+        date: parameters.date,
+        comment: parameters.comment,
+      })),
+    },
+    { cancelToken },
+  );
+};
+
+export {
+  acknowledgeResources,
+  setDowntimeOnResources,
+  checkResources,
+  commentResources,
+};

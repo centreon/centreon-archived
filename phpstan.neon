@@ -1,4 +1,6 @@
 parameters:
+  bootstrapFiles:
+    - config/centreon.config.php.template
   paths:
     - %currentWorkingDirectory%/src/Centreon
 services:

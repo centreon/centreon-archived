@@ -24,6 +24,8 @@ declare(strict_types=1);
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\Exception\EntityNotFoundException;
 
 interface PlatformTopologyRepositoryInterface
 {
@@ -62,7 +64,7 @@ interface PlatformTopologyRepositoryInterface
      * @return Platform|null
      * * @throws \Exception
      */
-    public function findPlatformByType(string $serverType): ?Platform;
+    public function findTopLevelPlatformByType(string $serverType): ?Platform;
 
     /**
      * Search for local platform's monitoring Id using its name
@@ -87,4 +89,35 @@ interface PlatformTopologyRepositoryInterface
      * @return Platform|null
      */
     public function findPlatform(int $serverId): ?Platform;
+
+    /**
+     * Delete a Platform.
+     *
+     * @param integer $serverId
+     * @throws EntityNotFoundException
+     * @throws RepositoryException
+     */
+    public function deletePlatform(int $serverId): void;
+
+    /**
+     * Find the Top Level Platform.
+     *
+     * @return Platform|null
+     */
+    public function findTopLevelPlatform(): ?Platform;
+
+    /**
+     * Find the children Platforms of another Platform.
+     *
+     * @param integer $parentId
+     * @return Platform[]
+     */
+    public function findChildrenPlatformsByParentId(int $parentId): array;
+
+    /**
+     * Update a Platform.
+     *
+     * @param Platform $platform
+     */
+    public function updatePlatformParameters(Platform $platform): void;
 }

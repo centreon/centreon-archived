@@ -84,6 +84,10 @@ $cmdId = 0;
 $service = array();
 $serviceTplId = null;
 $initialValues = array();
+
+// Used to store all macro passwords
+$macroPasswords = [];
+
 if (($o == SERVICE_MODIFY || $o == SERVICE_WATCH) && $service_id) {
     $statement = $pearDB->prepare(
         'SELECT * 
@@ -191,9 +195,12 @@ if (($o == SERVICE_MODIFY || $o == SERVICE_WATCH) && $service_id) {
     // We hide all passwords in the jsData property to prevent them from appearing in the HTML code.
     foreach ($aMacros as $index => $macroValues) {
         if ($macroValues['macroPassword_#index#'] === 1) {
+            $macroPasswords[$index]['password'] = $aMacros[$index]['macroValue_#index#'];
             // It's a password macro
             $aMacros[$index]['macroOldValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
             $aMacros[$index]['macroValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
+            // Keep the original name of the input field in case its name changes.
+            $aMacros[$index]['macroOriginalName_#index#'] = $aMacros[$index]['macroInput_#index#'];
         }
     }
 }
@@ -1141,6 +1148,27 @@ if ($form->validate() && $from_list_menu == false) {
     if ($form->getSubmitValue("submitA")) {
         $serviceObj->setValue(insertServiceInDB());
     } elseif ($form->getSubmitValue("submitC")) {
+        /*
+         * Before saving, we check if a password macro has changed its name to be able to give it the right password
+         * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
+         */
+        foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+            if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
+                $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
+                if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
+                    /*
+                     * The password has not been changed along with the name, so its value is equal to the wildcard.
+                     * We will therefore recover the password stored for its original name.
+                     */
+                    foreach ($aMacros as $indexMacro => $macroDetails) {
+                        if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
+                            $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         updateServiceInDB($serviceObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
         foreach ($select as $serviceIdToUpdate) {
