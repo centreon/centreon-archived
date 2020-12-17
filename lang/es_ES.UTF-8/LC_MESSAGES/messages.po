@@ -14628,3 +14628,12 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "FQDN / Address"
 #  msgstr ""
+
+#  msgid "Comment added"
+#  msgstr ""
+
+#  msgid "Display events"
+#  msgstr ""
+
+#  msgid "Export to png"
+#  msgstr ""

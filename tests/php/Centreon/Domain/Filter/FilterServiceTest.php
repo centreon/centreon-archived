@@ -59,7 +59,7 @@ class FilterServiceTest extends TestCase
      */
     protected $serviceGroupService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adminContact = (new Contact())
             ->setId(1)

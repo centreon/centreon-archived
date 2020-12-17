@@ -57,7 +57,7 @@ class CentreonModuleWebserviceTest extends TestCase
     const METHOD_POST_UPDATE = 'postUpdate';
     const METHOD_DELETE_REMOVE = 'deleteRemove';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $container = new Container;

@@ -328,23 +328,27 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function getPollers()
     {
-        $listType = array('configuration', 'stability', 'database', 'latency');
+        $listType = ['configuration', 'stability', 'database', 'latency'];
         if (!isset($this->arguments['type']) || !in_array($this->arguments['type'], $listType)) {
             throw new \RestBadRequestException('Missing type argument or bad type name.');
         }
 
-        $result = array(
+        $result = [
             'type' => $this->arguments['type'],
-            'pollers' => array(),
+            'pollers' => [],
             'total' => 0,
             'refreshTime' => $this->refreshTime
-        );
+        ];
 
         if ($this->arguments['type'] === 'configuration') {
             $pollers = $this->pollersList();
-            $result['total'] = count($pollers);
+            $changeStateServers = [];
             foreach ($pollers as $poller) {
-                if ($this->checkChangeState($poller['id'], $poller['lastRestart'])) {
+                $changeStateServers[$poller['id']] = $poller['lastRestart'];
+            }
+            $changeStateServers = getChangeState($changeStateServers); 
+            foreach ($pollers as $poller) {
+                if ($changeStateServers[$poller['id']]) {
                     $result['pollers'][] = array(
                         'id' => $poller['id'],
                         'name' => $poller['name'],
@@ -374,9 +378,9 @@ class CentreonTopCounter extends CentreonWebService
                     );
                 }
             }
-            $result['total'] = count($pollers);
         }
 
+        $result['total'] = count($pollers);
         return $result;
     }
 

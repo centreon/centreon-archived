@@ -15071,3 +15071,12 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "FQDN / Address"
 #  msgstr ""
+
+#  msgid "Comment added"
+#  msgstr ""
+
+#  msgid "Display events"
+#  msgstr ""
+
+#  msgid "Export to png"
+#  msgstr ""

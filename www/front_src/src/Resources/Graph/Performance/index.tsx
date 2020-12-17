@@ -8,21 +8,27 @@ import { makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData, timeFormat } from '@centreon/ui';
 
-import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
+import { Resource } from '../../models';
+import { ResourceDetails } from '../../Details/models';
+import { CommentParameters } from '../../Actions/api';
+import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
-import { getTimeSeries, getLineData } from './timeSeries';
-import { GraphData, TimeValue, Line as LineModel } from './models';
-import LoadingSkeleton from './LoadingSkeleton';
-import Legend from './Legend';
 import Graph from './Graph';
+import Legend from './Legend';
+import LoadingSkeleton from './LoadingSkeleton';
+import { GraphData, TimeValue, Line as LineModel } from './models';
+import { getTimeSeries, getLineData } from './timeSeries';
 
 interface Props {
   endpoint?: string;
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
+  eventAnnotationsActive?: boolean;
+  resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
+  onAddComment: (commentParameters: CommentParameters) => void;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -54,22 +60,22 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
+  eventAnnotationsActive = false,
   timeline,
   tooltipPosition,
   onTooltipDisplay,
+  resource,
+  onAddComment,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
-  const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
+  const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
 
-  const {
-    sendRequest: sendGetGraphDataRequest,
-    sending: sendingGetGraphDataRequest,
-  } = useRequest<GraphData>({
+  const { sendRequest: sendGetGraphDataRequest } = useRequest<GraphData>({
     request: getData,
   });
 
@@ -77,6 +83,8 @@ const PerformanceGraph = ({
     if (isNil(endpoint)) {
       return;
     }
+
+    setLineData(undefined);
 
     sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
@@ -86,10 +94,7 @@ const PerformanceGraph = ({
     });
   }, [endpoint]);
 
-  const loading =
-    sendingGetGraphDataRequest || isNil(timeline) || isNil(endpoint);
-
-  if (loading) {
+  if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return <LoadingSkeleton graphHeight={graphHeight} />;
   }
 
@@ -150,6 +155,9 @@ const PerformanceGraph = ({
             timeline={timeline}
             onTooltipDisplay={onTooltipDisplay}
             tooltipPosition={tooltipPosition}
+            resource={resource}
+            onAddComment={onAddComment}
+            eventAnnotationsActive={eventAnnotationsActive}
           />
         )}
       </ParentSize>

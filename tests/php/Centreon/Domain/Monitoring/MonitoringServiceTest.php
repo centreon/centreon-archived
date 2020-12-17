@@ -21,7 +21,6 @@
 
 namespace Tests\Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
 use Centreon\Domain\Monitoring\Entity\CommentEventObject;
 use Centreon\Domain\Monitoring\Host;
@@ -86,7 +85,7 @@ class MonitoringServiceTest extends TestCase
 
         $repository = $this->createMock(MonitoringRepositoryInterface::class);
         $repository->expects(self::any())
-            ->method('findServicesByHost')
+            ->method('findServicesByHostWithRequestParameters')
             ->with($hostId)
             ->willReturn([$service]); // values returned for the all next tests
 

@@ -51,7 +51,7 @@ class EngineServiceTest extends TestCase
     protected $hostComment;
     protected $serviceComment;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adminContact = (new Contact())
             ->setId(1)

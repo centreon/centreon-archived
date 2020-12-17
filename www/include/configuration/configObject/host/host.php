@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 }
 
 $host_id = filter_var(
-    $_GET['host_id'] ?? $_POST['host_id'] ?? 0,
+    $_GET['host_id'] ?? $_POST['host_id'] ?? null,
     FILTER_VALIDATE_INT
 );
 

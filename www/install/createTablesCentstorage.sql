@@ -157,7 +157,8 @@ CREATE TABLE `log_action` (
   `log_contact_id` int(11) NOT NULL,
   PRIMARY KEY (`action_log_id`),
   KEY `log_contact_id` (`log_contact_id`),
-  KEY `action_log_date` (`action_log_date`)
+  KEY `action_log_date` (`action_log_date`),
+  KEY `action_object_date` (`object_type`,`action_log_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
