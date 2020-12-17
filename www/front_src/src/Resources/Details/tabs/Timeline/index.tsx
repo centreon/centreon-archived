@@ -43,7 +43,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
     translatedTypes,
   );
-  const limit = 6;
+  const limit = 30;
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
     request: listTimelineEvents,

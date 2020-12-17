@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { isNil } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 import GraphIcon from '@material-ui/icons/BarChart';
@@ -53,9 +54,13 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     setSelectedResourceParentId,
     setSelectedResourceParentType,
     setOpenDetailsTabId,
+    tabParameters,
+    setServicesTabParameters,
   } = useResourceContext();
 
-  const [graphMode, setGraphMode] = React.useState<boolean>(false);
+  const [graphMode, setGraphMode] = React.useState<boolean>(
+    tabParameters.services?.graphMode || false,
+  );
 
   const {
     selectedTimePeriod,
@@ -99,6 +104,16 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     setSelectedResourceType('service');
   };
 
+  const switchMode = (): void => {
+    const mode = !graphMode;
+
+    setServicesTabParameters({
+      graphMode: mode,
+    });
+
+    setGraphMode(mode);
+  };
+
   const labelSwitch = graphMode ? labelSwitchToList : labelSwitchToGraph;
   const switchIcon = graphMode ? <ListIcon /> : <GraphIcon />;
 
@@ -107,9 +122,8 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
       <IconButton
         title={t(labelSwitch)}
         ariaLabel={t(labelSwitch)}
-        onClick={(): void => {
-          setGraphMode(!graphMode);
-        }}
+        disabled={isNil(details) || sending}
+        onClick={switchMode}
       >
         {switchIcon}
       </IconButton>

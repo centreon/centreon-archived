@@ -58,6 +58,7 @@ import {
   labelFqdn,
   labelAlias,
   labelAcknowledgement,
+  labelSwitchToGraph,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -268,6 +269,11 @@ const retrievedServices = {
       },
       information: 'OK - 127.0.0.1 rta 0ms lost 0%',
       duration: '22m',
+      links: {
+        endpoints: {
+          performance_graph: 'ping-performance',
+        },
+      },
     },
     {
       id: 4,
@@ -806,6 +812,15 @@ describe(Details, () => {
       context.setSelectedResourceParentId(undefined);
       context.setSelectedResourceParentType(undefined);
       context.setSelectedResourceType('host');
+      context.setGraphTabParameters({
+        eventsDisplayed: true,
+      });
+    });
+
+    act(() => {
+      context.setServicesTabParameters({
+        graphMode: true,
+      });
     });
 
     const updatedDetailsFromQueryParameters = getUrlQueryParameters()
@@ -814,8 +829,16 @@ describe(Details, () => {
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
         id: 1,
-        type: 'host',
         tab: 'details',
+        tabParameters: {
+          graph: {
+            eventsDisplayed: true,
+          },
+          services: {
+            graphMode: true,
+          },
+        },
+        type: 'host',
       });
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -924,5 +947,51 @@ describe(Details, () => {
     await waitFor(() => {
       expect(queryByText(labelServices)).toBeNull();
     });
+  });
+
+  it('displays the linked service graphs when the service tab of a host is clicked and the graph mode is activated', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          ...retrievedDetails,
+          type: 'host',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: retrievedServices,
+      })
+      .mockResolvedValueOnce({
+        data: performanceGraphData,
+      });
+
+    const { getByText, getByLabelText } = renderDetails({
+      openTabId: servicesTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    fireEvent.click(
+      getByLabelText(labelSwitchToGraph).firstElementChild as HTMLElement,
+    );
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `ping-performance?start=2020-06-20T06:00:00.000Z&end=${currentDateIsoString}`,
+        expect.anything(),
+      );
+    });
+
+    expect(getByText('No data for Disk')).toBeInTheDocument();
+
+    const queryParameters = getUrlQueryParameters()
+      .details as DetailsUrlQueryParameters;
+
+    expect(queryParameters.tabParameters?.services?.graphMode).toEqual(true);
   });
 });
