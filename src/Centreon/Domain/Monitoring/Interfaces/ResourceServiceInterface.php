@@ -125,6 +125,7 @@ interface ResourceServiceInterface
      * Enrich resource object with specific service data
      *
      * @param ResourceEntity $resource
+     * @throws \ResourceException
      */
     public function enrichServiceWithDetails(ResourceEntity $resource): void;
 

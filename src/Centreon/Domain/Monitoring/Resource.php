@@ -909,6 +909,7 @@ class Resource
      * Set groups to which belongs the resource
      *
      * @param ResourceGroup[] $groups
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function setGroups(array $groups): self
