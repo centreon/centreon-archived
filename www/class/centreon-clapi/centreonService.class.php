@@ -905,7 +905,7 @@ class CentreonService extends CentreonObject
                 $macroList[0][$macroObj->getPrimaryKey()],
                 array(
                     'svc_macro_value' => $params[3],
-                    'is_password' => $params[4],
+                    'is_password' => (strlen($params[4]) === 0) ? 0 : (int) $params[4],
                     'description' => isset($params[5]) ? $params[5] : ''
                 )
             );
@@ -915,7 +915,7 @@ class CentreonService extends CentreonObject
                     'svc_svc_id' => $elements[0]['service_id'],
                     'svc_macro_name' => $this->wrapMacro($params[2]),
                     'svc_macro_value' => $params[3],
-                    'is_password' => $params[4],
+                    'is_password' => (strlen($params[4]) === 0) ? 0 : (int) $params[4],
                     'description' => isset($params[5]) ? $params[5] : '',
                     'macro_order' => $macroOrder
                 )
@@ -1385,13 +1385,22 @@ class CentreonService extends CentreonObject
                 "AND"
             );
             foreach ($macros as $macro) {
+                $description = $macro['description'];
+                if (
+                    strlen($description) > 0
+                    && substr($description, 0, 1) !== "'"
+                    && substr($description, -1, 1) !== "'"
+                ) {
+                    $description = "'" . $description . "'";
+                }
+
                 echo $this->action . $this->delim . "setmacro" . $this->delim
                     . $element['host_name'] . $this->delim
                     . $element['service_description'] . $this->delim
                     . $this->stripMacro($macro['svc_macro_name']) . $this->delim
                     . $macro['svc_macro_value'] . $this->delim
-                    . $macro['is_password'] . $this->delim
-                    . "'" . $macro['description'] . "'" . "\n";
+                    . ((strlen($macro['is_password']) === 0) ? 0 : (int) $macro['is_password']) . $this->delim
+                    . $description . "\n";
             }
             $cgRel = new \Centreon_Object_Relation_Contact_Group_Service($this->dependencyInjector);
             $cgelements = $cgRel->getMergedParameters(

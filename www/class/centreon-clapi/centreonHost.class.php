@@ -901,13 +901,19 @@ class CentreonHost extends CentreonObject
 
         // disable the check if the macro added is already in host template with same value
         //if($this->hasMacroFromHostChanged($hostId,$params[1],$params[2],$cmdId = false)){
+        $description = (string) $params[4];
+        if (strlen($description) === 0
+            || (strlen($description) === 2 && substr($description, 0, 1) === "'" && substr($description, 1, 1) === "'")
+        ) {
+            $description = null;
+        }
         if (count($macroList)) {
             $macroObj->update(
                 $macroList[0][$macroObj->getPrimaryKey()],
                 array(
                     'host_macro_value' => $params[2],
-                    'is_password' => $params[3],
-                    'description' => $params[4]
+                    'is_password' => (strlen($params[3]) === 0) ? 0 : (int) $params[3],
+                    'description' => $description
                 )
             );
         } else {
@@ -916,8 +922,8 @@ class CentreonHost extends CentreonObject
                     'host_host_id' => $hostId,
                     'host_macro_name' => $this->wrapMacro($params[1]),
                     'host_macro_value' => $params[2],
-                    'is_password' => $params[3],
-                    'description' => $params[4],
+                    'is_password' => (strlen($params[3]) === 0) ? 0 : (int) $params[3],
+                    'description' => $description,
                     'macro_order' => $macroOrder
                 )
             );
@@ -1388,13 +1394,22 @@ class CentreonHost extends CentreonObject
                 "AND"
             );
             foreach ($macros as $macro) {
+                $description = $macro['description'];
+                if (
+                    strlen($description) > 0
+                    && substr($description, 0, 1) !== "'"
+                    && substr($description, -1, 1) !== "'"
+                ) {
+                    $description = "'" . $description . "'";
+                }
+
                 echo $this->action . $this->delim
                     . "setmacro" . $this->delim
                     . $element[$this->object->getUniqueLabelField()] . $this->delim
                     . $this->stripMacro($macro['host_macro_name']) . $this->delim
                     . $macro['host_macro_value'] . $this->delim
-                    . $macro['is_password'] . $this->delim
-                    . "'" . $macro['description'] . "'" . "\n";
+                    . ((strlen($macro['is_password']) === 0) ? 0 : (int) $macro['is_password']) . $this->delim
+                    . $description . "\n";
             }
         }
         $cgRel = new \Centreon_Object_Relation_Contact_Group_Host($this->dependencyInjector);

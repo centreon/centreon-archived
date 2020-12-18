@@ -163,7 +163,7 @@ abstract class Centreon_Object
                 $sqlUpdate .= ",";
             }
             $sqlUpdate .= $key . " = ? ";
-            if ($value == "" && !isset($not_null_attributes[$key])) {
+            if ($value === "" && !isset($not_null_attributes[$key])) {
                 $value = null;
             }
             if (!is_null($value)) {
