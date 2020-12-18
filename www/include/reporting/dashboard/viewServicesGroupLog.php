@@ -209,4 +209,9 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('formItem', $renderer->toArray());
 
-$tpl->display("template/viewServicesGroupLog.ihtml");
+if (
+    !$formPeriod->isSubmitted()
+    || ($formPeriod->isSubmitted() && $formPeriod->validate())
+) {
+    $tpl->display("template/viewServicesGroupLog.ihtml");
+}
