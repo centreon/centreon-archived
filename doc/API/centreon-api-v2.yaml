@@ -4004,6 +4004,10 @@ components:
               example: "127.0.0.1"
             links:
               $ref: '#/components/schemas/Monitoring.ResourceLinks'
+            groups:
+              type: array
+              items:
+                $ref: '#/components/schemas/Monitoring.ResourceGroup'
             status:
               type: object
               properties:
@@ -4175,6 +4179,17 @@ components:
                 nullable: true
                 description: "URL that can be used to provide more information on the resource"
                 example: "http://mediawiki/resource/name"
+    Monitoring.ResourceGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "ID of the group to which belongs the resource"
+          example: 1
+        name:
+          type: string
+          description: "Name of the group to which belongs the resource"
+          example: "ESX-France|Cpus"
     Monitoring.ResourceStatus:
       type: object
       properties:
