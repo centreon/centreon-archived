@@ -168,4 +168,9 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
 }
 
-$tpl->display("template/viewServicesLog.ihtml");
+if (
+    !$formPeriod->isSubmitted()
+    || ($formPeriod->isSubmitted() && $formPeriod->validate())
+) {
+    $tpl->display("template/viewServicesLog.ihtml");
+}
