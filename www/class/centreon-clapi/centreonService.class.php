@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -74,12 +75,11 @@ require_once "Centreon/Object/Dependency/DependencyServiceParent.php";
  */
 class CentreonService extends CentreonObject
 {
-
-    const ORDER_HOSTNAME = 0;
-    const ORDER_SVCDESC = 1;
-    const ORDER_SVCTPL = 2;
-    const NB_UPDATE_PARAMS = 4;
-    const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const ORDER_HOSTNAME = 0;
+    public const ORDER_SVCDESC = 1;
+    public const ORDER_SVCTPL = 2;
+    public const NB_UPDATE_PARAMS = 4;
+    public const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
     public const INVALID_GEO_COORDS = "Invalid geo coords";
 
     public static $aDepends = array(
@@ -266,8 +266,7 @@ class CentreonService extends CentreonObject
             if (count($params) == 2) {
                 $filters["host_name"] = "%" . $params[0] . "%";
                 $filters["service_description"] = "%" . $params[1] . "%";
-            }
-            else {
+            } else {
                 $filters["service_description"] = "%" . $parameters . "%";
             }
         }
@@ -427,7 +426,7 @@ class CentreonService extends CentreonObject
     /**
      * @param $serviceId
      */
-    function insertRelations($serviceId)
+    public function insertRelations($serviceId)
     {
         $relObject = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
         $relObject->insert($this->hostId, $serviceId);
