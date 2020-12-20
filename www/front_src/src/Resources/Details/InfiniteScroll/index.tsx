@@ -98,6 +98,7 @@ const InfiniteScroll = <TEntity extends { id: number }>({
     if (page !== 1 || isNil(details) || preventReloadWhen) {
       return;
     }
+
     reload();
   }, [details]);
 

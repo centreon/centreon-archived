@@ -63,6 +63,8 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     tabParameters.services?.graphMode || false,
   );
 
+  const [canDisplayGraphs, setCanDisplayGraphs] = React.useState(false);
+
   const {
     selectedTimePeriod,
     changeSelectedTimePeriod,
@@ -118,15 +120,21 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
   };
 
   const switchMode = (): void => {
+    setCanDisplayGraphs(false);
     const mode = !graphMode;
+
+    setGraphMode(mode);
 
     setServicesTabParameters({
       graphMode: mode,
       selectedTimePeriodId: selectedTimePeriod.id,
     });
-
-    setGraphMode(mode);
   };
+
+  React.useEffect(() => {
+    // In that case we make sure that graphs are not displayed before 'entities are reset
+    setCanDisplayGraphs(true);
+  }, [graphMode]);
 
   const labelSwitch = graphMode ? labelSwitchToList : labelSwitchToGraph;
   const switchIcon = graphMode ? <ListIcon /> : <GraphIcon />;
@@ -157,12 +165,14 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
             />
           ) : undefined
         }
-        reloadDependencies={[]}
+        reloadDependencies={[graphMode]}
         loading={sending}
         limit={limit}
       >
         {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
-          return graphMode ? (
+          const displayGraphs = graphMode && canDisplayGraphs;
+
+          return displayGraphs ? (
             <ServiceGraphs
               services={entities}
               infiniteScrollTriggerRef={infiniteScrollTriggerRef}
