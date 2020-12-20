@@ -132,7 +132,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
   };
 
   React.useEffect(() => {
-    // In that case we make sure that graphs are not displayed before 'entities are reset
+    // To make sure that graphs are not displayed until 'entities' are reset
     setCanDisplayGraphs(true);
   }, [graphMode]);
 
