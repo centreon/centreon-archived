@@ -351,7 +351,7 @@ const Graph = ({
             {tooltipData}
           </TooltipWithBounds>
         )}
-        <svg width={width} height={height} ref={containerRef}>
+        <svg width="100%" height={height} ref={containerRef}>
           <Group left={margin.left} top={margin.top}>
             <MemoizedGridRows
               scale={leftScale}

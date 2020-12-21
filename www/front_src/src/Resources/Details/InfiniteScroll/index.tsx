@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   entities: {
     display: 'grid',
     gridAutoFlow: 'row',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
     gridGap: theme.spacing(1),
     width: '100%',
   },

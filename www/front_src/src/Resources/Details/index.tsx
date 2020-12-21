@@ -22,6 +22,7 @@ export interface DetailsSectionProps {
 const Details = (): JSX.Element | null => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const [width, setWidth] = React.useState(550);
 
   const {
     openDetailsTabId,
@@ -96,6 +97,8 @@ const Details = (): JSX.Element | null => {
       ))}
       selectedTabId={getTabIndex(openDetailsTabId)}
       selectedTab={<TabById id={openDetailsTabId} details={details} />}
+      width={width}
+      onResize={setWidth}
     />
   );
 };
