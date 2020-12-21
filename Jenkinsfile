@@ -87,14 +87,14 @@ try {
           enabledForFailure: true,
           ignoreFailedBuilds: false,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tools: [checkStyle(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml')],
+          tools: [phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml')],
           referenceJobName: 'centreon-web/master'
         )
         recordIssues(
           enabledForFailure: true,
           ignoreFailedBuilds: false,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tools: [checkStyle(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml')],
+          tools: [phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml')],
           referenceJobName: 'centreon-web/master'
         )
         recordIssues(
