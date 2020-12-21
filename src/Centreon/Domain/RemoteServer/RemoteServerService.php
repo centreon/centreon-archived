@@ -24,17 +24,37 @@ declare(strict_types=1);
 namespace Centreon\Domain\RemoteServer;
 
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface;
 use Security\Encryption;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
 
+    /**
+     * @var TopologyRepositoryInterface
+     */
+    private $topologyRepository;
 
+    public function __construct(TopologyRepositoryInterface $topologyRepository) {
+        $this->topologyRepository = $topologyRepository;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function encryptCentralApiCredentials(string $password): string
     {
         $secondKey = base64_encode("api_remote_credentials");
         $centreonEncryption = new Encryption();
         $centreonEncryption->setFirstKey($_ENV['APP_SECRET'])->setSecondKey($secondKey);
         return $centreonEncryption->crypt($password);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function convertCentralToRemote(): void
+    {
+        $this->topologyRepository->disableMenus();
     }
 }
