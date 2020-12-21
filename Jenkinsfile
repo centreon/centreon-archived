@@ -84,6 +84,7 @@ try {
         }
 
         recordIssues(
+          id: 'phpcs',
           name: 'phpcs',
           enabledForFailure: true,
           ignoreFailedBuilds: false,
@@ -92,6 +93,7 @@ try {
           referenceJobName: 'centreon-web/master'
         )
         recordIssues(
+          id: 'phpstan',
           name: 'phpstan',
           enabledForFailure: true,
           ignoreFailedBuilds: false,
@@ -100,6 +102,7 @@ try {
           referenceJobName: 'centreon-web/master'
         )
         recordIssues(
+          id: 'eslint',
           name: 'eslint',
           enabledForFailure: true,
           failOnError: true,
