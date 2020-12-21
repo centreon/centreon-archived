@@ -183,4 +183,9 @@ if (isset($id) && $id != "NULL") {
     ?><script type="text/javascript"> function initTimeline() {;} </script><?php
 }
 
-$tpl->display("template/viewHostGroupLog.ihtml");
+if (
+    !$formPeriod->isSubmitted()
+    || ($formPeriod->isSubmitted() && $formPeriod->validate())
+) {
+    $tpl->display("template/viewHostGroupLog.ihtml");
+}

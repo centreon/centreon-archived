@@ -166,4 +166,10 @@ if (isset($id) && $id != "NULL") {
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
 }
-$tpl->display("template/viewHostLog.ihtml");
+
+if (
+    !$formPeriod->isSubmitted()
+    || ($formPeriod->isSubmitted() && $formPeriod->validate())
+) {
+    $tpl->display("template/viewHostLog.ihtml");
+}
