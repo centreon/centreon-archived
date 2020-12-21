@@ -235,3 +235,7 @@ services:
 
     Centreon\Domain\Broker\Interfaces\BrokerServiceRepositoryInterface:
         class: Centreon\Infrastructure\Broker\BrokerRepositoryRDB
+
+    # Remote Server
+    Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface:
+        class: Centreon\Domain\RemoteServer\RemoteServerService
