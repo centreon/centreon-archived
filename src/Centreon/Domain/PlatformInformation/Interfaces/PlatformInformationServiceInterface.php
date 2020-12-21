@@ -33,4 +33,13 @@ interface PlatformInformationServiceInterface
      * @throws PlatformInformationException
      */
     public function getInformation(): ?PlatformInformation;
+
+    /**
+     * Upadte platform information
+     *
+     * @param PlatformInformation $platformInformation
+     * @return PlatformInformation|null
+     * @throws PlatformInformationException
+     */
+    public function updatePlatformInformation(PlatformInformation $platformInformationUpdated): ?PlatformInformation;
 }
