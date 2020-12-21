@@ -25,5 +25,16 @@ namespace Centreon\Domain\RemoteServer\Interfaces;
 
 interface RemoteServerServiceInterface
 {
+    /**
+     * Encrypt the Central API Password
+     *
+     * @param string $password
+     * @return string
+     */
     public function encryptCentralApiCredentials(string $password): string;
+
+    /**
+     * Convert a Central into a Remote Server
+     */
+    public function convertCentralToRemote(): void;
 }
