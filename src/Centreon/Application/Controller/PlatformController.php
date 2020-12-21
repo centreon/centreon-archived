@@ -22,9 +22,17 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Platform\PlatformException;
-use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
+use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
+use JsonSchema\Constraints\Constraint;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Platform\PlatformException;
+use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
+use Centreon\Domain\PlatformInformation\PlatformInformationException;
+use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 
 /**
  * This controller is designed to manage API requests concerning the versions of the different modules, widgets on the
@@ -39,9 +47,44 @@ class PlatformController extends AbstractController
      */
     private $informationService;
 
-    public function __construct(PlatformServiceInterface $informationService)
-    {
+    /**
+     * @var RemoteServerServiceInterface
+     */
+    private $remoteServerService;
+
+    public function __construct(
+        PlatformServiceInterface $informationService,
+        RemoteServerServiceInterface $remoteServerService
+    ) {
         $this->informationService = $informationService;
+        $this->remoteServerService = $remoteServerService;
+    }
+
+    /**
+     * Validate platform information data according to json schema
+     *
+     * @param array<mixed> $platformToAdd data sent in json
+     * @param string $schemaPath
+     * @return void
+     * @throws PlatformException
+     */
+    private function validatePlatformInformationSchema($platformToAdd, array $validationSchema): void
+    {
+        // $platformInformationSchemaToValidate = Validator::arrayToObjectRecursive($platformToAdd);
+        $validator = new Validator();
+
+        $validator->validate(
+            $platformToAdd,
+            $validationSchema,
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+        if (!$validator->isValid()) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            throw new PlatformInformationException($message);
+        }
     }
 
     /**
@@ -90,5 +133,72 @@ class PlatformController extends AbstractController
             'minor' => $minor,
             'fix' => !empty($fix) ? $fix : '0'
         ];
+    }
+
+    /**
+     * Update the platform
+     *
+     * @return View
+     */
+    public function updatePlatform(Request $request): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $platformToUpdate = json_decode((string) $request->getContent(), true);
+
+        try {
+            if (!is_array($platformToUpdate)) {
+                throw new PlatformInformationException(_('Error when decoding sent data'));
+            }
+
+            $this->validatePlatformInformationSchema(
+                json_decode((string) $request->getContent()),
+                json_decode(
+                    file_get_contents(
+                        $this->getParameter('centreon_path')
+                        . 'config/json_validator/latest/Centreon/PlatformInformation/Update.json'
+                    ), true
+                )
+            );
+
+            $platformInformation = new PlatformInformation();
+
+            foreach ($platformToUpdate as $platformProperty => $platformValue) {
+                switch ($platformProperty) {
+                    case 'api_crendentials':
+                        $password = $this->remoteServerService->encryptCentralApiCredentials(
+                            $platformToUpdate['api_crendentials']
+                        );
+                        $platformInformation->setApiCredentials($password);
+                        break;
+                    case 'central_address':
+                        $platformInformation->setCentralServerAddress($platformToUpdate['central_address']);
+                        break;
+                    case 'username':
+                        $platformInformation->setApiUsername($platformToUpdate['username']);
+                        break;
+                    case 'isRemote':
+                        if ($platformValue === true) {
+                            $platformInformation->setIsRemote('yes');
+                            $platformInformation->setIsCentral('no');
+                        }
+                        break;
+                    case 'isCentral':
+                        if ($platformValue === true) {
+                            $platformInformation->setIsCentral('yes');
+                            $platformInformation->setIsRemote('no');
+                        }
+                        break;
+                }
+            }
+
+            $this->platformInformationService->updatePlatformInformation($platformInformation);
+        } catch (PlatformInformationException $ex) {
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable $ex) {
+            return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->view(null, 200);
     }
 }

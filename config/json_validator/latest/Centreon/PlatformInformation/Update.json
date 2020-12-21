@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Patch a platform information",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+      "isRemote": {
+        "type": "string"
+      },
+      "isCentral": {
+        "type": "string"
+      }
+  }
+}
