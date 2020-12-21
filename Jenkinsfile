@@ -84,28 +84,25 @@ try {
         }
 
         recordIssues(
-          name: 'phpcs',
           enabledForFailure: true,
           ignoreFailedBuilds: false,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tools: [checkStyle(id: 'phpcs', pattern: 'codestyle-be.xml')],
+          tools: [checkStyle(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml')],
           referenceJobName: 'centreon-web/master'
         )
         recordIssues(
-          name: 'phpstan',
           enabledForFailure: true,
           ignoreFailedBuilds: false,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tools: [checkStyle(id: 'phpstan', pattern: 'phpstan.xml')],
+          tools: [checkStyle(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml')],
           referenceJobName: 'centreon-web/master'
         )
         recordIssues(
-          name: 'eslint',
           enabledForFailure: true,
           failOnError: true,
           ignoreFailedBuilds: false,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tools: [esLint(id: 'eslint', pattern: 'codestyle-fe.xml')],
+          tools: [esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml')],
           referenceJobName: 'centreon-web/master'
         )
 
