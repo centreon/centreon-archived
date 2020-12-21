@@ -12,3 +12,4 @@ Security
 * [Security] XSS in centreon_wiki
 * [Security] Plain text password in KB configuration
 * [Security] Plain text password in Logs configuration
+* [Security] Unsecure media upload
