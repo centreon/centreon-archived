@@ -239,3 +239,7 @@ services:
     # Remote Server
     Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface:
         class: Centreon\Domain\RemoteServer\RemoteServerService
+
+    # Topology
+    Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface:
+        class: Centreon\Infrastructure\Topology\TopologyRepositoryRDB
