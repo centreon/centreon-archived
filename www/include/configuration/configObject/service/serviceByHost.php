@@ -42,7 +42,7 @@ global $form_service_type;
 $form_service_type = "BYHOST";
 
 $service_id = filter_var(
-    $_GET['service_id'] ?? $_POST['service_id'] ?? 0,
+    $_GET['service_id'] ?? $_POST['service_id'] ?? null,
     FILTER_VALIDATE_INT
 );
 

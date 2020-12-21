@@ -44,7 +44,7 @@ class TimeperiodRepositoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->db = new CentreonDB();
         $this->repository = new TimeperiodRepository($this->db);

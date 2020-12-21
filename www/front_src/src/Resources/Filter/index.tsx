@@ -1,5 +1,10 @@
 import * as React from 'react';
 
+import { isEmpty, propEq, pick, find } from 'ramda';
+import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
+
+import { Skeleton } from '@material-ui/lab';
 import { Typography, Button, makeStyles } from '@material-ui/core';
 
 import {
@@ -10,10 +15,6 @@ import {
   Filters,
 } from '@centreon/ui';
 
-import { isEmpty, propEq, pick, find } from 'ramda';
-import { Skeleton } from '@material-ui/lab';
-import clsx from 'clsx';
-import { useTranslation } from 'react-i18next';
 import {
   labelFilter,
   labelCriterias,
@@ -30,8 +31,9 @@ import {
   labelNewFilter,
   labelMyFilters,
 } from '../translatedLabels';
-import SearchHelpTooltip from './SearchHelpTooltip';
 import { useResourceContext } from '../Context';
+
+import SearchHelpTooltip from './SearchHelpTooltip';
 import SaveFilter from './Save';
 import {
   buildHostGroupsEndpoint,

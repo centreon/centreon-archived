@@ -36,6 +36,7 @@ config/centreon.config.php
 
 #continuous integration and testing files
 *-dev.yml
+.phpunit.result.cache
 coverage-report/
 centreon-build/
 secret

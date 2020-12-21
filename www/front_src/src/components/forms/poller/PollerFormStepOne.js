@@ -5,6 +5,7 @@
 /* eslint-disable import/no-named-as-default */
 
 import React, { Component } from 'react';
+
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
 

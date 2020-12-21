@@ -11,7 +11,7 @@ use CentreonRemote\Infrastructure\Service\ExporterCacheService;
 class ExporterCacheServiceTest extends TestCase
 {
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cache = new ExporterCacheService();
         $this->cache->set('key1', 'val1');

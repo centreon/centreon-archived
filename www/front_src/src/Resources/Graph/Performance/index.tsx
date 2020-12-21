@@ -8,18 +8,27 @@ import { makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData, timeFormat } from '@centreon/ui';
 
-import { getTimeSeries, getLineData } from './timeSeries';
-import { GraphData, TimeValue, Line as LineModel } from './models';
+import { TimelineEvent } from '../../Details/tabs/Timeline/models';
+import { Resource } from '../../models';
+import { ResourceDetails } from '../../Details/models';
+import { CommentParameters } from '../../Actions/api';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
-import LoadingSkeleton from './LoadingSkeleton';
-import Legend from './Legend';
+
 import Graph from './Graph';
+import Legend from './Legend';
+import LoadingSkeleton from './LoadingSkeleton';
+import { GraphData, TimeValue, Line as LineModel } from './models';
+import { getTimeSeries, getLineData } from './timeSeries';
 
 interface Props {
   endpoint?: string;
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
+  eventAnnotationsActive?: boolean;
+  resource: Resource | ResourceDetails;
+  timeline?: Array<TimelineEvent>;
+  onAddComment: (commentParameters: CommentParameters) => void;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -51,16 +60,20 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
+  eventAnnotationsActive = false,
+  timeline,
+  resource,
+  onAddComment,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
-  const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
+  const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
 
-  const { sendRequest, sending } = useRequest<GraphData>({
+  const { sendRequest: sendGetGraphDataRequest } = useRequest<GraphData>({
     request: getData,
   });
 
@@ -69,7 +82,9 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendRequest(endpoint).then((graphData) => {
+    setLineData(undefined);
+
+    sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);
@@ -77,7 +92,7 @@ const PerformanceGraph = ({
     });
   }, [endpoint]);
 
-  if (sending || isNil(endpoint)) {
+  if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return <LoadingSkeleton />;
   }
 
@@ -135,6 +150,10 @@ const PerformanceGraph = ({
             lines={displayedLines}
             base={base as number}
             xAxisTickFormat={xAxisTickFormat}
+            timeline={timeline}
+            resource={resource}
+            onAddComment={onAddComment}
+            eventAnnotationsActive={eventAnnotationsActive}
           />
         )}
       </ParentSize>

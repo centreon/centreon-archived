@@ -209,7 +209,7 @@ services:
 
     # Host configuration
     Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface:
-        class: Centreon\Infrastructure\HostConfiguration\HostConfigurationRepositoryRDB
+        class: Centreon\Infrastructure\HostConfiguration\Repository\HostConfigurationRepositoryRDB
 
     Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface:
         class: Centreon\Domain\HostConfiguration\HostConfigurationService

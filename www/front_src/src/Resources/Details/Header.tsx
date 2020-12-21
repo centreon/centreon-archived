@@ -15,12 +15,13 @@ import {
 } from '@centreon/ui';
 import copyToClipboard from '@centreon/ui/src/utils/copy';
 
-import { DetailsSectionProps } from '.';
 import {
   labelCopyLink,
   labelLinkCopied,
   labelSomethingWentWrong,
 } from '../translatedLabels';
+
+import { DetailsSectionProps } from '.';
 
 const useStyles = makeStyles((theme) => ({
   header: {

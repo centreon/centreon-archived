@@ -161,3 +161,7 @@ Centreon\Domain\Monitoring\Resource:
             type: Centreon\Domain\Acknowledgement\Acknowledgement
             groups:
                 - 'resource_details'
+        groups:
+            type: array<Centreon\Domain\Monitoring\ResourceGroup>
+            groups:
+                - 'resource_details'

@@ -14518,6 +14518,9 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Error when decoding sent data"
 #  msgstr ""
 
+#  msgid "Error when retrieving selected options"
+#  msgstr ""
+
 #  msgid "Filter id %d not found"
 #  msgstr ""
 
@@ -14624,4 +14627,13 @@ msgstr "Permitir certificado autofirmado"
 #  msgstr ""
 
 #  msgid "FQDN / Address"
+#  msgstr ""
+
+#  msgid "Comment added"
+#  msgstr ""
+
+#  msgid "Display events"
+#  msgstr ""
+
+#  msgid "Export to png"
 #  msgstr ""

@@ -4,7 +4,6 @@ import mockDate from 'mockdate';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { last, pick, map } from 'ramda';
-
 import {
   render,
   RenderResult,
@@ -47,33 +46,37 @@ import {
   labelCritical,
   labelUnknown,
 } from '../translatedLabels';
-import Actions from '.';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
-import useActions from './useActions';
 import useFilter from '../Filter/useFilter';
 import Context, { ResourceContext } from '../Context';
 import { mockAppStateSelector, cancelTokenRequestParam } from '../testUtils';
 import { Resource } from '../models';
+import useDetails from '../Details/useDetails';
+
 import {
   acknowledgeEndpoint,
   downtimeEndpoint,
   checkEndpoint,
 } from './api/endpoint';
-import useDetails from '../Details/useDetails';
+import useActions from './useActions';
 import { disacknowledgeEndpoint } from './Resource/Disacknowledge/api';
 import { submitStatusEndpoint } from './Resource/SubmitStatus/api';
+
+import Actions from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const onRefresh = jest.fn();
 
 jest.mock('react-redux', () => ({
+  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
 }));
 
 const mockUserContext = {
-  username: 'admin',
+  alias: 'admin',
+  name: 'admin',
   locale: 'en',
   timezone: 'Europe/Paris',
 
@@ -95,6 +98,11 @@ const mockUserContext = {
       },
     },
   },
+
+  downtime: {
+    default_duration: 7200,
+  },
+  refresh_interval: 15,
 };
 
 jest.mock('@centreon/ui-context', () => ({
@@ -377,7 +385,7 @@ describe(Actions, () => {
     await findByText(labelDowntimeByAdmin);
 
     fireEvent.click(getByLabelText(labelFixed));
-    fireEvent.change(getByDisplayValue('3600'), {
+    fireEvent.change(getByDisplayValue('7200'), {
       target: { value: '' },
     });
 
@@ -447,7 +455,7 @@ describe(Actions, () => {
           resources: map(pick(['type', 'id', 'parent']), selectedResources),
           downtime: {
             comment: labelDowntimeByAdmin,
-            duration: 3600,
+            duration: 7200,
             start_time: '2020-01-01T00:00:00Z',
             end_time: '2020-01-01T02:00:00Z',
             is_fixed: true,

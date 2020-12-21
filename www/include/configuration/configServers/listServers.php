@@ -77,14 +77,14 @@ if ($is_admin == 0) {
 /*
  * nagios servers comes from DB
  */
-$nagios_servers = array();
-$nagios_restart = array();
-foreach ($serverResult as $nagios_server) {
-    $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
-    $nagios_restart[$nagios_server["id"]] = $nagios_server["last_restart"];
+$nagiosServers = array();
+$nagiosRestart = [];
+foreach ($serverResult as $nagiosServer) {
+    $nagiosServers[$nagiosServer["id"]] = $nagiosServer["name"];
+    $nagiosRestart[$nagiosServer["id"]] = $nagiosServer["last_restart"];
 }
 
-$pollerstring = implode(',', array_keys($nagios_servers));
+$pollerstring = implode(',', array_keys($nagiosServers));
 
 /*
  * Get information info RTM
@@ -153,13 +153,26 @@ $dbResult = $pearDB->query($query);
 
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
+$servers = [];
+$changeStateServers = [];
+while (($config = $dbResult->fetch())) {
+    $servers[] = $config;
+    if ($config["ns_activate"] && isset($nagiosRestart[$config['id']])) {
+        $changeStateServers[$config['id']] = $nagiosRestart[$config['id']];
+    }
+}
+
 include "./include/common/checkPagination.php";
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
+$changeStateServers = getChangeState($changeStateServers);
+
 // Fill a tab with a multidimensional Array we put in $tpl
-$elemArr = array();
-for ($i = 0; $config = $dbResult->fetch(); $i++) {
+$elemArr = [];
+$i = -1;
+foreach ($servers as $config) {
+    $i++;
     $moptions = "";
     $selectedElements = $form->addElement(
         'checkbox',
@@ -190,12 +203,8 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
     // Manage flag for changes
     $confChangedMessage = _("N/A");
     $hasChanged = false;
-    if ($config["ns_activate"] && isset($nagios_restart[$config['id']])) {
-        $hasChanged = checkChangeState(
-            (int) $config['id'],
-            (int) $nagios_restart[$config['id']]
-        );
-        $confChangedMessage = $hasChanged ? _("Yes") : _("No");
+    if ($config["ns_activate"] && isset($nagiosRestart[$config['id']])) {
+        $confChangedMessage = $changeStateServers[$config['id']] ? _("Yes") : _("No");
     }
 
     // Manage flag for update time

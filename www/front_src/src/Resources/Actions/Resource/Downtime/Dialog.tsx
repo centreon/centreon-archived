@@ -2,7 +2,6 @@
 import * as React from 'react';
 
 import dayjs from 'dayjs';
-
 import DayjsAdapter from '@date-io/dayjs';
 import { useTranslation } from 'react-i18next';
 

@@ -38,7 +38,7 @@
                                 {foreach key=key item=a from=$acl_topos2}
                                     <li>
                                     <table cellpadding=0 cellspacing=0 border=0 margin=0 padding=0 width="100%" style='padding-bottom:3px;'>
-                                        <tr style='background-color:#BBBBBB;'>
+                                        <tr class="bg_grey">
                                         {if $a.childNumber != 0}
                                             <td width="400"><img id="img_{$a.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$a.c_id}');">&nbsp;<label for="{$a.id}">{$a.name}</label> : </td> 
                                         {else}
@@ -65,7 +65,7 @@
                                     {assign var='group' value='0'}
                                     {foreach key=key item=b from=$a.childs}
                                     <table cellpadding=0 cellspacing=0 border=0 margin=0 width='100%'>
-                                    <tr style='background-color:#CCCCCC'>
+                                    <tr class="bg_grey_mid">
                                         {if $b.childNumber != 0}
                                         <td>
                                             <li><img id="img_{$b.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$b.c_id}');">&nbsp;<label for="{$b.id}">{$b.name}</label> : 
@@ -96,11 +96,11 @@
                                         {foreach key=key item=c from=$b.childs}
                                         <table cellpadding=0 cellspacing=0 border=0 margin=0 width='100%'>
                                         {if $group != $c.group}
-                                        <tr style='background-color:#DDDDDD'>
+                                        <tr class="bg_grey_light">
                                             <td width="400" colspan="2"><b>{$c.group}</b></td>
                                         </tr>
                                         {/if}
-                                        <tr style='background-color:#DDDDDD'>
+                                        <tr class="bg_grey_light">
                                             {if $c.childNumber != 0}
                                             <td><li><img id="img_{$c.c_id}" src="img/icones/16x16/navigate_plus.gif"  onclick="toggleDisplay('{$c.c_id}');">&nbsp;<label for="{$c.id}">{$c.name}</label> : </td>
                                             {else}
@@ -126,10 +126,10 @@
                                         </table>
                                             <ul class="arbo_d" id="{$c.c_id}">
                                                 {foreach key=key item=d from=$c.childs}
-                                                <table cellpadding=0 cellspacing=0 border=0 margin=0>
-                                                    <tr style='background-color:#DDDDDD'>
-                                                        <td width="170"><li> - <label for="{$d.id}">{$d.name}</label> : </td>
-                                                        <td width="170">
+                                                <table cellpadding="0" cellspacing="0" border="0" margin="0" width="100%">
+                                                    <tr class="bg_grey_white">
+                                                        <td class="td_label"><li> - <label for="{$d.id}">{$d.name}</label> : </td>
+                                                        <td class="td_checkbox">
                                                         { if $c.readonly == 1 }
                                                             <div class="md-checkbox md-checkbox-inline">
                                                                 <input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="checkbox" {if $d.access > 0}checked="checked"{/if} value="1" />

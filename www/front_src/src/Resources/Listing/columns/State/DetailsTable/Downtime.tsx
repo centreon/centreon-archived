@@ -16,6 +16,7 @@ import {
   labelEndTime,
   labelComment,
 } from '../../../../translatedLabels';
+
 import DetailsTable, { DetailsTableProps } from '.';
 
 const useStyles = makeStyles({

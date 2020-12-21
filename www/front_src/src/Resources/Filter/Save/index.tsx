@@ -23,10 +23,11 @@ import {
 } from '../../translatedLabels';
 import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
-import CreateFilterDialog from './CreateFilterDialog';
 import { updateFilter as updateFilterRequest } from '../api';
 import useFilterModels from '../useFilterModels';
 import useAdapters from '../api/adapters';
+
+import CreateFilterDialog from './CreateFilterDialog';
 
 const useStyles = makeStyles((theme) => ({
   save: {

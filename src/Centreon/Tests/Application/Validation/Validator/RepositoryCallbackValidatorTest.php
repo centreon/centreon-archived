@@ -45,6 +45,7 @@ use Centreon\Tests\Resource\Mock;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Context\ExecutionContext;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilder;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Pimple\Container;
 use Pimple\Psr11\Container as Psr11Container;
 
@@ -57,7 +58,7 @@ class RepositoryCallbackValidatorTest extends TestCase
 
     use Dependency\CentreonDbManagerDependencyTrait;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new Container;
         $this->executionContext = $this->createMock(ExecutionContext::class);
@@ -69,11 +70,9 @@ class RepositoryCallbackValidatorTest extends TestCase
         $this->validator->initialize($this->executionContext);
     }
 
-    /**
-     * @expectedException \Symfony\Component\Validator\Exception\UnexpectedTypeException
-     */
     public function testValidateWithDifferentConstraint()
     {
+        $this->expectException(UnexpectedTypeException::class);
         $this->validator->validate(null, $this->createMock(Constraint::class));
     }
 
@@ -84,7 +83,7 @@ class RepositoryCallbackValidatorTest extends TestCase
         $constraint->repoMethod = 'validateEntity';
         $constraint->fieldAccessor = 'getName';
 
-        $entity = new Mock\EntityMock;
+        $entity = new Mock\EntityMock();
         $entity->setId(1);
         $entity->setName('my name');
 
@@ -101,9 +100,9 @@ class RepositoryCallbackValidatorTest extends TestCase
         // register mocked repository in DB manager
         $this->container[ServiceProvider::CENTREON_DB_MANAGER]
             ->addRepositoryMock($constraint->repository, $repository);
-        
+
         $usedMethods = [];
-        
+
         // mock execution context object
         $this->executionContext
             ->method('buildViolation')

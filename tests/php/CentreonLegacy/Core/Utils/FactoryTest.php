@@ -29,7 +29,7 @@ use CentreonLegacy\ServiceProvider;
 class FactoryTest extends TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new ServiceContainer();
 
@@ -39,7 +39,7 @@ class FactoryTest extends TestCase
             ->getMock();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->container->terminate();
         $this->container = null;

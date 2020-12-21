@@ -43,61 +43,6 @@ use PDOStatement;
 
 class StatementCollectorTest extends TestCase
 {
-
-    public function testAddColumn()
-    {
-        $value = 987;
-        $key = 'key';
-        $dataType = PDO::PARAM_INT;
-
-        $collector = new StatementCollector;
-
-        $collector->addColumn($key, $value, $dataType);
-
-        $this->assertAttributeEquals([
-            $key => [
-                'value' => $value,
-                'data_type' => $dataType,
-            ]
-            ], 'columns', $collector);
-    }
-
-    public function testAddValue()
-    {
-        $value = true;
-        $key = 'key';
-        $dataType = PDO::PARAM_BOOL;
-
-        $collector = new StatementCollector;
-
-        $collector->addValue($key, $value, $dataType);
-
-        $this->assertAttributeEquals([
-            $key => [
-                'value' => $value,
-                'data_type' => $dataType,
-            ]
-            ], 'values', $collector);
-    }
-
-    public function testAddParam()
-    {
-        $value = null;
-        $key = 'key';
-        $dataType = PDO::PARAM_STR;
-
-        $collector = new StatementCollector;
-
-        $collector->addParam($key, $value);
-
-        $this->assertAttributeEquals([
-            $key => [
-                'value' => $value,
-                'data_type' => $dataType,
-            ]
-            ], 'params', $collector);
-    }
-
     public function testBind()
     {
         $value = '...';
@@ -110,7 +55,7 @@ class StatementCollectorTest extends TestCase
             $this->assertEquals($dataType, $_dataType);
         };
 
-        $collector = new StatementCollector;
+        $collector = new StatementCollector();
         $collector->addColumn($key, $value, $dataType);
         $collector->addValue($key, $value, $dataType);
         $collector->addParam($key, $value, $dataType);

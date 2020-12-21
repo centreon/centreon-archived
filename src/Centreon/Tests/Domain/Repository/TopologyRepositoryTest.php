@@ -15,7 +15,7 @@ class TopologyRepositoryTest extends TestCase
     protected $datasets = [];
     protected $repository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $db = new CentreonDB;
         $this->datasets = [

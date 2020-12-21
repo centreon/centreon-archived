@@ -2,11 +2,11 @@ import React from 'react';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { path, not, or, omit } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { Dialog, TextField, useRequest } from '@centreon/ui';
 
-import { path, not, or, omit } from 'ramda';
-import { useTranslation } from 'react-i18next';
 import {
   labelSave,
   labelCancel,

@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Filter;
 
-use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;

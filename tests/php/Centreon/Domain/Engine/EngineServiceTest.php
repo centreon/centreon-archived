@@ -27,6 +27,7 @@ use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Engine\EngineService;
 use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\Monitoring\Comment\Comment;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
@@ -47,13 +48,16 @@ class EngineServiceTest extends TestCase
     protected $commandHeaderRegex;
     protected $monitoringRepository;
     protected $engineConfigurationService;
+    protected $hostComment;
+    protected $serviceComment;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adminContact = (new Contact())
             ->setId(1)
             ->setName('admin')
-            ->setAdmin(true);
+            ->setAdmin(true)
+            ->setAlias('adminAlias');
 
         $this->host = (new Host())
             ->setId(1)
@@ -73,6 +77,12 @@ class EngineServiceTest extends TestCase
             ->setParentResourceId($this->service->getHost()->getId())
             ->setOutput('Service went critical')
             ->setPerformanceData('ping: 0');
+
+        $this->hostComment = (new Comment($this->host->getID(), 'Simple host comment'))
+            ->setDate(new \DateTime('now'));
+
+        $this->serviceComment = (new Comment($this->service->getID(), 'Simple service comment'))
+            ->setDate(new \DateTime('now'));
         /**
          * commandHeader should look like 'EXTERNALCMD:<pollerid>:[timestamp] '
          */
@@ -84,6 +94,85 @@ class EngineServiceTest extends TestCase
         $this->engineService = $this->createMock(EngineServiceInterface::class);
         $this->entityValidator = $this->createMock(EntityValidator::class);
         $this->monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
+    }
+
+    /**
+     * Testing the addHostComment EngineService function in a nominal case.
+     */
+    public function testAddHostComment()
+    {
+        $this->entityValidator->expects($this->once())
+            ->method('validate')
+            ->willReturn(new ConstraintViolationList());
+
+        /**
+         * Creating the command to check that the code
+         * will send the same to the sendExternalCommand
+         * repository function
+         */
+        $command = sprintf(
+            'ADD_HOST_COMMENT;%s;1;%s;%s',
+            $this->host->getName(),
+            $this->adminContact->getAlias(),
+            $this->hostComment->getComment()
+        );
+
+        $this->engineRepository->expects($this->once())
+            ->method('sendExternalCommand')
+            ->with(
+                $this->matchesRegularExpression(
+                    '/^' . $this->commandHeaderRegex . str_replace('|', '\|', $command) . '$/'
+                )
+            );
+
+        $engineService = new EngineService(
+            $this->engineRepository,
+            $this->engineConfigurationService,
+            $this->entityValidator
+        );
+
+        $engineService->filterByContact($this->adminContact);
+        $this->assertNull($engineService->addHostComment($this->hostComment, $this->host));
+    }
+
+    /**
+    * Testing the addServiceComment EngineService function in a nominal case.
+    */
+    public function testServiceComment()
+    {
+        $this->entityValidator->expects($this->once())
+           ->method('validate')
+           ->willReturn(new ConstraintViolationList());
+
+        /**
+         * Creating the command to check that the code
+         * will send the same to the sendExternalCommand
+         * repository function
+         */
+        $command = sprintf(
+            'ADD_SVC_COMMENT;%s;%s;1;%s;%s',
+            $this->host->getName(),
+            $this->service->getDescription(),
+            $this->adminContact->getAlias(),
+            $this->serviceComment->getComment()
+        );
+
+        $this->engineRepository->expects($this->once())
+           ->method('sendExternalCommand')
+           ->with(
+               $this->matchesRegularExpression(
+                   '/^' . $this->commandHeaderRegex . str_replace('|', '\|', $command) . '$/'
+               )
+           );
+
+        $engineService = new EngineService(
+            $this->engineRepository,
+            $this->engineConfigurationService,
+            $this->entityValidator
+        );
+
+        $engineService->filterByContact($this->adminContact);
+        $this->assertNull($engineService->addServiceComment($this->serviceComment, $this->service));
     }
 
     /**
