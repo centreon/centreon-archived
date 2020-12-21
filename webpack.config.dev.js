@@ -38,12 +38,12 @@ module.exports = (env) => {
     devServer: {
       contentBase: [
         path.resolve(
-          `${__dirname}/www/modules/centreon-license-manager/static/`,
+          `${__dirname}/www/modules/centreon-license-manager/static`,
         ),
         path.resolve(
-          `${__dirname}/www/modules/centreon-autodiscovery-server/static/`,
+          `${__dirname}/www/modules/centreon-autodiscovery-server/static`,
         ),
-        path.resolve(`${__dirname}/www/modules/centreon-bam-server/static/`),
+        path.resolve(`${__dirname}/www/modules/centreon-bam-server/static`),
       ],
       compress: true,
       host: '0.0.0.0',
