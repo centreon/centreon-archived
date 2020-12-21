@@ -24,6 +24,8 @@ namespace Centreon\Domain\PlatformInformation;
 
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface;
 
 /**
  * Service intended to use rest API on 'information' specific configuration data
@@ -38,9 +40,17 @@ class PlatformInformationService implements PlatformInformationServiceInterface
      */
     private $platformInformationRepository;
 
-    public function __construct(PlatformInformationRepositoryInterface $platformInformationRepository)
-    {
+    /**
+     * @var RemoteServerServiceInterface
+     */
+    private $remoteServerService;
+
+    public function __construct(
+        PlatformInformationRepositoryInterface $platformInformationRepository,
+        RemoteServerServiceInterface $remoteServerService
+    ) {
         $this->platformInformationRepository = $platformInformationRepository;
+        $this->remoteServerService = $remoteServerService;
     }
 
     /**
@@ -61,5 +71,16 @@ class PlatformInformationService implements PlatformInformationServiceInterface
         }
 
         return $foundPlatformInformation;
+    }
+
+    public function updatePlatformInformation(PlatformInformation $platformInformationUpdate): ?PlatformInformation
+    {
+        $platformInformation = $this->getInformation();
+
+        if ($platformInformation->isCentral() && $platformInformationUpdate->isRemote()) {
+            $this->remoteServerService->convertCentralToRemote();
+        }
+
+        return $platformInformation;
     }
 }
