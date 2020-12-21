@@ -85,13 +85,16 @@ try {
 
         recordIssues(
           enabledForFailure: true,
-          aggregatingResults: true,
           ignoreFailedBuilds: false,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tools: [
-            checkStyle(pattern: 'codestyle-be.xml'),
-            checkStyle(pattern: 'phpstan.xml')
-          ],
+          tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
+          referenceJobName: 'centreon-web/master'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          ignoreFailedBuilds: false,
+          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+          tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
           referenceJobName: 'centreon-web/master'
         )
         recordIssues(
@@ -99,7 +102,7 @@ try {
           failOnError: true,
           ignoreFailedBuilds: false,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tools: [esLint(pattern: 'codestyle-fe.xml')],
+          tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
           referenceJobName: 'centreon-web/master'
         )
 
