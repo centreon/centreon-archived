@@ -9,13 +9,12 @@ const baseConfig = require('./webpack.config');
 const devServerPort = 9090;
 
 const interfaces = os.networkInterfaces();
-const externalInterface = Object.keys(interfaces).find((interfaceName) => {
-  return (
+const externalInterface = Object.keys(interfaces).find(
+  (interfaceName) =>
     !interfaceName.includes('docker') &&
     interfaces[interfaceName][0].family === 'IPv4' &&
-    interfaces[interfaceName][0].internal === false
-  );
-});
+    interfaces[interfaceName][0].internal === false,
+);
 
 const devServerAddress = externalInterface
   ? interfaces[externalInterface][0].address
@@ -23,25 +22,29 @@ const devServerAddress = externalInterface
 
 const publicPath = `http://${devServerAddress}:${devServerPort}/static/`;
 
-module.exports = merge(baseConfig, devConfig, {
-  output: {
-    publicPath,
-  },
-  resolve: {
-    alias: {
-      'react-router-dom': path.resolve('./node_modules/react-router-dom'),
-      '@material-ui/core': path.resolve('./node_modules/@material-ui/core'),
+module.exports = (env) => {
+  const plugins = env?.WEBPACK_SERVE ? [new ReactRefreshWebpackPlugin()] : [];
+
+  return merge(baseConfig, devConfig, {
+    output: {
+      publicPath,
     },
-  },
-  devServer: {
-    contentBase: path.resolve(`${__dirname}/www/modules/`),
-    compress: true,
-    host: '0.0.0.0',
-    port: devServerPort,
-    hot: true,
-    watchContentBase: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-    publicPath,
-  },
-  plugins: [new ReactRefreshWebpackPlugin()],
-});
+    resolve: {
+      alias: {
+        'react-router-dom': path.resolve('./node_modules/react-router-dom'),
+        '@material-ui/core': path.resolve('./node_modules/@material-ui/core'),
+      },
+    },
+    devServer: {
+      contentBase: path.resolve(`${__dirname}/www/modules/`),
+      compress: true,
+      host: '0.0.0.0',
+      port: devServerPort,
+      hot: true,
+      watchContentBase: true,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      publicPath,
+    },
+    plugins,
+  });
+};
