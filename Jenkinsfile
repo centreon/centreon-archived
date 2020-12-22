@@ -57,11 +57,6 @@ try {
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
         junit 'ut-be.xml,ut-fe.xml'
-        step([
-          $class: 'CloverPublisher',
-          cloverReportDir: '.',
-          cloverReportFileName: 'coverage-be.xml'
-        ])
         recordIssues(
           enabledForFailure: true,
           aggregatingResults: true,
@@ -69,13 +64,15 @@ try {
             checkStyle(pattern: 'codestyle-be.xml'),
             checkStyle(pattern: 'phpstan.xml')
           ],
-          referenceJobName: 'centreon-web/master'
+          referenceJobName: 'centreon-web/master',
+          trendChartType: 'NONE'
         )
         recordIssues(
           enabledForFailure: true,
           failOnError: true,
           tools: [esLint(pattern: 'codestyle-fe.xml')],
-          referenceJobName: 'centreon-web/master'
+          referenceJobName: 'centreon-web/master',
+          trendChartType: 'NONE'
         )
 
         if (env.CHANGE_ID) { // pull request to comment with coding style issues
