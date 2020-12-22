@@ -47,11 +47,6 @@ try {
         junit 'ut.xml,jest-test-results.xml'
         if (currentBuild.result == 'UNSTABLE')
           currentBuild.result = 'FAILURE'
-        step([
-          $class: 'CloverPublisher',
-          cloverReportDir: '.',
-          cloverReportFileName: 'coverage.xml'
-        ])
 
         if (env.CHANGE_ID) { // pull request to comment with coding style issues
           ViolationsToGitHub([
