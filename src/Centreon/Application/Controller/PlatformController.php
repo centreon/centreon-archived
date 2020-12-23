@@ -48,15 +48,22 @@ class PlatformController extends AbstractController
     private $informationService;
 
     /**
+     * @var PlatformServiceInterface
+     */
+    private $platformInformationService;
+
+    /**
      * @var RemoteServerServiceInterface
      */
     private $remoteServerService;
 
     public function __construct(
         PlatformServiceInterface $informationService,
+        PlatformInformationServiceInterface $platformInformationService,
         RemoteServerServiceInterface $remoteServerService
     ) {
         $this->informationService = $informationService;
+        $this->platformInformationService = $platformInformationService;
         $this->remoteServerService = $remoteServerService;
     }
 
@@ -144,10 +151,10 @@ class PlatformController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
-        $platformToUpdate = json_decode((string) $request->getContent(), true);
+        $platformToUpdateProperty = json_decode((string) $request->getContent(), true);
 
         try {
-            if (!is_array($platformToUpdate)) {
+            if (!is_array($platformToUpdateProperty)) {
                 throw new PlatformInformationException(_('Error when decoding sent data'));
             }
 
@@ -161,37 +168,7 @@ class PlatformController extends AbstractController
                 )
             );
 
-            $platformInformation = new PlatformInformation();
-
-            foreach ($platformToUpdate as $platformProperty => $platformValue) {
-                switch ($platformProperty) {
-                    case 'api_crendentials':
-                        $password = $this->remoteServerService->encryptCentralApiCredentials(
-                            $platformToUpdate['api_crendentials']
-                        );
-                        $platformInformation->setApiCredentials($password);
-                        break;
-                    case 'central_address':
-                        $platformInformation->setCentralServerAddress($platformToUpdate['central_address']);
-                        break;
-                    case 'username':
-                        $platformInformation->setApiUsername($platformToUpdate['username']);
-                        break;
-                    case 'isRemote':
-                        if ($platformValue === true) {
-                            $platformInformation->setIsRemote('yes');
-                            $platformInformation->setIsCentral('no');
-                        }
-                        break;
-                    case 'isCentral':
-                        if ($platformValue === true) {
-                            $platformInformation->setIsCentral('yes');
-                            $platformInformation->setIsRemote('no');
-                        }
-                        break;
-                }
-            }
-
+            $platformInformation = $this->platformInformationService->updateExistingInformationFromArray($platformToUpdateProperty);
             $this->platformInformationService->updatePlatformInformation($platformInformation);
         } catch (PlatformInformationException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
