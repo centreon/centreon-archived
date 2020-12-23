@@ -21,17 +21,5 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Domain\RemoteServer\Interfaces;
-
-interface RemoteServerServiceInterface
-{
-    /**
-     * Convert a Central into a Remote Server
-     */
-    public function convertCentralToRemote(): void;
-
-    /**
-     * Convert a Remote Server into a Central
-     */
-    public function convertRemoteToCentral(): void;
-}
+class RemoteServerException extends \Exception
+{}
