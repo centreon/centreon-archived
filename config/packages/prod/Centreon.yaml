@@ -239,7 +239,8 @@ services:
     # Remote Server
     Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface:
         class: Centreon\Domain\RemoteServer\RemoteServerService
-
+        calls:
+            - [setCentreonEtcPath, ['%centreon_etc_path%']]
     # Topology
     Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface:
         class: Centreon\Infrastructure\Topology\TopologyRepositoryRDB
