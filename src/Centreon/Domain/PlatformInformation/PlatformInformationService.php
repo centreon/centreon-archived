@@ -25,7 +25,6 @@ namespace Centreon\Domain\PlatformInformation;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
-use Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface;
 
 /**
  * Service intended to use rest API on 'information' specific configuration data
@@ -73,14 +72,79 @@ class PlatformInformationService implements PlatformInformationServiceInterface
         return $foundPlatformInformation;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function updatePlatformInformation(PlatformInformation $platformInformationUpdate): ?PlatformInformation
     {
-        $platformInformation = $this->getInformation();
-
-        if ($platformInformation->isCentral() && $platformInformationUpdate->isRemote()) {
+        if ($platformInformationUpdate->isRemote()) {
             $this->remoteServerService->convertCentralToRemote();
+        } else {
+            $this->remoteServerService->convertRemoteToCentral();
         }
 
+        return $this->platformInformationRepository->updatePlatformInformation($platformInformationUpdate);
+    }
+
+    public function updateExistingInformationFromArray(array $platformToUpdateProperty): ?PlatformInformation
+    {
+        /**
+         * Get the current existing informations
+         * @var PlatformInformation
+         */
+        $platformInformation = $this->getInformation();
+
+        /**
+         * Update the existing informations
+         */
+        if ($platformInformation !== null) {
+            foreach ($platformToUpdateProperty as $platformProperty => $platformValue) {
+                switch ($platformProperty) {
+                    case 'version':
+                        $platformInformation->setVersion($platformValue);
+                        break;
+                    case 'appKey':
+                        $platformInformation->setAppKey($platformValue);
+                        break;
+                    case 'isRemote':
+                        if ($platformValue === true) {
+                            $platformInformation->setIsRemote('yes');
+                            $platformInformation->setIsCentral('no');
+                        }
+                        break;
+                    case 'isCentral':
+                        if ($platformValue === true) {
+                            $platformInformation->setIsCentral('yes');
+                            $platformInformation->setIsRemote('no');
+                        }
+                        break;
+                    case 'centralServerAddress':
+                        $platformInformation->setCentralServerAddress($platformValue);
+                        break;
+                    case 'apiUsername':
+                        $platformInformation->setApiUsername($platformValue);
+                        break;
+                    case 'apiCredentials':
+                        $platformInformation->setApiCredentials($platformValue);
+                        break;
+                    case 'apiScheme':
+                        $platformInformation->setApiScheme($platformValue);
+                        break;
+                    case 'apiPort':
+                        $platformInformation->setApiPort($platformValue);
+                        break;
+                    case 'apiPath':
+                        $platformInformation->setApiPath($platformValue);
+                        break;
+                    case 'peerValidation':
+                        if ($platformValue === true) {
+                            $platformInformation->setApiPeerValidation('yes');
+                        }
+                        break;
+                }
+            }
+
+        }
         return $platformInformation;
     }
 }
