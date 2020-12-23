@@ -31,6 +31,11 @@ use Security\Encryption;
 class PlatformInformation
 {
     /**
+     * Credentials encryption key
+     */
+    public const ENCRYPT_SECOND_KEY = 'api_remote_credentials';
+
+    /**
      * @var string|null platform version
      */
     private $version;
@@ -59,6 +64,11 @@ class PlatformInformation
      * @var string|null
      */
     private $apiUsername;
+
+    /**
+     * @var string|null
+     */
+    private $encryptedApiCredentials;
 
     /**
      * @var string|null
@@ -203,29 +213,45 @@ class PlatformInformation
         if (empty($encryptedKey)) {
             return null;
         }
-        // first key
-        $path = __DIR__ . "/../../../../";
-        if (file_exists($path . '/.env.local.php')) {
-            $localEnv = @include $path . '/.env.local.php';
-        }
 
-        // second key
-        if (empty($localEnv) || !isset($localEnv['APP_SECRET'])) {
+        if (!isset($_ENV['APP_SECRET'])) {
             throw new \InvalidArgumentException(
                 _("Unable to find the encryption key. Please check the '.env.local.php' file.")
             );
         }
-        $secondKey = base64_encode('api_remote_credentials');
+
+        // second key
+        $secondKey = base64_encode(self::ENCRYPT_SECOND_KEY);
 
         try {
             $centreonEncryption = new Encryption();
-            $centreonEncryption->setFirstKey($localEnv['APP_SECRET'])->setSecondKey($secondKey);
+            $centreonEncryption->setFirstKey($_ENV['APP_SECRET'])->setSecondKey($secondKey);
             return $centreonEncryption->decrypt($encryptedKey);
         } catch (\throwable $e) {
             throw new \InvalidArgumentException(
                 _("Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form")
             );
         }
+    }
+
+    /**
+     * encrypt the Central API Password
+     *
+     * @param string $password
+     * @return string
+     */
+    private function encryptApiCredentials(string $password): string
+    {
+        if (!isset($_ENV['APP_SECRET'])) {
+            throw new \InvalidArgumentException(
+                _("Unable to find the encryption key. Please check the '.env.local.php' file.")
+            );
+        }
+
+        $secondKey = base64_encode(self::ENCRYPT_SECOND_KEY);
+        $centreonEncryption = new Encryption();
+        $centreonEncryption->setFirstKey($_ENV['APP_SECRET'])->setSecondKey($secondKey);
+        return $centreonEncryption->crypt($password);
     }
 
     /**
@@ -240,12 +266,29 @@ class PlatformInformation
      * @param string|null $encryptedKey
      * @return $this
      */
-    public function setApiCredentials(?string $encryptedKey): self
+    public function setApiCredentials(?string $apiCredentials): self
     {
+        $this->apiCredentials = $apiCredentials;
+        if (null !== $apiCredentials) {
+            $apiCredentials = $this->encryptApiCredentials($apiCredentials);
+        }
+        $this->encryptedApiCredentials = $apiCredentials;
+        return $this;
+    }
+
+    public function getEncryptedApiCredentials(): ?string
+    {
+        return $this->encryptedApiCredentials;
+    }
+
+    public function setEncryptedApiCredentials(?string $encryptedKey): self
+    {
+        $this->encryptedApiCredentials = $encryptedKey;
         if (null !== $encryptedKey) {
             $encryptedKey = $this->decryptApiCredentials($encryptedKey);
         }
         $this->apiCredentials = $encryptedKey;
+
         return $this;
     }
 
@@ -289,7 +332,7 @@ class PlatformInformation
      */
     public function getApiPort(): ?int
     {
-        return $this->checkPortConsistency($this->apiPort);
+        return $this->apiPort;
     }
 
     /**
@@ -298,7 +341,7 @@ class PlatformInformation
      */
     public function setApiPort(?int $port): self
     {
-        $this->apiPort = $port;
+        $this->apiPort = $this->checkPortConsistency($port);
         return $this;
     }
 
