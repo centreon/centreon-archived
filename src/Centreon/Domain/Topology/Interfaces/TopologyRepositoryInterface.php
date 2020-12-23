@@ -25,9 +25,16 @@ namespace Centreon\Domain\Topology\Interfaces;
 interface TopologyRepositoryInterface
 {
     /**
-     * Disable Menu
+     * Disable Centreon Web Menu
      *
      * @return void
      */
     public function disableMenus(): void;
+
+    /**
+     * Enable Centreon Web Menu
+     *
+     * @return void
+     */
+    public function enableMenus(): void;
 }
