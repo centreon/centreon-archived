@@ -224,21 +224,23 @@ class CentreonWidget
     /**
      * Add widget to view
      *
-     * @param array $params
+     * @param int $customViewId
+     * @param int $widgetModelId
+     * @param string $widgetTitle
      * @throws CentreonWidgetException
      */
-    public function addWidget($params)
+    public function addWidget($customViewId, $widgetModelId, $widgetTitle)
     {
-        if (!isset($params['custom_view_id'])
-            || !isset($params['widget_model_id'])
-            || !isset($params['widget_title'])
+        if (!isset($customViewId)
+            || !isset($widgetModelId)
+            || !isset($widgetTitle)
         ) {
             throw new CentreonWidgetException('No custom view or no widget selected');
         }
         $queryValues = array();
         $query = 'INSERT INTO widgets (title, widget_model_id) VALUES (?, ?)';
-        $queryValues[] = (string)$params['widget_title'];
-        $queryValues[] = (int)$params['widget_model_id'];
+        $queryValues[] = $widgetTitle;
+        $queryValues[] = $widgetModelId;
         $stmt = $this->db->prepare($query);
         $res = $this->db->execute($stmt, $queryValues);
         if (PEAR::isError($res)) {
@@ -251,7 +253,7 @@ class CentreonWidget
             'WHERE custom_view_id = ?';
 
         $stmt = $this->db->prepare($query);
-        $res = $this->db->execute($stmt, array((int)$params['custom_view_id']));
+        $res = $this->db->execute($stmt, array($customViewId));
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
         }
@@ -273,7 +275,7 @@ class CentreonWidget
             'WHERE custom_view_id = ?';
 
         $stmt = $this->db->prepare($query);
-        $res = $this->db->execute($stmt, array((int)$params['custom_view_id']));
+        $res = $this->db->execute($stmt, array($customViewId));
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
         }
@@ -310,11 +312,11 @@ class CentreonWidget
             $newPosition = '0_' . $rowNb;
         }
 
-        $lastId = $this->getLastInsertedWidgetId($params['widget_title']);
+        $lastId = $this->getLastInsertedWidgetId($widgetTitle);
         $queryValues = array();
 
         $query = 'INSERT INTO widget_views (custom_view_id, widget_id, widget_order) VALUES (?, ?, ?)';
-        $queryValues[] = (int)$params['custom_view_id'];
+        $queryValues[] = $customViewId;
         $queryValues[] = (int)$lastId;
         $queryValues[] = (string)$newPosition;
         $stmt = $this->db->prepare($query);
