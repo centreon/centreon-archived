@@ -49,4 +49,17 @@ class TopologyRepositoryRDB implements TopologyRepositoryInterface
             OR topology_parent IN ('601', '602', '608', '604', '617', '650', '609', '610')"
         );
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function enableMenus(): void
+    {
+        $this->db->query(
+            "UPDATE topology SET topology_show = '1'
+            WHERE topology_page IN ('21003', '601', '602', '60304', '608', '604', '617', '650', '609', '610', '50111',
+            '50102', '50707', '50120')
+            OR topology_parent IN ('601', '602', '608', '604', '617', '650', '609', '610')"
+        );
+    }
 }
