@@ -23,9 +23,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\RemoteServer;
 
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface;
-use Security\Encryption;
+use RemoteServerException;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -35,19 +36,21 @@ class RemoteServerService implements RemoteServerServiceInterface
      */
     private $topologyRepository;
 
-    public function __construct(TopologyRepositoryInterface $topologyRepository) {
-        $this->topologyRepository = $topologyRepository;
-    }
+    /**
+     * @var PlatformTopologyRepositoryInterface
+     */
+    private $platformTopologyRepository;
 
     /**
-     * @inheritDoc
+     * @param TopologyRepositoryInterface $topologyRepository
+     * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
      */
-    public function encryptCentralApiCredentials(string $password): string
-    {
-        $secondKey = base64_encode("api_remote_credentials");
-        $centreonEncryption = new Encryption();
-        $centreonEncryption->setFirstKey($_ENV['APP_SECRET'])->setSecondKey($secondKey);
-        return $centreonEncryption->crypt($password);
+    public function __construct(
+        TopologyRepositoryInterface $topologyRepository,
+        PlatformTopologyRepositoryInterface $platformTopologyRepository
+    ) {
+        $this->topologyRepository = $topologyRepository;
+        $this->platformTopologyRepository = $platformTopologyRepository;
     }
 
     /**
@@ -55,6 +58,20 @@ class RemoteServerService implements RemoteServerServiceInterface
      */
     public function convertCentralToRemote(): void
     {
+        $platformChildren = $this->platformTopologyRepository->findCentralRemoteChildren();
+        if(!empty($platformChildren)) {
+            throw new RemoteServerException(
+                "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
+            );
+        }
         $this->topologyRepository->disableMenus();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function convertRemoteToCentral(): void
+    {
+        $this->topologyRepository->enableMenus();
     }
 }
