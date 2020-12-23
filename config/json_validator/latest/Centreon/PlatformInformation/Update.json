@@ -4,11 +4,38 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-      "isRemote": {
+      "version": {
         "type": "string"
       },
-      "isCentral": {
+      "appKey": {
         "type": "string"
+      },
+      "isRemote": {
+        "type": "boolean"
+      },
+      "isCentral": {
+        "type": "boolean"
+      },
+      "centralServerAddress": {
+        "type": "string"
+      },
+      "apiUsername": {
+        "type": "string"
+      },
+      "apiCredentials": {
+        "type": "string"
+      },
+      "apiScheme": {
+        "type": "string"
+      },
+      "apiPort": {
+        "type": "integer"
+      },
+      "apiPath": {
+        "type": "string"
+      },
+      "peerValidation": {
+        "type": "boolean"
       }
   }
 }
