@@ -23,10 +23,11 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\RemoteServer;
 
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface;
-use RemoteServerException;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -42,6 +43,11 @@ class RemoteServerService implements RemoteServerServiceInterface
     private $platformTopologyRepository;
 
     /**
+     * @var string
+     */
+    private $centreonEtcPath;
+
+    /**
      * @param TopologyRepositoryInterface $topologyRepository
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
      */
@@ -53,18 +59,44 @@ class RemoteServerService implements RemoteServerServiceInterface
         $this->platformTopologyRepository = $platformTopologyRepository;
     }
 
+    public function setCentreonEtcPath(string $centreonEtcPath): void
+    {
+        if ($centreonEtcPath[-1] !== DIRECTORY_SEPARATOR) {
+            $centreonEtcPath .= DIRECTORY_SEPARATOR;
+        }
+        $this->centreonEtcPath = $centreonEtcPath;
+    }
+
     /**
      * @inheritDoc
      */
     public function convertCentralToRemote(): void
     {
+        /**
+         * Stop conversion if the Central has remote children
+         */
         $platformChildren = $this->platformTopologyRepository->findCentralRemoteChildren();
         if(!empty($platformChildren)) {
             throw new RemoteServerException(
                 "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
             );
         }
+
         $this->topologyRepository->disableMenus();
+
+        /**
+         * Set Remote type into Platform_Topology
+         */
+        $platform = $this->platformTopologyRepository->findTopLevelPlatform();
+        $platform->setType(Platform::TYPE_REMOTE);
+        $this->platformTopologyRepository->updatePlatformParameters($platform);
+
+        /**
+         * Apply Remote Server mode in configuration file
+         */
+        system(
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . $this->centreonEtcPath . "conf.pm"
+        );
     }
 
     /**
