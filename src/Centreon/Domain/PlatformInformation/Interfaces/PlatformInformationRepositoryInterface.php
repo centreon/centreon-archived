@@ -33,4 +33,12 @@ interface PlatformInformationRepositoryInterface
      * @throws \Exception
      */
     public function findPlatformInformation(): ?PlatformInformation;
+
+    /**
+     * Update the 'information' table
+     *
+     * @param PlatformInformation $platformInformation
+     * @return PlatformInformation|null
+     */
+    public function updatePlatformInformation(PlatformInformation $platformInformation): ?PlatformInformation;
 }
