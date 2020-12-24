@@ -25,6 +25,7 @@ namespace Centreon\Domain\PlatformInformation;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\RemoteServer\RemoteServerException;
 
 /**
  * Service intended to use rest API on 'information' specific configuration data
@@ -77,13 +78,22 @@ class PlatformInformationService implements PlatformInformationServiceInterface
      */
     public function updatePlatformInformation(PlatformInformation $platformInformationUpdate): ?PlatformInformation
     {
-        if ($platformInformationUpdate->isRemote()) {
-            $this->remoteServerService->convertCentralToRemote();
-        } else {
-            $this->remoteServerService->convertRemoteToCentral();
-        }
+        /**
+         * Convert the Remote to Central or opposite
+         */
+        try {
+            if ($platformInformationUpdate->isRemote()) {
+                $this->remoteServerService->convertCentralToRemote();
+            } else {
+                $this->remoteServerService->convertRemoteToCentral();
+            }
 
-        return $this->platformInformationRepository->updatePlatformInformation($platformInformationUpdate);
+            return $this->platformInformationRepository->updatePlatformInformation($platformInformationUpdate);
+        } catch (RemoteServerException $ex) {
+            throw new PlatformInformationException(_("An error occured while converting your platform"), null, $ex);
+        } catch (\Exception $ex) {
+            throw new PlatformInformationException(_("An error occured while updating your platform"));
+        }
     }
 
     public function updateExistingInformationFromArray(array $platformToUpdateProperty): ?PlatformInformation
