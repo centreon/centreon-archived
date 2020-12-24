@@ -307,21 +307,23 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     public function findCentralRemoteChildren(): array
     {
         $central = $this->findTopLevelPlatformByType('central');
-        $statement = $this->db->prepare(
-            $this->translateDbName(
-                "SELECT * FROM `:db`.platform_topology WHERE `type` = 'remote' AND `parent_id` = :parentId"
-            )
-        );
-        $statement->bindValue(':parentId', $central->getId(), \PDO::PARAM_INT);
-        $statement->execute();
-
         $remoteChildren = [];
-        if ($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
-            foreach ($result as $platform) {
-                /**
-                 * @var Platform[] $childrenPlatforms
-                 */
-                $remoteChildren[] = EntityCreator::createEntityByArray(Platform::class, $platform);
+        if ($central !== null) {
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    "SELECT * FROM `:db`.platform_topology WHERE `type` = 'remote' AND `parent_id` = :parentId"
+                )
+            );
+            $statement->bindValue(':parentId', $central->getId(), \PDO::PARAM_INT);
+            $statement->execute();
+
+            if ($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
+                foreach ($result as $platform) {
+                    /**
+                     * @var Platform[] $childrenPlatforms
+                     */
+                    $remoteChildren[] = EntityCreator::createEntityByArray(Platform::class, $platform);
+                }
             }
         }
 
