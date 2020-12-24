@@ -1,4 +1,26 @@
 =====================
+Centreon Web 19.10.18
+=====================
+
+Bug fixes
+---------
+
+* [Apache] apache example file for https declaration of SSLCipherSuite
+* [Authentication] Reach Centreon Front-end parameter ineffective
+* [LDAP] new LDAP configurations are broken
+* [Login] Invalid credentials after edit profile changes
+
+Security fixes
+--------------
+
+* [Apache] Support for the HTTP TRACE method
+* [Configuration] Leak of technical information in "Configuration > Service Groups"
+* [Configuration] Cross-site Scripting (XSS) Stored/Persistent in "Commands > Connectors"
+* [Configuration] Cross-site Scripting (XSS) Stored/Persistent in "Users > Contact Groups"
+* [Media] Unrestricted file upload
+* [Monitoring] XSS in updateContactParam.php & commonJS.php
+
+=====================
 Centreon Web 19.10.17
 =====================
 
