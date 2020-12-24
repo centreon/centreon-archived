@@ -24,15 +24,16 @@ namespace Centreon\Application\Controller;
 
 use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
+use Centreon\Domain\Proxy\Proxy;
 use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Platform\PlatformException;
-use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformationException;
+use Centreon\Domain\Interfaces\PlatformOptions\PlatformOptionsServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 
 /**
  * This controller is designed to manage API requests concerning the versions of the different modules, widgets on the
@@ -53,18 +54,18 @@ class PlatformController extends AbstractController
     private $platformInformationService;
 
     /**
-     * @var RemoteServerServiceInterface
+     * @var ProxyServiceInterface
      */
-    private $remoteServerService;
+    private $proxyService;
 
     public function __construct(
         PlatformServiceInterface $informationService,
         PlatformInformationServiceInterface $platformInformationService,
-        RemoteServerServiceInterface $remoteServerService
+        ProxyServiceInterface $proxyService
     ) {
         $this->informationService = $informationService;
         $this->platformInformationService = $platformInformationService;
-        $this->remoteServerService = $remoteServerService;
+        $this->platformOptionsService = $platformOptionsService;
     }
 
     /**
@@ -150,7 +151,6 @@ class PlatformController extends AbstractController
     public function updatePlatform(Request $request): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-
         $platformToUpdateProperty = json_decode((string) $request->getContent(), true);
 
         try {
@@ -168,11 +168,40 @@ class PlatformController extends AbstractController
                 )
             );
 
-            $platformInformation = $this->platformInformationService->updateExistingInformationFromArray($platformToUpdateProperty);
+            /**
+             * Update the Proxy Options
+             */
+            if (isset($platformToUpdateProperty['proxy'])) {
+                $proxyInformations = $platformToUpdateProperty['proxy'];
+                $proxy = new Proxy();
+
+                $proxy->setUrl($proxyInformations['proxyHost']);
+                if (isset($proxyInformations['proxyScheme'])) {
+                    $proxy->setProtocol($proxyInformations['proxyPort']);
+                }
+                if (isset($proxyInformations['proxyPort'])) {
+                    $proxy->setPort($proxyInformations['proxyPort']);
+                }
+                if (isset($proxyInformations['proxyUser'])) {
+                    $proxy->setUser($proxyInformations['proxyUser']);
+                    if (isset($proxyInformations['proxyPassword'])) {
+                        $proxy->setPassword($proxyInformations['proxyPassword']);
+                    }
+                }
+                $this->proxyService->updateProxy($proxy);
+            }
+
+            /**
+             * Get all the existing information and update them
+             *
+             * @var PlatformInformation $platformInformation
+             *
+             */
+            $platformInformation = $this->platformInformationService->updateExistingInformationFromArray(
+                $platformToUpdateProperty
+            );
             $this->platformInformationService->updatePlatformInformation($platformInformation);
-        } catch (PlatformInformationException $ex) {
-            return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
-        } catch (\Throwable $ex) {
+        } catch (PlatformInformationException | \Throwable $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
