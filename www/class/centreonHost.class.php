@@ -1340,8 +1340,7 @@ class CentreonHost
      * @param array $alreadyProcessed
      * @param int $depth
      * @param bool $allFields
-     * @param string $fields
-     * @param bool $extendedInformation
+     * @param array $fields
      * @return array
      * @throws Exception
      */
@@ -1350,8 +1349,7 @@ class CentreonHost
         $alreadyProcessed = array(),
         $depth = -1,
         $allFields = false,
-        $fields = '',
-        $extendedInformation = false
+        $fields = array()
     ) {
         $templates = array();
         if (($depth == -1) || ($depth > 0)) {
@@ -1363,29 +1361,19 @@ class CentreonHost
                 return $templates;
             } else {
                 $alreadyProcessed[] = $hostId;
-                if (!empty($fields)) {
-                    $searchFields = $fields;
-                } else {
+                if (empty($fields)) {
                     if (!$allFields) {
-                        $searchFields = "h.host_id, h.host_name";
+                        $fields = "h.host_id, h.host_name";
                     } else {
-                        $searchFields = " h.* ";
-                        if ($extendedInformation) {
-                            $searchFields .= ",ehi.* ";
-                        }
+                        $fields = " * ";
                     }
                 }
 
-                $query = 'SELECT ' . $searchFields . ' ' .
-                    'FROM host h ';
-
-                if ($extendedInformation) {
-                    $query .= "INNER JOIN extended_host_information ehi ON h.host_id = ehi.host_host_id ";
-                }
-
-                $query .= 'INNER JOIN host_template_relation htr ON h.host_id = htr.host_tpl_id ' .
+                $query = 'SELECT ' . $fields . ' ' .
+                    'FROM host h, host_template_relation htr ' .
+                    'WHERE h.host_id = htr.host_tpl_id ' .
                     'AND htr.host_host_id = :hostId ' .
-                    'WHERE host_activate = "1" ' .
+                    'AND host_activate = "1" ' .
                     'AND host_register = "0" ' .
                     'ORDER BY `order` ASC';
                 $stmt = $this->db->prepare($query);
@@ -1408,14 +1396,7 @@ class CentreonHost
 
                     $templates = array_merge(
                         $templates,
-                        $this->getTemplateChain(
-                            $row['host_id'],
-                            $alreadyProcessed,
-                            $depth,
-                            $allFields,
-                            $fields,
-                            $extendedInformation
-                        )
+                        $this->getTemplateChain($row['host_id'], $alreadyProcessed, $depth, $allFields)
                     );
                 }
                 return $templates;
