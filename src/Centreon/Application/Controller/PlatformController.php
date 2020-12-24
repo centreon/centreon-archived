@@ -30,6 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Platform\PlatformException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
+use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformationException;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
@@ -48,7 +49,7 @@ class PlatformController extends AbstractController
     private $informationService;
 
     /**
-     * @var PlatformServiceInterface
+     * @var PlatformInformationServiceInterface
      */
     private $platformInformationService;
 
@@ -71,7 +72,7 @@ class PlatformController extends AbstractController
      * Validate platform information data according to json schema
      *
      * @param array<mixed> $platformToAdd data sent in json
-     * @param string $schemaPath
+     * @param string $validationSchema
      * @return void
      * @throws PlatformException
      */
@@ -163,7 +164,8 @@ class PlatformController extends AbstractController
                     file_get_contents(
                         $this->getParameter('centreon_path')
                         . 'config/json_validator/latest/Centreon/PlatformInformation/Update.json'
-                    ), true
+                    ),
+                    true
                 )
             );
 

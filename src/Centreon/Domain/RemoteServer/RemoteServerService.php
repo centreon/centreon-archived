@@ -76,7 +76,7 @@ class RemoteServerService implements RemoteServerServiceInterface
          * Stop conversion if the Central has remote children
          */
         $platformChildren = $this->platformTopologyRepository->findCentralRemoteChildren();
-        if(!empty($platformChildren)) {
+        if (!empty($platformChildren)) {
             throw new RemoteServerException(
                 "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
             );
@@ -95,7 +95,8 @@ class RemoteServerService implements RemoteServerServiceInterface
          * Apply Remote Server mode in configuration file
          */
         system(
-            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . $this->centreonEtcPath . "conf.pm"
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' "
+            . $this->centreonEtcPath . "conf.pm"
         );
     }
 
@@ -117,7 +118,8 @@ class RemoteServerService implements RemoteServerServiceInterface
          * Apply Central mode in configuration file
          */
         system(
-            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\central\\3/' " . $this->centreonEtcPath . "conf.pm"
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\central\\3/' "
+            . $this->centreonEtcPath . "conf.pm"
         );
     }
 }
