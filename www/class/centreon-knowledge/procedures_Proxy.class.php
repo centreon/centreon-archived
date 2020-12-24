@@ -36,11 +36,11 @@
 require_once _CENTREON_PATH_ . '/www/include/configuration/configKnowledge/functions.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonHost.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonService.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreon-knowledge/wikiApi.class.php';
 
 class procedures_Proxy
 {
     private $DB;
-    private $hflag;
     private $sflag;
     private $proc;
     private $wikiUrl;
@@ -54,7 +54,6 @@ class procedures_Proxy
     public function __construct($pearDB)
     {
         $this->DB = $pearDB;
-        $this->hflag = 0;
         $this->sflag = 0;
         $this->hostObj = new CentreonHost($this->DB);
         $this->serviceObj = new CentreonService($this->DB);
@@ -126,28 +125,30 @@ class procedures_Proxy
      */
     public function getHostUrl($hostName)
     {
-        $this->proc->setHostInformations();
-
-        $procList = $this->proc->getProcedures();
-
-        /*
-         * Check if host has a procedure directly on Host
-         */
-        if (isset($procList["Host_:_" . $hostName])) {
-            return $this->wikiUrl . "/index.php?title=Host_:_" . $hostName;
-        }
-
-        /*
-         * Check if host can get a procedure on templates
-         */
         $hostId = $this->getHostId($hostName);
-        $templates = $this->hostObj->getTemplateChain($hostId);
-        foreach ($templates as $template) {
-            $templateName = $template['host_name'];
-            if (isset($procList["Host-Template_:_" . $templateName])) {
-                return $this->wikiUrl . "/index.php?title=Host-Template_:_" . $templateName;
-            }
+        $hostProperties = $this->hostObj->getInheritedValues(
+            $hostId,
+            [],
+            1,
+            ['host_id', 'host_name', 'ehi_notes_url']
+        );
+
+        if (isset($hostProperties['ehi_notes_url'])) {
+            return $this->wikiUrl . "/index.php?title=Host_:_" . $hostProperties['host_name'];
         }
+
+        $inheritedHostProperties = $this->hostObj->getInheritedValues(
+            $hostId,
+            [],
+            -1,
+            ['host_id', 'host_name', 'ehi_notes_url']
+        );
+
+        if (isset($inheritedHostProperties['ehi_notes_url'])) {
+            return $this->wikiUrl . "/index.php?title=Host-Template_:_" . $inheritedHostProperties['host_name'];
+        }
+
+        return null;
     }
 
     /**
@@ -156,12 +157,6 @@ class procedures_Proxy
      */
     public function getServiceUrl($hostName, $serviceDescription)
     {
-        if ($this->hflag != 0) {
-            $this->proc->setHostInformations();
-        }
-        $this->proc->setServiceInformations();
-        $this->sflag;
-
         $procList = $this->proc->getProcedures();
 
         /*

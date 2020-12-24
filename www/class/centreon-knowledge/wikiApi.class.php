@@ -51,6 +51,8 @@ class WikiApi
     private $cookies;
     private $noSslCertificate;
 
+    public const PROXY_URL = './include/configuration/configKnowledge/proxy/proxy.php';
+
     /**
      * WikiApi constructor.
      */
