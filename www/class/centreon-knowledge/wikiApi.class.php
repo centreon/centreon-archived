@@ -48,7 +48,6 @@ class WikiApi
     private $curl;
     private $loggedIn;
     private $tokens;
-    private $cookies;
     private $noSslCertificate;
 
     public const PROXY_URL = './include/configuration/configKnowledge/proxy/proxy.php';
@@ -413,7 +412,7 @@ class WikiApi
         );
         $tuple = $resHost->fetch();
 
-        $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$';
+        $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$';
         $this->db->query(
             "UPDATE extended_host_information "
             . "SET ehi_notes_url = '" . $valueToAdd . "' "
@@ -437,8 +436,7 @@ class WikiApi
         );
         $tuple = $resService->fetch();
 
-        $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
-            'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+        $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
         $this->db->query(
             "UPDATE extended_service_information " .
             "SET esi_notes_url = '" . $valueToAdd . "' " .
@@ -457,8 +455,7 @@ class WikiApi
         );
         $tuple = $resService->fetch();
 
-        $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
-            'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+        $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
         $this->db->query(
             "UPDATE extended_service_information " .
             "SET esi_notes_url = '" . $valueToAdd . "' " .
