@@ -201,7 +201,7 @@ class PlatformController extends AbstractController
                 $platformToUpdateProperty
             );
             $this->platformInformationService->updatePlatformInformation($platformInformation);
-        } catch (PlatformInformationException | \Throwable $ex) {
+        } catch (PlatformInformationException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Throwable $ex) {
             return $this->view(['message' => 'Unable to update the platform informations'], Response::HTTP_BAD_REQUEST);
