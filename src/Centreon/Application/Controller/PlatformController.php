@@ -32,7 +32,6 @@ use Centreon\Domain\Platform\PlatformException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformationException;
-use Centreon\Domain\Interfaces\PlatformOptions\PlatformOptionsServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 
 /**
@@ -65,7 +64,7 @@ class PlatformController extends AbstractController
     ) {
         $this->informationService = $informationService;
         $this->platformInformationService = $platformInformationService;
-        $this->platformOptionsService = $platformOptionsService;
+        $this->proxyService = $proxyService;
     }
 
     /**
@@ -174,8 +173,9 @@ class PlatformController extends AbstractController
             if (isset($platformToUpdateProperty['proxy'])) {
                 $proxyInformations = $platformToUpdateProperty['proxy'];
                 $proxy = new Proxy();
-
-                $proxy->setUrl($proxyInformations['proxyHost']);
+                if (isset($proxyInformations['proxyHost'])) {
+                    $proxy->setUrl($proxyInformations['proxyHost']);
+                }
                 if (isset($proxyInformations['proxyScheme'])) {
                     $proxy->setProtocol($proxyInformations['proxyPort']);
                 }
@@ -203,8 +203,10 @@ class PlatformController extends AbstractController
             $this->platformInformationService->updatePlatformInformation($platformInformation);
         } catch (PlatformInformationException | \Throwable $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable $ex) {
+            return $this->view(['message' => 'Unable to update the platform informations'], Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->view(null, 200);
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 }
