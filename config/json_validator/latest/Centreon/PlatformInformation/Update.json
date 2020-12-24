@@ -39,7 +39,6 @@
     },
     "proxy": {
       "type": "object",
-      "required": ["proxyHost"],
       "properties": {
         "proxyHost": {
           "type": "string"
