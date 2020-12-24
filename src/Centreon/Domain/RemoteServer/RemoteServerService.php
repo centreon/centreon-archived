@@ -105,5 +105,19 @@ class RemoteServerService implements RemoteServerServiceInterface
     public function convertRemoteToCentral(): void
     {
         $this->topologyRepository->enableMenus();
+
+        /**
+         * Set Central type into Platform_Topology
+         */
+        $platform = $this->platformTopologyRepository->findTopLevelPlatform();
+        $platform->setType(Platform::TYPE_CENTRAL);
+        $this->platformTopologyRepository->updatePlatformParameters($platform);
+
+        /**
+         * Apply Central mode in configuration file
+         */
+        system(
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\central\\3/' " . $this->centreonEtcPath . "conf.pm"
+        );
     }
 }
