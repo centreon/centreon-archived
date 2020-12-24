@@ -24,4 +24,5 @@ declare(strict_types=1);
 namespace Centreon\Domain\RemoteServer;
 
 class RemoteServerException extends \Exception
-{}
+{
+}
