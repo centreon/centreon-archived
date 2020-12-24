@@ -24,9 +24,10 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Topology;
 
 use Centreon\Infrastructure\DatabaseConnection;
+use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface;
 
-class TopologyRepositoryRDB implements TopologyRepositoryInterface
+class TopologyRepositoryRDB extends AbstractRepositoryDRB implements TopologyRepositoryInterface
 {
 
     /**
