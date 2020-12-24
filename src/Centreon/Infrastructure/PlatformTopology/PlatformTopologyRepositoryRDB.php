@@ -24,10 +24,8 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\PlatformTopology;
 
 use Centreon\Domain\Entity\EntityCreator;
-use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Platform;
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
