@@ -92,7 +92,7 @@ class PlatformInformationService implements PlatformInformationServiceInterface
         } catch (RemoteServerException $ex) {
             throw new PlatformInformationException(_("An error occured while converting your platform"), null, $ex);
         } catch (\Exception $ex) {
-            throw new PlatformInformationException(_("An error occured while updating your platform"));
+            throw $ex;
         }
     }
 
