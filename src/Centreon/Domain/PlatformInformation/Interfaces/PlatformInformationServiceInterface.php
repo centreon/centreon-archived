@@ -37,7 +37,7 @@ interface PlatformInformationServiceInterface
     /**
      * Update platform information
      *
-     * @param PlatformInformation $platformInformation
+     * @param PlatformInformation $platformInformationUpdated
      * @return PlatformInformation|null
      * @throws PlatformInformationException
      */

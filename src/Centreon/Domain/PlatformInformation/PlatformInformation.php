@@ -263,7 +263,7 @@ class PlatformInformation
     }
 
     /**
-     * @param string|null $encryptedKey
+     * @param string|null $apiCredentials
      * @return $this
      */
     public function setApiCredentials(?string $apiCredentials): self

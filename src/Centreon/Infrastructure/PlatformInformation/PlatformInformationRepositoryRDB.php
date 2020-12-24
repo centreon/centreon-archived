@@ -161,7 +161,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                 }
             }
             $statement->execute();
-        } catch ( \Exception $ex) {
+        } catch (\Exception $ex) {
             $this->db->rollBack();
             throw new RepositoryException('An error occured while updating the platform');
         }
