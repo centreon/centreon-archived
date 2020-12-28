@@ -171,7 +171,7 @@ class PlatformController extends AbstractController
             );
 
             /**
-             * @var PlatformInformationn|null $platformInformationUpdate
+             * @var PlatformInformation|null $platformInformationUpdate
              */
             $platformInformationUpdate = $this->platformInformationService->getInformation();
 
