@@ -42,12 +42,4 @@ interface PlatformInformationServiceInterface
      * @throws PlatformInformationException
      */
     public function updatePlatformInformation(PlatformInformation $platformInformationUpdated): ?PlatformInformation;
-
-    /**
-     * Update the Existing PlatformInformation from an array of properties.
-     *
-     * @param array $platformUpdateProperty
-     * @return PlatformInformation|null
-     */
-    public function updateExistingInformationFromArray(array $platformUpdateProperty): ?PlatformInformation;
 }
