@@ -170,11 +170,15 @@ class PlatformController extends AbstractController
                 )
             );
 
+            /**
+             * @var PlatformInformation $platformInformationUpdate
+             */
             $platformInformationUpdate = $this->platformInformationService->getInformation();
 
             if ($platformInformationUpdate === null) {
                 throw new EntityNotFoundException(_("Platform Information not found"));
             }
+
             foreach ($platformToUpdateProperty as $platformProperty => $platformValue) {
                 switch ($platformProperty) {
                     case 'version':
