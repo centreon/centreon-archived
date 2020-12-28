@@ -276,11 +276,20 @@ class PlatformInformation
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEncryptedApiCredentials(): ?string
     {
         return $this->encryptedApiCredentials;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param string|null $encryptedKey
+     * @return self
+     */
     public function setEncryptedApiCredentials(?string $encryptedKey): self
     {
         $this->encryptedApiCredentials = $encryptedKey;
