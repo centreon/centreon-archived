@@ -118,7 +118,7 @@ class RemoteServerService implements RemoteServerServiceInterface
          * Apply Central mode in configuration file
          */
         system(
-            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\central\\3/' "
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1central\\3/' "
             . $this->centreonEtcPath . "conf.pm"
         );
     }
