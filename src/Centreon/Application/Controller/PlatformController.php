@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\Exception\EntityNotFoundException;
 use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Proxy\Proxy;
@@ -71,8 +72,8 @@ class PlatformController extends AbstractController
     /**
      * Validate platform information data according to json schema
      *
-     * @param array<mixed> $platformToAdd data sent in json
-     * @param string $validationSchema
+     * @param mixed $platformToAdd data sent in json
+     * @param array<mixed> $validationSchema
      * @return void
      * @throws PlatformException
      */
@@ -169,6 +170,57 @@ class PlatformController extends AbstractController
                 )
             );
 
+            $platformInformationUpdate = $this->platformInformationService->getInformation();
+
+            if ($platformInformationUpdate === null) {
+                throw new EntityNotFoundException(_("Platform Information not found"));
+            }
+            foreach ($platformToUpdateProperty as $platformProperty => $platformValue) {
+                switch ($platformProperty) {
+                    case 'version':
+                        $platformInformationUpdate->setVersion($platformValue);
+                        break;
+                    case 'appKey':
+                        $platformInformationUpdate->setAppKey($platformValue);
+                        break;
+                    case 'isRemote':
+                        if ($platformValue === true) {
+                            $platformInformationUpdate->setIsRemote('yes');
+                            $platformInformationUpdate->setIsCentral('no');
+                        }
+                        break;
+                    case 'isCentral':
+                        if ($platformValue === true) {
+                            $platformInformationUpdate->setIsCentral('yes');
+                            $platformInformationUpdate->setIsRemote('no');
+                        }
+                        break;
+                    case 'centralServerAddress':
+                        $platformInformationUpdate->setCentralServerAddress($platformValue);
+                        break;
+                    case 'apiUsername':
+                        $platformInformationUpdate->setApiUsername($platformValue);
+                        break;
+                    case 'apiCredentials':
+                        $platformInformationUpdate->setApiCredentials($platformValue);
+                        break;
+                    case 'apiScheme':
+                        $platformInformationUpdate->setApiScheme($platformValue);
+                        break;
+                    case 'apiPort':
+                        $platformInformationUpdate->setApiPort($platformValue);
+                        break;
+                    case 'apiPath':
+                        $platformInformationUpdate->setApiPath($platformValue);
+                        break;
+                    case 'peerValidation':
+                        if ($platformValue === true) {
+                            $platformInformationUpdate->setApiPeerValidation('yes');
+                        }
+                        break;
+                }
+            }
+
             /**
              * Update the Proxy Options
              */
@@ -193,17 +245,8 @@ class PlatformController extends AbstractController
                 $this->proxyService->updateProxy($proxy);
             }
 
-            /**
-             * Get all the existing information and update them
-             *
-             * @var PlatformInformation $platformInformation
-             *
-             */
-            $platformInformation = $this->platformInformationService->updateExistingInformationFromArray(
-                $platformToUpdateProperty
-            );
-            $this->platformInformationService->updatePlatformInformation($platformInformation);
-        } catch (PlatformInformationException $ex) {
+            $this->platformInformationService->updatePlatformInformation($platformInformationUpdate);
+        } catch (PlatformInformationException | EntityNotFoundException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Throwable $ex) {
             return $this->view(['message' => 'Unable to update the platform informations'], Response::HTTP_BAD_REQUEST);
