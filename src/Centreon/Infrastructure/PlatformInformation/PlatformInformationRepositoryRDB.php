@@ -63,9 +63,12 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                 if ('authorizedMaster' === $row['key']) {
                     $row['key'] = 'centralServerAddress';
                 }
+
+                //Renaming informations.apiCredentials to PlatformInformation encryptedApiCredentials property.
                 if ('apiCredentials' === $row['key']) {
                     $row['key'] = 'encryptedApiCredentials';
                 }
+
                 // Converting each camelCase key as snake_case
                 $key = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $row['key']));
                 $result[$key] = $row['value'];
