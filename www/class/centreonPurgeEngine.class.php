@@ -216,7 +216,7 @@ class CentreonPurgeEngine
                 . $table . ", " . $e->getMessage() . "\n");
             return 1;
         }
-    
+
         echo "[" . date(DATE_RFC822) . "] Partitions deleted\n";
         return 0;
     }
