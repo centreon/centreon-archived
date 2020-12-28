@@ -18,3 +18,54 @@
  * For more information : contact@centreon.com
  *
  */
+
+// error specific content
+$versionOfTheUpgrade = 'UPGRADE - 21.04.0-beta.1 : ';
+$errorMessage = '';
+
+try {
+    $statement = $pearDB->query(
+        'SELECT COLUMN_DEFAULT
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = \'centreon\'
+          AND TABLE_NAME = \'on_demand_macro_host\'
+          AND COLUMN_NAME = \'is_password\''
+    );
+    if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        $defaultValue = $result['COLUMN_DEFAULT'];
+        if ($defaultValue !== '0') {
+            // An update is required
+            $errorMessage = 'Impossible to alter the table on_demand_macro_host';
+            $pearDB->query('ALTER TABLE on_demand_macro_host ALTER is_password SET DEFAULT 0');
+            $errorMessage = 'Impossible to update the column on_demand_macro_host.is_password';
+            $pearDB->query('UPDATE on_demand_macro_host SET is_password = 0 WHERE is_password IS NULL');
+        }
+    }
+    $statement = $pearDB->query(
+        'SELECT COLUMN_DEFAULT
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = \'centreon\'
+          AND TABLE_NAME = \'on_demand_macro_service\'
+          AND COLUMN_NAME = \'is_password\''
+    );
+    if (($defaultValue = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        $defaultValue = $result['COLUMN_DEFAULT'];
+        if ($defaultValue !== '0') {
+            // An update is required
+            $errorMessage = 'Impossible to alter the table on_demand_macro_service';
+            $pearDB->query('ALTER TABLE on_demand_macro_service ALTER is_password SET DEFAULT 0');
+            $errorMessage = 'Impossible to update the column on_demand_macro_service.is_password';
+            $pearDB->query('UPDATE on_demand_macro_service SET is_password = 0 WHERE is_password IS NULL');
+        }
+    }
+} catch (\Throwable $ex) {
+    require_once __DIR__ . '/../../class/centreonLog.class.php';
+    (new CentreonLog())->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . $ex->getCode() .
+        " - Error : " . $ex->getMessage() .
+        " - Trace : " . $ex->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, $ex->getCode(), $ex);
+}
