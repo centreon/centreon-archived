@@ -29,12 +29,6 @@ use Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface;
 
 class TopologyRepositoryRDB extends AbstractRepositoryDRB implements TopologyRepositoryInterface
 {
-
-    /**
-     * @var DatabaseConnection
-     */
-    private $db;
-
     /**
      * PlatformTopologyRepositoryRDB constructor.
      * @param DatabaseConnection $db

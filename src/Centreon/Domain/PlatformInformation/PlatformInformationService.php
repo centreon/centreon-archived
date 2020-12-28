@@ -81,80 +81,20 @@ class PlatformInformationService implements PlatformInformationServiceInterface
         /**
          * Convert the Remote to Central or opposite
          */
+        $currentPlatformInformation = $this->platformInformationRepository->findPlatformInformation();
+
         try {
-            if ($platformInformationUpdate->isRemote()) {
+            if ($platformInformationUpdate->isRemote() && !$currentPlatformInformation->isRemote()) {
                 $this->remoteServerService->convertCentralToRemote();
-            } else {
+            } elseif ($platformInformationUpdate->isCentral() && !$currentPlatformInformation->isCentral()) {
                 $this->remoteServerService->convertRemoteToCentral();
             }
 
             return $this->platformInformationRepository->updatePlatformInformation($platformInformationUpdate);
         } catch (RemoteServerException $ex) {
-            throw new PlatformInformationException(_("An error occured while converting your platform"), null, $ex);
+            throw new PlatformInformationException(_("An error occured while converting your platform"), 0, $ex);
         } catch (\Exception $ex) {
             throw $ex;
         }
-    }
-
-    public function updateExistingInformationFromArray(array $platformToUpdateProperty): ?PlatformInformation
-    {
-        /**
-         * Get the current existing informations
-         * @var PlatformInformation
-         */
-        $platformInformation = $this->getInformation();
-
-        /**
-         * Update the existing informations
-         */
-        if ($platformInformation !== null) {
-            foreach ($platformToUpdateProperty as $platformProperty => $platformValue) {
-                switch ($platformProperty) {
-                    case 'version':
-                        $platformInformation->setVersion($platformValue);
-                        break;
-                    case 'appKey':
-                        $platformInformation->setAppKey($platformValue);
-                        break;
-                    case 'isRemote':
-                        if ($platformValue === true) {
-                            $platformInformation->setIsRemote('yes');
-                            $platformInformation->setIsCentral('no');
-                        }
-                        break;
-                    case 'isCentral':
-                        if ($platformValue === true) {
-                            $platformInformation->setIsCentral('yes');
-                            $platformInformation->setIsRemote('no');
-                        }
-                        break;
-                    case 'centralServerAddress':
-                        $platformInformation->setCentralServerAddress($platformValue);
-                        break;
-                    case 'apiUsername':
-                        $platformInformation->setApiUsername($platformValue);
-                        break;
-                    case 'apiCredentials':
-                        $platformInformation->setApiCredentials($platformValue);
-                        break;
-                    case 'apiScheme':
-                        $platformInformation->setApiScheme($platformValue);
-                        break;
-                    case 'apiPort':
-                        $platformInformation->setApiPort($platformValue);
-                        break;
-                    case 'apiPath':
-                        $platformInformation->setApiPath($platformValue);
-                        break;
-                    case 'peerValidation':
-                        if ($platformValue === true) {
-                            $platformInformation->setApiPeerValidation('yes');
-                        }
-                        break;
-                }
-            }
-
-        }
-        return $platformInformation;
     }
 }
