@@ -112,7 +112,7 @@ class CentreonPurgeEngine
 
         $this->readConfig();
 
-        $this->isPartitioned();
+        $this->checkTablesPartitioned();
     }
 
     private function readConfig()
@@ -144,7 +144,7 @@ class CentreonPurgeEngine
         }
     }
 
-    private function isPartitioned()
+    private function checkTablesPartitioned()
     {
         foreach ($this->tablesToPurge as $name => $value) {
             try {

@@ -309,7 +309,6 @@ class PartEngine
             }
         }
 
-        // maybe we need to check the value of $row["lastPart"]
         return $lastPart;
     }
 
