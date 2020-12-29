@@ -2,7 +2,7 @@
 
 ### Define all supported constants
 OPTIONS=":t:v:r:l:"
-declare -A SUPPORTED_LOG_LEVEL=([DEBUG]=0 [INFO]=1 [WARNING]=2 [ERROR]=3)
+declare -A SUPPORTED_LOG_LEVEL=([DEBUG]=0 [INFO]=1 [WARN]=2 [ERROR]=3)
 declare -A SUPPORTED_TOPOLOGY=([central]=1 [poller]=1)
 declare -A SUPPORTED_VERSION=([20.10]=1)
 declare -A SUPPORTED_REPOSITORY=([testing]=1 [unstable]=1 [stable]=1)
@@ -48,7 +48,7 @@ function usage(){
 	echo
 	echo "Usage :"
 	echo
-	echo " $script_short_name [install|upgrade (default: install)] [-t <central|poller> (default: central)] [-v <20.10> (default: 20.10)] [-r <stable|testing|unstable> (default: stable)] [-l <DEBUG|INFO|WARNING|ERROR>"
+	echo " $script_short_name [install|upgrade (default: install)] [-t <central|poller> (default: central)] [-v <20.10> (default: 20.10)] [-r <stable|testing|unstable> (default: stable)] [-l <DEBUG|INFO|WARN|ERROR>"
 	echo
 	echo Example:
 	echo " $script_short_name == install the $version of $topology from the repository $repo"
@@ -72,7 +72,7 @@ function usage(){
 # with timestamp
 # 
 # usage:
-# log "$LOG_LEVEL" "$message" ($LOG_LEVEL = DEBUG|INFO|WARNING|ERROR)
+# log "$LOG_LEVEL" "$message" ($LOG_LEVEL = DEBUG|INFO|WARN|ERROR)
 #
 # example:
 # log "DEBUG" "This is a DEBUG_LOG_LEVEL message"
@@ -174,21 +174,21 @@ function parse_subcommand_options(){
 	## check the configuration parameters
 	if [ -z "${requested_topology}" ];
 	then
-		log "WARNING" "No topology provided : default value '$topology' will be used"
+		log "WARN" "No topology provided : default value '$topology' will be used"
 	else
 		topology=$requested_topology
 	fi
 	
 	if [ -z "${requested_version}" ];
 	then
-		log "WARNING" "No version provided : default value '$version' will be used"
+		log "WARN" "No version provided : default value '$version' will be used"
 	else
 		version=$requested_version
 	fi
 	
 	if [ -z "${requested_repo}" ];
 	then
-		log "WARNING" "No repository provided : default value '$repo' will be used"
+		log "WARN" "No repository provided : default value '$repo' will be used"
 	else
 		repo=$requested_repo
 	fi
@@ -250,7 +250,7 @@ function get_os_release(){
  
 # Unattended install script only support Red Hat or compatible.
  if ! os_release=$(rpm -q --whatprovides /etc/redhat-release); then
-    log "ERROR" "Unable distribution $os_release detected"
+    log "ERROR" "Unsupported distribution $os_release detected"
     error_and_exit "This '$script_short_name' script only supports Red Hat compatible distributions. Please check https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/introduction.html for alternative installation methods."
  fi
  
@@ -260,7 +260,7 @@ function get_os_release(){
 
  os_version=$(rpm -q "${os_release}" --qf "%{version}")
 
- log "INFO" "Your running OS is $os_version"
+ log "INFO" "Your running OS is $os_release (version: ${os_version})"
 
 }
 #========= end of function get_os_release()
@@ -345,17 +345,14 @@ function set_required_prerequisite(){
 #
 function is_systemd_present(){
 	# systemd check.
-	command -v systemctl > /dev/null 2>&1
-	if [ "x$?" '=' x0 ] ; then
-	  systemctl show > /dev/null 2>&1
-	  if [ "x$?" '=' x0 ] ; then
-		has_systemd=1
-	  else
-		has_systemd=0
-	  fi
-	else
-	  has_systemd=0
-	fi
+  running_process=$(ps --no-headers -o comm 1)
+  if [ "$running_process" = "systemd" ]; then
+    has_systemd=1
+    log "INFO" "Systemd is running"
+  else
+    has_systemd=0
+     log "WARN" "Systemd is not running"
+  fi
 }
 #========= end of function is_systemd_present()
 
@@ -377,10 +374,12 @@ function disable_selinux(){
 		fi
 		print_step_end
 	  else
-		print_step_end "OK, already disabled"
+      log "WARN" "SELinux was already disabled"
+      print_step_end
 	  fi
 	else
-	  print_step_end "OK, not detected"
+    log "WARN" "SELinux was not detected"
+    print_step_end
 	fi
 }
 #========= end of function disable_selinux()
@@ -424,10 +423,12 @@ function update_firewall_config(){
 		firewall-cmd --reload
 		print_step_end
 	  else
-		print_step_end "OK, not active"
+		  log "WARN" "Firewall was not active"
+      print_step_end
 	  fi
 	else
-	  print_step_end "OK, not detected"
+	  log "WARN" "Firewall was not detected"
+    print_step_end
 	fi
 }
 #========= end of function update_firewall_config()
@@ -454,7 +455,8 @@ function enable_new_services(){
 		esac
 		print_step_end
 	else
-		print_step_end "OK, systemd not detected, skipping"
+		log "WARN" "Systemd not detected, skipping"
+    print_step_end
 	fi
 }
 #========= end of function enable_new_services()
@@ -479,7 +481,7 @@ function setup_before_installation(){
 # install the Centreon Central
 #
 function install_central(){
-	print_step_begin "Centreon $topology installation"
+	print_step_begin "Centreon $topology installation from ${CENTREON_REPO}"
 	$PKG_MGR -q clean all --enablerepo="*" && $PKG_MGR -q install -y centreon  --enablerepo="$CENTREON_REPO"
 	if [ "x$?" '!=' x0 ] ; then
 	  error_and_exit "Could not install Centreon (package centreon)"
@@ -502,7 +504,8 @@ function install_central(){
 		echo $timezoneName;
 	' 2> /dev/null`
 	echo "date.timezone = $timezone" > $PHP_ETC/10-centreon.ini
-	print_step_end "OK, timezone set to $timezone"
+	log "INFO" "PHP date.timezone set to $timezone"
+  print_step_end
 
 }
 #========= end of function install_central()
@@ -511,7 +514,7 @@ function install_central(){
 # install the Centreon Poller
 #
 function install_poller(){
-	print_step_begin "Poller installation from testing\*"
+	print_step_begin "Poller installation from ${CENTREON_REPO}"
 	$PKG_MGR -q clean all --enablerepo="*" && $PKG_MGR -q install -y centreon-poller-centreon-engine  --enablerepo=$CENTREON_REPO
 	if [ "x$?" '!=' x0 ] ; then
 	  error_and_exit "Could not install Centreon (package centreon)"
@@ -554,7 +557,7 @@ case "$1" in
 		;;
 	
 	*)
-		log "WARNING" "No provided operation : default value '$operation' will be used"
+		log "WARN" "No provided operation : default value '$operation' will be used"
 		operation="install"
 		parse_subcommand_options "$@"
 		;;
@@ -568,7 +571,7 @@ log "INFO" " topology   : \t$topology"
 log "INFO" " version    : \t$version"	
 log "INFO" " repository : \t$repo"				
 
-log "WARNING" "It will start in '$default_timeout_in_sec' seconds. If you don't want to way, press any key to continue or Ctrl-C to exit"
+log "WARN" "It will start in '$default_timeout_in_sec' seconds. If you don't want to way, press any key to continue or Ctrl-C to exit"
 pause "" $default_timeout_in_sec
 
 
