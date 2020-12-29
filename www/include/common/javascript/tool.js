@@ -32,7 +32,7 @@
  * 
  */
 
-function checkItem(element, toCheck)
+function checkItem(element, toCheck) 
 {
 	if (element.type == 'checkbox') {
 		if (toCheck) {
@@ -70,49 +70,50 @@ function getChecked(element) {
 	return false;
 }
 
-function toggleCheckAll(theElement, id) {
-	var a = document.getElementById(id);
+function updateACLRulesInputsLines(element) {
+	const elementType = jQuery(element).prop('type');
+	const level = jQuery(element).parents('tr:first').prop('className').split(' ')
+		.find((cssClass) => cssClass.startsWith('level_'));
 
-	// enable/disable all subnodes of id
-	for (var i = 0; document.getElementById(id+'_'+i) ;i++){
-		var b = document.getElementById(id+'_'+i);
-		checkItem(b, getChecked(a));
+	let cssClassArbo = '';
 
-		for(var j = 0; document.getElementById(id+'_'+i+'_'+j) ;j++) {
-			var c = document.getElementById(id+'_'+i+'_'+j);
-			checkItem(c, getChecked(b));
-			for(var k = 0; document.getElementById(id+'_'+i+'_'+j+'_'+k) ;k++) {
-				var d = document.getElementById(id+'_'+i+'_'+j+'_'+k);
-				checkItem(d, getChecked(c));
+	switch (level) {
+		case 'level_1':
+			cssClassArbo = '.arbo_b';
+			break;
+
+		case 'level_2':
+			cssClassArbo = '.arbo_c';
+			break;
+
+		case 'level_3':
+			cssClassArbo = '.arbo_d';
+			break;
 			}
+
+	if (level && cssClassArbo !== '') {
+		const cssSelector = `input[type="checkbox"]:not(.not_select_item),
+			input[type="radio"]:not(.not_select_item)`;
+
+		const inputs = jQuery(element).parents('table:first').next(cssClassArbo)
+			.find(cssSelector);
+
+		Object.values(inputs).forEach((input) => {
+			let valueInputParent = element.value;
+
+			if (element.type === 'checkbox') {
+				input.checked = element.checked;
 		}
+
+			if (element.type === 'radio') {
+				if (input.type === 'radio') {
+					input.checked = input.value === valueInputParent ? true : false;
 	}
-	// enable/disable upper nodes of id
-	var node = id;
-	var pos = node.lastIndexOf("_");
-	var upnode;
-	var elem, elem_up;
-	while (pos>0) {
-	    upnode = node.substr(0, pos);
-	    elem = document.getElementById(node);
-	    elem_up = document.getElementById(upnode);
-	    if (getChecked(elem)) {
-	    	checkItem(elem_up, true);
-	    } else {
-			var enabled = false;
-			for (var k = 0; document.getElementById(upnode+'_'+k) ;k++) {
-			    var elem_sub = document.getElementById(upnode+'_'+k);
-				if (getChecked(elem_sub)) {
-				    enabled = true;
-				    break;
-				}
-			}
-			if (!enabled) {
-				checkItem(elem_up, false);
+				if (input.type === 'checkbox') {
+					input.checked = [1, 2].includes(parseInt(valueInputParent)) ? true : false;
 			}
 	    }
-	    node = upnode;
-	    pos = node.lastIndexOf("_");
+		});
 	}
 }
 
