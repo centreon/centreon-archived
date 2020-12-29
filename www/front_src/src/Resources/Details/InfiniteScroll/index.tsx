@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     alignContent: 'flex-start',
     gridGap: theme.spacing(1),
   },
+  filter: {
+    width: '100%',
+  },
   entities: {
     display: 'grid',
     gridAutoFlow: 'row',
@@ -146,8 +149,8 @@ const InfiniteScroll = <TEntity extends { id: number }>({
 
   return (
     <div className={classes.container}>
+      <div className={classes.filter}>{filter}</div>
       <div className={classes.entities}>
-        {filter}
         {cond([
           [always(isNil(entities)), always(loadingSkeleton)],
           [isEmpty, always(<NoResultsMessage />)],
