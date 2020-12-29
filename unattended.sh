@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ### Define all supported constants
 OPTIONS=":t:v:r:l:"
@@ -11,11 +11,11 @@ script_short_name="$(basename $0)"
 ###
 
 #Define default values
-topology=central 	#Default topology to be installed
-version=20.10		#Default version to be installed
-repo=stable			#Default repository to used
-operation=install	#Default operation to be executed
-runtime_log_level="INFO" #set default log level to INFO
+topology=central            #Default topology to be installed
+version=20.10               #Default version to be installed
+repo=stable                 #Default repository to used
+operation=install	          #Default operation to be executed
+runtime_log_level="INFO"    #set default log level to INFO
 
 ##FIXME - to be set dynmically & and support other tickets
 CENTREON_MAJOR_VERSION="20.10"
@@ -79,27 +79,27 @@ function usage(){
 # log "INFO" "This is a INFO_LOG_LEVEL message"
 #
 function log(){
- TIMESTAMP=$(date --rfc-3339=seconds)
+  TIMESTAMP=$(date --rfc-3339=seconds)
  
- if [[ -z "${1}" || -z "${2}" ]]
- then
-	echo "${TIMESTAMP} - ERROR : Missing argument"
-	echo "${TIMESTAMP} - ERROR : Usage log \"INFO\" \"Message log\" "
-	exit 1
- fi
+  if [[ -z "${1}" || -z "${2}" ]]
+  then
+    echo "${TIMESTAMP} - ERROR : Missing argument"
+	  echo "${TIMESTAMP} - ERROR : Usage log \"INFO\" \"Message log\" "
+	  exit 1
+  fi
  
  # get the message log level
- log_message_level="${1}"
+  log_message_level="${1}"
  
  # get the log message
- log_message="${2}"
+  log_message="${2}"
  
  # check if the log_message_level is greater than the runtime_log_level
- [[ ${SUPPORTED_LOG_LEVEL[$log_message_level]} ]] || return 1
+  [[ ${SUPPORTED_LOG_LEVEL[$log_message_level]} ]] || return 1
  
- (( ${SUPPORTED_LOG_LEVEL[$log_message_level]} < ${SUPPORTED_LOG_LEVEL[$runtime_log_level]} )) && return 2
+  (( ${SUPPORTED_LOG_LEVEL[$log_message_level]} < ${SUPPORTED_LOG_LEVEL[$runtime_log_level]} )) && return 2
  
- echo -e "${TIMESTAMP} - $log_message_level - $log_message" 
+  echo -e "${TIMESTAMP} - $log_message_level - $log_message" 
 
 }
 #======== end of function log()
@@ -111,7 +111,7 @@ function log(){
 # unsupported argument/option (which are defined in constants)
 # 
 function parse_subcommand_options(){
-	local requested_topology=""
+  local requested_topology=""
 	local requested_version=""
 	local requested_repo=""
 	local OPTIND
@@ -119,11 +119,11 @@ function parse_subcommand_options(){
 	while getopts $OPTIONS opt; do
 			case ${opt} in
 				t)
-					requested_topology=$OPTARG
-					log "INFO" "Requested topology   : '$requested_topology'"
+				  requested_topology=$OPTARG
+				  log "INFO" "Requested topology   : '$requested_topology'"
 						
 					[[ ! ${SUPPORTED_TOPOLOGY[$requested_topology]} ]] && 
-						log "ERROR" "Unsupported topology : $requested_topology" &&
+					  log "ERROR" "Unsupported topology : $requested_topology" &&
 						usage
 					;;
 					
@@ -169,7 +169,7 @@ function parse_subcommand_options(){
 					;;
 			esac
 	done
-    shift $((OPTIND-1))
+  shift $((OPTIND-1))
 	
 	## check the configuration parameters
 	if [ -z "${requested_topology}" ];
@@ -467,8 +467,8 @@ function enable_new_services(){
 function setup_before_installation(){
 
 	
-	# FIXME - make it optional for secure mode
-	disable_selinux
+  # FIXME - make it optional for secure mode
+  disable_selinux
 
 	install_centreon_repo
 }
