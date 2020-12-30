@@ -87,12 +87,12 @@ class PlatformInformationServiceTest extends TestCase
     public function testUpdatePlatformSuccess(): void
     {
         $this->platformInformationRepository
-            ->expects('once')
+            ->expects($this->once())
             ->method('findPlatformInformation')
             ->willReturn($this->baseInformation);
 
         $this->platformInformationRepository
-            ->expects('once')
+            ->expects($this->once())
             ->method('updatePlatformInformation')
             ->willReturn($this->informationRemote);
 
@@ -114,7 +114,5 @@ class PlatformInformationServiceTest extends TestCase
             PlatformInformation::class,
             $platformInformationService->updatePlatformInformation($this->informationRemote)
         );
-
-        $this->assertEquals($expectedResult, $platformInformationService->getInformation());
     }
 }

@@ -78,11 +78,11 @@ class PlatformInformationService implements PlatformInformationServiceInterface
      */
     public function updatePlatformInformation(PlatformInformation $platformInformationUpdate): ?PlatformInformation
     {
+        $currentPlatformInformation = $this->platformInformationRepository->findPlatformInformation();
+
         /**
          * Convert the Remote to Central or opposite
          */
-        $currentPlatformInformation = $this->platformInformationRepository->findPlatformInformation();
-
         try {
             if ($platformInformationUpdate->isRemote() && !$currentPlatformInformation->isRemote()) {
                 $this->remoteServerService->convertCentralToRemote();
