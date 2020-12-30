@@ -44,13 +44,6 @@ class PlatformInformationServiceTest extends TestCase
     private $informationRemote;
 
     /**
-     * Information for a central conversion
-     *
-     * @var PlatformInformation
-     */
-    private $informationCentral;
-
-    /**
      * @var PlatformInformationRepositoryInterface&MockObject $platformInformationRepository
      */
     private $platformInformationRepository;
@@ -77,9 +70,6 @@ class PlatformInformationServiceTest extends TestCase
             ->setApiPath('path')
             ->setCentralServerAddress('192.168.0.1');
 
-        $this->informationCentral = (new PlatformInformation())
-            ->setIsCentral(true);
-
         $this->platformInformationRepository = $this->createMock(PlatformInformationRepositoryInterface::class);
         $this->remoteServerService = $this->createMock(RemoteServerServiceInterface::class);
     }
@@ -100,15 +90,6 @@ class PlatformInformationServiceTest extends TestCase
             $this->platformInformationRepository,
             $this->remoteServerService
         );
-
-        $expectedResult = (new PlatformInformation())
-            ->setIsRemote(true)
-            ->setApiUsername('admin')
-            ->setApiCredentials('centreon')
-            ->setApiScheme('http')
-            ->setApiPort(80)
-            ->setApiPath('path')
-            ->setCentralServerAddress('192.168.0.1');
 
         $this->assertInstanceOf(
             PlatformInformation::class,
