@@ -144,9 +144,10 @@ class PlatformInformation
      * @param string|null $isRemote
      * @return $this
      */
-    public function setIsRemote(?string $isRemote): self
+    public function setIsRemote(bool $isRemote): self
     {
-        $this->isRemote = ('yes' === $isRemote);
+        $this->isRemote = $isRemote;
+        $this->isCentral = !$isRemote;
         return $this;
     }
 
@@ -162,9 +163,10 @@ class PlatformInformation
      * @param string|null $isCentral
      * @return $this
      */
-    public function setIsCentral(?string $isCentral): self
+    public function setIsCentral(bool $isCentral): self
     {
-        $this->isCentral = ('yes' === $isCentral);
+        $this->isCentral = $isCentral;
+        $this->isRemote = !$isCentral;
         return $this;
     }
 
@@ -390,9 +392,9 @@ class PlatformInformation
      * @param string|null $status
      * @return $this
      */
-    public function setApiPeerValidation(?string $status): self
+    public function setApiPeerValidation(bool $status): self
     {
-        $this->apiPeerValidation = ('yes' === ($status));
+        $this->apiPeerValidation = $status;
         return $this;
     }
 }

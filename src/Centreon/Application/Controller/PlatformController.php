@@ -189,14 +189,12 @@ class PlatformController extends AbstractController
                         break;
                     case 'isRemote':
                         if ($platformValue === true) {
-                            $platformInformationUpdate->setIsRemote('yes');
-                            $platformInformationUpdate->setIsCentral('no');
+                            $platformInformationUpdate->setIsRemote(true);
                         }
                         break;
                     case 'isCentral':
                         if ($platformValue === true) {
-                            $platformInformationUpdate->setIsCentral('yes');
-                            $platformInformationUpdate->setIsRemote('no');
+                            $platformInformationUpdate->setIsCentral(true);
                         }
                         break;
                     case 'centralServerAddress':
