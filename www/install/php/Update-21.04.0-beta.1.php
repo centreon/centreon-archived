@@ -42,7 +42,7 @@ try {
         'dependency_servicegroupParent_relation'
     ];
     $pearDB->beginTransaction();
-    
+
     foreach ($tables as $table) {
         $errorMessage = "Unable to check $tables dependencies";
         $result = $pearDB->query(
