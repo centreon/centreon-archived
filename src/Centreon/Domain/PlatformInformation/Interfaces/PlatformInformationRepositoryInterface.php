@@ -38,7 +38,7 @@ interface PlatformInformationRepositoryInterface
      * Update the 'information' table
      *
      * @param PlatformInformation $platformInformation
-     * @return PlatformInformation|null
+     * @throws \Exception
      */
-    public function updatePlatformInformation(PlatformInformation $platformInformation): ?PlatformInformation;
+    public function updatePlatformInformation(PlatformInformation $platformInformation): void;
 }

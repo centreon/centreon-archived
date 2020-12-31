@@ -88,7 +88,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
         return $platformInformation;
     }
 
-    public function updatePlatformInformation(PlatformInformation $platformInformation): ?PlatformInformation
+    public function updatePlatformInformation(PlatformInformation $platformInformation): void
     {
         try {
             $this->db->beginTransaction();
@@ -169,7 +169,5 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
             throw new RepositoryException('An error occured while updating the platform');
         }
         $this->db->commit();
-
-        return $this->findPlatformInformation();
     }
 }

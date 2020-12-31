@@ -76,7 +76,7 @@ class PlatformInformationService implements PlatformInformationServiceInterface
     /**
      * @inheritDoc
      */
-    public function updatePlatformInformation(PlatformInformation $platformInformationUpdate): ?PlatformInformation
+    public function updatePlatformInformation(PlatformInformation $platformInformationUpdate): void
     {
         $currentPlatformInformation = $this->platformInformationRepository->findPlatformInformation();
 
@@ -90,7 +90,7 @@ class PlatformInformationService implements PlatformInformationServiceInterface
                 $this->remoteServerService->convertRemoteToCentral();
             }
 
-            return $this->platformInformationRepository->updatePlatformInformation($platformInformationUpdate);
+            $this->platformInformationRepository->updatePlatformInformation($platformInformationUpdate);
         } catch (RemoteServerException $ex) {
             throw new PlatformInformationException(_("An error occured while converting your platform"), 0, $ex);
         } catch (\Exception $ex) {

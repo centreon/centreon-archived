@@ -38,8 +38,7 @@ interface PlatformInformationServiceInterface
      * Update platform information
      *
      * @param PlatformInformation $platformInformationUpdated
-     * @return PlatformInformation|null
      * @throws PlatformInformationException
      */
-    public function updatePlatformInformation(PlatformInformation $platformInformationUpdated): ?PlatformInformation;
+    public function updatePlatformInformation(PlatformInformation $platformInformationUpdated): void;
 }
