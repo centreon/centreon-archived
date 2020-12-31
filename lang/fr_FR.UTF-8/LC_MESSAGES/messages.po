@@ -15918,3 +15918,9 @@ msgstr "Erreur lors de la recherche du nombre de group d'hôte"
 #: api/host/groups
 msgid "Error when searching for already used host group names"
 msgstr "Erreur lors de la recherche de noms de groupe d'hôtes déjà utilisés"
+
+msgid "Parent of service resource type cannot be null"
+msgstr "Le parent de la resource de type service ne peut être null"
+
+msgid "One of the elements provided is not a ResourceGroup type"
+msgstr "Un des éléments fourni n'est pas de type ResourceGroup"

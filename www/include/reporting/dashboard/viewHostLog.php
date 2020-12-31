@@ -202,4 +202,9 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $formHost->accept($renderer);
 $tpl->assign('formHost', $renderer->toArray());
 
-$tpl->display("template/viewHostLog.ihtml");
+if (
+    !$formPeriod->isSubmitted()
+    || ($formPeriod->isSubmitted() && $formPeriod->validate())
+) {
+    $tpl->display("template/viewHostLog.ihtml");
+}
