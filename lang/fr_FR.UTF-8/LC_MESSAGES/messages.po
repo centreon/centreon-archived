@@ -15535,6 +15535,18 @@ msgstr "par"
 msgid "Notification sent to"
 msgstr "Notification envoyée à"
 
+#: api/platform/
+msgid: "Unable to update the platform informations"
+msgstr: "Impossible de mettre à jour les informations de la plateforme"
+
+#: api/platform/
+msgid: "An error occured while converting your platform"
+msgstr: "Une erreur est survenue lors de la conversion de la plateforme"
+
+#: api/platform/
+msgid: "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
+msgstr: "Votre central est liés a d'autre remote(s), la conversion en Remote n'est pas autorisée"
+
 #: api/platform/topology
 msgid "The address '%s' of '%s' is not valid or not resolvable"
 msgstr "L'adresse '%s' de la plateforme '%s' n'est pas valide ou ne peut être résolue"
