@@ -202,10 +202,12 @@ class CentreonContact extends CentreonObject
         if (strtolower($locale) == "en_us" || strtolower($locale) == "browser") {
             return true;
         }
-        $centreonDir = realpath(__DIR__ . "/../../../");
-        $dir = $centreonDir . "/www/locale/$locale";
-        if (is_dir($dir)) {
-            return true;
+        $centreonDir = realpath(__DIR__ . "/../../../") . "/www/locale";
+        $dir = opendir($centreonDir) ;
+        while (false !== ($ssDir = readdir($dir))) {
+            if (($locale === substr($ssDir, 0, 5)) && is_dir($centreonDir . '/' . $ssDir)) {
+                return true;
+            }
         }
         return false;
     }
