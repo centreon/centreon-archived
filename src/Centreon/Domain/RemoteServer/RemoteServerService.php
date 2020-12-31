@@ -91,13 +91,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Set Remote type into Platform_Topology
          */
-        try {
-            $platform = $this->platformTopologyRepository->findTopLevelPlatform();
-            $platform->setType(Platform::TYPE_REMOTE);
-            $this->platformTopologyRepository->updatePlatformParameters($platform);
-        } catch (\Exception $ex) {
-            throw new PlatformException(_('An error occured while updating the platform topology'));
-        }
+        $this->updatePlatformTypeParameters(Platform::TYPE_REMOTE);
 
         try {
             $this->menuRepository->disableCentralMenus();
@@ -119,16 +113,8 @@ class RemoteServerService implements RemoteServerServiceInterface
      */
     public function convertRemoteToCentral(): void
     {
-        /**
-         * Set Central type into Platform_Topology
-         */
-        try {
-            $platform = $this->platformTopologyRepository->findTopLevelPlatform();
-            $platform->setType(Platform::TYPE_CENTRAL);
-            $this->platformTopologyRepository->updatePlatformParameters($platform);
-        } catch (\Exception $ex) {
-            throw new PlatformException(_('An error occured while updating the platform topology'));
-        }
+
+        $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
 
         try {
             $this->menuRepository->enableCentralMenus();
@@ -143,5 +129,15 @@ class RemoteServerService implements RemoteServerServiceInterface
             "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1central\\3/' "
             . $this->centreonEtcPath . "conf.pm"
         );
+    }
+
+    private function updatePlatformTypeParameters(string $type) {
+        try {
+            $platform = $this->platformTopologyRepository->findTopLevelPlatform();
+            $platform->setType($type);
+            $this->platformTopologyRepository->updatePlatformParameters($platform);
+        } catch (\Exception $ex) {
+            throw new PlatformException(_('An error occured while updating the platform topology'));
+        }
     }
 }
