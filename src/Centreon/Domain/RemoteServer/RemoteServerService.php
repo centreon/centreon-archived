@@ -35,9 +35,9 @@ class RemoteServerService implements RemoteServerServiceInterface
 {
 
     /**
-     * @var TopologyRepositoryInterface
+     * @var MenuRepositoryInterface
      */
-    private $topologyRepository;
+    private $menuRepository;
 
     /**
      * @var PlatformTopologyRepositoryInterface
@@ -50,14 +50,14 @@ class RemoteServerService implements RemoteServerServiceInterface
     private $centreonEtcPath;
 
     /**
-     * @param MenuRepositoryInterface $topologyRepository
+     * @param MenuRepositoryInterface $menuRepository
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
      */
     public function __construct(
-        MenuRepositoryInterface $topologyRepository,
+        MenuRepositoryInterface $menuRepository,
         PlatformTopologyRepositoryInterface $platformTopologyRepository
     ) {
-        $this->topologyRepository = $topologyRepository;
+        $this->menuRepository = $menuRepository;
         $this->platformTopologyRepository = $platformTopologyRepository;
     }
 
@@ -100,7 +100,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         }
 
         try {
-            $this->topologyRepository->disableMenus();
+            $this->menuRepository->disableCentralMenus();
         } catch (\Exception $ex) {
             throw new MenuException(_('An error occured while disabling the central menus'));
         }
@@ -131,7 +131,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         }
 
         try {
-            $this->topologyRepository->enableMenus();
+            $this->menuRepository->enableCentralMenus();
         } catch (\Exception $ex) {
             throw new MenuException(_('An error occured while enabling the central menus'));
         }

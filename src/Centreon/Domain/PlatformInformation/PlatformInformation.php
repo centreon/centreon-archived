@@ -141,7 +141,7 @@ class PlatformInformation
     }
 
     /**
-     * @param string|null $isRemote
+     * @param bool $isRemote
      * @return $this
      */
     public function setIsRemote(bool $isRemote): self
@@ -160,7 +160,7 @@ class PlatformInformation
     }
 
     /**
-     * @param string|null $isCentral
+     * @param bool $isCentral
      * @return $this
      */
     public function setIsCentral(bool $isCentral): self
@@ -389,7 +389,7 @@ class PlatformInformation
     }
 
     /**
-     * @param string|null $status
+     * @param bool $status
      * @return $this
      */
     public function setApiPeerValidation(bool $status): self
