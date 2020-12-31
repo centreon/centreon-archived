@@ -253,7 +253,10 @@ class PlatformController extends AbstractController
         } catch (PlatformInformationException | EntityNotFoundException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Throwable $ex) {
-            return $this->view(['message' => _('Unable to update the platform informations')], Response::HTTP_BAD_REQUEST);
+            return $this->view(
+                ['message' => _('Unable to update the platform informations')],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         return $this->view(null, Response::HTTP_NO_CONTENT);
