@@ -697,7 +697,7 @@ class CentreonDependency extends CentreonObject
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find host group %s', $objectToInsert));
         }
-        if($this->isExistingDependency($table, $depId, $ids[0])){
+        if ($this->isExistingDependency($table, $depId, $ids[0])) {
             throw new CentreonClapiException(
                 sprintf('Dependency between host %s already exist', $objectToInsert)
             );
@@ -720,12 +720,11 @@ class CentreonDependency extends CentreonObject
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find service group %s', $objectToInsert));
         }
-        if($this->isExistingDependency($table, $depId, $ids[0])){
+        if ($this->isExistingDependency($table, $depId, $ids[0])) {
             throw new CentreonClapiException(
                 sprintf('Dependency between host %s already exist', $objectToInsert)
             );
         }
-    
         $sql = "INSERT INTO {$table} (dependency_dep_id, servicegroup_sg_id) VALUES (?, ?)";
         $this->db->query($sql, array($depId, $ids[0]));
     }
@@ -739,13 +738,12 @@ class CentreonDependency extends CentreonObject
     protected function addMetaRelations($depId, $objectToInsert, $relType)
     {
         $table = "dependency_metaservice" . ucfirst($relType) . "_relation";
-
         $obj = new \Centreon_Object_Meta_Service($this->dependencyInjector);
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find meta service %s', $objectToInsert));
         }
-        if($this->isExistingDependency($table, $depId, $ids[0])){
+        if ($this->isExistingDependency($table, $depId, $ids[0])) {
             throw new CentreonClapiException(
                 sprintf('Dependency between host %s already exist', $objectToInsert)
             );
@@ -768,7 +766,7 @@ class CentreonDependency extends CentreonObject
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
             }
-            if($this->isExistingDependency('dependency_hostParent_relation', $depId, $hostIds[0])){
+            if ($this->isExistingDependency('dependency_hostParent_relation', $depId, $hostIds[0])) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between host %s already exist', $objectToInsert)
                 );
@@ -781,13 +779,12 @@ class CentreonDependency extends CentreonObject
             if (!count($idTab)) {
                 throw new CentreonClapiException(sprintf('Could not find service %s on host %s', $service, $host));
             }
-            if($this->isExistingDependency('dependency_serviceChild_relation', $depId, $idTab[0], $idTab[1])){
+            if ($this->isExistingDependency('dependency_serviceChild_relation', $depId, $idTab[0], $idTab[1])) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between service %s and host %s already exist', $service, $host)
                 );
             }
-            $sql = "INSERT INTO dependency_serviceChild_relation
-                (dependency_dep_id, host_host_id, service_service_id)
+            $sql = "INSERT INTO dependency_serviceChild_relation (dependency_dep_id, host_host_id, service_service_id)
                 VALUES (?, ?, ?)";
             $params = array($depId, $idTab[0], $idTab[1]);
         } elseif ($relType == 'child') { // host child
@@ -796,7 +793,7 @@ class CentreonDependency extends CentreonObject
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
             }
-            if($this->isExistingDependency('dependency_hostChild_relation', $depId, $hostIds[0])){
+            if ($this->isExistingDependency('dependency_hostChild_relation', $depId, $hostIds[0])) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between host %s already exist', $objectToInsert)
                 );
@@ -824,13 +821,12 @@ class CentreonDependency extends CentreonObject
             if (!count($idTab)) {
                 throw new CentreonClapiException(sprintf('Could not find service %s on host %s', $service, $host));
             }
-            if($this->isExistingDependency('dependency_serviceParent_relation', $depId, $idTab[0], $idTab[1])){
+            if ($this->isExistingDependency('dependency_serviceParent_relation', $depId, $idTab[0], $idTab[1])) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between service %s and host %s already exist', $service, $host)
                 );
             }
-            $sql = "INSERT INTO dependency_serviceParent_relation
-                (dependency_dep_id, host_host_id, service_service_id)
+            $sql = "INSERT INTO dependency_serviceParent_relation (dependency_dep_id, host_host_id, service_service_id)
                 VALUES (?, ?, ?)";
             $params = array($depId, $idTab[0], $idTab[1]);
         } elseif ($relType == 'child' && strstr($objectToInsert, ',')) { // service child
@@ -841,7 +837,7 @@ class CentreonDependency extends CentreonObject
                     sprintf('Could not find service %s on host %s', $depId, $service, $host)
                 );
             }
-            if($this->isExistingDependency('dependency_serviceChild_relation', $idTab[0], $idTab[1])){
+            if ($this->isExistingDependency('dependency_serviceChild_relation', $idTab[0], $idTab[1])) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between service %s and host %s already exist', $service, $host)
                 );
@@ -855,13 +851,12 @@ class CentreonDependency extends CentreonObject
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
             }
-            if($this->isExistingDependency('dependency_serviceChild_relation', $depId, $hostIds[0])){
+            if ($this->isExistingDependency('dependency_serviceChild_relation', $depId, $hostIds[0])) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between host %s already exist', $objectToInsert)
                 );
             }
-            $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id)
-                VALUES (?, ?)";
+            $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
             $params = array($depId, $hostIds[0]);
         }
         $this->db->query($sql, $params);
@@ -909,7 +904,7 @@ class CentreonDependency extends CentreonObject
                 break;
         }
     }
-    
+
     /**
      * @param string $table
      * @param int $depId
@@ -923,18 +918,17 @@ class CentreonDependency extends CentreonObject
                 FROM {$table}
                 WHERE dependency_dep_id = {$depId}
                 AND host_host_id = {$hostId}";
-        
         if (!is_null($serviceId)) {
             $sql .= " AND service_service_id = {$serviceId}";
         }
         $res = $this->db->query($sql);
         $row = $res->fetch();
-        if(!empty($row['dependency_dep_id'])){
+        if (!empty($row['dependency_dep_id'])) {
             return true;
         }
         return false;
     }
-    
+
     /**
      * @param $depId
      * @param $objectToDelete
