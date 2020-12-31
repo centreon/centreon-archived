@@ -20,21 +20,21 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Topology\Interfaces;
+namespace Centreon\Domain\Menu\Interfaces;
 
-interface TopologyRepositoryInterface
+interface MenuRepositoryInterface
 {
     /**
      * Disable Centreon Web Menu
      *
      * @return void
      */
-    public function disableMenus(): void;
+    public function disableCentralMenus(): void;
 
     /**
      * Enable Centreon Web Menu
      *
      * @return void
      */
-    public function enableMenus(): void;
+    public function enableCentralMenus(): void;
 }

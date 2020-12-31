@@ -188,14 +188,10 @@ class PlatformController extends AbstractController
                         $platformInformationUpdate->setAppKey($platformValue);
                         break;
                     case 'isRemote':
-                        if ($platformValue === true) {
-                            $platformInformationUpdate->setIsRemote(true);
-                        }
+                        $platformInformationUpdate->setIsRemote($platformValue);
                         break;
                     case 'isCentral':
-                        if ($platformValue === true) {
-                            $platformInformationUpdate->setIsCentral(true);
-                        }
+                        $platformInformationUpdate->setIsCentral($platformValue);
                         break;
                     case 'centralServerAddress':
                         $platformInformationUpdate->setCentralServerAddress($platformValue);
@@ -216,9 +212,7 @@ class PlatformController extends AbstractController
                         $platformInformationUpdate->setApiPath($platformValue);
                         break;
                     case 'peerValidation':
-                        if ($platformValue === true) {
-                            $platformInformationUpdate->setApiPeerValidation('yes');
-                        }
+                        $platformInformationUpdate->setApiPeerValidation($platformValue);
                         break;
                 }
             }

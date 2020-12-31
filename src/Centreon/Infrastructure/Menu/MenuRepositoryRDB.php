@@ -21,13 +21,13 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\Topology;
+namespace Centreon\Infrastructure\Menu;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface;
+use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 
-class TopologyRepositoryRDB extends AbstractRepositoryDRB implements TopologyRepositoryInterface
+class MenuRepositoryRDB extends AbstractRepositoryDRB implements MenuRepositoryInterface
 {
     /**
      * PlatformTopologyRepositoryRDB constructor.
@@ -41,7 +41,7 @@ class TopologyRepositoryRDB extends AbstractRepositoryDRB implements TopologyRep
     /**
      * @inheritDoc
      */
-    public function disableMenus(): void
+    public function disableCentralMenus(): void
     {
         $this->db->query(
             "UPDATE topology SET topology_show = '0'
@@ -54,7 +54,7 @@ class TopologyRepositoryRDB extends AbstractRepositoryDRB implements TopologyRep
     /**
      * @inheritDoc
      */
-    public function enableMenus(): void
+    public function enableCentralMenus(): void
     {
         $this->db->query(
             "UPDATE topology SET topology_show = '1'

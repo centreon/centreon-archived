@@ -23,9 +23,11 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\RemoteServer;
 
+use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
-use Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface;
+use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 
@@ -48,11 +50,11 @@ class RemoteServerService implements RemoteServerServiceInterface
     private $centreonEtcPath;
 
     /**
-     * @param TopologyRepositoryInterface $topologyRepository
+     * @param MenuRepositoryInterface $topologyRepository
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
      */
     public function __construct(
-        TopologyRepositoryInterface $topologyRepository,
+        MenuRepositoryInterface $topologyRepository,
         PlatformTopologyRepositoryInterface $platformTopologyRepository
     ) {
         $this->topologyRepository = $topologyRepository;
@@ -75,21 +77,33 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Stop conversion if the Central has remote children
          */
-        $platformChildren = $this->platformTopologyRepository->findCentralRemoteChildren();
-        if (!empty($platformChildren)) {
-            throw new RemoteServerException(
-                "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
-            );
+        try {
+            $platformChildren = $this->platformTopologyRepository->findCentralRemoteChildren();
+            if (!empty($platformChildren)) {
+                throw new RemoteServerException(
+                    "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
+                );
+            }
+        } catch (RemoteServerException $ex) {
+            throw $ex;
         }
-
-        $this->topologyRepository->disableMenus();
 
         /**
          * Set Remote type into Platform_Topology
          */
-        $platform = $this->platformTopologyRepository->findTopLevelPlatform();
-        $platform->setType(Platform::TYPE_REMOTE);
-        $this->platformTopologyRepository->updatePlatformParameters($platform);
+        try {
+            $platform = $this->platformTopologyRepository->findTopLevelPlatform();
+            $platform->setType(Platform::TYPE_REMOTE);
+            $this->platformTopologyRepository->updatePlatformParameters($platform);
+        } catch (\Exception $ex) {
+            throw new PlatformException(_('An error occured while updating the platform topology'));
+        }
+
+        try {
+            $this->topologyRepository->disableMenus();
+        } catch (\Exception $ex) {
+            throw new MenuException(_('An error occured while disabling the central menus'));
+        }
 
         /**
          * Apply Remote Server mode in configuration file
@@ -105,14 +119,22 @@ class RemoteServerService implements RemoteServerServiceInterface
      */
     public function convertRemoteToCentral(): void
     {
-        $this->topologyRepository->enableMenus();
-
         /**
          * Set Central type into Platform_Topology
          */
-        $platform = $this->platformTopologyRepository->findTopLevelPlatform();
-        $platform->setType(Platform::TYPE_CENTRAL);
-        $this->platformTopologyRepository->updatePlatformParameters($platform);
+        try {
+            $platform = $this->platformTopologyRepository->findTopLevelPlatform();
+            $platform->setType(Platform::TYPE_CENTRAL);
+            $this->platformTopologyRepository->updatePlatformParameters($platform);
+        } catch (\Exception $ex) {
+            throw new PlatformException(_('An error occured while updating the platform topology'));
+        }
+
+        try {
+            $this->topologyRepository->enableMenus();
+        } catch (\Exception $ex) {
+            throw new MenuException(_('An error occured while enabling the central menus'));
+        }
 
         /**
          * Apply Central mode in configuration file

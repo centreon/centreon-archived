@@ -241,6 +241,6 @@ services:
         class: Centreon\Domain\RemoteServer\RemoteServerService
         calls:
             - [setCentreonEtcPath, ['%centreon_etc_path%']]
-    # Topology
-    Centreon\Domain\Topology\Interfaces\TopologyRepositoryInterface:
-        class: Centreon\Infrastructure\Topology\TopologyRepositoryRDB
+    # Menu
+    Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
+        class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
