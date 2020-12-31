@@ -9,19 +9,29 @@ Feature:
 
     Scenario: Update platform informations
         Given I am logged in
+
+        #This step is mandatory, else the platform_topology is empty on the test container.
+        When I send a POST request to '/beta/platform/topology' with body:
+        """
+        {
+            "name": "Central",
+            "type": "central",
+            "address": "1.1.1.10",
+            "hostname": "central.test.localhost.localdomain"
+        }
+        """
+        Then the response code should be "201"
+
         When I send a PATCH request to '/beta/platform' with body:
         """
         {
             "isRemote": true,
             "apiUsername": "admin",
             "apiCredentials": "centreon",
-            "centralServerAddress": "192.168.0.1",
-            "proxy": {
-                "proxyHost": "myproxy.com",
-                "proxyPort": 3128,
-                "proxyUser": "admin",
-                "proxyPassword": "centreon"
-            }
+            "apiScheme": "http",
+            "apiPort": 80,
+            "centralServerAddress": "10.30.2.137",
+            "apiPath": "centreon"
         }
         """
         Then the response code should be "204"
