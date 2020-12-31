@@ -2570,6 +2570,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Platform.Full'
       responses:
+        '400':
+          description: 'Bad Request'
         '204':
           description: "Platform updated"
         '403':
