@@ -69,6 +69,14 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                     $row['key'] = 'encryptedApiCredentials';
                 }
 
+                if ('isCentral' === $row['key'] || 'isRemote' === $row['key']) {
+                    if ($row['value'] === 'yes') {
+                        $row['value'] = true;
+                    } else {
+                        $row['value'] = false;
+                    }
+                }
+
                 // Converting each camelCase key as snake_case
                 $key = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $row['key']));
                 $result[$key] = $row['value'];
@@ -164,10 +172,10 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                 }
             }
             $statement->execute();
+            $this->db->commit();
         } catch (\Exception $ex) {
             $this->db->rollBack();
-            throw new RepositoryException('An error occured while updating the platform');
+            throw $ex;
         }
-        $this->db->commit();
     }
 }
