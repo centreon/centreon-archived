@@ -10,7 +10,7 @@ Feature:
     Scenario: Update platform information
         Given I am logged in
 
-        #This step is mandatory, otherwise the platform_topology is empty on the test container.
+        # This step is mandatory, otherwise the platform_topology is empty on the test container.
         When I send a POST request to '/beta/platform/topology' with body:
         """
         {
