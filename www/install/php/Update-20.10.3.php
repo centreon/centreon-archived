@@ -20,7 +20,7 @@
  */
 
 // error specific content
-$versionOfTheUpgrade = 'UPGRADE - 21.04.0-beta.1 : ';
+$versionOfTheUpgrade = 'UPGRADE - 20.10.3 : ';
 $errorMessage = '';
 
 try {
