@@ -114,6 +114,9 @@ class RemoteServerService implements RemoteServerServiceInterface
     public function convertRemoteToCentral(): void
     {
 
+        /**
+         * Set Central type into Platform_Topology
+         */
         $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
 
         try {
@@ -131,7 +134,8 @@ class RemoteServerService implements RemoteServerServiceInterface
         );
     }
 
-    private function updatePlatformTypeParameters(string $type) {
+    private function updatePlatformTypeParameters(string $type)
+    {
         try {
             $platform = $this->platformTopologyRepository->findTopLevelPlatform();
             $platform->setType($type);
