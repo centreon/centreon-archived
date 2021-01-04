@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Exception\EntityNotFoundException;
 use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Proxy\Proxy;
@@ -30,6 +29,8 @@ use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Platform\PlatformException;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
@@ -242,7 +243,7 @@ class PlatformController extends AbstractController
             }
 
             $this->platformInformationService->updatePlatformInformation($platformInformationUpdate);
-        } catch (PlatformInformationException | EntityNotFoundException $ex) {
+        } catch (PlatformInformationException | EntityNotFoundException | RemoteServerException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Throwable $ex) {
             return $this->view(
