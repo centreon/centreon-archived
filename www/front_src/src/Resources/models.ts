@@ -90,24 +90,4 @@ export interface ResourceLinks {
 
 export type TranslationType = (label: string) => string;
 
-interface Regex {
-  value: string;
-  fields: Array<string>;
-}
-
 export type SortOrder = 'asc' | 'desc';
-
-interface Sort {
-  [x: string]: SortOrder;
-}
-export interface ListResourcesEndpointParams {
-  states: Array<string | number>;
-  statuses: Array<string | number>;
-  resourceTypes: Array<string | number>;
-  hostGroupIds: Array<string | number>;
-  serviceGroupIds: Array<string | number>;
-  limit: number;
-  page?: number;
-  regex: Regex | undefined;
-  sort: Sort | undefined;
-}
