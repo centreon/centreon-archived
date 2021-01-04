@@ -55,7 +55,7 @@ class FindHostCategoriesResponse
     /**
      * @return array<int, array<string, mixed>>
      */
-    public function getHostCategories()
+    public function getHostCategories(): array
     {
         return $this->hostCategories;
     }
