@@ -29,7 +29,7 @@ class RemoteServerRepositoryFile implements RemoteServerRepositoryInterface
     public function updateInstanceMod(string $filePath, string $instanceType): void
     {
         system(
-            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1" . $instanceType ."\\3/' "
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1" . $instanceType . "\\3/' "
             . $filePath
         );
     }
