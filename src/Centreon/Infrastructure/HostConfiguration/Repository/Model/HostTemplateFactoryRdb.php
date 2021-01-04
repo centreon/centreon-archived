@@ -39,7 +39,7 @@ class HostTemplateFactoryRdb
      * @param array<string, mixed> $data
      * @return HostTemplate
      * @throw \InvalidArgumentException
-     * @throws HostTemplateFactoryException
+     * @throws HostTemplateFactoryException|\Assert\AssertionFailedException
      */
     public static function create(array $data): HostTemplate
     {
