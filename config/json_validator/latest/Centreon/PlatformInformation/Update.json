@@ -4,12 +4,6 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "version": {
-      "type": "string"
-    },
-    "appKey": {
-      "type": "string"
-    },
     "isRemote": {
       "type": "boolean"
     },

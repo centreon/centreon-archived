@@ -100,23 +100,15 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
     {
         try {
             $this->db->beginTransaction();
-            $deleteQuery = $this->db->prepare($this->translateDbName('DELETE FROM `:db`.informations'));
+            $deleteQuery = $this->db->prepare(
+                $this->translateDbName(
+                    "DELETE FROM `:db`.informations' WHERE `key` <> 'version' AND `key` <> 'appKey'"
+                )
+            );
             $deleteQuery->execute();
             $insertQuery =  'INSERT INTO `:db`.informations (`key`, `value`) VALUES ';
 
             $queryParameters = [];
-            if ($platformInformation->getVersion() !== null) {
-                $queryParameters[':version'] = [
-                    \PDO::PARAM_STR => $platformInformation->getVersion()
-                ];
-                $insertQuery .= "('version', :version), ";
-            }
-            if ($platformInformation->getAppKey() !== null) {
-                $queryParameters[':appKey'] = [
-                    \PDO::PARAM_STR => $platformInformation->getAppKey()
-                ];
-                $insertQuery .= "('appKey', :appKey), ";
-            }
             if ($platformInformation->isRemote() === true) {
                 $insertQuery .= "('isRemote', 'yes'),  ('isCentral', 'no'), ";
 

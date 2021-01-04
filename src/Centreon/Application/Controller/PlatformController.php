@@ -184,12 +184,6 @@ class PlatformController extends AbstractController
 
             foreach ($platformToUpdateProperty as $platformProperty => $platformValue) {
                 switch ($platformProperty) {
-                    case 'version':
-                        $platformInformationUpdate->setVersion($platformValue);
-                        break;
-                    case 'appKey':
-                        $platformInformationUpdate->setAppKey($platformValue);
-                        break;
                     case 'isRemote':
                         $platformInformationUpdate->setIsRemote($platformValue);
                         break;
