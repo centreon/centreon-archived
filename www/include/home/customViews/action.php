@@ -54,16 +54,13 @@ $action = $_POST['action'];
 
 $postFilter = array(
     'widget_id' => array(
-        'filter' => FILTER_VALIDATE_INT,
-        'options' => array('default' => false)
+        'filter' => FILTER_VALIDATE_INT
     ),
     'custom_view_id' => array(
-        'filter' => FILTER_VALIDATE_INT,
-        'options' => array('default' => false)
+        'filter' => FILTER_VALIDATE_INT
     ),
     'widget_model_id' => array(
-        'filter' => FILTER_VALIDATE_INT,
-        'options' => array('default' => false)
+        'filter' => FILTER_VALIDATE_INT
     ),
     'widget_title' => array(
         'filter' => FILTER_SANITIZE_STRING,

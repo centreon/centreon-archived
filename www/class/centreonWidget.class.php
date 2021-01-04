@@ -231,10 +231,7 @@ class CentreonWidget
      */
     public function addWidget($customViewId, $widgetModelId, $widgetTitle)
     {
-        if (!isset($customViewId)
-            || !isset($widgetModelId)
-            || !isset($widgetTitle)
-        ) {
+        if (!isset($customViewId, $widgetModelId, $widgetTitle)) {
             throw new CentreonWidgetException('No custom view or no widget selected');
         }
         $queryValues = array();
