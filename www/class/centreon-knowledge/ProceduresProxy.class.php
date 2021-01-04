@@ -149,9 +149,12 @@ class ProceduresProxy
     }
 
     /**
+     * Get host url
+     *
      * @param string $hostName
+     * @return string|null
      */
-    public function getHostUrl($hostName)
+    public function getHostUrl($hostName): ?string
     {
         $hostId = $this->getHostId($hostName);
         $hostProperties = $this->hostObj->getInheritedValues(
@@ -180,10 +183,13 @@ class ProceduresProxy
     }
 
     /**
+     * Get service url
+     *
      * @param string $hostName
      * @param string $serviceDescription
+     * @return string|null
      */
-    public function getServiceUrl($hostName, $serviceDescription)
+    public function getServiceUrl($hostName, $serviceDescription): ?string
     {
         $serviceDescription = str_replace(' ', '_', $serviceDescription);
 

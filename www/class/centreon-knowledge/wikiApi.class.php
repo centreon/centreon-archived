@@ -414,12 +414,15 @@ class WikiApi
         $hostRow = $resHost->fetch();
 
         if ($hostRow !== false) {
-            $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$';
-            $this->db->query(
-                "UPDATE extended_host_information "
-                . "SET ehi_notes_url = '" . $valueToAdd . "' "
-                . "WHERE host_host_id = '" . $hostRow['host_id'] . "'"
+            $url = self::PROXY_URL . '?host_name=$HOSTNAME$';
+            $statement = $this->db->prepare(
+                "UPDATE extended_host_information " .
+                "SET ehi_notes_url = :url " .
+                "WHERE host_host_id = :hostId"
             );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            $statement->bindValue(':hostId', $hostRow['host_id'], \PDO::PARAM_INT);
+            $statement->execute();
         }
     }
 
@@ -440,12 +443,15 @@ class WikiApi
         $serviceRow = $resService->fetch();
 
         if ($serviceRow !== false) {
-            $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
-            $this->db->query(
+            $url = self::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+            $statement = $this->db->prepare(
                 "UPDATE extended_service_information " .
-                "SET esi_notes_url = '" . $valueToAdd . "' " .
-                "WHERE service_service_id = '" . $serviceRow['service_id'] . "' "
+                "SET esi_notes_url = :url " .
+                "WHERE service_service_id = :serviceId"
             );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            $statement->bindValue(':serviceId', $serviceRow['service_id'], \PDO::PARAM_INT);
+            $statement->execute();
         }
     }
 
@@ -461,12 +467,15 @@ class WikiApi
         $serviceTemplateRow = $resService->fetch();
 
         if ($serviceTemplateRow !== false) {
-            $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
-            $this->db->query(
+            $url = self::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+            $statement = $this->db->prepare(
                 "UPDATE extended_service_information " .
-                "SET esi_notes_url = '" . $valueToAdd . "' " .
-                "WHERE service_service_id = '" . $serviceTemplateRow['service_id'] . "' "
+                "SET esi_notes_url = :url " .
+                "WHERE service_service_id = :serviceId"
             );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            $statement->bindValue(':serviceId', $serviceTemplateRow['service_id'], \PDO::PARAM_INT);
+            $statement->execute();
         }
     }
 
