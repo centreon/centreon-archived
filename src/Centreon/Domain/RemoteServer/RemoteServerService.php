@@ -86,6 +86,8 @@ class RemoteServerService implements RemoteServerServiceInterface
             }
         } catch (RemoteServerException $ex) {
             throw $ex;
+        } catch (\Exception $ex) {
+            throw new RemoteServerException(_('An error occured while searching any remote children'));
         }
 
         /**

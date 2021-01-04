@@ -22,8 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation;
 
+use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
+use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 
@@ -91,7 +93,7 @@ class PlatformInformationService implements PlatformInformationServiceInterface
             }
 
             $this->platformInformationRepository->updatePlatformInformation($platformInformationUpdate);
-        } catch (RemoteServerException $ex) {
+        } catch (RemoteServerException | MenuException | PlatformException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
             throw new PlatformInformationException(_("An error occured while your platform update"), 0, $ex);
