@@ -102,7 +102,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
             $this->db->beginTransaction();
             $deleteQuery = $this->db->prepare(
                 $this->translateDbName(
-                    "DELETE FROM `:db`.informations' WHERE `key` <> 'version' AND `key` <> 'appKey'"
+                    "DELETE FROM `:db`.informations WHERE `key` <> 'version' AND `key` <> 'appKey'"
                 )
             );
             $deleteQuery->execute();
