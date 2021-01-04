@@ -20,11 +20,13 @@ import {
   labelMoreActions,
   labelDisacknowledge,
   labelSubmitStatus,
+  labelAddComment,
 } from '../../translatedLabels';
 import { useResourceContext } from '../../Context';
 import { checkResources } from '../api';
 import { Resource } from '../../models';
 import ActionButton from '../ActionButton';
+import AddCommentForm from '../../Graph/Performance/Graph/AddCommentForm';
 
 import useAclQuery from './aclQuery';
 import DowntimeForm from './Downtime';
@@ -47,7 +49,11 @@ const ResourceActions = (): JSX.Element => {
 
   const [
     resourceToSubmitStatus,
-    setresourceToSubmitStatus,
+    setResourceToSubmitStatus,
+  ] = React.useState<Resource | null>();
+  const [
+    resourceToComment,
+    setResourceToComment,
   ] = React.useState<Resource | null>();
 
   const {
@@ -74,6 +80,7 @@ const ResourceActions = (): JSX.Element => {
     canCheck,
     canDisacknowledge,
     canSubmitStatus,
+    canComment,
   } = useAclQuery();
 
   const hasResourcesToCheck = resourcesToCheck.length > 0;
@@ -83,8 +90,9 @@ const ResourceActions = (): JSX.Element => {
     setResourcesToAcknowledge([]);
     setResourcesToSetDowntime([]);
     setResourcesToCheck([]);
-    setresourceToSubmitStatus(null);
+    setResourceToSubmitStatus(null);
     setResourcesToDisacknowledge([]);
+    setResourceToComment(null);
   };
 
   React.useEffect(() => {
@@ -142,11 +150,22 @@ const ResourceActions = (): JSX.Element => {
     closeMoreActionsMenu();
     const [selectedResource] = selectedResources;
 
-    setresourceToSubmitStatus(selectedResource);
+    setResourceToSubmitStatus(selectedResource);
   };
 
   const cancelSubmitStatus = (): void => {
-    setresourceToSubmitStatus(null);
+    setResourceToSubmitStatus(null);
+  };
+
+  const prepareToAddComment = (): void => {
+    closeMoreActionsMenu();
+    const [selectedResource] = selectedResources;
+
+    setResourceToComment(selectedResource);
+  };
+
+  const cancelComment = (): void => {
+    setResourceToComment(null);
   };
 
   const openMoreActionsMenu = (event: React.MouseEvent): void => {
@@ -162,6 +181,9 @@ const ResourceActions = (): JSX.Element => {
     selectedResources.length !== 1 ||
     !canSubmitStatus(selectedResources) ||
     !head(selectedResources)?.passive_checks;
+
+  const disableAddComment =
+    selectedResources.length !== 1 || !canComment(selectedResources);
 
   return (
     <Grid container spacing={1}>
@@ -214,6 +236,9 @@ const ResourceActions = (): JSX.Element => {
           >
             {t(labelSubmitStatus)}
           </MenuItem>
+          <MenuItem disabled={disableAddComment} onClick={prepareToAddComment}>
+            {t(labelAddComment)}
+          </MenuItem>
         </Menu>
       </Grid>
       {resourcesToAcknowledge.length > 0 && (
@@ -242,6 +267,14 @@ const ResourceActions = (): JSX.Element => {
           resource={resourceToSubmitStatus}
           onClose={cancelSubmitStatus}
           onSuccess={confirmAction}
+        />
+      )}
+      {resourceToComment && (
+        <AddCommentForm
+          resource={resourceToComment as Resource}
+          onClose={cancelComment}
+          onSuccess={confirmAction}
+          date={new Date()}
         />
       )}
     </Grid>

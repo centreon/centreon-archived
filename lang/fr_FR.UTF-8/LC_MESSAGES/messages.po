@@ -15912,3 +15912,9 @@ msgstr "Basculer vers le mode graphique"
 
 msgid "Switch to list mode"
 msgstr "Basculer vers le mode liste"
+
+msgid "Parent of service resource type cannot be null"
+msgstr "Le parent de la resource de type service ne peut être null"
+
+msgid "One of the elements provided is not a ResourceGroup type"
+msgstr "Un des éléments fourni n'est pas de type ResourceGroup"
