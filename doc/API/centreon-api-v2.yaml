@@ -4853,14 +4853,6 @@ components:
     Platform.Full:
       type: object
       properties:
-        version:
-          type: string
-          example: "21.04.0"
-          description: "Version of your Centreon platform"
-        appKey:
-          type: string
-          example: "4abe32bc98adfaf8b061e9d4e4532c60"
-          description: "Application key"
         isRemote:
           type: boolean
           example: true
