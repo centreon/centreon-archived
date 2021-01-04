@@ -991,10 +991,13 @@ describe(Details, () => {
         data: retrievedServices,
       })
       .mockResolvedValueOnce({
+        data: retrievedServices,
+      })
+      .mockResolvedValueOnce({
         data: retrievedPerformanceGraphData,
       })
       .mockResolvedValueOnce({
-        data: retrievedTimeline,
+        data: retrievedPerformanceGraphData,
       });
 
     const { getByLabelText, findByText, getAllByText } = renderDetails({
@@ -1019,6 +1022,10 @@ describe(Details, () => {
 
     userEvent.click(head(getAllByText(labelLast24h)) as HTMLElement);
     userEvent.click(last(getAllByText(labelLast7Days)) as HTMLElement);
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(5);
+    });
 
     expect(context.tabParameters?.services?.selectedTimePeriodId).toEqual(
       last7Days.id,

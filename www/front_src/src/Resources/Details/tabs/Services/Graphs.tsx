@@ -6,6 +6,24 @@ import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { TimePeriod } from '../Graph/models';
 
+const MemoizedPerformanceGraph = React.memo(
+  ExportablePerformanceGraphWithTimeline,
+  (prevProps, nextProps) => {
+    const prevResource = prevProps.resource;
+    const nextResource = nextProps.resource;
+    const prevPeriodQueryParameters = prevProps.periodQueryParameters;
+    const nextPeriodQueryParameters = nextProps.periodQueryParameters;
+    const prevTooltipX = prevProps.tooltipX;
+    const nextTooltipX = nextProps.tooltipX;
+
+    return (
+      equals(prevResource?.id, nextResource?.id) &&
+      equals(prevPeriodQueryParameters, nextPeriodQueryParameters) &&
+      equals(prevTooltipX, nextTooltipX)
+    );
+  },
+);
+
 interface Props {
   services: Array<Resource>;
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
@@ -35,7 +53,7 @@ const ServiceGraphs = ({
 
         return (
           <div key={id}>
-            <ExportablePerformanceGraphWithTimeline
+            <MemoizedPerformanceGraph
               resource={service}
               graphHeight={120}
               periodQueryParameters={periodQueryParameters}
