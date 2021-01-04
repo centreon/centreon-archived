@@ -34,16 +34,16 @@
     "proxy": {
       "type": "object",
       "properties": {
-        "proxyHost": {
+        "host": {
           "type": "string"
         },
-        "proxyPort": {
+        "port": {
           "type": "integer"
         },
-        "proxyUser": {
+        "user": {
           "type": "string"
         },
-        "proxyPassword": {
+        "password": {
           "type": "string"
         }
       }

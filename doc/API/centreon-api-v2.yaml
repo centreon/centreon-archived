@@ -4892,19 +4892,19 @@ components:
         proxy:
           type: object
           properties:
-            proxyHost:
+            host:
               type: string
               example: "example.proxy.com"
               description: "Host of your proxy"
-            proxyPort:
+            port:
               type: integer
               example: 80
               description: "Proxy port"
-            proxyUser:
+            user:
               type: string
               example: "admin"
               description: "proxy username"
-            proxyPassword:
+            password:
               type: string
               example: "centreon"
               description: "proxy password"

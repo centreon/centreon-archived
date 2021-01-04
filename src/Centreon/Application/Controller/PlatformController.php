@@ -219,19 +219,19 @@ class PlatformController extends AbstractController
             if (isset($platformToUpdateProperty['proxy'])) {
                 $proxyInformations = $platformToUpdateProperty['proxy'];
                 $proxy = new Proxy();
-                if (isset($proxyInformations['proxyHost'])) {
-                    $proxy->setUrl($proxyInformations['proxyHost']);
+                if (isset($proxyInformations['host'])) {
+                    $proxy->setUrl($proxyInformations['host']);
                 }
-                if (isset($proxyInformations['proxyScheme'])) {
-                    $proxy->setProtocol($proxyInformations['proxyPort']);
+                if (isset($proxyInformations['scheme'])) {
+                    $proxy->setProtocol($proxyInformations['scheme']);
                 }
-                if (isset($proxyInformations['proxyPort'])) {
-                    $proxy->setPort($proxyInformations['proxyPort']);
+                if (isset($proxyInformations['port'])) {
+                    $proxy->setPort($proxyInformations['port']);
                 }
-                if (isset($proxyInformations['proxyUser'])) {
-                    $proxy->setUser($proxyInformations['proxyUser']);
-                    if (isset($proxyInformations['proxyPassword'])) {
-                        $proxy->setPassword($proxyInformations['proxyPassword']);
+                if (isset($proxyInformations['user'])) {
+                    $proxy->setUser($proxyInformations['user']);
+                    if (isset($proxyInformations['password'])) {
+                        $proxy->setPassword($proxyInformations['password']);
                     }
                 }
                 $this->proxyService->updateProxy($proxy);
