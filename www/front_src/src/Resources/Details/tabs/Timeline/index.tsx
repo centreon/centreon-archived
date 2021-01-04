@@ -73,7 +73,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     atPage?: number;
   }): Promise<TimelineListing> => {
     return sendRequest({
-      endpoint: 'http://localhost:5000/mock/timeline',
+      endpoint: timelineEndpoint,
       parameters: {
         page: atPage,
         limit,
