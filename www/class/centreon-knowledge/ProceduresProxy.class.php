@@ -38,17 +38,16 @@ require_once _CENTREON_PATH_ . '/www/class/centreonHost.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonService.class.php';
 require_once _CENTREON_PATH_ . '/www/class/centreon-knowledge/wikiApi.class.php';
 
-class procedures_Proxy
+class ProceduresProxy
 {
     private $DB;
-    private $sflag;
     private $proc;
     private $wikiUrl;
     private $hostObj;
     private $serviceObj;
 
     /**
-     * procedures_Proxy constructor.
+     * ProceduresProxy constructor.
      * @param $pearDB
      */
     public function __construct($pearDB)
@@ -81,11 +80,13 @@ class procedures_Proxy
     }
 
     /**
+     * Get service id from hostname and service description
+     *
      * @param string $hostName
      * @param string $serviceDescription
-     * @return mixed
+     * @return int|null
      */
-    private function getServiceId($hostName, $serviceDescription)
+    private function getServiceId($hostName, $serviceDescription): ?int
     {
         /*
          * Get Services attached to hosts
@@ -98,10 +99,11 @@ class procedures_Proxy
             "AND h.host_name LIKE '" . $hostName . "' " .
             "AND s.service_description LIKE '" . $serviceDescription . "' "
         );
-        while ($row = $result->fetch()) {
-            return $row["service_id"];
+        if ($row = $result->fetch()) {
+            return (int) $row["service_id"];
         }
         $result->closeCursor();
+
         /*
          * Get Services attached to hostgroups
          */
@@ -114,10 +116,38 @@ class procedures_Proxy
             "AND service_id = hsr.service_service_id " .
             "AND service_description LIKE '" . $serviceDescription . "' "
         );
-        while ($row = $result->fetch()) {
-            return $row["service_id"];
+        if ($row = $result->fetch()) {
+            return (int) $row["service_id"];
         }
         $result->closeCursor();
+
+        return null;
+    }
+
+    /**
+     * Get service notes url
+     *
+     * @param int $serviceId
+     * @return string|null
+     */
+    private function getServiceNotesUrl(int $serviceId): ?string
+    {
+        $notesUrl = null;
+
+        $statement = $this->DB->prepare(
+            "SELECT esi_notes_url " .
+            "FROM extended_service_information " .
+            "WHERE service_service_id = :serviceId"
+        );
+
+        $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if ($row = $statement->fetch()) {
+            $notesUrl = $row['esi_notes_url'];
+        }
+
+        return $notesUrl;
     }
 
     /**
@@ -130,7 +160,7 @@ class procedures_Proxy
             $hostId,
             [],
             1,
-            ['host_id', 'host_name', 'ehi_notes_url']
+            ['host_name', 'ehi_notes_url']
         );
 
         if (isset($hostProperties['ehi_notes_url'])) {
@@ -141,7 +171,7 @@ class procedures_Proxy
             $hostId,
             [],
             -1,
-            ['host_id', 'host_name', 'ehi_notes_url']
+            ['host_name', 'ehi_notes_url']
         );
 
         if (isset($inheritedHostProperties['ehi_notes_url'])) {
@@ -157,14 +187,19 @@ class procedures_Proxy
      */
     public function getServiceUrl($hostName, $serviceDescription)
     {
-        $procList = $this->proc->getProcedures();
+        $serviceDescription = str_replace(' ', '_', $serviceDescription);
+
+        $serviceId = $this->getServiceId($hostName, $serviceDescription);
+
+        if ($serviceId === null) {
+            return null;
+        }
 
         /*
          * Check Service
          */
-        $serviceDescription = str_replace(' ', '_', $serviceDescription);
-
-        if (isset($procList["Service_:_" . trim($hostName . "_/_" . $serviceDescription)])) {
+        $notesUrl = $this->getServiceNotesUrl($serviceId);
+        if ($notesUrl !== null) {
             return $this->wikiUrl . "/index.php?title=Service_:_" . $hostName . "_/_" . $serviceDescription;
         }
 
@@ -175,7 +210,8 @@ class procedures_Proxy
         $templates = $this->serviceObj->getTemplatesChain($serviceId);
         foreach ($templates as $templateId) {
             $templateDescription = $this->serviceObj->getServiceDesc($templateId);
-            if (isset($procList["Service-Template_:_" . $templateDescription])) {
+            $notesUrl = $this->getServiceNotesUrl((int) $templateId);
+            if ($notesUrl !== null) {
                 return $this->wikiUrl . "/index.php?title=Service-Template_:_" . $templateDescription;
             }
         }

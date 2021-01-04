@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 CENTREON
+ * Copyright 2005-2020 CENTREON
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -123,12 +124,12 @@ class procedures
      * Get host template models
      *
      * @param int $host_id
-     * @return void
+     * @return array
      */
     public function getMyHostMultipleTemplateModels($host_id = null)
     {
         if (!$host_id) {
-            return;
+            return [];
         }
 
         $tplArr = array();
@@ -149,7 +150,7 @@ class procedures
         }
         unset($row);
         unset($hTpl);
-        return ($tplArr);
+        return $tplArr;
     }
 
     /**

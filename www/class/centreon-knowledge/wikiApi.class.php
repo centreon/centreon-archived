@@ -410,14 +410,17 @@ class WikiApi
         $resHost = $this->db->query(
             "SELECT host_id FROM host WHERE host_name LIKE '" . $hostName . "'"
         );
-        $tuple = $resHost->fetch();
 
-        $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$';
-        $this->db->query(
-            "UPDATE extended_host_information "
-            . "SET ehi_notes_url = '" . $valueToAdd . "' "
-            . "WHERE host_host_id = '" . $tuple['host_id'] . "'"
-        );
+        $hostRow = $resHost->fetch();
+
+        if ($hostRow !== false) {
+            $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$';
+            $this->db->query(
+                "UPDATE extended_host_information "
+                . "SET ehi_notes_url = '" . $valueToAdd . "' "
+                . "WHERE host_host_id = '" . $hostRow['host_id'] . "'"
+            );
+        }
     }
 
     /**
@@ -434,14 +437,16 @@ class WikiApi
             "AND host_service_relation.host_host_id = host.host_id " .
             "AND host_service_relation.service_service_id = service.service_id "
         );
-        $tuple = $resService->fetch();
+        $serviceRow = $resService->fetch();
 
-        $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
-        $this->db->query(
-            "UPDATE extended_service_information " .
-            "SET esi_notes_url = '" . $valueToAdd . "' " .
-            "WHERE service_service_id = '" . $tuple['service_id'] . "' "
-        );
+        if ($serviceRow !== false) {
+            $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+            $this->db->query(
+                "UPDATE extended_service_information " .
+                "SET esi_notes_url = '" . $valueToAdd . "' " .
+                "WHERE service_service_id = '" . $serviceRow['service_id'] . "' "
+            );
+        }
     }
 
     /**
@@ -453,20 +458,22 @@ class WikiApi
             "SELECT service_id FROM service " .
             "WHERE service_description LIKE '" . $serviceName . "' "
         );
-        $tuple = $resService->fetch();
+        $serviceTemplateRow = $resService->fetch();
 
-        $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
-        $this->db->query(
-            "UPDATE extended_service_information " .
-            "SET esi_notes_url = '" . $valueToAdd . "' " .
-            "WHERE service_service_id = '" . $tuple['service_id'] . "' "
-        );
+        if ($serviceTemplateRow !== false) {
+            $valueToAdd = static::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+            $this->db->query(
+                "UPDATE extended_service_information " .
+                "SET esi_notes_url = '" . $valueToAdd . "' " .
+                "WHERE service_service_id = '" . $serviceTemplateRow['service_id'] . "' "
+            );
+        }
     }
 
     /**
      * make a call to mediawiki api to delete a page
      * @param string $title
-     * @return array
+     * @return object
      */
     private function deleteMWPage($title = '')
     {
