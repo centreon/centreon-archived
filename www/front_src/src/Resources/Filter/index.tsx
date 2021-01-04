@@ -176,26 +176,26 @@ const Filter = (): JSX.Element => {
     setCurrentSearch('');
   };
 
-  const changeResourceTypes = (e, updatedResourceTypes): void => {
+  const changeResourceTypes = (_, updatedResourceTypes): void => {
     setResourceTypes(updatedResourceTypes);
     setNewFilter();
   };
 
-  const changeStates = (e, updatedStates): void => {
+  const changeStates = (_, updatedStates): void => {
     setStates(updatedStates);
     setNewFilter();
   };
 
-  const changeStatuses = (e, updatedStatuses): void => {
+  const changeStatuses = (_, updatedStatuses): void => {
     setStatuses(updatedStatuses);
     setNewFilter();
   };
 
-  const changeHostGroups = (e, updatedHostGroups): void => {
+  const changeHostGroups = (_, updatedHostGroups): void => {
     setHostGroups(updatedHostGroups);
   };
 
-  const changeServiceGroups = (e, updatedServiceGroups): void => {
+  const changeServiceGroups = (_, updatedServiceGroups): void => {
     setServiceGroups(updatedServiceGroups);
   };
 

@@ -99,7 +99,7 @@ describe(useLoadResources, () => {
 
   it.each(testCases)(
     'resets the page to 1 when %p is changed',
-    async (e, setter) => {
+    async (_, setter) => {
       render(<TestComponent />);
 
       await waitFor(() => {

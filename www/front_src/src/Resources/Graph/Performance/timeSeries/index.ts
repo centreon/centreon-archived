@@ -194,7 +194,7 @@ const getStackedMetricValues = ({
     return [];
   }
 
-  return metricsValues[0].map((value, index): number =>
+  return metricsValues[0].map((_, index): number =>
     reduce(
       (acc: number, metricValue: Array<number>) => add(metricValue[index], acc),
       0,
