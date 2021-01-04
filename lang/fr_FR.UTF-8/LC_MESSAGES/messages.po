@@ -15707,6 +15707,22 @@ msgstr "Impossible de trouver la clef de déchiffrement. Veuillez vérifer le fi
 msgid "No Platform Topology found."
 msgstr "Aucune Topologie trouvée."
 
+#: api/platform/topology
+msgid "No top level platform found to link the child platforms"
+msgstr "Aucune platforme principale trouvée pour lier les plateformes enfants"
+
+#: api/platform/topology
+msgid "An error occured while deleting the platform"
+msgstr "Une erreur est survenue lors de la suppression de la plateforme"
+
+#: api/platform/topology
+msgid "An error occured while updating the platform"
+msgstr "Une erreur est survenue lors de la mise à jour de la plateforme"
+
+#: api/platform/topology
+msgid "platform not found"
+msgstr "plateforme non trouvée"
+
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
 
@@ -15855,11 +15871,8 @@ msgstr "EN ATTENTE"
 msgid "FQDN / Address"
 msgstr "FQDN / Adresse"
 
-msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
-msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas avoir plus de %d caractères, mais a %d caractères"
-
-msgid "[%s] The value \"%s\" is too short, it should have at least %d characters, but only has %d characters"
-msgstr "[%s] La valeur \"%s\" est trop courte, elle devrait avoir au moins %d caractères, mais n'a que %d caractères"
+msgid "Comment added"
+msgstr "Commentaire ajouté"
 
 msgid "Error when searching for services"
 msgstr "Erreur lors de la recherche des services"
@@ -15869,3 +15882,36 @@ msgstr "Erreur lors de la recherche des hôtes"
 
 msgid "Groups"
 msgstr "Groupes"
+
+msgid "Display events"
+msgstr "Afficher les évènements"
+
+msgid "Export to png"
+msgstr "Exporter comme png"
+
+msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
+msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas comporter plus de %d caractères mais n'en comporte que %d"
+
+msgid "[%s] The value \"%s\" is too short, it should have at least %d characters, but only has %d characters"
+msgstr "[%s] La valeur \"%s\" est trop courte, elle devrait comporter au moins %d caractères mais n'en a que %d"
+
+msgid "[%s] The value \"%d\" was expected to be at least %d"
+msgstr "[%s] La valeur \"%d\" devait être au moins égale à %d"
+
+msgid "[%s] The value \"%d\" was expected to be at most %d"
+msgstr "[%s] La valeur \"%d\" devait être au plus égale à %d"
+
+msgid "[%s] The value \"%d\" is not greater or equal than %d"
+msgstr "[%s] La valeur \"%d\" n'est pas supérieure ou égale à %d"
+
+msgid "[%s] The value is empty, but non empty value was expected"
+msgstr "[%s] La valeur est vide, mais une valeur non vide était attendue"
+
+msgid "[%s] The value is null, but non null value was expected"
+msgstr "[%] La valeur est nulle, mais une valeur non nulle était attendue"
+
+msgid "Parent of service resource type cannot be null"
+msgstr "Le parent de la resource de type service ne peut être null"
+
+msgid "One of the elements provided is not a ResourceGroup type"
+msgstr "Un des éléments fourni n'est pas de type ResourceGroup"

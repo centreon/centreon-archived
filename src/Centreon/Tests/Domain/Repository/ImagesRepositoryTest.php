@@ -49,7 +49,7 @@ class ImagesRepositoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $db = new CentreonDB;
         $this->datasets = [

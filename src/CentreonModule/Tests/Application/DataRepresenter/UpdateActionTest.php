@@ -44,7 +44,7 @@ use CentreonModule\Application\DataRepresenter\ModuleEntity;
 class UpdateActionTest extends TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         $data = [
             'id' => '1',

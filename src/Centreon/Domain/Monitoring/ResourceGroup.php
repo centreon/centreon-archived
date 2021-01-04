@@ -30,6 +30,18 @@ namespace Centreon\Domain\Monitoring;
 class ResourceGroup
 {
     /**
+     * Contructor for ResourceGroup entity
+     *
+     * @param integer $resourceGroupId
+     * @param string $resourceGroupName
+     */
+    public function __construct(int $resourceGroupId, string $resourceGroupName)
+    {
+        $this->id = $resourceGroupId;
+        $this->name = $resourceGroupName;
+    }
+
+    /**
      * Id of the resource group
      *
      * @var int
@@ -52,15 +64,6 @@ class ResourceGroup
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * ResourceGroup constructor
-     */
-    public function __construct(int $resourceGroupId, string $resourceGroupName)
-    {
-        $this->id = $resourceGroupId;
-        $this->name = $resourceGroupName;
     }
 
     /**

@@ -44,7 +44,7 @@ class MenuTest extends \PHPUnit\Framework\TestCase
      */
     private $db;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->db = new CentreonDB();
     }

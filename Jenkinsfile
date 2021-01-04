@@ -57,26 +57,6 @@ try {
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
         junit 'ut-be.xml,ut-fe.xml'
-        step([
-          $class: 'CloverPublisher',
-          cloverReportDir: '.',
-          cloverReportFileName: 'coverage-be.xml'
-        ])
-        recordIssues(
-          enabledForFailure: true,
-          aggregatingResults: true,
-          tools: [
-            checkStyle(pattern: 'codestyle-be.xml'),
-            checkStyle(pattern: 'phpstan.xml')
-          ],
-          referenceJobName: 'centreon-web/master'
-        )
-        recordIssues(
-          enabledForFailure: true,
-          failOnError: true,
-          tools: [esLint(pattern: 'codestyle-fe.xml')],
-          referenceJobName: 'centreon-web/master'
-        )
 
         if (env.CHANGE_ID) { // pull request to comment with coding style issues
           ViolationsToGitHub([
@@ -97,6 +77,29 @@ try {
             ]
           ])
         }
+
+        recordIssues(
+          enabledForFailure: true,
+          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+          tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
+          referenceJobName: 'centreon-web/master',
+          trendChartType: 'NONE'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+          tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
+          referenceJobName: 'centreon-web/master',
+          trendChartType: 'NONE'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          failOnError: true,
+          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+          tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
+          referenceJobName: 'centreon-web/master',
+          trendChartType: 'NONE'
+        )
 
         if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
           unstash 'git-sources'

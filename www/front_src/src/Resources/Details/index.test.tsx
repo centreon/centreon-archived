@@ -59,6 +59,9 @@ import {
   labelFqdn,
   labelAlias,
   labelGroups,
+  labelAcknowledgement,
+  labelDowntime,
+  labelDisplayEvents,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -158,10 +161,14 @@ const retrievedDetails = {
 
 const performanceGraphData = {
   global: {},
-  times: ['2020-06-20T06:55:00Z', '2020-06-21T06:55:00Z'],
+  times: [
+    '2020-06-19T07:30:00Z',
+    '2020-06-20T06:55:00Z',
+    '2020-06-23T06:55:00Z',
+  ],
   metrics: [
     {
-      data: [0, 1],
+      data: [2, 0, 1],
       ds_data: {
         ds_color_line: '#fff',
         ds_filled: false,
@@ -448,12 +455,10 @@ describe(Details, () => {
     async (period, startIsoString, timelineEventsLimit) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
+        .mockResolvedValueOnce({ data: retrievedTimeline })
         .mockResolvedValueOnce({ data: performanceGraphData })
-        .mockResolvedValueOnce({
-          data: retrievedTimeline,
-        })
-        .mockResolvedValueOnce({ data: performanceGraphData })
-        .mockResolvedValueOnce({ data: retrievedTimeline });
+        .mockResolvedValueOnce({ data: retrievedTimeline })
+        .mockResolvedValueOnce({ data: performanceGraphData });
 
       const { getByText, getAllByText } = renderDetails({
         openTabId: graphTabId,
@@ -502,11 +507,12 @@ describe(Details, () => {
   it('displays event annotations when the corresponding switch is triggered and the Graph tab is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
-      .mockResolvedValueOnce({ data: performanceGraphData })
       .mockResolvedValueOnce({
         data: retrievedTimeline,
-      });
-    const { findAllByLabelText } = renderDetails({
+      })
+      .mockResolvedValueOnce({ data: performanceGraphData });
+
+    const { findAllByLabelText, queryByLabelText, getByText } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -515,12 +521,24 @@ describe(Details, () => {
     });
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
+      expect(mockedAxios.get).toHaveBeenCalledTimes(3);
     });
 
+    expect(queryByLabelText(labelComment)).toBeNull();
+    expect(queryByLabelText(labelAcknowledgement)).toBeNull();
+    expect(queryByLabelText(labelDowntime)).toBeNull();
+
+    userEvent.click(getByText(labelDisplayEvents));
+
     const commentAnnotations = await findAllByLabelText(labelComment);
+    const acknowledgementAnnotations = await findAllByLabelText(
+      labelAcknowledgement,
+    );
+    const downtimeAnnotations = await findAllByLabelText(labelDowntime);
 
     expect(commentAnnotations).toHaveLength(1);
+    expect(acknowledgementAnnotations).toHaveLength(1);
+    expect(downtimeAnnotations).toHaveLength(2);
   });
 
   it('copies the command line to clipboard when the copy button is clicked', async () => {
@@ -625,7 +643,9 @@ describe(Details, () => {
     const dateRegExp = /\d+\/\d+\/\d+$/;
 
     expect(
-      getAllByText(dateRegExp).map((element) => element.textContent),
+      getAllByText(dateRegExp)
+        .map((element) => element.textContent)
+        .filter((text) => text !== '06/23/2020'), // corresponds to one of the graph X Scale ticks
     ).toEqual(['06/22/2020', '06/21/2020', '06/20/2020']);
 
     const removeEventIcon = baseElement.querySelectorAll(

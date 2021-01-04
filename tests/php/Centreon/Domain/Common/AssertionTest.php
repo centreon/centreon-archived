@@ -29,7 +29,7 @@ use Centreon\Domain\Common\Assertion\Assertion;
 /**
  * @package Tests\Centreon\Domain\Common
  */
-class TestAssertion extends TestCase
+class AssertionTest extends TestCase
 {
     /**
      * @var string
@@ -179,6 +179,54 @@ class TestAssertion extends TestCase
         $propertyValue = 49;
         $minLength = $propertyValue;
         Assertion::greaterOrEqualThan($propertyValue, $minLength, $this->propertyName);
+        $this->expectNotToPerformAssertions();
+    }
+
+    /**
+     * Test the notEmpty assertion
+     */
+    public function testNotEmptyException(): void
+    {
+        $propertyValue = '';
+        $expectedExceptionMessage = AssertionException::notEmpty(
+            $this->propertyName
+        )->getMessage();
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+        Assertion::notEmpty($propertyValue, $this->propertyName);
+    }
+
+    /**
+     * Test no exception on notEmpty assertion
+     */
+    public function testNoExceptionNotEmpty(): void
+    {
+        $propertyValue = 'test_value_too_long';
+        Assertion::notEmpty($propertyValue, $this->propertyName);
+        $this->expectNotToPerformAssertions();
+    }
+
+    /**
+     * Test the notNull assertion
+     */
+    public function testNotNullException(): void
+    {
+        $propertyValue = null;
+        $expectedExceptionMessage = AssertionException::notNull(
+            $this->propertyName
+        )->getMessage();
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+        Assertion::notNull($propertyValue, $this->propertyName);
+    }
+
+    /**
+     * Test no exception on notNull assertion
+     */
+    public function testNoExceptionNotNull(): void
+    {
+        $propertyValue = 'test_value_too_long';
+        Assertion::notNull($propertyValue, $this->propertyName);
         $this->expectNotToPerformAssertions();
     }
 }

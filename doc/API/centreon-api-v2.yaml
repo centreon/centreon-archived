@@ -2667,6 +2667,21 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /platform/topology/{poller_id}:
+    delete:
+      tags:
+        - Topology
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+      summary: 'Delete a Platform'
+      description: "Delete a platform from the topology"
+      responses:
+        '204':
+          description: "Platform deleted"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /gorgone/pollers/{poller_id}/responses/{token}:
     get:
       tags:

@@ -48,7 +48,7 @@ class ServiceProviderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new ServiceProvider();
         $this->container = new Container();

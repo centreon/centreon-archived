@@ -241,7 +241,7 @@ class Resource
      */
     public function getShortType(): ?string
     {
-        return $this->type ? $this->type{0} : null;
+        return $this->type ? $this->type[0] : null;
     }
 
     /**
@@ -657,25 +657,6 @@ class Resource
     /**
      * @return string|null
      */
-    public function getActionUrl(): ?string
-    {
-        return $this->actionUrl;
-    }
-
-    /**
-     * @param string|null $actionUrl
-     * @return \Centreon\Domain\Monitoring\Resource
-     */
-    public function setActionUrl(?string $actionUrl): self
-    {
-        $this->actionUrl = $actionUrl ?: null;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
     public function getChartUrl(): ?string
     {
         return $this->chartUrl;
@@ -928,10 +909,16 @@ class Resource
      * Set groups to which belongs the resource
      *
      * @param ResourceGroup[] $groups
-     * @return Resource
+     * @throws \InvalidArgumentException
+     * @return self
      */
     public function setGroups(array $groups): self
     {
+        foreach ($groups as $group) {
+            if (!($group instanceof ResourceGroup)) {
+                throw new \InvalidArgumentException(_('One of the elements provided is not a ResourceGroup type'));
+            }
+        }
         $this->groups = $groups;
 
         return $this;

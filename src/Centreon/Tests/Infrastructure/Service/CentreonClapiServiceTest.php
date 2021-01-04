@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -39,6 +40,7 @@ namespace Centreon\Tests\Infrastructure\Service;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Centreon\Infrastructure\Service\CentreonClapiService;
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Centreon\Tests\Resource\Mock\ClapiMock;
 
 class CentreonClapiServiceTest extends TestCase
@@ -55,18 +57,15 @@ class CentreonClapiServiceTest extends TestCase
         $serviceId = strtolower(ClapiMock::getName());
 
         // check is webservice is added
-        $this->assertAttributeEquals([
-            $serviceId => ClapiMock::class,
-            ], 'objects', $service);
+        $this->assertSame(ClapiMock::class, $service->get($serviceId));
     }
 
-    /**
-     * @expectedException \Centreon\Infrastructure\Service\Exception\NotFoundException
-     */
     public function testAddWithoutInterface()
     {
         $service = new CentreonClapiService;
         $this->assertInstanceOf(ContainerInterface::class, $service);
+
+        $this->expectException(NotFoundException::class);
 
         $service->add(\stdClass::class);
     }

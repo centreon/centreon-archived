@@ -73,9 +73,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     }
 
     /**
-     * {@inheritDoc}
-     * @param Contact $contact
-     * @return self
+     * @inheritDoc
      */
     public function filterByContact($contact): self
     {
@@ -169,6 +167,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function enrichServiceWithDetails(ResourceEntity $resource): void
     {
+        if ($resource->getParent() === null) {
+            throw new ResourceException(_('Parent of resource type service cannot be null'));
+        }
+
         $downtimes = $this->monitoringRepository->findDowntimes(
             $resource->getParent()->getId(),
             $resource->getId()
@@ -224,8 +226,8 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      * Validates input for resource based on groups
      * @param EntityValidator $validator
      * @param ResourceEntity $resource
-     * @param array $contextGroups
-     * @return ConstraintViolationListInterface
+     * @param array<string, mixed> $contextGroups
+     * @return ConstraintViolationListInterface<mixed>
      */
     public static function validateResource(
         EntityValidator $validator,
