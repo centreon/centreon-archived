@@ -71,10 +71,7 @@ class RemoteServerService implements RemoteServerServiceInterface
 
     public function setCentreonEtcPath(string $centreonEtcPath): void
     {
-        if ($centreonEtcPath[-1] !== DIRECTORY_SEPARATOR) {
-            $centreonEtcPath .= DIRECTORY_SEPARATOR;
-        }
-        $this->centreonEtcPath = $centreonEtcPath;
+        $this->centreonEtcPath = DIRECTORY_SEPARATOR . ltrim($centreonEtcPath, DIRECTORY_SEPARATOR);
     }
 
     /**
@@ -120,7 +117,6 @@ class RemoteServerService implements RemoteServerServiceInterface
      */
     public function convertRemoteToCentral(): void
     {
-
         /**
          * Set Central type into Platform_Topology
          */

@@ -2562,7 +2562,7 @@ paths:
     patch:
       tags:
         - Platform'
-      summary: "Update a platform informations"
+      summary: "Update a platform information"
       requestBody:
         required: true
         content:

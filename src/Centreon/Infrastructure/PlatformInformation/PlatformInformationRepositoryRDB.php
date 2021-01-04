@@ -70,11 +70,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                 }
 
                 if ('isCentral' === $row['key'] || 'isRemote' === $row['key']) {
-                    if ($row['value'] === 'yes') {
-                        $row['value'] = true;
-                    } else {
-                        $row['value'] = false;
-                    }
+                    $row['value'] = $row['value'] === 'yes';
                 }
 
                 // Converting each camelCase key as snake_case
@@ -96,6 +92,9 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
         return $platformInformation;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function updatePlatformInformation(PlatformInformation $platformInformation): void
     {
         try {

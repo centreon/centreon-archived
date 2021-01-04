@@ -1,16 +1,16 @@
 Feature:
-    In order to update the platform informations
+    In order to update the platform information
     As a user
-    I want to update some of the informations
+    I want to update some of the information
 
     Background:
         Given a running instance of Centreon Web API
         And the endpoints are described in Centreon Web API documentation
 
-    Scenario: Update platform informations
+    Scenario: Update platform information
         Given I am logged in
 
-        #This step is mandatory, else the platform_topology is empty on the test container.
+        #This step is mandatory, otherwise the platform_topology is empty on the test container.
         When I send a POST request to '/beta/platform/topology' with body:
         """
         {

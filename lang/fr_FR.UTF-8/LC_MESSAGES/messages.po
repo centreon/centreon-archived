@@ -15536,7 +15536,7 @@ msgid "Notification sent to"
 msgstr "Notification envoyée à"
 
 #: api/platform
-msgid "Unable to update the platform informations"
+msgid "Unable to update the platform information"
 msgstr "Impossible de mettre à jour les informations de la plateforme"
 
 #: api/platform
@@ -15565,7 +15565,7 @@ msgstr "Une erreur est survenue lors de la mise à jour de la topology de la pla
 
 #: api/platform
 msgid "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
-msgstr "Votre central est liés a d'autre remote(s), la conversion en Remote n'est pas autorisée"
+msgstr "Votre central est lié a d'autre remote(s), la conversion en Remote n'est pas autorisée"
 
 #: api/platform/topology
 msgid "The address '%s' of '%s' is not valid or not resolvable"

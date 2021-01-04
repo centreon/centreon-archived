@@ -82,7 +82,6 @@ class PlatformController extends AbstractController
      */
     private function validatePlatformInformationSchema($platformToAdd, array $validationSchema): void
     {
-        // $platformInformationSchemaToValidate = Validator::arrayToObjectRecursive($platformToAdd);
         $validator = new Validator();
 
         $validator->validate(
@@ -149,7 +148,7 @@ class PlatformController extends AbstractController
 
     /**
      * Update the platform
-     *
+     * @param Request $request
      * @return View
      */
     public function updatePlatform(Request $request): View
@@ -249,7 +248,7 @@ class PlatformController extends AbstractController
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Throwable $ex) {
             return $this->view(
-                ['message' => _('Unable to update the platform informations')],
+                ['message' => _('Unable to update the platform information')],
                 Response::HTTP_BAD_REQUEST
             );
         }
