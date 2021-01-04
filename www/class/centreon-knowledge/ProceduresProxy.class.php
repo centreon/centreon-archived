@@ -41,7 +41,6 @@ require_once _CENTREON_PATH_ . '/www/class/centreon-knowledge/wikiApi.class.php'
 class ProceduresProxy
 {
     private $DB;
-    private $proc;
     private $wikiUrl;
     private $hostObj;
     private $serviceObj;
@@ -53,7 +52,6 @@ class ProceduresProxy
     public function __construct($pearDB)
     {
         $this->DB = $pearDB;
-        $this->sflag = 0;
         $this->hostObj = new CentreonHost($this->DB);
         $this->serviceObj = new CentreonService($this->DB);
 
