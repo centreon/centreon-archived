@@ -81,7 +81,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             $platformChildren = $this->platformTopologyRepository->findCentralRemoteChildren();
             if (!empty($platformChildren)) {
                 throw new RemoteServerException(
-                    "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
+                    _("Your Central is linked to another remote(s), conversion in Remote isn't allowed")
                 );
             }
         } catch (RemoteServerException $ex) {
@@ -136,6 +136,12 @@ class RemoteServerService implements RemoteServerServiceInterface
         );
     }
 
+    /**
+     * Update the platform type
+     *
+     * @param string $type
+     * @return void
+     */
     private function updatePlatformTypeParameters(string $type)
     {
         try {
