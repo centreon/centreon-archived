@@ -1492,8 +1492,8 @@ class CentreonHost
                     }
                 }
                 $query = 'SELECT ' . $queryFields . ' ' .
-                    'FROM host h ' .
-                    'WHERE host_id = :hostId';
+                    'FROM host h, extended_host_information ehi ' .
+                    'WHERE host_id = :hostId AND host_id = ehi.host_host_id';
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
