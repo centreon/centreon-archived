@@ -139,11 +139,12 @@
         {foreach key=elem from=$content item=stt}
         <tr class="{php} global $line; print $line[$l%2]; {/php}">
             <td class="ListColCenter">
-                {if $selection == 3}
-                <img class="ico-14" src="./img/icons/service.png"></td>
+            {if $selection == 1 || $selection == 3}
+                <img class="ico-14" src="./img/icons/service.png">
             {else}
-            <img class="ico-14" src="{$icone[$elem]}"></td>
+                <img class="ico-14" src="./img/icons/host.png"></td>
             {/if}
+            </td>
             <td class="ListColLeft">{if $selection == 0}<a
                     href="./include/configuration/configKnowledge/proxy/proxy.php?host_name={$elem}" target="_blank"
                     title="Show Wiki Page"><img class="ico-14" src="./img/icons/link.png"></a>&nbsp;{/if}{$elem}
