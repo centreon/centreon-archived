@@ -70,6 +70,8 @@ const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 
 const margin = { top: 30, right: 45, bottom: 30, left: 45 };
 
+const commentTooltipWidth = 165;
+
 interface Props {
   width: number;
   height: number;
@@ -297,8 +299,10 @@ const Graph = ({
 
     setCommentDate(date);
 
+    const displayLeft = width - x < commentTooltipWidth;
+
     showAddCommentTooltip({
-      tooltipLeft: x,
+      tooltipLeft: displayLeft ? x - commentTooltipWidth : x,
       tooltipTop: y,
     });
   };
@@ -396,6 +400,7 @@ const Graph = ({
             style={{
               left: addCommentTooltipLeft,
               top: addCommentTooltipTop,
+              width: commentTooltipWidth,
             }}
           >
             <Typography variant="caption">
