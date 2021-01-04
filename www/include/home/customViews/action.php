@@ -51,6 +51,25 @@ if (!isset($_POST['action']) || !isset($_SESSION['centreon'])) {
 
 $centreon = $_SESSION['centreon'];
 $action = $_POST['action'];
+
+$postFilter = array(
+    'widget_id' => array(
+        'filter' => FILTER_VALIDATE_INT
+    ),
+    'custom_view_id' => array(
+        'filter' => FILTER_VALIDATE_INT
+    ),
+    'widget_model_id' => array(
+        'filter' => FILTER_VALIDATE_INT
+    ),
+    'widget_title' => array(
+        'filter' => FILTER_SANITIZE_STRING,
+        'options' => array('default' => '')
+    )
+);
+
+$postInputs = filter_input_array(INPUT_POST, $postFilter);
+
 $db = new CentreonDB();
 if (CentreonSession::checkSession(session_id(), $db) == 0) {
     exit();
@@ -109,7 +128,11 @@ try {
     } elseif ($action == "deleteView" && $customViewId) {
         $viewObj->deleteCustomView($customViewId);
     } elseif ($action == "addWidget") {
-        $widgetObj->addWidget($_POST);
+        $widgetObj->addWidget(
+            $postInputs['custom_view_id'],
+            $postInputs['widget_model_id'],
+            $postInputs['widget_title']
+        );
     } elseif ($action == "setDefault") {
         $viewObj->setDefault($customViewId);
     } elseif ($action == "setRotate" && isset($_POST['timer'])) {
