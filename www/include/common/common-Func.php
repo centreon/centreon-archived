@@ -742,7 +742,7 @@ function getMyHostTemplateModels($host_id = null)
 function getMyHostMultipleTemplateModels($host_id = null)
 {
     if (!$host_id) {
-        return;
+        return [];
     }
 
     global $pearDB;
@@ -755,7 +755,7 @@ function getMyHostMultipleTemplateModels($host_id = null)
         $hTpl = $DBRESULT2->fetchRow();
         $tplArr[$row['host_tpl_id']] = html_entity_decode($hTpl["host_name"], ENT_QUOTES, "UTF-8");
     }
-    return ($tplArr);
+    return $tplArr;
 }
 
 #
