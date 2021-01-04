@@ -30,6 +30,7 @@ use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -45,6 +46,11 @@ class RemoteServerService implements RemoteServerServiceInterface
     private $platformTopologyRepository;
 
     /**
+     * @var RemoteServerRepositoryInterface
+     */
+    private $remoteServerRepository;
+
+    /**
      * @var string
      */
     private $centreonEtcPath;
@@ -55,10 +61,12 @@ class RemoteServerService implements RemoteServerServiceInterface
      */
     public function __construct(
         MenuRepositoryInterface $menuRepository,
-        PlatformTopologyRepositoryInterface $platformTopologyRepository
+        PlatformTopologyRepositoryInterface $platformTopologyRepository,
+        RemoteServerRepositoryInterface $remoteServerRepository
     ) {
         $this->menuRepository = $menuRepository;
         $this->platformTopologyRepository = $platformTopologyRepository;
+        $this->remoteServerRepository = $remoteServerRepository;
     }
 
     public function setCentreonEtcPath(string $centreonEtcPath): void
@@ -104,10 +112,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Apply Remote Server mode in configuration file
          */
-        system(
-            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' "
-            . $this->centreonEtcPath . "conf.pm"
-        );
+        $this->remoteServerRepository->updateInstanceMod($this->centreonEtcPath . "conf.pm", "remote");
     }
 
     /**
@@ -130,10 +135,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Apply Central mode in configuration file
          */
-        system(
-            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1central\\3/' "
-            . $this->centreonEtcPath . "conf.pm"
-        );
+        $this->remoteServerRepository->updateInstanceMod($this->centreonEtcPath . "conf.pm", "central");
     }
 
     /**
