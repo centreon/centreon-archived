@@ -115,7 +115,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                 /**
                  * Those 2 keys aren't put into queryParameters, so we add them directly to the deletedKey array
                  */
-                array_push($deletedKeys, "'isRemote'","'isCentral'");
+                array_push($deletedKeys, "'isRemote'", "'isCentral'");
                 $insertQuery .= "('isRemote', 'yes'),  ('isCentral', 'no'), ";
 
                 if ($platformInformation->getCentralServerAddress() !== null) {
