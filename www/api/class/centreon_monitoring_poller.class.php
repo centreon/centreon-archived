@@ -79,7 +79,8 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
 
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclPollers .= 'AND instances.instance_id IN (' . $acl->getPollerString('ID', $this->pearDBMonitoring) . ') ';
+            $aclPollers .= 'AND instances.instance_id IN (' .
+                $acl->getPollerString('ID', $this->pearDBMonitoring) . ') ';
         }
 
         $queryPoller .= $aclPollers;
