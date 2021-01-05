@@ -500,7 +500,7 @@ class CentreonRtAcknowledgement extends CentreonObject
             list($hostName, $serviceName) = explode(',', $acknowledgement);
 
             if ($serviceName) {
-                $serviceId = $this->serviceObject->getObjectId($serviceName);
+                $serviceId = $this->serviceObject->getObjectId($hostName . ";" . $serviceName);
                 if ($this->object->svcIsAcknowledged($serviceId)) {
                     $this->externalCmdObj->deleteAcknowledgement(
                         'SVC',
