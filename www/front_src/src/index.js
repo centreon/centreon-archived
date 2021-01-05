@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 /* eslint-disable prefer-arrow-functions/prefer-arrow-functions */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/react-in-jsx-scope */
@@ -6,9 +5,6 @@
 /* eslint-disable func-names */
 
 import AppProvider from './Provider';
-
-self.$RefreshReg$ = () => {};
-self.$RefreshSig$$ = () => () => {};
 
 // make an IIFE function to allow "await" usage
 // generate an "external" bundle to embed all needed libraries by external pages and hooks
