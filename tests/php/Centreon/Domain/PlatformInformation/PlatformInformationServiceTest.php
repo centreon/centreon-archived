@@ -61,10 +61,8 @@ class PlatformInformationServiceTest extends TestCase
     /**
      * This test assert that when given Central information and central a Remote conversion,
      * The method convertCentralToRemote is called
-     *
-     * @return void
      */
-    public function testUpdatePlatformToRemoteSuccess()
+    public function testUpdatePlatformToRemoteSuccess(): void
     {
         $this->platformInformationRepository
             ->expects($this->once())
@@ -84,10 +82,8 @@ class PlatformInformationServiceTest extends TestCase
     /**
      * This test assert that when given Remote information and a Central conversion,
      * The method convertRemoteToCentral is called
-     *
-     * @return void
      */
-    public function testUpdatePlatformToCentralSuccess()
+    public function testUpdatePlatformToCentralSuccess(): void
     {
         $this->platformInformationRepository
             ->expects($this->once())

@@ -26,8 +26,12 @@ namespace Centreon\Domain\RemoteServer\Interfaces;
 interface RemoteServerRepositoryInterface
 {
     /**
-     * @param string $instanceType
-     * @return void
+     * Update the instance mode of centreon to Central.
      */
-    public function updateInstanceMod(string $filePath, string $instanceType): void;
+    public function updateInstanceModeCentral(): void;
+
+    /**
+     * Update the instance mode of centreon to Remote.
+     */
+    public function updateInstanceModeRemote(): void;
 }

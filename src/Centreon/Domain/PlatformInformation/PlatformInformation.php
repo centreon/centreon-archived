@@ -91,9 +91,9 @@ class PlatformInformation
     private $apiPath;
 
     /**
-     * @var bool SSL peer validation
+     * @var bool|null SSL peer validation
      */
-    private $apiPeerValidation = false;
+    private $apiPeerValidation;
 
     /**
      * @return string|null
@@ -381,18 +381,18 @@ class PlatformInformation
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function hasApiPeerValidation(): bool
+    public function hasApiPeerValidation(): ?bool
     {
         return $this->apiPeerValidation;
     }
 
     /**
-     * @param bool $status
+     * @param bool|null $status
      * @return $this
      */
-    public function setApiPeerValidation(bool $status): self
+    public function setApiPeerValidation(?bool $status): self
     {
         $this->apiPeerValidation = $status;
         return $this;

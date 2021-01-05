@@ -69,7 +69,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                     $row['key'] = 'encryptedApiCredentials';
                 }
 
-                if ('isCentral' === $row['key'] || 'isRemote' === $row['key']) {
+                if ('isCentral' === $row['key'] || 'isRemote' === $row['key'] || 'apiPeerValidation' === $row['key']) {
                     $row['value'] = $row['value'] === 'yes';
                 }
 
@@ -99,70 +99,99 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
     {
         try {
             $this->db->beginTransaction();
-            $deleteQuery = $this->db->prepare(
-                $this->translateDbName(
-                    "DELETE FROM `:db`.informations WHERE `key` <> 'version' AND `key` <> 'appKey'"
-                )
-            );
-            $deleteQuery->execute();
             $insertQuery =  'INSERT INTO `:db`.informations (`key`, `value`) VALUES ';
 
+            /**
+             * Store the parameters used to bindValue into the insertStatement
+             */
             $queryParameters = [];
+
+            /**
+             * Store the key to delete into the deleteStatement
+             */
+            $deletedKeys = [];
+
             if ($platformInformation->isRemote() === true) {
+                /**
+                 * Those 2 keys aren't put into queryParameters, so we add them directly to the deletedKey array
+                 */
+                array_push($deletedKeys, "'isRemote'","'isCentral'");
                 $insertQuery .= "('isRemote', 'yes'),  ('isCentral', 'no'), ";
 
                 if ($platformInformation->getCentralServerAddress() !== null) {
-                    $queryParameters[':authorizedMaster'] = [
+                    $queryParameters['authorizedMaster'] = [
                         \PDO::PARAM_STR => $platformInformation->getCentralServerAddress()
                     ];
                     $insertQuery .= "('authorizedMaster', :authorizedMaster), ";
                 }
                 if ($platformInformation->getApiUsername() !== null) {
-                    $queryParameters[':apiUsername'] = [
+                    $queryParameters['apiUsername'] = [
                         \PDO::PARAM_STR => $platformInformation->getApiUsername()
                     ];
                     $insertQuery .= "('apiUsername', :apiUsername), ";
                 }
                 if ($platformInformation->getEncryptedApiCredentials() !== null) {
-                    $queryParameters[':apiCredentials'] = [
+                    $queryParameters['apiCredentials'] = [
                         \PDO::PARAM_STR => $platformInformation->getEncryptedApiCredentials()
                     ];
                     $insertQuery .= "('apiCredentials', :apiCredentials), ";
                 }
                 if ($platformInformation->getApiScheme() !== null) {
-                    $queryParameters[':apiScheme'] = [
+                    $queryParameters['apiScheme'] = [
                         \PDO::PARAM_STR => $platformInformation->getApiScheme()
                     ];
                     $insertQuery .= "('apiScheme', :apiScheme), ";
                 }
                 if ($platformInformation->getApiPort() !== null) {
-                    $queryParameters[':apiPort'] = [
+                    $queryParameters['apiPort'] = [
                         \PDO::PARAM_INT => $platformInformation->getApiPort()
                     ];
                     $insertQuery .= "('apiPort', :apiPort), ";
                 }
                 if ($platformInformation->getApiPath() !== null) {
-                    $queryParameters[':apiPath'] = [
+                    $queryParameters['apiPath'] = [
                         \PDO::PARAM_STR => $platformInformation->getApiPath()
                     ];
                     $insertQuery .= "('apiPath', :apiPath), ";
                 }
-                if ($platformInformation->hasApiPeerValidation() === true) {
-                    $insertQuery .= "('apiPeerValidation', 'yes')";
-                } else {
-                    $insertQuery .= "('apiPeerValidation', 'no')";
+                if ($platformInformation->hasApiPeerValidation() !== null) {
+                    /**
+                     * This key isn't put into queryParameters, so we add it directly to the deletedKey array
+                     */
+                    $deletedKeys[] = "'apiPeerValidation'";
+                    if ($platformInformation->hasApiPeerValidation() === true) {
+                        $insertQuery .= "('apiPeerValidation', 'yes')";
+                    } else {
+                        $insertQuery .= "('apiPeerValidation', 'no')";
+                    }
                 }
             } else {
+                array_push($deletedKeys, 'isRemote','isCentral');
                 $insertQuery .= "('isCentral', 'yes'),  ('isRemote', 'no')";
             }
-
-            $statement = $this->db->prepare($this->translateDbName($insertQuery));
-            foreach ($queryParameters as $token => $bindParams) {
+            $insertStatement = $this->db->prepare($this->translateDbName($insertQuery));
+            foreach ($queryParameters as $key => $bindParams) {
+                /**
+                 * each key of queryParameters used into the insertStatement also needs to be deleted before
+                 * being reinserted. So they're stored into $deletedKeys that is used into the delete query
+                 */
+                $deletedKeys[] = "'$key'";
                 foreach ($bindParams as $paramType => $paramValue) {
-                    $statement->bindValue($token, $paramValue, $paramType);
+                    $insertStatement->bindValue(':' . $key, $paramValue, $paramType);
                 }
             }
-            $statement->execute();
+            $deleteKeyList = implode(',', $deletedKeys);
+
+            /**
+             * Delete only the updated key
+             */
+            $this->db->query($this->translateDbName("DELETE FROM `:db`.informations WHERE `key` IN ($deleteKeyList)"));
+
+            /**
+             * Insert updated values
+             */
+            $insertStatement->execute();
+
             $this->db->commit();
         } catch (\Exception $ex) {
             $this->db->rollBack();

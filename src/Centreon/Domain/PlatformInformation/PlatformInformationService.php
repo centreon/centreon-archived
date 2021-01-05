@@ -96,7 +96,7 @@ class PlatformInformationService implements PlatformInformationServiceInterface
         } catch (RemoteServerException | MenuException | PlatformException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
-            throw new PlatformInformationException(_("An error occured while your platform update"), 0, $ex);
+            throw new PlatformInformationException(_("An error occured while your platform update" . $ex->getMessage()), 0, $ex);
         }
     }
 }

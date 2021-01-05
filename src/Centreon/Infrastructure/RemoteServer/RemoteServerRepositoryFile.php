@@ -26,11 +26,39 @@ use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
 
 class RemoteServerRepositoryFile implements RemoteServerRepositoryInterface
 {
-    public function updateInstanceMod(string $filePath, string $instanceType): void
+
+    /**
+     * @var string
+     */
+    private $centreonConfFilePath;
+
+    /**
+     * @param string $centreonConfFilePath
+     */
+    public function setCentreonConfFilePath(string $centreonConfFilePath): void
+    {
+        $this->centreonConfFilePath = DIRECTORY_SEPARATOR . ltrim($centreonConfFilePath, DIRECTORY_SEPARATOR);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateInstanceModeCentral(): void
     {
         system(
-            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1" . $instanceType . "\\3/' "
-            . $filePath
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1central\\3/' "
+            . $this->centreonConfFilePath
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateInstanceModeRemote(): void
+    {
+        system(
+            "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' "
+            . $this->centreonConfFilePath
         );
     }
 }

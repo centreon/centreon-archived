@@ -69,11 +69,6 @@ class RemoteServerService implements RemoteServerServiceInterface
         $this->remoteServerRepository = $remoteServerRepository;
     }
 
-    public function setCentreonEtcPath(string $centreonEtcPath): void
-    {
-        $this->centreonEtcPath = DIRECTORY_SEPARATOR . ltrim($centreonEtcPath, DIRECTORY_SEPARATOR);
-    }
-
     /**
      * @inheritDoc
      */
@@ -109,7 +104,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Apply Remote Server mode in configuration file
          */
-        $this->remoteServerRepository->updateInstanceMod($this->centreonEtcPath . "conf.pm", "remote");
+        $this->remoteServerRepository->updateInstanceModeRemote();
     }
 
     /**
@@ -131,16 +126,15 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Apply Central mode in configuration file
          */
-        $this->remoteServerRepository->updateInstanceMod($this->centreonEtcPath . "conf.pm", "central");
+        $this->remoteServerRepository->updateInstanceModeCentral();
     }
 
     /**
      * Update the platform type
      *
      * @param string $type
-     * @return void
      */
-    private function updatePlatformTypeParameters(string $type)
+    private function updatePlatformTypeParameters(string $type): void
     {
         try {
             $platform = $this->platformTopologyRepository->findTopLevelPlatform();
