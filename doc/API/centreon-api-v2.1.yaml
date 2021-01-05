@@ -3225,14 +3225,12 @@ components:
           description: "Define an optional URL that can be used to provide more actions to be performed on the host group. You will see the link to the action URL in the host group details"
           example: "action url"
         icon:
-          type: object
           nullable: true
-          $ref: '#/components/schemas/Media.Image'
+          $ref: '#/components/schemas/Media.NullableImage'
           description: "Define the image that should be associated with this host group"
         icon_map:
-          type: object
           nullable: true
-          $ref: '#/components/schemas/Media.Image'
+          $ref: '#/components/schemas/Media.NullableImage'
           description: "Define an image that should be associated with this host group in the statusmap CGI in monitoring engine"
         geocoords:
           type: string
@@ -3253,6 +3251,10 @@ components:
         is_activated:
           type: boolean
           description: "Indicates whether the host group is activated or not"
+    Media.NullableImage:
+      type: object
+      nullable: true
+      $ref: '#/components/schemas/Media.Image'
     Media.Image:
       type: object
       properties:
