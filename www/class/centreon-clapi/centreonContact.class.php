@@ -202,12 +202,10 @@ class CentreonContact extends CentreonObject
         if (strtolower($locale) == "en_us" || strtolower($locale) == "browser") {
             return true;
         }
-        $centreonDir = realpath(__DIR__ . "/../../../") . "/www/locale";
-        $dir = opendir($centreonDir) ;
-        while (false !== ($ssDir = readdir($dir))) {
-            if (($locale === substr($ssDir, 0, 5)) && is_dir($centreonDir . '/' . $ssDir)) {
-                return true;
-            }
+        $centreonDir = realpath(__DIR__ . "/../../../");
+        $dir = $centreonDir . "/www/locale/$locale";
+        if (is_dir($dir)) {
+            return true;
         }
         return false;
     }
@@ -297,10 +295,13 @@ class CentreonContact extends CentreonObject
         if ($addParams['contact_oreon'] == '') {
             $addParams['contact_oreon'] = '1';
         }
-        if ($this->checkLang($params[self::ORDER_LANG]) == false) {
+        $completeLanguage = ($params[self::ORDER_LANG]) === "browser"
+            ? $params[self::ORDER_LANG]
+            : $params[self::ORDER_LANG] . '.UTF-8';
+        if ($this->checkLang($completeLanguage) == false) {
             throw new CentreonClapiException(self::UNKNOWN_LOCALE);
         }
-        $addParams['contact_lang'] = $params[self::ORDER_LANG];
+        $addParams['contact_lang'] = $completeLanguage;
         $addParams['contact_auth_type'] = $params[self::ORDER_AUTHTYPE];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
@@ -356,10 +357,14 @@ class CentreonContact extends CentreonObject
                 } elseif ($params[1] == "authtype") {
                     $params[1] = "auth_type";
                 } elseif ($params[1] == "lang" || $params[1] == "language" || $params[1] == "locale") {
-                    if ($this->checkLang($params[2]) == false) {
+                    $completeLanguage = ($params[self::ORDER_LANG]) === "browser"
+                        ? $params[self::ORDER_LANG]
+                        : $params[self::ORDER_LANG] . '.UTF-8';
+                    if ($this->checkLang($completeLanguage) == false) {
                         throw new CentreonClapiException(self::UNKNOWN_LOCALE);
                     }
                     $params[1] = "lang";
+                    $params[2] = $completeLanguage;
                 } elseif ($params[1] == "password") {
                     $params[1] = "passwd";
                     $params[2] = md5(trim($params[2]));
