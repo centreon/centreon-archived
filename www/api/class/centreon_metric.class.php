@@ -74,6 +74,12 @@ class CentreonMetric extends CentreonWebService
      */
     public function getList()
     {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $aclMetrics = '';
+
         $queryValues = array();
         if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
@@ -82,9 +88,19 @@ class CentreonMetric extends CentreonWebService
         }
 
         $query = 'SELECT DISTINCT(`metric_name`)
-            COLLATE utf8_bin as "metric_name" FROM `metrics`
-            WHERE metric_name LIKE :name
-            ORDER BY `metric_name` COLLATE utf8_general_ci ';
+            COLLATE utf8_bin as "metric_name", index_id FROM `metrics` as m, index_data i
+            WHERE metric_name LIKE :name ';
+
+        /**
+         * If ACLs on, then only return metrics linked to services that the user can see.
+         */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclMetrics .= ' AND m.index_id = i.id AND i.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+        }
+
+        $query .= $aclMetrics;
+        $query .= ' ORDER BY `metric_name` COLLATE utf8_general_ci ';
         $stmt = $this->pearDBMonitoring->prepare($query);
         $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
         $dbResult = $stmt->execute();
