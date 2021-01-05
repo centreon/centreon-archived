@@ -226,11 +226,15 @@ const getDetailCardLines = ({
         {
           key: 'groups',
           line: (
-            <div>
+            <Grid container spacing={1}>
               {details.groups?.map((group) => {
-                return <Chip label={group.name} />;
+                return (
+                  <Grid item>
+                    <Chip label={group.name} />
+                  </Grid>
+                );
               })}
-            </div>
+            </Grid>
           ),
         },
       ],
