@@ -76,10 +76,6 @@ class CentreonMetric extends CentreonWebService
     {
         global $centreon;
 
-        $userId = $centreon->user->user_id;
-        $isAdmin = $centreon->user->admin;
-        $aclMetrics = '';
-
         $queryValues = array();
         if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
@@ -94,13 +90,12 @@ class CentreonMetric extends CentreonWebService
         /**
          * If ACLs on, then only return metrics linked to services that the user can see.
          */
-        if (!$isAdmin) {
-            $acl = new CentreonACL($userId, $isAdmin);
-            $aclMetrics .= ' AND m.index_id = i.id AND i.service_id IN (' .
+        if (!$centreon->user->admin) {
+            $acl = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
+            $query .= ' AND m.index_id = i.id AND i.service_id IN (' .
                 $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
         }
 
-        $query .= $aclMetrics;
         $query .= ' ORDER BY `metric_name` COLLATE utf8_general_ci ';
         $stmt = $this->pearDBMonitoring->prepare($query);
         $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
@@ -129,10 +124,6 @@ class CentreonMetric extends CentreonWebService
     {
         global $centreon;
 
-        $userId = $centreon->user->user_id;
-        $isAdmin = $centreon->user->admin;
-        $aclMetrics = '';
-
         $queryValues = array();
         if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
@@ -150,12 +141,12 @@ class CentreonMetric extends CentreonWebService
             AND s.enabled = 1
             AND CONCAT(h.name," - ", s.description, " - ",  m.metric_name) LIKE :name ';
 
-        if (!$isAdmin) {
-            $acl = new CentreonACL($userId, $isAdmin);
-            $aclMetrics .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+        if (!$centreon->user->admin) {
+            $acl = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
+            $query .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
         }
 
-        $query .= ' ORDER BY CONCAT(h.name," - ", s.description, " - ",  m.metric_name) COLLATE utf8_general_ci ';
+        $query .= ' ORDER BY fullname COLLATE utf8_general_ci ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (
