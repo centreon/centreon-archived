@@ -110,6 +110,12 @@ class CentreonMetric extends CentreonWebService
      */
     protected function getListByService()
     {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $aclMetrics = '';
+
         $queryValues = array();
         if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
@@ -125,8 +131,14 @@ class CentreonMetric extends CentreonWebService
             AND s.service_id = i.service_id
             AND h.enabled = 1
             AND s.enabled = 1
-            AND CONCAT(h.name," - ", s.description, " - ",  m.metric_name) LIKE :name
-            ORDER BY CONCAT(h.name," - ", s.description, " - ",  m.metric_name) COLLATE utf8_general_ci ';
+            AND CONCAT(h.name," - ", s.description, " - ",  m.metric_name) LIKE :name ';
+
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclMetrics .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+        }
+
+        $query .= ' ORDER BY CONCAT(h.name," - ", s.description, " - ",  m.metric_name) COLLATE utf8_general_ci ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (
