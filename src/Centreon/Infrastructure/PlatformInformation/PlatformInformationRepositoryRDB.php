@@ -160,16 +160,16 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                      */
                     $deletedKeys[] = "'apiPeerValidation'";
                     if ($platformInformation->hasApiPeerValidation() === true) {
-                        $insertQuery .= "('apiPeerValidation', 'yes')";
+                        $insertQuery .= "('apiPeerValidation', 'yes'),";
                     } else {
-                        $insertQuery .= "('apiPeerValidation', 'no')";
+                        $insertQuery .= "('apiPeerValidation', 'no'),";
                     }
                 }
             } else {
                 array_push($deletedKeys, "'isRemote'", "'isCentral'");
-                $insertQuery .= "('isCentral', 'yes'),  ('isRemote', 'no')";
+                $insertQuery .= "('isCentral', 'yes'),  ('isRemote', 'no'),";
             }
-            $insertStatement = $this->db->prepare($this->translateDbName($insertQuery));
+            $insertStatement = $this->db->prepare($this->translateDbName(rtrim($insertQuery, ',')));
             foreach ($queryParameters as $key => $bindParams) {
                 /**
                  * each key of queryParameters used into the insertStatement also needs to be deleted before
