@@ -58,6 +58,7 @@ import {
   labelServices,
   labelFqdn,
   labelAlias,
+  labelGroups,
   labelAcknowledgement,
   labelDowntime,
   labelDisplayEvents,
@@ -155,6 +156,7 @@ const retrievedDetails = {
       reporting: undefined,
     },
   },
+  groups: [{ id: 0, name: 'Linux-servers' }],
 };
 
 const performanceGraphData = {
@@ -429,6 +431,9 @@ describe(Details, () => {
 
     expect(getByText(labelCurrentNotificationNumber)).toBeInTheDocument();
     expect(getByText('3')).toBeInTheDocument();
+
+    expect(getByText(labelGroups)).toBeInTheDocument();
+    expect(getByText('Linux-servers')).toBeInTheDocument();
 
     expect(getByText(labelPerformanceData)).toBeInTheDocument();
     expect(

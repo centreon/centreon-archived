@@ -15880,6 +15880,9 @@ msgstr "Erreur lors de la recherche des services"
 msgid "Error when searching for hosts"
 msgstr "Erreur lors de la recherche des hôtes"
 
+msgid "Groups"
+msgstr "Groupes"
+
 msgid "Display events"
 msgstr "Afficher les évènements"
 
