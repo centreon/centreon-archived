@@ -116,43 +116,43 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                  * Those 2 keys aren't put into queryParameters, so we add them directly to the deletedKey array
                  */
                 array_push($deletedKeys, "'isRemote'", "'isCentral'");
-                $insertQuery .= "('isRemote', 'yes'),  ('isCentral', 'no'), ";
+                $insertQuery .= "('isRemote', 'yes'),  ('isCentral', 'no'),";
 
                 if ($platformInformation->getCentralServerAddress() !== null) {
                     $queryParameters['authorizedMaster'] = [
                         \PDO::PARAM_STR => $platformInformation->getCentralServerAddress()
                     ];
-                    $insertQuery .= "('authorizedMaster', :authorizedMaster), ";
+                    $insertQuery .= "('authorizedMaster', :authorizedMaster),";
                 }
                 if ($platformInformation->getApiUsername() !== null) {
                     $queryParameters['apiUsername'] = [
                         \PDO::PARAM_STR => $platformInformation->getApiUsername()
                     ];
-                    $insertQuery .= "('apiUsername', :apiUsername), ";
+                    $insertQuery .= "('apiUsername', :apiUsername),";
                 }
                 if ($platformInformation->getEncryptedApiCredentials() !== null) {
                     $queryParameters['apiCredentials'] = [
                         \PDO::PARAM_STR => $platformInformation->getEncryptedApiCredentials()
                     ];
-                    $insertQuery .= "('apiCredentials', :apiCredentials), ";
+                    $insertQuery .= "('apiCredentials', :apiCredentials),";
                 }
                 if ($platformInformation->getApiScheme() !== null) {
                     $queryParameters['apiScheme'] = [
                         \PDO::PARAM_STR => $platformInformation->getApiScheme()
                     ];
-                    $insertQuery .= "('apiScheme', :apiScheme), ";
+                    $insertQuery .= "('apiScheme', :apiScheme),";
                 }
                 if ($platformInformation->getApiPort() !== null) {
                     $queryParameters['apiPort'] = [
                         \PDO::PARAM_INT => $platformInformation->getApiPort()
                     ];
-                    $insertQuery .= "('apiPort', :apiPort), ";
+                    $insertQuery .= "('apiPort', :apiPort),";
                 }
                 if ($platformInformation->getApiPath() !== null) {
                     $queryParameters['apiPath'] = [
                         \PDO::PARAM_STR => $platformInformation->getApiPath()
                     ];
-                    $insertQuery .= "('apiPath', :apiPath), ";
+                    $insertQuery .= "('apiPath', :apiPath),";
                 }
                 if ($platformInformation->hasApiPeerValidation() !== null) {
                     /**
