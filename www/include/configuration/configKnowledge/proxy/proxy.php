@@ -52,7 +52,7 @@ require_once "include/common/common-Func.php";
 require_once "class/centreonLog.class.php";
 require_once $centreon_path . '/bootstrap.php';
 require_once "class/centreon-knowledge/procedures.class.php";
-require_once "class/centreon-knowledge/procedures_Proxy.class.php";
+require_once "class/centreon-knowledge/ProceduresProxy.class.php";
 
 $modules_path = $centreon_path . "www/include/configuration/configKnowledge/";
 require_once $modules_path . 'functions.php';
@@ -70,7 +70,7 @@ try {
 }
 
 $WikiURL = $conf['kb_wiki_url'];
-$proxy = new procedures_Proxy($pearDB);
+$proxy = new ProceduresProxy($pearDB);
 
 /*
  * Check if user want host or service procedures

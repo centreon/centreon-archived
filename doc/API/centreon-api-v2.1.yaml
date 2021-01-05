@@ -21,7 +21,7 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-  version: "beta"
+  version: "2.1"
 externalDocs:
   description: You can contact us on our community Slack
   url: 'https://centreon.slack.com/messages/CCRGLQSE5'
@@ -41,11 +41,7 @@ servers:
         default: '80'
         description: "Port used by HTTP server"
       version:
-        enum:
-          - latest
-          - beta
-          - v2
-        default: beta
+        default: v2.1
         description: "Version of the API"
 tags:
   - name: Authentication
@@ -122,6 +118,31 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Configuration.Host.Template'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/hosts/categories:
+    get:
+      tags:
+        - Host category
+      summary: "List all host categories"
+      description: |
+        List of all host category configurations
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.Host.Category'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -2942,6 +2963,29 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
+    Configuration.Host.Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "Host category id"
+          example: 1
+        name:
+          type: string
+          description: "Host category name"
+          example: "host-category"
+        alias:
+          type: string
+          description: "Host category alias"
+          example: "host-category"
+        is_activated:
+          type: boolean
+          description: "Indicates whether this host category is enabled or not"
+          example: "true"
+        comments:
+          type: string
+          description: "Host category comments"
+          nullable: true
     Configuration.Host.Template:
       type: object
       properties:
