@@ -59,7 +59,6 @@ const GraphColumn = ({
             graphHeight={150}
             resource={row}
             timeline={[]}
-            onAddComment={(): void => undefined}
           />
         </Paper>
       </HoverChip>
