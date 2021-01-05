@@ -96,7 +96,8 @@ class CentreonMetric extends CentreonWebService
          */
         if (!$isAdmin) {
             $acl = new CentreonACL($userId, $isAdmin);
-            $aclMetrics .= ' AND m.index_id = i.id AND i.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+            $aclMetrics .= ' AND m.index_id = i.id AND i.service_id IN (' .
+                $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
         }
 
         $query .= $aclMetrics;
