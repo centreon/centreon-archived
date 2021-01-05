@@ -199,7 +199,7 @@ class CentreonContact extends CentreonObject
         if (!$locale || $locale == "") {
             return true;
         }
-        if (strtolower($locale) == "en_us" || strtolower($locale) == "browser") {
+        if (strtolower($locale) === "en_us.utf-8" || strtolower($locale) === "browser") {
             return true;
         }
         $centreonDir = realpath(__DIR__ . "/../../../");
@@ -295,7 +295,7 @@ class CentreonContact extends CentreonObject
         if ($addParams['contact_oreon'] == '') {
             $addParams['contact_oreon'] = '1';
         }
-        $completeLanguage = ($params[self::ORDER_LANG]) === "browser"
+        $completeLanguage = strtolower($params[self::ORDER_LANG]) === "browser"
             ? $params[self::ORDER_LANG]
             : $params[self::ORDER_LANG] . '.UTF-8';
         if ($this->checkLang($completeLanguage) == false) {
@@ -357,7 +357,7 @@ class CentreonContact extends CentreonObject
                 } elseif ($params[1] == "authtype") {
                     $params[1] = "auth_type";
                 } elseif ($params[1] == "lang" || $params[1] == "language" || $params[1] == "locale") {
-                    $completeLanguage = ($params[self::ORDER_LANG]) === "browser"
+                    $completeLanguage = strtolower($params[self::ORDER_LANG]) === "browser"
                         ? $params[self::ORDER_LANG]
                         : $params[self::ORDER_LANG] . '.UTF-8';
                     if ($this->checkLang($completeLanguage) == false) {
