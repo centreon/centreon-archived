@@ -1,9 +1,11 @@
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const { merge } = require('webpack-merge');
 const path = require('path');
 const os = require('os');
 
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const { merge } = require('webpack-merge');
+
 const devConfig = require('@centreon/frontend-core/webpack/patch/dev');
+
 const baseConfig = require('./webpack.config');
 
 const devServerPort = 9090;
