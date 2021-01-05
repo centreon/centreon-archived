@@ -4,6 +4,10 @@ default:
   gherkin:
     cache: ~
   suites:
+    host_severity:
+      paths: [ "%paths.base%/features/HostSeverity.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\HostSeverityContext
     host_monitoring:
       paths: [ "%paths.base%/features/HostMonitoring.feature" ]
       contexts:

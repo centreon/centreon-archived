@@ -215,6 +215,9 @@ services:
         class: Centreon\Domain\HostConfiguration\HostConfigurationService
         public: true
 
+    Centreon\Domain\HostConfiguration\Interfaces\HostSeverityReadRepositoryInterface:
+        class: Centreon\Infrastructure\HostConfiguration\Repository\HostSeverityRepositoryRDB
+
     # Service configuration
     Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface:
         class: Centreon\Domain\ServiceConfiguration\ServiceConfigurationService
