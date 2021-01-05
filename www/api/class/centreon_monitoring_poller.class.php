@@ -59,6 +59,12 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
      */
     public function getList()
     {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $aclPollers = '';
+
         $queryValues = array();
 
         // Check for select2 'q' argument
@@ -69,8 +75,16 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
         }
 
         $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name FROM instances ' .
-            'WHERE name LIKE :name AND deleted=0 ' .
-            'ORDER BY name ';
+            'WHERE name LIKE :name AND deleted=0 ';
+
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclPollers .= 'AND instances.instance_id IN (' . $acl->getPollerString('ID', $this->pearDBMonitoring) . ') ';
+        }
+
+        $queryPoller .= $aclPollers;
+        $queryPoller .= ' ORDER BY name';
+
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (
                 !is_numeric($this->arguments['page'])
