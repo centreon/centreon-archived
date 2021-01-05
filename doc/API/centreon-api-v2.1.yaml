@@ -3181,16 +3181,14 @@ components:
           description: "Define an optional URL that can be used to provide more actions to be performed on the host group. You will see the link to the action URL in the host group details"
           example: "action url"
         icon:
-          "oneOf": [
-            { "type": "null" },
-            { "$ref": '#/components/schemas/Media.Image' }
-          ]
+          type: object
+          nullable: true
+          $ref: '#/components/schemas/Media.Image'
           description: "Define the image that should be associated with this host group"
         icon_map:
-          "oneOf": [
-            { "type": "null" },
-            { "$ref": '#/components/schemas/Media.Image' }
-          ]
+          type: object
+          nullable: true
+          $ref: '#/components/schemas/Media.Image'
           description: "Define an image that should be associated with this host group in the statusmap CGI in monitoring engine"
         geocoords:
           type: string
