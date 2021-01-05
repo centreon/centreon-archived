@@ -3,6 +3,7 @@
   <description>Custom rules defined by Centreon</description>
 
   <exclude-pattern>*/centreon-build/*</exclude-pattern>
+  <exclude-pattern>symfony/*</exclude-pattern>
   <exclude-pattern>*/doc/*</exclude-pattern>
   <exclude-pattern>*/node_modules/*</exclude-pattern>
   <exclude-pattern>*/vendor/*</exclude-pattern>

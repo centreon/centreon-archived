@@ -63,4 +63,12 @@ class FindHostTemplates
         $response->setHostTemplates($hostTemplates);
         return $response;
     }
+
+    /**
+     * @return HostConfigurationReadRepositoryInterface
+     */
+    public function getConfigurationReadRepository(): HostConfigurationReadRepositoryInterface
+    {
+        return $this->configurationReadRepository;
+    }
 }
