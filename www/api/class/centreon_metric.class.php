@@ -199,7 +199,7 @@ class CentreonMetric extends CentreonWebService
     {
         $queryValues = array();
         if (isset($this->arguments['id'])) {
-            $tmp = explode ('-', $this->arguments['id']);
+            $tmp = explode('-', $this->arguments['id']);
             $queryValues['host_id'] = (int)$tmp[0];
             $queryValues['service_id'] = (int)$tmp[1];
         } else {
@@ -413,7 +413,8 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
 
-        if (!isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
+        if (
+            !isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
             || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
@@ -464,7 +465,7 @@ class CentreonMetric extends CentreonWebService
             $stmt = $this->pearDBMonitoring->prepare(
                 'SELECT metric_id, host_id, service_id
                  FROM metrics, index_data
-                 WHERE metrics.metric_id IN (' . $filter. ')
+                 WHERE metrics.metric_id IN (' . $filter . ')
                  AND metrics.index_id = index_data.id'
             );
             foreach ($queryValues as $param => $value) {
@@ -473,7 +474,8 @@ class CentreonMetric extends CentreonWebService
             $stmt->execute();
 
             while ($row = $stmt->fetch()) {
-                if (isset($selectedMetrics[$row['host_id'] . '_' . $row['service_id']])
+                if (
+                    isset($selectedMetrics[$row['host_id'] . '_' . $row['service_id']])
                     && count($selectedMetrics[$row['host_id'] . '_' . $row['service_id']]) <= 0
                 ) {
                     continue;
@@ -669,7 +671,8 @@ class CentreonMetric extends CentreonWebService
         }
 
         /* Validate options */
-        if (!isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
+        if (
+            !isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
             || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
@@ -700,7 +703,8 @@ class CentreonMetric extends CentreonWebService
 
         foreach ($ids as $id) {
             list($hostId, $serviceId) = explode('_', $id);
-            if (!is_numeric($hostId) ||
+            if (
+                !is_numeric($hostId) ||
                 !is_numeric($serviceId)
             ) {
                 throw new RestBadRequestException("Bad parameters");
@@ -809,8 +813,9 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
 
-        if (!isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
-           || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
+        if (
+            !isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
+            || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
         }
@@ -819,7 +824,8 @@ class CentreonMetric extends CentreonWebService
         $end = $this->arguments['end'];
 
         list($hostId, $serviceId) = explode('_', $id);
-        if (!is_numeric($hostId) ||
+        if (
+            !is_numeric($hostId) ||
             !is_numeric($serviceId)
         ) {
             throw new RestBadRequestException("Bad parameters");
@@ -901,7 +907,8 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
 
-        if (!isset($this->arguments['start']) ||
+        if (
+            !isset($this->arguments['start']) ||
             !is_numeric($this->arguments['start']) ||
             !isset($this->arguments['end']) ||
             !is_numeric($this->arguments['end'])
@@ -925,7 +932,8 @@ class CentreonMetric extends CentreonWebService
         }
 
         list($hostId, $serviceId) = explode('_', $id);
-        if (!is_numeric($hostId) ||
+        if (
+            !is_numeric($hostId) ||
             !is_numeric($serviceId)
         ) {
             throw new RestBadRequestException("Bad parameters");
@@ -1040,7 +1048,8 @@ class CentreonMetric extends CentreonWebService
         }
 
         /* Validate options */
-        if (!isset($this->arguments['ids']) ||
+        if (
+            !isset($this->arguments['ids']) ||
             !isset($this->arguments['start']) ||
             !is_numeric($this->arguments['start']) ||
             !isset($this->arguments['end']) ||
@@ -1203,13 +1212,15 @@ class CentreonMetric extends CentreonWebService
                 'start' => $row['start'],
                 'end' => $row['end']
             );
-            if ($start > $row['start']
+            if (
+                $start > $row['start']
                 || is_null($row['start'])
                 || $row['start'] === ''
             ) {
                 $period['start'] = $start;
             }
-            if ($end < $row['end']
+            if (
+                $end < $row['end']
                 || is_null($row['end'])
                 || $row['end'] === ''
             ) {
