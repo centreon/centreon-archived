@@ -24,37 +24,35 @@ const devServerAddress = externalInterface
 
 const publicPath = `http://${devServerAddress}:${devServerPort}/static/`;
 
-module.exports = (env) => {
-  const plugins = env?.WEBPACK_SERVE ? [new ReactRefreshWebpackPlugin()] : [];
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
-  return merge(baseConfig, devConfig, {
-    output: {
-      publicPath,
+const plugins = isDevelopment ? [new ReactRefreshWebpackPlugin()] : [];
+
+module.exports = merge(baseConfig, devConfig, {
+  output: {
+    publicPath,
+  },
+  resolve: {
+    alias: {
+      'react-router-dom': path.resolve('./node_modules/react-router-dom'),
+      '@material-ui/core': path.resolve('./node_modules/@material-ui/core'),
     },
-    resolve: {
-      alias: {
-        'react-router-dom': path.resolve('./node_modules/react-router-dom'),
-        '@material-ui/core': path.resolve('./node_modules/@material-ui/core'),
-      },
-    },
-    devServer: {
-      contentBase: [
-        path.resolve(
-          `${__dirname}/www/modules/centreon-license-manager/static`,
-        ),
-        path.resolve(
-          `${__dirname}/www/modules/centreon-autodiscovery-server/static`,
-        ),
-        path.resolve(`${__dirname}/www/modules/centreon-bam-server/static`),
-      ],
-      compress: true,
-      host: '0.0.0.0',
-      port: devServerPort,
-      hot: true,
-      watchContentBase: true,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      publicPath,
-    },
-    plugins,
-  });
-};
+  },
+  devServer: {
+    contentBase: [
+      path.resolve(`${__dirname}/www/modules/centreon-license-manager/static`),
+      path.resolve(
+        `${__dirname}/www/modules/centreon-autodiscovery-server/static`,
+      ),
+      path.resolve(`${__dirname}/www/modules/centreon-bam-server/static`),
+    ],
+    compress: true,
+    host: '0.0.0.0',
+    port: devServerPort,
+    hot: true,
+    watchContentBase: true,
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    publicPath,
+  },
+  plugins,
+});

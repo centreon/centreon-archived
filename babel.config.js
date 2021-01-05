@@ -1,5 +1,4 @@
-const isDevelopment =
-  process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const plugins = isDevelopment ? ['react-refresh/babel'] : [];
 
