@@ -166,7 +166,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                     }
                 }
             } else {
-                array_push($deletedKeys, 'isRemote','isCentral');
+                array_push($deletedKeys, "'isRemote'", "'isCentral'");
                 $insertQuery .= "('isCentral', 'yes'),  ('isRemote', 'no')";
             }
             $insertStatement = $this->db->prepare($this->translateDbName($insertQuery));
