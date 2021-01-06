@@ -24,6 +24,7 @@ import {
   makeStyles,
   Paper,
   Typography,
+  Theme,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
@@ -69,12 +70,30 @@ const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 
 const margin = { top: 30, right: 45, bottom: 30, left: 45 };
 
-const useStyles = makeStyles((theme) => ({
+const commentTooltipWidth = 165;
+
+interface Props {
+  width: number;
+  height: number;
+  timeSeries: Array<TimeValue>;
+  base: number;
+  lines: Array<LineModel>;
+  xAxisTickFormat: string;
+  tooltipX?: number;
+  onTooltipDisplay?: (tooltipX?: number) => void;
+  timeline?: Array<TimelineEvent>;
+  resource: Resource | ResourceDetails;
+  onAddComment?: (commentParameters: CommentParameters) => void;
+  eventAnnotationsActive: boolean;
+}
+
+const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   container: {
     position: 'relative',
   },
   overlay: {
-    cursor: 'crosshair',
+    cursor: ({ onAddComment }): string =>
+      isNil(onAddComment) ? 'normal' : 'crosshair',
   },
   tooltip: {
     opacity: 0.8,
@@ -92,21 +111,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 10,
   },
 }));
-
-interface Props {
-  width: number;
-  height: number;
-  timeSeries: Array<TimeValue>;
-  base: number;
-  lines: Array<LineModel>;
-  xAxisTickFormat: string;
-  timeline?: Array<TimelineEvent>;
-  onTooltipDisplay?: (x?: number) => void;
-  tooltipX?: number;
-  resource: Resource | ResourceDetails;
-  onAddComment: (commentParameters: CommentParameters) => void;
-  eventAnnotationsActive: boolean;
-}
 
 const getScale = ({
   values,
@@ -140,7 +144,7 @@ const Graph = ({
   eventAnnotationsActive,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const classes = useStyles();
+  const classes = useStyles({ onAddComment });
   const { format } = useLocaleDateTimeFormat();
 
   const [addingComment, setAddingComment] = React.useState(false);
@@ -315,7 +319,7 @@ const Graph = ({
   };
 
   const displayAddCommentTooltip = (event): void => {
-    if (!canComment([resource])) {
+    if (!canComment([resource]) || isNil(onAddComment)) {
       return;
     }
 
@@ -326,8 +330,10 @@ const Graph = ({
 
     setCommentDate(date);
 
+    const displayLeft = width - x < commentTooltipWidth;
+
     showAddCommentTooltip({
-      tooltipLeft: x,
+      tooltipLeft: displayLeft ? x - commentTooltipWidth : x,
       tooltipTop: y,
     });
   };
@@ -339,7 +345,7 @@ const Graph = ({
 
   const confirmAddComment = (comment): void => {
     setAddingComment(false);
-    onAddComment(comment);
+    onAddComment?.(comment);
   };
 
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
@@ -425,6 +431,7 @@ const Graph = ({
             style={{
               left: addCommentTooltipLeft,
               top: addCommentTooltipTop,
+              width: commentTooltipWidth,
             }}
           >
             <Typography variant="caption">

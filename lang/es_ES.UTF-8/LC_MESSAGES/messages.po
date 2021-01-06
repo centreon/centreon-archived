@@ -14629,6 +14629,9 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "FQDN / Address"
 #  msgstr ""
 
+#  msgid "Groups"
+#  msgstr ""
+
 #  msgid "Comment added"
 #  msgstr ""
 

@@ -1,5 +1,10 @@
 import { ListingModel } from '@centreon/ui';
 
+export interface NamedEntity {
+  id: number;
+  name: string;
+}
+
 export interface Icon {
   url: string;
   name: string;
@@ -7,9 +12,7 @@ export interface Icon {
 
 type ParentLinks = Pick<ResourceLinks, 'uris'>;
 
-export interface Parent {
-  id: number;
-  name: string;
+export interface Parent extends NamedEntity {
   icon: Icon | null;
   status: Status;
   links: ParentLinks;
@@ -26,9 +29,7 @@ export interface Severity {
   level: number;
 }
 
-export interface Resource {
-  id: number;
-  name: string;
+export interface Resource extends NamedEntity {
   icon?: Icon;
   parent?: Parent;
   status: Status;

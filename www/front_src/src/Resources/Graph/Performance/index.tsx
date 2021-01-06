@@ -28,7 +28,7 @@ interface Props {
   eventAnnotationsActive?: boolean;
   resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
-  onAddComment: (commentParameters: CommentParameters) => void;
+  onAddComment?: (commentParameters: CommentParameters) => void;
   tooltipX?: number;
   onTooltipDisplay?: (x?: number) => void;
 }

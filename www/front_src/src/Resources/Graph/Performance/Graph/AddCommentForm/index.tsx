@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isEmpty, isNil } from 'ramda';
+import { isEmpty, isNil, pipe, trim } from 'ramda';
 
 import { Grid, Typography } from '@material-ui/core';
 
@@ -69,9 +69,19 @@ const AddCommentForm = ({
     });
   };
 
-  const error = isEmpty(comment) ? t(labelRequired) : undefined;
+  const getError = (): string | undefined => {
+    if (isNil(comment)) {
+      return undefined;
+    }
 
-  const canConfirm = isNil(error) && !isNil(comment) && !sending;
+    const normalizedComment = comment || '';
+
+    return pipe(trim, isEmpty)(normalizedComment)
+      ? t(labelRequired)
+      : undefined;
+  };
+
+  const canConfirm = isNil(getError()) && !isNil(comment) && !sending;
 
   return (
     <Dialog
@@ -91,7 +101,7 @@ const AddCommentForm = ({
         <Grid item>
           <TextField
             autoFocus
-            error={error}
+            error={getError()}
             label={t(labelComment)}
             ariaLabel={t(labelComment)}
             value={comment}

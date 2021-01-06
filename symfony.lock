@@ -113,6 +113,9 @@
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },
+    "hansott/psr7-cookies": {
+        "version": "3.0.2"
+    },
     "instaclick/php-webdriver": {
         "version": "1.4.7"
     },
@@ -144,6 +147,12 @@
     },
     "league/openapi-psr7-validator": {
         "version": "0.9"
+    },
+    "league/uri": {
+        "version": "6.4.0"
+    },
+    "league/uri-interfaces": {
+        "version": "2.2.0"
     },
     "mehr-als-nix/parallel": {
         "version": "v1.0.0"
