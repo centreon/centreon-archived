@@ -27,7 +27,7 @@ use Centreon\Domain\PlatformInformation\PlatformInformation;
 interface PlatformInformationRepositoryInterface
 {
     /**
-     * Retrieve all data from 'information' table
+     * Find all platform information.
      *
      * @return PlatformInformation|null
      * @throws \Exception
@@ -35,7 +35,7 @@ interface PlatformInformationRepositoryInterface
     public function findPlatformInformation(): ?PlatformInformation;
 
     /**
-     * Update the 'information' table
+     * Update the platform information.
      *
      * @param PlatformInformation $platformInformation
      * @throws \Exception
