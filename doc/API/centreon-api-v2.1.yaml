@@ -3252,7 +3252,23 @@ components:
     Media.NullableImage:
       type: object
       nullable: true
-      $ref: '#/components/schemas/Media.Image'
+      properties:
+        id:
+          type: integer
+          description: "Image id"
+        name:
+          type: string
+          description: "Image name"
+          maxLength: 255
+        path:
+          type: string
+          maxLength: 255
+          description: "Image path"
+        comment:
+          type: string
+          nullable: true
+          maxLength: 65535
+          description: "Image comments"
     Media.Image:
       type: object
       properties:
