@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\UseCase\V21;
 
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
+use Centreon\Domain\Media\Model\Image;
 
 /**
  * This class is a DTO for the FindHostSeverities use case.
@@ -47,6 +48,8 @@ class FindHostSeveritiesResponse
                 'name' => $hostSeverity->getName(),
                 'alias' => $hostSeverity->getAlias(),
                 'comments' => $hostSeverity->getComments(),
+                'level' => $hostSeverity->getLevel(),
+                'icon' => $this->imageToArray($hostSeverity->getIcon()),
                 'is_activated' => $hostSeverity->isActivated()
             ];
         }
@@ -58,5 +61,22 @@ class FindHostSeveritiesResponse
     public function getHostSeverities(): array
     {
         return $this->hostSeverities;
+    }
+
+    /**
+     * @param Image|null $image
+     * @return array|null
+     */
+    private function imageToArray(?Image $image): ?array
+    {
+        if ($image !== null) {
+            return [
+                'id' => $image->getId(),
+                'name' => $image->getName(),
+                'path' => $image->getPath(),
+                'comment' => $image->getComment()
+            ];
+        }
+        return null;
     }
 }

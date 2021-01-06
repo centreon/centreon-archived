@@ -43,7 +43,17 @@ class HostSeverityV21
      * @var string
      */
     public $alias;
-    
+
+    /**
+     * @var int
+     */
+    public $level;
+
+    /**
+     * @var string
+     */
+    public $icon;
+
     /**
      * @var string
      */

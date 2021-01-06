@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Model;
 
 use Centreon\Domain\Common\Assertion\Assertion;
+use Centreon\Domain\Media\Model\Image;
 
 /**
  * This class is designed to represent a host severity.
@@ -49,6 +50,16 @@ class HostSeverity
      * @var string Longer description of this severity.
      */
     private $alias;
+
+    /**
+     * @var int Priority.
+     */
+    private $level;
+
+    /**
+     * @var Image Define the image that should be associated with this severity.
+     */
+    private $icon;
     
     /**
      * @var string|null Comments regarding this severity.
@@ -139,7 +150,43 @@ class HostSeverity
         $this->isActivated = $isActivated;
         return $this;
     }
-    
+
+    /**
+     * @return int
+     */
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    /**
+     * @param int $level
+     * @return $this
+     */
+    public function setLevel(int $level): HostSeverity
+    {
+        $this->level = $level;
+        return $this;
+    }
+
+    /**
+     * @return Image
+     */
+    public function getIcon(): Image
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @param Image $icon
+     * @return $this
+     */
+    public function setIcon(Image $icon): HostSeverity
+    {
+        $this->icon = $icon;
+        return $this;
+    }
+
     /**
      * @return string|null
      */

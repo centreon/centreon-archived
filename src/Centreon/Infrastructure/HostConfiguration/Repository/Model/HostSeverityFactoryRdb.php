@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\HostConfiguration\Repository\Model;
 
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
+use Centreon\Domain\Media\Model\Image;
 
 /**
  * This class is designed to provide a way to create the HostSeverity entity from the database.
@@ -44,6 +45,14 @@ class HostSeverityFactoryRdb
             ->setId((int) $data['hc_id'])
             ->setName($data['hc_name'])
             ->setAlias($data['hc_alias'])
+            ->setLevel((int) $data['level'])
+            ->setIcon(
+                (new Image())
+                    ->setId((int)$data['img_id'])
+                    ->setName($data['img_name'])
+                    ->setComment($data['img_comment'])
+                    ->setPath(str_replace('//', '/', ($data['img_path'])))
+            )
             ->setIsActivated($data['hc_activate'] === '1');
         if ($data['hc_comment'] !== null) {
             $hostSeverity->setComments($data['hc_comment']);

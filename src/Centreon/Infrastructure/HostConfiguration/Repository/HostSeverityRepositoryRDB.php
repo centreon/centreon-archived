@@ -61,6 +61,8 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
                 'id' => 'hc_id',
                 'name' => 'hc_name',
                 'alias' => 'hc_alias',
+                'level' => 'level',
+                'icon' => 'icon_id',
                 'is_activated' => 'hc_activate',
             ]
         );
@@ -77,7 +79,17 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
                 }
             }
         );
-        $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.hostcategories');
+        $request = $this->translateDbName(
+            'SELECT SQL_CALC_FOUND_ROWS hc.*, icon.img_id AS img_id, icon.img_name AS img_name,
+                CONCAT(iconD.dir_name,\'/\',icon.img_path) AS img_path, icon.img_comment AS img_comment
+            FROM `:db`.hostcategories hc
+            LEFT JOIN `:db`.view_img icon
+                ON icon.img_id = hc.icon_id
+            LEFT JOIN `centreon`.view_img_dir_relation iconR
+                ON iconR.img_img_id = icon.img_id
+            LEFT JOIN `centreon`.view_img_dir iconD
+                ON iconD.dir_id = iconR.dir_dir_parent_id'
+        );
         
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
@@ -106,7 +118,6 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
         if ($result !== false && ($total = $result->fetchColumn()) !== false) {
             $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
         }
-        
         $hostSeverities = [];
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $hostSeverities[] = HostSeverityFactoryRdb::create($record);

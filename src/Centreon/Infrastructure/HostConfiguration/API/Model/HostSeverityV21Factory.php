@@ -43,9 +43,10 @@ class HostSeverityV21Factory
             $newHostSeverity->id = $hostSeverity['id'];
             $newHostSeverity->name = $hostSeverity['name'];
             $newHostSeverity->alias = $hostSeverity['alias'];
+            $newHostSeverity->level = $hostSeverity['level'];
+            $newHostSeverity->icon = $hostSeverity['icon'];
             $newHostSeverity->comments = $hostSeverity['comments'];
             $newHostSeverity->isActivated = $hostSeverity['is_activated'];
-            
             $hostSeverities[] = $newHostSeverity;
         }
         return $hostSeverities;
