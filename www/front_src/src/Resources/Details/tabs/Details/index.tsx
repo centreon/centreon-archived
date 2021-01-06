@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { ParentSize } from '@visx/visx';
 
@@ -140,9 +140,10 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
             {getDetailCardLines({ details, toDate, toTime }).map(
               ({ title, field, xs = 6, getLines }) => {
                 const variableXs = (width > 600 ? xs / 2 : xs) as 3 | 6 | 12;
+                const displayCard = !isNil(field) && !isEmpty(field);
 
                 return (
-                  !isNil(field) && (
+                  displayCard && (
                     <Grid key={title} item xs={variableXs}>
                       <DetailsCard title={t(title)} lines={getLines()} />
                     </Grid>
