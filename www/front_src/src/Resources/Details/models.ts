@@ -5,6 +5,7 @@ import {
   Parent,
   ResourceLinks,
   Severity,
+  NamedEntity,
 } from '../models';
 
 import { TimePeriodId } from './tabs/Graph/models';
@@ -39,6 +40,7 @@ export interface ResourceDetails {
   type: 'service' | 'host';
   fqdn?: string;
   alias?: string;
+  groups?: Array<NamedEntity>;
 }
 
 export interface ServicesTabParameters {

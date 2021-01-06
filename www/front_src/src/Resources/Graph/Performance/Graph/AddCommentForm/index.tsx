@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isEmpty, isNil } from 'ramda';
+import { isEmpty, isNil, pipe, trim } from 'ramda';
 
 import { Grid, Typography } from '@material-ui/core';
 
@@ -27,14 +27,14 @@ import { ResourceDetails } from '../../../../Details/models';
 
 interface Props {
   onClose: () => void;
-  onAddComment: (comment) => void;
+  onSuccess: (comment) => void;
   date: Date;
   resource: Resource | ResourceDetails;
 }
 
-const DialogAddComment = ({
+const AddCommentForm = ({
   onClose,
-  onAddComment,
+  onSuccess,
   resource,
   date,
 }: Props): JSX.Element => {
@@ -65,13 +65,23 @@ const DialogAddComment = ({
         message: t(labelCommentAdded),
         severity: Severity.success,
       });
-      onAddComment(parameters);
+      onSuccess(parameters);
     });
   };
 
-  const error = isEmpty(comment) ? t(labelRequired) : undefined;
+  const getError = (): string | undefined => {
+    if (isNil(comment)) {
+      return undefined;
+    }
 
-  const canConfirm = isNil(error) && !isNil(comment) && !sending;
+    const normalizedComment = comment || '';
+
+    return pipe(trim, isEmpty)(normalizedComment)
+      ? t(labelRequired)
+      : undefined;
+  };
+
+  const canConfirm = isNil(getError()) && !isNil(comment) && !sending;
 
   return (
     <Dialog
@@ -91,7 +101,7 @@ const DialogAddComment = ({
         <Grid item>
           <TextField
             autoFocus
-            error={error}
+            error={getError()}
             label={t(labelComment)}
             ariaLabel={t(labelComment)}
             value={comment}
@@ -107,4 +117,4 @@ const DialogAddComment = ({
   );
 };
 
-export default DialogAddComment;
+export default AddCommentForm;

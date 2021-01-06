@@ -183,6 +183,7 @@ export const labelUrl = 'URL';
 export const labelSwitchToGraph = 'Switch to graph mode';
 export const labelSwitchToList = 'Switch to list mode';
 export const labelNoDataFor = 'No data for';
+export const labelGroups = 'Groups';
 export const labelAddComment = 'Add a comment';
 export const labelCommentAdded = 'Comment added';
 export const labelDisplayEvents = 'Display events';

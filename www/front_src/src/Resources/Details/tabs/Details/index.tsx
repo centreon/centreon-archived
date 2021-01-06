@@ -103,7 +103,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
 
   return (
     <ParentSize>
-      {({ width }) => (
+      {({ width }): JSX.Element => (
         <div className={classes.details}>
           <ExpandableCard
             title={t(labelStatusInformation)}
@@ -138,12 +138,17 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           )}
           <Grid container spacing={2} alignItems="stretch">
             {getDetailCardLines({ details, toDate, toTime }).map(
-              ({ title, field, xs = 6, getLines }) =>
-                !isNil(field) && (
-                  <Grid key={title} item xs={width > 600 ? xs / 2 : xs}>
-                    <DetailsCard title={t(title)} lines={getLines()} />
-                  </Grid>
-                ),
+              ({ title, field, xs = 6, getLines }) => {
+                const variableXs = (width > 600 ? xs / 2 : xs) as 3 | 6 | 12;
+
+                return (
+                  !isNil(field) && (
+                    <Grid key={title} item xs={variableXs}>
+                      <DetailsCard title={t(title)} lines={getLines()} />
+                    </Grid>
+                  )
+                );
+              },
             )}
           </Grid>
           {details.performance_data && (
