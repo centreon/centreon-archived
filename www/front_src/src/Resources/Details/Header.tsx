@@ -26,7 +26,7 @@ import { DetailsSectionProps } from '.';
 const useStyles = makeStyles((theme) => ({
   header: {
     height: 43,
-    padding: theme.spacing(0, 1, 0, 1),
+    padding: theme.spacing(0, 1),
     display: 'grid',
     gridGap: theme.spacing(2),
     gridTemplateColumns: 'auto minmax(0, 1fr) auto',
