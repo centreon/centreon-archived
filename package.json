@@ -3,7 +3,7 @@
   "version": "21.04.0",
   "description": "centreon web package",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --mode production --config ./webpack.config.prod.js",
+    "build": "webpack --mode production --config ./webpack.config.prod.js",
     "build:analyze": "webpack --mode production --config ./webpack.config.analyze.js",
     "build:dev": "webpack --mode development --config ./webpack.config.dev.js",
     "watch": "webpack --mode=development --config ./webpack.config.dev.js --watch",
@@ -11,7 +11,7 @@
     "eslint:fix": "npm run eslint -- --fix",
     "test": "jest",
     "test:watch": "npm test -- --watch",
-    "start:dev": "webpack serve --mode development --config ./webpack.config.dev.js"
+    "start:dev": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

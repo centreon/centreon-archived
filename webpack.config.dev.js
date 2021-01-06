@@ -24,14 +24,18 @@ const devServerAddress = externalInterface
 
 const publicPath = `http://${devServerAddress}:${devServerPort}/static/`;
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isServing = process.env.WEBPACK_ENV === 'serve';
 
-const plugins = isDevelopment ? [new ReactRefreshWebpackPlugin()] : [];
+const plugins = isServing ? [new ReactRefreshWebpackPlugin()] : [];
+
+const output = isServing
+  ? {
+      publicPath,
+    }
+  : {};
 
 module.exports = merge(baseConfig, devConfig, {
-  output: {
-    publicPath,
-  },
+  output,
   resolve: {
     alias: {
       'react-router-dom': path.resolve('./node_modules/react-router-dom'),

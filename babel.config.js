@@ -1,6 +1,6 @@
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isServing = process.env.WEBPACK_ENV === 'serve';
 
-const plugins = isDevelopment ? ['react-refresh/babel'] : [];
+const plugins = isServing ? ['react-refresh/babel'] : [];
 
 module.exports = {
   extends: '@centreon/frontend-core/babel/typescript',
