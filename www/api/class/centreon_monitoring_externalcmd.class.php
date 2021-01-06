@@ -99,7 +99,7 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
              * If user is not admin we need to retrieve its ACL
              */
             if (!$isAdmin) {
-                $userAcl = new CentreonACL($centreon->user->user_id, $centreon->centreon->admin);
+                $userAcl = new CentreonACL($centreon->user->user_id, $isAdmin);
             }
 
             if ($fh = @fopen($this->centcore_file, 'a+')) {
