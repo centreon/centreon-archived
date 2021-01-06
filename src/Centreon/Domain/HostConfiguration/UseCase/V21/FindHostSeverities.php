@@ -36,7 +36,7 @@ class FindHostSeverities
      * @var HostSeverityReadRepositoryInterface
      */
     private $repository;
-    
+
     /**
      * FindHostSeverities constructor.
      *
@@ -46,7 +46,7 @@ class FindHostSeverities
     {
         $this->repository = $repository;
     }
-    
+
     /**
      * Execute the use case for which this class was designed.
      *

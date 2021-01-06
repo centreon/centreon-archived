@@ -33,12 +33,12 @@ class HostSeverityV21
      * @var int
      */
     public $id;
-    
+
     /**
      * @var string
      */
     public $name;
-    
+
     /**
      * @var string
      */
@@ -58,7 +58,7 @@ class HostSeverityV21
      * @var string
      */
     public $comments;
-    
+
     /**
      * @var bool
      */

@@ -35,17 +35,17 @@ class HostSeverity
     public const MAX_NAME_LENGTH = 200,
         MAX_ALIAS_LENGTH = 200,
         MAX_COMMENTS_LENGTH = 65535;
-    
+
     /**
      * @var int|null
      */
     private $id;
-    
+
     /**
      * @var string Define a short name for this severity. It will be displayed with this name in the ACL configuration.
      */
     private $name;
-    
+
     /**
      * @var string Longer description of this severity.
      */
@@ -60,17 +60,17 @@ class HostSeverity
      * @var Image Define the image that should be associated with this severity.
      */
     private $icon;
-    
+
     /**
      * @var string|null Comments regarding this severity.
      */
     private $comments;
-    
+
     /**
      * @var bool Indicates whether this host severity is enabled or not (TRUE by default)
      */
     private $isActivated = true;
-    
+
     /**
      * @return int|null
      */
@@ -78,7 +78,7 @@ class HostSeverity
     {
         return $this->id;
     }
-    
+
     /**
      * @param int $id
      * @return HostSeverity
@@ -88,7 +88,7 @@ class HostSeverity
         $this->id = $id;
         return $this;
     }
-    
+
     /**
      * @return string
      */
@@ -96,7 +96,7 @@ class HostSeverity
     {
         return $this->name;
     }
-    
+
     /**
      * @param string $name
      * @return HostSeverity
@@ -110,7 +110,7 @@ class HostSeverity
         $this->name = $name;
         return $this;
     }
-    
+
     /**
      * @return string
      */
@@ -118,7 +118,7 @@ class HostSeverity
     {
         return $this->alias;
     }
-    
+
     /**
      * @param string $alias
      * @return HostSeverity
@@ -132,7 +132,7 @@ class HostSeverity
         $this->alias = $alias;
         return $this;
     }
-    
+
     /**
      * @return bool
      */
@@ -140,7 +140,7 @@ class HostSeverity
     {
         return $this->isActivated;
     }
-    
+
     /**
      * @param bool $isActivated
      * @return HostSeverity
@@ -194,7 +194,7 @@ class HostSeverity
     {
         return $this->comments;
     }
-    
+
     /**
      * @param string|null $comments
      * @return HostSeverity
