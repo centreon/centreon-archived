@@ -28,7 +28,7 @@ interface Props {
   eventAnnotationsActive?: boolean;
   resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
-  onAddComment: (commentParameters: CommentParameters) => void;
+  onAddComment?: (commentParameters: CommentParameters) => void;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({

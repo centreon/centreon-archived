@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { Grid, Chip } from '@material-ui/core';
+
 import {
   labelCurrentStateDuration,
   labelPoller,
@@ -17,6 +19,7 @@ import {
   labelNo,
   labelFqdn,
   labelAlias,
+  labelGroups,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 
@@ -27,7 +30,7 @@ type Lines = Array<{ key: string; line: JSX.Element | null }>;
 
 interface DetailCardLines {
   title: string;
-  field?: string | number | boolean;
+  field?: string | number | boolean | Array<unknown>;
   xs?: 6 | 12;
   getLines: () => Lines;
 }
@@ -179,6 +182,27 @@ const getDetailCardLines = ({
         {
           key: 'notification_number',
           line: <DetailsLine line={details.notification_number.toString()} />,
+        },
+      ],
+    },
+    {
+      title: labelGroups,
+      field: details.groups,
+      xs: 12,
+      getLines: (): Lines => [
+        {
+          key: 'groups',
+          line: (
+            <Grid container spacing={1}>
+              {details.groups?.map((group) => {
+                return (
+                  <Grid item>
+                    <Chip label={group.name} />
+                  </Grid>
+                );
+              })}
+            </Grid>
+          ),
         },
       ],
     },
