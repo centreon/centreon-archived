@@ -24,6 +24,7 @@ namespace Tests\Centreon\Domain\HostConfiguration\Model;
 
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
+use Centreon\Domain\Media\Model\Image;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -120,6 +121,8 @@ class HostSeverityTest extends TestCase
             ->setId(10)
             ->setName('Severity')
             ->setAlias('Alias severity')
+            ->setLevel(42)
+            ->setIcon((new Image())->setId(1)->setName('my icon')->setPath('/'))
             ->setIsActivated(true)
             ->setComments("blablabla");
     }

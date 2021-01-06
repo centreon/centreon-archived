@@ -54,6 +54,16 @@ class FindHostSeveritiesResponseTest extends TestCase
         $this->assertEquals($hostSeverity->getId(), $hostSeverities[0]['id']);
         $this->assertEquals($hostSeverity->getName(), $hostSeverities[0]['name']);
         $this->assertEquals($hostSeverity->getAlias(), $hostSeverities[0]['alias']);
+        $this->assertEquals(
+            [
+                'id' => $hostSeverity->getIcon()->getId(),
+                'name' => $hostSeverity->getIcon()->getName(),
+                'path' => $hostSeverity->getIcon()->getPath(),
+                'comment' => $hostSeverity->getIcon()->getComment()
+            ],
+            $hostSeverities[0]['icon']
+        );
+        $this->assertEquals($hostSeverity->getLevel(), $hostSeverities[0]['level']);
         $this->assertEquals($hostSeverity->getComments(), $hostSeverities[0]['comments']);
         $this->assertEquals($hostSeverity->isActivated(), $hostSeverities[0]['is_activated']);
     }
