@@ -1,17 +1,11 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
-
-import { Typography, Grid, makeStyles, Box } from '@material-ui/core';
-import IconCheck from '@material-ui/icons/Check';
-
 import {
   labelCurrentStateDuration,
   labelPoller,
   labelTimezone,
   labelLastStateChange,
   labelLastCheck,
-  labelActive,
   labelNextCheck,
   labelCheckDuration,
   labelLatency,
@@ -26,6 +20,9 @@ import {
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 
+import DetailsLine from './DetailsLine';
+import ActiveLine from './ActiveLine';
+
 type Lines = Array<{ key: string; line: JSX.Element | null }>;
 
 interface DetailCardLines {
@@ -34,38 +31,6 @@ interface DetailCardLines {
   xs?: 6 | 12;
   getLines: () => Lines;
 }
-
-const DetailsLine = ({ line }: { line?: string }): JSX.Element => {
-  return (
-    <Typography component="div">
-      <Box fontWeight={500} lineHeight={1} style={{ fontSize: 15 }}>
-        {line}
-      </Box>
-    </Typography>
-  );
-};
-
-const useStyles = makeStyles((theme) => ({
-  activeIcon: {
-    color: theme.palette.success.main,
-  },
-}));
-
-const ActiveLine = (): JSX.Element => {
-  const { t } = useTranslation();
-  const classes = useStyles();
-
-  return (
-    <Grid container spacing={1} alignItems="center">
-      <Grid item>
-        <IconCheck className={classes.activeIcon} />
-      </Grid>
-      <Grid item>
-        <DetailsLine key="tries" line={t(labelActive)} />
-      </Grid>
-    </Grid>
-  );
-};
 
 interface DetailCardLineProps {
   details: ResourceDetails;
