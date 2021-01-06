@@ -24,7 +24,7 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.5",
     "@babel/preset-typescript": "^7.12.1",
-    "@centreon/frontend-core": "github:centreon/frontend-core",
+    "@centreon/frontend-core": "github:centreon/frontend-core#d68881429f0a74ffd869aeaf1e2df10d0c4d00ea",
     "@svgr/webpack": "^5.4.0",
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.0",
