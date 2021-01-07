@@ -18,27 +18,20 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformInformation\Interfaces;
+namespace Centreon\Domain\RemoteServer\Interfaces;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-
-interface PlatformInformationRepositoryInterface
+interface RemoteServerServiceInterface
 {
     /**
-     * Find all platform information.
-     *
-     * @return PlatformInformation|null
-     * @throws \Exception
+     * Convert a Central into a Remote Server
      */
-    public function findPlatformInformation(): ?PlatformInformation;
+    public function convertCentralToRemote(): void;
 
     /**
-     * Update the platform information.
-     *
-     * @param PlatformInformation $platformInformation
-     * @throws \Exception
+     * Convert a Remote Server into a Central
      */
-    public function updatePlatformInformation(PlatformInformation $platformInformation): void;
+    public function convertRemoteToCentral(): void;
 }

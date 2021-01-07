@@ -20,25 +20,13 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformInformation\Interfaces;
+namespace Centreon\Domain\Menu;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-
-interface PlatformInformationRepositoryInterface
+/**
+ * This class is designed to represent a business exception in the 'Platform information' context.
+ *
+ * @package Centreon\Domain\PlatformInformation
+ */
+class MenuException extends \Exception
 {
-    /**
-     * Find all platform information.
-     *
-     * @return PlatformInformation|null
-     * @throws \Exception
-     */
-    public function findPlatformInformation(): ?PlatformInformation;
-
-    /**
-     * Update the platform information.
-     *
-     * @param PlatformInformation $platformInformation
-     * @throws \Exception
-     */
-    public function updatePlatformInformation(PlatformInformation $platformInformation): void;
 }
