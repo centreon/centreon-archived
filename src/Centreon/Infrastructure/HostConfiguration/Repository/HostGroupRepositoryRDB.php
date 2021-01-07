@@ -83,10 +83,10 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             $statement->bindValue(':comment', $hostGroup->getComment(), \PDO::PARAM_STR);
             $statement->bindValue(':is_activate', $hostGroup->isActivated(), \PDO::PARAM_STR);
             $statement->execute();
-            
+
             $hostGroupId = (int)$this->db->lastInsertId();
             $this->db->commit();
-            
+
             return $hostGroupId;
         } catch (\Exception $ex) {
             $this->db->rollBack();
@@ -101,7 +101,6 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
     {
         $request = $this->translateDbName('SELECT COUNT(*) AS total FROM `:db`.host WHERE host_register = \'1\'');
         $statement = $this->db->query($request);
-        
         if ($statement !== false && ($result = $statement->fetchColumn()) !== false) {
             return (int)$result;
         }
