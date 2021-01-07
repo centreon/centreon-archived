@@ -34,7 +34,7 @@
  */
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . 'www/class/centreonExternalCommand.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonExternalCommand.class.php';
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
 class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
 {
