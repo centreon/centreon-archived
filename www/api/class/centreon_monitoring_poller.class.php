@@ -58,6 +58,7 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
      */
     public function getList()
     {
+        global $centreon;
         $queryValues = array();
 
         // Check for select2 'q' argument
@@ -86,8 +87,15 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
 
         $queryPoller = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT instance_id, name ' .
             'FROM instances ' .
-            'WHERE name LIKE ? AND deleted=0 ' .
-            'ORDER BY name ' . $range;
+            'WHERE name LIKE ? AND deleted=0 ';
+
+        if (!$centreon->user->admin) {
+            $acl = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
+            $queryPoller .= 'AND instances.instance_id IN (' .
+                $acl->getPollerString('ID', $this->pearDBMonitoring) . ') ';
+        }
+
+        $queryPoller .= 'ORDER BY name ' . $range;
 
         $stmt = $this->pearDBMonitoring->prepare($queryPoller);
         $dbResult = $this->pearDBMonitoring->execute($stmt, $queryValues);

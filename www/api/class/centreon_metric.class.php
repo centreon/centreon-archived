@@ -69,15 +69,27 @@ class CentreonMetric extends CentreonWebService
      */
     public function getList()
     {
+        global $centreon;
         if (false === isset($this->arguments['q'])) {
             $q = '';
         } else {
             $q = $this->arguments['q'];
         }
+
         $query = 'SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as "metric_name" ' .
             'FROM `metrics` ' .
-            'WHERE metric_name LIKE ? ' .
-            'ORDER BY `metric_name` COLLATE utf8_general_ci ';
+            'WHERE metric_name LIKE ? ';
+
+        /**
+         * If ACLs on, then only return metrics linked to services that the user can see.
+         */
+        if (!$centreon->user->admin) {
+            $acl = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
+            $query .= ' AND m.index_id = i.id AND i.service_id IN (' .
+                $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+        }
+
+        $query .= 'ORDER BY `metric_name` COLLATE utf8_general_ci ';
         $stmt = $this->pearDBMonitoring->prepare($query);
         $DBRESULT = $this->pearDBMonitoring->execute($stmt, array('%' . (string)$q . '%'));
 
@@ -98,6 +110,7 @@ class CentreonMetric extends CentreonWebService
      */
     protected function getListByService()
     {
+        global $centreon;
         $queryValues = array();
 
         if (false === isset($this->arguments['q'])) {
@@ -131,9 +144,14 @@ class CentreonMetric extends CentreonWebService
             'AND s.service_id = i.service_id ' .
             'AND h.enabled = 1 ' .
             'AND s.enabled = 1 ' .
-            'AND CONCAT(h.name," - ", s.description, " - ",  m.metric_name) LIKE ? ' .
-            'ORDER BY CONCAT(h.name," - ", s.description, " - ",  m.metric_name) COLLATE utf8_general_ci ' .
-            $range;
+            'AND CONCAT(h.name," - ", s.description, " - ",  m.metric_name) LIKE ? ';
+
+        if (!$centreon->user->admin) {
+            $acl = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
+            $query .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+        }
+
+        $query .= 'ORDER BY fullname COLLATE utf8_general_ci ' . $range;
 
         $stmt = $this->pearDBMonitoring->prepare($query);
         $dbResult = $this->pearDBMonitoring->execute($stmt, $queryValues);
@@ -217,7 +235,8 @@ class CentreonMetric extends CentreonWebService
         }
 
         /* Validate options */
-        if (false === isset($this->arguments['start']) ||
+        if (
+            false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
             false === is_numeric($this->arguments['end'])
@@ -250,7 +269,8 @@ class CentreonMetric extends CentreonWebService
 
         foreach ($ids as $id) {
             list($hostId, $serviceId) = explode('_', $id);
-            if (false === is_numeric($hostId) ||
+            if (
+                false === is_numeric($hostId) ||
                 false === is_numeric($serviceId)
             ) {
                 throw new RestBadRequestException("Bad parameters");
@@ -353,7 +373,8 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
 
-        if (false === isset($this->arguments['start']) ||
+        if (
+            false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
             false === is_numeric($this->arguments['end'])
@@ -377,7 +398,8 @@ class CentreonMetric extends CentreonWebService
         }
 
         list($hostId, $serviceId) = explode('_', $id);
-        if (false === is_numeric($hostId) ||
+        if (
+            false === is_numeric($hostId) ||
             false === is_numeric($serviceId)
         ) {
             throw new RestBadRequestException("Bad parameters");
@@ -493,7 +515,8 @@ class CentreonMetric extends CentreonWebService
         }
 
         /* Validate options */
-        if (false === isset($this->arguments['ids']) ||
+        if (
+            false === isset($this->arguments['ids']) ||
             false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
