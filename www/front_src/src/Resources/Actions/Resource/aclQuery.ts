@@ -32,7 +32,8 @@ interface AclQuery {
   canDisacknowledge: (resources) => boolean;
   canDisacknowledgeServices: () => boolean;
   getDisacknowledgementDeniedTypeAlert: (resources) => string | undefined;
-  canSubmitStatus: (resource) => boolean;
+  canSubmitStatus: (resources) => boolean;
+  canComment: (resources) => boolean;
 }
 
 const useAclQuery = (): AclQuery => {
@@ -127,6 +128,10 @@ const useAclQuery = (): AclQuery => {
     return can({ resources, action: 'submit_status' });
   };
 
+  const canComment = (resources: Array<Resource>): boolean => {
+    return can({ resources, action: 'comment' });
+  };
+
   return {
     canDowntime,
     getDowntimeDeniedTypeAlert,
@@ -139,6 +144,7 @@ const useAclQuery = (): AclQuery => {
     canDisacknowledgeServices,
     getDisacknowledgementDeniedTypeAlert,
     canSubmitStatus,
+    canComment,
   };
 };
 
