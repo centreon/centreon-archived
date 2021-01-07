@@ -33,18 +33,15 @@
  */
 
 function checkItem(element, toCheck) {
-  if (element.type == 'checkbox') {
+  if (element.type === 'checkbox') {
     if (toCheck) {
       element.checked = true;
     } else {
       element.checked = false;
     }
-  } else if (element.type == 'radio') {
+  } else if (element.type === 'radio') {
     var element = document.Form[element.name];
-    var value = 0;
-    if (toCheck) {
-      value = 2;
-    }
+    const value = toCheck ? 2 : 0;
     for (var j = 0; j < element.length; j++) {
       if (element[j].value == value) {
         element[j].checked = true;
@@ -54,7 +51,7 @@ function checkItem(element, toCheck) {
 }
 
 function getChecked(element) {
-  if (element.type == 'checkbox') {
+  if (element.type === 'checkbox') {
     return element.checked;
   }
 
@@ -109,7 +106,7 @@ function updateACLRulesInputsLines(element) {
           input.checked = input.value === valueInputParent ? true : false;
         }
         if (input.type === 'checkbox') {
-          input.checked = [1, 2].includes(parseInt(valueInputParent)) ? true : false;
+          input.checked = [1, 2].includes(parseInt(valueInputParent));
         }
       }
     });
