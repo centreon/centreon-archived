@@ -103,7 +103,7 @@ function updateACLRulesInputsLines(element) {
 
       if (element.type === 'radio') {
         if (input.type === 'radio') {
-          input.checked = input.value === valueInputParent ? true : false;
+          input.checked = input.value === valueInputParent;
         }
         if (input.type === 'checkbox') {
           input.checked = [1, 2].includes(parseInt(valueInputParent));
