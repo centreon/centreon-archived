@@ -295,9 +295,12 @@ class CentreonContact extends CentreonObject
         if ($addParams['contact_oreon'] == '') {
             $addParams['contact_oreon'] = '1';
         }
-        $completeLanguage = strtolower($params[self::ORDER_LANG]) === "browser"
-            ? $params[self::ORDER_LANG]
-            : $params[self::ORDER_LANG] . '.UTF-8';
+        if (strtolower($params[self::ORDER_LANG]) === "browser"
+            || strtoupper(substr($params[self::ORDER_LANG], -5)) === '.UTF-8') {
+            $completeLanguage = $params[self::ORDER_LANG];
+        } else {
+            $completeLanguage = params[self::ORDER_LANG] . '.UTF-8';
+        }
         if ($this->checkLang($completeLanguage) == false) {
             throw new CentreonClapiException(self::UNKNOWN_LOCALE);
         }
@@ -357,9 +360,11 @@ class CentreonContact extends CentreonObject
                 } elseif ($params[1] == "authtype") {
                     $params[1] = "auth_type";
                 } elseif ($params[1] == "lang" || $params[1] == "language" || $params[1] == "locale") {
-                    $completeLanguage = strtolower($params[self::ORDER_LANG]) === "browser"
-                        ? $params[self::ORDER_LANG]
-                        : $params[self::ORDER_LANG] . '.UTF-8';
+                    if (strtolower($params[2]) === "browser" || strtoupper(substr($params[2], -5)) === '.UTF-8') {
+                        $completeLanguage = $params[2];
+                    } else {
+                        $completeLanguage = $params[2] . '.UTF-8';
+                    }
                     if ($this->checkLang($completeLanguage) == false) {
                         throw new CentreonClapiException(self::UNKNOWN_LOCALE);
                     }
