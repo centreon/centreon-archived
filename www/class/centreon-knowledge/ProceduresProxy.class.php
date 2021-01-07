@@ -157,6 +157,11 @@ class ProceduresProxy
     public function getHostUrl($hostName): ?string
     {
         $hostId = $this->getHostId($hostName);
+
+        if ($hostId === null) {
+            return null;
+        }
+
         $hostProperties = $this->hostObj->getInheritedValues(
             $hostId,
             [],
@@ -168,15 +173,18 @@ class ProceduresProxy
             return $this->wikiUrl . "/index.php?title=Host_:_" . $hostProperties['host_name'];
         }
 
-        $inheritedHostProperties = $this->hostObj->getInheritedValues(
-            $hostId,
-            [],
-            -1,
-            ['host_name', 'ehi_notes_url']
-        );
+        $templates = $this->hostObj->getTemplateChain($hostId);
+        foreach ($templates as $template) {
+            $inheritedHostProperties = $this->hostObj->getInheritedValues(
+                $template['id'],
+                [],
+                1,
+                ['host_name', 'ehi_notes_url']
+            );
 
-        if (isset($inheritedHostProperties['ehi_notes_url'])) {
-            return $this->wikiUrl . "/index.php?title=Host-Template_:_" . $inheritedHostProperties['host_name'];
+            if (isset($inheritedHostProperties['ehi_notes_url'])) {
+                return $this->wikiUrl . "/index.php?title=Host-Template_:_" . $inheritedHostProperties['host_name'];
+            }
         }
 
         return null;
