@@ -15073,6 +15073,9 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "FQDN / Address"
 #  msgstr ""
 
+#  msgid "Groups"
+#  msgstr ""
+
 #  msgid "Comment added"
 #  msgstr ""
 

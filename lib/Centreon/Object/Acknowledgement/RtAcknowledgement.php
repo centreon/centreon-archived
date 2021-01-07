@@ -77,6 +77,7 @@ class Centreon_Object_RtAcknowledgement extends Centreon_ObjectRt
                     ) AS tmp
                     ON tmp.entry_time = ack.entry_time
                     AND tmp.host_id = ack.host_id
+                    AND ack.service_id = 0
                 ORDER BY ack.entry_time, hosts.name',
                 $hostFilter
             )

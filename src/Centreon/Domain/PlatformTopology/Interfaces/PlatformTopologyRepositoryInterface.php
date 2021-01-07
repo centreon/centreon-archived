@@ -120,4 +120,11 @@ interface PlatformTopologyRepositoryInterface
      * @param Platform $platform
      */
     public function updatePlatformParameters(Platform $platform): void;
+
+    /**
+     * find all the type 'remote' children of a Central
+     *
+     * @return array
+     */
+    public function findCentralRemoteChildren(): array;
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -135,12 +135,17 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       )}
       <Grid container spacing={2} alignItems="stretch">
         {getDetailCardLines({ details, toDate, toTime }).map(
-          ({ title, field, xs = 6, getLines }) =>
-            !isNil(field) && (
-              <Grid key={title} item xs={xs}>
-                <DetailsCard title={t(title)} lines={getLines()} />
-              </Grid>
-            ),
+          ({ title, field, xs = 6, getLines }) => {
+            const displayCard = !isNil(field) && !isEmpty(field);
+
+            return (
+              displayCard && (
+                <Grid key={title} item xs={xs}>
+                  <DetailsCard title={t(title)} lines={getLines()} />
+                </Grid>
+              )
+            );
+          },
         )}
       </Grid>
       {details.performance_data && (

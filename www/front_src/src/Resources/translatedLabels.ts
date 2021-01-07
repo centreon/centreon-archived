@@ -180,6 +180,7 @@ export const labelNoResourceFound = 'No resource found';
 export const labelFqdn = 'FQDN / Address';
 export const labelAlias = 'Alias';
 export const labelUrl = 'URL';
+export const labelGroups = 'Groups';
 export const labelAddComment = 'Add a comment';
 export const labelCommentAdded = 'Comment added';
 export const labelDisplayEvents = 'Display events';

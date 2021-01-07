@@ -4,6 +4,10 @@ default:
   gherkin:
     cache: ~
   suites:
+    host_category:
+      paths: [ "%paths.base%/features/HostCategory.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\HostCategoryContext
     host_severity:
       paths: [ "%paths.base%/features/HostSeverity.feature" ]
       contexts:
@@ -57,3 +61,7 @@ default:
       paths: [ "%paths.base%/features/PlatformTopology.feature" ]
       contexts:
         - Centreon\Test\Api\Context\PlatformTopologyContext
+    platform_information:
+      paths: [ "%paths.base%/features/PlatformInformation.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\PlatformInformationContext
