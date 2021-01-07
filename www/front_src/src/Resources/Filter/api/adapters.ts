@@ -1,28 +1,40 @@
 import { propEq, pipe } from 'ramda';
 
-import { CriteriaValue, RawFilter, RawCriteria, Filter } from '../models';
+import {
+  CriteriaValue,
+  RawFilter,
+  RawCriteria,
+  Filter,
+  FilterWithSort,
+} from '../models';
 import useFilterModels from '../useFilterModels';
+import { SortOrder } from '../../Listing/models';
 
 interface Adapters {
   toFilter: (rawFilter: RawFilter) => Filter;
-  toRawFilter: (filter: Filter) => RawFilter;
+  toRawFilter: (filter: FilterWithSort) => RawFilter;
   toFilterWithTranslatedCriterias: (filter: Filter) => Filter;
 }
 
 const useAdapters = (): Adapters => {
   const { criteriaValueNameById } = useFilterModels();
 
-  const toFilter = ({ id: filterId, name, criterias }: RawFilter): Filter => {
+  const toFilter = ({
+    id: filterId,
+    name,
+    criterias,
+  }: RawFilter): FilterWithSort => {
     const findCriteriaByName = (criteriaName): RawCriteria =>
       criterias.find(propEq('name', criteriaName)) as RawCriteria;
 
     const toStandardMultiSelectCriteriaValue = (
       criteria,
-    ): Array<CriteriaValue> =>
-      criteria.value.map(({ id: criteriaId }) => ({
+    ): Array<CriteriaValue> => {
+      return criteria.value.map(({ id: criteriaId }) => ({
         id: criteriaId,
         name: criteriaValueNameById[criteriaId],
       }));
+    };
 
     const getStandardMultiSelectCriteriaValue = (
       rawName,
@@ -42,10 +54,16 @@ const useAdapters = (): Adapters => {
           .value as Array<CriteriaValue>,
         search: findCriteriaByName('search').value as string | undefined,
       },
+      sort: findCriteriaByName('sort').value as [string, SortOrder],
     };
   };
 
-  const toRawFilter = ({ id, name, criterias }: Filter): RawFilter => {
+  const toRawFilter = ({
+    id,
+    name,
+    criterias,
+    sort,
+  }: FilterWithSort): RawFilter => {
     return {
       id,
       name,
@@ -81,6 +99,11 @@ const useAdapters = (): Adapters => {
           name: 'search',
           value: criterias.search || '',
           type: 'text',
+        },
+        {
+          name: 'sort',
+          value: sort,
+          type: 'array',
         },
       ],
     };

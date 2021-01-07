@@ -15,7 +15,7 @@ import {
   labelRequired,
 } from '../../translatedLabels';
 import { createFilter } from '../api';
-import { Filter, RawFilter } from '../models';
+import { RawFilter, FilterWithSort } from '../models';
 import useAdapters from '../api/adapters';
 
 type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -24,7 +24,7 @@ interface Props {
   onCreate: (filter) => void;
   onCancel: () => void;
   open: boolean;
-  filter: Filter;
+  filter: FilterWithSort;
 }
 
 const CreateFilterDialog = ({
@@ -40,7 +40,6 @@ const CreateFilterDialog = ({
   const { sendRequest, sending } = useRequest<RawFilter>({
     request: createFilter,
   });
-
   const form = useFormik({
     initialValues: {
       name: '',
@@ -56,6 +55,7 @@ const CreateFilterDialog = ({
             id: '',
             name: values.name,
             criterias: filter.criterias,
+            sort: filter.sort,
           }),
         ),
       )

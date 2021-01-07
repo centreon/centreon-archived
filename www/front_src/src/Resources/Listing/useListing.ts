@@ -1,8 +1,12 @@
 import * as React from 'react';
 
-import { ifElse, pathEq, always, pathOr } from 'ramda';
+import { ifElse, pathEq, always, pathOr, pipe } from 'ramda';
 
-import { useRequest } from '@centreon/ui';
+import {
+  useRequest,
+  setUrlQueryParameters,
+  getUrlQueryParameters,
+} from '@centreon/ui';
 
 import { ResourceListing } from '../models';
 import { labelSomethingWentWrong } from '../translatedLabels';
@@ -10,8 +14,7 @@ import { labelSomethingWentWrong } from '../translatedLabels';
 import { defaultSortOrder, defaultSortField } from './columns';
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { listResources } from './api';
-
-type SortOrder = 'asc' | 'desc';
+import { SortOrder } from './models';
 
 type ListingDispatch<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -34,8 +37,17 @@ export interface ListingState {
 
 const useListing = (): ListingState => {
   const [listing, setListing] = React.useState<ResourceListing>();
-  const [sorto, setSorto] = React.useState<SortOrder>(defaultSortOrder);
-  const [sortf, setSortf] = React.useState<string>(defaultSortField);
+
+  const sortOrderFromQueryParameters = getUrlQueryParameters()
+    .sorto as SortOrder;
+  const sortFieldFromQueryParameters = getUrlQueryParameters().sortf as string;
+
+  const [sorto, setSorto] = React.useState<SortOrder>(
+    sortOrderFromQueryParameters || defaultSortOrder,
+  );
+  const [sortf, setSortf] = React.useState<string>(
+    sortFieldFromQueryParameters || defaultSortField,
+  );
   const [limit, setLimit] = React.useState<number>(30);
   const [page, setPage] = React.useState<number>();
   const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
@@ -48,6 +60,24 @@ const useListing = (): ListingState => {
       pathOr(labelSomethingWentWrong, ['response', 'data', 'message']),
     ),
   });
+
+  React.useEffect(() => {
+    setUrlQueryParameters([
+      {
+        name: 'sorto',
+        value: sorto,
+      },
+    ]);
+  }, [sorto]);
+
+  React.useEffect(() => {
+    setUrlQueryParameters([
+      {
+        name: 'sortf',
+        value: sortf,
+      },
+    ]);
+  }, [sortf]);
 
   return {
     listing,

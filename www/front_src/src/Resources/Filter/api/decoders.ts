@@ -15,7 +15,12 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
           object_type: JsonDecoder.optional(JsonDecoder.string),
           type: JsonDecoder.string,
           value: JsonDecoder.optional(
-            JsonDecoder.oneOf<string | boolean | Array<CriteriaValue>>(
+            JsonDecoder.oneOf<
+              | string
+              | boolean
+              | Array<CriteriaValue>
+              | { [field: string]: string }
+            >(
               [
                 JsonDecoder.string,
                 JsonDecoder.boolean,
@@ -24,13 +29,17 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
                     {
                       id: JsonDecoder.oneOf<number | string>(
                         [JsonDecoder.number, JsonDecoder.string],
-                        'FilterCriteriaMilteSelectId',
+                        'FilterCriteriaMultiSelectId',
                       ),
                       name: JsonDecoder.string,
                     },
                     'FilterCriteriaMultiSelectValue',
                   ),
                   'FilterCriteriaValues',
+                ),
+                JsonDecoder.dictionary(
+                  JsonDecoder.string,
+                  'FilterCriteriaDictionary',
                 ),
               ],
               'FilterCriteriaValue',

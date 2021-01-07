@@ -21,7 +21,7 @@ import {
   labelFilterSaved,
   labelEditFilters,
 } from '../../translatedLabels';
-import { Filter } from '../models';
+import { Filter, FilterWithSort } from '../models';
 import { useResourceContext } from '../../Context';
 import { updateFilter as updateFilterRequest } from '../api';
 import useFilterModels from '../useFilterModels';
@@ -68,6 +68,8 @@ const SaveFilterMenu = (): JSX.Element => {
     loadCustomFilters,
     customFilters,
     setEditPanelOpen,
+    sorto,
+    sortf,
   } = useResourceContext();
 
   const openSaveFilterMenu = (event: React.MouseEvent): void => {
@@ -108,10 +110,15 @@ const SaveFilterMenu = (): JSX.Element => {
     loadFiltersAndUpdateCurrent(newFilter);
   };
 
+  const updatedFilterWithSort = {
+    ...updatedFilter,
+    sort: [sortf, sorto],
+  } as FilterWithSort;
+
   const updateFilter = (): void => {
     sendUpdateFilterRequest({
       id: updatedFilter.id,
-      rawFilter: omit(['id'], toRawFilter(updatedFilter)),
+      rawFilter: omit(['id'], toRawFilter(updatedFilterWithSort)),
     }).then((savedFilter) => {
       closeSaveFilterMenu();
       showMessage({
@@ -133,7 +140,7 @@ const SaveFilterMenu = (): JSX.Element => {
       return false;
     }
 
-    return !equals(filter, updatedFilter);
+    return !equals(filter, updatedFilterWithSort);
   };
 
   const isNewFilter = filter.id === '';
@@ -171,7 +178,7 @@ const SaveFilterMenu = (): JSX.Element => {
         <CreateFilterDialog
           open
           onCreate={confirmCreateFilter}
-          filter={updatedFilter}
+          filter={updatedFilterWithSort}
           onCancel={closeCreateFilterDialog}
         />
       )}
