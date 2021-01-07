@@ -39,12 +39,12 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
  */
 class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupRepositoryInterface
 {
-    
+
     /**
      * @var SqlRequestParametersTranslator
      */
     private $sqlRequestTranslator;
-    
+
     public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
     {
         $this->db = $db;
@@ -53,7 +53,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -73,7 +73,6 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             empty($hostGroup->getAlias())
                 ? $statement->bindValue(':alias', null, \PDO::PARAM_NULL)
                 : $statement->bindValue(':alias', $hostGroup->getAlias(), \PDO::PARAM_STR);
-            
             $statement->bindValue(':notes', $hostGroup->getNotes(), \PDO::PARAM_STR);
             $statement->bindValue(':notesUrl', $hostGroup->getNotesUrl(), \PDO::PARAM_STR);
             $statement->bindValue(':actionUrl', $hostGroup->getActionUrl(), \PDO::PARAM_STR);
@@ -94,7 +93,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             throw $ex;
         }
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -108,7 +107,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         }
         return 0;
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -123,7 +122,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         }
         return false;
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -157,13 +156,13 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             LEFT JOIN `:db`.view_img imap
                 ON imap.img_id = hg.hg_map_icon_image'
         );
-        
+
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest)
             ? $searchRequest . ' GROUP BY hg.hg_id'
             : ' GROUP BY hg.hg_id';
-        
+
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest)
@@ -172,12 +171,10 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
         $statement = $this->db->query($request);
-        
         $result = $this->db->query('SELECT FOUND_ROWS()');
         if ($result !== false && ($total = $result->fetchColumn()) !== false) {
             $this->sqlRequestTranslator->getRequestParameters()->setTotal((int)$total);
         }
-        
         $hostGroups = [];
         if ($statement !== false) {
             while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {

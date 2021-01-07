@@ -42,7 +42,7 @@ interface HostGroupWriteRepositoryInterface
      * @throws \Exception
      */
     public function addHostGroup(HostGroup $hg): int;
-    
+
     /**
      * Add a host/host group relation.
      *

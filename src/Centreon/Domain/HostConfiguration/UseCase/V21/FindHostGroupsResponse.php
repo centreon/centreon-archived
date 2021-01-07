@@ -36,7 +36,7 @@ class FindHostGroupsResponse
      * @var array<int, array<string, mixed>>
      */
     private $hostGroups = [];
-    
+
     /**
      * @param array $hostGroups
      */

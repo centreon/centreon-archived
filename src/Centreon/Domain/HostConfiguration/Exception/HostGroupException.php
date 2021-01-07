@@ -31,25 +31,25 @@ class HostGroupException extends \Exception
 {
     /**
      * @param \Exception $ex
-     * @return static
+     * @return self
      */
     public static function searchHostGroupsException(\Exception $ex): self
     {
         return new self(_('Error when searching for host groups'), 0, $ex);
     }
-    
+
     /**
      * @param \Exception $ex
-     * @return static
+     * @return self
      */
     public static function countHostGroupsException(\Exception $ex): self
     {
         return new self(_('Error while searching for the number of host group'), 0, $ex);
     }
-    
+
     /**
      * @param \Exception $ex
-     * @return static
+     * @return self
      */
     public static function searchUsedHostGroupsNameException(\Exception $ex): self
     {

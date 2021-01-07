@@ -40,7 +40,7 @@ class HostGroup
     public const MAX_GEO_COORDS = 32;
     public const MAX_RRD = 11;
     public const MAX_COMMENTS_LENGTH = 65535;
-    
+
     /**
      * @var int|null
      */
@@ -283,7 +283,7 @@ class HostGroup
     {
         return $this->rrd;
     }
-    
+
     /**
      * @param int|null $rrd
      * @return $this
