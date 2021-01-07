@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -163,7 +164,7 @@ abstract class Centreon_Object
                 $sqlUpdate .= ",";
             }
             $sqlUpdate .= $key . " = ? ";
-            if ($value == "" && !isset($not_null_attributes[$key])) {
+            if ($value === "" && !isset($not_null_attributes[$key])) {
                 $value = null;
             }
             if (!is_null($value)) {
