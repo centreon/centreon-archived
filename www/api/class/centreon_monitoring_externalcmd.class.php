@@ -112,7 +112,7 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
                         throw new RestBadRequestException('Action ' . $action . ' not supported');
                     }
 
-                    if (!$centreon->user->admin) {
+                    if (!$isAdmin) {
                         // Checking that the user has rights to do the action provided
                         if ($userAcl->checkAction($availableCommands[$action]) === 0) {
                             throw new RestUnauthorizedException(
