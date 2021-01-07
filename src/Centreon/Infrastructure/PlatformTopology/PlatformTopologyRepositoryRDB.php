@@ -24,10 +24,8 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\PlatformTopology;
 
 use Centreon\Domain\Entity\EntityCreator;
-use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Platform;
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
@@ -301,5 +299,34 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
         $statement->bindValue(':id', $platform->getId(), \PDO::PARAM_INT);
         $statement->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findCentralRemoteChildren(): array
+    {
+        $central = $this->findTopLevelPlatformByType('central');
+        $remoteChildren = [];
+        if ($central !== null) {
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    "SELECT * FROM `:db`.platform_topology WHERE `type` = 'remote' AND `parent_id` = :parentId"
+                )
+            );
+            $statement->bindValue(':parentId', $central->getId(), \PDO::PARAM_INT);
+            $statement->execute();
+
+            if ($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
+                foreach ($result as $platform) {
+                    /**
+                     * @var Platform[] $childrenPlatforms
+                     */
+                    $remoteChildren[] = EntityCreator::createEntityByArray(Platform::class, $platform);
+                }
+            }
+        }
+
+        return $remoteChildren;
     }
 }

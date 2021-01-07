@@ -18,27 +18,11 @@
  * For more information : contact@centreon.com
  *
  */
-declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformInformation\Interfaces;
+namespace Centreon\Test\Api\Context;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Test\Behat\Api\Context\ApiContext;
 
-interface PlatformInformationRepositoryInterface
+class PlatformInformationContext extends ApiContext
 {
-    /**
-     * Find all platform information.
-     *
-     * @return PlatformInformation|null
-     * @throws \Exception
-     */
-    public function findPlatformInformation(): ?PlatformInformation;
-
-    /**
-     * Update the platform information.
-     *
-     * @param PlatformInformation $platformInformation
-     * @throws \Exception
-     */
-    public function updatePlatformInformation(PlatformInformation $platformInformation): void;
 }
