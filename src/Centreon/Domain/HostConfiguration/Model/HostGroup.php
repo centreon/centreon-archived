@@ -32,15 +32,15 @@ use Centreon\Domain\Media\Model\Image;
  */
 class HostGroup
 {
-    public const MAX_NAME_LENGTH = 200,
-        MAX_ALIAS_LENGTH = 200,
-        MAX_NOTES = 255,
-        MAX_NOTES_URL = 255,
-        MAX_ACTION_URL = 255,
-        MAX_GEO_COORDS = 32,
-        MAX_RRD = 99999999999,
-        MIN_RRD = 0,
-        MAX_COMMENTS_LENGTH = 65535;
+    public const MAX_NAME_LENGTH = 200;
+    public const MAX_ALIAS_LENGTH = 200;
+    public const MAX_NOTES = 255;
+    public const MAX_NOTES_URL = 255;
+    public const MAX_ACTION_URL = 255;
+    public const MAX_GEO_COORDS = 32;
+    public const MAX_RRD = 11;
+    public const MAX_COMMENTS_LENGTH = 65535;
+    
     /**
      * @var int|null
      */
@@ -121,10 +121,10 @@ class HostGroup
     }
 
     /**
-     * @param int|null $id
+     * @param int $id
      * @return HostGroup
      */
-    public function setId(?int $id): HostGroup
+    public function setId(int $id): HostGroup
     {
         $this->id = $id;
         return $this;
@@ -283,19 +283,18 @@ class HostGroup
     {
         return $this->rrd;
     }
-
+    
     /**
      * @param int|null $rrd
-     * @return HostGroup
+     * @return $this
      * @throws \Assert\AssertionFailedException
      */
     public function setRrd(?int $rrd): HostGroup
     {
         if ($rrd !== null) {
-            Assertion::max($rrd, self::MAX_RRD, 'HostGroup::rrd');
-            Assertion::min($rrd, self::MIN_RRD, 'HostGroup::rrd');
+            Assertion::maxLength((string) $rrd, self::MAX_RRD, 'HostGroup::rrd');
         }
-        $this->rrd = $rrd;
+        $this->rrd = (int) $rrd;
         return $this;
     }
 

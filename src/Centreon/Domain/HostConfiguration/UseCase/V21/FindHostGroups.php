@@ -27,7 +27,7 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostGroupReadRepositoryInterfac
 use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostGroupsResponse;
 
 /**
- * This class is designed to represent a use case to find all host templates
+ * This class is designed to represent a use case to find all host groups
  *
  * @package Centreon\Domain\HostConfiguration\UseCase
  */

@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
+use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Repository\RepositoryException;
 
@@ -33,7 +34,7 @@ use Centreon\Domain\Repository\RepositoryException;
 interface HostGroupWriteRepositoryInterface
 {
     /**
-     * Add a host
+     * Add a host group
      *
      * @param HostGroup $hg Host Group to add
      * @return int Returns the host group id
@@ -41,4 +42,14 @@ interface HostGroupWriteRepositoryInterface
      * @throws \Exception
      */
     public function addHostGroup(HostGroup $hg): int;
+    
+    /**
+     * Add a host/host group relation.
+     *
+     * @param int $hostId Host id for which this host groups will be associated
+     * @param Host[] $hostGroups Host group to be added
+     * @throws RepositoryException
+     * @throws \Exception
+     */
+    public function addHostGroupRelation(int $hostId, array $hostGroups): void;
 }

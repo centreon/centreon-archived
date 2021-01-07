@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Exception;
 
 /**
- * This class is designed to provide all exceptions for the HostTemplate entity factory.
+ * This class is designed to provide all exceptions for the HostGroup entity factory.
  *
  * @package Centreon\Domain\HostConfiguration\Exception
  */

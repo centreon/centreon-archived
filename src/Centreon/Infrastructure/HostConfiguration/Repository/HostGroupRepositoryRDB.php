@@ -33,18 +33,18 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
 /**
- * This class is designed to represent the MariaDb repository to manage host, host group and host template
+ * This class is designed to represent the MariaDb repository to manage host groups
  *
  * @package Centreon\Infrastructure\HostConfiguration
  */
 class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupRepositoryInterface
 {
-
+    
     /**
      * @var SqlRequestParametersTranslator
      */
     private $sqlRequestTranslator;
-
+    
     public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
     {
         $this->db = $db;
@@ -53,7 +53,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
     }
-
+    
     /**
      * @inheritDoc
      */
@@ -73,7 +73,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             empty($hostGroup->getAlias())
                 ? $statement->bindValue(':alias', null, \PDO::PARAM_NULL)
                 : $statement->bindValue(':alias', $hostGroup->getAlias(), \PDO::PARAM_STR);
-
+            
             $statement->bindValue(':notes', $hostGroup->getNotes(), \PDO::PARAM_STR);
             $statement->bindValue(':notesUrl', $hostGroup->getNotesUrl(), \PDO::PARAM_STR);
             $statement->bindValue(':actionUrl', $hostGroup->getActionUrl(), \PDO::PARAM_STR);
@@ -84,17 +84,17 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             $statement->bindValue(':comment', $hostGroup->getComment(), \PDO::PARAM_STR);
             $statement->bindValue(':is_activate', $hostGroup->isActivated(), \PDO::PARAM_STR);
             $statement->execute();
-
+            
             $hostGroupId = (int)$this->db->lastInsertId();
             $this->db->commit();
-
+            
             return $hostGroupId;
         } catch (\Exception $ex) {
             $this->db->rollBack();
             throw $ex;
         }
     }
-
+    
     /**
      * @inheritDoc
      */
@@ -102,13 +102,13 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
     {
         $request = $this->translateDbName('SELECT COUNT(*) AS total FROM `:db`.host WHERE host_register = \'1\'');
         $statement = $this->db->query($request);
-
+        
         if ($statement !== false && ($result = $statement->fetchColumn()) !== false) {
-            return (int) $result;
+            return (int)$result;
         }
         return 0;
     }
-
+    
     /**
      * @inheritDoc
      */
@@ -119,11 +119,11 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         $statement->bindValue(':host_name', $hostName, \PDO::FETCH_ASSOC);
         $statement->execute();
         if (($result = $statement->fetchColumn()) !== false) {
-            return ((int) $result) > 0;
+            return ((int)$result) > 0;
         }
         return false;
     }
-
+    
     /**
      * @inheritDoc
      */
@@ -157,13 +157,13 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             LEFT JOIN `:db`.view_img imap
                 ON imap.img_id = hg.hg_map_icon_image'
         );
-
+        
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest)
             ? $searchRequest . ' GROUP BY hg.hg_id'
             : ' GROUP BY hg.hg_id';
-
+        
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest)
@@ -172,12 +172,12 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
         $statement = $this->db->query($request);
-
+        
         $result = $this->db->query('SELECT FOUND_ROWS()');
         if ($result !== false && ($total = $result->fetchColumn()) !== false) {
-            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int)$total);
         }
-
+        
         $hostGroups = [];
         if ($statement !== false) {
             while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
@@ -188,50 +188,53 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
     }
 
     /**
-     * Add a host group.
-     *
-     * @param int $hostId Host id for which this host groups will be associated
-     * @param Host[] $hostGroups Host group to be added
-     * @throws RepositoryException
-     * @throws \Exception
+     * @inheritDoc
      */
-    private function addHostGroupRelation(int $hostId, array $hostGroups): void
+    public function addHostGroupRelation(int $hostId, array $hostGroups): void
     {
         if (empty($hostGroups)) {
             return;
         }
-
-        foreach ($hostGroups as $order => $hostGroup) {
-            if ($hostGroup->getId() !== null) {
-                // Associate the host and host group using host group id
-                $request = $this->translateDbName(
-                    'INSERT INTO `:db`.hostgroup_relation
+        foreach (array_values($hostGroups) as $hostGroup) {
+            try {
+                $this->db->beginTransaction();
+                if ($hostGroup->getId() !== null) {
+                    // Associate the host and host group using host group id
+                    $request = $this->translateDbName(
+                        'INSERT INTO `:db`.hostgroup_relation
                     (`host_host_id`, `hostgroup_hg_id`)
                     VALUES (:host_id, :hg_id)'
-                );
-                $statement = $this->db->prepare($request);
-                $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-                $statement->bindValue(':hg_id', $hostGroup->getId(), \PDO::PARAM_INT);
-                $statement->execute();
-                if ($statement->rowCount() === 0) {
-                    throw new RepositoryException(sprintf(_('Host Group with id %d not found'), $hostGroup->getId()));
-                }
-            } elseif (!empty($hostGroup->getName())) {
-                // Associate the host and host group using host group name
-                $request = $this->translateDbName(
-                    'INSERT INTO `:db`.hostgroup_relation
+                    );
+                    $statement = $this->db->prepare($request);
+                    $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+                    $statement->bindValue(':hg_id', $hostGroup->getId(), \PDO::PARAM_INT);
+                    $statement->execute();
+                    if ($statement->rowCount() === 0) {
+                        throw new RepositoryException(
+                            sprintf(_('Host Group with id %d not found'), $hostGroup->getId())
+                        );
+                    }
+                } elseif (!empty($hostGroup->getName())) {
+                    // Associate the host and host group using host group name
+                    $request = $this->translateDbName(
+                        'INSERT INTO `:db`.hostgroup_relation
                     (`host_host_id`, `hostgroup_hg_id`)
                     SELECT :host_id, hostgroup.hg_id
                     FROM `:db`.hostgroup
                     WHERE hostgroup.hg_name = :hg_name'
-                );
-                $statement = $this->db->prepare($request);
-                $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-                $statement->bindValue(':hg_name', $hostGroup->getName(), \PDO::PARAM_STR);
-                $statement->execute();
-                if ($statement->rowCount() === 0) {
-                    throw new RepositoryException(sprintf(_('Host Group %s not found'), $hostGroup->getName()));
+                    );
+                    $statement = $this->db->prepare($request);
+                    $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+                    $statement->bindValue(':hg_name', $hostGroup->getName(), \PDO::PARAM_STR);
+                    $statement->execute();
+                    if ($statement->rowCount() === 0) {
+                        throw new RepositoryException(sprintf(_('Host Group %s not found'), $hostGroup->getName()));
+                    }
                 }
+                $this->db->commit();
+            } catch (\Exception $ex) {
+                $this->db->rollBack();
+                throw $ex;
             }
         }
     }

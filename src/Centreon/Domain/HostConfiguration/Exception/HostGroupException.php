@@ -23,22 +23,34 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Exception;
 
 /**
- * This class is designed to contain all exceptions for the context of the host template.
+ * This class is designed to contain all exceptions for the context of the host group.
  *
  * @package Centreon\Domain\HostConfiguration\Exception
  */
 class HostGroupException extends \Exception
 {
+    /**
+     * @param \Exception $ex
+     * @return static
+     */
     public static function searchHostGroupsException(\Exception $ex): self
     {
         return new self(_('Error when searching for host groups'), 0, $ex);
     }
-
+    
+    /**
+     * @param \Exception $ex
+     * @return static
+     */
     public static function countHostGroupsException(\Exception $ex): self
     {
         return new self(_('Error while searching for the number of host group'), 0, $ex);
     }
-
+    
+    /**
+     * @param \Exception $ex
+     * @return static
+     */
     public static function searchUsedHostGroupsNameException(\Exception $ex): self
     {
         return new self(_('Error when searching for already used host group names'), 0, $ex);

@@ -27,7 +27,7 @@ use Centreon\Domain\Media\Model\Image;
 use Centreon\Domain\HostConfiguration\Exception\HostGroupFactoryException;
 
 /**
- * This class is designed to provide a way to create the HostTemplate entity from the database.
+ * This class is designed to provide a way to create the HostGroup entity from the database.
  *
  * @package Centreon\Infrastructure\HostConfiguration\Model
  */

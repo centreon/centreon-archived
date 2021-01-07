@@ -36,10 +36,9 @@ class FindHostGroupsResponse
      * @var array<int, array<string, mixed>>
      */
     private $hostGroups = [];
-
+    
     /**
-     * @param HostGroup[] $hostGroups
-     * @throws \Exception
+     * @param array $hostGroups
      */
     public function setHostGroups(array $hostGroups): void
     {
