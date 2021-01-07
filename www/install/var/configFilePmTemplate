@@ -13,7 +13,7 @@ $centreon_config = {
        "db_passwd" => '--DBPASS--'
 };
 
-# Central or Poller ?
+# Central, Remote or Poller ?
 $instance_mode = "--INSTANCEMODE--";
 
 # Centreon Centcore Command File

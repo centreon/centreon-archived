@@ -20,25 +20,21 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformInformation\Interfaces;
+namespace Centreon\Domain\Menu\Interfaces;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-
-interface PlatformInformationRepositoryInterface
+interface MenuRepositoryInterface
 {
     /**
-     * Find all platform information.
+     * Disable Centreon Web Menu
      *
-     * @return PlatformInformation|null
-     * @throws \Exception
+     * @return void
      */
-    public function findPlatformInformation(): ?PlatformInformation;
+    public function disableCentralMenus(): void;
 
     /**
-     * Update the platform information.
+     * Enable Centreon Web Menu
      *
-     * @param PlatformInformation $platformInformation
-     * @throws \Exception
+     * @return void
      */
-    public function updatePlatformInformation(PlatformInformation $platformInformation): void;
+    public function enableCentralMenus(): void;
 }
