@@ -465,25 +465,19 @@ class CentreonDowntimeBroker extends CentreonDowntime
     public function setCommand($host_id, $cmd)
     {
         static $cmdData = null;
-        static $remoteCommands = array();
-        static $localCommands = array();
+        static $remoteCommands = [];
 
         if (is_null($cmdData)) {
-            $cmdData = array();
-            $query = "SELECT ns.localhost, ns.id, cn.command_file, host_host_id
-                                FROM cfg_nagios cn, nagios_server ns, ns_host_relation nsh
-                            WHERE cn.nagios_server_id = ns.id
-                            AND nsh.nagios_server_id = ns.id
-                            AND cn.nagios_activate = '1'
-                            AND ns.ns_activate = '1'";
+            $cmdData = [];
+            $query = "SELECT ns.id, host_host_id
+                FROM cfg_nagios cn, nagios_server ns, ns_host_relation nsh
+                WHERE cn.nagios_server_id = ns.id
+                AND nsh.nagios_server_id = ns.id
+                AND cn.nagios_activate = '1'
+                AND ns.ns_activate = '1'";
             $res = $this->db->query($query);
             while ($row = $res->fetchRow()) {
-                $hid = $row['host_host_id'];
-                $cmdData[$hid] = array(
-                    'localhost' => $row['localhost'],
-                    'command_file' => $row['command_file'],
-                    'id' => $row['id']
-                );
+                $cmdData[$row['host_host_id']] = $row['id'];
             }
         }
 
@@ -491,12 +485,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
             return;
         }
 
-        if ($cmdData[$host_id]['localhost'] == 1) {
-            $this->localCommands[] = $cmd;
-            $this->localCmdFile = $cmdData[$host_id]['command_file'];
-        } else {
-            $this->remoteCommands[] = 'EXTERNALCMD:' . $cmdData[$host_id]['id'] . ':' . $cmd;
-        }
+        $this->remoteCommands[] = 'EXTERNALCMD:' . $cmdData[$host_id] . ':' . $cmd;
     }
 
     /**
@@ -504,13 +493,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
      */
     public function sendCommands()
     {
-        /* send local commands */
-        $localCommands = implode(PHP_EOL, $this->localCommands);
-        if ($localCommands && $this->localCmdFile) {
-            file_put_contents($this->localCmdFile, $localCommands, FILE_APPEND);
-        }
-
-        /* send remote commands */
         $remoteCommands = implode(PHP_EOL, $this->remoteCommands);
         if ($remoteCommands) {
             file_put_contents($this->remoteCmdDir . "/" . time() . "-downtimes", $remoteCommands, FILE_APPEND);
