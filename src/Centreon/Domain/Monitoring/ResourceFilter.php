@@ -322,7 +322,6 @@ class ResourceFilter
     public function setOnlyWithPerformanceData(bool $onlyWithPerformanceData): self
     {
         $this->onlyWithPerformanceData = $onlyWithPerformanceData;
-
         return $this;
     }
 
