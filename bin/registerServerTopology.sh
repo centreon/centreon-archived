@@ -172,7 +172,7 @@ function parse_fqdn() {
   if [ -n "$pass" ]; then
     user="$(echo $userpass | grep : | cut -d: -f1)"
   else
-      user=$userpass
+    user=$userpass
   fi
   url="$(echo ${1/${userpass}"@"/})"
 
