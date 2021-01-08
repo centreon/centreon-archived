@@ -3,6 +3,7 @@ import { JsonDecoder } from 'ts.data.json';
 import { buildListingDecoder } from '@centreon/ui';
 
 import { CriteriaValue, RawCriteria, RawFilter } from '../models';
+import { SortOrder } from '../../Listing/models';
 
 const entityDecoder = JsonDecoder.object<RawFilter>(
   {
@@ -16,10 +17,7 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
           type: JsonDecoder.string,
           value: JsonDecoder.optional(
             JsonDecoder.oneOf<
-              | string
-              | boolean
-              | Array<CriteriaValue>
-              | { [field: string]: string }
+              string | boolean | Array<CriteriaValue> | [string, string]
             >(
               [
                 JsonDecoder.string,
@@ -37,9 +35,9 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
                   ),
                   'FilterCriteriaValues',
                 ),
-                JsonDecoder.dictionary(
-                  JsonDecoder.string,
-                  'FilterCriteriaDictionary',
+                JsonDecoder.tuple(
+                  [JsonDecoder.string, JsonDecoder.string],
+                  'FilterCriteriaTuple',
                 ),
               ],
               'FilterCriteriaValue',

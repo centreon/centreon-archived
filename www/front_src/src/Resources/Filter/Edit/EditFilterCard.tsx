@@ -69,6 +69,8 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     filter: currentFilter,
     setCustomFilters,
     customFilters,
+    sortf,
+    sorto,
   } = useResourceContext();
 
   const { showMessage } = useSnackbar();
@@ -138,7 +140,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
       });
 
       if (equals(filter.id, currentFilter.id)) {
-        setFilter(newFilter as Filter);
+        setFilter({ ...newFilter, sort: [sortf, sorto] } as Filter);
       }
 
       setCustomFilters(reject(equals(filter), customFilters));

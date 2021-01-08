@@ -18,9 +18,8 @@ export interface Filter {
   id: string | number;
   name: string;
   criterias: Criterias;
+  sort: [string, SortOrder];
 }
-
-export type FilterWithSort = Filter & { sort: [string, SortOrder] };
 
 export interface RawCriteria {
   name: string;

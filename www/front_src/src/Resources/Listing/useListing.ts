@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ifElse, pathEq, always, pathOr, pipe } from 'ramda';
+import { ifElse, pathEq, always, pathOr } from 'ramda';
 
 import {
   useRequest,
@@ -10,6 +10,8 @@ import {
 
 import { ResourceListing } from '../models';
 import { labelSomethingWentWrong } from '../translatedLabels';
+import { getStoredOrDefaultFilter, storeFilter } from '../Filter/storedFilter';
+import useFilterModels from '../Filter/useFilterModels';
 
 import { defaultSortOrder, defaultSortField } from './columns';
 import ApiNotFoundMessage from './ApiNotFoundMessage';
@@ -52,6 +54,8 @@ const useListing = (): ListingState => {
   const [page, setPage] = React.useState<number>();
   const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
 
+  const { unhandledProblemsFilter } = useFilterModels();
+
   const { sendRequest, sending } = useRequest<ResourceListing>({
     request: listResources,
     getErrorMessage: ifElse(
@@ -62,22 +66,21 @@ const useListing = (): ListingState => {
   });
 
   React.useEffect(() => {
+    const storedFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
+
+    storeFilter({ ...storedFilter, sort: [sortf, sorto] });
+
     setUrlQueryParameters([
       {
         name: 'sorto',
         value: sorto,
       },
-    ]);
-  }, [sorto]);
-
-  React.useEffect(() => {
-    setUrlQueryParameters([
       {
         name: 'sortf',
         value: sortf,
       },
     ]);
-  }, [sortf]);
+  }, [sorto, sortf]);
 
   return {
     listing,

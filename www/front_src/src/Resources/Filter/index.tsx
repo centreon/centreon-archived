@@ -106,6 +106,8 @@ const Filter = (): JSX.Element => {
     setServiceGroups,
     customFilters,
     customFiltersLoading,
+    sortf,
+    sorto,
   } = useResourceContext();
 
   const getConnectedAutocompleteEndpoint = (buildEndpoint) => ({
@@ -123,7 +125,11 @@ const Filter = (): JSX.Element => {
     if (isCustom(filter)) {
       return;
     }
-    setFilter({ ...newFilter, criterias: filter.criterias });
+    setFilter({
+      ...newFilter,
+      criterias: filter.criterias,
+      sort: [sortf, sorto],
+    });
   };
 
   const requestSearch = (): void => {

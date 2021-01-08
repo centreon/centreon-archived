@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals } from 'ramda';
+import { equals, isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
@@ -46,9 +46,21 @@ const ResourceListing = (): JSX.Element => {
     setResourcesToSetDowntime,
     setResourcesToCheck,
     sending,
+    filter,
   } = useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
+
+  React.useEffect(() => {
+    if (isNil(filter)) {
+      return;
+    }
+
+    const [filterSortf, filterSorto] = filter.sort;
+
+    setSortf(filterSortf);
+    setSorto(filterSorto);
+  }, [filter]);
 
   const changeSort = ({ order, orderBy }): void => {
     setSortf(orderBy);

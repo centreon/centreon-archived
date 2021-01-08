@@ -8,6 +8,8 @@ import {
   getUrlQueryParameters,
 } from '@centreon/ui';
 
+import { SortOrder } from '../Listing/models';
+
 import {
   getStoredOrDefaultFilter,
   clearCachedFilter,
@@ -64,7 +66,13 @@ const useFilter = (): FilterState => {
     decoder: listCustomFiltersDecoder,
   });
 
-  const { unhandledProblemsFilter, allFilter, newFilter } = useFilterModels();
+  const {
+    unhandledProblemsFilter,
+    allFilter,
+    newFilter,
+    resourceProblemsFilter,
+  } = useFilterModels();
+
   const { toFilter, toFilterWithTranslatedCriterias } = useAdapters();
 
   const getDefaultFilter = (): Filter => {
@@ -73,11 +81,26 @@ const useFilter = (): FilterState => {
     const urlQueryParameters = getUrlQueryParameters();
 
     if (hasPath(['filter'], urlQueryParameters)) {
-      return pipe(
+      const filterFromQueryParameters = pipe(
         mergeDeepLeft(urlQueryParameters.filter as Filter) as (t) => Filter,
         mergeDeepRight(allFilter) as (t) => Filter,
         toFilterWithTranslatedCriterias,
       )(newFilter) as Filter;
+
+      const getSort = (): [string, SortOrder] => {
+        const { sortf, sorto } = urlQueryParameters;
+
+        if (sorto && sortf) {
+          return [sortf as string, sorto as SortOrder];
+        }
+
+        return defaultFilter.sort;
+      };
+
+      return {
+        ...filterFromQueryParameters,
+        sort: getSort(),
+      };
     }
 
     return defaultFilter;
@@ -144,6 +167,13 @@ const useFilter = (): FilterState => {
       serviceGroups,
     },
   };
+
+  const filters = [
+    unhandledProblemsFilter,
+    allFilter,
+    resourceProblemsFilter,
+    ...customFilters,
+  ];
 
   React.useEffect(() => {
     loadCustomFilters();
@@ -214,6 +244,7 @@ const useFilter = (): FilterState => {
     filter,
     setFilter,
     updatedFilter,
+    filters,
     customFilters,
     currentSearch,
     setCurrentSearch,

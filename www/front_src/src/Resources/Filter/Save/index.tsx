@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, or, and, not, isEmpty, omit } from 'ramda';
+import { equals, or, and, not, isEmpty, omit, find, propEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -61,6 +61,7 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const {
     filter,
+    filters,
     updatedFilter,
     setFilter,
     setHostGroups,
@@ -136,11 +137,15 @@ const SaveFilterMenu = (): JSX.Element => {
   };
 
   const isFilterDirty = (): boolean => {
-    if (!isCustom(filter)) {
-      return false;
-    }
+    const retrievedFilter = find(propEq('id', filter.id), filters);
 
-    return !equals(filter, updatedFilterWithSort);
+    console.log('retrieved', retrievedFilter, 'updated', updatedFilterWithSort);
+    return !equals(retrievedFilter, updatedFilterWithSort);
+    // if (!isCustom(filter)) {
+    //   return false;
+    // }
+
+    // return !equals(filter, updatedFilterWithSort);
   };
 
   const isNewFilter = filter.id === '';
