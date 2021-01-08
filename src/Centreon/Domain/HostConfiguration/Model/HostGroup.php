@@ -111,7 +111,7 @@ class HostGroup
      * @var bool Indicates whether the host group is activated or not.
      */
     private $isActivated = true;
-    
+
     /**
      * @param string $name
      * @throws \Assert\AssertionFailedException
@@ -120,7 +120,7 @@ class HostGroup
     {
         $this->setName($name);
     }
-    
+
     /**
      * @return int|null
      */
