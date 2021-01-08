@@ -394,7 +394,6 @@ function convert_to_remote() {
 #========= begin of request_to_remote()
 function request_to_remote() {
   # Prepare Proxy Payload
-   # Check si Proxy Host remplis
   if [[ -n $PROXY_HOST ]]; then
     PROXY_PAYLOAD=', "proxy":{"host":"'"${PROXY_HOST}"'","port":'"${PROXY_PORT}"
     if [[ -n $PROXY_USERNAME ]]; then
