@@ -296,7 +296,8 @@ class CentreonContact extends CentreonObject
             $addParams['contact_oreon'] = '1';
         }
         if (strtolower($params[self::ORDER_LANG]) === "browser"
-            || strtoupper(substr($params[self::ORDER_LANG], -5)) === '.UTF-8') {
+            || strtoupper(substr($params[self::ORDER_LANG], -5)) === '.UTF-8'
+        ) {
             $completeLanguage = $params[self::ORDER_LANG];
         } else {
             $completeLanguage = params[self::ORDER_LANG] . '.UTF-8';
