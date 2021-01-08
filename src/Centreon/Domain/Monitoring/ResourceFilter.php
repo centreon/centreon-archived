@@ -318,7 +318,6 @@ class ResourceFilter
     /**
      * @param boolean $onlyWithPerformanceData
      * @return \Centreon\Domain\Monitoring\ResourceFilter
-     * @throws \InvalidArgumentException
      */
     public function setOnlyWithPerformanceData(bool $onlyWithPerformanceData): self
     {
