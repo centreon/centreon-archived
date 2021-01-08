@@ -169,7 +169,15 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             : ' ORDER BY hg.hg_id ASC';
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
-        $statement = $this->db->query($request);
+        $statement = $this->db->prepare($request);
+
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+        $statement->execute();
+
         $result = $this->db->query('SELECT FOUND_ROWS()');
         if ($result !== false && ($total = $result->fetchColumn()) !== false) {
             $this->sqlRequestTranslator->getRequestParameters()->setTotal((int)$total);

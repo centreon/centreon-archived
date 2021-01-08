@@ -39,11 +39,11 @@ class HostGroupFactoryRdb
      * @param array<string, mixed> $data
      * @return HostGroup
      * @throw \InvalidArgumentException
-     * @throws HostGroupFactoryException
+     * @throws \Assert\AssertionFailedException
      */
     public static function create(array $data): HostGroup
     {
-        $hostGroup = new HostGroup();
+        $hostGroup = new HostGroup($data['hg_name']);
         if (isset($data['hg_icon_image'])) {
             $hostGroup->setIcon(
                 (new Image())
@@ -66,7 +66,6 @@ class HostGroupFactoryRdb
 
         $hostGroup
             ->setId((int) $data['hg_id'])
-            ->setName($data['hg_name'])
             ->setAlias($data['hg_alias'])
             ->setNotes($data['hg_notes'])
             ->setNotesUrl($data['hg_notes_url'])

@@ -47,7 +47,7 @@ class HostGroup
     private $id;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $name;
 
@@ -111,7 +111,16 @@ class HostGroup
      * @var bool Indicates whether the host group is activated or not.
      */
     private $isActivated = true;
-
+    
+    /**
+     * @param string $name
+     * @throws \Assert\AssertionFailedException
+     */
+    public function __construct(string $name)
+    {
+        $this->setName($name);
+    }
+    
     /**
      * @return int|null
      */
@@ -131,9 +140,9 @@ class HostGroup
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
