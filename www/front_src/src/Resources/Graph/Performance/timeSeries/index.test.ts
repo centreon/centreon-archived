@@ -221,12 +221,6 @@ describe('timeSeries', () => {
     });
   });
 
-  describe('getMetricValues', () => {
-    it('returns the values for the given time value', () => {
-      expect(timeSeries.getMetricValues({ rta: 1, time: 0 })).toEqual([1, 0]);
-    });
-  });
-
   describe('getMetricValuesForUnit', () => {
     it('returns the values in the given time series corresponding to the given line unit', () => {
       const series = timeSeries.getTimeSeries(graphData);

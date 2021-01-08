@@ -8,11 +8,7 @@ const baseConfig = require('@centreon/frontend-core/webpack/base');
 const extractCssConfig = require('@centreon/frontend-core/webpack/patch/extractCss');
 
 module.exports = merge(baseConfig, extractCssConfig, {
-  entry: [
-    'react-hot-loader/patch',
-    '@babel/polyfill',
-    './www/front_src/src/index.js',
-  ],
+  entry: ['@babel/polyfill', './www/front_src/src/index.js'],
   output: {
     path: path.resolve(`${__dirname}/www/static`),
     publicPath: './static/',
@@ -30,7 +26,7 @@ module.exports = merge(baseConfig, extractCssConfig, {
     new HtmlWebpackPlugin({
       alwaysWriteToDisk: true,
       template: './www/front_src/public/index.html',
-      filename: '../index.html',
+      filename: path.resolve(`${__dirname}`, 'www', 'index.html'),
     }),
     new HtmlWebpackHarddiskPlugin(),
   ],

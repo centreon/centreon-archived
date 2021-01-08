@@ -6,13 +6,12 @@ import { ScaleLinear } from 'd3-scale';
 
 import { getUnits } from '../../timeSeries';
 import formatMetricValue from '../../formatMetricValue';
-import { Line, TimeValue } from '../../models';
+import { Line } from '../../models';
 
 import { commonTickLabelProps } from '.';
 
 interface Props {
   lines: Array<Line>;
-  timeSeries: Array<TimeValue>;
   graphWidth: number;
   graphHeight: number;
   base: number;
@@ -25,18 +24,16 @@ interface UnitLabelProps {
   unit: string;
 }
 
-const UnitLabel = ({ x, unit }: UnitLabelProps): JSX.Element => {
-  return (
-    <text
-      x={x}
-      y={-8}
-      fontSize={commonTickLabelProps.fontSize}
-      fontFamily={commonTickLabelProps.fontFamily}
-    >
-      {unit}
-    </text>
-  );
-};
+const UnitLabel = ({ x, unit }: UnitLabelProps): JSX.Element => (
+  <text
+    x={x}
+    y={-8}
+    fontSize={commonTickLabelProps.fontSize}
+    fontFamily={commonTickLabelProps.fontFamily}
+  >
+    {unit}
+  </text>
+);
 
 const YAxes = ({
   lines,
@@ -66,7 +63,7 @@ const YAxes = ({
       {!hasMoreThanTwoUnits && <UnitLabel x={0} unit={firstUnit} />}
       <AxisLeft
         orientation="left"
-        tickLabelProps={(): {} => ({
+        tickLabelProps={(): Record<string, unknown> => ({
           ...commonTickLabelProps,
           textAnchor: 'end',
           dy: 4,
