@@ -322,12 +322,6 @@ class ResourceFilter
      */
     public function setOnlyWithPerformanceData(bool $onlyWithPerformanceData): self
     {
-        if (!is_bool($onlyWithPerformanceData)) {
-            throw new \InvalidArgumentException(
-                'Search parameter on resources that has performance data available should be a boolean'
-            );
-        }
-
         $this->onlyWithPerformanceData = $onlyWithPerformanceData;
 
         return $this;
