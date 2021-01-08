@@ -50,7 +50,7 @@ class HostGroupTest extends TestCase
                 'HostGroup::name'
             )->getMessage()
         );
-        (new HostGroup())->setName($name);
+        (new HostGroup('hg-name'))->setName($name);
     }
 
     /**
@@ -68,7 +68,7 @@ class HostGroupTest extends TestCase
                 'HostGroup::alias'
             )->getMessage()
         );
-        (new HostGroup())->setAlias($alias);
+        (new HostGroup('hg-name'))->setAlias($alias);
     }
 
     /**
@@ -86,7 +86,7 @@ class HostGroupTest extends TestCase
                 'HostGroup::notes'
             )->getMessage()
         );
-        (new HostGroup())->setNotes($notes);
+        (new HostGroup('hg-name'))->setNotes($notes);
     }
 
     /**
@@ -104,7 +104,7 @@ class HostGroupTest extends TestCase
                 'HostGroup::notesUrl'
             )->getMessage()
         );
-        (new HostGroup())->setNotesUrl($notesUrl);
+        (new HostGroup('hg-name'))->setNotesUrl($notesUrl);
     }
 
     /**
@@ -122,7 +122,7 @@ class HostGroupTest extends TestCase
                 'HostGroup::actionUrl'
             )->getMessage()
         );
-        (new HostGroup())->setActionUrl($actionUrl);
+        (new HostGroup('hg-name'))->setActionUrl($actionUrl);
     }
 
     /**
@@ -140,7 +140,7 @@ class HostGroupTest extends TestCase
                 'HostGroup::comment'
             )->getMessage()
         );
-        (new HostGroup())->setComment($comments);
+        (new HostGroup('hg-name'))->setComment($comments);
     }
 
     /**
@@ -158,7 +158,7 @@ class HostGroupTest extends TestCase
                 'HostGroup::geoCoords'
             )->getMessage()
         );
-        (new HostGroup())->setGeoCoords($geoCoords);
+        (new HostGroup('hg-name'))->setGeoCoords($geoCoords);
     }
 
     /**
@@ -167,7 +167,7 @@ class HostGroupTest extends TestCase
      */
     public static function createEntity(): HostGroup
     {
-        return (new HostGroup())
+        return (new HostGroup('hg-name'))
             ->setId(10)
             ->setName('hg-name')
             ->setAlias('host group name')
