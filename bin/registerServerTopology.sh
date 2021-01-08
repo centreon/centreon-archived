@@ -231,13 +231,13 @@ function usage() {
               Additional Properties for Remote:
               - API_CURRENT_NODE_USERNAME           <mandatory> string
               - API_CURRENT_NODE_PASSWORD           <mandatory> string
-              - API_CURRENT_NODE_PROTOCOL           <mandatory> string
-              - API_CURRENT_NODE_PORT               <mandatory> string
-              - API_CURRENT_NODE_CENTREON_FOLDER    <mandatory> string
-              - PROXY_PORT=
-              - PROXY_HOST=
-              - PROXY_USERNAME=
-              - PROXY_PASSWORD=
+              - API_CURRENT_NODE_PROTOCOL           <optional> string
+              - API_CURRENT_NODE_PORT               <optional> string
+              - API_CURRENT_NODE_CENTREON_FOLDER    <optional> string
+              - PROXY_PORT                          <optional> integer
+              - PROXY_HOST                          <optional> string
+              - PROXY_USERNAME                      <optional> string
+              - PROXY_PASSWORD                      <optional> string
 
 EOF
 }
