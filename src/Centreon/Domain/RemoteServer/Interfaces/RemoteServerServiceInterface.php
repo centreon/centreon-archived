@@ -27,8 +27,9 @@ interface RemoteServerServiceInterface
 {
     /**
      * Convert a Central into a Remote Server
+     * @param string $centralAddress
      */
-    public function convertCentralToRemote(): void;
+    public function convertCentralToRemote(string $centralAddress): void;
 
     /**
      * Convert a Remote Server into a Central

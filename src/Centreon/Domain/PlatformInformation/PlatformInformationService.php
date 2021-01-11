@@ -87,7 +87,19 @@ class PlatformInformationService implements PlatformInformationServiceInterface
          */
         try {
             if ($platformInformationUpdate->isRemote() && !$currentPlatformInformation->isRemote()) {
-                $this->remoteServerService->convertCentralToRemote();
+                if ($platformInformationUpdate->getCentralServerAddress() !== null) {
+                    $this->remoteServerService->convertCentralToRemote(
+                        $platformInformationUpdate->getCentralServerAddress()
+                    );
+                } elseif ($currentPlatformInformation->getCentralServerAddress() !== null) {
+                    $this->remoteServerService->convertCentralToRemote(
+                        $currentPlatformInformation->getCentralServerAddress()
+                    );
+                }else {
+                    throw new RemoteServerException(
+                        _("Unable to convert in remote server, no Central to attached provided.")
+                    );
+                }
             } elseif ($platformInformationUpdate->isCentral() && !$currentPlatformInformation->isCentral()) {
                 $this->remoteServerService->convertRemoteToCentral();
             }

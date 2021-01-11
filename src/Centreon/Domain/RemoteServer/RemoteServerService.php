@@ -28,6 +28,7 @@ use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
@@ -51,9 +52,9 @@ class RemoteServerService implements RemoteServerServiceInterface
     private $remoteServerRepository;
 
     /**
-     * @var string
+     * @var MonitoringServerRepositoryInterface
      */
-    private $centreonEtcPath;
+    private $monitoringServerRepository;
 
     /**
      * @param MenuRepositoryInterface $menuRepository
@@ -62,17 +63,19 @@ class RemoteServerService implements RemoteServerServiceInterface
     public function __construct(
         MenuRepositoryInterface $menuRepository,
         PlatformTopologyRepositoryInterface $platformTopologyRepository,
-        RemoteServerRepositoryInterface $remoteServerRepository
+        RemoteServerRepositoryInterface $remoteServerRepository,
+        MonitoringServerRepositoryInterface $monitoringServerRepository
     ) {
         $this->menuRepository = $menuRepository;
         $this->platformTopologyRepository = $platformTopologyRepository;
         $this->remoteServerRepository = $remoteServerRepository;
+        $this->monitoringServerRepository = $monitoringServerRepository;
     }
 
     /**
      * @inheritDoc
      */
-    public function convertCentralToRemote(): void
+    public function convertCentralToRemote(string $centralAddress): void
     {
         /**
          * Stop conversion if the Central has remote children
@@ -89,6 +92,11 @@ class RemoteServerService implements RemoteServerServiceInterface
         } catch (\Exception $ex) {
             throw new RemoteServerException(_('An error occured while searching any remote children'));
         }
+
+        /**
+         * Find any children platform and forward them to Central Parent.
+         */
+        dd($this->monitoringServerRepository->findServersWithoutRequestParameters());
 
         /**
          * Set Remote type into Platform_Topology
