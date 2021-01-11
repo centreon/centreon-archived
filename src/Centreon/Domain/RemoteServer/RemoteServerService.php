@@ -28,10 +28,12 @@ use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
-use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
+use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -52,9 +54,9 @@ class RemoteServerService implements RemoteServerServiceInterface
     private $remoteServerRepository;
 
     /**
-     * @var MonitoringServerRepositoryInterface
+     * @var PlatformTopologyRegisterRepositoryInterface
      */
-    private $monitoringServerRepository;
+    private $platformTopologyRegisterRepository;
 
     /**
      * @param MenuRepositoryInterface $menuRepository
@@ -64,18 +66,18 @@ class RemoteServerService implements RemoteServerServiceInterface
         MenuRepositoryInterface $menuRepository,
         PlatformTopologyRepositoryInterface $platformTopologyRepository,
         RemoteServerRepositoryInterface $remoteServerRepository,
-        MonitoringServerRepositoryInterface $monitoringServerRepository
+        PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
     ) {
         $this->menuRepository = $menuRepository;
         $this->platformTopologyRepository = $platformTopologyRepository;
         $this->remoteServerRepository = $remoteServerRepository;
-        $this->monitoringServerRepository = $monitoringServerRepository;
+        $this->platformTopologyRegisterRepository = $platformTopologyRegisterRepository;
     }
 
     /**
      * @inheritDoc
      */
-    public function convertCentralToRemote(string $centralAddress): void
+    public function convertCentralToRemote(PlatformInformation $platformInformation): void
     {
         /**
          * Stop conversion if the Central has remote children
@@ -96,8 +98,13 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Find any children platform and forward them to Central Parent.
          */
-        dd($this->monitoringServerRepository->findServersWithoutRequestParameters());
-
+        $centralPlatform = $this->platformTopologyRepository->findTopLevelPlatformByType(Platform::TYPE_CENTRAL);
+        $childrenPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
+            $centralPlatform->getId()
+        );
+        foreach ($childrenPlatforms as $platform) {
+            $this->platformTopologyRegisterRepository->registerPlatformToParent($platform, $platformInformation);
+        }
         /**
          * Set Remote type into Platform_Topology
          */
