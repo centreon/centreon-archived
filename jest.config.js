@@ -1,6 +1,6 @@
-const merge = require('lodash/merge');
+const { mergeDeepRight } = require('ramda');
 
-module.exports = merge(require('@centreon/frontend-core/jest'), {
+module.exports = mergeDeepRight(require('@centreon/frontend-core/jest'), {
   roots: ['<rootDir>/www/front_src/src/'],
   setupFilesAfterEnv: [
     '@testing-library/jest-dom/extend-expect',

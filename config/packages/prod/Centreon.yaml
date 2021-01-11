@@ -238,3 +238,15 @@ services:
 
     Centreon\Domain\Broker\Interfaces\BrokerServiceRepositoryInterface:
         class: Centreon\Infrastructure\Broker\BrokerRepositoryRDB
+
+    # Remote Server
+    Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface:
+        class: Centreon\Domain\RemoteServer\RemoteServerService
+
+    Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface:
+        class: Centreon\Infrastructure\RemoteServer\RemoteServerRepositoryFile
+        calls:
+            - [setCentreonConfFilePath, ['%centreon_etc_path%/conf.pm']]
+    # Menu
+    Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
+        class: Centreon\Infrastructure\Menu\MenuRepositoryRDB

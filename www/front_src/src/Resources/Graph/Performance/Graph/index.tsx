@@ -355,7 +355,6 @@ const Graph = ({
               rightScale={rightScale}
               xScale={xScale}
               xAxisTickFormat={xAxisTickFormat}
-              timeSeries={timeSeries}
             />
             {eventAnnotationsActive && (
               <MemoizedAnnotations

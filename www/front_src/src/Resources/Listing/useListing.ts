@@ -8,7 +8,7 @@ import {
   getUrlQueryParameters,
 } from '@centreon/ui';
 
-import { ResourceListing } from '../models';
+import { ResourceListing, SortOrder } from '../models';
 import { labelSomethingWentWrong } from '../translatedLabels';
 import { getStoredOrDefaultFilter, storeFilter } from '../Filter/storedFilter';
 import useFilterModels from '../Filter/useFilterModels';
@@ -16,7 +16,6 @@ import useFilterModels from '../Filter/useFilterModels';
 import { defaultSortOrder, defaultSortField } from './columns';
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { listResources } from './api';
-import { SortOrder } from './models';
 
 type ListingDispatch<T> = React.Dispatch<React.SetStateAction<T>>;
 
