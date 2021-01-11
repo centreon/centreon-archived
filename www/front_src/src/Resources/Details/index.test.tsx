@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { last, head, equals, reject, path } from 'ramda';
+import { last, head, equals, reject, path, isNil } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import {
@@ -11,7 +11,6 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { isNil } from 'lodash';
 
 import {
   ThemeProvider,
