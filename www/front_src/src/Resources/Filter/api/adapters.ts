@@ -1,29 +1,19 @@
 import { propEq, pipe } from 'ramda';
 
-import {
-  CriteriaValue,
-  RawFilter,
-  RawCriteria,
-  Filter,
-  FilterWithSort,
-} from '../models';
+import { CriteriaValue, RawFilter, RawCriteria, Filter } from '../models';
 import useFilterModels from '../useFilterModels';
 import { SortOrder } from '../../Listing/models';
 
 interface Adapters {
   toFilter: (rawFilter: RawFilter) => Filter;
-  toRawFilter: (filter: FilterWithSort) => RawFilter;
+  toRawFilter: (filter: Filter) => RawFilter;
   toFilterWithTranslatedCriterias: (filter: Filter) => Filter;
 }
 
 const useAdapters = (): Adapters => {
   const { criteriaValueNameById } = useFilterModels();
 
-  const toFilter = ({
-    id: filterId,
-    name,
-    criterias,
-  }: RawFilter): FilterWithSort => {
+  const toFilter = ({ id: filterId, name, criterias }: RawFilter): Filter => {
     const findCriteriaByName = (criteriaName): RawCriteria =>
       criterias.find(propEq('name', criteriaName)) as RawCriteria;
 
@@ -58,12 +48,7 @@ const useAdapters = (): Adapters => {
     };
   };
 
-  const toRawFilter = ({
-    id,
-    name,
-    criterias,
-    sort,
-  }: FilterWithSort): RawFilter => {
+  const toRawFilter = ({ id, name, criterias, sort }: Filter): RawFilter => {
     return {
       id,
       name,

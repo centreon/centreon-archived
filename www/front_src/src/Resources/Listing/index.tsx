@@ -47,6 +47,7 @@ const ResourceListing = (): JSX.Element => {
     setResourcesToCheck,
     sending,
     filter,
+    setNewFilter,
   } = useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
@@ -65,6 +66,7 @@ const ResourceListing = (): JSX.Element => {
   const changeSort = ({ order, orderBy }): void => {
     setSortf(orderBy);
     setSorto(order);
+    setNewFilter([orderBy, order]);
   };
 
   const changeLimit = (event): void => {

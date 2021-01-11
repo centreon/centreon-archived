@@ -15,7 +15,7 @@ import {
   labelRequired,
 } from '../../translatedLabels';
 import { createFilter } from '../api';
-import { RawFilter, FilterWithSort } from '../models';
+import { RawFilter, Filter } from '../models';
 import useAdapters from '../api/adapters';
 
 type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -24,7 +24,7 @@ interface Props {
   onCreate: (filter) => void;
   onCancel: () => void;
   open: boolean;
-  filter: FilterWithSort;
+  filter: Filter;
 }
 
 const CreateFilterDialog = ({

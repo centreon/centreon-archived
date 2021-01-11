@@ -17,7 +17,7 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
           type: JsonDecoder.string,
           value: JsonDecoder.optional(
             JsonDecoder.oneOf<
-              string | boolean | Array<CriteriaValue> | [string, string]
+              string | boolean | Array<CriteriaValue> | [string, SortOrder]
             >(
               [
                 JsonDecoder.string,
@@ -36,7 +36,16 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
                   'FilterCriteriaValues',
                 ),
                 JsonDecoder.tuple(
-                  [JsonDecoder.string, JsonDecoder.string],
+                  [
+                    JsonDecoder.string,
+                    JsonDecoder.oneOf<'asc' | 'desc'>(
+                      [
+                        JsonDecoder.isExactly('asc'),
+                        JsonDecoder.isExactly('desc'),
+                      ],
+                      'FilterCriteriaSortOrder',
+                    ),
+                  ],
                   'FilterCriteriaTuple',
                 ),
               ],

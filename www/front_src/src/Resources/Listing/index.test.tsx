@@ -20,7 +20,7 @@ import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
 
 import useListing from './useListing';
-import { getColumns } from './columns';
+import { getColumns, defaultSortField, defaultSortOrder } from './columns';
 
 import Listing from '.';
 
@@ -144,6 +144,8 @@ describe(Listing, () => {
   });
 
   afterEach(() => {
+    context.setSortf(defaultSortField);
+    context.setSorto(defaultSortOrder);
     useSelector.mockClear();
     mockedAxios.get.mockReset();
   });

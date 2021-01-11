@@ -21,7 +21,7 @@ import {
   labelFilterSaved,
   labelEditFilters,
 } from '../../translatedLabels';
-import { Filter, FilterWithSort } from '../models';
+import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
 import { updateFilter as updateFilterRequest } from '../api';
 import useFilterModels from '../useFilterModels';
@@ -114,7 +114,7 @@ const SaveFilterMenu = (): JSX.Element => {
   const updatedFilterWithSort = {
     ...updatedFilter,
     sort: [sortf, sorto],
-  } as FilterWithSort;
+  } as Filter;
 
   const updateFilter = (): void => {
     sendUpdateFilterRequest({
