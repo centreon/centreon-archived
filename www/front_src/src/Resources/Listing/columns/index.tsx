@@ -29,6 +29,7 @@ import {
   labelSetDowntimeOn,
   labelCheck,
   labelSetDowntime,
+  labelParent,
 } from '../../translatedLabels';
 import useAclQuery from '../../Actions/Resource/aclQuery';
 import truncate from '../../truncate';
@@ -239,11 +240,11 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   },
   {
     id: 'parent_resource',
-    label: '',
+    label: t(labelParent),
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
     Component: ParentResourceColumn,
-    sortable: false,
+    sortField: 'parent_name',
     width: 200,
   },
   {
@@ -290,6 +291,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     id: 'information',
     label: t(labelInformation),
     type: ColumnType.string,
+    sortable: false,
     getFormattedString: pipe(
       propOr('', 'information'),
       split('\n'),

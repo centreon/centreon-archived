@@ -14640,3 +14640,6 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Export to png"
 #  msgstr ""
+
+#  msgid "Parent"
+#  msgstr ""

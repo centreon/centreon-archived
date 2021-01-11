@@ -15950,3 +15950,6 @@ msgstr "Un des éléments fourni n'est pas de type ResourceGroup"
 
 msgid "Error when searching for host categories"
 msgstr "Erreur lors de la recherche des catégories d'hôtes"
+
+msgid "Parent"
+msgstr "Parent"
