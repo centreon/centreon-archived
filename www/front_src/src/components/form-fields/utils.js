@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable import/no-extraneous-dependencies */
 
-import pick from 'lodash/fp/pick';
+import { pick } from 'ramda';
 
 export const prepareInputProps = pick([
   'type',

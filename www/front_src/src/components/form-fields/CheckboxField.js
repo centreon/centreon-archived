@@ -51,7 +51,7 @@ const CheckboxField = ({
         onChange={
           onChange && callbackWithValue(trueValue, falseValue, onChange)
         }
-        onBlur={onBlur && callbackWithValue(trueValue, falseValue, onBlur)}
+        focusin={onBlur && callbackWithValue(trueValue, falseValue, onBlur)}
         className={styles['custom-control-input']}
         type="checkbox"
       />

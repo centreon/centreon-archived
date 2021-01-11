@@ -22,8 +22,12 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation;
 
+use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
+use Centreon\Domain\PlatformTopology\PlatformException;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\RemoteServer\RemoteServerException;
 
 /**
  * Service intended to use rest API on 'information' specific configuration data
@@ -38,9 +42,17 @@ class PlatformInformationService implements PlatformInformationServiceInterface
      */
     private $platformInformationRepository;
 
-    public function __construct(PlatformInformationRepositoryInterface $platformInformationRepository)
-    {
+    /**
+     * @var RemoteServerServiceInterface
+     */
+    private $remoteServerService;
+
+    public function __construct(
+        PlatformInformationRepositoryInterface $platformInformationRepository,
+        RemoteServerServiceInterface $remoteServerService
+    ) {
         $this->platformInformationRepository = $platformInformationRepository;
+        $this->remoteServerService = $remoteServerService;
     }
 
     /**
@@ -61,5 +73,30 @@ class PlatformInformationService implements PlatformInformationServiceInterface
         }
 
         return $foundPlatformInformation;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updatePlatformInformation(PlatformInformation $platformInformationUpdate): void
+    {
+        $currentPlatformInformation = $this->platformInformationRepository->findPlatformInformation();
+
+        /**
+         * Convert the Remote to Central or opposite
+         */
+        try {
+            if ($platformInformationUpdate->isRemote() && !$currentPlatformInformation->isRemote()) {
+                $this->remoteServerService->convertCentralToRemote();
+            } elseif ($platformInformationUpdate->isCentral() && !$currentPlatformInformation->isCentral()) {
+                $this->remoteServerService->convertRemoteToCentral();
+            }
+
+            $this->platformInformationRepository->updatePlatformInformation($platformInformationUpdate);
+        } catch (RemoteServerException | MenuException | PlatformException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            throw new PlatformInformationException(_("An error occured while your platform update"), 0, $ex);
+        }
     }
 }

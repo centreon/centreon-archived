@@ -229,7 +229,7 @@ const getDetailCardLines = ({
             <Grid container spacing={1}>
               {details.groups?.map((group) => {
                 return (
-                  <Grid item>
+                  <Grid item key={group.name}>
                     <Chip label={group.name} />
                   </Grid>
                 );
