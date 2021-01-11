@@ -36,7 +36,7 @@ class FindHostSeveritiesResponse
      * @var array<int, array<string, mixed>>
      */
     private $hostSeverities = [];
-    
+
     /**
      * @param HostSeverity[] $hostSeverities
      */
@@ -54,7 +54,7 @@ class FindHostSeveritiesResponse
             ];
         }
     }
-    
+
     /**
      * @return array<int, array<string, mixed>>
      */

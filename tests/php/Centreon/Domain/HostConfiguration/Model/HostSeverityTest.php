@@ -51,7 +51,7 @@ class HostSeverityTest extends TestCase
         );
         (new HostSeverity())->setName($name);
     }
-    
+
     /**
      * Too long alias test
      */
@@ -69,7 +69,7 @@ class HostSeverityTest extends TestCase
         );
         (new HostSeverity())->setAlias($alias);
     }
-    
+
     /**
      * Too long comments test
      */
@@ -87,7 +87,7 @@ class HostSeverityTest extends TestCase
         );
         (new HostSeverity())->setComments($comments);
     }
-    
+
     /**
      * IsActivated property test
      */
@@ -98,7 +98,7 @@ class HostSeverityTest extends TestCase
         $hostSeverity->setIsActivated(false);
         $this->assertFalse($hostSeverity->isActivated());
     }
-    
+
     /**
      * Id property test
      */
@@ -110,7 +110,7 @@ class HostSeverityTest extends TestCase
         $hostSeverity->setId($newHostId);
         $this->assertEquals($newHostId, $hostSeverity->getId());
     }
-    
+
     /**
      * @return HostSeverity
      * @throws \Assert\AssertionFailedException

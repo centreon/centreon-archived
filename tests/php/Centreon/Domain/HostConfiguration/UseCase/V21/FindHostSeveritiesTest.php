@@ -40,13 +40,13 @@ class FindHostSeveritiesTest extends TestCase
      * @var \Centreon\Domain\HostConfiguration\Model\HostSeverity
      */
     private $hostSeverity;
-    
+
     protected function setUp(): void
     {
         $this->hostSeverityReadRepository = $this->createMock(HostSeverityReadRepositoryInterface::class);
         $this->hostSeverity = hostSeverityTest::createEntity();
     }
-    
+
     /**
      * @return FindHostSeverities
      */

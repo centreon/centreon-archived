@@ -40,7 +40,7 @@ class FindHostSeveritiesResponseTest extends TestCase
         $hostSeverities = $response->getHostSeverities();
         $this->assertCount(0, $hostSeverities);
     }
-    
+
     /**
      * We test the transformation of an entity into an array.
      */

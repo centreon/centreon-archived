@@ -41,7 +41,7 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
      * @var SqlRequestParametersTranslator
      */
     private $sqlRequestTranslator;
-    
+
     public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
     {
         $this->db = $db;
@@ -50,7 +50,7 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -90,30 +90,30 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
             LEFT JOIN `centreon`.view_img_dir iconD
                 ON iconD.dir_id = iconR.dir_dir_parent_id'
         );
-        
+
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest)
             ? $searchRequest . ' AND level IS NOT NULL'
             : '  WHERE level IS NOT NULL';
-        
+
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest)
             ? $sortRequest
             : ' ORDER BY hc_name ASC';
-        
+
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
         $statement = $this->db->prepare($request);
-        
+
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
             $type = key($data);
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
         }
         $statement->execute();
-        
+
         $result = $this->db->query('SELECT FOUND_ROWS()');
         if ($result !== false && ($total = $result->fetchColumn()) !== false) {
             $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
