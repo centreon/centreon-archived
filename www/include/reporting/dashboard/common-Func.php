@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,49 +33,79 @@
  *
  */
 
-/*
- * return the interval of time which must be reported
- * @alternate type string : Needed to choose between the localized or the unlocalized date format
+/**
+ * Function that returns the time interval to report
+ *
+ * @param string $alternate Needed to choose between the localized or the unlocalized date format
+ * @return array
  */
-function getPeriodToReport($alternate = null)
+function getPeriodToReport(string $alternate = null): array
 {
-    $period = (isset($_POST["period"])) ? $_POST["period"] : "";
-    $period = (isset($_GET["period"])) ? $_GET["period"] : $period;
-    $period_choice = (isset($_POST["period_choice"])) ? $_POST["period_choice"] : "";
-    $end_date = 0;
-    $start_date = 0;
+    $period = '';
+    $period_choice = '';
+    $start_date = '';
+    $end_date = '';
+
+    if (isset($_POST['period'])) {
+        $period = filter_var($_POST['period'], FILTER_SANITIZE_STRING);
+    } elseif (isset($_GET['period'])) {
+        $period = filter_var($_GET['period'], FILTER_SANITIZE_STRING);
+    }
+
+    if (isset($_POST['period_choice'])) {
+        $period_choice = filter_var($_POST['period_choice'], FILTER_SANITIZE_STRING);
+    }
+
     if (null != $alternate) {
-        $start_date = (isset($_POST["alternativeDateStartDate"])) ? $_POST["alternativeDateStartDate"] : "";
-        $end_date = (isset($_POST["alternativeDateEndDate"])) ? $_POST["alternativeDateEndDate"] : "";
+        if (isset($_POST['alternativeDateStartDate'])) {
+            $start_date = filter_var($_POST['alternativeDateStartDate'], FILTER_SANITIZE_STRING);
+        }
+
+        if (isset($_POST['alternativeDateEndDate'])) {
+            $end_date = filter_var($_POST['alternativeDateEndDate'], FILTER_SANITIZE_STRING);
+        }
     } else {
-        $start_date = (isset($_POST["StartDate"])) ? $_POST["StartDate"] : "";
-        $end_date = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
+        if (isset($_POST['StartDate'])) {
+            $start_date = filter_var($_POST['StartDate'], FILTER_SANITIZE_STRING);
+        } elseif (isset($_GET['StartDate'])) {
+            $start_date = filter_var($_GET['StartDate'], FILTER_SANITIZE_STRING);
+        }
+
+        if (isset($_POST['EndDate'])) {
+            $end_date = filter_var($_POST['EndDate'], FILTER_SANITIZE_STRING);
+        } elseif (isset($_GET['EndDate'])) {
+            $end_date = filter_var($_GET['EndDate'], FILTER_SANITIZE_STRING);
+        }
     }
-    $start_date = (isset($_GET["start"])) ? $_GET["start"] : $start_date;
-    $end_date = (isset($_GET["end"])) ? $_GET["end"] : $end_date;
-    $interval = array(0, 0);
-    if ($period_choice == "custom" &&
-        $start_date != "" &&
-        $end_date != ""
+
+    $interval = [0, 0];
+
+    if (
+        $period_choice === 'custom' &&
+        $start_date !== '' &&
+        $end_date !== ''
     ) {
-        $period = "";
+        $period = '';
     }
-    if ($period == "" &&
-        $start_date == "" &&
-        $end_date == ""
+    if (
+        $period === '' &&
+        $start_date === '' &&
+        $end_date === ''
     ) {
-        $period = "yesterday";
+        $period = 'yesterday';
     }
-    if ($period == "" &&
-        $start_date != ""
+    if (
+        $period === '' &&
+        $start_date !== ''
     ) {
         $interval = getDateSelectCustomized($start_date, $end_date);
     } else {
         $interval = getDateSelectPredefined($period);
     }
-    $start_date = $interval[0];
-    $end_date = $interval[1];
-    return (array($start_date, $end_date));
+
+    list($start_date, $end_date) = $interval;
+
+    return [$start_date, $end_date];
 }
 
 /*
