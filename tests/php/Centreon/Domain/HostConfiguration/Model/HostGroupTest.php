@@ -26,7 +26,6 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Media\Model\Image;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
-use Centreon\Domain\HostConfiguration\Exception\HostGroupArgumentException;
 
 /**
  * This class is designed to test all setters of the HostGroup entity, especially those with exceptions.
@@ -72,17 +71,17 @@ class HostGroupTest extends TestCase
     }
 
     /**
-     * Test the notes
+     * Too long notes test
      */
-    public function testBadNotes(): void
+    public function testNotesTooLongException(): void
     {
-        $notes = str_repeat('.', HostGroup::MAX_NOTES + 1);
+        $notes = str_repeat('.', HostGroup::MAX_NOTES_LENGTH + 1);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
             AssertionException::maxLength(
                 $notes,
                 strlen($notes),
-                HostGroup::MAX_NOTES,
+                HostGroup::MAX_NOTES_LENGTH,
                 'HostGroup::notes'
             )->getMessage()
         );
@@ -90,17 +89,17 @@ class HostGroupTest extends TestCase
     }
 
     /**
-     * Test the url notes
+     * Too long notes url test
      */
-    public function testBadNotesUrl(): void
+    public function testNotesUrlTooLongException(): void
     {
-        $notesUrl = str_repeat('.', HostGroup::MAX_NOTES_URL + 1);
+        $notesUrl = str_repeat('.', HostGroup::MAX_NOTES_URL_LENGTH + 1);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
             AssertionException::maxLength(
                 $notesUrl,
                 strlen($notesUrl),
-                HostGroup::MAX_NOTES_URL,
+                HostGroup::MAX_NOTES_URL_LENGTH,
                 'HostGroup::notesUrl'
             )->getMessage()
         );
@@ -110,19 +109,53 @@ class HostGroupTest extends TestCase
     /**
      * Test the action url
      */
-    public function testBadActionUrl(): void
+    public function testActionUrlTooLongException(): void
     {
-        $actionUrl = str_repeat('.', HostGroup::MAX_ACTION_URL + 1);
+        $actionUrl = str_repeat('.', HostGroup::MAX_ACTION_URL_LENGTH + 1);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
             AssertionException::maxLength(
                 $actionUrl,
                 strlen($actionUrl),
-                HostGroup::MAX_ACTION_URL,
+                HostGroup::MAX_ACTION_URL_LENGTH,
                 'HostGroup::actionUrl'
             )->getMessage()
         );
         (new HostGroup('hg-name'))->setActionUrl($actionUrl);
+    }
+
+    /**
+     * Too long rrd test
+     */
+    public function testRrdTooLongException(): void
+    {
+        $rrd = HostGroup::MAX_RRD_NUMBER + 1;
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::max(
+                $rrd,
+                HostGroup::MAX_RRD_NUMBER,
+                'HostGroup::rrd'
+            )->getMessage()
+        );
+        (new HostGroup('hg-name'))->setRrd($rrd);
+    }
+
+    /**
+     * Too short rrd test
+     */
+    public function testRrdTooShortException(): void
+    {
+        $rrd = -1;
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::min(
+                $rrd,
+                HostGroup::MIN_RRD_NUMBER,
+                'HostGroup::rrd'
+            )->getMessage()
+        );
+        (new HostGroup('hg-name'))->setRrd($rrd);
     }
 
     /**
@@ -148,13 +181,13 @@ class HostGroupTest extends TestCase
      */
     public function testGeoCoordsTooLongException(): void
     {
-        $geoCoords = str_repeat('.', HostGroup::MAX_GEO_COORDS + 1);
+        $geoCoords = str_repeat('.', HostGroup::MAX_GEO_COORDS_LENGTH + 1);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
             AssertionException::maxLength(
                 $geoCoords,
                 strlen($geoCoords),
-                HostGroup::MAX_GEO_COORDS,
+                HostGroup::MAX_GEO_COORDS_LENGTH,
                 'HostGroup::geoCoords'
             )->getMessage()
         );

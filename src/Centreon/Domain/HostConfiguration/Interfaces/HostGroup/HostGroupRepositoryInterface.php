@@ -20,36 +20,15 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces;
-
-use Centreon\Domain\HostConfiguration\Model\HostGroup;
+namespace Centreon\Domain\HostConfiguration\Interfaces\HostGroup;
 
 /**
- * This interface gathers all the reading operations on the repository.
+ * This interface gathers all the writing and reading operations on the repository
  *
  * @package Centreon\Domain\HostConfiguration\Interfaces
  */
-interface HostGroupReadRepositoryInterface
+interface HostGroupRepositoryInterface extends
+    HostGroupReadRepositoryInterface,
+    HostGroupWriteRepositoryInterface
 {
-    /**
-     * Find all host groups.
-     *
-     * @return HostGroup[]
-     */
-    public function findHostGroups(): array;
-
-    /**
-     * Indicates if a host group name is already in use.
-     *
-     * @param string $hgName Host group name to be found
-     * @return bool True if the hostname is already in use
-     */
-    public function hasHostGroupWithSameName(string $hgName): bool;
-
-    /**
-     * Returns the number of host groups.
-     *
-     * @return int Number of hosts
-     */
-    public function getNumberOfHostGroups(): int;
 }

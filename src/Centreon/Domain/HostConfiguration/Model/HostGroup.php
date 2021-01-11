@@ -32,14 +32,15 @@ use Centreon\Domain\Media\Model\Image;
  */
 class HostGroup
 {
-    public const MAX_NAME_LENGTH = 200;
-    public const MAX_ALIAS_LENGTH = 200;
-    public const MAX_NOTES = 255;
-    public const MAX_NOTES_URL = 255;
-    public const MAX_ACTION_URL = 255;
-    public const MAX_GEO_COORDS = 32;
-    public const MAX_RRD = 11;
-    public const MAX_COMMENTS_LENGTH = 65535;
+    public const MAX_NAME_LENGTH = 200,
+                 MAX_ALIAS_LENGTH = 200,
+                 MAX_NOTES_LENGTH = 255,
+                 MAX_NOTES_URL_LENGTH = 255,
+                 MAX_ACTION_URL_LENGTH = 255,
+                 MAX_GEO_COORDS_LENGTH = 32,
+                 MIN_RRD_NUMBER = 0,
+                 MAX_RRD_NUMBER = 2147483648,
+                 MAX_COMMENTS_LENGTH = 65535;
 
     /**
      * @var int|null
@@ -97,7 +98,7 @@ class HostGroup
     private $geoCoords;
 
     /**
-     * @var int|null RRD retention duration of all the services that are in this host group.
+     * @var int|null RRD retention duration (in days) of all the services that are in this host group.
      * If service is in multiple host groups, the highest retention value will be used.
      */
     private $rrd;
@@ -113,7 +114,7 @@ class HostGroup
     private $isActivated = true;
 
     /**
-     * @param string $name
+     * @param string $name Host Group name
      * @throws \Assert\AssertionFailedException
      */
     public function __construct(string $name)
@@ -199,7 +200,7 @@ class HostGroup
     public function setNotes(?string $notes): HostGroup
     {
         if ($notes !== null) {
-            Assertion::maxLength($notes, self::MAX_NOTES, 'HostGroup::notes');
+            Assertion::maxLength($notes, self::MAX_NOTES_LENGTH, 'HostGroup::notes');
         }
         $this->notes = $notes;
         return $this;
@@ -221,7 +222,7 @@ class HostGroup
     public function setNotesUrl(?string $notesUrl): HostGroup
     {
         if ($notesUrl !== null) {
-            Assertion::maxLength($notesUrl, self::MAX_NOTES_URL, 'HostGroup::notesUrl');
+            Assertion::maxLength($notesUrl, self::MAX_NOTES_URL_LENGTH, 'HostGroup::notesUrl');
         }
         $this->notesUrl = $notesUrl;
         return $this;
@@ -243,7 +244,7 @@ class HostGroup
     public function setActionUrl(?string $actionUrl): HostGroup
     {
         if ($actionUrl !== null) {
-            Assertion::maxLength($actionUrl, self::MAX_ACTION_URL, 'HostGroup::actionUrl');
+            Assertion::maxLength($actionUrl, self::MAX_ACTION_URL_LENGTH, 'HostGroup::actionUrl');
         }
         $this->actionUrl = $actionUrl;
         return $this;
@@ -301,9 +302,10 @@ class HostGroup
     public function setRrd(?int $rrd): HostGroup
     {
         if ($rrd !== null) {
-            Assertion::maxLength((string) $rrd, self::MAX_RRD, 'HostGroup::rrd');
+            Assertion::min($rrd, self::MIN_RRD_NUMBER, 'HostGroup::rrd');
+            Assertion::max($rrd, self::MAX_RRD_NUMBER, 'HostGroup::rrd');
         }
-        $this->rrd = (int) $rrd;
+        $this->rrd = $rrd;
         return $this;
     }
 
@@ -323,7 +325,7 @@ class HostGroup
     public function setGeoCoords(?string $geoCoords): HostGroup
     {
         if ($geoCoords !== null) {
-            Assertion::maxLength($geoCoords, self::MAX_GEO_COORDS, 'HostGroup::geoCoords');
+            Assertion::maxLength($geoCoords, self::MAX_GEO_COORDS_LENGTH, 'HostGroup::geoCoords');
         }
         $this->geoCoords = $geoCoords;
         return $this;

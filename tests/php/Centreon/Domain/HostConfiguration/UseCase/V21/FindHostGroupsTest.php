@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
 
-use Centreon\Domain\HostConfiguration\Interfaces\HostGroupReadRepositoryInterface;
+use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostGroups;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostGroupTest;
 
