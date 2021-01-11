@@ -557,7 +557,7 @@ class CentreonTopCounter extends CentreonWebService
             throw new \RestUnauthorizedException("You're not authorized to access resource datas");
         }
 
-        if (isset($_SESSION['topCounterHostStatus']) && 
+        if (isset($_SESSION['topCounterHostStatus']) &&
             (time() - $this->refreshTime) < $_SESSION['topCounterHostStatus']['time']) {
             return $_SESSION['topCounterHostStatus'];
         }
@@ -634,11 +634,14 @@ class CentreonTopCounter extends CentreonWebService
             COALESCE(SUM(CASE WHEN s.state = 2 THEN 1 ELSE 0 END), 0) AS critical_total,
             COALESCE(SUM(CASE WHEN s.state = 3 THEN 1 ELSE 0 END), 0) AS unknown_total,
             COALESCE(SUM(CASE WHEN s.state = 4 THEN 1 ELSE 0 END), 0) AS pending_total,
-            COALESCE(SUM(CASE WHEN s.state = 1 AND (s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
+            COALESCE(SUM(CASE WHEN s.state = 1 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0
+                AND s.state_type = 1 AND s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
                 THEN 1 ELSE 0 END), 0) AS warning_unhandled,
-            COALESCE(SUM(CASE WHEN s.state = 2 AND (s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
+            COALESCE(SUM(CASE WHEN s.state = 2 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0
+                AND s.state_type = 1 AND s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
                 THEN 1 ELSE 0 END), 0) AS critical_unhandled,
-            COALESCE(SUM(CASE WHEN s.state = 3 AND (s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
+            COALESCE(SUM(CASE WHEN s.state = 3 AND (h.acknowledged = 0 AND h.scheduled_downtime_depth = 0
+                AND s.state_type = 1 AND s.acknowledged = 0 AND s.scheduled_downtime_depth = 0)
                 THEN 1 ELSE 0 END), 0) AS unknown_unhandled
             FROM hosts h, services s, instances i';
         $query .= ' WHERE i.deleted = 0
