@@ -15,6 +15,7 @@ import Context, { ResourceContext } from '../../Context';
 import useFilter from '../useFilter';
 import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
+import { defaultSortField, defaultSortOrder } from '../../Listing/columns';
 
 import EditFilterPanel from '.';
 
@@ -74,6 +75,11 @@ const retrievedCustomFilters = {
         name: 'search',
         type: 'text',
         value: '',
+      },
+      {
+        name: 'sort',
+        type: 'array',
+        value: [defaultSortField, defaultSortOrder],
       },
     ],
   })),

@@ -66,7 +66,6 @@ const useListing = (): ListingState => {
 
   React.useEffect(() => {
     const storedFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
-
     storeFilter({ ...storedFilter, sort: [sortf, sorto] });
 
     setUrlQueryParameters([

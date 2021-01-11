@@ -46,6 +46,7 @@ import {
   searchableFields,
 } from '../testUtils';
 import useDetails from '../Details/useDetails';
+import { defaultSortOrder, defaultSortField } from '../Listing/columns';
 
 import { Filter as FilterModel } from './models';
 import useFilter from './useFilter';
@@ -443,6 +444,7 @@ describe(Filter, () => {
           serviceGroups: [],
           search: undefined,
         },
+        sort: [defaultSortField, defaultSortOrder],
       };
 
       expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
@@ -461,6 +463,7 @@ describe(Filter, () => {
             id: '',
             name: labelNewFilter,
             criterias: { ...allFilter.criterias, search: 'searching...' },
+            sort: [defaultSortField, defaultSortOrder],
           }),
         ),
       );

@@ -139,13 +139,7 @@ const SaveFilterMenu = (): JSX.Element => {
   const isFilterDirty = (): boolean => {
     const retrievedFilter = find(propEq('id', filter.id), filters);
 
-    console.log('retrieved', retrievedFilter, 'updated', updatedFilterWithSort);
     return !equals(retrievedFilter, updatedFilterWithSort);
-    // if (!isCustom(filter)) {
-    //   return false;
-    // }
-
-    // return !equals(filter, updatedFilterWithSort);
   };
 
   const isNewFilter = filter.id === '';

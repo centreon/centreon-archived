@@ -21,19 +21,27 @@ import {
 } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
 import { RawFilter, Filter } from '../models';
+import { defaultSortField, defaultSortOrder } from '../../Listing/columns';
+import useListing from '../../Listing/useListing';
 
 import SaveMenu from '.';
 
-let filterState;
+let context;
 
 const SaveMenuTest = (): JSX.Element => {
-  filterState = useFilter();
+  const listingState = useListing();
+  const filterState = useFilter();
+
+  context = {
+    ...listingState,
+    ...filterState,
+  };
 
   return (
     <Context.Provider
       value={
         {
-          ...filterState,
+          ...context,
         } as ResourceContext
       }
     >
@@ -112,6 +120,11 @@ const getRawFilter = ({
       type: 'text',
       value: search,
     },
+    {
+      name: 'sort',
+      type: 'array',
+      value: [defaultSortField, defaultSortOrder],
+    },
   ],
 });
 
@@ -125,7 +138,7 @@ const retrievedCustomFilters = {
 };
 
 const getCustomFilter = (): Filter =>
-  filterState.customFilters.find(propEq('id', rawFilterId));
+  context.customFilters.find(propEq('id', rawFilterId));
 
 describe(SaveMenu, () => {
   beforeEach(() => {
@@ -166,14 +179,16 @@ describe(SaveMenu, () => {
     const { criterias } = filter;
 
     act(() => {
-      filterState.setFilter(filter);
-      filterState.setResourceTypes(criterias.resourceTypes);
-      filterState.setHostGroups(criterias.hostGroups);
-      filterState.setServiceGroups(criterias.serviceGroups);
-      filterState.setStates(criterias.states);
-      filterState.setStatuses(criterias.statuses);
+      context.setFilter(filter);
+      context.setResourceTypes(criterias.resourceTypes);
+      context.setHostGroups(criterias.hostGroups);
+      context.setServiceGroups(criterias.serviceGroups);
+      context.setStates(criterias.states);
+      context.setStatuses(criterias.statuses);
+      context.setSortf(filter.sort[0]);
+      context.setSorto(filter.sort[1]);
 
-      filterState.setNextSearch('toto');
+      context.setNextSearch('toto');
     });
 
     expect(
@@ -216,14 +231,14 @@ describe(SaveMenu, () => {
     mockedAxios.put.mockResolvedValue({ data: updatedFilterRaw });
 
     act(() => {
-      filterState.setFilter(filter);
-      filterState.setResourceTypes(criterias.resourceTypes);
-      filterState.setHostGroups(criterias.hostGroups);
-      filterState.setServiceGroups(criterias.serviceGroups);
-      filterState.setStates(criterias.states);
-      filterState.setStatuses(criterias.statuses);
+      context.setFilter(filter);
+      context.setResourceTypes(criterias.resourceTypes);
+      context.setHostGroups(criterias.hostGroups);
+      context.setServiceGroups(criterias.serviceGroups);
+      context.setStates(criterias.states);
+      context.setStatuses(criterias.statuses);
 
-      filterState.setNextSearch(newSearch);
+      context.setNextSearch(newSearch);
     });
 
     expect(
@@ -234,7 +249,7 @@ describe(SaveMenu, () => {
 
     await waitFor(() => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
-        `${filterEndpoint}/${filterState.updatedFilter.id}`,
+        `${filterEndpoint}/${context.updatedFilter.id}`,
         omit(['id'], getRawFilter({ search: newSearch })),
         expect.anything(),
       );

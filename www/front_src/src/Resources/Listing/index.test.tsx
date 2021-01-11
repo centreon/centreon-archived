@@ -11,6 +11,8 @@ import {
 import axios from 'axios';
 import { partition, where, contains, head, split, pipe, identity } from 'ramda';
 
+import { getUrlQueryParameters, setUrlQueryParameters } from '@centreon/ui';
+
 import { Resource } from '../models';
 import Context, { ResourceContext } from '../Context';
 import useActions from '../Actions/useActions';
@@ -144,10 +146,19 @@ describe(Listing, () => {
   });
 
   afterEach(() => {
-    context.setSortf(defaultSortField);
-    context.setSorto(defaultSortOrder);
     useSelector.mockClear();
     mockedAxios.get.mockReset();
+
+    setUrlQueryParameters([
+      {
+        name: 'sortf',
+        value: defaultSortField,
+      },
+      {
+        name: 'sorto',
+        value: defaultSortOrder,
+      },
+    ]);
   });
 
   it('displays first part of information when multiple (split by \n) are available', async () => {
@@ -181,7 +192,7 @@ describe(Listing, () => {
       .filter(({ sortable }) => sortable !== false)
       .map(({ id, label, sortField }) => [id, label, sortField]),
   )(
-    'executes a listing request with sort_by param when %p column is clicked',
+    'executes a listing request with sort_by param and stores the order parameter in the URL when %p column is clicked',
     async (id, label, sortField) => {
       const { getByLabelText } = renderListing();
 
@@ -198,6 +209,9 @@ describe(Listing, () => {
         );
       });
 
+      expect(getUrlQueryParameters().sortf).toEqual(sortBy);
+      expect(getUrlQueryParameters().sorto).toEqual('desc');
+
       fireEvent.click(getByLabelText(`Column ${label}`));
 
       await waitFor(() =>
@@ -206,6 +220,8 @@ describe(Listing, () => {
           cancelTokenRequestParam,
         ),
       );
+
+      expect(getUrlQueryParameters().sorto).toEqual('asc');
     },
   );
 
