@@ -54,7 +54,7 @@ class FindHostSeveritiesTest extends TestCase
     {
         return (new FindHostSeverities($this->hostSeverityReadRepository));
     }
-    
+
     public function testExecute(): void
     {
         $this->hostSeverityReadRepository->expects($this->once())
