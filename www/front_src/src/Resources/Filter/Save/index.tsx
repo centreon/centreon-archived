@@ -24,7 +24,6 @@ import {
 import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
 import { updateFilter as updateFilterRequest } from '../api';
-import useFilterModels from '../useFilterModels';
 import useAdapters from '../api/adapters';
 
 import CreateFilterDialog from './CreateFilterDialog';
@@ -42,7 +41,6 @@ const SaveFilterMenu = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
-  const { isCustom } = useFilterModels();
   const { toRawFilter, toFilter } = useAdapters();
 
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);

@@ -21,7 +21,6 @@ import {
   labelResourceProblems,
 } from '../translatedLabels';
 import { defaultSortField, defaultSortOrder } from '../Listing/columns';
-import { useResourceContext } from '../Context';
 
 import { Filter, CriteriaValue } from './models';
 
