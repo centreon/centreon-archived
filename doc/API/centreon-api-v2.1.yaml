@@ -3032,16 +3032,14 @@ components:
           example: 2
         icon:
           $ref: '#/components/schemas/Media.Image'
-          nullable: true
           description: "Define the image associated with this severity"
-        is_activated:
-          type: boolean
-          description: "Indicates whether this host severity is enabled or not"
-          example: "true"
         comments:
           type: string
           description: "Host severity comments"
           nullable: true
+        is_activated:
+          type: boolean
+          description: "Indicates whether this host severity is enabled or not"
     Configuration.Host.Template:
       type: object
       properties:
