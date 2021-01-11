@@ -1,20 +1,20 @@
 Feature:
-  In order to check the host categories
+  In order to check the host severities
   As a logged in user
-  I want to find host categories using api
+  I want to find host severities using api
 
   Background:
     Given a running instance of Centreon Web API
     And the endpoints are described in Centreon Web API documentation (version: 2.1)
 
-  Scenario: Host categories listing
+  Scenario: Host severities listing
     Given I am logged in
     And the following CLAPI import data:
     """
     HC;ADD;severity1;host-severity-alias
     HC;setparam;severity1;hc_comment;blabla bla
     HC;setparam;severity1;hc_activate;1
-    HC;setseverity;severity1;42;/usr/share/centreon/www/img/media/logos/centreon.png
+    HC;setseverity;severity1;42;logos/centreon.png
     """
 
     When I send a GET request to '/v2.1/configuration/hosts/severities'
@@ -30,9 +30,9 @@ Feature:
                 "level": 42,
                 "icon": {
                     "id": 1,
-                    "name": "centreon.png",
-                    "path": "/logos/centreon.png",
-                    "comment": ""
+                    "name": "centreon",
+                    "path": "logos/centreon.png",
+                    "comment": "centreon logo"
                 },
                 "comments": "blabla bla",
                 "is_activated": true
