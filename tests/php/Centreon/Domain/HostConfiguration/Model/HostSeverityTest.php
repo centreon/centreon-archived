@@ -36,6 +36,7 @@ class HostSeverityTest extends TestCase
 {
     /**
      * Too long name test
+     * @throws \Assert\AssertionFailedException
      */
     public function testNameTooLongException(): void
     {
@@ -49,11 +50,12 @@ class HostSeverityTest extends TestCase
                 'HostSeverity::name'
             )->getMessage()
         );
-        (new HostSeverity())->setName($name);
+        new HostSeverity($name, 'alias');
     }
-
+    
     /**
      * Too long alias test
+     * @throws \Assert\AssertionFailedException
      */
     public function testAliasTooLongException(): void
     {
@@ -67,7 +69,7 @@ class HostSeverityTest extends TestCase
                 'HostSeverity::alias'
             )->getMessage()
         );
-        (new HostSeverity())->setAlias($alias);
+        new HostSeverity('name', $alias);
     }
 
     /**
@@ -85,7 +87,7 @@ class HostSeverityTest extends TestCase
                 'HostSeverity::comments'
             )->getMessage()
         );
-        (new HostSeverity())->setComments($comments);
+        (new HostSeverity('name', 'alias'))->setComments($comments);
     }
 
     /**
@@ -93,7 +95,7 @@ class HostSeverityTest extends TestCase
      */
     public function testIsActivatedProperty(): void
     {
-        $hostSeverity = new HostSeverity();
+        $hostSeverity = new HostSeverity('name', 'alias');
         $this->assertTrue($hostSeverity->isActivated());
         $hostSeverity->setIsActivated(false);
         $this->assertFalse($hostSeverity->isActivated());
@@ -105,7 +107,7 @@ class HostSeverityTest extends TestCase
     public function testIdProperty(): void
     {
         $newHostId = 1;
-        $hostSeverity = new HostSeverity();
+        $hostSeverity = new HostSeverity('name', 'alias');
         $this->assertNull($hostSeverity->getId());
         $hostSeverity->setId($newHostId);
         $this->assertEquals($newHostId, $hostSeverity->getId());
@@ -117,10 +119,8 @@ class HostSeverityTest extends TestCase
      */
     public static function createEntity(): HostSeverity
     {
-        return (new HostSeverity())
+        return (new HostSeverity('Severity', 'Alias severity'))
             ->setId(10)
-            ->setName('Severity')
-            ->setAlias('Alias severity')
             ->setLevel(42)
             ->setIcon((new Image())->setId(1)->setName('my icon')->setPath('/'))
             ->setIsActivated(true)

@@ -32,9 +32,9 @@ use Centreon\Domain\Media\Model\Image;
  */
 class HostSeverity
 {
-    public const MAX_NAME_LENGTH = 200,
-        MAX_ALIAS_LENGTH = 200,
-        MAX_COMMENTS_LENGTH = 65535;
+    public const MAX_NAME_LENGTH = 200;
+    public const MAX_ALIAS_LENGTH = 200;
+    public const  MAX_COMMENTS_LENGTH = 65535;
 
     /**
      * @var int|null
@@ -70,6 +70,17 @@ class HostSeverity
      * @var bool Indicates whether this host severity is enabled or not (TRUE by default)
      */
     private $isActivated = true;
+    
+    /**
+     * @param string $name
+     * @param string $alias
+     * @throws \Assert\AssertionFailedException
+     */
+    public function __construct(string $name, string $alias)
+    {
+        $this->setName($name);
+        $this->setAlias($alias);
+    }
 
     /**
      * @return int|null

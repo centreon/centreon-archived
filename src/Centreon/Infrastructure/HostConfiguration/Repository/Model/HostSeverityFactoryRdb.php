@@ -41,14 +41,12 @@ class HostSeverityFactoryRdb
      */
     public static function create(array $data): HostSeverity
     {
-        $hostSeverity = (new HostSeverity())
+        $hostSeverity = (new HostSeverity($data['hc_name'], $data['hc_alias']))
             ->setId((int) $data['hc_id'])
-            ->setName($data['hc_name'])
-            ->setAlias($data['hc_alias'])
             ->setLevel((int) $data['level'])
             ->setIcon(
                 (new Image())
-                    ->setId((int)$data['img_id'])
+                    ->setId((int) $data['img_id'])
                     ->setName($data['img_name'])
                     ->setComment($data['img_comment'])
                     ->setPath(str_replace('//', '/', ($data['img_path'])))
