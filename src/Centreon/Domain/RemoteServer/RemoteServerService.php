@@ -113,6 +113,8 @@ class RemoteServerService implements RemoteServerServiceInterface
 
         /**
          * Get the parent platform to register it later.
+         *
+         * @var Platform $topLevelPlatform
          */
         $topLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatform();
         if ($topLevelPlatform === null) {
@@ -121,7 +123,6 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Add the future Parent Central as Parent Address to be able to register it later.
          *
-         * @var Platform $topLevelPlatform
          */
         $topLevelPlatform->setParentAddress($platformInformation->getCentralServerAddress());
 
