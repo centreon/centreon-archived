@@ -384,10 +384,6 @@ function convert_to_remote() {
   else
     PEER_VALIDATION='"peerValidation": true'
   fi
-  # get token of Remote API
-  get_api_token "$CURRENT_NODE_ADDRESS" "$API_CURRENT_NODE_USERNAME" "$API_CURRENT_NODE_PASSWORD" "$API_CURRENT_NODE_CENTREON_FOLDER"
-  # send request to update informations and convert remote
-  request_to_remote
 }
 #========= end of convert_to_remote()
 
@@ -511,7 +507,12 @@ fi
 
 # Get the API TARGET Token
 get_api_token "$TARGET_NODE_ADDRESS" "$API_USERNAME" "$API_TARGET_PASSWORD" "$ROOT_CENTREON_FOLDER"
-
 # Send cURL to POST Register
 register_server
+
+# get token of Remote API
+get_api_token "$CURRENT_NODE_ADDRESS" "$API_CURRENT_NODE_USERNAME" "$API_CURRENT_NODE_PASSWORD" "$API_CURRENT_NODE_CENTREON_FOLDER"
+# send request to update informations and convert remote
+request_to_remote
+
 exit 0

@@ -34,6 +34,7 @@ use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
+use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -59,6 +60,11 @@ class RemoteServerService implements RemoteServerServiceInterface
     private $platformTopologyRegisterRepository;
 
     /**
+     * @var ProxyServiceInterface
+     */
+    private $proxyService;
+
+    /**
      * @param MenuRepositoryInterface $menuRepository
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
      */
@@ -66,12 +72,14 @@ class RemoteServerService implements RemoteServerServiceInterface
         MenuRepositoryInterface $menuRepository,
         PlatformTopologyRepositoryInterface $platformTopologyRepository,
         RemoteServerRepositoryInterface $remoteServerRepository,
-        PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
+        PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository,
+        ProxyServiceInterface $proxyService
     ) {
         $this->menuRepository = $menuRepository;
         $this->platformTopologyRepository = $platformTopologyRepository;
         $this->remoteServerRepository = $remoteServerRepository;
         $this->platformTopologyRegisterRepository = $platformTopologyRegisterRepository;
+        $this->proxyService = $proxyService;
     }
 
     /**
@@ -92,7 +100,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         } catch (RemoteServerException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
-            throw new RemoteServerException(_('An error occured while searching any remote children'));
+            throw new RemoteServerException(_('An error occured while searching any remote children'), 0, $ex);
         }
 
         /**
@@ -103,7 +111,13 @@ class RemoteServerService implements RemoteServerServiceInterface
             $centralPlatform->getId()
         );
         foreach ($childrenPlatforms as $platform) {
-            $this->platformTopologyRegisterRepository->registerPlatformToParent($platform, $platformInformation);
+            $platform->setParentAddress($centralPlatform->getAddress());
+
+            $this->platformTopologyRegisterRepository->registerPlatformToParent(
+                $platform,
+                $platformInformation,
+                $this->proxyService->getProxy()
+            );
         }
         /**
          * Set Remote type into Platform_Topology
