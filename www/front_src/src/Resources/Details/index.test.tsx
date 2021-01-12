@@ -11,7 +11,6 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { isNil } from 'lodash';
 
 import {
   ThemeProvider,
