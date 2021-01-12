@@ -238,6 +238,10 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 - Type:
                     type: int
                     groups: [Default]
+        onlyWithPerformanceData:
+            - Type:
+                type: boolean
+                groups: [Default]
 
 # Used to validate the Resource Entity
 Centreon\Domain\Monitoring\Resource:

@@ -147,24 +147,22 @@ const PerformanceGraph = ({
       </Typography>
 
       <ParentSize>
-        {({ width, height }): JSX.Element => {
-          return (
-            <Graph
-              width={width}
-              height={height}
-              timeSeries={timeSeries}
-              lines={displayedLines}
-              base={base as number}
-              xAxisTickFormat={xAxisTickFormat}
-              timeline={timeline}
-              onTooltipDisplay={onTooltipDisplay}
-              tooltipX={tooltipX}
-              resource={resource}
-              onAddComment={onAddComment}
-              eventAnnotationsActive={eventAnnotationsActive}
-            />
-          );
-        }}
+        {({ width, height }): JSX.Element => (
+          <Graph
+            width={width}
+            height={height}
+            timeSeries={timeSeries}
+            lines={displayedLines}
+            base={base as number}
+            xAxisTickFormat={xAxisTickFormat}
+            timeline={timeline}
+            onTooltipDisplay={onTooltipDisplay}
+            tooltipX={tooltipX}
+            resource={resource}
+            onAddComment={onAddComment}
+            eventAnnotationsActive={eventAnnotationsActive}
+          />
+        )}
       </ParentSize>
       <div className={classes.legend}>
         <Legend

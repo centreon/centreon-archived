@@ -10,9 +10,7 @@ import {
 
 import { TimePeriodId } from './tabs/Graph/models';
 
-export interface ResourceDetails {
-  id: number;
-  name: string;
+export interface ResourceDetails extends NamedEntity {
   status: Status;
   parent: Parent;
   links: ResourceLinks;

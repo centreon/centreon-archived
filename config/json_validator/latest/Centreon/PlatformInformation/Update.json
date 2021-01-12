@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Patch a platform information",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "isRemote": {
+      "type": "boolean"
+    },
+    "isCentral": {
+      "type": "boolean"
+    },
+    "centralServerAddress": {
+      "type": "string"
+    },
+    "apiUsername": {
+      "type": "string"
+    },
+    "apiCredentials": {
+      "type": "string"
+    },
+    "apiScheme": {
+      "type": "string"
+    },
+    "apiPort": {
+      "type": "integer"
+    },
+    "apiPath": {
+      "type": "string"
+    },
+    "peerValidation": {
+      "type": "boolean"
+    },
+    "proxy": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "user": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

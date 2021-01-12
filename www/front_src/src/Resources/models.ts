@@ -88,3 +88,7 @@ export interface ResourceLinks {
   uris: ResourceUris;
   externals: ResourceExternals;
 }
+
+export type TranslationType = (label: string) => string;
+
+export type SortOrder = 'asc' | 'desc';

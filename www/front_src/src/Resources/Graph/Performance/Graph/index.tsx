@@ -79,6 +79,8 @@ interface Props {
   base: number;
   lines: Array<LineModel>;
   xAxisTickFormat: string;
+  tooltipX?: number;
+  onTooltipDisplay?: (tooltipX?: number) => void;
   timeline?: Array<TimelineEvent>;
   resource: Resource | ResourceDetails;
   onAddComment?: (commentParameters: CommentParameters) => void;
@@ -399,7 +401,6 @@ const Graph = ({
               rightScale={rightScale}
               xScale={xScale}
               xAxisTickFormat={xAxisTickFormat}
-              timeSeries={timeSeries}
             />
             {eventAnnotationsActive && (
               <MemoizedAnnotations

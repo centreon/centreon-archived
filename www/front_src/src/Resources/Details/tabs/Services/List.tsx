@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   services: Array<Resource>;
-  onSelectService: () => void;
+  onSelectService: (id: number) => void;
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -37,39 +37,45 @@ const ServiceList = ({
   services,
   onSelectService,
   infiniteScrollTriggerRef,
-}): JSX.Element => {
+}: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  return services.map((service) => {
-    const isLastService = equals(last(services), service);
-    const { id, name, status, information, duration } = service;
+  return (
+    <>
+      {services.map((service) => {
+        const isLastService = equals(last(services), service);
+        const { id, name, status, information, duration } = service;
 
-    return (
-      <div key={id}>
-        <Paper className={classes.serviceCard}>
-          <div className={classes.serviceDetails}>
-            <StatusChip
-              label={t(status.name)}
-              severityCode={status.severity_code}
-            />
-            <div className={classes.description}>
-              <Typography
-                variant="body1"
-                onClick={(): void => onSelectService(id)}
-                style={{ cursor: 'pointer' }}
-              >
-                {name}
-              </Typography>
-              <Typography variant="body2">{information}</Typography>
-            </div>
-            {duration && <Typography variant="body2">{duration}</Typography>}
+        return (
+          <div key={id}>
+            <Paper className={classes.serviceCard}>
+              <div className={classes.serviceDetails}>
+                <StatusChip
+                  label={t(status.name)}
+                  severityCode={status.severity_code}
+                />
+                <div className={classes.description}>
+                  <Typography
+                    variant="body1"
+                    onClick={(): void => onSelectService(id)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {name}
+                  </Typography>
+                  <Typography variant="body2">{information}</Typography>
+                </div>
+                {duration && (
+                  <Typography variant="body2">{duration}</Typography>
+                )}
+              </div>
+            </Paper>
+            {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>
-        </Paper>
-        {isLastService && <div ref={infiniteScrollTriggerRef} />}
-      </div>
-    );
-  });
+        );
+      })}
+    </>
+  );
 };
 
 export default ServiceList;

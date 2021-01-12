@@ -22,3 +22,9 @@ centreon_application_platformtopology_deleteplatform:
     serverId: '\d+'
   controller: 'Centreon\Application\Controller\PlatformTopologyController::deletePlatform'
   condition: "request.attributes.get('version') >= 2.0"
+
+centreon_application_platform_updateplatform:
+  methods: PATCH
+  path: /platform
+  controller: 'Centreon\Application\Controller\PlatformController::updatePlatform'
+  condition: "request.attributes.get('version') >= 2.0"
