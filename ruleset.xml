@@ -10,6 +10,11 @@
   <exclude-pattern>*/lib/HTML/QuickForm/**/*.php</exclude-pattern>
 
   <rule ref="PSR12"/>
+  <rule ref="PHPCompatibility">
+    <config name="testVersion" value="7.3"/>
+    <include-pattern>*/lib/HTML/QuickForm.php</include-pattern>
+    <include-pattern>*/lib/HTML/QuickForm/**/*.php</include-pattern>
+  </rule>
   <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
     <properties>
       <property name="ignoreBlankLines" value="false"/>

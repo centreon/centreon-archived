@@ -24,7 +24,9 @@
         "symfony/var-dumper": "4.4.*",
         "symfony/profiler-pack": "^1.0",
         "phpstan/phpstan": "^0.12.59",
-        "webmozart/assert": "^1.8"
+        "webmozart/assert": "^1.8",
+        "phpcompatibility/php-compatibility": "*",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
     },
     "require": {
         "php": ">=7.1.3",
