@@ -117,6 +117,11 @@ class ResourceFilter
     private $serviceIds = [];
 
     /**
+     * @var boolean
+     */
+    private $onlyWithPerformanceData = false;
+
+    /**
      * Transform result by map
      *
      * @param array $list
@@ -308,5 +313,23 @@ class ResourceFilter
         $this->serviceIds = $serviceIds;
 
         return $this;
+    }
+
+    /**
+     * @param boolean $onlyWithPerformanceData
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setOnlyWithPerformanceData(bool $onlyWithPerformanceData): self
+    {
+        $this->onlyWithPerformanceData = $onlyWithPerformanceData;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getOnlyWithPerformanceData(): bool
+    {
+        return $this->onlyWithPerformanceData;
     }
 }
