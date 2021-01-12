@@ -73,20 +73,11 @@ try {
 // Contact language with transaction
 try {
     $pearDB->beginTransaction();
-    $stmt = $pearDB->query(
-        "SELECT contact_id, contact_lang FROM contact
-        WHERE contact_lang NOT LIKE '%UTF-8' AND contact_lang <> 'browser' AND contact_lang <> '';"
-    );
     $errorMessage = "Unable to Update user language";
-    $updateDB = $pearDB->prepare(
-        "UPDATE contact SET contact_lang = :lang WHERE contact_id = :contactId"
+    $pearDB->query(
+        "UPDATE contact SET contact_lang = CONCAT(contact_lang, '.UTF-8')
+        WHERE contact_lang NOT LIKE '%UTF-8' AND contact_lang <> 'browser' AND contact_lang <> ''"
     );
-    while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-        $completeLang = $row['contact_lang'] . '.UTF-8';
-        $updateDB->bindValue(':lang', $completeLang, \PDO::PARAM_STR);
-        $updateDB->bindValue(':contactId', $row['contact_id'], \PDO::PARAM_INT);
-        $updateDB->execute();
-    }
     $pearDB->commit();
 } catch (\Throwable $ex) {
     $pearDB->rollBack();
