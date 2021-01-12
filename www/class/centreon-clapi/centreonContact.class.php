@@ -297,7 +297,7 @@ class CentreonContact extends CentreonObject
         }
         if (
             strtolower($params[self::ORDER_LANG]) === "browser"
-            || strtoupper(substr($params[self::ORDER_LANG], -5)) === '.UTF-8'
+            || strtoupper(substr($params[self::ORDER_LANG], -6)) === '.UTF-8'
             || empty($params[self::ORDER_LANG])
         ) {
             $completeLanguage = $params[self::ORDER_LANG];
@@ -365,7 +365,7 @@ class CentreonContact extends CentreonObject
                 } elseif ($params[1] == "lang" || $params[1] == "language" || $params[1] == "locale") {
                     if (
                         strtolower($params[2]) === "browser"
-                        || strtoupper(substr($params[2], -5)) === '.UTF-8'
+                        || strtoupper(substr($params[2], -6)) === '.UTF-8'
                         || empty($params[2])
                     ) {
                         $completeLanguage = $params[2];
