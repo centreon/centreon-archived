@@ -25,16 +25,19 @@ namespace Centreon\Domain\RemoteServer;
 
 use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
+use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
-use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -104,14 +107,43 @@ class RemoteServerService implements RemoteServerServiceInterface
         }
 
         /**
-         * Find any children platform and forward them to Central Parent.
+         * Set Remote type into Platform_Topology
          */
-        $centralPlatform = $this->platformTopologyRepository->findTopLevelPlatformByType(Platform::TYPE_CENTRAL);
-        $childrenPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
-            $centralPlatform->getId()
+        $this->updatePlatformTypeParameters(Platform::TYPE_REMOTE);
+
+        /**
+         * Get the parent platform to register it later.
+         */
+        $topLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatform();
+        if ($topLevelPlatform === null) {
+            throw new EntityNotFoundException(_('No top level platform found to link the child platforms'));
+        }
+        /**
+         * Add the future Parent Central as Parent Address to be able to register it later.
+         *
+         * @var Platform $topLevelPlatform
+         */
+        $topLevelPlatform->setParentAddress($platformInformation->getCentralServerAddress());
+
+        /**
+         * Find any children platform and forward them to Central Parent.
+         *
+         * @var Platform[] $platforms
+         */
+        $platforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
+            $topLevelPlatform->getId()
         );
-        foreach ($childrenPlatforms as $platform) {
-            $platform->setParentAddress($centralPlatform->getAddress());
+        /**
+         * Insert the Top Level Platform at the beginning of array, as it need to be registered first.
+         */
+        array_unshift($platforms, $topLevelPlatform);
+        /**
+         * Register the platforms on the Parent Central
+         */
+        foreach ($platforms as $platform) {
+            if ($platform->getParentId() !== null) {
+                $platform->setParentAddress($topLevelPlatform->getAddress());
+            }
 
             $this->platformTopologyRegisterRepository->registerPlatformToParent(
                 $platform,
@@ -119,10 +151,6 @@ class RemoteServerService implements RemoteServerServiceInterface
                 $this->proxyService->getProxy()
             );
         }
-        /**
-         * Set Remote type into Platform_Topology
-         */
-        $this->updatePlatformTypeParameters(Platform::TYPE_REMOTE);
 
         try {
             $this->menuRepository->disableCentralMenus();
