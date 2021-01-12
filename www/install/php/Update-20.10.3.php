@@ -19,14 +19,12 @@
  *
  */
 include_once __DIR__ . "/../../class/centreonLog.class.php";
-$centreonLog = new CentreonLog();
 
 // error specific content
 $versionOfTheUpgrade = 'UPGRADE - 20.10.3 : ';
 $errorMessage = '';
 
 try {
-    $pearDB->beginTransaction();
     $statement = $pearDB->query(
         'SELECT COLUMN_DEFAULT
         FROM information_schema.COLUMNS
@@ -61,8 +59,20 @@ try {
             $pearDB->query('UPDATE on_demand_macro_service SET is_password = 0 WHERE is_password IS NULL');
         }
     }
+} catch (\Throwable $ex) {
+    (new CentreonLog())->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . $ex->getCode() .
+        " - Error : " . $ex->getMessage() .
+        " - Trace : " . $ex->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, $ex->getCode(), $ex);
+}
 
-    // Contact language
+// Contact language with transaction
+try {
+    $pearDB->beginTransaction();
     $stmt = $pearDB->query(
         "SELECT contact_id, contact_lang FROM contact
         WHERE contact_lang NOT LIKE '%UTF-8' AND contact_lang <> 'browser' AND contact_lang <> '';"
@@ -78,7 +88,6 @@ try {
         $updateDB->execute();
     }
     $pearDB->commit();
-    $errorMessage = "";
 } catch (\Throwable $ex) {
     $pearDB->rollBack();
     require_once __DIR__ . '/../../class/centreonLog.class.php';
