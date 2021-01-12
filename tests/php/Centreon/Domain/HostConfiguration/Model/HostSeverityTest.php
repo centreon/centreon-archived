@@ -52,7 +52,7 @@ class HostSeverityTest extends TestCase
         );
         new HostSeverity($name, 'alias');
     }
-    
+
     /**
      * Too long alias test
      * @throws \Assert\AssertionFailedException

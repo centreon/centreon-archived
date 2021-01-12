@@ -70,7 +70,7 @@ class HostSeverity
      * @var bool Indicates whether this host severity is enabled or not (TRUE by default)
      */
     private $isActivated = true;
-    
+
     /**
      * @param string $name
      * @param string $alias
