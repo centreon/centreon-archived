@@ -121,8 +121,7 @@ class CentreonMetric extends CentreonWebService
         $queryValues[] = '%' . (string)$q . '%';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            if (
-                !is_numeric($this->arguments['page'])
+            if (!is_numeric($this->arguments['page'])
                 || !is_numeric($this->arguments['page_limit'])
                 || $this->arguments['page_limit'] < 1
             ) {
@@ -235,8 +234,7 @@ class CentreonMetric extends CentreonWebService
         }
 
         /* Validate options */
-        if (
-            false === isset($this->arguments['start']) ||
+        if (false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
             false === is_numeric($this->arguments['end'])
@@ -373,8 +371,7 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
 
-        if (
-            false === isset($this->arguments['start']) ||
+        if (false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
             false === is_numeric($this->arguments['end'])
@@ -398,8 +395,7 @@ class CentreonMetric extends CentreonWebService
         }
 
         list($hostId, $serviceId) = explode('_', $id);
-        if (
-            false === is_numeric($hostId) ||
+        if (false === is_numeric($hostId) ||
             false === is_numeric($serviceId)
         ) {
             throw new RestBadRequestException("Bad parameters");
@@ -440,9 +436,9 @@ class CentreonMetric extends CentreonWebService
 
         $serviceData = $graph->getData($rows);
 
-
         /* Replace NaN */
-        for ($i = 0; $i < count($serviceData); $i++) {
+        $j = count($serviceData);
+        for ($i = 0; $i < $j; $i++) {
             if (isset($serviceData[$i]['data'])) {
                 $times = array_keys($serviceData[$i]['data']);
                 $values = array_map(
@@ -515,8 +511,7 @@ class CentreonMetric extends CentreonWebService
         }
 
         /* Validate options */
-        if (
-            false === isset($this->arguments['ids']) ||
+        if (false === isset($this->arguments['ids']) ||
             false === isset($this->arguments['start']) ||
             false === is_numeric($this->arguments['start']) ||
             false === isset($this->arguments['end']) ||
@@ -561,7 +556,8 @@ class CentreonMetric extends CentreonWebService
         }
         $pollerDatas = $graphPollerObject->getData($rows);
 
-        for ($i = 0; $i < count($pollerDatas); $i++) {
+        $j = count($pollerDatas);
+        for ($i = 0; $i < $j; $i++) {
             if (isset($pollerDatas[$i]['data'])) {
                 $times = array_keys($pollerDatas[$i]['data']);
                 $values = array_map(
