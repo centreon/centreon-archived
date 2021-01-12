@@ -544,6 +544,7 @@ paths:
         - $ref: '#/components/parameters/ResourceFilterStatus'
         - $ref: '#/components/parameters/ResourceFilterHostgroupId'
         - $ref: '#/components/parameters/ResourceFilterServicegroupId'
+        - $ref: '#/components/parameters/ResourceFilterOnlyWithPerformanceData'
       responses:
         '200':
           description: "OK"
@@ -2913,6 +2914,15 @@ components:
           type: string
           enum: [service, host]
         example: '["host"]'
+    ResourceFilterOnlyWithPerformanceData:
+      in: query
+      name: only_with_performance_data
+      required: false
+      description: "Filter the resources to retrieve the ones with available performance data"
+      schema:
+        type: boolean
+        default: false
+        example: true
     ResourceFilterState:
       in: query
       name: states

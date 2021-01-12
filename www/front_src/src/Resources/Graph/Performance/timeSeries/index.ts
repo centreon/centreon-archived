@@ -30,15 +30,14 @@ interface TimeTickWithMetrics {
 const toTimeTickWithMetrics = ({
   metrics,
   times,
-}): Array<TimeTickWithMetrics> => {
-  return map(
+}): Array<TimeTickWithMetrics> =>
+  map(
     (timeTick) => ({
       timeTick,
       metrics,
     }),
     times,
   );
-};
 
 const toTimeTickValue = (
   { timeTick, metrics }: TimeTickWithMetrics,
@@ -70,12 +69,10 @@ const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
   const rejectLowerThanLimit = ({
     timeTick,
     ...metrics
-  }: TimeValue): TimeValue => {
-    return {
-      ...filter(isGreaterThanLowerLimit, metrics),
-      timeTick,
-    };
-  };
+  }: TimeValue): TimeValue => ({
+    ...filter(isGreaterThanLowerLimit, metrics),
+    timeTick,
+  });
 
   const indexedMap = addIndex<TimeTickWithMetrics, TimeValue>(map);
 
@@ -103,40 +100,24 @@ const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
     : null,
 });
 
-const getLineData = (graphData: GraphData): Array<Line> => {
-  return map(toLine, graphData.metrics);
-};
+const getLineData = (graphData: GraphData): Array<Line> =>
+  map(toLine, graphData.metrics);
 
-const getMin = (values): number => {
-  return Math.min(...values);
-};
+const getMin = (values: Array<number>): number => Math.min(...values);
 
-const getMax = (values): number => {
-  return Math.max(...values);
-};
+const getMax = (values: Array<number>): number => Math.max(...values);
 
-const getTime = (timeValue): number => {
-  return new Date(timeValue.timeTick).valueOf();
-};
+const getTime = (timeValue: TimeValue): number =>
+  new Date(timeValue.timeTick).valueOf();
 
-const getMetrics = (timeValue: TimeValue): Array<string> => {
-  return pipe(keys, reject(equals('timeTick')))(timeValue);
-};
+const getMetrics = (timeValue: TimeValue): Array<string> =>
+  pipe(keys, reject(equals('timeTick')))(timeValue);
 
-const getValueForMetric = (timeValue) => (metric): number =>
-  prop(metric, timeValue);
+const getValueForMetric = (timeValue: TimeValue) => (metric: string): number =>
+  prop(metric, timeValue) as number;
 
-const getMetricValues = (timeValue): Array<number> => {
-  return pipe(
-    getMetrics,
-    map(getValueForMetric(timeValue)),
-    reject(isNil),
-  )(timeValue);
-};
-
-const getUnits = (lines: Array<Line>): Array<string> => {
-  return pipe(map(prop('unit')), uniq)(lines);
-};
+const getUnits = (lines: Array<Line>): Array<string> =>
+  pipe(map(prop('unit')), uniq)(lines);
 
 interface ValuesForUnitProps {
   lines: Array<Line>;
@@ -149,9 +130,11 @@ const getMetricValuesForUnit = ({
   timeSeries,
   unit,
 }: ValuesForUnitProps): Array<number> => {
-  const getTimeSeriesValuesForMetric = (metric): Array<number> => {
-    return map((timeValue) => getValueForMetric(timeValue)(metric), timeSeries);
-  };
+  const getTimeSeriesValuesForMetric = (metric): Array<number> =>
+    map(
+      (timeValue) => getValueForMetric(timeValue)(metric),
+      timeSeries,
+    ) as Array<number>;
 
   return pipe(
     filter(propEq('unit', unit)) as (line) => Array<Line>,
@@ -177,22 +160,30 @@ interface LineForMetricProps {
 const getLineForMetric = ({
   lines,
   metric,
-}: LineForMetricProps): Line | undefined => {
-  return find(propEq('metric', metric), lines);
-};
+}: LineForMetricProps): Line | undefined =>
+  find(propEq('metric', metric), lines);
 
-const getMetricValuesForLines = ({ lines, timeSeries }): Array<number> => {
-  return pipe(
+interface LinesTimeSeries {
+  lines: Array<Line>;
+  timeSeries: Array<TimeValue>;
+}
+
+const getMetricValuesForLines = ({
+  lines,
+  timeSeries,
+}: LinesTimeSeries): Array<number> =>
+  pipe(
     getUnits,
     map((unit) => getMetricValuesForUnit({ unit, lines, timeSeries })),
     flatten,
   )(lines);
-};
 
-const getStackedMetricValues = ({ lines, timeSeries }): Array<number> => {
-  const getTimeSeriesValuesForMetric = (metric): Array<number> => {
-    return map((timeValue) => getValueForMetric(timeValue)(metric), timeSeries);
-  };
+const getStackedMetricValues = ({
+  lines,
+  timeSeries,
+}: LinesTimeSeries): Array<number> => {
+  const getTimeSeriesValuesForMetric = (metric): Array<number> =>
+    map((timeValue) => getValueForMetric(timeValue)(metric), timeSeries);
 
   const metricsValues = pipe(
     map(prop('metric')) as (metric) => Array<string>,
@@ -203,7 +194,7 @@ const getStackedMetricValues = ({ lines, timeSeries }): Array<number> => {
     return [];
   }
 
-  return metricsValues[0].map((value, index): number =>
+  return metricsValues[0].map((_, index): number =>
     reduce(
       (acc: number, metricValue: Array<number>) => add(metricValue[index], acc),
       0,
@@ -212,45 +203,42 @@ const getStackedMetricValues = ({ lines, timeSeries }): Array<number> => {
   );
 };
 
-const getSortedStackedLines = (lines: Array<Line>): Array<Line> => {
-  return pipe(
+const getSortedStackedLines = (lines: Array<Line>): Array<Line> =>
+  pipe(
     reject(({ stackOrder }: Line): boolean => isNil(stackOrder)) as (
       lines,
     ) => Array<Line>,
     sortBy(prop('stackOrder')),
   )(lines);
-};
 
-const getInvertedStackedLines = (lines: Array<Line>): Array<Line> => {
-  return pipe(
+const getInvertedStackedLines = (lines: Array<Line>): Array<Line> =>
+  pipe(
     reject(({ invert }: Line): boolean => isNil(invert)) as (
       lines,
     ) => Array<Line>,
     getSortedStackedLines,
   )(lines);
-};
 
-const getNotInvertedStackedLines = (lines: Array<Line>): Array<Line> => {
-  return pipe(
+const getNotInvertedStackedLines = (lines: Array<Line>): Array<Line> =>
+  pipe(
     filter(({ invert }: Line): boolean => isNil(invert)) as (
       lines,
     ) => Array<Line>,
     getSortedStackedLines,
   )(lines);
-};
 
-const hasUnitStackedLines = ({ lines, unit }): boolean =>
-  pipe(getSortedStackedLines, any(propEq('unit', unit)))(lines);
-
-interface GetSpecificTimeSeries {
+interface HasStackedLines {
   lines: Array<Line>;
-  timeSeries: Array<TimeValue>;
+  unit: string;
 }
+
+const hasUnitStackedLines = ({ lines, unit }: HasStackedLines): boolean =>
+  pipe(getSortedStackedLines, any(propEq('unit', unit)))(lines);
 
 const getTimeSeriesForLines = ({
   lines,
   timeSeries,
-}: GetSpecificTimeSeries): Array<TimeValue> => {
+}: LinesTimeSeries): Array<TimeValue> => {
   const metrics = map(prop('metric'), lines);
 
   return map(
@@ -277,7 +265,6 @@ export {
   getTime,
   getMetrics,
   getValueForMetric,
-  getMetricValues,
   getMetricValuesForUnit,
   getUnits,
   getDates,

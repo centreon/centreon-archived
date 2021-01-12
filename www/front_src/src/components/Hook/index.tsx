@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import isEqual from 'lodash/isEqual';
+import { equals } from 'ramda';
 
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
@@ -51,7 +51,7 @@ const Hook = React.memo(
     );
   },
   ({ hooks: previousHooks }, { hooks: nextHooks }) =>
-    isEqual(previousHooks, nextHooks),
+    equals(previousHooks, nextHooks),
 );
 
 const mapStateToProps = ({ externalComponents }): Record<string, unknown> => ({

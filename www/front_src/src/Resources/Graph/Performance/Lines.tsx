@@ -1,8 +1,7 @@
 import * as React from 'react';
 
-import { prop, difference, min, max } from 'ramda';
+import { prop, difference, min, max, isNil } from 'ramda';
 import { AreaClosed, LinePath, curveBasis, scaleLinear } from '@visx/visx';
-import { isNil } from 'lodash';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { fade } from '@material-ui/core';

@@ -1,68 +1,52 @@
 import * as React from 'react';
 
-import { isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { isNil, path } from 'ramda';
 
-import { Skeleton } from '@material-ui/lab';
-import { makeStyles, Paper, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
+import GraphIcon from '@material-ui/icons/BarChart';
+import ListIcon from '@material-ui/icons/List';
 
-import { useRequest, StatusChip } from '@centreon/ui';
+import { useRequest, IconButton, ListingModel } from '@centreon/ui';
 
 import { TabProps, detailsTabId } from '..';
 import { useResourceContext } from '../../../Context';
-import { labelNoResultsFound } from '../../../translatedLabels';
+import {
+  labelSwitchToGraph,
+  labelSwitchToList,
+} from '../../../translatedLabels';
+import { listResources } from '../../../Listing/api';
+import { Resource } from '../../../models';
+import InfiniteScroll from '../../InfiniteScroll';
+import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
+import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
+import { TimePeriodId } from '../Graph/models';
 
-import { listServices } from './api';
-import { listServicesDecoder } from './api/decoders';
-import { Service } from './models';
+import ServiceGraphs from './Graphs';
+import ServiceList from './List';
+import LoadingSkeleton from './LoadingSkeleton';
 
 const useStyles = makeStyles((theme) => ({
   services: {
     display: 'grid',
-    gridAutoFlow: 'row',
     gridGap: theme.spacing(1),
-    width: '100%',
   },
-  service: {
+  serviceDetails: {
     display: 'grid',
     gridAutoFlow: 'columns',
     gridTemplateColumns: 'auto 1fr auto',
-    padding: theme.spacing(1),
     gridGap: theme.spacing(2),
     alignItems: 'center',
   },
-  description: {
-    display: 'grid',
-    gridAutoFlow: 'row',
-    gridGap: theme.spacing(1),
+  serviceCard: {
+    padding: theme.spacing(1),
   },
   noResultContainer: {
     padding: theme.spacing(1),
   },
 }));
 
-const LoadingSkeleton = (): JSX.Element => {
-  const classes = useStyles();
-
-  const serviceLoadingSkeleton = (
-    <div className={classes.service}>
-      <Skeleton variant="circle" width={25} height={25} />
-      <Skeleton height={25} />
-      <Skeleton width={50} height={25} />
-    </div>
-  );
-
-  return (
-    <div className={classes.services}>
-      {serviceLoadingSkeleton}
-      {serviceLoadingSkeleton}
-      {serviceLoadingSkeleton}
-    </div>
-  );
-};
-
 const ServicesTab = ({ details }: TabProps): JSX.Element => {
-  const classes = useStyles();
   const { t } = useTranslation();
 
   const {
@@ -71,31 +55,63 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     setSelectedResourceParentId,
     setSelectedResourceParentType,
     setOpenDetailsTabId,
-    selectedResourceId,
+    tabParameters,
+    setServicesTabParameters,
   } = useResourceContext();
 
-  const [services, setServices] = React.useState<Array<Service>>();
+  const [graphMode, setGraphMode] = React.useState<boolean>(
+    tabParameters.services?.graphMode || false,
+  );
 
-  const { sendRequest } = useRequest({
-    request: listServices,
-    decoder: listServicesDecoder,
+  const [canDisplayGraphs, setCanDisplayGraphs] = React.useState(false);
+
+  const {
+    selectedTimePeriod,
+    changeSelectedTimePeriod,
+    periodQueryParameters,
+    getIntervalDates,
+  } = useTimePeriod({
+    defaultSelectedTimePeriodId: path(
+      ['services', 'selectedTimePeriodId'],
+      tabParameters,
+    ),
+    onTimePeriodChange: (timePeriodId: TimePeriodId) => {
+      setServicesTabParameters({
+        graphMode,
+        selectedTimePeriodId: timePeriodId,
+      });
+    },
   });
 
-  React.useEffect(() => {
-    if (isNil(details) || details.type === 'service') {
-      return;
-    }
+  const { sendRequest, sending } = useRequest({
+    request: listResources,
+  });
 
-    sendRequest(details.id).then(({ result }) => setServices(result));
-  }, [details]);
+  const limit = graphMode ? 6 : 30;
 
-  React.useEffect(() => {
-    if (selectedResourceId !== details?.id) {
-      setServices(undefined);
-    }
-  }, [selectedResourceId]);
+  const sendListingRequest = ({
+    atPage,
+  }: {
+    atPage?: number;
+  }): Promise<ListingModel<Resource>> => {
+    return sendRequest({
+      limit,
+      page: atPage,
+      resourceTypes: ['service'],
+      search: {
+        conditions: [
+          {
+            field: 'h.name',
+            values: {
+              $eq: details?.name,
+            },
+          },
+        ],
+      },
+    });
+  };
 
-  const selectService = (serviceId) => (): void => {
+  const selectService = (serviceId): void => {
     setOpenDetailsTabId(detailsTabId);
     setSelectedResourceParentType('host');
     setSelectedResourceParentId(details?.id);
@@ -103,49 +119,79 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     setSelectedResourceType('service');
   };
 
-  const getContent = (): JSX.Element => {
-    if (isNil(details) || isNil(services)) {
-      return <LoadingSkeleton />;
-    }
+  const switchMode = (): void => {
+    setCanDisplayGraphs(false);
+    const mode = !graphMode;
 
-    if (isEmpty(services)) {
-      return (
-        <Paper className={classes.noResultContainer}>
-          <Typography align="center" variant="body1">
-            {t(labelNoResultsFound)}
-          </Typography>
-        </Paper>
-      );
-    }
+    setGraphMode(mode);
 
-    return (
-      <>
-        {services.map(({ id, status, name, output, duration }) => {
-          return (
-            <Paper key={id} className={classes.service}>
-              <StatusChip
-                label={t(status.name)}
-                severityCode={status.severity_code}
-              />
-              <div className={classes.description}>
-                <Typography
-                  variant="body1"
-                  onClick={selectService(id)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {name}
-                </Typography>
-                <Typography variant="body2">{output}</Typography>
-              </div>
-              {duration && <Typography variant="body2">{duration}</Typography>}
-            </Paper>
-          );
-        })}
-      </>
-    );
+    setServicesTabParameters({
+      graphMode: mode,
+      selectedTimePeriodId: selectedTimePeriod.id,
+    });
   };
 
-  return <div className={classes.services}>{getContent()}</div>;
+  React.useEffect(() => {
+    // To make sure that graphs are not displayed until 'entities' are reset
+    setCanDisplayGraphs(true);
+  }, [graphMode]);
+
+  const labelSwitch = graphMode ? labelSwitchToList : labelSwitchToGraph;
+  const switchIcon = graphMode ? <ListIcon /> : <GraphIcon />;
+
+  const loading = isNil(details) || sending;
+
+  return (
+    <>
+      <IconButton
+        title={t(labelSwitch)}
+        ariaLabel={t(labelSwitch)}
+        disabled={loading}
+        onClick={switchMode}
+      >
+        {switchIcon}
+      </IconButton>
+      <InfiniteScroll<Resource>
+        preventReloadWhen={details?.type === 'service'}
+        sendListingRequest={sendListingRequest}
+        details={details}
+        loadingSkeleton={<LoadingSkeleton />}
+        filter={
+          graphMode ? (
+            <TimePeriodSelect
+              selectedTimePeriodId={selectedTimePeriod.id}
+              onChange={changeSelectedTimePeriod}
+              disabled={loading}
+            />
+          ) : undefined
+        }
+        reloadDependencies={[graphMode]}
+        loading={sending}
+        limit={limit}
+      >
+        {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
+          const displayGraphs = graphMode && canDisplayGraphs;
+
+          return displayGraphs ? (
+            <ServiceGraphs
+              services={entities}
+              infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+              periodQueryParameters={periodQueryParameters}
+              getIntervalDates={getIntervalDates}
+              selectedTimePeriod={selectedTimePeriod}
+            />
+          ) : (
+            <ServiceList
+              services={entities}
+              onSelectService={selectService}
+              infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+            />
+          );
+        }}
+      </InfiniteScroll>
+    </>
+  );
 };
 
 export default ServicesTab;
+export { useStyles };
