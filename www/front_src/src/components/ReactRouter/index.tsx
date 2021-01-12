@@ -2,8 +2,7 @@ import React, { Suspense } from 'react';
 
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import isEmpty from 'lodash/isEmpty';
-import isEqual from 'lodash/isEqual';
+import { isEmpty, equals } from 'ramda';
 
 import { styled } from '@material-ui/core';
 
@@ -99,9 +98,9 @@ const ReactRouter = React.memo<Props>(
     );
   },
   (previousProps, nextProps) =>
-    isEqual(previousProps.pages, nextProps.pages) &&
-    isEqual(previousProps.allowedPages, nextProps.allowedPages) &&
-    isEqual(previousProps.externalPagesFetched, nextProps.externalPagesFetched),
+    equals(previousProps.pages, nextProps.pages) &&
+    equals(previousProps.allowedPages, nextProps.allowedPages) &&
+    equals(previousProps.externalPagesFetched, nextProps.externalPagesFetched),
 );
 
 const mapStateToProps = (state): Record<string, unknown> => ({

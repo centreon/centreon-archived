@@ -25,8 +25,23 @@ import { DetailsSectionProps } from '.';
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    height: 60,
-    paddingRight: theme.spacing(1),
+    height: 43,
+    padding: theme.spacing(0, 1),
+    display: 'grid',
+    gridGap: theme.spacing(2),
+    gridTemplateColumns: 'auto minmax(0, 1fr) auto',
+    alignItems: 'center',
+  },
+  parent: {
+    display: 'grid',
+    gridGap: theme.spacing(1),
+    gridTemplateColumns: 'auto minmax(0, 1fr)',
+    alignItems: 'center',
+  },
+  truncated: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 }));
 
@@ -44,6 +59,7 @@ const LoadingSkeleton = (): JSX.Element => (
 const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
   const { t } = useTranslation();
   const { showMessage } = useSnackbar();
+  const classes = useStyles();
 
   const copyResourceLink = (): void => {
     try {
@@ -66,49 +82,35 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
 
   return (
     <>
-      <Grid item>
-        {details.severity && (
-          <StatusChip
-            severityCode={SeverityCode.None}
-            label={details.severity.level?.toString()}
-          />
-        )}
-      </Grid>
-      <Grid item>
+      {details.severity && (
         <StatusChip
-          severityCode={details.status.severity_code}
-          label={t(details.status.name)}
+          severityCode={SeverityCode.None}
+          label={details.severity.level?.toString()}
         />
-      </Grid>
-      <Grid item style={{ flexGrow: 1 }}>
-        <Grid container direction="column">
-          <Grid item>
-            <Typography>{details.name}</Typography>
-          </Grid>
-          {details.parent && (
-            <Grid item container spacing={1}>
-              <Grid item>
-                <StatusChip
-                  severityCode={details.parent.status?.severity_code}
-                />
-              </Grid>
-              <Grid item>
-                <Typography variant="caption">{details.parent.name}</Typography>
-              </Grid>
-            </Grid>
-          )}
-        </Grid>
-      </Grid>
-      <Grid item>
-        <IconButton
-          size="small"
-          title={t(labelCopyLink)}
-          ariaLabel={t(labelCopyLink)}
-          onClick={copyResourceLink}
-        >
-          <CopyIcon fontSize="small" />
-        </IconButton>
-      </Grid>
+      )}
+      <StatusChip
+        severityCode={details.status.severity_code}
+        label={t(details.status.name)}
+      />
+      <div>
+        <Typography className={classes.truncated}>{details.name}</Typography>
+        {details.parent && (
+          <div className={classes.parent}>
+            <StatusChip severityCode={details.parent.status?.severity_code} />
+            <Typography variant="caption" className={classes.truncated}>
+              {details.parent.name}
+            </Typography>
+          </div>
+        )}
+      </div>
+      <IconButton
+        size="small"
+        title={t(labelCopyLink)}
+        ariaLabel={t(labelCopyLink)}
+        onClick={copyResourceLink}
+      >
+        <CopyIcon fontSize="small" />
+      </IconButton>
     </>
   );
 };
@@ -117,15 +119,9 @@ const Header = ({ details }: DetailsSectionProps): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Grid
-      container
-      item
-      spacing={2}
-      alignItems="center"
-      className={classes.header}
-    >
+    <div className={classes.header}>
       <HeaderContent details={details} />
-    </Grid>
+    </div>
   );
 };
 

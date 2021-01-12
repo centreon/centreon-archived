@@ -68,6 +68,8 @@ class MonitoringResourceController extends AbstractController
         'servicegroup_ids',
     ];
 
+    public const FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY = 'only_with_performance_data';
+
     private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id={resource_id}';
     private const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id={resource_id}';
     private const HOST_LOGS_URI = '/main.php?p=20301&h={resource_id}';
@@ -181,6 +183,8 @@ class MonitoringResourceController extends AbstractController
         foreach (static::EXTRA_PARAMETERS_LIST as $param) {
             $filterData[$param] = [];
         }
+
+        $filterData[static::FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY] = false;
 
         // load filter data with the query parameters
         foreach ($request->query->all() as $param => $data) {
