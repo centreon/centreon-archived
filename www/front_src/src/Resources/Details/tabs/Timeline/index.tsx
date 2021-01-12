@@ -1,16 +1,9 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { prop, isEmpty, cond, always, T, isNil, concat, path } from 'ramda';
+import { prop, isEmpty, path } from 'ramda';
 
-import {
-  makeStyles,
-  Paper,
-  Typography,
-  CircularProgress,
-  Button,
-} from '@material-ui/core';
-import IconRefresh from '@material-ui/icons/Refresh';
+import { makeStyles, Paper } from '@material-ui/core';
 
 import {
   useRequest,
@@ -19,12 +12,9 @@ import {
   SearchParameter,
 } from '@centreon/ui';
 
-import {
-  labelEvent,
-  labelNoResultsFound,
-  labelRefresh,
-} from '../../../translatedLabels';
+import { labelEvent } from '../../../translatedLabels';
 import { TabProps } from '..';
+import InfiniteScroll from '../../InfiniteScroll';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -36,35 +26,13 @@ import LoadingSkeleton from './LoadingSkeleton';
 type TimelineListing = ListingModel<TimelineEvent>;
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    width: '100%',
-    height: '100%',
-    display: 'grid',
-    alignItems: 'center',
-    justifyItems: 'center',
-    alignContent: 'flex-start',
-    gridGap: theme.spacing(1),
-  },
-  filterContainer: {
-    width: '100%',
-  },
-  filterAutocomplete: {
-    margin: theme.spacing(2),
-  },
-  noResultContainer: {
-    padding: theme.spacing(1),
-  },
-  events: {
-    display: 'grid',
-    gridAutoFlow: 'row',
-    gridGap: theme.spacing(1),
-    width: '100%',
+  filter: {
+    padding: theme.spacing(2),
   },
 }));
 
 const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
-
   const { t } = useTranslation();
 
   const translatedTypes = types.map((type) => ({
@@ -72,14 +40,10 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     name: t(type.name),
   })) as Array<Type>;
 
-  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
     translatedTypes,
   );
-  const [page, setPage] = React.useState(1);
-  const [total, setTotal] = React.useState(0);
-  const [limit] = React.useState(30);
-  const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
+  const limit = 30;
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
     request: listTimelineEvents,
@@ -103,11 +67,11 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
 
   const timelineEndpoint = path(['links', 'endpoints', 'timeline'], details);
 
-  const listTimeline = (
-    { atPage } = {
-      atPage: page,
-    },
-  ): Promise<TimelineListing> => {
+  const listTimeline = ({
+    atPage,
+  }: {
+    atPage?: number;
+  }): Promise<TimelineListing> => {
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
@@ -115,70 +79,23 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
         limit,
         search: getSearch(),
       },
-    })
-      .then((retrievedListing) => {
-        const { meta } = retrievedListing;
-        setTotal(meta.total);
-
-        return retrievedListing;
-      })
-      .finally(() => {
-        setLoadingMoreEvents(false);
-      });
-  };
-
-  const reload = (): void => {
-    setPage(1);
-    listTimeline({ atPage: 1 }).then(({ result }) => {
-      setTimeline(result);
     });
   };
-
-  React.useEffect(() => {
-    if (isNil(details)) {
-      setTimeline(undefined);
-    }
-
-    if (page !== 1 || isNil(details)) {
-      return;
-    }
-
-    reload();
-  }, [details]);
-
-  React.useEffect(() => {
-    if (isNil(timeline) || page === 1) {
-      return;
-    }
-
-    listTimeline().then(({ result }) => {
-      setTimeline(concat(timeline, result));
-    });
-  }, [page]);
-
-  React.useEffect(() => {
-    if (isNil(details) || isNil(timeline)) {
-      return;
-    }
-
-    setTimeline(undefined);
-
-    reload();
-  }, [selectedTypes]);
 
   const changeSelectedTypes = (_, typeIds): void => {
     setSelectedTypes(typeIds);
   };
 
-  const loadMoreEvents = (): void => {
-    setLoadingMoreEvents(true);
-    setPage(page + 1);
-  };
-
   return (
-    <div className={classes.container}>
-      <Paper className={classes.filterContainer}>
-        <div className={classes.filterAutocomplete}>
+    <InfiniteScroll
+      details={details}
+      sendListingRequest={listTimeline}
+      loading={sending}
+      limit={limit}
+      loadingSkeleton={<LoadingSkeleton />}
+      reloadDependencies={[selectedTypes]}
+      filter={
+        <Paper className={classes.filter}>
           <MultiAutocompleteField
             label={t(labelEvent)}
             onChange={changeSelectedTypes}
@@ -187,51 +104,18 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
             fullWidth
             limitTags={3}
           />
-        </div>
-      </Paper>
-      <div className={classes.events}>
-        {cond([
-          [always(isNil(timeline)), always(<LoadingSkeleton />)],
-          [
-            isEmpty,
-            always(
-              <Paper className={classes.noResultContainer}>
-                <Typography align="center" variant="body1">
-                  {t(labelNoResultsFound)}
-                </Typography>
-              </Paper>,
-            ),
-          ],
-          [
-            T,
-            always(
-              <>
-                {page > 1 && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    startIcon={<IconRefresh />}
-                    onClick={reload}
-                  >
-                    {labelRefresh}
-                  </Button>
-                )}
-                <Events
-                  timeline={timeline as Array<TimelineEvent>}
-                  total={total}
-                  limit={limit}
-                  page={page}
-                  loading={sending}
-                  onLoadMore={loadMoreEvents}
-                />
-              </>,
-            ),
-          ],
-        ])(timeline)}
-      </div>
-      {loadingMoreEvents && <CircularProgress />}
-    </div>
+        </Paper>
+      }
+    >
+      {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
+        return (
+          <Events
+            timeline={entities}
+            infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+          />
+        );
+      }}
+    </InfiniteScroll>
   );
 };
 
