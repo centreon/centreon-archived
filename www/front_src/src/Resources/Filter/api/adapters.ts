@@ -19,12 +19,11 @@ const useAdapters = (): Adapters => {
 
     const toStandardMultiSelectCriteriaValue = (
       criteria,
-    ): Array<CriteriaValue> => {
-      return criteria.value.map(({ id: criteriaId }) => ({
+    ): Array<CriteriaValue> =>
+      criteria.value.map(({ id: criteriaId }) => ({
         id: criteriaId,
         name: criteriaValueNameById[criteriaId],
       }));
-    };
 
     const getStandardMultiSelectCriteriaValue = (
       rawName,
