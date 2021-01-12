@@ -34,38 +34,47 @@ try {
         "ALTER IGNORE TABLE `dependency_hostChild_relation`
         ADD UNIQUE (`dependency_dep_id`, `host_host_id`)"
     );
+    $errorMessage = "Unable to update dependency_hostParent_relation";
     $pearDB->query(
         "ALTER IGNORE TABLE `dependency_hostParent_relation`
         ADD UNIQUE (`dependency_dep_id`, `host_host_id`)"
     );
+    $errorMessage = "Unable to update dependency_hostgroupChild_relation";
     $pearDB->query(
         "ALTER IGNORE TABLE `dependency_hostgroupChild_relation`
         ADD UNIQUE (`dependency_dep_id`, `hostgroup_hg_id`)"
     );
+    $errorMessage = "Unable to update dependency_hostgroupParent_relation";
     $pearDB->query(
         "ALTER IGNORE TABLE `dependency_hostgroupParent_relation`
         ADD UNIQUE (`dependency_dep_id`, `hostgroup_hg_id`)"
     );
+    $errorMessage = "Unable to update dependency_metaserviceChild_relation";
     $pearDB->query(
         "ALTER IGNORE TABLE `dependency_metaserviceChild_relation`
         ADD UNIQUE (`dependency_dep_id`, `meta_service_meta_id`)"
     );
+    $errorMessage = "Unable to update dependency_metaserviceParent_relation";
     $pearDB->query(
         "ALTER IGNORE TABLE `dependency_metaserviceParent_relation`
         ADD UNIQUE (`dependency_dep_id`, `meta_service_meta_id`)"
     );
+    $errorMessage = "Unable to update dependency_serviceChild_relation";
     $pearDB->query(
         "ALTER IGNORE TABLE `dependency_serviceChild_relation`
         ADD UNIQUE (`dependency_dep_id`, `service_service_id`, `host_host_id`)"
     );
+    $errorMessage = "Unable to update dependency_serviceParent_relation";
     $pearDB->query(
         "ALTER IGNORE TABLE `dependency_serviceParent_relation`
         ADD UNIQUE (`dependency_dep_id`, `service_service_id`, `host_host_id`)"
     );
+    $errorMessage = "Unable to update dependency_servicegroupChild_relation";
     $pearDB->query(
         "ALTER IGNORE TABLE `dependency_servicegroupChild_relation`
         ADD UNIQUE (`dependency_dep_id`, `servicegroup_sg_id`)"
     );
+    $errorMessage = "Unable to update dependency_servicegroupParent_relation";
     $pearDB->query(
         "ALTER IGNORE TABLE `dependency_servicegroupParent_relation`
         ADD UNIQUE (`dependency_dep_id`, `servicegroup_sg_id`)"
