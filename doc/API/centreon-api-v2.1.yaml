@@ -149,31 +149,31 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-    /configuration/hosts/severities:
-      get:
-        tags:
-          - Host severity
-        summary: "List all host severities"
-        description: |
-          List of all host severity configurations
-        responses:
-          "200":
-            description: "OK"
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    result:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/Configuration.Host.Severity'
-                    meta:
-                      $ref: '#/components/schemas/Meta'
-          '403':
-            $ref: '#/components/responses/Forbidden'
-          '500':
-            $ref: '#/components/responses/InternalServerError'
+  /configuration/hosts/severities:
+    get:
+      tags:
+        - Host severity
+      summary: "List all host severities"
+      description: |
+        List of all host severity configurations
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.Host.Severity'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/icons:
     get:
       tags:
