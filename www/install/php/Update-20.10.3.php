@@ -18,12 +18,15 @@
  * For more information : contact@centreon.com
  *
  */
+include_once __DIR__ . "/../../class/centreonLog.class.php";
+$centreonLog = new CentreonLog();
 
 // error specific content
 $versionOfTheUpgrade = 'UPGRADE - 20.10.3 : ';
 $errorMessage = '';
 
 try {
+    $pearDB->beginTransaction();
     $statement = $pearDB->query(
         'SELECT COLUMN_DEFAULT
         FROM information_schema.COLUMNS
@@ -58,7 +61,26 @@ try {
             $pearDB->query('UPDATE on_demand_macro_service SET is_password = 0 WHERE is_password IS NULL');
         }
     }
+
+    // Contact language
+    $stmt = $pearDB->query(
+        "SELECT contact_id, contact_lang FROM contact
+        WHERE contact_lang NOT LIKE '%UTF-8' AND contact_lang <> 'browser' AND contact_lang <> '';"
+    );
+    $errorMessage = "Unable to Update user language";
+    $updateDB = $pearDB->prepare(
+        "UPDATE contact SET contact_lang = :lang WHERE contact_id = :contactId"
+    );
+    while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $completeLang = $row['contact_lang'] . '.UTF-8';
+        $updateDB->bindValue(':lang', $completeLang, \PDO::PARAM_STR);
+        $updateDB->bindValue(':contactId', $row['contact_id'], \PDO::PARAM_INT);
+        $updateDB->execute();
+    }
+    $pearDB->commit();
+    $errorMessage = "";
 } catch (\Throwable $ex) {
+    $pearDB->rollBack();
     require_once __DIR__ . '/../../class/centreonLog.class.php';
     (new CentreonLog())->insertLog(
         4,
