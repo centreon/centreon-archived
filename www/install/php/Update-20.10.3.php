@@ -90,7 +90,6 @@ try {
     $pearDB->commit();
 } catch (\Throwable $ex) {
     $pearDB->rollBack();
-    require_once __DIR__ . '/../../class/centreonLog.class.php';
     (new CentreonLog())->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
