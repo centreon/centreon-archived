@@ -37,7 +37,7 @@
 /**
  * Function that returns the time interval to report
  *
- * @param string $alternate Needed to choose between the localized or the unlocalized date format
+ * @param string|null $alternate Needed to choose between the localized or the unlocalized date format
  * @return array
  */
 function getPeriodToReport(string $alternate = null): array
