@@ -253,6 +253,16 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . ' LEFT JOIN `:dbstg`.`hosts_hostgroups` AS hhg ON hhg.host_id = resource.host_id'
             . ' LEFT JOIN `:dbstg`.`hostgroups` AS hg ON hg.hostgroup_id = hhg.hostgroup_id';
 
+        /**
+         * If we specify that user only wants resources with available performance datas.
+         * Then only resources with existing metrics referencing index_data services will be returned.
+         */
+        if ($filter->getOnlyWithPerformanceData() === true) {
+            $request .= ' INNER JOIN (SELECT host_id, service_id FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i '
+                . 'WHERE i.id = m.index_id AND m.hidden = "0" GROUP BY host_id, service_id) AS gdata '
+                . 'ON gdata.host_id = resource.parent_id AND gdata.service_id = resource.id';
+        }
+
         $request = $this->translateDbName($request);
 
         // Search

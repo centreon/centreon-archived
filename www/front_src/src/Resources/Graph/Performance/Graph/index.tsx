@@ -24,6 +24,7 @@ import {
   makeStyles,
   Paper,
   Typography,
+  Theme,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
@@ -50,9 +51,10 @@ import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
+import useAclQuery from '../../../Actions/Resource/aclQuery';
 
 import MetricsTooltip from './MetricsTooltip';
-import DialogAddComment from './DialogAddComment';
+import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
 import Axes from './Axes';
 
@@ -68,12 +70,30 @@ const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 
 const margin = { top: 30, right: 45, bottom: 30, left: 45 };
 
-const useStyles = makeStyles((theme) => ({
+const commentTooltipWidth = 165;
+
+interface Props {
+  width: number;
+  height: number;
+  timeSeries: Array<TimeValue>;
+  base: number;
+  lines: Array<LineModel>;
+  xAxisTickFormat: string;
+  tooltipX?: number;
+  onTooltipDisplay?: (tooltipX?: number) => void;
+  timeline?: Array<TimelineEvent>;
+  resource: Resource | ResourceDetails;
+  onAddComment?: (commentParameters: CommentParameters) => void;
+  eventAnnotationsActive: boolean;
+}
+
+const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   container: {
     position: 'relative',
   },
   overlay: {
-    cursor: 'crosshair',
+    cursor: ({ onAddComment }): string =>
+      isNil(onAddComment) ? 'normal' : 'crosshair',
   },
   tooltip: {
     opacity: 0.8,
@@ -91,19 +111,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 10,
   },
 }));
-
-interface Props {
-  width: number;
-  height: number;
-  timeSeries: Array<TimeValue>;
-  base: number;
-  lines: Array<LineModel>;
-  xAxisTickFormat: string;
-  timeline?: Array<TimelineEvent>;
-  resource: Resource | ResourceDetails;
-  onAddComment: (commentParameters: CommentParameters) => void;
-  eventAnnotationsActive: boolean;
-}
 
 const getScale = ({
   values,
@@ -130,16 +137,19 @@ const Graph = ({
   lines,
   xAxisTickFormat,
   timeline,
+  tooltipX,
+  onTooltipDisplay,
   resource,
   onAddComment,
   eventAnnotationsActive,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const classes = useStyles();
+  const classes = useStyles({ onAddComment });
   const { format } = useLocaleDateTimeFormat();
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
+  const { canComment } = useAclQuery();
 
   const {
     tooltipData,
@@ -149,6 +159,7 @@ const Graph = ({
     showTooltip,
     hideTooltip,
   } = useTooltip();
+  const [isMouseOver, setIsMouseOver] = React.useState(false);
   const {
     tooltipLeft: addCommentTooltipLeft,
     tooltipTop: addCommentTooltipTop,
@@ -251,37 +262,67 @@ const Graph = ({
     return timeSeries[index];
   };
 
+  const showTooltipAt = ({ x, y }): void => {
+    const timeValue = getTimeValue(x);
+
+    const metrics = getMetrics(timeValue);
+
+    const metricsToDisplay = metrics.filter((metric) => {
+      const line = getLineForMetric({ lines, metric });
+
+      return !isNil(timeValue[metric]) && !isNil(line);
+    });
+
+    showTooltip({
+      tooltipLeft: x,
+      tooltipTop: y,
+      tooltipData: isEmpty(metricsToDisplay) ? undefined : (
+        <MetricsTooltip
+          timeValue={timeValue}
+          lines={lines}
+          base={base}
+          metrics={metricsToDisplay}
+        />
+      ),
+    });
+  };
+
   const displayTooltip = React.useCallback(
     (event) => {
+      setIsMouseOver(true);
       const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
-      const timeValue = getTimeValue(x);
+      showTooltipAt({ x, y });
 
-      const metrics = getMetrics(timeValue);
-
-      const metricsToDisplay = metrics.filter((metric) => {
-        const line = getLineForMetric({ lines, metric });
-
-        return !isNil(timeValue[metric]) && !isNil(line);
-      });
-
-      showTooltip({
-        tooltipLeft: x,
-        tooltipTop: y,
-        tooltipData: isEmpty(metricsToDisplay) ? undefined : (
-          <MetricsTooltip
-            timeValue={timeValue}
-            lines={lines}
-            base={base}
-            metrics={metricsToDisplay}
-          />
-        ),
-      });
+      onTooltipDisplay?.(x);
     },
     [showTooltip, containerBounds, lines],
   );
 
+  React.useEffect(() => {
+    if (isMouseOver) {
+      return;
+    }
+
+    if (isNil(tooltipX)) {
+      hideTooltip();
+      return;
+    }
+
+    showTooltipAt({ x: tooltipX, y: 20 });
+  }, [tooltipX]);
+
+  const closeTooltip = (): void => {
+    hideTooltip();
+    setIsMouseOver(false);
+    onTooltipDisplay?.();
+  };
+
   const displayAddCommentTooltip = (event): void => {
+    if (!canComment([resource]) || isNil(onAddComment)) {
+      return;
+    }
+
     const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
     const { timeTick } = getTimeValue(x);
@@ -289,8 +330,10 @@ const Graph = ({
 
     setCommentDate(date);
 
+    const displayLeft = width - x < commentTooltipWidth;
+
     showAddCommentTooltip({
-      tooltipLeft: x,
+      tooltipLeft: displayLeft ? x - commentTooltipWidth : x,
       tooltipTop: y,
     });
   };
@@ -302,7 +345,7 @@ const Graph = ({
 
   const confirmAddComment = (comment): void => {
     setAddingComment(false);
-    onAddComment(comment);
+    onAddComment?.(comment);
   };
 
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
@@ -343,7 +386,6 @@ const Graph = ({
               rightScale={rightScale}
               xScale={xScale}
               xAxisTickFormat={xAxisTickFormat}
-              timeSeries={timeSeries}
             />
             {eventAnnotationsActive && (
               <MemoizedAnnotations
@@ -369,14 +411,14 @@ const Graph = ({
               className={classes.overlay}
               onClick={displayAddCommentTooltip}
               onMouseMove={displayTooltip}
-              onMouseLeave={hideTooltip}
+              onMouseLeave={closeTooltip}
             />
             {tooltipData && (
               <Line
                 from={{ x: tooltipLineLeft, y: 0 }}
                 to={{ x: tooltipLineLeft, y: graphHeight }}
-                stroke={grey[300]}
-                strokeWidth={2}
+                stroke={grey[400]}
+                strokeWidth={1}
                 pointerEvents="none"
               />
             )}
@@ -388,6 +430,7 @@ const Graph = ({
             style={{
               left: addCommentTooltipLeft,
               top: addCommentTooltipTop,
+              width: commentTooltipWidth,
             }}
           >
             <Typography variant="caption">
@@ -407,8 +450,8 @@ const Graph = ({
           </Paper>
         )}
         {addingComment && (
-          <DialogAddComment
-            onAddComment={confirmAddComment}
+          <AddCommentForm
+            onSuccess={confirmAddComment}
             date={commentDate as Date}
             resource={resource}
             onClose={(): void => {

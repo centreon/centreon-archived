@@ -14629,6 +14629,9 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "FQDN / Address"
 #  msgstr ""
 
+#  msgid "Groups"
+#  msgstr ""
+
 #  msgid "Comment added"
 #  msgstr ""
 
@@ -14636,4 +14639,10 @@ msgstr "Permitir certificado autofirmado"
 #  msgstr ""
 
 #  msgid "Export to png"
+#  msgstr ""
+
+#  msgid "Switch to graph mode"
+#  msgstr ""
+
+#  msgid "Switch to list mode"
 #  msgstr ""

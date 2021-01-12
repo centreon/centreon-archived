@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\API\Model;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplatesResponse;
-
 /**
  * This class is designed to represent the formatted response of the API request.
  *

@@ -8,11 +8,11 @@ import { Resource } from '../../../../models';
 import { labelComment, labelAdd } from '../../../../translatedLabels';
 import { commentEndpoint } from '../../../../Actions/api/endpoint';
 
-import DialogAddComment from '.';
+import AddCommentForm from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe(DialogAddComment, () => {
+describe(AddCommentForm, () => {
   beforeEach(() => {
     mockedAxios.post.mockResolvedValue({});
   });
@@ -28,13 +28,13 @@ describe(DialogAddComment, () => {
       },
     } as Resource;
 
-    const onAddComment = jest.fn();
+    const onSuccess = jest.fn();
 
     render(
-      <DialogAddComment
+      <AddCommentForm
         date={date}
         resource={resource}
-        onAddComment={onAddComment}
+        onSuccess={onSuccess}
         onClose={jest.fn()}
       />,
     );
@@ -64,7 +64,7 @@ describe(DialogAddComment, () => {
         expect.anything(),
       );
 
-      expect(onAddComment).toHaveBeenCalledWith(commentParameters);
+      expect(onSuccess).toHaveBeenCalledWith(commentParameters);
     });
   });
 });
