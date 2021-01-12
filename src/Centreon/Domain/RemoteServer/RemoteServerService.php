@@ -114,7 +114,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Get the parent platform to register it later.
          *
-         * @var Platform $topLevelPlatform
+         * @var Platform|null $topLevelPlatform
          */
         $topLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatform();
         if ($topLevelPlatform === null) {
