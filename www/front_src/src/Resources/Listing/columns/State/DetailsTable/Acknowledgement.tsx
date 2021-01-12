@@ -14,8 +14,9 @@ import {
   labelPersistent,
   labelSticky,
 } from '../../../../translatedLabels';
-import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
 import { getFormattedDateTime } from '../../../../dateTime';
+
+import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
 
 const useStyles = makeStyles({
   comment: {

@@ -5,8 +5,9 @@ import { pipe, uniq, prop, map, isNil } from 'ramda';
 
 import { fade } from '@material-ui/core';
 
-import { fontFamily } from '.';
 import formatMetricValue from './formatMetricValue';
+
+import { fontFamily } from '.';
 
 const formatTick = ({ unit, base }) => (value): string => {
   if (isNil(value)) {

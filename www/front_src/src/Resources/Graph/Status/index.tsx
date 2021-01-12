@@ -7,9 +7,10 @@ import { Skeleton } from '@material-ui/lab';
 
 import { getStatusColors, useRequest, getData } from '@centreon/ui';
 
-import getTimeSeries from './timeSeries';
 import { timeFormat } from '../format';
 import { parseAndFormat } from '../../dateTime';
+
+import getTimeSeries from './timeSeries';
 import { GraphData } from './models';
 
 const LoadingSkeleton = (): JSX.Element => {

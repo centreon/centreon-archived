@@ -1,4 +1,5 @@
 import { buildListingEndpoint, ListingModel, getData } from '@centreon/ui';
+
 import { TimelineEvent } from '../models';
 
 const buildListTimelineEventsEndpoint = ({ endpoint, parameters }): string =>

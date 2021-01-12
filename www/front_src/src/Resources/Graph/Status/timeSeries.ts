@@ -1,6 +1,7 @@
 import { flatten, pipe, map, sortBy } from 'ramda';
 
 import { SeverityCode } from '@centreon/ui';
+
 import { GraphData, Interval } from './models';
 
 interface StatusSeverity {
