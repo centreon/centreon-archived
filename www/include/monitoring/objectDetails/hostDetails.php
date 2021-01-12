@@ -353,13 +353,13 @@ if (!$is_admin && !$haveAccess) {
          * Get comments for hosts
          */
         $tabCommentHosts = array();
-        $rq2 = " SELECT cmt.entry_time as comment_time, cmt.comment_id, cmt.author AS author_name,
+        $rq2 = "SELECT cmt.entry_time as comment_time, cmt.comment_id, cmt.author AS author_name,
          cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name " .
             " FROM comments cmt, hosts h " .
-            " WHERE cmt.host_id = '" . $host_id . "' 
-                  AND h.host_id = cmt.host_id 
-                  AND cmt.service_id IS NULL 
-                  AND cmt.expires = 0 
+            " WHERE cmt.host_id = '" . $host_id . "'
+                  AND h.host_id = cmt.host_id
+                  AND cmt.type = 1
+                  AND cmt.expires = 0
                   AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
                   ORDER BY cmt.entry_time DESC";
         $DBRESULT = $pearDBO->query($rq2);
