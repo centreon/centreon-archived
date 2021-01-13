@@ -29,6 +29,8 @@ interface Props {
   resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
   onAddComment?: (commentParameters: CommentParameters) => void;
+  tooltipX?: number;
+  onTooltipDisplay?: (x?: number) => void;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -62,6 +64,8 @@ const PerformanceGraph = ({
   toggableLegend = false,
   eventAnnotationsActive = false,
   timeline,
+  tooltipX,
+  onTooltipDisplay,
   resource,
   onAddComment,
 }: Props): JSX.Element | null => {
@@ -93,7 +97,7 @@ const PerformanceGraph = ({
   }, [endpoint]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
-    return <LoadingSkeleton />;
+    return <LoadingSkeleton graphHeight={graphHeight} />;
   }
 
   if (isEmpty(timeSeries) || isEmpty(lineData)) {
@@ -151,6 +155,8 @@ const PerformanceGraph = ({
             base={base as number}
             xAxisTickFormat={xAxisTickFormat}
             timeline={timeline}
+            onTooltipDisplay={onTooltipDisplay}
+            tooltipX={tooltipX}
             resource={resource}
             onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}

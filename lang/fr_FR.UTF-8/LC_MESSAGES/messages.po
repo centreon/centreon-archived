@@ -15942,6 +15942,12 @@ msgstr "[%s] La valeur est vide, mais une valeur non vide était attendue"
 msgid "[%s] The value is null, but non null value was expected"
 msgstr "[%] La valeur est nulle, mais une valeur non nulle était attendue"
 
+msgid "Switch to graph mode"
+msgstr "Basculer vers le mode graphique"
+
+msgid "Switch to list mode"
+msgstr "Basculer vers le mode liste"
+
 msgid "Parent of service resource type cannot be null"
 msgstr "Le parent de la resource de type service ne peut être null"
 
