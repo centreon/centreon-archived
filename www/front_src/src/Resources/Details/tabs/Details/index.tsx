@@ -19,7 +19,6 @@ import IconCopyFile from '@material-ui/icons/FileCopy';
 import { useSnackbar, Severity } from '@centreon/ui';
 import copyToClipBoard from '@centreon/ui/src/utils/copy';
 
-import ExpandableCard from './ExpandableCard';
 import {
   labelCopy,
   labelCommand,
@@ -33,13 +32,15 @@ import {
   labelCommandCopied,
   labelSomethingWentWrong,
 } from '../../../translatedLabels';
-import StateCard from './StateCard';
 import { getFormattedDateTime } from '../../../dateTime';
 import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
+import { ResourceDetails } from '../../models';
+
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
-import { ResourceDetails } from '../../models';
+import StateCard from './StateCard';
+import ExpandableCard from './ExpandableCard';
 
 const useStyles = makeStyles((theme) => ({
   loadingSkeleton: {

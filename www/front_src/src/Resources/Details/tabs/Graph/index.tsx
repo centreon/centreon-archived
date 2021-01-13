@@ -7,13 +7,15 @@ import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField } from '@centreon/ui';
 
+import PerformanceGraph from '../../../Graph/Performance';
+
 import {
   timePeriods,
   getTimePeriodById,
   last24hPeriod,
   TimePeriod,
 } from './models';
-import PerformanceGraph from '../../../Graph/Performance';
+
 import { TabProps } from '..';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -63,9 +65,10 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
 
-  const [selectedTimePeriod, setSelectedTimePeriod] = React.useState<
-    TimePeriod
-  >(defaultTimePeriod);
+  const [
+    selectedTimePeriod,
+    setSelectedTimePeriod,
+  ] = React.useState<TimePeriod>(defaultTimePeriod);
 
   const getQueryParams = (timePeriod): string => {
     const now = new Date(Date.now()).toISOString();

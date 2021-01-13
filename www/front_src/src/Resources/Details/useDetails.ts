@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { isNil, ifElse, pathEq, always, pathOr } from 'ramda';
+import { useTranslation } from 'react-i18next';
+
 import {
   getUrlQueryParameters,
   setUrlQueryParameters,
@@ -7,16 +10,15 @@ import {
   getData,
 } from '@centreon/ui';
 
-import { isNil, ifElse, pathEq, always, pathOr } from 'ramda';
-import { useTranslation } from 'react-i18next';
-import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
-import { TabId } from './tabs/models';
-import { DetailsUrlQueryParameters, ResourceDetails } from './models';
 import { resourcesEndpoint } from '../api/endpoint';
 import {
   labelNoResourceFound,
   labelSomethingWentWrong,
 } from '../translatedLabels';
+
+import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
+import { TabId } from './tabs/models';
+import { DetailsUrlQueryParameters, ResourceDetails } from './models';
 
 export interface DetailsState {
   clearSelectedResource: () => void;
@@ -49,9 +51,10 @@ const useDetails = (): DetailsState => {
     selectedResourceParentId,
     setSelectedResourceParentId,
   ] = React.useState<number>();
-  const [selectedResourceType, setSelectedResourceType] = React.useState<
-    string
-  >();
+  const [
+    selectedResourceType,
+    setSelectedResourceType,
+  ] = React.useState<string>();
   const [
     selectedResourceParentType,
     setSelectedResourceParentType,

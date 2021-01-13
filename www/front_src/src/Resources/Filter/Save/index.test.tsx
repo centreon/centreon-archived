@@ -9,9 +9,8 @@ import {
 } from '@testing-library/react';
 import axios from 'axios';
 import { last, omit, propEq } from 'ramda';
-
 import userEvent from '@testing-library/user-event';
-import SaveMenu from '.';
+
 import useFilter from '../useFilter';
 import Context, { ResourceContext } from '../../Context';
 import {
@@ -20,9 +19,10 @@ import {
   labelSaveAsNew,
   labelName,
 } from '../../translatedLabels';
-
 import { filterEndpoint } from '../api';
 import { RawFilter, Filter } from '../models';
+
+import SaveMenu from '.';
 
 let filterState;
 

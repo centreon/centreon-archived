@@ -6,10 +6,11 @@
 /* eslint-disable import/no-named-as-default */
 
 import React, { Component } from 'react';
+
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
-
 import Select from 'react-select';
+
 import styles from '../../../styles/partials/form/_form.scss';
 import SelectField from '../../form-fields/SelectField';
 import CheckboxField from '../../form-fields/CheckboxField';

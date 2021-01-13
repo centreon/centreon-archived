@@ -1,15 +1,15 @@
 import * as React from 'react';
 
-import { makeStyles, Typography } from '@material-ui/core';
-import EventIcon from '@material-ui/icons/Event';
-import CommentIcon from '@material-ui/icons/Comment';
+import { prop, isNil } from 'ramda';
+import { useTranslation } from 'react-i18next';
+
 import NotificationIcon from '@material-ui/icons/Notifications';
+import CommentIcon from '@material-ui/icons/Comment';
+import EventIcon from '@material-ui/icons/Event';
+import { makeStyles, Typography } from '@material-ui/core';
 
 import { StatusChip } from '@centreon/ui';
-import { prop, isNil } from 'ramda';
 
-import { useTranslation } from 'react-i18next';
-import { TimelineEvent, Type } from './models';
 import {
   labelEvent,
   labelComment,
@@ -26,6 +26,8 @@ import { getFormattedTime, getFormattedDateTime } from '../../../dateTime';
 import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
 import truncate from '../../../truncate';
+
+import { TimelineEvent, Type } from './models';
 
 const types: Array<Type> = [
   {

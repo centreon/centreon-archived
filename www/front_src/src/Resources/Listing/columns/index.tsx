@@ -30,10 +30,11 @@ import {
   labelCheck,
   labelSetDowntime,
 } from '../../translatedLabels';
-import StateColumn from './State';
-import GraphColumn from './Graph';
 import useAclQuery from '../../Actions/Resource/aclQuery';
 import truncate from '../../truncate';
+
+import StateColumn from './State';
+import GraphColumn from './Graph';
 import UrlColumn from './Url';
 
 const useStyles = makeStyles((theme) => ({

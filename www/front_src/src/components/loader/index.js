@@ -2,8 +2,10 @@
 /* eslint-disable react/prefer-stateless-function */
 
 import React, { Component } from 'react';
+
 import classnames from 'classnames';
 import loaderStyles from 'loaders.css/loaders.min.css';
+
 import styles from './loader.scss';
 
 class Loader extends Component {

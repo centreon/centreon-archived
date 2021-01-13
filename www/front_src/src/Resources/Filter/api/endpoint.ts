@@ -1,4 +1,5 @@
 import { buildListingEndpoint } from '@centreon/ui';
+
 import { monitoringEndpoint } from '../../api/endpoint';
 
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;

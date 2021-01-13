@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
+import { move, isNil } from 'ramda';
 
 import {
   Typography,
@@ -13,11 +14,11 @@ import MoveIcon from '@material-ui/icons/UnfoldMore';
 
 import { SectionPanel, useRequest } from '@centreon/ui';
 
-import { move, isNil } from 'ramda';
 import { useResourceContext } from '../../Context';
 import { labelEditFilters } from '../../translatedLabels';
-import EditFilterCard from './EditFilterCard';
 import { patchFilter } from '../api';
+
+import EditFilterCard from './EditFilterCard';
 
 const useStyles = makeStyles((theme) => ({
   header: {

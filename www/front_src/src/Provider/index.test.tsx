@@ -1,11 +1,12 @@
 import * as React from 'react';
 
 import axios from 'axios';
-
 import { render, RenderResult, waitFor } from '@testing-library/react';
-import AppProvider from '.';
+
 import { useUserContext as mockUseUserContext } from './UserContext';
 import { UserContext } from './models';
+
+import AppProvider from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

@@ -4,20 +4,19 @@
 /* eslint-disable no-shadow */
 
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
 import classnames from 'classnames';
-import styles from './header.scss';
 
 import Hook from '../Hook';
-
 import { setRefreshIntervals } from '../../redux/actions/refreshActions';
+import axios from '../../axios';
 
+import styles from './header.scss';
 import PollerMenu from './pollerMenu';
 import UserMenu from './userMenu';
 import HostMenu from './hostMenu';
 import ServiceStatusMenu from './serviceStatusMenu';
-
-import axios from '../../axios';
 
 class TopHeader extends Component {
   refreshIntervalsApi = axios(

@@ -2,12 +2,14 @@ import * as React from 'react';
 
 import { Provider } from 'react-redux';
 import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
-
-import { useRequest, getData, Loader } from '@centreon/ui';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
+
+import { useRequest, getData, Loader } from '@centreon/ui';
+
 import App from '../App';
 import createStore from '../store';
+
 import Context from './UserContext';
 import {
   userEndpoint,

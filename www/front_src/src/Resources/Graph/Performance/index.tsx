@@ -27,9 +27,10 @@ import { useRequest, getData } from '@centreon/ui';
 
 import { timeFormat, dateTimeFormat } from '../format';
 import { parseAndFormat } from '../../dateTime';
+import { labelNoDataForThisPeriod } from '../../translatedLabels';
+
 import getTimeSeries, { getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
-import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import LoadingSkeleton from './LoadingSkeleton';
 import Legend from './Legend';
 import getGraphLines from './Lines';
