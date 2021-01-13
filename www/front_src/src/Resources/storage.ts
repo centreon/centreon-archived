@@ -3,7 +3,7 @@ import { isNil } from 'ramda';
 interface StoredItemParameters<TItem> {
   cachedItem: TItem;
   defaultValue: TItem;
-  onCachedItemUpdate: (updatedItem: TITem) => void;
+  onCachedItemUpdate: (updatedItem: TItem) => void;
   key: string;
 }
 
