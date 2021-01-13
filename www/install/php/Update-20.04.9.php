@@ -69,3 +69,23 @@ try {
     );
     throw new \Exception($versionOfTheUpgrade . $errorMessage, $ex->getCode(), $ex);
 }
+// Contact language with transaction
+try {
+    $pearDB->beginTransaction();
+    $errorMessage = "Unable to Update user language";
+    $pearDB->query(
+        "UPDATE contact SET contact_lang = CONCAT(contact_lang, '.UTF-8')
+        WHERE contact_lang NOT LIKE '%UTF-8' AND contact_lang <> 'browser' AND contact_lang <> ''"
+    );
+    $pearDB->commit();
+} catch (\Throwable $ex) {
+    $pearDB->rollBack();
+    (new CentreonLog())->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . $ex->getCode() .
+        " - Error : " . $ex->getMessage() .
+        " - Trace : " . $ex->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, $ex->getCode(), $ex);
+}
