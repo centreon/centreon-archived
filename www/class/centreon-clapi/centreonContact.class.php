@@ -296,9 +296,9 @@ class CentreonContact extends CentreonObject
             $addParams['contact_oreon'] = '1';
         }
         if (
-            strtolower($params[self::ORDER_LANG]) === "browser"
+            empty($params[self::ORDER_LANG])
+            || strtolower($params[self::ORDER_LANG]) === "browser"
             || strtoupper(substr($params[self::ORDER_LANG], -6)) === '.UTF-8'
-            || empty($params[self::ORDER_LANG])
         ) {
             $completeLanguage = $params[self::ORDER_LANG];
         } else {
@@ -364,9 +364,9 @@ class CentreonContact extends CentreonObject
                     $params[1] = "auth_type";
                 } elseif ($params[1] == "lang" || $params[1] == "language" || $params[1] == "locale") {
                     if (
-                        strtolower($params[2]) === "browser"
+                        empty($params[2])
                         || strtoupper(substr($params[2], -6)) === '.UTF-8'
-                        || empty($params[2])
+                        || strtolower($params[2]) === "browser"
                     ) {
                         $completeLanguage = $params[2];
                     } else {
