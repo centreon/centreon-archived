@@ -111,11 +111,11 @@ const DialogDowntime = ({
 
   class Adapter extends DayjsAdapter {
     public format(date, formatString): string {
-      return dayjs(date).tz(timezone).format(formatString);
+      return dayjs(date).locale(locale).tz(timezone).format(formatString);
     }
 
     public date(value): dayjs.Dayjs {
-      return dayjs(value).tz(timezone);
+      return dayjs(value).locale(locale).tz(timezone);
     }
   }
 
