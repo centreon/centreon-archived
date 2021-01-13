@@ -19,6 +19,8 @@
  *
  */
 
+require_once __DIR__ . '/../../class/centreonLog.class.php';
+
 // error specific content
 $versionOfTheUpgrade = 'UPGRADE - 20.04.9 : ';
 $errorMessage = '';
@@ -59,7 +61,6 @@ try {
         }
     }
 } catch (\Throwable $ex) {
-    require_once __DIR__ . '/../../class/centreonLog.class.php';
     (new CentreonLog())->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
