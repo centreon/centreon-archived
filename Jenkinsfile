@@ -20,7 +20,7 @@ def featureFiles = []
 */
 stage('Source') {
   node {
-    sh 'setup_centreon_build.sh'
+    sh 'setup_centreon_build.sh' // this is the test to check link with centreon-build
     dir('centreon-web') {
       checkout scm
     }
