@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { last, head, equals, reject, path } from 'ramda';
+import { last, head, equals, reject, path, isNil } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import {
@@ -16,7 +16,6 @@ import {
   ThemeProvider,
   setUrlQueryParameters,
   getUrlQueryParameters,
-  buildListingEndpoint,
 } from '@centreon/ui';
 import copyToClipboard from '@centreon/ui/src/utils/copy';
 
@@ -60,13 +59,16 @@ import {
   labelAlias,
   labelGroups,
   labelAcknowledgement,
+  labelSwitchToGraph,
   labelDowntime,
   labelDisplayEvents,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
-import { resourcesEndpoint, monitoringEndpoint } from '../api/endpoint';
+import { resourcesEndpoint } from '../api/endpoint';
+import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
+import { last7Days, last31Days } from './tabs/Graph/models';
 import {
   graphTabId,
   timelineTabId,
@@ -159,8 +161,10 @@ const retrievedDetails = {
   groups: [{ id: 0, name: 'Linux-servers' }],
 };
 
-const performanceGraphData = {
-  global: {},
+const retrievedPerformanceGraphData = {
+  global: {
+    title: 'Ping graph',
+  },
   times: [
     '2020-06-19T07:30:00Z',
     '2020-06-20T06:55:00Z',
@@ -269,22 +273,27 @@ const retrievedServices = {
   result: [
     {
       id: 3,
-      display_name: 'Ping',
+      name: 'Ping',
       status: {
         severity_code: 5,
         name: 'Ok',
       },
-      output: 'OK - 127.0.0.1 rta 0ms lost 0%',
+      information: 'OK - 127.0.0.1 rta 0ms lost 0%',
       duration: '22m',
+      links: {
+        endpoints: {
+          performance_graph: 'ping-performance',
+        },
+      },
     },
     {
       id: 4,
-      display_name: 'Disk',
+      name: 'Disk',
       status: {
         severity_code: 6,
         name: 'Unknown',
       },
-      output: 'No output',
+      information: 'No output',
       duration: '21m',
     },
   ],
@@ -341,6 +350,9 @@ describe(Details, () => {
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+    act(() => {
+      context.clearSelectedResource();
+    });
   });
 
   it('displays resource details information', async () => {
@@ -447,18 +459,18 @@ describe(Details, () => {
   });
 
   it.each([
-    [labelLast24h, '2020-06-20T06:00:00.000Z', 20],
-    [labelLast7Days, '2020-06-14T06:00:00.000Z', 100],
-    [labelLast31Days, '2020-05-21T06:00:00.000Z', 500],
+    [labelLast24h, '2020-06-20T06:00:00.000Z', 20, undefined],
+    [labelLast7Days, '2020-06-14T06:00:00.000Z', 100, last7Days.id],
+    [labelLast31Days, '2020-05-21T06:00:00.000Z', 500, last31Days.id],
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected`,
-    async (period, startIsoString, timelineEventsLimit) => {
+    async (period, startIsoString, timelineEventsLimit, periodId) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline })
-        .mockResolvedValueOnce({ data: performanceGraphData })
-        .mockResolvedValueOnce({ data: retrievedTimeline })
-        .mockResolvedValueOnce({ data: performanceGraphData });
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedTimeline });
 
       const { getByText, getAllByText } = renderDetails({
         openTabId: graphTabId,
@@ -500,6 +512,12 @@ describe(Details, () => {
           }),
           expect.anything(),
         );
+
+        if (!isNil(periodId)) {
+          expect(context.tabParameters.graph).toEqual({
+            selectedTimePeriodId: periodId,
+          });
+        }
       });
     },
   );
@@ -507,10 +525,10 @@ describe(Details, () => {
   it('displays event annotations when the corresponding switch is triggered and the Graph tab is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({
         data: retrievedTimeline,
-      })
-      .mockResolvedValueOnce({ data: performanceGraphData });
+      });
 
     const { findAllByLabelText, queryByLabelText, getByText } = renderDetails({
       openTabId: graphTabId,
@@ -826,6 +844,16 @@ describe(Details, () => {
       context.setSelectedResourceParentId(undefined);
       context.setSelectedResourceParentType(undefined);
       context.setSelectedResourceType('host');
+      context.setGraphTabParameters({
+        selectedTimePeriodId: last7Days.id,
+      });
+    });
+
+    act(() => {
+      context.setServicesTabParameters({
+        selectedTimePeriodId: last31Days.id,
+        graphMode: true,
+      });
     });
 
     const updatedDetailsFromQueryParameters = getUrlQueryParameters()
@@ -834,8 +862,17 @@ describe(Details, () => {
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
         id: 1,
-        type: 'host',
         tab: 'details',
+        tabParameters: {
+          graph: {
+            selectedTimePeriodId: last7Days.id,
+          },
+          services: {
+            graphMode: true,
+            selectedTimePeriodId: last31Days.id,
+          },
+        },
+        type: 'host',
       });
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -899,10 +936,23 @@ describe(Details, () => {
     });
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      buildListingEndpoint({
-        baseEndpoint: `${monitoringEndpoint}/hosts/${resourceId}/services`,
-        parameters: {
-          limit: 100,
+      buildResourcesEndpoint({
+        limit: 30,
+        page: 1,
+        resourceTypes: ['service'],
+        statuses: [],
+        states: [],
+        hostGroupIds: [],
+        serviceGroupIds: [],
+        search: {
+          conditions: [
+            {
+              field: 'h.name',
+              values: {
+                $eq: retrievedDetails.name,
+              },
+            },
+          ],
         },
       }),
       expect.anything(),
@@ -931,5 +981,58 @@ describe(Details, () => {
     await waitFor(() => {
       expect(queryByText(labelServices)).toBeNull();
     });
+  });
+
+  it('displays the linked service graphs when the service tab of a host is clicked and the graph mode is activated', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          ...retrievedDetails,
+          type: 'host',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: retrievedServices,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedServices,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedPerformanceGraphData,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedPerformanceGraphData,
+      });
+
+    const { getByLabelText, findByText, getAllByText } = renderDetails({
+      openTabId: servicesTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    fireEvent.click(
+      getByLabelText(labelSwitchToGraph).firstElementChild as HTMLElement,
+    );
+
+    await findByText(retrievedPerformanceGraphData.global.title);
+
+    expect(context.tabParameters?.services?.graphMode).toEqual(true);
+
+    userEvent.click(head(getAllByText(labelLast24h)) as HTMLElement);
+    userEvent.click(last(getAllByText(labelLast7Days)) as HTMLElement);
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(5);
+    });
+
+    expect(context.tabParameters?.services?.selectedTimePeriodId).toEqual(
+      last7Days.id,
+    );
   });
 });

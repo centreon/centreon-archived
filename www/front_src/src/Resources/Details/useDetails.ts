@@ -18,7 +18,13 @@ import {
 
 import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
 import { TabId } from './tabs/models';
-import { DetailsUrlQueryParameters, ResourceDetails } from './models';
+import {
+  DetailsUrlQueryParameters,
+  ResourceDetails,
+  ServicesTabParameters,
+  GraphTabParameters,
+  TabParameters,
+} from './models';
 
 export interface DetailsState {
   clearSelectedResource: () => void;
@@ -40,6 +46,9 @@ export interface DetailsState {
   setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
   details?: ResourceDetails;
   loadDetails: () => void;
+  tabParameters: TabParameters;
+  setServicesTabParameters: (parameters: ServicesTabParameters) => void;
+  setGraphTabParameters: (parameters: GraphTabParameters) => void;
 }
 
 const useDetails = (): DetailsState => {
@@ -60,6 +69,7 @@ const useDetails = (): DetailsState => {
     setSelectedResourceParentType,
   ] = React.useState<string>();
   const [details, setDetails] = React.useState<ResourceDetails>();
+  const [tabParameters, setTabParameters] = React.useState<TabParameters>({});
 
   const { t } = useTranslation();
 
@@ -81,7 +91,14 @@ const useDetails = (): DetailsState => {
       return;
     }
 
-    const { id, parentId, type, parentType, tab } = detailsUrlQueryParameters;
+    const {
+      id,
+      parentId,
+      type,
+      parentType,
+      tab,
+      tabParameters: tabParametersFromUrl,
+    } = detailsUrlQueryParameters;
 
     if (!isNil(tab)) {
       setOpenDetailsTabId(getTabIdFromLabel(tab));
@@ -91,6 +108,7 @@ const useDetails = (): DetailsState => {
     setSelectedResourceParentId(parentId);
     setSelectedResourceType(type);
     setSelectedResourceParentType(parentType);
+    setTabParameters(tabParametersFromUrl || {});
   }, []);
 
   React.useEffect(() => {
@@ -103,6 +121,7 @@ const useDetails = (): DetailsState => {
           type: selectedResourceType,
           parentType: selectedResourceParentType,
           tab: getTabLabelFromId(openDetailsTabId),
+          tabParameters,
         },
       },
     ]);
@@ -112,6 +131,7 @@ const useDetails = (): DetailsState => {
     selectedResourceType,
     selectedResourceParentType,
     selectedResourceParentType,
+    tabParameters,
   ]);
 
   const getSelectedResourceDetailsEndpoint = (): string | undefined => {
@@ -146,6 +166,16 @@ const useDetails = (): DetailsState => {
     loadDetails();
   }, [selectedResourceId]);
 
+  const setServicesTabParameters = (
+    parameters: ServicesTabParameters,
+  ): void => {
+    setTabParameters({ ...tabParameters, services: parameters });
+  };
+
+  const setGraphTabParameters = (parameters: GraphTabParameters): void => {
+    setTabParameters({ ...tabParameters, graph: parameters });
+  };
+
   return {
     clearSelectedResource,
     selectedResourceId,
@@ -158,6 +188,9 @@ const useDetails = (): DetailsState => {
     getSelectedResourceDetailsEndpoint,
     details,
     loadDetails,
+    tabParameters,
+    setServicesTabParameters,
+    setGraphTabParameters,
   };
 };
 

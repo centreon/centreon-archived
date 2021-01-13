@@ -14,7 +14,7 @@ import {
 
 import { Typography, Paper, makeStyles } from '@material-ui/core';
 
-import { useIntersectionObserver, useLocaleDateTimeFormat } from '@centreon/ui';
+import { useLocaleDateTimeFormat } from '@centreon/ui';
 
 import { TimelineEvent } from '../models';
 import { TimelineEventByType } from '../Event';
@@ -32,25 +32,12 @@ type DateEvents = Array<[string, Array<TimelineEvent>]>;
 
 interface Props {
   timeline: Array<TimelineEvent>;
-  total: number;
-  limit: number;
-  page: number;
-  loading: boolean;
-  onLoadMore: () => void;
+  infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
 }
 
-const Events = ({
-  timeline,
-  total,
-  limit,
-  page,
-  loading,
-  onLoadMore,
-}: Props): JSX.Element => {
+const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
   const classes = useStyles();
   const { toDate } = useLocaleDateTimeFormat();
-
-  const maxPage = Math.ceil(total / limit);
 
   const eventsByDate = pipe(
     reduceBy<TimelineEvent, Array<TimelineEvent>>(
@@ -63,13 +50,6 @@ const Events = ({
   )(timeline) as DateEvents;
 
   const dates = eventsByDate.map(head);
-
-  const infiniteScrollTriggerRef = useIntersectionObserver({
-    maxPage,
-    page,
-    loading,
-    action: onLoadMore,
-  });
 
   return (
     <div>
