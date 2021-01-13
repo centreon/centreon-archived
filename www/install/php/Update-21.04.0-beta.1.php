@@ -29,59 +29,118 @@ $versionOfTheUpgrade = 'UPGRADE - 21.04.0-beta.1 : ';
  * Queries needing exception management and rollback if failing
  */
 try {
-    $errorMessage = "Unable to update dependency_hostChild_relation";
-    $pearDB->query(
-        "ALTER IGNORE TABLE `dependency_hostChild_relation`
+    $statement = $pearDB->query(
+        "SELECT count(CONSTRAINT_NAME) as nb from information_schema.TABLE_CONSTRAINTS
+        WHERE table_name = 'dependency_hostChild_relation' and constraint_type = 'UNIQUE'"
+    );
+    if ($statement->fetchColumn() === 0) {
+        $errorMessage = "Unable to update dependency_hostChild_relation";
+        $pearDB->query(
+            "ALTER IGNORE TABLE `dependency_hostChild_relation`
+            ADD UNIQUE (`dependency_dep_id`, `host_host_id`)"
+        );
+    }
+    $statement = $pearDB->query(
+        "SELECT count(CONSTRAINT_NAME) as nb from information_schema.TABLE_CONSTRAINTS
+        WHERE table_name = 'dependency_hostParent_relation' and constraint_type = 'UNIQUE'"
+    );
+    if ($statement->fetchColumn() === 0) {
+        $errorMessage = "Unable to update dependency_hostParent_relation";
+        $pearDB->query(
+            "ALTER IGNORE TABLE `dependency_hostParent_relation`
         ADD UNIQUE (`dependency_dep_id`, `host_host_id`)"
+        );
+    }
+    $statement = $pearDB->query(
+        "SELECT count(CONSTRAINT_NAME) as nb from information_schema.TABLE_CONSTRAINTS
+        WHERE table_name = 'dependency_hostgroupChild_relation' and constraint_type = 'UNIQUE'"
     );
-    $errorMessage = "Unable to update dependency_hostParent_relation";
-    $pearDB->query(
-        "ALTER IGNORE TABLE `dependency_hostParent_relation`
-        ADD UNIQUE (`dependency_dep_id`, `host_host_id`)"
-    );
-    $errorMessage = "Unable to update dependency_hostgroupChild_relation";
-    $pearDB->query(
-        "ALTER IGNORE TABLE `dependency_hostgroupChild_relation`
+    if ($statement->fetchColumn() === 0) {
+        $errorMessage = "Unable to update dependency_hostgroupChild_relation";
+        $pearDB->query(
+            "ALTER IGNORE TABLE `dependency_hostgroupChild_relation`
         ADD UNIQUE (`dependency_dep_id`, `hostgroup_hg_id`)"
+        );
+    }
+    $statement = $pearDB->query(
+        "SELECT count(CONSTRAINT_NAME) as nb from information_schema.TABLE_CONSTRAINTS
+        WHERE table_name = 'dependency_hostgroupParent_relation' and constraint_type = 'UNIQUE'"
     );
-    $errorMessage = "Unable to update dependency_hostgroupParent_relation";
-    $pearDB->query(
-        "ALTER IGNORE TABLE `dependency_hostgroupParent_relation`
+    if ($statement->fetchColumn() === 0) {
+        $errorMessage = "Unable to update dependency_hostgroupParent_relation";
+        $pearDB->query(
+            "ALTER IGNORE TABLE `dependency_hostgroupParent_relation`
         ADD UNIQUE (`dependency_dep_id`, `hostgroup_hg_id`)"
+        );
+    }
+    $statement = $pearDB->query(
+        "SELECT count(CONSTRAINT_NAME) as nb from information_schema.TABLE_CONSTRAINTS
+        WHERE table_name = 'dependency_metaserviceChild_relation' and constraint_type = 'UNIQUE'"
     );
-    $errorMessage = "Unable to update dependency_metaserviceChild_relation";
-    $pearDB->query(
-        "ALTER IGNORE TABLE `dependency_metaserviceChild_relation`
+    if ($statement->fetchColumn() === 0) {
+        $errorMessage = "Unable to update dependency_metaserviceChild_relation";
+        $pearDB->query(
+            "ALTER IGNORE TABLE `dependency_metaserviceChild_relation`
         ADD UNIQUE (`dependency_dep_id`, `meta_service_meta_id`)"
+        );
+    }
+    $statement = $pearDB->query(
+        "SELECT count(CONSTRAINT_NAME) as nb from information_schema.TABLE_CONSTRAINTS
+        WHERE table_name = 'dependency_metaserviceParent_relation' and constraint_type = 'UNIQUE'"
     );
-    $errorMessage = "Unable to update dependency_metaserviceParent_relation";
-    $pearDB->query(
-        "ALTER IGNORE TABLE `dependency_metaserviceParent_relation`
+    if ($statement->fetchColumn() === 0) {
+        $errorMessage = "Unable to update dependency_metaserviceParent_relation";
+        $pearDB->query(
+            "ALTER IGNORE TABLE `dependency_metaserviceParent_relation`
         ADD UNIQUE (`dependency_dep_id`, `meta_service_meta_id`)"
+        );
+    }
+    $statement = $pearDB->query(
+        "SELECT count(CONSTRAINT_NAME) as nb from information_schema.TABLE_CONSTRAINTS
+        WHERE table_name = 'dependency_serviceChild_relation' and constraint_type = 'UNIQUE'"
     );
-    $errorMessage = "Unable to update dependency_serviceChild_relation";
-    $pearDB->query(
-        "ALTER IGNORE TABLE `dependency_serviceChild_relation`
+    if ($statement->fetchColumn() === 0) {
+        $errorMessage = "Unable to update dependency_serviceChild_relation";
+        $pearDB->query(
+            "ALTER IGNORE TABLE `dependency_serviceChild_relation`
         ADD UNIQUE (`dependency_dep_id`, `service_service_id`, `host_host_id`)"
+        );
+    }
+    $statement = $pearDB->query(
+        "SELECT count(CONSTRAINT_NAME) as nb from information_schema.TABLE_CONSTRAINTS
+        WHERE table_name = 'dependency_serviceParent_relation' and constraint_type = 'UNIQUE'"
     );
-    $errorMessage = "Unable to update dependency_serviceParent_relation";
-    $pearDB->query(
-        "ALTER IGNORE TABLE `dependency_serviceParent_relation`
+    if ($statement->fetchColumn() === 0) {
+        $errorMessage = "Unable to update dependency_serviceParent_relation";
+        $pearDB->query(
+            "ALTER IGNORE TABLE `dependency_serviceParent_relation`
         ADD UNIQUE (`dependency_dep_id`, `service_service_id`, `host_host_id`)"
+        );
+    }
+    $statement = $pearDB->query(
+        "SELECT count(CONSTRAINT_NAME) as nb from information_schema.TABLE_CONSTRAINTS
+        WHERE table_name = 'dependency_servicegroupChild_relation' and constraint_type = 'UNIQUE'"
     );
-    $errorMessage = "Unable to update dependency_servicegroupChild_relation";
-    $pearDB->query(
-        "ALTER IGNORE TABLE `dependency_servicegroupChild_relation`
+    if ($statement->fetchColumn() === 0) {
+        $errorMessage = "Unable to update dependency_servicegroupChild_relation";
+        $pearDB->query(
+            "ALTER IGNORE TABLE `dependency_servicegroupChild_relation`
         ADD UNIQUE (`dependency_dep_id`, `servicegroup_sg_id`)"
+        );
+    }
+    $statement = $pearDB->query(
+        "SELECT count(CONSTRAINT_NAME) as nb from information_schema.TABLE_CONSTRAINTS
+        WHERE table_name = 'dependency_servicegroupParent_relation' and constraint_type = 'UNIQUE'"
     );
-    $errorMessage = "Unable to update dependency_servicegroupParent_relation";
-    $pearDB->query(
-        "ALTER IGNORE TABLE `dependency_servicegroupParent_relation`
+    if ($statement->fetchColumn() === 0) {
+        $errorMessage = "Unable to update dependency_servicegroupParent_relation";
+        $pearDB->query(
+            "ALTER IGNORE TABLE `dependency_servicegroupParent_relation`
         ADD UNIQUE (`dependency_dep_id`, `servicegroup_sg_id`)"
-    );
+        );
+    }
     $errorMessage = "";
 } catch (\Exception $e) {
-    $pearDB->rollBack();
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
