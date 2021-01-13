@@ -1,4 +1,17 @@
-import 'cypress-localstorage-commands';
+// declare namespace Cypress {
+//   interface Chainable {
+//     visitCentreon(relativeUrl: string): void;
+//     dockerStart(): Promise<any>;
+//     loginForm(): void;
+//     logout(): void;
+//   }
+// }
+
+Cypress.Commands.add('visitCentreon', (url = '') => {
+  cy.visit(`${Cypress.env('DOCKER_URL')}${url}`, {
+    failOnStatusCode: false,
+  });
+});
 
 Cypress.Commands.add('dockerStart', () => {
   return cy
@@ -8,14 +21,8 @@ Cypress.Commands.add('dockerStart', () => {
     );
 });
 
-Cypress.Commands.add('visitCentreon', (url = '') => {
-  cy.visit(`${Cypress.env('DOCKER_URL')}${url}`, {
-    failOnStatusCode: false,
-  });
-});
-
 Cypress.Commands.add('loginForm', () => {
-  cy.visitCentreon();
+  cy.visitCentreon('/');
 
   cy.fixture('users/admin.json')
     .as('user')
@@ -35,5 +42,5 @@ Cypress.Commands.add('logout', () => {
     .should('be.visible')
     .click();
 
-  return cy.get('input[name="useralias"]').should('be.visible');
+  cy.get('input[name="useralias"]').should('be.visible');
 });

@@ -5,9 +5,9 @@ Feature: Filter a list of resources
 
   Background:
     Given a valid centreon user account
-    And there is a page with a list of resources under monitoring
     And the user can access this page
     And there is a filters menu on this page
+    And there is a page with a list of resources under monitoring
     And the resources contains a service named "Ping" in the list
 
   Scenario: User first access to the page
