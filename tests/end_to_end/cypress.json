@@ -4,7 +4,12 @@
   "supportFile": "cypress/support/index.ts",
   "pluginsFile": "cypress/plugins/index.ts",
   "video": true,
-  "execTimeout": 120000,
+  "videosFolder": "cypress/results/videos",
+  "screenshotsFolder": "cypress/results/screenshots",
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "cypress/results/reports/junit-report.xml"
+  },
   "env": {
     "DOCKER_URL": "http://localhost:3400",
     "TAGS": "not @ignore"

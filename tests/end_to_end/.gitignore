@@ -1,5 +1,4 @@
 node_modules
 cypress/node_modules
-cypress/screenshots
-cypress/videos
+cypress/results
 cypress/*.yml
