@@ -1,37 +1,38 @@
 import { Given, And, When, Then } from 'cypress-cucumber-preprocessor/steps';
+import { containerStateFilter, selectFilterOnInput } from './resourceCommon';
 
-const containerStateFilter = 'div[aria-label="State filter"]';
 const serviceName = 'Ping';
 const resourcesRegexApiUrl = /\/api\/.+\/monitoring\/resources?/;
 
-Given('a valid centreon user account', () => true);
-And('there is a page with a list of resources under monitoring', () => true);
-And('the user can access this page', () => true);
-And('there is a filters menu on this page', () => true);
-And(
-  `the resources contains a service named "${serviceName}" in the list`,
-  () => true,
+Given('a valid centreon user account', () =>
+  cy.getCookie('PHPSESSID').should('exist'),
+);
+And('the user can access this page', () =>
+  cy.get('nav[aria-label="Breadcrumb"]').should('be.visible'),
+);
+And('there is a filters menu on this page', () =>
+  cy.get('h6').contains('Filter').should('be.visible'),
+);
+And('there is a page with a list of resources under monitoring', () =>
+  cy.get('table.MuiTable-root th p.MuiTypography-root').contains('Resource'),
+);
+And(`the resources contains a service named "${serviceName}" in the list`, () =>
+  cy
+    .get('table.MuiTable-root tr td p.MuiTypography-root')
+    .contains(serviceName),
 );
 
 // Scenario: User first access to the page
 When('the user accesses the page for the first time', () => {
-  cy.get('nav[aria-label="Breadcrumb"]').should('be.visible');
-
   cy.get('ol[class="MuiBreadcrumbs-ol"] li')
     .should('have.length', 3)
     .each(($li) => $li.text() === 'Resources Status');
 });
-Then('a default filter is applied', () => {
-  const inputFilter = 'input[aria-label="MuiSelect-nativeInput"]';
-
-  cy.get(containerStateFilter).should('be.visible');
-  cy.get(inputFilter).should('not.be.empty');
-});
+Then('a default filter is applied', () => selectFilterOnInput());
 
 // Scenario: User can choose from predefined filters
 When('the user clicks on the predefined filters selection', () => {
-  cy.get(containerStateFilter).click();
-  cy.get('li[data-value="resource_problems"]').click();
+  selectFilterOnInput('resource_problems');
 
   cy.get('svg[aria-label="Show criterias filters"]')
     .click()
@@ -79,9 +80,7 @@ Given('the user has selected filters', () => true);
 And('the user has input a search pattern', () => {
   cy.get('.MuiAccordionSummary-content input.MuiInputBase-input')
     .should('have.attr', 'aria-invalid', 'false')
-    .then(($inputSearch) => {
-      cy.get($inputSearch).type(`s.description:${serviceName}`);
-    });
+    .type(`s.description:${serviceName}`);
 });
 When('the user clicks on the SEARCH button', () => {
   cy.intercept('GET', resourcesRegexApiUrl).as('searchForTerms');
