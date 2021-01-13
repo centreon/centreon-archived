@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { isNil } from 'ramda';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
@@ -121,7 +122,7 @@ const DowntimeForm = ({
         value: downtime.default_duration,
         unit: 'seconds',
       },
-      comment: '',
+      comment: undefined,
       downtimeAttachedResources: true,
     },
     onSubmit: (values, { setSubmitting }) => {
@@ -166,7 +167,7 @@ const DowntimeForm = ({
       handleChange={form.handleChange}
       setFieldValue={form.setFieldValue}
       submitting={sendingSetDowntingOnResources}
-      loading={form.values.comment === ''}
+      loading={isNil(form.values.comment)}
     />
   );
 };
