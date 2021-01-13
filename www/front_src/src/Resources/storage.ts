@@ -1,11 +1,18 @@
 import { isNil } from 'ramda';
 
+interface StoredItemParameters<TItem> {
+  cachedItem: TItem;
+  defaultValue: TItem;
+  onCachedItemUpdate: (updatedItem: TITem) => void;
+  key: string;
+}
+
 const getStoredOrDefault = <TItem>({
   cachedItem,
   defaultValue,
   onCachedItemUpdate,
   key,
-}): TItem => {
+}: StoredItemParameters<TItem>): TItem => {
   if (!isNil(cachedItem)) {
     return cachedItem;
   }
@@ -23,7 +30,12 @@ const getStoredOrDefault = <TItem>({
   return updatedCachedItem;
 };
 
-const store = <TItem>({ value, key }): void => {
+interface StoreParameters<TItem> {
+  value: TItem;
+  key: string;
+}
+
+const store = <TItem>({ value, key }: StoreParameters<TItem>): void => {
   localStorage.setItem(key, JSON.stringify(value));
 };
 
