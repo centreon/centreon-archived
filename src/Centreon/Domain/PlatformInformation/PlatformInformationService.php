@@ -111,7 +111,7 @@ class PlatformInformationService implements PlatformInformationServiceInterface
                  */
                 } else {
                     throw new RemoteServerException(
-                        _("Unable to convert in remote server, no Central to attached provided.")
+                        _("Unable to convert in remote server, no Central to link provided")
                     );
                 }
             } elseif ($platformInformationUpdate->isCentral() && !$currentPlatformInformation->isCentral()) {
