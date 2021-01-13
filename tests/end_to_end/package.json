@@ -5,6 +5,7 @@
   "scripts": {
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
+    "cypress:run:chrome": "cypress run --headless --browser chrome",
     "cypress:env:start": "./cypress/start-env.sh",
     "cypress:env:stop": "./cypress/stop-env.sh",
     "cypress:build:docker": "node ./cypress/build-docker-compose.js"
