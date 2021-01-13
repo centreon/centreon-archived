@@ -46,7 +46,7 @@ stage('Source') {
       reportTitles: ''
     ])
     apiFeatureFiles = sh(script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
-    e2eFeatureFiles = sh(script: 'find centreon-web/tests/end_to_end/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
+    e2eFeatureFiles = sh(script: 'find centreon-web/tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
     featureFiles = sh(script: 'find centreon-web/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
   }
 }
@@ -184,7 +184,7 @@ try {
     }
     parallel parallelSteps
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('API integration tests stage failure.');
+      error('E2E tests stage failure.');
     }
   }
 
