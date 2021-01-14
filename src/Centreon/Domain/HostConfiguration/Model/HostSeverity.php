@@ -34,7 +34,8 @@ class HostSeverity
 {
     public const MAX_NAME_LENGTH = 200;
     public const MAX_ALIAS_LENGTH = 200;
-    public const  MAX_COMMENTS_LENGTH = 65535;
+    public const MAX_COMMENTS_LENGTH = 65535;
+    public const MAX_LEVEL_LENGTH = 5;
 
     /**
      * @var int|null
@@ -70,22 +71,26 @@ class HostSeverity
      * @var bool Indicates whether this host severity is enabled or not (TRUE by default)
      */
     private $isActivated = true;
-
+    
     /**
      * @param string $name
      * @param string $alias
+     * @param int $level
+     * @param Image $icon
      * @throws \Assert\AssertionFailedException
      */
-    public function __construct(string $name, string $alias)
+    public function __construct(string $name, string $alias, int $level, Image $icon)
     {
         $this->setName($name);
         $this->setAlias($alias);
+        $this->setLevel($level);
+        $this->setIcon($icon);
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -169,14 +174,18 @@ class HostSeverity
     {
         return $this->level;
     }
-
+    
     /**
      * @param int $level
-     * @return $this
+     * @return HostSeverity
+     * @throws \Assert\AssertionFailedException
      */
     public function setLevel(int $level): HostSeverity
     {
-        $this->level = $level;
+        if ($level !== null) {
+            Assertion::maxLength((string) $level, self::MAX_LEVEL_LENGTH, 'HostSeverity::level');
+        }
+        $this->level = (int) $level;
         return $this;
     }
 

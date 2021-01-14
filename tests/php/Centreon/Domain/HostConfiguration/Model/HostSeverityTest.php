@@ -34,6 +34,17 @@ use PHPUnit\Framework\TestCase;
  */
 class HostSeverityTest extends TestCase
 {
+    
+    /**
+     * @var Image Define the image that should be associated with this severity.
+     */
+    protected $icon;
+    
+    protected function setUp(): void
+    {
+        $this->icon = (new Image())->setId(1)->setName('my icon')->setPath('/');
+    }
+    
     /**
      * Too long name test
      * @throws \Assert\AssertionFailedException
@@ -50,7 +61,7 @@ class HostSeverityTest extends TestCase
                 'HostSeverity::name'
             )->getMessage()
         );
-        new HostSeverity($name, 'alias');
+        new HostSeverity($name, 'alias', 42, $this->icon);
     }
 
     /**
@@ -69,11 +80,31 @@ class HostSeverityTest extends TestCase
                 'HostSeverity::alias'
             )->getMessage()
         );
-        new HostSeverity('name', $alias);
+        new HostSeverity('name', $alias, 42, $this->icon);
     }
-
+        
+    /**
+     * Too long level test
+     * @throws \Assert\AssertionFailedException
+     */
+    public function testLevelTooLongException(): void
+    {
+        $level = (int) str_repeat('1', HostSeverity::MAX_LEVEL_LENGTH + 1);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::maxLength(
+                (string) $level,
+                strlen((string) $level),
+                HostSeverity::MAX_LEVEL_LENGTH,
+                'HostSeverity::level'
+            )->getMessage()
+        );
+        new HostSeverity('name', 'alias', (int) $level, $this->icon);
+    }
+    
     /**
      * Too long comments test
+     * @throws \Assert\AssertionFailedException
      */
     public function testCommentsTooLongException(): void
     {
@@ -87,7 +118,7 @@ class HostSeverityTest extends TestCase
                 'HostSeverity::comments'
             )->getMessage()
         );
-        (new HostSeverity('name', 'alias'))->setComments($comments);
+        (new HostSeverity('name', 'alias', 42, $this->icon))->setComments($comments);
     }
 
     /**
@@ -95,7 +126,7 @@ class HostSeverityTest extends TestCase
      */
     public function testIsActivatedProperty(): void
     {
-        $hostSeverity = new HostSeverity('name', 'alias');
+        $hostSeverity = new HostSeverity('name', 'alias', 42, $this->icon);
         $this->assertTrue($hostSeverity->isActivated());
         $hostSeverity->setIsActivated(false);
         $this->assertFalse($hostSeverity->isActivated());
@@ -107,8 +138,7 @@ class HostSeverityTest extends TestCase
     public function testIdProperty(): void
     {
         $newHostId = 1;
-        $hostSeverity = new HostSeverity('name', 'alias');
-        $this->assertNull($hostSeverity->getId());
+        $hostSeverity = new HostSeverity('name', 'alias', 42, $this->icon);
         $hostSeverity->setId($newHostId);
         $this->assertEquals($newHostId, $hostSeverity->getId());
     }
@@ -119,10 +149,9 @@ class HostSeverityTest extends TestCase
      */
     public static function createEntity(): HostSeverity
     {
-        return (new HostSeverity('Severity', 'Alias severity'))
+        $icon = (new Image())->setId(1)->setName('my icon')->setPath('/');
+        return (new HostSeverity('Severity', 'Alias severity', 42, $icon))
             ->setId(10)
-            ->setLevel(42)
-            ->setIcon((new Image())->setId(1)->setName('my icon')->setPath('/'))
             ->setIsActivated(true)
             ->setComments("blablabla");
     }
