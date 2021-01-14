@@ -15536,6 +15536,11 @@ msgid "Notification sent to"
 msgstr "Notification envoyée à"
 
 #: api/platform
+msgid "Unable to convert in remote server, no Central to link provided"
+msgstr "Impossible de convertir en remote, aucun Central à lier renseigné"
+
+
+#: api/platform
 msgid "Unable to update the platform information"
 msgstr "Impossible de mettre à jour les informations de la plateforme"
 
