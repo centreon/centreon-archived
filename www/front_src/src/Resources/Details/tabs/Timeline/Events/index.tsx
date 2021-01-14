@@ -59,7 +59,7 @@ const Events = ({
       pipe(prop('date'), getFormattedDate),
     ),
     toPairs,
-    sortWith([descend(head)]),
+    sortWith([descend(pipe(head, Date.parse))]),
   )(timeline) as DateEvents;
 
   const dates = eventsByDate.map(head);
