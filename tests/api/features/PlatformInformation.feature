@@ -30,7 +30,7 @@ Feature:
             "apiCredentials": "centreon",
             "apiScheme": "http",
             "apiPort": 80,
-            "centralServerAddress": "10.30.2.137",
+            "centralServerAddress": "1.1.1.10",
             "apiPath": "centreon"
         }
         """
