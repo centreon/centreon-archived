@@ -40,13 +40,15 @@ const Axes = ({
   const formatXAxisTick = (tick): string =>
     format({ date: new Date(tick), formatString: xAxisTickFormat });
 
+  const xTickCount = Math.ceil(graphWidth / 60);
+
   return (
     <>
       <AxisBottom
         top={graphHeight}
         scale={xScale}
         tickFormat={formatXAxisTick}
-        numTicks={7}
+        numTicks={xTickCount}
         tickLabelProps={(): Record<string, unknown> => ({
           ...commonTickLabelProps,
           textAnchor: 'middle',

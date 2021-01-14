@@ -150,30 +150,22 @@ const InfiniteScroll = <TEntity extends { id: number }>({
   return (
     <div className={classes.container}>
       <div className={classes.filter}>{filter}</div>
+      {page > 1 && (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<IconRefresh />}
+          onClick={reload}
+        >
+          {t(labelRefresh)}
+        </Button>
+      )}
       <div className={classes.entities}>
         {cond([
           [always(isNil(entities)), always(loadingSkeleton)],
           [isEmpty, always(<NoResultsMessage />)],
-          [
-            T,
-            always(
-              <>
-                {page > 1 && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    startIcon={<IconRefresh />}
-                    onClick={reload}
-                  >
-                    {t(labelRefresh)}
-                  </Button>
-                )}
-
-                {children({ infiniteScrollTriggerRef, entities })}
-              </>,
-            ),
-          ],
+          [T, always(<>{children({ infiniteScrollTriggerRef, entities })}</>)],
         ])(entities)}
       </div>
       {loadingMoreEvents && <CircularProgress />}
