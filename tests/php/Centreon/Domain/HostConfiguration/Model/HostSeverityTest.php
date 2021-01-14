@@ -34,17 +34,16 @@ use PHPUnit\Framework\TestCase;
  */
 class HostSeverityTest extends TestCase
 {
-    
     /**
      * @var Image Define the image that should be associated with this severity.
      */
     protected $icon;
-    
+
     protected function setUp(): void
     {
         $this->icon = (new Image())->setId(1)->setName('my icon')->setPath('/');
     }
-    
+
     /**
      * Too long name test
      * @throws \Assert\AssertionFailedException
@@ -82,7 +81,7 @@ class HostSeverityTest extends TestCase
         );
         new HostSeverity('name', $alias, 42, $this->icon);
     }
-        
+
     /**
      * Too long level test
      * @throws \Assert\AssertionFailedException
@@ -101,7 +100,7 @@ class HostSeverityTest extends TestCase
         );
         new HostSeverity('name', 'alias', (int) $level, $this->icon);
     }
-    
+
     /**
      * Too long comments test
      * @throws \Assert\AssertionFailedException
