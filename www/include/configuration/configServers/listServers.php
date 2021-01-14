@@ -204,7 +204,8 @@ foreach ($servers as $config) {
     $confChangedMessage = _("N/A");
     $hasChanged = false;
     if ($config["ns_activate"] && isset($nagiosRestart[$config['id']])) {
-        $confChangedMessage = $changeStateServers[$config['id']] ? _("Yes") : _("No");
+        $hasChanged = $changeStateServers[$config['id']];
+        $confChangedMessage = $hasChanged ? _("Yes") : _("No");
     }
 
     // Manage flag for update time
