@@ -1,8 +1,24 @@
 import * as React from 'react';
 
 import { ParentSize } from '@visx/visx';
-import { map, prop, propEq, find, reject, sortBy, isEmpty, isNil } from 'ramda';
+import {
+  map,
+  prop,
+  propEq,
+  find,
+  reject,
+  sortBy,
+  isEmpty,
+  isNil,
+  head,
+  equals,
+  set,
+  lensProp,
+  not,
+  pipe,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { display } from 'html2canvas/dist/types/css/property-descriptors/display';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
@@ -88,12 +104,14 @@ const PerformanceGraph = ({
 
     setLineData(undefined);
 
-    sendGetGraphDataRequest(endpoint).then((graphData) => {
-      setTimeSeries(getTimeSeries(graphData));
-      setLineData(getLineData(graphData));
-      setTitle(graphData.global.title);
-      setBase(graphData.global.base);
-    });
+    sendGetGraphDataRequest('http://localhost:5000/mock/graph').then(
+      (graphData) => {
+        setTimeSeries(getTimeSeries(graphData));
+        setLineData(getLineData(graphData));
+        setTitle(graphData.global.title);
+        setBase(graphData.global.base);
+      },
+    );
   }, [endpoint]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
@@ -117,7 +135,7 @@ const PerformanceGraph = ({
     return find(propEq('metric', metric), lineData) as LineModel;
   };
 
-  const toggleMetricDisplay = (metric): void => {
+  const toggleMetricLine = (metric): void => {
     const line = getLineByMetric(metric);
 
     setLineData([
@@ -137,6 +155,25 @@ const PerformanceGraph = ({
 
   const clearHighlight = (): void => {
     setLineData(map((line) => ({ ...line, highlight: undefined }), lineData));
+  };
+
+  const selectMetricLine = (metric: string): void => {
+    const line = getLineByMetric(metric);
+
+    const isOnlyLineDisplayed =
+      displayedLines.length === 1 && equals(head(displayedLines), line);
+
+    if (isOnlyLineDisplayed || isEmpty(displayedLines)) {
+      setLineData(lineData.map(set(lensProp('display'), true)));
+      return;
+    }
+
+    setLineData(
+      sortedLines.map((sortedLine) => ({
+        ...sortedLine,
+        display: equals(sortedLine, line),
+      })),
+    );
   };
 
   return (
@@ -166,7 +203,8 @@ const PerformanceGraph = ({
       <div className={classes.legend}>
         <Legend
           lines={sortedLines}
-          onItemToggle={toggleMetricDisplay}
+          onItemToggle={toggleMetricLine}
+          onItemSelect={selectMetricLine}
           toggable={toggableLegend}
           onItemHighlight={highlightLine}
           onClearItemHighlight={clearHighlight}
