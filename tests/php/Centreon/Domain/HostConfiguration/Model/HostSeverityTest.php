@@ -88,17 +88,33 @@ class HostSeverityTest extends TestCase
      */
     public function testLevelTooLongException(): void
     {
-        $level = (int) str_repeat('1', HostSeverity::MAX_LEVEL_LENGTH + 1);
+        $level = HostSeverity::MAX_LEVEL_NUMBER + 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            AssertionException::maxLength(
-                (string) $level,
-                strlen((string) $level),
-                HostSeverity::MAX_LEVEL_LENGTH,
+            AssertionException::max(
+                $level,
+                HostSeverity::MAX_LEVEL_NUMBER,
                 'HostSeverity::level'
             )->getMessage()
         );
-        new HostSeverity('name', 'alias', (int) $level, $this->icon);
+        new HostSeverity('name', 'alias', $level, $this->icon);
+    }
+
+    /**
+     * Too short rrd test
+     */
+    public function testLevelTooShortException(): void
+    {
+        $level = HostSeverity::MIN_LEVEL_NUMBER - 1;
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::min(
+                $level,
+                HostSeverity::MIN_LEVEL_NUMBER,
+                'HostSeverity::level'
+            )->getMessage()
+        );
+        new HostSeverity('name', 'alias', $level, $this->icon);
     }
 
     /**
