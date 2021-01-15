@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
   header: {
     padding: theme.spacing(2),
   },
+  select: {
+    maxWidth: 250,
+  },
 }));
 
 interface Props {
@@ -41,6 +44,7 @@ const TimePeriodSelect = ({
   return (
     <Paper className={classes.header}>
       <SelectField
+        className={classes.select}
         disabled={disabled}
         options={translatedTimePeriodSelectOptions}
         selectedOptionId={selectedTimePeriodId}

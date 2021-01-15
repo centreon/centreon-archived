@@ -321,7 +321,7 @@
                         <div id='tab4' class='tab'>
                             <table class="ListTable">
                                 <tr class='list_lvl_1'>
-                                    <td class="ListColHeaderCenter FormHeader">{$cmt_host_name}</td>
+                                    <td class="ListColHeaderCenter FormHeader" width="200">{$cmt_host_name}</td>
                                     <td class="ListColHeaderCenter FormHeader" width="180">{$cmt_entry_time}</td>
                                     <td class="ListColHeaderCenter FormHeader" width="120">{$cmt_author}</td>
                                     <td class="ListColHeaderCenter FormHeader">{$cmt_comment}</td>
@@ -329,10 +329,10 @@
                                 </tr>
                                 {foreach item=tch from=$tab_comments_host}
                                 <tr class={cycle values="list_two, list_one"}>
-                                    <td class="ListColLeft">{$tch.host_name}</td>
-                                    <td class="ListColRight isTimestamp">{$tch.comment_time}</td>
+                                    <td class="ListColCenter">{$tch.host_name}</td>
+                                    <td class="ListColCenter isTimestamp">{$tch.comment_time}</td>
                                     <td class="ListColCenter">{$tch.author_name}</td>
-                                    <td class="ListColLeft containsURI">{$tch.comment_data}</td>
+                                    <td class="ListColCenter containsURI">{$tch.comment_data}</td>
                                     <td class="ListColCenter">{$tch.is_persistent}</td>
                                 </tr>
                                 {/foreach}

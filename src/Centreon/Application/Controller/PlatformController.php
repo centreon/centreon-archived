@@ -30,10 +30,12 @@ use Centreon\Domain\Menu\MenuException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Platform\PlatformException;
+use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformationException;
 use Centreon\Domain\PlatformTopology\PlatformException as PlatformTopologyException;
@@ -243,7 +245,9 @@ class PlatformController extends AbstractController
             | EntityNotFoundException
             | RemoteServerException
             | MenuException
-            | PlatformTopologyException $ex
+            | PlatformTopologyException
+            | RepositoryException
+            | PlatformConflictException $ex
         ) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Throwable $ex) {

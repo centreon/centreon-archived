@@ -366,8 +366,8 @@ function set_variable_from_template() {
 #========= end of set_variable_from_template()
 
 
-#========= begin of convert_to_remote()
-function convert_to_remote() {
+#========= begin of prepare_remote_payload()
+function prepare_remote_payload() {
   # set default variables
   API_CURRENT_NODE_PROTOCOL="http"
   API_CURRENT_NODE_PORT="80"
@@ -384,12 +384,9 @@ function convert_to_remote() {
   else
     PEER_VALIDATION='"peerValidation": true'
   fi
-  # get token of Remote API
-  get_api_token "$CURRENT_NODE_ADDRESS" "$API_CURRENT_NODE_USERNAME" "$API_CURRENT_NODE_PASSWORD" "$API_CURRENT_NODE_CENTREON_FOLDER"
-  # send request to update informations and convert remote
-  request_to_remote
 }
-#========= end of convert_to_remote()
+#========= end of prepare_remote_payload()
+
 
 #========= begin of request_to_remote()
 function request_to_remote() {
@@ -419,7 +416,7 @@ function request_to_remote() {
 
   if [[ $HTTP_CODE == "204" ]];
   then
-    log "INFO" "The CURRENT NODE ${CURRENT_NODE_TYPE}: '${CURRENT_NODE_NAME}@${CURRENT_NODE_ADDRESS}' has been converted successfully."
+    log "INFO" "The CURRENT NODE ${CURRENT_NODE_TYPE}: '${CURRENT_NODE_NAME}@${CURRENT_NODE_ADDRESS}' has been converted and registered successfully."
   elif [[ $RESPONSE_MESSAGE != "" ]];
   then
     log "ERROR" "${RESPONSE_MESSAGE}"
@@ -429,7 +426,10 @@ function request_to_remote() {
     exit 1
   fi
 }
+#========= end of request_to_remote()
 
+
+#========= begin of set_remote_parameters_manually()
 function set_remote_parameters_manually() {
     # ask information to connect to Remote API
     echo "A few more information are required to convert your platform into Remote : "
@@ -477,7 +477,7 @@ function set_remote_parameters_manually() {
       fi
     fi
 }
-#========= end of convert_to_remote()
+#========= end of set_remote_parameters_manually()
 ###########################################################
 #                                                         #
 #                    SCRIPT EXECUTION                     #
@@ -506,12 +506,16 @@ then
 fi
 
 if [[ $CURRENT_NODE_TYPE == 'remote' ]]; then
-  convert_to_remote
+  prepare_remote_payload
+  # get token of Remote API
+  get_api_token "$CURRENT_NODE_ADDRESS" "$API_CURRENT_NODE_USERNAME" "$API_CURRENT_NODE_PASSWORD" "$API_CURRENT_NODE_CENTREON_FOLDER"
+  # send request to update informations and convert remote
+  request_to_remote
+else
+  # Get the API TARGET Token
+  get_api_token "$TARGET_NODE_ADDRESS" "$API_USERNAME" "$API_TARGET_PASSWORD" "$ROOT_CENTREON_FOLDER"
+  # Send cURL to POST Register
+  register_server
 fi
 
-# Get the API TARGET Token
-get_api_token "$TARGET_NODE_ADDRESS" "$API_USERNAME" "$API_TARGET_PASSWORD" "$ROOT_CENTREON_FOLDER"
-
-# Send cURL to POST Register
-register_server
 exit 0
