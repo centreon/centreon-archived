@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostSeverities;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverityV21Factory;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity\HostSeverityV21Factory;
 use FOS\RestBundle\View\View;
 
 /**
