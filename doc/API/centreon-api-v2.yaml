@@ -2666,6 +2666,10 @@ paths:
                                     type: string
                                     description: physical name of a platform
                                     example: "localhost.localdomain"
+                                  address:
+                                    type: string
+                                    description: address of a platform
+                                    example: "192.168.0.1"
                       edges:
                         type: array
                         minItems: 0
