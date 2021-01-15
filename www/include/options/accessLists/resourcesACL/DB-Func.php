@@ -656,7 +656,8 @@ function sanitizeResourceParameters(array $resources): array
     $sanitizedParameters['all_servicegroups'] =
         (string) filter_var(
             $resources['all_servicegroups']['all_servicegroups'] ?? null,
-            FILTER_VALIDATE_INT, $default
+            FILTER_VALIDATE_INT,
+            $default
         );
 
     $sanitizedParameters['acl_res_activate'] =
