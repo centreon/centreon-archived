@@ -18,7 +18,6 @@ import {
   pipe,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { display } from 'html2canvas/dist/types/css/property-descriptors/display';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 

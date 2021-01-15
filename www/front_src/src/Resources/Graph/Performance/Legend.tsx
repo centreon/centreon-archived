@@ -4,6 +4,8 @@ import clsx from 'clsx';
 
 import { Typography, makeStyles, useTheme, fade } from '@material-ui/core';
 
+import { useResourceContext } from '../../Context';
+
 import { Line } from './models';
 
 const useStyles = makeStyles((theme) => ({
@@ -36,20 +38,24 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   lines: Array<Line>;
   toggable: boolean;
-  onItemToggle: (params) => void;
-  onItemHighlight: (metric) => void;
+  onItemToggle: (metric: string) => void;
+  onItemHighlight: (metric: string) => void;
+  onItemSelect: (metric: string) => void;
   onClearItemHighlight: () => void;
 }
 
 const Legend = ({
   lines,
   onItemToggle,
+  onItemSelect,
   toggable,
   onItemHighlight,
   onClearItemHighlight,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const theme = useTheme();
+
+  const { panelWidth } = useResourceContext();
 
   const getLegendName = ({ metric, name, display }: Line): JSX.Element => {
     return (
@@ -58,6 +64,7 @@ const Legend = ({
         onMouseLeave={(): void => onClearItemHighlight()}
       >
         <Typography
+          style={{ maxWidth: panelWidth }}
           className={clsx(
             {
               [classes.hidden]: !display,
@@ -66,11 +73,17 @@ const Legend = ({
             classes.caption,
           )}
           variant="body2"
-          onClick={(): void => {
+          onClick={(event: React.MouseEvent): void => {
             if (!toggable) {
               return;
             }
-            onItemToggle(metric);
+
+            if (event.ctrlKey) {
+              onItemToggle(metric);
+              return;
+            }
+
+            onItemSelect(metric);
           }}
         >
           {name}
