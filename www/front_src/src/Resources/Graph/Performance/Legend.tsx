@@ -2,13 +2,20 @@ import * as React from 'react';
 
 import clsx from 'clsx';
 
-import { Typography, makeStyles, useTheme, fade } from '@material-ui/core';
+import {
+  Typography,
+  makeStyles,
+  useTheme,
+  fade,
+  Theme,
+} from '@material-ui/core';
+import { CreateCSSProperties } from '@material-ui/styles';
 
 import { useResourceContext } from '../../Context';
 
 import { Line } from './models';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
   item: {
     display: 'flex',
     alignItems: 'center',
@@ -20,10 +27,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '50%',
     marginRight: theme.spacing(1),
   },
-  caption: {
+  caption: ({ panelWidth }) => ({
     marginRight: theme.spacing(1),
     color: fade(theme.palette.common.black, 0.6),
-  },
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: 0.85 * panelWidth,
+  }),
   hidden: {
     color: theme.palette.text.disabled,
   },
@@ -52,10 +62,9 @@ const Legend = ({
   onItemHighlight,
   onClearItemHighlight,
 }: Props): JSX.Element => {
-  const classes = useStyles();
-  const theme = useTheme();
-
   const { panelWidth } = useResourceContext();
+  const classes = useStyles({ panelWidth });
+  const theme = useTheme();
 
   const getLegendName = ({ metric, name, display }: Line): JSX.Element => {
     return (
@@ -64,7 +73,6 @@ const Legend = ({
         onMouseLeave={(): void => onClearItemHighlight()}
       >
         <Typography
-          style={{ maxWidth: panelWidth }}
           className={clsx(
             {
               [classes.hidden]: !display,

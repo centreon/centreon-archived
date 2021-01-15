@@ -14,8 +14,8 @@ import {
   equals,
   set,
   lensProp,
-  not,
-  pipe,
+  over,
+  always,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -158,21 +158,33 @@ const PerformanceGraph = ({
   };
 
   const selectMetricLine = (metric: string): void => {
-    const line = getLineByMetric(metric);
+    const metricLine = getLineByMetric(metric);
 
     const isOnlyLineDisplayed =
-      displayedLines.length === 1 && equals(head(displayedLines), line);
+      displayedLines.length === 1 && equals(head(displayedLines), metricLine);
 
     if (isOnlyLineDisplayed || isEmpty(displayedLines)) {
-      setLineData(lineData.map(set(lensProp('display'), true)));
+      setLineData(
+        map(
+          (line) => ({
+            ...line,
+            display: true,
+          }),
+          lineData,
+        ),
+      );
+
       return;
     }
 
     setLineData(
-      sortedLines.map((sortedLine) => ({
-        ...sortedLine,
-        display: equals(sortedLine, line),
-      })),
+      map(
+        (line) => ({
+          ...line,
+          display: equals(line, metricLine),
+        }),
+        lineData,
+      ),
     );
   };
 
