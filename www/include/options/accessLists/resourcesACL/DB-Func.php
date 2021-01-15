@@ -644,53 +644,23 @@ function sanitizeResourceParameters(array $resources): array
     $sanitizedParameters['acl_res_alias'] = filter_var($resources['acl_res_alias'], FILTER_SANITIZE_STRING);
     $sanitizedParameters['acl_res_comment'] = filter_var($resources['acl_res_comment'], FILTER_SANITIZE_STRING);
 
-    if (
-        isset($resources['all_hosts']['all_hosts'])
-        && filter_var($resources['all_hosts']['all_hosts'], FILTER_VALIDATE_INT) !== false
-    ) {
-        /**
-         * Cast to string as it will be inserted as an enum '0','1'
-         */
-        $sanitizedParameters['all_hosts'] = (string) $resources['all_hosts']['all_hosts'];
-    } else {
-        $sanitizedParameters['all_hosts'] = "0";
-    }
+    // set default value for unconsistent FILTER_VALIDATE_INT
+    $default = ["options" => ["default" => 0]];
+    // Cast to string as it will be inserted as an enum '0','1'
+    $sanitizedParameters['all_hosts'] =
+        (string) filter_var($resources['all_hosts']['all_hosts'] ?? null, FILTER_VALIDATE_INT, $default);
 
-    if (
-        isset($resources['all_hostgroups']['all_hostgroups'])
-        && filter_var($resources['all_hostgroups']['all_hostgroups'], FILTER_VALIDATE_INT) !== false
-    ) {
-        /**
-         * Cast to string as it will be inserted as an enum '0','1'
-         */
-        $sanitizedParameters['all_hostgroups'] = (string) $resources['all_hostgroups']['all_hostgroups'];
-    } else {
-        $sanitizedParameters['all_hostgroups'] = "0";
-    }
+    $sanitizedParameters['all_hostgroups'] =
+        (string) filter_var($resources['all_hostgroups']['all_hostgroups'] ?? null, FILTER_VALIDATE_INT, $default);
 
-    if (
-        isset($resources['all_servicegroups']['all_servicegroups'])
-        && filter_var($resources['all_servicegroups']['all_servicegroups'], FILTER_VALIDATE_INT) !== false
-    ) {
-        /**
-         * Cast to string as it will be inserted as an enum '0','1'
-         */
-        $sanitizedParameters['all_servicegroups'] = (string) $resources['all_servicegroups']['all_servicegroups'];
-    } else {
-        $sanitizedParameters['all_servicegroups'] = "0";
-    }
+    $sanitizedParameters['all_servicegroups'] =
+        (string) filter_var(
+            $resources['all_servicegroups']['all_servicegroups'] ?? null,
+            FILTER_VALIDATE_INT, $default
+        );
 
-    if (
-        isset($resources['acl_res_activate']['acl_res_activate'])
-        && filter_var($resources['acl_res_activate']['acl_res_activate'], FILTER_VALIDATE_INT) !== false
-    ) {
-        /**
-         * Cast to string as it will be inserted as an enum '0','1','2'
-         */
-        $sanitizedParameters['acl_res_activate'] = (string) $resources['acl_res_activate']['acl_res_activate'];
-    } else {
-        $sanitizedParameters['acl_res_activate'] = "0";
-    }
+    $sanitizedParameters['acl_res_activate'] =
+        (string) filter_var($resources['acl_res_activate']['acl_res_activate'] ?? null, FILTER_VALIDATE_INT, $default);
 
     return $sanitizedParameters;
 }
