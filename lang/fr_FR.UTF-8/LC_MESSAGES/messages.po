@@ -13934,6 +13934,9 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "ACL rules"
 #~ msgstr "Règles d'accès"
 
+msgid "ACL Resource name can't be empty"
+msgstr "Le nom de la Resource ACL ne peut pas être vide"
+
 #~ msgid "All Graphs"
 #~ msgstr "Tous les graphiques"
 

@@ -639,8 +639,12 @@ function updateMetaServices($acl_id = null)
 function sanitizeResourceParameters(array $resources): array
 {
     $sanitizedParameters = [];
-
     $sanitizedParameters['acl_res_name'] = filter_var($resources['acl_res_name'], FILTER_SANITIZE_STRING);
+
+    if (empty($sanitizedParameters['acl_res_name'])) {
+        throw new InvalidArgumentException(_("ACL Resource name can't be empty"));
+    }
+
     $sanitizedParameters['acl_res_alias'] = filter_var($resources['acl_res_alias'], FILTER_SANITIZE_STRING);
     $sanitizedParameters['acl_res_comment'] = filter_var($resources['acl_res_comment'], FILTER_SANITIZE_STRING);
 
