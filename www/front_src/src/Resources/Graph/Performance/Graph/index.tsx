@@ -120,8 +120,8 @@ interface Props {
   lines: Array<LineModel>;
   xAxisTickFormat: string;
   timeline?: Array<TimelineEvent>;
-  onTooltipDisplay?: (x?: number) => void;
-  tooltipX?: number;
+  onTooltipDisplay?: (position?: [number, number]) => void;
+  tooltipPosition?: [number, number];
   resource: Resource | ResourceDetails;
   onAddComment?: (commentParameters: CommentParameters) => void;
   eventAnnotationsActive: boolean;
