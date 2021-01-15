@@ -36,7 +36,7 @@ class HostGroupV21
     public $id;
 
     /**
-     * @var string|null
+     * @var string
      */
     public $name;
 

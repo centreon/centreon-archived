@@ -36,7 +36,7 @@ class FindHostGroups
     /**
      * @var HostGroupReadRepositoryInterface
      */
-    private $configurationReadRepository;
+    private $hostGroupReadRepository;
 
     /**
      * @var string|null
@@ -48,7 +48,7 @@ class FindHostGroups
      */
     public function __construct(HostGroupReadRepositoryInterface $configurationReadRepository)
     {
-        $this->configurationReadRepository = $configurationReadRepository;
+        $this->hostGroupReadRepository = $configurationReadRepository;
     }
 
     /**
@@ -71,7 +71,7 @@ class FindHostGroups
     public function execute(): FindHostGroupsResponse
     {
         try {
-            $hostGroups = $this->configurationReadRepository->findHostGroups();
+            $hostGroups = $this->hostGroupReadRepository->findHostGroups();
         } catch (\Exception $ex) {
             throw HostGroupException::searchHostGroupsException($ex);
         }

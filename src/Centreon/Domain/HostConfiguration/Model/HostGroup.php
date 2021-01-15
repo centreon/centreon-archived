@@ -155,9 +155,7 @@ class HostGroup
      */
     public function setName(string $name): HostGroup
     {
-        if ($name !== null) {
-            Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'HostGroup::name');
-        }
+        Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'HostGroup::name');
         $this->name = $name;
         return $this;
     }
