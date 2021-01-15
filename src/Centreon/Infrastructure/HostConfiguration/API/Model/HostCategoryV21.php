@@ -45,7 +45,7 @@ class HostCategoryV21
     public $alias;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $comments;
 

@@ -35,7 +35,8 @@ class HostSeverity
     public const MAX_NAME_LENGTH = 200;
     public const MAX_ALIAS_LENGTH = 200;
     public const MAX_COMMENTS_LENGTH = 65535;
-    public const MAX_LEVEL_LENGTH = 5;
+    public const MAX_LEVEL_NUMBER = 127;
+    public const MIN_LEVEL_NUMBER = -128;
 
     /**
      * @var int|null
@@ -120,9 +121,7 @@ class HostSeverity
      */
     public function setName(string $name): HostSeverity
     {
-        if ($name !== null) {
-            Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'HostSeverity::name');
-        }
+        Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'HostSeverity::name');
         $this->name = $name;
         return $this;
     }
@@ -142,9 +141,7 @@ class HostSeverity
      */
     public function setAlias(string $alias): HostSeverity
     {
-        if ($alias !== null) {
-            Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'HostSeverity::alias');
-        }
+        Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'HostSeverity::alias');
         $this->alias = $alias;
         return $this;
     }
@@ -182,10 +179,9 @@ class HostSeverity
      */
     public function setLevel(int $level): HostSeverity
     {
-        if ($level !== null) {
-            Assertion::maxLength((string) $level, self::MAX_LEVEL_LENGTH, 'HostSeverity::level');
-        }
-        $this->level = (int) $level;
+        Assertion::min($level, self::MIN_LEVEL_NUMBER, 'HostSeverity::level');
+        Assertion::max($level, self::MAX_LEVEL_NUMBER, 'HostSeverity::level');
+        $this->level = $level;
         return $this;
     }
 
