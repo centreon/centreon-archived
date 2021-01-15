@@ -62,7 +62,6 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
                 'name' => 'hc_name',
                 'alias' => 'hc_alias',
                 'level' => 'level',
-                'icon' => 'icon_id',
                 'is_activated' => 'hc_activate',
             ]
         );

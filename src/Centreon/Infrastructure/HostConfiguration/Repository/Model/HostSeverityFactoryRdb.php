@@ -48,7 +48,7 @@ class HostSeverityFactoryRdb
             ->setPath(str_replace('//', '/', ($data['img_path'])));
         $hostSeverity = (new HostSeverity($data['hc_name'], $data['hc_alias'], (int)$data['level'], $icon))
             ->setId((int)$data['hc_id'])
-            ->setIsActivated($data['hc_activate'] === '1');
+            ->setActivated($data['hc_activate'] === '1');
         if ($data['hc_comment'] !== null) {
             $hostSeverity->setComments($data['hc_comment']);
         }

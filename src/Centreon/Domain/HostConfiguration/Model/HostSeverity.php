@@ -161,7 +161,7 @@ class HostSeverity
      * @param bool $isActivated
      * @return HostSeverity
      */
-    public function setIsActivated(bool $isActivated): HostSeverity
+    public function setActivated(bool $isActivated): HostSeverity
     {
         $this->isActivated = $isActivated;
         return $this;

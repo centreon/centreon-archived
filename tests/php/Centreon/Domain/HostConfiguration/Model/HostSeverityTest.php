@@ -127,7 +127,7 @@ class HostSeverityTest extends TestCase
     {
         $hostSeverity = new HostSeverity('name', 'alias', 42, $this->icon);
         $this->assertTrue($hostSeverity->isActivated());
-        $hostSeverity->setIsActivated(false);
+        $hostSeverity->setActivated(false);
         $this->assertFalse($hostSeverity->isActivated());
     }
 
@@ -151,7 +151,7 @@ class HostSeverityTest extends TestCase
         $icon = (new Image())->setId(1)->setName('my icon')->setPath('/');
         return (new HostSeverity('Severity', 'Alias severity', 42, $icon))
             ->setId(10)
-            ->setIsActivated(true)
+            ->setActivated(true)
             ->setComments("blablabla");
     }
 }
