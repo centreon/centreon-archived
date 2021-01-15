@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
 
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverityReadRepositoryInterface;
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostSeverities;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities;
 use PHPStan\Testing\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostSeverityTest;
 

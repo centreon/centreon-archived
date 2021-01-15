@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\UseCase\V21;
+namespace Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity;
 
 use Centreon\Domain\HostConfiguration\Exception\HostSeverityException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverityReadRepositoryInterface;

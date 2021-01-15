@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\HostConfiguration\API\Model;
+namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity;
 
 /**
  * This class is designed to represent the formatted response of the API request.

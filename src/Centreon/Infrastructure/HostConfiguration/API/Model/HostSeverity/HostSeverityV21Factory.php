@@ -20,9 +20,9 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\HostConfiguration\API\Model;
+namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostSeveritiesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeveritiesResponse;
 
 /**
  * This class is designed to create the hostSeverityV21 entity

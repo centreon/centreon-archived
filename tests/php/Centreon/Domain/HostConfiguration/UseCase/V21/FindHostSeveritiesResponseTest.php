@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostSeveritiesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeveritiesResponse;
 use PHPStan\Testing\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostSeverityTest;
 
