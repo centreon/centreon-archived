@@ -41,6 +41,7 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
     gridGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
+    width: 'auto',
   },
   noDataContainer: {
     display: 'flex',

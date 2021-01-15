@@ -112,6 +112,21 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   },
 }));
 
+interface Props {
+  width: number;
+  height: number;
+  timeSeries: Array<TimeValue>;
+  base: number;
+  lines: Array<LineModel>;
+  xAxisTickFormat: string;
+  timeline?: Array<TimelineEvent>;
+  onTooltipDisplay?: (x?: number) => void;
+  tooltipX?: number;
+  resource: Resource | ResourceDetails;
+  onAddComment?: (commentParameters: CommentParameters) => void;
+  eventAnnotationsActive: boolean;
+}
+
 const getScale = ({
   values,
   height,
@@ -365,7 +380,7 @@ const Graph = ({
             {tooltipData}
           </TooltipWithBounds>
         )}
-        <svg width={width} height={height} ref={containerRef}>
+        <svg width="100%" height={height} ref={containerRef}>
           <Group left={margin.left} top={margin.top}>
             <MemoizedGridRows
               scale={leftScale}

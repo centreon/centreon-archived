@@ -1,4 +1,4 @@
-import { isNil } from 'ramda';
+import { getStoredOrDefault, store } from '../storage';
 
 import { Filter } from './models';
 
@@ -6,24 +6,19 @@ const key = 'centreon-resource-status-filter';
 
 let cachedFilter;
 
-const getStoredOrDefaultFilter = (defaultFilter: Filter): Filter => {
-  if (!isNil(cachedFilter)) {
-    return cachedFilter;
-  }
-
-  const foundFilterInStorage = localStorage.getItem(key);
-
-  if (isNil(foundFilterInStorage)) {
-    return defaultFilter;
-  }
-
-  cachedFilter = JSON.parse(foundFilterInStorage);
-
-  return cachedFilter;
+const getStoredOrDefaultFilter = (defaultValue: Filter): Filter => {
+  return getStoredOrDefault<Filter>({
+    defaultValue,
+    key,
+    cachedItem: cachedFilter,
+    onCachedItemUpdate: (updatedItem) => {
+      cachedFilter = updatedItem;
+    },
+  });
 };
 
 const storeFilter = (filter: Filter): void => {
-  localStorage.setItem(key, JSON.stringify(filter));
+  store<Filter>({ value: filter, key });
 };
 
 const clearCachedFilter = (): void => {
