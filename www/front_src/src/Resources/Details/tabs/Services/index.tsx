@@ -98,6 +98,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
       limit,
       page: atPage,
       resourceTypes: ['service'],
+      onlyWithPerformanceData: graphMode ? true : undefined,
       search: {
         conditions: [
           {

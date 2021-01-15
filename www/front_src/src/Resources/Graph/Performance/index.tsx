@@ -44,8 +44,8 @@ interface Props {
   resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  tooltipX?: number;
-  onTooltipDisplay?: (x?: number) => void;
+  tooltipPosition?: [number, number];
+  onTooltipDisplay?: (position?: [number, number]) => void;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -56,6 +56,7 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
     gridGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
+    width: 'auto',
   },
   noDataContainer: {
     display: 'flex',
@@ -79,7 +80,7 @@ const PerformanceGraph = ({
   toggableLegend = false,
   eventAnnotationsActive = false,
   timeline,
-  tooltipX,
+  tooltipPosition,
   onTooltipDisplay,
   resource,
   onAddComment,
@@ -192,7 +193,7 @@ const PerformanceGraph = ({
             xAxisTickFormat={xAxisTickFormat}
             timeline={timeline}
             onTooltipDisplay={onTooltipDisplay}
-            tooltipX={tooltipX}
+            tooltipPosition={tooltipPosition}
             resource={resource}
             onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}
