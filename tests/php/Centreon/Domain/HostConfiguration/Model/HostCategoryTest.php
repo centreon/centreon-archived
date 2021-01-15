@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ class HostCategoryTest extends TestCase
                 'HostCategory::name'
             )->getMessage()
         );
-        (new HostCategory())->setName($name);
+        new HostCategory($name, '');
     }
 
     /**
@@ -66,7 +66,7 @@ class HostCategoryTest extends TestCase
                 'HostCategory::alias'
             )->getMessage()
         );
-        (new HostCategory())->setAlias($alias);
+        new HostCategory('a', $alias);
     }
 
     /**
@@ -84,7 +84,7 @@ class HostCategoryTest extends TestCase
                 'HostCategory::comments'
             )->getMessage()
         );
-        (new HostCategory())->setComments($comments);
+        (new HostCategory('a', ''))->setComments($comments);
     }
 
     /**
@@ -92,9 +92,9 @@ class HostCategoryTest extends TestCase
      */
     public function testIsActivatedProperty(): void
     {
-        $hostCategory = new HostCategory();
+        $hostCategory = new HostCategory('a', '');
         $this->assertTrue($hostCategory->isActivated());
-        $hostCategory->setIsActivated(false);
+        $hostCategory->setActivated(false);
         $this->assertFalse($hostCategory->isActivated());
     }
 
@@ -104,7 +104,7 @@ class HostCategoryTest extends TestCase
     public function testIdProperty(): void
     {
         $newHostId = 1;
-        $hostCategory = new HostCategory();
+        $hostCategory = new HostCategory('a', '');
         $this->assertNull($hostCategory->getId());
         $hostCategory->setId($newHostId);
         $this->assertEquals($newHostId, $hostCategory->getId());
@@ -116,11 +116,11 @@ class HostCategoryTest extends TestCase
      */
     public static function createEntity(): HostCategory
     {
-        return (new HostCategory())
+        return (new HostCategory('a', ''))
             ->setId(10)
             ->setName('Category')
             ->setAlias('Alias category')
-            ->setIsActivated(true)
+            ->setActivated(true)
             ->setComments("blablabla");
     }
 }

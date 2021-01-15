@@ -61,6 +61,17 @@ class HostCategory
     private $isActivated = true;
 
     /**
+     * @param string $name Name of the host category
+     * @param string $alias Alias of the host category
+     * @throws \Assert\AssertionFailedException
+     */
+    public function __construct(string $name, string $alias)
+    {
+        $this->setName($name);
+        $this->setAlias($alias);
+    }
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -134,7 +145,7 @@ class HostCategory
      * @param bool $isActivated
      * @return HostCategory
      */
-    public function setIsActivated(bool $isActivated): HostCategory
+    public function setActivated(bool $isActivated): HostCategory
     {
         $this->isActivated = $isActivated;
         return $this;

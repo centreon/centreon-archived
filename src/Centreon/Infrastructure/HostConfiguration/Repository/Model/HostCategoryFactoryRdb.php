@@ -40,11 +40,9 @@ class HostCategoryFactoryRdb
      */
     public static function create(array $data): HostCategory
     {
-        $hostCategory = (new HostCategory())
+        $hostCategory = (new HostCategory($data['hc_name'], $data['hc_alias']))
             ->setId((int) $data['hc_id'])
-            ->setName($data['hc_name'])
-            ->setAlias($data['hc_alias'])
-            ->setIsActivated($data['hc_activate'] === '1');
+            ->setActivated($data['hc_activate'] === '1');
         if ($data['hc_comment'] !== null) {
             $hostCategory->setComments($data['hc_comment']);
         }

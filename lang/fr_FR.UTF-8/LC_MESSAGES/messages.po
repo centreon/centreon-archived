@@ -15967,3 +15967,9 @@ msgstr "Erreur lors de la recherche des catégories d'hôtes"
 
 msgid "Error when searching for host groups"
 msgstr "Erreur lors de la recherche de groupes d'hôtes"
+
+msgid "Error when searching for the host category (%s)"
+msgstr "Erreur lors de la recherche de la catégorie de l'hôte (%s)"
+
+msgid "Host category (%s) not found"
+msgstr "Catégorie de l'hôte (%s) non trouvé"
