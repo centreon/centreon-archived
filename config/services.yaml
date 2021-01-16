@@ -17,6 +17,7 @@ parameters:
     centreon_path: "%env(_CENTREON_PATH_)%"
     centreon_etc_path: "%env(_CENTREON_ETC_)%"
     translation_path: "%centreon_path%/www/locale"
+    media_path: "img/media"
 
 services:
     # Default configuration for services in *this* file
