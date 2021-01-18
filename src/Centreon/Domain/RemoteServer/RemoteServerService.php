@@ -34,7 +34,7 @@ use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryFileInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
@@ -53,7 +53,7 @@ class RemoteServerService implements RemoteServerServiceInterface
     private $platformTopologyRepository;
 
     /**
-     * @var RemoteServerRepositoryInterface
+     * @var RemoteServerRepositoryFileInterface
      */
     private $remoteServerRepository;
 
@@ -74,7 +74,7 @@ class RemoteServerService implements RemoteServerServiceInterface
     public function __construct(
         MenuRepositoryInterface $menuRepository,
         PlatformTopologyRepositoryInterface $platformTopologyRepository,
-        RemoteServerRepositoryInterface $remoteServerRepository,
+        RemoteServerRepositoryFileInterface $remoteServerRepository,
         PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository,
         ProxyServiceInterface $proxyService
     ) {
@@ -168,8 +168,18 @@ class RemoteServerService implements RemoteServerServiceInterface
     /**
      * @inheritDoc
      */
-    public function convertRemoteToCentral(): void
+    public function convertRemoteToCentral(PlatformInformation $platformInformation): void
     {
+        /**
+         * Delete the platform on its parent.
+         */
+        $platform = $this->platformTopologyRepository->findTopLevelPlatform();
+        $this->platformTopologyRegisterRepository->deletePlatformToParent(
+            $platform,
+            $platformInformation,
+            $this->proxyService->getProxy()
+        );
+
         /**
          * Set Central type into Platform_Topology
          */

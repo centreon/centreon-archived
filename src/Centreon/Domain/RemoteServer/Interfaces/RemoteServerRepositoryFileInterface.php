@@ -23,19 +23,15 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\RemoteServer\Interfaces;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-
-interface RemoteServerServiceInterface
+interface RemoteServerRepositoryFileInterface
 {
     /**
-     * Convert a Central into a Remote Server
-     * @param PlatformInformation $platformInformation
+     * Update the instance mode of centreon to Central.
      */
-    public function convertCentralToRemote(PlatformInformation $platformInformation): void;
+    public function updateInstanceModeCentral(): void;
 
     /**
-     * Convert a Remote Server into a Central
-     * @param PlatformInformation $platformInformation
+     * Update the instance mode of centreon to Remote.
      */
-    public function convertRemoteToCentral(PlatformInformation $platformInformation): void;
+    public function updateInstanceModeRemote(): void;
 }
