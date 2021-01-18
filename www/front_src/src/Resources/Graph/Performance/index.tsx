@@ -101,14 +101,12 @@ const PerformanceGraph = ({
 
     setLineData(undefined);
 
-    sendGetGraphDataRequest('http://localhost:5000/mock/graph').then(
-      (graphData) => {
-        setTimeSeries(getTimeSeries(graphData));
-        setLineData(getLineData(graphData));
-        setTitle(graphData.global.title);
-        setBase(graphData.global.base);
-      },
-    );
+    sendGetGraphDataRequest(endpoint).then((graphData) => {
+      setTimeSeries(getTimeSeries(graphData));
+      setLineData(getLineData(graphData));
+      setTitle(graphData.global.title);
+      setBase(graphData.global.base);
+    });
   }, [endpoint]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
