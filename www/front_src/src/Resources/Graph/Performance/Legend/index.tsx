@@ -9,11 +9,11 @@ import {
   fade,
   Theme,
 } from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/styles';
 
-import { useResourceContext } from '../../Context';
+import { useResourceContext } from '../../../Context';
+import { Line } from '../models';
 
-import { Line } from './models';
+import LegendMarker from './Marker';
 
 const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
   item: {
@@ -48,19 +48,19 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
 interface Props {
   lines: Array<Line>;
   toggable: boolean;
-  onItemToggle: (metric: string) => void;
-  onItemHighlight: (metric: string) => void;
-  onItemSelect: (metric: string) => void;
-  onClearItemHighlight: () => void;
+  onToggle: (metric: string) => void;
+  onHighlight: (metric: string) => void;
+  onSelect: (metric: string) => void;
+  onClearHighlight: () => void;
 }
 
 const Legend = ({
   lines,
-  onItemToggle,
-  onItemSelect,
+  onToggle,
+  onSelect,
   toggable,
-  onItemHighlight,
-  onClearItemHighlight,
+  onHighlight,
+  onClearHighlight,
 }: Props): JSX.Element => {
   const { panelWidth } = useResourceContext();
   const classes = useStyles({ panelWidth });
@@ -69,8 +69,8 @@ const Legend = ({
   const getLegendName = ({ metric, name, display }: Line): JSX.Element => {
     return (
       <div
-        onMouseEnter={(): void => onItemHighlight(metric)}
-        onMouseLeave={(): void => onClearItemHighlight()}
+        onMouseEnter={(): void => onHighlight(metric)}
+        onMouseLeave={(): void => onClearHighlight()}
       >
         <Typography
           className={clsx(
@@ -87,11 +87,11 @@ const Legend = ({
             }
 
             if (event.ctrlKey) {
-              onItemToggle(metric);
+              onToggle(metric);
               return;
             }
 
-            onItemSelect(metric);
+            onSelect(metric);
           }}
         >
           {name}
@@ -105,16 +105,13 @@ const Legend = ({
       {lines.map((line) => {
         const { color, name, display } = line;
 
-        const iconBackgroundColor = display
+        const markerColor = display
           ? color
           : fade(theme.palette.text.disabled, 0.2);
 
         return (
           <div className={classes.item} key={name}>
-            <div
-              className={clsx(classes.icon, { [classes.hidden]: !display })}
-              style={{ backgroundColor: iconBackgroundColor }}
-            />
+            <LegendMarker disabled={!display} color={markerColor} />
             {getLegendName(line)}
           </div>
         );

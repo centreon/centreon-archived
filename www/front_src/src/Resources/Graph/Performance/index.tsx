@@ -12,10 +12,7 @@ import {
   isNil,
   head,
   equals,
-  set,
-  lensProp,
-  over,
-  always,
+  pipe,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -160,8 +157,8 @@ const PerformanceGraph = ({
   const selectMetricLine = (metric: string): void => {
     const metricLine = getLineByMetric(metric);
 
-    const isOnlyLineDisplayed =
-      displayedLines.length === 1 && equals(head(displayedLines), metricLine);
+    const isLineDisplayed = pipe(head, equals(metricLine))(displayedLines);
+    const isOnlyLineDisplayed = displayedLines.length === 1 && isLineDisplayed;
 
     if (isOnlyLineDisplayed || isEmpty(displayedLines)) {
       setLineData(
@@ -190,7 +187,7 @@ const PerformanceGraph = ({
 
   return (
     <div className={classes.container}>
-      <Typography variant="body1" color="textPrimary">
+      <Typography variant="body1" color="textPrimary" align="center">
         {title}
       </Typography>
 
@@ -215,11 +212,11 @@ const PerformanceGraph = ({
       <div className={classes.legend}>
         <Legend
           lines={sortedLines}
-          onItemToggle={toggleMetricLine}
-          onItemSelect={selectMetricLine}
+          onToggle={toggleMetricLine}
+          onSelect={selectMetricLine}
           toggable={toggableLegend}
-          onItemHighlight={highlightLine}
-          onClearItemHighlight={clearHighlight}
+          onHighlight={highlightLine}
+          onClearHighlight={clearHighlight}
         />
       </div>
     </div>
