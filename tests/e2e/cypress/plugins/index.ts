@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const webpackPreprocessor = require('@cypress/webpack-preprocessor');
+const webpackPreprocessor = require('cypress-webpack-preprocessor-v5');
 
 module.exports = (on) => {
   const options = {
