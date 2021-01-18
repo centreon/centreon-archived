@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -120,7 +121,8 @@ class CentreonTopCounter extends CentreonWebService
             $this->hasAccessToPollers = true;
         }
 
-        if (isset($this->centreon->user->access->topology[50104]) &&
+        if (
+            isset($this->centreon->user->access->topology[50104]) &&
             $this->centreon->user->access->topology[50104] === 1
         ) {
             $this->hasAccessToProfile = true;
@@ -234,7 +236,8 @@ class CentreonTopCounter extends CentreonWebService
 
         // If the autologin feature is enabled then fetch the autologin key
         // And display the shortcut if the option is enabled
-        if (isset($rowEnableAutoLogin['value'])
+        if (
+            isset($rowEnableAutoLogin['value'])
             && isset($rowEnableShortcut['value'])
             && $rowEnableAutoLogin['value'] === '1'
             && $rowEnableShortcut['value'] === '1'
@@ -244,7 +247,7 @@ class CentreonTopCounter extends CentreonWebService
                 $res = $this->pearDB->prepare(
                     'SELECT contact_autologin_key FROM contact WHERE contact_id = :userId'
                 );
-                $res->bindValue(':userId',  (int) $this->centreon->user->user_id, \PDO::PARAM_INT);
+                $res->bindValue(':userId', (int) $this->centreon->user->user_id, \PDO::PARAM_INT);
                 $res->execute();
             } catch (\Exception $e) {
                 throw new \RestInternalServerErrorException('Error getting the user.');
@@ -346,7 +349,7 @@ class CentreonTopCounter extends CentreonWebService
             foreach ($pollers as $poller) {
                 $changeStateServers[$poller['id']] = $poller['lastRestart'];
             }
-            $changeStateServers = getChangeState($changeStateServers); 
+            $changeStateServers = getChangeState($changeStateServers);
             foreach ($pollers as $poller) {
                 if ($changeStateServers[$poller['id']]) {
                     $result['pollers'][] = array(
@@ -557,8 +560,10 @@ class CentreonTopCounter extends CentreonWebService
             throw new \RestUnauthorizedException("You're not authorized to access resource datas");
         }
 
-        if (isset($_SESSION['topCounterHostStatus']) &&
-            (time() - $this->refreshTime) < $_SESSION['topCounterHostStatus']['time']) {
+        if (
+            isset($_SESSION['topCounterHostStatus']) &&
+            (time() - $this->refreshTime) < $_SESSION['topCounterHostStatus']['time']
+        ) {
             return $_SESSION['topCounterHostStatus'];
         }
 
@@ -623,8 +628,10 @@ class CentreonTopCounter extends CentreonWebService
             throw new \RestUnauthorizedException("You're not authorized to access resource datas");
         }
 
-        if (isset($_SESSION['topCounterServiceStatus']) && 
-            (time() - $this->refreshTime) < $_SESSION['topCounterServiceStatus']['time']) {
+        if (
+            isset($_SESSION['topCounterServiceStatus']) &&
+            (time() - $this->refreshTime) < $_SESSION['topCounterServiceStatus']['time']
+        ) {
             return $_SESSION['topCounterServiceStatus'];
         }
 
