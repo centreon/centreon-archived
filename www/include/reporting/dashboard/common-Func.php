@@ -39,9 +39,9 @@
 function getPeriodToReport()
 {
     $period = '';
-    $start_date = '';
-    $end_date = '';
-    $period_choice = '';
+    $startDate = '';
+    $endDate = '';
+    $periodChoice = '';
 
     if (isset($_POST['period'])) {
         $period = filter_var($_POST['period'], FILTER_SANITIZE_STRING);
@@ -50,47 +50,47 @@ function getPeriodToReport()
     }
 
     if (isset($_POST['period_choice'])) {
-        $period_choice = filter_var($_POST['period_choice'], FILTER_SANITIZE_STRING);
+        $periodChoice = filter_var($_POST['period_choice'], FILTER_SANITIZE_STRING);
     }
 
     if (isset($_POST['StartDate'])) {
-        $start_date = filter_var($_POST['StartDate'], FILTER_SANITIZE_STRING);
+        $startDate = filter_var($_POST['StartDate'], FILTER_SANITIZE_STRING);
     } elseif (isset($_GET['StartDate'])) {
-        $start_date = filter_var($_GET['StartDate'], FILTER_SANITIZE_STRING);
+        $startDate = filter_var($_GET['StartDate'], FILTER_SANITIZE_STRING);
     }
 
     if (isset($_POST['EndDate'])) {
-        $end_date = filter_var($_POST['EndDate'], FILTER_SANITIZE_STRING);
+        $endDate = filter_var($_POST['EndDate'], FILTER_SANITIZE_STRING);
     } elseif (isset($_GET['EndDate'])) {
-        $end_date = filter_var($_GET['EndDate'], FILTER_SANITIZE_STRING);
+        $endDate = filter_var($_GET['EndDate'], FILTER_SANITIZE_STRING);
     }
 
     $interval = array(0, 0);
 
     if (
-        $period_choice == 'custom' &&
-        $start_date != '' &&
-        $end_date != ''
+        $periodChoice == 'custom' &&
+        $startDate != '' &&
+        $endDate != ''
     ) {
         $period = '';
     }
 
     if ($period == '' &&
-        $start_date == '' &&
-        $end_date == ''
+        $startDate == '' &&
+        $endDate == ''
     ) {
         $period = 'yesterday';
     }
 
-    if ($period == '' && $start_date != '') {
-        $interval = getDateSelectCustomized($start_date, $end_date);
+    if ($period == '' && $startDate != '') {
+        $interval = getDateSelectCustomized($startDate, $endDate);
     } else {
         $interval = getDateSelectPredefined($period);
     }
 
-    list($start_date, $end_date) = $interval;
+    list($startDate, $endDate) = $interval;
 
-    return(array($start_date, $end_date));
+    return(array($startDate, $endDate));
 }
 
 /*
