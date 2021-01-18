@@ -67,8 +67,7 @@ function getPeriodToReport()
 
     $interval = array(0, 0);
 
-    if (
-        $periodChoice == 'custom' &&
+    if ($periodChoice == 'custom' &&
         $startDate != '' &&
         $endDate != ''
     ) {
