@@ -1,6 +1,7 @@
 module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
+    fallback: { path: false },
   },
   module: {
     rules: [
