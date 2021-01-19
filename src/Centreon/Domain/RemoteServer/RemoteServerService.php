@@ -36,6 +36,7 @@ use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryFileInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
 
@@ -67,6 +68,8 @@ class RemoteServerService implements RemoteServerServiceInterface
      */
     private $proxyService;
 
+    private $monitoringServerService;
+
     /**
      * @param MenuRepositoryInterface $menuRepository
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
@@ -76,13 +79,15 @@ class RemoteServerService implements RemoteServerServiceInterface
         PlatformTopologyRepositoryInterface $platformTopologyRepository,
         RemoteServerRepositoryFileInterface $remoteServerRepository,
         PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository,
-        ProxyServiceInterface $proxyService
+        ProxyServiceInterface $proxyService,
+        MonitoringServerServiceInterface $monitoringServerService
     ) {
         $this->menuRepository = $menuRepository;
         $this->platformTopologyRepository = $platformTopologyRepository;
         $this->remoteServerRepository = $remoteServerRepository;
         $this->platformTopologyRegisterRepository = $platformTopologyRegisterRepository;
         $this->proxyService = $proxyService;
+        $this->monitoringServerService = $monitoringServerService;
     }
 
     /**
@@ -180,6 +185,21 @@ class RemoteServerService implements RemoteServerServiceInterface
             $platformInformation,
             $this->proxyService->getProxy()
         );
+
+        /**
+         * Find any children platform and remove them,
+         * as they now attached to the Central and no longer to this platform.
+         *
+         * @var Platform[] $childrenPlatforms
+         */
+        $childrenPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
+            $platform->getId()
+        );
+        foreach ($childrenPlatforms as $childrenPlatform) {
+            if ($childrenPlatform->getServerId() !== null) {
+                $this->monitoringServerService->deleteServer($childrenPlatform->getServerId());
+            }
+        }
 
         /**
          * Set Central type into Platform_Topology
