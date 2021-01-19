@@ -68,6 +68,9 @@ class RemoteServerService implements RemoteServerServiceInterface
      */
     private $proxyService;
 
+    /**
+     * @var MonitoringServerServiceInterface
+     */
     private $monitoringServerService;
 
     /**
