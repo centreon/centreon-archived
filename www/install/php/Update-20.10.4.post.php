@@ -28,8 +28,8 @@ $errorMessage = '';
 try {
     // Platform_topology refacto
     $pearDB->beginTransaction();
-    $errorMessage = "Unable to Update pending platform status";
-    $registeredPlatforms = [];
+    $errorMessage = "Unable to add pending column to platform_topology table";
+    $registeredPlatforms = "";
     // find registered platforms in monitoring table
     $pearDB->query(
         "SELECT id FROM `platform_topology`
