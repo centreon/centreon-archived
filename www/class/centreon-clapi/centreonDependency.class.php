@@ -697,7 +697,8 @@ class CentreonDependency extends CentreonObject
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find host group %s', $objectToInsert));
         }
-        if ($this->isExistingDependency($table, $depId, $ids[0])) {
+        $dataField = ['dependency_dep_id' => $depId, 'hostgroup_hg_id' => $ids[0]];
+        if ($this->isExistingDependency($table, $dataField)) {
             throw new CentreonClapiException(
                 sprintf('Dependency between host %s already exist', $objectToInsert)
             );
@@ -720,7 +721,8 @@ class CentreonDependency extends CentreonObject
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find service group %s', $objectToInsert));
         }
-        if ($this->isExistingDependency($table, $depId, $ids[0])) {
+        $dataField = ['dependency_dep_id' => $depId, 'servicegroup_sg_id' => $ids[0]];
+        if ($this->isExistingDependency($table, $dataField)) {
             throw new CentreonClapiException(
                 sprintf('Dependency between host %s already exist', $objectToInsert)
             );
@@ -743,7 +745,8 @@ class CentreonDependency extends CentreonObject
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find meta service %s', $objectToInsert));
         }
-        if ($this->isExistingDependency($table, $depId, $ids[0])) {
+        $dataField = ['dependency_dep_id' => $depId, 'meta_service_meta_id' => $ids[0]];
+        if ($this->isExistingDependency($table, $dataField)) {
             throw new CentreonClapiException(
                 sprintf('Dependency between host %s already exist', $objectToInsert)
             );
@@ -766,7 +769,8 @@ class CentreonDependency extends CentreonObject
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
             }
-            if ($this->isExistingDependency('dependency_hostParent_relation', $depId, $hostIds[0])) {
+            $dataField = ['dependency_dep_id' => $depId, 'host_host_id' => $hostIds[0]];
+            if ($this->isExistingDependency('dependency_hostParent_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between host %s already exist', $objectToInsert)
                 );
@@ -779,7 +783,12 @@ class CentreonDependency extends CentreonObject
             if (!count($idTab)) {
                 throw new CentreonClapiException(sprintf('Could not find service %s on host %s', $service, $host));
             }
-            if ($this->isExistingDependency('dependency_serviceChild_relation', $depId, $idTab[0], $idTab[1])) {
+            $dataField = [
+                'dependency_dep_id' => $depId,
+                'host_host_id' => $idTab[0],
+                'service_service_id' => $idTab[1]
+            ];
+            if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between service %s and host %s already exist', $service, $host)
                 );
@@ -793,7 +802,8 @@ class CentreonDependency extends CentreonObject
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
             }
-            if ($this->isExistingDependency('dependency_hostChild_relation', $depId, $hostIds[0])) {
+            $dataField = ['dependency_dep_id' => $depId, 'host_host_id' => $hostIds[0]];
+            if ($this->isExistingDependency('dependency_hostChild_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between host %s already exist', $objectToInsert)
                 );
@@ -821,7 +831,12 @@ class CentreonDependency extends CentreonObject
             if (!count($idTab)) {
                 throw new CentreonClapiException(sprintf('Could not find service %s on host %s', $service, $host));
             }
-            if ($this->isExistingDependency('dependency_serviceParent_relation', $depId, $idTab[0], $idTab[1])) {
+            $dataField = [
+                'dependency_dep_id' => $depId,
+                'host_host_id' => $idTab[0],
+                'service_service_id' => $idTab[1]
+            ];
+            if ($this->isExistingDependency('dependency_serviceParent_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between service %s and host %s already exist', $service, $host)
                 );
@@ -837,7 +852,12 @@ class CentreonDependency extends CentreonObject
                     sprintf('Could not find service %s on host %s', $depId, $service, $host)
                 );
             }
-            if ($this->isExistingDependency('dependency_serviceChild_relation', $idTab[0], $idTab[1])) {
+            $dataField = [
+                'dependency_dep_id' => $depId,
+                'host_host_id' => $idTab[0],
+                'service_service_id' => $idTab[1]
+            ];
+            if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between service %s and host %s already exist', $service, $host)
                 );
@@ -851,7 +871,8 @@ class CentreonDependency extends CentreonObject
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
             }
-            if ($this->isExistingDependency('dependency_serviceChild_relation', $depId, $hostIds[0])) {
+            $dataField = ['dependency_dep_id' => $depId, 'host_host_id' => $hostIds[0]];
+            if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf('Dependency between host %s already exist', $objectToInsert)
                 );
@@ -907,20 +928,17 @@ class CentreonDependency extends CentreonObject
 
     /**
      * @param string $table
-     * @param int $depId
-     * @param int $hostId
-     * @param int|null $serviceId
+     * @param table $dataField
      * @return bool
      */
-    protected function isExistingDependency(string $table, int $depId, int $hostId, ?int $serviceId = null): bool
+    protected function isExistingDependency(string $table, table $dataField): bool
     {
         $sql = "SELECT `dependency_dep_id`
-                FROM {$table}
-                WHERE dependency_dep_id = {$depId}
-                AND host_host_id = {$hostId}";
-        if (!is_null($serviceId)) {
-            $sql .= " AND service_service_id = {$serviceId}";
+                FROM {$table} WHERE ";
+        foreach ($dataField as $field => $value){
+            $sql.= " {$field} = {$value} AND";
         }
+        $sql = rtrim($sql, "AND");
         $res = $this->db->query($sql);
         $row = $res->fetch();
         if (!empty($row['dependency_dep_id'])) {
