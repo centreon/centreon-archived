@@ -14386,6 +14386,12 @@ msgstr "Poubelle"
 #~ msgid "%s is downloaded."
 #~ msgstr "%s est téléchargé."
 
+msgid "ACL Resource name can't be empty"
+msgstr "Le nom de la Resource ACL ne peut pas être vide"
+
+msgid "Invalid ACL Resource ID"
+msgstr "ID de la Resource ACL invalide"
+
 #~ msgid ""
 #~ "In order to complete your upgrade (%s), unzip the downloaded file, and "
 #~ "follow the instructions in README\n"
