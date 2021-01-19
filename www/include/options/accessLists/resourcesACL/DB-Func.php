@@ -67,7 +67,7 @@ function testExistence($name = null)
 function enableLCAInDB($acl_res_id = null, $acls = array())
 {
     global $pearDB, $centreon;
-    
+
     if (!$acl_res_id && !count($acls)) {
         return;
     }
@@ -96,7 +96,7 @@ function enableLCAInDB($acl_res_id = null, $acls = array())
 function disableLCAInDB($acl_res_id = null, $acls = array())
 {
     global $pearDB, $centreon;
-    
+
     if (!$acl_res_id && !count($acls)) {
         return;
     }
@@ -173,7 +173,7 @@ function multipleLCAInDB($lcas = array(), $nbrDup = array())
 
                 if (isset($maxId["MAX(acl_res_id)"])) {
                     duplicateGroups($key, $maxId["MAX(acl_res_id)"], $pearDB);
-                    
+
                     $centreon->CentreonLogAction->insertLog("resource access", $maxId["MAX(acl_res_id)"], $acl_name, "a", $fields);
                 }
             }
@@ -192,11 +192,11 @@ function duplicateGroups($idTD, $acl_id, $pearDB)
 {
     $pearDB->query("INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) SELECT '$acl_id'
         AS acl_res_id, acl_group_id FROM acl_res_group_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
-    
+
     //host categories
     $pearDB->query("INSERT INTO acl_resources_hc_relations (acl_res_id, hc_id)
         (SELECT $acl_id, hc_id FROM acl_resources_hc_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
-    
+
     //hostgroups
     $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id)
         (SELECT $acl_id, hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
@@ -235,7 +235,7 @@ function duplicateGroups($idTD, $acl_id, $pearDB)
  */
 function duplicateContactGroups($idTD, $acl_id, $pearDB)
 {
-    $DBRESULT = $pearDB->query("INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) 
+    $DBRESULT = $pearDB->query("INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id)
         SELECT acl_res_id, '$acl_id' AS acl_group_id FROM acl_res_group_relations WHERE acl_group_id = '$idTD'");
 }
 
@@ -247,7 +247,7 @@ function duplicateContactGroups($idTD, $acl_id, $pearDB)
 function updateLCAInDB($acl_id = null)
 {
     global $form, $centreon;
-    
+
     if (!$acl_id) {
         return;
     }
@@ -262,7 +262,7 @@ function updateLCAInDB($acl_id = null)
     updateServiceGroups($acl_id);
     updateMetaServices($acl_id);
     updatePollers($acl_id);
-    
+
     $ret = $form->getSubmitValues();
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("resource access", $acl_id, $ret['acl_res_name'], "c", $fields);
@@ -286,7 +286,7 @@ function insertLCAInDB()
     updateServiceGroups($acl_id);
     updateMetaServices($acl_id);
     updatePollers($acl_id);
-    
+
     $ret = $form->getSubmitValues();
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("resource access", $acl_id, $ret['acl_res_name'], "a", $fields);
@@ -305,20 +305,23 @@ function insertLCA()
 
     $ret = array();
     $ret = $form->getSubmitValues();
+
+    $resourceValues = sanitizeResourceParameters($ret);
+
     $rq = "INSERT INTO `acl_resources` ";
     $rq .= "(acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate, changed, acl_res_comment) ";
-    $rq .= "VALUES ('".$pearDB->escape($ret["acl_res_name"])."', " .
-            "'".$pearDB->escape($ret["acl_res_alias"])."', " .
-            "'".(isset($ret["all_hosts"]["all_hosts"]) ? $pearDB->escape($ret["all_hosts"]["all_hosts"]) : 0)."', " .
-            "'".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? $pearDB->escape($ret["all_hostgroups"]["all_hostgroups"]) : 0)."', " .
-            "'".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? $pearDB->escape($ret["all_servicegroups"]["all_servicegroups"]) : 0)."', " .
-            "'".$pearDB->escape($ret["acl_res_activate"]["acl_res_activate"])."', " .
+    $rq .= "VALUES ('" . $resourceValues["acl_res_name"] . "', " .
+            "'" . $resourceValues["acl_res_alias"] . "', " .
+            "'" . $resourceValues["all_hosts"] . "', " .
+            "'" . $resourceValues["all_hostgroups"] . "', " .
+            "'" . $resourceValues["all_servicegroups"] . "', " .
+            "'" . $resourceValues["acl_res_activate"] . "', " .
             "'1', " .
-            "'".$pearDB->escape($ret["acl_res_comment"])."')";
+            "'" . $resourceValues["acl_res_comment"] . "')";
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
     $acl = $DBRESULT->fetchRow();
-    
+
     return ($acl["MAX(acl_res_id)"]);
 }
 
@@ -335,19 +338,25 @@ function updateLCA($acl_id = null)
         return;
     }
 
+    $acl_id = filter_var($acl_id, FILTER_VALIDATE_INT);
+    if ($acl_id === false) {
+        throw new InvalidArgumentException(_("Invalid ACL Resource ID"));
+    }
     $ret = array();
     $ret = $form->getSubmitValues();
 
+    $resourceValues = sanitizeResourceParameters($ret);
+
     $rq = "UPDATE `acl_resources` ";
-    $rq .= "SET acl_res_name = '".$pearDB->escape($ret["acl_res_name"])."', " .
-            "acl_res_alias = '".$pearDB->escape($ret["acl_res_alias"])."', " .
-            "all_hosts = '".(isset($ret["all_hosts"]["all_hosts"]) ? $pearDB->escape($ret["all_hosts"]["all_hosts"]) : 0)."', " .
-            "all_hostgroups = '".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? $pearDB->escape($ret["all_hostgroups"]["all_hostgroups"]) : 0)."', " .
-            "all_servicegroups = '".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? $pearDB->escape($ret["all_servicegroups"]["all_servicegroups"]) : 0)."', " .
-            "acl_res_activate = '".$pearDB->escape($ret["acl_res_activate"]["acl_res_activate"])."', " .
-            "acl_res_comment = '".$pearDB->escape(!isset($ret["acl_res_comment"]) ? "" : $ret["acl_res_comment"])."', " .
+    $rq .= "SET acl_res_name = '" . $resourceValues["acl_res_name"] . "', " .
+            "acl_res_alias = '" . $resourceValues["acl_res_alias"] . "', " .
+            "all_hosts = '" . $resourceValues["all_hosts"] . "', " .
+            "all_hostgroups = '" . $resourceValues["all_hostgroups"] . "', " .
+            "all_servicegroups = '" . $resourceValues["all_servicegroups"] . "', " .
+            "acl_res_activate = '" .  $resourceValues["acl_res_activate"] . "', " .
+            "acl_res_comment = '" . $resourceValues["acl_res_comment"] . "', " .
             "changed = '1' " .
-            "WHERE acl_res_id = '".$acl_id."'";
+            "WHERE acl_res_id = '" . $acl_id . "'";
     $DBRESULT = $pearDB->query($rq);
 }
 
@@ -473,7 +482,7 @@ function updateHostGroups($acl_id = null)
     if (isset($ret)) {
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $DBRESULT = $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) 
+                $DBRESULT = $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id)
                     VALUES ('".$acl_id."', '".$value."')");
             }
         }
@@ -577,9 +586,78 @@ function updateMetaServices($acl_id = null)
     if (isset($ret)) {
         foreach ($ret as $key => $value) {
             if (isset($value)) {
-                $DBRESULT = $pearDB->query("INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) 
+                $DBRESULT = $pearDB->query("INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id)
                     VALUES ('".$acl_id."', '".$value."')");
             }
         }
     }
+}
+
+/**
+ * sanitize resources parameter for Create / Update a Resource ACL
+ *
+ * @param array<string, mixed> $resources
+ * @return array<string, mixed>
+ */
+function sanitizeResourceParameters(array $resources)
+{
+    $sanitizedParameters = array();
+    $sanitizedParameters['acl_res_name'] = filter_var($resources['acl_res_name'], FILTER_SANITIZE_STRING);
+
+    if (empty($sanitizedParameters['acl_res_name'])) {
+        throw new InvalidArgumentException(_("ACL Resource name can't be empty"));
+    }
+
+    $sanitizedParameters['acl_res_alias'] = filter_var($resources['acl_res_alias'], FILTER_SANITIZE_STRING);
+    $sanitizedParameters['acl_res_comment'] = filter_var($resources['acl_res_comment'], FILTER_SANITIZE_STRING);
+
+    if (
+        isset($resources['all_hosts']['all_hosts'])
+        && filter_var($resources['all_hosts']['all_hosts'], FILTER_VALIDATE_INT) !== false
+    ) {
+        /**
+         * Cast to string as it will be inserted as an enum '0','1'
+         */
+        $sanitizedParameters['all_hosts'] = (string) $resources['all_hosts']['all_hosts'];
+    } else {
+        $sanitizedParameters['all_hosts'] = "0";
+    }
+
+    if (
+        isset($resources['all_hostgroups']['all_hostgroups'])
+        && filter_var($resources['all_hostgroups']['all_hostgroups'], FILTER_VALIDATE_INT) !== false
+    ) {
+        /**
+         * Cast to string as it will be inserted as an enum '0','1'
+         */
+        $sanitizedParameters['all_hostgroups'] = (string) $resources['all_hostgroups']['all_hostgroups'];
+    } else {
+        $sanitizedParameters['all_hostgroups'] = "0";
+    }
+
+    if (
+        isset($resources['all_servicegroups']['all_servicegroups'])
+        && filter_var($resources['all_servicegroups']['all_servicegroups'], FILTER_VALIDATE_INT) !== false
+    ) {
+        /**
+         * Cast to string as it will be inserted as an enum '0','1'
+         */
+        $sanitizedParameters['all_servicegroups'] = (string) $resources['all_servicegroups']['all_servicegroups'];
+    } else {
+        $sanitizedParameters['all_servicegroups'] = "0";
+    }
+
+    if (
+        isset($resources['acl_res_activate']['acl_res_activate'])
+        && filter_var($resources['acl_res_activate']['acl_res_activate'], FILTER_VALIDATE_INT) !== false
+    ) {
+        /**
+         * Cast to string as it will be inserted as an enum '0','1','2'
+         */
+        $sanitizedParameters['acl_res_activate'] = (string) $resources['acl_res_activate']['acl_res_activate'];
+    } else {
+        $sanitizedParameters['acl_res_activate'] = "0";
+    }
+
+    return $sanitizedParameters;
 }
