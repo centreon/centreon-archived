@@ -55,7 +55,9 @@ class PlatformInformationServiceTest extends TestCase
         $this->platformInformationRepository = $this->createMock(PlatformInformationRepositoryInterface::class);
         $this->remoteServerService = $this->createMock(RemoteServerServiceInterface::class);
         $this->remoteInformation = (new PlatformInformation())->setIsRemote(true);
-        $this->centralInformation = (new PlatformInformation())->setIsCentral(true);
+        $this->centralInformation = (new PlatformInformation())
+            ->setIsCentral(true)
+            ->setCentralServerAddress('192.168.0.1');
     }
 
     /**

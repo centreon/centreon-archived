@@ -18,4 +18,3 @@
  * For more information : contact@centreon.com
  *
  */
-

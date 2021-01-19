@@ -13934,6 +13934,9 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "ACL rules"
 #~ msgstr "Règles d'accès"
 
+msgid "ACL Resource name can't be empty"
+msgstr "Le nom de la Resource ACL ne peut pas être vide"
+
 #~ msgid "All Graphs"
 #~ msgstr "Tous les graphiques"
 
@@ -15536,6 +15539,11 @@ msgid "Notification sent to"
 msgstr "Notification envoyée à"
 
 #: api/platform
+msgid "Unable to convert in remote server, no Central to link provided"
+msgstr "Impossible de convertir en remote, aucun Central à lier renseigné"
+
+
+#: api/platform
 msgid "Unable to update the platform information"
 msgstr "Impossible de mettre à jour les informations de la plateforme"
 
@@ -15956,3 +15964,6 @@ msgstr "Un des éléments fourni n'est pas de type ResourceGroup"
 
 msgid "Error when searching for host categories"
 msgstr "Erreur lors de la recherche des catégories d'hôtes"
+
+msgid "Error when searching for host groups"
+msgstr "Erreur lors de la recherche de groupes d'hôtes"

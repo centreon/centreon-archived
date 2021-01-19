@@ -218,6 +218,16 @@ services:
         class: Centreon\Domain\HostConfiguration\HostConfigurationService
         public: true
 
+    # Host group configuration
+    Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupRepositoryInterface:
+        class: Centreon\Infrastructure\HostConfiguration\Repository\HostGroupRepositoryRDB
+
+    Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups:
+        class: Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups
+        calls:
+            - method: setMediaPath
+              arguments: ["%media_path%"]
+
     # Service configuration
     Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface:
         class: Centreon\Domain\ServiceConfiguration\ServiceConfigurationService
