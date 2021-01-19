@@ -18,15 +18,14 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
-
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\MonitoringServer\MonitoringServerResource;
-
 
 interface MonitoringServerRepositoryInterface
 {
