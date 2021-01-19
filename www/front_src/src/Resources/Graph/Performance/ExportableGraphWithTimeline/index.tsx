@@ -59,8 +59,8 @@ interface Props {
   getIntervalDates: () => [string, string];
   periodQueryParameters: string;
   graphHeight: number;
-  onTooltipDisplay?: (x?: number) => void;
-  tooltipX?: number;
+  onTooltipDisplay?: (position?: [number, number]) => void;
+  tooltipPosition?: [number, number];
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
@@ -70,7 +70,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   periodQueryParameters,
   graphHeight,
   onTooltipDisplay,
-  tooltipX,
+  tooltipPosition,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -215,7 +215,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           timeline={timeline}
           onAddComment={addCommentToTimeline}
           onTooltipDisplay={onTooltipDisplay}
-          tooltipX={tooltipX}
+          tooltipPosition={tooltipPosition}
         />
       </div>
     </Paper>

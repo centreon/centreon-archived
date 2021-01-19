@@ -79,8 +79,8 @@ interface Props {
   base: number;
   lines: Array<LineModel>;
   xAxisTickFormat: string;
-  tooltipX?: number;
-  onTooltipDisplay?: (tooltipX?: number) => void;
+  tooltipPosition?: [number, number];
+  onTooltipDisplay?: (tooltipPosition?: [number, number]) => void;
   timeline?: Array<TimelineEvent>;
   resource: Resource | ResourceDetails;
   onAddComment?: (commentParameters: CommentParameters) => void;
@@ -112,6 +112,21 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   },
 }));
 
+interface Props {
+  width: number;
+  height: number;
+  timeSeries: Array<TimeValue>;
+  base: number;
+  lines: Array<LineModel>;
+  xAxisTickFormat: string;
+  timeline?: Array<TimelineEvent>;
+  onTooltipDisplay?: (position?: [number, number]) => void;
+  tooltipPosition?: [number, number];
+  resource: Resource | ResourceDetails;
+  onAddComment?: (commentParameters: CommentParameters) => void;
+  eventAnnotationsActive: boolean;
+}
+
 const getScale = ({
   values,
   height,
@@ -137,7 +152,7 @@ const Graph = ({
   lines,
   xAxisTickFormat,
   timeline,
-  tooltipX,
+  tooltipPosition,
   onTooltipDisplay,
   resource,
   onAddComment,
@@ -294,7 +309,7 @@ const Graph = ({
 
       showTooltipAt({ x, y });
 
-      onTooltipDisplay?.(x);
+      onTooltipDisplay?.([x, y]);
     },
     [showTooltip, containerBounds, lines],
   );
@@ -304,13 +319,15 @@ const Graph = ({
       return;
     }
 
-    if (isNil(tooltipX)) {
+    if (isNil(tooltipPosition)) {
       hideTooltip();
       return;
     }
 
-    showTooltipAt({ x: tooltipX, y: 20 });
-  }, [tooltipX]);
+    const [x, y] = tooltipPosition;
+
+    showTooltipAt({ x, y });
+  }, [tooltipPosition]);
 
   const closeTooltip = (): void => {
     hideTooltip();
@@ -363,7 +380,7 @@ const Graph = ({
             {tooltipData}
           </TooltipWithBounds>
         )}
-        <svg width={width} height={height} ref={containerRef}>
+        <svg width="100%" height={height} ref={containerRef}>
           <Group left={margin.left} top={margin.top}>
             <MemoizedGridRows
               scale={leftScale}

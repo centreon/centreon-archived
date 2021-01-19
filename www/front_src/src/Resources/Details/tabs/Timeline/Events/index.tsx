@@ -46,7 +46,7 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
       pipe(prop('date'), toDate),
     ),
     toPairs,
-    sortWith([descend(head)]),
+    sortWith([descend(pipe(head, Date.parse))]),
   )(timeline) as DateEvents;
 
   const dates = eventsByDate.map(head);
