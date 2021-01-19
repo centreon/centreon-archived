@@ -32,7 +32,7 @@ try {
     $registeredPlatforms = [];
     // find registered platforms in monitoring table
     $pearDB->query(
-        "SELECT id FROM platform_topology
+        "SELECT id FROM `platform_topology`
         WHERE `type` NOT IN ('central', 'remote', 'poller') OR server_id IS NOT NULL"
     );
     if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
