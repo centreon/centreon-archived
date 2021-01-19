@@ -171,7 +171,8 @@ class RemoteServerService implements RemoteServerServiceInterface
     public function convertRemoteToCentral(PlatformInformation $platformInformation): void
     {
         /**
-         * Delete the platform on its parent.
+         * Delete the platform on its parent before anything else,
+         * If this step throw an exception, don't go further and avoid decorelation betweens platforms.
          */
         $platform = $this->platformTopologyRepository->findTopLevelPlatform();
         $this->platformTopologyRegisterRepository->deletePlatformToParent(
