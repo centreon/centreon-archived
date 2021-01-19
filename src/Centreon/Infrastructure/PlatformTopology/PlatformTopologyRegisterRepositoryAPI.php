@@ -79,8 +79,8 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
     private function getToken(
         Platform $platform,
         PlatformInformation $platformInformation,
-        Proxy $proxyService = null): string
-    {
+        Proxy $proxyService = null
+    ): string {
         // Central's API endpoints base path building
         $this->baseApiEndpoint = $platformInformation->getApiScheme() . '://'
             . $platformInformation->getCentralServerAddress() . ':'
@@ -222,8 +222,8 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
     public function deletePlatformToParent(
         Platform $platform,
         PlatformInformation $platformInformation,
-        ?Proxy $proxyService = null): void
-    {
+        ?Proxy $proxyService = null
+    ): void {
         try {
             $token = $this->getToken($platform, $platformInformation, $proxyService);
 
@@ -262,7 +262,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
 
             $platformToDeleteId = null;
             foreach ($platformsOnParent as $topologyId => $platformOnParent) {
-                if($platformOnParent['metadata']['address'] === $platform->getAddress()) {
+                if ($platformOnParent['metadata']['address'] === $platform->getAddress()) {
                     $platformToDeleteId = $topologyId;
                 }
             }

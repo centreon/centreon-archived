@@ -53,7 +53,9 @@ class RemoteServerRepositoryRDB extends AbstractRepositoryDRB implements RemoteS
      */
     public function deleteAdditionalRemoteServer(int $monitoringServerId): void
     {
-        $statement = $this->db->prepare($this->translateDbName("DELETE FROM rs_poller_relation WHERE remote_server_id = :id"));
+        $statement = $this->db->prepare(
+            $this->translateDbName("DELETE FROM rs_poller_relation WHERE remote_server_id = :id")
+        );
         $statement->bindValue(':id', $monitoringServerId, \PDO::PARAM_INT);
         $statement->execute();
     }

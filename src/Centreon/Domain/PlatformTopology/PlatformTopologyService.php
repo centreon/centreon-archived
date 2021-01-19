@@ -658,7 +658,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              * Delete the monitoring server and the topology.
              */
             if ($deletedPlatform->getServerId() !== null) {
-                if($deletedPlatform->getType() === Platform::TYPE_REMOTE) {
+                if ($deletedPlatform->getType() === Platform::TYPE_REMOTE) {
                     $this->remoteServerRepository->deleteRemoteServerByAddress($deletedPlatform->getAddress());
                     $this->remoteServerRepository->deleteAdditionalRemoteServer($deletedPlatform->getServerId());
                 }
