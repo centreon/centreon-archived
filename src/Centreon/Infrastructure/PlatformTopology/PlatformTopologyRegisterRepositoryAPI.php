@@ -86,7 +86,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             . $platformInformation->getCentralServerAddress() . ':'
             . $platformInformation->getApiPort() . DIRECTORY_SEPARATOR
             . $platformInformation->getApiPath() . '/api/v'
-            . ((string) $this->apiPlatform->getVersion()) . DIRECTORY_SEPARATOR;
+            . ((string) $this->apiPlatform->getVersion());
 
         // Enable specific options
         $optionPayload = [];
@@ -119,7 +119,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
         // Login on the Central to get a valid token
         $loginResponse = $this->httpClient->request(
             'POST',
-            $this->baseApiEndpoint . 'login',
+            $this->baseApiEndpoint . '/login',
             $loginPayload
         );
 
@@ -167,7 +167,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
 
             $registerResponse = $this->httpClient->request(
                 'POST',
-                $this->baseApiEndpoint . 'platform/topology',
+                $this->baseApiEndpoint . '/platform/topology',
                 $registerPayload
             );
 
@@ -237,7 +237,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             ];
             $getResponse = $this->httpClient->request(
                 'GET',
-                $this->baseApiEndpoint . 'platform/topology/',
+                $this->baseApiEndpoint . '/platform/topology/',
                 $getPayload
             );
 
@@ -281,7 +281,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             ];
             $deleteResponse = $this->httpClient->request(
                 'DELETE',
-                $this->baseApiEndpoint . 'platform/topology/' . $platformToDeleteId,
+                $this->baseApiEndpoint . '/platform/topology/' . $platformToDeleteId,
                 $deletePayload
             );
 
