@@ -935,8 +935,8 @@ class CentreonDependency extends CentreonObject
     {
         $sql = "SELECT `dependency_dep_id`
                 FROM {$table} WHERE ";
-        foreach ($dataField as $field => $value){
-            $sql.= " {$field} = {$value} AND";
+        foreach ($dataField as $field => $value) {
+            $sql .= " {$field} = {$value} AND";
         }
         $sql = rtrim($sql, "AND");
         $res = $this->db->query($sql);
