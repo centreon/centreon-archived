@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 36,
   },
   searchField: {
-    width: 350,
+    width: 375,
   },
   field: {
     minWidth: 160,
