@@ -237,7 +237,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             ];
             $getResponse = $this->httpClient->request(
                 'GET',
-                $this->baseApiEndpoint . '/platform/topology/',
+                $this->baseApiEndpoint . '/platform/topology',
                 $getPayload
             );
 
