@@ -44,7 +44,6 @@ try {
 
     $pearDB->beginTransaction();
     $errorMessage = "Unable to update pending state on platform_topology table";
-    $registeredPlatforms = "";
     // find registered platforms in monitoring table
     $statement = $pearDB->query(
         "SELECT id FROM `platform_topology`
