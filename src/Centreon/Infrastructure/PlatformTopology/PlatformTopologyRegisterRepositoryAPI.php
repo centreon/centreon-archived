@@ -73,26 +73,26 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
      *
      * @param Platform $platform
      * @param PlatformInformation $platformInformation
-     * @param Proxy $proxyService
+     * @param Proxy $proxy
      * @return string
      */
     private function getToken(
         Platform $platform,
         PlatformInformation $platformInformation,
-        Proxy $proxyService = null
+        Proxy $proxy = null
     ): string {
         // Central's API endpoints base path building
         $this->baseApiEndpoint = $platformInformation->getApiScheme() . '://'
             . $platformInformation->getCentralServerAddress() . ':'
-            . $platformInformation->getApiPort() . '/'
+            . $platformInformation->getApiPort() . DIRECTORY_SEPARATOR
             . $platformInformation->getApiPath() . '/api/v'
-            . ((string) $this->apiPlatform->getVersion()) . '/';
+            . ((string) $this->apiPlatform->getVersion()) . DIRECTORY_SEPARATOR;
 
         // Enable specific options
         $optionPayload = [];
         // Enable proxy
-        if (null !== $proxyService && !empty((string) $proxyService)) {
-            $optionPayload['proxy'] = (string) $proxyService;
+        if (null !== $proxy && !empty((string) $proxy)) {
+            $optionPayload['proxy'] = (string) $proxy;
         }
         // On https scheme, the SSL verify_peer needs to be specified
         if ('https' === $platformInformation->getApiScheme()) {
@@ -142,14 +142,14 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
     public function registerPlatformToParent(
         Platform $platform,
         PlatformInformation $platformInformation,
-        Proxy $proxyService = null
+        Proxy $proxy = null
     ): void {
         /**
          * Call the API on the n-1 server to register it too
          */
         try {
             // Get a Token
-            $token = $this->getToken($platform, $platformInformation, $proxyService);
+            $token = $this->getToken($platform, $platformInformation, $proxy);
 
             // Central's API register platform payload
             $registerPayload = [
@@ -219,13 +219,16 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function deletePlatformToParent(
         Platform $platform,
         PlatformInformation $platformInformation,
-        ?Proxy $proxyService = null
+        ?Proxy $proxy = null
     ): void {
         try {
-            $token = $this->getToken($platform, $platformInformation, $proxyService);
+            $token = $this->getToken($platform, $platformInformation, $proxy);
 
             $getPayload = [
                 'headers' => [
