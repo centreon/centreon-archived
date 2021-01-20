@@ -257,6 +257,11 @@ const Filter = (): JSX.Element => {
           {({ width }): JSX.Element => {
             const limitTags = width < 1000 ? 1 : 2;
 
+            const commonProps = {
+              limitTags,
+              className: classes.field,
+            };
+
             return (
               <div className={clsx([classes.grid, classes.criterias])}>
                 <MultiAutocompleteField
@@ -265,8 +270,7 @@ const Filter = (): JSX.Element => {
                   onChange={changeResourceTypes}
                   value={resourceTypes || []}
                   openText={`${t(labelOpen)} ${t(labelResource)}`}
-                  limitTags={limitTags}
-                  className={classes.field}
+                  {...commonProps}
                 />
                 <MultiAutocompleteField
                   options={availableStates}
@@ -274,8 +278,7 @@ const Filter = (): JSX.Element => {
                   onChange={changeStates}
                   value={states || []}
                   openText={`${t(labelOpen)} ${t(labelState)}`}
-                  limitTags={limitTags}
-                  className={classes.field}
+                  {...commonProps}
                 />
                 <MultiAutocompleteField
                   options={availableStatuses}
@@ -283,8 +286,7 @@ const Filter = (): JSX.Element => {
                   onChange={changeStatuses}
                   value={statuses || []}
                   openText={`${t(labelOpen)} ${t(labelStatus)}`}
-                  className={classes.field}
-                  limitTags={limitTags}
+                  {...commonProps}
                 />
                 <MultiConnectedAutocompleteField
                   getEndpoint={getConnectedAutocompleteEndpoint(
@@ -295,7 +297,7 @@ const Filter = (): JSX.Element => {
                   value={hostGroups || []}
                   openText={`${t(labelOpen)} ${t(labelHostGroup)}`}
                   field="name"
-                  className={classes.field}
+                  {...commonProps}
                 />
                 <MultiConnectedAutocompleteField
                   getEndpoint={getConnectedAutocompleteEndpoint(
@@ -306,7 +308,7 @@ const Filter = (): JSX.Element => {
                   value={serviceGroups || []}
                   openText={`${t(labelOpen)} ${t(labelServiceGroup)}`}
                   field="name"
-                  className={classes.field}
+                  {...commonProps}
                 />
                 <Button color="primary" onClick={clearAllFilters}>
                   {t(labelClearAll)}
