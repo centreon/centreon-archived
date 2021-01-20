@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
     width: 350,
   },
   field: {
-    minWidth: 170,
+    minWidth: 160,
   },
   filterLineLabel: {
     width: 60,
