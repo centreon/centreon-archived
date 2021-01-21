@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\RemoteServer;
 
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryFileInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
 
-class RemoteServerRepositoryFile implements RemoteServerRepositoryFileInterface
+class RemoteServerRepositoryFile implements RemoteServerLocalConfigurationRepositoryInterface
 {
 
     /**

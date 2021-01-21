@@ -61,7 +61,6 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
      * PlatformTopologyRegisterRepositoryAPI constructor.
      * @param HttpClientInterface $httpClient
      * @param ApiPlatform $apiPlatform
-     * @throws RepositoryException
      */
     public function __construct(HttpClientInterface $httpClient, ApiPlatform $apiPlatform)
     {
@@ -74,6 +73,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
      *
      * @param PlatformInformation $platformInformation
      * @param Proxy $proxy
+     * @throws RepositoryException
      * @return string
      */
     private function getToken(

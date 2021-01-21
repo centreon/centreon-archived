@@ -23,7 +23,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\RemoteServer\Interfaces;
 
-interface RemoteServerRepositoryFileInterface
+/**
+ * This inteface is designed to configure the local instance mode of the platform.
+ */
+interface RemoteServerLocalConfigurationRepositoryInterface
 {
     /**
      * Update the platform instance mode to Central.

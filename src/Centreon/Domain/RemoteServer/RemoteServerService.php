@@ -25,17 +25,14 @@ namespace Centreon\Domain\RemoteServer;
 
 use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformTopology\Platform;
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryFileInterface;
-use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
@@ -54,7 +51,7 @@ class RemoteServerService implements RemoteServerServiceInterface
     private $platformTopologyRepository;
 
     /**
-     * @var RemoteServerRepositoryFileInterface
+     * @var RemoteServerLocalConfigurationRepositoryInterface
      */
     private $remoteServerRepository;
 
@@ -80,7 +77,7 @@ class RemoteServerService implements RemoteServerServiceInterface
     public function __construct(
         MenuRepositoryInterface $menuRepository,
         PlatformTopologyRepositoryInterface $platformTopologyRepository,
-        RemoteServerRepositoryFileInterface $remoteServerRepository,
+        RemoteServerLocalConfigurationRepositoryInterface $remoteServerRepository,
         PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository,
         ProxyServiceInterface $proxyService,
         MonitoringServerServiceInterface $monitoringServerService

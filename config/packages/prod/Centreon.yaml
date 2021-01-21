@@ -253,7 +253,7 @@ services:
     Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface:
         class: Centreon\Domain\RemoteServer\RemoteServerService
 
-    Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryFileInterface:
+    Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface:
         class: Centreon\Infrastructure\RemoteServer\RemoteServerRepositoryFile
         calls:
             - [setCentreonConfFilePath, ['%centreon_etc_path%/conf.pm']]
