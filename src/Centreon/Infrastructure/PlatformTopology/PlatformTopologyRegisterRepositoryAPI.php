@@ -61,6 +61,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
      * PlatformTopologyRegisterRepositoryAPI constructor.
      * @param HttpClientInterface $httpClient
      * @param ApiPlatform $apiPlatform
+     * @throws RepositoryException
      */
     public function __construct(HttpClientInterface $httpClient, ApiPlatform $apiPlatform)
     {
@@ -71,13 +72,11 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
     /**
      * Get a valid token to request the API.
      *
-     * @param Platform $platform
      * @param PlatformInformation $platformInformation
      * @param Proxy $proxy
      * @return string
      */
     private function getToken(
-        Platform $platform,
         PlatformInformation $platformInformation,
         Proxy $proxy = null
     ): string {
@@ -149,7 +148,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
          */
         try {
             // Get a Token
-            $token = $this->getToken($platform, $platformInformation, $proxy);
+            $token = $this->getToken($platformInformation, $proxy);
 
             // Central's API register platform payload
             $registerPayload = [
@@ -228,7 +227,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
         ?Proxy $proxy = null
     ): void {
         try {
-            $token = $this->getToken($platform, $platformInformation, $proxy);
+            $token = $this->getToken($platformInformation, $proxy);
 
             $getPayload = [
                 'headers' => [
@@ -244,7 +243,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             // Get request status code and return the error message
             if (Response::HTTP_OK !== $getResponse->getStatusCode()) {
                 $errorMessage = sprintf(
-                    _("The remote: '%s'@'%s' cannot be found to the Central"),
+                    _("The platform: '%s'@'%s' cannot be found on the Central"),
                     $platform->getName(),
                     $platform->getAddress()
                 );
@@ -271,7 +270,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             }
 
             if ($platformToDeleteId === null) {
-                throw new PlatformConflictException(_("The platform '%s'@'%s' can't be found on the Central."));
+                throw new PlatformConflictException(_("The platform '%s'@'%s' cannot be found on the Central."));
             }
 
             $deletePayload = [
@@ -288,7 +287,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             // Get request status code and return the error message
             if (Response::HTTP_NO_CONTENT !== $deleteResponse->getStatusCode()) {
                 $errorMessage = sprintf(
-                    _("The remote: '%s'@'%s' cannot be delete from the Central"),
+                    _("The platform: '%s'@'%s' cannot be delete from the Central"),
                     $platform->getName(),
                     $platform->getAddress()
                 );

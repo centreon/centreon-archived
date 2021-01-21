@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,12 @@ namespace Centreon\Domain\RemoteServer\Interfaces;
 interface RemoteServerRepositoryFileInterface
 {
     /**
-     * Update the instance mode of centreon to Central.
+     * Update the platform instance mode to Central.
      */
     public function updateInstanceModeCentral(): void;
 
     /**
-     * Update the instance mode of centreon to Remote.
+     * Update the platform instance mode to Remote.
      */
     public function updateInstanceModeRemote(): void;
 }
