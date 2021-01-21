@@ -928,7 +928,7 @@ class CentreonDependency extends CentreonObject
 
     /**
      * @param string $table
-     * @param table $dataField
+     * @param array $dataField
      * @return bool
      */
     protected function isExistingDependency(string $table, array $dataField): bool
