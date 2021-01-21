@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { take, takeLast } from 'ramda';
+import clsx from 'clsx';
 
 import { Typography, makeStyles } from '@material-ui/core';
 
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
   },
-  dateTime: {
+  emphasized: {
     fontWeight: 'bold',
   },
   metric: {
@@ -60,7 +61,7 @@ const MetricsTooltip = ({
 
   return (
     <div className={classes.tooltip}>
-      <Typography variant="caption" className={classes.dateTime}>
+      <Typography variant="caption" className={classes.emphasized}>
         {format({
           date: new Date(timeValue.timeTick),
           formatString: dateTimeFormat,
@@ -82,7 +83,10 @@ const MetricsTooltip = ({
             <Typography variant="caption" noWrap>
               {truncateInMiddle(name)}
             </Typography>
-            <Typography variant="caption" className={classes.value}>
+            <Typography
+              variant="caption"
+              className={clsx([classes.value, classes.emphasized])}
+            >
               {formattedValue}
             </Typography>
           </div>
