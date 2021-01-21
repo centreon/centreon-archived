@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { ParentSize } from '@visx/visx';
 
-import { Skeleton } from '@material-ui/lab';
 import { Button, makeStyles } from '@material-ui/core';
 
 import {
@@ -39,6 +38,7 @@ import {
   buildServiceGroupsEndpoint,
 } from './api/endpoint';
 import useFilterModels from './useFilterModels';
+import FilterLoadingSkeleton from './FilterLoadingSkeleton';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -46,13 +46,6 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     gridGap: theme.spacing(1),
     alignItems: 'center',
-    justifyItems: 'center',
-  },
-
-  filterLoadingSkeleton: {
-    transform: 'none',
-    height: '100%',
-    width: 170,
   },
   filterSelect: {
     width: 200,
@@ -229,7 +222,7 @@ const Filter = (): JSX.Element => {
         <div className={classes.grid}>
           <SaveFilter />
           {customFiltersLoading ? (
-            <Skeleton className={classes.filterLoadingSkeleton} />
+            <FilterLoadingSkeleton />
           ) : (
             <SelectField
               options={options.map(pick(['id', 'name', 'type']))}
