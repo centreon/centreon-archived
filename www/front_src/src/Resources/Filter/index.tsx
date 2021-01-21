@@ -24,7 +24,7 @@ import {
   labelStatus,
   labelHostGroup,
   labelServiceGroup,
-  labelClearAll,
+  labelClear,
   labelOpen,
   labelShowCriteriasFilters,
   labelNewFilter,
@@ -310,8 +310,8 @@ const Filter = (): JSX.Element => {
                   field="name"
                   {...commonProps}
                 />
-                <Button color="primary" onClick={clearAllFilters}>
-                  {t(labelClearAll)}
+                <Button color="primary" onClick={clearAllFilters} size="small">
+                  {t(labelClear)}
                 </Button>
               </div>
             );
