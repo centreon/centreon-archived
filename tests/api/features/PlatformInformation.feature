@@ -25,12 +25,10 @@ Feature:
         When I send a PATCH request to '/beta/platform' with body:
         """
         {
-            "isRemote": true,
             "apiUsername": "admin",
             "apiCredentials": "centreon",
             "apiScheme": "http",
             "apiPort": 80,
-            "centralServerAddress": "10.30.2.137",
             "apiPath": "centreon"
         }
         """

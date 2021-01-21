@@ -28,6 +28,8 @@ const Details = (): JSX.Element | null => {
     setOpenDetailsTabId,
     clearSelectedResource,
     details,
+    panelWidth,
+    setPanelWidth,
   } = useResourceContext();
 
   React.useEffect(() => {
@@ -96,6 +98,8 @@ const Details = (): JSX.Element | null => {
       ))}
       selectedTabId={getTabIndex(openDetailsTabId)}
       selectedTab={<TabById id={openDetailsTabId} details={details} />}
+      width={panelWidth}
+      onResize={setPanelWidth}
     />
   );
 };
