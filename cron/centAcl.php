@@ -1,7 +1,8 @@
 #!@PHP_BIN@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -54,7 +55,7 @@ define('LDAP_UPDATE_PERIOD', 3600);
  * CentAcl script
  */
 $nbProc = exec('ps -o args -p $(pidof -o $$ -o $PPID -o %PPID -x php || echo 1000000) | grep -c ' . __FILE__);
-if ((int) $nbProc > 0) {
+if ((int)$nbProc > 0) {
     programExit("More than one centAcl.php process is currently running. Going to exit...");
 }
 
@@ -87,7 +88,7 @@ try {
             programExit("Error can't insert centAcl values in the `cron_operation` table.");
         }
         $data = getCentAclRunningState();
-        $appId = (int)$data["id"] ?? 0;
+        $appId = (int)($data["id"] ?? 0);
         $is_running = 0;
     } else {
         $is_running = $data["running"];
@@ -95,7 +96,7 @@ try {
     }
 
     /*
-     * Lock in MySQL (ie: by setting the `running` value to 1)
+     * Locking MySQL (ie: by setting the `running` value to 1)
      */
     if ($is_running == 0) {
         putALock($appId);
@@ -109,6 +110,35 @@ try {
             $errorMessage = "centAcl marked as running. Exiting...";
         }
         programExit($errorMessage);
+    }
+
+    /**
+     * Remove expired sessions
+     */
+    // Find duration of session_expiration
+    $sessionDuration = 120;
+    $durationQuery = $pearDB->query("SELECT `value` from options where `key` = 'session_expire'");
+    if (($duration = $durationQuery->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        $sessionDuration = $duration['value'];
+    } else {
+        // cannot find the default value. setting a new value
+        $pearDB->query("DELETE FROM options WHERE `key` = 'session_expire'");
+        $pearDB->query("INSERT INTO options (`key`, `value`) VALUES ('session_expire', '120')");
+    }
+
+    // Get users sessions list
+    $sessionQuery = $pearDB->query("SELECT `id`, `last_reload` FROM session");
+    $expiredSessions = [];
+    while ($row = $sessionQuery->fetch(\PDO::FETCH_ASSOC)) {
+        $expirationTime = time() - ($sessionDuration * 60);
+        if ($row['last_reload'] < $expirationTime) {
+            $expiredSessions[] = $row['id'];
+        }
+    }
+    if (!empty($expiredSessions)) {
+        // remove the sessions
+        $expiredSessions = implode(', ', $expiredSessions);
+        $pearDB->query("DELETE FROM session WHERE `id` IN ($expiredSessions)");
     }
 
     /**
