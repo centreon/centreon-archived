@@ -130,8 +130,8 @@ try {
     // Get users sessions list
     $sessionQuery = $pearDB->query("SELECT `id`, `last_reload` FROM session");
     $expiredSessions = [];
+    $expirationTime = time() - ($sessionDuration * 60);
     while ($row = $sessionQuery->fetch(\PDO::FETCH_ASSOC)) {
-        $expirationTime = time() - ($sessionDuration * 60);
         if ($row['last_reload'] < $expirationTime) {
             $expiredSessions[] = $row['id'];
         }
