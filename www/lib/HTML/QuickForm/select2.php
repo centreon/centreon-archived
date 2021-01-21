@@ -475,6 +475,8 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
     public function setDefaultAjaxDatas()
     {
         if (preg_match('/id=$/', $this->_defaultDatasetRoute)) {
+            // do not fetch data if id is not set
+            // it happens when creating a new object
             return '';
         }
 
