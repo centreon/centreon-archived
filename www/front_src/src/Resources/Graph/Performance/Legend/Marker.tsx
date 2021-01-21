@@ -2,14 +2,15 @@ import * as React from 'react';
 
 import clsx from 'clsx';
 
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme, { color?: string }>((theme) => ({
   icon: {
     width: 9,
     height: 9,
     borderRadius: '50%',
     marginRight: theme.spacing(1),
+    backgroundColor: ({ color }) => color,
   },
   disabled: {
     color: theme.palette.text.disabled,
@@ -22,13 +23,10 @@ interface Props {
 }
 
 const LegendMarker = ({ disabled, color }: Props): JSX.Element => {
-  const classes = useStyles();
+  const classes = useStyles({ color });
 
   return (
-    <div
-      className={clsx(classes.icon, { [classes.disabled]: disabled })}
-      style={{ backgroundColor: color }}
-    />
+    <div className={clsx(classes.icon, { [classes.disabled]: disabled })} />
   );
 };
 
