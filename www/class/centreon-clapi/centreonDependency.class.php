@@ -931,7 +931,7 @@ class CentreonDependency extends CentreonObject
      * @param table $dataField
      * @return bool
      */
-    protected function isExistingDependency(string $table, table $dataField): bool
+    protected function isExistingDependency(string $table, array $dataField): bool
     {
         $sql = "SELECT `dependency_dep_id`
                 FROM {$table} WHERE ";
