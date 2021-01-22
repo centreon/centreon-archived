@@ -542,6 +542,14 @@ check_result $? "$(gettext "Change macros for centAcl.php")"
 cp -f $TMP_DIR/work/cron/centAcl.php \
     $TMP_DIR/final/cron/centAcl.php >> "$LOG_FILE" 2>&1
 
+log "INFO" "$(gettext "Change macros for session.php")"
+${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
+    $TMP_DIR/src/cron/session.php > $TMP_DIR/work/cron/session.php
+check_result $? "$(gettext "Change macros for session.php")"
+
+cp -f $TMP_DIR/work/cron/session.php \
+    $TMP_DIR/final/cron/session.php >> "$LOG_FILE" 2>&1
+
 log "INFO" "$(gettext "Change macros for downtimeManager.php")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
     -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \

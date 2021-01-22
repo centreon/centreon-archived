@@ -12,6 +12,10 @@ CRONTAB_EXEC_USER=""
 * * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/centAcl.php >> @CENTREON_LOG@/centAcl.log 2>&1
 
 ############################
+# Cron for Session
+* * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/session.php >> @CENTREON_LOG@/centAcl.log 2>&1
+
+############################
 # Cron for Centreon-Downtime
 */5 * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/downtimeManager.php >> @CENTREON_LOG@/downtimeManager.log 2>&1
 

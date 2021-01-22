@@ -50,7 +50,6 @@ $centreonLog = new CentreonLog();
  * Define the period between two update in second for LDAP user/contactgroup
  */
 define('LDAP_UPDATE_PERIOD', 3600);
-define('SESSION_DEFAULT_DURATION', 120);
 
 /**
  * CentAcl script
@@ -111,35 +110,6 @@ try {
             $errorMessage = "centAcl marked as running. Exiting...";
         }
         programExit($errorMessage);
-    }
-
-    /**
-     * Remove expired sessions
-     */
-    // Find duration of session_expiration
-    $sessionDuration = SESSION_DEFAULT_DURATION;
-    $durationQuery = $pearDB->query("SELECT `value` from options where `key` = 'session_expire'");
-    if (($duration = $durationQuery->fetch(\PDO::FETCH_ASSOC)) !== false) {
-        $sessionDuration = $duration['value'];
-    } else {
-        // cannot find the default value. setting a new value
-        $pearDB->query("DELETE FROM options WHERE `key` = 'session_expire'");
-        $pearDB->query("INSERT INTO options (`key`, `value`) VALUES ('session_expire', '$sessionDuration')");
-    }
-
-    // Get users sessions list
-    $sessionQuery = $pearDB->query("SELECT `id`, `last_reload` FROM session");
-    $expiredSessions = [];
-    $expirationTime = time() - ($sessionDuration * 60);
-    while ($row = $sessionQuery->fetch(\PDO::FETCH_ASSOC)) {
-        if ($row['last_reload'] < $expirationTime) {
-            $expiredSessions[] = $row['id'];
-        }
-    }
-    if (!empty($expiredSessions)) {
-        // remove the sessions
-        $expiredSessions = implode(', ', $expiredSessions);
-        $pearDB->query("DELETE FROM session WHERE `id` IN ($expiredSessions)");
     }
 
     /**
