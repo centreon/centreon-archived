@@ -1,7 +1,19 @@
 import * as React from 'react';
 
 import { ParentSize } from '@visx/visx';
-import { map, prop, propEq, find, reject, sortBy, isEmpty, isNil } from 'ramda';
+import {
+  map,
+  prop,
+  propEq,
+  find,
+  reject,
+  sortBy,
+  isEmpty,
+  isNil,
+  head,
+  equals,
+  pipe,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
@@ -118,7 +130,7 @@ const PerformanceGraph = ({
     return find(propEq('metric', metric), lineData) as LineModel;
   };
 
-  const toggleMetricDisplay = (metric): void => {
+  const toggleMetricLine = (metric): void => {
     const line = getLineByMetric(metric);
 
     setLineData([
@@ -140,9 +152,40 @@ const PerformanceGraph = ({
     setLineData(map((line) => ({ ...line, highlight: undefined }), lineData));
   };
 
+  const selectMetricLine = (metric: string): void => {
+    const metricLine = getLineByMetric(metric);
+
+    const isLineDisplayed = pipe(head, equals(metricLine))(displayedLines);
+    const isOnlyLineDisplayed = displayedLines.length === 1 && isLineDisplayed;
+
+    if (isOnlyLineDisplayed || isEmpty(displayedLines)) {
+      setLineData(
+        map(
+          (line) => ({
+            ...line,
+            display: true,
+          }),
+          lineData,
+        ),
+      );
+
+      return;
+    }
+
+    setLineData(
+      map(
+        (line) => ({
+          ...line,
+          display: equals(line, metricLine),
+        }),
+        lineData,
+      ),
+    );
+  };
+
   return (
     <div className={classes.container}>
-      <Typography variant="body1" color="textPrimary">
+      <Typography variant="body1" color="textPrimary" align="center">
         {title}
       </Typography>
 
@@ -167,10 +210,11 @@ const PerformanceGraph = ({
       <div className={classes.legend}>
         <Legend
           lines={sortedLines}
-          onItemToggle={toggleMetricDisplay}
+          onToggle={toggleMetricLine}
+          onSelect={selectMetricLine}
           toggable={toggableLegend}
-          onItemHighlight={highlightLine}
-          onClearItemHighlight={clearHighlight}
+          onHighlight={highlightLine}
+          onClearHighlight={clearHighlight}
         />
       </div>
     </div>
