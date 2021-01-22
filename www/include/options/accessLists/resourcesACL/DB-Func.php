@@ -46,6 +46,7 @@ function testExistence($name = null)
     if (isset($form)) {
         $id = $form->getSubmitValue('lca_id');
     }
+    $name = filter_var($name, FILTER_SANITIZE_STRING);
     $DBRESULT = $pearDB->query("SELECT acl_res_name, acl_res_id FROM `acl_resources`
         WHERE acl_res_name = '".$name."'");
     $lca = $DBRESULT->fetchRow();
