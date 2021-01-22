@@ -255,7 +255,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`nagios_id` , `nagios_name` , `use_timezone`, `nagios_server_id`, `log_file` , `cfg_dir` , "
         . "`temp_file` , "
         . "`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , "
-        . "`enable_notifications` , `execute_service_checks` , "
+        . "`postpone_notification_to_timeperiod`, `enable_notifications` , `execute_service_checks` , "
         . "`accept_passive_service_checks` , `execute_host_checks` , "
         . "`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , "
         . "`check_external_commands` , `command_check_interval` , `command_file` , `downtime_file` , `comment_file` , "
@@ -359,6 +359,14 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" . htmlentities($ret["nagios_group"], ENT_QUOTES, "UTF-8") . "', ";
     } else {
         $rq .= "NULL, ";
+    }
+
+    if (isset($ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"])
+        && $ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"] != 2
+    ) {
+        $rq .= "'" . $ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"] . "',  ";
+    } else {
+        $rq .= "'2', ";
     }
 
     if (isset($ret["enable_notifications"]["enable_notifications"])
