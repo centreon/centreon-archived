@@ -71,7 +71,7 @@ try {
         // remove the sessions
         $expiredSessions = implode(', ', $expiredSessions);
         $pearDB->query("DELETE FROM session WHERE `id` IN ($expiredSessions)");
-        // log session removed in login.log
+        // log removed sessions in login.log
         foreach ($userSessions as $userSession) {
             $centreonLog->insertLog(1, "Remove expired session of: " . $userSession);
         }
