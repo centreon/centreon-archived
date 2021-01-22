@@ -27,22 +27,22 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostSeverityReadRepositoryInter
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 
 /**
- * This class is designed to represent a use case to find all host groups
+ * This class is designed to represent a use case to find all host severities
  *
- * @package Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup
+ * @package Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity
  */
 class FindHostSeverities
 {
     /**
-     * @var HostGroupReadRepositoryInterface
+     * @var HostSeverityReadRepositoryInterface
      */
     private $hostSeverityReadRepository;
-    
+
     /**
      * @var string|null
      */
     private $mediaPath;
-    
+
     /**
      * @param HostSeverityReadRepositoryInterface $configurationReadRepository
      */
@@ -50,7 +50,7 @@ class FindHostSeverities
     {
         $this->hostSeverityReadRepository = $configurationReadRepository;
     }
-    
+
     /**
      * @param string|null $mediaPath
      * @return FindHostSeverities
@@ -60,7 +60,7 @@ class FindHostSeverities
         $this->mediaPath = $mediaPath;
         return $this;
     }
-    
+
     /**
      * Execute the use case for which this class was designed.
      *
@@ -80,9 +80,9 @@ class FindHostSeverities
         $response->setHostSeverities($hostSeverities);
         return $response;
     }
-    
+
     /**
-     * Updated all media paths for all host groups.
+     * Updated all media paths for all host severities.
      *
      * @param HostSeverity[] $hostSeverities
      * @throws \Assert\AssertionFailedException
