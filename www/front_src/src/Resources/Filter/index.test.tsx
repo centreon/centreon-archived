@@ -442,7 +442,7 @@ describe(Filter, () => {
           statuses: [],
           hostGroups: [],
           serviceGroups: [],
-          search: undefined,
+          search: '',
         },
         sort: [defaultSortField, defaultSortOrder],
       };

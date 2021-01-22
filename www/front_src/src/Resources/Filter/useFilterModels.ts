@@ -157,7 +157,7 @@ const useFilterModels = (): FilterModelsContext => {
       statuses: [],
       hostGroups: [],
       serviceGroups: [],
-      search: undefined,
+      search: '',
     },
     sort: [defaultSortField, defaultSortOrder],
   };
@@ -166,7 +166,7 @@ const useFilterModels = (): FilterModelsContext => {
     id: 'unhandled_problems',
     name: t(labelUnhandledProblems),
     criterias: {
-      search: undefined,
+      search: '',
       resourceTypes: [],
       states: [unhandledState],
       statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
@@ -185,7 +185,7 @@ const useFilterModels = (): FilterModelsContext => {
       statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
       hostGroups: [],
       serviceGroups: [],
-      search: undefined,
+      search: '',
     },
     sort: [defaultSortField, defaultSortOrder],
   };
