@@ -46,12 +46,13 @@ function testExistence($name = null)
         $id = $form->getSubmitValue('lca_id');
     }
     $name = filter_var($name, FILTER_SANITIZE_STRING);
-    $query = "SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = '" . $name . "'";
-    $dbResult = $pearDB->query($query);
-    $lca = $dbResult->fetch();
-    if ($dbResult->rowCount() >= 1 && $lca["acl_res_id"] == $id) {
+    $statement = $pearDB->prepare("SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = :name");
+    $statement->bindValue(':name', $name, \PDO::PARAM_STR);
+    $statement->execute();
+    $lca = $statement->fetch();
+    if ($statement->rowCount() >= 1 && $lca["acl_res_id"] == $id) {
         return true;
-    } elseif ($dbResult->rowCount() >= 1 && $lca["acl_res_id"] != $id) {
+    } elseif ($statement->rowCount() >= 1 && $lca["acl_res_id"] != $id) {
         return false;
     } else {
         return true;
