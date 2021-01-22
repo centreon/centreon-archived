@@ -94,7 +94,7 @@ class FindHostSeverities
                 $icon = $hostSeverity->getIcon();
                 if (
                     $icon !== null
-                    && $icon->getPath() !== null
+                    && $icon->getPath() !== ''
                     && substr($icon->getPath(), 0, strlen($this->mediaPath)) !== $this->mediaPath
                 ) {
                     $icon->setPath(
