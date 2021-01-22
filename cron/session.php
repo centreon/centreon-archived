@@ -26,14 +26,12 @@ include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 $centreonLog = new CentreonLog();
+$pearDB = new CentreonDB();
 
 // Default session duration
 define('SESSION_DEFAULT_DURATION', 120);
 
 try {
-    // Init DB connections
-    $pearDB = new CentreonDB();
-
     /**
      * Remove expired sessions
      */
