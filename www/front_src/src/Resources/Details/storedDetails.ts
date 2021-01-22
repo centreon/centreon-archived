@@ -1,6 +1,6 @@
 import { getStoredOrDefault, store } from '../storage';
 
-const key = 'centreon-resource-status-details';
+const key = 'centreon-resource-status-details-21.04';
 
 let cachedPanelWidth;
 
