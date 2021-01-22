@@ -50,12 +50,11 @@ import { defaultSortOrder, defaultSortField } from '../Listing/columns';
 
 import { Filter as FilterModel } from './models';
 import useFilter from './useFilter';
+import { key as filterStorageKey } from './storedFilter';
 
 import Filter from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-
-const filterStorageKey = 'centreon-resource-status-filter';
 
 jest.mock('react-redux', () => ({
   ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),

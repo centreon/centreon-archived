@@ -25,4 +25,4 @@ const clearCachedFilter = (): void => {
   cachedFilter = null;
 };
 
-export { getStoredOrDefaultFilter, storeFilter, clearCachedFilter };
+export { getStoredOrDefaultFilter, storeFilter, clearCachedFilter, key };

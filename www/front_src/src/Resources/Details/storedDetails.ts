@@ -23,4 +23,9 @@ const clearCachedPanelWidth = (): void => {
   cachedPanelWidth = null;
 };
 
-export { getStoredOrDefaultPanelWidth, storePanelWidth, clearCachedPanelWidth };
+export {
+  getStoredOrDefaultPanelWidth,
+  storePanelWidth,
+  clearCachedPanelWidth,
+  key,
+};
