@@ -188,7 +188,7 @@ class RemoteServerService implements RemoteServerServiceInterface
 
         /**
          * Find any children platform and remove them,
-         * as they now attached to the Central and no longer to this platform.
+         * as they are now attached to the Central and no longer to this platform.
          *
          * @var Platform[] $childrenPlatforms
          */
