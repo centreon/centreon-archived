@@ -205,7 +205,7 @@ class CentreonDependency extends CentreonObject
         }
         return "";
     }
-    
+
     /**
      * @param int $dependencyId
      * @return string
@@ -217,7 +217,10 @@ class CentreonDependency extends CentreonObject
         $stmt->bindParam(':depId', $dependencyId, \PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch();
-        return $row['dep_name'];
+        if (isset($row['dep_name'])) {
+            return $row['dep_name'];
+        }
+        return "";
     }
 
     /**
@@ -713,9 +716,12 @@ class CentreonDependency extends CentreonObject
         }
         $dataField = ['dependency_dep_id' => $depId, 'hostgroup_hg_id' => $ids[0]];
         if ($this->isExistingDependency($table, $dataField)) {
-            $depName = $this->getDependencyName($depId);
             throw new CentreonClapiException(
-                sprintf('Hostgroup %s already link to the dependency %s', $objectToInsert, $depName)
+                sprintf(
+                    'Hostgroup %s already link to the dependency %s',
+                    $objectToInsert,
+                    $this->getDependencyName($depId)
+                )
             );
         }
         $sql = "INSERT INTO {$table} (dependency_dep_id, hostgroup_hg_id) VALUES (?, ?)";
@@ -738,9 +744,12 @@ class CentreonDependency extends CentreonObject
         }
         $dataField = ['dependency_dep_id' => $depId, 'servicegroup_sg_id' => $ids[0]];
         if ($this->isExistingDependency($table, $dataField)) {
-            $depName = $this->getDependencyName($depId);
             throw new CentreonClapiException(
-                sprintf('Servicegroup %s already link to the dependency %s', $objectToInsert, $depName)
+                sprintf(
+                    'Servicegroup %s already link to the dependency %s',
+                    $objectToInsert,
+                    $this->getDependencyName($depId)
+                )
             );
         }
         $sql = "INSERT INTO {$table} (dependency_dep_id, servicegroup_sg_id) VALUES (?, ?)";
@@ -763,9 +772,12 @@ class CentreonDependency extends CentreonObject
         }
         $dataField = ['dependency_dep_id' => $depId, 'meta_service_meta_id' => $ids[0]];
         if ($this->isExistingDependency($table, $dataField)) {
-            $depName = $this->getDependencyName($depId);
             throw new CentreonClapiException(
-                sprintf('Meta %s already already link to the dependency %s', $objectToInsert, $depName)
+                sprintf(
+                    'Meta %s already already link to the dependency %s',
+                    $objectToInsert,
+                    $this->getDependencyName($depId)
+                )
             );
         }
         $sql = "INSERT INTO {$table} (dependency_dep_id, meta_service_meta_id) VALUES (?, ?)";
@@ -788,9 +800,12 @@ class CentreonDependency extends CentreonObject
             }
             $dataField = ['dependency_dep_id' => $depId, 'host_host_id' => $hostIds[0]];
             if ($this->isExistingDependency('dependency_hostParent_relation', $dataField)) {
-                $depName = $this->getDependencyName($depId);
                 throw new CentreonClapiException(
-                    sprintf('Host %s already link to the dependency %s', $objectToInsert, $depName)
+                    sprintf(
+                        'Host %s already link to the dependency %s',
+                        $objectToInsert,
+                        $this->getDependencyName($depId)
+                    )
                 );
             }
             $sql = "INSERT INTO dependency_hostParent_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
@@ -807,9 +822,13 @@ class CentreonDependency extends CentreonObject
                 'service_service_id' => $idTab[1]
             ];
             if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
-                $depName = $this->getDependencyName($depId);
                 throw new CentreonClapiException(
-                    sprintf('Dependency between service %s and host %s already exist on %s', $service, $host, $depName)
+                    sprintf(
+                        'Dependency between service %s and host %s already exist on %s',
+                        $service,
+                        $host,
+                        $this->getDependencyName($depId)
+                    )
                 );
             }
             $sql = "INSERT INTO dependency_serviceChild_relation (dependency_dep_id, host_host_id, service_service_id)
@@ -823,9 +842,12 @@ class CentreonDependency extends CentreonObject
             }
             $dataField = ['dependency_dep_id' => $depId, 'host_host_id' => $hostIds[0]];
             if ($this->isExistingDependency('dependency_hostChild_relation', $dataField)) {
-                $depName = $this->getDependencyName($depId);
                 throw new CentreonClapiException(
-                    sprintf('Host %s already link to the dependency %s', $objectToInsert, $depName)
+                    sprintf(
+                        'Host %s already link to the dependency %s',
+                        $objectToInsert,
+                        $this->getDependencyName($depId)
+                    )
                 );
             }
             $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
@@ -857,9 +879,13 @@ class CentreonDependency extends CentreonObject
                 'service_service_id' => $idTab[1]
             ];
             if ($this->isExistingDependency('dependency_serviceParent_relation', $dataField)) {
-                $depName = $this->getDependencyName($depId);
                 throw new CentreonClapiException(
-                    sprintf('Dependency between service %s and host %s already exist on %s', $service, $host, $depName)
+                    sprintf(
+                        'Dependency between service %s and host %s already exist on %s',
+                        $service,
+                        $host,
+                        $this->getDependencyName($depId)
+                    )
                 );
             }
             $sql = "INSERT INTO dependency_serviceParent_relation (dependency_dep_id, host_host_id, service_service_id)
@@ -879,9 +905,13 @@ class CentreonDependency extends CentreonObject
                 'service_service_id' => $idTab[1]
             ];
             if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
-                $depName = $this->getDependencyName($depId);
                 throw new CentreonClapiException(
-                    sprintf('Dependency between service %s and host %s already exist on %s', $service, $host, $depName)
+                    sprintf(
+                        'Dependency between service %s and host %s already exist on %s',
+                        $service,
+                        $host,
+                        $this->getDependencyName($depId)
+                    )
                 );
             }
             $sql = "INSERT INTO dependency_serviceChild_relation (dependency_dep_id, host_host_id, service_service_id)
@@ -895,9 +925,12 @@ class CentreonDependency extends CentreonObject
             }
             $dataField = ['dependency_dep_id' => $depId, 'host_host_id' => $hostIds[0]];
             if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
-                $depName = $this->getDependencyName($depId);
                 throw new CentreonClapiException(
-                    sprintf('Service %s already link to the dependency %s', $objectToInsert, $depName)
+                    sprintf(
+                        'Service %s already link to the dependency %s',
+                        $objectToInsert,
+                        $this->getDependencyName($depId)
+                    )
                 );
             }
             $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
