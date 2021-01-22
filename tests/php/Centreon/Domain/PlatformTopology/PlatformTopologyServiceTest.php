@@ -22,7 +22,6 @@
 namespace Tests\Centreon\Domain\PlatformTopology;
 
 use PHPUnit\Framework\TestCase;
-use Centreon\Domain\Broker\Broker;
 use Centreon\Domain\Broker\BrokerConfiguration;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Engine\EngineException;
