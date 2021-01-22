@@ -35,15 +35,15 @@
  *
  */
 
-// Default session duration
-define('SESSION_DEFAULT_DURATION', 120);
-
 require_once realpath(__DIR__ . "/../config/centreon.config.php");
 include_once _CENTREON_PATH_ . "/cron/centAcl-Func.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 $centreonLog = new CentreonLog();
+
+// Default session duration
+define('SESSION_DEFAULT_DURATION', 120);
 
 try {
     // Init DB connections
