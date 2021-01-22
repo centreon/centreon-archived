@@ -35,15 +35,15 @@
  *
  */
 
+// Default session duration
+define('SESSION_DEFAULT_DURATION', 120);
+
 require_once realpath(__DIR__ . "/../config/centreon.config.php");
 include_once _CENTREON_PATH_ . "/cron/centAcl-Func.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 $centreonLog = new CentreonLog();
-
-// Default session duration
-define('SESSION_DEFAULT_DURATION', 120);
 
 try {
     // Init DB connections
@@ -62,9 +62,9 @@ try {
         $pearDB->query("DELETE FROM options WHERE `key` = 'session_expire'");
         $pearDB->query("INSERT INTO options (`key`, `value`) VALUES ('session_expire', '$sessionDuration')");
         $centreonLog->insertLog(
-                1,
-                "Cannot find session duration value. Setting a default value of " .
-                SESSION_DEFAULT_DURATION . " minutes"
+            1,
+            "Cannot find session duration value. Setting a default value of " .
+            SESSION_DEFAULT_DURATION . " minutes"
         );
     }
 
