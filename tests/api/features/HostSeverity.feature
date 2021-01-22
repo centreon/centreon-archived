@@ -31,7 +31,7 @@ Feature:
                 "icon": {
                     "id": 1,
                     "name": "centreon",
-                    "path": "logos/centreon.png",
+                    "path": "img/media/logos/centreon.png",
                     "comment": "centreon logo"
                 },
                 "comments": "blabla bla",
