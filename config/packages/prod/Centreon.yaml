@@ -221,6 +221,12 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostSeverityReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostSeverityRepositoryRDB
 
+    Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities:
+        class: Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities
+        calls:
+            - method: setMediaPath
+              arguments: ["%media_path%"]
+
     # Host group configuration
     Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostGroupRepositoryRDB
