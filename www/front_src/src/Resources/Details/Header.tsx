@@ -84,11 +84,13 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
     <>
       {details.severity && (
         <StatusChip
+          clickable={false}
           severityCode={SeverityCode.None}
           label={details.severity.level?.toString()}
         />
       )}
       <StatusChip
+        clickable={false}
         severityCode={details.status.severity_code}
         label={t(details.status.name)}
       />
@@ -96,7 +98,10 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
         <Typography className={classes.truncated}>{details.name}</Typography>
         {details.parent && (
           <div className={classes.parent}>
-            <StatusChip severityCode={details.parent.status?.severity_code} />
+            <StatusChip
+              clickable={false}
+              severityCode={details.parent.status?.severity_code}
+            />
             <Typography variant="caption" className={classes.truncated}>
               {details.parent.name}
             </Typography>

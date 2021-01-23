@@ -3,7 +3,7 @@ import * as React from 'react';
 import { prop, isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Chip, Typography } from '@material-ui/core';
 import EventIcon from '@material-ui/icons/Event';
 import CommentIcon from '@material-ui/icons/Comment';
 import NotificationIcon from '@material-ui/icons/Notifications';
@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   info: {
     display: 'grid',
     gridAutoFlow: 'row',
-    gridGap: theme.spacing(0.5),
+    gridGap: 4,
   },
   title: {
     display: 'grid',
@@ -96,13 +96,13 @@ const Date = ({ event }: Props): JSX.Element => {
 const Content = ({ event }: Props): JSX.Element => {
   const { content } = event;
 
-  return <Typography variant="caption">{truncate(content)}</Typography>;
+  return <Typography variant="subtitle2">{truncate(content)}</Typography>;
 };
 
-const Author = ({ event, label }: Props & { label: string }): JSX.Element => {
+const Author = ({ event }: Props): JSX.Element => {
   const suffix = event.contact ? `${labelBy} ${event.contact.name}` : '';
 
-  return <Typography variant="h6">{`${label} ${suffix}`}</Typography>;
+  return <Chip label={suffix} size="small" variant="outlined" />;
 };
 
 const EventTimelineEvent = ({ event }: Props): JSX.Element => {
@@ -113,23 +113,41 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
     <div className={classes.event}>
       <EventIcon color="primary" />
       <div className={classes.info}>
-        <Date event={event} />
-        <div className={classes.title}>
-          <Typography variant="h6">{t(labelEvent)}</Typography>
+        <div
+          style={{
+            display: 'grid',
+            gridGap: 16,
+            gridAutoFlow: 'column',
+            gridTemplateColumns: 'minmax(auto, 60px) auto 1fr',
+          }}
+        >
+          <Date event={event} />
           <StatusChip
+            style={{
+              height: 18,
+              fontSize: '0.75rem',
+            }}
+            clickable={false}
+            title={t(labelEvent)}
             severityCode={event.status?.severity_code as number}
             label={t(event.status?.name as string)}
           />
+          <Typography
+            style={{
+              justifySelf: 'end',
+            }}
+            variant="caption"
+          >
+            {`${t(labelTries)}: ${event.tries}`}
+          </Typography>
         </div>
         <Content event={event} />
       </div>
-      <Typography>{`${t(labelTries)}: ${event.tries}`}</Typography>
     </div>
   );
 };
 
 const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -138,7 +156,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Author event={event} label={t(labelComment)} />
+          <Author event={event} />
         </div>
         <Content event={event} />
       </div>
@@ -147,16 +165,24 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
       <AcknowledgeChip />
       <div className={classes.info}>
-        <Date event={event} />
-        <div className={classes.title}>
-          <Author event={event} label={t(labelAcknowledgement)} />
+        <div
+          style={{
+            display: 'grid',
+            gridGap: 16,
+            gridAutoFlow: 'column',
+            gridTemplateColumns: 'auto auto 1fr',
+          }}
+        >
+          <Date event={event} />
+          <div className={classes.title}>
+            <Author event={event} />
+          </div>
         </div>
         <Content event={event} />
       </div>
@@ -189,7 +215,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
       <div className={classes.info}>
         <Date event={event} />
         <div className={classes.title}>
-          <Author event={event} label={t(labelDowntime)} />
+          <Author event={event} />
         </div>
         <Typography variant="caption">{getCaption()}</Typography>
         <Content event={event} />

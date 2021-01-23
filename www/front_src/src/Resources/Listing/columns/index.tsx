@@ -70,6 +70,7 @@ const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
 
   return (
     <StatusChip
+      clickable={false}
       label={row.severity.level.toString()}
       severityCode={SeverityCode.None}
       classes={{
@@ -132,6 +133,7 @@ const StatusColumnOnHover = ({
       </Grid>
       <Grid item>
         <StatusChip
+          clickable={false}
           label={row.status.name[0]}
           severityCode={row.status.severity_code}
           classes={{
@@ -152,6 +154,7 @@ const StatusColumn = ({ actions, t }) => ({
     <StatusColumnOnHover actions={actions} row={row} />
   ) : (
     <StatusChip
+      clickable={false}
       style={{ width: 100, height: 20, margin: 2 }}
       label={t(row.status.name)}
       severityCode={row.status.severity_code}
@@ -168,6 +171,7 @@ const ResourceColumn = ({ row }: ComponentColumnProps): JSX.Element => {
         <img src={row.icon.url} alt={row.icon.name} width={16} height={16} />
       ) : (
         <StatusChip
+          clickable={false}
           label={row.short_type}
           severityCode={SeverityCode.None}
           classes={{
@@ -194,7 +198,10 @@ const ParentResourceColumn = ({
 
   return (
     <div className={classes.resourceDetailsCell}>
-      <StatusChip severityCode={row.parent?.status?.severity_code || 0} />
+      <StatusChip
+        clickable={false}
+        severityCode={row.parent?.status?.severity_code || 0}
+      />
       <div className={classes.resourceNameItem}>
         <Typography variant="body2">{row.parent.name}</Typography>
       </div>
