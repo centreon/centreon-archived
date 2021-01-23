@@ -15271,8 +15271,8 @@ msgstr "Acquitter les services attachés à l'hôte"
 msgid "at"
 msgstr "à"
 
-msgid "Clear all"
-msgstr "Effacer tout"
+msgid "Clear"
+msgstr "Effacer"
 
 msgid "Criterias"
 msgstr "Critères"

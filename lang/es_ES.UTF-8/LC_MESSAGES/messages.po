@@ -14326,7 +14326,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "at"
 #  msgstr ""
 
-#  msgid "Clear all"
+#  msgid "Clear"
 #  msgstr ""
 
 #  msgid "Criterias"
