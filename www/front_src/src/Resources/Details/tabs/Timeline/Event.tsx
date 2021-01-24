@@ -136,14 +136,13 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
 
   return (
     <div className={classes.event}>
-      <EventIcon color="primary" />
+      <EventIcon aria-label={t(labelEvent)} color="primary" />
       <div className={classes.info}>
         <div className={classes.infoHeader}>
           <Date event={event} />
           <StatusChip
             className={classes.chip}
             clickable={false}
-            title={t(labelEvent)}
             severityCode={event.status?.severity_code as number}
             label={t(event.status?.name as string)}
           />
@@ -163,11 +162,12 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
-      <CommentIcon color="primary" />
+      <CommentIcon aria-label={t(labelComment)} color="primary" />
       <div className={classes.info}>
         <div className={classes.infoHeader}>
           <Date event={event} />
@@ -182,11 +182,12 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
-      <AcknowledgeChip />
+      <AcknowledgeChip aria-label={t(labelAcknowledgement)} />
       <div className={classes.info}>
         <div className={classes.infoHeader}>
           <Date event={event} />
@@ -221,7 +222,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
 
   return (
     <div className={classes.event}>
-      <DowntimeChip />
+      <DowntimeChip aria-label={t(labelDowntime)} />
       <div className={classes.info}>
         <div className={classes.infoHeader}>
           <Typography variant="caption">{getCaption()}</Typography>
@@ -236,11 +237,12 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
-      <NotificationIcon color="primary" />
+      <NotificationIcon aria-label={t(labelNotification)} color="primary" />
       <div className={classes.info}>
         <div className={classes.infoHeader}>
           <Date event={event} />
