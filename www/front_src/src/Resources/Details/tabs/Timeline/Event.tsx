@@ -2,11 +2,14 @@ import * as React from 'react';
 
 import { prop, isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import parse from 'html-react-parser';
+import DOMPurify from 'dompurify';
 
 import { makeStyles, Chip, Typography } from '@material-ui/core';
 import EventIcon from '@material-ui/icons/Event';
 import CommentIcon from '@material-ui/icons/Comment';
 import NotificationIcon from '@material-ui/icons/Notifications';
+import FaceIcon from '@material-ui/icons/Face';
 
 import { StatusChip, useLocaleDateTimeFormat } from '@centreon/ui';
 
@@ -15,10 +18,8 @@ import {
   labelComment,
   labelAcknowledgement,
   labelDowntime,
-  labelBy,
   labelFrom,
   labelTo,
-  labelNotificationSentTo,
   labelTries,
   labelNotification,
 } from '../../../translatedLabels';
@@ -63,7 +64,13 @@ const useStyles = makeStyles((theme) => ({
   info: {
     display: 'grid',
     gridAutoFlow: 'row',
-    gridGap: 4,
+    gridGap: theme.spacing(1),
+  },
+  infoHeader: {
+    display: 'grid',
+    gridGap: theme.spacing(2),
+    gridAutoFlow: 'column',
+    gridTemplateColumns: 'minmax(80px, auto) auto 1fr',
   },
   title: {
     display: 'grid',
@@ -81,6 +88,10 @@ const useStyles = makeStyles((theme) => ({
     gridGap: theme.spacing(2),
     alignItems: 'center',
   },
+  chip: {
+    height: 18,
+    fontSize: theme.typography.pxToRem(12),
+  },
 }));
 
 interface Props {
@@ -96,13 +107,27 @@ const Date = ({ event }: Props): JSX.Element => {
 const Content = ({ event }: Props): JSX.Element => {
   const { content } = event;
 
-  return <Typography variant="subtitle2">{truncate(content)}</Typography>;
+  return (
+    <Typography variant="body2" style={{ fontWeight: 600 }}>
+      {parse(DOMPurify.sanitize(truncate(content)))}
+    </Typography>
+  );
 };
 
 const Author = ({ event }: Props): JSX.Element => {
-  const suffix = event.contact ? `${labelBy} ${event.contact.name}` : '';
+  const classes = useStyles();
 
-  return <Chip label={suffix} size="small" variant="outlined" />;
+  const contactName = event.contact?.name || '';
+
+  return (
+    <Chip
+      className={classes.chip}
+      icon={<FaceIcon />}
+      label={contactName}
+      size="small"
+      variant="outlined"
+    />
+  );
 };
 
 const EventTimelineEvent = ({ event }: Props): JSX.Element => {
@@ -113,20 +138,10 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
     <div className={classes.event}>
       <EventIcon color="primary" />
       <div className={classes.info}>
-        <div
-          style={{
-            display: 'grid',
-            gridGap: 16,
-            gridAutoFlow: 'column',
-            gridTemplateColumns: 'minmax(auto, 60px) auto 1fr',
-          }}
-        >
+        <div className={classes.infoHeader}>
           <Date event={event} />
           <StatusChip
-            style={{
-              height: 18,
-              fontSize: '0.75rem',
-            }}
+            className={classes.chip}
             clickable={false}
             title={t(labelEvent)}
             severityCode={event.status?.severity_code as number}
@@ -154,9 +169,11 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
     <div className={classes.event}>
       <CommentIcon color="primary" />
       <div className={classes.info}>
-        <Date event={event} />
-        <div className={classes.title}>
-          <Author event={event} />
+        <div className={classes.infoHeader}>
+          <Date event={event} />
+          <div className={classes.title}>
+            <Author event={event} />
+          </div>
         </div>
         <Content event={event} />
       </div>
@@ -171,14 +188,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
     <div className={classes.event}>
       <AcknowledgeChip />
       <div className={classes.info}>
-        <div
-          style={{
-            display: 'grid',
-            gridGap: 16,
-            gridAutoFlow: 'column',
-            gridTemplateColumns: 'auto auto 1fr',
-          }}
-        >
+        <div className={classes.infoHeader}>
           <Date event={event} />
           <div className={classes.title}>
             <Author event={event} />
@@ -213,11 +223,12 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
     <div className={classes.event}>
       <DowntimeChip />
       <div className={classes.info}>
-        <Date event={event} />
-        <div className={classes.title}>
-          <Author event={event} />
+        <div className={classes.infoHeader}>
+          <Typography variant="caption">{getCaption()}</Typography>
+          <div className={classes.title}>
+            <Author event={event} />
+          </div>
         </div>
-        <Typography variant="caption">{getCaption()}</Typography>
         <Content event={event} />
       </div>
     </div>
@@ -225,18 +236,17 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
       <NotificationIcon color="primary" />
       <div className={classes.info}>
-        <Date event={event} />
-        <div className={classes.title}>
-          <Typography variant="h6">
-            {`${t(labelNotificationSentTo)} ${event.contact?.name}`}
-          </Typography>
+        <div className={classes.infoHeader}>
+          <Date event={event} />
+          <div className={classes.title}>
+            <Author event={event} />
+          </div>
         </div>
         <Content event={event} />
       </div>
