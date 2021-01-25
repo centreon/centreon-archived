@@ -25,6 +25,7 @@ import {
   GraphTabParameters,
   TabParameters,
 } from './models';
+import { getStoredOrDefaultPanelWidth, storePanelWidth } from './storedDetails';
 
 export interface DetailsState {
   clearSelectedResource: () => void;
@@ -49,6 +50,8 @@ export interface DetailsState {
   tabParameters: TabParameters;
   setServicesTabParameters: (parameters: ServicesTabParameters) => void;
   setGraphTabParameters: (parameters: GraphTabParameters) => void;
+  panelWidth: number;
+  setPanelWidth: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const useDetails = (): DetailsState => {
@@ -70,6 +73,9 @@ const useDetails = (): DetailsState => {
   ] = React.useState<string>();
   const [details, setDetails] = React.useState<ResourceDetails>();
   const [tabParameters, setTabParameters] = React.useState<TabParameters>({});
+  const [panelWidth, setPanelWidth] = React.useState(
+    getStoredOrDefaultPanelWidth(550),
+  );
 
   const { t } = useTranslation();
 
@@ -166,6 +172,10 @@ const useDetails = (): DetailsState => {
     loadDetails();
   }, [selectedResourceId]);
 
+  React.useEffect(() => {
+    storePanelWidth(panelWidth);
+  }, [panelWidth]);
+
   const setServicesTabParameters = (
     parameters: ServicesTabParameters,
   ): void => {
@@ -191,6 +201,8 @@ const useDetails = (): DetailsState => {
     tabParameters,
     setServicesTabParameters,
     setGraphTabParameters,
+    panelWidth,
+    setPanelWidth,
   };
 };
 

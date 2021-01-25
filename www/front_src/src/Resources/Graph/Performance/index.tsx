@@ -1,7 +1,19 @@
 import * as React from 'react';
 
 import { ParentSize } from '@visx/visx';
-import { map, prop, propEq, find, reject, sortBy, isEmpty, isNil } from 'ramda';
+import {
+  map,
+  prop,
+  propEq,
+  find,
+  reject,
+  sortBy,
+  isEmpty,
+  isNil,
+  head,
+  equals,
+  pipe,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
@@ -29,8 +41,8 @@ interface Props {
   resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  tooltipX?: number;
-  onTooltipDisplay?: (x?: number) => void;
+  tooltipPosition?: [number, number];
+  onTooltipDisplay?: (position?: [number, number]) => void;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -41,6 +53,7 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
     gridGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
+    width: 'auto',
   },
   noDataContainer: {
     display: 'flex',
@@ -64,7 +77,7 @@ const PerformanceGraph = ({
   toggableLegend = false,
   eventAnnotationsActive = false,
   timeline,
-  tooltipX,
+  tooltipPosition,
   onTooltipDisplay,
   resource,
   onAddComment,
@@ -117,7 +130,7 @@ const PerformanceGraph = ({
     return find(propEq('metric', metric), lineData) as LineModel;
   };
 
-  const toggleMetricDisplay = (metric): void => {
+  const toggleMetricLine = (metric): void => {
     const line = getLineByMetric(metric);
 
     setLineData([
@@ -139,9 +152,40 @@ const PerformanceGraph = ({
     setLineData(map((line) => ({ ...line, highlight: undefined }), lineData));
   };
 
+  const selectMetricLine = (metric: string): void => {
+    const metricLine = getLineByMetric(metric);
+
+    const isLineDisplayed = pipe(head, equals(metricLine))(displayedLines);
+    const isOnlyLineDisplayed = displayedLines.length === 1 && isLineDisplayed;
+
+    if (isOnlyLineDisplayed || isEmpty(displayedLines)) {
+      setLineData(
+        map(
+          (line) => ({
+            ...line,
+            display: true,
+          }),
+          lineData,
+        ),
+      );
+
+      return;
+    }
+
+    setLineData(
+      map(
+        (line) => ({
+          ...line,
+          display: equals(line, metricLine),
+        }),
+        lineData,
+      ),
+    );
+  };
+
   return (
     <div className={classes.container}>
-      <Typography variant="body1" color="textPrimary">
+      <Typography variant="body1" color="textPrimary" align="center">
         {title}
       </Typography>
 
@@ -156,7 +200,7 @@ const PerformanceGraph = ({
             xAxisTickFormat={xAxisTickFormat}
             timeline={timeline}
             onTooltipDisplay={onTooltipDisplay}
-            tooltipX={tooltipX}
+            tooltipPosition={tooltipPosition}
             resource={resource}
             onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}
@@ -166,10 +210,11 @@ const PerformanceGraph = ({
       <div className={classes.legend}>
         <Legend
           lines={sortedLines}
-          onItemToggle={toggleMetricDisplay}
+          onToggle={toggleMetricLine}
+          onSelect={selectMetricLine}
           toggable={toggableLegend}
-          onItemHighlight={highlightLine}
-          onClearItemHighlight={clearHighlight}
+          onHighlight={highlightLine}
+          onClearHighlight={clearHighlight}
         />
       </div>
     </div>

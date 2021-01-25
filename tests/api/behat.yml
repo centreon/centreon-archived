@@ -60,3 +60,7 @@ default:
       paths: [ "%paths.base%/features/PlatformInformation.feature" ]
       contexts:
         - Centreon\Test\Api\Context\PlatformInformationContext
+    host_groups:
+      paths: [ "%paths.base%/features/HostGroup.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\HostGroupContext

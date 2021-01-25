@@ -12,7 +12,6 @@ import {
   useTooltip,
   useTooltipInPortal,
   localPoint,
-  TooltipWithBounds,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
@@ -79,8 +78,8 @@ interface Props {
   base: number;
   lines: Array<LineModel>;
   xAxisTickFormat: string;
-  tooltipX?: number;
-  onTooltipDisplay?: (tooltipX?: number) => void;
+  tooltipPosition?: [number, number];
+  onTooltipDisplay?: (tooltipPosition?: [number, number]) => void;
   timeline?: Array<TimelineEvent>;
   resource: Resource | ResourceDetails;
   onAddComment?: (commentParameters: CommentParameters) => void;
@@ -96,8 +95,8 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
       isNil(onAddComment) ? 'normal' : 'crosshair',
   },
   tooltip: {
-    opacity: 0.8,
     padding: 12,
+    zIndex: theme.zIndex.tooltip,
   },
   addCommentTooltip: {
     position: 'absolute',
@@ -111,6 +110,21 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
     fontSize: 10,
   },
 }));
+
+interface Props {
+  width: number;
+  height: number;
+  timeSeries: Array<TimeValue>;
+  base: number;
+  lines: Array<LineModel>;
+  xAxisTickFormat: string;
+  timeline?: Array<TimelineEvent>;
+  onTooltipDisplay?: (position?: [number, number]) => void;
+  tooltipPosition?: [number, number];
+  resource: Resource | ResourceDetails;
+  onAddComment?: (commentParameters: CommentParameters) => void;
+  eventAnnotationsActive: boolean;
+}
 
 const getScale = ({
   values,
@@ -137,7 +151,7 @@ const Graph = ({
   lines,
   xAxisTickFormat,
   timeline,
-  tooltipX,
+  tooltipPosition,
   onTooltipDisplay,
   resource,
   onAddComment,
@@ -168,10 +182,12 @@ const Graph = ({
     hideTooltip: hideAddCommentTooltip,
   } = useTooltip();
 
-  const { containerRef, containerBounds } = useTooltipInPortal({
-    detectBounds: true,
-    scroll: true,
-  });
+  const { containerRef, containerBounds, TooltipInPortal } = useTooltipInPortal(
+    {
+      detectBounds: true,
+      scroll: true,
+    },
+  );
 
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
@@ -294,7 +310,7 @@ const Graph = ({
 
       showTooltipAt({ x, y });
 
-      onTooltipDisplay?.(x);
+      onTooltipDisplay?.([x, y]);
     },
     [showTooltip, containerBounds, lines],
   );
@@ -304,13 +320,15 @@ const Graph = ({
       return;
     }
 
-    if (isNil(tooltipX)) {
+    if (isNil(tooltipPosition)) {
       hideTooltip();
       return;
     }
 
-    showTooltipAt({ x: tooltipX, y: 20 });
-  }, [tooltipX]);
+    const [x, y] = tooltipPosition;
+
+    showTooltipAt({ x, y });
+  }, [tooltipPosition]);
 
   const closeTooltip = (): void => {
     hideTooltip();
@@ -354,16 +372,16 @@ const Graph = ({
     <ClickAwayListener onClickAway={hideAddCommentTooltip}>
       <div className={classes.container}>
         {tooltipOpen && tooltipData && (
-          <TooltipWithBounds
+          <TooltipInPortal
             key={Math.random()}
             top={tooltipTop}
             left={tooltipLeft}
             className={classes.tooltip}
           >
             {tooltipData}
-          </TooltipWithBounds>
+          </TooltipInPortal>
         )}
-        <svg width={width} height={height} ref={containerRef}>
+        <svg width="100%" height={height} ref={containerRef}>
           <Group left={margin.left} top={margin.top}>
             <MemoizedGridRows
               scale={leftScale}

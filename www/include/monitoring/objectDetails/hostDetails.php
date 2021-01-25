@@ -353,13 +353,13 @@ if (!$is_admin && !$haveAccess) {
          * Get comments for hosts
          */
         $tabCommentHosts = array();
-        $rq2 = " SELECT cmt.entry_time as comment_time, cmt.comment_id, cmt.author AS author_name,
+        $rq2 = "SELECT cmt.entry_time as comment_time, cmt.comment_id, cmt.author AS author_name,
          cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name " .
             " FROM comments cmt, hosts h " .
-            " WHERE cmt.host_id = '" . $host_id . "' 
-                  AND h.host_id = cmt.host_id 
-                  AND cmt.service_id IS NULL 
-                  AND cmt.expires = 0 
+            " WHERE cmt.host_id = '" . $host_id . "'
+                  AND h.host_id = cmt.host_id
+                  AND cmt.type = 1
+                  AND cmt.expires = 0
                   AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
                   ORDER BY cmt.entry_time DESC";
         $DBRESULT = $pearDBO->query($rq2);
@@ -429,7 +429,8 @@ if (!$is_admin && !$haveAccess) {
 
         $host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
 
-        if (isset($host_status[$host_name]["scheduled_downtime_depth"]) &&
+        if (
+            isset($host_status[$host_name]["scheduled_downtime_depth"]) &&
             $host_status[$host_name]["scheduled_downtime_depth"]
         ) {
             $host_status[$host_name]["scheduled_downtime_depth"] = 1;
@@ -668,7 +669,8 @@ if (!$is_admin && !$haveAccess) {
         $tools = array();
         $DBRESULT = $pearDB->query("SELECT * FROM modules_informations");
         while ($module = $DBRESULT->fetchrow()) {
-            if (isset($module['host_tools']) && $module['host_tools'] == 1
+            if (
+                isset($module['host_tools']) && $module['host_tools'] == 1
                 && file_exists('modules/' . $module['name'] . '/host_tools.php')
             ) {
                 include('modules/' . $module['name'] . '/host_tools.php');

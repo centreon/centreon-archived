@@ -14778,7 +14778,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "at"
 #  msgstr ""
 
-#  msgid "Clear all"
+#  msgid "Clear"
 #  msgstr ""
 
 #  msgid "Criterias"

@@ -25,12 +25,17 @@ namespace Centreon\Domain\RemoteServer;
 
 use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
+use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
+use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -46,14 +51,24 @@ class RemoteServerService implements RemoteServerServiceInterface
     private $platformTopologyRepository;
 
     /**
-     * @var RemoteServerRepositoryInterface
+     * @var RemoteServerLocalConfigurationRepositoryInterface
      */
     private $remoteServerRepository;
 
     /**
-     * @var string
+     * @var PlatformTopologyRegisterRepositoryInterface
      */
-    private $centreonEtcPath;
+    private $platformTopologyRegisterRepository;
+
+    /**
+     * @var ProxyServiceInterface
+     */
+    private $proxyService;
+
+    /**
+     * @var MonitoringServerServiceInterface
+     */
+    private $monitoringServerService;
 
     /**
      * @param MenuRepositoryInterface $menuRepository
@@ -62,17 +77,23 @@ class RemoteServerService implements RemoteServerServiceInterface
     public function __construct(
         MenuRepositoryInterface $menuRepository,
         PlatformTopologyRepositoryInterface $platformTopologyRepository,
-        RemoteServerRepositoryInterface $remoteServerRepository
+        RemoteServerLocalConfigurationRepositoryInterface $remoteServerRepository,
+        PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository,
+        ProxyServiceInterface $proxyService,
+        MonitoringServerServiceInterface $monitoringServerService
     ) {
         $this->menuRepository = $menuRepository;
         $this->platformTopologyRepository = $platformTopologyRepository;
         $this->remoteServerRepository = $remoteServerRepository;
+        $this->platformTopologyRegisterRepository = $platformTopologyRegisterRepository;
+        $this->proxyService = $proxyService;
+        $this->monitoringServerService = $monitoringServerService;
     }
 
     /**
      * @inheritDoc
      */
-    public function convertCentralToRemote(): void
+    public function convertCentralToRemote(PlatformInformation $platformInformation): void
     {
         /**
          * Stop conversion if the Central has remote children
@@ -87,13 +108,55 @@ class RemoteServerService implements RemoteServerServiceInterface
         } catch (RemoteServerException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
-            throw new RemoteServerException(_('An error occured while searching any remote children'));
+            throw new RemoteServerException(_('An error occured while searching any remote children'), 0, $ex);
         }
 
         /**
          * Set Remote type into Platform_Topology
          */
         $this->updatePlatformTypeParameters(Platform::TYPE_REMOTE);
+
+        /**
+         * Get the parent platform to register it later.
+         *
+         * @var Platform|null $topLevelPlatform
+         */
+        $topLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatform();
+        if ($topLevelPlatform === null) {
+            throw new EntityNotFoundException(_('No top level platform found to link the child platforms'));
+        }
+        /**
+         * Add the future Parent Central as Parent Address to be able to register it later.
+         *
+         */
+        $topLevelPlatform->setParentAddress($platformInformation->getCentralServerAddress());
+
+        /**
+         * Find any children platform and forward them to Central Parent.
+         *
+         * @var Platform[] $platforms
+         */
+        $platforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
+            $topLevelPlatform->getId()
+        );
+        /**
+         * Insert the Top Level Platform at the beginning of array, as it need to be registered first.
+         */
+        array_unshift($platforms, $topLevelPlatform);
+        /**
+         * Register the platforms on the Parent Central
+         */
+        foreach ($platforms as $platform) {
+            if ($platform->getParentId() !== null) {
+                $platform->setParentAddress($topLevelPlatform->getAddress());
+            }
+
+            $this->platformTopologyRegisterRepository->registerPlatformToParent(
+                $platform,
+                $platformInformation,
+                $this->proxyService->getProxy()
+            );
+        }
 
         try {
             $this->menuRepository->disableCentralMenus();
@@ -110,8 +173,34 @@ class RemoteServerService implements RemoteServerServiceInterface
     /**
      * @inheritDoc
      */
-    public function convertRemoteToCentral(): void
+    public function convertRemoteToCentral(PlatformInformation $platformInformation): void
     {
+        /**
+         * Delete the platform on its parent before anything else,
+         * If this step throw an exception, don't go further and avoid decorelation betweens platforms.
+         */
+        $platform = $this->platformTopologyRepository->findTopLevelPlatform();
+        $this->platformTopologyRegisterRepository->deletePlatformToParent(
+            $platform,
+            $platformInformation,
+            $this->proxyService->getProxy()
+        );
+
+        /**
+         * Find any children platform and remove them,
+         * as they are now attached to the Central and no longer to this platform.
+         *
+         * @var Platform[] $childrenPlatforms
+         */
+        $childrenPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
+            $platform->getId()
+        );
+        foreach ($childrenPlatforms as $childrenPlatform) {
+            if ($childrenPlatform->getServerId() !== null) {
+                $this->monitoringServerService->deleteServer($childrenPlatform->getServerId());
+            }
+        }
+
         /**
          * Set Central type into Platform_Topology
          */

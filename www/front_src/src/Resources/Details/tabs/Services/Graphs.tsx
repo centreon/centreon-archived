@@ -13,13 +13,13 @@ const MemoizedPerformanceGraph = React.memo(
     const nextResource = nextProps.resource;
     const prevPeriodQueryParameters = prevProps.periodQueryParameters;
     const nextPeriodQueryParameters = nextProps.periodQueryParameters;
-    const prevTooltipX = prevProps.tooltipX;
-    const nextTooltipX = nextProps.tooltipX;
+    const prevTooltipPosition = prevProps.tooltipPosition;
+    const nextTooltipPosition = nextProps.tooltipPosition;
 
     return (
       equals(prevResource?.id, nextResource?.id) &&
       equals(prevPeriodQueryParameters, nextPeriodQueryParameters) &&
-      equals(prevTooltipX, nextTooltipX)
+      equals(prevTooltipPosition, nextTooltipPosition)
     );
   },
 );
@@ -39,7 +39,9 @@ const ServiceGraphs = ({
   getIntervalDates,
   selectedTimePeriod,
 }: Props): JSX.Element => {
-  const [tooltipX, setTooltipX] = React.useState<number>();
+  const [tooltipPosition, setTooltipPosition] = React.useState<
+    [number, number]
+  >();
 
   const servicesWithGraph = services.filter(
     pipe(path(['links', 'endpoints', 'performance_graph']), isNil, not),
@@ -59,8 +61,8 @@ const ServiceGraphs = ({
               periodQueryParameters={periodQueryParameters}
               getIntervalDates={getIntervalDates}
               selectedTimePeriod={selectedTimePeriod}
-              onTooltipDisplay={setTooltipX}
-              tooltipX={tooltipX}
+              onTooltipDisplay={setTooltipPosition}
+              tooltipPosition={tooltipPosition}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>
