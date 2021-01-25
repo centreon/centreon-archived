@@ -250,10 +250,14 @@ services:
     Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface:
         class: Centreon\Domain\RemoteServer\RemoteServerService
 
-    Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface:
+    Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface:
         class: Centreon\Infrastructure\RemoteServer\RemoteServerRepositoryFile
         calls:
             - [setCentreonConfFilePath, ['%centreon_etc_path%/conf.pm']]
+
+    Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface:
+        class: Centreon\Infrastructure\RemoteServer\RemoteServerRepositoryRDB
+
     # Menu
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
