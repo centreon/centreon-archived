@@ -18,15 +18,14 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
-use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\MonitoringServer\MonitoringServerResource;
-use Centreon\Infrastructure\MonitoringServer\MonitoringServerRepositoryRDB;
 
 interface MonitoringServerRepositoryInterface
 {
@@ -88,4 +87,11 @@ interface MonitoringServerRepositoryInterface
      * @throws MonitoringServerException
      */
     public function findServerByName(string $monitoringServerName): ?MonitoringServer;
+
+    /**
+     * Delete a monitoring server.
+     *
+     * @param integer $monitoringServerId
+     */
+    public function deleteServer(int $monitoringServerId): void;
 }

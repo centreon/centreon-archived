@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,18 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\RemoteServer\Interfaces;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-
-interface RemoteServerServiceInterface
+/**
+ * This inteface is designed to configure the local instance mode of the platform.
+ */
+interface RemoteServerLocalConfigurationRepositoryInterface
 {
     /**
-     * Convert a Central into a Remote Server
-     * @param PlatformInformation $platformInformation
+     * Update the platform instance mode to Central.
      */
-    public function convertCentralToRemote(PlatformInformation $platformInformation): void;
+    public function updateInstanceModeCentral(): void;
 
     /**
-     * Convert a Remote Server into a Central
-     * @param PlatformInformation $platformInformation
+     * Update the platform instance mode to Remote.
      */
-    public function convertRemoteToCentral(PlatformInformation $platformInformation): void;
+    public function updateInstanceModeRemote(): void;
 }
