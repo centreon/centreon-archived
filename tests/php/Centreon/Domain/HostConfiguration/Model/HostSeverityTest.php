@@ -64,6 +64,25 @@ class HostSeverityTest extends TestCase
     }
 
     /**
+     * Too short name test
+     * @throws \Assert\AssertionFailedException
+     */
+    public function testNameTooShortException(): void
+    {
+        $name = str_repeat('.', HostSeverity::MIN_NAME_LENGTH - 1);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::minLength(
+                $name,
+                strlen($name),
+                HostSeverity::MIN_NAME_LENGTH,
+                'HostSeverity::name'
+            )->getMessage()
+        );
+        new HostSeverity($name, 'alias', 42, $this->icon);
+    }
+
+    /**
      * Too long alias test
      * @throws \Assert\AssertionFailedException
      */
@@ -76,6 +95,25 @@ class HostSeverityTest extends TestCase
                 $alias,
                 strlen($alias),
                 HostSeverity::MAX_ALIAS_LENGTH,
+                'HostSeverity::alias'
+            )->getMessage()
+        );
+        new HostSeverity('name', $alias, 42, $this->icon);
+    }
+
+    /**
+     * Too short alias test
+     * @throws \Assert\AssertionFailedException
+     */
+    public function testAliasTooShortException(): void
+    {
+        $alias = str_repeat('.', HostSeverity::MIN_ALIAS_LENGTH - 1);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::minLength(
+                $alias,
+                strlen($alias),
+                HostSeverity::MIN_ALIAS_LENGTH,
                 'HostSeverity::alias'
             )->getMessage()
         );

@@ -33,7 +33,9 @@ use Centreon\Domain\Media\Model\Image;
 class HostSeverity
 {
     public const MAX_NAME_LENGTH = 200;
+    public const MIN_NAME_LENGTH = 1;
     public const MAX_ALIAS_LENGTH = 200;
+    public const MIN_ALIAS_LENGTH = 1;
     public const MAX_COMMENTS_LENGTH = 65535;
     public const MAX_LEVEL_NUMBER = 127;
     public const MIN_LEVEL_NUMBER = -128;
@@ -122,6 +124,7 @@ class HostSeverity
     public function setName(string $name): HostSeverity
     {
         Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'HostSeverity::name');
+        Assertion::minLength($name, self::MIN_NAME_LENGTH, 'HostSeverity::name');
         $this->name = $name;
         return $this;
     }
@@ -142,6 +145,7 @@ class HostSeverity
     public function setAlias(string $alias): HostSeverity
     {
         Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'HostSeverity::alias');
+        Assertion::minLength($alias, self::MIN_ALIAS_LENGTH, 'HostSeverity::alias');
         $this->alias = $alias;
         return $this;
     }
