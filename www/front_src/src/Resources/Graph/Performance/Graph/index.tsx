@@ -12,7 +12,6 @@ import {
   useTooltip,
   useTooltipInPortal,
   localPoint,
-  TooltipWithBounds,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
@@ -96,8 +95,8 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
       isNil(onAddComment) ? 'normal' : 'crosshair',
   },
   tooltip: {
-    opacity: 0.8,
     padding: 12,
+    zIndex: theme.zIndex.tooltip,
   },
   addCommentTooltip: {
     position: 'absolute',
@@ -183,10 +182,12 @@ const Graph = ({
     hideTooltip: hideAddCommentTooltip,
   } = useTooltip();
 
-  const { containerRef, containerBounds } = useTooltipInPortal({
-    detectBounds: true,
-    scroll: true,
-  });
+  const { containerRef, containerBounds, TooltipInPortal } = useTooltipInPortal(
+    {
+      detectBounds: true,
+      scroll: true,
+    },
+  );
 
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
@@ -371,14 +372,14 @@ const Graph = ({
     <ClickAwayListener onClickAway={hideAddCommentTooltip}>
       <div className={classes.container}>
         {tooltipOpen && tooltipData && (
-          <TooltipWithBounds
+          <TooltipInPortal
             key={Math.random()}
             top={tooltipTop}
             left={tooltipLeft}
             className={classes.tooltip}
           >
             {tooltipData}
-          </TooltipWithBounds>
+          </TooltipInPortal>
         )}
         <svg width="100%" height={height} ref={containerRef}>
           <Group left={margin.left} top={margin.top}>
