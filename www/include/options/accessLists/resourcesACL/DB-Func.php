@@ -49,13 +49,16 @@ function testExistence($name = null)
     $statement = $pearDB->prepare("SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = :name");
     $statement->bindValue(':name', $name, \PDO::PARAM_STR);
     $statement->execute();
-    $lca = $statement->fetch();
-    if ($statement->rowCount() >= 1 && $lca["acl_res_id"] == $id) {
-        return true;
-    } elseif ($statement->rowCount() >= 1 && $lca["acl_res_id"] != $id) {
-        return false;
+    if ($lca = $statement->fetch()) {
+        if ($statement->rowCount() >= 1 && $lca["acl_res_id"] == $id) {
+            return true;
+        } elseif ($statement->rowCount() >= 1 && $lca["acl_res_id"] != $id) {
+            return false;
+        } else {
+            return true;
+        }
     } else {
-        return true;
+        return false;
     }
 }
 
