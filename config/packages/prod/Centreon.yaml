@@ -243,10 +243,7 @@ services:
         class: Centreon\Domain\ActionLog\ActionLogService
 
     # Broker
-    Centreon\Domain\Broker\Interfaces\BrokerServiceInterface:
-        class: Centreon\Domain\Broker\BrokerService
-
-    Centreon\Domain\Broker\Interfaces\BrokerServiceRepositoryInterface:
+    Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface:
         class: Centreon\Infrastructure\Broker\BrokerRepositoryRDB
 
     # Remote Server
