@@ -44,6 +44,7 @@ use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
 
 class PlatformTopologyServiceTest extends TestCase
 {
@@ -113,9 +114,16 @@ class PlatformTopologyServiceTest extends TestCase
     protected $brokerRepository;
 
     /**
-     * @var PlatformRegisterRepositoryInterface
+     * @var PlatformTopologyRegisterRepositoryInterface&MockObject $platformTopologyRegisterRepository
      */
     private $platformTopologyRegisterRepository;
+
+    /**
+     * Undocumented variable
+     *
+     * @var RemoteServerRepositoryInterface&MockObject $remoteServerRepository
+     */
+    private $remoteServerRepository;
 
     /**
      * initiate query data
@@ -166,6 +174,7 @@ class PlatformTopologyServiceTest extends TestCase
         $this->platformTopologyRegisterRepository = $this->createMock(
             PlatformTopologyRegisterRepositoryInterface::class
         );
+        $this->remoteServerRepository = $this->createMock(RemoteServerRepositoryInterface::class);
     }
 
     /**
@@ -202,7 +211,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->engineConfigurationService,
             $this->monitoringServerService,
             $this->brokerRepository,
-            $this->platformTopologyRegisterRepository
+            $this->platformTopologyRegisterRepository,
+            $this->remoteServerRepository
         );
 
         $this->expectException(PlatformConflictException::class);
@@ -249,7 +259,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->engineConfigurationService,
             $this->monitoringServerService,
             $this->brokerRepository,
-            $this->platformTopologyRegisterRepository
+            $this->platformTopologyRegisterRepository,
+            $this->remoteServerRepository
         );
 
         $this->expectException(EntityNotFoundException::class);
@@ -303,7 +314,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->engineConfigurationService,
             $this->monitoringServerService,
             $this->brokerRepository,
-            $this->platformTopologyRegisterRepository
+            $this->platformTopologyRegisterRepository,
+            $this->remoteServerRepository
         );
 
         $this->assertNull($platformTopologyService->addPlatformToTopology($this->platform));
@@ -340,7 +352,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->engineConfigurationService,
             $this->monitoringServerService,
             $this->brokerRepository,
-            $this->platformTopologyRegisterRepository
+            $this->platformTopologyRegisterRepository,
+            $this->remoteServerRepository
         );
 
         $this->assertIsArray($platformTopologyService->getPlatformTopology());
@@ -368,7 +381,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->engineConfigurationService,
             $this->monitoringServerService,
             $this->brokerRepository,
-            $this->platformTopologyRegisterRepository
+            $this->platformTopologyRegisterRepository,
+            $this->remoteServerRepository
         );
 
         /**
@@ -428,7 +442,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->engineConfigurationService,
             $this->monitoringServerService,
             $this->brokerRepository,
-            $this->platformTopologyRegisterRepository
+            $this->platformTopologyRegisterRepository,
+            $this->remoteServerRepository
         );
 
         /**
@@ -473,7 +488,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->engineConfigurationService,
             $this->monitoringServerService,
             $this->brokerRepository,
-            $this->platformTopologyRegisterRepository
+            $this->platformTopologyRegisterRepository,
+            $this->remoteServerRepository
         );
 
         $this->assertEquals(null, $platformTopologyService->deletePlatformAndReallocateChildren(
@@ -495,7 +511,8 @@ class PlatformTopologyServiceTest extends TestCase
             $this->engineConfigurationService,
             $this->monitoringServerService,
             $this->brokerRepository,
-            $this->platformTopologyRegisterRepository
+            $this->platformTopologyRegisterRepository,
+            $this->remoteServerRepository
         );
 
         $this->expectException(EntityNotFoundException::class);

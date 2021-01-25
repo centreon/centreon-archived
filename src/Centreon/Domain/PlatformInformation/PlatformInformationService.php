@@ -115,7 +115,7 @@ class PlatformInformationService implements PlatformInformationServiceInterface
                     );
                 }
             } elseif ($platformInformationUpdate->isCentral() && !$currentPlatformInformation->isCentral()) {
-                $this->remoteServerService->convertRemoteToCentral();
+                $this->remoteServerService->convertRemoteToCentral($platformInformationUpdate);
             }
 
             $this->platformInformationRepository->updatePlatformInformation($platformInformationUpdate);

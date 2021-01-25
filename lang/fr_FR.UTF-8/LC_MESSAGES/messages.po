@@ -15152,6 +15152,10 @@ msgstr "Erreur lors de la recherche de ressources"
 msgid "Error when searching for monitoring servers"
 msgstr "Erreur lors de la recherche de serveurs de supervision"
 
+#:Centreon/Domain/MonitoringServer/MonitoringServerService.php:142
+msgid "Error when deleting a monitoring server"
+msgstr "Erreur lors de la supression d'un serveur de supervision"
+
 #:Centreon/Domain/MonitoringServer/MonitoringServerService.php:69
 msgid "Error when searching for a resource of monitoring server"
 msgstr "Erreur lors de la recherche de la ressource attachée au serveur de supervision"
@@ -15700,8 +15704,15 @@ msgid "Unable to decipher central's credentials. Please check the credentials in
 msgstr "Impossible de déchiffrer les identifiants du Central. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/platform/topology
-msgid "Failed to get the auth token. Cannot register the platform : '%s'@'%s' on the Central"
-msgstr "Echec d'obtention du token d'auth. Impossible d'enregistrer sur le Central: '%s'@'%s'"
+msgid "Failed to get the auth token from Central : '%s'"
+msgstr "Echec d'obtention du token d'auth. sur le Central: '%s'@'%s'"
+
+#: api/platform/topology
+msgid "The platform: '%s'@'%s' cannot be found on the Central"
+msgstr "La plateforme: '%s'@'%s' ne peut pas être trouvé sur le Central"
+
+msgid "The platform: '%s'@'%s' cannot be delete from the Central"
+msgstr "La plateforme: '%s'@'%s' ne peut pas être supprimé depuis le Central"
 
 #: api/platform/topology
 msgid "Request to the Central's API failed"

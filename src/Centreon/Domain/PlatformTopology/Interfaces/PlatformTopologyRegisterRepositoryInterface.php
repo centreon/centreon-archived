@@ -44,4 +44,19 @@ interface PlatformTopologyRegisterRepositoryInterface
         PlatformInformation $platformInformation,
         Proxy $proxy = null
     ): void;
+
+    /**
+     * Delete the platform on its parent
+     *
+     * @param Platform $platform
+     * @param PlatformInformation $platformInformation
+     * @param Proxy $proxy
+     * @throws RepositoryException
+     * @throws PlatformConflictException
+     */
+    public function deletePlatformToParent(
+        Platform $platform,
+        PlatformInformation $platformInformation,
+        Proxy $proxy = null
+    ): void;
 }

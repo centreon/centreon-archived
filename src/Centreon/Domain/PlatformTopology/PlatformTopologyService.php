@@ -39,6 +39,7 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
 
 /**
  * Service intended to register a new server to the platform topology
@@ -83,6 +84,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     private $brokerRepository;
 
     /**
+     * @var RemoteServerRepositoryInterface
+     */
+    private $remoteServerRepository;
+
+    /**
      * Broker Retention Parameter
      */
     public const BROKER_PEER_RETENTION = "one_peer_retention_mode";
@@ -105,7 +111,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         EngineConfigurationServiceInterface $engineConfigurationService,
         MonitoringServerServiceInterface $monitoringServerService,
         BrokerRepositoryInterface $brokerRepository,
-        PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
+        PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository,
+        RemoteServerRepositoryInterface $remoteServerRepository
     ) {
         $this->platformTopologyRepository = $platformTopologyRepository;
         $this->platformInformationService = $platformInformationService;
@@ -114,6 +121,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         $this->monitoringServerService = $monitoringServerService;
         $this->brokerRepository = $brokerRepository;
         $this->platformTopologyRegisterRepository = $platformTopologyRegisterRepository;
+        $this->remoteServerRepository = $remoteServerRepository;
     }
 
     /**
@@ -616,7 +624,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     public function deletePlatformAndReallocateChildren(int $serverId): void
     {
         try {
-            if ($this->platformTopologyRepository->findPlatform($serverId) === null) {
+            if (($deletedPlatform = $this->platformTopologyRepository->findPlatform($serverId)) === null) {
                 throw new EntityNotFoundException(_('Platform not found'));
             }
             /**
@@ -638,14 +646,27 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 }
 
                 /**
-                 * Update children parent_id
+                 * Update children parent_id.
                  */
                 foreach ($childPlatforms as $platform) {
                     $platform->setParentId($topLevelPlatform->getId());
                     $this->updatePlatformParameters($platform);
                 }
             }
-            $this->platformTopologyRepository->deletePlatform($serverId);
+
+            /**
+             * Delete the monitoring server and the topology.
+             */
+            if ($deletedPlatform->getServerId() !== null) {
+                if ($deletedPlatform->getType() === Platform::TYPE_REMOTE) {
+                    $this->remoteServerRepository->deleteRemoteServerByAddress($deletedPlatform->getAddress());
+                    $this->remoteServerRepository->deleteAdditionalRemoteServer($deletedPlatform->getServerId());
+                }
+
+                $this->monitoringServerService->deleteServer($deletedPlatform->getServerId());
+            } else {
+                $this->platformTopologyRepository->deletePlatform($deletedPlatform->getId());
+            }
         } catch (EntityNotFoundException | PlatformException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
