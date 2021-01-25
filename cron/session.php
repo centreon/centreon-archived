@@ -25,8 +25,8 @@ include_once _CENTREON_PATH_ . "/cron/centAcl-Func.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
-$centreonLog = new CentreonLog();
 $pearDB = new CentreonDB();
+$centreonLog = new CentreonUserLog(0, $pearDB);
 
 // Default session duration
 define('SESSION_DEFAULT_DURATION', 120);
