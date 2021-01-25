@@ -219,12 +219,13 @@ $form->addElement('select2', 'template', "", array(), $attrHosttemplates);
 
 //select2 Host Status
 $attrHostStatus = null;
+$statusDefault = '';
 if ($status) {
     $statusDefault = array($statusFilter[$status] => $status);
-    $attrHostStatus = array(
-        'defaultDataset' => $statusDefault
-    );
 }
+$attrHostStatus = array(
+    'defaultDataset' => $statusDefault
+);
 $form->addElement('select2', 'status', "", $statusFilter, $attrHostStatus);
 
 $attrBtnSuccess = array(
