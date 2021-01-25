@@ -130,4 +130,16 @@ class MonitoringServerService implements MonitoringServerServiceInterface
             throw new MonitoringServerException('Error when notifying a configuration change', 0, $ex);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteServer(int $monitoringServerId): void
+    {
+        try {
+            $this->monitoringServerRepository->deleteServer($monitoringServerId);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException('Error when deleting a monitoring server', 0, $ex);
+        }
+    }
 }
