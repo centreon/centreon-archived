@@ -133,14 +133,14 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: 'rpms-centos7.tar.gz'
       }
-    },
-    'centos8': {
-      node {
-        sh 'setup_centreon_build.sh'
-        unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
-        archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
-      }
+    //},
+    //'centos8': {
+    //  node {
+    //    sh 'setup_centreon_build.sh'
+    //    unstash 'tar-sources'
+    //    sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
+    //    archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
+    //  }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Package stage failure.');
@@ -153,12 +153,12 @@ try {
         sh 'setup_centreon_build.sh'
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
-    },
-    'centos8': {
-      node {
-        sh 'setup_centreon_build.sh'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
-      }
+    //},
+    //'centos8': {
+    //  node {
+    //    sh 'setup_centreon_build.sh'
+    //    sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
+    //  }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
