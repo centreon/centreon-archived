@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Platform\PlatformException;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\PlatforimInformation\UseCase\V21\UpdatePlatformInformation;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
@@ -153,7 +154,7 @@ class PlatformController extends AbstractController
      * @param Request $request
      * @return View
      */
-    public function updatePlatform(Request $request): View
+    public function updatePlatformOld(Request $request): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
         $platformToUpdateProperty = json_decode((string) $request->getContent(), true);
@@ -257,6 +258,17 @@ class PlatformController extends AbstractController
             );
         }
 
+        return $this->view(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function updatePlatform(Request $request, UpdatePlatformInformation $updatePlatformInformation): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+        $request = json_decode((string) $request->getContent(), true);
+        if (!is_array($request)) {
+            throw new PlatformInformationException(_('Error when decoding sent data'));
+        }
+        $updatePlatformInformation->execute($request);
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 }

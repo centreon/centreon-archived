@@ -22,8 +22,15 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Interfaces;
 
-interface PlatformInformationRepositoryInterface extends
-    PlatformInformationReadRepositoryInterface,
-    PlatformInformationWriteRepositoryInterface
+use Centreon\Domain\PlatformInformation\PlatformInformation;
+
+interface PlatformInformationWriteRepositoryInterface
 {
+    /**
+     * Update the platform information.
+     *
+     * @param PlatformInformation $platformInformation
+     * @throws \Exception
+     */
+    public function updatePlatformInformation(PlatformInformation $platformInformation): void;
 }

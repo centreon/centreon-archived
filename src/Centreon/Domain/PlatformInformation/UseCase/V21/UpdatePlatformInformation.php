@@ -18,12 +18,28 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformInformation\Interfaces;
+namespace Centreon\Domain\PlatforimInformation\UseCase\V21;
 
-interface PlatformInformationRepositoryInterface extends
-    PlatformInformationReadRepositoryInterface,
-    PlatformInformationWriteRepositoryInterface
+use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationWriteRepositoryInterface;
+
+class UpdatePlatformInformation
 {
+    /**
+     * @var PlatformInformationWriteRepositoryInterface
+     */
+    private $writeRepository;
+
+    public function __construct(
+        PlatformInformationWriteRepositoryInterface $writeRepository
+    ) {
+        $this->writeRepository = $writeRepository;
+    }
+
+    public function execute(array $request)
+    {
+
+    }
 }
