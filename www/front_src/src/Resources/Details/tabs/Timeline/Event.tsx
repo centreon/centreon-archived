@@ -143,7 +143,6 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
           <Date event={event} />
           <StatusChip
             className={classes.chip}
-            clickable={false}
             severityCode={event.status?.severity_code as number}
             label={t(event.status?.name as string)}
           />

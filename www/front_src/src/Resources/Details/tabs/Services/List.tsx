@@ -52,7 +52,6 @@ const ServiceList = ({
             <Paper className={classes.serviceCard}>
               <div className={classes.serviceDetails}>
                 <StatusChip
-                  clickable={false}
                   label={t(status.name)}
                   severityCode={status.severity_code}
                 />
