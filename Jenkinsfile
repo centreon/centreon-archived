@@ -178,7 +178,7 @@ try {
           junit 'tests/e2e/cypress/results/reports/junit-report.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
-          //archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'tests/e2e/cypress/results'
         }
       }
     }
