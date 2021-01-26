@@ -7,11 +7,7 @@ import { ParentSize } from '@visx/visx';
 
 import { Button, makeStyles } from '@material-ui/core';
 
-import {
-  MultiConnectedAutocompleteField,
-  Filters,
-  SelectEntry,
-} from '@centreon/ui';
+import { Filters, SelectEntry } from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -38,7 +34,6 @@ import {
 } from './api/endpoint';
 import useFilterModels from './useFilterModels';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
-import { Filter } from './models';
 import { FilterState } from './useFilter';
 import Search from './FormComponents/Search';
 import SelectFilter from './FormComponents/SelectFilter';
