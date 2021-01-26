@@ -968,8 +968,10 @@ class CentreonLDAP
 
                 // checking if the interval between two synchronizations is reached
                 $currentTime = time();
-                if (($syncState['ldap_sync_interval'] * 3600 + $ldapBaseSync['referenceDate']) <= $currentTime
-                    && $manualOverride['contact_ldap_last_sync'] < $ldapBaseSync['referenceDate']) {
+                if (
+                    ($syncState['ldap_sync_interval'] * 3600 + $ldapBaseSync['referenceDate']) <= $currentTime
+                    && $manualOverride['contact_ldap_last_sync'] < $ldapBaseSync['referenceDate']
+                ) {
                     // synchronization is expected
                     $this->centreonLog->insertLog(
                         3,
@@ -996,7 +998,6 @@ class CentreonLDAP
  */
 class CentreonLdapAdmin
 {
-
     /**
      * @object centreonLog
      */

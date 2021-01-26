@@ -259,7 +259,7 @@ $cloneSet[] = $form->addElement(
     'address[#index#]',
     _("Host address"),
     array(
-        "size"=>"30",
+        "size" => "30",
         "id" => "address_#index#"
     )
 );
@@ -268,7 +268,7 @@ $cloneSet[] = $form->addElement(
     'port[#index#]',
     _("Port"),
     array(
-        "size"=>"10",
+        "size" => "10",
         "id" => "port_#index#"
     )
 );
@@ -420,7 +420,7 @@ $form->addElement(
     "button",
     "change",
     _("Modify"),
-    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId ."'")
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId . "'")
 );
 
 /*
