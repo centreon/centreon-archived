@@ -174,11 +174,13 @@ try {
           sh 'setup_centreon_build.sh'
           unstash 'tar-sources'
           unstash 'cypress-node-modules'
+          sh 'pwd'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
-          junit 'tests/e2e/cypress/results/reports/junit-report.xml'
+          sh 'pwd'
+          junit 'centreon-web/tests/e2e/cypress/results/reports/junit-report.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'tests/e2e/cypress/results'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web/tests/e2e/cypress/results'
         }
       }
     }
