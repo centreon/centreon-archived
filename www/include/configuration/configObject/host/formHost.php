@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 }
 
 if (!$centreon->user->admin) {
-    if (isset($host_id) && false === strpos($aclHostString, "'" . $host_id . "'")) {
+    if (is_numeric($host_id) && false === strpos($aclHostString, "'" . $host_id . "'")) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
