@@ -361,12 +361,13 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"])
-        && $ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"] != 2
+    if (
+        isset($ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"])
+        && $ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"] === '1'
     ) {
-        $rq .= "'" . $ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"] . "',  ";
+        $rq .= "1,  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "0, ";
     }
 
     if (isset($ret["enable_notifications"]["enable_notifications"])
@@ -1259,6 +1260,14 @@ function updateNagios($nagios_id = null)
         $rq .= "nagios_group = '" . htmlentities($ret["nagios_group"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "nagios_group = NULL, ";
+    }
+
+    if (isset($ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"])
+        && $ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"] === '1'
+    ) {
+        $rq .= "postpone_notification_to_timeperiod = 1, ";
+    } else {
+        $rq .= "postpone_notification_to_timeperiod = 0, ";
     }
 
     if (isset($ret["enable_notifications"]["enable_notifications"])
