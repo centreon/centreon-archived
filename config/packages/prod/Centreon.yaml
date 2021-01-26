@@ -180,6 +180,9 @@ services:
     Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface:
         class: Centreon\Infrastructure\PlatformInformation\PlatformInformationRepositoryRDB
 
+    Centreon\Domain\PlatformInformation\UseCase\V21\UpdatePartiallyPlatformInformation:
+        class: Centreon\Domain\PlatformInformation\UseCase\V21\UpdatePartiallyPlatformInformation
+
     # Monitoring resources
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
         class: Centreon\Domain\Monitoring\ResourceService

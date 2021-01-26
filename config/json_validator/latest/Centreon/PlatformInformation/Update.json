@@ -7,9 +7,6 @@
     "isRemote": {
       "type": "boolean"
     },
-    "isCentral": {
-      "type": "boolean"
-    },
     "centralServerAddress": {
       "type": "string"
     },
@@ -33,6 +30,7 @@
     },
     "proxy": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "host": {
           "type": "string"

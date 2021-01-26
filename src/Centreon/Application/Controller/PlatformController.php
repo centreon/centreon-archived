@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Platform\PlatformException;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\PlatforimInformation\UseCase\V21\UpdatePlatformInformation;
+use Centreon\Domain\PlatformInformation\UseCase\V21\UpdatePartiallyPlatformInformation;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformation;
@@ -41,6 +41,8 @@ use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
 use Centreon\Domain\PlatformInformation\PlatformInformationException;
 use Centreon\Domain\PlatformTopology\PlatformException as PlatformTopologyException;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformationDtoValidator;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * This controller is designed to manage API requests concerning the versions of the different modules, widgets on the
@@ -261,14 +263,32 @@ class PlatformController extends AbstractController
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
-    public function updatePlatform(Request $request, UpdatePlatformInformation $updatePlatformInformation): View
-    {
+    public function updatePlatform(
+        Request $request,
+        UpdatePartiallyPlatformInformation $updatePartiallyPlatformInformation
+    ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $updatePartiallyPlatformInformation->addValidators(
+            [
+                new PlatformInformationDtoValidator(
+                    $this->getParameter('centreon_path')
+                    . 'config/json_validator/latest/Centreon/PlatformInformation/Update.json'
+                )
+            ]
+        );
+
         $request = json_decode((string) $request->getContent(), true);
         if (!is_array($request)) {
-            throw new PlatformInformationException(_('Error when decoding sent data'));
+            throw new BadRequestHttpException(_('Error when decoding sent data'));
         }
-        $updatePlatformInformation->execute($request);
+
+        try {
+            $updatePartiallyPlatformInformation->execute($request);
+        } catch (\Exception $ex){
+            return $this->view($ex->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 }

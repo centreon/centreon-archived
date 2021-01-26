@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,25 +21,21 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatforimInformation\UseCase\V21;
+namespace Centreon\Domain\PlatformInformation\Model;
 
-use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationWriteRepositoryInterface;
-
-class UpdatePlatformInformation
+class InformationDto
 {
     /**
-     * @var PlatformInformationWriteRepositoryInterface
+     * Information key
+     *
+     * @var string
      */
-    private $writeRepository;
+    public $key;
 
-    public function __construct(
-        PlatformInformationWriteRepositoryInterface $writeRepository
-    ) {
-        $this->writeRepository = $writeRepository;
-    }
-
-    public function execute(array $request)
-    {
-
-    }
+    /**
+     * Information value
+     *
+     * @var mixed|null
+     */
+    public $value;
 }
