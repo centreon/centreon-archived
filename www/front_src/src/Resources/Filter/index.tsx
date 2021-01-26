@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { ParentSize } from '@visx/visx';
 
-import { Button, makeStyles } from '@material-ui/core';
+import { Button, makeStyles, Grid } from '@material-ui/core';
 
 import {
   MultiAutocompleteField,
@@ -40,13 +40,7 @@ import {
 import useFilterModels from './useFilterModels';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
 
-const useStyles = makeStyles((theme) => ({
-  grid: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gridGap: theme.spacing(1),
-    alignItems: 'center',
-  },
+const useStyles = makeStyles(() => ({
   filterSelect: {
     width: 200,
   },
@@ -57,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     width: 375,
   },
   field: {
-    minWidth: 160,
+    minWidth: 155,
   },
   filterLineLabel: {
     width: 60,
@@ -219,31 +213,43 @@ const Filter = (): JSX.Element => {
       expandable
       expandLabel={labelShowCriteriasFilters}
       filters={
-        <div className={classes.grid}>
-          <SaveFilter />
-          {customFiltersLoading ? (
-            <FilterLoadingSkeleton />
-          ) : (
-            <SelectField
-              options={options.map(pick(['id', 'name', 'type']))}
-              selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
-              onChange={changeFilterGroup}
-              aria-label={t(labelStateFilter)}
-              className={classes.field}
+        <Grid container spacing={1} alignItems="center">
+          <Grid item>
+            <SaveFilter />
+          </Grid>
+          <Grid item>
+            {customFiltersLoading ? (
+              <FilterLoadingSkeleton />
+            ) : (
+              <SelectField
+                options={options.map(pick(['id', 'name', 'type']))}
+                selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
+                onChange={changeFilterGroup}
+                aria-label={t(labelStateFilter)}
+                className={classes.field}
+              />
+            )}
+          </Grid>
+          <Grid item>
+            <SearchField
+              EndAdornment={SearchHelpTooltip}
+              value={nextSearch || ''}
+              onChange={prepareSearch}
+              placeholder={t(labelSearch)}
+              onKeyDown={requestSearchOnEnterKey}
             />
-          )}
-          <SearchField
-            className={classes.searchField}
-            EndAdornment={SearchHelpTooltip}
-            value={nextSearch || ''}
-            onChange={prepareSearch}
-            placeholder={t(labelSearch)}
-            onKeyDown={requestSearchOnEnterKey}
-          />
-          <Button variant="contained" color="primary" onClick={requestSearch}>
-            {t(labelSearch)}
-          </Button>
-        </div>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={requestSearch}
+            >
+              {t(labelSearch)}
+            </Button>
+          </Grid>
+        </Grid>
       }
       expandableFilters={
         <ParentSize>
@@ -256,57 +262,73 @@ const Filter = (): JSX.Element => {
             };
 
             return (
-              <div className={clsx([classes.grid, classes.criterias])}>
-                <MultiAutocompleteField
-                  options={availableResourceTypes}
-                  label={t(labelResource)}
-                  onChange={changeResourceTypes}
-                  value={resourceTypes || []}
-                  openText={`${t(labelOpen)} ${t(labelResource)}`}
-                  {...commonProps}
-                />
-                <MultiAutocompleteField
-                  options={availableStates}
-                  label={t(labelState)}
-                  onChange={changeStates}
-                  value={states || []}
-                  openText={`${t(labelOpen)} ${t(labelState)}`}
-                  {...commonProps}
-                />
-                <MultiAutocompleteField
-                  options={availableStatuses}
-                  label={t(labelStatus)}
-                  onChange={changeStatuses}
-                  value={statuses || []}
-                  openText={`${t(labelOpen)} ${t(labelStatus)}`}
-                  {...commonProps}
-                />
-                <MultiConnectedAutocompleteField
-                  getEndpoint={getConnectedAutocompleteEndpoint(
-                    buildHostGroupsEndpoint,
-                  )}
-                  label={t(labelHostGroup)}
-                  onChange={changeHostGroups}
-                  value={hostGroups || []}
-                  openText={`${t(labelOpen)} ${t(labelHostGroup)}`}
-                  field="name"
-                  {...commonProps}
-                />
-                <MultiConnectedAutocompleteField
-                  getEndpoint={getConnectedAutocompleteEndpoint(
-                    buildServiceGroupsEndpoint,
-                  )}
-                  label={t(labelServiceGroup)}
-                  onChange={changeServiceGroups}
-                  value={serviceGroups || []}
-                  openText={`${t(labelOpen)} ${t(labelServiceGroup)}`}
-                  field="name"
-                  {...commonProps}
-                />
-                <Button color="primary" onClick={clearAllFilters} size="small">
-                  {t(labelClear)}
-                </Button>
-              </div>
+              <Grid container spacing={1} alignItems="center">
+                <Grid item>
+                  <MultiAutocompleteField
+                    options={availableResourceTypes}
+                    label={t(labelResource)}
+                    onChange={changeResourceTypes}
+                    value={resourceTypes || []}
+                    openText={`${t(labelOpen)} ${t(labelResource)}`}
+                    {...commonProps}
+                  />
+                </Grid>
+                <Grid item>
+                  <MultiAutocompleteField
+                    options={availableStates}
+                    label={t(labelState)}
+                    onChange={changeStates}
+                    value={states || []}
+                    openText={`${t(labelOpen)} ${t(labelState)}`}
+                    {...commonProps}
+                  />
+                </Grid>
+                <Grid item>
+                  <MultiAutocompleteField
+                    options={availableStatuses}
+                    label={t(labelStatus)}
+                    onChange={changeStatuses}
+                    value={statuses || []}
+                    openText={`${t(labelOpen)} ${t(labelStatus)}`}
+                    {...commonProps}
+                  />
+                </Grid>
+                <Grid item>
+                  <MultiConnectedAutocompleteField
+                    getEndpoint={getConnectedAutocompleteEndpoint(
+                      buildHostGroupsEndpoint,
+                    )}
+                    label={t(labelHostGroup)}
+                    onChange={changeHostGroups}
+                    value={hostGroups || []}
+                    openText={`${t(labelOpen)} ${t(labelHostGroup)}`}
+                    field="name"
+                    {...commonProps}
+                  />
+                </Grid>
+                <Grid item>
+                  <MultiConnectedAutocompleteField
+                    getEndpoint={getConnectedAutocompleteEndpoint(
+                      buildServiceGroupsEndpoint,
+                    )}
+                    label={t(labelServiceGroup)}
+                    onChange={changeServiceGroups}
+                    value={serviceGroups || []}
+                    openText={`${t(labelOpen)} ${t(labelServiceGroup)}`}
+                    field="name"
+                    {...commonProps}
+                  />
+                </Grid>
+                <Grid item>
+                  <Button
+                    color="primary"
+                    onClick={clearAllFilters}
+                    size="small"
+                  >
+                    {t(labelClear)}
+                  </Button>
+                </Grid>
+              </Grid>
             );
           }}
         </ParentSize>
