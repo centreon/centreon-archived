@@ -14,7 +14,8 @@ import {
   labelDisableAutorefresh,
   labelEnableAutorefresh,
 } from '../../translatedLabels';
-import { useResourceContext } from '../../Context';
+import { ResourceContext, useResourceContext } from '../../Context';
+import memoizeComponent from '../../memoizedComponent';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;
@@ -47,14 +48,18 @@ interface Props {
   onRefresh: () => void;
 }
 
-const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
-  const { t } = useTranslation();
+type ResourceContextProps = Pick<
+  ResourceContext,
+  'enabledAutorefresh' | 'setEnabledAutorefresh' | 'sending'
+>;
 
-  const {
-    enabledAutorefresh,
-    setEnabledAutorefresh,
-    sending,
-  } = useResourceContext();
+const RefreshActionsContent = ({
+  onRefresh,
+  enabledAutorefresh,
+  setEnabledAutorefresh,
+  sending,
+}: Props & ResourceContextProps): JSX.Element => {
+  const { t } = useTranslation();
 
   const toggleAutorefresh = (): void => {
     setEnabledAutorefresh(!enabledAutorefresh);
@@ -80,6 +85,30 @@ const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
         />
       </Grid>
     </Grid>
+  );
+};
+
+const MemoizedRefreshActionsContent = memoizeComponent<
+  Props & ResourceContextProps
+>({
+  memoProps: ['sending', 'enabledAutorefresh'],
+  Component: RefreshActionsContent,
+});
+
+const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
+  const {
+    enabledAutorefresh,
+    setEnabledAutorefresh,
+    sending,
+  } = useResourceContext();
+
+  return (
+    <MemoizedRefreshActionsContent
+      onRefresh={onRefresh}
+      enabledAutorefresh={enabledAutorefresh}
+      setEnabledAutorefresh={setEnabledAutorefresh}
+      sending={sending}
+    />
   );
 };
 
