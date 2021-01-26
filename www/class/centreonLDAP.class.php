@@ -1103,9 +1103,9 @@ class CentreonLdapAdmin
      *
      * @param int $arId
      * @param array $options The list of options
-     * @return int | auth ressource id
+     * @return int resource auth id
      */
-    public function setGeneralOptions($arId = 0, array $options)
+    public function setGeneralOptions(array $options, $arId = 0)
     {
         $isUpdate = ((int)$arId !== 0);
 

@@ -389,7 +389,7 @@ if ($form->validate()) {
                 }
             }
 
-            $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);
+            $arId = $ldapAdmin->setGeneralOptions($values, $values['ar_id']);
             $o = "w";
             $valid = true;
 
