@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isEmpty, propEq, pick, find, equals } from 'ramda';
+import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { ParentSize } from '@visx/visx';
@@ -10,8 +10,6 @@ import { Button, makeStyles } from '@material-ui/core';
 import {
   MultiAutocompleteField,
   MultiConnectedAutocompleteField,
-  SelectField,
-  SearchField,
   Filters,
   SelectEntry,
 } from '@centreon/ui';
@@ -43,6 +41,8 @@ import useFilterModels from './useFilterModels';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
 import { Filter } from './models';
 import { FilterState } from './useFilter';
+import Search from './FormComponents/Search';
+import SelectFilter from './FormComponents/SelectFilter';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -247,17 +247,17 @@ const FilterForm = ({
           {customFiltersLoading ? (
             <FilterLoadingSkeleton />
           ) : (
-            <SelectField
+            <SelectFilter
               options={
                 options.map(pick(['id', 'name', 'type'])) as Array<SelectEntry>
               }
               selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
               onChange={changeFilterGroup}
-              aria-label={t(labelStateFilter)}
+              ariaLabel={t(labelStateFilter)}
               className={classes.field}
             />
           )}
-          <SearchField
+          <Search
             className={classes.searchField}
             EndAdornment={SearchHelpTooltip}
             value={nextSearch || ''}
