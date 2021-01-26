@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isEmpty, propEq, pick, find } from 'ramda';
+import { isEmpty, propEq, pick, find, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { ParentSize } from '@visx/visx';
@@ -13,6 +13,7 @@ import {
   SelectField,
   SearchField,
   Filters,
+  SelectEntry,
 } from '@centreon/ui';
 
 import {
@@ -39,6 +40,8 @@ import {
 } from './api/endpoint';
 import useFilterModels from './useFilterModels';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
+import { Filter } from './models';
+import { FilterState } from './useFilter';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -65,7 +68,46 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Filter = (): JSX.Element => {
+type Props = Pick<
+  FilterState,
+  | 'filter'
+  | 'setFilter'
+  | 'setCurrentSearch'
+  | 'nextSearch'
+  | 'setNextSearch'
+  | 'resourceTypes'
+  | 'setResourceTypes'
+  | 'states'
+  | 'setStates'
+  | 'statuses'
+  | 'setStatuses'
+  | 'hostGroups'
+  | 'setHostGroups'
+  | 'serviceGroups'
+  | 'setServiceGroups'
+  | 'customFilters'
+  | 'customFiltersLoading'
+>;
+
+const FilterForm = ({
+  filter,
+  setFilter,
+  setCurrentSearch,
+  nextSearch,
+  setNextSearch,
+  resourceTypes,
+  setResourceTypes,
+  states,
+  setStates,
+  statuses,
+  setStatuses,
+  hostGroups,
+  setHostGroups,
+  serviceGroups,
+  setServiceGroups,
+  customFilters,
+  customFiltersLoading,
+}: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -81,26 +123,6 @@ const Filter = (): JSX.Element => {
     isCustom,
     newFilter,
   } = useFilterModels();
-
-  const {
-    filter,
-    setFilter,
-    setCurrentSearch,
-    nextSearch,
-    setNextSearch,
-    resourceTypes,
-    setResourceTypes,
-    states,
-    setStates,
-    statuses,
-    setStatuses,
-    hostGroups,
-    setHostGroups,
-    serviceGroups,
-    setServiceGroups,
-    customFilters,
-    customFiltersLoading,
-  } = useResourceContext();
 
   const getConnectedAutocompleteEndpoint = (buildEndpoint) => ({
     search,
@@ -225,7 +247,9 @@ const Filter = (): JSX.Element => {
             <FilterLoadingSkeleton />
           ) : (
             <SelectField
-              options={options.map(pick(['id', 'name', 'type']))}
+              options={
+                options.map(pick(['id', 'name', 'type'])) as Array<SelectEntry>
+              }
               selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
               onChange={changeFilterGroup}
               aria-label={t(labelStateFilter)}
@@ -311,6 +335,67 @@ const Filter = (): JSX.Element => {
           }}
         </ParentSize>
       }
+    />
+  );
+};
+
+const memoProps = [
+  'filter',
+  'setFilter',
+  'nextSearch',
+  'resourceTypes',
+  'states',
+  'statuses',
+  'hostGroups',
+  'serviceGroups',
+  'customFilters',
+  'customFiltersLoading',
+];
+
+const MemoizedFilterForm = React.memo(FilterForm, (prevProps, nextProps) =>
+  equals(pick(memoProps, prevProps), pick(memoProps, nextProps)),
+);
+
+const Filter = (): JSX.Element => {
+  const {
+    filter,
+    setFilter,
+    setCurrentSearch,
+    nextSearch,
+    setNextSearch,
+    resourceTypes,
+    setResourceTypes,
+    states,
+    setStates,
+    statuses,
+    setStatuses,
+    hostGroups,
+    setHostGroups,
+    serviceGroups,
+    setServiceGroups,
+    customFilters,
+    customFiltersLoading,
+  } = useResourceContext();
+
+  return (
+    <MemoizedFilterForm
+      filter={filter}
+      setFilter={setFilter}
+      setCurrentSearch={setCurrentSearch}
+      nextSearch={nextSearch}
+      setNextSearch={setNextSearch}
+      resourceTypes={resourceTypes}
+      setResourceTypes={setResourceTypes}
+      states={states}
+      setStates={setStates}
+      statuses={statuses}
+      setStatuses={setStatuses}
+      hostGroups={hostGroups}
+      setHostGroups={setHostGroups}
+      serviceGroups={serviceGroups}
+      setServiceGroups={setServiceGroups}
+      customFilters={customFilters}
+      customFiltersLoading={customFiltersLoading}
     />
   );
 };
