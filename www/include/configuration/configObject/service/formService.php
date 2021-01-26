@@ -63,21 +63,19 @@ function myDecodeService($arg)
     return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 }
 
-if (!$centreon->user->admin) {
-    if ($service_id) {
-        $checkres = $pearDB->query(
-            "SELECT service_id
-            FROM {$acldbname}.centreon_acl
-            WHERE service_id = " . ((int) $service_id)
-            . "  AND group_id IN (" . $acl->getAccessGroupsString() . ")"
-        );
-        if (!$checkres->numRows()) {
-            $msg = new CentreonMsg();
-            $msg->setImage("./img/icons/warning.png");
-            $msg->setTextStyle("bold");
-            $msg->setText(_('You are not allowed to access this service'));
-            return null;
-        }
+if (!$centreon->user->admin && is_numeric($service_id)) {
+    $checkres = $pearDB->query(
+        "SELECT service_id
+        FROM {$acldbname}.centreon_acl
+        WHERE service_id = " . ((int) $service_id)
+        . "  AND group_id IN (" . $acl->getAccessGroupsString() . ")"
+    );
+    if (!$checkres->numRows()) {
+        $msg = new CentreonMsg();
+        $msg->setImage("./img/icons/warning.png");
+        $msg->setTextStyle("bold");
+        $msg->setText(_('You are not allowed to access this service'));
+        return null;
     }
 }
 
