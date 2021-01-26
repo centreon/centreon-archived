@@ -26,6 +26,8 @@ import { useResourceContext } from '../../Context';
 import { updateFilter as updateFilterRequest } from '../api';
 import useFilterModels from '../useFilterModels';
 import useAdapters from '../api/adapters';
+import { FilterState } from '../useFilter';
+import memoizeComponent from '../../memoizedComponent';
 
 import CreateFilterDialog from './CreateFilterDialog';
 
@@ -38,7 +40,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SaveFilterMenu = (): JSX.Element => {
+type Props = Pick<
+  FilterState,
+  | 'filter'
+  | 'updatedFilter'
+  | 'setFilter'
+  | 'setHostGroups'
+  | 'setServiceGroups'
+  | 'loadCustomFilters'
+  | 'customFilters'
+  | 'setEditPanelOpen'
+>;
+
+const SaveFilterMenuContent = ({
+  filter,
+  updatedFilter,
+  setFilter,
+  setHostGroups,
+  setServiceGroups,
+  loadCustomFilters,
+  customFilters,
+  setEditPanelOpen,
+}: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -58,17 +81,6 @@ const SaveFilterMenu = (): JSX.Element => {
   });
 
   const { showMessage } = useSnackbar();
-
-  const {
-    filter,
-    updatedFilter,
-    setFilter,
-    setHostGroups,
-    setServiceGroups,
-    loadCustomFilters,
-    customFilters,
-    setEditPanelOpen,
-  } = useResourceContext();
 
   const openSaveFilterMenu = (event: React.MouseEvent): void => {
     setMenuAnchor(event.currentTarget);
@@ -176,6 +188,39 @@ const SaveFilterMenu = (): JSX.Element => {
         />
       )}
     </>
+  );
+};
+
+const memoProps = ['filter', 'updatedFilter', 'customFilters'];
+
+const MemoizedSaveFilterMenuContent = memoizeComponent<Props>({
+  memoProps,
+  Component: SaveFilterMenuContent,
+});
+
+const SaveFilterMenu = (): JSX.Element => {
+  const {
+    filter,
+    updatedFilter,
+    setFilter,
+    setHostGroups,
+    setServiceGroups,
+    loadCustomFilters,
+    customFilters,
+    setEditPanelOpen,
+  } = useResourceContext();
+
+  return (
+    <MemoizedSaveFilterMenuContent
+      filter={filter}
+      updatedFilter={updatedFilter}
+      setFilter={setFilter}
+      setHostGroups={setHostGroups}
+      setServiceGroups={setServiceGroups}
+      loadCustomFilters={loadCustomFilters}
+      setEditPanelOpen={setEditPanelOpen}
+      customFilters={customFilters}
+    />
   );
 };
 
