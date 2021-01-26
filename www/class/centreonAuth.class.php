@@ -323,6 +323,7 @@ class CentreonAuth
                         "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication succeeded for '" . $username . "'"
                     );
                 } else {
+                    $this->passwdOk = 0;
                     $this->CentreonLog->insertLog(
                         1,
                         "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] '" . $username . "' is not allowed to reach Centreon"

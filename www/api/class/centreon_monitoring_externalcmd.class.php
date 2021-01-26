@@ -34,8 +34,8 @@
  */
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . '/www/class/centreonExternalCommand.class.php';
 require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
-
 class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
 {
     /**
@@ -61,32 +61,79 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
      */
     public function postSend()
     {
-        if (isset($this->arguments['commands']) && is_array($this->arguments['commands'])) {
+        global $centreon;
+
+        if (
+            isset($this->arguments['commands'])
+            && is_array($this->arguments['commands'])
+            && count($this->arguments['commands'])
+        ) {
             /* Get poller Listing */
-            $query = 'SELECT id FROM nagios_server WHERE ns_activate = "1"';
+            $query = 'SELECT id ' .
+                'FROM nagios_server ' .
+                'WHERE ns_activate = "1"';
+
             $dbResult = $this->pearDB->query($query);
             $pollers = array();
+
             while ($row = $dbResult->fetch()) {
                 $pollers[$row['id']] = 1;
             }
 
-            if (count($this->arguments['commands'])) {
-                if ($fh = @fopen($this->centcore_file, 'a+')) {
-                    foreach ($this->arguments['commands'] as $command) {
-                        if (isset($pollers[$command['poller_id']])) {
-                            fwrite(
-                                $fh,
-                                "EXTERNALCMD:" . $command["poller_id"] . ":[" .
-                                $command['timestamp'] . "] " . $command['command'] . "\n"
-                            );
-                        } else {
-                            throw new RestException('Cannot open Centcore file');
-                        }
-                    }
-                    fclose($fh);
+            $externalCommand = new CentreonExternalCommand();
+            $availableCommands = array();
+
+            /**
+             * We need to make the concordance between the data saved in the database
+             * and the action provided by the user.
+             */
+            foreach ($externalCommand->getExternalCommandList() as $key => $cmd) {
+                foreach ($cmd as $c) {
+                    $availableCommands[$c] = $key;
                 }
             }
-            return (array('success' => true));
+
+            $isAdmin = $centreon->user->admin;
+
+            /**
+             * If user is not admin we need to retrieve its ACL
+             */
+            if (!$isAdmin) {
+                $userAcl = new CentreonACL($centreon->user->user_id, $isAdmin);
+            }
+
+            if ($fh = @fopen($this->centcore_file, 'a+')) {
+                foreach ($this->arguments['commands'] as $command) {
+                    $commandSplitted = explode(';', $command['command']);
+                    $action = $commandSplitted[0];
+
+                    // checking that action provided exists
+                    if (!array_key_exists($action, $availableCommands)) {
+                        throw new RestBadRequestException('Action ' . $action . ' not supported');
+                    }
+
+                    if (!$isAdmin) {
+                        // Checking that the user has rights to do the action provided
+                        if ($userAcl->checkAction($availableCommands[$action]) === 0) {
+                            throw new RestUnauthorizedException(
+                                'User is not allowed to execute ' . $action . ' action'
+                            );
+                        }
+                    }
+
+                    if (isset($pollers[$command['poller_id']])) {
+                        fwrite(
+                            $fh,
+                            "EXTERNALCMD:" . $command["poller_id"] . ":[" .
+                            $command['timestamp'] . "] " . $command['command'] . "\n"
+                        );
+                    }
+                }
+                fclose($fh);
+                return (array('success' => true));
+            } else {
+                throw new RestException('Cannot open Centcore file');
+            }
         } else {
             throw new RestBadRequestException('Bad arguments - Cannot find command list');
         }

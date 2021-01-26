@@ -10351,14 +10351,6 @@ msgstr "Campo obrigatório para fins de permissionamento (ACL)."
 msgid "Impossible to change server due to parentship with other hosts"
 msgstr "Impossível mudar de servidor devido ao parentesco com outros hosts"
 
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1089
-msgid "Some hosts parent has not the same instance"
-msgstr "Alguns hosts parente não tem a mesma instância"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1090
-msgid "Some hosts child has not the same instance"
-msgstr "Alguns hosts filho não tem a mesma instância"
-
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1096
 msgid "_Module_ is not a legal expression"
 msgstr "_Module_ não é uma expressão autorizada"
