@@ -8,7 +8,6 @@ import { ParentSize } from '@visx/visx';
 import { Button, makeStyles } from '@material-ui/core';
 
 import {
-  MultiAutocompleteField,
   MultiConnectedAutocompleteField,
   Filters,
   SelectEntry,
@@ -43,6 +42,8 @@ import { Filter } from './models';
 import { FilterState } from './useFilter';
 import Search from './FormComponents/Search';
 import SelectFilter from './FormComponents/SelectFilter';
+import FilterAutocomplete from './FormComponents/FilterAutocomplete';
+import FilterConnectedAutocomplete from './FormComponents/FilterConnectedAutocomplete';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -282,48 +283,48 @@ const FilterForm = ({
 
             return (
               <div className={clsx([classes.grid, classes.criterias])}>
-                <MultiAutocompleteField
+                <FilterAutocomplete
                   options={availableResourceTypes}
                   label={t(labelResource)}
                   onChange={changeResourceTypes}
-                  value={resourceTypes || []}
+                  value={resourceTypes}
                   openText={`${t(labelOpen)} ${t(labelResource)}`}
                   {...commonProps}
                 />
-                <MultiAutocompleteField
+                <FilterAutocomplete
                   options={availableStates}
                   label={t(labelState)}
                   onChange={changeStates}
-                  value={states || []}
+                  value={states}
                   openText={`${t(labelOpen)} ${t(labelState)}`}
                   {...commonProps}
                 />
-                <MultiAutocompleteField
+                <FilterAutocomplete
                   options={availableStatuses}
                   label={t(labelStatus)}
                   onChange={changeStatuses}
-                  value={statuses || []}
+                  value={statuses}
                   openText={`${t(labelOpen)} ${t(labelStatus)}`}
                   {...commonProps}
                 />
-                <MultiConnectedAutocompleteField
+                <FilterConnectedAutocomplete
                   getEndpoint={getConnectedAutocompleteEndpoint(
                     buildHostGroupsEndpoint,
                   )}
                   label={t(labelHostGroup)}
                   onChange={changeHostGroups}
-                  value={hostGroups || []}
+                  value={hostGroups}
                   openText={`${t(labelOpen)} ${t(labelHostGroup)}`}
                   field="name"
                   {...commonProps}
                 />
-                <MultiConnectedAutocompleteField
+                <FilterConnectedAutocomplete
                   getEndpoint={getConnectedAutocompleteEndpoint(
                     buildServiceGroupsEndpoint,
                   )}
                   label={t(labelServiceGroup)}
                   onChange={changeServiceGroups}
-                  value={serviceGroups || []}
+                  value={serviceGroups}
                   openText={`${t(labelOpen)} ${t(labelServiceGroup)}`}
                   field="name"
                   {...commonProps}
