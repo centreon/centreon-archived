@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals } from 'ramda';
+import { equals, pick } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
@@ -14,41 +14,66 @@ import {
   labelOf,
   labelNoResultsFound,
 } from '../translatedLabels';
-import { useResourceContext } from '../Context';
+import { ResourceContext, useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource } from '../models';
+import memoizeComponent from '../memoizedComponent';
 
 import useLoadResources from './useLoadResources';
 import { getColumns } from './columns';
 
-const ResourceListing = (): JSX.Element => {
+interface Props
+  extends Pick<
+    ResourceContext,
+    | 'listing'
+    | 'sortf'
+    | 'setSortf'
+    | 'sorto'
+    | 'setSorto'
+    | 'setLimit'
+    | 'page'
+    | 'setPage'
+    | 'setOpenDetailsTabId'
+    | 'setSelectedResourceId'
+    | 'setSelectedResourceParentId'
+    | 'setSelectedResourceType'
+    | 'setSelectedResourceParentType'
+    | 'selectedResourceId'
+    | 'setSelectedResources'
+    | 'selectedResources'
+    | 'setResourcesToAcknowledge'
+    | 'setResourcesToSetDowntime'
+    | 'setResourcesToCheck'
+    | 'sending'
+  > {
+  initAutorefreshAndLoad: () => void;
+}
+
+const ResourceListingContent = ({
+  listing,
+  sortf,
+  setSortf,
+  sorto,
+  setSorto,
+  setLimit,
+  page,
+  setPage,
+  setOpenDetailsTabId,
+  setSelectedResourceId,
+  setSelectedResourceParentId,
+  setSelectedResourceType,
+  setSelectedResourceParentType,
+  selectedResourceId,
+  setSelectedResources,
+  selectedResources,
+  setResourcesToAcknowledge,
+  setResourcesToSetDowntime,
+  setResourcesToCheck,
+  sending,
+  initAutorefreshAndLoad,
+}: Props): JSX.Element => {
   const theme = useTheme();
   const { t } = useTranslation();
-
-  const {
-    listing,
-    sortf,
-    setSortf,
-    sorto,
-    setSorto,
-    setLimit,
-    page,
-    setPage,
-    setOpenDetailsTabId,
-    setSelectedResourceId,
-    setSelectedResourceParentId,
-    setSelectedResourceType,
-    setSelectedResourceParentType,
-    selectedResourceId,
-    setSelectedResources,
-    selectedResources,
-    setResourcesToAcknowledge,
-    setResourcesToSetDowntime,
-    setResourcesToCheck,
-    sending,
-  } = useResourceContext();
-
-  const { initAutorefreshAndLoad } = useLoadResources();
 
   const changeSort = ({ order, orderBy }): void => {
     setSortf(orderBy);
@@ -127,6 +152,53 @@ const ResourceListing = (): JSX.Element => {
       onRowClick={selectResource}
       innerScrollDisabled={false}
       emptyDataMessage={t(labelNoResultsFound)}
+    />
+  );
+};
+
+const memoProps = [
+  'listing',
+  'sortf',
+  'sorto',
+  'page',
+  'selectedResources',
+  'selectResourceId',
+  'sending',
+];
+
+const MemoizedResourceListingContent = memoizeComponent<Props>({
+  memoProps,
+  Component: ResourceListingContent,
+});
+
+const functionProps = [
+  'setSortf',
+  'setSorto',
+  'setLimit',
+  'setPage',
+  'setOpenDetailsTabId',
+  'setSelectedResourceId',
+  'setSelectedResourceParentId',
+  'setSelectedResourceType',
+  'setSelectedResourceParentType',
+  'setSelectedResources',
+  'setResourcesToAcknowledge',
+  'setResourcesToSetDowntime',
+  'setResourcesToCheck',
+];
+
+const ResourceListing = (): JSX.Element => {
+  const resourceProps = pick(
+    [...memoProps, ...functionProps],
+    useResourceContext(),
+  );
+
+  const { initAutorefreshAndLoad } = useLoadResources();
+
+  return (
+    <MemoizedResourceListingContent
+      {...resourceProps}
+      initAutorefreshAndLoad={initAutorefreshAndLoad}
     />
   );
 };
