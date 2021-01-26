@@ -31,6 +31,7 @@ import {
   labelMyFilters,
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
+import memoizeComponent from '../memoizedComponent';
 
 import SearchHelpTooltip from './SearchHelpTooltip';
 import SaveFilter from './Save';
@@ -352,9 +353,10 @@ const memoProps = [
   'customFiltersLoading',
 ];
 
-const MemoizedFilterForm = React.memo(FilterForm, (prevProps, nextProps) =>
-  equals(pick(memoProps, prevProps), pick(memoProps, nextProps)),
-);
+const MemoizedFilterForm = memoizeComponent<Props>({
+  memoProps,
+  Component: FilterForm,
+});
 
 const Filter = (): JSX.Element => {
   const {
