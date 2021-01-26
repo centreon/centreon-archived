@@ -71,12 +71,11 @@ function hidePasswordInCommand(
         return _('Unable to get executed command');
     }
 
-    if ($row = $statement->fetch()) {
+    if (($row = $statement->fetch()) && !empty($row['command_line'])) {
         $monitoringCommand = $row['command_line'];
     } else {
         return _('Unable to get executed command');
     }
-
 
     // Get command line with macro
     $statement = $pearDB->prepare("SELECT command_line FROM command WHERE command_name = :command_name");
@@ -87,7 +86,7 @@ function hidePasswordInCommand(
         return _('Unable to get configured command');
     }
 
-    if ($row = $statement->fetch()) {
+    if (($row = $statement->fetch()) && !empty($row['command_line'])) {
         $configurationCommand = $row['command_line'];
     } else {
         $statement = $pearDB->prepare("SELECT service_register FROM service WHERE service_id = :service_id");
