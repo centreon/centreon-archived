@@ -289,7 +289,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`check_for_orphaned_services` , `check_service_freshness` , "
         . "`service_freshness_check_interval` , `cached_host_check_horizon`, "
         . "`cached_service_check_horizon` , `additional_freshness_latency` , "
-        . "`check_host_freshness` , `host_freshness_check_interval` , `date_format` , "
+        . "`check_host_freshness` , `host_freshness_check_interval` , `instance_heartbeat_interval` , `date_format` , "
         . "`illegal_object_name_chars` , `illegal_macro_output_chars`, "
         . "`use_large_installation_tweaks` , `debug_file` , `debug_level` , "
         . "`debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , `daemon_dumps_core`, "
@@ -953,6 +953,16 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" . htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "NULL, ";
+    }
+
+    if (
+        isset($ret["instance_heartbeat_interval"])
+        && $ret["instance_heartbeat_interval"] != null
+        && is_numeric($ret["instance_heartbeat_interval"])
+    ) {
+        $rq .= (int)$ret["instance_heartbeat_interval"] . ",  ";
+    } else {
+        $rq .= "30, ";
     }
 
     if (isset($ret["date_format"]) && $ret["date_format"] != null) {
@@ -1920,6 +1930,16 @@ function updateNagios($nagios_id = null)
             . "',  ";
     } else {
         $rq .= "host_freshness_check_interval  = NULL, ";
+    }
+
+    if (
+        isset($ret["instance_heartbeat_interval"])
+        && $ret["instance_heartbeat_interval"] != null
+        && is_numeric($ret["instance_heartbeat_interval"])
+    ) {
+        $rq .= "instance_heartbeat_interval = " . (int)$ret["instance_heartbeat_interval"] . ",  ";
+    } else {
+        $rq .= "instance_heartbeat_interval = 30, ";
     }
 
     if (isset($ret["date_format"]) && $ret["date_format"] != null) {

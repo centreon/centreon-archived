@@ -90,6 +90,7 @@ class Engine extends AbstractObject
         service_perfdata_file_processing_interval,
         service_freshness_check_interval,
         host_freshness_check_interval,
+        instance_heartbeat_interval,
         date_format,
         illegal_object_name_chars,
         illegal_macro_output_chars,
@@ -229,6 +230,7 @@ class Engine extends AbstractObject
         'grpc_port'
     );
     protected $attributes_default = array(
+        'instance_heartbeat_interval',
         'enable_notifications',
         'execute_service_checks',
         'accept_passive_service_checks',
