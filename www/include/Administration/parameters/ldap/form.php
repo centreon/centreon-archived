@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -46,8 +46,16 @@ $attrsTextarea = array("rows" => "4", "cols" => "60");
 $attrsAdvSelect = null;
 
 $arId = 0;
-if (isset($_REQUEST['ar_id'])) {
-    $arId = $_REQUEST['ar_id'];
+$filterVarOptions = array(
+    'options' => array(
+        'default' => 0
+    )
+);
+
+if (isset($_POST['ar_id'])) {
+    $arId = filter_var($_POST['ar_id'], FILTER_VALIDATE_INT, $filterVarOptions);
+} elseif (isset($_GET['arId'])) {
+    $arId = filter_var($_GET['ar_id'], FILTER_VALIDATE_INT, $filterVarOptions);
 }
 
 /**
@@ -177,22 +185,23 @@ if ($arId) {
     $gopt = $ldapAdmin->getGeneralOptions($arId);
     $arStmt1 = $pearDB->prepare(
         "SELECT `ar_name`, `ar_description`, `ar_enable` " .
-        "FROM `auth_ressource` ".
+        "FROM `auth_ressource` " .
         "WHERE ar_id = ?"
     );
     $res = $pearDB->execute($arStmt1, array($arId));
-    
+
     if (PEAR::isError($res)) {
         die("An error occured");
     }
-    
+
     while ($row = $res->fetchRow()) {
-        $gopt['ar_name'] = $row['ar_name'];
-        $gopt['ar_description'] = $row['ar_description'];
+        // sanitize name and description
+        $gopt['ar_name'] = filter_var($row['ar_name'], FILTER_SANITIZE_STRING);
+        $gopt['ar_description'] = filter_var($row['ar_description'], FILTER_SANITIZE_STRING);
         $gopt['ldap_auth_enable'] = $row['ar_enable'];
     }
     unset($res);
-    
+
     /*
      * Preset values of ldap servers
      */
@@ -203,7 +212,7 @@ if ($arId) {
 }
 
 /*
- * LDAP servers 
+ * LDAP servers
  */
 $cloneSet = array();
 $cloneSet[] = $form->addElement(
@@ -211,7 +220,7 @@ $cloneSet[] = $form->addElement(
     'address[#index#]',
     _("Host address"),
     array(
-        "size"=>"30",
+        "size" => "30",
         "id" => "address_#index#"
     )
 );
@@ -220,7 +229,7 @@ $cloneSet[] = $form->addElement(
     'port[#index#]',
     _("Port"),
     array(
-        "size"=>"10",
+        "size" => "10",
         "id" => "port_#index#"
     )
 );
@@ -283,40 +292,50 @@ require_once $path . 'ldap/javascript/ldapJs.php';
 
 $valid = false;
 $filterValid = true;
+$validNameOrDescription = true;
 $allHostsOk = true;
 if ($form->validate()) {
     $values = $form->getSubmitValues();
+    // sanitize name and description
+    $values['ar_name'] = filter_var($values['ar_name'], FILTER_SANITIZE_STRING);
+    $values['ar_description'] = filter_var($values['ar_description'], FILTER_SANITIZE_STRING);
 
-    /*
-     * Test is filter string is validate
-     */
-    if (false === CentreonLDAP::validateFilterPattern($values['user_filter'])) {
-        $filterValid = false;
-    }
+    // Check if sanitized name and description are not empty
+    if (
+        "" === $values['ar_name']
+        || "" === $values['ar_description']
+    ) {
+        $validNameOrDescription = false;
+    } else {
+        // Test if filter string is valid
+        if (!CentreonLDAP::validateFilterPattern($values['user_filter'])) {
+            $filterValid = false;
+        }
 
-    if (isset($_POST['ldapHosts'])) {
-        foreach ($_POST['ldapHosts'] as $ldapHost) {
-            if ($ldapHost['hostname'] == '' || $ldapHost['port'] == '') {
-                $allHostsOk = false;
+        if (isset($_POST['ldapHosts'])) {
+            foreach ($_POST['ldapHosts'] as $ldapHost) {
+                if ($ldapHost['hostname'] == '' || $ldapHost['port'] == '') {
+                    $allHostsOk = false;
+                }
             }
         }
-    }
 
-    if ($filterValid && $allHostsOk) {
-        if (!isset($values['ldap_contact_tmpl'])) {
-            $values['ldap_contact_tmpl'] = "";
+        if ($filterValid && $allHostsOk) {
+            if (!isset($values['ldap_contact_tmpl'])) {
+                $values['ldap_contact_tmpl'] = "";
+            }
+
+            $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);
+            $o = "w";
+            $valid = true;
+
+            if (!isset($values['ldap_srv_dns']['ldap_srv_dns']) || !$values['ldap_srv_dns']['ldap_srv_dns']) {
+                $tpl->assign("hideDnsOptions", 1);
+            } else {
+                $tpl->assign("hideDnsOptions", 0);
+            }
+            $form->freeze();
         }
-
-        $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);
-        $o = "w";
-        $valid = true;
-
-        if (!isset($values['ldap_srv_dns']['ldap_srv_dns']) || !$values['ldap_srv_dns']['ldap_srv_dns']) {
-            $tpl->assign("hideDnsOptions", 1);
-        } else {
-            $tpl->assign("hideDnsOptions", 0);
-        }
-        $form->freeze();
     }
 }
 
@@ -327,13 +346,15 @@ if (!$form->validate() && isset($_POST["gopt_id"])) {
         . _("Bad ldap filter: missing %s pattern. Check user or group filter") . "</div>");
 } elseif (false === $allHostsOk) {
     print("<div class='msg' align='center'>" . _("Invalid LDAP Host parameters") . "</div>");
+} elseif (false === $validNameOrDescription) {
+    print("<div class='msg' align='center'>" . _("Invalid name or description") . "</div>");
 }
 
 $form->addElement(
     "button",
     "change",
     _("Modify"),
-    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId ."'")
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId . "'")
 );
 
 /*
