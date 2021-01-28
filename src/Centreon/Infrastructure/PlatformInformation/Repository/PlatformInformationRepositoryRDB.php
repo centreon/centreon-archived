@@ -170,6 +170,9 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                     }
                 }
             } else {
+                /**
+                 * delete all keys related to a remote configuration, reinsert isCentral and isRemote.
+                 */
                 array_push(
                     $deletedKeys,
                     "'isRemote'", 
@@ -177,6 +180,10 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                     "'authorizedMaster'", 
                     "'apiUsername'", 
                     "'apiCredentials'",
+                    "'apiScheme'",
+                    "'apiPort'",
+                    "'apiPath'",
+                    "'apiPeerValidation'"
                 );
                 $insertQuery .= "('isCentral', 'yes'),  ('isRemote', 'no'),";
             }
