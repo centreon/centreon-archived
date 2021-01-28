@@ -28,7 +28,9 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\PlatformTopology\PlatformConflictException;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
 
@@ -76,60 +78,5 @@ class PlatformInformationService implements PlatformInformationServiceInterface
         }
 
         return $foundPlatformInformation;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function updatePlatformInformation(PlatformInformation $platformInformationUpdate): void
-    {
-        $currentPlatformInformation = $this->platformInformationRepository->findPlatformInformation();
-
-        /**
-         * Convert the Remote to Central or opposite
-         */
-        try {
-            if ($platformInformationUpdate->isRemote() && !$currentPlatformInformation->isRemote()) {
-                if ($platformInformationUpdate->getCentralServerAddress() !== null) {
-                    $this->remoteServerService->convertCentralToRemote(
-                        $platformInformationUpdate
-                    );
-                /**
-                 * If the updated information as no Central Server Address, check in the existing information if its
-                 * provided.
-                 */
-                } elseif ($currentPlatformInformation->getCentralServerAddress() !== null) {
-                    $platformInformationUpdate->setCentralServerAddress(
-                        $currentPlatformInformation->getCentralServerAddress()
-                    );
-                    $this->remoteServerService->convertCentralToRemote(
-                        $platformInformationUpdate
-                    );
-                /**
-                 * If no CentralServerAddress are provided into the updated or current information,
-                 * we can't convert the platform in remote.
-                 */
-                } else {
-                    throw new RemoteServerException(
-                        _("Unable to convert in remote server, no Central to link provided")
-                    );
-                }
-            } elseif ($platformInformationUpdate->isCentral() && !$currentPlatformInformation->isCentral()) {
-                $this->remoteServerService->convertRemoteToCentral($platformInformationUpdate);
-            }
-
-            $this->platformInformationRepository->updatePlatformInformation($platformInformationUpdate);
-        } catch (
-            RemoteServerException
-            | MenuException
-            | PlatformException
-            | RepositoryException
-            | EntityNotFoundException
-            | PlatformConflictException $ex
-        ) {
-            throw $ex;
-        } catch (\Exception $ex) {
-            throw new PlatformInformationException(_("An error occured while your platform update"), 0, $ex);
-        }
     }
 }

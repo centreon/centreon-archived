@@ -34,38 +34,38 @@ class PlatformInformationFactoryRDB
 
     public static function create(array $information)
     {
-        $platFormInformation = new PlatformInformation();
+        $platformInformation = new PlatformInformation();
         foreach ($information as $key => $value) {
             switch ($key) {
                 case 'isRemote':
-                    $platFormInformation->setRemote($value);
+                    $platformInformation->setRemote($value);
                     break;
                 case 'centralServerAddress':
-                    $platFormInformation->setCentralServerAddress($value);
+                    $platformInformation->setCentralServerAddress($value);
                     break;
                 case 'apiUsername':
-                    $platFormInformation->setApiUsername($value);
+                    $platformInformation->setApiUsername($value);
                     break;
-                case 'apiCredentials':
-                    $platFormInformation->setEncryptedApiCredentials($value);
+                case 'encryptedApiCredentials':
+                    $platformInformation->setEncryptedApiCredentials($value);
                     $decryptedPassword = self::decryptApiCredentials($value);
-                    $platFormInformation->setApiCredentials($decryptedPassword);
+                    $platformInformation->setApiCredentials($decryptedPassword);
                     break;
                 case 'apiScheme':
-                    $platFormInformation->setApiScheme($value);
+                    $platformInformation->setApiScheme($value);
                     break;
                 case 'apiPort':
-                    $platFormInformation->setApiPort((int) $value);
+                    $platformInformation->setApiPort((int) $value);
                     break;
                 case 'apiPath':
-                    $platFormInformation->setApiPath($value);
+                    $platformInformation->setApiPath($value);
                     break;
                 case 'apiPeerValidation':
-                    $platFormInformation->setApiPeerValidation($value);
+                    $platformInformation->setApiPeerValidation($value);
                     break;
             }
         }
-        return $platFormInformation;
+        return $platformInformation;
     }
 
     /**

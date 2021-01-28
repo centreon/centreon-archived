@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\Proxy\Proxy;

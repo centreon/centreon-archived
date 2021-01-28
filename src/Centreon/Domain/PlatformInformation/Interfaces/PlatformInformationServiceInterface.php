@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Interfaces;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-use Centreon\Domain\PlatformInformation\PlatformInformationException;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 
 interface PlatformInformationServiceInterface
 {
@@ -33,12 +33,4 @@ interface PlatformInformationServiceInterface
      * @throws PlatformInformationException
      */
     public function getInformation(): ?PlatformInformation;
-
-    /**
-     * Update platform information
-     *
-     * @param PlatformInformation $platformInformationUpdated
-     * @throws PlatformInformationException
-     */
-    public function updatePlatformInformation(PlatformInformation $platformInformationUpdated): void;
 }

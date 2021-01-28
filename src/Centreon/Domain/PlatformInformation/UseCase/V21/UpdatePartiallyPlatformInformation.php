@@ -30,9 +30,9 @@ use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\PlatformInformation\Model\InformationDtoFactory;
 use Centreon\Domain\PlatformInformation\Interfaces\DtoValidatorInterface;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformationFactory;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationWriteRepositoryInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 
 class UpdatePartiallyPlatformInformation
 {
@@ -65,6 +65,7 @@ class UpdatePartiallyPlatformInformation
         $this->writeRepository = $writeRepository;
         $this->readRepository = $readRepository;
         $this->proxyService = $proxyService;
+        $this->remoteServerService = $remoteServerService;
     }
 
     /**
@@ -112,14 +113,12 @@ class UpdatePartiallyPlatformInformation
             }
             break;
         }
-
         $platformInformationUpdate = PlatformInformationFactory::create($information);
         $currentPlatformInformation = $this->readRepository->findPlatformInformation();
-
-        dd($platformInformationUpdate, $currentPlatformInformation);
         //utiliser les services déjà existant
         $this->updatePlatformTypeOrFail($platformInformationUpdate, $currentPlatformInformation);
         //writeRepository->update
+        $this->writeRepository->updatePlatformInformation($platformInformationUpdate);
     }
 
     /**
@@ -153,11 +152,50 @@ class UpdatePartiallyPlatformInformation
      *
      * @param PlatformInformation $platformInformationUpdate
      * @param PlatformInformation $currentPlatformInformation
+     * @throws RemoteServerException
      */
     private function updatePlatformTypeOrFail(
         PlatformInformation $platformInformationUpdate,
         PlatformInformation $currentPlatformInformation
     ): void {
+        if ($platformInformationUpdate->isRemote() && !$currentPlatformInformation->isRemote()) {
+            $this->convertCentralToRemote($platformInformationUpdate, $currentPlatformInformation);
+        } elseif (!$platformInformationUpdate->isRemote() && $currentPlatformInformation->isRemote()) {
+            /**
+             * Use the current information as they contains all the information
+             * required to remove the Remote to its Parent
+             */
+            $this->remoteServerService->convertRemoteToCentral($currentPlatformInformation);
+        }
+    }
 
+    private function convertCentralToRemote(
+        PlatformInformation $platformInformationUpdate,
+        PlatformInformation $currentPlatformInformation
+    ): void {
+        if ($platformInformationUpdate->getCentralServerAddress() !== null) {
+            $this->remoteServerService->convertCentralToRemote(
+                $platformInformationUpdate
+            );
+        /**
+         * If the updated information as no Central Server Address, check in the existing information if its
+         * provided.
+         */
+        } elseif ($currentPlatformInformation->getCentralServerAddress() !== null) {
+            $platformInformationUpdate->setCentralServerAddress(
+                $currentPlatformInformation->getCentralServerAddress()
+            );
+            $this->remoteServerService->convertCentralToRemote(
+                $platformInformationUpdate
+            );
+        /**
+         * If no CentralServerAddress are provided into the updated or current information,
+         * we can't convert the platform in remote.
+         */
+        } else {
+            throw new RemoteServerException(
+                _("Unable to convert in remote server, no Central to link provided")
+            );
+        }
     }
 }

@@ -29,7 +29,7 @@ use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\PlatformTopology\PlatformException;
-use Centreon\Domain\PlatformInformation\PlatformInformationException;
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 use Centreon\Domain\Repository\RepositoryException;
 
 interface PlatformTopologyServiceInterface

@@ -30,7 +30,7 @@ use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
-use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
@@ -171,7 +171,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              * @var PlatformInformation|null $foundPlatformInformation
              */
             $foundPlatformInformation = $this->platformInformationService->getInformation();
-
             if (null === $foundPlatformInformation) {
                 throw new PlatformException(
                     sprintf(

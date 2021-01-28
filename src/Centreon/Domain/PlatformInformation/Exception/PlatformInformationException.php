@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformInformation;
+namespace Centreon\Domain\PlatformInformation\Exception;
 
 /**
  * This class is designed to represent a business exception in the 'Platform information' context.
