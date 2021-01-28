@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -59,7 +60,7 @@ $openIdConnectMode = $result->fetch()["value"];
  * Defining Login Form
  */
 $form = new HTML_QuickFormCustom('Form', 'post', './index.php');
-$form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic'));
+$form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic', 'autocomplete' => 'off'));
 $form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
 $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));
 
