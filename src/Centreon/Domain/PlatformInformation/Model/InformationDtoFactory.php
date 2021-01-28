@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,24 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformInformation\Interfaces;
+namespace Centreon\Domain\PlatformInformation\Model;
 
-use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
-
-interface PlatformInformationWriteRepositoryInterface
+class InformationDtoFactory
 {
-    /**
-     * Update the platform information.
-     *
-     * @param PlatformInformation $platformInformation
-     * @throws \Exception
-     */
-    public function updatePlatformInformation(PlatformInformation $platformInformation): void;
+    public static function createFromRequest(array $request)
+    {
+        $informationArray = [];
+        foreach($request as $informationKey => $informationValue) {
+            $newInformationDto = new InformationDto();
+            $newInformationDto->key = $informationKey;
+            $newInformationDto->value = $informationValue;
+
+            $informationArray[] = $newInformationDto;
+        }
+
+        return $informationArray;
+    }
 }

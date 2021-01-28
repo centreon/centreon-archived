@@ -283,12 +283,7 @@ class PlatformController extends AbstractController
             throw new BadRequestHttpException(_('Error when decoding sent data'));
         }
 
-        try {
-            $updatePartiallyPlatformInformation->execute($request);
-        } catch (\Exception $ex){
-            return $this->view($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
-
+        $updatePartiallyPlatformInformation->execute($request);
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 }

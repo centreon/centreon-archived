@@ -20,14 +20,17 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\PlatformInformation;
+namespace Centreon\Infrastructure\PlatformInformation\Repository;
 
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Infrastructure\DatabaseConnection;
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
 use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
+use Centreon\Infrastructure\RequestParameters\Interfaces\NormalizerInterface;
+use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
+use Centreon\Infrastructure\PlatformInformation\Repository\Model\PlatformInformationFactoryRDB;
 
 /**
  * This class is designed to manage the repository of the platform topology requests
@@ -37,12 +40,18 @@ use Centreon\Domain\Repository\RepositoryException;
 class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements PlatformInformationRepositoryInterface
 {
     /**
+     * @var SqlRequestParametersTranslator
+     */
+    private $sqlRequestTranslator;
+
+    /**
      * PlatformTopologyRepositoryRDB constructor.
      * @param DatabaseConnection $db
      */
-    public function __construct(DatabaseConnection $db)
+    public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
     {
         $this->db = $db;
+        $this->sqlRequestTranslator = $sqlRequestTranslator;
     }
 
     /**
@@ -59,6 +68,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
         $platformInformation = null;
         if ($statement->execute()) {
             while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+
                 // Renaming one key to be more explicit
                 if ('authorizedMaster' === $row['key']) {
                     $row['key'] = 'centralServerAddress';
@@ -69,23 +79,17 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                     $row['key'] = 'encryptedApiCredentials';
                 }
 
-                if ('isCentral' === $row['key'] || 'isRemote' === $row['key'] || 'apiPeerValidation' === $row['key']) {
+                if ('isRemote' === $row['key'] || 'apiPeerValidation' === $row['key']) {
                     $row['value'] = $row['value'] === 'yes';
                 }
 
-                // Converting each camelCase key as snake_case
-                $key = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $row['key']));
-                $result[$key] = $row['value'];
+                $result[$row['key']] = $row['value'];
             }
-
             if (!empty($result)) {
                 /**
                  * @var PlatformInformation $platformInformation
                  */
-                $platformInformation = EntityCreator::createEntityByArray(
-                    PlatformInformation::class,
-                    $result
-                );
+                $platformInformation = PlatformInformationFactoryRDB::create($result);
             }
         }
 

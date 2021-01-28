@@ -23,9 +23,16 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\UseCase\V21;
 
+use Centreon\Domain\Proxy\Proxy;
+use Centreon\Domain\RemoteServer\RemoteServerException;
+use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
+use Centreon\Domain\PlatformInformation\Model\InformationDtoFactory;
 use Centreon\Domain\PlatformInformation\Interfaces\DtoValidatorInterface;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformationFactory;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationWriteRepositoryInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 
 class UpdatePartiallyPlatformInformation
 {
@@ -39,11 +46,25 @@ class UpdatePartiallyPlatformInformation
      */
     private $readRepository;
 
+    /**
+     * @var ProxyServiceInterface
+     */
+    private $proxyService;
+
+    /**
+     * @var RemoteServerServiceInterface
+     */
+    private $remoteServerService;
+
     public function __construct(
         PlatformInformationWriteRepositoryInterface $writeRepository,
-        PlatformInformationReadRepositoryInterface $readRepository
+        PlatformInformationReadRepositoryInterface $readRepository,
+        ProxyServiceInterface $proxyService,
+        RemoteServerServiceInterface $remoteServerService
     ) {
         $this->writeRepository = $writeRepository;
+        $this->readRepository = $readRepository;
+        $this->proxyService = $proxyService;
     }
 
     /**
@@ -80,19 +101,63 @@ class UpdatePartiallyPlatformInformation
      */
     public function execute(array $request)
     {
-        //methode private validate DTO
         foreach ($this->validators as $validator) {
-            try {
-                $validator->validateOrFail($request);
-            } catch(\Throwable $ex) {
-                throw $ex;
+            $validator->validateOrFail($request);
+        }
+        $information = InformationDtoFactory::createFromRequest($request);
+
+        foreach($information as $informationDto) {
+            if ($informationDto->key === "proxy") {
+                $this->updateProxyOptions($informationDto->value);
             }
+            break;
         }
 
+        $platformInformationUpdate = PlatformInformationFactory::create($information);
+        $currentPlatformInformation = $this->readRepository->findPlatformInformation();
+
+        dd($platformInformationUpdate, $currentPlatformInformation);
         //utiliser les services déjà existant
-
+        $this->updatePlatformTypeOrFail($platformInformationUpdate, $currentPlatformInformation);
         //writeRepository->update
+    }
 
+    /**
+     * Update Proxy Options.
+     *
+     * @param array $proxyOptions
+     */
+    private function updateProxyOptions(array $proxyOptions): void
+    {
+        $proxy = new Proxy();
+        if (isset($proxyOptions['host'])) {
+            $proxy->setUrl($proxyOptions['host']);
+        }
+        if (isset($proxyOptions['scheme'])) {
+            $proxy->setProtocol($proxyOptions['scheme']);
+        }
+        if (isset($proxyOptions['port'])) {
+            $proxy->setPort($proxyOptions['port']);
+        }
+        if (isset($proxyOptions['user'])) {
+            $proxy->setUser($proxyOptions['user']);
+            if (isset($proxyOptions['password'])) {
+                $proxy->setPassword($proxyOptions['password']);
+            }
+        }
+        $this->proxyService->updateProxy($proxy);
+    }
+
+    /**
+     * Update the Platform Type
+     *
+     * @param PlatformInformation $platformInformationUpdate
+     * @param PlatformInformation $currentPlatformInformation
+     */
+    private function updatePlatformTypeOrFail(
+        PlatformInformation $platformInformationUpdate,
+        PlatformInformation $currentPlatformInformation
+    ): void {
 
     }
 }

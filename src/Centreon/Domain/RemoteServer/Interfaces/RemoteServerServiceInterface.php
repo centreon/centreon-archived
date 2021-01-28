@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\RemoteServer\Interfaces;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 
 interface RemoteServerServiceInterface
 {

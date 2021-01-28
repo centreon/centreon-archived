@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformInformation;
+namespace Centreon\Domain\PlatformInformation\Model;
 
 use Security\Encryption;
 
@@ -31,29 +31,9 @@ use Security\Encryption;
 class PlatformInformation
 {
     /**
-     * Credentials encryption key
-     */
-    public const ENCRYPT_SECOND_KEY = 'api_remote_credentials';
-
-    /**
-     * @var string|null platform version
-     */
-    private $version;
-
-    /**
-     * @var string|null
-     */
-    private $appKey;
-
-    /**
      * @var bool platform type
      */
     private $isRemote = false;
-
-    /**
-     * @var bool platform type
-     */
-    private $isCentral = false;
 
     /**
      * @var string|null central's address
@@ -96,42 +76,6 @@ class PlatformInformation
     private $apiPeerValidation;
 
     /**
-     * @return string|null
-     */
-    public function getVersion(): ?string
-    {
-        return $this->version;
-    }
-
-    /**
-     * @param string|null $version
-     * @return $this
-     */
-    public function setVersion(?string $version): self
-    {
-        $this->version = $version;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAppKey(): ?string
-    {
-        return $this->appKey;
-    }
-
-    /**
-     * @param string|null $value
-     * @return $this
-     */
-    public function setAppKey(?string $value): self
-    {
-        $this->appKey = $value;
-        return $this;
-    }
-
-    /**
      *
      * @return bool
      */
@@ -144,29 +88,9 @@ class PlatformInformation
      * @param bool $isRemote
      * @return $this
      */
-    public function setIsRemote(bool $isRemote): self
+    public function setRemote(bool $isRemote): self
     {
         $this->isRemote = $isRemote;
-        $this->isCentral = !$isRemote;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCentral(): bool
-    {
-        return $this->isCentral;
-    }
-
-    /**
-     * @param bool $isCentral
-     * @return $this
-     */
-    public function setIsCentral(bool $isCentral): self
-    {
-        $this->isCentral = $isCentral;
-        $this->isRemote = !$isCentral;
         return $this;
     }
 
@@ -207,56 +131,6 @@ class PlatformInformation
     }
 
     /**
-     * @param string|null $encryptedKey
-     * @return string|null
-     */
-    private function decryptApiCredentials(?string $encryptedKey): ?string
-    {
-        if (empty($encryptedKey)) {
-            return null;
-        }
-
-        if (!isset($_ENV['APP_SECRET'])) {
-            throw new \InvalidArgumentException(
-                _("Unable to find the encryption key. Please check the '.env.local.php' file.")
-            );
-        }
-
-        // second key
-        $secondKey = base64_encode(self::ENCRYPT_SECOND_KEY);
-
-        try {
-            $centreonEncryption = new Encryption();
-            $centreonEncryption->setFirstKey($_ENV['APP_SECRET'])->setSecondKey($secondKey);
-            return $centreonEncryption->decrypt($encryptedKey);
-        } catch (\throwable $e) {
-            throw new \InvalidArgumentException(
-                _("Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form")
-            );
-        }
-    }
-
-    /**
-     * encrypt the Central API Password
-     *
-     * @param string $password
-     * @return string
-     */
-    private function encryptApiCredentials(string $password): string
-    {
-        if (!isset($_ENV['APP_SECRET'])) {
-            throw new \InvalidArgumentException(
-                _("Unable to find the encryption key. Please check the '.env.local.php' file.")
-            );
-        }
-
-        $secondKey = base64_encode(self::ENCRYPT_SECOND_KEY);
-        $centreonEncryption = new Encryption();
-        $centreonEncryption->setFirstKey($_ENV['APP_SECRET'])->setSecondKey($secondKey);
-        return $centreonEncryption->crypt($password);
-    }
-
-    /**
      * @return string|null
      */
     public function getApiCredentials(): ?string
@@ -271,10 +145,6 @@ class PlatformInformation
     public function setApiCredentials(?string $apiCredentials): self
     {
         $this->apiCredentials = $apiCredentials;
-        if (null !== $apiCredentials) {
-            $apiCredentials = $this->encryptApiCredentials($apiCredentials);
-        }
-        $this->encryptedApiCredentials = $apiCredentials;
         return $this;
     }
 
@@ -295,11 +165,6 @@ class PlatformInformation
     public function setEncryptedApiCredentials(?string $encryptedKey): self
     {
         $this->encryptedApiCredentials = $encryptedKey;
-        if (null !== $encryptedKey) {
-            $encryptedKey = $this->decryptApiCredentials($encryptedKey);
-        }
-        $this->apiCredentials = $encryptedKey;
-
         return $this;
     }
 
@@ -328,13 +193,16 @@ class PlatformInformation
      * @param int|null $port
      * @return int
      */
-    private function checkPortConsistency(?int $port): int
+    private function checkPortConsistency(?int $port): ?int
     {
-        if (null === $port || 1 > $port || $port > 65535) {
-            throw new \InvalidArgumentException(
-                _("Central platform's API port is not consistent. Please check the 'Remote Access' form.")
-            );
+        if ($port !== null) {
+            if (1 > $port || $port > 65535) {
+                throw new \InvalidArgumentException(
+                    _("Central platform's API port is not consistent. Please check the 'Remote Access' form.")
+                );
+            }
         }
+
         return $port;
     }
 
@@ -370,11 +238,13 @@ class PlatformInformation
      */
     public function setApiPath(?string $path): self
     {
-        $path = trim(filter_var($path, FILTER_SANITIZE_STRING, ['options' => ['default' => '']]), '/');
-        if (empty($path)) {
-            throw new \InvalidArgumentException(
-                _("Central platform's data are not consistent. Please check the 'Remote Access' form")
-            );
+        if ($path !== null) {
+            $path = trim(filter_var($path, FILTER_SANITIZE_STRING, ['options' => ['default' => '']]), '/');
+            if (empty($path)) {
+                throw new \InvalidArgumentException(
+                    _("Central platform's data are not consistent. Please check the 'Remote Access' form")
+                );
+            }
         }
         $this->apiPath = $path;
         return $this;

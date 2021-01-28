@@ -61,17 +61,14 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
             throw PlatformInformationDtoValidatorException::BadJSONSchemaFilePathException();
         }
         $schema = json_decode($schema, true);
-        try {
-            if (!is_array($schema)) {
-                throw PlatformInformationDtoValidatorException::BadJSONSchemaFormatException();
-            }
-            $this->validateAdditionalPropertiesRecursively($schema, $dto);
-            $this->validateRequiredPropertiesRecursively($schema, $dto);
-            $this->validateNonNullPropertiesRecursively($schema, $dto);
-            $this->validatePropertiesTypeRecursively($schema, $dto);
-        } catch (PlatformInformationDtoValidatorException $ex) {
-            throw $ex;
+
+        if (!is_array($schema)) {
+            throw PlatformInformationDtoValidatorException::BadJSONSchemaFormatException();
         }
+        $this->validateAdditionalPropertiesRecursivelyOrFail($schema, $dto);
+        $this->validateRequiredPropertiesRecursivelyOrFail($schema, $dto);
+        $this->validateNonNullPropertiesRecursivelyOrFail($schema, $dto);
+        $this->validatePropertiesTypeRecursivelyOrFail($schema, $dto);
     }
 
     /**
@@ -81,7 +78,7 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
      * @param array $dto
      * @throws PlatformInformationDtoValidatorException
      */
-    private function validateAdditionalPropertiesRecursively(array $schema, array $dto): void
+    private function validateAdditionalPropertiesRecursivelyOrFail(array $schema, array $dto): void
     {
         if (
             array_key_exists(self::ADDITIONAL_PROPERTIES_KEY, $schema)
@@ -89,7 +86,7 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
         ) {
             foreach ($dto as $key => $value) {
                 if (is_array($value)) {
-                    $this->validateAdditionalPropertiesRecursively($schema[self::PROPERTIES_KEY][$key], $value);
+                    $this->validateAdditionalPropertiesRecursivelyOrFail($schema[self::PROPERTIES_KEY][$key], $value);
                 }
                 if (!array_key_exists($key, $schema[self::PROPERTIES_KEY])) {
                     throw PlatformInformationDtoValidatorException::additionalPropertiesNotAllowedException();
@@ -105,12 +102,12 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
      * @param array $dto
      * @throws PlatformInformationDtoValidatorException
      */
-    private function validateNonNullPropertiesRecursively(array $schema, array $dto): void
+    private function validateNonNullPropertiesRecursivelyOrFail(array $schema, array $dto): void
     {
         $schemaProperties = $schema[self::PROPERTIES_KEY];
         foreach ($dto as $key => $value) {
             if (is_array($value)) {
-                $this->validateNonNullPropertiesRecursively($schemaProperties[$key], $value);
+                $this->validateNonNullPropertiesRecursivelyOrFail($schemaProperties[$key], $value);
             }
             if (
                 is_array($schemaProperties[$key][self::TYPE_KEY])
@@ -135,11 +132,11 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
      * @param array $dto
      * @throws PlatformInformationDtoValidatorException
      */
-    private function validateRequiredPropertiesRecursively(array $schema, array $dto): void
+    private function validateRequiredPropertiesRecursivelyOrFail(array $schema, array $dto): void
     {
         foreach ($dto as $key => $value) {
             if (is_array($value)) {
-                $this->validateRequiredPropertiesRecursively($schema[self::PROPERTIES_KEY][$key], $value);
+                $this->validateRequiredPropertiesRecursivelyOrFail($schema[self::PROPERTIES_KEY][$key], $value);
             }
         }
         if (array_key_exists(self::REQUIRED_KEY, $schema)) {
@@ -160,13 +157,13 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
      * @param array $dto
      * @throws PlatformInformationDtoValidatorException
      */
-    private function validatePropertiesTypeRecursively(array $schema, array $dto): void
+    private function validatePropertiesTypeRecursivelyOrFail(array $schema, array $dto): void
     {
         $schemaProperties = $schema[self::PROPERTIES_KEY];
         foreach ($dto as $key => $value) {
             $schemaPropertyType = $schemaProperties[$key][self::TYPE_KEY];
             if (is_array($value)) {
-                $this->validatePropertiesTypeRecursively($schemaProperties[$key], $value);
+                $this->validatePropertiesTypeRecursivelyOrFail($schemaProperties[$key], $value);
             } else {
                 if (is_array($schemaPropertyType)) {
                     $dtoPropertyType = gettype($value);
