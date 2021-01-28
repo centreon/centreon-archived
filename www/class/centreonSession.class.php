@@ -125,7 +125,6 @@ class CentreonSession
     /**
      * Delete all expired sessions
      * @param CentreonDB $db
-     * @throws Exception
      */
     public static function deleteExpiredSession(CentreonDB $db): void
     {
