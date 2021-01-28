@@ -25,17 +25,19 @@ namespace Centreon\Domain\RemoteServer;
 
 use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
+use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -146,7 +148,8 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Register the platforms on the Parent Central
          */
-        foreach ($platforms as $platform) {
+        try {
+         foreach ($platforms as $platform) {
             if ($platform->getParentId() !== null) {
                 $platform->setParentAddress($topLevelPlatform->getAddress());
             }
@@ -158,9 +161,13 @@ class RemoteServerService implements RemoteServerServiceInterface
             );
         }
 
-        try {
+
             $this->menuRepository->disableCentralMenus();
+        } catch (RepositoryException | PlatformConflictException $ex) {
+            $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
+            throw $ex;
         } catch (\Exception $ex) {
+            $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
             throw new MenuException(_('An error occured while disabling the central menus'));
         }
 
