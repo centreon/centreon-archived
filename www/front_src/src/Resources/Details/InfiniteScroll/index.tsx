@@ -184,6 +184,7 @@ const MemoizedInfiniteScrollContent = memoizeComponent({
     'reloadDependencies',
     'loading',
     'preventReloadWhen',
+    'filter',
   ],
   Component: InfiniteScrollContent,
 }) as typeof InfiniteScrollContent;
