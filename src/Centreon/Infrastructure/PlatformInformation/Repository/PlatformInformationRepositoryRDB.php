@@ -111,15 +111,13 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
             $queryParameters = [];
 
             /**
-             * Store the key to delete into the deleteStatement
+             * Store the key to delete into the deleteStatement.
+             * Those 2 keys aren't put into queryParameters, so we add them directly to the deletedKey array
              */
-            $deletedKeys = [];
+            $deletedKeys = ["'isRemote'", "'isCentral'"];
 
             if ($platformInformation->isRemote() === true) {
-                /**
-                 * Those 2 keys aren't put into queryParameters, so we add them directly to the deletedKey array
-                 */
-                array_push($deletedKeys, "'isRemote'", "'isCentral'");
+
                 $insertQuery .= "('isRemote', 'yes'),  ('isCentral', 'no'),";
 
                 if ($platformInformation->getCentralServerAddress() !== null) {
@@ -175,10 +173,8 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                  */
                 array_push(
                     $deletedKeys,
-                    "'isRemote'", 
-                    "'isCentral'", 
-                    "'authorizedMaster'", 
-                    "'apiUsername'", 
+                    "'authorizedMaster'",
+                    "'apiUsername'",
                     "'apiCredentials'",
                     "'apiScheme'",
                     "'apiPort'",

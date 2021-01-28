@@ -149,18 +149,17 @@ class RemoteServerService implements RemoteServerServiceInterface
          * Register the platforms on the Parent Central
          */
         try {
-         foreach ($platforms as $platform) {
-            if ($platform->getParentId() !== null) {
-                $platform->setParentAddress($topLevelPlatform->getAddress());
+            foreach ($platforms as $platform) {
+                if ($platform->getParentId() !== null) {
+                    $platform->setParentAddress($topLevelPlatform->getAddress());
+                }
+
+                $this->platformTopologyRegisterRepository->registerPlatformToParent(
+                    $platform,
+                    $platformInformation,
+                    $this->proxyService->getProxy()
+                );
             }
-
-            $this->platformTopologyRegisterRepository->registerPlatformToParent(
-                $platform,
-                $platformInformation,
-                $this->proxyService->getProxy()
-            );
-        }
-
 
             $this->menuRepository->disableCentralMenus();
         } catch (RepositoryException | PlatformConflictException $ex) {

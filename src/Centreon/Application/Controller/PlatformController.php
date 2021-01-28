@@ -22,25 +22,13 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
-use Centreon\Domain\Proxy\Proxy;
-use JsonSchema\Constraints\Constraint;
-use Centreon\Domain\Menu\MenuException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Platform\PlatformException;
-use Centreon\Domain\Repository\RepositoryException;
-use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformInformation\UseCase\V21\UpdatePartiallyPlatformInformation;
-use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
-use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
-use Centreon\Domain\PlatformTopology\PlatformException as PlatformTopologyException;
-use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformationDtoValidator;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 

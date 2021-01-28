@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Model;
 
-use Security\Encryption;
-
 /**
  * Class designed to retrieve servers' specific information
  *

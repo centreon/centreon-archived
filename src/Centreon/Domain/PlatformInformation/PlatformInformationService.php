@@ -22,17 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation;
 
-use Centreon\Domain\Menu\MenuException;
-use Centreon\Domain\Repository\RepositoryException;
-use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\PlatformTopology\PlatformException;
-use Centreon\Domain\RemoteServer\RemoteServerException;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
-use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
+use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface;
 
 /**
  * Service intended to use rest API on 'information' specific configuration data
@@ -47,17 +40,10 @@ class PlatformInformationService implements PlatformInformationServiceInterface
      */
     private $platformInformationRepository;
 
-    /**
-     * @var RemoteServerServiceInterface
-     */
-    private $remoteServerService;
-
     public function __construct(
-        PlatformInformationRepositoryInterface $platformInformationRepository,
-        RemoteServerServiceInterface $remoteServerService
+        PlatformInformationReadRepositoryInterface $platformInformationRepository
     ) {
         $this->platformInformationRepository = $platformInformationRepository;
-        $this->remoteServerService = $remoteServerService;
     }
 
     /**
