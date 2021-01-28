@@ -120,16 +120,16 @@ interface GraphContentProps {
   lines: Array<LineModel>;
   xAxisTickFormat: string;
   timeline?: Array<TimelineEvent>;
-  onTooltipDisplay?: (position?: [number, number]) => void;
   tooltipPosition?: [number, number];
   resource: Resource | ResourceDetails;
-  onAddComment?: (commentParameters: CommentParameters) => void;
   eventAnnotationsActive: boolean;
-  hideAddCommentTooltip: () => void;
-  showAddCommentTooltip: (args) => void;
   addCommentTooltipLeft?: number;
   addCommentTooltipTop?: number;
   addCommentTooltipOpen: boolean;
+  onAddComment?: (commentParameters: CommentParameters) => void;
+  onTooltipDisplay?: (position?: [number, number]) => void;
+  hideAddCommentTooltip: () => void;
+  showAddCommentTooltip: (args) => void;
   format: (parameters) => string;
 }
 
@@ -159,15 +159,15 @@ const GraphContent = ({
   xAxisTickFormat,
   timeline,
   tooltipPosition,
-  onTooltipDisplay,
   resource,
-  onAddComment,
   eventAnnotationsActive,
-  hideAddCommentTooltip,
-  showAddCommentTooltip,
   addCommentTooltipLeft,
   addCommentTooltipTop,
   addCommentTooltipOpen,
+  onTooltipDisplay,
+  onAddComment,
+  hideAddCommentTooltip,
+  showAddCommentTooltip,
   format,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
@@ -491,6 +491,16 @@ const memoProps = [
   'addCommentTooltipLeft',
   'addCommentTooltipTop',
   'addCommentTooltipOpen',
+  'width',
+  'height',
+  'timeSeries',
+  'base',
+  'lines',
+  'xAxisTickFormat',
+  'timeline',
+  'tooltipPosition',
+  'resource',
+  'eventAnnotationsActive',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
