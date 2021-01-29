@@ -120,7 +120,7 @@ class CentreonSession
      * Delete all expired sessions
      * @param CentreonDB $db
      */
-    public static function deleteExpiredSession(CentreonDB $db): void
+    public static function deleteExpiredSession(CentreonDB $db)
     {
         $db->query(
             'DELETE FROM `session`
