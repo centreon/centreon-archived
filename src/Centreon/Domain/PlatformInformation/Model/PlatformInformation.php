@@ -29,9 +29,9 @@ namespace Centreon\Domain\PlatformInformation\Model;
 class PlatformInformation
 {
     /**
-     * @var bool platform type
+     * @var bool|null platform type
      */
-    private $isRemote = false;
+    private $isRemote;
 
     /**
      * @var string|null central's address
@@ -77,7 +77,7 @@ class PlatformInformation
      *
      * @return bool
      */
-    public function isRemote(): bool
+    public function isRemote(): ?bool
     {
         return $this->isRemote;
     }
@@ -86,7 +86,7 @@ class PlatformInformation
      * @param bool $isRemote
      * @return $this
      */
-    public function setRemote(bool $isRemote): self
+    public function setRemote(?bool $isRemote): self
     {
         $this->isRemote = $isRemote;
         return $this;
