@@ -718,7 +718,7 @@ class CentreonDependency extends CentreonObject
         if ($this->isExistingDependency($table, $dataField)) {
             throw new CentreonClapiException(
                 sprintf(
-                    'Hostgroup %s already link to the dependency %s',
+                    'Hostgroup %s is already linked to the dependency %s',
                     $objectToInsert,
                     $this->getDependencyName($depId)
                 )
@@ -749,7 +749,7 @@ class CentreonDependency extends CentreonObject
         if ($this->isExistingDependency($table, $dataField)) {
             throw new CentreonClapiException(
                 sprintf(
-                    'Servicegroup %s already link to the dependency %s',
+                    'Servicegroup %s is already linked to the dependency %s',
                     $objectToInsert,
                     $this->getDependencyName($depId)
                 )
@@ -780,7 +780,7 @@ class CentreonDependency extends CentreonObject
         if ($this->isExistingDependency($table, $dataField)) {
             throw new CentreonClapiException(
                 sprintf(
-                    'Meta %s already already link to the dependency %s',
+                    'Meta %s already is already linked to the dependency %s',
                     $objectToInsert,
                     $this->getDependencyName($depId)
                 )
@@ -811,7 +811,7 @@ class CentreonDependency extends CentreonObject
             if ($this->isExistingDependency('dependency_hostParent_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf(
-                        'Host %s already link to the dependency %s',
+                        'Host %s is already linked to the dependency %s',
                         $objectToInsert,
                         $this->getDependencyName($depId)
                     )
@@ -837,7 +837,7 @@ class CentreonDependency extends CentreonObject
             if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf(
-                        'Dependency between service %s and host %s already exist on %s',
+                        'Dependency between service %s and host %s already exists on %s',
                         $service,
                         $host,
                         $this->getDependencyName($depId)
@@ -861,7 +861,7 @@ class CentreonDependency extends CentreonObject
             if ($this->isExistingDependency('dependency_hostChild_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf(
-                        'Host %s already link to the dependency %s',
+                        'Host %s is already linked to the dependency %s',
                         $objectToInsert,
                         $this->getDependencyName($depId)
                     )
@@ -901,7 +901,7 @@ class CentreonDependency extends CentreonObject
             if ($this->isExistingDependency('dependency_serviceParent_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf(
-                        'Dependency between service %s and host %s already exist on %s',
+                        'Dependency between service %s and host %s already exists on %s',
                         $service,
                         $host,
                         $this->getDependencyName($depId)
@@ -931,7 +931,7 @@ class CentreonDependency extends CentreonObject
             if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf(
-                        'Dependency between service %s and host %s already exist on %s',
+                        'Dependency between service %s and host %s already exists on %s',
                         $service,
                         $host,
                         $this->getDependencyName($depId)
@@ -955,7 +955,7 @@ class CentreonDependency extends CentreonObject
             if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
                 throw new CentreonClapiException(
                     sprintf(
-                        'Service %s already link to the dependency %s',
+                        'Service %s is already linked to the dependency %s',
                         $objectToInsert,
                         $this->getDependencyName($depId)
                     )
