@@ -26,8 +26,9 @@ namespace Centreon\Domain\PlatformInformation\UseCase\V21;
 use Centreon\Domain\Proxy\Proxy;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
+use Centreon\Domain\PlatformInformation\Model\InformationFactory;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
-use Centreon\Domain\PlatformInformation\Model\InformationDtoFactory;
+use Centreon\Domain\PlatformInformation\Model\InformationV21Factory;
 use Centreon\Domain\PlatformInformation\Interfaces\DtoValidatorInterface;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformationFactory;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
@@ -105,19 +106,21 @@ class UpdatePartiallyPlatformInformation
         foreach ($this->validators as $validator) {
             $validator->validateOrFail($request);
         }
-        $information = InformationDtoFactory::createFromRequest($request);
+        $information = InformationFactory::createFromRequest($request);
 
-        foreach($information as $informationDto) {
-            if ($informationDto->key === "proxy") {
-                $this->updateProxyOptions($informationDto->value);
+        foreach($information as $informationObject) {
+            if ($informationObject->getKey() === "proxy") {
+                $this->updateProxyOptions($informationObject->getValue());
             }
             break;
         }
-        $platformInformationUpdate = PlatformInformationFactory::create($information);
+        $informationDto = InformationV21Factory::create($information);
+        $platformInformationUpdate = PlatformInformationFactory::create($informationDto);
         $currentPlatformInformation = $this->readRepository->findPlatformInformation();
-        //utiliser les services déjà existant
-        $this->updatePlatformTypeOrFail($platformInformationUpdate, $currentPlatformInformation);
-        //writeRepository->update
+        if($platformInformationUpdate->isRemote() !== null) {
+            $this->updatePlatformTypeOrFail($platformInformationUpdate, $currentPlatformInformation);
+        }
+
         $this->writeRepository->updatePlatformInformation($platformInformationUpdate);
     }
 
@@ -162,8 +165,8 @@ class UpdatePartiallyPlatformInformation
             $this->convertCentralToRemote($platformInformationUpdate, $currentPlatformInformation);
         } elseif (!$platformInformationUpdate->isRemote() && $currentPlatformInformation->isRemote()) {
             /**
-             * Use the current information as they contains all the information
-             * required to remove the Remote to its Parent
+             * Use the current information
+             * as they contains all the information required to remove the Remote to its Parent
              */
             $this->remoteServerService->convertRemoteToCentral($currentPlatformInformation);
         }
