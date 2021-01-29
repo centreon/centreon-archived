@@ -143,8 +143,7 @@ try {
     $statement = $pearDB->query(
         'SELECT COLUMN_DEFAULT
         FROM information_schema.COLUMNS
-        WHERE TABLE_SCHEMA = \'centreon\'
-          AND TABLE_NAME = \'cfg_nagios\'
+        WHERE TABLE_NAME = \'cfg_nagios\'
           AND COLUMN_NAME = \'postpone_notification_to_timeperiod\''
     );
     if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {

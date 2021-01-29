@@ -724,8 +724,11 @@ class CentreonDependency extends CentreonObject
                 )
             );
         }
-        $sql = "INSERT INTO {$table} (dependency_dep_id, hostgroup_hg_id) VALUES (?, ?)";
-        $this->db->query($sql, array($depId, $ids[0]));
+        $sql = "INSERT INTO {$table} (dependency_dep_id, hostgroup_hg_id) VALUES (:depId, :hgId)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+        $stmt->bindParam(':hgId', $ids[0], \PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     /**
@@ -752,8 +755,11 @@ class CentreonDependency extends CentreonObject
                 )
             );
         }
-        $sql = "INSERT INTO {$table} (dependency_dep_id, servicegroup_sg_id) VALUES (?, ?)";
-        $this->db->query($sql, array($depId, $ids[0]));
+        $sql = "INSERT INTO {$table} (dependency_dep_id, servicegroup_sg_id) VALUES (:depId, :sgId)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+        $stmt->bindParam(':sgId', $ids[0], \PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     /**
@@ -780,8 +786,11 @@ class CentreonDependency extends CentreonObject
                 )
             );
         }
-        $sql = "INSERT INTO {$table} (dependency_dep_id, meta_service_meta_id) VALUES (?, ?)";
-        $this->db->query($sql, array($depId, $ids[0]));
+        $sql = "INSERT INTO {$table} (dependency_dep_id, meta_service_meta_id) VALUES (:depId, :metaId)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+        $stmt->bindParam(':metaId', $ids[0], \PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     /**
@@ -808,8 +817,12 @@ class CentreonDependency extends CentreonObject
                     )
                 );
             }
-            $sql = "INSERT INTO dependency_hostParent_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
-            $params = array($depId, $hostIds[0]);
+            $sql = "INSERT INTO dependency_hostParent_relation (dependency_dep_id, host_host_id)
+                    VALUES (:depId, :hostId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $hostIds[0], \PDO::PARAM_INT);
+            $stmt->execute();
         } elseif ($relType == 'child' && strstr($objectToInsert, ',')) { // service child
             list($host, $service) = explode(",", $objectToInsert);
             $idTab = $this->serviceObj->getHostAndServiceId($host, $service);
@@ -832,8 +845,12 @@ class CentreonDependency extends CentreonObject
                 );
             }
             $sql = "INSERT INTO dependency_serviceChild_relation (dependency_dep_id, host_host_id, service_service_id)
-                VALUES (?, ?, ?)";
-            $params = array($depId, $idTab[0], $idTab[1]);
+                    VALUES (:depId, :hostId, :svcId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $idTab[0], \PDO::PARAM_INT);
+            $stmt->bindParam(':svcId', $idTab[1], \PDO::PARAM_INT);
+            $stmt->execute();
         } elseif ($relType == 'child') { // host child
             $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
@@ -850,10 +867,13 @@ class CentreonDependency extends CentreonObject
                     )
                 );
             }
-            $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
-            $params = array($depId, $hostIds[0]);
+            $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id)
+                    VALUES (:depId, :hostId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $hostIds[0], \PDO::PARAM_INT);
+            $stmt->execute();
         }
-        $this->db->query($sql, $params);
     }
 
     /**
@@ -889,8 +909,12 @@ class CentreonDependency extends CentreonObject
                 );
             }
             $sql = "INSERT INTO dependency_serviceParent_relation (dependency_dep_id, host_host_id, service_service_id)
-                VALUES (?, ?, ?)";
-            $params = array($depId, $idTab[0], $idTab[1]);
+                VALUES (:depId, :hostId, :svcId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $idTab[0], \PDO::PARAM_INT);
+            $stmt->bindParam(':svcId', $idTab[1], \PDO::PARAM_INT);
+            $stmt->execute();
         } elseif ($relType == 'child' && strstr($objectToInsert, ',')) { // service child
             list($host, $service) = explode(",", $objectToInsert);
             $idTab = $this->serviceObj->getHostAndServiceId($host, $service);
@@ -915,8 +939,12 @@ class CentreonDependency extends CentreonObject
                 );
             }
             $sql = "INSERT INTO dependency_serviceChild_relation (dependency_dep_id, host_host_id, service_service_id)
-                VALUES (?, ?, ?)";
-            $params = array($depId, $idTab[0], $idTab[1]);
+                VALUES (:depId, :hostId, :svcId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $idTab[0], \PDO::PARAM_INT);
+            $stmt->bindParam(':svcId', $idTab[1], \PDO::PARAM_INT);
+            $stmt->execute();
         } elseif ($relType == 'child') { // host child
             $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
@@ -933,10 +961,13 @@ class CentreonDependency extends CentreonObject
                     )
                 );
             }
-            $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
-            $params = array($depId, $hostIds[0]);
+            $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id)
+                    VALUES (:depId, :hostId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $hostIds[0], \PDO::PARAM_INT);
+            $stmt->execute();
         }
-        $this->db->query($sql, $params);
     }
 
     /**
