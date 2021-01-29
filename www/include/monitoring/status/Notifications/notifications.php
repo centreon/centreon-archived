@@ -53,7 +53,7 @@ $centreon = $_SESSION['centreon'] ?? null;
 if (!isset($_SESSION['centreon'])) {
     exit;
 }
-if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($sid, $obj->DB)) {
     exit;
 }
 
