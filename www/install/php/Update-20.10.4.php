@@ -139,6 +139,25 @@ try {
         ADD UNIQUE (`dependency_dep_id`, `servicegroup_sg_id`)"
         );
     }
+    //engine postpone
+    $statement = $pearDB->query(
+        'SELECT COLUMN_DEFAULT
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = \'centreon\'
+          AND TABLE_NAME = \'cfg_nagios\'
+          AND COLUMN_NAME = \'postpone_notification_to_timeperiod\''
+    );
+    if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        $defaultValue = $result['COLUMN_DEFAULT'];
+        if ($defaultValue !== '0') {
+            // An update is required
+            $errorMessage = 'Impossible to alter the table cfg_nagios';
+            $pearDB->query(
+                'ALTER TABLE `cfg_nagios` ADD COLUMN
+                `postpone_notification_to_timeperiod` boolean DEFAULT false AFTER `nagios_group`'
+            );
+        }
+    }
     $errorMessage = "";
 } catch (\Exception $e) {
     $centreonLog->insertLog(

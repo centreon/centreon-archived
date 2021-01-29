@@ -28,7 +28,7 @@ import {
   labelUnhandledProblems,
   labelShowCriteriasFilters,
   labelOpen,
-  labelClearAll,
+  labelClear,
   labelSearchHelp,
   labelSearchOnFields,
   labelNewFilter,
@@ -482,7 +482,7 @@ describe(Filter, () => {
 
       fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
-      fireEvent.click(getByText(labelClearAll));
+      fireEvent.click(getByText(labelClear));
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 

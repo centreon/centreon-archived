@@ -26,12 +26,16 @@ namespace Centreon\Domain\RemoteServer\Interfaces;
 interface RemoteServerRepositoryInterface
 {
     /**
-     * Update the instance mode of centreon to Central.
+     * Delete a Remote Server.
+     *
+     * @param string $address
      */
-    public function updateInstanceModeCentral(): void;
+    public function deleteRemoteServerByAddress(string $address): void;
 
     /**
-     * Update the instance mode of centreon to Remote.
+     * Delete an Additional Remote Server, for pollers linked to multiple Remote Servers.
+     *
+     * @param integer $monitoringServerId
      */
-    public function updateInstanceModeRemote(): void;
+    public function deleteAdditionalRemoteServer(int $monitoringServerId): void;
 }
