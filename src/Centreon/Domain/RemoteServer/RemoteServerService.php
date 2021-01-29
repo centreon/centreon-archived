@@ -154,11 +154,13 @@ class RemoteServerService implements RemoteServerServiceInterface
                     $platform->setParentAddress($topLevelPlatform->getAddress());
                 }
 
-                $this->platformTopologyRegisterRepository->registerPlatformToParent(
-                    $platform,
-                    $platformInformation,
-                    $this->proxyService->getProxy()
-                );
+                if ($platform->getServerId() !== null) {
+                    $this->platformTopologyRegisterRepository->registerPlatformToParent(
+                        $platform,
+                        $platformInformation,
+                        $this->proxyService->getProxy()
+                    );
+                }
             }
 
             $this->menuRepository->disableCentralMenus();
@@ -201,6 +203,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         $childrenPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
             $platform->getId()
         );
+
         foreach ($childrenPlatforms as $childrenPlatform) {
             if ($childrenPlatform->getServerId() !== null) {
                 $this->monitoringServerService->deleteServer($childrenPlatform->getServerId());
