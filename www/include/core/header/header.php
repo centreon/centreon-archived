@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -54,14 +54,14 @@ $advanced_search = 0;
 /*
  * Include
  */
-include_once(realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php"));
+include_once(realpath(__DIR__ . "/../../../../config/centreon.config.php"));
 
 require_once "$classdir/centreonDB.class.php";
 require_once "$classdir/centreonLang.class.php";
 require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreon.class.php";
-require_once $classdir . '/centreonFeature.class.php';
-require_once SMARTY_DIR."Smarty.class.php";
+require_once "$classdir/centreonFeature.class.php";
+require_once SMARTY_DIR . "Smarty.class.php";
 
 /*
  * Create DB Connection
@@ -72,21 +72,14 @@ $pearDB     = new CentreonDB();
 $pearDBO    = new CentreonDB("centstorage");
 
 ini_set("session.gc_maxlifetime", "31536000");
+$centreonSession = new CentreonSession();
 
 CentreonSession::start();
 
-/*
- * Delete Session Expired
- */
-$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");
-$session_expire = $DBRESULT->fetchRow();
-if (!isset($session_expire["value"]) || !$session_expire["value"]) {
-    $session_expire["value"] = 2;
+// Check session and drop all expired sessions
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+    CentreonSession::stop();
 }
-$time_limit = time() - ($session_expire["value"] * 60);
-
-$DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");
-
 
 $args = "&redirect='";
 $a = 0;
