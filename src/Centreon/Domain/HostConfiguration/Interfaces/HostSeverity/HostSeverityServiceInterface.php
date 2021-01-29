@@ -20,8 +20,9 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces;
+namespace Centreon\Domain\HostConfiguration\Interfaces\HostSeverity;
 
+use Centreon\Domain\HostConfiguration\Exception\HostSeverityException;
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 
 /**
@@ -29,11 +30,22 @@ use Centreon\Domain\HostConfiguration\Model\HostSeverity;
  *
  * @package Centreon\Domain\HostConfiguration\Interfaces
  */
-interface HostSeverityReadRepositoryInterface
+interface HostSeverityServiceInterface
 {
+
     /**
+     * Find all host severities (for non admin user).
+     *
      * @return HostSeverity[]
-     * @throws \Throwable
+     * @throws HostSeverityException
      */
-    public function findHostSeverities(): array;
+    public function findAllWithAcl(): array;
+
+    /**
+     * Find all host severities (for admin user).
+     *
+     * @return HostSeverity[]
+     * @throws HostSeverityException
+     */
+    public function findAllWithoutAcl(): array;
 }

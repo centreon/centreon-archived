@@ -22,8 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Exception\HostSeverityException;
-use Centreon\Domain\HostConfiguration\Interfaces\HostSeverityReadRepositoryInterface;
+use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 
 /**
@@ -39,16 +40,25 @@ class FindHostSeverities
     private $hostSeverityReadRepository;
 
     /**
+     * @var ContactInterface
+     */
+    private $contact;
+
+    /**
      * @var string|null
      */
     private $mediaPath;
 
     /**
      * @param HostSeverityReadRepositoryInterface $configurationReadRepository
+     * @param ContactInterface $contact
      */
-    public function __construct(HostSeverityReadRepositoryInterface $configurationReadRepository)
-    {
+    public function __construct(
+        HostSeverityReadRepositoryInterface $configurationReadRepository,
+        ContactInterface $contact
+    ) {
         $this->hostSeverityReadRepository = $configurationReadRepository;
+        $this->contact = $contact;
     }
 
     /**
@@ -71,11 +81,14 @@ class FindHostSeverities
     public function execute(): FindHostSeveritiesResponse
     {
         try {
-            $hostSeverities = $this->hostSeverityReadRepository->findHostSeverities();
+            $hostSeverities = ($this->contact->isAdmin())
+                ? $this->hostSeverityReadRepository->findAllWithoutAcl()
+                : $this->hostSeverityReadRepository->findAllWithAcl();
         } catch (\Exception $ex) {
-            throw HostSeverityException::searchHostSeveritiesException($ex);
+            throw HostSeverityException::findHostSeveritiesException($ex);
         }
         $this->updateMediaPaths($hostSeverities);
+
         $response = new FindHostSeveritiesResponse();
         $response->setHostSeverities($hostSeverities);
         return $response;

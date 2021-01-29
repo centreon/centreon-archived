@@ -20,21 +20,20 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Exception;
+namespace Centreon\Domain\HostConfiguration\Interfaces\HostSeverity;
+
+use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 
 /**
- * This class is designed to contain all exceptions for the context of the host severity.
+ * This interface gathers all the reading operations on the host severity repository.
  *
- * @package Centreon\Domain\HostConfiguration\Exception
+ * @package Centreon\Domain\HostConfiguration\Interfaces
  */
-class HostSeverityException extends \Exception
+interface HostSeverityReadRepositoryInterface
 {
     /**
-     * @param \Throwable $ex
-     * @return self
+     * @return HostSeverity[]
+     * @throws \Throwable
      */
-    public static function findHostSeveritiesException(\Throwable $ex): self
-    {
-        return new self(_('Error when searching for host severities'), 0, $ex);
-    }
+    public function findHostSeverities(): array;
 }

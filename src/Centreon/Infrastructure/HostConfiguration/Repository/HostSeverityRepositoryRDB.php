@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverityReadRepositoryInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
@@ -54,21 +55,41 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
     /**
      * @inheritDoc
      */
-    public function findHostSeverities(): array
+    public function findAll(): array
     {
-        $this->sqlRequestTranslator->setConcordanceArray(
-            [
-                'id' => 'hc_id',
-                'name' => 'hc_name',
-                'alias' => 'hc_alias',
-                'level' => 'level',
-                'is_activated' => 'hc_activate',
-            ]
-        );
+        return $this->findAllRequest(null);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAllByContact(ContactInterface $contact): array
+    {
+        return $this->findAllRequest($contact->getId());
+    }
+    
+    /**
+     * Find all severities filtered by contact id.
+     *
+     * @param int|null $contactId Contact id related to host severities
+     * @return HostSeverity[]
+     * @throws \Assert\AssertionFailedException
+     */
+    private function findAllRequest(?int $contactId): array
+    {
+        $this->sqlRequestTranslator->setConcordanceArray([
+            'id' => 'hc.hc_id',
+            'name' => 'hc.hc_name',
+            'alias' => 'hc.hc_alias',
+            'is_activated' => 'hc.hc_activate',
+        ]);
         $this->sqlRequestTranslator->addNormalizer(
             'is_activated',
             new class implements NormalizerInterface
             {
+                /**
+                 * @inheritDoc
+                 */
                 public function normalize($valueToNormalize)
                 {
                     if (is_bool($valueToNormalize)) {
@@ -78,45 +99,64 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
                 }
             }
         );
-        $request = $this->translateDbName(
-            'SELECT SQL_CALC_FOUND_ROWS hc.*, icon.img_id AS img_id, icon.img_name AS img_name,
-                CONCAT(iconD.dir_name,\'/\',icon.img_path) AS img_path, icon.img_comment AS img_comment
-            FROM `:db`.hostcategories hc
-            LEFT JOIN `:db`.view_img icon
-                ON icon.img_id = hc.icon_id
-            LEFT JOIN `centreon`.view_img_dir_relation iconR
-                ON iconR.img_img_id = icon.img_id
-            LEFT JOIN `centreon`.view_img_dir iconD
-                ON iconD.dir_id = iconR.dir_dir_parent_id'
-        );
-
+        if ($contactId === null) {
+            $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.hostcategories hc');
+        } else {
+            $request = $this->translateDbName(
+                'SELECT SQL_CALC_FOUND_ROWS hc.*
+                FROM `:db`.hostcategories hc
+                INNER JOIN `:db`.acl_resources_hc_relations arhr
+                    ON hc.hc_id = arhr.hc_id
+                INNER JOIN `:db`.acl_resources res
+                    ON arhr.acl_res_id = res.acl_res_id
+                INNER JOIN `:db`.acl_res_group_relations argr
+                    ON res.acl_res_id = argr.acl_res_id
+                INNER JOIN `:db`.acl_groups ag
+                    ON argr.acl_group_id = ag.acl_group_id
+                LEFT JOIN `:db`.acl_group_contacts_relations agcr
+                    ON ag.acl_group_id = agcr.acl_group_id
+                LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
+                    ON ag.acl_group_id = agcgr.acl_group_id
+                LEFT JOIn `:db`.contactgroup_contact_relation cgcr
+                    ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id'
+            );
+        }
+        
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest)
-            ? $searchRequest . ' AND level IS NOT NULL'
-            : '  WHERE level IS NOT NULL';
-
+            ? $searchRequest . ' AND hc.level IS NOT NULL'
+            : '  WHERE hc.level IS NOT NULL';
+        
+        if ($contactId !== null) {
+            $request .= ' AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)';
+        }
+        
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest)
             ? $sortRequest
-            : ' ORDER BY hc_name ASC';
-
+            : ' ORDER BY hc.hc_name ASC';
+        
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
         $statement = $this->db->prepare($request);
-
+        
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
             $type = key($data);
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
         }
+        if ($contactId !== null) {
+            $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
+        }
         $statement->execute();
-
+        
         $result = $this->db->query('SELECT FOUND_ROWS()');
         if ($result !== false && ($total = $result->fetchColumn()) !== false) {
             $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
         }
+        
         $hostSeverities = [];
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $hostSeverities[] = HostSeverityFactoryRdb::create($record);
