@@ -36,6 +36,24 @@ class HostCategoryTest extends TestCase
     /**
      * Too long name test
      */
+    public function testNameTooShortException(): void
+    {
+        $name = str_repeat('.', HostCategory::MIN_NAME_LENGTH - 1);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::minLength(
+                $name,
+                strlen($name),
+                HostCategory::MIN_NAME_LENGTH,
+                'HostCategory::name'
+            )->getMessage()
+        );
+        new HostCategory($name, '');
+    }
+
+    /**
+     * Too long name test
+     */
     public function testNameTooLongException(): void
     {
         $name = str_repeat('.', HostCategory::MAX_NAME_LENGTH + 1);
@@ -49,6 +67,24 @@ class HostCategoryTest extends TestCase
             )->getMessage()
         );
         new HostCategory($name, '');
+    }
+
+    /**
+     * Too short alias test
+     */
+    public function testAliasTooShortException(): void
+    {
+        $alias = str_repeat('.', HostCategory::MIN_ALIAS_LENGTH - 1);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::minLength(
+                $alias,
+                strlen($alias),
+                HostCategory::MIN_ALIAS_LENGTH,
+                'HostCategory::alias'
+            )->getMessage()
+        );
+        new HostCategory('a', $alias);
     }
 
     /**

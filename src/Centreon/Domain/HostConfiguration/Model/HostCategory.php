@@ -32,7 +32,9 @@ use Centreon\Domain\Common\Assertion\Assertion;
 class HostCategory
 {
     public const MAX_NAME_LENGTH = 200,
+                 MIN_NAME_LENGTH = 1,
                  MAX_ALIAS_LENGTH = 200,
+                 MIN_ALIAS_LENGTH = 1,
                  MAX_COMMENTS_LENGTH = 65535;
 
     /**
@@ -104,6 +106,7 @@ class HostCategory
      */
     public function setName(string $name): HostCategory
     {
+        Assertion::minLength($name, self::MIN_NAME_LENGTH, 'HostCategory::name');
         Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'HostCategory::name');
         $this->name = $name;
         return $this;
@@ -124,6 +127,7 @@ class HostCategory
      */
     public function setAlias(string $alias): HostCategory
     {
+        Assertion::minLength($alias, self::MIN_ALIAS_LENGTH, 'HostCategory::alias');
         Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'HostCategory::alias');
         $this->alias = $alias;
         return $this;
