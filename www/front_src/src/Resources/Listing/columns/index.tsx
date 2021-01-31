@@ -307,6 +307,3 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     width: 80,
   },
 ];
-
-export const defaultSortField = 'status_severity_code';
-export const defaultSortOrder = 'asc';

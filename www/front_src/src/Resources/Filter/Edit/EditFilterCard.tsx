@@ -38,10 +38,8 @@ import {
   labelNameCannotBeEmpty,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
-import { Filter } from '../models';
+import { Filter, newFilter } from '../models';
 import { useResourceContext } from '../../Context';
-import useFilterModels from '../useFilterModels';
-import useAdapters from '../api/adapters';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {
@@ -51,7 +49,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     gridTemplateColumns: 'auto 1fr',
   },
-  filterNameInput: {},
 }));
 
 interface Props {
@@ -61,8 +58,6 @@ interface Props {
 const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const { newFilter } = useFilterModels();
-  const { toRawFilter } = useAdapters();
   const { t } = useTranslation();
   const {
     setFilter,
@@ -105,7 +100,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
       const updatedFilter = { ...filter, name: values.name };
 
       sendUpdateFilterRequest({
-        rawFilter: omit(['id'], toRawFilter(updatedFilter)),
+        filter: omit(['id'], updatedFilter),
         id: updatedFilter.id,
       }).then(() => {
         showMessage({
@@ -184,7 +179,6 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
         </IconButton>
       </ContentWithCircularLoading>
       <TextField
-        className={classes.filterNameInput}
         ariaLabel={`${t(labelFilter)}-${id}-${t(labelName)}`}
         value={form.values.name}
         error={form.errors.name}

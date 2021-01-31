@@ -21,11 +21,9 @@ import {
   labelFilterSaved,
   labelEditFilters,
 } from '../../translatedLabels';
-import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
 import { updateFilter as updateFilterRequest } from '../api';
-import useFilterModels from '../useFilterModels';
-import useAdapters from '../api/adapters';
+import { Filter, isCustom } from '../models';
 
 import CreateFilterDialog from './CreateFilterDialog';
 
@@ -42,8 +40,6 @@ const SaveFilterMenu = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
-  const { isCustom } = useFilterModels();
-  const { toRawFilter, toFilter } = useAdapters();
 
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [createFilterDialogOpen, setCreateFilterDialogOpen] = React.useState(
@@ -63,8 +59,6 @@ const SaveFilterMenu = (): JSX.Element => {
     filter,
     updatedFilter,
     setFilter,
-    setHostGroups,
-    setServiceGroups,
     loadCustomFilters,
     customFilters,
     setEditPanelOpen,
@@ -94,8 +88,8 @@ const SaveFilterMenu = (): JSX.Element => {
       setFilter(newFilter);
 
       // update criterias with deletable objects
-      setHostGroups(newFilter.criterias.hostGroups);
-      setServiceGroups(newFilter.criterias.serviceGroups);
+      // setHostGroups(newFilter.criterias.hostGroups);
+      // setServiceGroups(newFilter.criterias.serviceGroups);
     });
   };
 
@@ -111,7 +105,7 @@ const SaveFilterMenu = (): JSX.Element => {
   const updateFilter = (): void => {
     sendUpdateFilterRequest({
       id: updatedFilter.id,
-      rawFilter: omit(['id'], toRawFilter(updatedFilter)),
+      rawFilter: omit(['id'], updatedFilter),
     }).then((savedFilter) => {
       closeSaveFilterMenu();
       showMessage({
@@ -119,7 +113,7 @@ const SaveFilterMenu = (): JSX.Element => {
         severity: Severity.success,
       });
 
-      loadFiltersAndUpdateCurrent(toFilter(savedFilter));
+      loadFiltersAndUpdateCurrent(savedFilter);
     });
   };
 

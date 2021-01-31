@@ -2,29 +2,14 @@ import * as React from 'react';
 
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import clsx from 'clsx';
-import { ParentSize } from '@visx/visx';
 
 import { Button, makeStyles, Grid } from '@material-ui/core';
 
-import {
-  MultiAutocompleteField,
-  MultiConnectedAutocompleteField,
-  SelectField,
-  SearchField,
-  Filters,
-} from '@centreon/ui';
+import { SelectField, SearchField, Filters } from '@centreon/ui';
 
 import {
   labelStateFilter,
   labelSearch,
-  labelResource,
-  labelState,
-  labelStatus,
-  labelHostGroup,
-  labelServiceGroup,
-  labelClear,
-  labelOpen,
   labelShowCriteriasFilters,
   labelNewFilter,
   labelMyFilters,
@@ -33,12 +18,14 @@ import { useResourceContext } from '../Context';
 
 import SearchHelpTooltip from './SearchHelpTooltip';
 import SaveFilter from './Save';
-import {
-  buildHostGroupsEndpoint,
-  buildServiceGroupsEndpoint,
-} from './api/endpoint';
-import useFilterModels from './useFilterModels';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
+import Criterias from './Criterias';
+import {
+  standardFilterById,
+  unhandledProblemsFilter,
+  resourceProblemsFilter,
+  allFilter,
+} from './models';
 
 const useStyles = makeStyles(() => ({
   filterSelect: {
@@ -65,57 +52,18 @@ const Filter = (): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    unhandledProblemsFilter,
-    resourceProblemsFilter,
-    allFilter,
-    states: availableStates,
-    resourceTypes: availableResourceTypes,
-    statuses: availableStatuses,
-    standardFilterById,
-    isCustom,
-    newFilter,
-  } = useFilterModels();
-
-  const {
     filter,
     setFilter,
-    setCurrentSearch,
     nextSearch,
     setNextSearch,
-    resourceTypes,
-    setResourceTypes,
-    states,
-    setStates,
-    statuses,
-    setStatuses,
-    hostGroups,
-    setHostGroups,
-    serviceGroups,
-    setServiceGroups,
     customFilters,
     customFiltersLoading,
+    setCriteria,
+    setNewFilter,
   } = useResourceContext();
 
-  const getConnectedAutocompleteEndpoint = (buildEndpoint) => ({
-    search,
-    page,
-  }): string => {
-    return buildEndpoint({
-      limit: 10,
-      page,
-      search,
-    });
-  };
-
-  const setNewFilter = (): void => {
-    if (isCustom(filter)) {
-      return;
-    }
-    setFilter({ ...newFilter, criterias: filter.criterias });
-  };
-
   const requestSearch = (): void => {
-    setCurrentSearch(nextSearch);
+    setCriteria({ name: 'search', value: nextSearch });
   };
 
   const requestSearchOnEnterKey = (event: React.KeyboardEvent): void => {
@@ -131,7 +79,7 @@ const Filter = (): JSX.Element => {
     setNewFilter();
   };
 
-  const changeFilterGroup = (event): void => {
+  const changeFilter = (event): void => {
     const filterId = event.target.value;
 
     const updatedFilter =
@@ -139,53 +87,13 @@ const Filter = (): JSX.Element => {
       customFilters?.find(propEq('id', filterId));
 
     setFilter(updatedFilter);
-
-    if (!updatedFilter.criterias) {
-      return;
-    }
-
-    setResourceTypes(updatedFilter.criterias.resourceTypes);
-    setStatuses(updatedFilter.criterias.statuses);
-    setStates(updatedFilter.criterias.states);
-    setHostGroups(updatedFilter.criterias.hostGroups);
-    setServiceGroups(updatedFilter.criterias.serviceGroups);
-    setNextSearch(updatedFilter.criterias.search);
-    setCurrentSearch(updatedFilter.criterias.search);
   };
 
-  const clearAllFilters = (): void => {
-    setFilter(allFilter);
-    setResourceTypes(allFilter.criterias.resourceTypes);
-    setStatuses(allFilter.criterias.statuses);
-    setStates(allFilter.criterias.states);
-    setHostGroups(allFilter.criterias.hostGroups);
-    setServiceGroups(allFilter.criterias.serviceGroups);
-    setNextSearch('');
-    setCurrentSearch('');
-  };
-
-  const changeResourceTypes = (_, updatedResourceTypes): void => {
-    setResourceTypes(updatedResourceTypes);
-    setNewFilter();
-  };
-
-  const changeStates = (_, updatedStates): void => {
-    setStates(updatedStates);
-    setNewFilter();
-  };
-
-  const changeStatuses = (_, updatedStatuses): void => {
-    setStatuses(updatedStatuses);
-    setNewFilter();
-  };
-
-  const changeHostGroups = (_, updatedHostGroups): void => {
-    setHostGroups(updatedHostGroups);
-  };
-
-  const changeServiceGroups = (_, updatedServiceGroups): void => {
-    setServiceGroups(updatedServiceGroups);
-  };
+  const translatedOptions = [
+    unhandledProblemsFilter,
+    resourceProblemsFilter,
+    allFilter,
+  ].map(({ id, name }) => ({ id, name: t(name) }));
 
   const customFilterOptions = isEmpty(customFilters)
     ? []
@@ -200,9 +108,7 @@ const Filter = (): JSX.Element => {
 
   const options = [
     { id: '', name: t(labelNewFilter) },
-    unhandledProblemsFilter,
-    resourceProblemsFilter,
-    allFilter,
+    ...translatedOptions,
     ...customFilterOptions,
   ];
 
@@ -224,7 +130,7 @@ const Filter = (): JSX.Element => {
               <SelectField
                 options={options.map(pick(['id', 'name', 'type']))}
                 selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
-                onChange={changeFilterGroup}
+                onChange={changeFilter}
                 aria-label={t(labelStateFilter)}
                 className={classes.field}
               />
@@ -251,90 +157,10 @@ const Filter = (): JSX.Element => {
           </Grid>
         </Grid>
       }
-      expandableFilters={
-        <ParentSize>
-          {({ width }): JSX.Element => {
-            const limitTags = width < 1000 ? 1 : 2;
-
-            const commonProps = {
-              limitTags,
-              className: classes.field,
-            };
-
-            return (
-              <Grid container spacing={1} alignItems="center">
-                <Grid item>
-                  <MultiAutocompleteField
-                    options={availableResourceTypes}
-                    label={t(labelResource)}
-                    onChange={changeResourceTypes}
-                    value={resourceTypes || []}
-                    openText={`${t(labelOpen)} ${t(labelResource)}`}
-                    {...commonProps}
-                  />
-                </Grid>
-                <Grid item>
-                  <MultiAutocompleteField
-                    options={availableStates}
-                    label={t(labelState)}
-                    onChange={changeStates}
-                    value={states || []}
-                    openText={`${t(labelOpen)} ${t(labelState)}`}
-                    {...commonProps}
-                  />
-                </Grid>
-                <Grid item>
-                  <MultiAutocompleteField
-                    options={availableStatuses}
-                    label={t(labelStatus)}
-                    onChange={changeStatuses}
-                    value={statuses || []}
-                    openText={`${t(labelOpen)} ${t(labelStatus)}`}
-                    {...commonProps}
-                  />
-                </Grid>
-                <Grid item>
-                  <MultiConnectedAutocompleteField
-                    getEndpoint={getConnectedAutocompleteEndpoint(
-                      buildHostGroupsEndpoint,
-                    )}
-                    label={t(labelHostGroup)}
-                    onChange={changeHostGroups}
-                    value={hostGroups || []}
-                    openText={`${t(labelOpen)} ${t(labelHostGroup)}`}
-                    field="name"
-                    {...commonProps}
-                  />
-                </Grid>
-                <Grid item>
-                  <MultiConnectedAutocompleteField
-                    getEndpoint={getConnectedAutocompleteEndpoint(
-                      buildServiceGroupsEndpoint,
-                    )}
-                    label={t(labelServiceGroup)}
-                    onChange={changeServiceGroups}
-                    value={serviceGroups || []}
-                    openText={`${t(labelOpen)} ${t(labelServiceGroup)}`}
-                    field="name"
-                    {...commonProps}
-                  />
-                </Grid>
-                <Grid item>
-                  <Button
-                    color="primary"
-                    onClick={clearAllFilters}
-                    size="small"
-                  >
-                    {t(labelClear)}
-                  </Button>
-                </Grid>
-              </Grid>
-            );
-          }}
-        </ParentSize>
-      }
+      expandableFilters={<Criterias />}
     />
   );
 };
 
 export default Filter;
+export { useStyles };

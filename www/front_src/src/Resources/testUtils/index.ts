@@ -1,3 +1,7 @@
+import { propEq } from 'ramda';
+
+import { CriteriaValue } from '../Filter/Criterias/models';
+import { Filter } from '../Filter/models';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 interface EndpointParams {
@@ -72,6 +76,18 @@ const mockAppStateSelector = (useSelector: jest.Mock): void => {
   useSelector.mockImplementation((callback) => callback(appState));
 };
 
+interface CriteriaValueProps {
+  filter: Filter;
+  name: string;
+}
+
+const getCriteriaValue = ({
+  filter,
+  name,
+}: CriteriaValueProps): CriteriaValue | undefined => {
+  return filter.criterias.find(propEq('name', name))?.value;
+};
+
 export {
   mockAppStateSelector,
   getListingEndpoint,
@@ -80,4 +96,5 @@ export {
   defaultResourceTypes,
   defaultStates,
   searchableFields,
+  getCriteriaValue,
 };

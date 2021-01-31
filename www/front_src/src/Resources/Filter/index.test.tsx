@@ -10,6 +10,7 @@ import {
 } from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
+import { propEq } from 'ramda';
 
 import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
 
@@ -41,6 +42,7 @@ import useLoadResources from '../Listing/useLoadResources';
 import {
   defaultStates,
   defaultStatuses,
+  getCriteriaValue,
   getListingEndpoint,
   mockAppStateSelector,
   searchableFields,
@@ -569,9 +571,12 @@ describe(Filter, () => {
       const filterFromUrlQueryParameters = getUrlQueryParameters()
         .filter as FilterModel;
 
-      expect(filterFromUrlQueryParameters.criterias.search).toEqual(
-        'Search me two',
-      );
+      expect(
+        getCriteriaValue({
+          filter: filterFromUrlQueryParameters,
+          name: 'search',
+        }),
+      ).toEqual('Search me two');
     });
 
     it('resets the filter criterias which are not set in the filter URL query parameter when given', async () => {
@@ -619,9 +624,12 @@ describe(Filter, () => {
       const filterFromUrlQueryParameters = getUrlQueryParameters()
         .filter as FilterModel;
 
-      expect(filterFromUrlQueryParameters.criterias.search).toEqual(
-        'Search me',
-      );
+      expect(
+        getCriteriaValue({
+          filter: filterFromUrlQueryParameters,
+          name: 'search',
+        }),
+      ).toEqual('Search me');
     });
   });
 });
