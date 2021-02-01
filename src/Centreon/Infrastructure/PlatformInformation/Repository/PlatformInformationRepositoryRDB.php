@@ -167,7 +167,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
      * @param array<string,array<int,mixed>> $queryParameters
      * @return void
      */
-    public function prepareInsertQueryString(
+    private function prepareInsertQueryString(
         PlatformInformation $platformInformation,
         string &$insertQuery,
         array &$queryParameters
