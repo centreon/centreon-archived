@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\UseCase\V21;
 
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 use Centreon\Domain\Proxy\Proxy;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
@@ -34,6 +35,7 @@ use Centreon\Domain\PlatformInformation\Model\PlatformInformationFactory;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationWriteRepositoryInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 
 class UpdatePartiallyPlatformInformation
 {
@@ -57,16 +59,23 @@ class UpdatePartiallyPlatformInformation
      */
     private $remoteServerService;
 
+    /**
+     * @var PlatformTopologyServiceInterface
+     */
+    private $platformTopologyService;
+
     public function __construct(
         PlatformInformationWriteRepositoryInterface $writeRepository,
         PlatformInformationReadRepositoryInterface $readRepository,
         ProxyServiceInterface $proxyService,
-        RemoteServerServiceInterface $remoteServerService
+        RemoteServerServiceInterface $remoteServerService,
+        PlatformTopologyServiceInterface $platformTopologyService
     ) {
         $this->writeRepository = $writeRepository;
         $this->readRepository = $readRepository;
         $this->proxyService = $proxyService;
         $this->remoteServerService = $remoteServerService;
+        $this->platformTopologyService = $platformTopologyService;
     }
 
     /**
@@ -111,12 +120,17 @@ class UpdatePartiallyPlatformInformation
         foreach($information as $informationObject) {
             if ($informationObject->getKey() === "proxy") {
                 $this->updateProxyOptions($informationObject->getValue());
+                break;
             }
-            break;
         }
+
         $informationDto = InformationV21Factory::create($information);
         $platformInformationUpdate = PlatformInformationFactory::create($informationDto);
         $currentPlatformInformation = $this->readRepository->findPlatformInformation();
+
+        if($platformInformationUpdate->getCentralServerAddress() !== null) {
+            $this->validateCentralServerAddressOrFail($platformInformationUpdate->getCentralServerAddress());
+        }
         if($platformInformationUpdate->isRemote() !== null) {
             $this->updatePlatformTypeOrFail($platformInformationUpdate, $currentPlatformInformation);
         }
@@ -128,6 +142,7 @@ class UpdatePartiallyPlatformInformation
      * Update Proxy Options.
      *
      * @param array $proxyOptions
+     * @throws InvalidArgumentException
      */
     private function updateProxyOptions(array $proxyOptions): void
     {
@@ -172,6 +187,14 @@ class UpdatePartiallyPlatformInformation
         }
     }
 
+    /**
+     * This method verify the existing and updated type before sending information to Remote Server Service.
+     *
+     * @param PlatformInformation $platformInformationUpdate
+     * @param PlatformInformation $currentPlatformInformation
+     * @throws RemoteServerException
+     * @return void
+     */
     private function convertCentralToRemote(
         PlatformInformation $platformInformationUpdate,
         PlatformInformation $currentPlatformInformation
@@ -201,4 +224,35 @@ class UpdatePartiallyPlatformInformation
             );
         }
     }
+
+    /**
+     * Validate that central server address is not already in used by another platform or by the proxy.
+     *
+     * @param string $centralServerAddress
+     * @throws PlatformInformationException
+     */
+    private function validateCentralServerAddressOrFail(string $centralServerAddress): void
+    {
+        $topology = $this->platformTopologyService->getPlatformTopology();
+        foreach ($topology as $platform) {
+            if ($centralServerAddress === $platform->getAddress()) {
+                throw new PlatformInformationException(
+                    sprintf(
+                        _('the address %s is already used in the topology and can\'t ' .
+                        'be provided as Central Server Address'), $centralServerAddress
+                    )
+                );
+            }
+        }
+        $proxy = $this->proxyService->getProxy();
+        if ($centralServerAddress === $proxy->getUrl()) {
+            throw new PlatformInformationException(
+                sprintf(
+                    _('the address %s is already used has proxy address and can\'t ' .
+                    'be provided as Central Server Address'), $centralServerAddress
+                )
+            );
+        }
+    }
+
 }

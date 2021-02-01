@@ -45,17 +45,10 @@ class PlatformController extends AbstractController
      */
     private $informationService;
 
-    /**
-     * @var ProxyServiceInterface
-     */
-    private $proxyService;
-
     public function __construct(
         PlatformServiceInterface $informationService,
-        ProxyServiceInterface $proxyService
     ) {
         $this->informationService = $informationService;
-        $this->proxyService = $proxyService;
     }
 
     /**
