@@ -48,7 +48,7 @@ class HostCategoryTest extends TestCase
                 'HostCategory::name'
             )->getMessage()
         );
-        new HostCategory($name, '');
+        new HostCategory($name, 'alias');
     }
 
     /**
@@ -66,7 +66,7 @@ class HostCategoryTest extends TestCase
                 'HostCategory::name'
             )->getMessage()
         );
-        new HostCategory($name, '');
+        new HostCategory($name, 'alias');
     }
 
     /**
@@ -84,7 +84,7 @@ class HostCategoryTest extends TestCase
                 'HostCategory::alias'
             )->getMessage()
         );
-        new HostCategory('a', $alias);
+        new HostCategory('name', $alias);
     }
 
     /**
@@ -102,7 +102,7 @@ class HostCategoryTest extends TestCase
                 'HostCategory::alias'
             )->getMessage()
         );
-        new HostCategory('a', $alias);
+        new HostCategory('name', $alias);
     }
 
     /**
@@ -120,7 +120,7 @@ class HostCategoryTest extends TestCase
                 'HostCategory::comments'
             )->getMessage()
         );
-        (new HostCategory('a', ''))->setComments($comments);
+        (new HostCategory('name', 'alias'))->setComments($comments);
     }
 
     /**
@@ -128,7 +128,7 @@ class HostCategoryTest extends TestCase
      */
     public function testIsActivatedProperty(): void
     {
-        $hostCategory = new HostCategory('a', '');
+        $hostCategory = new HostCategory('name', 'alias');
         $this->assertTrue($hostCategory->isActivated());
         $hostCategory->setActivated(false);
         $this->assertFalse($hostCategory->isActivated());
@@ -140,7 +140,7 @@ class HostCategoryTest extends TestCase
     public function testIdProperty(): void
     {
         $newHostId = 1;
-        $hostCategory = new HostCategory('a', '');
+        $hostCategory = new HostCategory('name', 'alias');
         $this->assertNull($hostCategory->getId());
         $hostCategory->setId($newHostId);
         $this->assertEquals($newHostId, $hostCategory->getId());
@@ -152,7 +152,7 @@ class HostCategoryTest extends TestCase
      */
     public static function createEntity(): HostCategory
     {
-        return (new HostCategory('a', ''))
+        return (new HostCategory('name', 'alias'))
             ->setId(10)
             ->setName('Category')
             ->setAlias('Alias category')
