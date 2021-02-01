@@ -46,7 +46,7 @@ class PlatformController extends AbstractController
     private $informationService;
 
     public function __construct(
-        PlatformServiceInterface $informationService,
+        PlatformServiceInterface $informationService
     ) {
         $this->informationService = $informationService;
     }
