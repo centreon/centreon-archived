@@ -22,36 +22,64 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Exception;
 
+/**
+ * This class is designed to validate the request body against a validation Json Schema.
+ */
 class PlatformInformationDtoValidatorException extends \Exception
 {
+    /**
+     * @return self
+     */
     public static function additionalPropertiesNotAllowedException(): self
     {
         return new self(_('Additional properties are not allowed'));
     }
 
+    /**
+     * @return self
+     */
     public static function nullPropertiesNotAllowedException(): self
     {
         return new self(_('Nullable property is not allowed'));
     }
 
+    /**
+     * @param string $property
+     * @return self
+     */
     public static function missingRequiredPropertiesException(string $property): self
     {
         return new self(sprintf(_('Missing required property: %s'), $property));
     }
 
-    public static function invalidPropertyTypeException($invalidType, $propertyName, $validType): self
-    {
+    /**
+     * @param string $invalidType
+     * @param string $propertyName
+     * @param string $validType
+     * @return self
+     */
+    public static function invalidPropertyTypeException(
+        string $invalidType,
+        string $propertyName,
+        string $validType
+    ): self {
         return new self(
             sprintf(_('Invalid property type %s for %s, type %s expected'), $invalidType, $propertyName, $validType)
         );
     }
 
-    public static function BadJSONSchemaFormatException(): self
+    /**
+     * @return self
+     */
+    public static function badJsonSchemaFormatException(): self
     {
         return new self(_('Bad JSON schema format'));
     }
 
-    public static function BadJSONSchemaFilePathException(): self
+    /**
+     * @return self
+     */
+    public static function badJsonSchemaFilePathException(): self
     {
         return new self(_('Bad JSON schema path'));
     }

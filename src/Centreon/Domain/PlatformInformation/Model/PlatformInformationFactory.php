@@ -33,13 +33,17 @@ class PlatformInformationFactory
      */
     public const ENCRYPT_SECOND_KEY = 'api_remote_credentials';
 
-    public static function create(array $information)
+    /**
+     * @param array<string, mixed> $information
+     * @return PlatformInformation
+     */
+    public static function create(array $information): PlatformInformation
     {
         $platFormInformation = new PlatformInformation();
 
         foreach ($information as $informationDto) {
             if ($informationDto->key === 'isRemote') {
-                if($informationDto->value === true) {
+                if ($informationDto->value === true) {
                     $platFormInformation->setRemote(true);
                 } else {
                     $platFormInformation->setRemote(false);

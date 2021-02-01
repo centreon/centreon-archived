@@ -23,16 +23,18 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Model;
 
+use Centreon\Domain\PlatformInformation\Model\InformationV21;
+
 class InformationV21Factory
 {
     /**
      * @param array<Information> $information
-     * @return void
+     * @return array<InformationV21>
      */
     public static function create(array $information): array
     {
         $informationArray = [];
-        foreach($information as $informationObject) {
+        foreach ($information as $informationObject) {
             $newInformationDto = new InformationV21();
             $newInformationDto->key = $informationObject->getKey();
             $newInformationDto->value = $informationObject->getValue();

@@ -32,7 +32,11 @@ class PlatformInformationFactoryRDB
      */
     public const ENCRYPT_SECOND_KEY = 'api_remote_credentials';
 
-    public static function create(array $information)
+    /**
+     * @param array<string,mixed> $information
+     * @return PlatformInformation
+     */
+    public static function create(array $information): PlatformInformation
     {
         $platformInformation = new PlatformInformation();
         foreach ($information as $key => $value) {

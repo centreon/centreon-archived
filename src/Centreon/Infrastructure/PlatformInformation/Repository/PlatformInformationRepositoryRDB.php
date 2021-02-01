@@ -59,7 +59,6 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
         $platformInformation = null;
         if ($statement->execute()) {
             while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
-
                 // Renaming one key to be more explicit
                 if ('authorizedMaster' === $row['key']) {
                     $row['key'] = 'centralServerAddress';
@@ -102,7 +101,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
 
             $deletedKeys = [];
 
-            if($platformInformation->isRemote() === null) {
+            if ($platformInformation->isRemote() === null) {
                 $this->prepareInsertQueryString($platformInformation, $insertQuery, $queryParameters);
             } else {
                 /**
@@ -160,6 +159,14 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
         }
     }
 
+    /**
+     * this method is designed to prepare the insertQuery, based on the provided Information.
+     *
+     * @param PlatformInformation $platformInformation
+     * @param string $insertQuery
+     * @param array<string,array<int,mixed>> $queryParameters
+     * @return void
+     */
     public function prepareInsertQueryString(
         PlatformInformation $platformInformation,
         string &$insertQuery,

@@ -81,17 +81,16 @@ class UpdatePartiallyPlatformInformation
     /**
      * Array of all available validators for this use case.
      *
-     * @var array
+     * @var array<DtoValidatorInterface>
      */
     private $validators = [];
 
     /**
-     * @param array $validators
+     * @param array<DtoValidatorInterface> $validators
      */
     public function addValidators(array $validators): void
     {
-        foreach ($validators as $validator)
-        {
+        foreach ($validators as $validator) {
             $this->addValidator($validator);
         }
     }
@@ -107,17 +106,17 @@ class UpdatePartiallyPlatformInformation
     /**
      * Execute the use case for which this class was designed.
      *
-     * @return FindHostCategoriesResponse
+     * @param array<string,mixed> $request
      * @throws \Exception
      */
-    public function execute(array $request)
+    public function execute(array $request): void
     {
         foreach ($this->validators as $validator) {
             $validator->validateOrFail($request);
         }
         $information = InformationFactory::createFromRequest($request);
 
-        foreach($information as $informationObject) {
+        foreach ($information as $informationObject) {
             if ($informationObject->getKey() === "proxy") {
                 $this->updateProxyOptions($informationObject->getValue());
                 break;
@@ -128,10 +127,10 @@ class UpdatePartiallyPlatformInformation
         $platformInformationUpdate = PlatformInformationFactory::create($informationDto);
         $currentPlatformInformation = $this->readRepository->findPlatformInformation();
 
-        if($platformInformationUpdate->getCentralServerAddress() !== null) {
+        if ($platformInformationUpdate->getCentralServerAddress() !== null) {
             $this->validateCentralServerAddressOrFail($platformInformationUpdate->getCentralServerAddress());
         }
-        if($platformInformationUpdate->isRemote() !== null) {
+        if ($platformInformationUpdate->isRemote() !== null) {
             $this->updatePlatformTypeOrFail($platformInformationUpdate, $currentPlatformInformation);
         }
 
@@ -141,8 +140,8 @@ class UpdatePartiallyPlatformInformation
     /**
      * Update Proxy Options.
      *
-     * @param array $proxyOptions
-     * @throws InvalidArgumentException
+     * @param array<string,mixed> $proxyOptions
+     * @throws \InvalidArgumentException
      */
     private function updateProxyOptions(array $proxyOptions): void
     {
@@ -239,7 +238,8 @@ class UpdatePartiallyPlatformInformation
                 throw new PlatformInformationException(
                     sprintf(
                         _('the address %s is already used in the topology and can\'t ' .
-                        'be provided as Central Server Address'), $centralServerAddress
+                        'be provided as Central Server Address'),
+                        $centralServerAddress
                     )
                 );
             }
@@ -249,10 +249,10 @@ class UpdatePartiallyPlatformInformation
             throw new PlatformInformationException(
                 sprintf(
                     _('the address %s is already used has proxy address and can\'t ' .
-                    'be provided as Central Server Address'), $centralServerAddress
+                    'be provided as Central Server Address'),
+                    $centralServerAddress
                 )
             );
         }
     }
-
 }

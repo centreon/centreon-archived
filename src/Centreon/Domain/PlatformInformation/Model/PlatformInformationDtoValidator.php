@@ -46,7 +46,7 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
                  NULL_TYPE = "null";
 
     /**
-     * @param string $jsonSchemaPath
+     * @var string $jsonSchemaPath
      */
     private $jsonSchemaPath;
 
@@ -58,19 +58,19 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
     /**
      * validate the request DTO.
      *
-     * @param array $dto
+     * @param array<string,mixed> $dto
      * @throws PlatformInformationDtoValidatorException
      */
     public function validateOrFail(array $dto): void
     {
         $schema = file_get_contents($this->jsonSchemaPath);
         if ($schema === false) {
-            throw PlatformInformationDtoValidatorException::BadJSONSchemaFilePathException();
+            throw PlatformInformationDtoValidatorException::badJsonSchemaFilePathException();
         }
         $schema = json_decode($schema, true);
 
         if (!is_array($schema)) {
-            throw PlatformInformationDtoValidatorException::BadJSONSchemaFormatException();
+            throw PlatformInformationDtoValidatorException::badJsonSchemaFormatException();
         }
         $this->validateAdditionalPropertiesRecursivelyOrFail($schema, $dto);
         $this->validateRequiredPropertiesRecursivelyOrFail($schema, $dto);
@@ -81,8 +81,8 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
     /**
      * Validate that no additional properties has been sent.
      *
-     * @param array $schema
-     * @param array $dto
+     * @param array<string,mixed> $schema
+     * @param array<string,mixed> $dto
      * @throws PlatformInformationDtoValidatorException
      */
     private function validateAdditionalPropertiesRecursivelyOrFail(array $schema, array $dto): void
@@ -113,8 +113,8 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
     /**
      * Validate that all required properties has been declared.
      *
-     * @param array $schema
-     * @param array $dto
+     * @param array<string,mixed> $schema
+     * @param array<string,mixed> $dto
      * @throws PlatformInformationDtoValidatorException
      */
     private function validateRequiredPropertiesRecursivelyOrFail(array $schema, array $dto): void
@@ -141,8 +141,8 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
     /**
      * Validate that properties are not null if nullable is not allow.
      *
-     * @param array $schema
-     * @param array $dto
+     * @param array<string,mixed> $schema
+     * @param array<string,mixed> $dto
      * @throws PlatformInformationDtoValidatorException
      */
     private function validateNonNullPropertiesRecursivelyOrFail(array $schema, array $dto): void
@@ -183,8 +183,8 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
     /**
      * Validate that the properties type are valid.
      *
-     * @param array $schema
-     * @param array $dto
+     * @param array<string,mixed> $schema
+     * @param array<string,mixed> $dto
      * @throws PlatformInformationDtoValidatorException
      */
     private function validatePropertiesTypeRecursivelyOrFail(array $schema, array $dto): void
@@ -197,9 +197,9 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
             } else {
                 if (is_array($schemaPropertyType)) {
                     $dtoPropertyType = gettype($value);
-                    $this->validateArrayOfPropertyTypes($schemaPropertyType, $propertyName, $dtoPropertyType);
+                    $this->validateArrayOfPropertyTypesOrFail($schemaPropertyType, $propertyName, $dtoPropertyType);
                 } else {
-                    $this->validatePropertyType($schemaPropertyType, $propertyName, $value);
+                    $this->validatePropertyTypeOrFail($schemaPropertyType, $propertyName, $value);
                 }
             }
         }
@@ -208,26 +208,33 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
     /**
      * Validate the dtoProperty against the schema type array.
      *
-     * @param array $schemaPropertyType
+     * @param array<string,mixed> $schemaPropertyType
      * @param string $propertyName
      * @param string $dtoPropertyType
      * @throws PlatformInformationDtoValidatorException
      */
-    private function validateArrayOfPropertyTypes(array $schemaPropertyType, string $propertyName, string $dtoPropertyType)
-    {
+    private function validateArrayOfPropertyTypesOrFail(
+        array $schemaPropertyType,
+        string $propertyName,
+        string $dtoPropertyType
+    ): void {
         /**
          * gettype(null) will return "NULL" so we need to check this value for a null type.
          */
         if ($dtoPropertyType === "NULL" && !in_array(self::NULL_TYPE, $schemaPropertyType)) {
             throw PlatformInformationDtoValidatorException::invalidPropertyTypeException(
-                $dtoPropertyType, $propertyName, implode(", ", $schemaPropertyType)
+                $dtoPropertyType,
+                $propertyName,
+                implode(", ", $schemaPropertyType)
             );
         /**
          * array is inevitably an object, so if an array is detected, we check that object type is allow.
          */
         } elseif ($dtoPropertyType === "array" && !in_array(self::OBJECT_TYPE, $schemaPropertyType)) {
             throw PlatformInformationDtoValidatorException::invalidPropertyTypeException(
-                $dtoPropertyType, $propertyName, implode(", ", $schemaPropertyType)
+                $dtoPropertyType,
+                $propertyName,
+                implode(", ", $schemaPropertyType)
             );
         /**
          * For other case simply check if the type is present into the allowed types.
@@ -238,7 +245,9 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
             && !in_array($dtoPropertyType, $schemaPropertyType)
         ) {
             throw PlatformInformationDtoValidatorException::invalidPropertyTypeException(
-                $dtoPropertyType, $propertyName, implode(", ", $schemaPropertyType)
+                $dtoPropertyType,
+                $propertyName,
+                implode(", ", $schemaPropertyType)
             );
         }
     }
@@ -249,42 +258,56 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
      * @param string $schemaPropertyType
      * @param string $propertyName
      * @param mixed $dtoProperty
+     * @throws PlatformInformationDtoValidatorException
      */
-    private function validatePropertyType(string $schemaPropertyType, string $propertyName, $dtoProperty)
-    {
+    private function validatePropertyTypeOrFail(
+        string $schemaPropertyType,
+        string $propertyName,
+        $dtoProperty
+    ): void {
         switch ($schemaPropertyType) {
             case self::STRING_TYPE:
                 if (!is_string($dtoProperty)) {
                     throw PlatformInformationDtoValidatorException::invalidPropertyTypeException(
-                        gettype($dtoProperty), $propertyName, $schemaPropertyType
+                        gettype($dtoProperty),
+                        $propertyName,
+                        $schemaPropertyType
                     );
                 }
                 break;
             case self::INTEGER_TYPE:
                 if (!is_int($dtoProperty)) {
                     throw PlatformInformationDtoValidatorException::invalidPropertyTypeException(
-                        gettype($dtoProperty), $propertyName, $schemaPropertyType
+                        gettype($dtoProperty),
+                        $propertyName,
+                        $schemaPropertyType
                     );
                 }
                 break;
             case self::BOOLEAN_TYPE:
                 if (!is_bool($dtoProperty)) {
                     throw PlatformInformationDtoValidatorException::invalidPropertyTypeException(
-                        gettype($dtoProperty), $propertyName, $schemaPropertyType
+                        gettype($dtoProperty),
+                        $propertyName,
+                        $schemaPropertyType
                     );
                 }
                 break;
             case self::OBJECT_TYPE:
                 if (!is_array($dtoProperty) || !array_key_exists(self::PROPERTIES_KEY, $dtoProperty)) {
                     throw PlatformInformationDtoValidatorException::invalidPropertyTypeException(
-                        gettype($dtoProperty), $propertyName, $schemaPropertyType
+                        gettype($dtoProperty),
+                        $propertyName,
+                        $schemaPropertyType
                     );
                 }
                 break;
             case self::NULL_TYPE:
                 if (!is_null($dtoProperty)) {
                     throw PlatformInformationDtoValidatorException::invalidPropertyTypeException(
-                        gettype($dtoProperty), $propertyName, $schemaPropertyType
+                        gettype($dtoProperty),
+                        $propertyName,
+                        $schemaPropertyType
                     );
                 }
                 break;

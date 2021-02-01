@@ -28,9 +28,8 @@ use Centreon\Domain\PlatformInformation\Model\Information;
 class InformationFactory
 {
     /**
-     *
-     * @param array<Information> $request
-     * @return void
+     * @param array<string,mixed> $request
+     * @return array<Information>
      */
     public static function createFromRequest(array $request): array
     {

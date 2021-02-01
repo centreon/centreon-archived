@@ -24,5 +24,9 @@ namespace Centreon\Domain\PlatformInformation\Interfaces;
 
 interface DtoValidatorInterface
 {
+    /**
+     * @param array<string,mixed> $dto
+     * @return void
+     */
     public function validateOrFail(array $dto): void;
 }
