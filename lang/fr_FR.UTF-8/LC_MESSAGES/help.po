@@ -3230,7 +3230,7 @@ msgid ""
 "Time interval in seconds between two heartbeat events. This event is the one responsible of the ‘Last Update’ "
 "column update in the Pollers listing. Value must be between 5 and 600. Default value is 30."
 msgstr ""
-"Intervalle de temps en secondes entre deux événements heatbeat. Cet événement est le responsable de "
+"Intervalle de temps en secondes entre deux événements heartbeat. Cet événement est le responsable de "
 "la mise à jour de la colonne 'Dernière mise à jour' dans la liste des Poller. La valeur doit "
 "être comprise entre 5 et 600. La valeur par défaut est 30."
 
