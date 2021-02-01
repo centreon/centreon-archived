@@ -22,11 +22,18 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface;
+use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface as previousAuthenticationServiceInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\View\View;
+use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Security\Domain\Authentication\Model\ProviderFactory;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @package Centreon\Application\Controller
@@ -34,18 +41,42 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class AuthenticationController extends AbstractFOSRestController
 {
     /**
-     * @var AuthenticationServiceInterface
+     * @var previousAuthenticationServiceInterface
      */
     private $auth;
+    /**
+     * @var ProviderInterface[]
+     */
+    private $providers;
+    /**
+     * @var AuthenticationServiceInterface
+     */
+    private $authenticationService;
+    /**
+     * @var ContactServiceInterface
+     */
+    private $contactService;
 
     /**
-     * LoginController constructor.
-     *
-     * @param AuthenticationServiceInterface $auth
+     * @param previousAuthenticationServiceInterface $auth
+     * @param AuthenticationServiceInterface $authenticationService
+     * @param \Traversable $providers
+     * @param ContactServiceInterface $contactService
+     * @throws \InvalidArgumentException
      */
-    public function __construct(AuthenticationServiceInterface $auth)
-    {
+    public function __construct(
+        previousAuthenticationServiceInterface $auth,
+        AuthenticationServiceInterface $authenticationService,
+        \Traversable $providers,
+        ContactServiceInterface $contactService
+    ) {
         $this->auth = $auth;
+        if (!$providers) {
+            throw new \InvalidArgumentException('You must at least add one authentication provider');
+        }
+        $this->providers = iterator_to_array($providers);
+        $this->authenticationService = $authenticationService;
+        $this->contactService = $contactService;
     }
 
     /**
@@ -55,7 +86,7 @@ class AuthenticationController extends AbstractFOSRestController
      * necessary).
      *
      * @param Request $request
-     * @return array
+     * @return View
      * @throws \Exception
      */
     public function login(Request $request)
@@ -97,7 +128,7 @@ class AuthenticationController extends AbstractFOSRestController
      * Entry point used to delete an existing authentication token.
      *
      * @param Request $request
-     * @return array
+     * @return View
      * @throws \RestException
      */
     public function logout(Request $request)
@@ -119,5 +150,171 @@ class AuthenticationController extends AbstractFOSRestController
         } catch (\Exception $ex) {
             throw new \RestException($ex->getMessage(), $ex->getCode(), $ex);
         }
+    }
+
+    /**
+     * Provide the default connection url.
+     *
+     * @param Request $request
+     * @return View
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws \InvalidArgumentException
+     */
+    public function redirection(Request $request): View
+    {
+        if (!$this->providers) {
+            throw new \InvalidArgumentException('You must at least add one authentication provider');
+        }
+
+        $redirectionUrl = $this->getParameter('default_login_url');
+
+        if ($redirectionUrl === null) {
+            throw new \InvalidArgumentException('You must define the default login url');
+        }
+
+        foreach ($this->providers as $provider) {
+            if ($provider->isForced()) {
+                $redirectionUrl = $provider->getAuthenticationUri();
+                break;
+            }
+        }
+
+        if ($request->headers->get('Content-Type') === 'application/json') {
+            // Send redirection_uri in JSON format only for API request
+            return View::create(['authentication_uri' => $redirectionUrl]);
+        } else {
+            // Otherwise, we send a redirection response.
+            $view = View::createRedirect($redirectionUrl);
+            $view->setHeader('Content-Type', 'text/html');
+            return $view;
+        }
+    }
+
+    /**
+     * Returns the list of available providers.
+     *
+     * @return View
+     */
+    public function findProviders(): View
+    {
+        $definedProviders = [];
+        foreach ($this->providers as $provider) {
+            $definedProviders[] = [
+                'name' => $provider->getName(),
+                'authentication_uri' => $provider->getAuthenticationUri(),
+                'is_forced' => $provider->isForced(),
+                'configuration' => $provider->exportConfiguration()
+            ];
+        }
+        return View::create($definedProviders);
+    }
+
+    /**
+     * @param Request $request
+     * @param SessionInterface $session
+     * @param string $providerConfigurationName
+     * @return Response|View
+     * @throws \InvalidArgumentException
+     * @throws AuthenticationServiceException
+     * @throws \Exception
+     */
+    public function authentication(
+        Request $request,
+        SessionInterface $session,
+        string $providerConfigurationName
+    ) {
+        if ($request->getMethod() === 'GET') {
+            $data = $request->query->getIterator();
+        } else {
+            $data = $request->request->getIterator() ;
+        }
+        $requestParameters = [];
+        foreach ($data as $key => $value) {
+            $requestParameters[$key] = $value;
+        }
+
+        $authenticationProvider = $this->authenticationService->findProviderByConfigurationName(
+            $providerConfigurationName
+        );
+
+        if ($authenticationProvider === null) {
+            throw AuthenticationServiceException::providerConfigurationNotFound($providerConfigurationName);
+        }
+
+        if (empty($requestParameters)) {
+            $sessionId = $this->extractSessionId($request);
+            if ($sessionId !== null) {
+                if (!$this->authenticationService->hasValidSession($sessionId, $authenticationProvider)) {
+                    $session->start();
+                    $session->clear();
+                    $session->invalidate();
+                    $this->authenticationService->deleteSession($sessionId);
+                    $urlToRedirect = $this->generateUrl('centreon_security_authentication_redirection');
+                    return View::createRedirect($urlToRedirect);
+                } else {
+                    return View::createRedirect('/centreon');
+                }
+            } else {
+                $urlToRedirect = $this->generateUrl('centreon_security_authentication_redirection');
+                return View::createRedirect($urlToRedirect);
+            }
+        } else {
+            $authenticationProvider->authenticate($requestParameters);
+            if ($authenticationProvider->isAuthenticated()) {
+                if (($providerUser = $authenticationProvider->getUser()) === null) {
+                    return View::create(
+                        ['error' => 'The user cannot be retrieved from the provider'],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+                if (!$this->contactService->exists($providerUser)) {
+                    if ($authenticationProvider->canCreateUser()) {
+                        $this->contactService->addContact($providerUser);
+                    } else {
+                        // error can not create user
+                        return View::create(['error' => '...'], Response::HTTP_BAD_REQUEST);
+                    }
+                } else {
+                    $this->contactService->updateUser($providerUser);
+                }
+
+                $session->start();
+
+                $this->authenticationService->createAuthenticationTokens(
+                    $session->getId(),
+                    $providerConfigurationName,
+                    $providerUser,
+                    $authenticationProvider->getProviderToken(),
+                    $authenticationProvider->getProviderRefreshToken()
+                );
+
+                $response = new Response(null, Response::HTTP_OK, ['content-type' => 'text/html']);
+                $response->headers->setCookie(Cookie::create('PHPSESSID', $session->getId()));
+                $response->headers->set("Location", "/centreon");
+                return $response;
+            }
+        }
+        // Authentication failed
+        return View::create(null, Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Extract the session id from the request.
+     *
+     * @param Request $request
+     * @return string|null
+     */
+    private function extractSessionId(Request $request): ?string
+    {
+        if ($request->headers->has('Cookie')) {
+            $cookies = explode(';', $request->headers->get('Cookie'));
+            foreach ($cookies as $cookie) {
+                list($key, $value) = explode('=', $cookie);
+                if (trim($key) === 'PHPSESSID') {
+                    return trim($value);
+                }
+            }
+        }
+        return null;
     }
 }

@@ -19,7 +19,7 @@
  */
 declare(strict_types=1);
 
-namespace App\Security;
+namespace Security;
 
 use Centreon\Domain\Exception\ContactDisabledException;
 use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
@@ -34,11 +34,12 @@ use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * Class used to authenticate a request by using a security token.
  *
- * @package App\Security
+ * @package Security
  */
 class TokenAPIAuthenticator extends AbstractGuardAuthenticator
 {
@@ -63,6 +64,15 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
     ) {
         $this->authenticationRepository = $authenticationRepository;
         $this->contactRepository = $contactRepository;
+    }
+
+    public function createAuthenticatedToken(UserInterface $user, $providerKey)
+    {
+        return parrent::PostAuthenticationGuardToken(
+            $user,
+            'token_API',
+            $user->getRoles()
+        );
     }
 
     /**
@@ -138,6 +148,7 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
     {
         return [
             'token' => $request->headers->get('X-AUTH-TOKEN'),
+            'type' => 'local'
         ];
     }
 

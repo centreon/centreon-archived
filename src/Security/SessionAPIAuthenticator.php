@@ -19,7 +19,7 @@
  */
 declare(strict_types=1);
 
-namespace App\Security;
+namespace Security;
 
 use Centreon\Domain\Exception\ContactDisabledException;
 use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
@@ -38,7 +38,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 /**
  * Class used to authenticate a request by using a session id.
  *
- * @package App\Security
+ * @package Security
  */
 class SessionAPIAuthenticator extends AbstractGuardAuthenticator
 {

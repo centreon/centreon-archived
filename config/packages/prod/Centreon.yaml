@@ -219,9 +219,6 @@ services:
         public: true
 
     # Host group configuration
-    Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupRepositoryInterface:
-        class: Centreon\Infrastructure\HostConfiguration\Repository\HostGroupRepositoryRDB
-
     Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups:
         class: Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups
         calls:
@@ -261,3 +258,9 @@ services:
     # Menu
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
+
+    Centreon\Application\Controller\AuthenticationController:
+        arguments:
+            - '@Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface'
+            - '@Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface'
+            - !tagged_iterator 'authentication.providers'
