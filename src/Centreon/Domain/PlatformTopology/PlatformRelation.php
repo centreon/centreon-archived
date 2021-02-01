@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ class PlatformRelation
     /**
      * Set the value of source
      *
-     * @param  int  $source
+     * @param int $source
      *
      * @return  self
      */
@@ -100,17 +100,18 @@ class PlatformRelation
     /**
      * Set the value of relation
      *
-     * @param  string  $relation
+     * @param string|null $relation
      *
      * @return  self
      */
-    public function setRelation(string $relation): self
+    public function setRelation(?string $relation): self
     {
         //Set relation to normal if invalid relation type is given to be able to compute the relation
-        if (!in_array($relation, self::AVAILABLE_RELATIONS)) {
+        if (null !== $relation && !in_array($relation, self::AVAILABLE_RELATIONS)) {
             $this->relation = self::NORMAL_RELATION;
+        } else {
+            $this->relation = $relation;
         }
-        $this->relation = $relation;
 
         return $this;
     }
@@ -128,7 +129,7 @@ class PlatformRelation
     /**
      * Set the value of target
      *
-     * @param  int  $target
+     * @param int $target
      *
      * @return  self
      */

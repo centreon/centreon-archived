@@ -1,6 +1,7 @@
 <?php
 
 /*
+ *
  * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +24,31 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-interface PlatformTopologyRepositoryInterface extends
-    PlatformTopologyReadRepositoryInterface,
-    PlatformTopologyWriteRepositoryInterface
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Repository\RepositoryException;
+
+interface PlatformTopologyWriteRepositoryInterface
 {
+    /**
+     * Register a new platform to topology
+     *
+     * @param PlatformInterface $platformPending
+     */
+    public function addPlatformToTopology(PlatformInterface $platformPending): void;
+
+    /**
+     * Delete a Platform.
+     *
+     * @param int $serverId
+     * @throws EntityNotFoundException
+     * @throws RepositoryException
+     */
+    public function deletePlatform(int $serverId): void;
+
+    /**
+     * Update a Platform.
+     *
+     * @param PlatformInterface $platform
+     */
+    public function updatePlatformParameters(PlatformInterface $platform): void;
 }

@@ -3229,8 +3229,11 @@ msgstr "Métriques"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: centreon-web/www/install/menu_translation.php:109
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:129
+#: /srv/translate/sources/git/centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: /srv/translate/sources/git/centreon/www/install/menu_translation.php:95
+#: /srv/translate/sources/git/centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: /srv/translate/sources/git/centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Divers"
 
@@ -11770,10 +11773,6 @@ msgstr "Informations Gorgone"
 msgid "Monitoring Engine Information"
 msgstr "Information sur le moteur de supervision"
 
-#: centreon-web/www/include/configuration/configServers/formServers.php:104
-msgid "Miscelleneous"
-msgstr "Divers"
-
 #: centreon-web/www/include/configuration/configServers/formServers.php:105
 msgid "Centreon Trap Collector"
 msgstr "Colleteur de traps SNMP Centreon"
@@ -15798,11 +15797,11 @@ msgid "No top level platform found to link the child platforms"
 msgstr "Aucune platforme principale trouvée pour lier les plateformes enfants"
 
 #: api/platform/topology
-msgid "An error occured while deleting the platform"
+msgid "An error occurred while deleting the platform"
 msgstr "Une erreur est survenue lors de la suppression de la plateforme"
 
 #: api/platform/topology
-msgid "An error occured while updating the platform"
+msgid "An error occurred while updating the platform"
 msgstr "Une erreur est survenue lors de la mise à jour de la plateforme"
 
 #: api/platform/topology

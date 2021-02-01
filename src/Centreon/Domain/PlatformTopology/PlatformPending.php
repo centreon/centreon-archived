@@ -29,7 +29,7 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
  * Class designed to retrieve servers to be added using the wizard
  *
  */
-class Platform implements PlatformInterface
+class PlatformPending implements PlatformInterface
 {
     public const TYPE_CENTRAL = 'central';
     public const TYPE_POLLER = 'poller';
@@ -100,9 +100,9 @@ class Platform implements PlatformInterface
 
     /**
      * @var bool define if the platform is in a pending state or is already registered
-     * By default Platform entities are not pending platforms
+     * By default PlatformPending entities are pending platforms
      */
-    private $isPending = false;
+    private $isPending = true;
 
     /**
      * @inheritDoc
@@ -339,7 +339,7 @@ class Platform implements PlatformInterface
     /**
      * @inheritDoc
      */
-    public function setIsPending(bool $isPending = false): PlatformInterface
+    public function setIsPending(bool $isPending = true): PlatformInterface
     {
         $this->isPending = $isPending;
         return $this;
