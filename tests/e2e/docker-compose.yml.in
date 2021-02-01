@@ -1,0 +1,11 @@
+version: "3.2"
+services:
+  centreon-web:
+    image: "@WEB_IMAGE@"
+    ports:
+      - 80
+  cypress:
+    image: cypress/included:6.3.0
+    volumes:
+      - .:/e2e
+    working_dir: /e2e

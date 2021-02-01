@@ -11,7 +11,7 @@
     "mochaFile": "cypress/results/reports/junit-report.xml"
   },
   "env": {
-    "DOCKER_URL": "http://localhost:3400",
+    "DOCKER_URL": "http://web",
     "TAGS": "not @ignore"
   }
 }

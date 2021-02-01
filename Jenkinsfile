@@ -133,14 +133,14 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: 'rpms-centos7.tar.gz'
       }
-    },
-    'centos8': {
-      node {
-        sh 'setup_centreon_build.sh'
-        unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
-        archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
-      }
+    //},
+    //'centos8': {
+    //  node {
+    //    sh 'setup_centreon_build.sh'
+    //    unstash 'tar-sources'
+    //    sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
+    //    archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
+    //  }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Package stage failure.');
@@ -153,12 +153,12 @@ try {
         sh 'setup_centreon_build.sh'
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
-    },
-    'centos8': {
-      node {
-        sh 'setup_centreon_build.sh'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
-      }
+    //},
+    //'centos8': {
+    //  node {
+    //    sh 'setup_centreon_build.sh'
+    //    sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
+    //  }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
@@ -175,10 +175,10 @@ try {
           unstash 'tar-sources'
           unstash 'cypress-node-modules'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
-          junit 'tests/e2e/cypress/results/reports/junit-report.xml'
+          junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
-          //archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/videos/*.mp4'
         }
       }
     }
