@@ -22,10 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology;
 
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\Proxy\Proxy;
 use Centreon\Application\ApiPlatform;
 use Symfony\Component\HttpClient\HttpClient;
-use Centreon\Domain\PlatformTopology\Platform;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Repository\RepositoryException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -72,7 +72,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
      * Get a valid token to request the API.
      *
      * @param PlatformInformation $platformInformation
-     * @param Proxy $proxy
+     * @param Proxy|null $proxy
      * @throws RepositoryException
      * @return string
      */
@@ -139,7 +139,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
      * @inheritDoc
      */
     public function registerPlatformToParent(
-        Platform $platform,
+        PlatformInterface $platform,
         PlatformInformation $platformInformation,
         Proxy $proxy = null
     ): void {
@@ -222,7 +222,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
      * @inheritDoc
      */
     public function deletePlatformToParent(
-        Platform $platform,
+        PlatformInterface $platform,
         PlatformInformation $platformInformation,
         ?Proxy $proxy = null
     ): void {
@@ -299,9 +299,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
                     $errorMessage .= "  /  " . _("Central's response => Code : ") .
                         implode(', ', $returnedMessage);
                 }
-                throw new PlatformTopologyConflictException(
-                    $errorMessage
-                );
+                throw new PlatformTopologyConflictException($errorMessage);
             }
         } catch (TransportExceptionInterface $e) {
             throw new RepositoryException(

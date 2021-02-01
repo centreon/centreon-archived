@@ -34,10 +34,10 @@ use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -218,7 +218,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         try {
             $this->menuRepository->enableCentralMenus();
         } catch (\Exception $ex) {
-            throw new MenuException(_('An error occured while enabling the central menus'));
+            throw new MenuException(_('An error occurred while enabling the central menus'));
         }
 
         /**
@@ -239,7 +239,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             $platform->setType($type);
             $this->platformTopologyRepository->updatePlatformParameters($platform);
         } catch (\Exception $ex) {
-            throw new PlatformTopologyException(_('An error occured while updating the platform topology'));
+            throw new PlatformTopologyException(_('An error occurred while updating the platform topology'));
         }
     }
 }

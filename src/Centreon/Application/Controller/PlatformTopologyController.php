@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ use FOS\RestBundle\Context\Context;
 use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\PlatformTopology\PlatformPending;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Infrastructure\PlatformTopology\Model\PlatformJsonGraph;
@@ -108,15 +109,18 @@ class PlatformTopologyController extends AbstractController
             );
         }
 
+        /**
+         * @var string $centreonPath
+         */
+        $centreonPath = $this->getParameter('centreon_path');
         // validate request payload consistency
         $this->validatePlatformTopologySchema(
             $platformToAdd,
-            $this->getParameter('centreon_path')
-                . 'config/json_validator/latest/Centreon/PlatformTopology/Register.json'
+            $centreonPath . 'config/json_validator/latest/Centreon/PlatformTopology/Register.json'
         );
 
         try {
-            $platformTopology = (new Platform())
+            $platformTopology = (new PlatformPending())
                 ->setName($platformToAdd['name'])
                 ->setAddress($platformToAdd['address'])
                 ->setType($platformToAdd['type'])
@@ -139,6 +143,7 @@ class PlatformTopologyController extends AbstractController
      * Get the Topology of a platform with an adapted Json Graph Format.
      *
      * @return View
+     * @throws PlatformTopologyException
      */
     public function getPlatformJsonGraph(): View
     {

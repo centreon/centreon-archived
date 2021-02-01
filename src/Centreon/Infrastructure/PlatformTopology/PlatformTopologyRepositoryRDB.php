@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\PlatformTopology;
 
 use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Infrastructure\DatabaseConnection;
@@ -48,20 +49,21 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function addPlatformToTopology(Platform $platform): void
+    public function addPlatformToTopology(PlatformInterface $platformPending): void
     {
         $statement = $this->db->prepare(
-            $this->translateDbName('
-                INSERT INTO `:db`.platform_topology (`address`, `name`, `type`, `parent_id`, `server_id`, `hostname`)
-                VALUES (:address, :name, :type, :parentId, :serverId, :hostname)
-            ')
+            $this->translateDbName("
+                INSERT INTO `:db`.platform_topology
+                    (`address`, `name`, `type`, `parent_id`, `server_id`, `hostname`, `pending`)
+                VALUES (:address, :name, :type, :parentId, :serverId, :hostname, '1')
+            ")
         );
-        $statement->bindValue(':address', $platform->getAddress(), \PDO::PARAM_STR);
-        $statement->bindValue(':name', $platform->getName(), \PDO::PARAM_STR);
-        $statement->bindValue(':type', $platform->getType(), \PDO::PARAM_STR);
-        $statement->bindValue(':parentId', $platform->getParentId(), \PDO::PARAM_INT);
-        $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
-        $statement->bindValue(':hostname', $platform->getHostname(), \PDO::PARAM_STR);
+        $statement->bindValue(':address', $platformPending->getAddress(), \PDO::PARAM_STR);
+        $statement->bindValue(':name', $platformPending->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':type', $platformPending->getType(), \PDO::PARAM_STR);
+        $statement->bindValue(':parentId', $platformPending->getParentId(), \PDO::PARAM_INT);
+        $statement->bindValue(':serverId', $platformPending->getServerId(), \PDO::PARAM_INT);
+        $statement->bindValue(':hostname', $platformPending->getHostname(), \PDO::PARAM_STR);
         $statement->execute();
     }
 
@@ -241,10 +243,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             /**
              * @var Platform $platform
              */
-            $platform = EntityCreator::createEntityByArray(
-                Platform::class,
-                $result
-            );
+            $platform = EntityCreator::createEntityByArray(Platform::class, $result);
         }
 
         return $platform;
@@ -277,7 +276,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function updatePlatformParameters(Platform $platform): void
+    public function updatePlatformParameters(PlatformInterface $platform): void
     {
         $statement = $this->db->prepare(
             $this->translateDbName(
@@ -287,7 +286,8 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
                 `name` = :name,
                 `type` = :type,
                 `parent_id` = :parentId,
-                `server_id` = :serverId
+                `server_id` = :serverId,
+                `pending` = :pendingStatus
                 WHERE id = :id"
             )
         );
@@ -298,6 +298,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':parentId', $platform->getParentId(), \PDO::PARAM_INT);
         $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
         $statement->bindValue(':id', $platform->getId(), \PDO::PARAM_INT);
+        $statement->bindValue(':id', ($platform->isPending() ? '1' : '0'), \PDO::PARAM_STR);
         $statement->execute();
     }
 
