@@ -26,7 +26,7 @@ namespace Centreon\Domain\PlatformInformation\Model;
 class InformationV21Factory
 {
     /**
-     * @param array<string,mixed> $information
+     * @param array<Information> $information
      * @return void
      */
     public static function create(array $information): array

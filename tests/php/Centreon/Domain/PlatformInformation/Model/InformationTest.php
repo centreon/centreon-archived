@@ -65,6 +65,10 @@ class InformationTest extends TestCase
         (new Information())->setValue($value);
     }
 
+    /**
+     * @return array<Information>
+     * @throws \Assert\AssertionFailedException
+     */
     public static function createEntities(): array
     {
         $request = [

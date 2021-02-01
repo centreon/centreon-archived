@@ -52,8 +52,17 @@ class InformationFactoryTest extends TestCase
         ];
     }
 
+    /**
+     * Test the Information instances are correctly created from a request body.
+     */
     public function testCreateFromRequest(): void
     {
         $information = InformationFactory::createFromRequest($this->informationRequest);
+        $this->assertCount(count($information), $this->informationRequest);
+
+        foreach ($information as $informationObject) {
+            $this->assertEquals($this->informationRequest[$informationObject->getKey()], $informationObject->getValue());
+        }
+        $this->assertEquals($this->information, $information);
     }
 }

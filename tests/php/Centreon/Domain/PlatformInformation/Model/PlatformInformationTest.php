@@ -58,12 +58,22 @@ class PlatformInformationTest extends TestCase
         (new PlatformInformation())->setApiPath($path);
     }
 
+    /**
+     * Create Platform Information for a Central.
+     *
+     * @return PlatformInformation
+     */
     public static function createEntityForCentralInformation(): PlatformInformation
     {
         return (new PlatformInformation())
             ->setRemote(false);
     }
 
+    /**
+     * Create Platform Information for a Remote.
+     *
+     * @return PlatformInformation
+     */
     public static function createEntityForRemoteInformation(): PlatformInformation
     {
         return (new PlatformInformation())
