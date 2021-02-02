@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Tests\Centreon\Domain\PlatformInformation\Model;
 
 use PHPUnit\Framework\TestCase;
-use Centreon\Domain\PlatformInformation\Model\InformationV21Factory;
+use Centreon\Domain\PlatformInformation\Model\InformationV20Factory;
 use Tests\Centreon\Domain\PlatformInformation\Model\InformationTest;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformationFactory;
 
@@ -40,21 +40,21 @@ class PlatformInformationFactoryTest extends TestCase
     private $remotePlatformInformationStub;
 
     /**
-     * @var array<InformationV21>
+     * @var array<InformationV20>
      */
-    private $informationV21;
+    private $informationV20;
 
     protected function setUp(): void
     {
         $this->centralPlatformInformation = PlatformInformationTest::createEntityForCentralInformation();
         $this->remotePlatformInformationStub = PlatformInformationTest::createEntityForRemoteInformation();
         $remoteInformation = InformationTest::createEntities();
-        $this->informationV21 = InformationV21Factory::create($remoteInformation);
+        $this->informationV20 = InformationV20Factory::create($remoteInformation);
     }
 
     public function testCreate(): void
     {
-        $remotePlatformInformation = PlatformInformationFactory::create($this->informationV21);
+        $remotePlatformInformation = PlatformInformationFactory::create($this->informationV01);
         $this->assertEquals($this->remotePlatformInformationStub->isRemote(), $remotePlatformInformation->isRemote());
         $this->assertEquals(
             $this->remotePlatformInformationStub->getCentralServerAddress(),

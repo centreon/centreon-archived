@@ -25,7 +25,6 @@ namespace Centreon\Infrastructure\PlatformInformation\Repository;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
-use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
 use Centreon\Infrastructure\PlatformInformation\Repository\Model\PlatformInformationFactoryRDB;
 

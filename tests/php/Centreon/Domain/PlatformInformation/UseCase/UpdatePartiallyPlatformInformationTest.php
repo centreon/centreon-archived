@@ -26,7 +26,7 @@ namespace Tests\Centreon\Domain\PlatformInformation\UseCase;
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Tests\Centreon\Domain\PlatformInformation\Model\PlatformInformationTest;
-use Centreon\Domain\PlatformInformation\UseCase\V21\UpdatePartiallyPlatformInformation;
+use Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationWriteRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;

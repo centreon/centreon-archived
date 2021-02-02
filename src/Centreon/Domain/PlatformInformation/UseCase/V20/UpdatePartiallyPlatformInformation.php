@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformInformation\UseCase\V21;
+namespace Centreon\Domain\PlatformInformation\UseCase\V20;
 
 use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 use Centreon\Domain\Proxy\Proxy;
@@ -29,7 +29,7 @@ use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\PlatformInformation\Model\InformationFactory;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
-use Centreon\Domain\PlatformInformation\Model\InformationV21Factory;
+use Centreon\Domain\PlatformInformation\Model\InformationV20Factory;
 use Centreon\Domain\PlatformInformation\Interfaces\DtoValidatorInterface;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformationFactory;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
@@ -122,7 +122,7 @@ class UpdatePartiallyPlatformInformation
          * Then transform them as Dto to easily create the PlatformInformation.
          */
         $information = InformationFactory::createFromRequest($request);
-        $informationDto = InformationV21Factory::create($information);
+        $informationDto = InformationV20Factory::create($information);
         $platformInformationUpdate = PlatformInformationFactory::create($informationDto);
 
         foreach ($information as $informationObject) {

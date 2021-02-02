@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Model;
 
-class InformationV21
+class InformationV20
 {
     /**
      * Information key
