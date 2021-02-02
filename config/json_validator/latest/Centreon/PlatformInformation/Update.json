@@ -33,16 +33,16 @@
       "additionalProperties": false,
       "properties": {
         "host": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "port": {
-          "type": "integer"
+          "type": ["integer", "null"]
         },
         "user": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "password": {
-          "type": "string"
+          "type": ["string", "null"]
         }
       }
     }
