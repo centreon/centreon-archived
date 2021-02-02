@@ -98,6 +98,14 @@ if [ "x$?" '!=' x0 ] ; then
 fi
 print_step_end
 
+# Get the Centos version
+eval $(cat /etc/os-release | grep VERSION_ID)
+
+if [ $VERSION_ID == 8 ] ; then
+  # Switch dnf upstream to install php73
+  dnf module enable php:7.3
+fi
+
 #
 # CENTREON
 #
