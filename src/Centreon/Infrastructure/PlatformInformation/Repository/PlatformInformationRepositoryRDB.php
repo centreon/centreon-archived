@@ -78,7 +78,8 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                 /**
                  * @var PlatformInformation $platformInformation
                  */
-                $platformInformation = PlatformInformationFactoryRDB::create($result);
+                $platformInformationFactoryRDB = new PlatformInformationFactoryRDB($_ENV['APP_SECRET']);
+                $platformInformation = $platformInformationFactoryRDB->create($result);
             }
         }
 

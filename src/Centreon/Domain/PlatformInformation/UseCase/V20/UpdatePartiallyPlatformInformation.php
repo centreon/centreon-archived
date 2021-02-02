@@ -29,7 +29,6 @@ use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\PlatformInformation\Model\InformationFactory;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
-use Centreon\Domain\PlatformInformation\Model\InformationV20Factory;
 use Centreon\Domain\PlatformInformation\Interfaces\DtoValidatorInterface;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformationFactory;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
@@ -108,7 +107,7 @@ class UpdatePartiallyPlatformInformation
      * Execute the use case for which this class was designed.
      *
      * @param array<string,mixed> $request
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function execute(array $request): void
     {
@@ -121,27 +120,27 @@ class UpdatePartiallyPlatformInformation
          * and validate the length of each value.
          * Then transform them as Dto to easily create the PlatformInformation.
          */
-        $information = InformationFactory::createFromRequest($request);
-        $informationDto = InformationV20Factory::create($information);
-        $platformInformationUpdate = PlatformInformationFactory::create($informationDto);
+        $informationList = InformationFactory::createFromRequest($request);
+        $platformInformationFactory = new PlatformInformationFactory($_ENV['APP_SECRET']);
+        $platformInformationToUpdate = $platformInformationFactory->create($request);
 
-        foreach ($information as $informationObject) {
-            if ($informationObject->getKey() === "proxy") {
-                $this->updateProxyOptions($informationObject, $platformInformationUpdate->getCentralServerAddress());
+        foreach ($informationList as $information) {
+            if ($information->getKey() === "proxy") {
+                $this->updateProxyOptions($information, $platformInformationToUpdate->getCentralServerAddress());
             }
         }
 
-        if ($platformInformationUpdate->getCentralServerAddress() !== null) {
-            $this->validateCentralServerAddressOrFail($platformInformationUpdate->getCentralServerAddress());
+        if ($platformInformationToUpdate->getCentralServerAddress() !== null) {
+            $this->validateCentralServerAddressOrFail($platformInformationToUpdate->getCentralServerAddress());
         }
 
         $currentPlatformInformation = $this->readRepository->findPlatformInformation();
-
-        if ($platformInformationUpdate->isRemote() !== null) {
-            $this->updatePlatformTypeOrFail($platformInformationUpdate, $currentPlatformInformation);
+        dd($currentPlatformInformation);
+        if ($platformInformationToUpdate->isRemote() !== null) {
+            $this->updatePlatformType($platformInformationToUpdate, $currentPlatformInformation);
         }
 
-        $this->writeRepository->updatePlatformInformation($platformInformationUpdate);
+        $this->writeRepository->updatePlatformInformation($platformInformationToUpdate);
     }
 
     /**
@@ -186,17 +185,17 @@ class UpdatePartiallyPlatformInformation
     /**
      * Update the Platform Type
      *
-     * @param PlatformInformation $platformInformationUpdate
+     * @param PlatformInformation $platformInformationToUpdate
      * @param PlatformInformation $currentPlatformInformation
      * @throws RemoteServerException
      */
-    private function updatePlatformTypeOrFail(
-        PlatformInformation $platformInformationUpdate,
+    private function updatePlatformType(
+        PlatformInformation $platformInformationToUpdate,
         PlatformInformation $currentPlatformInformation
     ): void {
-        if ($platformInformationUpdate->isRemote() && !$currentPlatformInformation->isRemote()) {
-            $this->convertCentralToRemote($platformInformationUpdate, $currentPlatformInformation);
-        } elseif (!$platformInformationUpdate->isRemote() && $currentPlatformInformation->isRemote()) {
+        if ($platformInformationToUpdate->isRemote() && !$currentPlatformInformation->isRemote()) {
+            $this->convertCentralToRemote($platformInformationToUpdate, $currentPlatformInformation);
+        } elseif (!$platformInformationToUpdate->isRemote() && $currentPlatformInformation->isRemote()) {
             /**
              * Use the current information
              * as they contains all the information required to remove the Remote to its Parent
@@ -208,29 +207,29 @@ class UpdatePartiallyPlatformInformation
     /**
      * This method verify the existing and updated type before sending information to Remote Server Service.
      *
-     * @param PlatformInformation $platformInformationUpdate
+     * @param PlatformInformation $platformInformationToUpdate
      * @param PlatformInformation $currentPlatformInformation
      * @throws RemoteServerException
      * @return void
      */
     private function convertCentralToRemote(
-        PlatformInformation $platformInformationUpdate,
+        PlatformInformation $platformInformationToUpdate,
         PlatformInformation $currentPlatformInformation
     ): void {
-        if ($platformInformationUpdate->getCentralServerAddress() !== null) {
+        if ($platformInformationToUpdate->getCentralServerAddress() !== null) {
             $this->remoteServerService->convertCentralToRemote(
-                $platformInformationUpdate
+                $platformInformationToUpdate
             );
         /**
          * If the updated information as no Central Server Address, check in the existing information if its
          * provided.
          */
         } elseif ($currentPlatformInformation->getCentralServerAddress() !== null) {
-            $platformInformationUpdate->setCentralServerAddress(
+            $platformInformationToUpdate->setCentralServerAddress(
                 $currentPlatformInformation->getCentralServerAddress()
             );
             $this->remoteServerService->convertCentralToRemote(
-                $platformInformationUpdate
+                $platformInformationToUpdate
             );
         /**
          * If no CentralServerAddress are provided into the updated or current information,

@@ -189,7 +189,7 @@ class PlatformInformation
 
     /**
      * @param int|null $port
-     * @return int
+     * @return int|null
      */
     private function checkPortConsistency(?int $port): ?int
     {
@@ -237,7 +237,7 @@ class PlatformInformation
     public function setApiPath(?string $path): self
     {
         if ($path !== null) {
-            $path = trim(filter_var($path, FILTER_SANITIZE_STRING, ['options' => ['default' => '']]), '/');
+            $path = trim(filter_var($path, FILTER_SANITIZE_STRING), '/');
             if (empty($path)) {
                 throw new \InvalidArgumentException(
                     _("Central platform's data are not consistent. Please check the 'Remote Access' form")

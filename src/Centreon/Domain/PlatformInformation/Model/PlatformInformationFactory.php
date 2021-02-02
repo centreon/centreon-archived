@@ -34,58 +34,68 @@ class PlatformInformationFactory
     public const ENCRYPT_SECOND_KEY = 'api_remote_credentials';
 
     /**
+     * @var string|null
+     */
+    private $appSecret;
+
+    public function __construct(?string $appSecret)
+    {
+        $this->appSecret = $appSecret;
+    }
+
+    /**
      * @param array<string, mixed> $information
      * @return PlatformInformation
      */
-    public static function create(array $information): PlatformInformation
+    public function create(array $information): PlatformInformation
     {
-        $platFormInformation = new PlatformInformation();
+        $platformInformation = new PlatformInformation();
 
-        foreach ($information as $informationDto) {
-            if ($informationDto->key === 'isRemote') {
-                if ($informationDto->value === true) {
-                    $platFormInformation->setRemote(true);
+        foreach ($information as $key => $value) {
+            if ($key === 'isRemote') {
+                if ($value === true) {
+                    $platformInformation->setRemote(true);
                 } else {
-                    $platFormInformation->setRemote(false);
-                    $platFormInformation->setCentralServerAddress(null);
-                    $platFormInformation->setApiUsername(null);
-                    $platFormInformation->setApiCredentials(null);
-                    $platFormInformation->setEncryptedApiCredentials(null);
-                    $platFormInformation->setApiScheme(null);
-                    $platFormInformation->setApiPort(null);
-                    $platFormInformation->setApiPath(null);
-                    $platFormInformation->setApiPeerValidation(null);
+                    $platformInformation->setRemote(false);
+                    $platformInformation->setCentralServerAddress(null);
+                    $platformInformation->setApiUsername(null);
+                    $platformInformation->setApiCredentials(null);
+                    $platformInformation->setEncryptedApiCredentials(null);
+                    $platformInformation->setApiScheme(null);
+                    $platformInformation->setApiPort(null);
+                    $platformInformation->setApiPath(null);
+                    $platformInformation->setApiPeerValidation(null);
                     break;
                 }
             }
-            switch ($informationDto->key) {
+            switch ($key) {
                 case 'centralServerAddress':
-                    $platFormInformation->setCentralServerAddress($informationDto->value);
+                    $platformInformation->setCentralServerAddress($value);
                     break;
                 case 'apiUsername':
-                    $platFormInformation->setApiUsername($informationDto->value);
+                    $platformInformation->setApiUsername($value);
                     break;
                 case 'apiCredentials':
-                    $platFormInformation->setApiCredentials($informationDto->value);
-                    $passwordEncrypted =  self::encryptApiCredentials($informationDto->value);
-                    $platFormInformation->setEncryptedApiCredentials($passwordEncrypted);
+                    $platformInformation->setApiCredentials($value);
+                    $passwordEncrypted =  $this->encryptApiCredentials($value);
+                    $platformInformation->setEncryptedApiCredentials($passwordEncrypted);
                     break;
                 case 'apiScheme':
-                    $platFormInformation->setApiScheme($informationDto->value);
+                    $platformInformation->setApiScheme($value);
                     break;
                 case 'apiPort':
-                    $platFormInformation->setApiPort($informationDto->value);
+                    $platformInformation->setApiPort($value);
                     break;
                 case 'apiPath':
-                    $platFormInformation->setApiPath($informationDto->value);
+                    $platformInformation->setApiPath($value);
                     break;
                 case 'peerValidation':
-                    $platFormInformation->setApiPeerValidation($informationDto->value);
+                    $platformInformation->setApiPeerValidation($value);
                     break;
             }
         }
 
-        return $platFormInformation;
+        return $platformInformation;
     }
 
     /**
@@ -94,9 +104,9 @@ class PlatformInformationFactory
      * @param string $password
      * @return string
      */
-    private static function encryptApiCredentials(string $password): string
+    private function encryptApiCredentials(string $password): string
     {
-        if (!isset($_ENV['APP_SECRET'])) {
+        if ($this->appSecret === null) {
             throw new \InvalidArgumentException(
                 _("Unable to find the encryption key. Please check the '.env.local.php' file.")
             );

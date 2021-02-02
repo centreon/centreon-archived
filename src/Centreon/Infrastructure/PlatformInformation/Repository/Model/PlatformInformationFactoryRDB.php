@@ -33,10 +33,20 @@ class PlatformInformationFactoryRDB
     public const ENCRYPT_SECOND_KEY = 'api_remote_credentials';
 
     /**
+     * @var string|null
+     */
+    private $appSecret;
+
+    public function __construct(?string $appSecret)
+    {
+        $this->appSecret = $appSecret;
+    }
+
+    /**
      * @param array<string,mixed> $information
      * @return PlatformInformation
      */
-    public static function create(array $information): PlatformInformation
+    public function create(array $information): PlatformInformation
     {
         $platformInformation = new PlatformInformation();
         foreach ($information as $key => $value) {
@@ -52,7 +62,7 @@ class PlatformInformationFactoryRDB
                     break;
                 case 'encryptedApiCredentials':
                     $platformInformation->setEncryptedApiCredentials($value);
-                    $decryptedPassword = self::decryptApiCredentials($value);
+                    $decryptedPassword = $this->decryptApiCredentials($value);
                     $platformInformation->setApiCredentials($decryptedPassword);
                     break;
                 case 'apiScheme':
@@ -76,13 +86,13 @@ class PlatformInformationFactoryRDB
      * @param string|null $encryptedKey
      * @return string|null
      */
-    private static function decryptApiCredentials(?string $encryptedKey): ?string
+    private function decryptApiCredentials(?string $encryptedKey): ?string
     {
         if (empty($encryptedKey)) {
             return null;
         }
 
-        if (!isset($_ENV['APP_SECRET'])) {
+        if ($this->appSecret === null) {
             throw new \InvalidArgumentException(
                 _("Unable to find the encryption key. Please check the '.env.local.php' file.")
             );

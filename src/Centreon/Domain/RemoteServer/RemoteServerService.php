@@ -169,7 +169,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             throw $ex;
         } catch (\Exception $ex) {
             $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
-            throw new MenuException(_('An error occured while disabling the central menus'));
+            throw new MenuException(_('An error occurred while disabling the central menus'));
         }
 
         /**
