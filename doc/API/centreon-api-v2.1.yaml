@@ -4931,17 +4931,21 @@ components:
           properties:
             host:
               type: string
+              nullable: true
               example: "example.proxy.com"
               description: "Host of your proxy"
             port:
               type: integer
+              nullable: true
               example: 80
               description: "Proxy port"
             user:
               type: string
+              nullable: true
               example: "admin"
               description: "proxy username"
             password:
               type: string
+              nullable: true
               example: "centreon"
               description: "proxy password"
