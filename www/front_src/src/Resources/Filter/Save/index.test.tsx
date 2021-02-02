@@ -22,19 +22,27 @@ import {
 import { filterEndpoint } from '../api';
 import { Filter } from '../models';
 import { getCriteriaValue } from '../../testUtils';
+import useListing from '../../Listing/useListing';
+import { defaultSortField, defaultSortOrder } from '../Criterias/default';
 
 import SaveMenu from '.';
 
-let filterState;
+let context;
 
 const SaveMenuTest = (): JSX.Element => {
-  filterState = useFilter();
+  const listingState = useListing();
+  const filterState = useFilter();
+
+  context = {
+    ...listingState,
+    ...filterState,
+  };
 
   return (
     <Context.Provider
       value={
         {
-          ...filterState,
+          ...context,
         } as ResourceContext
       }
     >
@@ -110,6 +118,11 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       type: 'text',
       value: search,
     },
+    {
+      name: 'sort',
+      type: 'array',
+      value: [defaultSortField, defaultSortOrder],
+    },
   ],
 });
 
@@ -123,7 +136,7 @@ const retrievedCustomFilters = {
 };
 
 const getCustomFilter = (): Filter =>
-  filterState.customFilters.find(propEq('id', filterId));
+  context.customFilters.find(propEq('id', filterId));
 
 describe(SaveMenu, () => {
   beforeEach(() => {
@@ -163,14 +176,14 @@ describe(SaveMenu, () => {
     const filter = getCustomFilter();
 
     act(() => {
-      filterState.setFilter(filter);
+      context.setFilter(filter);
       // filterState.setResourceTypes(criterias.resourceTypes);
       // filterState.setHostGroups(criterias.hostGroups);
       // filterState.setServiceGroups(criterias.serviceGroups);
       // filterState.setStates(criterias.states);
       // filterState.setStatuses(criterias.statuses);
 
-      filterState.setNextSearch('toto');
+      context.setNextSearch('toto');
     });
 
     expect(
@@ -213,14 +226,14 @@ describe(SaveMenu, () => {
     mockedAxios.put.mockResolvedValue({ data: updatedFilterRaw });
 
     act(() => {
-      filterState.setFilter(filter);
+      context.setFilter(filter);
       // filterState.setResourceTypes(criterias.resourceTypes);
       // filterState.setHostGroups(criterias.hostGroups);
       // filterState.setServiceGroups(criterias.serviceGroups);
       // filterState.setStates(criterias.states);
       // filterState.setStatuses(criterias.statuses);
 
-      filterState.setNextSearch(newSearch);
+      context.setNextSearch(newSearch);
     });
 
     expect(
@@ -231,7 +244,7 @@ describe(SaveMenu, () => {
 
     await waitFor(() => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
-        `${filterEndpoint}/${filterState.updatedFilter.id}`,
+        `${filterEndpoint}/${context.updatedFilter.id}`,
         omit(['id'], getFilter({ search: newSearch })),
         expect.anything(),
       );

@@ -37,7 +37,6 @@ const CreateFilterDialog = ({
   const { sendRequest, sending } = useRequest<Filter>({
     request: createFilter,
   });
-
   const form = useFormik({
     initialValues: {
       name: '',

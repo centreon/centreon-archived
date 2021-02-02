@@ -14641,6 +14641,9 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Export to png"
 #  msgstr ""
 
+#  msgid "Parent"
+#  msgstr ""
+
 #  msgid "Switch to graph mode"
 #  msgstr ""
 

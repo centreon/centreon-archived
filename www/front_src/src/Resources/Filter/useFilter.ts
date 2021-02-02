@@ -22,6 +22,7 @@ import {
 } from '@centreon/ui';
 
 import { labelNewFilter } from '../translatedLabels';
+import { SortOrder } from '../models';
 
 import {
   getStoredOrDefaultFilter,
@@ -41,6 +42,7 @@ import {
   newFilter,
   isCustom,
   Filter,
+  resourceProblemsFilter,
 } from './models';
 
 type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -83,10 +85,12 @@ const useFilter = (): FilterState => {
     const urlQueryParameters = getUrlQueryParameters();
 
     if (hasPath(['filter'], urlQueryParameters)) {
-      return pipe(
+      const filterFromQueryParameters = pipe(
         mergeDeepLeft(urlQueryParameters.filter as Filter) as (t) => Filter,
         mergeDeepRight(allFilter) as (t) => Filter,
       )(newFilter) as Filter;
+
+      return filterFromQueryParameters;
     }
 
     return defaultFilter;
@@ -120,6 +124,13 @@ const useFilter = (): FilterState => {
 
     return set(lens, value, filter);
   };
+
+  const filters = [
+    unhandledProblemsFilter,
+    allFilter,
+    resourceProblemsFilter,
+    ...customFilters,
+  ];
 
   React.useEffect(() => {
     loadCustomFilters();
