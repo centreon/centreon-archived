@@ -1,4 +1,27 @@
 =====================
+Centreon Web 19.10.19
+=====================
+
+Bug fixes
+---------
+
+* [CLAPI] Create user with language
+* [CLAPI] Import fails on password type macros
+
+Security fixes
+--------------
+
+* [ACL/Access Groups] Cross-site Scripting (XSS) Stored/Persistent for search
+* [ACL/Actions Access] Cross-site Scripting (XSS) Stored/Persistent for search
+* [ACL/Resources Access] Cross-site Scripting (XSS) Stored/Persistent for search
+* [API] Missing access control mechanism in rest API v1
+* [Configuration > Servicegroups] Leak of technical information
+* [Configuration/H/HTPL/S/STPL] Password in plain text
+* [Core] Centreon token is vulnerable against replay attack
+* [Core] Token usage is not mandatory
+* [Media] PHP warning about missing tmp dir used during media upload
+
+=====================
 Centreon Web 19.10.18
 =====================
 
