@@ -56,12 +56,33 @@ class PlatformInformationFactoryTest extends TestCase
     {
         $remotePlatformInformation = PlatformInformationFactory::create($this->informationV21);
         $this->assertEquals($this->remotePlatformInformationStub->isRemote(), $remotePlatformInformation->isRemote());
-        $this->assertEquals($this->remotePlatformInformationStub->getCentralServerAddress(), $remotePlatformInformation->getCentralServerAddress());
-        $this->assertEquals($this->remotePlatformInformationStub->getApiUsername(), $remotePlatformInformation->getApiUsername());
-        $this->assertEquals($this->remotePlatformInformationStub->getApiCredentials(), $remotePlatformInformation->getApiCredentials());
-        $this->assertEquals($this->remotePlatformInformationStub->getApiScheme(), $remotePlatformInformation->getApiScheme());
-        $this->assertEquals($this->remotePlatformInformationStub->getApiPort(), $remotePlatformInformation->getApiPort());
-        $this->assertEquals($this->remotePlatformInformationStub->getApiPath(), $remotePlatformInformation->getApiPath());
-        $this->assertEquals($this->remotePlatformInformationStub->hasApiPeerValidation(), $remotePlatformInformation->hasApiPeerValidation());
+        $this->assertEquals(
+            $this->remotePlatformInformationStub->getCentralServerAddress(),
+            $remotePlatformInformation->getCentralServerAddress()
+        );
+        $this->assertEquals(
+            $this->remotePlatformInformationStub->getApiUsername(),
+            $remotePlatformInformation->getApiUsername()
+        );
+        $this->assertEquals(
+            $this->remotePlatformInformationStub->getApiCredentials(),
+            $remotePlatformInformation->getApiCredentials()
+        );
+        $this->assertEquals(
+            $this->remotePlatformInformationStub->getApiScheme(),
+            $remotePlatformInformation->getApiScheme()
+        );
+        $this->assertEquals(
+            $this->remotePlatformInformationStub->getApiPort(),
+            $remotePlatformInformation->getApiPort()
+        );
+        $this->assertEquals(
+            $this->remotePlatformInformationStub->getApiPath(),
+            $remotePlatformInformation->getApiPath()
+        );
+        $this->assertEquals(
+            $this->remotePlatformInformationStub->hasApiPeerValidation(),
+            $remotePlatformInformation->hasApiPeerValidation()
+        );
     }
 }

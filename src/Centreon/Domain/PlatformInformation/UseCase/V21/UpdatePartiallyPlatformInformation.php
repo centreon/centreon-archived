@@ -147,7 +147,7 @@ class UpdatePartiallyPlatformInformation
     /**
      * Update Proxy Options.
      *
-     * @param array<string,mixed> $proxyOptions
+     * @param Information $proxyInformation
      * @param string|null $centralServerAddress
      * @throws \InvalidArgumentException
      */

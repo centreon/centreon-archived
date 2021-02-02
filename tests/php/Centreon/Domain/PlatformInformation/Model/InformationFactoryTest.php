@@ -61,7 +61,10 @@ class InformationFactoryTest extends TestCase
         $this->assertCount(count($information), $this->informationRequest);
 
         foreach ($information as $informationObject) {
-            $this->assertEquals($this->informationRequest[$informationObject->getKey()], $informationObject->getValue());
+            $this->assertEquals(
+                $this->informationRequest[$informationObject->getKey()],
+                $informationObject->getValue()
+            );
         }
         $this->assertEquals($this->information, $information);
     }
