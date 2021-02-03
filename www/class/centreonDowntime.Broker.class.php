@@ -271,18 +271,17 @@ class CentreonDowntimeBroker extends CentreonDowntime
      * example:
      *   - current date is 2021-03-28
      *   - $time is 02:30
-     *   - $timezone is Europe/Paris
      *   ==> return timestamp corresponding to 02:00 cause 02:30 does not exist (jump from 02:00 to 03:00)
      *
+     * @param \DateTime $datetime
      * @param string $time time formatted as HH:mm
-     * @param \DateTimeZone $timezone
      * @return integer the calculated timestamp
      */
     private function manageWinterToSummerTimestamp(\Datetime $datetime, string $time): int
     {
-        list($endHour) = explode(':', $time);
-        if ((int)$datetime->format('H') > (int)$endHour) {
-            $datetime->setTime($endHour, '00');
+        $hour = explode(':', $time)[0];
+        if ((int)$datetime->format('H') > (int)$hour) {
+            $datetime->setTime($hour, '00');
         }
 
         return $datetime->getTimestamp();
@@ -327,12 +326,10 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $tomorrow = $this->isTomorrow($downtime['dtp_start_time'], $startDelay, $delay);
 
             $downtimeStartDate = new \DateTime($downtime['dtp_start_time'], $timezone);
+            $downtimeEndDate = new \DateTime($downtime['dtp_end_time'], $timezone);
+
             if ($tomorrow) {
                 $downtimeStartDate->add(new \DateInterval('P1D'));
-            }
-
-            $downtimeEndDate = new \DateTime($downtime['dtp_end_time'], $timezone);
-            if ($tomorrow) {
                 $downtimeEndDate->add(new \DateInterval('P1D'));
             }
 
