@@ -62,7 +62,7 @@ function myDecodeService($arg)
     return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 }
 
-if (!$centreon->user->admin && isset($service_id)) {
+if (!$centreon->user->admin && is_numeric($service_id)) {
     $checkres = $pearDB->query(
         "SELECT service_id
         FROM $aclDbName.centreon_acl

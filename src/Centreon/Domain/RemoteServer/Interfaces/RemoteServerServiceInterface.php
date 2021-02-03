@@ -35,6 +35,7 @@ interface RemoteServerServiceInterface
 
     /**
      * Convert a Remote Server into a Central
+     * @param PlatformInformation $platformInformation
      */
-    public function convertRemoteToCentral(): void;
+    public function convertRemoteToCentral(PlatformInformation $platformInformation): void;
 }

@@ -20,12 +20,12 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\HostConfiguration\API\Model;
+namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory;
 
 /**
  * This class is designed to represent the formatted response of the API request.
  *
- * @package Centreon\Infrastructure\HostConfiguration\API\Model
+ * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory
  */
 class HostCategoryV21
 {

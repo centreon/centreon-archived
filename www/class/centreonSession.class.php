@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -36,11 +37,11 @@
 class CentreonSession
 {
     /*
-	 * Constructor class
-	 *
-	 * @access public
-	 * @return 	object	object session
-	 */
+     * Constructor class
+     *
+     * @access public
+     * @return 	object	object session
+     */
     public function __construct()
     {
     }
@@ -108,6 +109,9 @@ class CentreonSession
      */
     public static function checkSession($sessionId, CentreonDB $db)
     {
+        // First, Drop expired sessions
+        self::deleteExpiredSession($db);
+
         if (empty($sessionId)) {
             return 0;
         }
@@ -116,6 +120,22 @@ class CentreonSession
         $prepare->execute();
         $total = (int) $prepare->fetch(\PDO::FETCH_ASSOC)['total'];
         return ($total > 0) ? 1 : 0;
+    }
+
+    /**
+     * Delete all expired sessions
+     * @param CentreonDB $db
+     */
+    public static function deleteExpiredSession(CentreonDB $db): void
+    {
+        $db->query(
+            'DELETE FROM `session`
+            WHERE last_reload <
+                (SELECT UNIX_TIMESTAMP(NOW() - INTERVAL (`value` * 60) SECOND)
+                FROM `options`
+                WHERE `key` = \'session_expire\')
+            OR last_reload IS NULL'
+        );
     }
 
     /**

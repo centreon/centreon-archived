@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2017 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,7 +35,7 @@
  */
 
 require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
-require_once dirname(__FILE__) . "/webService.class.php";
+require_once __DIR__ . "/webService.class.php";
 
 /**
  * Class CentreonKeepalive
@@ -51,6 +52,7 @@ class CentreonKeepalive extends CentreonWebService
 
     /**
      * Keep alive
+     * @throws RestUnauthorizedException
      */
     public function getKeepAlive()
     {
