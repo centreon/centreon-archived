@@ -281,8 +281,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
 
     private function manageWinterToSummerTimestamp(string $time, \DateTimeZone $timezone)
     {
-        $currentDate = new \DateTime();
-        $currentDate->setTimezone($timezone);
+        $currentDate = new \DateTime('now', $timezone);
 
         list($hour, $minute) = explode(':', $time);
         $downtimeTime = clone $currentDate;
