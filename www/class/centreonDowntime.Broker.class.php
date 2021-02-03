@@ -294,7 +294,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         $currentDateTime = new \DateTime('now', $time->getTimezone());
 
         if ($time->getOffset() - $currentDateTime->getOffset() > 0) {
-            $time->setTime($time->getHour(), '00');
+            $time->setTime($time->format('H'), '00');
         }
 
         return $time->getTimestamp();
