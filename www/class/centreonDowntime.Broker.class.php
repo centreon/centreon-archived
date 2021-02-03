@@ -340,6 +340,18 @@ class CentreonDowntimeBroker extends CentreonDowntime
             # Check if we jump an hour
             $startTimestamp = $this->manageWinterToSummerTimestamp($downtimeStartDate);
 
+            list($endHour) = explode(':', $downtime['dtp_end_time']);
+            if ((int)$downtimeEndDate->format('H') > (int)$endHour) {
+                $downtimeEndDate->setTime($endHour, '00');
+            }
+
+            $endTimestamp = $downtimeEndDate->getTimestamp();
+            $currentDateTime = new \DateTime('now', $downtimeEndDate->getTimezone());
+
+            if ($downtimeEndDate->getOffset() - $currentDateTime->getOffset() > 0) {
+                $downtimeEndDate->setTime($downtimeEndDate->format('H'), '00');
+            }
+
             $endTimestamp = $downtimeEndDate->getTimestamp();
 
             if ($startTimestamp == $endTimestamp) {
