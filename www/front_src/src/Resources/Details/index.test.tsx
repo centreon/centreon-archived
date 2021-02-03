@@ -586,7 +586,12 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText, getAllByText, baseElement } = renderDetails({
+    const {
+      getByText,
+      getAllByText,
+      getAllByLabelText,
+      baseElement,
+    } = renderDetails({
       openTabId: timelineTabId,
     });
 
@@ -618,7 +623,7 @@ describe(Details, () => {
     expect(getByText('06/22/2020')).toBeInTheDocument();
 
     expect(getByText('10:40 AM')).toBeInTheDocument();
-    expect(getAllByText('Event')).toHaveLength(4);
+    expect(getAllByLabelText('Event')).toHaveLength(3); // 2 events + 1 selected option
     expect(getByText('UP')).toBeInTheDocument();
     expect(getByText('Tries: 1')).toBeInTheDocument();
     expect(
@@ -635,29 +640,22 @@ describe(Details, () => {
     expect(getByText('06/21/2020')).toBeInTheDocument();
 
     expect(getByText('9:40 AM')).toBeInTheDocument();
-    expect(getByText('Notification sent to admin')).toBeInTheDocument();
     expect(getByText('My little notification'));
 
     expect(getByText('06/20/2020')).toBeInTheDocument();
 
     expect(getByText('9:35 AM')).toBeInTheDocument();
-    expect(getByText('Acknowledgement by admin')).toBeInTheDocument();
     expect(getByText('My little ack'));
 
-    expect(getByText('9:30 AM')).toBeInTheDocument();
-    expect(getByText('Downtime by admin')).toBeInTheDocument();
     expect(
       getByText('From 06/20/2020 9:30 AM To 06/22/2020 9:33 AM'),
     ).toBeInTheDocument();
     expect(getByText('My little dt'));
 
-    expect(getByText('8:57 AM')).toBeInTheDocument();
-    expect(getByText('Downtime by super_admin')).toBeInTheDocument();
     expect(getByText('From 06/19/2020 9:30 AM')).toBeInTheDocument();
     expect(getByText('My little ongoing dt'));
 
     expect(getByText('8:55 AM')).toBeInTheDocument();
-    expect(getByText('Comment by admin')).toBeInTheDocument();
     expect(getByText('My little comment'));
 
     const dateRegExp = /\d+\/\d+\/\d+$/;
