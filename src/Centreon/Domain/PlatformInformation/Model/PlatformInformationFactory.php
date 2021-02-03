@@ -51,6 +51,9 @@ class PlatformInformationFactory
     {
         $platformInformation = new PlatformInformation();
 
+        /**
+         * Set all values to null if its a Central as they are all Remote related.
+         */
         foreach ($information as $key => $value) {
             if ($key === 'isRemote') {
                 if ($value === true) {

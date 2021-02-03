@@ -118,7 +118,6 @@ class UpdatePartiallyPlatformInformation
         /**
          * Create Information from Factory to be able to access them independently
          * and validate the length of each value.
-         * Then transform them as Dto to easily create the PlatformInformation.
          */
         $informationList = InformationFactory::createFromRequest($request);
         $platformInformationFactory = new PlatformInformationFactory($_ENV['APP_SECRET']);
@@ -135,7 +134,7 @@ class UpdatePartiallyPlatformInformation
         }
 
         $currentPlatformInformation = $this->readRepository->findPlatformInformation();
-        dd($currentPlatformInformation);
+
         if ($platformInformationToUpdate->isRemote() !== null) {
             $this->updatePlatformType($platformInformationToUpdate, $currentPlatformInformation);
         }

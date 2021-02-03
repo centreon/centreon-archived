@@ -26,7 +26,7 @@ interface DtoValidatorInterface
 {
     /**
      * @param array<string,mixed> $dto
-     * @return void
+     * @throws \Throwable
      */
     public function validateOrFail(array $dto): void;
 }
