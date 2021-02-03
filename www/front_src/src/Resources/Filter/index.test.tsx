@@ -10,7 +10,6 @@ import {
 } from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
-import { propEq } from 'ramda';
 
 import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
 
@@ -33,7 +32,6 @@ import {
   labelSearchHelp,
   labelSearchOnFields,
   labelNewFilter,
-  labelService,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../Actions/useActions';
@@ -43,16 +41,17 @@ import {
   defaultStates,
   defaultStatuses,
   getCriteriaValue,
+  getFilterWithUpdatedCriteria,
   getListingEndpoint,
   mockAppStateSelector,
   searchableFields,
 } from '../testUtils';
 import useDetails from '../Details/useDetails';
-import { defaultSortOrder, defaultSortField } from '../Listing/columns';
 
-import { Filter as FilterModel } from './models';
+import { allFilter, Filter as FilterModel } from './models';
 import useFilter from './useFilter';
 import { key as filterStorageKey } from './storedFilter';
+import { defaultSortField, defaultSortOrder } from './Criterias/default';
 
 import Filter from '.';
 
@@ -139,6 +138,26 @@ const filtersParams: Array<FilterParameter> = [
     },
   ],
 ];
+
+const filter = {
+  name: 'My filter',
+  id: 0,
+  criterias: [
+    {
+      name: 'resource_types',
+      value: [{ id: 'host', name: labelHost }],
+    },
+    {
+      name: 'states',
+      value: [{ id: 'acknowledged', name: labelAcknowledged }],
+    },
+    { name: 'statuses', value: [{ id: 'OK', name: labelOk }] },
+    { name: 'host_groups', value: [linuxServersHostGroup] },
+    { name: 'service_groups', value: [webAccessServiceGroup] },
+    { name: 'search', value: 'Search me' },
+    { name: 'sort', value: [defaultSortField, defaultSortOrder] },
+  ],
+};
 
 const FilterWithLoading = (): JSX.Element => {
   useLoadResources();
@@ -389,21 +408,8 @@ describe(Filter, () => {
   );
 
   describe('Filter storage', () => {
-    const savedFilter = {
-      id: '',
-      name: '',
-      criterias: {
-        resourceTypes: [{ id: 'host', name: labelHost }],
-        states: [{ id: 'acknowledged', name: labelAcknowledged }],
-        statuses: [{ id: 'OK', name: labelOk }],
-        hostGroups: [linuxServersHostGroup],
-        serviceGroups: [webAccessServiceGroup],
-        search: 'searching...',
-      },
-    };
-
     it('populates filter with values from localStorage if available', async () => {
-      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));
+      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(filter));
 
       const { getByText, getByDisplayValue, queryByLabelText } = renderFilter();
 
@@ -411,7 +417,7 @@ describe(Filter, () => {
 
       expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterStorageKey);
       expect(queryByLabelText(labelUnhandledProblems)).not.toBeInTheDocument();
-      expect(getByDisplayValue('searching...')).toBeInTheDocument();
+      expect(getByDisplayValue('Search me')).toBeInTheDocument();
       expect(getByText(labelHost)).toBeInTheDocument();
       expect(getByText(labelAcknowledged)).toBeInTheDocument();
       expect(getByText(labelOk)).toBeInTheDocument();
@@ -434,20 +440,6 @@ describe(Filter, () => {
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
-      const allFilter = {
-        id: 'all',
-        name: labelAll,
-        criterias: {
-          resourceTypes: [],
-          states: [],
-          statuses: [],
-          hostGroups: [],
-          serviceGroups: [],
-          search: '',
-        },
-        sort: [defaultSortField, defaultSortOrder],
-      };
-
       expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
         filterStorageKey,
         JSON.stringify(allFilter),
@@ -460,18 +452,19 @@ describe(Filter, () => {
       await waitFor(() =>
         expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
           filterStorageKey,
-          JSON.stringify({
-            id: '',
-            name: labelNewFilter,
-            criterias: { ...allFilter.criterias, search: 'searching...' },
-            sort: [defaultSortField, defaultSortOrder],
-          }),
+          JSON.stringify(
+            getFilterWithUpdatedCriteria({
+              filter: { ...allFilter, id: '', name: labelNewFilter },
+              criteriaName: 'search',
+              criteriaValue: 'searching...',
+            }),
+          ),
         ),
       );
     });
 
     it('clears all filters and set filter group to all when the clear all button is clicked', async () => {
-      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));
+      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(filter));
 
       mockedAxios.get.mockResolvedValue({ data: {} });
 
@@ -528,19 +521,6 @@ describe(Filter, () => {
 
   describe('Filter URL query parameters', () => {
     it('sets the filter according to the filter URL query parameter when given', async () => {
-      const filter = {
-        name: labelAll,
-        id: 'all',
-        criterias: {
-          resourceTypes: [{ id: 'service', name: labelService }],
-          states: [{ id: 'acknowledged', name: labelAcknowledged }],
-          statuses: [{ id: 'OK', name: labelOk }],
-          hostGroups: [linuxServersHostGroup],
-          serviceGroups: [webAccessServiceGroup],
-          search: 'Search me',
-        },
-      };
-
       setUrlQueryParameters([
         {
           name: 'filter',
@@ -558,13 +538,13 @@ describe(Filter, () => {
         expect(mockedAxios.get).toHaveBeenCalledTimes(2);
       });
 
-      expect(getByText(labelAll)).toBeInTheDocument();
+      expect(getByText('New filter')).toBeInTheDocument();
       expect(getByDisplayValue('Search me')).toBeInTheDocument();
+      expect(getByText(labelHost)).toBeInTheDocument();
       expect(getByText(labelAcknowledged)).toBeInTheDocument();
       expect(getByText(labelOk)).toBeInTheDocument();
       expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
       expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
-      expect(getByText(labelService)).toBeInTheDocument();
 
       fireEvent.change(getByPlaceholderText(labelSearch), {
         target: { value: 'Search me two' },
@@ -582,31 +562,14 @@ describe(Filter, () => {
     });
 
     it('resets the filter criterias which are not set in the filter URL query parameter when given', async () => {
-      const savedFilter = {
-        id: '',
-        name: '',
-        criterias: {
-          resourceTypes: [{ id: 'host', name: labelHost }],
-          states: [{ id: 'acknowledged', name: labelAcknowledged }],
-          statuses: [{ id: 'OK', name: labelOk }],
-          hostGroups: [linuxServersHostGroup],
-          serviceGroups: [webAccessServiceGroup],
-          search: 'searching...',
-        },
-      };
-
-      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));
-
-      const filter = {
-        criterias: {
-          search: 'Search me',
-        },
-      };
+      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(filter));
 
       setUrlQueryParameters([
         {
           name: 'filter',
-          value: filter,
+          value: {
+            criterias: [{ name: 'search', value: 'Search me' }],
+          },
         },
       ]);
 

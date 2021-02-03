@@ -2,16 +2,10 @@ import * as React from 'react';
 
 import { ifElse, pathEq, always, pathOr } from 'ramda';
 
-import {
-  useRequest,
-  setUrlQueryParameters,
-  getUrlQueryParameters,
-} from '@centreon/ui';
+import { useRequest } from '@centreon/ui';
 
 import { ResourceListing } from '../models';
 import { labelSomethingWentWrong } from '../translatedLabels';
-import { getStoredOrDefaultFilter, storeFilter } from '../Filter/storedFilter';
-import useFilterModels from '../Filter/useFilterModels';
 
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { listResources } from './api';

@@ -1,4 +1,4 @@
-import { propEq } from 'ramda';
+import { findIndex, lensPath, propEq, set } from 'ramda';
 
 import { CriteriaValue } from '../Filter/Criterias/models';
 import { Filter } from '../Filter/models';
@@ -88,6 +88,23 @@ const getCriteriaValue = ({
   return filter.criterias.find(propEq('name', name))?.value;
 };
 
+interface FilterAndCriteriaToUpdate {
+  filter: Filter;
+  criteriaName: string;
+  criteriaValue: CriteriaValue;
+}
+
+const getFilterWithUpdatedCriteria = ({
+  filter,
+  criteriaName,
+  criteriaValue,
+}: FilterAndCriteriaToUpdate): Filter => {
+  const index = findIndex(propEq('name', criteriaName))(filter.criterias);
+  const lens = lensPath(['criterias', index, 'value']);
+
+  return set(lens, criteriaValue, filter);
+};
+
 export {
   mockAppStateSelector,
   getListingEndpoint,
@@ -97,4 +114,5 @@ export {
   defaultStates,
   searchableFields,
   getCriteriaValue,
+  getFilterWithUpdatedCriteria,
 };

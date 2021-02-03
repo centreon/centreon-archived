@@ -15,7 +15,7 @@ import Context, { ResourceContext } from '../../Context';
 import useFilter from '../useFilter';
 import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
-import { defaultSortField, defaultSortOrder } from '../../Listing/columns';
+import { defaultSortField, defaultSortOrder } from '../Criterias/default';
 
 import EditFilterPanel from '.';
 

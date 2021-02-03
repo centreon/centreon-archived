@@ -38,7 +38,7 @@ import {
   labelNameCannotBeEmpty,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
-import { Filter, newFilter } from '../models';
+import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
 
 const useStyles = makeStyles((theme) => ({
@@ -64,8 +64,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     filter: currentFilter,
     setCustomFilters,
     customFilters,
-    sortf,
-    sorto,
+    setNewFilter,
   } = useResourceContext();
 
   const { showMessage } = useSnackbar();
@@ -135,7 +134,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
       });
 
       if (equals(filter.id, currentFilter.id)) {
-        setFilter({ ...newFilter, sort: [sortf, sorto] } as Filter);
+        setNewFilter();
       }
 
       setCustomFilters(reject(equals(filter), customFilters));

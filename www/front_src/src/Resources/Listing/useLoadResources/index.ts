@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { useSelector } from 'react-redux';
 import { isNil, equals, not, prop } from 'ramda';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import { SelectEntry } from '@centreon/ui/src';
 
@@ -133,7 +134,7 @@ const useLoadResources = (): LoadResources => {
     initAutorefreshAndLoad();
   }, [page]);
 
-  React.useEffect(() => {
+  useDeepCompareEffect(() => {
     if (page === 1) {
       initAutorefreshAndLoad();
     }

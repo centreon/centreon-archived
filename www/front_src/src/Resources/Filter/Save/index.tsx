@@ -23,7 +23,7 @@ import {
 } from '../../translatedLabels';
 import { useResourceContext } from '../../Context';
 import { updateFilter as updateFilterRequest } from '../api';
-import { Filter, isCustom } from '../models';
+import { Filter } from '../models';
 
 import CreateFilterDialog from './CreateFilterDialog';
 
@@ -62,6 +62,7 @@ const SaveFilterMenu = (): JSX.Element => {
     loadCustomFilters,
     customFilters,
     setEditPanelOpen,
+    filters,
   } = useResourceContext();
 
   const openSaveFilterMenu = (event: React.MouseEvent): void => {

@@ -6,14 +6,18 @@ import {
   hasPath,
   isNil,
   lensPath,
+  map,
   mergeDeepLeft,
   mergeDeepRight,
   pipe,
   propEq,
+  reduce,
   reject,
   set,
+  toPairs,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import {
   useRequest,
@@ -22,7 +26,6 @@ import {
 } from '@centreon/ui';
 
 import { labelNewFilter } from '../translatedLabels';
-import { SortOrder } from '../models';
 
 import {
   getStoredOrDefaultFilter,
@@ -44,6 +47,7 @@ import {
   Filter,
   resourceProblemsFilter,
 } from './models';
+import getDefaultFilter from './default';
 
 type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
 type EditPanelOpenDitpach = React.Dispatch<React.SetStateAction<boolean>>;
@@ -53,6 +57,7 @@ type CustomFiltersDispatch = React.Dispatch<
 
 export interface FilterState {
   customFilters: Array<Filter>;
+  filters: Array<Filter>;
   filter: Filter;
   updatedFilter: Filter;
   setFilter: (filter: Filter) => void;
@@ -69,6 +74,15 @@ export interface FilterState {
   getMultiSelectCriterias: () => Array<Criteria>;
 }
 
+const getFilterWithReducedCriterias = (filter) => {
+  const criterias = reduce(
+    (acc, { name, value }) => ({ ...acc, [name]: value }),
+    {},
+  )(filter.criterias);
+
+  return { ...filter, criterias };
+};
+
 const useFilter = (): FilterState => {
   const { t } = useTranslation();
   const {
@@ -78,23 +92,6 @@ const useFilter = (): FilterState => {
     request: listCustomFilters,
     decoder: listCustomFiltersDecoder,
   });
-
-  const getDefaultFilter = (): Filter => {
-    const defaultFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
-
-    const urlQueryParameters = getUrlQueryParameters();
-
-    if (hasPath(['filter'], urlQueryParameters)) {
-      const filterFromQueryParameters = pipe(
-        mergeDeepLeft(urlQueryParameters.filter as Filter) as (t) => Filter,
-        mergeDeepRight(allFilter) as (t) => Filter,
-      )(newFilter) as Filter;
-
-      return filterFromQueryParameters;
-    }
-
-    return defaultFilter;
-  };
 
   const getDefaultCriterias = (): Array<Criteria> =>
     getDefaultFilter().criterias;
@@ -140,9 +137,13 @@ const useFilter = (): FilterState => {
     setFilter(getFilterWithUpdatedCriteria({ name, value }));
   };
 
-  React.useEffect(() => {
+  useDeepCompareEffect(() => {
     setCriteria({ name: 'search', value: nextSearch });
   }, [...reject(propEq('name', 'search'), filter.criterias)]);
+
+  // React.useEffect(() => {
+  //   setNextSearch(getCriteriaValue('search') as string);
+  // }, [filter.id]);
 
   React.useEffect(() => {
     const updatedFilter = getFilterWithUpdatedCriteria({
@@ -215,6 +216,7 @@ const useFilter = (): FilterState => {
 
   return {
     filter,
+    filters,
     setFilter,
     setCriteria,
     updatedFilter,

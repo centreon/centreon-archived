@@ -7,11 +7,10 @@ import {
   waitFor,
   fireEvent,
   Matcher,
+  act,
 } from '@testing-library/react';
 import axios from 'axios';
 import { partition, where, contains, head, split, pipe, identity } from 'ramda';
-
-import { getUrlQueryParameters, setUrlQueryParameters } from '@centreon/ui';
 
 import { Resource } from '../models';
 import Context, { ResourceContext } from '../Context';
@@ -20,9 +19,10 @@ import useDetails from '../Details/useDetails';
 import useFilter from '../Filter/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
+import { unhandledProblemsFilter } from '../Filter/models';
 
 import useListing from './useListing';
-import { getColumns, defaultSortField, defaultSortOrder } from './columns';
+import { getColumns } from './columns';
 
 import Listing from '.';
 
@@ -148,17 +148,6 @@ describe(Listing, () => {
   afterEach(() => {
     useSelector.mockClear();
     mockedAxios.get.mockReset();
-
-    setUrlQueryParameters([
-      {
-        name: 'sortf',
-        value: defaultSortField,
-      },
-      {
-        name: 'sorto',
-        value: defaultSortOrder,
-      },
-    ]);
   });
 
   it('displays first part of information when multiple (split by \n) are available', async () => {
@@ -187,43 +176,50 @@ describe(Listing, () => {
     });
   });
 
-  it.each(
-    columns
-      .filter(({ sortable }) => sortable !== false)
-      .map(({ id, label, sortField }) => [id, label, sortField]),
-  )(
-    'executes a listing request with sort_by param and stores the order parameter in the URL when %p column is clicked',
-    async (id, label, sortField) => {
-      const { getByLabelText } = renderListing();
-
-      mockedAxios.get.mockResolvedValue({ data: retrievedListing });
-
-      const sortBy = (sortField || id) as string;
-
-      fireEvent.click(getByLabelText(`Column ${label}`));
-
-      await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenLastCalledWith(
-          getListingEndpoint({ sort: { [sortBy]: 'desc' } }),
-          cancelTokenRequestParam,
-        );
+  describe('column sorting', () => {
+    afterEach(async () => {
+      act(() => {
+        context.setFilter(unhandledProblemsFilter);
       });
 
-      expect(getUrlQueryParameters().sortf).toEqual(sortBy);
-      expect(getUrlQueryParameters().sorto).toEqual('desc');
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
+    });
 
-      fireEvent.click(getByLabelText(`Column ${label}`));
+    it.each(
+      columns
+        .filter(({ sortable }) => sortable !== false)
+        .map(({ id, label, sortField }) => [id, label, sortField]),
+    )(
+      'executes a listing request with sort_by param and stores the order parameter in the URL when %p column is clicked',
+      async (id, label, sortField) => {
+        const { getByLabelText } = renderListing();
 
-      await waitFor(() =>
-        expect(mockedAxios.get).toHaveBeenLastCalledWith(
-          getListingEndpoint({ sort: { [sortBy]: 'asc' } }),
-          cancelTokenRequestParam,
-        ),
-      );
+        mockedAxios.get.mockResolvedValue({ data: retrievedListing });
 
-      expect(getUrlQueryParameters().sorto).toEqual('asc');
-    },
-  );
+        const sortBy = (sortField || id) as string;
+
+        fireEvent.click(getByLabelText(`Column ${label}`));
+
+        await waitFor(() => {
+          expect(mockedAxios.get).toHaveBeenLastCalledWith(
+            getListingEndpoint({ sort: { [sortBy]: 'desc' } }),
+            cancelTokenRequestParam,
+          );
+        });
+
+        fireEvent.click(getByLabelText(`Column ${label}`));
+
+        await waitFor(() =>
+          expect(mockedAxios.get).toHaveBeenLastCalledWith(
+            getListingEndpoint({ sort: { [sortBy]: 'asc' } }),
+            cancelTokenRequestParam,
+          ),
+        );
+      },
+    );
+  });
 
   it('executes a listing request with an updated page param when a change page action is clicked', async () => {
     const { getByLabelText } = renderListing();

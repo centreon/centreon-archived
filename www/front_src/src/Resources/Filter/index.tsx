@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 import { Button, makeStyles, Grid } from '@material-ui/core';
 
@@ -87,6 +88,7 @@ const Filter = (): JSX.Element => {
       customFilters?.find(propEq('id', filterId));
 
     setFilter(updatedFilter);
+    setNextSearch(updatedFilter.criterias.find(propEq('name', 'search')).value);
   };
 
   const translatedOptions = [
@@ -132,7 +134,7 @@ const Filter = (): JSX.Element => {
                 selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
                 onChange={changeFilter}
                 aria-label={t(labelStateFilter)}
-                className={classes.field}
+                className={classes.filterSelect}
               />
             )}
           </Grid>
