@@ -1467,6 +1467,10 @@ check_php_fpm_directory() {
             DIR_PHP_FPM_CONF="/etc/php/7.2/fpm/pool.d"
         elif [ -d /etc/opt/rh/rh-php72/php-fpm.d ] ; then
             DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php72/php-fpm.d"
+        elif [ -d /etc/php/7.3/fpm/pool.d ]; then
+            DIR_PHP_FPM_CONF="/etc/php/7.3/fpm/pool.d"
+        elif [ -d /etc/opt/rh/rh-php73/php-fpm.d ] ; then
+            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php73/php-fpm.d"
         elif [ -d /etc/php/7.1/fpm/pool.d ]; then
             DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
         elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
