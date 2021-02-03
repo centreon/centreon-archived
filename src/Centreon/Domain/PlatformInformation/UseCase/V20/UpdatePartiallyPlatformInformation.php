@@ -192,7 +192,7 @@ class UpdatePartiallyPlatformInformation
         PlatformInformation $platformInformationToUpdate,
         PlatformInformation $currentPlatformInformation
     ): void {
-        if ($platformInformationToUpdate->isRemote() && !$currentPlatformInformation->isRemote()) {
+        if ($platformInformationToUpdate->isRemote()) {
             $this->convertCentralToRemote($platformInformationToUpdate, $currentPlatformInformation);
         } elseif (!$platformInformationToUpdate->isRemote() && $currentPlatformInformation->isRemote()) {
             /**
