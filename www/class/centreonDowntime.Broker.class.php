@@ -293,14 +293,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
     {
         $currentDateTime = new \DateTime('now', $time->getTimezone());
 
-        //list($hour, $minute) = explode(':', $time);
-        //$downtimeDateTime = clone $currentDateTime;
-        //$downtimeDateTime->setTime($hour, $minute);
-
-        $downtimeOffset = $time->getOffset();
-        $currentDateOffset = $time->getOffset();
-
-        if ($downtimeOffset - $currentDateOffset > 0) {
+        if ($time->getOffset() - $currentDateTime->getOffset() > 0) {
             $time->setTime($time->getHour(), '00');
         }
 
