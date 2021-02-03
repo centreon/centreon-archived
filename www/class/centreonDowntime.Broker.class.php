@@ -278,15 +278,14 @@ class CentreonDowntimeBroker extends CentreonDowntime
      * @param \DateTimeZone $timezone
      * @return integer the calculated timestamp
      */
-    private function manageWinterToSummerTimestamp(\Datetime $time): int
+    private function manageWinterToSummerTimestamp(\Datetime $datetime, string $time): int
     {
-        $currentDateTime = new \DateTime('now', $time->getTimezone());
-
-        if ($time->getOffset() - $currentDateTime->getOffset() > 0) {
-            $time->setTime($time->format('H'), '00');
+        list($endHour) = explode(':', $time);
+        if ((int)$datetime->format('H') > (int)$endHour) {
+            $datetime->setTime($endHour, '00');
         }
 
-        return $time->getTimestamp();
+        return $datetime->getTimestamp();
     }
 
     private function manageSummerToWinterTimestamp($timestamp, $timezone)
@@ -338,14 +337,8 @@ class CentreonDowntimeBroker extends CentreonDowntime
             }
 
             # Check if we jump an hour
-            $startTimestamp = $this->manageWinterToSummerTimestamp($downtimeStartDate);
-
-            list($endHour) = explode(':', $downtime['dtp_end_time']);
-            if ((int)$downtimeEndDate->format('H') > (int)$endHour) {
-                $downtimeEndDate->setTime($endHour, '00');
-            }
-
-            $endTimestamp = $downtimeEndDate->getTimestamp();
+            $startTimestamp = $this->manageWinterToSummerTimestamp($downtimeStartDate, $downtime['dtp_start_time']);
+            $endTimestamp = $this->manageWinterToSummerTimestamp($downtimeEndDate, $downtime['dtp_end_time']);
 
             if ($startTimestamp == $endTimestamp) {
                 continue;
