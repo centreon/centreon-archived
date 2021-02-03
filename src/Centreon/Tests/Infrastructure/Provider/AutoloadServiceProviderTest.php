@@ -38,8 +38,8 @@ namespace Centreon\Tests\Infrastructure\Provider;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Infrastructure\Provider\AutoloadServiceProvider;
-use Centreon\Tests\Resource\Mock\ServiceProvider;
-use Centreon\Tests\Resource\CheckPoint;
+use Centreon\Tests\Resources\Mock\ServiceProvider;
+use Centreon\Tests\Resources\CheckPoint;
 use Pimple\Container;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;

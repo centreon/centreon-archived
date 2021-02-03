@@ -41,7 +41,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Centreon\Infrastructure\Service\CentreonClapiService;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
-use Centreon\Tests\Resource\Mock\ClapiMock;
+use Centreon\Tests\Resources\Mock\ClapiMock;
 
 class CentreonClapiServiceTest extends TestCase
 {
