@@ -346,13 +346,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
             }
 
             $endTimestamp = $downtimeEndDate->getTimestamp();
-            $currentDateTime = new \DateTime('now', $downtimeEndDate->getTimezone());
-
-            if ($downtimeEndDate->getOffset() - $currentDateTime->getOffset() > 0) {
-                $downtimeEndDate->setTime($downtimeEndDate->format('H'), '00');
-            }
-
-            $endTimestamp = $downtimeEndDate->getTimestamp();
 
             if ($startTimestamp == $endTimestamp) {
                 continue;
