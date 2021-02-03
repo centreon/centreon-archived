@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import clsx from 'clsx';
 
 import { Button, makeStyles, Grid } from '@material-ui/core';
 

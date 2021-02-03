@@ -1,21 +1,6 @@
 import * as React from 'react';
 
-import {
-  find,
-  findIndex,
-  hasPath,
-  isNil,
-  lensPath,
-  map,
-  mergeDeepLeft,
-  mergeDeepRight,
-  pipe,
-  propEq,
-  reduce,
-  reject,
-  set,
-  toPairs,
-} from 'ramda';
+import { find, findIndex, isNil, lensPath, propEq, reject, set } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
@@ -27,11 +12,7 @@ import {
 
 import { labelNewFilter } from '../translatedLabels';
 
-import {
-  getStoredOrDefaultFilter,
-  clearCachedFilter,
-  storeFilter,
-} from './storedFilter';
+import { clearCachedFilter, storeFilter } from './storedFilter';
 import { listCustomFilters } from './api';
 import { listCustomFiltersDecoder } from './api/decoders';
 import {
@@ -42,7 +23,6 @@ import {
 import {
   unhandledProblemsFilter,
   allFilter,
-  newFilter,
   isCustom,
   Filter,
   resourceProblemsFilter,
@@ -73,15 +53,6 @@ export interface FilterState {
   setEditPanelOpen: EditPanelOpenDitpach;
   getMultiSelectCriterias: () => Array<Criteria>;
 }
-
-const getFilterWithReducedCriterias = (filter) => {
-  const criterias = reduce(
-    (acc, { name, value }) => ({ ...acc, [name]: value }),
-    {},
-  )(filter.criterias);
-
-  return { ...filter, criterias };
-};
 
 const useFilter = (): FilterState => {
   const { t } = useTranslation();
