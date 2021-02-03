@@ -48,8 +48,8 @@ use Centreon\Tests\Resources\Traits;
 
 class CentreonModuleWebserviceTest extends TestCase
 {
-    use Traits\WebServiceAuthorizeRestApiTrait,
-        Traits\WebServiceExecuteTestTrait;
+    use Traits\WebServiceAuthorizeRestApiTrait;
+    use Traits\WebServiceExecuteTestTrait;
 
     const METHOD_GET_LIST = 'getList';
     const METHOD_GET_DETAILS = 'getDetails';
