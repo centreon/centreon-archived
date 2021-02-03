@@ -220,17 +220,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $isApproaching;
     }
 
-    private function setTime($hourMinute, $timezone, $tomorrow)
-    {
-        $currentDate = new \DateTime($hourMinute, $timezone);
-
-        if ($tomorrow) {
-            $currentDate->add(new \DateInterval('P1D'));
-        }
-
-        return $currentDate;
-    }
-
     private function isTomorrow($downtimeStartTime, $now, $delay)
     {
         $tomorrow = false;
@@ -342,19 +331,16 @@ class CentreonDowntimeBroker extends CentreonDowntime
             if ($tomorrow) {
                 $downtimeStartDate->add(new \DateInterval('P1D'));
             }
-            //$startTime = $this->setTime($downtime['dtp_start_time'], $timezone, $tomorrow);
-            //$startTimestamp = $startTime->getTimestamp();
 
             $downtimeEndDate = new \DateTime($downtime['dtp_end_time'], $timezone);
             if ($tomorrow) {
                 $downtimeEndDate->add(new \DateInterval('P1D'));
             }
-            //$endTime = $this->setTime($downtime['dtp_end_time'], $timezone, $tomorrow);
-            //$endTimestamp = $endTime->getTimestamp();
 
             # Check if we jump an hour
             $startTimestamp = $this->manageWinterToSummerTimestamp($downtimeStartDate);
-            $endTimestamp = $this->manageWinterToSummerTimestamp($downtimeEndDate);
+
+            $endTimestamp = $downtimeEndDate->getTimestamp();
 
             if ($startTimestamp == $endTimestamp) {
                 continue;
