@@ -20,14 +20,14 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\HostConfiguration\API\Model;
+namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostCategoriesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory\FindHostCategoriesResponse;
 
 /**
  * This class is designed to create the hostCategoryV21 entity
  *
- * @package Centreon\Infrastructure\HostConfiguration\API\Model
+ * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory
  */
 class HostCategoryV21Factory
 {

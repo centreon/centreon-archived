@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostCategoriesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory\FindHostCategoriesResponse;
 use PHPStan\Testing\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostCategoryTest;
 

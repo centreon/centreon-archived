@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration;
 
+use Centreon\Domain\HostConfiguration\Model\HostCategory;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Annotation\EntityDescriptor;
 
@@ -115,6 +116,11 @@ class Host
     private $macros = [];
 
     /**
+     * @var HostCategory[]
+     */
+    private $categories = [];
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -124,9 +130,9 @@ class Host
 
     /**
      * @param int|null $id
-     * @return Host
+     * @return self
      */
-    public function setId(?int $id): Host
+    public function setId(?int $id): self
     {
         $this->id = $id;
         return $this;
@@ -142,9 +148,9 @@ class Host
 
     /**
      * @param string|null $name
-     * @return Host
+     * @return self
      */
-    public function setName(?string $name): Host
+    public function setName(?string $name): self
     {
         $this->name = $name;
         return $this;
@@ -160,9 +166,9 @@ class Host
 
     /**
      * @param string|null $alias
-     * @return Host
+     * @return self
      */
-    public function setAlias(?string $alias): Host
+    public function setAlias(?string $alias): self
     {
         $this->alias = $alias;
         return $this;
@@ -178,9 +184,9 @@ class Host
 
     /**
      * @param string|null $displayName
-     * @return Host
+     * @return self
      */
-    public function setDisplayName(?string $displayName): Host
+    public function setDisplayName(?string $displayName): self
     {
         $this->displayName = $displayName;
         return $this;
@@ -196,9 +202,9 @@ class Host
 
     /**
      * @param string|null $ipAddress
-     * @return Host
+     * @return self
      */
-    public function setIpAddress(?string $ipAddress): Host
+    public function setIpAddress(?string $ipAddress): self
     {
         $this->ipAddress = $ipAddress;
         return $this;
@@ -214,9 +220,9 @@ class Host
 
     /**
      * @param string|null $comment
-     * @return Host
+     * @return self
      */
-    public function setComment(?string $comment): Host
+    public function setComment(?string $comment): self
     {
         $this->comment = $comment;
         return $this;
@@ -232,9 +238,9 @@ class Host
 
     /**
      * @param string|null $geoCoords
-     * @return Host
+     * @return self
      */
-    public function setGeoCoords(?string $geoCoords): Host
+    public function setGeoCoords(?string $geoCoords): self
     {
         $this->geoCoords = $geoCoords;
         return $this;
@@ -250,9 +256,9 @@ class Host
 
     /**
      * @param bool $isActivated
-     * @return Host
+     * @return self
      */
-    public function setActivated(bool $isActivated): Host
+    public function setActivated(bool $isActivated): self
     {
         $this->isActivated = $isActivated;
         return $this;
@@ -268,9 +274,9 @@ class Host
 
     /**
      * @param ExtendedHost|null $extendedHost
-     * @return Host
+     * @return self
      */
-    public function setExtendedHost(?ExtendedHost $extendedHost): Host
+    public function setExtendedHost(?ExtendedHost $extendedHost): self
     {
         $this->extendedHost = $extendedHost;
         return $this;
@@ -286,9 +292,9 @@ class Host
 
     /**
      * @param MonitoringServer|null $monitoringServer
-     * @return Host
+     * @return self
      */
-    public function setMonitoringServer(?MonitoringServer $monitoringServer): Host
+    public function setMonitoringServer(?MonitoringServer $monitoringServer): self
     {
         $this->monitoringServer = $monitoringServer;
         return $this;
@@ -304,9 +310,9 @@ class Host
 
     /**
      * @param int $type
-     * @return Host
+     * @return self
      */
-    public function setType(int $type): Host
+    public function setType(int $type): self
     {
         $this->type = $type;
         return $this;
@@ -324,10 +330,10 @@ class Host
      * Add a host template.
      *
      * @param Host $hostTemplate
-     * @return Host
+     * @return self
      * @throws \InvalidArgumentException
      */
-    public function addTemplate(Host $hostTemplate): Host
+    public function addTemplate(Host $hostTemplate): self
     {
         if ($hostTemplate->getType() !== Host::TYPE_HOST_TEMPLATE) {
             throw new \InvalidArgumentException(_('This host is not a host template'));
@@ -340,10 +346,10 @@ class Host
      * Clear and add all host templates.
      *
      * @param Host[] $hostTemplates
-     * @return Host
+     * @return self
      * @throws \InvalidArgumentException
      */
-    public function setTemplates(array $hostTemplates): Host
+    public function setTemplates(array $hostTemplates): self
     {
         $this->clearTemplates();
         foreach ($hostTemplates as $hostTemplate) {
@@ -359,9 +365,9 @@ class Host
     /**
      * Clear all templates.
      *
-     * @return Host
+     * @return self
      */
-    public function clearTemplates(): Host
+    public function clearTemplates(): self
     {
         $this->templates = [];
         return $this;
@@ -377,9 +383,9 @@ class Host
 
     /**
      * @param HostMacro[] $macros
-     * @return Host
+     * @return self
      */
-    public function setMacros(array $macros): Host
+    public function setMacros(array $macros): self
     {
         $this->macros = $macros;
         return $this;
@@ -389,11 +395,38 @@ class Host
      * Add a host macro.
      *
      * @param HostMacro $hostMacro Host macro to be added
-     * @return Host
+     * @return self
      */
-    public function addMacro(HostMacro $hostMacro): Host
+    public function addMacro(HostMacro $hostMacro): self
     {
         $this->macros[] = $hostMacro;
+        return $this;
+    }
+
+    /**
+     * @param HostCategory $category
+     * @return $this
+     */
+    public function addCategory(HostCategory $category): self
+    {
+        $this->categories[] = $category;
+        return $this;
+    }
+
+    /**
+     * @return HostCategory[]
+     */
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @return self
+     */
+    public function clearCategories(): self
+    {
+        $this->categories = [];
         return $this;
     }
 }
