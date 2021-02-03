@@ -279,22 +279,34 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $approachingTime;
     }
 
-    private function manageWinterToSummerTimestamp(string $time, \DateTimeZone $timezone)
+    /**
+     * reset timestamp at beginning of hour if we jump forward
+     * example:
+     *   - current date is 2021-03-28
+     *   - $time is 02:30
+     *   - $timezone is Europe/Paris
+     *   ==> return timestamp corresponding to 02:00 cause 02:30 does not exist (jump from 02:00 to 03:00)
+     *
+     * @param string $time time formatted as HH:mm
+     * @param \DateTimeZone $timezone
+     * @return integer the calculated timestamp
+     */
+    private function manageWinterToSummerTimestamp(string $time, \DateTimeZone $timezone): int
     {
-        $currentDate = new \DateTime('now', $timezone);
+        $currentDateTime = new \DateTime('now', $timezone);
 
         list($hour, $minute) = explode(':', $time);
-        $downtimeTime = clone $currentDate;
-        $downtimeTime->setTime($hour, $minute);
+        $downtimeDateTime = clone $currentDateTime;
+        $downtimeDateTime->setTime($hour, $minute);
 
-        $downtimeOffset = $downtimeTime->getOffset();
-        $currentDateOffset = $currentDate->getOffset();
+        $downtimeOffset = $downtimeDateTime->getOffset();
+        $currentDateOffset = $currentDateTime->getOffset();
 
         if ($downtimeOffset - $currentDateOffset > 0) {
-            $downtimeTime->setTime($hour, '00');
+            $downtimeDateTime->setTime($hour, '00');
         }
 
-        return $downtimeTime->getTimestamp();
+        return $downtimeDateTime->getTimestamp();
     }
 
     private function manageSummerToWinterTimestamp($timestamp, $timezone)
