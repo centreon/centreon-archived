@@ -6,7 +6,7 @@
     "config": {
         "secure-http": false,
         "platform": {
-            "php": "7.2"
+            "php": "7.3"
         }
     },
     "require-dev": {
