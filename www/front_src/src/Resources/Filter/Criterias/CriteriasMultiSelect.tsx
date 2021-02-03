@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { isNil, map, pipe, toPairs } from 'ramda';
 
 import AddIcon from '@material-ui/icons/AddCircle';
-import { Popper } from '@material-ui/core';
+import { ClickAwayListener, Popper } from '@material-ui/core';
 
 import { IconButton, MultiAutocompleteField } from '@centreon/ui';
 
@@ -55,27 +55,30 @@ const CriteriasMultiSelect = (): JSX.Element => {
     }));
 
   return (
-    <>
-      <IconButton title="Add criterias" onClick={toggle}>
-        <AddIcon />
-      </IconButton>
-      <Popper
-        placement="bottom"
-        disablePortal
-        open={isOpen}
-        anchorEl={anchorEl}
-      >
-        <div style={{ backgroundColor: 'white' }}>
-          <MultiAutocompleteField
-            onClose={close}
-            label={t(labelCriterias)}
-            options={options}
-            value={selectedCriterias}
-            open={isOpen}
-          />
-        </div>
-      </Popper>
-    </>
+    <ClickAwayListener onClickAway={close}>
+      <div>
+        <IconButton title="Add criterias" onClick={toggle}>
+          <AddIcon />
+        </IconButton>
+        <Popper
+          placement="bottom"
+          disablePortal
+          open={isOpen}
+          anchorEl={anchorEl}
+        >
+          <div style={{ backgroundColor: 'white' }}>
+            <MultiAutocompleteField
+              onClose={close}
+              label={t(labelCriterias)}
+              options={options}
+              value={selectedCriterias}
+              open={isOpen}
+              limitTags={0}
+            />
+          </div>
+        </Popper>
+      </div>
+    </ClickAwayListener>
   );
 };
 

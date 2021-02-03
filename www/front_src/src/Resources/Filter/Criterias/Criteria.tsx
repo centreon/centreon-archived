@@ -35,12 +35,12 @@ const Criteria = ({ name, value, parentWidth }: Props): JSX.Element => {
     }));
   };
 
-  const changeCriteria = (_, updatedValue): void => {
-    setCriteria({ name, value: getUntranslated(updatedValue) });
+  const changeCriteria = (updatedValue): void => {
+    setCriteria({ name, value: updatedValue });
     setNewFilter();
   };
 
-  const getUntranslated = (values: Array<SelectEntry>): Array<SelectEntry> => {
+  const getUntranslated = (values): Array<SelectEntry> => {
     return values.map(({ id }) => ({
       id,
       name: criteriaValueNameById[id],
@@ -56,7 +56,6 @@ const Criteria = ({ name, value, parentWidth }: Props): JSX.Element => {
     label: t(label),
     className: classes.field,
     openText: `${t(labelOpen)} ${t(label)}`,
-    onChange: changeCriteria,
     value,
   };
 
@@ -71,13 +70,22 @@ const Criteria = ({ name, value, parentWidth }: Props): JSX.Element => {
       <MultiConnectedAutocompleteField
         getEndpoint={getEndpoint}
         field="name"
+        onChange={(_, updatedValue) => {
+          changeCriteria(updatedValue);
+        }}
         {...commonProps}
       />
     );
   }
 
   return (
-    <MultiAutocompleteField options={getTranslated(options)} {...commonProps} />
+    <MultiAutocompleteField
+      options={getTranslated(options)}
+      onChange={(_, updatedValue) => {
+        changeCriteria(getUntranslated(updatedValue));
+      }}
+      {...commonProps}
+    />
   );
 };
 

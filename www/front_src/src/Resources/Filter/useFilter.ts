@@ -112,10 +112,6 @@ const useFilter = (): FilterState => {
     setCriteria({ name: 'search', value: nextSearch });
   }, [...reject(propEq('name', 'search'), filter.criterias)]);
 
-  // React.useEffect(() => {
-  //   setNextSearch(getCriteriaValue('search') as string);
-  // }, [filter.id]);
-
   React.useEffect(() => {
     const updatedFilter = getFilterWithUpdatedCriteria({
       name: 'search',

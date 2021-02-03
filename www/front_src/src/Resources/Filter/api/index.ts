@@ -48,7 +48,7 @@ const createFilter = (cancelToken: CancelToken) => (
 
 interface UpdateFilterProps {
   id: number;
-  rawFilter: FilterWithoutId;
+  filter: FilterWithoutId;
 }
 
 const updateFilter = (cancelToken: CancelToken) => (
@@ -56,7 +56,7 @@ const updateFilter = (cancelToken: CancelToken) => (
 ): Promise<Filter> => {
   return putData<FilterWithoutId, Filter>(cancelToken)({
     endpoint: `${filterEndpoint}/${parameters.id}`,
-    data: parameters.rawFilter,
+    data: parameters.filter,
   });
 };
 

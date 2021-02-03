@@ -21,7 +21,6 @@ import {
 } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
 import { Filter } from '../models';
-import { getCriteriaValue } from '../../testUtils';
 import useListing from '../../Listing/useListing';
 import { defaultSortField, defaultSortOrder } from '../Criterias/default';
 
@@ -217,7 +216,6 @@ describe(SaveMenu, () => {
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     const filter = getCustomFilter();
-    // const { criterias } = filter;
 
     const newSearch = 'new search';
 
@@ -227,11 +225,6 @@ describe(SaveMenu, () => {
 
     act(() => {
       context.setFilter(filter);
-      // filterState.setResourceTypes(criterias.resourceTypes);
-      // filterState.setHostGroups(criterias.hostGroups);
-      // filterState.setServiceGroups(criterias.serviceGroups);
-      // filterState.setStates(criterias.states);
-      // filterState.setStatuses(criterias.statuses);
 
       context.setNextSearch(newSearch);
     });
