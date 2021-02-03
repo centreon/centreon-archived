@@ -23,8 +23,6 @@ declare(strict_types=1);
 namespace Tests\Centreon\Domain\PlatformInformation\Model;
 
 use PHPUnit\Framework\TestCase;
-use Centreon\Domain\PlatformInformation\Model\InformationV20Factory;
-use Tests\Centreon\Domain\PlatformInformation\Model\InformationTest;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformationFactory;
 
 class PlatformInformationFactoryTest extends TestCase
@@ -32,7 +30,7 @@ class PlatformInformationFactoryTest extends TestCase
     /**
      * @var PlatformInformation
      */
-    private $centralPlatformInformation;
+    private $centralPlatformInformationStub;
 
     /**
      * @var PlatformInformation
@@ -40,21 +38,38 @@ class PlatformInformationFactoryTest extends TestCase
     private $remotePlatformInformationStub;
 
     /**
-     * @var array<InformationV20>
+     * @var array<string,mixed>
      */
-    private $informationV20;
+    private $remoteRequest;
+
+    /**
+     * @var array<string,boolean>
+     */
+    private $centralRequest;
 
     protected function setUp(): void
     {
-        $this->centralPlatformInformation = PlatformInformationTest::createEntityForCentralInformation();
+        $this->centralPlatformInformationStub = PlatformInformationTest::createEntityForCentralInformation();
         $this->remotePlatformInformationStub = PlatformInformationTest::createEntityForRemoteInformation();
-        $remoteInformation = InformationTest::createEntities();
-        $this->informationV20 = InformationV20Factory::create($remoteInformation);
+        $this->remoteRequest = [
+            'isRemote' => true,
+            'centralServerAddress' => '1.1.1.10',
+            'apiUsername' => 'admin',
+            'apiCredentials' => 'centreon',
+            'apiScheme' => 'http',
+            'apiPort' => 80,
+            'apiPath' => 'centreon',
+            'peerValidation' => false
+        ];
+        $this->centralRequest = [
+            'isRemote' => false
+        ];
+        $this->platformInformationFactory = new PlatformInformationFactory($_ENV['APP_SECRET']);
     }
 
-    public function testCreate(): void
+    public function testCreateRemotePlatformInformation(): void
     {
-        $remotePlatformInformation = PlatformInformationFactory::create($this->informationV20);
+        $remotePlatformInformation = $this->platformInformationFactory->create($this->remoteRequest);
         $this->assertEquals($this->remotePlatformInformationStub->isRemote(), $remotePlatformInformation->isRemote());
         $this->assertEquals(
             $this->remotePlatformInformationStub->getCentralServerAddress(),
@@ -83,6 +98,40 @@ class PlatformInformationFactoryTest extends TestCase
         $this->assertEquals(
             $this->remotePlatformInformationStub->hasApiPeerValidation(),
             $remotePlatformInformation->hasApiPeerValidation()
+        );
+    }
+
+    public function testCreateCentralPlatformInformation(): void
+    {
+        $centralPlatformInformation = $this->platformInformationFactory->create($this->centralRequest);
+        $this->assertEquals($this->centralPlatformInformationStub->isRemote(), $centralPlatformInformation->isRemote());
+        $this->assertEquals(
+            $this->centralPlatformInformationStub->getCentralServerAddress(),
+            $centralPlatformInformation->getCentralServerAddress()
+        );
+        $this->assertEquals(
+            $this->centralPlatformInformationStub->getApiUsername(),
+            $centralPlatformInformation->getApiUsername()
+        );
+        $this->assertEquals(
+            $this->centralPlatformInformationStub->getApiCredentials(),
+            $centralPlatformInformation->getApiCredentials()
+        );
+        $this->assertEquals(
+            $this->centralPlatformInformationStub->getApiScheme(),
+            $centralPlatformInformation->getApiScheme()
+        );
+        $this->assertEquals(
+            $this->centralPlatformInformationStub->getApiPort(),
+            $centralPlatformInformation->getApiPort()
+        );
+        $this->assertEquals(
+            $this->centralPlatformInformationStub->getApiPath(),
+            $centralPlatformInformation->getApiPath()
+        );
+        $this->assertEquals(
+            $this->centralPlatformInformationStub->hasApiPeerValidation(),
+            $centralPlatformInformation->hasApiPeerValidation()
         );
     }
 }
