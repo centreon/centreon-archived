@@ -293,18 +293,18 @@ class CentreonDowntimeBroker extends CentreonDowntime
     {
         $currentDateTime = new \DateTime('now', $time->getTimezone());
 
-        list($hour, $minute) = explode(':', $time);
-        $downtimeDateTime = clone $currentDateTime;
-        $downtimeDateTime->setTime($hour, $minute);
+        //list($hour, $minute) = explode(':', $time);
+        //$downtimeDateTime = clone $currentDateTime;
+        //$downtimeDateTime->setTime($hour, $minute);
 
-        $downtimeOffset = $downtimeDateTime->getOffset();
-        $currentDateOffset = $currentDateTime->getOffset();
+        $downtimeOffset = $time->getOffset();
+        $currentDateOffset = $time->getOffset();
 
         if ($downtimeOffset - $currentDateOffset > 0) {
-            $downtimeDateTime->setTime($hour, '00');
+            $time->setTime($time->getHour(), '00');
         }
 
-        return $downtimeDateTime->getTimestamp();
+        return $time->getTimestamp();
     }
 
     private function manageSummerToWinterTimestamp($timestamp, $timezone)
