@@ -15985,3 +15985,6 @@ msgstr "Parent"
 
 msgid "Error when searching for host groups"
 msgstr "Erreur lors de la recherche de groupes d'hôtes"
+
+msgid "Select criterias"
+msgstr "Séléctionner les critères"

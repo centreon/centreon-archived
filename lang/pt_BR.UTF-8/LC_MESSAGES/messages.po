@@ -15092,3 +15092,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Switch to list mode"
 #  msgstr ""
+
+#  msgid "Select criterias"
+#  msgstr ""

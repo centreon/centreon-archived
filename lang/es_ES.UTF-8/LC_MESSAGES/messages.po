@@ -14649,3 +14649,6 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Switch to list mode"
 #  msgstr ""
+
+#  msgid "Select criterias"
+#  msgstr ""
