@@ -1,14 +1,29 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil, map, pipe, toPairs } from 'ramda';
+import {
+  difference,
+  flip,
+  includes,
+  isNil,
+  map,
+  pipe,
+  prop,
+  propSatisfies,
+  reject,
+  toPairs,
+} from 'ramda';
 
 import AddIcon from '@material-ui/icons/AddCircle';
 import { ClickAwayListener, Popper } from '@material-ui/core';
 
 import { IconButton, MultiAutocompleteField } from '@centreon/ui';
 
-import { labelCriterias } from '../../translatedLabels';
+import {
+  labelCriterias,
+  labelNewFilter,
+  labelSelectCriterias,
+} from '../../translatedLabels';
 import { useResourceContext } from '../../Context';
 
 import {
@@ -16,14 +31,18 @@ import {
   CriteriaDisplayProps,
   selectableCriterias,
 } from './models';
+import getDefaultCriterias from './default';
 
 const toCriteriaPairs = (criteriaById: CriteriaById) =>
   toPairs<CriteriaDisplayProps>(criteriaById);
 
+const isIn = flip(includes);
+const nameIsIn = (names: Array<string>) => propSatisfies(isIn(names), 'name');
+
 const CriteriasMultiSelect = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { filter } = useResourceContext();
+  const { filter, setFilter, setNewFilter } = useResourceContext();
 
   const [anchorEl, setAnchorEl] = React.useState();
 
@@ -34,7 +53,12 @@ const CriteriasMultiSelect = (): JSX.Element => {
 
   const isOpen = Boolean(anchorEl);
 
-  const close = (): void => {
+  const close = (reason?): void => {
+    const isClosedByInputClick = reason?.type === 'mousedown';
+
+    if (isClosedByInputClick) {
+      return;
+    }
     setAnchorEl(undefined);
   };
 
@@ -54,14 +78,49 @@ const CriteriasMultiSelect = (): JSX.Element => {
       name: t(selectableCriterias[name].label),
     }));
 
+  const changeSelectedCriterias = (_, updatedCriterias) => {
+    const { criterias } = filter;
+    const updatedNames = map(prop('id'), updatedCriterias) as Array<string>;
+
+    const currentNames = pipe(
+      map(prop('name')),
+      reject((name) => isNil(selectableCriterias[name as string])),
+    )(filter.criterias);
+
+    const criteriaNamesToAdd = difference(updatedNames, currentNames);
+    const criteriaNamesToRemove = difference(currentNames, updatedNames);
+
+    const criteriasWithoutRemoved = reject(
+      nameIsIn(criteriaNamesToRemove),
+      criterias,
+    );
+
+    const criteriasToAdd = getDefaultCriterias()
+      .filter(nameIsIn(criteriaNamesToAdd))
+      .map((criteria) => {
+        return { ...criteria, value: [] };
+      });
+
+    setFilter({
+      ...filter,
+      id: '',
+      name: labelNewFilter,
+      criterias: [...criteriasWithoutRemoved, ...criteriasToAdd],
+    });
+  };
+
   return (
     <ClickAwayListener onClickAway={close}>
       <div>
-        <IconButton title="Add criterias" onClick={toggle}>
+        <IconButton
+          title={labelSelectCriterias}
+          ariaLabel={labelSelectCriterias}
+          onClick={toggle}
+        >
           <AddIcon />
         </IconButton>
         <Popper
-          placement="bottom"
+          placement="bottom-end"
           disablePortal
           open={isOpen}
           anchorEl={anchorEl}
@@ -71,9 +130,10 @@ const CriteriasMultiSelect = (): JSX.Element => {
               onClose={close}
               label={t(labelCriterias)}
               options={options}
+              onChange={changeSelectedCriterias}
               value={selectedCriterias}
               open={isOpen}
-              limitTags={0}
+              limitTags={1}
             />
           </div>
         </Popper>

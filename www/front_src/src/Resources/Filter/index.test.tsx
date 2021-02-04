@@ -32,6 +32,7 @@ import {
   labelSearchHelp,
   labelSearchOnFields,
   labelNewFilter,
+  labelSelectCriterias,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../Actions/useActions';
@@ -595,6 +596,28 @@ describe(Filter, () => {
           name: 'search',
         }),
       ).toEqual('Search me');
+    });
+  });
+
+  it('hides criteria fields when deselected', async () => {
+    const { getByLabelText, getAllByText, queryByLabelText } = renderFilter();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    mockedAxios.get.mockResolvedValue({ data: {} });
+
+    fireEvent.click(
+      getByLabelText(labelSelectCriterias).firstChild as HTMLElement,
+    );
+
+    fireEvent.click(getAllByText(labelStatus)[1]);
+
+    expect(queryByLabelText(labelStatus)).toBeNull();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
     });
   });
 });

@@ -63,6 +63,7 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
     {
       name: 'resource_types',
       type: 'multi_select',
+      object_type: null,
       value: [
         {
           id: 'host',
@@ -73,6 +74,7 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
     {
       name: 'states',
       type: 'multi_select',
+      object_type: null,
       value: [
         {
           id: 'unhandled_problems',
@@ -83,6 +85,7 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
     {
       name: 'statuses',
       type: 'multi_select',
+      object_type: null,
       value: [
         {
           id: 'OK',
@@ -116,11 +119,13 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       name: 'search',
       type: 'text',
       value: search,
+      object_type: null,
     },
     {
       name: 'sort',
       type: 'array',
       value: [defaultSortField, defaultSortOrder],
+      object_type: null,
     },
   ],
 });

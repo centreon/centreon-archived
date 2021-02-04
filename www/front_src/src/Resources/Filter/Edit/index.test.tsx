@@ -47,16 +47,19 @@ const retrievedCustomFilters = {
       {
         name: 'resource_types',
         type: 'multi_select',
+        object_type: null,
         value: [],
       },
       {
         name: 'states',
         type: 'multi_select',
+        object_type: null,
         value: [],
       },
       {
         name: 'statuses',
         type: 'multi_select',
+        object_type: null,
         value: [],
       },
       {
@@ -74,12 +77,14 @@ const retrievedCustomFilters = {
       {
         name: 'search',
         type: 'text',
+        object_type: null,
         value: '',
       },
       {
         name: 'sort',
         type: 'array',
         value: [defaultSortField, defaultSortOrder],
+        object_type: null,
       },
     ],
   })),

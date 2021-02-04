@@ -96,7 +96,7 @@ const SaveFilterMenu = (): JSX.Element => {
       severity: Severity.success,
     });
 
-    loadFiltersAndUpdateCurrent(newFilter);
+    loadFiltersAndUpdateCurrent(omit(['order'], newFilter));
   };
 
   const updateFilter = (): void => {
@@ -110,7 +110,7 @@ const SaveFilterMenu = (): JSX.Element => {
         severity: Severity.success,
       });
 
-      loadFiltersAndUpdateCurrent(savedFilter);
+      loadFiltersAndUpdateCurrent(omit(['order'], savedFilter));
     });
   };
 

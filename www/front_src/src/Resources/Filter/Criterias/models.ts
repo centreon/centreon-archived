@@ -30,7 +30,7 @@ export type CriteriaValue = Array<SelectEntry> | string | [string, SortOrder];
 
 export interface Criteria {
   name: string;
-  object_type?: string;
+  object_type: string | null;
   type: string;
   value?: CriteriaValue;
 }

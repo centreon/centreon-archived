@@ -1,6 +1,15 @@
 import * as React from 'react';
 
-import { find, findIndex, isNil, lensPath, propEq, reject, set } from 'ramda';
+import {
+  find,
+  findIndex,
+  isNil,
+  lensPath,
+  omit,
+  propEq,
+  reject,
+  set,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
@@ -80,7 +89,7 @@ const useFilter = (): FilterState => {
 
   const loadCustomFilters = (): Promise<Array<Filter>> => {
     return sendListCustomFiltersRequest().then(({ result }) => {
-      setCustomFilters(result);
+      setCustomFilters(result.map(omit(['order'])));
 
       return result;
     });

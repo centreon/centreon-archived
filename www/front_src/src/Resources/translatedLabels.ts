@@ -189,3 +189,4 @@ export const labelCommentAdded = 'Comment added';
 export const labelDisplayEvents = 'Display events';
 export const labelExportToPng = 'Export to png';
 export const labelParent = 'Parent';
+export const labelSelectCriterias = 'Select criterias';
