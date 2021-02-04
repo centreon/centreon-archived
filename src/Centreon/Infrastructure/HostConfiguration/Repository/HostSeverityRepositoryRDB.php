@@ -24,6 +24,7 @@ namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface;
+use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostSeverityFactoryRdb;
