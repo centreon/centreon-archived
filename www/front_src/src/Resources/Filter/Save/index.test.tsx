@@ -181,11 +181,6 @@ describe(SaveMenu, () => {
 
     act(() => {
       context.setFilter(filter);
-      // filterState.setResourceTypes(criterias.resourceTypes);
-      // filterState.setHostGroups(criterias.hostGroups);
-      // filterState.setServiceGroups(criterias.serviceGroups);
-      // filterState.setStates(criterias.states);
-      // filterState.setStatuses(criterias.statuses);
 
       context.setNextSearch('toto');
     });
