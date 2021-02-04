@@ -10,6 +10,7 @@ import {
 } from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
+import { last } from 'ramda';
 
 import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
 
@@ -599,7 +600,13 @@ describe(Filter, () => {
     });
   });
 
-  it('hides criteria fields when deselected', async () => {
+  it.each([
+    labelResource,
+    labelState,
+    labelStatus,
+    labelHostGroup,
+    labelServiceGroup,
+  ])('hides the %p criteria field when deselected', async (criteriaLabel) => {
     const { getByLabelText, getAllByText, queryByLabelText } = renderFilter();
 
     await waitFor(() => {
@@ -612,9 +619,9 @@ describe(Filter, () => {
       getByLabelText(labelSelectCriterias).firstChild as HTMLElement,
     );
 
-    fireEvent.click(getAllByText(labelStatus)[1]);
+    fireEvent.click(last(getAllByText(criteriaLabel)) as HTMLElement);
 
-    expect(queryByLabelText(labelStatus)).toBeNull();
+    expect(queryByLabelText(criteriaLabel)).toBeNull();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
