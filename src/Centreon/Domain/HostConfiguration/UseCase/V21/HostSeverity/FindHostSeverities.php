@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\HostConfiguration\Exception\HostSeverityException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityServiceInterface;
 
 /**
@@ -71,7 +72,6 @@ class FindHostSeverities
      * Execute the use case for which this class was designed.
      *
      * @return FindHostSeveritiesResponse
-     * @throws \Assert\AssertionFailedException
      * @throws HostSeverityException
      */
     public function execute(): FindHostSeveritiesResponse
@@ -93,8 +93,7 @@ class FindHostSeverities
     /**
      * Updated all media paths for all host severities.
      *
-     * @param HostSeverity[] $hostSeverities
-     * @throws \Assert\AssertionFailedException
+     * @param array $hostSeverities
      */
     private function updateMediaPaths(array $hostSeverities): void
     {

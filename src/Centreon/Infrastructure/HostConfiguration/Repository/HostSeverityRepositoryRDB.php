@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\HostConfiguration\Interfaces\HostSeverityReadRepositoryInterface;
+use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostSeverityFactoryRdb;
@@ -67,7 +67,7 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
     {
         return $this->findAllRequest($contact->getId());
     }
-    
+
     /**
      * Find all severities filtered by contact id.
      *
