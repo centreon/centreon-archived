@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostSeverity;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 
 /**
@@ -32,8 +33,19 @@ use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 interface HostSeverityReadRepositoryInterface
 {
     /**
+     * Find all host severities.
+     *
      * @return HostSeverity[]
      * @throws \Throwable
      */
-    public function findHostSeverities(): array;
+    public function findAll(): array;
+
+    /**
+     * Find all host severities by contact.
+     *
+     * @param ContactInterface $contact Contact related to host severities
+     * @return Hostseverity[]
+     * @throws \Throwable
+     */
+    public function findAllByContact(ContactInterface $contact): array;
 }

@@ -121,7 +121,7 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
                     ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id'
             );
         }
-        
+
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest)
@@ -131,17 +131,17 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
         if ($contactId !== null) {
             $request .= ' AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)';
         }
-        
+
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest)
             ? $sortRequest
             : ' ORDER BY hc.hc_name ASC';
-        
+
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
         $statement = $this->db->prepare($request);
-        
+
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
             $type = key($data);
             $value = $data[$type];
@@ -151,12 +151,12 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
             $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
         }
         $statement->execute();
-        
+
         $result = $this->db->query('SELECT FOUND_ROWS()');
         if ($result !== false && ($total = $result->fetchColumn()) !== false) {
             $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
         }
-        
+
         $hostSeverities = [];
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $hostSeverities[] = HostSeverityFactoryRdb::create($record);
