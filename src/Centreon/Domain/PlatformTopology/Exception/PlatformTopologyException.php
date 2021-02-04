@@ -20,13 +20,13 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformTopology;
+namespace Centreon\Domain\PlatformTopology\Exception;
 
 /**
  * This class is designed to represent a business exception in the 'Platform status' context.
  *
  * @package Centreon\Domain\PlatformTopology
  */
-class PlatformException extends \Exception
+class PlatformTopologyException extends \Exception
 {
 }

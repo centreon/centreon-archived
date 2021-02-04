@@ -36,9 +36,9 @@ use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
-use Centreon\Domain\PlatformTopology\PlatformException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
@@ -179,10 +179,10 @@ class PlatformTopologyServiceTest extends TestCase
 
     /**
      * test addPlatformToTopology with already existing platform
-     * @throws PlatformConflictException
+     * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      * @throws RepositoryException
      * @throws PlatformInformationException
@@ -215,17 +215,17 @@ class PlatformTopologyServiceTest extends TestCase
             $this->remoteServerRepository
         );
 
-        $this->expectException(PlatformConflictException::class);
+        $this->expectException(PlatformTopologyConflictException::class);
         $this->expectExceptionMessage("A platform using the name : 'poller1' or address : '1.1.1.2' already exists");
         $platformTopologyService->addPlatformToTopology($this->platform);
     }
 
     /**
      * test addPlatformToTopology with not found parent
-     * @throws PlatformConflictException
+     * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
      * @throws RepositoryException
@@ -270,10 +270,10 @@ class PlatformTopologyServiceTest extends TestCase
 
     /**
      * test addPlatformToTopology which succeed
-     * @throws PlatformConflictException
+     * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
      * @throws RepositoryException

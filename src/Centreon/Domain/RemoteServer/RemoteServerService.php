@@ -27,11 +27,11 @@ use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\PlatformTopology\PlatformException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
@@ -164,7 +164,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             }
 
             $this->menuRepository->disableCentralMenus();
-        } catch (RepositoryException | PlatformConflictException $ex) {
+        } catch (RepositoryException | PlatformTopologyConflictException $ex) {
             $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
             throw $ex;
         } catch (\Exception $ex) {
@@ -239,7 +239,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             $platform->setType($type);
             $this->platformTopologyRepository->updatePlatformParameters($platform);
         } catch (\Exception $ex) {
-            throw new PlatformException(_('An error occured while updating the platform topology'));
+            throw new PlatformTopologyException(_('An error occured while updating the platform topology'));
         }
     }
 }
