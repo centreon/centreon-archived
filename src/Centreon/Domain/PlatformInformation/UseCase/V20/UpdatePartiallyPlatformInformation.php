@@ -136,7 +136,7 @@ class UpdatePartiallyPlatformInformation
         $currentPlatformInformation = $this->readRepository->findPlatformInformation();
 
         if ($platformInformationToUpdate->isRemote() !== null) {
-            $this->updatePlatformType($platformInformationToUpdate, $currentPlatformInformation);
+            $this->updateRemoteOrCentralType($platformInformationToUpdate, $currentPlatformInformation);
         }
 
         $this->writeRepository->updatePlatformInformation($platformInformationToUpdate);
@@ -188,7 +188,7 @@ class UpdatePartiallyPlatformInformation
      * @param PlatformInformation $currentPlatformInformation
      * @throws RemoteServerException
      */
-    private function updatePlatformType(
+    private function updateRemoteOrCentralType(
         PlatformInformation $platformInformationToUpdate,
         PlatformInformation $currentPlatformInformation
     ): void {
