@@ -270,7 +270,9 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             }
 
             if ($platformToDeleteId === null) {
-                throw new PlatformTopologyConflictException(_("The platform '%s'@'%s' cannot be found on the Central."));
+                throw new PlatformTopologyConflictException(
+                    _("The platform '%s'@'%s' cannot be found on the Central.")
+                );
             }
 
             $deletePayload = [
