@@ -69,8 +69,8 @@ interface PlatformTopologyServiceInterface
     /**
      * Update a platform with given parameters.
      *
-     * @param Platform
-     * @throws PlatformTopologyException
+     * @param Platform $platform
+     * @return void
      */
     public function updatePlatformParameters(Platform $platform): void;
 
