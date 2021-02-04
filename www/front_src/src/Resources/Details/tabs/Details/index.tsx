@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { ParentSize } from '@visx/visx';
 
 import {
   Grid,
@@ -101,79 +102,88 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   };
 
   return (
-    <div className={classes.details}>
-      <ExpandableCard
-        title={t(labelStatusInformation)}
-        content={details.information}
-        severityCode={details.status.severity_code}
-      />
-      {details.downtimes?.map(({ start_time, end_time, comment }) => (
-        <StateCard
-          key={`downtime-${start_time}-${end_time}`}
-          title={t(labelDowntimeDuration)}
-          contentLines={[
-            ...[
-              { prefix: labelFrom, time: start_time },
-              { prefix: labelTo, time: end_time },
-            ].map(({ prefix, time }) => `${prefix} ${toDateTime(time)}`),
-          ]}
-          commentLine={comment}
-          chip={<DowntimeChip />}
-        />
-      ))}
-      {details.acknowledgement && (
-        <StateCard
-          title={t(labelAcknowledgedBy)}
-          contentLines={[
-            `${details.acknowledgement.author_name} ${t(labelAt)} ${toDateTime(
-              details.acknowledgement.entry_time,
-            )}`,
-          ]}
-          commentLine={details.acknowledgement.comment}
-          chip={<AcknowledgeChip />}
-        />
-      )}
-      <Grid container spacing={2} alignItems="stretch">
-        {getDetailCardLines({ details, toDate, toTime }).map(
-          ({ title, field, xs = 6, getLines }) => {
-            const displayCard = !isNil(field) && !isEmpty(field);
+    <ParentSize>
+      {({ width }): JSX.Element => (
+        <div className={classes.details}>
+          <ExpandableCard
+            title={t(labelStatusInformation)}
+            content={details.information}
+            severityCode={details.status.severity_code}
+          />
+          {details.downtimes?.map(({ start_time, end_time, comment }) => (
+            <StateCard
+              key={`downtime-${start_time}-${end_time}`}
+              title={t(labelDowntimeDuration)}
+              contentLines={[
+                ...[
+                  { prefix: labelFrom, time: start_time },
+                  { prefix: labelTo, time: end_time },
+                ].map(({ prefix, time }) => `${prefix} ${toDateTime(time)}`),
+              ]}
+              commentLine={comment}
+              chip={<DowntimeChip />}
+            />
+          ))}
+          {details.acknowledgement && (
+            <StateCard
+              title={t(labelAcknowledgedBy)}
+              contentLines={[
+                `${details.acknowledgement.author_name} ${t(
+                  labelAt,
+                )} ${toDateTime(details.acknowledgement.entry_time)}`,
+              ]}
+              commentLine={details.acknowledgement.comment}
+              chip={<AcknowledgeChip />}
+            />
+          )}
+          <Grid container spacing={2} alignItems="stretch">
+            {getDetailCardLines({ details, toDate, toTime }).map(
+              ({ title, field, xs = 6, getLines }) => {
+                const variableXs = (width > 600 ? xs / 2 : xs) as 3 | 6 | 12;
+                const displayCard = !isNil(field) && !isEmpty(field);
 
-            return (
-              displayCard && (
-                <Grid key={title} item xs={xs}>
-                  <DetailsCard title={t(title)} lines={getLines()} />
-                </Grid>
-              )
-            );
-          },
-        )}
-      </Grid>
-      {details.performance_data && (
-        <ExpandableCard
-          title={t(labelPerformanceData)}
-          content={details.performance_data}
-        />
+                return (
+                  displayCard && (
+                    <Grid key={title} item xs={variableXs}>
+                      <DetailsCard title={t(title)} lines={getLines()} />
+                    </Grid>
+                  )
+                );
+              },
+            )}
+          </Grid>
+          {details.performance_data && (
+            <ExpandableCard
+              title={t(labelPerformanceData)}
+              content={details.performance_data}
+            />
+          )}
+          {details.command_line && (
+            <Card>
+              <CardContent>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  gutterBottom
+                >
+                  <Grid container alignItems="center" spacing={1}>
+                    <Grid item>{t(labelCommand)}</Grid>
+                    <Grid item>
+                      <Tooltip onClick={copyCommandLine} title={labelCopy}>
+                        <IconButton size="small">
+                          <IconCopyFile color="primary" fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
+                  </Grid>
+                </Typography>
+                <Typography variant="body2">{details.command_line}</Typography>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )}
-      {details.command_line && (
-        <Card>
-          <CardContent>
-            <Typography variant="subtitle2" color="textSecondary" gutterBottom>
-              <Grid container alignItems="center" spacing={1}>
-                <Grid item>{t(labelCommand)}</Grid>
-                <Grid item>
-                  <Tooltip onClick={copyCommandLine} title={labelCopy}>
-                    <IconButton size="small">
-                      <IconCopyFile color="primary" fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Grid>
-              </Grid>
-            </Typography>
-            <Typography variant="body2">{details.command_line}</Typography>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+    </ParentSize>
   );
 };
 

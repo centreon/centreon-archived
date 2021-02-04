@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 import { isEmpty, propEq, pick, find } from 'ramda';
-import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
+import { ParentSize } from '@visx/visx';
 
-import { Skeleton } from '@material-ui/lab';
-import { Typography, Button, makeStyles } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 
 import {
   MultiAutocompleteField,
@@ -16,8 +16,6 @@ import {
 } from '@centreon/ui';
 
 import {
-  labelFilter,
-  labelCriterias,
   labelStateFilter,
   labelSearch,
   labelResource,
@@ -25,7 +23,7 @@ import {
   labelStatus,
   labelHostGroup,
   labelServiceGroup,
-  labelClearAll,
+  labelClear,
   labelOpen,
   labelShowCriteriasFilters,
   labelNewFilter,
@@ -40,30 +38,26 @@ import {
   buildServiceGroupsEndpoint,
 } from './api/endpoint';
 import useFilterModels from './useFilterModels';
+import FilterLoadingSkeleton from './FilterLoadingSkeleton';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
-    display: 'grid',
+    display: 'flex',
+    flexWrap: 'wrap',
     gridGap: theme.spacing(1),
-    gridAutoFlow: 'column',
-
     alignItems: 'center',
-    justifyItems: 'center',
-  },
-  filterRow: {
-    gridTemplateColumns:
-      'auto 30px minmax(100px, 200px) minmax(min-content, 400px) auto auto',
-  },
-  filterLoadingSkeleton: {
-    transform: 'none',
-    height: '100%',
-    width: '100%',
-  },
-  criteriaRow: {
-    gridTemplateColumns: `auto 30px repeat(5, minmax(140px, 290px)) auto`,
   },
   filterSelect: {
     width: 200,
+  },
+  criterias: {
+    marginLeft: 36,
+  },
+  searchField: {
+    width: 375,
+  },
+  field: {
+    minWidth: 160,
   },
   filterLineLabel: {
     width: 60,
@@ -225,24 +219,21 @@ const Filter = (): JSX.Element => {
       expandable
       expandLabel={labelShowCriteriasFilters}
       filters={
-        <div className={clsx([classes.grid, classes.filterRow])}>
-          <Typography className={classes.filterLineLabel} variant="h6">
-            {t(labelFilter)}
-          </Typography>
+        <div className={classes.grid}>
           <SaveFilter />
           {customFiltersLoading ? (
-            <Skeleton className={classes.filterLoadingSkeleton} />
+            <FilterLoadingSkeleton />
           ) : (
             <SelectField
               options={options.map(pick(['id', 'name', 'type']))}
               selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
               onChange={changeFilterGroup}
               aria-label={t(labelStateFilter)}
-              fullWidth
+              className={classes.field}
             />
           )}
           <SearchField
-            fullWidth
+            className={classes.searchField}
             EndAdornment={SearchHelpTooltip}
             value={nextSearch || ''}
             onChange={prepareSearch}
@@ -255,64 +246,70 @@ const Filter = (): JSX.Element => {
         </div>
       }
       expandableFilters={
-        <div className={clsx([classes.grid, classes.criteriaRow])}>
-          <Typography className={classes.filterLineLabel} variant="subtitle1">
-            {t(labelCriterias)}
-          </Typography>
-          <div />
-          <MultiAutocompleteField
-            options={availableResourceTypes}
-            label={t(labelResource)}
-            onChange={changeResourceTypes}
-            value={resourceTypes || []}
-            openText={`${t(labelOpen)} ${t(labelResource)}`}
-            limitTags={2}
-            fullWidth
-          />
-          <MultiAutocompleteField
-            options={availableStates}
-            label={t(labelState)}
-            onChange={changeStates}
-            value={states || []}
-            openText={`${t(labelOpen)} ${t(labelState)}`}
-            limitTags={1}
-            fullWidth
-          />
-          <MultiAutocompleteField
-            options={availableStatuses}
-            label={t(labelStatus)}
-            onChange={changeStatuses}
-            value={statuses || []}
-            openText={`${t(labelOpen)} ${t(labelStatus)}`}
-            fullWidth
-            limitTags={2}
-          />
-          <MultiConnectedAutocompleteField
-            getEndpoint={getConnectedAutocompleteEndpoint(
-              buildHostGroupsEndpoint,
-            )}
-            label={t(labelHostGroup)}
-            onChange={changeHostGroups}
-            value={hostGroups || []}
-            openText={`${t(labelOpen)} ${t(labelHostGroup)}`}
-            field="name"
-            fullWidth
-          />
-          <MultiConnectedAutocompleteField
-            getEndpoint={getConnectedAutocompleteEndpoint(
-              buildServiceGroupsEndpoint,
-            )}
-            label={t(labelServiceGroup)}
-            onChange={changeServiceGroups}
-            value={serviceGroups || []}
-            openText={`${t(labelOpen)} ${t(labelServiceGroup)}`}
-            field="name"
-            fullWidth
-          />
-          <Button color="primary" onClick={clearAllFilters}>
-            {t(labelClearAll)}
-          </Button>
-        </div>
+        <ParentSize>
+          {({ width }): JSX.Element => {
+            const limitTags = width < 1000 ? 1 : 2;
+
+            const commonProps = {
+              limitTags,
+              className: classes.field,
+            };
+
+            return (
+              <div className={clsx([classes.grid, classes.criterias])}>
+                <MultiAutocompleteField
+                  options={availableResourceTypes}
+                  label={t(labelResource)}
+                  onChange={changeResourceTypes}
+                  value={resourceTypes || []}
+                  openText={`${t(labelOpen)} ${t(labelResource)}`}
+                  {...commonProps}
+                />
+                <MultiAutocompleteField
+                  options={availableStates}
+                  label={t(labelState)}
+                  onChange={changeStates}
+                  value={states || []}
+                  openText={`${t(labelOpen)} ${t(labelState)}`}
+                  {...commonProps}
+                />
+                <MultiAutocompleteField
+                  options={availableStatuses}
+                  label={t(labelStatus)}
+                  onChange={changeStatuses}
+                  value={statuses || []}
+                  openText={`${t(labelOpen)} ${t(labelStatus)}`}
+                  {...commonProps}
+                />
+                <MultiConnectedAutocompleteField
+                  getEndpoint={getConnectedAutocompleteEndpoint(
+                    buildHostGroupsEndpoint,
+                  )}
+                  label={t(labelHostGroup)}
+                  onChange={changeHostGroups}
+                  value={hostGroups || []}
+                  openText={`${t(labelOpen)} ${t(labelHostGroup)}`}
+                  field="name"
+                  {...commonProps}
+                />
+                <MultiConnectedAutocompleteField
+                  getEndpoint={getConnectedAutocompleteEndpoint(
+                    buildServiceGroupsEndpoint,
+                  )}
+                  label={t(labelServiceGroup)}
+                  onChange={changeServiceGroups}
+                  value={serviceGroups || []}
+                  openText={`${t(labelOpen)} ${t(labelServiceGroup)}`}
+                  field="name"
+                  {...commonProps}
+                />
+                <Button color="primary" onClick={clearAllFilters} size="small">
+                  {t(labelClear)}
+                </Button>
+              </div>
+            );
+          }}
+        </ParentSize>
       }
     />
   );

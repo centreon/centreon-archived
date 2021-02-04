@@ -1,0 +1,6 @@
+Centreon\Domain\HostConfiguration\Model\HostCategory:
+  properties:
+    name:
+      type: string
+      groups:
+        - 'host_category_conf_name'

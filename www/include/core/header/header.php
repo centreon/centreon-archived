@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -61,7 +61,7 @@ require_once "$classdir/centreonDB.class.php";
 require_once "$classdir/centreonLang.class.php";
 require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreon.class.php";
-require_once $classdir . '/centreonFeature.class.php';
+require_once "$classdir/centreonFeature.class.php";
 require_once SMARTY_DIR . "Smarty.class.php";
 
 /*
@@ -76,23 +76,10 @@ $centreonSession = new CentreonSession();
 
 CentreonSession::start();
 
-/*
- * Delete Session Expired
- */
-$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");
-$session_expire = $DBRESULT->fetch();
-if (!isset($session_expire["value"]) || !$session_expire["value"]) {
-    $session_expire["value"] = 2;
-}
-$time_limit = time() - ($session_expire["value"] * 60);
-
-$DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '" . $time_limit . "'");
-
-// drop session if session has been deleted due to expiration
+// Check session and drop all expired sessions
 if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     CentreonSession::stop();
 }
-
 
 $args = "&redirect='";
 $a = 0;

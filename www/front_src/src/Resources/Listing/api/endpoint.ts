@@ -8,6 +8,7 @@ export type ListResourcesProps = {
   statuses: Array<string>;
   hostGroupIds: Array<number>;
   serviceGroupIds: Array<number>;
+  onlyWithPerformanceData?: boolean;
 } & ListingParameters;
 
 const buildResourcesEndpoint = (parameters: ListResourcesProps): string => {
@@ -20,6 +21,10 @@ const buildResourcesEndpoint = (parameters: ListResourcesProps): string => {
       { name: 'statuses', value: parameters.statuses },
       { name: 'hostgroup_ids', value: parameters.hostGroupIds },
       { name: 'servicegroup_ids', value: parameters.serviceGroupIds },
+      {
+        name: 'only_with_performance_data',
+        value: parameters.onlyWithPerformanceData,
+      },
     ],
   });
 };

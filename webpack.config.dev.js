@@ -40,6 +40,7 @@ module.exports = merge(baseConfig, devConfig, {
     alias: {
       'react-router-dom': path.resolve('./node_modules/react-router-dom'),
       '@material-ui/core': path.resolve('./node_modules/@material-ui/core'),
+      dayjs: path.resolve('./node_modules/dayjs'),
     },
   },
   devServer: {

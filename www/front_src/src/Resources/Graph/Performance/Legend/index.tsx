@@ -2,11 +2,20 @@ import * as React from 'react';
 
 import clsx from 'clsx';
 
-import { Typography, makeStyles, useTheme, fade } from '@material-ui/core';
+import {
+  Typography,
+  makeStyles,
+  useTheme,
+  fade,
+  Theme,
+} from '@material-ui/core';
 
-import { Line } from './models';
+import { useResourceContext } from '../../../Context';
+import { Line } from '../models';
 
-const useStyles = makeStyles((theme) => ({
+import LegendMarker from './Marker';
+
+const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
   item: {
     display: 'flex',
     alignItems: 'center',
@@ -18,10 +27,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '50%',
     marginRight: theme.spacing(1),
   },
-  caption: {
+  caption: ({ panelWidth }) => ({
     marginRight: theme.spacing(1),
     color: fade(theme.palette.common.black, 0.6),
-  },
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: 0.85 * panelWidth,
+  }),
   hidden: {
     color: theme.palette.text.disabled,
   },
@@ -36,26 +48,29 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   lines: Array<Line>;
   toggable: boolean;
-  onItemToggle: (params) => void;
-  onItemHighlight: (metric) => void;
-  onClearItemHighlight: () => void;
+  onToggle: (metric: string) => void;
+  onHighlight: (metric: string) => void;
+  onSelect: (metric: string) => void;
+  onClearHighlight: () => void;
 }
 
 const Legend = ({
   lines,
-  onItemToggle,
+  onToggle,
+  onSelect,
   toggable,
-  onItemHighlight,
-  onClearItemHighlight,
+  onHighlight,
+  onClearHighlight,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const { panelWidth } = useResourceContext();
+  const classes = useStyles({ panelWidth });
   const theme = useTheme();
 
   const getLegendName = ({ metric, name, display }: Line): JSX.Element => {
     return (
       <div
-        onMouseEnter={(): void => onItemHighlight(metric)}
-        onMouseLeave={(): void => onClearItemHighlight()}
+        onMouseEnter={(): void => onHighlight(metric)}
+        onMouseLeave={(): void => onClearHighlight()}
       >
         <Typography
           className={clsx(
@@ -66,11 +81,17 @@ const Legend = ({
             classes.caption,
           )}
           variant="body2"
-          onClick={(): void => {
+          onClick={(event: React.MouseEvent): void => {
             if (!toggable) {
               return;
             }
-            onItemToggle(metric);
+
+            if (event.ctrlKey) {
+              onToggle(metric);
+              return;
+            }
+
+            onSelect(metric);
           }}
         >
           {name}
@@ -84,16 +105,13 @@ const Legend = ({
       {lines.map((line) => {
         const { color, name, display } = line;
 
-        const iconBackgroundColor = display
+        const markerColor = display
           ? color
           : fade(theme.palette.text.disabled, 0.2);
 
         return (
           <div className={classes.item} key={name}>
-            <div
-              className={clsx(classes.icon, { [classes.hidden]: !display })}
-              style={{ backgroundColor: iconBackgroundColor }}
-            />
+            <LegendMarker disabled={!display} color={markerColor} />
             {getLegendName(line)}
           </div>
         );

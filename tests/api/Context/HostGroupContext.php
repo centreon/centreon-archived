@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,11 @@
  * For more information : contact@centreon.com
  *
  */
-declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces;
+namespace Centreon\Test\Api\Context;
 
-use Centreon\Domain\HostConfiguration\Model\HostCategory;
+use Centreon\Test\Behat\Api\Context\ApiContext;
 
-/**
- * This interface gathers all the reading operations on the host category repository.
- *
- * @package Centreon\Domain\HostConfiguration\Interfaces
- */
-interface HostCategoryReadRepositoryInterface
+class HostGroupContext extends ApiContext
 {
-    /**
-     * @return HostCategory[]
-     * @throws \Throwable
-     */
-    public function findHostCategories(): array;
 }
