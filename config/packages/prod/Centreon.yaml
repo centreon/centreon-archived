@@ -225,7 +225,10 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryServiceInterface:
         class: Centreon\Domain\HostConfiguration\HostCategoryService
 
-    Centreon\Domain\HostConfiguration\Interfaces\HostSeverityReadRepositoryInterface:
+    Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityServiceInterface:
+        class: Centreon\Domain\HostConfiguration\HostSeverityService
+
+    Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostSeverityRepositoryRDB
 
     Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities:

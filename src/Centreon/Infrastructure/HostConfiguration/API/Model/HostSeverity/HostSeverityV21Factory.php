@@ -27,7 +27,7 @@ use Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeveritie
 /**
  * This class is designed to create the hostSeverityV21 entity
  *
- * @package Centreon\Infrastructure\HostConfiguration\API\Model
+ * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity
  */
 class HostSeverityV21Factory
 {

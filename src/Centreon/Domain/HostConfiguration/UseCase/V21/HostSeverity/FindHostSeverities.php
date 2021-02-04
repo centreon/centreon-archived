@@ -23,41 +23,37 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\HostConfiguration\Exception\HostSeverityException;
-use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface;
-use Centreon\Domain\HostConfiguration\Model\HostSeverity;
+use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityServiceInterface;
 
 /**
- * This class is designed to represent a use case to find all host severities
+ * This class is designed to represent a use case to find all host severities.
  *
- * @package Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity
+ * @package Centreon\Domain\HostConfiguration\UseCase\V21
  */
 class FindHostSeverities
 {
     /**
-     * @var HostSeverityReadRepositoryInterface
+     * @var HostSeverityServiceInterface
      */
-    private $hostSeverityReadRepository;
-
+    private $severityService;
     /**
      * @var ContactInterface
      */
     private $contact;
-
     /**
      * @var string|null
      */
     private $mediaPath;
 
     /**
-     * @param HostSeverityReadRepositoryInterface $configurationReadRepository
+     * FindHostSeverities constructor.
+     *
+     * @param HostSeverityServiceInterface $severityService
      * @param ContactInterface $contact
      */
-    public function __construct(
-        HostSeverityReadRepositoryInterface $configurationReadRepository,
-        ContactInterface $contact
-    ) {
-        $this->hostSeverityReadRepository = $configurationReadRepository;
+    public function __construct(HostSeverityServiceInterface $severityService, ContactInterface $contact)
+    {
+        $this->severityService = $severityService;
         $this->contact = $contact;
     }
 
@@ -82,8 +78,8 @@ class FindHostSeverities
     {
         try {
             $hostSeverities = ($this->contact->isAdmin())
-                ? $this->hostSeverityReadRepository->findAllWithoutAcl()
-                : $this->hostSeverityReadRepository->findAllWithAcl();
+                ? $this->severityService->findAllWithoutAcl()
+                : $this->severityService->findAllWithAcl();
         } catch (\Exception $ex) {
             throw HostSeverityException::findHostSeveritiesException($ex);
         }

@@ -25,7 +25,7 @@ namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity;
 /**
  * This class is designed to represent the formatted response of the API request.
  *
- * @package Centreon\Infrastructure\HostConfiguration\API\Model
+ * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity
  */
 class HostSeverityV21
 {

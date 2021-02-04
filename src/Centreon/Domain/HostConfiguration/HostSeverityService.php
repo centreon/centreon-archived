@@ -26,7 +26,6 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Exception\HostSeverityException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityServiceInterface;
-use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 
 /**
  * This class is designed to manage the host severities.
@@ -53,6 +52,7 @@ class HostSeverityService implements HostSeverityServiceInterface
         HostSeverityReadRepositoryInterface $repository,
         ContactInterface $contact
     ) {
+        var_dump('njnjnj');
         $this->readRepository = $repository;
         $this->contact = $contact;
     }

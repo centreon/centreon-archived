@@ -127,7 +127,7 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
         $request .= !is_null($searchRequest)
             ? $searchRequest . ' AND hc.level IS NOT NULL'
             : '  WHERE hc.level IS NOT NULL';
-        
+
         if ($contactId !== null) {
             $request .= ' AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)';
         }
