@@ -81,6 +81,7 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
             'id' => 'hc.hc_id',
             'name' => 'hc.hc_name',
             'alias' => 'hc.hc_alias',
+            'level' => 'hc.level',
             'is_activated' => 'hc.hc_activate',
         ]);
         $this->sqlRequestTranslator->addNormalizer(
@@ -100,11 +101,28 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
             }
         );
         if ($contactId === null) {
-            $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.hostcategories hc');
+            $request = $this->translateDbName(
+                'SELECT SQL_CALC_FOUND_ROWS hc.*, icon.img_id AS img_id, icon.img_name AS img_name,
+                CONCAT(iconD.dir_name,\'/\',icon.img_path) AS img_path, icon.img_comment AS img_comment
+                FROM `:db`.hostcategories hc
+                LEFT JOIN `:db`.view_img icon
+                    ON icon.img_id = hc.icon_id
+                LEFT JOIN `:db`.view_img_dir_relation iconR
+                    ON iconR.img_img_id = icon.img_id
+                LEFT JOIN `:db`.view_img_dir iconD
+                    ON iconD.dir_id = iconR.dir_dir_parent_id'
+            );
         } else {
             $request = $this->translateDbName(
-                'SELECT SQL_CALC_FOUND_ROWS hc.*
+                'SELECT SQL_CALC_FOUND_ROWS hc.*, icon.img_id AS img_id, icon.img_name AS img_name,
+                CONCAT(iconD.dir_name,\'/\',icon.img_path) AS img_path, icon.img_comment AS img_comment
                 FROM `:db`.hostcategories hc
+                LEFT JOIN `:db`.view_img icon
+                    ON icon.img_id = hc.icon_id
+                LEFT JOIN `:db`.view_img_dir_relation iconR
+                    ON iconR.img_img_id = icon.img_id
+                LEFT JOIN `:db`.view_img_dir iconD
+                    ON iconD.dir_id = iconR.dir_dir_parent_id
                 INNER JOIN `:db`.acl_resources_hc_relations arhr
                     ON hc.hc_id = arhr.hc_id
                 INNER JOIN `:db`.acl_resources res
@@ -121,7 +139,6 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
                     ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id'
             );
         }
-
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest)
@@ -151,12 +168,10 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
             $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
         }
         $statement->execute();
-
         $result = $this->db->query('SELECT FOUND_ROWS()');
         if ($result !== false && ($total = $result->fetchColumn()) !== false) {
             $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
         }
-
         $hostSeverities = [];
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $hostSeverities[] = HostSeverityFactoryRdb::create($record);
