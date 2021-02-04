@@ -15,7 +15,7 @@ import {
 } from 'ramda';
 
 import AddIcon from '@material-ui/icons/AddCircle';
-import { ClickAwayListener, Popper } from '@material-ui/core';
+import { ClickAwayListener, Popper, useTheme } from '@material-ui/core';
 
 import { IconButton, MultiAutocompleteField } from '@centreon/ui';
 
@@ -41,8 +41,9 @@ const nameIsIn = (names: Array<string>) => propSatisfies(isIn(names), 'name');
 
 const CriteriasMultiSelect = (): JSX.Element => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
-  const { filter, setFilter, setNewFilter } = useResourceContext();
+  const { filter, setFilter } = useResourceContext();
 
   const [anchorEl, setAnchorEl] = React.useState();
 
@@ -125,7 +126,7 @@ const CriteriasMultiSelect = (): JSX.Element => {
           open={isOpen}
           anchorEl={anchorEl}
         >
-          <div style={{ backgroundColor: 'white' }}>
+          <div style={{ backgroundColor: theme.palette.common.white }}>
             <MultiAutocompleteField
               onClose={close}
               label={t(labelCriterias)}
