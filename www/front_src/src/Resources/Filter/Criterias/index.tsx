@@ -33,6 +33,9 @@ const Criterias = (): JSX.Element => {
       {({ width }): JSX.Element => {
         return (
           <Grid container spacing={1} alignItems="center">
+            <Grid item>
+              <CriteriasMultiSelect />
+            </Grid>
             {getMultiSelectCriterias().map(({ name, value }) => {
               return (
                 <Grid item key={name}>
@@ -44,10 +47,6 @@ const Criterias = (): JSX.Element => {
                 </Grid>
               );
             })}
-
-            <Grid item>
-              <CriteriasMultiSelect />
-            </Grid>
             <Grid item>
               <Button color="primary" onClick={clearAllFilters} size="small">
                 {t(labelClear)}
