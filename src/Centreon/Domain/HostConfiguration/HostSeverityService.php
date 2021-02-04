@@ -52,7 +52,6 @@ class HostSeverityService implements HostSeverityServiceInterface
         HostSeverityReadRepositoryInterface $repository,
         ContactInterface $contact
     ) {
-        var_dump('njnjnj');
         $this->readRepository = $repository;
         $this->contact = $contact;
     }
