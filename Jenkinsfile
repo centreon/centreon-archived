@@ -43,13 +43,13 @@ def myChangeset(patterns) {
         echo "${file} match ${pattern} ?"
         if (SelectorUtils.match(pattern, file)) {
           echo "matching !!!!!!"
-          return true
+          return "true"
         }
       }
     }
   }
 
-  return false
+  return "false"
 }
 
 /*
