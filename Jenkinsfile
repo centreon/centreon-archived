@@ -41,7 +41,7 @@ def myChangeset(patterns) {
     for (file in files) {
       echo file
       for (pattern in patterns.split(" ")) {
-        if (SelectorUtils.match(pattern, file)) {
+        if (SelectorUtils.matchPath(pattern, file)) {
           return true
         }
       }
