@@ -51,12 +51,47 @@ stage('Source') {
 
 try {
   stage('Unit tests') {
-    parallel 'centos7': {
+    parallel 'frontend': {
       node {
         sh 'setup_centreon_build.sh'
         unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
-        junit 'ut-be.xml,ut-fe.xml'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
+        junit 'ut-fe.xml'
+
+        if (env.CHANGE_ID) { // pull request to comment with coding style issues
+          ViolationsToGitHub([
+            repositoryName: 'centreon',
+            pullRequestId: env.CHANGE_ID,
+
+            createSingleFileComments: true,
+            commentOnlyChangedContent: true,
+            commentOnlyChangedFiles: true,
+            keepOldComments: false,
+
+            commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
+
+            violationConfigs: [
+              [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
+            ]
+          ])
+        }
+
+        discoverGitReferenceBuild()
+        recordIssues(
+          enabledForFailure: true,
+          failOnError: true,
+          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+          tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
+          trendChartType: 'NONE'
+        )
+      }
+    },
+    'backend': {
+      node {
+        sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
+        junit 'ut-be.xml'
 
         if (env.CHANGE_ID) { // pull request to comment with coding style issues
           ViolationsToGitHub([
@@ -72,7 +107,6 @@ try {
 
             violationConfigs: [
               [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
-              [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle'],
               [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle']
             ]
           ])
@@ -91,13 +125,6 @@ try {
           tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
           trendChartType: 'NONE'
         )
-        recordIssues(
-          enabledForFailure: true,
-          failOnError: true,
-          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
-          trendChartType: 'NONE'
-        )
 
         if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
           unstash 'git-sources'
@@ -106,14 +133,6 @@ try {
             sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
           }
         }
-      }
-    },
-    'centos8': {
-      node {
-        sh 'setup_centreon_build.sh'
-        unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
-        junit 'ut-be.xml,ut-fe.xml'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
