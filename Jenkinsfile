@@ -22,7 +22,7 @@ def featureFiles = []
 ** Functions
 */
 @NonCPS
-def myChangeset(patterns) {
+boolean myChangeset(patterns) {
   /*
   if (!env.CHANGE_TARGET || env.BUILD == 'RELEASE' || env.BUILD == 'REFERENCE') {
     return true
