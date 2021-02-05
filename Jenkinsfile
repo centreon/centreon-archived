@@ -21,7 +21,7 @@ def featureFiles = []
 /*
 ** Functions
 */
-boolean myChangeset(patterns) {
+def myChangeset(patterns) {
   /*
   if (!env.CHANGE_TARGET || env.BUILD == 'RELEASE' || env.BUILD == 'REFERENCE') {
     return true
@@ -29,21 +29,19 @@ boolean myChangeset(patterns) {
   */
 
     dir ('centreon-web') {
-      sh "git config --add remote.origin.fetch +refs/heads/master:refs/remotes/origin/master"
+      sh "git config --add remote.origin.fetch +refs/heads/${env.REF_BRANCH}:refs/remotes/origin/${env.REF_BRANCH}"
       sh ("git fetch --no-tags")
-    def git_diff = sh (
-        script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --",
-        returnStdout: true
-    ).trim()
-
-    echo git_diff
+      sh ("git merge --ff-only")
+      def git_diff = sh (
+          script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --",
+          returnStdout: true
+      ).trim()
 
     def files = git_diff.split('\n')
     for (file in files) {
       echo file
       for (pattern in patterns.split(" ")) {
         if (SelectorUtils.match(pattern, file)) {
-          echo "true !!!!"
           return true
         }
       }
@@ -79,10 +77,6 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
-    def toto = myChangeset("www/front_src/**")
-    echo "toto"
-    echo toto
-    echo "toto"
     // git repository is stored for the Sonar analysis below.
     if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
       sh 'tar czf centreon-web-git.tar.gz centreon-web'
