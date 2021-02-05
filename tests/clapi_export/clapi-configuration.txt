@@ -591,6 +591,7 @@ ENGINECFG;setparam;Centreon Engine Central;check_for_orphaned_hosts;0
 ENGINECFG;setparam;Centreon Engine Central;check_service_freshness;1
 ENGINECFG;setparam;Centreon Engine Central;check_host_freshness;2
 ENGINECFG;setparam;Centreon Engine Central;date_format;euro
+ENGINECFG;setparam;Centreon Engine Central;instance_heartbeat_interval;30
 ENGINECFG;setparam;Centreon Engine Central;illegal_object_name_chars;~!$%^&*"|'<>?,()=
 ENGINECFG;setparam;Centreon Engine Central;illegal_macro_output_chars;`~$^&"|'<>
 ENGINECFG;setparam;Centreon Engine Central;use_regexp_matching;2

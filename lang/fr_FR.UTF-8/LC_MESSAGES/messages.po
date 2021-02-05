@@ -8321,6 +8321,14 @@ msgstr "Notification"
 msgid "Service Check Execution Option"
 msgstr "Contrôle actif des services"
 
+#: centreon-web/www/include/configuration/configNagios/formNagios.php
+msgid "Heartbeat Interval"
+msgstr "Intervalle du Heartbeat"
+
+#: centreon-web/www/include/configuration/configNagios/formNagios.php
+msgid "Number between 5 and 600"
+msgstr "Nombre entre 5 et 600"
+
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:193
 msgid "Passive Service Check Acceptance Option"
 msgstr "Contrôle passif des services"

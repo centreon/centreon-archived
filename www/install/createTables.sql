@@ -545,6 +545,7 @@ CREATE TABLE `cfg_nagios` (
   `check_host_freshness` enum('0','1','2') DEFAULT NULL,
   `host_freshness_check_interval` int(11) DEFAULT NULL,
   `date_format` varchar(255) DEFAULT NULL,
+  `instance_heartbeat_interval` smallint DEFAULT 30,
   `illegal_object_name_chars` varchar(255) DEFAULT NULL,
   `illegal_macro_output_chars` varchar(255) DEFAULT NULL,
   `use_regexp_matching` enum('0','1','2') DEFAULT NULL,
