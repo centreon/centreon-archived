@@ -23,7 +23,7 @@ def hasBackendUpdate = true
 /*
 ** Functions
 */
-def hasChanges(patterns) {
+def hasChanges(pattern) {
   if (env.BUILD == 'RELEASE' || env.BUILD == 'REFERENCE') {
     return true
   }
@@ -36,10 +36,8 @@ def hasChanges(patterns) {
   def diffFiles = sh(script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --", returnStdout: true).trim().split()
 
   for (file in diffFiles) {
-    for (pattern in patterns.split(" ")) {
-      if (SelectorUtils.match(pattern, file)) {
-        isMatching = true
-      }
+    if (SelectorUtils.match(pattern, file)) {
+      isMatching = true
     }
   }
 
