@@ -4,9 +4,9 @@ import org.apache.tools.ant.types.selectors.SelectorUtils
 ** Variables.
 */
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
-env.REF_BRANCH = 'master'
 def serie = '21.04'
 def maintenanceBranch = "${serie}.x"
+env.REF_BRANCH = 'master'
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
@@ -29,24 +29,8 @@ boolean myChangeset(patterns) {
   */
 
     dir ('centreon-web') {
-    def local_branch = sh (
-      script: "git rev-parse --abbrev-ref HEAD",
-      label: "Getting current branch name",
-      returnStdout: true
-    ).trim()
-    echo "Local branch is ${local_branch}"
-
-    // This is very naive.
-    // In reality, you need a better way to find out what your base branch is.
-    // One way is to have a file with a name of a base branch.
-    // Another one is to invoke API, e.g. GitHub API, to find out base branch.
-    // Use whatever works for you.
-    echo "Base branch is ${env.REF_BRANCH}"
-
-    sh script: "git fetch origin --no-tags ${env.REF_BRANCH}", label: "Getting base branch"
-
     def git_diff = sh (
-        script: "git diff --name-only origin/${env.REF_BRANCH}..${local_branch}",
+        script: "git diff --name-only origin/${env.REF_BRANCH}..${env.BRANCH_NAME}",
         returnStdout: true
     ).trim()
 
