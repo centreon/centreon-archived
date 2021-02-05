@@ -28,30 +28,24 @@ def myChangeset(patterns) {
   }
   */
 
-  def result = false
+  def isMatching = false
 
+  sh "git config --add remote.origin.fetch +refs/heads/${env.REF_BRANCH}:refs/remotes/origin/${env.REF_BRANCH}"
+  sh ("git fetch --no-tags")
+  sh ("git pull --rebase origin ${env.REF_BRANCH} || true")
+  def gitDiff = sh("git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --").trim()
+  def files = gitDiff.split('\n')
 
-    sh "git config --add remote.origin.fetch +refs/heads/${env.REF_BRANCH}:refs/remotes/origin/${env.REF_BRANCH}"
-    sh ("git fetch --no-tags")
-    sh ("git pull --rebase origin ${env.REF_BRANCH} || true")
-    def git_diff = sh (
-      script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --",
-      returnStdout: true
-    ).trim()
-
-    def files = git_diff.split('\n')
-    for (file in files) {
-      for (pattern in patterns.split(" ")) {
-        echo "${file} match ${pattern} ?"
-        if (SelectorUtils.match(pattern, file)) {
-          echo "matching !!!!!!"
-          result = true
-        }
+  for (file in files) {
+    for (pattern in patterns.split(" ")) {
+      if (SelectorUtils.match(pattern, file)) {
+        isMatching = true
       }
     }
+  }
 
 
-  return result
+  return isMatching
 }
 
 /*
@@ -95,7 +89,7 @@ stage('Source') {
 try {
   stage('Unit tests') {
     parallel 'frontend': {
-      if (myChangeset("www/front_src/**")) {
+      if (FRONTEND_UPDATE) {
         node {
           sh 'setup_centreon_build.sh'
           unstash 'tar-sources'
@@ -133,7 +127,7 @@ try {
       }
     },
     'backend': {
-      if (myChangeset("www/class/**")) {
+      if (BACKEND_UPDATE) {
         node {
           sh 'setup_centreon_build.sh'
           unstash 'tar-sources'
