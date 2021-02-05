@@ -222,48 +222,52 @@ try {
   }
 
   stage('API integration tests') {
-    def parallelSteps = [:]
-    for (x in apiFeatureFiles) {
-      def feature = x
-      parallelSteps[feature] = {
-        node {
-          sh 'setup_centreon_build.sh'
-          unstash 'tar-sources'
-          unstash 'vendor'
-          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
-          junit 'xunit-reports/**/*.xml'
-          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-            currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+    if (hasBackendUpdate) {
+      def parallelSteps = [:]
+      for (x in apiFeatureFiles) {
+        def feature = x
+        parallelSteps[feature] = {
+          node {
+            sh 'setup_centreon_build.sh'
+            unstash 'tar-sources'
+            unstash 'vendor'
+            def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
+            junit 'xunit-reports/**/*.xml'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              currentBuild.result = 'FAILURE'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+          }
         }
       }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('API integration tests stage failure.');
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('API integration tests stage failure.');
+      }
     }
   }
 
   stage('Acceptance tests') {
-    def parallelSteps = [:]
-    for (x in featureFiles) {
-      def feature = x
-      parallelSteps[feature] = {
-        node {
-          sh 'setup_centreon_build.sh'
-          unstash 'tar-sources'
-          unstash 'vendor'
-          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
-          junit 'xunit-reports/**/*.xml'
-          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-            currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+    if (hasBackendUpdate) {
+      def parallelSteps = [:]
+      for (x in featureFiles) {
+        def feature = x
+        parallelSteps[feature] = {
+          node {
+            sh 'setup_centreon_build.sh'
+            unstash 'tar-sources'
+            unstash 'vendor'
+            def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
+            junit 'xunit-reports/**/*.xml'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              currentBuild.result = 'FAILURE'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+          }
         }
       }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Critical tests stage failure.');
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Critical tests stage failure.');
+      }
     }
   }
 
