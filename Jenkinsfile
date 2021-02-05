@@ -60,7 +60,7 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
-    env.FRONTEND_UPDATE = myChangeset("www/front_src/**")
+    env.FRONTEND_UPDATE = myChangeset("www/front_src/*")
     env.BACKEND_UPDATE = myChangeset("**/*.php")
 
     echo env.FRONTEND_UPDATE
