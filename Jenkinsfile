@@ -53,6 +53,7 @@ stage('Source') {
 try {
   stage('Unit tests') {
     parallel 'frontend': {
+      when { changeset "www/front_src/**" }
       node {
         sh 'setup_centreon_build.sh'
         unstash 'tar-sources'
