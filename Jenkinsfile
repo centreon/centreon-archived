@@ -39,8 +39,8 @@ def myChangeset(patterns) {
 
     def files = git_diff.split('\n')
     for (file in files) {
-      echo file
       for (pattern in patterns.split(" ")) {
+        echo "${file} match ${pattern} ?"
         if (SelectorUtils.match(pattern, file)) {
           return true
         }
