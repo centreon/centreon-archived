@@ -51,7 +51,6 @@ use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class CentreonModuleServiceTest extends TestCase
 {
-
     use TestCaseExtensionTrait;
     use SourceDependencyTrait;
 

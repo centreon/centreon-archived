@@ -51,11 +51,11 @@ class CentreonModuleWebserviceTest extends TestCase
     use Traits\WebServiceAuthorizeRestApiTrait;
     use Traits\WebServiceExecuteTestTrait;
 
-    const METHOD_GET_LIST = 'getList';
-    const METHOD_GET_DETAILS = 'getDetails';
-    const METHOD_POST_INSTALL = 'postInstall';
-    const METHOD_POST_UPDATE = 'postUpdate';
-    const METHOD_DELETE_REMOVE = 'deleteRemove';
+    public const METHOD_GET_LIST = 'getList';
+    public const METHOD_GET_DETAILS = 'getDetails';
+    public const METHOD_POST_INSTALL = 'postInstall';
+    public const METHOD_POST_UPDATE = 'postUpdate';
+    public const METHOD_DELETE_REMOVE = 'deleteRemove';
 
     protected function setUp(): void
     {
