@@ -87,7 +87,6 @@ stage('Source') {
 try {
   stage('Unit tests') {
     parallel 'frontend': {
-      echo hasFrontendUpdate.toString()
       if (hasFrontendUpdate) {
         node {
           sh 'setup_centreon_build.sh'
