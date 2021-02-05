@@ -30,7 +30,7 @@ def myChangeset(patterns) {
 
   def result = false
 
-  dir ('centreon-web') {
+
     sh "git config --add remote.origin.fetch +refs/heads/${env.REF_BRANCH}:refs/remotes/origin/${env.REF_BRANCH}"
     sh ("git fetch --no-tags")
     sh ("git pull --rebase origin ${env.REF_BRANCH} || true")
@@ -49,7 +49,7 @@ def myChangeset(patterns) {
         }
       }
     }
-  }
+
 
   return result
 }
@@ -62,12 +62,10 @@ stage('Source') {
     sh 'setup_centreon_build.sh'
     dir('centreon-web') {
       checkout scm
+      def FRONTEND_UPDATE = myChangeset("www/front_src/**")
+      def BACKEND_UPDATE = myChangeset("**/*.php")
     }
-    def FRONTEND_UPDATE = myChangeset("www/front_src/**")
-    echo FRONTEND_UPDATE
-    def BACKEND_UPDATE = myChangeset("**/*.php")
-    echo BACKEND_UPDATE
-    error "ok"
+
     // git repository is stored for the Sonar analysis below.
     if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
       sh 'tar czf centreon-web-git.tar.gz centreon-web'
