@@ -31,7 +31,7 @@ boolean myChangeset(patterns) {
     dir ('centreon-web') {
       sh ("git fetch origin ${env.REF_BRANCH}")
     def git_diff = sh (
-        script: "git diff --name-only ${env.REF_BRANCH} ${env.BRANCH_NAME} --",
+        script: "git diff --name-only origin/${env.REF_BRANCH}",
         returnStdout: true
     ).trim()
 
