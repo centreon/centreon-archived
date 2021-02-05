@@ -39,6 +39,7 @@ def myChangeset(String patterns) {
 /*
 ** Pipeline code.
 */
+/*
 stage('Source') {
   node {
     sh 'setup_centreon_build.sh'
@@ -70,6 +71,7 @@ stage('Source') {
     featureFiles = sh(script: 'find centreon-web/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
   }
 }
+*/
 
 try {
   stage('Unit tests') {
