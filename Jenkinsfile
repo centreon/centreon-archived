@@ -42,6 +42,7 @@ def myChangeset(patterns) {
       for (pattern in patterns.split(" ")) {
         echo "${file} match ${pattern} ?"
         if (SelectorUtils.match(pattern, file)) {
+          echo "matching !!!!!!"
           return true
         }
       }
