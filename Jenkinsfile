@@ -35,6 +35,7 @@ stage('Source') {
     env.RELEASE = "${source.RELEASE}"
     stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
+    stash name: 'node_modules', includes: 'node_modules.tar.gz'
     stash name: 'api-doc', includes: 'centreon-api-v2.html'
     publishHTML([
       allowMissing: false,
@@ -55,6 +56,7 @@ try {
       node {
         sh 'setup_centreon_build.sh'
         unstash 'tar-sources'
+        unstash 'node_modules'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
         junit 'ut-fe.xml'
 
@@ -90,6 +92,7 @@ try {
       node {
         sh 'setup_centreon_build.sh'
         unstash 'tar-sources'
+        unstash 'vendor'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
         junit 'ut-be.xml'
 
