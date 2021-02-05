@@ -57,7 +57,6 @@ stage('Source') {
       hasFrontendUpdate = hasChanges("www/front_src/**")
       hasBackendUpdate = hasChanges("**/*.php")
     }
-    echo FRONTEND_UPDATE.toString()
 
     // git repository is stored for the Sonar analysis below.
     if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
