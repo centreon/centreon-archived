@@ -90,6 +90,7 @@ try {
       }
     },
     'backend': {
+      when { changeset "www/class/**" }
       node {
         sh 'setup_centreon_build.sh'
         unstash 'tar-sources'
