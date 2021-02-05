@@ -15995,7 +15995,7 @@ msgid "Error when searching for host groups"
 msgstr "Erreur lors de la recherche de groupes d'hôtes"
 
 msgid "Select criterias"
-msgstr "Séléctionner les critères"
+msgstr "Sélectionner les critères"
 
 msgid "Error when searching for the host category (%s)"
 msgstr "Erreur lors de la recherche de la catégorie de l'hôte (%s)"
