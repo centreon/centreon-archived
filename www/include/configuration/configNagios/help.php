@@ -741,6 +741,11 @@ $help["date_format"] = dgettext(
     "This option allows you to specify what kind of date/time format Monitoring Engine should use in the web " .
     "interface and date/time macros."
 );
+$help["instance_heartbeat_interval"] = dgettext(
+    "help",
+    "Time interval in seconds between two heartbeat events. This event is the one responsible of the ‘Last Update’ "
+    . "column update in the Pollers listing. Value must be between 5 and 600. Default value is 30."
+);
 $help["admin_email"] = dgettext(
     "help",
     "This is the email address for the administrator of the local machine (i.e. the one that Monitoring " .

@@ -621,6 +621,7 @@ $dateFormats = array(
     "strict-iso8601" => "strict-iso8601 (2002-06-30 03:15:00)"
 );
 $form->addElement('select', 'date_format', _("Date Format"), $dateFormats);
+$form->addElement('text', 'instance_heartbeat_interval', _("Heartbeat Interval"), $attrsText);
 $form->addElement('text', 'admin_email', _("Administrator Email Address"), $attrsText);
 $form->addElement('text', 'admin_pager', _("Administrator Pager"), $attrsText);
 $form->addElement('text', 'illegal_object_name_chars', _("Illegal Object Name Characters"), $attrsText2);
@@ -840,6 +841,19 @@ function isNum($value)
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->registerRule('isNum', 'callback', 'isNum');
 
+/**
+ * @param $value
+ * @return bool
+ */
+function isValidHeartbeat($value): bool
+{
+    if (!is_numeric($value) || $value < 5 || $value > 600) {
+        return false;
+    }
+    return true;
+}
+$form->registerRule('isValidHeartbeat', 'callback', 'isValidHeartbeat');
+
 /* Add validator for macro name format */
 /**
  * Validate the macro name
@@ -866,13 +880,13 @@ $form->applyFilter('cfg_dir', 'slash');
 $form->applyFilter('log_archive_path', 'slash');
 $form->applyFilter('__ALL__', 'myTrim');
 
+$form->addRule('instance_heartbeat_interval', _("Number between 5 and 600"), 'isValidHeartbeat');
 $form->addRule('nagios_name', _("Compulsory Name"), 'required');
 $form->addRule('cfg_file', _("Required Field"), 'required');
 $form->addRule('nagios_comment', _("Required Field"), 'required');
 $form->addRule('nagios_name', _("Name is already in use"), 'exist');
 // Add rule to field for whitelist macro
 $form->addRule('macros_filter', _("A macro is malformated."), 'validMacroName');
-
 /*
  * Get Values
  */

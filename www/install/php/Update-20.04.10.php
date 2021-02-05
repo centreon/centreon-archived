@@ -150,10 +150,28 @@ try {
         $defaultValue = $result['COLUMN_DEFAULT'];
         if ($defaultValue !== '0') {
             // An update is required
-            $errorMessage = 'Impossible to alter the table cfg_nagios';
+            $errorMessage = 'Impossible to alter the table cfg_nagios with postpone_notification_to_timeperiod';
             $pearDB->query(
                 'ALTER TABLE `cfg_nagios` ADD COLUMN
                 `postpone_notification_to_timeperiod` boolean DEFAULT false AFTER `nagios_group`'
+            );
+        }
+    }
+    //engine heartbeat interval
+    $statement = $pearDB->query(
+        'SELECT COLUMN_DEFAULT
+        FROM information_schema.COLUMNS
+        WHERE TABLE_NAME = \'cfg_nagios\'
+          AND COLUMN_NAME = \'instance_heartbeat_interval\''
+    );
+    if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        $defaultValue = $result['COLUMN_DEFAULT'];
+        if ($defaultValue !== '0') {
+            // An update is required
+            $errorMessage = 'Impossible to alter the table cfg_nagios with instance_heartbeat_interval';
+            $pearDB->query(
+                'ALTER TABLE `cfg_nagios` ADD COLUMN
+                `instance_heartbeat_interval` smallint DEFAULT 30 false AFTER `date_format`'
             );
         }
     }
