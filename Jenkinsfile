@@ -82,6 +82,7 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
+    myChangeset("www/front_src/**")
     // git repository is stored for the Sonar analysis below.
     if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
       sh 'tar czf centreon-web-git.tar.gz centreon-web'
