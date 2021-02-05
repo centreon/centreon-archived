@@ -17,6 +17,8 @@ if (env.BRANCH_NAME.startsWith('release-')) {
 }
 def apiFeatureFiles = []
 def featureFiles = []
+def FRONTEND_UPDATE = true
+def BACKEND_UPDATE = true
 
 /*
 ** Functions
@@ -52,8 +54,8 @@ stage('Source') {
     sh 'setup_centreon_build.sh'
     dir('centreon-web') {
       checkout scm
-      def FRONTEND_UPDATE = hasChanges("www/front_src/**")
-      def BACKEND_UPDATE = hasChanges("**/*.php")
+      FRONTEND_UPDATE = hasChanges("www/front_src/**")
+      BACKEND_UPDATE = hasChanges("**/*.php")
     }
     echo FRONTEND_UPDATE.toString()
 
