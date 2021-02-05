@@ -32,7 +32,7 @@ def hasChanges(patterns) {
 
   sh "git config --add remote.origin.fetch +refs/heads/${env.REF_BRANCH}:refs/remotes/origin/${env.REF_BRANCH}"
   sh "git fetch --no-tags"
-  sh "git pull --rebase origin ${env.REF_BRANCH} || true"
+  sh "git merge --no-commit --no-ff origin ${env.REF_BRANCH} || true"
   def diffFiles = sh(script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --", returnStdout: true).trim().split()
 
   for (file in diffFiles) {
