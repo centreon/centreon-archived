@@ -52,6 +52,17 @@ def myChangeset(String patterns) {
     ).trim()
 
     echo git_diff
+
+    def files = git_diff.split('\n')
+    for (file in files) {
+      echo file
+      for (pattern in patterns.split(" ")) {
+        if (SelectorUtils.match(pattern, file)) {
+          echo "true !!!!"
+          return true
+        }
+      }
+    }
   }
 
 /*
