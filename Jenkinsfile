@@ -62,9 +62,8 @@ stage('Source') {
       checkout scm
     }
     env.FRONTEND_UPDATE = myChangeset("www/front_src/**")
-    env.BACKEND_UPDATE = myChangeset("**/*.php")
-
     echo env.FRONTEND_UPDATE
+    env.BACKEND_UPDATE = myChangeset("**/*.php")
     echo env.BACKEND_UPDATE
     error "ok"
     // git repository is stored for the Sonar analysis below.
