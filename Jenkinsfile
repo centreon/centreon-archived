@@ -17,8 +17,8 @@ if (env.BRANCH_NAME.startsWith('release-')) {
 }
 def apiFeatureFiles = []
 def featureFiles = []
-def FRONTEND_UPDATE = true
-def BACKEND_UPDATE = true
+def hasFrontendUpdate = true
+def hasBackendUpdate = true
 
 /*
 ** Functions
@@ -54,8 +54,8 @@ stage('Source') {
     sh 'setup_centreon_build.sh'
     dir('centreon-web') {
       checkout scm
-      FRONTEND_UPDATE = hasChanges("www/front_src/**")
-      BACKEND_UPDATE = hasChanges("**/*.php")
+      hasFrontendUpdate = hasChanges("www/front_src/**")
+      hasBackendUpdate = hasChanges("**/*.php")
     }
     echo FRONTEND_UPDATE.toString()
 
@@ -88,8 +88,8 @@ stage('Source') {
 try {
   stage('Unit tests') {
     parallel 'frontend': {
-      echo FRONTEND_UPDATE.toString()
-      if (FRONTEND_UPDATE) {
+      echo hasFrontendUpdate.toString()
+      if (hasFrontendUpdate) {
         node {
           sh 'setup_centreon_build.sh'
           unstash 'tar-sources'
@@ -127,7 +127,7 @@ try {
       }
     },
     'backend': {
-      if (BACKEND_UPDATE) {
+      if (hasBackendUpdate) {
         node {
           sh 'setup_centreon_build.sh'
           unstash 'tar-sources'
