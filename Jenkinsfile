@@ -28,6 +28,8 @@ def myChangeset(patterns) {
   }
   */
 
+  def result = false
+
   dir ('centreon-web') {
     sh "git config --add remote.origin.fetch +refs/heads/${env.REF_BRANCH}:refs/remotes/origin/${env.REF_BRANCH}"
     sh ("git fetch --no-tags")
@@ -43,13 +45,13 @@ def myChangeset(patterns) {
         echo "${file} match ${pattern} ?"
         if (SelectorUtils.match(pattern, file)) {
           echo "matching !!!!!!"
-          return "true"
+          result = true
         }
       }
     }
   }
 
-  return "false"
+  return result
 }
 
 /*
