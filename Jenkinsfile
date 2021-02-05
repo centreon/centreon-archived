@@ -22,11 +22,20 @@ def featureFiles = []
 */
 @NonCPS
 def myChangeset(String patterns) {
+  /*
+  if (!env.CHANGE_TARGET || env.BUILD == 'RELEASE' || env.BUILD == 'REFERENCE') {
+    return true
+  }
+  */
+
   for (changeLogSet in currentBuild.changeSets) {
     for (entry in changeLogSet.getItems()) { // for each commit in the detected changes
       for (file in entry.getAffectedFiles()) {
+        echo "${file.editType.name} ${file.path}"
         for (pattern in patterns.split(" ")) {
+          echo pattern
           if (SelectorUtils.match(pattern, file.getPath())) {
+            echo "true !!!!"
             return true
           }
         }
