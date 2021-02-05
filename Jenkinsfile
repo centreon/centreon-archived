@@ -4,12 +4,13 @@ import org.apache.tools.ant.types.selectors.SelectorUtils
 ** Variables.
 */
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
+def refBranch = 'master'
 def serie = '21.04'
 def maintenanceBranch = "${serie}.x"
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
-} else if ((env.BRANCH_NAME == 'master') || (env.BRANCH_NAME == maintenanceBranch)) {
+} else if ((env.BRANCH_NAME == refBranch) || (env.BRANCH_NAME == maintenanceBranch)) {
   env.BUILD = 'REFERENCE'
 } else {
   env.BUILD = 'CI'
@@ -41,17 +42,16 @@ def myChangeset(String patterns) {
   // One way is to have a file with a name of a base branch.
   // Another one is to invoke API, e.g. GitHub API, to find out base branch.
   // Use whatever works for you.
-  println "Base branch is ${base_branch}"
+  println "Base branch is ${refBranch}"
 
-  sh script: "git fetch origin --no-tags ${base_branch}", label: "Getting base branch"
+  sh script: "git fetch origin --no-tags ${refBranch}", label: "Getting base branch"
 
   def git_diff = sh (
-      script: "git diff --name-only origin/${base_branch}..${local_branch}",
+      script: "git diff --name-only origin/${refBranch}..${local_branch}",
       returnStdout: true
   ).trim()
 
   println git_diff
-  throw
 
 /*
   echo "test !!!!"
