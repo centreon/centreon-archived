@@ -31,7 +31,7 @@ def myChangeset(patterns) {
   dir ('centreon-web') {
     sh "git config --add remote.origin.fetch +refs/heads/${env.REF_BRANCH}:refs/remotes/origin/${env.REF_BRANCH}"
     sh ("git fetch --no-tags")
-    sh ("git merge --ff-only origin/${env.REF_BRANCH}")
+    sh ("git merge origin/${env.REF_BRANCH} || git merge --abort")
     def git_diff = sh (
       script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --",
       returnStdout: true
