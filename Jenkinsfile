@@ -29,6 +29,7 @@ def myChangeset(patterns) {
   }
   */
 
+    sh 'cd centreon-web'
     def local_branch = sh (
       script: "git rev-parse --abbrev-ref HEAD",
       label: "Getting current branch name",
