@@ -28,7 +28,7 @@ boolean myChangeset(patterns) {
   }
   */
 
-    sh 'cd centreon-web'
+    dir ('centreon-web') {
     def local_branch = sh (
       script: "git rev-parse --abbrev-ref HEAD",
       label: "Getting current branch name",
@@ -62,6 +62,7 @@ boolean myChangeset(patterns) {
           return true
         }
       }
+    }
     }
 
 /*
