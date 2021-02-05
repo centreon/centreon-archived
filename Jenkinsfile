@@ -18,6 +18,7 @@ def featureFiles = []
 /*
 ** Pipeline code.
 */
+pipeline {
 stages {
   stage('Source') {
     node {
@@ -269,4 +270,5 @@ stages {
 
     currentBuild.result = 'FAILURE'
   }
+}
 }
