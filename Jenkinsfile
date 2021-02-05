@@ -21,7 +21,6 @@ def featureFiles = []
 /*
 ** Functions
 */
-@NonCPS
 boolean myChangeset(patterns) {
   /*
   if (!env.CHANGE_TARGET || env.BUILD == 'RELEASE' || env.BUILD == 'REFERENCE') {
