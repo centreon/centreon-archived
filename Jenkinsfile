@@ -28,14 +28,14 @@ def myChangeset(patterns) {
   }
   */
 
-    dir ('centreon-web') {
-      sh "git config --add remote.origin.fetch +refs/heads/${env.REF_BRANCH}:refs/remotes/origin/${env.REF_BRANCH}"
-      sh ("git fetch --no-tags")
-      sh ("git merge --ff-only")
-      def git_diff = sh (
-          script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --",
-          returnStdout: true
-      ).trim()
+  dir ('centreon-web') {
+    sh "git config --add remote.origin.fetch +refs/heads/${env.REF_BRANCH}:refs/remotes/origin/${env.REF_BRANCH}"
+    sh ("git fetch --no-tags")
+    sh ("git merge --ff-only")
+    def git_diff = sh (
+      script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --",
+      returnStdout: true
+    ).trim()
 
     def files = git_diff.split('\n')
     for (file in files) {
@@ -46,25 +46,8 @@ def myChangeset(patterns) {
         }
       }
     }
-    }
-
-/*
-  echo "test !!!!"
-  echo patterns
-  for (changeLogSet in currentBuild.changeSets) {
-    for (entry in changeLogSet.getItems()) { // for each commit in the detected changes
-      for (file in entry.getAffectedFiles()) {
-        echo "${file.editType.name} ${file.path}"
-        for (pattern in patterns.split(" ")) {
-          if (SelectorUtils.match(pattern, file.getPath())) {
-            echo "true !!!!"
-            return true
-          }
-        }
-      }
-    }
   }
-  */
+
   return false
 }
 
@@ -77,6 +60,12 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
+    env.FRONTEND_UPDATE = myChangeset("www/front_src/**")
+    env.BACKEND_UPDATE = myChangeset("**/*.php")
+
+    echo env.FRONTEND_UPDATE
+    echo env.BACKEND_UPDATE
+    error "ok"
     // git repository is stored for the Sonar analysis below.
     if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
       sh 'tar czf centreon-web-git.tar.gz centreon-web'
