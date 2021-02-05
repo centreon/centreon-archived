@@ -54,88 +54,92 @@ try {
   stage('Unit tests') {
     parallel 'frontend': {
       when { changeset "www/front_src/**" }
-      node {
-        sh 'setup_centreon_build.sh'
-        unstash 'tar-sources'
-        unstash 'node_modules'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
-        junit 'ut-fe.xml'
+      steps {
+        node {
+          sh 'setup_centreon_build.sh'
+          unstash 'tar-sources'
+          unstash 'node_modules'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
+          junit 'ut-fe.xml'
 
-        if (env.CHANGE_ID) { // pull request to comment with coding style issues
-          ViolationsToGitHub([
-            repositoryName: 'centreon',
-            pullRequestId: env.CHANGE_ID,
+          if (env.CHANGE_ID) { // pull request to comment with coding style issues
+            ViolationsToGitHub([
+              repositoryName: 'centreon',
+              pullRequestId: env.CHANGE_ID,
 
-            createSingleFileComments: true,
-            commentOnlyChangedContent: true,
-            commentOnlyChangedFiles: true,
-            keepOldComments: false,
+              createSingleFileComments: true,
+              commentOnlyChangedContent: true,
+              commentOnlyChangedFiles: true,
+              keepOldComments: false,
 
-            commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
+              commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
 
-            violationConfigs: [
-              [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
-            ]
-          ])
+              violationConfigs: [
+                [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
+              ]
+            ])
+          }
+
+          discoverGitReferenceBuild()
+          recordIssues(
+            enabledForFailure: true,
+            failOnError: true,
+            qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+            tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
+            trendChartType: 'NONE'
+          )
         }
-
-        discoverGitReferenceBuild()
-        recordIssues(
-          enabledForFailure: true,
-          failOnError: true,
-          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
-          trendChartType: 'NONE'
-        )
       }
     },
     'backend': {
       when { changeset "www/class/**" }
-      node {
-        sh 'setup_centreon_build.sh'
-        unstash 'tar-sources'
-        unstash 'vendor'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
-        junit 'ut-be.xml'
+      steps {
+        node {
+          sh 'setup_centreon_build.sh'
+          unstash 'tar-sources'
+          unstash 'vendor'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
+          junit 'ut-be.xml'
 
-        if (env.CHANGE_ID) { // pull request to comment with coding style issues
-          ViolationsToGitHub([
-            repositoryName: 'centreon',
-            pullRequestId: env.CHANGE_ID,
+          if (env.CHANGE_ID) { // pull request to comment with coding style issues
+            ViolationsToGitHub([
+              repositoryName: 'centreon',
+              pullRequestId: env.CHANGE_ID,
 
-            createSingleFileComments: true,
-            commentOnlyChangedContent: true,
-            commentOnlyChangedFiles: true,
-            keepOldComments: false,
+              createSingleFileComments: true,
+              commentOnlyChangedContent: true,
+              commentOnlyChangedFiles: true,
+              keepOldComments: false,
 
-            commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
+              commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
 
-            violationConfigs: [
-              [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
-              [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle']
-            ]
-          ])
-        }
+              violationConfigs: [
+                [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
+                [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle']
+              ]
+            ])
+          }
 
-        discoverGitReferenceBuild()
-        recordIssues(
-          enabledForFailure: true,
-          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-          tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
-          trendChartType: 'NONE'
-        )
-        recordIssues(
-          enabledForFailure: true,
-          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-          tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
-          trendChartType: 'NONE'
-        )
+          discoverGitReferenceBuild()
+          recordIssues(
+            enabledForFailure: true,
+            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
+            trendChartType: 'NONE'
+          )
+          recordIssues(
+            enabledForFailure: true,
+            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
+            trendChartType: 'NONE'
+          )
 
-        if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
-          unstash 'git-sources'
-          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-          withSonarQubeEnv('SonarQube') {
-            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+          if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+            unstash 'git-sources'
+            sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+            withSonarQubeEnv('SonarQube') {
+              sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+            }
           }
         }
       }
