@@ -28,30 +28,31 @@ def myChangeset(String patterns) {
     return true
   }
   */
-
-  def local_branch = sh (
-    script: "git rev-parse --abbrev-ref HEAD",
-    label: "Getting current branch name",
-    returnStdout: true
-  ).trim()
-  println "Local branch is ${local_branch}"
-
-  def base_branch = 'master'
-  // This is very naive.
-  // In reality, you need a better way to find out what your base branch is.
-  // One way is to have a file with a name of a base branch.
-  // Another one is to invoke API, e.g. GitHub API, to find out base branch.
-  // Use whatever works for you.
-  println "Base branch is ${refBranch}"
-
-  sh script: "git fetch origin --no-tags ${refBranch}", label: "Getting base branch"
-
-  def git_diff = sh (
-      script: "git diff --name-only origin/${refBranch}..${local_branch}",
+  dir('centreon-web') {
+    def local_branch = sh (
+      script: "git rev-parse --abbrev-ref HEAD",
+      label: "Getting current branch name",
       returnStdout: true
-  ).trim()
+    ).trim()
+    println "Local branch is ${local_branch}"
 
-  println git_diff
+    def base_branch = 'master'
+    // This is very naive.
+    // In reality, you need a better way to find out what your base branch is.
+    // One way is to have a file with a name of a base branch.
+    // Another one is to invoke API, e.g. GitHub API, to find out base branch.
+    // Use whatever works for you.
+    println "Base branch is ${refBranch}"
+
+    sh script: "git fetch origin --no-tags ${refBranch}", label: "Getting base branch"
+
+    def git_diff = sh (
+        script: "git diff --name-only origin/${refBranch}..${local_branch}",
+        returnStdout: true
+    ).trim()
+
+    println git_diff
+  }
 
 /*
   echo "test !!!!"
@@ -81,8 +82,8 @@ stage('Source') {
     sh 'setup_centreon_build.sh'
     dir('centreon-web') {
       checkout scm
-      myChangeset("www/front_src/**")
     }
+    myChangeset("www/front_src/**")
     // git repository is stored for the Sonar analysis below.
     if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
       sh 'tar czf centreon-web-git.tar.gz centreon-web'
