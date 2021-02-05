@@ -34,7 +34,7 @@ def myChangeset(String patterns) {
       label: "Getting current branch name",
       returnStdout: true
     ).trim()
-    println "Local branch is ${local_branch}"
+    echo "Local branch is ${local_branch}"
 
     def base_branch = 'master'
     // This is very naive.
@@ -42,7 +42,7 @@ def myChangeset(String patterns) {
     // One way is to have a file with a name of a base branch.
     // Another one is to invoke API, e.g. GitHub API, to find out base branch.
     // Use whatever works for you.
-    println "Base branch is ${refBranch}"
+    echo "Base branch is ${refBranch}"
 
     sh script: "git fetch origin --no-tags ${refBranch}", label: "Getting base branch"
 
@@ -51,7 +51,7 @@ def myChangeset(String patterns) {
         returnStdout: true
     ).trim()
 
-    println git_diff
+    echo git_diff
   }
 
 /*
