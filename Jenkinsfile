@@ -61,10 +61,10 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
-    env.FRONTEND_UPDATE = myChangeset("www/front_src/**")
-    echo env.FRONTEND_UPDATE
-    env.BACKEND_UPDATE = myChangeset("**/*.php")
-    echo env.BACKEND_UPDATE
+    def FRONTEND_UPDATE = myChangeset("www/front_src/**")
+    echo FRONTEND_UPDATE
+    def BACKEND_UPDATE = myChangeset("**/*.php")
+    echo BACKEND_UPDATE
     error "ok"
     // git repository is stored for the Sonar analysis below.
     if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
