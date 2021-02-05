@@ -21,18 +21,16 @@ def featureFiles = []
 /*
 ** Functions
 */
-def myChangeset(patterns) {
-  /*
-  if (!env.CHANGE_TARGET || env.BUILD == 'RELEASE' || env.BUILD == 'REFERENCE') {
+def hasChanges(patterns) {
+  if (env.BUILD == 'RELEASE' || env.BUILD == 'REFERENCE') {
     return true
   }
-  */
 
   def isMatching = false
 
   sh "git config --add remote.origin.fetch +refs/heads/${env.REF_BRANCH}:refs/remotes/origin/${env.REF_BRANCH}"
-  sh ("git fetch --no-tags")
-  sh ("git pull --rebase origin ${env.REF_BRANCH} || true")
+  sh "git fetch --no-tags"
+  sh "git pull --rebase origin ${env.REF_BRANCH} || true"
   def diffFiles = sh(script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --", returnStdout: true).trim().split()
 
   for (file in diffFiles) {
@@ -42,7 +40,6 @@ def myChangeset(patterns) {
       }
     }
   }
-
 
   return isMatching
 }
@@ -55,8 +52,8 @@ stage('Source') {
     sh 'setup_centreon_build.sh'
     dir('centreon-web') {
       checkout scm
-      def FRONTEND_UPDATE = myChangeset("www/front_src/**")
-      def BACKEND_UPDATE = myChangeset("**/*.php")
+      def FRONTEND_UPDATE = hasChanges("www/front_src/**")
+      def BACKEND_UPDATE = hasChanges("**/*.php")
     }
 
     // git repository is stored for the Sonar analysis below.
