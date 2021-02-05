@@ -55,6 +55,7 @@ stage('Source') {
       def FRONTEND_UPDATE = hasChanges("www/front_src/**")
       def BACKEND_UPDATE = hasChanges("**/*.php")
     }
+    echo FRONTEND_UPDATE.toString()
 
     // git repository is stored for the Sonar analysis below.
     if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
@@ -85,6 +86,7 @@ stage('Source') {
 try {
   stage('Unit tests') {
     parallel 'frontend': {
+      echo FRONTEND_UPDATE.toString()
       if (FRONTEND_UPDATE) {
         node {
           sh 'setup_centreon_build.sh'
