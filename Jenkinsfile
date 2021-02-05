@@ -33,7 +33,7 @@ def myChangeset(patterns) {
     sh ("git fetch --no-tags")
     sh ("git config user.name toto")
     sh ("git config user.email toto@localhost")
-    sh ("git pull --rebase origin/${env.REF_BRANCH} || true")
+    sh ("git pull --rebase origin ${env.REF_BRANCH} || true")
     def git_diff = sh (
       script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --",
       returnStdout: true
