@@ -98,6 +98,14 @@ if [ "x$?" '!=' x0 ] ; then
 fi
 print_step_end
 
+# Get the Centos version
+eval $(cat /etc/os-release | grep VERSION_ID)
+
+if [ $VERSION_ID == 8 ] ; then
+  # Switch dnf upstream to install php73
+  dnf module enable php:7.3
+fi
+
 #
 # CENTREON
 #
@@ -114,7 +122,7 @@ print_step_end
 #
 
 print_step_begin "PHP configuration"
-timezone=`/opt/rh/rh-php72/root/bin/php -r '
+timezone=`/opt/rh/rh-php73/root/bin/php -r '
     $timezoneName = timezone_name_from_abbr(trim(shell_exec("date \"+%Z\"")));
 
     if (preg_match("/Time zone: (\S+)/", shell_exec("timedatectl"), $matches)) {
@@ -127,7 +135,7 @@ timezone=`/opt/rh/rh-php72/root/bin/php -r '
 
     echo $timezoneName;
 ' 2> /dev/null`
-echo "date.timezone = $timezone" > /etc/opt/rh/rh-php72/php.d/10-centreon.ini
+echo "date.timezone = $timezone" > /etc/opt/rh/rh-php73/php.d/10-centreon.ini
 print_step_end "OK, timezone set to $timezone"
 
 #
@@ -160,8 +168,8 @@ fi
 
 print_step_begin "Services configuration"
 if [ "x$has_systemd" '=' x1 ] ; then
-  systemctl enable httpd24-httpd mariadb rh-php72-php-fpm snmpd snmptrapd gorgoned centreontrapd cbd centengine centreon
-  systemctl restart httpd24-httpd mariadb rh-php72-php-fpm snmpd snmptrapd
+  systemctl enable httpd24-httpd mariadb rh-php73-php-fpm snmpd snmptrapd gorgoned centreontrapd cbd centengine centreon
+  systemctl restart httpd24-httpd mariadb rh-php73-php-fpm snmpd snmptrapd
   print_step_end
 else
   print_step_end "OK, systemd not detected, skipping"

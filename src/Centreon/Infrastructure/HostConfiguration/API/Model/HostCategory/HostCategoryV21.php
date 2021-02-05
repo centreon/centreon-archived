@@ -20,20 +20,37 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces;
-
-use Centreon\Domain\HostConfiguration\Model\HostCategory;
+namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory;
 
 /**
- * This interface gathers all the reading operations on the host category repository.
+ * This class is designed to represent the formatted response of the API request.
  *
- * @package Centreon\Domain\HostConfiguration\Interfaces
+ * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory
  */
-interface HostCategoryReadRepositoryInterface
+class HostCategoryV21
 {
     /**
-     * @return HostCategory[]
-     * @throws \Throwable
+     * @var int
      */
-    public function findHostCategories(): array;
+    public $id;
+
+    /**
+     * @var string
+     */
+    public $name;
+
+    /**
+     * @var string
+     */
+    public $alias;
+
+    /**
+     * @var string
+     */
+    public $comments;
+
+    /**
+     * @var bool
+     */
+    public $isActivated;
 }
