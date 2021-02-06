@@ -88,7 +88,9 @@ stage('Source') {
 try {
   stage('Unit tests') {
     parallel 'frontend': {
-      if (hasFrontendUpdate) {
+      if (!hasFrontendUpdate) {
+        Utils.markStageSkippedForConditional('frontend')
+      } else {
         node {
           sh 'setup_centreon_build.sh'
           unstash 'tar-sources'
@@ -123,12 +125,12 @@ try {
             trendChartType: 'NONE'
           )
         }
-      } else {
-        Utils.markStageSkippedForConditional('frontend')
       }
     },
     'backend': {
-      if (hasBackendUpdate) {
+      if (!hasBackendUpdate) {
+        Utils.markStageSkippedForConditional('backend')
+      } else {
         node {
           sh 'setup_centreon_build.sh'
           unstash 'tar-sources'
