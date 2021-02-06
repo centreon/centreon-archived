@@ -144,7 +144,6 @@ class App extends Component<Props, State> {
   public render(): ReactNode {
     const min = this.getMinArgument();
 
-    // add comments again
     const { classes } = this.props;
 
     return (
