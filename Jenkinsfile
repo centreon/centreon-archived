@@ -34,7 +34,7 @@ def hasChanges(pattern) {
   sh "git fetch --no-tags"
   sh "git config user.name ${env.GIT_AUTHOR_NAME}"
   sh "git config user.email ${env.GIT_AUTHOR_EMAIL}"
-  sh "git merge --no-ff origin/${env.REF_BRANCH} || true"
+  sh "git pull --rebase origin ${env.REF_BRANCH} || git rebase --abort || true"
   def diffFiles = sh(script: "git diff --name-only origin/${env.REF_BRANCH}..origin/${env.BRANCH_NAME} --", returnStdout: true).trim().split()
 
   for (file in diffFiles) {
