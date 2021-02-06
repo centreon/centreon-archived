@@ -35,7 +35,7 @@ def hasChanges(pattern) {
   sh "git config user.name ${env.GIT_AUTHOR_NAME}"
   sh "git config user.email ${env.GIT_AUTHOR_EMAIL}"
   sh "git pull --rebase origin ${env.REF_BRANCH} || git rebase --abort || true"
-  def diffFiles = sh(script: "git diff --name-only ${env.BRANCH_NAME}..origin/${env.REF_BRANCH} --", returnStdout: true).trim().split()
+  def diffFiles = sh(script: "git diff --name-only origin/${env.REF_BRANCH} --", returnStdout: true).trim().split()
 
   for (file in diffFiles) {
     if (SelectorUtils.match(pattern, file)) {
