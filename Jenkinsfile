@@ -52,7 +52,7 @@ def hasChanges(pattern) {
 */
 stage('Source') {
   node {
-    sh "rm -rf centreon-build"
+    //sh "rm -rf centreon-build"
     dir('centreon-build') {
       checkout([
         $class: 'GitSCM',
@@ -60,7 +60,10 @@ stage('Source') {
         doGenerateSubmoduleConfigurations: false,
         extensions: [],
         submoduleCfg: [],
-        userRemoteConfigs: [[$class: 'UserRemoteConfig', url: "ssh://git@github.com/centreon/centreon-build.git"]]
+        userRemoteConfigs: [[
+          $class: 'UserRemoteConfig',
+          url: "ssh://git@github.com/centreon/centreon-build.git"
+        ]]
          //branches: "refs/heads/${env.BRANCH_NAME}:refs/remotes/origin/${env.BRANCH_NAME}"
          //branches: scm.branches,
          //doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
