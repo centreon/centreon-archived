@@ -56,7 +56,9 @@ stage('Source') {
     dir('centreon-build') {
       checkout([
          $class: 'GitSCM',
-         branches: "refs/heads/${env.BRANCH_NAME}:refs/remotes/origin/${env.BRANCH_NAME}"
+         branches: [[name: '*/${env.BRANCH_NAME}']],
+         doGenerateSubmoduleConfigurations: false
+         //branches: "refs/heads/${env.BRANCH_NAME}:refs/remotes/origin/${env.BRANCH_NAME}"
          //branches: scm.branches,
          //doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
          //extensions: scm.extensions,
