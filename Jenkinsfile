@@ -53,6 +53,16 @@ def hasChanges(pattern) {
   return isMatching
 }
 
+def getCentreonBuildGitConfiguration = { branchName -> [
+  $class: 'GitSCM',
+  branches: [[name: "refs/heads/${branchName}"]],
+  doGenerateSubmoduleConfigurations: false,
+  userRemoteConfigs: [[
+    $class: 'UserRemoteConfig',
+    url: "ssh://git@github.com/centreon/centreon-build.git"
+  ]]
+]}
+
 /*
 ** Pipeline code.
 */
@@ -61,25 +71,9 @@ stage('Source') {
     //sh "rm -rf centreon-build"
     dir('centreon-build') {
       try {
-        checkout([
-          $class: 'GitSCM',
-          branches: [[name: "refs/heads/${buildBranch}"]],
-          doGenerateSubmoduleConfigurations: false,
-          userRemoteConfigs: [[
-            $class: 'UserRemoteConfig',
-            url: "ssh://git@github.com/centreon/centreon-build.git"
-          ]]
-        ])
+        checkout(getCentreonBuildGitConfiguration(buildBranch))
       } catch(e) {
-        checkout([
-          $class: 'GitSCM',
-          branches: [[name: "refs/heads/master"]],
-          doGenerateSubmoduleConfigurations: false,
-          userRemoteConfigs: [[
-            $class: 'UserRemoteConfig',
-            url: "ssh://git@github.com/centreon/centreon-build.git"
-          ]]
-        ])
+        checkout(getCentreonBuildGitConfiguration('master'))
       }
     }
     dir('centreon-web') {
