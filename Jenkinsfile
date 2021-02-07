@@ -58,7 +58,7 @@ def hasChanges(pattern) {
 */
 stage('Source') {
   node {
-    sh "rm -rf centreon-build"
+    //sh "rm -rf centreon-build"
     dir('centreon-build') {
       try {
         checkout([
@@ -82,25 +82,9 @@ stage('Source') {
         ])
       }
     }
-    /*
-    dir('centreon-build') {
-      checkout([
-         $class: 'GitSCM',
-         branches: scm.branches,
-         doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-         extensions: scm.extensions,
-         userRemoteConfigs: scm.userRemoteConfigs
-    ])
-    }
-    */
-    //sh 'setup_centreon_build.sh'
     dir('centreon-web') {
       checkout([
          $class: 'GitSCM',
-         //branches: scm.branches,
-         //doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-         //extensions: scm.extensions,
-         //userRemoteConfigs: scm.userRemoteConfigs
       ])
       hasFrontendUpdate = hasChanges("www/front_src/**")
       hasBackendUpdate = hasChanges("**/*.php")
