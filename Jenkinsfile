@@ -16,6 +16,11 @@ if (env.BRANCH_NAME.startsWith('release-')) {
 } else {
   env.BUILD = 'CI'
 }
+
+def buildBranch = env.BRANCH_NAME
+if (env.CHANGE_BRANCH) {
+  buildBranch = env.CHANGE_BRANCH
+}
 def apiFeatureFiles = []
 def featureFiles = []
 def hasFrontendUpdate = true
@@ -57,8 +62,7 @@ stage('Source') {
       try {
         checkout([
           $class: 'GitSCM',
-          branches: [[name: "refs/heads/${env.BRANCH_NAME}"]],
-          //branches: [[name: "refs/heads/toto"]],
+          branches: [[name: "refs/heads/${buildBranch}"]],
           doGenerateSubmoduleConfigurations: false,
           extensions: [],
           submoduleCfg: [],
