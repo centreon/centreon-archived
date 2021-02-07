@@ -58,6 +58,7 @@ stage('Source') {
         checkout([
           $class: 'GitSCM',
           //branches: [[name: "refs/heads/toto"], [name: "refs/heads/${env.BRANCH_NAME}"]],
+          branches: [[name: "refs/heads/toto"]],
           doGenerateSubmoduleConfigurations: false,
           extensions: [],
           submoduleCfg: [],
