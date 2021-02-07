@@ -58,8 +58,8 @@ def hasChanges(pattern) {
 */
 stage('Source') {
   node {
-    //sh "rm -rf centreon-build"
-    dir('/opt/centreon-build') {
+    sh "rm -rf centreon-build"
+    dir('centreon-build') {
       try {
         checkout([
           $class: 'GitSCM',
