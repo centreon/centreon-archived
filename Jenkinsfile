@@ -21,6 +21,7 @@ def buildBranch = env.BRANCH_NAME
 if (env.CHANGE_BRANCH) {
   buildBranch = env.CHANGE_BRANCH
 }
+echo buildBranch
 def apiFeatureFiles = []
 def featureFiles = []
 def hasFrontendUpdate = true
