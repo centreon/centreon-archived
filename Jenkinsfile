@@ -71,8 +71,10 @@ stage('Source') {
     sh "rm -rf centreon-build"
     dir('centreon-build') {
       try {
+        echo buildBranch
         checkout(getCentreonBuildGitConfiguration(buildBranch))
       } catch(e) {
+        echo 'master'
         checkout(getCentreonBuildGitConfiguration('master'))
       }
     }
