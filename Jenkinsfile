@@ -75,7 +75,7 @@ stage('Source') {
         def config = getCentreonBuildGitConfiguration(buildBranch)
         checkout([
   $class: 'GitSCM',
-  branches: [[name: "refs/heads/${branchName}"]],
+  branches: [[name: "refs/heads/${buildBranch}"]],
   doGenerateSubmoduleConfigurations: false,
   userRemoteConfigs: [[
     $class: 'UserRemoteConfig',
