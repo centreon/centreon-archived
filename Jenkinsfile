@@ -52,6 +52,17 @@ def hasChanges(pattern) {
 */
 stage('Source') {
   node {
+    sh "rm -rf centreon-build"
+    dir('centreon-build') {
+      checkout([
+         $class: 'GitSCM',
+         branches: "refs/heads/${env.BRANCH_NAME}"
+         //branches: scm.branches,
+         //doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+         //extensions: scm.extensions,
+         //userRemoteConfigs: scm.userRemoteConfigs
+      ])
+    }
     /*
     dir('centreon-build') {
       checkout([
