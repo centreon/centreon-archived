@@ -60,7 +60,7 @@ stage('Source') {
         doGenerateSubmoduleConfigurations: false,
         extensions: [],
         submoduleCfg: [],
-        userRemoteConfigs: [[]]
+        userRemoteConfigs: [[url: 'https://github.com/centreon/centreon-build.git']]
          //branches: "refs/heads/${env.BRANCH_NAME}:refs/remotes/origin/${env.BRANCH_NAME}"
          //branches: scm.branches,
          //doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
