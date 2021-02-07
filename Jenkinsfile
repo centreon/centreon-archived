@@ -73,7 +73,15 @@ stage('Source') {
       try {
         echo getCentreonBuildGitConfiguration(buildBranch)
         def config = getCentreonBuildGitConfiguration(buildBranch)
-        checkout(config)
+        checkout([
+  $class: 'GitSCM',
+  branches: [[name: "refs/heads/${branchName}"]],
+  doGenerateSubmoduleConfigurations: false,
+  userRemoteConfigs: [[
+    $class: 'UserRemoteConfig',
+    url: "ssh://git@github.com/centreon/centreon-build.git"
+  ]]
+])
       } catch(e) {
         echo 'master'
         checkout(getCentreonBuildGitConfiguration('master'))
