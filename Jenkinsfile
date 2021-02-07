@@ -68,6 +68,7 @@ stage('Source') {
           ]]
         ])
       } catch(e) {
+        echo 'toto'
         checkout([
           $class: 'GitSCM',
           branches: [[name: "refs/heads/master"]],
