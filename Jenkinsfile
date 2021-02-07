@@ -21,7 +21,7 @@ def buildBranch = env.BRANCH_NAME
 if (env.CHANGE_BRANCH) {
   buildBranch = env.CHANGE_BRANCH
 }
-echo buildBranch
+
 def apiFeatureFiles = []
 def featureFiles = []
 def hasFrontendUpdate = true
@@ -59,27 +59,22 @@ def hasChanges(pattern) {
 stage('Source') {
   node {
     //sh "rm -rf centreon-build"
-    dir('centreon-build') {
+    dir('/opt/centreon-build') {
       try {
         checkout([
           $class: 'GitSCM',
           branches: [[name: "refs/heads/${buildBranch}"]],
           doGenerateSubmoduleConfigurations: false,
-          extensions: [],
-          submoduleCfg: [],
           userRemoteConfigs: [[
             $class: 'UserRemoteConfig',
             url: "ssh://git@github.com/centreon/centreon-build.git"
           ]]
         ])
       } catch(e) {
-        echo 'toto'
         checkout([
           $class: 'GitSCM',
           branches: [[name: "refs/heads/master"]],
           doGenerateSubmoduleConfigurations: false,
-          extensions: [],
-          submoduleCfg: [],
           userRemoteConfigs: [[
             $class: 'UserRemoteConfig',
             url: "ssh://git@github.com/centreon/centreon-build.git"
