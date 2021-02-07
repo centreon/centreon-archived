@@ -68,7 +68,7 @@ def getCentreonBuildGitConfiguration = { branchName -> [
 */
 stage('Source') {
   node {
-    //sh "rm -rf centreon-build"
+    sh "rm -rf centreon-build"
     dir('centreon-build') {
       try {
         checkout(getCentreonBuildGitConfiguration(buildBranch))
