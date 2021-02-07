@@ -54,22 +54,31 @@ stage('Source') {
   node {
     //sh "rm -rf centreon-build"
     dir('centreon-build') {
-      checkout([
-        $class: 'GitSCM',
-        branches: [[name: "refs/heads/toto"], [name: "refs/heads/${env.BRANCH_NAME}"]],
-        doGenerateSubmoduleConfigurations: false,
-        extensions: [],
-        submoduleCfg: [],
-        userRemoteConfigs: [[
-          $class: 'UserRemoteConfig',
-          url: "ssh://git@github.com/centreon/centreon-build.git"
-        ]]
-         //branches: "refs/heads/${env.BRANCH_NAME}:refs/remotes/origin/${env.BRANCH_NAME}"
-         //branches: scm.branches,
-         //doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-         //extensions: scm.extensions,
-         //userRemoteConfigs: scm.userRemoteConfigs
-      ])
+      try {
+        checkout([
+          $class: 'GitSCM',
+          //branches: [[name: "refs/heads/toto"], [name: "refs/heads/${env.BRANCH_NAME}"]],
+          doGenerateSubmoduleConfigurations: false,
+          extensions: [],
+          submoduleCfg: [],
+          userRemoteConfigs: [[
+            $class: 'UserRemoteConfig',
+            url: "ssh://git@github.com/centreon/centreon-build.git"
+          ]]
+        ])
+      } catch(e) {
+        checkout([
+          $class: 'GitSCM',
+          branches: [[name: "refs/heads/master"]],
+          doGenerateSubmoduleConfigurations: false,
+          extensions: [],
+          submoduleCfg: [],
+          userRemoteConfigs: [[
+            $class: 'UserRemoteConfig',
+            url: "ssh://git@github.com/centreon/centreon-build.git"
+          ]]
+        ])
+      }
     }
     /*
     dir('centreon-build') {
