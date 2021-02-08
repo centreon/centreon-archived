@@ -31,7 +31,7 @@ def backendFiles = [
   'symfony.lock',
   '.env*',
   'behat.yml',
-  'codingstyle.xml',
+  'ruleset.xml',
   'phpstan.neon',
   'sonar-project.properties',
   'bin/*',
