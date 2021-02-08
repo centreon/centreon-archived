@@ -69,9 +69,9 @@ def getCentreonBuildGitConfiguration = { branchName -> [
 stage('Source') {
   node {
     dir('centreon-web') {
-      checkout scm
+      checkout([$class: 'GitSCM'])
       hasFrontendUpdate = hasChanges("www/front_src/**")
-      hasBackendUpdate = hasChanges("**/*.php")
+      hasBackendUpdate = hasChanges("**/*.php,Jenkinsfile")
     }
 
     dir('centreon-build') {
