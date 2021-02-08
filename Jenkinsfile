@@ -71,20 +71,29 @@ stage('Source') {
     sh "rm -rf centreon-build"
     dir('centreon-build') {
       try {
-        echo getCentreonBuildGitConfiguration(buildBranch)
-        def config = getCentreonBuildGitConfiguration(buildBranch)
+        //echo getCentreonBuildGitConfiguration(buildBranch)
+        //def config = getCentreonBuildGitConfiguration(buildBranch)
         checkout([
-  $class: 'GitSCM',
-  branches: [[name: "refs/heads/${buildBranch}"]],
-  doGenerateSubmoduleConfigurations: false,
-  userRemoteConfigs: [[
-    $class: 'UserRemoteConfig',
-    url: "ssh://git@github.com/centreon/centreon-build.git"
-  ]]
-])
+          $class: 'GitSCM',
+          branches: [[name: "refs/heads/${buildBranch}"]],
+          doGenerateSubmoduleConfigurations: false,
+          userRemoteConfigs: [[
+            $class: 'UserRemoteConfig',
+            url: "ssh://git@github.com/centreon/centreon-build.git"
+          ]]
+        ])
       } catch(e) {
         echo 'master'
-        checkout(getCentreonBuildGitConfiguration('master'))
+        //checkout(getCentreonBuildGitConfiguration('master'))
+        checkout([
+          $class: 'GitSCM',
+          branches: [[name: "refs/heads/master"]],
+          doGenerateSubmoduleConfigurations: false,
+          userRemoteConfigs: [[
+            $class: 'UserRemoteConfig',
+            url: "ssh://git@github.com/centreon/centreon-build.git"
+          ]]
+        ])
       }
     }
     dir('centreon-web') {
