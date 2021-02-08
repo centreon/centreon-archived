@@ -58,7 +58,7 @@ def hasChanges(pattern) {
   return isMatching
 }
 
-def checkoutCentreonBuild = { buildBranch ->
+def checkoutCentreonBuild = { buildBranch -> {
   def getCentreonBuildGitConfiguration = (branchName) {
     return [
       $class: 'GitSCM',
@@ -79,7 +79,7 @@ def checkoutCentreonBuild = { buildBranch ->
       checkout(getCentreonBuildGitConfiguration('master'))
     }
   }
-}
+}}
 
 /*
 ** Pipeline code.
