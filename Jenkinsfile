@@ -160,13 +160,6 @@ stage('Source') {
       returnStdout: true
     ).split()
 
-    echo sh(
-      script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
-      returnStdout: true
-    )
-    sh "toto"
-
-
     // get feature files
     def grepAcceptanceFiles = ""
     if (hasFrontendChanges) {
@@ -321,6 +314,7 @@ try {
     if (hasBackendChanges) {
       def parallelSteps = [:]
       for (feature in apiFeatureFiles) {
+        echo feature
         parallelSteps[feature] = {
           node {
             checkoutCentreonBuild(buildBranch)
