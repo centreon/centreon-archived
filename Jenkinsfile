@@ -194,7 +194,7 @@ try {
               createSingleFileComments: true,
               commentOnlyChangedContent: true,
               commentOnlyChangedFiles: true,
-              keepOldComments: false,
+              keepOldComments: true,
 
               commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
 
@@ -234,7 +234,7 @@ try {
               createSingleFileComments: true,
               commentOnlyChangedContent: true,
               commentOnlyChangedFiles: true,
-              keepOldComments: false,
+              keepOldComments: true,
 
               commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
 
