@@ -90,7 +90,7 @@ stage('Source') {
       hasBackendUpdate = hasChanges("**/*.php,Jenkinsfile")
     }
 
-    checkoutCentreonBuild()
+    checkoutCentreonBuild(buildBranch)
 
     // git repository is stored for the Sonar analysis below.
     if (isStableBuild()) {
@@ -125,7 +125,7 @@ try {
         Utils.markStageSkippedForConditional('frontend')
       } else {
         node {
-          checkoutCentreonBuild()
+          checkoutCentreonBuild(buildBranch)
           unstash 'tar-sources'
           unstash 'node_modules'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
@@ -165,7 +165,7 @@ try {
         Utils.markStageSkippedForConditional('backend')
       } else {
         node {
-          checkoutCentreonBuild()
+          checkoutCentreonBuild(buildBranch)
           unstash 'tar-sources'
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
@@ -222,7 +222,7 @@ try {
   stage('Package') {
     parallel 'centos7': {
       node {
-        checkoutCentreonBuild()
+        checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: 'rpms-centos7.tar.gz'
@@ -230,7 +230,7 @@ try {
     },
     'centos8': {
       node {
-        checkoutCentreonBuild()
+        checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
         archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
@@ -244,13 +244,13 @@ try {
   stage('Bundle') {
     parallel 'centos7': {
       node {
-        checkoutCentreonBuild()
+        checkoutCentreonBuild(buildBranch)
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
     },
     'centos8': {
       node {
-        checkoutCentreonBuild()
+        checkoutCentreonBuild(buildBranch)
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
       }
     }
@@ -266,7 +266,7 @@ try {
         def feature = x
         parallelSteps[feature] = {
           node {
-            checkoutCentreonBuild()
+            checkoutCentreonBuild(buildBranch)
             unstash 'tar-sources'
             unstash 'vendor'
             def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
@@ -291,7 +291,7 @@ try {
         def feature = x
         parallelSteps[feature] = {
           node {
-            checkoutCentreonBuild()
+            checkoutCentreonBuild(buildBranch)
             unstash 'tar-sources'
             unstash 'vendor'
             def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
@@ -312,7 +312,7 @@ try {
   if (isStableBuild()) {
     stage('Delivery') {
       node {
-        checkoutCentreonBuild()
+        checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
         unstash 'api-doc'
         sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
