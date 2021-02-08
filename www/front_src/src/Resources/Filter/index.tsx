@@ -35,10 +35,10 @@ import {
 import useFilterModels from './useFilterModels';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
 import { FilterState } from './useFilter';
-import Search from './FormComponents/Search';
-import SelectFilter from './FormComponents/SelectFilter';
-import FilterAutocomplete from './FormComponents/FilterAutocomplete';
-import FilterConnectedAutocomplete from './FormComponents/FilterConnectedAutocomplete';
+import Search from './Fields/Search';
+import SelectFilter from './Fields/SelectFilter';
+import FilterAutocomplete from './Fields/FilterAutocomplete';
+import FilterConnectedAutocomplete from './Fields/FilterConnectedAutocomplete';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
