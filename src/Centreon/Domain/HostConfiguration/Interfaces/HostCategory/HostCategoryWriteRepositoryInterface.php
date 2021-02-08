@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,37 +20,17 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\HostConfiguration\API\Model;
+namespace Centreon\Domain\HostConfiguration\Interfaces\HostCategory;
+
+use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\HostConfiguration\Model\HostCategory;
+use Centreon\Domain\Repository\RepositoryException;
 
 /**
- * This class is designed to represent the formatted response of the API request.
+ * This interface gathers all the writing operations on the host category repository.
  *
- * @package Centreon\Infrastructure\HostConfiguration\API\Model
+ * @package Centreon\Domain\HostConfiguration\Interfaces\HostCategory
  */
-class HostCategoryV21
+interface HostCategoryWriteRepositoryInterface
 {
-    /**
-     * @var int
-     */
-    public $id;
-
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-    public $alias;
-
-    /**
-     * @var string
-     */
-    public $comments;
-
-    /**
-     * @var bool
-     */
-    public $isActivated;
 }

@@ -56,6 +56,9 @@ services:
         arguments: ["%kernel.cache_dir%/JsonValidatorCache", '%kernel.debug%']
 
     # Contact
+    Centreon\Domain\Contact\Interfaces\ContactInterface:
+        class: Centreon\Domain\Contact\Contact
+
     Centreon\Domain\Contact\Interfaces\ContactServiceInterface:
         class: Centreon\Domain\Contact\ContactService
         public: true
@@ -211,15 +214,19 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostConfigurationRepositoryRDB
 
-    Centreon\Domain\HostConfiguration\Interfaces\HostCategoryReadRepositoryInterface:
+    Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostCategoryRepositoryRDB
 
     Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface:
         class: Centreon\Domain\HostConfiguration\HostConfigurationService
         public: true
 
+    # Host category
+    Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryServiceInterface:
+        class: Centreon\Domain\HostConfiguration\HostCategoryService
+
     # Host group configuration
-    Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupRepositoryInterface:
+    Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostGroupRepositoryRDB
 
     Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups:

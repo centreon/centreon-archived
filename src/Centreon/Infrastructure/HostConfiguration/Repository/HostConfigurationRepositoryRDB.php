@@ -22,11 +22,13 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
+use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\HostConfiguration\ExtendedHost;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
+use Centreon\Domain\HostConfiguration\Model\HostCategory;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\RequestParameters\RequestParameters;
@@ -107,7 +109,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             if ($host->getExtendedHost() !== null) {
                 $this->addExtendedHost($hostId, $host->getExtendedHost());
             }
-            $this->addHostTemplate($hostId, $host->getTemplates());
+            $this->linkToTemplate($hostId, $host->getTemplates());
             $this->addHostMacro($hostId, $host->getMacros());
 
             $this->db->commit();
@@ -194,7 +196,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * @throws RepositoryException
      * @throws \Exception
      */
-    private function addHostTemplate(int $hostId, array $hostTemplates): void
+    private function linkToTemplate(int $hostId, array $hostTemplates): void
     {
         if (empty($hostTemplates)) {
             return;
