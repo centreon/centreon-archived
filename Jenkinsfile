@@ -68,7 +68,7 @@ def getCentreonBuildGitConfiguration = { branchName -> [
   ]]
 ]}
 
-def checkoutCentreonBuild(buildBranch) {
+def checkoutCentreonBuild = { buildBranch ->
   dir('centreon-build') {
     try {
       checkout(getCentreonBuildGitConfiguration(buildBranch))
