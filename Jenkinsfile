@@ -34,7 +34,7 @@ def isStableBuild() {
   return ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE'))
 }
 
-def hasChanges(pattern) {
+def hasChanges(patterns) {
   if (isStableBuild()) {
     return true
   }
@@ -49,9 +49,10 @@ def hasChanges(pattern) {
   def diffFiles = sh(script: "git diff --name-only origin/${env.REF_BRANCH} --", returnStdout: true).trim().split()
 
   for (file in diffFiles) {
-    echo "$file match $pattern ?"
-    if (SelectorUtils.match(pattern, file)) {
-      isMatching = true
+    for (pattern in patterns.split(',')) {
+      if (SelectorUtils.match(pattern, file)) {
+        isMatching = true
+      }
     }
   }
 
