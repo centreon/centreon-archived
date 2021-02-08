@@ -62,6 +62,9 @@ def frontendFiles = [
 ]
 def hasFrontendChanges = true
 def hasBackendChanges = true
+def apiFeatureFiles = []
+def featureFiles = []
+def acceptanceTag = ""
 
 /*
 ** Functions
@@ -150,6 +153,23 @@ stage('Source') {
       reportName: 'Centreon Build Artifacts',
       reportTitles: ''
     ])
+
+    // get api feature files
+    apiFeatureFiles = sh(
+      script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
+      returnStdout: true
+    ).split()
+
+
+    def grepAcceptanceFiles = ""
+    if (hasFrontendChanges) {
+      acceptanceTag = "@reactjs"
+      grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \\;"
+    }
+    featuresFiles = sh(
+      script: "find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
+      returnStdout: true
+    ).split()
   }
 }
 
@@ -267,6 +287,7 @@ try {
         }
       }
     }
+    parallel parallelSteps
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Package stage failure.');
     }
@@ -283,6 +304,7 @@ try {
         }
       }
     }
+    parallel parallelSteps
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
     }
@@ -291,10 +313,6 @@ try {
   stage('API integration tests') {
     if (hasBackendChanges) {
       def parallelSteps = [:]
-      def apiFeatureFiles = sh(
-        script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
-        returnStdout: true
-      ).split()
       for (x in apiFeatureFiles) {
         def feature = x
         parallelSteps[feature] = {
@@ -321,18 +339,7 @@ try {
   }
 
   stage('Acceptance tests') {
-    def acceptanceTag = ""
-    def grepAcceptanceFiles = ""
-    if (hasFrontendChanges) {
-      acceptanceTag = "@topCounter"
-      grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \\;"
-    }
-
     def parallelSteps = [:]
-    def featuresFiles = sh(
-      script: "find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
-      returnStdout: true
-    ).split()
     for (x in featureFiles) {
       def feature = x
       parallelSteps[feature] = {
