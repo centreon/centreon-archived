@@ -349,53 +349,28 @@ const memoProps = [
   'customFiltersLoading',
 ];
 
+const otherProps = [
+  'setCurrentSearch',
+  'setNextSearch',
+  'setResourceTypes',
+  'setStates',
+  'setStatuses',
+  'setHostGroups',
+  'setServiceGroups',
+];
+
 const MemoizedFilterForm = memoizeComponent<Props>({
   memoProps,
   Component: FilterForm,
 });
 
 const Filter = (): JSX.Element => {
-  const {
-    filter,
-    setFilter,
-    setCurrentSearch,
-    nextSearch,
-    setNextSearch,
-    resourceTypes,
-    setResourceTypes,
-    states,
-    setStates,
-    statuses,
-    setStatuses,
-    hostGroups,
-    setHostGroups,
-    serviceGroups,
-    setServiceGroups,
-    customFilters,
-    customFiltersLoading,
-  } = useResourceContext();
-
-  return (
-    <MemoizedFilterForm
-      filter={filter}
-      setFilter={setFilter}
-      setCurrentSearch={setCurrentSearch}
-      nextSearch={nextSearch}
-      setNextSearch={setNextSearch}
-      resourceTypes={resourceTypes}
-      setResourceTypes={setResourceTypes}
-      states={states}
-      setStates={setStates}
-      statuses={statuses}
-      setStatuses={setStatuses}
-      hostGroups={hostGroups}
-      setHostGroups={setHostGroups}
-      serviceGroups={serviceGroups}
-      setServiceGroups={setServiceGroups}
-      customFilters={customFilters}
-      customFiltersLoading={customFiltersLoading}
-    />
+  const contextProps = pick(
+    [...memoProps, ...otherProps],
+    useResourceContext(),
   );
+
+  return <MemoizedFilterForm {...contextProps} />;
 };
 
 export default Filter;
