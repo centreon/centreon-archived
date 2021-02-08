@@ -49,7 +49,7 @@ def hasChanges(pattern) {
   def diffFiles = sh(script: "git diff --name-only origin/${env.REF_BRANCH} --", returnStdout: true).trim().split()
 
   for (file in diffFiles) {
-    echo file
+    echo "$file match $pattern ?"
     if (SelectorUtils.match(pattern, file)) {
       isMatching = true
     }
@@ -59,7 +59,6 @@ def hasChanges(pattern) {
 }
 
 def checkoutCentreonBuild(buildBranch) {
-  echo "checkout $buildBranch"
   def getCentreonBuildGitConfiguration = { branchName -> [
     $class: 'GitSCM',
     branches: [[name: "refs/heads/${branchName}"]],
