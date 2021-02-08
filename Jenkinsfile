@@ -59,6 +59,7 @@ def hasChanges(pattern) {
 }
 
 def checkoutCentreonBuild(buildBranch) {
+  echo "checkout $buildBranch"
   def getCentreonBuildGitConfiguration = { branchName -> [
     $class: 'GitSCM',
     branches: [[name: "refs/heads/${branchName}"]],
