@@ -258,11 +258,15 @@ try {
       }
     },
     'centos8': {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
-        archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
+      if (isStableBuild()) {
+        node {
+          checkoutCentreonBuild(buildBranch)
+          unstash 'tar-sources'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
+          archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
+        }
+      } else {
+        Utils.markStageSkippedForConditional('centos8')
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -278,9 +282,13 @@ try {
       }
     },
     'centos8': {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
+      if (isStableBuild()) {
+        node {
+          checkoutCentreonBuild(buildBranch)
+          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
+        }
+      } else {
+        Utils.markStageSkippedForConditional('centos8')
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
