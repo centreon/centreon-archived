@@ -68,8 +68,13 @@ def getCentreonBuildGitConfiguration = { branchName -> [
 */
 stage('Source') {
   node {
+    dir('centreon-web') {
+      checkout scm
+      hasFrontendUpdate = hasChanges("www/front_src/**")
+      hasBackendUpdate = hasChanges("**/*.php")
+    }
+
     sh "rm -rf centreon-build"
-    /*
     dir('centreon-build') {
       try {
         //echo getCentreonBuildGitConfiguration(buildBranch)
@@ -96,12 +101,6 @@ stage('Source') {
           ]]
         ])
       }
-    }
-    */
-    dir('centreon-web') {
-      checkout scm
-      hasFrontendUpdate = hasChanges("www/front_src/**")
-      hasBackendUpdate = hasChanges("**/*.php")
     }
 
     // git repository is stored for the Sonar analysis below.
