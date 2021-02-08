@@ -24,8 +24,36 @@ if (env.CHANGE_BRANCH) {
 
 def apiFeatureFiles = []
 def featureFiles = []
-def hasFrontendUpdate = true
-def hasBackendUpdate = true
+
+def backendFiles = [
+  'Jenkinsfile',
+  '**/*.php',
+  '**/*.js',
+  'bin/*',
+  'cron/*',
+  'doc/*',
+  'features/*',
+  'lang/*',
+  'lib/*'
+  'tests/*'
+]
+def frontendFiles = [
+  'Jenkinsfile',
+  'www/front_src/*',
+  'packag*.json',
+  'webpack*',
+  'babel.config.js',
+  'tsconfig.json',
+  '.prettierrc.js',
+  '.eslint*',
+  '.csslintrc',
+  '**/*.ts',
+  '**/*.tsx',
+  '**/*.jsx',
+  'lang/*'
+]
+def hasFrontendChanges = true
+def hasBackendChanges = true
 
 /*
 ** Functions
@@ -49,7 +77,7 @@ def hasChanges(patterns) {
   def diffFiles = sh(script: "git diff --name-only origin/${env.REF_BRANCH} --", returnStdout: true).trim().split()
 
   for (file in diffFiles) {
-    for (pattern in patterns.split(',')) {
+    for (pattern in patterns) {
       if (SelectorUtils.match(pattern, file)) {
         isMatching = true
       }
@@ -87,8 +115,8 @@ stage('Source') {
   node {
     dir('centreon-web') {
       checkout scm
-      hasFrontendUpdate = hasChanges("www/front_src/**")
-      hasBackendUpdate = hasChanges("**/*.php,Jenkinsfile")
+      hasFrontendChanges = hasChanges(frontendFiles)
+      hasBackendChanges = hasChanges(backendFiles)
     }
 
     checkoutCentreonBuild(buildBranch)
@@ -122,7 +150,7 @@ stage('Source') {
 try {
   stage('Unit tests') {
     parallel 'frontend': {
-      if (!hasFrontendUpdate) {
+      if (!hasFrontendChanges) {
         Utils.markStageSkippedForConditional('frontend')
       } else {
         node {
@@ -162,7 +190,7 @@ try {
       }
     },
     'backend': {
-      if (!hasBackendUpdate) {
+      if (!hasBackendChanges) {
         Utils.markStageSkippedForConditional('backend')
       } else {
         node {
@@ -261,7 +289,7 @@ try {
   }
 
   stage('API integration tests') {
-    if (hasBackendUpdate) {
+    if (hasBackendChanges) {
       def parallelSteps = [:]
       for (x in apiFeatureFiles) {
         def feature = x
@@ -287,7 +315,7 @@ try {
 
   stage('Acceptance tests') {
     def acceptanceTag = ""
-    if (hasFrontendUpdate) {
+    if (hasFrontendChanges) {
       acceptanceTag = "topCounter"
     }
 
