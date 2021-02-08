@@ -33,7 +33,7 @@ def backendFiles = [
   'composer.*',
   'symfony.lock',
   '.env*',
-  'behat.yml'
+  'behat.yml',
   'codingstyle.xml',
   'phpstan.neon',
   'sonar-project.properties',
