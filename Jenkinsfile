@@ -58,17 +58,17 @@ def hasChanges(pattern) {
   return isMatching
 }
 
-def getCentreonBuildGitConfiguration = { branchName -> [
-  $class: 'GitSCM',
-  branches: [[name: "refs/heads/${branchName}"]],
-  doGenerateSubmoduleConfigurations: false,
-  userRemoteConfigs: [[
-    $class: 'UserRemoteConfig',
-    url: "ssh://git@github.com/centreon/centreon-build.git"
-  ]]
-]}
-
 def checkoutCentreonBuild = { buildBranch ->
+  def getCentreonBuildGitConfiguration = { branchName -> [
+    $class: 'GitSCM',
+    branches: [[name: "refs/heads/${branchName}"]],
+    doGenerateSubmoduleConfigurations: false,
+    userRemoteConfigs: [[
+      $class: 'UserRemoteConfig',
+      url: "ssh://git@github.com/centreon/centreon-build.git"
+    ]]
+  ]}
+
   dir('centreon-build') {
     try {
       checkout(getCentreonBuildGitConfiguration(buildBranch))
