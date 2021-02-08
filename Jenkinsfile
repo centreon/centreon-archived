@@ -59,17 +59,15 @@ def hasChanges(pattern) {
 }
 
 def checkoutCentreonBuild(buildBranch) {
-  def getCentreonBuildGitConfiguration = { branchName ->
-    return [
-      $class: 'GitSCM',
-      branches: [[name: "refs/heads/${branchName}"]],
-      doGenerateSubmoduleConfigurations: false,
-      userRemoteConfigs: [[
-        $class: 'UserRemoteConfig',
-        url: "ssh://git@github.com/centreon/centreon-build.git"
-      ]]
-    ]
-  }
+  def getCentreonBuildGitConfiguration = { branchName -> [
+    $class: 'GitSCM',
+    branches: [[name: "refs/heads/${branchName}"]],
+    doGenerateSubmoduleConfigurations: false,
+    userRemoteConfigs: [[
+      $class: 'UserRemoteConfig',
+      url: "ssh://git@github.com/centreon/centreon-build.git"
+    ]]
+  ]}
 
   dir('centreon-build') {
     try {
