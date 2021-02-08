@@ -130,7 +130,7 @@ stage('Source') {
     def toto = sh(
       script: "find centreon-web/features -type f -name '*.feature' -exec grep -Rl '@topCounter' {} \\; | sed -e 's#centreon-web/features/##g' | sort",
       returnStdout: true
-    ).split()
+    )
     echo toto
 
     checkoutCentreonBuild(buildBranch)
