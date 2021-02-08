@@ -160,7 +160,14 @@ stage('Source') {
       returnStdout: true
     ).split()
 
+    echo sh(
+      script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
+      returnStdout: true
+    )
+    sh "toto"
 
+
+    // get feature files
     def grepAcceptanceFiles = ""
     if (hasFrontendChanges) {
       acceptanceTag = "@reactjs"
@@ -313,8 +320,7 @@ try {
   stage('API integration tests') {
     if (hasBackendChanges) {
       def parallelSteps = [:]
-      for (x in apiFeatureFiles) {
-        def feature = x
+      for (feature in apiFeatureFiles) {
         parallelSteps[feature] = {
           node {
             checkoutCentreonBuild(buildBranch)
@@ -340,7 +346,7 @@ try {
 
   stage('Acceptance tests') {
     def parallelSteps = [:]
-    for (x in featureFiles) {
+    for (feature in featureFiles) {
       def feature = x
       parallelSteps[feature] = {
         node {
