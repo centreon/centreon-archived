@@ -26,11 +26,11 @@ def apiFeatureFiles = []
 def featureFiles = []
 
 def backendFiles = [
-  //'Jenkinsfile',
+  'Jenkinsfile',
   '**/*.php',
   '**/*.js',
   '**/*.sh',
-  //'composer.*',
+  'composer.*',
   'symfony.lock',
   '.env*',
   'behat.yml',
@@ -41,13 +41,13 @@ def backendFiles = [
   'config/*',
   'cron/*',
   'doc/*',
-  //'features/*',
+  'features/*',
   'lang/*',
   'lib/*',
   'tests/*'
 ]
 def frontendFiles = [
-  //'Jenkinsfile',
+  'Jenkinsfile',
   'www/front_src/*',
   'packag*.json',
   'webpack*',
