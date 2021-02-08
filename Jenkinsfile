@@ -170,6 +170,11 @@ stage('Source') {
       script: "find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
       returnStdout: true
     ).split()
+    echo sh(
+      script: "find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
+      returnStdout: true
+    )
+    echo "toto"
   }
 }
 
@@ -314,7 +319,6 @@ try {
     if (hasBackendChanges) {
       def parallelSteps = [:]
       for (feature in apiFeatureFiles) {
-        echo feature
         parallelSteps[feature] = {
           node {
             checkoutCentreonBuild(buildBranch)
