@@ -166,7 +166,7 @@ stage('Source') {
       acceptanceTag = "@reactjs"
       grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \\;"
     }
-    featuresFiles = sh(
+    featureFiles = sh(
       script: "find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
       returnStdout: true
     ).split()
@@ -311,7 +311,7 @@ try {
   }
 
   stage('API integration tests') {
-    if (hasBackendChanges || hasFrontendChanges) {
+    if (hasBackendChanges) {
       def parallelSteps = [:]
       for (feature in apiFeatureFiles) {
         parallelSteps[feature] = {
