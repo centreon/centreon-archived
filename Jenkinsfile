@@ -127,12 +127,6 @@ stage('Source') {
       hasBackendChanges = hasChanges(backendFiles)
     }
 
-    def toto = sh(
-      script: "find centreon-web/features -type f -name '*.feature' -exec grep -Rl '@topCounter' {} \\; | sed -e 's#centreon-web/features/##g' | sort",
-      returnStdout: true
-    )
-    echo toto
-
     checkoutCentreonBuild(buildBranch)
 
     // git repository is stored for the Sonar analysis below.
@@ -331,7 +325,7 @@ try {
     def grepAcceptanceFiles = ""
     if (hasFrontendChanges) {
       acceptanceTag = "@topCounter"
-      grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} " + '\\;'
+      grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \\;"
     }
 
     def parallelSteps = [:]
