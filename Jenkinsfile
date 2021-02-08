@@ -79,6 +79,8 @@ stage('Source') {
       try {
         //echo getCentreonBuildGitConfiguration(buildBranch)
         //def config = getCentreonBuildGitConfiguration(buildBranch)
+        checkout(getCentreonBuildGitConfiguration(buildBranch))
+        /*
         checkout([
           $class: 'GitSCM',
           branches: [[name: "refs/heads/${buildBranch}"]],
@@ -88,9 +90,12 @@ stage('Source') {
             url: "ssh://git@github.com/centreon/centreon-build.git"
           ]]
         ])
+        */
       } catch(e) {
         echo 'master'
+        checkout(getCentreonBuildGitConfiguration('master'))
         //checkout(getCentreonBuildGitConfiguration('master'))
+        /*
         checkout([
           $class: 'GitSCM',
           branches: [[name: "refs/heads/master"]],
@@ -100,6 +105,7 @@ stage('Source') {
             url: "ssh://git@github.com/centreon/centreon-build.git"
           ]]
         ])
+        */
       }
     }
 
