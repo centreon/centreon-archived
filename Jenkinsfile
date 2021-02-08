@@ -25,7 +25,7 @@ if (env.CHANGE_BRANCH) {
 def backendFiles = [
   'Jenkinsfile',
   '**/*.php',
-  '**/*.js',
+  'www/**/*.js',
   '**/*.sh',
   'composer.*',
   'symfony.lock',
