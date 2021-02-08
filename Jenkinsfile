@@ -339,7 +339,7 @@ try {
     def grepAcceptanceFiles = ""
     if (hasFrontendChanges) {
       acceptanceTag = "@topCounter"
-      grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \\;"
+      grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \\\;"
     }
 
     def parallelSteps = [:]
