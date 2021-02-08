@@ -22,9 +22,6 @@ if (env.CHANGE_BRANCH) {
   buildBranch = env.CHANGE_BRANCH
 }
 
-def apiFeatureFiles = []
-def featureFiles = []
-
 def backendFiles = [
   //'Jenkinsfile',
   //'**/*.php',
@@ -153,8 +150,6 @@ stage('Source') {
       reportName: 'Centreon Build Artifacts',
       reportTitles: ''
     ])
-    apiFeatureFiles = sh(script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
-    featureFiles = sh(script: 'find centreon-web/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
   }
 }
 
@@ -310,6 +305,10 @@ try {
   stage('API integration tests') {
     if (hasBackendChanges) {
       def parallelSteps = [:]
+      def apiFeatureFiles = sh(
+        script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
+        returnStdout: true
+      ).split()
       for (x in apiFeatureFiles) {
         def feature = x
         parallelSteps[feature] = {
@@ -317,7 +316,10 @@ try {
             checkoutCentreonBuild(buildBranch)
             unstash 'tar-sources'
             unstash 'vendor'
-            def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
+            def acceptanceStatus = sh(
+              script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
+              returnStatus: true
+            )
             junit 'xunit-reports/**/*.xml'
             if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
               currentBuild.result = 'FAILURE'
@@ -334,11 +336,17 @@ try {
 
   stage('Acceptance tests') {
     def acceptanceTag = ""
+    def grepAcceptanceFiles = ""
     if (hasFrontendChanges) {
-      acceptanceTag = "topCounter"
+      acceptanceTag = "@topCounter"
+      grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \;"
     }
 
     def parallelSteps = [:]
+    def featuresFiles = sh(
+      script: "find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
+      returnStdout: true
+    ).split()
     for (x in featureFiles) {
       def feature = x
       parallelSteps[feature] = {
@@ -346,7 +354,10 @@ try {
           checkoutCentreonBuild(buildBranch)
           unstash 'tar-sources'
           unstash 'vendor'
-          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}", returnStatus: true)
+          def acceptanceStatus = sh(
+            script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
+            returnStatus: true
+          )
           junit 'xunit-reports/**/*.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
