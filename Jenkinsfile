@@ -30,8 +30,12 @@ def hasBackendUpdate = true
 /*
 ** Functions
 */
+def isStableBuild() {
+  return ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE'))
+}
+
 def hasChanges(pattern) {
-  if (env.BUILD == 'RELEASE' || env.BUILD == 'REFERENCE') {
+  if (isStableBuild()) {
     return true
   }
 
@@ -45,6 +49,7 @@ def hasChanges(pattern) {
   def diffFiles = sh(script: "git diff --name-only origin/${env.REF_BRANCH} --", returnStdout: true).trim().split()
 
   for (file in diffFiles) {
+    echo file
     if (SelectorUtils.match(pattern, file)) {
       isMatching = true
     }
@@ -63,6 +68,17 @@ def getCentreonBuildGitConfiguration = { branchName -> [
   ]]
 ]}
 
+def checkoutCentreonBuild() {
+  dir('centreon-build') {
+    try {
+      checkout(getCentreonBuildGitConfiguration(buildBranch))
+    } catch(e) {
+      echo "branch '${buildBranch}' does not exist in centreon-build, then fallback to master"
+      checkout(getCentreonBuildGitConfiguration('master'))
+    }
+  }
+}
+
 /*
 ** Pipeline code.
 */
@@ -74,17 +90,10 @@ stage('Source') {
       hasBackendUpdate = hasChanges("**/*.php,Jenkinsfile")
     }
 
-    dir('centreon-build') {
-      try {
-        checkout(getCentreonBuildGitConfiguration(buildBranch))
-      } catch(e) {
-        echo "branch '${buildBranch}' does not exist in centreon-build, then fallback to master"
-        checkout(getCentreonBuildGitConfiguration('master'))
-      }
-    }
+    checkoutCentreonBuild()
 
     // git repository is stored for the Sonar analysis below.
-    if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+    if (isStableBuild()) {
       sh 'tar czf centreon-web-git.tar.gz centreon-web'
       stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
     }
@@ -116,7 +125,7 @@ try {
         Utils.markStageSkippedForConditional('frontend')
       } else {
         node {
-          sh 'setup_centreon_build.sh'
+          checkoutCentreonBuild()
           unstash 'tar-sources'
           unstash 'node_modules'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
@@ -156,7 +165,7 @@ try {
         Utils.markStageSkippedForConditional('backend')
       } else {
         node {
-          sh 'setup_centreon_build.sh'
+          checkoutCentreonBuild()
           unstash 'tar-sources'
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
@@ -195,7 +204,7 @@ try {
             trendChartType: 'NONE'
           )
 
-          if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+          if (isStableBuild()) {
             unstash 'git-sources'
             sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
             withSonarQubeEnv('SonarQube') {
@@ -213,7 +222,7 @@ try {
   stage('Package') {
     parallel 'centos7': {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild()
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: 'rpms-centos7.tar.gz'
@@ -221,7 +230,7 @@ try {
     },
     'centos8': {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild()
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
         archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
@@ -235,13 +244,13 @@ try {
   stage('Bundle') {
     parallel 'centos7': {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild()
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
     },
     'centos8': {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild()
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
       }
     }
@@ -257,7 +266,7 @@ try {
         def feature = x
         parallelSteps[feature] = {
           node {
-            sh 'setup_centreon_build.sh'
+            checkoutCentreonBuild()
             unstash 'tar-sources'
             unstash 'vendor'
             def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
@@ -282,7 +291,7 @@ try {
         def feature = x
         parallelSteps[feature] = {
           node {
-            sh 'setup_centreon_build.sh'
+            checkoutCentreonBuild()
             unstash 'tar-sources'
             unstash 'vendor'
             def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
@@ -300,10 +309,10 @@ try {
     }
   }
 
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+  if (isStableBuild()) {
     stage('Delivery') {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild()
         unstash 'tar-sources'
         unstash 'api-doc'
         sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
@@ -323,7 +332,7 @@ try {
     }
   }
 } catch(e) {
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+  if (isStableBuild()) {
     slackSend channel: "#monitoring-metrology",
         color: "#F30031",
         message: "*FAILURE*: `CENTREON WEB` <${env.BUILD_URL}|build #${env.BUILD_NUMBER}> on branch ${env.BRANCH_NAME}\n" +
