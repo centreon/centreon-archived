@@ -23,11 +23,11 @@ if (env.CHANGE_BRANCH) {
 }
 
 def backendFiles = [
-  //'Jenkinsfile',
-  //'**/*.php',
+  'Jenkinsfile',
+  '**/*.php',
   '**/*.js',
   '**/*.sh',
-  //'composer.*',
+  'composer.*',
   'symfony.lock',
   '.env*',
   'behat.yml',
@@ -38,7 +38,7 @@ def backendFiles = [
   'config/*',
   'cron/*',
   'doc/*',
-  //'features/*',
+  'features/*',
   'lang/*',
   'lib/*',
   'tests/*'
