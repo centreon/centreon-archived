@@ -86,7 +86,7 @@ def checkoutCentreonBuild(buildBranch) {
 stage('Source') {
   node {
     dir('centreon-web') {
-      checkout([$class: 'GitSCM'])
+      checkout scm
       hasFrontendUpdate = hasChanges("www/front_src/**")
       hasBackendUpdate = hasChanges("**/*.php,Jenkinsfile")
     }
