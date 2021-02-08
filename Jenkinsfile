@@ -26,7 +26,7 @@ def apiFeatureFiles = []
 def featureFiles = []
 
 def backendFiles = [
-  'Jenkinsfile',
+  //'Jenkinsfile',
   '**/*.php',
   '**/*.js',
   '**/*.sh',
@@ -47,7 +47,7 @@ def backendFiles = [
   'tests/*'
 ]
 def frontendFiles = [
-  'Jenkinsfile',
+  //'Jenkinsfile',
   'www/front_src/*',
   'packag*.json',
   'webpack*',
