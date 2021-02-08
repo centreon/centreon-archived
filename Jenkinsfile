@@ -127,6 +127,12 @@ stage('Source') {
       hasBackendChanges = hasChanges(backendFiles)
     }
 
+    def toto = sh(
+      script: "find centreon-web/features -type f -name '*.feature' -exec grep -Rl '${acceptanceTag}' {} \; | sed -e 's#centreon-web/features/##g' | sort",
+      returnStdout: true
+    ).split()
+    echo toto
+
     checkoutCentreonBuild(buildBranch)
 
     // git repository is stored for the Sonar analysis below.
@@ -255,24 +261,16 @@ try {
   }
 
   stage('Package') {
-    parallel 'centos7': {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
-        archiveArtifacts artifacts: 'rpms-centos7.tar.gz'
-      }
-    },
-    'centos8': {
-      if (isStableBuild()) {
+    def parallelSteps = [:]
+    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+    for (osBuild in osBuilds) {
+      parallelSteps[osBuild] = {
         node {
           checkoutCentreonBuild(buildBranch)
           unstash 'tar-sources'
-          sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
-          archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh ${osBuild}"
+          archiveArtifacts artifacts: "rpms-${osBuild}.tar.gz"
         }
-      } else {
-        Utils.markStageSkippedForConditional('centos8')
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -281,20 +279,14 @@ try {
   }
 
   stage('Bundle') {
-    parallel 'centos7': {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
-      }
-    },
-    'centos8': {
-      if (isStableBuild()) {
+    def parallelSteps = [:]
+    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+    for (osBuild in osBuilds) {
+      parallelSteps[osBuild] = {
         node {
           checkoutCentreonBuild(buildBranch)
-          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
+          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
         }
-      } else {
-        Utils.markStageSkippedForConditional('centos8')
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
