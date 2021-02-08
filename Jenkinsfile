@@ -347,7 +347,6 @@ try {
   stage('Acceptance tests') {
     def parallelSteps = [:]
     for (feature in featureFiles) {
-      def feature = x
       parallelSteps[feature] = {
         node {
           checkoutCentreonBuild(buildBranch)
