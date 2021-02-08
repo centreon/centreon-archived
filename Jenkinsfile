@@ -69,6 +69,7 @@ def getCentreonBuildGitConfiguration = { branchName -> [
 stage('Source') {
   node {
     sh "rm -rf centreon-build"
+    /*
     dir('centreon-build') {
       try {
         //echo getCentreonBuildGitConfiguration(buildBranch)
@@ -96,6 +97,7 @@ stage('Source') {
         ])
       }
     }
+    */
     dir('centreon-web') {
       checkout scm
       hasFrontendUpdate = hasChanges("www/front_src/**")
