@@ -34,7 +34,7 @@ def backendFiles = [
   'doc/*',
   'features/*',
   'lang/*',
-  'lib/*'
+  'lib/*',
   'tests/*'
 ]
 def frontendFiles = [
