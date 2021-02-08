@@ -170,11 +170,6 @@ stage('Source') {
       script: "find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
       returnStdout: true
     ).split()
-    echo sh(
-      script: "find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
-      returnStdout: true
-    )
-    sh "toto"
   }
 }
 
@@ -316,7 +311,7 @@ try {
   }
 
   stage('API integration tests') {
-    if (hasBackendChanges) {
+    if (hasBackendChanges || hasFrontendChanges) {
       def parallelSteps = [:]
       for (feature in apiFeatureFiles) {
         parallelSteps[feature] = {
