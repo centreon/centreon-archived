@@ -60,6 +60,8 @@ const Filter = (): JSX.Element => {
     customFiltersLoading,
     setCriteria,
     setNewFilter,
+    filterExpanded,
+    toggleFilterExpanded,
   } = useResourceContext();
 
   const requestSearch = (): void => {
@@ -117,7 +119,8 @@ const Filter = (): JSX.Element => {
 
   return (
     <Filters
-      expandable
+      expanded={filterExpanded}
+      onExpand={toggleFilterExpanded}
       expandLabel={labelShowCriteriasFilters}
       filters={
         <Grid container spacing={1} alignItems="center">

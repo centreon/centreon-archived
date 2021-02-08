@@ -1,6 +1,7 @@
 import {
   hasPath,
   indexBy,
+  isNil,
   map,
   merge,
   mergeRight,
@@ -19,7 +20,10 @@ import {
   unhandledProblemsFilter,
   Filter,
 } from './models';
-import { getStoredOrDefaultFilter } from './storedFilter';
+import {
+  getStoredOrDefaultFilter,
+  getStoredOrDefaultFilterExpanded,
+} from './storedFilter';
 import { Criteria } from './Criterias/models';
 
 const getDefaultFilter = (): Filter => {
@@ -45,4 +49,16 @@ const getDefaultFilter = (): Filter => {
   return defaultFilter;
 };
 
-export default getDefaultFilter;
+const getDefaultFilterExpanded = (): boolean => {
+  const defaultFilterExpanded = getStoredOrDefaultFilterExpanded(false);
+
+  const urlQueryParameters = getUrlQueryParameters();
+
+  if (isNil(urlQueryParameters.filterExpanded)) {
+    return defaultFilterExpanded;
+  }
+
+  return urlQueryParameters.filterExpanded as boolean;
+};
+
+export { getDefaultFilter, getDefaultFilterExpanded };

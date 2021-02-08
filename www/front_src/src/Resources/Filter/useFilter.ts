@@ -21,7 +21,12 @@ import {
 
 import { labelNewFilter } from '../translatedLabels';
 
-import { clearCachedFilter, storeFilter } from './storedFilter';
+import {
+  clearCachedFilter,
+  clearCachedFilterExpanded,
+  storeFilter,
+  storeFilterExpanded,
+} from './storedFilter';
 import { listCustomFilters } from './api';
 import { listCustomFiltersDecoder } from './api/decoders';
 import {
@@ -36,7 +41,7 @@ import {
   Filter,
   resourceProblemsFilter,
 } from './models';
-import getDefaultFilter from './default';
+import { getDefaultFilter, getDefaultFilterExpanded } from './default';
 
 type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
 type EditPanelOpenDitpach = React.Dispatch<React.SetStateAction<boolean>>;
@@ -49,6 +54,8 @@ export interface FilterState {
   filters: Array<Filter>;
   filter: Filter;
   updatedFilter: Filter;
+  filterExpanded: boolean;
+  toggleFilterExpanded: () => void;
   setFilter: (filter: Filter) => void;
   setNewFilter: () => void;
   setCriteria: ({ name, value }: { name: string; value }) => void;
@@ -83,6 +90,9 @@ const useFilter = (): FilterState => {
   const [filter, setFilter] = React.useState(getDefaultFilter());
   const [nextSearch, setNextSearch] = React.useState<string | undefined>(
     getDefaultSearchCriteria().value as string,
+  );
+  const [filterExpanded, setFilterExpanded] = React.useState(
+    getDefaultFilterExpanded(),
   );
 
   const [editPanelOpen, setEditPanelOpen] = React.useState<boolean>(false);
@@ -159,7 +169,19 @@ const useFilter = (): FilterState => {
 
   React.useEffect(() => (): void => {
     clearCachedFilter();
+    clearCachedFilterExpanded();
   });
+
+  React.useEffect(() => {
+    setUrlQueryParameters([
+      {
+        name: 'filterExpanded',
+        value: filterExpanded,
+      },
+    ]);
+
+    storeFilterExpanded(filterExpanded);
+  }, [filterExpanded]);
 
   const updatedFilter = getFilterWithUpdatedCriteria({
     name: 'search',
@@ -190,6 +212,10 @@ const useFilter = (): FilterState => {
     );
   };
 
+  const toggleFilterExpanded = (): void => {
+    setFilterExpanded(!filterExpanded);
+  };
+
   return {
     filter,
     filters,
@@ -207,6 +233,8 @@ const useFilter = (): FilterState => {
     setNewFilter,
     getCriteriaValue,
     getMultiSelectCriterias,
+    filterExpanded,
+    toggleFilterExpanded,
   };
 };
 

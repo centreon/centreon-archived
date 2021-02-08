@@ -52,7 +52,7 @@ import useDetails from '../Details/useDetails';
 
 import { allFilter, Filter as FilterModel } from './models';
 import useFilter from './useFilter';
-import { key as filterStorageKey } from './storedFilter';
+import { filterKey } from './storedFilter';
 import { defaultSortField, defaultSortOrder } from './Criterias/default';
 
 import Filter from '.';
@@ -417,7 +417,7 @@ describe(Filter, () => {
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
-      expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterStorageKey);
+      expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterKey);
       expect(queryByLabelText(labelUnhandledProblems)).not.toBeInTheDocument();
       expect(getByDisplayValue('Search me')).toBeInTheDocument();
       expect(getByText(labelHost)).toBeInTheDocument();
@@ -443,7 +443,7 @@ describe(Filter, () => {
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
       expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
-        filterStorageKey,
+        filterKey,
         JSON.stringify(allFilter),
       );
 
@@ -453,7 +453,7 @@ describe(Filter, () => {
 
       await waitFor(() =>
         expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
-          filterStorageKey,
+          filterKey,
           JSON.stringify(
             getFilterWithUpdatedCriteria({
               filter: { ...allFilter, id: '', name: labelNewFilter },
