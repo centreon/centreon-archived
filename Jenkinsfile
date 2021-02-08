@@ -97,9 +97,7 @@ stage('Source') {
       }
     }
     dir('centreon-web') {
-      checkout([
-         $class: 'GitSCM',
-      ])
+      checkout scm
       hasFrontendUpdate = hasChanges("www/front_src/**")
       hasBackendUpdate = hasChanges("**/*.php")
     }
