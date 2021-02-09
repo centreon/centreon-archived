@@ -189,15 +189,6 @@ try {
           junit 'ut-fe.xml'
           stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
           stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
-
-          discoverGitReferenceBuild()
-          recordIssues(
-            enabledForFailure: true,
-            failOnError: true,
-            qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-            tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
-            trendChartType: 'NONE'
-          )
         }
       }
     },
@@ -215,20 +206,6 @@ try {
           stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
           stash name: 'codestyle-be.xml', includes: 'codestyle-be.xml'
           stash name: 'phpstan.xml', includes: 'phpstan.xml'
-
-          discoverGitReferenceBuild()
-          recordIssues(
-            enabledForFailure: true,
-            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-            tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
-            trendChartType: 'NONE'
-          )
-          recordIssues(
-            enabledForFailure: true,
-            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-            tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
-            trendChartType: 'NONE'
-          )
         }
       }
     }
@@ -279,6 +256,27 @@ try {
           ]
         ])
       }
+
+      discoverGitReferenceBuild()
+      recordIssues(
+        enabledForFailure: true,
+        qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+        tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
+        trendChartType: 'NONE'
+      )
+      recordIssues(
+        enabledForFailure: true,
+        qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+        tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
+        trendChartType: 'NONE'
+      )
+      recordIssues(
+        enabledForFailure: true,
+        failOnError: true,
+        qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+        tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
+        trendChartType: 'NONE'
+      )
     }
   }
 
