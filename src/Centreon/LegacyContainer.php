@@ -30,7 +30,7 @@ use Pimple\Container;
  *
  * @package Centreon
  */
-class LegacyContainer 
+class LegacyContainer
 {
     /**
      * @var Container
