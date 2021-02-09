@@ -225,6 +225,8 @@ try {
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
           junit 'ut-be.xml'
+          stash name: 'ut-be.xml', includes: 'ut-be.xml'
+          stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
 
           if (env.CHANGE_ID) { // pull request to comment with coding style issues
             ViolationsToGitHub([
@@ -272,6 +274,20 @@ try {
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests stage failure.');
     }
+  }
+
+  stage('SonarQube quality gate') {
+    //if (isStableBuild()) {
+      unstash 'git-sources'
+      if (hasBackendChanges) {
+        unstash 'ut-be.xml'
+        unstash 'coverage-be.xml'
+        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+        withSonarQubeEnv('SonarQube') {
+          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+        }
+      }
+    //}
   }
 
   stage('Package') {
