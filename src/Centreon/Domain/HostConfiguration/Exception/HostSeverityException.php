@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,37 +20,21 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory;
+namespace Centreon\Domain\HostConfiguration\Exception;
 
 /**
- * This class is designed to represent the formatted response of the API request.
+ * This class is designed to contain all exceptions for the context of the host severity.
  *
- * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory
+ * @package Centreon\Domain\HostConfiguration\Exception
  */
-class HostCategoryV21
+class HostSeverityException extends \Exception
 {
     /**
-     * @var int
+     * @param \Throwable $ex
+     * @return self
      */
-    public $id;
-
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-    public $alias;
-
-    /**
-     * @var string|null
-     */
-    public $comments;
-
-    /**
-     * @var bool
-     */
-    public $isActivated;
+    public static function findHostSeveritiesException(\Throwable $ex): self
+    {
+        return new self(_('Error when searching for host severities'), 0, $ex);
+    }
 }
