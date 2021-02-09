@@ -280,7 +280,7 @@ try {
   stage('SonarQube quality gate') {
     //if (isStableBuild()) {
       node {
-        unstash 'git-sources'
+        unstash 'tar-sources'
         if (hasBackendChanges) {
           unstash 'ut-be.xml'
           unstash 'coverage-be.xml'
