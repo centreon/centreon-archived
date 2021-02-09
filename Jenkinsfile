@@ -185,6 +185,7 @@ try {
           unstash 'node_modules'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
           junit 'ut-fe.xml'
+          stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
 
           if (env.CHANGE_ID) { // pull request to comment with coding style issues
             ViolationsToGitHub([
@@ -278,13 +279,18 @@ try {
 
   stage('SonarQube quality gate') {
     //if (isStableBuild()) {
-      unstash 'git-sources'
-      if (hasBackendChanges) {
-        unstash 'ut-be.xml'
-        unstash 'coverage-be.xml'
-        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-        withSonarQubeEnv('SonarQube') {
-          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+      node {
+        unstash 'git-sources'
+        if (hasBackendChanges) {
+          unstash 'ut-be.xml'
+          unstash 'coverage-be.xml'
+          if (hasFrontendChanges) {
+            unstash 'ut-fe.xml'
+          }
+          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+          withSonarQubeEnv('SonarQube') {
+            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+          }
         }
       }
     //}
