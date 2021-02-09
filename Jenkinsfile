@@ -126,17 +126,19 @@ stage('Source') {
   node {
     dir('centreon-web') {
       checkout scm
-      hasFrontendChanges = hasChanges(frontendFiles)
-      hasBackendChanges = hasChanges(backendFiles)
+      if (!isStableBuild()) {
+        hasFrontendChanges = hasChanges(frontendFiles)
+        hasBackendChanges = hasChanges(backendFiles)
+      }
     }
 
     checkoutCentreonBuild(buildBranch)
 
     // git repository is stored for the Sonar analysis below.
-    if (isStableBuild()) {
+    //if (isStableBuild()) {
       sh 'tar czf centreon-web-git.tar.gz centreon-web'
       stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
-    }
+    //}
     sh "./centreon-build/jobs/web/${serie}/mon-web-source.sh"
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
@@ -280,7 +282,7 @@ try {
   stage('SonarQube quality gate') {
     //if (isStableBuild()) {
       node {
-        unstash 'tar-sources'
+        unstash 'git-sources'
         if (hasBackendChanges) {
           unstash 'ut-be.xml'
           unstash 'coverage-be.xml'
