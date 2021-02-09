@@ -107,7 +107,9 @@ class PlatformInformationFactoryTest extends TestCase
 
     public function testCreateCentralPlatformInformation(): void
     {
-        $centralPlatformInformation = $this->platformInformationFactory->createCentralInformation($this->centralRequest);
+        $centralPlatformInformation = $this->platformInformationFactory->createCentralInformation(
+            $this->centralRequest
+        );
         $this->assertEquals($this->centralPlatformInformationStub->isRemote(), $centralPlatformInformation->isRemote());
         $this->assertEquals(
             $this->centralPlatformInformationStub->getCentralServerAddress(),
