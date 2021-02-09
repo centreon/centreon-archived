@@ -52,7 +52,6 @@ use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class WidgetSourceTest extends TestCase
 {
-
     use TestCaseExtensionTrait;
     use SourceDependencyTrait;
 

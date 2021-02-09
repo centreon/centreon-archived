@@ -46,6 +46,16 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class AutoloadServiceProviderTest extends TestCase
 {
+    /**
+     * @var CheckPoint
+     */
+    protected $checkPoint;
+
+    /**
+     * @var Finder
+     */
+    protected $finder;
+
     public function setUp(): void
     {
         $this->checkPoint = (new CheckPoint)
