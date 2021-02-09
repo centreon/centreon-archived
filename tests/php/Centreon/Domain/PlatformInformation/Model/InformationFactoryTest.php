@@ -57,7 +57,7 @@ class InformationFactoryTest extends TestCase
      */
     public function testCreateFromRequest(): void
     {
-        $information = InformationFactory::createFromRequest($this->informationRequest);
+        $information = InformationFactory::createFromDto($this->informationRequest);
         $this->assertCount(count($information), $this->informationRequest);
 
         foreach ($information as $informationObject) {

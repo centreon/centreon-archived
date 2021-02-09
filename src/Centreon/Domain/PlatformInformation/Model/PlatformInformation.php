@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Model;
 
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
+
 /**
  * Class designed to retrieve servers' specific information
  *
@@ -29,7 +31,7 @@ namespace Centreon\Domain\PlatformInformation\Model;
 class PlatformInformation
 {
     /**
-     * @var bool|null platform type
+     * @var bool platform type
      */
     private $isRemote;
 
@@ -69,15 +71,21 @@ class PlatformInformation
     private $apiPath;
 
     /**
-     * @var bool|null SSL peer validation
+     * @var bool SSL peer validation
      */
-    private $apiPeerValidation;
+    private $apiPeerValidation = false;
+
+    public function __construct(bool $isRemote)
+    {
+        $this->isRemote = $isRemote;
+    }
+
 
     /**
      *
      * @return bool
      */
-    public function isRemote(): ?bool
+    public function isRemote(): bool
     {
         return $this->isRemote;
     }
@@ -86,7 +94,7 @@ class PlatformInformation
      * @param bool $isRemote
      * @return $this
      */
-    public function setRemote(?bool $isRemote): self
+    public function setRemote(bool $isRemote): self
     {
         $this->isRemote = $isRemote;
         return $this;
@@ -188,17 +196,13 @@ class PlatformInformation
     }
 
     /**
-     * @param int|null $port
-     * @return int|null
+     * @param int $port
+     * @return int
      */
-    private function checkPortConsistency(?int $port): ?int
+    private function checkPortConsistency(int $port): int
     {
-        if ($port !== null) {
-            if (1 > $port || $port > 65535) {
-                throw new \InvalidArgumentException(
-                    _("Central platform's API port is not consistent. Please check the 'Remote Access' form.")
-                );
-            }
+        if (1 > $port || $port > 65535) {
+            throw PlatformInformationException::inconsistentDataException();
         }
 
         return $port;
@@ -218,7 +222,12 @@ class PlatformInformation
      */
     public function setApiPort(?int $port): self
     {
-        $this->apiPort = $this->checkPortConsistency($port);
+        if ($port !== null) {
+            $this->apiPort = $this->checkPortConsistency($port);
+        } else {
+            $this->apiPort = $port;
+        }
+
         return $this;
     }
 
@@ -239,9 +248,7 @@ class PlatformInformation
         if ($path !== null) {
             $path = trim(filter_var($path, FILTER_SANITIZE_STRING), '/');
             if (empty($path)) {
-                throw new \InvalidArgumentException(
-                    _("Central platform's data are not consistent. Please check the 'Remote Access' form")
-                );
+                throw PlatformInformationException::inconsistentDataException();
             }
         }
         $this->apiPath = $path;
@@ -249,18 +256,18 @@ class PlatformInformation
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function hasApiPeerValidation(): ?bool
+    public function hasApiPeerValidation(): bool
     {
         return $this->apiPeerValidation;
     }
 
     /**
-     * @param bool|null $status
+     * @param bool $status
      * @return $this
      */
-    public function setApiPeerValidation(?bool $status): self
+    public function setApiPeerValidation(bool $status): self
     {
         $this->apiPeerValidation = $status;
         return $this;

@@ -32,7 +32,8 @@ use Centreon\Domain\Common\Assertion\Assertion;
 class Information
 {
     public const MAX_KEY_LENGTH = 25,
-                 MAX_VALUE_LENGTH = 1024;
+                 MAX_VALUE_LENGTH = 1024,
+                 MIN_LENGTH = 1;
     /**
      * Information key
      *
@@ -64,6 +65,7 @@ class Information
      */
     public function setKey(string $key): self
     {
+        Assertion::minLength($key, self::MIN_LENGTH, 'Information::key');
         Assertion::maxLength($key, self::MAX_KEY_LENGTH, 'Information::key');
         $this->key = $key;
         return $this;
@@ -85,6 +87,7 @@ class Information
     public function setValue($value): self
     {
         if ($value !== null && is_string($value)) {
+            Assertion::minLength($value, self::MIN_LENGTH, 'Information::value');
             Assertion::maxLength($value, self::MAX_VALUE_LENGTH, 'Information::value');
         }
         $this->value = $value;

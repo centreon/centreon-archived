@@ -41,10 +41,7 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
     }
 
     /**
-     * validate the request DTO.
-     *
-     * @param array<string,mixed> $dto
-     * @throws \InvalidArgumentException
+     * @inheritDoc
      */
     public function validateOrFail(array $dto): void
     {

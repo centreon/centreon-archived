@@ -33,4 +33,12 @@ interface PlatformInformationReadRepositoryInterface
      * @throws \Exception
      */
     public function findPlatformInformation(): ?PlatformInformation;
+
+    /**
+     * set the Encryption first key.
+     *
+     * @param string|null $encryptionFirstKey
+     * @return void
+     */
+    public function setEncryptionFirstKey(?string $encryptionFirstKey): void;
 }

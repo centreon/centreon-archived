@@ -28,6 +28,7 @@ use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Tests\Centreon\Domain\PlatformInformation\Model\PlatformInformationTest;
 use Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface;
+use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationWriteRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
@@ -106,13 +107,15 @@ class UpdatePartiallyPlatformInformationTest extends TestCase
      */
     private function createUpdatePartiallyPlatformUseCase(): UpdatePartiallyPlatformInformation
     {
-        return (new UpdatePartiallyPlatformInformation(
+        $useCase = new UpdatePartiallyPlatformInformation(
             $this->writeRepository,
             $this->readRepository,
             $this->proxyService,
             $this->remoteServerService,
             $this->platformTopologyService
-        ));
+        );
+        $useCase->setEncryptionFirstKey('encryptionF0rT3st');
+        return $useCase;
     }
 
     /**

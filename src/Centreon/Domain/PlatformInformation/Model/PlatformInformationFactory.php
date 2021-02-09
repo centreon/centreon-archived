@@ -29,48 +29,29 @@ use Security\Encryption;
 class PlatformInformationFactory
 {
     /**
-     * Credentials encryption key
+     * Credentials encryption second key
      */
     public const ENCRYPT_SECOND_KEY = 'api_remote_credentials';
 
     /**
      * @var string|null
      */
-    private $appSecret;
+    private $encryptionFirstKey;
 
-    public function __construct(?string $appSecret)
+    public function __construct(?string $encryptionFirstKey)
     {
-        $this->appSecret = $appSecret;
+        $this->encryptionFirstKey = $encryptionFirstKey;
     }
 
     /**
      * @param array<string, mixed> $information
      * @return PlatformInformation
      */
-    public function create(array $information): PlatformInformation
+    public function createRemoteInformation(array $information): PlatformInformation
     {
-        $platformInformation = new PlatformInformation();
-
-        /**
-         * Set all values to null if its a Central as they are all Remote related.
-         */
+        $isRemote = true;
+        $platformInformation = new PlatformInformation($isRemote);
         foreach ($information as $key => $value) {
-            if ($key === 'isRemote') {
-                if ($value === true) {
-                    $platformInformation->setRemote(true);
-                } else {
-                    $platformInformation->setRemote(false);
-                    $platformInformation->setCentralServerAddress(null);
-                    $platformInformation->setApiUsername(null);
-                    $platformInformation->setApiCredentials(null);
-                    $platformInformation->setEncryptedApiCredentials(null);
-                    $platformInformation->setApiScheme(null);
-                    $platformInformation->setApiPort(null);
-                    $platformInformation->setApiPath(null);
-                    $platformInformation->setApiPeerValidation(null);
-                    break;
-                }
-            }
             switch ($key) {
                 case 'centralServerAddress':
                     $platformInformation->setCentralServerAddress($value);
@@ -102,6 +83,18 @@ class PlatformInformationFactory
     }
 
     /**
+     * Create a PlatformInformation with isRemote false and other informations are null.
+     *
+     * @return PlatformInformation
+     */
+    public function createCentralInformation(): PlatformInformation
+    {
+        $isRemote = false;
+        $platformInformation = new PlatformInformation($isRemote);
+        return $platformInformation;
+    }
+
+    /**
      * encrypt the Central API Password
      *
      * @param string $password
@@ -109,15 +102,15 @@ class PlatformInformationFactory
      */
     private function encryptApiCredentials(string $password): string
     {
-        if ($this->appSecret === null) {
+        if ($this->encryptionFirstKey === null) {
             throw new \InvalidArgumentException(
-                _("Unable to find the encryption key. Please check the '.env.local.php' file.")
+                _("Unable to find the encryption key.")
             );
         }
 
         $secondKey = base64_encode(self::ENCRYPT_SECOND_KEY);
         $centreonEncryption = new Encryption();
-        $centreonEncryption->setFirstKey($_ENV['APP_SECRET'])->setSecondKey($secondKey);
+        $centreonEncryption->setFirstKey($this->encryptionFirstKey)->setSecondKey($secondKey);
         return $centreonEncryption->crypt($password);
     }
 }

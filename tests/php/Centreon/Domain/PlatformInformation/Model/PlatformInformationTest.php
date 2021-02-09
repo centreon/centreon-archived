@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\PlatformInformation\Model;
 
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use PHPUnit\Framework\TestCase;
 
@@ -36,11 +37,11 @@ class PlatformInformationTest extends TestCase
     public function testInvalidApiPortException(): void
     {
         $port = 0;
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(PlatformInformationException::class);
         $this->expectExceptionMessage(
-            "Central platform's API port is not consistent. Please check the 'Remote Access' form."
+            "Central platform's API data is not consistent. Please check the 'Remote Access' form."
         );
-        (new PlatformInformation())->setApiPort($port);
+        (new PlatformInformation(true))->setApiPort($port);
     }
 
     /**
@@ -51,11 +52,11 @@ class PlatformInformationTest extends TestCase
     public function testInvalidApiPathException(): void
     {
         $path = "";
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(PlatformInformationException::class);
         $this->expectExceptionMessage(
-            "Central platform's data are not consistent. Please check the 'Remote Access' form"
+            "Central platform's API data is not consistent. Please check the 'Remote Access' form."
         );
-        (new PlatformInformation())->setApiPath($path);
+        (new PlatformInformation(true))->setApiPath($path);
     }
 
     /**
@@ -65,8 +66,7 @@ class PlatformInformationTest extends TestCase
      */
     public static function createEntityForCentralInformation(): PlatformInformation
     {
-        return (new PlatformInformation())
-            ->setRemote(false);
+        return (new PlatformInformation(false));
     }
 
     /**
@@ -76,8 +76,7 @@ class PlatformInformationTest extends TestCase
      */
     public static function createEntityForRemoteInformation(): PlatformInformation
     {
-        return (new PlatformInformation())
-            ->setRemote(true)
+        return (new PlatformInformation(true))
             ->setCentralServerAddress('1.1.1.10')
             ->setApiUsername('admin')
             ->setApiCredentials('centreon')

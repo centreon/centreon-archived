@@ -31,7 +31,7 @@ class InformationFactory
      * @param array<string,mixed> $request
      * @return array<Information>
      */
-    public static function createFromRequest(array $request): array
+    public static function createFromDto(array $request): array
     {
         $information = [];
         foreach ($request as $key => $value) {

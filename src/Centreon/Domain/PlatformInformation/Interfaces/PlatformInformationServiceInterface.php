@@ -28,9 +28,10 @@ use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 interface PlatformInformationServiceInterface
 {
     /**
-     * Get monitoring server data
+     * Get monitoring server data.
+     *
      * @return PlatformInformation|null
-     * @throws PlatformInformationException
+     * @throws PlatformInformationException|\InvalidArgumentException
      */
     public function getInformation(): ?PlatformInformation;
 }

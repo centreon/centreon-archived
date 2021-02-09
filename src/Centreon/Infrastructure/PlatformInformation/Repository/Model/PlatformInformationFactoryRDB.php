@@ -27,7 +27,7 @@ use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 
 class PlatformInformationFactoryRDB
 {
-        /**
+    /**
      * Credentials encryption key
      */
     public const ENCRYPT_SECOND_KEY = 'api_remote_credentials';
@@ -35,11 +35,11 @@ class PlatformInformationFactoryRDB
     /**
      * @var string|null
      */
-    private $appSecret;
+    private $encryptionFirstKey;
 
-    public function __construct(?string $appSecret)
+    public function __construct(?string $encryptionFirstKey)
     {
-        $this->appSecret = $appSecret;
+        $this->encryptionFirstKey = $encryptionFirstKey;
     }
 
     /**
@@ -48,12 +48,9 @@ class PlatformInformationFactoryRDB
      */
     public function create(array $information): PlatformInformation
     {
-        $platformInformation = new PlatformInformation();
+        $platformInformation = new PlatformInformation($information['isRemote']);
         foreach ($information as $key => $value) {
             switch ($key) {
-                case 'isRemote':
-                    $platformInformation->setRemote($value);
-                    break;
                 case 'centralServerAddress':
                     $platformInformation->setCentralServerAddress($value);
                     break;
@@ -92,9 +89,9 @@ class PlatformInformationFactoryRDB
             return null;
         }
 
-        if ($this->appSecret === null) {
+        if ($this->encryptionFirstKey === null) {
             throw new \InvalidArgumentException(
-                _("Unable to find the encryption key. Please check the '.env.local.php' file.")
+                _("Unable to find the encryption key.")
             );
         }
 
@@ -103,7 +100,7 @@ class PlatformInformationFactoryRDB
 
         try {
             $centreonEncryption = new Encryption();
-            $centreonEncryption->setFirstKey($_ENV['APP_SECRET'])->setSecondKey($secondKey);
+            $centreonEncryption->setFirstKey($this->encryptionFirstKey)->setSecondKey($secondKey);
             return $centreonEncryption->decrypt($encryptedKey);
         } catch (\throwable $e) {
             throw new \InvalidArgumentException(

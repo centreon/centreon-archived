@@ -36,12 +36,27 @@ use Centreon\Infrastructure\PlatformInformation\Repository\Model\PlatformInforma
 class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements PlatformInformationRepositoryInterface
 {
     /**
+     * Encryption Key.
+     *
+     * @var string|null
+     */
+    private $encryptionFirstKey;
+
+    /**
      * PlatformTopologyRepositoryRDB constructor.
      * @param DatabaseConnection $db
      */
     public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setEncryptionFirstKey(?string $encryptionFirstKey): void
+    {
+        $this->encryptionFirstKey = $encryptionFirstKey;
     }
 
     /**
@@ -78,7 +93,7 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
                 /**
                  * @var PlatformInformation $platformInformation
                  */
-                $platformInformationFactoryRDB = new PlatformInformationFactoryRDB($_ENV['APP_SECRET']);
+                $platformInformationFactoryRDB = new PlatformInformationFactoryRDB($this->encryptionFirstKey);
                 $platformInformation = $platformInformationFactoryRDB->create($result);
             }
         }
@@ -101,34 +116,24 @@ class PlatformInformationRepositoryRDB extends AbstractRepositoryDRB implements 
 
             $deletedKeys = [];
 
-            if ($platformInformation->isRemote() === null) {
+            array_push($deletedKeys, "'isRemote'", "'isCentral'", "'apiPeerValidation'");
+            if ($platformInformation->isRemote() === true) {
+                $insertQuery .= "('isRemote', 'yes'), ('isCentral', 'no'), ";
                 $this->prepareInsertQueryString($platformInformation, $insertQuery, $queryParameters);
             } else {
                 /**
-                 * Store the key to delete into the deleteStatement.
-                 * Those 2 keys aren't put into queryParameters, so we add them directly to the deletedKey array
+                 * delete all keys related to a remote configuration, reinsert isCentral and isRemote.
                  */
-                array_push($deletedKeys, "'isRemote'", "'isCentral'");
-
-                if ($platformInformation->isRemote() === true) {
-                    $insertQuery .= "('isRemote', 'yes'), ('isCentral', 'no'), ";
-                    $this->prepareInsertQueryString($platformInformation, $insertQuery, $queryParameters);
-                } else {
-                    /**
-                     * delete all keys related to a remote configuration, reinsert isCentral and isRemote.
-                     */
-                    array_push(
-                        $deletedKeys,
-                        "'authorizedMaster'",
-                        "'apiUsername'",
-                        "'apiCredentials'",
-                        "'apiScheme'",
-                        "'apiPort'",
-                        "'apiPath'",
-                        "'apiPeerValidation'"
-                    );
-                    $insertQuery .= "('isCentral', 'yes'),  ('isRemote', 'no')";
-                }
+                array_push(
+                    $deletedKeys,
+                    "'authorizedMaster'",
+                    "'apiUsername'",
+                    "'apiCredentials'",
+                    "'apiScheme'",
+                    "'apiPort'",
+                    "'apiPath'"
+                );
+                $insertQuery .= "('isCentral', 'yes'),  ('isRemote', 'no')";
             }
 
             $insertStatement = $this->db->prepare($this->translateDbName($insertQuery));

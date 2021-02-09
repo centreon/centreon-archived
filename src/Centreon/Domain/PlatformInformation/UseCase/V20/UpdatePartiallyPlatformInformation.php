@@ -23,19 +23,19 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\UseCase\V20;
 
-use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 use Centreon\Domain\Proxy\Proxy;
 use Centreon\Domain\RemoteServer\RemoteServerException;
+use Centreon\Domain\PlatformInformation\Model\Information;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\PlatformInformation\Model\InformationFactory;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\PlatformInformation\Interfaces\DtoValidatorInterface;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformationFactory;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationWriteRepositoryInterface;
-use Centreon\Domain\PlatformInformation\Model\Information;
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 
 class UpdatePartiallyPlatformInformation
 {
@@ -64,6 +64,18 @@ class UpdatePartiallyPlatformInformation
      */
     private $platformTopologyService;
 
+    /**
+     * Array of all available validators for this use case.
+     *
+     * @var array<DtoValidatorInterface>
+     */
+    private $validators = [];
+
+    /**
+     * @var string|null
+     */
+    private $encryptionFirstKey;
+
     public function __construct(
         PlatformInformationWriteRepositoryInterface $writeRepository,
         PlatformInformationReadRepositoryInterface $readRepository,
@@ -78,12 +90,10 @@ class UpdatePartiallyPlatformInformation
         $this->platformTopologyService = $platformTopologyService;
     }
 
-    /**
-     * Array of all available validators for this use case.
-     *
-     * @var array<DtoValidatorInterface>
-     */
-    private $validators = [];
+    public function setEncryptionFirstKey(?string $encryptionFirstKey): void
+    {
+        $this->encryptionFirstKey = $encryptionFirstKey;
+    }
 
     /**
      * @param array<DtoValidatorInterface> $validators
@@ -119,24 +129,32 @@ class UpdatePartiallyPlatformInformation
          * Create Information from Factory to be able to access them independently
          * and validate the length of each value.
          */
-        $informationList = InformationFactory::createFromRequest($request);
-        $platformInformationFactory = new PlatformInformationFactory($_ENV['APP_SECRET']);
-        $platformInformationToUpdate = $platformInformationFactory->create($request);
+        $informationList = InformationFactory::createFromDto($request);
+        $currentPlatformInformation = $this->readRepository->findPlatformInformation();
+        $platformInformationFactory = new PlatformInformationFactory($this->encryptionFirstKey);
+
+        /**
+         * Take account if the isRemote request key is provided to create the PlatformInformation and trigger
+         * the conversion.
+         * If this key is not provided in the request, we dont want to convert the platform
+         * and just update the informations.
+         */
+        if (
+            (isset($request["isRemote"]) && $request["isRemote"] === true)
+            || (!isset($request["isRemote"]) && $currentPlatformInformation->isRemote() === true)
+        ) {
+            $platformInformationToUpdate = $platformInformationFactory->createRemoteInformation($request);
+        } else {
+            $platformInformationToUpdate = $platformInformationFactory->createCentralInformation();
+        }
+        if (isset($request["isRemote"])) {
+            $this->updateRemoteOrCentralType($platformInformationToUpdate, $currentPlatformInformation);
+        }
 
         foreach ($informationList as $information) {
             if ($information->getKey() === "proxy") {
                 $this->updateProxyOptions($information, $platformInformationToUpdate->getCentralServerAddress());
             }
-        }
-
-        if ($platformInformationToUpdate->getCentralServerAddress() !== null) {
-            $this->validateCentralServerAddressOrFail($platformInformationToUpdate->getCentralServerAddress());
-        }
-
-        $currentPlatformInformation = $this->readRepository->findPlatformInformation();
-
-        if ($platformInformationToUpdate->isRemote() !== null) {
-            $this->updateRemoteOrCentralType($platformInformationToUpdate, $currentPlatformInformation);
         }
 
         $this->writeRepository->updatePlatformInformation($platformInformationToUpdate);
@@ -215,30 +233,17 @@ class UpdatePartiallyPlatformInformation
         PlatformInformation $platformInformationToUpdate,
         PlatformInformation $currentPlatformInformation
     ): void {
-        if ($platformInformationToUpdate->getCentralServerAddress() !== null) {
-            $this->remoteServerService->convertCentralToRemote(
-                $platformInformationToUpdate
-            );
         /**
-         * If the updated information as no Central Server Address, check in the existing information if its
-         * provided.
+         * If some parameters required fort registering the Remote Server are missing,
+         * populate them with existing values.
          */
-        } elseif ($currentPlatformInformation->getCentralServerAddress() !== null) {
-            $platformInformationToUpdate->setCentralServerAddress(
-                $currentPlatformInformation->getCentralServerAddress()
-            );
-            $this->remoteServerService->convertCentralToRemote(
-                $platformInformationToUpdate
-            );
-        /**
-         * If no CentralServerAddress are provided into the updated or current information,
-         * we can't convert the platform in remote.
-         */
-        } else {
-            throw new RemoteServerException(
-                _("Unable to convert in remote server, no Central to link provided")
-            );
-        }
+        $platformInformationToUpdate = $this->populateMissingInformationValues(
+            $platformInformationToUpdate,
+            $currentPlatformInformation
+        );
+        $this->remoteServerService->convertCentralToRemote(
+            $platformInformationToUpdate
+        );
     }
 
     /**
@@ -252,8 +257,8 @@ class UpdatePartiallyPlatformInformation
         string $centralServerAddress,
         ?string $proxyAddress = null
     ): void {
-        $topology = $this->platformTopologyService->getPlatformTopology();
-        foreach ($topology as $platform) {
+        $platforms = $this->platformTopologyService->getPlatformTopology();
+        foreach ($platforms as $platform) {
             if ($centralServerAddress === $platform->getAddress()) {
                 throw new PlatformInformationException(
                     sprintf(
@@ -273,5 +278,46 @@ class UpdatePartiallyPlatformInformation
                 )
             );
         }
+    }
+
+    private function populateMissingInformationValues(
+        PlatformInformation $platformInformationToUpdate,
+        PlatformInformation $currentPlatformInformation
+    ): PlatformInformation {
+        if ($platformInformationToUpdate->getCentralServerAddress() !== null) {
+            $this->validateCentralServerAddressOrFail($platformInformationToUpdate->getCentralServerAddress());
+        }
+        if ($platformInformationToUpdate->getCentralServerAddress() === null) {
+            $platformInformationToUpdate->setCentralServerAddress(
+                $currentPlatformInformation->getCentralServerAddress()
+            );
+        }
+        if ($platformInformationToUpdate->getApiCredentials() === null) {
+            $platformInformationToUpdate->setApiCredentials(
+                $currentPlatformInformation->getApiCredentials()
+            );
+        }
+        if ($platformInformationToUpdate->getApiUsername() === null) {
+            $platformInformationToUpdate->setApiUsername(
+                $currentPlatformInformation->getApiUsername()
+            );
+        }
+        if ($platformInformationToUpdate->getApiPath() === null) {
+            $platformInformationToUpdate->setApiPath(
+                $currentPlatformInformation->getApiPath()
+            );
+        }
+        if ($platformInformationToUpdate->getApiScheme() === null) {
+            $platformInformationToUpdate->setApiScheme(
+                $currentPlatformInformation->getApiScheme()
+            );
+        }
+        if ($platformInformationToUpdate->getApiPort() === null) {
+            $platformInformationToUpdate->setApiPort(
+                $currentPlatformInformation->getApiPort()
+            );
+        }
+
+        return $platformInformationToUpdate;
     }
 }

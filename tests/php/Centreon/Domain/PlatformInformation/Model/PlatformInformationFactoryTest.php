@@ -47,6 +47,8 @@ class PlatformInformationFactoryTest extends TestCase
      */
     private $centralRequest;
 
+    private $platformInformationFactory;
+
     protected function setUp(): void
     {
         $this->centralPlatformInformationStub = PlatformInformationTest::createEntityForCentralInformation();
@@ -64,12 +66,14 @@ class PlatformInformationFactoryTest extends TestCase
         $this->centralRequest = [
             'isRemote' => false
         ];
-        $this->platformInformationFactory = new PlatformInformationFactory($_ENV['APP_SECRET']);
+        $this->platformInformationFactory = new PlatformInformationFactory(
+            'encryptionF0rT3st'
+        );
     }
 
     public function testCreateRemotePlatformInformation(): void
     {
-        $remotePlatformInformation = $this->platformInformationFactory->create($this->remoteRequest);
+        $remotePlatformInformation = $this->platformInformationFactory->createRemoteInformation($this->remoteRequest);
         $this->assertEquals($this->remotePlatformInformationStub->isRemote(), $remotePlatformInformation->isRemote());
         $this->assertEquals(
             $this->remotePlatformInformationStub->getCentralServerAddress(),
@@ -103,7 +107,7 @@ class PlatformInformationFactoryTest extends TestCase
 
     public function testCreateCentralPlatformInformation(): void
     {
-        $centralPlatformInformation = $this->platformInformationFactory->create($this->centralRequest);
+        $centralPlatformInformation = $this->platformInformationFactory->createCentralInformation($this->centralRequest);
         $this->assertEquals($this->centralPlatformInformationStub->isRemote(), $centralPlatformInformation->isRemote());
         $this->assertEquals(
             $this->centralPlatformInformationStub->getCentralServerAddress(),

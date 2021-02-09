@@ -25,6 +25,8 @@ namespace Centreon\Domain\PlatformInformation\Interfaces;
 interface DtoValidatorInterface
 {
     /**
+     * Validate the request DTO.
+     *
      * @param array<string,mixed> $dto
      * @throws \Throwable
      */

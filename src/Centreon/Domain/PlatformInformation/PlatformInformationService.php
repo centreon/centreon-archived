@@ -48,7 +48,6 @@ class PlatformInformationService implements PlatformInformationServiceInterface
 
     /**
      * @inheritDoc
-     * @throws \InvalidArgumentException
      */
     public function getInformation(): ?PlatformInformation
     {

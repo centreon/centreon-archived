@@ -29,4 +29,11 @@ namespace Centreon\Domain\PlatformInformation\Exception;
  */
 class PlatformInformationException extends \Exception
 {
+    /**
+     * @return PlatformInformationException
+     */
+    public static function inconsistentDataException(): self
+    {
+        return new self(_("Central platform's API data is not consistent. Please check the 'Remote Access' form."));
+    }
 }
