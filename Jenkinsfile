@@ -282,6 +282,7 @@ try {
   stage('SonarQube quality gate') {
     //if (isStableBuild()) {
       node {
+        checkoutCentreonBuild(buildBranch)
         unstash 'git-sources'
         if (hasBackendChanges) {
           unstash 'ut-be.xml'
