@@ -58,7 +58,7 @@ class AutoloadServiceProviderTest extends TestCase
 
     public function setUp(): void
     {
-        $this->checkPoint = (new CheckPoint)
+        $this->checkPoint = (new CheckPoint())
             ->add('finder.files')
             ->add('finder.name')
             ->add('finder.depth')
