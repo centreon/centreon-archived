@@ -30,11 +30,25 @@ namespace Centreon\Domain\HostConfiguration\Exception;
 class HostGroupException extends \Exception
 {
     /**
-     * @param \Exception $ex
+     * @param \Throwable $ex
      * @return self
      */
-    public static function searchHostGroupsException(\Exception $ex): self
+    public static function findHostGroupsException(\Throwable $ex): self
     {
         return new self(_('Error when searching for host groups'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @param array<string, mixed> $data
+     * @return self
+     */
+    public static function findHostGroupException(\Throwable $ex, array $data = []): self
+    {
+        return new self(
+            sprintf(_('Error when searching for the host group (%s)'), $data['id'] ?? $data['name'] ?? null),
+            0,
+            $ex
+        );
     }
 }

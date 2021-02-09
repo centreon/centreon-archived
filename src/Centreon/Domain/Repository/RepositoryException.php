@@ -22,8 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Repository;
 
-use Throwable;
-
+/**
+ * @package Centreon\Domain\Repository
+ */
 class RepositoryException extends \Exception
 {
 }
