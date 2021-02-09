@@ -188,24 +188,7 @@ try {
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
           junit 'ut-fe.xml'
           stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
-
-          if (env.CHANGE_ID) { // pull request to comment with coding style issues
-            ViolationsToGitHub([
-              repositoryName: 'centreon',
-              pullRequestId: env.CHANGE_ID,
-
-              createSingleFileComments: true,
-              commentOnlyChangedContent: true,
-              commentOnlyChangedFiles: true,
-              keepOldComments: true,
-
-              commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
-
-              violationConfigs: [
-                [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
-              ]
-            ])
-          }
+          stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
 
           discoverGitReferenceBuild()
           recordIssues(
@@ -230,25 +213,8 @@ try {
           junit 'ut-be.xml'
           stash name: 'ut-be.xml', includes: 'ut-be.xml'
           stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
-
-          if (env.CHANGE_ID) { // pull request to comment with coding style issues
-            ViolationsToGitHub([
-              repositoryName: 'centreon',
-              pullRequestId: env.CHANGE_ID,
-
-              createSingleFileComments: true,
-              commentOnlyChangedContent: true,
-              commentOnlyChangedFiles: true,
-              keepOldComments: true,
-
-              commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
-
-              violationConfigs: [
-                [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
-                [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle']
-              ]
-            ])
-          }
+          stash name: 'codestyle-be.xml', includes: 'codestyle-be.xml'
+          stash name: 'phpstan.xml', includes: 'phpstan.xml'
 
           discoverGitReferenceBuild()
           recordIssues(
@@ -263,14 +229,6 @@ try {
             tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
             trendChartType: 'NONE'
           )
-
-          if (isStableBuild()) {
-            unstash 'git-sources'
-            sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-            withSonarQubeEnv('SonarQube') {
-              sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-            }
-          }
         }
       }
     }
@@ -279,24 +237,49 @@ try {
     }
   }
 
-  stage('SonarQube quality gate') {
-    //if (isStableBuild()) {
-      node {
+  stage('Quality gate') {
+    node {
+      if (hasBackendChanges) {
+        unstash 'ut-be.xml'
+        unstash 'coverage-be.xml'
+        unstash 'codestyle-be.xml'
+        unstash 'phpstan.xml'
+      }
+
+      if (hasFrontendChanges) {
+        unstash 'ut-fe.xml'
+        unstash 'codestyle-fe.xml'
+      }
+
+      //if (isStableBuild()) {
         checkoutCentreonBuild(buildBranch)
         unstash 'git-sources'
-        if (hasBackendChanges) {
-          unstash 'ut-be.xml'
-          unstash 'coverage-be.xml'
-          if (hasFrontendChanges) {
-            unstash 'ut-fe.xml'
-          }
-          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-          withSonarQubeEnv('SonarQube') {
-            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-          }
+        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+        withSonarQubeEnv('SonarQube') {
+          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
+      //}
+
+      if (env.CHANGE_ID) { // pull request to comment with coding style issues
+        ViolationsToGitHub([
+          repositoryName: 'centreon',
+          pullRequestId: env.CHANGE_ID,
+
+          createSingleFileComments: true,
+          commentOnlyChangedContent: true,
+          commentOnlyChangedFiles: true,
+          keepOldComments: false,
+
+          commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
+
+          violationConfigs: [
+            [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
+            [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle'],
+            [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
+          ]
+        ])
       }
-    //}
+    }
   }
 
   stage('Package') {
