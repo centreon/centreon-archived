@@ -16,7 +16,6 @@ import queryString from 'query-string';
 import { withStyles, createStyles } from '@material-ui/core';
 
 import { ThemeProvider } from '@centreon/ui';
-import { PageSkeleton } from '@centreon/ui/src';
 
 import { history } from './store';
 import NavigationComponent from './components/navigation';
