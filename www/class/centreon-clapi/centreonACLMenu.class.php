@@ -436,7 +436,6 @@ class CentreonACLMenu extends CentreonObject
      */
     private function grantMenu($aclTopoId, $aclTopoName)
     {
-
         $grantedMenu = '';
 
         $grantedMenuTpl = $this->action . $this->delim .
@@ -450,7 +449,8 @@ class CentreonACLMenu extends CentreonObject
             '2' => 'GRANTRO'
         );
 
-        $queryAclMenuRelations = 'SELECT t.topology_page, t.topology_id, t.topology_name, atr.access_right ' .
+        $queryAclMenuRelations = 'SELECT t.topology_page, atr.topology_topology_id AS topology_id, ' .
+            't.topology_name, atr.access_right ' .
             'FROM acl_topology_relations atr, topology t ' .
             'WHERE atr.topology_topology_id = t.topology_id ' .
             "AND atr.access_right <> '0' " .
