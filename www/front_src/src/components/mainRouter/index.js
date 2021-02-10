@@ -21,13 +21,18 @@ const MainRouter = ({
     location: { key },
   },
 }) => (
-  <Switch>
-    <Route key={`path-${key}`} path="/main.php" exact component={LegacyRoute} />
-    <Route path="/" exact render={() => <Redirect to="/main.php" />} />
-    <React.Suspense fallback={<PageSkeleton />}>
+  <React.Suspense fallback={<PageSkeleton />}>
+    <Switch>
+      <Route
+        key={`path-${key}`}
+        path="/main.php"
+        exact
+        component={LegacyRoute}
+      />
+      <Route path="/" exact render={() => <Redirect to="/main.php" />} />
       <Route path="/" component={ReactRouter} />
-    </React.Suspense>
-  </Switch>
+    </Switch>
+  </React.Suspense>
 );
 
 export default withRouter(MainRouter);
