@@ -34,7 +34,9 @@ const LoadableHooks = ({
             dynamicImport(basename, parameters),
           );
 
-          return <HookComponent centreonAxios={centreonAxios} {...rest} />;
+          return (
+            <HookComponent key={path} centreonAxios={centreonAxios} {...rest} />
+          );
         })}
     </>
   );
