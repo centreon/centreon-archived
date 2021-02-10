@@ -1,19 +1,10 @@
 #!/bin/bash
 #----
-## @Synopsis	Install Script for Centreon project
-## @Copyright	Copyright 2008, Guillaume Watteeux
-## @Copyright	Copyright 2008-2020, Centreon
-## @License	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+## @Synopsis    Install Script for Centreon project
+## @Copyright    Copyright 2008, Guillaume Watteeux
+## @Copyright    Copyright 2008-2021, Centreon
+## @License    GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 ## Centreon Install Script
-## Use 
-## <pre>
-## Usage: sh install.sh [OPTION]
-## Options:
-##  -f	Input file with all variables define (use for with template)
-##  -u	Input file with all variables define for update centreon
-##  -v	Verbose mode
-##  -h	print usage
-## </pre>
 #----
 ## Centreon is developed with GPL Licence 2.0
 ##
@@ -37,391 +28,811 @@
 
 #----
 ## Usage information for install.sh
-## @Sdtout	Usage information
+## @Sdtout    Usage information
 #----
 usage() {
-	local program=$0
-	echo -e "$(gettext "Usage: $program -f <file>")"
-	echo -e "  -i\t$(gettext "install centreon")"
-	echo -e "  -f\t$(gettext "file with all variable")"
-	echo -e "  -u\t$(gettext "upgrade centreon with specify your directory with instCent* files")"
-	echo -e "  -v\t$(gettext "verbose mode")"
-	exit 1
+    local program=$0
+    echo -e "Usage: $program"
+    echo -e "  -i\tinstall Centreon with interactive interface"
+    echo -e "  -s\tinstall Centreon silently"
+    echo -e "  -u\tupgrade Centreon specifying the directory of instCentWeb.conf file"
+    echo -e "  -e\textra variables, 'VAR=value' format (overrides input files)"
+    exit 1
 }
-
-# define where is a centreon source 
-BASE_DIR=$(dirname $0)
-## set directory
-BASE_DIR=$( cd $BASE_DIR; pwd )
-export BASE_DIR
-if [ -z "${BASE_DIR#/}" ] ; then
-	echo -e "You cannot select the filesystem root folder"
-	exit 1
-fi
-INSTALL_DIR="$BASE_DIR/libinstall"
-export INSTALL_DIR
-INSTALL_VARS_DIR="$BASE_DIR/varinstall"
-export INSTALL_VARS_DIR
-PERL_LIB_DIR=`eval "\`perl -V:installvendorlib\`"; echo $installvendorlib`
-# for freebsd
-if [ "$PERL_LIB_DIR" = "" -o "$PERL_LIB_DIR" = "UNKNOWN" ]; then
-    PERL_LIB_DIR=`eval "\`perl -V:installsitelib\`"; echo $installsitelib`
-fi
-# define a locale directory for use gettext (LC_MESSAGE)
-TEXTDOMAINDIR=$BASE_DIR/locale
-export TEXTDOMAINDIR
-TEXTDOMAIN=install.sh
-export TEXTDOMAIN
-
-# init variables
-line="------------------------------------------------------------------------"
-export line
-
-## log default vars 
-. $INSTALL_VARS_DIR/vars
-
-## Test if gettext was installed
-# I use PATH variable to find
-found="0"
-OLDIFS="$IFS"
-IFS=:
-for p in $PATH ; do
-	[ -x "$p/gettext" ] && found="1"
-done
-IFS=$OLDIFS
-if [ $found -eq 1 ] ; then 
-	. $INSTALL_DIR/gettext.sh
-else
-	# if not, use my gettext dummy :p
-	PATH="$PATH:$INSTALL_DIR"
-fi
-
-## load all functions used in this script
-. $INSTALL_DIR/functions
 
 ## Use TRAPs to call clean_and_exit when user press
 ## CRTL+C or exec kill -TERM.
 trap clean_and_exit SIGINT SIGTERM
 
-## Define a default log file
-LOG_FILE=${LOG_FILE:=log\/install_centreon.log}
-
 ## Valid if you are root 
 if [ "${FORCE_NO_ROOT:-0}" -ne 0 ]; then
-	USERID=$(id -u)
-	if [ "$USERID" != "0" ]; then
-	    echo -e "$(gettext "You must launch this script using a root user")"
-	    exit 1
-	fi
+    USERID=$(id -u)
+    if [ "$USERID" != "0" ]; then
+        echo -e "You must launch this script using a root user"
+        exit 1
+    fi
 fi
+
+## Define where are Centreon sources
+BASE_DIR=$(dirname $0)
+BASE_DIR=$( cd $BASE_DIR; pwd )
+if [ -z "${BASE_DIR#/}" ] ; then
+    echo -e "You cannot select the filesystem root folder"
+    exit 1
+fi
+INSTALL_DIR="$BASE_DIR/install"
 
 _tmp_install_opts="0"
 silent_install="0"
 upgrade="0"
-user_install_vars=""
-inst_upgrade_dir=""
-use_upgrade_files="0"
 
-#define cinstall options
-cinstall_opts=""
-
-## Getopts :)
-# When you use options, by default I set silent_install to 1.
-while getopts "if:u:hv" Options
+## Get options
+while getopts "isu:e:h" Options
 do
-	case ${Options} in
-		i )	silent_install="0"
-			_tmp_install_opts="1"
-			;;
-		f )	silent_install="1"
-			user_install_vars="${OPTARG}"
-			_tmp_install_opts="1"
-			;;
-		u )	silent_install="1"
-			inst_upgrade_dir="${OPTARG%/}"
-			cinstall_opts="$cinstall_opts -f"
-			upgrade="1" 
-			_tmp_install_opts="1"
-			;;
-		v )	cinstall_opts="$cinstall_opts -v" 
-			# need one variable to parse debug log 
-			;;
-		\?|h)	usage ; exit 0 ;;
-		* )	usage ; exit 1 ;;
-	esac
+    case ${Options} in
+        i ) silent_install="0"
+            _tmp_install_opts="1"
+            ;;
+        s ) silent_install="1"
+            _tmp_install_opts="1"
+            ;;
+        u ) silent_install="1"
+            UPGRADE_FILE="${OPTARG%/}"
+            upgrade="1"
+            _tmp_install_opts="1"
+            ;;
+        e ) env_opts+=("$OPTARG")
+            ;;
+        \?|h ) usage ; exit 0 ;;
+        * ) usage ; exit 1 ;;
+    esac
 done
+shift $((OPTIND -1))
 
 if [ "$_tmp_install_opts" -eq 0 ] ; then
-	usage
-	exit 1
-fi
-
-#Export variable for all programs
-export silent_install user_install_vars CENTREON_CONF cinstall_opts inst_upgrade_dir upgrade
-
-## init LOG_FILE
-# backup old log file...
-[ ! -d "$LOG_DIR" ] && mkdir -p "$LOG_DIR"
-if [ -e "$LOG_FILE" ] ; then
-	mv "$LOG_FILE" "$LOG_FILE.`date +%Y%m%d-%H%M%S`"
-fi
-# Clean (and create) my log file
-${CAT} << __EOL__ > "$LOG_FILE"
-__EOL__
-
-# Init GREP,CAT,SED,CHMOD,CHOWN variables
-define_specific_binary_vars
-
-${CAT} << __EOT__
-###############################################################################
-#                                                                             #
-#                           Centreon (www.centreon.com)                       #
-#                                                                             #
-#                               infos@centreon.com                            #
-#                                                                             #
-#                   Make sure you have installed and configured               #
-#         centreon-gorgone - sudo - sed - php - apache - rrdtool - mysql      #
-#                                                                             #
-###############################################################################
-__EOT__
-
-## Test all binaries
-BINARIES="rm cp mv ${CHMOD} ${CHOWN} echo more mkdir find ${GREP} ${CAT} ${SED}"
-
-echo "$line"
-echo -e "\t$(gettext "Checking all needed binaries")"
-echo "$line"
-
-binary_fail="0"
-# For the moment, I check if all binary exists in path.
-# After, I must look a solution to use complet path by binary
-for binary in $BINARIES; do
-	if [ ! -e ${binary} ] ; then 
-		pathfind "$binary"
-		if [ "$?" -eq 0 ] ; then
-			echo_success "${binary}" "$ok"
-		else 
-			echo_failure "${binary}" "$fail"
-			log "ERR" "$(gettext "\$binary not found in \$PATH")"
-			binary_fail=1
-		fi
-	else
-		echo_success "${binary}" "$ok"
-	fi
-done
-
-###### Mandatory step
-# ask if gorgone is already installed
-echo -e "\n$line"
-echo -e "\t$(gettext "Check mandatory gorgone service status")"
-echo -e "$line"
-
-yes_no_default "$(gettext "Is the Gorgone module already installed?")"
-if [ "$?" -ne 0 ] ; then
-    echo_failure "\n$(gettext "Gorgone is required.\nPlease install it before launching this script")" "$fail"
-    echo -e "\n\t$(gettext "Please read the documentation to manage the Gorgone daemon installation")"
-    echo -e "\t$(gettext "Available on github") : https://github.com/centreon/centreon-gorgone"
-    echo -e "\t$(gettext "or on the centreon documentation") : https://documentation.centreon.com/\n"
+    usage
     exit 1
 fi
 
-# Script stop if one binary wasn't found
+INSTALLATION_MODE="install"
+if [ ! -z "$upgrade" ] && [ "$upgrade" -eq 1 ]; then
+    INSTALLATION_MODE="upgrade"
+fi
+
+## Load default input variables
+source $INSTALL_DIR/inputvars.default.env
+## Load all functions used in this script
+source $INSTALL_DIR/functions
+
+## Define a default log file
+if [ ! -z $LOG_FILE ] ; then
+    LOG_FILE="$BASE_DIR/log/install.log"
+fi
+LOG_DIR=$(dirname $LOG_FILE)
+[ ! -d "$LOG_DIR" ] && mkdir -p "$LOG_DIR"
+
+## Init LOG_FILE
+if [ -e "$LOG_FILE" ] ; then
+    mv "$LOG_FILE" "$LOG_FILE.`date +%Y%m%d-%H%M%S`"
+fi
+${CAT} << __EOL__ > "$LOG_FILE"
+__EOL__
+
+# Checking installation script requirements
+BINARIES="rm cp mv chmod chown echo more mkdir find grep cat sed tr"
+binary_fail="0"
+# For the moment, I check if all binary exists in PATH.
+# After, I must look a solution to use complet path by binary
+for binary in $BINARIES; do
+    if [ ! -e ${binary} ] ; then
+        pathfind_ret "$binary" "PATH_BIN"
+        if [ "$?" -ne 0 ] ; then
+            echo_error "${binary}" "FAILED"
+            binary_fail=1
+        fi
+    fi
+done
+
+## Script stop if one binary is not found
 if [ "$binary_fail" -eq 1 ] ; then
-	echo_info "$(gettext "Please check fail binary and retry")"
-	exit 1
+    echo_info "Please check failed binary and retry"
+    exit 1
+else
+    echo_success "Script requirements" "OK"
 fi
 
-# When you exec this script without file, you must valid a GPL licence.
-if [ "$silent_install" -ne 1 ] ; then 
-	echo -e "\n$(gettext "You will now read Centreon Licence.\\n\\tPress enter to continue.")"
-	read 
-	tput clear 
-	more "$BASE_DIR/LICENSE.md"
+## Search distribution and version
+if [ -z "$DISTRIB" ] || [ -z "$DISTRIB_VERSION" ] ; then
+    find_os
+fi
+echo_info "Found distribution" "$DISTRIB $DISTRIB_VERSION"
 
-	yes_no_default "$(gettext "Do you accept GPL license ?")" 
-	if [ "$?" -ne 0 ] ; then 
-		echo_info "$(gettext "As you did not accept the license, we cannot continue.")"
-		log "INFO" "Installation aborted - License not accepted"
-		exit 1
-	else
-		log "INFO" "Accepted the license"
-	fi
-else 
-	if [ "$upgrade" -eq 0 ] ; then
-		. $user_install_vars
-	fi
+## Load specific variables based on distribution
+if [ -f $INSTALL_DIR/inputvars.$DISTRIB.env ]; then
+    echo_info "Loading distribution specific input variables" "install/inputvars.$DISTRIB.env"
+    source $INSTALL_DIR/inputvars.$DISTRIB.env
 fi
 
+## Load specific variables based on version
+if [ -f $INSTALL_DIR/inputvars.$DISTRIB.$DISTRIB_VERSION.env ]; then
+    echo_info "Loading version specific input variables" "install/inputvars.$DISTRIB.$DISTRIB_VERSION.env"
+    source $INSTALL_DIR/inputvars.$DISTRIB.$DISTRIB_VERSION.env
+fi
+
+## Load specific variables defined by user
+if [ -f $INSTALL_DIR/../inputvars.env ]; then
+    echo_info "Loading user specific input variables" "inputvars.env"
+    source $INSTALL_DIR/../inputvars.env
+fi
+
+## Load previous installation input variables if upgrade
 if [ "$upgrade" -eq 1 ] ; then
-	# Test if instCent* file exist
-	if [ "$(ls $inst_upgrade_dir/instCent* | wc -l )" -ge 1 ] ; then
-		inst_upgrade_dir=${inst_upgrade_dir%/}
-		echo "$line"
-		echo -e "\t$(gettext "Detecting old installation")"
-		echo "$line"
-		echo_success "$(gettext "Finding configuration file in:") $inst_upgrade_dir" "$ok"
-		log "INFO" "$(gettext "Old configuration found in ") $(ls $inst_upgrade_dir/instCent*)"
-		echo_info "$(gettext "You seem to have an existing Centreon.")\n"
-		yes_no_default "$(gettext "Do you want to use the last Centreon install parameters ?")" "$yes"
-		if [ "$?" -eq 0 ] ; then
-			echo_passed "\n$(gettext "Using: ") $(ls $inst_upgrade_dir/instCent*)" "$ok"
-			use_upgrade_files="1"
-		fi
-	fi
+    test_file "$UPGRADE_FILE" "Centreon upgrade file"
+    if [ "$?" -eq 0 ] ; then
+        echo_info "Loading previous installation input variables" "$UPGRADE_FILE"
+        source $UPGRADE_FILE
+    else
+        echo_error "Missing previous installation input variables" "FAILED"
+        echo_info "Either specify it in command line or using UPGRADE_FILE input variable"
+        exit 1
+    fi
 fi
 
+## Load variables provided in command line
+for env_opt in "${env_opts[@]}"; do
+    if [[ "${env_opt}" =~ .+=.+ ]] ; then
+        variable=$(echo $env_opt | cut -f1 -d "=")
+        value=$(echo $env_opt | cut -f2 -d "=")
+        if [ ! -z "$variable" ] && [ ! -z "$value" ] ; then
+            echo_info "Loading command line input variables" "${variable}=${value}"
+            eval ${variable}=${value}
+        fi
+    fi
+done
+
+## Check installation mode
+if [ -z "$INSTALLATION_TYPE" ] ; then
+    echo_error "Installation mode" "NOT DEFINED"
+    exit 1
+fi
+if [[ ! "${INSTALLATION_TYPE}" =~ ^central|poller$ ]] ; then
+    echo_error "Installation mode" "$INSTALLATION_TYPE"
+    exit 1
+fi
+echo_info "Installation type" "$INSTALLATION_TYPE"
+echo_info "Installation mode" "$INSTALLATION_MODE"
+
+## Check space of tmp dir
+check_tmp_disk_space
+if [ "$?" -eq 1 ] ; then
+    if [ "$silent_install" -eq 1 ] ; then
+        purge_centreon_tmp_dir "silent"
+    else
+        purge_centreon_tmp_dir
+    fi
+fi
+
+## Installation is interactive
 if [ "$silent_install" -ne 1 ] ; then
-	echo "$line"
-	echo -e "\t$(gettext "Please choose what you want to install")"
-	echo "$line"
+    echo -e "\n"
+    echo_info "Welcome to Centreon installation script!"
+    yes_no_default "Should we start?" "$yes"
+    if [ "$?" -ne 0 ] ; then
+        echo_info "Exiting"
+        exit 1
+    fi
 fi
 
-## init install process
-# I prefer split install script.
-# 0 = do not install
-# 1 = install
-# 2 = question in console
-[ -z $PROCESS_CENTREON_WWW ] && PROCESS_CENTREON_WWW="2"
-## For a moment, isn't possible to install standalone CentStorage daemon
-## without CentWeb
-[ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE="0"
-[ -z $PROCESS_CENTREON_PLUGINS ] && PROCESS_CENTREON_PLUGINS="2"
-[ -z $PROCESS_CENTREON_SNMP_TRAPS ] && PROCESS_CENTREON_SNMP_TRAPS="2"
+# Start installation
 
-## install centreon perl lib
-if [ ! -d "$PERL_LIB_DIR/centreon/" ] ; then
-    mkdir "$PERL_LIB_DIR/centreon/"
-    log "INFO" "$(gettext "Created perl library directory")"
+ERROR_MESSAGE=""
+
+# Centreon installation requirements
+echo_title "Centreon installation requirements"
+echo_line "Checking installation requirements"
+
+if [[ "${INSTALLATION_TYPE}" =~ ^central|poller$ ]] ; then
+    # System
+    test_dir_from_var "SUDOERSD_ETC_DIR" "Sudoers directory"
+    test_dir_from_var "LOGROTATED_ETC_DIR" "Logrotate directory"
+    test_dir_from_var "CROND_ETC_DIR" "Cron directory"
+    test_dir_from_var "SNMP_ETC_DIR" "SNMP configuration directory"
+    test_dir_from_var "SYSTEMD_ETC_DIR" "SystemD directory"
+    test_dir_from_var "SYSCONFIG_ETC_DIR" "Sysconfig directory"
+
+    ## Perl information
+    find_perl_info
+    test_file_from_var "PERL_BINARY" "Perl binary"
+    test_dir_from_var "PERL_LIB_DIR" "Perl libraries directory"
+fi
+if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
+    ## Centreon
+    test_dir "$BASE_DIR/vendor" "Composer dependencies"
+    test_dir "$BASE_DIR/www/static" "Frontend application"
+
+    ## System
+    test_file_from_var "RRDTOOL_BINARY" "RRDTool binary"
+    test_file_from_var "MAIL_BINARY" "Mail binary"
+
+    ## Apache information
+    find_apache_info
+    test_user_from_var "APACHE_USER" "Apache user"
+    test_group_from_var "APACHE_GROUP" "Apache group"
+    test_dir_from_var "APACHE_DIR" "Apache directory"
+    test_dir_from_var "APACHE_CONF_DIR" "Apache configuration directory"
+    test_var "APACHE_SERVICE" "MariaDB service"
+
+    ## MariaDB information
+    if [ "$WITH_DB" -ne 0 ] ; then
+        find_mariadb_info
+        test_dir_from_var "MARIADB_CONF_DIR" "MariaDB configuration directory"
+        test_dir_from_var "MARIADB_SERVICE_DIR" "MariaDB systemd directory"
+        test_var "MARIADB_SERVICE" "MariaDB service"
+    fi
+
+    ## PHP information
+    find_php_info
+    find_phpfpm_info
+    get_timezone
+    test_var "PHP_TIMEZONE" "PHP timezone"
+    test_dir_from_var "PHPFPM_LOG_DIR" "PHP FPM log directory"
+    test_dir_from_var "PHPFPM_CONF_DIR" "PHP FPM configuration directory"
+    test_dir_from_var "PHPFPM_SERVICE_DIR" "PHP FPM service directory"
+    test_var "PHPFPM_SERVICE" "PHP FPM service"
+    test_dir_from_var "PHP_ETC_DIR" "PHP configuration directory"
+    test_file_from_var "PHP_BINARY" "PHP binary"
+    test_php_version
+
+    ## Engine information
+    test_user_from_var "ENGINE_USER" "Engine user"
+    test_group_from_var "ENGINE_GROUP" "Engine group"
+    test_file_from_var "ENGINE_BINARY" "Engine binary"
+    test_dir_from_var "ENGINE_ETC_DIR" "Engine configuration directory"
+    test_dir_from_var "ENGINE_LOG_DIR" "Engine log directory" 
+    test_dir_from_var "ENGINE_LIB_DIR" "Engine library directory"
+    test_dir_from_var "ENGINE_CONNECTORS_DIR" "Engine Connectors directory"
+
+    ## Broker information
+    test_user_from_var "BROKER_USER" "Broker user"
+    test_group_from_var "BROKER_GROUP" "Broker group"
+    test_dir_from_var "BROKER_ETC_DIR" "Broker configuration directory"
+    test_dir_from_var "BROKER_VARLIB_DIR" "Broker variable library directory"
+    test_dir_from_var "BROKER_LOG_DIR" "Broker log directory"
+    test_file_from_var "BROKER_MOD_BINARY" "Broker module binary"
+
+    ## Gorgone information
+    test_user_from_var "GORGONE_USER" "Gorgone user"
+    test_group_from_var "GORGONE_GROUP" "Gorgone group"
+    test_dir_from_var "GORGONE_ETC_DIR" "Gorgone configuration directory"
+    test_dir_from_var "GORGONE_VARLIB_DIR" "Gorgone variable library directory"
+
+    ## Plugins information
+    test_dir_from_var "CENTREON_PLUGINS_DIR" "Centreon Plugins directory"
 fi
 
-## request centreon_www
-if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then 
-	yes_no_default "$(gettext "Do you want to install") : Centreon Web Front"
-	if [ "$?" -eq 0 ] ; then
-		PROCESS_CENTREON_WWW="1"
-		log "INFO" "$(gettext "You chose to install") : Centreon Web Front"
-		## CentStorage dependency
-		PROCESS_CENTSTORAGE="1"
-	fi
+if [ ! -z "$ERROR_MESSAGE" ] ; then
+    echo_error_on_line "FAILED"
+    echo_error "\nErrors:"
+    echo_error "$ERROR_MESSAGE"
+    exit 1
+fi
+echo_success_on_line "OK"
+
+## Centreon information
+echo_title "Centreon information"
+
+if [[ "${INSTALLATION_TYPE}" =~ ^central|poller$ ]] ; then
+    test_var_and_show "CENTREON_USER" "Centreon user"
+    test_var_and_show "CENTREON_GROUP" "Centreon group"
+    test_var_and_show "CENTREON_HOME" "Centreon user home directory"
+    test_var_and_show "CENTREON_INSTALL_DIR" "Centreon installation directory"
+    test_var_and_show "CENTREON_ETC_DIR" "Centreon configuration directory"
+    test_var_and_show "CENTREON_LOG_DIR" "Centreon log directory"
+    test_var_and_show "CENTREON_VARLIB_DIR" "Centreon variable library directory"
+    test_var_and_show "CENTREON_PLUGINS_TMP_DIR" "Centreon Plugins temporary directory"
+    test_var_and_show "CENTREON_CACHE_DIR" "Centreon cache directory"
+    test_var_and_show "CENTREONTRAPD_SPOOL_DIR" "Centreontrapd spool directory"
+fi
+if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
+    test_var_and_show "CENTREON_CENTCORE_DIR" "Centreon Centcore directory"
+    test_var_and_show "CENTREON_RRD_STATUS_DIR" "Centreon RRD status directory"
+    test_var_and_show "CENTREON_RRD_METRICS_DIR" "Centreon RRD metrics directory"
+    test_var_and_show "USE_HTTPS" "Use HTTPS configuration"
+    if [ $USE_HTTPS -eq 1 ] ; then
+        test_var_and_show "HTTPS_CERTIFICATE_FILE" "Certificate file path"
+        test_var_and_show "HTTPS_CERTIFICATE_KEY_FILE" "Certificate key file path"
+    fi
+    test_var_and_show "WITH_DB" "Install database configuration"
 fi
 
-## request centreon_plugins
-if [ "$PROCESS_CENTREON_PLUGINS" -eq 2 ] ; then 
-	yes_no_default "$(gettext "Do you want to install") : Centreon Nagios Plugins"
-	if [ "$?" -eq 0 ] ; then
-		PROCESS_CENTREON_PLUGINS="1"
-		log "INFO" "$(gettext "You chose to install") : Centreon Nagios Plugins"
-	fi
+if [ ! -z "$ERROR_MESSAGE" ] ; then
+    echo_error "\nErrors:"
+    echo_error "$ERROR_MESSAGE"
+    exit 1
 fi
 
-## request centreon_snmp_traps
-if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 2 ] ; then 
-	yes_no_default "$(gettext "Do you want to install") : CentreonTrapd process"
-	if [ "$?" -eq 0 ] ; then
-		PROCESS_CENTREON_SNMP_TRAPS="1"
-		log "INFO" "$(gettext "You chose to install") : CentreonTrapd process"
-	fi
+if [ "$silent_install" -ne 1 ] ; then 
+    yes_no_default "Everything looks good, proceed to installation?"
+    if [ "$?" -ne 0 ] ; then
+        purge_centreon_tmp_dir "silent"
+        exit 1
+    fi
 fi
 
-## Start Centreon Web Front install
-if [ "$PROCESS_CENTREON_WWW" -eq 1 ] ; then 
-	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentWeb.conf" ] ; then
-		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentWeb.conf"
+# Start installation
 
-		. $inst_upgrade_dir/instCentWeb.conf
-		if [ -n "$NAGIOS_USER" ]; then
-			echo_info "$(gettext "Convert variables for upgrade:")"
-			MONITORINGENGINE_USER=$NAGIOS_USER
-			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
-			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
-			[ -n "$NAGIOS_BINARY" ] && MONITORINGENGINE_BINARY=$NAGIOS_BINARY
-		fi
-	fi
-	. $INSTALL_DIR/CentWeb.sh
+## Disconnect user if upgrade
+if [ "$upgrade" = "1" ] && [[ "$INSTALLATION_TYPE" =~ central ]] ; then
+    echo_info "Disconnect users from WebUI"
+    $PHP_BINARY $INSTALL_DIR/clean_session.php "$CENTREON_ETC" >> "$LOG_FILE" 2>&1
+    check_result $? "All users are disconnected"
 fi
 
-## Start CentStorage install
-if [ "$PROCESS_CENTSTORAGE" -eq 1 ] ; then
-	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentStorage.conf" ] ; then
-		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentStorage.conf"
-
-		. $inst_upgrade_dir/instCentStorage.conf
-		if [ -n "$NAGIOS_USER" ]; then
-			echo_info "$(gettext "Convert variables for upgrade:")"
-			MONITORINGENGINE_USER=$NAGIOS_USER
-			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
-		fi
-	fi
-	. $INSTALL_DIR/CentStorage.sh
+## Create a random APP_SECRET key
+if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
+    HEX_KEY=($(dd if=/dev/urandom bs=32 count=1 status=none | $PHP_BINARY -r "echo bin2hex(fread(STDIN, 32));"));
 fi
 
-## Start CentPlugins install
-if [ "$PROCESS_CENTREON_PLUGINS" -eq 1 ] ; then
-	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentPlugins.conf" ] ; then
-		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentPlugins.conf"
+## Build files
+echo_title "Build files"
+echo_line "Copying files to '$TMP_DIR'"
 
-		. $inst_upgrade_dir/instCentPlugins.conf
-		if [ -n "$NAGIOS_USER" ]; then
-			echo_info "$(gettext "Convert variables for upgrade:")"
-			MONITORINGENGINE_USER=$NAGIOS_USER
-			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
-			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
-			[ -n "$NAGIOS_PLUGIN" ] && PLUGIN_DIR=$NAGIOS_PLUGIN
-		fi
-	fi
-	. $INSTALL_DIR/CentPlugins.sh
+if [ -d $TMP_DIR ] ; then
+    mv $TMP_DIR $TMP_DIR.`date +%Y%m%d-%k%m%S`
 fi
 
-## Start CentPluginsTraps install
-if [ "$PROCESS_CENTREON_SNMP_TRAPS" -eq 1 ] ; then
-	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentPlugins.conf" ] ; then
-		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentPlugins.conf"
+create_dir "$TMP_DIR/source"
 
-		. $inst_upgrade_dir/instCentPlugins.conf
-		if [ -n "$NAGIOS_USER" ]; then
-			echo_info "$(gettext "Convert variables for upgrade:")"
-			MONITORINGENGINE_USER=$NAGIOS_USER
-			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
-			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
-			[ -n "$NAGIOS_PLUGIN" ] && PLUGIN_DIR=$NAGIOS_PLUGIN
-		fi
-	fi
-	. $INSTALL_DIR/CentPluginsTraps.sh
+if [[ "${INSTALLATION_TYPE}" =~ ^central|poller$ ]] ; then
+    {
+        copy_dir "$BASE_DIR/bin" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/cron" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/lib" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/logrotate" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/snmptrapd" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/tmpl" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/install" "$TMP_DIR/source/"
+    } || {
+        echo_error_on_line "FAILED"
+        if [ ! -z "$ERROR_MESSAGE" ] ; then
+            echo_error "\nErrors:"
+            echo_error "$ERROR_MESSAGE"
+        fi
+        purge_centreon_tmp_dir "silent"
+        exit 1
+    }
+fi
+if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
+    {
+        copy_dir "$BASE_DIR/config" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/GPL_LIB" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/src" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/vendor" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/www" "$TMP_DIR/source/" &&
+        copy_dir "$BASE_DIR/api" "$TMP_DIR/source/" &&
+        copy_file "$BASE_DIR/.env" "$TMP_DIR/source/" &&
+        copy_file "$BASE_DIR/.env.local.php" "$TMP_DIR/source/" &&
+        copy_file "$BASE_DIR/bootstrap.php" "$TMP_DIR/source/" &&
+        copy_file "$BASE_DIR/container.php" "$TMP_DIR/source/" &&
+        copy_file "$BASE_DIR/package.json" "$TMP_DIR/source/" &&
+        copy_file "$BASE_DIR/composer.json" "$TMP_DIR/source/"
+    } || {
+        echo_error_on_line "FAILED"
+        if [ ! -z "$ERROR_MESSAGE" ] ; then
+            echo_error "\nErrors:"
+            echo_error "$ERROR_MESSAGE"
+        fi
+        purge_centreon_tmp_dir "silent"
+        exit 1
+    }
+fi
+echo_success_on_line "OK"
+
+echo_line "Replacing macros"
+eval "echo \"$(cat "$TMP_DIR/source/install/src/instCentWeb.conf")\"" > $TMP_DIR/source/install/src/instCentWeb.conf
+{
+    if [[ "${INSTALLATION_TYPE}" =~ ^central|poller$ ]] ; then
+        replace_macro "bin cron logrotate snmptrapd tmpl install"
+    fi
+    if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
+        replace_macro "config www .env .env.local.php"
+    fi
+} || {
+    echo_error_on_line "FAILED"
+    if [ ! -z "$ERROR_MESSAGE" ] ; then
+        echo_error "\nErrors:"
+        echo_error "$ERROR_MESSAGE"
+    fi
+    purge_centreon_tmp_dir "silent"
+    exit 1
+}
+echo_success_on_line "OK"
+
+test_user "$CENTREON_USER"
+if [ $? -ne 0 ]; then
+    {
+        # Create user and group
+        create_dir "$CENTREON_HOME" &&
+        create_group "$CENTREON_GROUP" &&
+        create_user "$CENTREON_USER" "$CENTREON_GROUP" "$CENTREON_HOME" &&
+        set_ownership "$CENTREON_HOME" "$CENTREON_USER" "$CENTREON_GROUP" &&
+        set_permissions "$CENTREON_HOME" "700"
+    } || {
+        if [ ! -z "$ERROR_MESSAGE" ] ; then
+            echo_error "\nErrors:"
+            echo_error "$ERROR_MESSAGE"
+        fi
+        purge_centreon_tmp_dir "silent"
+        exit 1
+    }
+fi
+
+echo_line "Building installation tree"
+BUILD_DIR="$TMP_DIR/build"
+create_dir "$BUILD_DIR"
+
+if [[ "${INSTALLATION_TYPE}" =~ ^central|poller$ ]] ; then
+    {
+        # Centreon configuration
+        create_dir "$BUILD_DIR/$CENTREON_ETC_DIR" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_ETC_DIR/config.d" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        copy_file "$TMP_DIR/source/install/src/config.yaml" "$BUILD_DIR/$CENTREON_ETC_DIR/config.yaml" \
+            "$CENTREON_USER" "$CENTREON_GROUP" "664" &&
+
+        ### Log directory
+        create_dir "$BUILD_DIR/$CENTREON_LOG_DIR" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+
+        ### Variable libraries directory
+        create_dir "$BUILD_DIR/$CENTREON_VARLIB_DIR" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_PLUGINS_TMP_DIR" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+
+        ### Cache directories
+        create_dir "$BUILD_DIR/$CENTREON_CACHE_DIR" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_CACHE_DIR/backup" "$CENTREON_USER" "$CENTREON_GROUP" "750" &&
+        create_dir "$BUILD_DIR/$CENTREON_CACHE_DIR/config/engine" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_CACHE_DIR/config/broker" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_CACHE_DIR/config/export" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+
+        ### Centreon binaries
+        create_dir "$BUILD_DIR/$CENTREON_INSTALL_DIR" "" "" "755" &&
+        create_dir "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin" "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/centreontrapd" "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/centreontrapd" \
+            "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/centreontrapdforward" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/centreontrapdforward" "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/registerServerTopology.sh" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/registerServerTopology.sh" "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/registerServerTopologyTemplate" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/registerServerTopologyTemplate" "" "" "644" &&
+
+        ### Centreontrapd
+        copy_file "$TMP_DIR/source/install/src/centreontrapd-$INSTALLATION_TYPE.pm" \
+            "$BUILD_DIR/$CENTREON_ETC_DIR/centreontrapd.pm" "$CENTREON_USER" "$CENTREON_GROUP" "644" &&
+        create_dir "$BUILD_DIR/$CENTREONTRAPD_SPOOL_DIR" "$CENTREON_USER" "$CENTREON_GROUP" "755" &&
+
+        # Centreon Engine and Broker directories (kind of a workaround induced by components source installs)
+        create_dir "$BUILD_DIR/$ENGINE_ETC_DIR" "$ENGINE_USER" "$ENGINE_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$BROKER_ETC_DIR" "$BROKER_USER" "$BROKER_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$BROKER_LOG_DIR" "$BROKER_USER" "$BROKER_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$BROKER_VARLIB_DIR" "$BROKER_USER" "$BROKER_GROUP" "775"
+    } || {
+        echo_error_on_line "FAILED"
+        if [ ! -z "$ERROR_MESSAGE" ] ; then
+            echo_error "\nErrors:"
+            echo_error "$ERROR_MESSAGE"
+        fi
+        purge_centreon_tmp_dir "silent"
+        exit 1
+    }
+fi
+if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
+    {
+        ### Install save file
+        copy_file "$TMP_DIR/source/install/src/instCentWeb.conf" \
+            "$BUILD_DIR/$CENTREON_ETC_DIR/instCentWeb.conf" \
+            "$CENTREON_USER" "$CENTREON_GROUP" "644" &&
+
+        ### Variable libraries directory
+        create_dir "$BUILD_DIR/$CENTREON_VARLIB_DIR/installs" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_VARLIB_DIR/log" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_VARLIB_DIR/nagios-perf" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_VARLIB_DIR/perfdata" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_CENTCORE_DIR" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_RRD_STATUS_DIR" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_RRD_METRICS_DIR" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+
+        ### Symfony cache directory
+        create_dir "$BUILD_DIR/$CENTREON_CACHE_DIR/symfony" "$APACHE_USER" "$APACHE_GROUP" "755" &&
+
+        ### Web directory
+        copy_dir "$TMP_DIR/source/www" "$BUILD_DIR/$CENTREON_INSTALL_DIR/www" \
+            "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        copy_file "$TMP_DIR/source/install/src/install.conf.php" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/www/install/install.conf.php" \
+            "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+        create_dir "$BUILD_DIR/$CENTREON_INSTALL_DIR/www/modules" "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+
+        ### Sources
+        copy_dir "$TMP_DIR/source/src" "$BUILD_DIR/$CENTREON_INSTALL_DIR/src" \
+            "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+
+        ### API files
+        copy_dir "$TMP_DIR/source/api" "$BUILD_DIR/$CENTREON_INSTALL_DIR/api" \
+            "$CENTREON_USER" "$CENTREON_GROUP" "775" &&
+
+        ### Symfony config directories
+        copy_dir "$TMP_DIR/source/vendor" "$BUILD_DIR/$CENTREON_INSTALL_DIR/vendor" "" "" "755" &&
+        copy_dir "$TMP_DIR/source/config" "$BUILD_DIR/$CENTREON_INSTALL_DIR/config" "" "" "755" &&
+        copy_file "$BUILD_DIR/$CENTREON_INSTALL_DIR/config/centreon.config.php.template" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/config/centreon.config.php" "" "" "644" &&
+
+        ### Smarty directories
+        copy_dir "$TMP_DIR/source/GPL_LIB" "$BUILD_DIR/$CENTREON_INSTALL_DIR/GPL_LIB" "" "" "755" &&
+        set_ownership "$BUILD_DIR/$CENTREON_INSTALL_DIR/GPL_LIB/SmartyCache" "$CENTREON_USER" "$CENTREON_GROUP" &&
+        set_permissions "$BUILD_DIR/$CENTREON_INSTALL_DIR/GPL_LIB/SmartyCache" "775" &&
+
+        ### Centreon binaries
+        create_dir "$BUILD_DIR/usr/bin" "" "" "555" &&
+        copy_file "$TMP_DIR/source/bin/centFillTrapDB" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/centFillTrapDB" "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/centreon_health" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/centreon_health" "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/centreon_trap_send" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/centreon_trap_send" "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/centreonSyncPlugins" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/centreonSyncPlugins" "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/centreonSyncArchives" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/centreonSyncArchives" "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/generateSqlLite" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/generateSqlLite" "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/changeRrdDsName.pl" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/changeRrdDsName.pl" "" "" "755" &&
+        copy_file "$TMP_DIR/source/bin/migrateWikiPages.php" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/migrateWikiPages.php" "" "" "644" &&
+        copy_file "$TMP_DIR/source/bin/centreon-partitioning.php" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/centreon-partitioning.php" "" "" "644" &&
+        copy_file "$TMP_DIR/source/bin/logAnalyserBroker" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/logAnalyserBroker" "" "" "755" &&
+        create_symlink "$CENTREON_INSTALL_DIR/bin/centFillTrapDB" \
+            "$BUILD_DIR/usr/bin/centFillTrapDB" &&
+        create_symlink "$CENTREON_INSTALL_DIR/bin/centreon_trap_send" \
+            "$BUILD_DIR/usr/bin/centreon_trap_send" &&
+        create_symlink "$CENTREON_INSTALL_DIR/bin/centreonSyncPlugins" \
+            "$BUILD_DIR/usr/bin/centreonSyncPlugins" &&
+        create_symlink "$CENTREON_INSTALL_DIR/bin/centreonSyncArchives" \
+            "$BUILD_DIR/usr/bin/centreonSyncArchives" &&
+        create_symlink "$CENTREON_INSTALL_DIR/bin/generateSqlLite" \
+            "$BUILD_DIR/usr/bin/generateSqlLite" &&
+        copy_file "$TMP_DIR/source/bin/import-mysql-indexes" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/import-mysql-indexes" \
+            "$CENTREON_USER" "$CENTREON_GROUP" "755" &&
+        copy_file "$TMP_DIR/source/bin/export-mysql-indexes" \
+            "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/export-mysql-indexes" \
+            "$CENTREON_USER" "$CENTREON_GROUP" "755" &&
+        copy_file "$TMP_DIR/source/bin/centreon" "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/centreon" \
+            "$CENTREON_USER" "$CENTREON_GROUP" "755" &&
+        copy_file "$TMP_DIR/source/bin/console" "$BUILD_DIR/$CENTREON_INSTALL_DIR/bin/console" \
+            "$CENTREON_USER" "$CENTREON_GROUP" "755" &&
+
+        ### Centreon CLAPI
+        create_dir "$BUILD_DIR/$CENTREON_INSTALL_DIR/lib" "" "" "755" &&
+        copy_file "$TMP_DIR/source/lib/Slug.class.php" "$BUILD_DIR/$CENTREON_INSTALL_DIR/lib/Slug.class.php" \
+            "" "" "644" &&
+        copy_dir "$TMP_DIR/source/lib/Centreon" "$BUILD_DIR/$CENTREON_INSTALL_DIR/lib/Centreon" "" "" "755" &&
+
+        ### Cron binary
+        copy_dir "$TMP_DIR/source/cron" "$BUILD_DIR/$CENTREON_INSTALL_DIR/cron" "" "" "775" &&
+        set_permissions "$BUILD_DIR/$CENTREON_INSTALL_DIR/cron/*" "775"
+
+        ### Bases
+        copy_file "$TMP_DIR/source/bootstrap.php" "$BUILD_DIR/$CENTREON_INSTALL_DIR/bootstrap.php" "" "" "644" &&
+        copy_file "$TMP_DIR/source/composer.json" "$BUILD_DIR/$CENTREON_INSTALL_DIR/composer.json" "" "" "644" &&
+        copy_file "$TMP_DIR/source/container.php" "$BUILD_DIR/$CENTREON_INSTALL_DIR/container.php" "" "" "644" &&
+        copy_file "$TMP_DIR/source/package.json" "$BUILD_DIR/$CENTREON_INSTALL_DIR/package.json" "" "" "644"
+    } || {
+        echo_error_on_line "FAILED"
+        if [ ! -z "$ERROR_MESSAGE" ] ; then
+            echo_error "\nErrors:"
+            echo_error "$ERROR_MESSAGE"
+        fi
+        purge_centreon_tmp_dir "silent"
+        exit 1
+    }
+fi
+echo_success_on_line "OK"
+
+## Install files
+echo_title "Install builded files"
+echo_line "Copying files from '$TMP_DIR' to final directory"
+copy_dir "$BUILD_DIR/*" "/"
+if [ "$?" -ne 0 ] ; then
+    echo_error_on_line "FAILED"
+    if [ ! -z "$ERROR_MESSAGE" ] ; then
+        echo_error "\nErrors:"
+        echo_error "$ERROR_MESSAGE"
+    fi
+    purge_centreon_tmp_dir "silent"
+    exit 1
+fi
+echo_success_on_line "OK"
+
+## Install remaining files
+echo_title "Install remaining files"
+
+if [[ "${INSTALLATION_TYPE}" =~ ^central|poller$ ]] ; then
+    ### Centreon
+    copy_file "$TMP_DIR/source/install/src/centreon.systemd" "$SYSTEMD_ETC_DIR/centreon.service"
+    copy_file_no_replace "$TMP_DIR/source/logrotate/centreon" "$LOGROTATED_ETC_DIR/centreon" \
+        "Logrotate Centreon configuration"
+
+    ### Centreontrapd
+    create_dir "$SNMP_ETC_DIR/centreon_traps" "$CENTREON_USER" "$CENTREON_GROUP" "775"
+    copy_file "$TMP_DIR/source/snmptrapd/snmptrapd.conf" "$SNMP_ETC_DIR/snmptrapd.conf"
+    copy_file "$TMP_DIR/source/install/src/centreontrapd.systemd" "$SYSTEMD_ETC_DIR/centreontrapd.service"
+    copy_file "$TMP_DIR/source/install/src/centreontrapd.sysconfig" "$SYSCONFIG_ETC_DIR/centreontrapd"
+    copy_file_no_replace "$TMP_DIR/source/logrotate/centreontrapd" "$LOGROTATED_ETC_DIR/centreontrapd" \
+        "Logrotate Centreontrapd configuration"
+
+    ### Perl libraries
+    copy_dir "$TMP_DIR/source/lib/perl/centreon" "$PERL_LIB_DIR/centreon"
+
+    ### Sudoers configuration
+    copy_file "$TMP_DIR/source/tmpl/install/sudoersCentreonEngine" "$SUDOERSD_ETC_DIR/centreon" \
+        "" "" "600"
+
+    ### Centreon Broker configurations (kind of a workaround induced by components source installs)
+    delete_file "$BROKER_ETC_DIR/*"
+fi
+if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
+    ### Centreon CLAPI
+    create_symlink "$CENTREON_INSTALL_DIR/bin/centreon" "/usr/bin/centreon" \
+        "$CENTREON_USER" "$CENTREON_GROUP"
+
+    ### Cron configurations
+    copy_file "$TMP_DIR/source/tmpl/install/centreon.cron" "$CROND_ETC_DIR/centreon"
+    copy_file "$TMP_DIR/source/tmpl/install/centstorage.cron" "$CROND_ETC_DIR/centstorage"
+
+    ### Symfony
+    copy_file_no_replace "$TMP_DIR/source/.env" "$CENTREON_INSTALL_DIR/.env" "Symfony .env file"
+    copy_file_no_replace "$TMP_DIR/source/.env.local.php" "$CENTREON_INSTALL_DIR/.env.local.php" "Symfony .env.local.php file"
+
+    ### Apache
+    restart_apache="0"
+    if [ $USE_HTTPS -eq 1 ] ; then
+        copy_file_no_replace "$TMP_DIR/source/install/src/centreon-apache-https.conf" \
+            "$APACHE_CONF_DIR/10-centreon.conf" "Apache configuration" && restart_apache="1"
+    else
+        copy_file_no_replace "$TMP_DIR/source/install/src/centreon-apache.conf" \
+            "$APACHE_CONF_DIR/10-centreon.conf" "Apache configuration" && restart_apache="1"
+    fi
+
+    ### PHP FPM
+    restart_php_fpm="0"
+    create_dir "$PHPFPM_VARLIB_DIR/session" "root" "$APACHE_GROUP" "770"
+    delete_file "$PHPFPM_VARLIB_DIR/session/*"
+    create_dir "$PHPFPM_VARLIB_DIR/wsdlcache" "root" "$APACHE_GROUP" "775"
+    copy_file_no_replace "$TMP_DIR/source/install/src/php-fpm.conf" "$PHPFPM_CONF_DIR/centreon.conf" \
+        "PHP FPM configuration" && restart_php_fpm="1"
+    copy_file_no_replace "$TMP_DIR/source/install/src/php-fpm-systemd.conf" "$PHPFPM_SERVICE_DIR/centreon.conf" \
+        "PHP FPM service configuration" && restart_php_fpm="1"
+    copy_file_no_replace "$TMP_DIR/source/install/src/php.ini" "$PHP_ETC_DIR/50-centreon.ini" \
+        "PHP configuration" && restart_php_fpm="1"
+    #### openSUSE hack
+    [[ "$DISTRIB" =~ suse ]] && copy_file_no_replace "/etc/php7/fpm/php-fpm.conf.default" \
+        "/etc/php7/fpm/php-fpm.conf" "PHP default configuration" && restart_php_fpm="1"
+
+    ### MariaDB
+    restart_mariadb="0"
+    if [ "$WITH_DB" -ne 0 ] ; then
+        copy_file_no_replace "$TMP_DIR/source/install/src/centreon-mysql.cnf" "$MARIADB_CONF_DIR/centreon.cnf" \
+            "MariaDB configuration" && restart_mariadb="1"
+        copy_file_no_replace "$TMP_DIR/source/install/src/mariadb-systemd.conf" "$MARIADB_SERVICE_DIR/centreon.conf" \
+            "MariaDB service configuration" && restart_mariadb="1"
+    fi
+fi
+
+if [ ! -z "$ERROR_MESSAGE" ] ; then
+    echo_error "\nErrors:"
+    echo_error "$ERROR_MESSAGE"
+    ERROR_MESSAGE=""
+fi
+
+## Update groups memberships
+echo_title "Update groups memberships"
+if [[ "${INSTALLATION_TYPE}" =~ ^central|poller$ ]] ; then
+    add_user_to_group "$ENGINE_USER" "$CENTREON_GROUP"
+    add_user_to_group "$CENTREON_USER" "$ENGINE_GROUP"
+    add_user_to_group "$ENGINE_USER" "$BROKER_GROUP"
+    add_user_to_group "$BROKER_USER" "$CENTREON_GROUP"
+    add_user_to_group "$CENTREON_USER" "$GORGONE_GROUP"
+    add_user_to_group "$GORGONE_USER" "$CENTREON_GROUP"
+    add_user_to_group "$GORGONE_USER" "$BROKER_GROUP"
+    add_user_to_group "$GORGONE_USER" "$ENGINE_GROUP"
+fi
+if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
+    add_user_to_group "$APACHE_USER" "$CENTREON_GROUP"
+    add_user_to_group "$APACHE_USER" "$ENGINE_GROUP"
+    add_user_to_group "$APACHE_USER" "$BROKER_GROUP"
+    add_user_to_group "$APACHE_USER" "$GORGONE_GROUP"
+    add_user_to_group "$GORGONE_USER" "$APACHE_GROUP"
+    add_user_to_group "$CENTREON_USER" "$APACHE_GROUP"
+fi
+
+if [ ! -z "$ERROR_MESSAGE" ] ; then
+    echo_error "\nErrors:"
+    echo_error "$ERROR_MESSAGE"
+    ERROR_MESSAGE=""
+fi
+
+## Configure and restart services
+echo_title "Configure and restart services"
+if [[ "${INSTALLATION_TYPE}" =~ ^poller$ ]] ; then
+    ### Poller hack
+    echo "1;" > "$CENTREON_ETC_DIR/conf.pm"
+fi
+if [[ "${INSTALLATION_TYPE}" =~ ^central|poller$ ]] ; then
+    ### Centreontrapd
+    enable_service "centreontrapd"
+fi
+if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
+    ### Centreon
+    enable_service "centreon"
+
+    if [ "$restart_apache" -eq 1 ] || [ "$restart_php_fpm" -eq 1 ] || [ "$restart_mariadb" -eq 1 ] ; then
+        reload_daemon
+    fi
+
+    ### Apache
+    enable_apache_mod "proxy"
+    enable_apache_mod "proxy_fcgi"
+    enable_apache_mod "setenvif"
+    enable_apache_mod "headers"
+    enable_apache_mod "rewrite"
+    [[ "$DISTRIB" =~ suse ]] && enable_apache_mod "mod_access_compat"
+    [ $USE_HTTPS -eq 1 ] && enable_apache_mod "ssl"
+    if [ "$restart_apache" -eq 1 ] ; then
+        [[ "$DISTRIB" =~ ^debian|ubuntu$ ]] && enable_apache_conf "10-centreon"
+        enable_service "$APACHE_SERVICE"
+        restart_service "$APACHE_SERVICE"
+    fi
+
+    ### PHP FPM
+    if [ "$restart_php_fpm" -eq 1 ] ; then
+        enable_service "$PHPFPM_SERVICE"
+        restart_service "$PHPFPM_SERVICE"
+    fi
+    
+    ### MariaDB
+    if [ "$restart_mariadb" -eq 1 ] ; then
+        enable_service "$MARIADB_SERVICE"
+        restart_service "$MARIADB_SERVICE"
+    fi
+fi
+
+## Show databse configuration if not installed locally
+if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] && [ "$WITH_DB" -eq 0 ] ; then
+    echo_info "Add the following configuration on your database server:"
+    echo "$(<$BASE_DIR/install/src/centreon-mysql.cnf)"
+fi
+
+if [ ! -z "$ERROR_MESSAGE" ] ; then
+    echo_error "\nErrors:"
+    echo_error "$ERROR_MESSAGE"
+    ERROR_MESSAGE=""
 fi
 
 ## Purge working directories
 purge_centreon_tmp_dir "silent"
-server=$(hostname -f)
+server=`hostname -I | cut -d" " -f1`
 
-# Replace global variables
-
-${CAT} << __EOT__
-
-###############################################################################
-#                                                                             #
-#                         Thanks for using Centreon.                          #
-#                          -----------------------                            #
-#                                                                             #
-#                 Go to the URL : http://$server/centreon/                    #
-#                   	     to finish the setup                              #
-#                                                                             #
-#                Please read the documentation available here :               #
-#                         documentation.centreon.com                          #
-#                                                                             #
-#      ------------------------------------------------------------------     #
-#                                                                             #
-#         Report bugs at https://github.com/centreon/centreon/issues          #
-#                                                                             #
-#                        Contact : contact@centreon.com                       #
-#                          http://www.centreon.com                            #
-#                                                                             #
-#                          -----------------------                            #
-#              For security issues, please read our security policy           #
-#              https://github.com/centreon/centreon/security/policy           #
-#                                                                             #
-###############################################################################
-
-__EOT__
-
+# End
+echo_title "You're done!"
+echo_info "You can now connect to the following URL to finalize installation:"
+echo_info "\thttp://$server/centreon/"
+echo_info ""
+echo_info "Take a look at the documentation"
+echo_info "https://docs.centreon.com/current/en/installation/web-and-post-installation.html."
+echo_info "Thanks for using Centreon!"
+echo_info "Follow us on https://github.com/centreon/centreon!"
 
 exit 0

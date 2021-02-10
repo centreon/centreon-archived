@@ -1,0 +1,1550 @@
+#!/bin/bash
+#----
+## @Synopsis    This file contains functions to be used by Centreon install script
+## @Copyright    Copyright 2008, Guillaume Watteeux
+## @Copyright    Copyright 2008-2021, Centreon
+## @Licence    GPLv2
+## This file contains functions to be used by Centreon install script
+#----
+## Centreon is developed with GPL Licence 2.0
+##
+## GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+##
+## Developed by : Julien Mathis - Romain Le Merlus
+## Contributors : Guillaume Watteeux - Maximilien Bersoult
+##
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation; either version 2
+## of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+##    For information : infos@centreon.com
+
+## VARS
+yes="y"
+no="n"
+
+## COLOR FUNCTIONS
+RES_COL="70"
+MOVE_TO_COL="\\033[${RES_COL}G"
+SETCOLOR_INFO="\\033[1;38m"
+SETCOLOR_SUCCESS="\\033[1;32m"
+SETCOLOR_ERROR="\\033[1;31m"
+SETCOLOR_WARNING="\\033[1;33m"
+SETCOLOR_NORMAL="\\033[0;39m"
+
+#----
+## echo_title
+##  Print string in a title way. Also log in log file.
+## @param    string to display
+## @stdout    titled string
+#----
+echo_title() {
+    [ "$silent_install" -eq 0 ] && echo -e "\n"
+    [ "$silent_install" -eq 0 ] && echo -e "$1"
+    [ "$silent_install" -eq 0 ] && printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
+    log "INFO" "$1"
+}
+
+#----
+## echo_line
+##  Print message to screen and keep position, and in log file.
+## @param    message
+## @stdout    message
+#----
+echo_line() {
+    [ "$silent_install" -eq 0 ] && echo -en "${1}"
+    log "INFO" "$1"
+}
+
+#----
+## echo_success_on_line
+##  Print message to screen on right-end side, and in log file.
+## @param    message
+## @stdout    message
+#----
+echo_success_on_line() {
+    [ "$silent_install" -eq 0 ] && echo -e "${MOVE_TO_COL}${SETCOLOR_SUCCESS}${1}${SETCOLOR_NORMAL}"
+    log "SUCCESS" "$1"
+}
+
+#----
+## echo_succeecho_error_on_liness_on_line
+##  Print message to screen on right-end side, and in log file.
+## @param    message
+## @stdout    message
+#----
+echo_error_on_line() {
+    [ "$silent_install" -eq 0 ] && echo -e "${MOVE_TO_COL}${SETCOLOR_ERROR}${1}${SETCOLOR_NORMAL}"
+    log "ERROR" "$1"
+}
+
+#----
+## echo_info
+##  Print info message to screen and in log file.
+## @param    message
+## @param    type info (ex: INFO, username...)
+## @stdout    info message
+#----
+echo_info() {
+    [ "$silent_install" -eq 0 ] && echo -e "${1}${MOVE_TO_COL}${SETCOLOR_INFO}${2}${SETCOLOR_NORMAL}"
+    log "INFO" "$1 : $2"
+}
+
+#----
+## echo_success
+##  Print success message to screen and in log file.
+## @param    message
+## @param    word to specify success (ex: OK)
+## @stdout    success message
+#----
+echo_success() {
+    [ "$silent_install" -eq 0 ] && echo -e "${1}${MOVE_TO_COL}${SETCOLOR_SUCCESS}${2}${SETCOLOR_NORMAL}"
+    log "SUCCESSS" "$1 : $2"
+}
+
+#----
+## echo_warning
+##  Print warning message to screen and in log file.
+## @param    message
+## @param    word to specify warning (ex: warn)
+## @stdout    warning message
+#----
+echo_warning() {
+    [ "$silent_install" -eq 0 ] && echo -e "${1}${MOVE_TO_COL}${SETCOLOR_WARNING}${2}${SETCOLOR_NORMAL}"
+    log "WARNING" "$1 : $2"
+}
+
+#----
+## echo_error
+##  Print failure message to screen and in log file.
+## @param    message
+## @param    word to specify failure (ex: fail)
+## @stdout    failure message
+#----
+echo_error() {
+    [ "$silent_install" -eq 0 ] && echo -e "${1}${MOVE_TO_COL}${SETCOLOR_ERROR}${2}${SETCOLOR_NORMAL}"
+    log "ERROR" "$1 : $2"
+}
+
+#----
+## log
+##  Add message in log file
+## @param    type of message level (debug, info, ...)
+## @param    message
+## @globals    LOG_FILE
+#----
+log() {
+    local type="$1"
+    shift
+    local message="$@"
+    echo -e "["`date +"%m-%d-%y %T"`"] [$type] $message" >> $LOG_FILE
+}
+
+#----
+## trim
+##  Trim whitespaces and tabulations
+## @param    string to trim
+## @return    string
+#----
+trim() {
+    echo "$1" | sed 's/^[ \t]*\(.*\)[ \t]*$/\1/'
+}
+
+#----
+## yes_no_default
+##  Create a question with yes/no possiblity. Uses "no" response by default.
+## @param    message to print
+## @param     default response (default to no)
+## @return 0     yes
+## @return 1     no
+#----
+yes_no_default() {
+    local message=$1
+    local default=${2:-$no}
+    local res="not_define"
+
+    while [ "$res" != "$yes" ] && [ "$res" != "$no" ] && [ ! -z "$res" ] ; do
+        echo -en "\n$message"
+        [ "$default" = "$yes" ] && echo " [Y/n]"
+        [ "$default" = "$no" ] && echo " [y/N]"
+        echo -en "> "
+        read res
+        [ -z "$res" ] && res="$default"
+    done
+    if [ "$res" = "$yes" ] ; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+#----
+## add_error_message
+##  Add an error message in global variable ERROR_MESSAGE.
+##  See this as an exceptions management. Used by test_* functions.
+## @param    message
+## @globals    ERROR_MESSAGE
+#----
+add_error_message() {
+    local append=""
+    local message="$1"
+
+    if [ ! -z "$ERROR_MESSAGE" ] ; then
+        append="\n"
+    fi
+    ERROR_MESSAGE="${ERROR_MESSAGE}$append  $message"
+}
+
+#----
+## test_var
+##  Test a global variable valueexists.
+## @param    global variable (as string)
+## @param     message to display as part of the returned error
+## @return 0     show the message and value
+## @return 1     add an error using add_error_message
+#----
+test_var() {
+    local var="$1"
+    local message="$2"
+    local value=$(eval echo \$$var)
+
+    if [ -z "$value" ] ; then
+        add_error_message "Missing value for variable '$var' ($message)"
+        return 1
+    fi
+
+    return 0
+}
+
+#----
+## test_var_and_show
+##  Test a global variable value exists and show this value in a echo_info format.
+## @param    global variable (as string)
+## @param     message to display as part of the echo_info or returned error
+## @return 0     show the message and value
+## @return 1     add an error using add_error_message
+#----
+test_var_and_show() {
+    local var="$1"
+    local message="$2"
+    local value=$(eval echo \$$var)
+
+    if [ -z "$value" ] ; then
+        add_error_message "Missing value for variable '$var' ($message)"
+        return 1
+    fi
+
+    echo_info "$message ($var)" "$value"
+
+    return 0
+}
+
+#----
+## test_file
+##  Test a file existence.
+## @param    file absolute path
+## @param     message to display as part of the returned error
+## @return 0     file found
+## @return 1     add an error using add_error_message
+#----
+test_file() {
+    local file="$1"
+    local message="$2"
+
+    if [ -z "$file" ] ; then
+        add_error_message "Missing value for test_file function"
+        return 1
+    fi
+    if [ ! -f $file ] ; then
+        add_error_message "Cannot find file '$file' ($message)"
+        return 1
+    fi
+
+    return 0
+}
+
+#----
+## test_file_from_var
+##  Test a file existence from a global variable.
+## @param    global variable (as string)
+## @param     message to display as part of the returned error
+## @return 0     file found
+## @return 1     add an error using add_error_message
+#----
+test_file_from_var() {
+    local var="$1"
+    local message="$2"
+    local file=$(eval echo \$$var)
+
+    if [ -z "$file" ] ; then
+        add_error_message "Missing value for variable '$var' ($message)"
+        return 1
+    fi
+    if [ ! -f $file ] ; then
+        add_error_message "Cannot find file '$file' from variable '$var' ($message)"
+        return 1
+    fi
+
+    return 0
+}
+
+#----
+## test_dir
+##  Test a directory existence.
+## @param    directory absolute path
+## @param     message to display as part of the returned error
+## @return 0     directory found
+## @return 1     add an error using add_error_message
+#----
+test_dir() {
+    local dir="$1"
+    local message="$2"
+
+    if [ -z "$dir" ] ; then
+        add_error_message "Missing value for test_dir function"
+        return 1
+    fi
+    if [ ! -d "$dir" ] ; then
+        add_error_message "Cannot find directory '$dir' ($message)"
+        return 1
+    fi
+
+    return 0
+}
+
+#----
+## test_dir_from_var
+##  Test a directory existence from a global variable.
+## @param    global variable (as string)
+## @param     message to display as part of the returned error
+## @return 0     directory found
+## @return 1     add an error using add_error_message
+#----
+test_dir_from_var() {
+    local var="$1"
+    local message="$2"
+    local dir=$(eval echo \$$var)
+
+    if [ -z "$dir" ] ; then
+        add_error_message "Missing value for variable '$var' ($message)"
+        return 1
+    fi
+    if [ ! -d "$dir" ] ; then
+        add_error_message "Cannot find directory '$dir' from variable '$var' ($message)"
+        return 1
+    fi
+
+    return 0
+}
+
+#----
+## test_user_from_var
+##  Test a user existence from a global variable.
+## @param    global variable (as string)
+## @param     message to display as part of the returned error
+## @return 0     user found
+## @return 1     add an error using add_error_message
+#----
+test_user_from_var() {
+    local var="$1"
+    local message="$2"
+    local user=$(eval echo \$$var)
+
+    if [ -z "$user" ] ; then
+        add_error_message "Missing value for variable '$var' ($message)"
+        return 1
+    fi
+    result="$(grep "^$user:" /etc/passwd 2>&1 > /dev/null)"
+    if [ $? -ne 0 ] ; then
+        add_error_message "Cannot find user '$user' from variable '$var' ($message)"
+        return 1
+    fi
+
+    return 0
+}
+
+#----
+## test_group_from_var
+##  Test a group existence from a global variable.
+## @param    global variable (as string)
+## @param     message to display as part of the returned error
+## @return 0     group found
+## @return 1     add an error using add_error_message
+#----
+test_group_from_var() {
+    local var="$1"
+    local message="$2"
+    local group=$(eval echo \$$var)
+
+    if [ -z "$group" ] ; then
+        add_error_message "Missing value for variable '$var' ($message)"
+        return 1
+    fi
+    result="$(grep "^$group:" /etc/group 2>&1 > /dev/null)"
+    if [ $? -ne 0 ] ; then
+        add_error_message "Cannot find group '$group' from variable '$var' ($message)"
+        return 1
+    fi
+
+    return 0
+}
+
+#----
+## create_dir
+##  Create a directory if it does not exist.
+## @param    directory absolute path
+## @param    user to set ownership (optional)
+## @param    group to set ownership (optional)
+## @param    mode to set permisions (optional)
+## @return 0     directory created
+## @return 1     error message using echo_error
+#----
+create_dir() {
+    local dirname="$1"
+    local user="$2"
+    local group="$3"
+    local mode="$4"
+
+    if [ ! -d "$dirname" ] ; then
+        result="$(mkdir -p $dirname 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            echo_error "Could not create directory '$dirname'" "FAILED"
+            echo_error "$result"
+            return 1
+        fi
+    fi
+    if [ ! -z "$user" ] && [ ! -z "$group" ] ; then
+        set_ownership "$dirname" "$user" "$group"
+    fi
+    if [ ! -z "$mode" ] ; then
+        set_permissions "$dirname" "$mode"
+    fi
+
+    return 0
+}
+
+#----
+## delete_file
+##  Delete a file or multiple files if wildcard specified.
+## @param    file absolute path
+## @return 0     file deleted
+## @return 1     error message using echo_error
+#----
+delete_file() {
+    local file="$1"
+
+    if [ ! -f "$file" ] && [[ ! "$file" =~ \*$ ]] ; then
+        echo_error "Not a file '$file'" "FAILED"
+        return 1
+    else
+        result="$(rm -f $file 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            echo_error "Could not delete file '$file'" "FAILED"
+            echo_error "$result"
+            return 1
+        fi
+    fi
+
+    return 0
+}
+
+#----
+## copy_file
+##  Copy a file or multiple files (using wildcard) to a defined location.
+##  Simplistic but handles the needed cases.
+## @param    source, unique file absolute path or directory absolute path plus wildcard
+## @param    destination, can be unique file absolute path or directory absolute path
+## @param    user to set ownership (optional)
+## @param    group to set ownership (optional)
+## @param    mode to set permisions (optional)
+## @return 0     copy done successfully
+## @return 1     error message using echo_error
+#----
+copy_file() {
+    local file="$1"
+    local dest="$2"
+    local user="$3"
+    local group="$4"
+    local mode="$5"
+
+    if [ ! -f "$file" ] && [[ ! "$file" =~ \*$ ]] ; then
+        add_error_message "File '$file' does not exist"
+        return 1
+    else
+        result="$(cp -f $file $dest 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            add_error_message "Copy of '$file' to '$dest' failed: $result"
+            return 1
+        fi
+        if [ ! -z "$user" ] && [ ! -z "$group" ] ; then
+            set_ownership "$dest" "$user" "$group"
+            [ $? -ne 0 ] && return 1
+        fi
+        if [ ! -z "$mode" ] ; then
+            set_permissions "$dest" "$mode"
+            [ $? -ne 0 ] && return 1
+        fi
+    fi
+
+    return 0
+}
+
+#----
+## copy_file_no_replace
+##  Copy a file to a defined location.
+##  Simplistic but handles the needed cases.
+## @param    source, unique file absolute path
+## @param    destination, unique file absolute path
+## @return 0     copy done successfully, returning echo_success message
+## @return 1     error message using echo_error
+## @return 2     message copied as .new, returning echo_info message
+#----
+copy_file_no_replace() {
+    local file="$1"
+    local dest="$2"
+    local message="$3"
+    local exist=0
+
+    if [ ! -f "$file" ] ; then
+        add_error_message "File '$file' does not exist"
+        return 1
+    elif [ -f "$dest" ] ; then
+        dest=${dest}".new"
+        exist=1
+    fi
+    result="$(cp -f $file $dest 2>&1 > /dev/null)"
+    if [ $? -ne 0 ] ; then
+        add_error_message "Copy of '$file' to '$dest' failed: $result"
+        return 1
+    elif [ $exist == "1" ] ; then
+        echo_info "$message" "$dest"
+        return 2
+    else
+        echo_success "$message" "OK"
+        return 0
+    fi
+}
+
+#----
+## copy_dir
+##  Copy a directory or a directory content (using wildcard) to a defined location.
+##  Simplistic but handles the needed cases.
+## @param    source, unique directory absolute path or directory absolute path plus wildcard
+## @param    destination, directory absolute path
+## @param    user to set ownership (optional)
+## @param    group to set ownership (optional)
+## @param    mode to set permisions (optional)
+## @return 0     copy done successfully
+## @return 1     error message using echo_error
+#----
+copy_dir() {
+    local dir="$1"
+    local dest="$2"
+    local user="$3"
+    local group="$4"
+    local mode="$5"
+
+    if [ ! -d "$dir" ] && [[ ! "$dir" =~ \*$ ]] ; then
+        add_error_message "Directory '$dir' does not exist"
+        return 1
+    else
+        result="$(cp -rpf $dir $dest 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            add_error_message "Copy of '$dir' to '$dest' failed: $result"
+            return 1
+        fi
+        if [ ! -z "$user" ] && [ ! -z "$group" ] ; then
+            set_ownership "$dest" "$user" "$group"
+            [ $? -ne 0 ] && return 1
+        fi
+        if [ ! -z "$mode" ] ; then
+            set_permissions "$dest" "$mode"
+            [ $? -ne 0 ] && return 1
+        fi
+    fi
+
+    return 0
+}
+
+#----
+## create_symlink
+##  Create a symbolic link for a file.
+## @param    file absolute path
+## @param    link absolute path
+## @param    user to set ownership (optional)
+## @param    group to set ownership (optional)
+## @param    mode to set permisions (optional)
+## @return 0     directory created
+## @return 1     error message using echo_error
+#----
+create_symlink() {
+    local file="$1"
+    local link="$2"
+    local user="$3"
+    local group="$4"
+    local mode="$5"
+
+    if [ -f "$file" ] && [ ! -L "$link" ]; then
+        result="$(ln -s "$file" "$link" 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            add_error_message "Could not create symbolic link '$file' to '$link': $result"
+            return 1
+        fi
+        if [ ! -z "$user" ] && [ ! -z "$group" ] ; then
+            set_ownership "$link" "$user" "$group"
+            [ $? -ne 0 ] && return 1
+        fi
+        if [ ! -z "$mode" ] ; then
+            set_permissions "$link" "$mode"
+            [ $? -ne 0 ] && return 1
+        fi
+    fi
+
+    return 0
+}
+
+#----
+## set_ownership
+##  Set the ownership on a unique file or on a directory.
+##  Simplistic but handles the needed cases.
+## @param    file or directory
+## @param    user
+## @param    group
+## @return 0     ownership set successfully
+## @return 1     error message using echo_error
+#----
+set_ownership() {
+    local dir_file="$1"
+    local user="$2"
+    local group="$3"
+
+    if [ -z "$dir_file" ] ; then
+        echo_info "File or directory not defined"
+        return 1
+    fi
+    if [ -f "$dir_file" ] || [[ "$dir_file" =~ \*$ ]] ; then
+        result="$(chown -h $user:$group $dir_file 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            add_error_message "Set ownership '$user:$group' on file '$dir_file' failed: $result"
+            return 1
+        fi
+    elif [ -d "$dir_file" ] ; then
+        result="$(chown -R $user:$group $dir_file 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            add_error_message "Set ownership '$user:$group' on directory '$dir_file' failed: $result"
+            return 1
+        fi
+    fi
+
+    return 0
+}
+
+#----
+## set_permissions
+##  Set the permissions on a unique file, on a directory and its content (recursively)
+##  or on files in directories (recursively) if using wildcard.
+##  Simplistic but handles the needed cases.
+## @param    file or directory
+## @param    mode
+## @return 0     permissions set successfully
+## @return 1     error message using echo_error
+#----
+set_permissions() {
+    local dir_file="$1"
+    local mode="$2"
+
+    if [ -z "$dir_file" ] ; then
+        add_error_message "File or directory not defined"
+        return 1
+    fi
+    if [ -f "$dir_file" ] ; then
+        result="$(chmod $mode $dir_file 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            add_error_message "Set permissions '$mode' on file '$dir_file' failed: $result"
+            return 1
+        fi
+    elif [ -d "$dir_file" ] ; then
+        result="$(find $dir_file -type d -print | xargs -I '{}' chmod $mode '{}' 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            add_error_message "Set permissions '$mode' on directories in '$dir_file' failed: $result"
+            return 1
+        fi
+    elif [[ "$dir_file" =~ \*$ ]]  ; then
+        result="$(find $dir_file -type f -print | xargs -I '{}' chmod $mode '{}' 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            add_error_message "Set permissions '$mode' on files in '$dir_file' failed: $result"
+            return 1
+        fi
+    else
+        add_error_message "Not a file or a directory '$dir_file'"
+        return 1
+    fi
+
+    return 0
+}
+
+#----
+## create_user
+##  Create a user if does not exist (checked using test_user).
+## @param    username
+## @param    groupname
+## @param    user's home
+## @return 0     user created successfully
+## @return 1     creation failed
+#----
+create_user() {
+    local username="$1"
+    local groupname="$2"
+    local home="$3"
+
+    test_user $username
+    if [ $? -ne 0 ]; then
+        echo_line "Create user '$username'"
+        result="$(useradd -r -s "/bin/sh" -d "$home" -g "$groupname" "$username" 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            echo_error_on_line "FAILED"
+            add_error_message "Create user '$username' failed: $result"
+            return 1
+        fi
+        echo_success_on_line "OK"
+    fi
+
+    return 0
+}
+
+#----
+## create_group
+##  Create a group if does not exist (checked using test_group).
+## @param    groupname
+## @return 0     group created successfully
+## @return 1     creation failed
+#----
+create_group() {
+    local groupname="$1"
+
+    test_group $groupname
+    if [ $? -ne 0 ]; then
+        echo_line "Create group '$groupname'"
+        result="$(groupadd -r "$groupname" 2>&1 > /dev/null)"
+        if [ $? -ne 0 ] ; then
+            echo_error_on_line "FAILED"
+            add_error_message "Create group '$groupname' failed: $result"
+            return 1
+        fi
+        echo_success_on_line "OK"
+    fi
+
+    return 0
+}
+
+#----
+## test_user
+##  Test a user existence.
+## @param    user
+## @return 0     user exists
+## @return 1     user does not exist
+#----
+test_user() {
+    result="$(grep "^$1:" /etc/passwd 2>&1 > /dev/null)"
+    return $?
+}
+
+#----
+## test_group
+##  Test a group existence.
+## @param    user
+## @return 0     group exists
+## @return 1     group does not exist
+#----
+test_group() {
+    result="$(grep "^$1:" /etc/group 2>&1 > /dev/null)"
+    return $?
+}
+
+#----
+## add_user_to_group
+##  Add a user in a group
+## @param    user
+## @param    group
+## @return 0     add successfull 
+## @return 1     add failed
+#----
+add_user_to_group() {
+    local user=$1
+    local group=$2
+    echo_line "Add user '$user' to group '$group'"
+    if [ -z "$user" -o -z "$group" ]; then
+        echo_error_on_line "FAILED"
+        add_error_message "User or group not defined"
+        return 1
+    fi
+    test_user $user
+    if [ $? -ne 0 ]; then
+        echo_error_on_line "FAILED"
+        add_error_message "Add user '$user' to group '$group' failed: user '$user' does not exist"
+        return 1
+    fi
+    test_group $group
+    if [ $? -ne 0 ]; then
+        echo_error_on_line "FAILED"
+        add_error_message "Add user '$user' to group '$group' failed: group '$group' does not exist"
+        return 1
+    fi
+
+    result="$(usermod -a -G $group $user 2>&1 > /dev/null)"
+    local ret=$?
+    if [ "$ret" -ne 0 ] ; then
+        echo_error_on_line "FAILED"
+        add_error_message "Add user '$user' to group '$group' failed: $result"
+    else
+        echo_success_on_line "OK"
+    fi
+    return $ret
+}
+
+#----
+## find_perl_info
+##  Find Perl information.
+## @return 0     search done
+## @globals    PERL_LIB_DIR
+#----
+find_perl_info() {
+    if [ -z $PERL_LIB_DIR ] ; then
+        PERL_LIB_DIR=$(perl -V:installvendorlib | cut -d "'" -f 2)
+        # for freebsd
+        if [ "$PERL_LIB_DIR" = "" -o "$PERL_LIB_DIR" = "UNKNOWN" ]; then
+            PERL_LIB_DIR=$(perl -V:installsitelib | cut -d "'" -f 2)
+        fi
+    fi
+
+    PERL_LIB_DIR=${PERL_LIB_DIR%/}
+
+    return 0
+}
+
+#----
+## enable_apache_conf
+##  Enable Apache configuration.
+## @return 0     enabling ok (or not needed)
+## @return 0     enabling failed
+#----
+enable_apache_conf() {
+    local conf="$1"
+
+    if [[ ! "$APACHE_SERVICE" =~ ^apache2$ ]] ; then
+        return 0
+    fi
+
+    echo_line "Enabling Apache configuration '$conf'"
+    result="$(a2enconf $conf 2>&1 > /dev/null)"
+    local ret=$?
+    if [ "$ret" -ne 0 ] ; then
+        echo_error_on_line "FAILED"
+        add_error_message "Enabling Apache configuration '$conf' failed: $result"
+    else
+        echo_success_on_line "OK"
+    fi
+    return $ret
+}
+
+#----
+## enable_apache_mod
+##  Enable Apache module.
+## @return 0     enabling ok (or not needed)
+## @return 0     enabling failed
+#----
+enable_apache_mod() {
+    local mod="$1"
+
+    if [[ ! "$APACHE_SERVICE" =~ ^apache2$ ]] ; then
+        return 0
+    fi
+
+    echo_line "Enabling Apache module '$mod'"
+    result="$(a2enmod $mod 2>&1 > /dev/null)"
+    local ret=$?
+    if [ "$ret" -ne 0 ] ; then
+        echo_error_on_line "FAILED"
+        add_error_message "Enabling Apache module '$mod' failed: $result"
+    else
+        echo_success_on_line "OK"
+    fi
+    return $ret
+}
+
+#----
+## enable_service
+##  Enable a systemd service.
+## @return 0     enabling ok
+## @return 0     enabling failed
+#----
+enable_service() {
+    local service="$1"
+
+    if [ -x /bin/systemctl ] ; then
+        echo_line "Enabling service '$service'"
+        result="$(/bin/systemctl enable $service 2>&1 > /dev/null)"
+        local ret=$?
+        if [ "$ret" -ne 0 ] ; then
+            echo_error_on_line "FAILED"
+            add_error_message "Enabling service '$service' failed: $result"
+        else
+            echo_success_on_line "OK"
+        fi
+        return $ret
+    fi
+
+    return 1
+}
+
+#----
+## reload_service
+##  Reload a systemd service.
+## @return 0     reloading ok
+## @return 0     reloading failed
+#----
+reload_service() {
+    local service="$1"
+
+    if [ -x /bin/systemctl ] ; then
+        echo_line "Reloading service '$service'"
+        result="$(/bin/systemctl reload $service 2>&1 > /dev/null)"
+        local ret=$?
+        if [ "$ret" -ne 0 ] ; then
+            echo_error_on_line "FAILED"
+            add_error_message "Reloading service '$service' failed: $result"
+        else
+            echo_success_on_line "OK"
+        fi
+        return $ret
+    fi
+
+    return 1
+}
+
+#----
+## restart_service
+##  Restart a systemd service.
+## @return 0     restarting ok
+## @return 0     restarting failed
+#----
+restart_service() {
+    local service="$1"
+
+    if [ -x /bin/systemctl ] ; then
+        echo_line "Restarting service '$service'"
+        result="$(/bin/systemctl restart $service 2>&1 > /dev/null)"
+        local ret=$?
+        if [ "$ret" -ne 0 ] ; then
+            echo_error_on_line "FAILED"
+            add_error_message "Restarting service '$service' failed: $result"
+        else
+            echo_success_on_line "OK"
+        fi
+        return $ret
+    fi
+
+    return 1
+}
+
+#----
+## reload_daemon
+##  Reload systemd daemon.
+## @return 0     reload ok
+## @return 0     reload failed
+#----
+reload_daemon() {
+    if [ -x /bin/systemctl ] ; then
+        echo_line "Reloading systemctl daemon"
+        result="$(/bin/systemctl daemon-reload 2>&1 > /dev/null)"
+        local ret=$?
+        if [ "$ret" -ne 0 ] ; then
+            echo_error_on_line "FAILED"
+            add_error_message "Reloading systemctl daemon failed: $result"
+        else
+            echo_success_on_line "OK"
+        fi
+        return $ret
+    fi
+
+    return 1
+}
+
+#----
+## find_phpfpm_info
+##  Find PHP FPM information.
+## @return 0     search done
+## @globals    PHPFPM_CONF_DIR PHPFPM_LOG_DIR PHPFPM_SERVICE PHPFPM_SERVICE_DIR
+#----
+find_phpfpm_info() {
+    # PHP FPM configuration directory
+    if [ -z "$PHPFPM_CONF_DIR" ] ; then
+        # Debian / Ubuntu
+        if [ -d /etc/php/7.3/fpm/pool.d ] ; then
+            PHPFPM_CONF_DIR="/etc/php/7.3/fpm/pool.d"
+        elif [ -d /etc/php/7.2/fpm/pool.d ] ; then
+            PHPFPM_CONF_DIR="/etc/php/7.2/fpm/pool.d"
+        elif [ -d /etc/php/7.1/fpm/pool.d ] ; then
+            PHPFPM_CONF_DIR="/etc/php/7.1/fpm/pool.d"
+        # CentOS 8
+        elif [ -d /etc/php-fpm.d ] ; then
+            PHPFPM_CONF_DIR="/etc/php-fpm.d"
+        # CentOS 7
+        elif [ -d /etc/opt/rh/rh-php73/php-fpm.d ] ; then
+            PHPFPM_CONF_DIR="/etc/opt/rh/rh-php73/php-fpm.d"
+        elif [ -d /etc/opt/rh/rh-php72/php-fpm.d ] ; then
+            PHPFPM_CONF_DIR="/etc/opt/rh/rh-php72/php-fpm.d"
+        elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
+            PHPFPM_CONF_DIR="/etc/opt/rh/rh-php71/php-fpm.d"
+        # OpenSUSE Leap
+        elif [ -d /etc/php7/fpm/php-fpm.d/ ] ; then
+            PHPFPM_CONF_DIR="/etc/php7/fpm/php-fpm.d/"
+        fi
+    fi
+
+    PHPFPM_CONF_DIR=${PHPFPM_CONF_DIR%/}
+
+    # PHP FPM log directory
+    if [ -z "$PHPFPM_LOG_DIR" ] ; then
+        if [ -d /var/log/php-fpm ] ; then
+            PHPFPM_LOG_DIR="/var/log/php-fpm"
+        fi
+    fi
+
+    PHPFPM_LOG_DIR=${PHPFPM_LOG_DIR%/}
+
+    # PHP FPM service
+    if [ -z $PHPFPM_SERVICE ] ; then
+        if [ -x /bin/systemctl ] ; then
+            PHPFPM_SERVICE=$(/bin/systemctl list-unit-files | grep php | grep fpm | tail -1 | cut -f 1 -d " ")
+            PHPFPM_SERVICE=${PHPFPM_SERVICE%.service}
+        fi
+    fi
+    
+    # PHP FPM service directory
+    if [ -z $PHPFPM_SERVICE_DIR ] ; then
+        if [ ! -z "$SYSTEMD_ETC_DIR" ] && [ ! -z "$PHPFPM_SERVICE" ]; then
+            PHPFPM_SERVICE_DIR="$SYSTEMD_ETC_DIR/$PHPFPM_SERVICE.service.d"
+        fi
+    fi
+
+    PHPFPM_SERVICE_DIR=${PHPFPM_SERVICE_DIR%/}
+
+    return 0
+}
+
+#----
+## find_php_info
+##  Find PHP information.
+## @return 0     search done
+## @globals    PHP_ETC_DIR PHP_BINARY
+#----
+find_php_info() {
+    # PHP configuration directory
+    if [ -z "$PHP_ETC_DIR" ] ; then
+        # Debian / Ubuntu
+        if [ -d /etc/php/7.3/fpm/conf.d/ ] ; then
+            PHP_ETC_DIR="/etc/php/7.3/fpm/conf.d"
+        elif [ -d /etc/php/7.2/fpm/conf.d/ ] ; then
+            PHP_ETC_DIR="/etc/php/7.2/fpm/conf.d"
+        elif [ -d /etc/php/7.1/fpm/conf.d/ ] ; then
+            PHP_ETC_DIR="/etc/php/7.1/fpm/conf.d"
+        # CentOS 8
+        elif [ -d /etc/php.d ] ; then
+            PHP_ETC_DIR="/etc/php.d"
+        # CentOS 7
+        elif [ -d /etc/opt/rh/rh-php73/php.d ] ; then
+            PHP_ETC_DIR="/etc/opt/rh/rh-php73/php.d"
+        elif [ -d /etc/opt/rh/rh-php72/php.d ] ; then
+            PHP_ETC_DIR="/etc/opt/rh/rh-php72/php.d"
+        elif [ -d /etc/opt/rh/rh-php71/php.d ] ; then
+            PHP_ETC_DIR="/etc/opt/rh/rh-php71/php.d"
+        # OpenSUSE Leap
+        elif [ -d /etc/php7/conf.d/ ] ; then
+            PHP_ETC_DIR="/etc/php7/conf.d/"
+        fi
+    fi
+
+    PHP_ETC_DIR=${PHP_ETC_DIR%/}
+    
+    # PHP binary
+    if [ -z "$PHP_BINARY" ] ; then
+        # CentOS 8 / OpenSUSE Leap / Debian / Ubuntu
+        if [ -f /usr/bin/php ] ; then
+            PHP_BINARY="/usr/bin/php"
+        # CentOS 7
+        elif [ -f /opt/rh/rh-php73/root/usr/bin/php ] ; then
+            PHP_BINARY="/opt/rh/rh-php73/root/usr/bin/php"
+        elif [ -f /opt/rh/rh-php72/root/usr/bin/php ] ; then
+            PHP_BINARY="/opt/rh/rh-php72/root/usr/bin/php"
+        elif [ -f /opt/rh/rh-php71/root/usr/bin/php ] ; then
+            PHP_BINARY="/opt/rh/rh-php71/root/usr/bin/php"
+        fi
+    fi
+
+    return 0
+}
+
+#----
+## find_mariadb_info
+##  Find PHP FPM information.
+## @return 0     search done
+## @globals    MARIADB_CONF_DIR MARIADB_SERVICE MARIADB_SERVICE_DIR MARIADB_SOCKET
+#----
+find_mariadb_info() {
+    # MariaDB configuration directory
+    if [ -z "$MARIADB_CONF_DIR" ] ; then
+        if [ -d /etc/my.cnf.d ] ; then
+            MARIADB_CONF_DIR="/etc/my.cnf.d"
+        elif [ -d /etc/mysql/conf.d ] ; then
+            MARIADB_CONF_DIR="/etc/mysql/conf.d"
+        fi
+    fi
+
+    MARIADB_CONF_DIR=${MARIADB_CONF_DIR%/}
+    
+    # MariaDB service
+    if [ -z $MARIADB_SERVICE ] ; then
+        if [ -x /bin/systemctl ] ; then
+            if [ $(/bin/systemctl list-unit-files mariadb.service | wc -l) -gt "3" ] ; then
+                MARIADB_SERVICE="mariadb"
+            elif [ $(/bin/systemctl list-unit-files mysql.service | wc -l) -gt "3" ] ; then
+                MARIADB_SERVICE="mysql"
+            fi
+        fi
+    fi
+
+    # MariaDB service directory
+    if [ -z $MARIADB_SERVICE_DIR ] ; then
+        if [ ! -z "$SYSTEMD_ETC_DIR" ] && [ ! -z "$MARIADB_SERVICE" ] ; then
+            MARIADB_SERVICE_DIR="$SYSTEMD_ETC_DIR/$MARIADB_SERVICE.service.d"
+        fi
+    fi
+
+    MARIADB_SERVICE_DIR=${MARIADB_SERVICE_DIR%/}
+
+    # MariaDB socket file
+    if [ -z "$MARIADB_SOCKET" ] ; then
+        if [ -e /var/lib/mysql/mysql.sock ] ; then
+            MARIADB_SOCKET="/var/lib/mysql/mysql.sock"
+        fi
+    fi
+
+    return 0
+}
+
+#----
+## test_php_version
+##  Test PHP version compared to minimal version.
+## @param    user
+## @param    group
+## @return 0     version is ok
+## @return 1     add an error using add_error_message
+## @globals    PHP_BINARY PHP_MIN_VERSION
+#----
+test_php_version() {
+    if [ ! -f "$PHP_BINARY" ] ; then
+        add_error_message "Cannot find PHP binary '$PHP_BINARY'"
+        return 1
+    else
+        local php_version=$($PHP_BINARY --version | head -n 1 | cut -d " " -f 2 | cut -c 1,3) >/dev/null 2>&1
+
+        if [ "$php_version" -lt "$PHP_MIN_VERSION" ] ; then
+            add_error_message "Minimum PHP version required is '$PHP_MIN_VERSION', found '$php_version'"
+            return 1
+        fi
+    fi
+
+    return 0
+}
+
+#----
+## find_apache_info
+##  Find Apache information.
+## @return 0     search done
+## @globals    APACHE_DIR APACHE_CONF_DIR APACHE_CONF APACHE_USER APACHE_GROUP APACHE_SERVICE
+#----
+find_apache_info() {
+    # Apache directories
+    if [ -z "$APACHE_DIR" ] || [ -z "$APACHE_CONF_DIR" ] ; then
+        if [ -d /opt/rh/httpd24/root/etc/httpd/conf ] ; then
+            APACHE_DIR="/opt/rh/httpd24/root/etc/httpd/conf"
+            APACHE_CONF_DIR="/opt/rh/httpd24/root/etc/httpd/conf.d"
+        elif [ -d /etc/apache/conf ] ; then
+            APACHE_DIR="/etc/apache/conf"
+            APACHE_CONF_DIR="/etc/apache/conf.d"
+        elif [ -d /usr/local/apache2/conf ] ; then
+            APACHE_DIR="/usr/local/apache2/conf"
+            APACHE_CONF_DIR="/usr/local/apache2/conf"
+        elif [ -d /etc/apache2 ] ; then
+            APACHE_DIR="/etc/apache2"
+            APACHE_CONF_DIR="/etc/apache2/conf-available"
+            if [ -d '/etc/apache2/conf-available' ] ; then
+                APACHE_CONF_DIR="/etc/apache2/conf-available"
+            elif [ -d '/etc/apache2/conf.d' ] ; then
+                APACHE_CONF_DIR="/etc/apache2/conf.d"
+            fi
+        elif [ -d /etc/httpd/conf ] ; then
+            APACHE_DIR="/etc/httpd/conf"
+            APACHE_CONF_DIR="/etc/httpd/conf.d"
+        elif [ -d /usr/local/etc/apache ] ; then
+            APACHE_DIR="/usr/local/etc/apache"
+            APACHE_CONF_DIR="/usr/local/etc/apache/Includes"
+        elif [ -d /usr/local/etc/apache2 ] ; then
+            APACHE_DIR="/usr/local/etc/apache2"
+            APACHE_CONF_DIR="/usr/local/etc/apache2/Includes"
+        elif [ -d /usr/local/etc/apache22 ] ; then
+            APACHE_DIR="/usr/local/etc/apache22"
+            APACHE_CONF_DIR="/usr/local/etc/apache22/Includes"
+        fi
+    fi
+
+    APACHE_DIR=${APACHE_DIR%/}
+    APACHE_CONF_DIR=${APACHE_CONF_DIR%/}
+
+    if [ -z "$APACHE_CONF" ] ; then
+        if [ -e $APACHE_DIR/apache2.conf ] ; then
+            APACHE_CONF="apache2.conf"
+        elif [ -e $APACHE_DIR/apache.conf ] ; then
+            APACHE_CONF="apache.conf"
+        elif [ -e $APACHE_DIR/commondhttpd.conf ] ; then
+            APACHE_CONF="commondhttpd.conf"
+        elif [ -e $APACHE_DIR/httpd.conf ] ; then
+            APACHE_CONF="httpd.conf"
+        fi
+    fi
+
+    APACHE_CONF=${APACHE_CONF%/}
+    
+    # Apache user
+    local found=0
+    if [ -z "$APACHE_USER" ] ; then
+        if [ -e /etc/apache2/envvars ] ; then
+            # Debian
+            APACHE_USER=`cat /etc/apache2/envvars |grep "USER" | cut -d= -f2`
+            if [ ! -z "$APACHE_USER" ] ; then
+                found=1
+            fi
+        elif [ -e /etc/apache2/uid.conf ] ; then
+            # SUSE
+            APACHE_USER=`cat /etc/apache2/uid.conf |grep -e "^User" | cut -d" " -f2`
+            if [ ! -z "$APACHE_USER" ] ; then
+                found=1
+            fi
+        fi
+        if [ "$found" -eq 0 ] ; then
+            APACHE_USER=`cat $APACHE_DIR/$APACHE_CONF | grep -e "^User" | cut -d" " -f2`
+            if [ -z "$APACHE_USER"  ] ; then
+                local APACHE_USER_TEMP=""
+                for fichier in $APACHE_DIR/*
+                do
+                    if [ -f "$fichier" ] ; then
+                        APACHE_USER_TEMP=`cat $fichier | grep -e "^User" | cut -d" " -f2`
+                        if [ -n "$APACHE_USER_TEMP" ] ; then
+                            APACHE_USER=$APACHE_USER_TEMP
+                        fi
+                    fi
+                done
+            fi
+        fi
+    fi
+
+    found=0
+    # Apache group
+    if [ -z "$APACHE_GROUP" ] ; then
+        if [ -e /etc/apache2/envvars ] ; then
+            # Debian
+            APACHE_GROUP=`cat /etc/apache2/envvars |grep "GROUP" |cut -d= -f2`
+            if [ ! -z "$APACHE_GROUP" ] ; then
+                found=1
+            fi
+        elif [ -e /etc/apache2/uid.conf ] ; then
+            # SUSE
+            APACHE_GROUP=`cat /etc/apache2/uid.conf |grep -e "^Group" | cut -d" " -f2`
+            if [ ! -z "$APACHE_GROUP" ] ; then
+                found=1
+            fi
+        fi
+        if [ "$found" -eq 0 ] ; then
+            APACHE_GROUP=`cat $APACHE_DIR/$APACHE_CONF | grep -e "^Group" | cut -d" " -f2`
+            if [  -z "$APACHE_GROUP"  ] ; then
+                local APACHE_GROUP_TMP=""
+                for fichier in $APACHE_DIR/*
+                do
+                    if [ -f "$fichier" ];    then
+                        APACHE_GROUP_TEMP=`cat $fichier | grep -e "^Group" | cut -d" " -f2`
+                        if [ -n "$APACHE_GROUP_TEMP" ]; then
+                            APACHE_GROUP=$APACHE_GROUP_TEMP
+                        fi
+                    fi
+                done
+            fi
+        fi
+    fi
+    
+    # Apache service
+    if [ -z $APACHE_SERVICE ] ; then
+        if [ -x /bin/systemctl ] ; then
+            if [ $(/bin/systemctl list-unit-files httpd24-httpd.service | wc -l) -gt "3" ] ; then
+                APACHE_SERVICE="httpd24-httpd"
+            elif [ $(/bin/systemctl list-unit-files httpd.service | wc -l) -gt "3" ] ; then
+                APACHE_SERVICE="httpd"
+            elif [ $(/bin/systemctl list-unit-files apache2.service | wc -l) -gt "3" ] ; then
+                APACHE_SERVICE="apache2"
+            fi
+        fi
+    fi
+    
+    return 0
+}
+
+#----
+## replace_macro
+##  Replace @@ macros in all needed files in temporary directory.
+## @return 0     replacement done successfully
+## @return 1     replacement failed
+## @globals    TMP_DIR
+#----
+replace_macro() {
+    local srclistcp="$1"
+
+    {
+        for folder in $srclistcp ; do
+            result="$(find $TMP_DIR/source/$folder -type f | xargs --delimiter='\n' sed -i \
+                -e 's|@INSTALL_DIR_CENTREON@|'"$CENTREON_INSTALL_DIR"'|gi' \
+                -e 's|@CENTREON_INSTALL_DIR@|'"$CENTREON_INSTALL_DIR"'|gi' \
+                -e 's|@PHP_BIN@|'"$PHP_BINARY"'|gi' \
+                -e 's|@BIN_MAIL@|'"$MAIL_BINARY"'|gi' \
+                -e 's|@MAIL_BINARY@|'"$MAIL_BINARY"'|gi' \
+                -e 's|@CENTREON_ETC@|'"$CENTREON_ETC_DIR"'|gi' \
+                -e 's|@CENTREON_ETC_DIR@|'"$CENTREON_ETC_DIR"'|gi' \
+                -e 's|@CENTREON_LOG@|'"$CENTREON_LOG_DIR"'|gi' \
+                -e 's|@CENTREON_LOG_DIR@|'"$CENTREON_LOG_DIR"'|gi' \
+                -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB_DIR"'|gi' \
+                -e 's|@CENTREON_VARLIB_DIR@|'"$CENTREON_VARLIB_DIR"'|gi' \
+                -e 's|@RRDTOOL_BINARY@|'"$RRDTOOL_BINARY"'|gi' \
+                -e 's|@SNMP_ETC_DIR@|'"$SNMP_ETC_DIR"'|gi' \
+                -e 's|@SYSCONFIG_ETC_DIR@|'"$SYSCONFIG_ETC_DIR"'|gi' \
+                -e 's|@MONITORING_VARLOG@|'"$ENGINE_LOG_DIR"'|gi' \
+                -e 's|@CENTREON_CACHEDIR@|'"$CENTREON_CACHE_DIR"'|gi' \
+                -e 's|@CENTREON_CACHE_DIR@|'"$CENTREON_CACHE_DIR"'|gi' \
+                -e 's|@CENTREONPLUGINS@|'"$CENTREON_PLUGINS_DIR"'|gi' \
+                -e 's|@CENTREON_PLUGINS_DIR@|'"$CENTREON_PLUGINS_DIR"'|gi' \
+                -e 's|@NAGIOS_PLUGINS_DIR@|'"$CENTREON_PLUGINS_DIR"'|gi' \
+                -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_INSTALL_DIR/bin"'|gi' \
+                -e 's|@CENTREON_ENGINE_CONNECTORS@|'"$ENGINE_CONNECTORS_DIR/bin"'|gi' \
+                -e 's|%APP_SECRET%|'"$HEX_KEY"'|gi' \
+                -e 's|@CENTREON_USER@|'"$CENTREON_USER"'|gi' \
+                -e 's|@CENTREON_GROUP@|'"$CENTREON_GROUP"'|gi' \
+                -e 's|@ENGINE_USER@|'"$ENGINE_USER"'|gi' \
+                -e 's|@ENGINE_GROUP@|'"$ENGINE_GROUP"'|gi' \
+                -e 's|@ENGINE_ETC_DIR@|'"$ENGINE_ETC_DIR"'|gi' \
+                -e 's|@ENGINE_BINARY@|'"$ENGINE_BINARY"'|gi' \
+                -e 's|@ENGINE_LOG_DIR@|'"$ENGINE_LOG_DIR"'|gi' \
+                -e 's|@ENGINE_CONNECTORS_DIR@|'"$ENGINE_CONNECTORS_DIR"'|gi' \
+                -e 's|@ENGINE_LIB_DIR@|'"$ENGINE_LIB_DIR"'|gi' \
+                -e 's|@BROKER_USER@|'"$BROKER_USER"'|gi' \
+                -e 's|@BROKER_GROUP@|'"$BROKER_GROUP"'|gi' \
+                -e 's|@BROKER_ETC_DIR@|'"$BROKER_ETC_DIR"'|gi' \
+                -e 's|@BROKER_MOD_BINARY@|'"$BROKER_MOD_BINARY"'|gi' \
+                -e 's|@WEB_USER@|'"$APACHE_USER"'|gi' \
+                -e 's|@APACHE_USER@|'"$APACHE_USER"'|gi' \
+                -e 's|@APACHE_GROUP@|'"$APACHE_GROUP"'|gi' \
+                -e 's|@PHPFPM_LOG_DIR@|'"$PHPFPM_LOG_DIR"'|gi' \
+                -e 's|@PHPFPM_VARLIB_DIR@|'"$PHPFPM_VARLIB_DIR"'|gi' \
+                -e 's|@PHP_TIMEZONE@|'"$PHP_TIMEZONE"'|gi'\
+                -e 's|@MARIADB_SOCKET@|'"$MARIADB_SOCKET"'|gi' \
+                -e 's|@HTTPS_CERTIFICATE_FILE@|'"$HTTPS_CERTIFICATE_FILE"'|gi' \
+                -e 's|@HTTPS_CERTIFICATE_KEY_FILE@|'"$HTTPS_CERTIFICATE_KEY_FILE"'|gi' 2>&1 > /dev/null)"
+        done
+    } || {
+        add_error_message "Replacing macros failed: $result"
+        return 1
+    }
+
+    return 0
+}
+
+#----
+## find_os
+##  Search OS distribution and version.
+## @return 0     search done
+## @globals    DISTRIB DISTRIB_VERSION
+#----
+find_os() {    
+    # From https://unix.stackexchange.com/questions/6345/how-can-i-get-distribution-name-and-version-number-in-a-simple-shell-script
+    if [ -f /etc/os-release ]; then
+        # freedesktop.org and systemd
+        . /etc/os-release
+        DISTRIB=${ID}
+        DISTRIB_VERSION=${VERSION_ID}
+    elif type lsb_release >/dev/null 2>&1; then
+        # linuxbase.org
+        DISTRIB=$(lsb_release -si | sed -e 's/\(.*\)/\L\1/')
+        DISTRIB_VERSION=$(lsb_release -sr)
+    elif [ -f /etc/lsb-release ]; then
+        # For some versions of Debian/Ubuntu without lsb_release command
+        . /etc/lsb-release
+        DISTRIB=${DISTRIB_ID}
+        DISTRIB_VERSION=${DISTRIB_RELEASE}
+    elif [ -f /etc/debian_version ]; then
+        # Older Debian/Ubuntu/etc.
+        DISTRIB=debian
+        DISTRIB_VERSION=$(cat /etc/debian_version | cut -d "." -f 1)
+    elif [ -f /etc/centos-release ]; then
+        # CentOS
+        DISTRIB=centos
+        DISTRIB_VERSION=$(cat /etc/centos-release | cut -d " " -f 4 | cut -d "." -f 1)
+    elif [ -f /etc/redhat-release ]; then
+        # Older Red Hat, CentOS, etc.
+        DISTRIB=centos
+        DISTRIB_VERSION=$(cat /etc/redhat-release | cut -d " " -f 4 | cut -d "." -f 1)
+    else
+        # Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
+        DISTRIB=$(uname -s)
+        DISTRIB_VERSION=$(uname -r)
+    fi
+
+    return 0
+}
+
+#----
+## get_timezone
+##  Search system timezone.
+## @return 0     search done
+## @globals    PHP_TIMEZONE
+#----
+get_timezone() {
+    if [ -z "$PHP_TIMEZONE" ] ; then
+        PHP_TIMEZONE=$(realpath /etc/localtime --relative-to=/usr/share/zoneinfo/)
+    fi
+
+    return 0
+}
+
+#----
+## clean_and_exit
+##  Function to clean and exit Centreon install using purge_centreon_tmp_dir functionn, and exit.
+#----
+clean_and_exit() {
+    local trap_sig=${1:-0}
+
+    if [ $trap_sig -eq 0 ] ; then
+        echo -e "\nTrap interrupt, Centreon'll exit now and clean installation"
+        yes_no_default "Do you really want to quit Centreon installation?" "$no"
+        if [ $? -eq 1 ] ; then
+            echo "Continue..."
+            return 1
+        fi
+    fi
+
+    purge_centreon_tmp_dir "silent"
+
+    exit 1
+}
+
+#----
+## check_tmp_disk_space
+##  Check space left for working directory.
+## @return 0    space ok
+## @return 1    no Space left
+## @globals    TMP_DIR
+#----
+check_tmp_disk_space() {
+    local min_space="35584"
+    local free_space=""
+    local tmp_dir=""
+
+    tmp_dir=$(dirname $TMP_DIR)
+
+    free_space=$(df -P $tmp_dir | tail -1 | awk '{print $4}')
+
+    if [ "$free_space" -lt "$min_space" ] ; then
+        echo_error "No space left on temporary directory '$tmp_dir' (<$min_space Ko)" "FAILED"
+        return 1
+    else
+        return 0
+    fi
+}
+
+#----
+## purge_centreon_tmp_dir
+##  Ask to remove all temporaries working directory.
+## @param     silent option (silent)
+## @return 0    remove done
+## @return 1    don't remove (abort by user)
+## @globals    TMP_DIR
+#----
+purge_centreon_tmp_dir() {
+    local silent="$1"
+    local not_clean="1"
+    local rc="0"
+    while [ $not_clean -ne 0 ] ; do
+        if [ "$silent" != "silent" ] ; then
+            yes_no_default "Do you want to remove the Centreon temporary working space to continue installation?" "$yes"
+            rc=$?
+        else
+            rc=0
+        fi
+        if [ $rc -eq 0 ] ; then
+            local tmp_base_dir=`dirname $TMP_DIR`
+            local tmp_dir=`basename $TMP_DIR`
+            find $tmp_base_dir -name "$tmp_dir*" -type d \
+                -exec rm -rf {} \; 2>/dev/null
+            not_clean="0"
+        else
+            return 1
+        fi
+    done
+    return 0
+}
+
+#----
+## pathfind_ret
+##  Find in $PATH if binary exist and return dirname.
+## @param    file to test
+## @param    global variable to set a result
+## @return 0    found
+## @return 1    not found
+## @Globals    PATH
+#----
+pathfind_ret() {
+    local bin=$1
+    local var_ref=$2
+    local OLDIFS="$IFS"
+    IFS=:
+    for p in $PATH; do
+        if [ -x "$p/$bin" ]; then
+            IFS="$OLDIFS"
+            eval $var_ref=$p
+            return 0
+        fi
+    done
+    IFS="$OLDIFS"
+    return 1
+}
+
+#----
+## check_result
+##  Check result and print a message using echo_success or echo_error
+## @param    return code to check
+## @param    message to print
+#----
+check_result() {
+    local code=$1
+    shift
+    local message=$@
+
+    if [ $code -eq 0 ] ; then
+        echo_success "$message" "OK"
+    else
+        echo_error "$message" "FAILED"
+    fi
+    return 0
+}

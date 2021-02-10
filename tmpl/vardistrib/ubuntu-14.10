@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-# Use Debian 8 variables.
-. "$BASE_DIR/tmpl/vardistrib/debian-8"

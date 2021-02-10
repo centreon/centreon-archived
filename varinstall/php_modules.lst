@@ -1,7 +1,0 @@
-ldap
-xmlwriter
-mbstring
-pdo_mysql
-pdo_sqlite
-gd
-intl
