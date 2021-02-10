@@ -86,7 +86,7 @@ const Legend = ({
               return;
             }
 
-            if (event.ctrlKey) {
+            if (event.ctrlKey || event.metaKey) {
               onToggle(metric);
               return;
             }
