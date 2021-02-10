@@ -48,6 +48,24 @@ class InformationTest extends TestCase
     }
 
     /**
+     * Too Short Key Test.
+     */
+    public function testKeyTooShortException(): void
+    {
+        $key = str_repeat('.', Information::MIN_KEY_LENGTH - 1);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::minLength(
+                $key,
+                strlen($key),
+                Information::MIN_KEY_LENGTH,
+                'Information::key'
+            )->getMessage()
+        );
+        (new Information())->setKey($key);
+    }
+
+    /**
      * Too long Value Test.
      */
     public function testValueTooLongException(): void
@@ -59,6 +77,24 @@ class InformationTest extends TestCase
                 $value,
                 strlen($value),
                 Information::MAX_VALUE_LENGTH,
+                'Information::value'
+            )->getMessage()
+        );
+        (new Information())->setValue($value);
+    }
+
+    /**
+     * Too long Value Test.
+     */
+    public function testValueTooShortException(): void
+    {
+        $value = str_repeat('.', Information::MIN_VALUE_LENGTH - 1);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::minLength(
+                $value,
+                strlen($value),
+                Information::MIN_VALUE_LENGTH,
                 'Information::value'
             )->getMessage()
         );
