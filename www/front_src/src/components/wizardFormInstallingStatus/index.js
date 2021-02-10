@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
 import styles from '../../styles/partials/form/_form.scss';
-import Loader from '../loader';
 
 export default ({ formTitle, statusCreating, statusGenerating, error }) => {
   const { t } = useTranslation();
@@ -22,7 +21,7 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
           <h2 className={styles['form-title']}>{formTitle}</h2>
         </div>
         {/* display loader until tasks are finished or error is displayed */}
-        {loading && <Loader />}
+        {loading && <p>Loading...</p>}
         <p className={styles['form-text']}>
           {t('Creating Export Task')}
           <span
