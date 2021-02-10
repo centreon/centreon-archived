@@ -280,6 +280,14 @@ class UpdatePartiallyPlatformInformation
         }
     }
 
+    /**
+     * Populate the PlatformInformation missing values.
+     * This method is useful if some properties are already existing in data storage.
+     *
+     * @param PlatformInformation $platformInformationToUpdate
+     * @param PlatformInformation $currentPlatformInformation
+     * @return PlatformInformation
+     */
     private function populateMissingInformationValues(
         PlatformInformation $platformInformationToUpdate,
         PlatformInformation $currentPlatformInformation
