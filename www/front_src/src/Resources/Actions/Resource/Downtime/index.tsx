@@ -175,7 +175,6 @@ const DowntimeForm = ({
       handleChange={form.handleChange}
       setFieldValue={form.setFieldValue}
       submitting={sendingSetDowntingOnResources}
-      loading={isNil(form.values.comment)}
     />
   );
 };

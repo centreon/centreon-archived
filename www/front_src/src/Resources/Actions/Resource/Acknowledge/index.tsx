@@ -81,7 +81,6 @@ const AcknowledgeForm = ({
       values={form.values}
       handleChange={form.handleChange}
       submitting={sendingAcknowledgeResources}
-      loading={isNil(form.values.comment)}
     />
   );
 };

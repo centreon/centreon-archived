@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Filter = (): JSX.Element => {
+  const [expanded, setExpanded] = React.useState(false);
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -193,6 +194,8 @@ const Filter = (): JSX.Element => {
     setServiceGroups(updatedServiceGroups);
   };
 
+  const expandFilters = () => setExpanded((expandState) => !expandState);
+
   const customFilterOptions = isEmpty(customFilters)
     ? []
     : [
@@ -216,8 +219,9 @@ const Filter = (): JSX.Element => {
 
   return (
     <Filters
-      expandable
+      expanded={expanded}
       expandLabel={labelShowCriteriasFilters}
+      onExpand={expandFilters}
       filters={
         <div className={classes.grid}>
           <SaveFilter />
