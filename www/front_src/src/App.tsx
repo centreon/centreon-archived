@@ -17,6 +17,7 @@ import { withStyles, createStyles } from '@material-ui/core';
 
 import { ThemeProvider } from '@centreon/ui';
 
+import Header from './components/header';
 import { history } from './store';
 import NavigationComponent from './components/navigation';
 import Tooltip from './components/tooltip';
@@ -27,7 +28,6 @@ import footerStyles from './components/footer/footer.scss';
 import PageLoader from './components/PageLoader';
 
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
-const Header = React.lazy(() => import('./components/header'));
 
 const styles = createStyles({
   wrapper: {
