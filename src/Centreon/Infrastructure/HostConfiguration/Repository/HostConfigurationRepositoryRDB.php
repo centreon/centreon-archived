@@ -35,6 +35,7 @@ use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostTemplateFactoryRdb;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
 /**
@@ -534,55 +535,74 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      */
     public function findHostTemplates(): array
     {
-        $request = $this->translateDbName(
-            'SELECT SQL_CALC_FOUND_ROWS h.*, ext.*, icon.img_id AS icon_id, icon.img_name AS icon_name, 
-                CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
-                icon.img_comment AS icon_comment, smi.img_id AS smi_id, smi.img_name AS smi_name, 
-                smi.img_path AS smi_path, smi.img_comment AS smi_comment,
-                GROUP_CONCAT(DISTINCT htr.host_tpl_id) AS parents
-            FROM `:db`.host h
-            LEFT JOIN `:db`.extended_host_information ext
-                ON h.host_id = ext.host_host_id
-            LEFT JOIN `:db`.view_img icon
-                ON icon.img_id = ext.ehi_icon_image
-            LEFT JOIN `centreon`.view_img_dir_relation iconR
-                ON iconR.img_img_id = icon.img_id
-            LEFT JOIN `centreon`.view_img_dir iconD
-                ON iconD.dir_id = iconR.dir_dir_parent_id
-            LEFT JOIN `:db`.view_img smi
-                ON smi.img_id = ext.ehi_statusmap_image
-            LEFT JOIN centreon.host_template_relation htr
-                ON htr.host_host_id = h.host_id
-            LEFT JOIN centreon.options AS opt
-                ON opt.key = \'nagios_path_img\''
-        );
-        // Search
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        $request .= !is_null($searchRequest)
-            ? $searchRequest . ' AND host_register = \'0\' GROUP BY h.host_id'
-            : ' WHERE host_register = \'0\' GROUP BY h.host_id';
+        try {
+            $this->sqlRequestTranslator->setConcordanceArray(
+                [
+                    'id' => 'h.host_id',
+                    'name' => 'h.host_name',
+                    'alias' => 'h.host_alias'
+                ]
+            );
+            $request = $this->translateDbName(
+                'SELECT SQL_CALC_FOUND_ROWS h.*, ext.*, icon.img_id AS icon_id, icon.img_name AS icon_name, 
+                    CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
+                    icon.img_comment AS icon_comment, smi.img_id AS smi_id, smi.img_name AS smi_name, 
+                    smi.img_path AS smi_path, smi.img_comment AS smi_comment,
+                    GROUP_CONCAT(DISTINCT htr.host_tpl_id) AS parents
+                FROM `:db`.host h
+                LEFT JOIN `:db`.extended_host_information ext
+                    ON h.host_id = ext.host_host_id
+                LEFT JOIN `:db`.view_img icon
+                    ON icon.img_id = ext.ehi_icon_image
+                LEFT JOIN `centreon`.view_img_dir_relation iconR
+                    ON iconR.img_img_id = icon.img_id
+                LEFT JOIN `centreon`.view_img_dir iconD
+                    ON iconD.dir_id = iconR.dir_dir_parent_id
+                LEFT JOIN `:db`.view_img smi
+                    ON smi.img_id = ext.ehi_statusmap_image
+                LEFT JOIN centreon.host_template_relation htr
+                    ON htr.host_host_id = h.host_id
+                LEFT JOIN centreon.options AS opt
+                    ON opt.key = \'nagios_path_img\''
+            );
+            // Search
+            $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+            $request .= !is_null($searchRequest)
+                ? $searchRequest . ' AND h.host_register = \'0\' GROUP BY h.host_id'
+                : ' WHERE h.host_register = \'0\' GROUP BY h.host_id';
 
-        // Sort
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
-        $request .= !is_null($sortRequest)
-            ? $sortRequest
-            : ' ORDER BY h.host_id ASC';
+            // Sort
+            $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+            $request .= !is_null($sortRequest)
+                ? $sortRequest
+                : ' ORDER BY h.host_id ASC';
 
-        // Pagination
-        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
-        $statement = $this->db->query($request);
-
-        $result = $this->db->query('SELECT FOUND_ROWS()');
-        if ($result !== false && ($total = $result->fetchColumn()) !== false) {
-            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
-        }
-
-        $hostTemplates = [];
-        if ($statement !== false) {
-            while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-                $hostTemplates[] = HostTemplateFactoryRdb::create($result);
+            // Pagination
+            $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+            $statement = $this->db->prepare($request);
+            foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+                $type = key($data);
+                $value = $data[$type];
+                $statement->bindValue($key, $value, $type);
             }
+            $statement->execute();
+
+            $result = $this->db->query('SELECT FOUND_ROWS()');
+            if ($result !== false && ($total = $result->fetchColumn()) !== false) {
+                $this->sqlRequestTranslator->getRequestParameters()->setTotal((int)$total);
+            }
+
+            $hostTemplates = [];
+            if ($statement !== false) {
+                while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                    $hostTemplates[] = HostTemplateFactoryRdb::create($result);
+                }
+            }
+            return $hostTemplates;
+        } catch (RequestParametersTranslatorException $ex) {
+            throw new RepositoryException($ex->getMessage(), $ex->getCode(), $ex);
+        } catch (\Throwable $ex) {
+            throw $ex;
         }
-        return $hostTemplates;
     }
 }
