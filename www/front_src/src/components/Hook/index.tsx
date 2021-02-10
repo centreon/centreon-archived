@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { equals } from 'ramda';
 
-import { PageSkeleton } from '@centreon/ui';
-
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
 
@@ -36,11 +34,7 @@ const LoadableHooks = ({
             dynamicImport(basename, parameters),
           );
 
-          return (
-            <React.Suspense key={path} fallback={<PageSkeleton />}>
-              <HookComponent centreonAxios={centreonAxios} {...rest} />
-            </React.Suspense>
-          );
+          return <HookComponent centreonAxios={centreonAxios} {...rest} />;
         })}
     </>
   );
