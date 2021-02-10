@@ -84,7 +84,7 @@ class Information
      * @param mixed $value
      * @throws \Assert\AssertionFailedException
      * @return self
-     */ 
+     */
     public function setValue($value): self
     {
         if ($value !== null && is_string($value)) {
