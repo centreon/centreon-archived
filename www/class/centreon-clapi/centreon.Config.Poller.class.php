@@ -553,8 +553,8 @@ class CentreonConfigPoller
              * Get Parent Remote Servers of the Poller
              */
             $statementRemotes = $pearDB->prepare(
-                'SELECT ns.id FROM nagios_server
-                AS ns JOIN nagios_server AS ns2 ON ns.id = ns2.remote_id
+                'SELECT ns.id FROM nagios_server AS ns
+                JOIN nagios_server AS ns2 ON ns.id = ns2.remote_id
                 WHERE ns2.id = :pollerId
                 UNION
                 SELECT ns.id FROM nagios_server AS ns
