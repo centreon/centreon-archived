@@ -553,25 +553,13 @@ class CentreonConfigPoller
              * Get Parent Remote Servers of the Poller
              */
             $statementRemotes = $pearDB->prepare(
-                'SELECT ns.id
-                FROM nagios_server AS ns
-                JOIN platform_topology AS pt ON (ns.id = pt.server_id)
-                WHERE ns.id = :pollerId
-                AND pt.type = "remote"
-                UNION
-                SELECT ns1.id
-                FROM nagios_server AS ns1
-                JOIN platform_topology AS pt ON (ns1.id = pt.server_id)
-                JOIN nagios_server AS ns2 ON ns1.id = ns2.remote_id
+                'SELECT ns.id FROM nagios_server
+                AS ns JOIN nagios_server AS ns2 ON ns.id = ns2.remote_id
                 WHERE ns2.id = :pollerId
-                AND pt.type = "remote"
                 UNION
-                SELECT ns1.id
-                FROM nagios_server AS ns1
-                JOIN platform_topology AS pt ON (ns1.id = pt.server_id)
-                JOIN rs_poller_relation AS rspr ON rspr.remote_server_id = ns1.id
-                WHERE rspr.poller_server_id = :pollerId
-                AND pt.type = "remote"'
+                SELECT ns.id FROM nagios_server AS ns
+                JOIN rs_poller_relation AS rspr ON rspr.remote_server_id = ns.id
+                WHERE rspr.poller_server_id = :pollerId'
             );
             $statementRemotes->bindValue(':pollerId', $pollerId, \PDO::PARAM_INT);
             $statementRemotes->execute();
