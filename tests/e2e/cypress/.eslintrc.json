@@ -1,11 +1,17 @@
 {
   "env": {
-    "es2020": true,  // <- activate “es2020” globals
-    "browser": true,
+    "es2020": true, // <- activate “es2020” globals
     "node": true,
+    "commonjs": true,
     "mocha": true
   },
-  "extends": [
-    "plugin:cypress/recommended"
-  ]
+  "extends": ["eslint:recommended", "plugin:cypress/recommended"],
+  "rules": {
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "single"],
+    "semi": ["error", "always"]
+  },
+  "parserOptions": {
+    "ecmaVersion": 2015
+  }
 }

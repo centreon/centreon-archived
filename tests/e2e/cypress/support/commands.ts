@@ -1,24 +1,17 @@
-// declare namespace Cypress {
-//   interface Chainable {
-//     visitCentreon(relativeUrl: string): void;
-//     dockerStart(): Promise<any>;
-//     loginForm(): void;
-//     logout(): void;
-//   }
-// }
+/* eslint-disable @typescript-eslint/no-namespace */
+declare namespace Cypress {
+  interface Chainable {
+    visitCentreon(url: string): void;
+    dockerStart(): boolean;
+    loginForm(): void;
+    logout(): void;
+  }
+}
 
 Cypress.Commands.add('visitCentreon', (url = '') => {
-  cy.visit(`${Cypress.env('DOCKER_URL')}${url}`, {
+  cy.visit(`${Cypress.config().baseUrl}${url}`, {
     failOnStatusCode: false,
   });
-});
-
-Cypress.Commands.add('dockerStart', () => {
-  return cy
-    .exec(`npx wait-on ${Cypress.env('DOCKER_URL')}`)
-    .then(() =>
-      cy.log(`Docker Centreon started on : ${Cypress.env('DOCKER_URL')}`),
-    );
 });
 
 Cypress.Commands.add('loginForm', () => {
@@ -32,15 +25,4 @@ Cypress.Commands.add('loginForm', () => {
     });
 
   return cy.get('form').submit();
-});
-
-Cypress.Commands.add('logout', () => {
-  cy.get('div[class^="wrap-right-user"] span[class^="iconmoon"]')
-    .should('be.visible')
-    .click();
-  cy.get('div[class^="button-wrap"] button[class*="logout"]')
-    .should('be.visible')
-    .click();
-
-  cy.get('input[name="useralias"]').should('be.visible');
 });

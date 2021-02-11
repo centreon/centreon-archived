@@ -3,24 +3,28 @@
   "version": "21.04.0",
   "description": "centreon web package",
   "scripts": {
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cypress:run:chrome": "cypress run --headless --browser chrome",
-    "cypress:env:start": "./cypress/start-env.sh",
-    "cypress:env:stop": "./cypress/stop-env.sh",
-    "cypress:build:docker": "node ./cypress/build-docker-compose.js"
+    "cypress:up": "docker-compose up --force-recreate --abort-on-container-exit --exit-code-from cypress",
+    "cypress:up:dev": "docker-compose up --force-recreate",
+    "cypress:local": "npx cypress run --config-file cypress.dev.json",
+    "cypress:local:chrome": "npx cypress run --config-file cypress.dev.json -b chrome",
+    "cypress:local:open": "npx cypress open --config-file cypress.dev.json"
   },
   "devDependencies": {
-    "@types/cypress-cucumber-preprocessor": "^3.0.0",
-    "@types/node": "^14.14.20",
-    "cypress": "^6.2.1",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@cypress/webpack-preprocessor": "^5.5.0",
+    "@types/cypress": "^1.1.3",
+    "@types/cypress-cucumber-preprocessor": "^4.0.0",
+    "@types/node": "^14.14.22",
+    "@centreon/frontend-core": "github:centreon/frontend-core",
+    "babel-loader": "^8.2.2",
+    "cypress": "^6.4.0",
     "cypress-cucumber-preprocessor": "^4.0.0",
-    "cypress-localstorage-commands": "^1.3.1",
-    "cypress-webpack-preprocessor-v5": "^5.0.0-alpha.1",
+    "cypress-localstorage-commands": "^1.4.0",
     "eslint-plugin-cypress": "^2.11.2",
     "ts-loader": "^8.0.14",
     "typescript": "^4.1.3",
-    "webpack": "^5.11.0"
+    "webpack": "^4.46.0"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true

@@ -1,16 +1,7 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "../node_modules/@centreon/frontend-core/tsconfig/index",
   "compilerOptions": {
-    "target": "ES5",
-    "strict": true,
-    "lib": [
-      "ES5",
-      "DOM"
-    ],
-    "types": [
-      "cypress",
-      "node"
-    ],
+    "baseUrl": "..",
     "esModuleInterop": true
   },
   "include": [

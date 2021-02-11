@@ -1,15 +1,11 @@
 version: "3.2"
 services:
   centreon-web:
-    image: registry.centreon.com/mon-web-21.04:centos7
-    container_name: centreon-web
+    image: "registry.centreon.com/mon-web-21.04:centos7"
     ports:
-      - 3400:80
+      - 80
   cypress:
-    image: cypress/included:6.2.1
-    container_name: cypress
+    image: cypress/included:6.3.0
     volumes:
       - .:/e2e
     working_dir: /e2e
-    links:
-      - "centreon-web"
