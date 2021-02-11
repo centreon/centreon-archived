@@ -15,7 +15,6 @@ import {
   labelEnableAutorefresh,
 } from '../../translatedLabels';
 import { ResourceContext, useResourceContext } from '../../Context';
-import memoizeComponent from '../../memoizedComponent';
 import useLoadResources from '../../Listing/useLoadResources';
 
 interface AutorefreshProps {
