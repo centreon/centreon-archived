@@ -13,7 +13,6 @@ import { dynamicImport } from '../../helpers/dynamicImport';
 import NotAllowedPage from '../../route-components/notAllowedPage';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
-import PageLoader from '../PageLoader/index';
 
 const PageContainer = styled('div')(({ theme }) => ({
   overflow: 'auto',
@@ -69,7 +68,7 @@ interface Props {
 const ReactRouter = React.memo<Props>(
   ({ allowedPages, history, pages, externalPagesFetched }: Props) => {
     if (isEmpty(allowedPages)) {
-      return <PageLoader />;
+      return <PageSkeleton />;
     }
     return (
       <React.Suspense fallback={<PageSkeleton />}>
