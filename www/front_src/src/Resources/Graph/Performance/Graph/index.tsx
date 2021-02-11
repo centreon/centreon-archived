@@ -51,6 +51,7 @@ import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
+import { TabBounds, TabContext } from '../../../Details';
 
 import MetricsTooltip from './MetricsTooltip';
 import AddCommentForm from './AddCommentForm';
@@ -189,6 +190,8 @@ const Graph = ({
     },
   );
 
+  const context = React.useContext<TabBounds>(TabContext);
+
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
 
@@ -316,7 +319,12 @@ const Graph = ({
   );
 
   React.useEffect(() => {
-    if (isMouseOver) {
+    const { top, bottom } = context;
+
+    const isWithinBounds =
+      containerBounds.top > top && containerBounds.bottom > bottom;
+
+    if (isMouseOver || !isWithinBounds) {
       return;
     }
 
