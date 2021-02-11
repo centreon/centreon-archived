@@ -120,7 +120,7 @@ jest.mock('../icons/Downtime');
 const ActionsWithLoading = (): JSX.Element => {
   useLoadResources();
 
-  return <Actions />;
+  return <Actions onRefresh={onRefresh} />;
 };
 
 let context: ResourceContext;

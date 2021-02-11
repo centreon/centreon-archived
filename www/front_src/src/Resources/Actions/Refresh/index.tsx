@@ -15,7 +15,6 @@ import {
   labelEnableAutorefresh,
 } from '../../translatedLabels';
 import { ResourceContext, useResourceContext } from '../../Context';
-import useLoadResources from '../../Listing/useLoadResources';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;
@@ -44,7 +43,7 @@ const AutorefreshButton = ({
   );
 };
 
-interface Props {
+export interface ActionsProps {
   onRefresh: () => void;
 }
 
@@ -61,7 +60,7 @@ const RefreshActionsContent = ({
   enabledAutorefresh,
   setEnabledAutorefresh,
   sending,
-}: Props & ResourceContextProps): JSX.Element => {
+}: ActionsProps & ResourceContextProps): JSX.Element => {
   const { t } = useTranslation();
 
   const toggleAutorefresh = (): void => {
@@ -91,7 +90,7 @@ const RefreshActionsContent = ({
   );
 };
 
-const RefreshActions = (): JSX.Element => {
+const RefreshActions = ({ onRefresh }: ActionsProps): JSX.Element => {
   const {
     enabledAutorefresh,
     setEnabledAutorefresh,
@@ -99,12 +98,10 @@ const RefreshActions = (): JSX.Element => {
     selectedResourceId,
   } = useResourceContext();
 
-  const { initAutorefreshAndLoad } = useLoadResources();
-
   return useMemoComponent({
     Component: (
       <RefreshActionsContent
-        onRefresh={initAutorefreshAndLoad}
+        onRefresh={onRefresh}
         enabledAutorefresh={enabledAutorefresh}
         setEnabledAutorefresh={setEnabledAutorefresh}
         sending={sending}

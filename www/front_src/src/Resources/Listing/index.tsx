@@ -19,6 +19,7 @@ import Actions from '../Actions';
 import { Resource } from '../models';
 
 import { getColumns } from './columns';
+import useLoadResources from './useLoadResources';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
@@ -46,6 +47,8 @@ const ResourceListing = (): JSX.Element => {
     setResourcesToCheck,
     sending,
   } = useResourceContext();
+
+  const { initAutorefreshAndLoad } = useLoadResources();
 
   const changeSort = ({ order, orderBy }): void => {
     setSortf(orderBy);
@@ -101,7 +104,7 @@ const ResourceListing = (): JSX.Element => {
   return (
     <Listing
       checkable
-      Actions={<Actions />}
+      Actions={<Actions onRefresh={initAutorefreshAndLoad} />}
       loading={loading}
       columnConfiguration={columns}
       tableData={listing?.result}
