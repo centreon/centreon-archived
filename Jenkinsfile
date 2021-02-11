@@ -319,7 +319,8 @@ try {
   stage('API integration tests') {
     if (hasBackendChanges) {
       def parallelSteps = [:]
-      for (feature in apiFeatureFiles) {
+      for (x in apiFeatureFiles) {
+        def feature = x
         parallelSteps[feature] = {
           node {
             checkoutCentreonBuild(buildBranch)
@@ -346,7 +347,8 @@ try {
   stage('Acceptance tests') {
     if (hasBackendChanges || hasFrontendChanges) {
       def parallelSteps = [:]
-      for (feature in featureFiles) {
+      for (x in featureFiles) {
+        def feature = x
         parallelSteps[feature] = {
           node {
             checkoutCentreonBuild(buildBranch)
