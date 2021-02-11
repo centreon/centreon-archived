@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { equals, pick } from 'ramda';
+import { equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
 
-import { Listing } from '@centreon/ui';
+import { MemoizedListing as Listing } from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
@@ -14,66 +14,38 @@ import {
   labelOf,
   labelNoResultsFound,
 } from '../translatedLabels';
-import { ResourceContext, useResourceContext } from '../Context';
+import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource } from '../models';
-import memoizeComponent from '../memoizedComponent';
 
-import useLoadResources from './useLoadResources';
 import { getColumns } from './columns';
 
-interface Props
-  extends Pick<
-    ResourceContext,
-    | 'listing'
-    | 'sortf'
-    | 'setSortf'
-    | 'sorto'
-    | 'setSorto'
-    | 'setLimit'
-    | 'page'
-    | 'setPage'
-    | 'setOpenDetailsTabId'
-    | 'setSelectedResourceId'
-    | 'setSelectedResourceParentId'
-    | 'setSelectedResourceType'
-    | 'setSelectedResourceParentType'
-    | 'selectedResourceId'
-    | 'setSelectedResources'
-    | 'selectedResources'
-    | 'setResourcesToAcknowledge'
-    | 'setResourcesToSetDowntime'
-    | 'setResourcesToCheck'
-    | 'sending'
-  > {
-  initAutorefreshAndLoad: () => void;
-}
-
-const ResourceListingContent = ({
-  listing,
-  sortf,
-  setSortf,
-  sorto,
-  setSorto,
-  setLimit,
-  page,
-  setPage,
-  setOpenDetailsTabId,
-  setSelectedResourceId,
-  setSelectedResourceParentId,
-  setSelectedResourceType,
-  setSelectedResourceParentType,
-  selectedResourceId,
-  setSelectedResources,
-  selectedResources,
-  setResourcesToAcknowledge,
-  setResourcesToSetDowntime,
-  setResourcesToCheck,
-  sending,
-  initAutorefreshAndLoad,
-}: Props): JSX.Element => {
+const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
   const { t } = useTranslation();
+
+  const {
+    listing,
+    sortf,
+    setSortf,
+    sorto,
+    setSorto,
+    setLimit,
+    page,
+    setPage,
+    setOpenDetailsTabId,
+    setSelectedResourceId,
+    setSelectedResourceParentId,
+    setSelectedResourceType,
+    setSelectedResourceParentType,
+    selectedResourceId,
+    setSelectedResources,
+    selectedResources,
+    setResourcesToAcknowledge,
+    setResourcesToSetDowntime,
+    setResourcesToCheck,
+    sending,
+  } = useResourceContext();
 
   const changeSort = ({ order, orderBy }): void => {
     setSortf(orderBy);
@@ -129,7 +101,7 @@ const ResourceListingContent = ({
   return (
     <Listing
       checkable
-      Actions={<Actions onRefresh={initAutorefreshAndLoad} />}
+      Actions={<Actions />}
       loading={loading}
       columnConfiguration={columns}
       tableData={listing?.result}
@@ -152,53 +124,15 @@ const ResourceListingContent = ({
       onRowClick={selectResource}
       innerScrollDisabled={false}
       emptyDataMessage={t(labelNoResultsFound)}
-    />
-  );
-};
-
-const memoProps = [
-  'listing',
-  'sortf',
-  'sorto',
-  'page',
-  'selectedResources',
-  'selectResourceId',
-  'sending',
-];
-
-const MemoizedResourceListingContent = memoizeComponent<Props>({
-  memoProps,
-  Component: ResourceListingContent,
-});
-
-const functionProps = [
-  'setSortf',
-  'setSorto',
-  'setLimit',
-  'setPage',
-  'setOpenDetailsTabId',
-  'setSelectedResourceId',
-  'setSelectedResourceParentId',
-  'setSelectedResourceType',
-  'setSelectedResourceParentType',
-  'setSelectedResources',
-  'setResourcesToAcknowledge',
-  'setResourcesToSetDowntime',
-  'setResourcesToCheck',
-];
-
-const ResourceListing = (): JSX.Element => {
-  const resourceProps = pick(
-    [...memoProps, ...functionProps],
-    useResourceContext(),
-  );
-
-  const { initAutorefreshAndLoad } = useLoadResources();
-
-  return (
-    <MemoizedResourceListingContent
-      {...resourceProps}
-      initAutorefreshAndLoad={initAutorefreshAndLoad}
+      memoProps={[
+        listing,
+        sortf,
+        sorto,
+        page,
+        selectedResources,
+        selectedResourceId,
+        sending,
+      ]}
     />
   );
 };

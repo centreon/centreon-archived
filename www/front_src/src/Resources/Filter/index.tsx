@@ -7,7 +7,7 @@ import { ParentSize } from '@visx/visx';
 
 import { Button, makeStyles } from '@material-ui/core';
 
-import { Filters, SelectEntry } from '@centreon/ui';
+import { SelectEntry, MemoizedFilters as Filters } from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -24,7 +24,6 @@ import {
   labelMyFilters,
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
-import memoizeComponent from '../memoizedComponent';
 
 import SearchHelpTooltip from './SearchHelpTooltip';
 import SaveFilter from './Save';
@@ -34,7 +33,6 @@ import {
 } from './api/endpoint';
 import useFilterModels from './useFilterModels';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
-import { FilterState } from './useFilter';
 import Search from './Fields/Search';
 import SelectFilter from './Fields/SelectFilter';
 import FilterAutocomplete from './Fields/FilterAutocomplete';
@@ -65,46 +63,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = Pick<
-  FilterState,
-  | 'filter'
-  | 'setFilter'
-  | 'setCurrentSearch'
-  | 'nextSearch'
-  | 'setNextSearch'
-  | 'resourceTypes'
-  | 'setResourceTypes'
-  | 'states'
-  | 'setStates'
-  | 'statuses'
-  | 'setStatuses'
-  | 'hostGroups'
-  | 'setHostGroups'
-  | 'serviceGroups'
-  | 'setServiceGroups'
-  | 'customFilters'
-  | 'customFiltersLoading'
->;
-
-const FilterForm = ({
-  filter,
-  setFilter,
-  setCurrentSearch,
-  nextSearch,
-  setNextSearch,
-  resourceTypes,
-  setResourceTypes,
-  states,
-  setStates,
-  statuses,
-  setStatuses,
-  hostGroups,
-  setHostGroups,
-  serviceGroups,
-  setServiceGroups,
-  customFilters,
-  customFiltersLoading,
-}: Props): JSX.Element => {
+const Filter = (): JSX.Element => {
+  const [expanded, setExpanded] = React.useState(false);
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -120,6 +80,38 @@ const FilterForm = ({
     isCustom,
     newFilter,
   } = useFilterModels();
+
+  const {
+    filter,
+    setFilter,
+    nextSearch,
+    resourceTypes,
+    states,
+    statuses,
+    hostGroups,
+    serviceGroups,
+    customFilters,
+    customFiltersLoading,
+    setCurrentSearch,
+    setNextSearch,
+    setResourceTypes,
+    setStates,
+    setStatuses,
+    setHostGroups,
+    setServiceGroups,
+  } = useResourceContext();
+
+  const memoProps = [
+    filter,
+    nextSearch,
+    resourceTypes,
+    states,
+    statuses,
+    hostGroups,
+    serviceGroups,
+    customFilters,
+    customFiltersLoading,
+  ];
 
   const getConnectedAutocompleteEndpoint = (buildEndpoint) => ({
     search,
@@ -212,6 +204,8 @@ const FilterForm = ({
     setServiceGroups(updatedServiceGroups);
   };
 
+  const expandFilters = () => setExpanded((expand) => !expand);
+
   const customFilterOptions = isEmpty(customFilters)
     ? []
     : [
@@ -235,7 +229,8 @@ const FilterForm = ({
 
   return (
     <Filters
-      expandable
+      expanded={expanded}
+      onExpand={expandFilters}
       expandLabel={labelShowCriteriasFilters}
       filters={
         <div className={classes.grid}>
@@ -332,45 +327,9 @@ const FilterForm = ({
           }}
         </ParentSize>
       }
+      memoProps={memoProps}
     />
   );
-};
-
-const memoProps = [
-  'filter',
-  'setFilter',
-  'nextSearch',
-  'resourceTypes',
-  'states',
-  'statuses',
-  'hostGroups',
-  'serviceGroups',
-  'customFilters',
-  'customFiltersLoading',
-];
-
-const otherProps = [
-  'setCurrentSearch',
-  'setNextSearch',
-  'setResourceTypes',
-  'setStates',
-  'setStatuses',
-  'setHostGroups',
-  'setServiceGroups',
-];
-
-const MemoizedFilterForm = memoizeComponent<Props>({
-  memoProps,
-  Component: FilterForm,
-});
-
-const Filter = (): JSX.Element => {
-  const contextProps = pick(
-    [...memoProps, ...otherProps],
-    useResourceContext(),
-  );
-
-  return <MemoizedFilterForm {...contextProps} />;
 };
 
 export default Filter;

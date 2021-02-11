@@ -5,11 +5,7 @@ import { useTheme, Grid } from '@material-ui/core';
 import ResourceActions from './Resource';
 import GlobalActions from './Refresh';
 
-interface Props {
-  onRefresh: () => void;
-}
-
-const Actions = ({ onRefresh }: Props): JSX.Element => {
+const Actions = (): JSX.Element => {
   const theme = useTheme();
 
   return (
@@ -18,7 +14,7 @@ const Actions = ({ onRefresh }: Props): JSX.Element => {
         <ResourceActions />
       </Grid>
       <Grid item style={{ paddingLeft: theme.spacing(3) }}>
-        <GlobalActions onRefresh={onRefresh} />
+        <GlobalActions />
       </Grid>
     </Grid>
   );

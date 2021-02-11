@@ -12,12 +12,11 @@ import {
 } from '@material-ui/core';
 import MoveIcon from '@material-ui/icons/UnfoldMore';
 
-import { SectionPanel, useRequest } from '@centreon/ui';
+import { MemoizedSectionPanel as SectionPanel, useRequest } from '@centreon/ui';
 
-import { ResourceContext, useResourceContext } from '../../Context';
+import { useResourceContext } from '../../Context';
 import { labelEditFilters } from '../../translatedLabels';
 import { patchFilter } from '../api';
-import memoizeComponent from '../../memoizedComponent';
 
 import EditFilterCard from './EditFilterCard';
 
@@ -52,18 +51,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = Pick<
-  ResourceContext,
-  'customFilters' | 'setEditPanelOpen' | 'setCustomFilters'
->;
-
-const EditFiltersPanelContent = ({
-  customFilters,
-  setEditPanelOpen,
-  setCustomFilters,
-}: Props): JSX.Element => {
+const EditFiltersPanel = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const {
+    customFilters,
+    setEditPanelOpen,
+    setCustomFilters,
+  } = useResourceContext();
 
   const { sendRequest, sending } = useRequest({
     request: patchFilter,
@@ -152,27 +148,7 @@ const EditFiltersPanelContent = ({
       sections={sections}
       header={header}
       onClose={closeEditPanel}
-    />
-  );
-};
-
-const MemoizedEditFiltersPanelContent = memoizeComponent<Props>({
-  memoProps: ['customFilters'],
-  Component: EditFiltersPanelContent,
-});
-
-const EditFiltersPanel = (): JSX.Element => {
-  const {
-    setEditPanelOpen,
-    customFilters,
-    setCustomFilters,
-  } = useResourceContext();
-
-  return (
-    <MemoizedEditFiltersPanelContent
-      customFilters={customFilters}
-      setEditPanelOpen={setEditPanelOpen}
-      setCustomFilters={setCustomFilters}
+      memoProps={[customFilters]}
     />
   );
 };

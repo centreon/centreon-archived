@@ -5,11 +5,10 @@ import { useTranslation } from 'react-i18next';
 
 import { Tab, useTheme, fade } from '@material-ui/core';
 
-import { Panel } from '@centreon/ui';
+import { MemoizedPanel as Panel } from '@centreon/ui';
 
-import { ResourceContext, useResourceContext } from '../Context';
+import { useResourceContext } from '../Context';
 import { rowColorConditions } from '../colors';
-import memoizeComponent from '../memoizedComponent';
 
 import Header from './Header';
 import { ResourceDetails } from './models';
@@ -20,26 +19,18 @@ export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-type Props = Pick<
-  ResourceContext,
-  | 'details'
-  | 'openDetailsTabId'
-  | 'clearSelectedResource'
-  | 'panelWidth'
-  | 'setOpenDetailsTabId'
-  | 'setPanelWidth'
->;
-
-const DetailsContent = ({
-  details,
-  openDetailsTabId,
-  clearSelectedResource,
-  panelWidth,
-  setOpenDetailsTabId,
-  setPanelWidth,
-}: Props): JSX.Element => {
+const Details = (): JSX.Element => {
   const { t } = useTranslation();
   const theme = useTheme();
+
+  const {
+    openDetailsTabId,
+    details,
+    panelWidth,
+    setOpenDetailsTabId,
+    clearSelectedResource,
+    setPanelWidth,
+  } = useResourceContext();
 
   React.useEffect(() => {
     if (isNil(details)) {
@@ -109,35 +100,7 @@ const DetailsContent = ({
       selectedTab={<TabById id={openDetailsTabId} details={details} />}
       width={panelWidth}
       onResize={setPanelWidth}
-    />
-  );
-};
-
-const memoProps = ['openDetailsTabId', 'details', 'panelWidth'];
-
-const MemoizedDetailsContent = memoizeComponent<Props>({
-  memoProps,
-  Component: DetailsContent,
-});
-
-const Details = (): JSX.Element => {
-  const {
-    openDetailsTabId,
-    details,
-    panelWidth,
-    setOpenDetailsTabId,
-    clearSelectedResource,
-    setPanelWidth,
-  } = useResourceContext();
-
-  return (
-    <MemoizedDetailsContent
-      openDetailsTabId={openDetailsTabId}
-      details={details}
-      panelWidth={panelWidth}
-      setOpenDetailsTabId={setOpenDetailsTabId}
-      clearSelectedResource={clearSelectedResource}
-      setPanelWidth={setPanelWidth}
+      memoProps={[openDetailsTabId, details, panelWidth]}
     />
   );
 };

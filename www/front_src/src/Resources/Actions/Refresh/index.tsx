@@ -7,7 +7,7 @@ import IconRefresh from '@material-ui/icons/Refresh';
 import IconPlay from '@material-ui/icons/PlayArrow';
 import IconPause from '@material-ui/icons/Pause';
 
-import { IconButton } from '@centreon/ui';
+import { IconButton, useMemoComponent } from '@centreon/ui';
 
 import {
   labelRefresh,
@@ -16,6 +16,7 @@ import {
 } from '../../translatedLabels';
 import { ResourceContext, useResourceContext } from '../../Context';
 import memoizeComponent from '../../memoizedComponent';
+import useLoadResources from '../../Listing/useLoadResources';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;
@@ -50,7 +51,10 @@ interface Props {
 
 type ResourceContextProps = Pick<
   ResourceContext,
-  'enabledAutorefresh' | 'setEnabledAutorefresh' | 'sending'
+  | 'enabledAutorefresh'
+  | 'setEnabledAutorefresh'
+  | 'sending'
+  | 'selectedResourceId'
 >;
 
 const RefreshActionsContent = ({
@@ -88,28 +92,27 @@ const RefreshActionsContent = ({
   );
 };
 
-const MemoizedRefreshActionsContent = memoizeComponent<
-  Props & ResourceContextProps
->({
-  memoProps: ['sending', 'enabledAutorefresh'],
-  Component: RefreshActionsContent,
-});
-
-const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
+const RefreshActions = (): JSX.Element => {
   const {
     enabledAutorefresh,
     setEnabledAutorefresh,
     sending,
+    selectedResourceId,
   } = useResourceContext();
 
-  return (
-    <MemoizedRefreshActionsContent
-      onRefresh={onRefresh}
-      enabledAutorefresh={enabledAutorefresh}
-      setEnabledAutorefresh={setEnabledAutorefresh}
-      sending={sending}
-    />
-  );
+  const { initAutorefreshAndLoad } = useLoadResources();
+
+  return useMemoComponent({
+    Component: (
+      <RefreshActionsContent
+        onRefresh={initAutorefreshAndLoad}
+        enabledAutorefresh={enabledAutorefresh}
+        setEnabledAutorefresh={setEnabledAutorefresh}
+        sending={sending}
+      />
+    ),
+    memoProps: [sending, enabledAutorefresh, selectedResourceId],
+  });
 };
 
 export default RefreshActions;
