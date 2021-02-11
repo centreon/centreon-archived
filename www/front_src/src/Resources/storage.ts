@@ -1,5 +1,7 @@
 import { isNil } from 'ramda';
 
+const baseKey = 'centreon-resource-status-21.04-';
+
 interface StoredItemParameters<TItem> {
   cachedItem: TItem;
   defaultValue: TItem;
@@ -39,4 +41,4 @@ const store = <TItem>({ value, key }: StoreParameters<TItem>): void => {
   localStorage.setItem(key, JSON.stringify(value));
 };
 
-export { getStoredOrDefault, store };
+export { getStoredOrDefault, store, baseKey };

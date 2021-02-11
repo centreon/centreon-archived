@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, or, and, not, isEmpty, omit } from 'ramda';
+import { equals, or, and, not, isEmpty, omit, find, propEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -21,11 +21,9 @@ import {
   labelFilterSaved,
   labelEditFilters,
 } from '../../translatedLabels';
-import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
 import { updateFilter as updateFilterRequest } from '../api';
-import useFilterModels from '../useFilterModels';
-import useAdapters from '../api/adapters';
+import { Filter } from '../models';
 
 import CreateFilterDialog from './CreateFilterDialog';
 
@@ -42,8 +40,6 @@ const SaveFilterMenu = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
-  const { isCustom } = useFilterModels();
-  const { toRawFilter, toFilter } = useAdapters();
 
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [createFilterDialogOpen, setCreateFilterDialogOpen] = React.useState(
@@ -63,11 +59,10 @@ const SaveFilterMenu = (): JSX.Element => {
     filter,
     updatedFilter,
     setFilter,
-    setHostGroups,
-    setServiceGroups,
     loadCustomFilters,
     customFilters,
     setEditPanelOpen,
+    filters,
   } = useResourceContext();
 
   const openSaveFilterMenu = (event: React.MouseEvent): void => {
@@ -92,10 +87,6 @@ const SaveFilterMenu = (): JSX.Element => {
 
     loadCustomFilters().then(() => {
       setFilter(newFilter);
-
-      // update criterias with deletable objects
-      setHostGroups(newFilter.criterias.hostGroups);
-      setServiceGroups(newFilter.criterias.serviceGroups);
     });
   };
 
@@ -105,13 +96,13 @@ const SaveFilterMenu = (): JSX.Element => {
       severity: Severity.success,
     });
 
-    loadFiltersAndUpdateCurrent(newFilter);
+    loadFiltersAndUpdateCurrent(omit(['order'], newFilter));
   };
 
   const updateFilter = (): void => {
     sendUpdateFilterRequest({
       id: updatedFilter.id,
-      rawFilter: omit(['id'], toRawFilter(updatedFilter)),
+      filter: omit(['id'], updatedFilter),
     }).then((savedFilter) => {
       closeSaveFilterMenu();
       showMessage({
@@ -119,7 +110,7 @@ const SaveFilterMenu = (): JSX.Element => {
         severity: Severity.success,
       });
 
-      loadFiltersAndUpdateCurrent(toFilter(savedFilter));
+      loadFiltersAndUpdateCurrent(omit(['order'], savedFilter));
     });
   };
 
@@ -129,11 +120,9 @@ const SaveFilterMenu = (): JSX.Element => {
   };
 
   const isFilterDirty = (): boolean => {
-    if (!isCustom(filter)) {
-      return false;
-    }
+    const retrievedFilter = find(propEq('id', filter.id), filters);
 
-    return !equals(filter, updatedFilter);
+    return !equals(retrievedFilter, updatedFilter);
   };
 
   const isNewFilter = filter.id === '';
