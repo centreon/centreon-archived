@@ -59,9 +59,6 @@
     "curl/curl": {
         "version": "1.9.3"
     },
-    "dealerdirect/phpcodesniffer-composer-installer": {
-        "version": "v0.7.1"
-    },
     "dflydev/fig-cookies": {
         "version": "v2.0.1"
     },
@@ -234,9 +231,6 @@
     },
     "phpcollection/phpcollection": {
         "version": "0.5.0"
-    },
-    "phpcompatibility/php-compatibility": {
-        "version": "9.3.5"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.1.0"
