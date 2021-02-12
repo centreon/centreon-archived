@@ -2109,40 +2109,6 @@ function str2db($string)
 }
 
 /**
- * Execute a command to the Centreon Broker socket
- *
- * @param string $command The command to execute
- * @param string $socket The socket file or tcp information
- * @return bool
- */
-function sendCommandBySocket($command, $socket)
-{
-    ob_start();
-    $stream = stream_socket_client($socket, $errno, $errstr, 10);
-    ob_end_clean();
-    if (false === $stream) {
-        throw new Exception("Error to connect to the socket.");
-    }
-    fwrite($stream, $command . "\n");
-    $rStream = array($stream);
-    $nbStream = stream_select($rStream, $wStream = null, $eStream = null, 5);
-    if (false === $nbStream || 0 === $nbStream) {
-        fclose($stream);
-        throw new Exception("Error to read the socket.");
-    }
-    $ret = explode(' ', fgets($stream), 3);
-    fclose($stream);
-    if ($ret[1] !== '0x1' && $ret[1] !== '0x0') {
-        throw new Exception("Error when execute command : " . $ret[2]);
-    }
-    $running = true;
-    if ($ret[1] === '0x0') {
-        $running = false;
-    }
-    return $running;
-}
-
-/**
  * Return the list of template
  *
  * @param int $svcId The service ID

@@ -34,69 +34,28 @@
  *
  */
 
-namespace Centreon\Tests\Resource;
+namespace Centreon\Tests\Resources\Traits;
 
-use PHPUnit\Framework\TestCase;
+use Centreon\Infrastructure\Webservice\WebserviceAutorizePublicInterface;
 
 /**
- * This class help to test list of callbacks or methods if they were executed
+ * Trait with extension methods to test the authorize method in REST webservices
  *
- * <example>
- * class MyTest extends TestCase
- * {
- *      public testMethod()
- *      {
- *          $checkpoint = (new CheckPoint)
- *              ->add('point1');
- *      }
- * }
- * </example>
+ * @author Centreon
+ * @version 1.0.0
+ * @package centreon
+ * @subpackage test
  */
-class CheckPoint
+trait WebServiceAuthorizePublicTrait
 {
 
     /**
-     * @var array
-     */
-    protected $points;
-
-    /**
-     * Add point
+     * Check is webservice implemented public authorization interface
      *
-     * @param string $name
      * @return void
      */
-    public function add($name): self
+    public function testAuthorize(): void
     {
-        $this->points[$name] = false;
-
-        return $this;
-    }
-
-    /**
-     * Mark point as executed
-     *
-     * @param $name
-     * @return void
-     */
-    public function mark($name): void
-    {
-        $this->points[$name] = true;
-    }
-
-    /**
-     * Check list of points
-     *
-     * @param \PHPUnit\Framework\TestCase $testCase
-     */
-    public function assert(TestCase $testCase): void
-    {
-        $expected = [];
-
-        foreach ($this->points as $key => $val) {
-            $expected[$key] = true;
-        }
-
-        $testCase->assertEquals($expected, $this->points);
+        $this->assertInstanceOf(WebserviceAutorizePublicInterface::class, $this->webservice);
     }
 }

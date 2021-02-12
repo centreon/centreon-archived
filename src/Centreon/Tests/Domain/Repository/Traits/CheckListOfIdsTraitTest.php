@@ -38,7 +38,7 @@ namespace Centreon\Tests\Domain\Repository\Traits;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
-use Centreon\Tests\Resource\Mock\RepositoryMock;
+use Centreon\Tests\Resources\Mock\RepositoryMock;
 use Centreon\Test\Mock\CentreonDBManagerService;
 use Centreon\Domain\Repository\Traits\CheckListOfIdsTrait;
 

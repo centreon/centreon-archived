@@ -24,7 +24,7 @@ namespace CentreonNotification\Tests;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use CentreonNotification\ServiceProvider;
-use Centreon\Tests\Resource\Traits\WebserviceTrait;
+use Centreon\Tests\Resources\Traits\WebserviceTrait;
 use CentreonNotification\Application\Webservice;
 
 /**
