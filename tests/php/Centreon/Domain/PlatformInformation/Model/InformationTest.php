@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Tests\Centreon\Domain\PlatformInformation\Model;
 
 use PHPUnit\Framework\TestCase;
-use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\PlatformInformation\Model\Information;
 
 class InformationTest extends TestCase
@@ -37,12 +36,7 @@ class InformationTest extends TestCase
         $key = str_repeat('.', Information::MAX_KEY_LENGTH + 1);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            AssertionException::maxLength(
-                $key,
-                strlen($key),
-                Information::MAX_KEY_LENGTH,
-                'Information::key'
-            )->getMessage()
+            sprintf(_("key length is too long, maximum %d character(s) required"), Information::MAX_KEY_LENGTH)
         );
         (new Information())->setKey($key);
     }
@@ -55,12 +49,7 @@ class InformationTest extends TestCase
         $key = str_repeat('.', Information::MIN_KEY_LENGTH - 1);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            AssertionException::minLength(
-                $key,
-                strlen($key),
-                Information::MIN_KEY_LENGTH,
-                'Information::key'
-            )->getMessage()
+            sprintf(_("key length is too short, minimum %d character(s) required"), Information::MIN_KEY_LENGTH)
         );
         (new Information())->setKey($key);
     }
@@ -73,12 +62,7 @@ class InformationTest extends TestCase
         $value = str_repeat('.', Information::MAX_VALUE_LENGTH + 1);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            AssertionException::maxLength(
-                $value,
-                strlen($value),
-                Information::MAX_VALUE_LENGTH,
-                'Information::value'
-            )->getMessage()
+            sprintf(_("value length is too long, maximum %d character(s) required"), Information::MAX_VALUE_LENGTH)
         );
         (new Information())->setValue($value);
     }
@@ -91,12 +75,7 @@ class InformationTest extends TestCase
         $value = str_repeat('.', Information::MIN_VALUE_LENGTH - 1);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            AssertionException::minLength(
-                $value,
-                strlen($value),
-                Information::MIN_VALUE_LENGTH,
-                'Information::value'
-            )->getMessage()
+            sprintf(_("value length is too short, minimum %d character(s) required"), Information::MIN_VALUE_LENGTH)
         );
         (new Information())->setValue($value);
     }

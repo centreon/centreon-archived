@@ -23,8 +23,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Model;
 
-use Centreon\Domain\Common\Assertion\Assertion;
-
 /**
  * Class designed to retrieve servers' specific information
  *
@@ -61,13 +59,21 @@ class Information
 
     /**
      * @param string $key
-     * @throws \Assert\AssertionFailedException
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function setKey(string $key): self
     {
-        Assertion::minLength($key, self::MIN_KEY_LENGTH, 'Information::key');
-        Assertion::maxLength($key, self::MAX_KEY_LENGTH, 'Information::key');
+        if (strlen($key) < self::MIN_KEY_LENGTH) {
+            throw new \InvalidArgumentException(
+                sprintf(_("key length is too short, minimum %d character(s) required"),self::MIN_KEY_LENGTH)
+            );
+        }
+        if (strlen($key) > self::MAX_KEY_LENGTH) {
+            throw new \InvalidArgumentException(
+                sprintf(_("key length is too long, maximum %d character(s) required"),self::MAX_KEY_LENGTH)
+            );
+        }
         $this->key = $key;
         return $this;
     }
@@ -82,14 +88,22 @@ class Information
 
     /**
      * @param mixed $value
-     * @throws \Assert\AssertionFailedException
+     * @throws \InvalidArgumentException
      * @return self
      */
     public function setValue($value): self
     {
         if ($value !== null && is_string($value)) {
-            Assertion::minLength($value, self::MIN_VALUE_LENGTH, 'Information::value');
-            Assertion::maxLength($value, self::MAX_VALUE_LENGTH, 'Information::value');
+            if (strlen($value) < self::MIN_VALUE_LENGTH) {
+                throw new \InvalidArgumentException(
+                    sprintf(_("value length is too short, minimum %d character(s) required"),self::MIN_VALUE_LENGTH)
+                );
+            }
+            if (strlen($value) > self::MAX_VALUE_LENGTH) {
+                throw new \InvalidArgumentException(
+                    sprintf(_("value length is too long, maximum %d character(s) required"),self::MAX_VALUE_LENGTH)
+                );
+            }
         }
         $this->value = $value;
         return $this;
