@@ -302,19 +302,25 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
     public function findServiceMacrosFromCommandLine(int $serviceId, string $command): array
     {
         $serviceMacros = [];
-        if (preg_match_all('/\$_SERVICE\S+\$/', $command, $matches)) {
+        if (preg_match_all('/(\$_SERVICE\S+?\$)/', $command, $matches)) {
             $matchedMacros = $matches[0];
-            if (count($matchedMacros > 0)) {
-                $linkedServiceMacros = $this->findOnDemandServiceMacros($serviceId, true);
-                foreach ($linkedServiceMacros as $linkedServiceMacro) {
-                    if (in_array($linkedServiceMacro->getName(), $matchedMacros)) {
-                        $serviceMacros[] = $linkedServiceMacro;
-                    }
+
+            foreach($matchedMacros as $matchedMacroName) {
+                $hostMacros[$matchedMacroName] = (new ServiceMacro())
+                    ->setName($matchedMacroName)
+                    ->setValue('');
+            }
+
+            $linkedServiceMacros = $this->findOnDemandServiceMacros($serviceId, true);
+            foreach ($linkedServiceMacros as $linkedServiceMacro) {
+                if (in_array($linkedServiceMacro->getName(), $matchedMacros)) {
+                    $serviceMacros[$linkedServiceMacro->getName()] = $linkedServiceMacro;
                 }
             }
+
         }
 
-        return $serviceMacros;
+        return array_values($serviceMacros);
     }
 
     /**

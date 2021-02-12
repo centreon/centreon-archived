@@ -237,19 +237,24 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     public function findHostMacrosFromCommandLine(int $hostId, string $command): array
     {
         $hostMacros = [];
-        if (preg_match_all('/\$_HOST\S+\$/', $command, $matches)) {
+        if (preg_match_all('/(\$_HOST\S+?\$)/', $command, $matches)) {
             $matchedMacros = $matches[0];
-            if (count($matchedMacros > 0)) {
-                $linkedHostMacros = $this->findOnDemandHostMacros($hostId, true);
-                foreach ($linkedHostMacros as $linkedHostMacro) {
-                    if (in_array($linkedHostMacro->getName(), $matchedMacros)) {
-                        $hostMacros[] = $linkedHostMacro;
-                    }
+
+            foreach($matchedMacros as $matchedMacroName) {
+                $hostMacros[$matchedMacroName] = (new HostMacro())
+                    ->setName($matchedMacroName)
+                    ->setValue('');
+            }
+
+            $linkedHostMacros = $this->findOnDemandHostMacros($hostId, true);
+            foreach ($linkedHostMacros as $linkedHostMacro) {
+                if (in_array($linkedHostMacro->getName(), $matchedMacros)) {
+                    $hostMacros[$linkedHostMacro->getName()] = $linkedHostMacro;
                 }
             }
         }
 
-        return $hostMacros;
+        return array_values($hostMacros);
     }
 
     /**

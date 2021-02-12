@@ -347,27 +347,25 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         }
 
         $configurationCommand = $this->hostConfiguration->findCommandLine($monitoringHost->getId());
+        if (empty($configurationCommand)) {
+            throw new MonitoringServiceException('Check command not found');
+        }
+
         $hostMacros = $this->hostConfiguration->findHostMacrosFromCommandLine(
             $monitoringHost->getId(),
             $configurationCommand
         );
 
-        $hasAtLeastOnePassword = false;
-        foreach ($hostMacros as $hostMacro) {
-            if ($hostMacro->isPassword()) {
-                $hasAtLeastOnePassword = true;
-                $hostMacro->setValue($replacementValue);
-            }
-        }
+        $builtCommand = $this->buildCommandLineFromConfiguration(
+            $configurationCommand,
+            $monitoringCommand,
+            $hostMacros,
+            $replacementValue
+        );
 
-        if (!$hasAtLeastOnePassword) {
-            return;
+        if (!empty($builtCommand)) {
+            $monitoringHost->setCheckCommand($builtCommand);
         }
-
-        foreach ($hostMacros as $hostMacro) {
-            $configurationCommand = str_replace($hostMacro->getName(), $hostMacro->getValue(), $configurationCommand);
-        }
-        $monitoringHost->setCheckCommand($configurationCommand);
     }
 
     /**
@@ -411,34 +409,92 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
             $configurationCommand
         );
 
-        $hasAtLeastOnePassword = false;
-
-        foreach ($hostMacros as $hostMacro) {
-            if ($hostMacro->isPassword()) {
-                $hasAtLeastOnePassword = true;
-                $hostMacro->setValue($replacementValue);
-            }
-        }
-
-        foreach ($serviceMacros as $serviceMacro) {
-            if ($serviceMacro->isPassword()) {
-                $hasAtLeastOnePassword = true;
-                $serviceMacro->setValue($replacementValue);
-            }
-        }
-
-        if (!$hasAtLeastOnePassword) {
-            return;
-        }
-
         /**
          * @var ServiceMacro[]|HostMacro[] $macros
          */
         $macros = array_merge($hostMacros, $serviceMacros);
 
-        foreach ($macros as $macro) {
-            $configurationCommand = str_replace($macro->getName(), $macro->getValue(), $configurationCommand);
+        $builtCommand = $this->buildCommandLineFromConfiguration(
+            $configurationCommand,
+            $monitoringCommand,
+            $macros,
+            $replacementValue
+        );
+
+        if (!empty($builtCommand)) {
+            $monitoringService->setCommandLine($builtCommand);
         }
-        $monitoringService->setCommandLine($configurationCommand);
+    }
+
+    /**
+     * Build command line by comparing monitoring & configuration commands
+     * and by replacing macros in configuration command
+     *
+     * @param string $configurationCommand
+     * @param string $monitoringCommand
+     * @param array $macros
+     * @param string $replacementValue
+     * @return string|null
+     */
+    private function buildCommandLineFromConfiguration(
+        string $configurationCommand,
+        string $monitoringCommand,
+        array $macros,
+        string $replacementValue
+    ): ?string {
+        $macroPasswordNames = [];
+        foreach ($macros as $macro) {
+            if ($macro->isPassword()) {
+                $macroPasswordNames[] = $macro->getName();
+            }
+        }
+
+        if (count($macroPasswordNames) === 0) {
+            return null;
+        }
+
+        $foundMacroNames = [];
+        if (preg_match_all('/(\$\S+?\$)/', $configurationCommand, $matches)) {
+            if (isset($matches[0])) {
+                $foundMacroNames = $matches[0];
+            }
+        }
+
+        // build a regex to identify macro associated value
+        // example :
+        //  - configuration command : $USER1$/check_icmp -H $HOSTADDRESS$ $_HOSTPASSWORD$
+        //  - generated regex : ^\Q\E(.*)\Q/check_icmp -H \E(.*)\Q \E(.*)\Q\E$
+        //  - monitoring : /usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 hiddenPassword
+        //  ==> matched values : [/usr/lib64/nagios/plugins/check_icmp, hiddenPassword]
+        $commandSplittedByMacros = preg_split('/(\$\S+?\$)/', $configurationCommand);
+        $macroRegex = '^';
+        foreach ($commandSplittedByMacros as $index => $commandSection) {
+            $macroMatcher = isset($foundMacroNames[$index]) ? '(.*)' : '';
+
+            $macroRegex .= preg_quote($commandSection, '/') . $macroMatcher;
+        }
+        $macroRegex .= '$';
+
+        // if two macros are glued, regex cannot detect properly password string
+        if (str_contains($macroRegex, '(.*)(.*)')) {
+            throw new MonitoringServiceException('Cannot parse configuration command line');
+        }
+
+        if (preg_match('/' . $macroRegex . '/', $monitoringCommand, $foundMacroValues)) {
+            array_shift($foundMacroValues); // remove global string matching
+
+            foreach ($foundMacroNames as $index => $foundMacroName) {
+                $foundMacroValue = $foundMacroValues[$index];
+                if (in_array($foundMacroName, $macroPasswordNames)) {
+                    $configurationCommand = str_replace($foundMacroName, $replacementValue, $configurationCommand);
+                } else {
+                    $configurationCommand = str_replace($foundMacroName, $foundMacroValue, $configurationCommand);
+                }
+            }
+        } else {
+            throw new MonitoringServiceException('Cannot parse configuration command line');
+        }
+
+        return $configurationCommand;
     }
 }
