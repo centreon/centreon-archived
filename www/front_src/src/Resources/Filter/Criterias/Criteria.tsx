@@ -100,6 +100,7 @@ const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
     setCriteria,
     setNewFilter,
     getMultiSelectCriterias,
+    nextSearch,
   } = useResourceContext();
 
   return useMemoComponent({
@@ -112,7 +113,13 @@ const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
         parentWidth={parentWidth}
       />
     ),
-    memoProps: [value, name, parentWidth, getMultiSelectCriterias()],
+    memoProps: [
+      value,
+      name,
+      parentWidth,
+      getMultiSelectCriterias(),
+      nextSearch,
+    ],
   });
 };
 

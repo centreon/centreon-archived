@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, makeStyles, Grid } from '@material-ui/core';
 
-import { MemoizedFilters as Filters } from '@centreon/ui';
+import { MemoizedFilters as Filters, SearchField } from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -26,7 +26,6 @@ import {
   resourceProblemsFilter,
   allFilter,
 } from './models';
-import Search from './Fields/Search';
 import SelectFilter from './Fields/SelectFilter';
 
 const useStyles = makeStyles(() => ({
@@ -146,7 +145,7 @@ const Filter = (): JSX.Element => {
             )}
           </Grid>
           <Grid item>
-            <Search
+            <SearchField
               EndAdornment={SearchHelpTooltip}
               value={nextSearch || ''}
               onChange={prepareSearch}
