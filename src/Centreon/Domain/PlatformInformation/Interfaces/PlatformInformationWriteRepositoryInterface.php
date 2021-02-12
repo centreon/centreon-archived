@@ -18,11 +18,19 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Centreon\Domain\RemoteServer;
+namespace Centreon\Domain\PlatformInformation\Interfaces;
 
-class RemoteServerException extends \Exception
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
+
+interface PlatformInformationWriteRepositoryInterface
 {
+    /**
+     * Update the platform information.
+     *
+     * @param PlatformInformation $platformInformation
+     * @throws \Exception
+     */
+    public function updatePlatformInformation(PlatformInformation $platformInformation): void;
 }

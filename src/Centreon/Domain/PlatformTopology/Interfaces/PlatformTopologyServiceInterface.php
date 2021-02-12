@@ -27,9 +27,9 @@ use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\PlatformTopology\Platform;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
-use Centreon\Domain\PlatformTopology\PlatformException;
-use Centreon\Domain\PlatformInformation\PlatformInformationException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 use Centreon\Domain\Repository\RepositoryException;
 
 interface PlatformTopologyServiceInterface
@@ -38,10 +38,10 @@ interface PlatformTopologyServiceInterface
      * Add new server
      *
      * @param Platform $platform
-     * @throws PlatformConflictException
+     * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
      * @throws RepositoryException
@@ -52,7 +52,7 @@ interface PlatformTopologyServiceInterface
      * Get a topology with detailed nodes
      *
      * @return Platform[]
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      */
     public function getPlatformTopology(): array;
@@ -61,7 +61,7 @@ interface PlatformTopologyServiceInterface
      * Delete a Platform and allocate its children to top level platform.
      *
      * @param integer $platformId
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      */
     public function deletePlatformAndReallocateChildren(int $platformId): void;
@@ -69,8 +69,8 @@ interface PlatformTopologyServiceInterface
     /**
      * Update a platform with given parameters.
      *
-     * @param Platform
-     * @throws PlatformException
+     * @param Platform $platform
+     * @return void
      */
     public function updatePlatformParameters(Platform $platform): void;
 
@@ -78,7 +78,7 @@ interface PlatformTopologyServiceInterface
      * Find the top level platform of the topology.
      *
      * @return Platform|null
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      */
     public function findTopLevelPlatform(): ?Platform;
 }

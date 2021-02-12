@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,23 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation\Interfaces;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-
-interface PlatformInformationRepositoryInterface
+interface PlatformInformationRepositoryInterface extends
+    PlatformInformationReadRepositoryInterface,
+    PlatformInformationWriteRepositoryInterface
 {
-    /**
-     * Find all platform information.
-     *
-     * @return PlatformInformation|null
-     * @throws \Exception
-     */
-    public function findPlatformInformation(): ?PlatformInformation;
-
-    /**
-     * Update the platform information.
-     *
-     * @param PlatformInformation $platformInformation
-     * @throws \Exception
-     */
-    public function updatePlatformInformation(PlatformInformation $platformInformation): void;
 }
