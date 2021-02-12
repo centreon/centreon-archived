@@ -122,7 +122,7 @@ class PlatformController extends AbstractController
         );
 
         $request = json_decode((string) $request->getContent(), true);
-        if (empty($request)) {
+        if (!is_array($request)) {
             throw new BadRequestHttpException(_('Error when decoding sent data'));
         }
 
