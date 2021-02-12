@@ -142,6 +142,7 @@ export interface CriteriaDisplayProps {
   label: string;
   options?: Array<SelectEntry>;
   buildAutocompleteEndpoint?;
+  sortId: number;
 }
 
 export interface CriteriaById {
@@ -150,22 +151,27 @@ export interface CriteriaById {
 
 const selectableCriterias: CriteriaById = {
   resource_types: {
+    sortId: 0,
     label: labelResource,
     options: selectableResourceTypes,
   },
   states: {
+    sortId: 1,
     label: labelState,
     options: selectableStates,
   },
   statuses: {
+    sortId: 2,
     label: labelStatus,
     options: selectableStatuses,
   },
   host_groups: {
+    sortId: 3,
     label: labelHostGroup,
     buildAutocompleteEndpoint: buildHostGroupsEndpoint,
   },
   service_groups: {
+    sortId: 4,
     label: labelServiceGroup,
     buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
   },

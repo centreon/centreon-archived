@@ -6,9 +6,11 @@ import {
   isNil,
   lensPath,
   omit,
+  pipe,
   propEq,
   reject,
   set,
+  sortBy,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -207,9 +209,19 @@ const useFilter = (): FilterState => {
   };
 
   const getMultiSelectCriterias = (): Array<Criteria> => {
-    return reject<Criteria>(({ name }) => isNil(selectableCriterias[name]))(
-      filter.criterias,
-    );
+    const getSelectableCriteriaByName = (name: string) =>
+      selectableCriterias[name];
+
+    const isNonSelectableCriteria = (criteria: Criteria) =>
+      pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
+
+    const getSortId = ({ name }: Criteria) =>
+      getSelectableCriteriaByName(name).sortId;
+
+    return pipe(
+      reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
+      sortBy(getSortId),
+    )(filter.criterias);
   };
 
   const toggleFilterExpanded = (): void => {
