@@ -15988,11 +15988,17 @@ msgstr "Un des éléments fourni n'est pas de type ResourceGroup"
 msgid "Error when searching for host categories"
 msgstr "Erreur lors de la recherche des catégories d'hôtes"
 
+msgid "Parent"
+msgstr "Parent"
+
 msgid "Error when searching for host severities"
 msgstr "Erreur lors de la recherche des sévérités d'hôtes"
 
 msgid "Error when searching for host groups"
 msgstr "Erreur lors de la recherche de groupes d'hôtes"
+
+msgid "Select criterias"
+msgstr "Sélectionner les critères"
 
 msgid "Error when searching for the host category (%s)"
 msgstr "Erreur lors de la recherche de la catégorie de l'hôte (%s)"

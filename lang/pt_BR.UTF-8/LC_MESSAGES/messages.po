@@ -15084,8 +15084,14 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Export to png"
 #  msgstr ""
 
+#  msgid "Parent"
+#  msgstr ""
+
 #  msgid "Switch to graph mode"
 #  msgstr ""
 
 #  msgid "Switch to list mode"
+#  msgstr ""
+
+#  msgid "Select criterias"
 #  msgstr ""
