@@ -17,7 +17,11 @@ import {
 import AddIcon from '@material-ui/icons/AddCircle';
 import { ClickAwayListener, Popper, useTheme } from '@material-ui/core';
 
-import { IconButton, MultiAutocompleteField } from '@centreon/ui';
+import {
+  IconButton,
+  MultiAutocompleteField,
+  useMemoComponent,
+} from '@centreon/ui';
 
 import {
   labelCriterias,
@@ -25,6 +29,7 @@ import {
   labelSelectCriterias,
 } from '../../translatedLabels';
 import { useResourceContext } from '../../Context';
+import { FilterState } from '../useFilter';
 
 import {
   CriteriaById,
@@ -39,11 +44,12 @@ const toCriteriaPairs = (criteriaById: CriteriaById) =>
 const isIn = flip(includes);
 const nameIsIn = (names: Array<string>) => propSatisfies(isIn(names), 'name');
 
-const CriteriasMultiSelect = (): JSX.Element => {
+const CriteriasMultiSelectContent = ({
+  filter,
+  setFilter,
+}: Pick<FilterState, 'filter' | 'setFilter'>): JSX.Element => {
   const { t } = useTranslation();
   const theme = useTheme();
-
-  const { filter, setFilter } = useResourceContext();
 
   const [anchorEl, setAnchorEl] = React.useState();
 
@@ -141,6 +147,17 @@ const CriteriasMultiSelect = (): JSX.Element => {
       </div>
     </ClickAwayListener>
   );
+};
+
+const CriteriasMultiSelect = (): JSX.Element => {
+  const { filter, setFilter } = useResourceContext();
+
+  return useMemoComponent({
+    Component: (
+      <CriteriasMultiSelectContent filter={filter} setFilter={setFilter} />
+    ),
+    memoProps: [filter],
+  });
 };
 
 export default CriteriasMultiSelect;
