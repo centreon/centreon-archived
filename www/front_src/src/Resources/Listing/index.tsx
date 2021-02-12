@@ -131,8 +131,8 @@ const ResourceListing = (): JSX.Element => {
       emptyDataMessage={t(labelNoResultsFound)}
       memoProps={[
         listing,
-        sortf,
-        sorto,
+        sortField,
+        sortOrder,
         page,
         selectedResources,
         selectedResourceId,
