@@ -34,39 +34,35 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Dependency;
+namespace Centreon\Tests\Resources\Traits;
 
-use Pimple\Container;
-use Centreon\ServiceProvider;
-use Centreon\Test\Mock\CentreonDBManagerService;
-use Symfony\Component\Validator\Validator\RecursiveValidator;
-
-/**
- * Container provider for Symfony\Component\Validator\Validator\ValidatorInterface
- *
- * @author Centreon
- * @version 1.0.0
- * @package centreon
- * @subpackage test
- */
-trait ValidatorDependencyTrait
+trait CheckListOfIdsTrait
 {
+    public function checkListOfIdsTrait(
+        string $repositoryClass,
+        $method,
+        $tableName = null,
+        $identificator = null
+    ): void {
+        $ids = [1, 3, 5];
 
-    /**
-     * Set up DB manager service in container
-     *
-     * <code>
-     * public function setUp()
-     * {
-     *     $container = new \Pimple\Container;
-     *     $this->setUpValidator($container);
-     * }
-     * </code>
-     *
-     * @param \Pimple\Container $container
-     */
-    public function setUpValidator(Container $container)
-    {
-        $container[ServiceProvider::VALIDATOR] = $this->createMock(RecursiveValidator::class);
+        $repository = $this->createPartialMock(
+            $repositoryClass,
+            [
+                'checkListOfIdsTrait',
+            ]
+        );
+        $repository->method('checkListOfIdsTrait')
+            ->will($this->returnCallback(function () use ($ids, $tableName, $identificator) {
+                $this->assertEquals([
+                    $ids,
+                    $tableName,
+                    $identificator,
+                ], func_get_args());
+
+                return true;
+            }));
+
+        $this->assertTrue($repository->$method($ids));
     }
 }

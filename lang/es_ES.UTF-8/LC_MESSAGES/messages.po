@@ -562,55 +562,46 @@ msgid "Yes"
 msgstr "Sí"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:150
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:127
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:160
 msgid "Host Check Execution Time"
 msgstr "Duración del cheque de acogida"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:151
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:128
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:161
 msgid "Hosts Actively Checked"
 msgstr "Actualmente verificados hosts"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:152
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:129
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:162
 msgid "Host check latency"
 msgstr "Latencia del control del host."
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:153
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:130
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:163
 msgid "Service Check Execution Time"
 msgstr "Período de verificación de servicio"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:154
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:131
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:164
 msgid "Services Actively Checked"
 msgstr "Servicios actualmente controlados"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:155
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:132
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:165
 msgid "Service check latency"
 msgstr "Latencia del control de servicio."
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:156
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:133
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:166
 msgid "Commands in buffer"
 msgstr "Comandos en el buffer"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:157
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:134
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:167
 msgid "Host status"
 msgstr "Estado de acogida"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:158
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:135
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:168
 msgid "Service status"
 msgstr "Estado del servicio"

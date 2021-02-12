@@ -34,33 +34,52 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Mock;
+namespace Centreon\Tests\Resources\Traits;
 
-use Centreon\Infrastructure\Webservice;
-use Centreon\Application\DataRepresenter;
-
-/**
- * Mock of webservice class
- */
-class WebserviceMock extends Webservice\WebServiceAbstract implements
-    Webservice\WebserviceAutorizeRestApiInterface
+trait PaginationListTrait
 {
 
     /**
-     * {@inheritdoc}
+     * @var \Centreon\Infrastructure\CentreonLegacyDB\Interfaces\PaginationRepositoryInterface
      */
-    public static function getName(): string
-    {
-        return 'webservice_mock';
+    protected $repository;
+
+    /**
+     * Test pagination list
+     *
+     * @param array $data
+     * @param array $filters
+     * @param int $limit
+     * @param int $offset
+     * @param array $ordering
+     * @return void
+     */
+    public function getPaginationListTrait(
+        array $data = [],
+        array $filters = null,
+        int $limit = null,
+        int $offset = null,
+        array $ordering = []
+    ): void {
+        $this->assertEquals(
+            [
+                $this->repository->getEntityPersister()->load($data),
+            ],
+            $this->repository->getPaginationList($filters, $limit, $offset, $ordering)
+        );
     }
 
     /**
-     * Return empty list
+     * Test pagination list total
      *
-     * @return \Centreon\Application\DataRepresenter\Response
+     * @param int|string $data
+     * @return void
      */
-    public function getList(): DataRepresenter\Response
+    public function getPaginationListTotalTrait($data = 0): void
     {
-        return new DataRepresenter\Response([]);
+        $this->assertEquals(
+            (int) $data,
+            $this->repository->getPaginationListTotal()
+        );
     }
 }
