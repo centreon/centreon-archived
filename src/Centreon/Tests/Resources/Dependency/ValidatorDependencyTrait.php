@@ -34,44 +34,39 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Mock;
+namespace Centreon\Tests\Resources\Dependency;
 
-use Centreon\Infrastructure\Service\CentreonPaginationService;
-use Centreon\Application\DataRepresenter;
+use Pimple\Container;
+use Centreon\ServiceProvider;
+use Centreon\Test\Mock\CentreonDBManagerService;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 /**
- * Mock of CentreonPaginationService service
+ * Container provider for Symfony\Component\Validator\Validator\ValidatorInterface
  *
  * @author Centreon
  * @version 1.0.0
  * @package centreon
  * @subpackage test
  */
-class CentreonPaginationServiceMock extends CentreonPaginationService
+trait ValidatorDependencyTrait
 {
 
     /**
-     * Disable service requirements
+     * Set up DB manager service in container
+     *
+     * <code>
+     * public function setUp()
+     * {
+     *     $container = new \Pimple\Container;
+     *     $this->setUpValidator($container);
+     * }
+     * </code>
+     *
+     * @param \Pimple\Container $container
      */
-    public function __construct()
+    public function setUpValidator(Container $container)
     {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getListing(): DataRepresenter\Listing
-    {
-        $result = [
-            [
-                'repository' => $this->repository,
-                'dataRepresenter' => $this->dataRepresenter,
-                'context' => $this->context,
-                'limit' => $this->limit,
-                'offset' => $this->offset,
-            ],
-        ];
-
-        return new DataRepresenter\Listing($result);
+        $container[ServiceProvider::VALIDATOR] = $this->createMock(RecursiveValidator::class);
     }
 }

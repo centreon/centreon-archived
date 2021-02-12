@@ -34,9 +34,9 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Traits;
+namespace Centreon\Tests\Resources\Traits;
 
-use Centreon\Infrastructure\Webservice\WebserviceAutorizePublicInterface;
+use Centreon\Infrastructure\Webservice\WebserviceAutorizeRestApiInterface;
 
 /**
  * Trait with extension methods to test the authorize method in REST webservices
@@ -46,16 +46,16 @@ use Centreon\Infrastructure\Webservice\WebserviceAutorizePublicInterface;
  * @package centreon
  * @subpackage test
  */
-trait WebServiceAuthorizePublicTrait
+trait WebServiceAuthorizeRestApiTrait
 {
 
     /**
-     * Check is webservice implemented public authorization interface
+     * Check is webservice implemented Rest API authorization interface
      *
      * @return void
      */
     public function testAuthorize(): void
     {
-        $this->assertInstanceOf(WebserviceAutorizePublicInterface::class, $this->webservice);
+        $this->assertInstanceOf(WebserviceAutorizeRestApiInterface::class, $this->webservice);
     }
 }

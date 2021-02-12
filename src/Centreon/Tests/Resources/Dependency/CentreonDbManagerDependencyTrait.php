@@ -34,71 +34,38 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Traits;
+namespace Centreon\Tests\Resources\Dependency;
 
 use Pimple\Container;
 use Centreon\ServiceProvider;
 
 /**
- * Trait with extension methods for Webservice testing
+ * Container provider for Centreon\Infrastructure\Service\CentreonDBManagerService
  *
  * @author Centreon
  * @version 1.0.0
- * @package centreon-license-manager
+ * @package centreon
  * @subpackage test
  */
-trait WebserviceTrait
+trait CentreonDbManagerDependencyTrait
 {
 
     /**
-     * Set up webservice service in container
+     * Set up DB manager service in container
      *
      * <code>
      * public function setUp()
      * {
      *     $container = new \Pimple\Container;
-     *     $this->setUpWebservice($container);
+     *     $this->setUpCentreonDbManager($container);
      * }
      * </code>
      *
      * @param \Pimple\Container $container
      */
-    public function setUpWebservice(Container $container)
+    public function setUpCentreonDbManager(Container $container)
     {
-        
-        $this->container[ServiceProvider::CENTREON_WEBSERVICE] = new class {
-
-            protected $services = [];
-
-            public function add($class)
-            {
-                $this->services[$class] = $class;
-            }
-
-            public function getServices(): array
-            {
-                return $this->services;
-            }
-        };
-    }
-
-    /**
-     * Check list of webservices if they are registered in webservice chain service
-     *
-     * <code>
-     * $this->checkWebservices([
-     *     \MyComponenct\Application\Webservice\MyWebservice::class,
-     * ]);
-     * </code>
-     *
-     * @param array $checkList
-     */
-    public function checkWebservices(array $checkList)
-    {
-        // check webservices
-        $webservices = $this->container[ServiceProvider::CENTREON_WEBSERVICE]->getServices();
-        foreach ($checkList as $webservice) {
-            $this->assertArrayHasKey($webservice, $webservices);
-        }
+        $container[ServiceProvider::CENTREON_DB_MANAGER] =
+            loadDependencyInjector()[ServiceProvider::CENTREON_DB_MANAGER];
     }
 }

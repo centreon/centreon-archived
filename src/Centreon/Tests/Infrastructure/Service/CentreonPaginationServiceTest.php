@@ -42,8 +42,8 @@ use Pimple\Psr11\Container as ContainerWrap;
 use Centreon\Infrastructure\Service\CentreonPaginationService;
 use Centreon\Application\DataRepresenter;
 use Centreon\ServiceProvider;
-use Centreon\Tests\Resource\Mock;
-use Centreon\Tests\Resource\Dependency;
+use Centreon\Tests\Resources\Mock;
+use Centreon\Tests\Resources\Dependency;
 use Symfony\Component\Serializer\Serializer;
 
 class CentreonPaginationServiceTest extends TestCase

@@ -34,28 +34,44 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Traits;
+namespace Centreon\Tests\Resources\Mock;
 
-use Centreon\Infrastructure\Webservice\WebserviceAutorizeRestApiInterface;
+use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
+use Centreon\Tests\Resources\Mock\EntityMock;
 
 /**
- * Trait with extension methods to test the authorize method in REST webservices
- *
- * @author Centreon
- * @version 1.0.0
- * @package centreon
- * @subpackage test
+ * Mock of repository class
  */
-trait WebServiceAuthorizeRestApiTrait
+class RepositoryMock extends ServiceEntityRepository
 {
 
     /**
-     * Check is webservice implemented Rest API authorization interface
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    public function testAuthorize(): void
+    public static function entityClass(): string
     {
-        $this->assertInstanceOf(WebserviceAutorizeRestApiInterface::class, $this->webservice);
+        return EntityMock::class;
+    }
+
+    /**
+     * Find entity by parameters
+     *
+     * @param array $params
+     * @return \Centreon\Test\Mock\EntityMock|null
+     */
+    public function findOneBy(array $params)
+    {
+        return null;
+    }
+
+    /**
+     * Validate entity
+     *
+     * @param \Centreon\Test\Mock\EntityMock $object
+     * @return bool
+     */
+    public function validateEntity(EntityMock $object): bool
+    {
+        return false;
     }
 }
