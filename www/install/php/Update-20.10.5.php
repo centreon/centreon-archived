@@ -26,16 +26,9 @@ $versionOfTheUpgrade = 'UPGRADE - 20.10.5 : ';
 
 // Part requiring rollback management
 try {
-    // Platform_topology refacto
+    // Platform_topology pending platform status
     $errorMessage = "Unable to add pending column to platform_topology table";
-    $statement = $pearDB->query(
-        "SELECT COLUMN_DEFAULT
-        FROM information_schema.COLUMNS
-        WHERE TABLE_SCHEMA = 'centreon'
-          AND TABLE_NAME = 'platform_topology'
-          AND COLUMN_NAME = 'pending'"
-    );
-    if ($statement->fetch(\PDO::FETCH_ASSOC) === false) {
+    if (!$pearDB->isColumnExist('platform_topology', 'pending')) {
         //Create the new column
         $pearDB->query(
             "ALTER TABLE `platform_topology` ADD COLUMN `pending` enum('0','1') DEFAULT ('1') AFTER `parent_id`"
