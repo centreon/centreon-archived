@@ -280,6 +280,18 @@ class MonitoringResourceController extends AbstractController
 
         $this->resource->enrichHostWithDetails($resource);
 
+        try {
+            $host = (new Host())
+                ->setId($resource->getId())
+                ->setCheckCommand($resource->getCommandLine());
+            $this->monitoring->hidePasswordInHostCommandLine($host);
+            $resource->setCommandLine($host->getCheckCommand());
+        } catch (\Throwable $ex) {
+            $resource->setCommandLine(
+                sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
+            );
+        }
+
         $context = (new Context())
             ->setGroups(array_merge(
                 static::SERIALIZER_GROUPS_LISTING,
@@ -338,7 +350,7 @@ class MonitoringResourceController extends AbstractController
                         ->setId($resource->getParent()->getId())
                 )
                 ->setCommandLine($resource->getCommandLine());
-            $this->monitoring->hidePasswordInCommandLine($service);
+            $this->monitoring->hidePasswordInServiceCommandLine($service);
             $resource->setCommandLine($service->getCommandLine());
         } catch (\Throwable $ex) {
             $resource->setCommandLine(

@@ -324,7 +324,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
             if ($service === null) {
                 throw new MonitoringServiceException('Service not found');
             }
-            $this->hidePasswordInCommandLine($service);
+            $this->hidePasswordInServiceCommandLine($service);
             return $service->getCommandLine();
         } catch (MonitoringServiceException $ex) {
             throw $ex;
@@ -336,7 +336,44 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
-    public function hidePasswordInCommandLine(Service $monitoringService, string $replacementValue = '***'): void
+    public function hidePasswordInHostCommandLine(Host $monitoringHost, string $replacementValue = '***'): void
+    {
+        $monitoringCommand = $monitoringHost->getCheckCommand();
+        if (empty($monitoringCommand)) {
+            return;
+        }
+        if ($monitoringHost->getId() === null) {
+            throw new MonitoringServiceException(_('The host id can not be null'));
+        }
+
+        $configurationCommand = $this->hostConfiguration->findCommandLine($monitoringHost->getId());
+        $hostMacros = $this->hostConfiguration->findHostMacrosFromCommandLine(
+            $monitoringHost->getId(),
+            $configurationCommand
+        );
+
+        $hasAtLeastOnePassword = false;
+        foreach ($hostMacros as $hostMacro) {
+            if ($hostMacro->isPassword()) {
+                $hasAtLeastOnePassword = true;
+                $hostMacro->setValue($replacementValue);
+            }
+        }
+
+        if (!$hasAtLeastOnePassword) {
+            return;
+        }
+
+        foreach ($hostMacros as $hostMacro) {
+            $configurationCommand = str_replace($hostMacro->getName(), $hostMacro->getValue(), $configurationCommand);
+        }
+        $monitoringHost->setCheckCommand($configurationCommand);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hidePasswordInServiceCommandLine(Service $monitoringService, string $replacementValue = '***'): void
     {
         $monitoringCommand = $monitoringService->getCommandLine();
         if (empty($monitoringCommand)) {
@@ -356,97 +393,52 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
             if ($service->getServiceType() === \Centreon\Domain\ServiceConfiguration\Service::TYPE_META_SERVICE) {
                 // For META SERVICE we can define the configuration command line with the monitoring command line
                 $monitoringService->setCommandLine($monitoringCommand);
+                return;
             } else {
                 // The service is not a META SERVICE
-                $monitoringServerId = $monitoringService->getHost()->getPollerId();
-                if ($monitoringServerId !== null) {
-                    $monitoringServer = $this->monitoringServerService->findServer($monitoringServerId);
-                    // Has the configuration of the monitoring server changed ?
-                    if ($monitoringServer !== null) {
-                        if ($monitoringServer->isUpdated() === false) {
-                            // The configuration of the monitoring server has not changed.
-                            // So we can use the command line that has been stored in the monitoring service
-                            $monitoringService->setCommandLine($monitoringService->getCommandLine());
-                        } else {
-                            throw new MonitoringServiceException(
-                                'The configuration has changed. '
-                                . 'For security reasons we do not display the command line'
-                            );
-                        }
-                    }
-                }
-                // In other cases and for security reasons, we do not display the command line
-            }
-            return;
-        }
-
-        $serviceMacrosPassword = $this->serviceConfiguration->findServiceMacrosPassword(
-            $monitoringService->getId(),
-            $configurationCommand
-        );
-        $hostMacrosPassword = $this->hostConfiguration->findHostMacrosPassword(
-            $monitoringService->getHost()->getId(),
-            $configurationCommand
-        );
-
-        if (!empty($hostMacrosPassword) || !empty($serviceMacrosPassword)) {
-            /**
-             * @var ServiceMacro[]|HostMacro[] $macrosPassword
-             */
-            $macrosPassword = array_merge($hostMacrosPassword, $serviceMacrosPassword);
-            $macroNames = array_map(
-                function ($macro) {
-                    return $macro->getName();
-                },
-                $macrosPassword
-            );
-
-            $onDemandServiceMacro = $this->serviceConfiguration->findOnDemandServiceMacros(
-                $monitoringService->getId(),
-                true
-            );
-            $onDemandHostMacro = $this->hostConfiguration->findOnDemandHostMacros(
-                $monitoringService->getHost()->getId(),
-                true
-            );
-
-            $configurationToken = explode(' ', $configurationCommand);
-            $monitoringToken = $this->explodeSpacesButKeepValuesByMacro(
-                $configurationCommand,
-                $monitoringCommand,
-                $onDemandServiceMacro,
-                $onDemandHostMacro
-            );
-            if (count($monitoringToken) === count($configurationToken)) {
-                /**
-                 * @var array<string, ServiceMacro|HostMacro> $macrosPasswordByName
-                 */
-                $macrosPasswordByName = [];
-                foreach ($macrosPassword as $macro) {
-                    $macrosPasswordByName[$macro->getName()] = $macro;
-                }
-                $patternMacrosPassword = implode('|', $macroNames);
-                $patternMacrosPassword = str_replace(['$', '~'], ['\$', '\~'], $patternMacrosPassword);
-                foreach ($configurationToken as $index => $token) {
-                    if (preg_match_all('~' . $patternMacrosPassword . '~', $token, $matches, PREG_SET_ORDER)) {
-                        if (
-                            array_key_exists($matches[0][0], $macrosPasswordByName)
-                            && $macrosPasswordByName[$matches[0][0]]->getValue() !== null
-                        ) {
-                            $monitoringToken[$index] = str_replace(
-                                $macrosPasswordByName[$matches[0][0]]->getValue(),
-                                $replacementValue,
-                                $monitoringToken[$index]
-                            );
-                        }
-                    }
-                }
-                $monitoringService->setCommandLine(implode(' ', $monitoringToken));
-            } else {
                 throw new MonitoringServiceException(
-                    'Different number of tokens between configuration and monitoring command line'
+                    'Check command not found'
                 );
             }
         }
+
+        $hostMacros = $this->hostConfiguration->findHostMacrosFromCommandLine(
+            $monitoringService->getHost()->getId(),
+            $configurationCommand
+        );
+        $serviceMacros = $this->serviceConfiguration->findServiceMacrosFromCommandLine(
+            $monitoringService->getId(),
+            $configurationCommand
+        );
+
+        $hasAtLeastOnePassword = false;
+
+        foreach ($hostMacros as $hostMacro) {
+            if ($hostMacro->isPassword()) {
+                $hasAtLeastOnePassword = true;
+                $hostMacro->setValue($replacementValue);
+            }
+        }
+
+        foreach ($serviceMacros as $serviceMacro) {
+            if ($serviceMacro->isPassword()) {
+                $hasAtLeastOnePassword = true;
+                $serviceMacro->setValue($replacementValue);
+            }
+        }
+
+        if (!$hasAtLeastOnePassword) {
+            return;
+        }
+
+        /**
+         * @var ServiceMacro[]|HostMacro[] $macros
+         */
+        $macros = array_merge($hostMacros, $serviceMacros);
+
+        foreach ($macros as $macro) {
+            $configurationCommand = str_replace($macro->getName(), $macro->getValue(), $configurationCommand);
+        }
+        $monitoringService->setCommandLine($configurationCommand);
     }
 }
