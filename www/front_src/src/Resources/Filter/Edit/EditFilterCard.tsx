@@ -40,8 +40,6 @@ import {
 import { updateFilter, deleteFilter } from '../api';
 import { Filter } from '../models';
 import { ResourceContext, useResourceContext } from '../../Context';
-import useFilterModels from '../useFilterModels';
-import useAdapters from '../api/adapters';
 import memoizeComponent from '../../memoizedComponent';
 
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     gridTemplateColumns: 'auto 1fr',
   },
-  filterNameInput: {},
 }));
 
 interface EditFilterCardProps {
@@ -61,7 +58,10 @@ interface EditFilterCardProps {
 
 interface Props
   extends EditFilterCardProps,
-    Pick<ResourceContext, 'customFilters' | 'setFilter' | 'setCustomFilters'> {
+    Pick<
+      ResourceContext,
+      'customFilters' | 'setFilter' | 'setCustomFilters' | 'setNewFilter'
+    > {
   currentFilter: Filter;
 }
 
@@ -71,11 +71,10 @@ const EditFilterCardContent = ({
   customFilters,
   setFilter,
   setCustomFilters,
+  setNewFilter,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const { newFilter } = useFilterModels();
-  const { toRawFilter } = useAdapters();
   const { t } = useTranslation();
 
   const { showMessage } = useSnackbar();
@@ -112,7 +111,7 @@ const EditFilterCardContent = ({
       const updatedFilter = { ...filter, name: values.name };
 
       sendUpdateFilterRequest({
-        rawFilter: omit(['id'], toRawFilter(updatedFilter)),
+        filter: omit(['id'], updatedFilter),
         id: updatedFilter.id,
       }).then(() => {
         showMessage({
@@ -145,7 +144,7 @@ const EditFilterCardContent = ({
       });
 
       if (equals(filter.id, currentFilter.id)) {
-        setFilter(newFilter as Filter);
+        setNewFilter();
       }
 
       setCustomFilters(reject(equals(filter), customFilters));
@@ -191,7 +190,6 @@ const EditFilterCardContent = ({
         </IconButton>
       </ContentWithCircularLoading>
       <TextField
-        className={classes.filterNameInput}
         ariaLabel={`${t(labelFilter)}-${id}-${t(labelName)}`}
         value={form.values.name}
         error={form.errors.name}
@@ -228,6 +226,7 @@ const EditFilterCard = ({ filter }: EditFilterCardProps): JSX.Element => {
     filter: currentFilter,
     setCustomFilters,
     customFilters,
+    setNewFilter,
   } = useResourceContext();
 
   return (
@@ -237,6 +236,7 @@ const EditFilterCard = ({ filter }: EditFilterCardProps): JSX.Element => {
       customFilters={customFilters}
       setFilter={setFilter}
       setCustomFilters={setCustomFilters}
+      setNewFilter={setNewFilter}
     />
   );
 };

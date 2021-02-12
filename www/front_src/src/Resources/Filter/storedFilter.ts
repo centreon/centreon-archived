@@ -2,7 +2,7 @@ import { getStoredOrDefault, store } from '../storage';
 
 import { Filter } from './models';
 
-const key = 'centreon-resource-status-filter';
+const key = 'centreon-resource-status-filter-21.04';
 
 let cachedFilter;
 
@@ -25,4 +25,4 @@ const clearCachedFilter = (): void => {
   cachedFilter = null;
 };
 
-export { getStoredOrDefaultFilter, storeFilter, clearCachedFilter };
+export { getStoredOrDefaultFilter, storeFilter, clearCachedFilter, key };
