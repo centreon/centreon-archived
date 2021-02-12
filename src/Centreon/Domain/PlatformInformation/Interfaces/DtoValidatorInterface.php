@@ -18,11 +18,17 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Centreon\Domain\RemoteServer;
+namespace Centreon\Domain\PlatformInformation\Interfaces;
 
-class RemoteServerException extends \Exception
+interface DtoValidatorInterface
 {
+    /**
+     * Validate the request DTO.
+     *
+     * @param array<string,mixed> $dto
+     * @throws \Throwable
+     */
+    public function validateOrFail(array $dto): void;
 }

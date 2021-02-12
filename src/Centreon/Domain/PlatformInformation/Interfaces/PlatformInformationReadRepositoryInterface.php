@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,25 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformTopology;
+namespace Centreon\Domain\PlatformInformation\Interfaces;
 
-/**
- * This class is designed to represent a business exception in the 'Platform status' context.
- *
- * @package Centreon\Domain\PlatformTopology
- */
-class PlatformConflictException extends \Exception
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
+
+interface PlatformInformationReadRepositoryInterface
 {
+    /**
+     * Find all platform information.
+     *
+     * @return PlatformInformation|null
+     * @throws \Exception
+     */
+    public function findPlatformInformation(): ?PlatformInformation;
+
+    /**
+     * set the Encryption first key.
+     *
+     * @param string|null $encryptionFirstKey
+     * @return void
+     */
+    public function setEncryptionFirstKey(?string $encryptionFirstKey): void;
 }

@@ -30,11 +30,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\PlatformTopology\Platform;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\PlatformTopology\PlatformRelation;
-use Centreon\Domain\PlatformTopology\PlatformException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Infrastructure\PlatformTopology\Model\PlatformJsonGraph;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Application\Controller\PlatformTopologyController;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
@@ -172,7 +172,7 @@ class PlatformTopologyControllerTest extends TestCase
         $this->request->expects($this->once())
             ->method('getContent')
             ->willReturn('[}');
-        $this->expectException(PlatformException::class);
+        $this->expectException(PlatformTopologyException::class);
         $this->expectExceptionMessage('Error when decoding sent data');
         $this->expectExceptionCode(Response::HTTP_BAD_REQUEST);
         $platformTopologyController->addPlatformToTopology($this->request);
@@ -180,7 +180,7 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology with conflict
-     * @throws PlatformConflictException
+     * @throws PlatformTopologyConflictException
      */
     public function testAddPlatformToTopologyConflict(): void
     {
@@ -190,7 +190,7 @@ class PlatformTopologyControllerTest extends TestCase
 
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
-            ->will($this->throwException(new PlatformConflictException('conflict')));
+            ->will($this->throwException(new PlatformTopologyConflictException('conflict')));
 
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
@@ -204,7 +204,7 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology with bad request
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      */
     public function testAddPlatformToTopologyBadRequest(): void
     {
@@ -214,7 +214,7 @@ class PlatformTopologyControllerTest extends TestCase
 
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
-            ->will($this->throwException(new PlatformException('bad request')));
+            ->will($this->throwException(new PlatformTopologyException('bad request')));
 
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
@@ -229,7 +229,7 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology which succeed
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      */
     public function testAddPlatformToTopologySuccess(): void
     {
