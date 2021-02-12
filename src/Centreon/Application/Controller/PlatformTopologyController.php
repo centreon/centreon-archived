@@ -32,8 +32,8 @@ use Centreon\Domain\PlatformTopology\Platform;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Infrastructure\PlatformTopology\Model\PlatformJsonGraph;
-use Centreon\Domain\PlatformTopology\PlatformException;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 
 /**
@@ -66,7 +66,7 @@ class PlatformTopologyController extends AbstractController
      * @param array<mixed> $platformToAdd data sent in json
      * @param string $schemaPath
      * @return void
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      */
     private function validatePlatformTopologySchema(array $platformToAdd, string $schemaPath): void
     {
@@ -83,7 +83,7 @@ class PlatformTopologyController extends AbstractController
             foreach ($validator->getErrors() as $error) {
                 $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
             }
-            throw new PlatformException($message);
+            throw new PlatformTopologyException($message);
         }
     }
 
@@ -92,7 +92,7 @@ class PlatformTopologyController extends AbstractController
      *
      * @param Request $request
      * @return View
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      */
     public function addPlatformToTopology(Request $request): View
     {
@@ -102,7 +102,7 @@ class PlatformTopologyController extends AbstractController
         // get http request content
         $platformToAdd = json_decode((string) $request->getContent(), true);
         if (!is_array($platformToAdd)) {
-            throw new PlatformException(
+            throw new PlatformTopologyException(
                 _('Error when decoding sent data'),
                 Response::HTTP_BAD_REQUEST
             );
@@ -128,7 +128,7 @@ class PlatformTopologyController extends AbstractController
             return $this->view(null, Response::HTTP_CREATED);
         } catch (EntityNotFoundException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
-        } catch (PlatformConflictException  $ex) {
+        } catch (PlatformTopologyConflictException  $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_CONFLICT);
         } catch (\Throwable $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);

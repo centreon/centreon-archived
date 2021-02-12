@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,17 +25,19 @@ namespace Centreon\Domain\RemoteServer;
 
 use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\PlatformTopology\PlatformException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
-use Centreon\Domain\PlatformInformation\PlatformInformation;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -146,22 +148,28 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Register the platforms on the Parent Central
          */
-        foreach ($platforms as $platform) {
-            if ($platform->getParentId() !== null) {
-                $platform->setParentAddress($topLevelPlatform->getAddress());
+        try {
+            foreach ($platforms as $platform) {
+                if ($platform->getParentId() !== null) {
+                    $platform->setParentAddress($topLevelPlatform->getAddress());
+                }
+
+                if ($platform->getServerId() !== null) {
+                    $this->platformTopologyRegisterRepository->registerPlatformToParent(
+                        $platform,
+                        $platformInformation,
+                        $this->proxyService->getProxy()
+                    );
+                }
             }
 
-            $this->platformTopologyRegisterRepository->registerPlatformToParent(
-                $platform,
-                $platformInformation,
-                $this->proxyService->getProxy()
-            );
-        }
-
-        try {
             $this->menuRepository->disableCentralMenus();
+        } catch (RepositoryException | PlatformTopologyConflictException $ex) {
+            $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
+            throw $ex;
         } catch (\Exception $ex) {
-            throw new MenuException(_('An error occured while disabling the central menus'));
+            $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
+            throw new MenuException(_('An error occurred while disabling the central menus'));
         }
 
         /**
@@ -195,6 +203,7 @@ class RemoteServerService implements RemoteServerServiceInterface
         $childrenPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
             $platform->getId()
         );
+
         foreach ($childrenPlatforms as $childrenPlatform) {
             if ($childrenPlatform->getServerId() !== null) {
                 $this->monitoringServerService->deleteServer($childrenPlatform->getServerId());
@@ -230,7 +239,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             $platform->setType($type);
             $this->platformTopologyRepository->updatePlatformParameters($platform);
         } catch (\Exception $ex) {
-            throw new PlatformException(_('An error occured while updating the platform topology'));
+            throw new PlatformTopologyException(_('An error occured while updating the platform topology'));
         }
     }
 }

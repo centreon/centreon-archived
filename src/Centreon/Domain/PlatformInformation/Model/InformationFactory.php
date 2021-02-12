@@ -21,8 +21,27 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Domain\RemoteServer;
+namespace Centreon\Domain\PlatformInformation\Model;
 
-class RemoteServerException extends \Exception
+use Centreon\Domain\PlatformInformation\Model\Information;
+
+class InformationFactory
 {
+    /**
+     * @param array<string,mixed> $request
+     * @return array<Information>
+     */
+    public static function createFromDto(array $request): array
+    {
+        $information = [];
+        foreach ($request as $key => $value) {
+            $newInformation = (new Information())
+                ->setKey($key)
+                ->setValue($value);
+
+            $information[] = $newInformation;
+        }
+
+        return $information;
+    }
 }

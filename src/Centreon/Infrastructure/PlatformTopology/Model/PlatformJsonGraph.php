@@ -48,12 +48,12 @@ class PlatformJsonGraph
     private $label;
 
     /**
-     * @var array Custom properties of a Json Graph Object
+     * @var array<string,string> Custom properties of a Json Graph Object
      */
     private $metadata = [];
 
     /**
-     * @var array relation details between a platform and its parent
+     * @var array<string,string> relation details between a platform and its parent
      */
     private $relation = [];
 
@@ -134,7 +134,7 @@ class PlatformJsonGraph
     }
 
     /**
-     * @return array
+     * @return array<string,string>
      */
     public function getMetadata(): array
     {
@@ -142,7 +142,7 @@ class PlatformJsonGraph
     }
 
     /**
-     * @param array $metadata
+     * @param array<string,string> $metadata
      * @return self
      */
     public function setMetadata(array $metadata): self
@@ -152,7 +152,7 @@ class PlatformJsonGraph
     }
 
     /**
-     * @return array
+     * @return array<string,string>
      */
     public function getRelation(): array
     {
@@ -160,7 +160,7 @@ class PlatformJsonGraph
     }
 
     /**
-     * @param array $relation
+     * @param PlatformRelation $platformRelation
      * @return self
      */
     public function setRelation(PlatformRelation $platformRelation): self

@@ -178,7 +178,19 @@ services:
         class: Centreon\Domain\PlatformInformation\PlatformInformationService
 
     Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformInformation\PlatformInformationRepositoryRDB
+        class: Centreon\Infrastructure\PlatformInformation\Repository\PlatformInformationRepositoryRDB
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
+
+    Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface:
+        class: Centreon\Infrastructure\PlatformInformation\Repository\PlatformInformationRepositoryRDB
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
+
+    Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation:
+        class: Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
 
     # Monitoring resources
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:

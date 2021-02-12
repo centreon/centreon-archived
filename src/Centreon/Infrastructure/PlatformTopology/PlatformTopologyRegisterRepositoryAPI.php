@@ -29,8 +29,8 @@ use Centreon\Domain\PlatformTopology\Platform;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Repository\RepositoryException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -183,7 +183,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
                     $errorMessage .= "  /  " . _("Central's response => Code : ") .
                         implode(', ', $returnedMessage);
                 }
-                throw new PlatformConflictException(
+                throw new PlatformTopologyConflictException(
                     $errorMessage
                 );
             }
@@ -253,7 +253,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
                     $errorMessage .= "  /  " . _("Central's response => Code : ") .
                         implode(', ', $returnedMessage);
                 }
-                throw new PlatformConflictException(
+                throw new PlatformTopologyConflictException(
                     $errorMessage
                 );
             }
@@ -270,7 +270,9 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             }
 
             if ($platformToDeleteId === null) {
-                throw new PlatformConflictException(_("The platform '%s'@'%s' cannot be found on the Central."));
+                throw new PlatformTopologyConflictException(
+                    _("The platform '%s'@'%s' cannot be found on the Central.")
+                );
             }
 
             $deletePayload = [
@@ -297,7 +299,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
                     $errorMessage .= "  /  " . _("Central's response => Code : ") .
                         implode(', ', $returnedMessage);
                 }
-                throw new PlatformConflictException(
+                throw new PlatformTopologyConflictException(
                     $errorMessage
                 );
             }
