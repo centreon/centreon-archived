@@ -4,10 +4,9 @@ import { ifElse, pathEq, always, pathOr } from 'ramda';
 
 import { useRequest } from '@centreon/ui';
 
-import { ResourceListing, SortOrder } from '../models';
+import { ResourceListing } from '../models';
 import { labelSomethingWentWrong } from '../translatedLabels';
 
-import { defaultSortOrder, defaultSortField } from './columns';
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { listResources } from './api';
 
@@ -16,10 +15,6 @@ type ListingDispatch<T> = React.Dispatch<React.SetStateAction<T>>;
 export interface ListingState {
   listing?: ResourceListing;
   setListing: ListingDispatch<ResourceListing | undefined>;
-  sorto: SortOrder;
-  sortf: string;
-  setSortf: ListingDispatch<string>;
-  setSorto: ListingDispatch<SortOrder>;
   limit: number;
   setLimit: ListingDispatch<number>;
   page?: number;
@@ -32,8 +27,6 @@ export interface ListingState {
 
 const useListing = (): ListingState => {
   const [listing, setListing] = React.useState<ResourceListing>();
-  const [sorto, setSorto] = React.useState<SortOrder>(defaultSortOrder);
-  const [sortf, setSortf] = React.useState<string>(defaultSortField);
   const [limit, setLimit] = React.useState<number>(30);
   const [page, setPage] = React.useState<number>();
   const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
@@ -50,10 +43,6 @@ const useListing = (): ListingState => {
   return {
     listing,
     setListing,
-    sorto,
-    setSorto,
-    sortf,
-    setSortf,
     limit,
     setLimit,
     page,
