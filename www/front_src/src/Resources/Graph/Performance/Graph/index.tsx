@@ -322,7 +322,7 @@ const Graph = ({
     const { top, bottom } = context;
 
     const isWithinBounds =
-      containerBounds.top > top && containerBounds.bottom > bottom;
+      containerBounds.top > top && containerBounds.bottom < bottom;
 
     if (isMouseOver || !isWithinBounds) {
       return;
