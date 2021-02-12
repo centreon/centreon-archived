@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, makeStyles, Grid } from '@material-ui/core';
 
-import { SelectField, SearchField, Filters } from '@centreon/ui';
+import { SelectField, SearchField, MemoizedFilters } from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -63,6 +63,8 @@ const Filter = (): JSX.Element => {
     setNewFilter,
   } = useResourceContext();
 
+  const memoProps = [filter, nextSearch, customFilters, customFiltersLoading];
+
   const requestSearch = (): void => {
     setCriteria({ name: 'search', value: nextSearch });
   };
@@ -119,7 +121,7 @@ const Filter = (): JSX.Element => {
   const canDisplaySelectedFilter = find(propEq('id', filter.id), options);
 
   return (
-    <Filters
+    <MemoizedFilters
       expanded={expanded}
       onExpand={expandFilters}
       expandLabel={labelShowCriteriasFilters}
@@ -163,6 +165,7 @@ const Filter = (): JSX.Element => {
         </Grid>
       }
       expandableFilters={<Criterias />}
+      memoProps={memoProps}
     />
   );
 };
