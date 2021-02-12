@@ -216,6 +216,7 @@ for ($i = 0; $data = $downtimesStatement->fetchRow(); $i++) {
         $tab_downtime_svc[$i]['s_details_uri'] = "./main.php?p=207&o=d&ba_id="
             . $tab_service_bam[$data['service_description']]['id'];
         $tab_downtime_svc[$i]['service_description'] = $tab_service_bam[$data['service_description']]['name'];
+        $tab_downtime_svc[$i]['downtime_type'] = 'SVC';
         if ($tab_downtime_svc[$i]['author_name'] == 'Centreon Broker BAM Module') {
             $tab_downtime_svc[$i]['scheduled_end_time'] = "Automatic";
             $tab_downtime_svc[$i]['duration'] = 'Automatic';
