@@ -2967,10 +2967,10 @@ msgstr "métrica"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: /srv/translate/sources/git/centreon/www/include/configuration/configObject/command/listCommand.php:127
-#: /srv/translate/sources/git/centreon/www/install/menu_translation.php:95
-#: /srv/translate/sources/git/centreon/www/include/options/oreon/generalOpt/colors/form.php:59
-#: /srv/translate/sources/git/centreon/www/include/configuration/configServers/formServers.php:122
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
 #: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Diverso"
