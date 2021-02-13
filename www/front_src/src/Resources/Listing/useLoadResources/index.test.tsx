@@ -73,27 +73,54 @@ describe(useLoadResources, () => {
   });
 
   const testCases = [
-    ['sortf', (): void => context.setSortf('a')],
-    ['sorto', (): void => context.setSorto('desc')],
+    [
+      'sort',
+      (): void => context.setCriteria({ name: 'sort', value: ['a', 'asc'] }),
+    ],
     ['limit', (): void => context.setLimit(20), '20'],
-    ['currentSearch', (): void => context.setCurrentSearch('toto')],
+    [
+      'search',
+      (): void => context.setCriteria({ name: 'search', value: 'toto' }),
+    ],
     [
       'states',
       (): void =>
-        context.setStates([{ id: 'unhandled', name: 'Unhandled problems' }]),
+        context.setCriteria({
+          name: 'states',
+          value: [{ id: 'unhandled', name: 'Unhandled problems' }],
+        }),
     ],
-    ['statuses', (): void => context.setStatuses([{ id: 'OK', name: 'Ok' }])],
+    [
+      'statuses',
+      (): void =>
+        context.setCriteria({
+          name: 'statuses',
+          value: [{ id: 'OK', name: 'Ok' }],
+        }),
+    ],
     [
       'resourceTypes',
-      (): void => context.setResourceTypes([{ id: 'host', name: 'Host' }]),
+      (): void =>
+        context.setCriteria({
+          name: 'resource_types',
+          value: [{ id: 'host', name: 'Host' }],
+        }),
     ],
     [
       'hostGroups',
-      (): void => context.setHostGroups([{ id: 0, name: 'Linux-servers' }]),
+      (): void =>
+        context.setCriteria({
+          name: 'host_groups',
+          value: [{ id: 0, name: 'Linux-servers' }],
+        }),
     ],
     [
       'serviceGroups',
-      (): void => context.setServiceGroups([{ id: 1, name: 'Web-services' }]),
+      (): void =>
+        context.setCriteria({
+          name: 'service_groups',
+          value: [{ id: 1, name: 'Web-services' }],
+        }),
     ],
   ];
 

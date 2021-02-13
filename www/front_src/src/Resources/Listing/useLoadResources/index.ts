@@ -1,9 +1,13 @@
 import * as React from 'react';
 
 import { useSelector } from 'react-redux';
-import { isNil, equals, not } from 'ramda';
+import { isNil, equals, not, prop } from 'ramda';
+import useDeepCompareEffect from 'use-deep-compare-effect';
+
+import { SelectEntry } from '@centreon/ui/src';
 
 import { useResourceContext } from '../../Context';
+import { SortOrder } from '../../models';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
@@ -11,17 +15,9 @@ export interface LoadResources {
 
 const useLoadResources = (): LoadResources => {
   const {
-    sortf,
-    sorto,
-    states,
-    statuses,
-    resourceTypes,
-    hostGroups,
-    serviceGroups,
     limit,
     page,
     setPage,
-    currentSearch,
     nextSearch,
     setListing,
     sendRequest,
@@ -30,6 +26,8 @@ const useLoadResources = (): LoadResources => {
     loadDetails,
     details,
     selectedResourceId,
+    getCriteriaValue,
+    filter,
   } = useResourceContext();
 
   const refreshIntervalRef = React.useRef<number>();
@@ -38,12 +36,24 @@ const useLoadResources = (): LoadResources => {
     (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
   );
 
+  const getSort = (): { [sortField: string]: SortOrder } | undefined => {
+    const sort = getCriteriaValue('sort');
+
+    if (isNil(sort)) {
+      return undefined;
+    }
+
+    const [sortField, sortOrder] = sort as [string, SortOrder];
+
+    return { [sortField]: sortOrder };
+  };
+
   const load = (): void => {
-    const sort = sortf ? { [sortf]: sorto } : undefined;
-    const search = currentSearch
+    const searchCriteria = getCriteriaValue('search');
+    const search = searchCriteria
       ? {
           regex: {
-            value: currentSearch,
+            value: searchCriteria,
             fields: [
               'h.name',
               'h.alias',
@@ -55,13 +65,21 @@ const useLoadResources = (): LoadResources => {
         }
       : undefined;
 
+    const getCriteriaIds = (name: string) => {
+      const criteriaValue = getCriteriaValue(name) as
+        | Array<SelectEntry>
+        | undefined;
+
+      return criteriaValue?.map(prop('id'));
+    };
+
     sendRequest({
-      states: states.map(({ id }) => id),
-      statuses: statuses.map(({ id }) => id),
-      resourceTypes: resourceTypes.map(({ id }) => id),
-      hostGroupIds: hostGroups?.map(({ id }) => id),
-      serviceGroupIds: serviceGroups?.map(({ id }) => id),
-      sort,
+      resourceTypes: getCriteriaIds('resource_types'),
+      states: getCriteriaIds('states'),
+      statuses: getCriteriaIds('statuses'),
+      hostGroupIds: getCriteriaIds('host_groups'),
+      serviceGroupIds: getCriteriaIds('service_groups'),
+      sort: getSort(),
       limit,
       page,
       search,
@@ -87,7 +105,10 @@ const useLoadResources = (): LoadResources => {
   };
 
   const initAutorefreshAndLoad = (): void => {
-    if (isNil(customFilters) || not(equals(currentSearch, nextSearch))) {
+    if (
+      isNil(customFilters) ||
+      not(equals(getCriteriaValue('search'), nextSearch))
+    ) {
       return;
     }
 
@@ -113,23 +134,13 @@ const useLoadResources = (): LoadResources => {
     initAutorefreshAndLoad();
   }, [page]);
 
-  React.useEffect(() => {
+  useDeepCompareEffect(() => {
     if (page === 1) {
       initAutorefreshAndLoad();
     }
 
     setPage(1);
-  }, [
-    sortf,
-    sorto,
-    limit,
-    currentSearch,
-    states,
-    statuses,
-    resourceTypes,
-    hostGroups,
-    serviceGroups,
-  ]);
+  }, [limit, ...filter.criterias]);
 
   return { initAutorefreshAndLoad };
 };
