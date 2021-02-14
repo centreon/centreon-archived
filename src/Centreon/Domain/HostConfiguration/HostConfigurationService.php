@@ -240,7 +240,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         if (preg_match_all('/(\$_HOST\S+?\$)/', $command, $matches)) {
             $matchedMacros = $matches[0];
 
-            foreach($matchedMacros as $matchedMacroName) {
+            foreach ($matchedMacros as $matchedMacroName) {
                 $hostMacros[$matchedMacroName] = (new HostMacro())
                     ->setName($matchedMacroName)
                     ->setValue('');

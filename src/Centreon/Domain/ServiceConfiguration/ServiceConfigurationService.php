@@ -305,7 +305,7 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
         if (preg_match_all('/(\$_SERVICE\S+?\$)/', $command, $matches)) {
             $matchedMacros = $matches[0];
 
-            foreach($matchedMacros as $matchedMacroName) {
+            foreach ($matchedMacros as $matchedMacroName) {
                 $hostMacros[$matchedMacroName] = (new ServiceMacro())
                     ->setName($matchedMacroName)
                     ->setValue('');
@@ -317,7 +317,6 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
                     $serviceMacros[$linkedServiceMacro->getName()] = $linkedServiceMacro;
                 }
             }
-
         }
 
         return array_values($serviceMacros);

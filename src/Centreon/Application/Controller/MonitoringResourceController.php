@@ -667,9 +667,9 @@ class MonitoringResourceController extends AbstractController
      *
      * @param integer $hostId
      * @param integer $serviceId
-     * @return void
+     * @return string
      */
-    public function buildServiceDetailsUri(int $hostId, int $serviceId)
+    public function buildServiceDetailsUri(int $hostId, int $serviceId): string
     {
         return $this->buildServiceUri($hostId, $serviceId, self::TAB_DETAILS_NAME);
     }
