@@ -281,14 +281,13 @@ class MonitoringResourceController extends AbstractController
         $this->resource->enrichHostWithDetails($resource);
 
         try {
-            $host = (new Host())
-                ->setId($resource->getId())
+            $host = (new Host())->setId($resource->getId())
                 ->setCheckCommand($resource->getCommandLine());
             $this->monitoring->hidePasswordInHostCommandLine($host);
             $resource->setCommandLine($host->getCheckCommand());
         } catch (\Throwable $ex) {
             $resource->setCommandLine(
-                sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
+                sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
             );
         }
 
@@ -345,16 +344,13 @@ class MonitoringResourceController extends AbstractController
         try {
             $service = (new Service())
                 ->setId($resource->getId())
-                ->setHost(
-                    (new Host())
-                        ->setId($resource->getParent()->getId())
-                )
+                ->setHost((new Host())->setId($resource->getParent()->getId()))
                 ->setCommandLine($resource->getCommandLine());
             $this->monitoring->hidePasswordInServiceCommandLine($service);
             $resource->setCommandLine($service->getCommandLine());
         } catch (\Throwable $ex) {
             $resource->setCommandLine(
-                sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
+                sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
             );
         }
 

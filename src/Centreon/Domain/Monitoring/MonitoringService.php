@@ -33,6 +33,8 @@ use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
 use Centreon\Domain\ServiceConfiguration\ServiceMacro;
+use Centreon\Domain\HostConfiguration\Exception\HostCommandException;
+use Centreon\Domain\ServiceConfiguration\Exception\ServiceCommandException;
 
 /**
  * Monitoring class used to manage the real time services and hosts
@@ -343,12 +345,12 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
             return;
         }
         if ($monitoringHost->getId() === null) {
-            throw new MonitoringServiceException(_('The host id can not be null'));
+            throw MonitoringServiceException::hostIdNotNull();
         }
 
         $configurationCommand = $this->hostConfiguration->findCommandLine($monitoringHost->getId());
         if (empty($configurationCommand)) {
-            throw new MonitoringServiceException('Check command not found');
+            throw HostCommandException::notFound($monitoringHost->getId());
         }
 
         $hostMacros = $this->hostConfiguration->findHostMacrosFromCommandLine(
@@ -378,10 +380,10 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
             return;
         }
         if ($monitoringService->getId() === null) {
-            throw new MonitoringServiceException(_('The service id can not be null'));
+            throw MonitoringServiceException::serviceIdNotNull();
         }
         if ($monitoringService->getHost() === null || $monitoringService->getHost()->getId() === null) {
-            throw new MonitoringServiceException(_('Host or id can not be null'));
+            throw MonitoringServiceException::hostIdNotNull();
         }
 
         $configurationCommand = $this->serviceConfiguration->findCommandLine($monitoringService->getId());
@@ -394,9 +396,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
                 return;
             } else {
                 // The service is not a META SERVICE
-                throw new MonitoringServiceException(
-                    'Check command not found'
-                );
+                throw ServiceCommandException::notFound($monitoringService->getId());
             }
         }
 
@@ -446,6 +446,8 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         foreach ($macros as $macro) {
             if ($macro->isPassword()) {
                 $macroPasswordNames[] = $macro->getName();
+            } else {
+                $configurationCommand = str_replace($macro->getName(), $macro->getValue(), $configurationCommand);
             }
         }
 
@@ -463,7 +465,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         // build a regex to identify macro associated value
         // example :
         //  - configuration command : $USER1$/check_icmp -H $HOSTADDRESS$ $_HOSTPASSWORD$
-        //  - generated regex : ^\Q\E(.*)\Q/check_icmp -H \E(.*)\Q \E(.*)\Q\E$
+        //  - generated regex : ^(.*)\/check_icmp \-H (.*) (.*)$
         //  - monitoring : /usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 hiddenPassword
         //  ==> matched values : [/usr/lib64/nagios/plugins/check_icmp, hiddenPassword]
         $commandSplittedByMacros = preg_split('/(\$\S+?\$)/', $configurationCommand);
@@ -477,7 +479,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
 
         // if two macros are glued, regex cannot detect properly password string
         if (str_contains($macroRegex, '(.*)(.*)')) {
-            throw new MonitoringServiceException('Cannot parse configuration command line');
+            throw MonitoringServiceException::macroPasswordNotDetected();
         }
 
         if (preg_match('/' . $macroRegex . '/', $monitoringCommand, $foundMacroValues)) {
@@ -485,14 +487,11 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
 
             foreach ($foundMacroNames as $index => $foundMacroName) {
                 $foundMacroValue = $foundMacroValues[$index];
-                if (in_array($foundMacroName, $macroPasswordNames)) {
-                    $configurationCommand = str_replace($foundMacroName, $replacementValue, $configurationCommand);
-                } else {
-                    $configurationCommand = str_replace($foundMacroName, $foundMacroValue, $configurationCommand);
-                }
+                $macroValue = in_array($foundMacroName, $macroPasswordNames) ? $replacementValue : $foundMacroValue;
+                $configurationCommand = str_replace($foundMacroName, $macroValue, $configurationCommand);
             }
         } else {
-            throw new MonitoringServiceException('Cannot parse configuration command line');
+            throw MonitoringServiceException::configurationhasChanged();
         }
 
         return $configurationCommand;
