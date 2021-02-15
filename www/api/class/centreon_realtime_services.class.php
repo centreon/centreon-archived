@@ -162,11 +162,8 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         } else {
             $this->instance = null;
         }
-        if (isset($this->arguments['criticality'])) {
-            $this->criticality = $this->arguments['criticality'];
-        } else {
-            $this->criticality = null;
-        }
+        // set criticality
+        $this->criticality = $this->arguments['criticality'] ?? null;
 
         /* view properties */
         if (isset($this->arguments['viewType'])) {
