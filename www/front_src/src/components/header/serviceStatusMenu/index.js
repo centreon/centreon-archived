@@ -141,7 +141,7 @@ class ServiceStatusMenu extends Component {
 
     // do not display service information until having data
     if (!data) {
-      return <MenuLoader width={36} />;
+      return <MenuLoader width={33} />;
     }
 
     return (
