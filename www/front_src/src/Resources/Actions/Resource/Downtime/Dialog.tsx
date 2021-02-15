@@ -24,7 +24,6 @@ import {
   Dialog,
   TextField,
   SelectField,
-  Loader,
   useLocaleDateTimeFormat,
 } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
@@ -64,7 +63,6 @@ interface Props {
   handleChange;
   setFieldValue;
   submitting: boolean;
-  loading: boolean;
 }
 
 const pickerCommonProps = {
@@ -99,7 +97,6 @@ const DialogDowntime = ({
   submitting,
   handleChange,
   setFieldValue,
-  loading,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { locale, timezone } = useUserContext();
@@ -138,7 +135,6 @@ const DialogDowntime = ({
       confirmDisabled={!canConfirm}
       submitting={submitting}
     >
-      {loading && <Loader fullContent />}
       {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
       <MuiPickersUtilsProvider utils={Adapter} locale={locale.substring(0, 2)}>
         <Grid direction="column" container spacing={1}>

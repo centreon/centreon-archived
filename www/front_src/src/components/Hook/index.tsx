@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import * as React from 'react';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -44,11 +44,7 @@ const LoadableHooks = ({
 
 const Hook = React.memo(
   (props: Props) => {
-    return (
-      <Suspense fallback={null}>
-        <LoadableHooks {...props} />
-      </Suspense>
-    );
+    return <LoadableHooks {...props} />;
   },
   ({ hooks: previousHooks }, { hooks: nextHooks }) =>
     equals(previousHooks, nextHooks),
