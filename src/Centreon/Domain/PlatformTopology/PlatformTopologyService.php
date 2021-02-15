@@ -480,6 +480,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * @param PlatformInterface $platform
      * @throws PlatformTopologyConflictException
      * @throws EntityNotFoundException
+     * @throws \Exception
      */
     private function checkForAlreadyRegisteredSameNameOrAddress(PlatformInterface $platform): void
     {
