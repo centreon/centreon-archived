@@ -136,7 +136,7 @@ class HostMenu extends Component {
 
     // do not display host information until having data
     if (!data) {
-      return <MenuLoader width={29} />;
+      return <MenuLoader width={27} />;
     }
 
     return (
