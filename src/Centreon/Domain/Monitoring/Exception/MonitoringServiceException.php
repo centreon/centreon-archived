@@ -53,6 +53,14 @@ class MonitoringServiceException extends \Exception
      */
     public static function macroPasswordNotDetected(): self
     {
-        return new self(_('Macro password cannot be detected'));
+        return new self(_('Macro passwords cannot be detected'));
+    }
+
+    /**
+     * @return self
+     */
+    public static function configurationCommandNotSplitted(): self
+    {
+        return new self(_('Configuration command cannot be splitted by macros'));
     }
 }

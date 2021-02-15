@@ -15999,3 +15999,15 @@ msgstr "Erreur lors de la recherche de la catégorie de l'hôte (%s)"
 
 msgid "Host category (%s) not found"
 msgstr "Catégorie de l'hôte (%s) non trouvé"
+
+msgid "Service id cannot be null"
+msgstr "L'id du service ne peut pas être nul"
+
+msgid "Configuration has changed"
+msgstr "La configuration a changé"
+
+msgid "Macro passwords cannot be detected"
+msgstr "Les macros de type mot de passe ne peuvent pas être détectées"
+
+msgid "Configuration command cannot be splitted by macros"
+msgstr "La commande de configuration ne peut être séparée par macros"

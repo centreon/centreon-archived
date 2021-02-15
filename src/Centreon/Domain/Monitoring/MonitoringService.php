@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -390,7 +390,10 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         if (empty($configurationCommand)) {
             // If there is no command line defined in the configuration, it's useless to continue.
             $service = $this->serviceConfiguration->findService($monitoringService->getId());
-            if ($service->getServiceType() === \Centreon\Domain\ServiceConfiguration\Service::TYPE_META_SERVICE) {
+            if (
+                $service !== null
+                && $service->getServiceType() === \Centreon\Domain\ServiceConfiguration\Service::TYPE_META_SERVICE
+            ) {
                 // For META SERVICE we can define the configuration command line with the monitoring command line
                 $monitoringService->setCommandLine($monitoringCommand);
                 return;
@@ -410,7 +413,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         );
 
         /**
-         * @var ServiceMacro[]|HostMacro[] $macros
+         * @var HostMacro[]|ServiceMacro[] $macros
          */
         $macros = array_merge($hostMacros, $serviceMacros);
 
@@ -424,76 +427,5 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         if (!empty($builtCommand)) {
             $monitoringService->setCommandLine($builtCommand);
         }
-    }
-
-    /**
-     * Build command line by comparing monitoring & configuration commands
-     * and by replacing macros in configuration command
-     *
-     * @param string $configurationCommand
-     * @param string $monitoringCommand
-     * @param array $macros
-     * @param string $replacementValue
-     * @return string|null
-     */
-    private function buildCommandLineFromConfiguration(
-        string $configurationCommand,
-        string $monitoringCommand,
-        array $macros,
-        string $replacementValue
-    ): ?string {
-        $macroPasswordNames = [];
-        foreach ($macros as $macro) {
-            if ($macro->isPassword()) {
-                $macroPasswordNames[] = $macro->getName();
-            } else {
-                $configurationCommand = str_replace($macro->getName(), $macro->getValue(), $configurationCommand);
-            }
-        }
-
-        if (count($macroPasswordNames) === 0) {
-            return null;
-        }
-
-        $foundMacroNames = [];
-        if (preg_match_all('/(\$\S+?\$)/', $configurationCommand, $matches)) {
-            if (isset($matches[0])) {
-                $foundMacroNames = $matches[0];
-            }
-        }
-
-        // build a regex to identify macro associated value
-        // example :
-        //  - configuration command : $USER1$/check_icmp -H $HOSTADDRESS$ $_HOSTPASSWORD$
-        //  - generated regex : ^(.*)\/check_icmp \-H (.*) (.*)$
-        //  - monitoring : /usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 hiddenPassword
-        //  ==> matched values : [/usr/lib64/nagios/plugins/check_icmp, hiddenPassword]
-        $commandSplittedByMacros = preg_split('/(\$\S+?\$)/', $configurationCommand);
-        $macroRegex = '^';
-        foreach ($commandSplittedByMacros as $index => $commandSection) {
-            $macroMatcher = isset($foundMacroNames[$index]) ? '(.*)' : '';
-
-            $macroRegex .= preg_quote($commandSection, '/') . $macroMatcher;
-        }
-        $macroRegex .= '$';
-
-        // if two macros are glued, regex cannot detect properly password string
-        if (str_contains($macroRegex, '(.*)(.*)')) {
-            throw MonitoringServiceException::macroPasswordNotDetected();
-        }
-
-        if (preg_match('/' . $macroRegex . '/', $monitoringCommand, $foundMacroValues)) {
-            array_shift($foundMacroValues); // remove global string matching
-
-            foreach ($foundMacroNames as $index => $foundMacroName) {
-                $foundMacroValue = $foundMacroValues[$index];
-                $macroValue = in_array($foundMacroName, $macroPasswordNames) ? $replacementValue : $foundMacroValue;
-                $configurationCommand = str_replace($foundMacroName, $macroValue, $configurationCommand);
-            }
-        } else {
-            throw MonitoringServiceException::configurationhasChanged();
-        }
-
-        return $configurationCommand;
     }
 }
