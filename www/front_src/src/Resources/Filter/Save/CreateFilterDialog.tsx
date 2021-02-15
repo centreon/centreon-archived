@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { path, not, or, omit } from 'ramda';
+import { path, not, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Dialog, TextField, useRequest } from '@centreon/ui';
@@ -15,8 +15,7 @@ import {
   labelRequired,
 } from '../../translatedLabels';
 import { createFilter } from '../api';
-import { Filter, RawFilter } from '../models';
-import useAdapters from '../api/adapters';
+import { Filter } from '../models';
 
 type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
 
@@ -33,14 +32,11 @@ const CreateFilterDialog = ({
   open,
   onCancel,
 }: Props): JSX.Element => {
-  const { toFilter, toRawFilter } = useAdapters();
-
   const { t } = useTranslation();
 
-  const { sendRequest, sending } = useRequest<RawFilter>({
+  const { sendRequest, sending } = useRequest<Filter>({
     request: createFilter,
   });
-
   const form = useFormik({
     initialValues: {
       name: '',
@@ -49,17 +45,7 @@ const CreateFilterDialog = ({
       name: Yup.string().required(labelRequired),
     }),
     onSubmit: (values) => {
-      sendRequest(
-        omit(
-          ['id'],
-          toRawFilter({
-            id: '',
-            name: values.name,
-            criterias: filter.criterias,
-          }),
-        ),
-      )
-        .then(toFilter)
+      sendRequest({ name: values.name, criterias: filter.criterias })
         .then(onCreate)
         .catch((requestError) => {
           form.setFieldError(
