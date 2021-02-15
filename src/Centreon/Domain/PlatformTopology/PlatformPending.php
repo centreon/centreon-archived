@@ -339,7 +339,7 @@ class PlatformPending implements PlatformInterface
     /**
      * @inheritDoc
      */
-    public function setIsPending(bool $isPending = true): PlatformInterface
+    public function setPending(bool $isPending = true): PlatformInterface
     {
         $this->isPending = $isPending;
         return $this;

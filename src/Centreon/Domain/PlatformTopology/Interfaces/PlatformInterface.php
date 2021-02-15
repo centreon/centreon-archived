@@ -114,7 +114,7 @@ interface PlatformInterface
     public function getServerId(): ?int;
 
     /**
-     * @param int|null $serverId nagios_server ID
+     * @param int|null $serverId monitoring ID
      * @return self
      */
     public function setServerId(?int $serverId): self;
@@ -150,5 +150,5 @@ interface PlatformInterface
      * @param bool $isPending
      * @return self
      */
-    public function setIsPending(bool $isPending): self;
+    public function setPending(bool $isPending): self;
 }
