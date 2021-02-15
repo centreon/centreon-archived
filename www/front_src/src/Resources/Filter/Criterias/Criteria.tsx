@@ -26,7 +26,7 @@ const Criteria = ({ name, value, parentWidth }: Props): JSX.Element => {
   const classes = useStyles();
   const limitTags = parentWidth < 1000 ? 1 : 2;
 
-  const { setCriteria, setNewFilter } = useResourceContext();
+  const { setCriteriaAndNewFilter } = useResourceContext();
 
   const getTranslated = (values: Array<SelectEntry>): Array<SelectEntry> => {
     return values.map((entry) => ({
@@ -36,8 +36,7 @@ const Criteria = ({ name, value, parentWidth }: Props): JSX.Element => {
   };
 
   const changeCriteria = (updatedValue): void => {
-    setCriteria({ name, value: updatedValue });
-    setNewFilter();
+    setCriteriaAndNewFilter({ name, value: updatedValue });
   };
 
   const getUntranslated = (values): Array<SelectEntry> => {

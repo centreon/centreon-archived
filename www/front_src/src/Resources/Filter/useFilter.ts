@@ -42,6 +42,7 @@ import {
   isCustom,
   Filter,
   resourceProblemsFilter,
+  newFilter,
 } from './models';
 import { getDefaultFilter, getDefaultFilterExpanded } from './default';
 
@@ -61,6 +62,7 @@ export interface FilterState {
   setFilter: (filter: Filter) => void;
   setNewFilter: () => void;
   setCriteria: ({ name, value }: { name: string; value }) => void;
+  setCriteriaAndNewFilter: ({ name, value }: { name: string; value }) => void;
   nextSearch?: string;
   setNextSearch: SearchDispatch;
   getCriteriaValue: (name: string) => CriteriaValue | undefined;
@@ -127,6 +129,13 @@ const useFilter = (): FilterState => {
 
   const setCriteria = ({ name, value }): void => {
     setFilter(getFilterWithUpdatedCriteria({ name, value }));
+  };
+
+  const setCriteriaAndNewFilter = ({ name, value }): void => {
+    setFilter({
+      ...getFilterWithUpdatedCriteria({ name, value }),
+      ...newFilter,
+    });
   };
 
   useDeepCompareEffect(() => {
@@ -233,6 +242,7 @@ const useFilter = (): FilterState => {
     filters,
     setFilter,
     setCriteria,
+    setCriteriaAndNewFilter,
     updatedFilter,
     customFilters,
     nextSearch,
