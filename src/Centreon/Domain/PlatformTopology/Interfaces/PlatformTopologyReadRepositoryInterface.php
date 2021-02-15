@@ -31,11 +31,11 @@ interface PlatformTopologyReadRepositoryInterface
     /**
      * Search for already registered servers using same name or address
      *
-     * @param string $address
-     * @param string $name
-     * @return bool returns true if a server is already registered using same address or name
+     * @param string $serverName
+     * @return Platform|null
+     * @throws \Exception
      */
-    public function isPlatformAlreadyRegisteredInTopology(string $address, string $name): bool;
+    public function findPlatformByName(string $serverName): ?Platform;
 
     /**
      * Search for platform's ID using its address

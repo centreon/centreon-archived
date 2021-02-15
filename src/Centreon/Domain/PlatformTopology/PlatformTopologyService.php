@@ -496,12 +496,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             );
         }
 
-        $isAlreadyRegistered = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
-            $platform->getAddress(),
-            $platform->getName()
-        );
-
-        if (true === $isAlreadyRegistered) {
+        $addressAlreadyRegistered = $this->platformTopologyRepository->findPlatformByAddress($platform->getAddress());
+        $nameAlreadyRegistered = $this->platformTopologyRepository->findPlatformByName($platform->getName());
+        if (null !== $nameAlreadyRegistered || null !== $addressAlreadyRegistered) {
             throw new PlatformTopologyConflictException(
                 sprintf(
                     _("A platform using the name : '%s' or address : '%s' already exists"),

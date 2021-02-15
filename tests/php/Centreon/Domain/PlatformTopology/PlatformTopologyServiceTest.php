@@ -192,8 +192,13 @@ class PlatformTopologyServiceTest extends TestCase
     {
         $this->platformTopologyRepository
             ->expects($this->once())
-            ->method('isPlatformAlreadyRegisteredInTopology')
-            ->willReturn(true);
+            ->method('findPlatformByAddress')
+            ->willReturn($this->platform);
+
+        $this->platformTopologyRepository
+            ->expects($this->once())
+            ->method('findPlatformByName')
+            ->willReturn($this->platform);
 
         $this->monitoringServerService
             ->expects($this->once())
@@ -235,8 +240,13 @@ class PlatformTopologyServiceTest extends TestCase
     {
         $this->platformTopologyRepository
             ->expects($this->once())
-            ->method('isPlatformAlreadyRegisteredInTopology')
-            ->willReturn(false);
+            ->method('findPlatformByAddress')
+            ->willReturn(null);
+
+        $this->platformTopologyRepository
+            ->expects($this->once())
+            ->method('findPlatformByName')
+            ->willReturn(null);
 
         $this->platformTopologyRepository
             ->expects($this->once())
@@ -285,8 +295,13 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->platformTopologyRepository
             ->expects($this->once())
-            ->method('isPlatformAlreadyRegisteredInTopology')
-            ->willReturn(false);
+            ->method('findPlatformByAddress')
+            ->willReturn(null);
+
+        $this->platformTopologyRepository
+            ->expects($this->once())
+            ->method('findPlatformByName')
+            ->willReturn(null);
 
         $this->platformTopologyRepository
             ->expects($this->once())

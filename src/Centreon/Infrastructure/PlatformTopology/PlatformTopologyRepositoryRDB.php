@@ -70,20 +70,30 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function isPlatformAlreadyRegisteredInTopology(string $address, string $name): bool
+    public function findPlatformByName(string $serverName): ?Platform
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
-                SELECT `address`, `name`, `type`
-                FROM `:db`.platform_topology
-                WHERE `address` = :address OR `name` = :name collate utf8_bin
+                SELECT * FROM `:db`.platform_topology
+                WHERE `name` = :name
             ')
         );
-        $statement->bindValue(':address', $address, \PDO::PARAM_STR);
-        $statement->bindValue(':name', $name, \PDO::PARAM_STR);
+        $statement->bindValue(':name', $serverName, \PDO::PARAM_STR);
         $statement->execute();
 
-        return (!empty($statement->fetch(\PDO::FETCH_ASSOC)));
+        $platform = null;
+
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var Platform $platform
+             */
+            $platform = EntityCreator::createEntityByArray(
+                Platform::class,
+                $result
+            );
+        }
+
+        return $platform;
     }
 
     /**
