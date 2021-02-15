@@ -73,7 +73,7 @@ class Information
     }
 
     /**
-     * @return string|array<string,mixed>|integer|boolean|null
+     * @return string|array<string,mixed>|int|bool|null
      */
     public function getValue()
     {
