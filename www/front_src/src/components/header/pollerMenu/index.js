@@ -24,7 +24,7 @@ import { connect } from 'react-redux';
 import axios from '../../../axios';
 import styles from '../header.scss';
 import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
-import MenuLoader from '../menuLoader';
+import MenuLoader from '../../MenuLoader';
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901';
 

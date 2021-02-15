@@ -6,7 +6,7 @@ import { equals } from 'ramda';
 
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
-import MenuLoader from '../header/menuLoader';
+import MenuLoader from '../MenuLoader';
 
 interface Props {
   history;

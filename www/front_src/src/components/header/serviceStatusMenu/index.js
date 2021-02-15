@@ -40,7 +40,7 @@ import {
   pendingCriterias,
   unhandledStateCriterias,
 } from '../getResourcesUrl';
-import MenuLoader from '../menuLoader';
+import MenuLoader from '../../MenuLoader';
 
 const numberFormat = yup.number().required().integer();
 

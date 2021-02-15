@@ -17,7 +17,7 @@ import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowe
 import styles from '../header.scss';
 import Clock from '../clock';
 import axios from '../../../axios';
-import MenuLoader from '../menuLoader';
+import MenuLoader from '../../MenuLoader';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
