@@ -30,8 +30,11 @@ const getDefaultFilter = (): Filter => {
   const defaultFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
 
   const urlQueryParameters = getUrlQueryParameters();
+  const filterQueryParameter = urlQueryParameters.filter as Filter | undefined;
 
-  if (hasPath(['filter'], urlQueryParameters)) {
+  const hasCriterias = Array.isArray(filterQueryParameter?.criterias);
+
+  if (hasCriterias) {
     const filterFromUrl = urlQueryParameters.filter as Filter;
 
     const mergedCriterias = pipe(
