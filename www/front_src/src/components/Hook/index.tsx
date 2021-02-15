@@ -6,7 +6,7 @@ import { equals } from 'ramda';
 
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
-import MenuPoller from '../header/menuLoader';
+import MenuLoader from '../header/menuLoader';
 
 interface Props {
   history;
@@ -36,7 +36,7 @@ const LoadableHooks = ({
           );
 
           return (
-            <React.Suspense key={path} fallback={<MenuPoller width={29} />}>
+            <React.Suspense key={path} fallback={<MenuLoader width={29} />}>
               <HookComponent centreonAxios={centreonAxios} {...rest} />
             </React.Suspense>
           );
