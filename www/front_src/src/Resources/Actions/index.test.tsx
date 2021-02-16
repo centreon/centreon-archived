@@ -14,6 +14,7 @@ import {
 import userEvent from '@testing-library/user-event';
 
 import { useUserContext } from '@centreon/ui-context';
+import { SeverityCode } from '@centreon/ui';
 
 import {
   labelAcknowledgedBy,
@@ -893,14 +894,14 @@ describe(Actions, () => {
           ...host,
           status: {
             name: 'UP',
-            severity_code: 5,
+            severity_code: SeverityCode.Ok,
           },
         },
         {
           ...service,
           status: {
             name: 'OK',
-            severity_code: 5,
+            severity_code: SeverityCode.Ok,
           },
         },
       ]);

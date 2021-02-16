@@ -8,7 +8,12 @@ import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 import IconMore from '@material-ui/icons/MoreHoriz';
 
-import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
+import {
+  useCancelTokenSource,
+  Severity,
+  useSnackbar,
+  SeverityCode,
+} from '@centreon/ui';
 
 import IconDowntime from '../../icons/Downtime';
 import {
@@ -186,7 +191,7 @@ const ResourceActionsContent = ({
   };
 
   const areSelectedResourcesOk = all(
-    pathEq(['status', 'severity_code'], 5),
+    pathEq(['status', 'severity_code'], SeverityCode.Ok),
     selectedResources,
   );
 

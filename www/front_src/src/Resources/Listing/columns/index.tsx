@@ -94,7 +94,11 @@ const StatusColumnOnHover = ({
 
   const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
 
-  const isResourceOk = pathEq(['status', 'severity_code'], 5, row);
+  const isResourceOk = pathEq(
+    ['status', 'severity_code'],
+    SeverityCode.Ok,
+    row,
+  );
 
   const disableAcknowledge = !canAcknowledge([row]) || isResourceOk;
   const disableDowntime = !canDowntime([row]);
