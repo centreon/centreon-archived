@@ -6,8 +6,9 @@ import React from 'react';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
+import { ContentWithCircularLoading } from '@centreon/ui';
+
 import styles from '../../styles/partials/form/_form.scss';
-import Loader from '../loader';
 
 export default ({ formTitle, statusCreating, statusGenerating, error }) => {
   const { t } = useTranslation();
@@ -22,36 +23,43 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
           <h2 className={styles['form-title']}>{formTitle}</h2>
         </div>
         {/* display loader until tasks are finished or error is displayed */}
-        {loading && <Loader />}
         <p className={styles['form-text']}>
           {t('Creating Export Task')}
-          <span
-            className={classnames(
-              styles['form-status'],
-              styles[statusCreating ? 'valid' : 'failed'],
-            )}
-          >
-            {statusCreating != null ? (
-              <span>{statusCreating ? '[OK]' : '[FAIL]'}</span>
-            ) : (
-              '...'
-            )}
-          </span>
+          <ContentWithCircularLoading loading={loading} alignCenter>
+            <>
+              <span
+                className={classnames(
+                  styles['form-status'],
+                  styles[statusCreating ? 'valid' : 'failed'],
+                )}
+              >
+                {statusCreating != null ? (
+                  <span>{statusCreating ? '[OK]' : '[FAIL]'}</span>
+                ) : (
+                  '...'
+                )}
+              </span>
+            </>
+          </ContentWithCircularLoading>
         </p>
         <p className={styles['form-text']}>
           {t('Generating Export Files')}
-          <span
-            className={classnames(
-              styles['form-status'],
-              styles[statusGenerating ? 'valid' : 'failed'],
-            )}
-          >
-            {statusGenerating != null ? (
-              <span>{statusGenerating ? '[OK]' : '[FAIL]'}</span>
-            ) : (
-              '...'
-            )}
-          </span>
+          <ContentWithCircularLoading loading={loading} alignCenter>
+            <>
+              <span
+                className={classnames(
+                  styles['form-status'],
+                  styles[statusGenerating ? 'valid' : 'failed'],
+                )}
+              >
+                {statusGenerating != null ? (
+                  <span>{statusGenerating ? '[OK]' : '[FAIL]'}</span>
+                ) : (
+                  '...'
+                )}
+              </span>
+            </>
+          </ContentWithCircularLoading>
         </p>
         {hasError && (
           <span className={styles['form-error-message']}>{error}</span>

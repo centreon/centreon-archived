@@ -124,8 +124,8 @@ const Filter = (): JSX.Element => {
   return (
     <Filters
       expanded={expanded}
-      onExpand={expandFilters}
       expandLabel={labelShowCriteriasFilters}
+      onExpand={expandFilters}
       filters={
         <Grid container spacing={1} alignItems="center">
           <Grid item>
