@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { head, pick } from 'ramda';
+import { all, head, pathEq, pick } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
@@ -8,7 +8,12 @@ import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 import IconMore from '@material-ui/icons/MoreHoriz';
 
-import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
+import {
+  useCancelTokenSource,
+  Severity,
+  useSnackbar,
+  SeverityCode,
+} from '@centreon/ui';
 
 import IconDowntime from '../../icons/Downtime';
 import {
@@ -185,7 +190,13 @@ const ResourceActionsContent = ({
     setMoreActionsMenuAnchor(event.currentTarget);
   };
 
-  const disableAcknowledge = !canAcknowledge(selectedResources);
+  const areSelectedResourcesOk = all(
+    pathEq(['status', 'severity_code'], SeverityCode.Ok),
+    selectedResources,
+  );
+
+  const disableAcknowledge =
+    !canAcknowledge(selectedResources) || areSelectedResourcesOk;
   const disableDowntime = !canDowntime(selectedResources);
   const disableCheck = !canCheck(selectedResources);
   const disableDisacknowledge = !canDisacknowledge(selectedResources);
