@@ -34,9 +34,9 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Traits;
+namespace Centreon\Tests\Resources\Traits;
 
-use Centreon\Tests\Resource\CheckPoint;
+use Centreon\Tests\Resources\CheckPoint;
 use Symfony\Component\Serializer\Serializer;
 use Centreon\ServiceProvider;
 
@@ -86,7 +86,7 @@ trait WebServiceExecuteTestTrait
      * Mock the repository methods related with the pagination
      *
      * @param array $entities
-     * @param \Centreon\Tests\Resource\CheckPoint $checkPoints
+     * @param \Centreon\Tests\Resources\CheckPoint $checkPoints
      * @param string $repositoryClass
      * @param callable $callback
      */

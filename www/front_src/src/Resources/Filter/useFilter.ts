@@ -6,9 +6,11 @@ import {
   isNil,
   lensPath,
   omit,
+  pipe,
   propEq,
   reject,
   set,
+  sortBy,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -40,6 +42,7 @@ import {
   isCustom,
   Filter,
   resourceProblemsFilter,
+  newFilter,
 } from './models';
 import { getDefaultFilter, getDefaultFilterExpanded } from './default';
 
@@ -59,6 +62,7 @@ export interface FilterState {
   setFilter: (filter: Filter) => void;
   setNewFilter: () => void;
   setCriteria: ({ name, value }: { name: string; value }) => void;
+  setCriteriaAndNewFilter: ({ name, value }: { name: string; value }) => void;
   nextSearch?: string;
   setNextSearch: SearchDispatch;
   getCriteriaValue: (name: string) => CriteriaValue | undefined;
@@ -125,6 +129,13 @@ const useFilter = (): FilterState => {
 
   const setCriteria = ({ name, value }): void => {
     setFilter(getFilterWithUpdatedCriteria({ name, value }));
+  };
+
+  const setCriteriaAndNewFilter = ({ name, value }): void => {
+    setFilter({
+      ...getFilterWithUpdatedCriteria({ name, value }),
+      ...newFilter,
+    });
   };
 
   useDeepCompareEffect(() => {
@@ -207,9 +218,19 @@ const useFilter = (): FilterState => {
   };
 
   const getMultiSelectCriterias = (): Array<Criteria> => {
-    return reject<Criteria>(({ name }) => isNil(selectableCriterias[name]))(
-      filter.criterias,
-    );
+    const getSelectableCriteriaByName = (name: string) =>
+      selectableCriterias[name];
+
+    const isNonSelectableCriteria = (criteria: Criteria) =>
+      pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
+
+    const getSortId = ({ name }: Criteria) =>
+      getSelectableCriteriaByName(name).sortId;
+
+    return pipe(
+      reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
+      sortBy(getSortId),
+    )(filter.criterias);
   };
 
   const toggleFilterExpanded = (): void => {
@@ -221,6 +242,7 @@ const useFilter = (): FilterState => {
     filters,
     setFilter,
     setCriteria,
+    setCriteriaAndNewFilter,
     updatedFilter,
     customFilters,
     nextSearch,

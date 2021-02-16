@@ -38,7 +38,7 @@ namespace Centreon\Tests\Domain\Repository;
 
 use Centreon\Domain\Repository\CommandRepository;
 use PHPUnit\Framework\TestCase;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group Centreon

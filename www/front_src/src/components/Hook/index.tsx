@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import * as React from 'react';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { equals } from 'ramda';
 
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
+import MenuLoader from '../MenuLoader';
 
 interface Props {
   history;
@@ -35,7 +36,9 @@ const LoadableHooks = ({
           );
 
           return (
-            <HookComponent key={path} centreonAxios={centreonAxios} {...rest} />
+            <React.Suspense key={path} fallback={<MenuLoader width={29} />}>
+              <HookComponent centreonAxios={centreonAxios} {...rest} />
+            </React.Suspense>
           );
         })}
     </>
@@ -44,11 +47,7 @@ const LoadableHooks = ({
 
 const Hook = React.memo(
   (props: Props) => {
-    return (
-      <Suspense fallback={null}>
-        <LoadableHooks {...props} />
-      </Suspense>
-    );
+    return <LoadableHooks {...props} />;
   },
   ({ hooks: previousHooks }, { hooks: nextHooks }) =>
     equals(previousHooks, nextHooks),

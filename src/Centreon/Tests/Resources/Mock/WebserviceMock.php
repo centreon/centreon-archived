@@ -34,39 +34,33 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Mock;
+namespace Centreon\Tests\Resources\Mock;
 
-use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
-use Pimple\Container;
+use Centreon\Infrastructure\Webservice;
+use Centreon\Application\DataRepresenter;
 
 /**
- * Mock of CLAPI class
+ * Mock of webservice class
  */
-class ClapiMock implements CentreonClapiServiceInterface
+class WebserviceMock extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizeRestApiInterface
 {
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(Container $di)
-    {
-    }
 
     /**
      * {@inheritdoc}
      */
     public static function getName(): string
     {
-        return 'ClapiMock';
+        return 'webservice_mock';
     }
 
     /**
-     * Execute test CLI command
+     * Return empty list
      *
-     * @return void
+     * @return \Centreon\Application\DataRepresenter\Response
      */
-    public function execute(): void
+    public function getList(): DataRepresenter\Response
     {
-        throw new \Exception('test cmd');
+        return new DataRepresenter\Response([]);
     }
 }

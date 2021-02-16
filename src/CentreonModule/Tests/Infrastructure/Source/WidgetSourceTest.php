@@ -48,13 +48,12 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonModule\Infrastructure\Source\WidgetSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
-use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
+use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class WidgetSourceTest extends TestCase
 {
-
-    use TestCaseExtensionTrait,
-        SourceDependencyTrait;
+    use TestCaseExtensionTrait;
+    use SourceDependencyTrait;
 
     public static $widgetName = 'test-widget';
     public static $widgetInfo = [
