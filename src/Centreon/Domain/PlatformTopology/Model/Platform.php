@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformTopology;
+namespace Centreon\Domain\PlatformTopology\Model;
 
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 

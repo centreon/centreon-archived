@@ -108,7 +108,7 @@ services:
         class: Centreon\Domain\PlatformTopology\PlatformTopologyService
 
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRepositoryRDB
+        class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRepositoryRDB
 
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface:
         class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRegisterRepositoryAPI

@@ -1,6 +1,7 @@
 <?php
 
 /*
+ *
  * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,12 +22,11 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\PlatformTopology;
+namespace Centreon\Infrastructure\PlatformTopology\Repository;
 
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
-use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
@@ -49,7 +49,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function addPlatformToTopology(PlatformInterface $platformPending): void
+    public function addPlatformToTopology(PlatformInterface $platform): void
     {
         $statement = $this->db->prepare(
             $this->translateDbName("
@@ -58,12 +58,12 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
                 VALUES (:address, :name, :type, :parentId, :serverId, :hostname, '1')
             ")
         );
-        $statement->bindValue(':address', $platformPending->getAddress(), \PDO::PARAM_STR);
-        $statement->bindValue(':name', $platformPending->getName(), \PDO::PARAM_STR);
-        $statement->bindValue(':type', $platformPending->getType(), \PDO::PARAM_STR);
-        $statement->bindValue(':parentId', $platformPending->getParentId(), \PDO::PARAM_INT);
-        $statement->bindValue(':serverId', $platformPending->getServerId(), \PDO::PARAM_INT);
-        $statement->bindValue(':hostname', $platformPending->getHostname(), \PDO::PARAM_STR);
+        $statement->bindValue(':address', $platform->getAddress(), \PDO::PARAM_STR);
+        $statement->bindValue(':name', $platform->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':type', $platform->getType(), \PDO::PARAM_STR);
+        $statement->bindValue(':parentId', $platform->getParentId(), \PDO::PARAM_INT);
+        $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
+        $statement->bindValue(':hostname', $platform->getHostname(), \PDO::PARAM_STR);
         $statement->execute();
     }
 

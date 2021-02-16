@@ -24,50 +24,48 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-use Centreon\Domain\PlatformTopology\Platform;
-
 interface PlatformTopologyReadRepositoryInterface
 {
     /**
      * Search for already registered servers using same name or address
      *
      * @param string $serverName
-     * @return Platform|null
+     * @return PlatformInterface|null
      * @throws \Exception
      */
-    public function findPlatformByName(string $serverName): ?Platform;
+    public function findPlatformByName(string $serverName): ?PlatformInterface;
 
     /**
      * Search for platform's ID using its address
      *
      * @param string $serverAddress
-     * @return Platform|null
+     * @return PlatformInterface|null
      * @throws \Exception
      */
-    public function findPlatformByAddress(string $serverAddress): ?Platform;
+    public function findPlatformByAddress(string $serverAddress): ?PlatformInterface;
 
     /**
      * Search for platform's name and address using its type
      *
      * @param string $serverType
-     * @return Platform|null
+     * @return PlatformInterface|null
      * @throws \Exception
      */
-    public function findTopLevelPlatformByType(string $serverType): ?Platform;
+    public function findTopLevelPlatformByType(string $serverType): ?PlatformInterface;
 
     /**
      * Search for local platform's monitoring Id using its name
      *
      * @param string $serverName
-     * @return Platform|null
+     * @return PlatformInterface|null
      * @throws \Exception
      */
-    public function findLocalMonitoringIdFromName(string $serverName): ?Platform;
+    public function findLocalMonitoringIdFromName(string $serverName): ?PlatformInterface;
 
     /**
      * Search for the global topology of the platform
      *
-     * @return Platform[]
+     * @return PlatformInterface[]
      */
     public function getPlatformTopology(): array;
 
@@ -75,29 +73,29 @@ interface PlatformTopologyReadRepositoryInterface
      * Search for the address of a topology using its Id
      *
      * @param int $serverId
-     * @return Platform|null
+     * @return PlatformInterface|null
      */
-    public function findPlatform(int $serverId): ?Platform;
+    public function findPlatform(int $serverId): ?PlatformInterface;
 
     /**
      * Find the Top Level Platform.
      *
-     * @return Platform|null
+     * @return PlatformInterface|null
      */
-    public function findTopLevelPlatform(): ?Platform;
+    public function findTopLevelPlatform(): ?PlatformInterface;
 
     /**
      * Find the children Platforms of another Platform.
      *
      * @param int $parentId
-     * @return Platform[]
+     * @return PlatformInterface[]
      */
     public function findChildrenPlatformsByParentId(int $parentId): array;
 
     /**
      * find all the type 'remote' children of a Central
      *
-     * @return Platform[]
+     * @return PlatformInterface[]
      * @throws \Exception
      */
     public function findCentralRemoteChildren(): array;

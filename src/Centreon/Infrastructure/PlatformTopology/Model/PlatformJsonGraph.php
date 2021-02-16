@@ -23,8 +23,8 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology\Model;
 
-use Centreon\Domain\PlatformTopology\Platform;
-use Centreon\Domain\PlatformTopology\PlatformRelation;
+use Centreon\Domain\PlatformTopology\Model\Platform;
+use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 
 /**
  * Format Platform to fit the JSON Graph Schema specification

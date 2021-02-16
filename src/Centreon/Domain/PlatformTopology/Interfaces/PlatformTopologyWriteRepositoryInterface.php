@@ -32,9 +32,9 @@ interface PlatformTopologyWriteRepositoryInterface
     /**
      * Register a new platform to topology
      *
-     * @param PlatformInterface $platformPending
+     * @param PlatformInterface $platform
      */
-    public function addPlatformToTopology(PlatformInterface $platformPending): void;
+    public function addPlatformToTopology(PlatformInterface $platform): void;
 
     /**
      * Delete a Platform.

@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-use Centreon\Domain\PlatformTopology\PlatformRelation;
+use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 
 interface PlatformInterface
 {

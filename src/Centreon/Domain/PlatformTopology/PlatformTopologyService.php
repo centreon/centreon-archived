@@ -26,6 +26,9 @@ namespace Centreon\Domain\PlatformTopology;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
+use Centreon\Domain\PlatformTopology\Model\Platform;
+use Centreon\Domain\PlatformTopology\Model\PlatformPending;
+use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
@@ -41,6 +44,7 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 
 /**
  * Service intended to register a new server to the platform topology
@@ -135,33 +139,29 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         $this->checkEntityConsistency($platformPending);
 
         /**
-         * @TODO distinguish MBI and MAP use cases
-         * @TODO add check parent_address method
-         * @TODO add find_parent-platform method
-         */
-
-        /**
          * Search for already registered central or remote top level server on this platform
          * As only top level platform do not need parent_address and only one should be registered
          */
-        // @TODO convert to switch
-
-        if (Platform::TYPE_CENTRAL === $platformPending->getType()) {
-            // New unique Central top level platform case
-            $this->searchAlreadyRegisteredTopLevelPlatformByType(Platform::TYPE_CENTRAL);
-            $this->searchAlreadyRegisteredTopLevelPlatformByType(Platform::TYPE_REMOTE);
-            $this->setMonitoringServerId($platformPending);
-        } elseif (Platform::TYPE_REMOTE === $platformPending->getType()) {
-            // Cannot add a Remote behind another Remote
-            $this->searchAlreadyRegisteredTopLevelPlatformByType(Platform::TYPE_REMOTE);
-            if (null === $platformPending->getParentAddress()) {
-                // New unique Remote top level platform case
-                $this->searchAlreadyRegisteredTopLevelPlatformByType(Platform::TYPE_CENTRAL);
-                $this->setMonitoringServerId($platformPending);
-            }
-        }
 
         $this->checkForAlreadyRegisteredSameNameOrAddress($platformPending);
+
+        switch ($platformPending->getType()) {
+            case PlatformPending::TYPE_CENTRAL:
+                // New unique Central top level platform case
+                $this->searchAlreadyRegisteredTopLevelPlatformByType(PlatformPending::TYPE_CENTRAL);
+                $this->searchAlreadyRegisteredTopLevelPlatformByType(PlatformPending::TYPE_REMOTE);
+                $this->setMonitoringServerId($platformPending);
+                break;
+            case PlatformPending::TYPE_REMOTE:
+                // Cannot add a Remote behind another Remote
+                $this->searchAlreadyRegisteredTopLevelPlatformByType(PlatformPending::TYPE_REMOTE);
+                if (null === $platformPending->getParentAddress()) {
+                    // New unique Remote top level platform case
+                    $this->searchAlreadyRegisteredTopLevelPlatformByType(PlatformPending::TYPE_CENTRAL);
+                    $this->setMonitoringServerId($platformPending);
+                }
+                break;
+        }
 
         /**
          * @var Platform|null $registeredParentInTopology
@@ -176,94 +176,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             null !== $registeredParentInTopology
             && true === $registeredParentInTopology->isLinkedToAnotherServer()
         ) {
-            /**
-             * Getting platform information's data
-             * @var PlatformInformation|null $foundPlatformInformation
-             */
-            $foundPlatformInformation = $this->platformInformationService->getInformation();
-            if (null === $foundPlatformInformation) {
-                throw new PlatformTopologyException(
-                    sprintf(
-                        _("Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."),
-                        $platformPending->getName(),
-                        $platformPending->getAddress()
-                    )
-                );
-            }
-            if (false === $foundPlatformInformation->isRemote()) {
-                throw new PlatformTopologyConflictException(
-                    sprintf(
-                        _("The platform: '%s'@'%s' is not declared as a 'remote'."),
-                        $platformPending->getName(),
-                        $platformPending->getAddress()
-                    )
-                );
-            }
-            if (null === $foundPlatformInformation->getCentralServerAddress()) {
-                throw new PlatformTopologyException(
-                    sprintf(
-                        _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."),
-                        $platformPending->getName(),
-                        $platformPending->getAddress()
-                    )
-                );
-            }
-            if (
-                null === $foundPlatformInformation->getApiUsername()
-                || null === $foundPlatformInformation->getApiCredentials()
-            ) {
-                throw new PlatformTopologyException(
-                    sprintf(
-                        _("Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."),
-                        $platformPending->getName(),
-                        $platformPending->getAddress()
-                    )
-                );
-            }
-            if (null === $foundPlatformInformation->getApiScheme()) {
-                throw new PlatformTopologyException(
-                    sprintf(
-                        _("Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."),
-                        $platformPending->getName(),
-                        $platformPending->getAddress()
-                    )
-                );
-            }
-            if (null === $foundPlatformInformation->getApiPort()) {
-                throw new PlatformTopologyException(
-                    sprintf(
-                        _("Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."),
-                        $platformPending->getName(),
-                        $platformPending->getAddress()
-                    )
-                );
-            }
-            if (null === $foundPlatformInformation->getApiPath()) {
-                throw new PlatformTopologyException(
-                    sprintf(
-                        _("Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."),
-                        $platformPending->getName(),
-                        $platformPending->getAddress()
-                    )
-                );
-            }
-
-            /**
-             * Register this platform to its Central
-             */
-            try {
-                $this->platformTopologyRegisterRepository->registerPlatformToParent(
-                    $platformPending,
-                    $foundPlatformInformation,
-                    $this->proxyService->getProxy()
-                );
-            } catch (PlatformTopologyConflictException $ex) {
-                throw $ex;
-            } catch (RepositoryException $ex) {
-                throw new PlatformTopologyException($ex->getMessage(), $ex->getCode(), $ex);
-            } catch (\Exception $ex) {
-                throw new PlatformTopologyException(_("Error from Central's register API"), 0, $ex);
-            }
+            $this->registerPlatformToParent($platformPending);
         }
 
         /*
@@ -280,6 +193,104 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                     $platformPending->getAddress()
                 )
             );
+        }
+    }
+
+    /**
+     * @param PlatformInterface $platformPending
+     * @throws PlatformTopologyConflictException
+     * @throws PlatformTopologyException
+     * @throws PlatformInformationException
+     */
+    private function registerPlatformToParent(PlatformInterface $platformPending): void
+    {
+        /**
+         * Getting platform information's data
+         * @var PlatformInformation|null $foundPlatformInformation
+         */
+        $foundPlatformInformation = $this->platformInformationService->getInformation();
+        if (null === $foundPlatformInformation) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."),
+                    $platformPending->getName(),
+                    $platformPending->getAddress()
+                )
+            );
+        }
+        if (false === $foundPlatformInformation->isRemote()) {
+            throw new PlatformTopologyConflictException(
+                sprintf(
+                    _("The platform: '%s'@'%s' is not declared as a 'remote'."),
+                    $platformPending->getName(),
+                    $platformPending->getAddress()
+                )
+            );
+        }
+        if (null === $foundPlatformInformation->getCentralServerAddress()) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."),
+                    $platformPending->getName(),
+                    $platformPending->getAddress()
+                )
+            );
+        }
+        if (
+            null === $foundPlatformInformation->getApiUsername()
+            || null === $foundPlatformInformation->getApiCredentials()
+        ) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."),
+                    $platformPending->getName(),
+                    $platformPending->getAddress()
+                )
+            );
+        }
+        if (null === $foundPlatformInformation->getApiScheme()) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                    $platformPending->getName(),
+                    $platformPending->getAddress()
+                )
+            );
+        }
+        if (null === $foundPlatformInformation->getApiPort()) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                    $platformPending->getName(),
+                    $platformPending->getAddress()
+                )
+            );
+        }
+        if (null === $foundPlatformInformation->getApiPath()) {
+            throw new PlatformTopologyException(
+                sprintf(
+                    _("Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                    $platformPending->getName(),
+                    $platformPending->getAddress()
+                )
+            );
+        }
+
+        /**
+         * Register this platform to its Parent
+         */
+        try {
+            $this->platformTopologyRegisterRepository->registerPlatformToParent(
+                $platformPending,
+                $foundPlatformInformation,
+                $this->proxyService->getProxy()
+            );
+        } catch (PlatformTopologyConflictException $ex) {
+            throw $ex;
+        } catch (RepositoryException $ex) {
+            throw new PlatformTopologyException($ex->getMessage(), $ex->getCode(), $ex);
+        } catch (\Exception $ex) {
+            throw new PlatformTopologyException(_("Error from Central's register API"), 0, $ex);
         }
     }
 
