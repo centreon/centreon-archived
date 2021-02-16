@@ -238,6 +238,9 @@ class MonitoringResourceController extends AbstractController
 
             // add shortcuts
             $this->provideLinks($resource, $contact);
+
+            // replace macros in external links
+            $this->resource->replaceMacrosInExternalLinks($resource);
         }
 
         return $this->view([
