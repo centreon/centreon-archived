@@ -7,10 +7,11 @@ import {
   MultiAutocompleteField,
   MultiConnectedAutocompleteField,
   SelectEntry,
+  useMemoComponent,
 } from '@centreon/ui';
 
 import { useStyles } from '..';
-import { useResourceContext } from '../../Context';
+import { ResourceContext, useResourceContext } from '../../Context';
 import { labelOpen } from '../../translatedLabels';
 
 import { criteriaValueNameById, selectableCriterias } from './models';
@@ -21,12 +22,15 @@ interface Props {
   parentWidth: number;
 }
 
-const Criteria = ({ name, value, parentWidth }: Props): JSX.Element => {
+const CriteriaContent = ({
+  name,
+  value,
+  parentWidth,
+  setCriteriaAndNewFilter,
+}: Props & Pick<ResourceContext, 'setCriteriaAndNewFilter'>): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
   const limitTags = parentWidth < 1000 ? 1 : 2;
-
-  const { setCriteriaAndNewFilter } = useResourceContext();
 
   const getTranslated = (values: Array<SelectEntry>): Array<SelectEntry> => {
     return values.map((entry) => ({
@@ -86,6 +90,32 @@ const Criteria = ({ name, value, parentWidth }: Props): JSX.Element => {
       {...commonProps}
     />
   );
+};
+
+const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
+  const {
+    setCriteriaAndNewFilter,
+    getMultiSelectCriterias,
+    nextSearch,
+  } = useResourceContext();
+
+  return useMemoComponent({
+    Component: (
+      <CriteriaContent
+        setCriteriaAndNewFilter={setCriteriaAndNewFilter}
+        value={value}
+        name={name}
+        parentWidth={parentWidth}
+      />
+    ),
+    memoProps: [
+      value,
+      name,
+      parentWidth,
+      getMultiSelectCriterias(),
+      nextSearch,
+    ],
+  });
 };
 
 export default Criteria;
