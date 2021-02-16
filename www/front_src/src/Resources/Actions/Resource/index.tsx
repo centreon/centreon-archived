@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { head } from 'ramda';
+import { head, pick } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
@@ -22,11 +22,12 @@ import {
   labelSubmitStatus,
   labelAddComment,
 } from '../../translatedLabels';
-import { useResourceContext } from '../../Context';
+import { ResourceContext, useResourceContext } from '../../Context';
 import { checkResources } from '../api';
 import { Resource } from '../../models';
 import ActionButton from '../ActionButton';
 import AddCommentForm from '../../Graph/Performance/Graph/AddCommentForm';
+import memoizeComponent from '../../memoizedComponent';
 
 import useAclQuery from './aclQuery';
 import DowntimeForm from './Downtime';
@@ -38,7 +39,32 @@ const ContainedActionButton = (props: ButtonProps): JSX.Element => (
   <ActionButton variant="contained" {...props} />
 );
 
-const ResourceActions = (): JSX.Element => {
+type Props = Pick<
+  ResourceContext,
+  | 'resourcesToCheck'
+  | 'selectedResources'
+  | 'resourcesToAcknowledge'
+  | 'resourcesToSetDowntime'
+  | 'resourcesToDisacknowledge'
+  | 'setSelectedResources'
+  | 'setResourcesToAcknowledge'
+  | 'setResourcesToSetDowntime'
+  | 'setResourcesToCheck'
+  | 'setResourcesToDisacknowledge'
+>;
+
+const ResourceActionsContent = ({
+  resourcesToCheck,
+  selectedResources,
+  resourcesToAcknowledge,
+  resourcesToSetDowntime,
+  resourcesToDisacknowledge,
+  setSelectedResources,
+  setResourcesToAcknowledge,
+  setResourcesToSetDowntime,
+  setResourcesToCheck,
+  setResourcesToDisacknowledge,
+}: Props): JSX.Element => {
   const { t } = useTranslation();
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
@@ -55,19 +81,6 @@ const ResourceActions = (): JSX.Element => {
     resourceToComment,
     setResourceToComment,
   ] = React.useState<Resource | null>();
-
-  const {
-    resourcesToCheck,
-    setSelectedResources,
-    selectedResources,
-    resourcesToAcknowledge,
-    setResourcesToAcknowledge,
-    resourcesToSetDowntime,
-    setResourcesToSetDowntime,
-    setResourcesToCheck,
-    resourcesToDisacknowledge,
-    setResourcesToDisacknowledge,
-  } = useResourceContext();
 
   const showError = (message): void =>
     showMessage({ message, severity: Severity.error });
@@ -279,6 +292,36 @@ const ResourceActions = (): JSX.Element => {
       )}
     </Grid>
   );
+};
+
+const memoProps = [
+  'resourcesToCheck',
+  'selectedResources',
+  'resourcesToAcknowledge',
+  'resourcesToSetDowntime',
+  'resourcesToDisacknowledge',
+];
+
+const MemoizedResourceActionsContent = memoizeComponent<Props>({
+  memoProps,
+  Component: ResourceActionsContent,
+});
+
+const functionProps = [
+  'setSelectedResources',
+  'setResourcesToAcknowledge',
+  'setResourcesToSetDowntime',
+  'setResourcesToCheck',
+  'setResourcesToDisacknowledge',
+];
+
+const ResourceActions = (): JSX.Element => {
+  const resourceContextProps = pick(
+    [...memoProps, ...functionProps],
+    useResourceContext(),
+  );
+
+  return <MemoizedResourceActionsContent {...resourceContextProps} />;
 };
 
 export default ResourceActions;

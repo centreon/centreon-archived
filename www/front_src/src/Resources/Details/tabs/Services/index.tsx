@@ -10,7 +10,7 @@ import ListIcon from '@material-ui/icons/List';
 import { useRequest, IconButton, ListingModel } from '@centreon/ui';
 
 import { TabProps, detailsTabId } from '..';
-import { useResourceContext } from '../../../Context';
+import { ResourceContext, useResourceContext } from '../../../Context';
 import {
   labelSwitchToGraph,
   labelSwitchToList,
@@ -21,6 +21,7 @@ import InfiniteScroll from '../../InfiniteScroll';
 import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
 import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
 import { TimePeriodId } from '../Graph/models';
+import memoizeComponent from '../../../memoizedComponent';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -46,18 +47,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ServicesTab = ({ details }: TabProps): JSX.Element => {
-  const { t } = useTranslation();
+type ServicesTabContentProps = TabProps &
+  Pick<
+    ResourceContext,
+    | 'setSelectedResourceId'
+    | 'setSelectedResourceType'
+    | 'setSelectedResourceParentId'
+    | 'setSelectedResourceParentType'
+    | 'setOpenDetailsTabId'
+    | 'tabParameters'
+    | 'setServicesTabParameters'
+  >;
 
-  const {
-    setSelectedResourceId,
-    setSelectedResourceType,
-    setSelectedResourceParentId,
-    setSelectedResourceParentType,
-    setOpenDetailsTabId,
-    tabParameters,
-    setServicesTabParameters,
-  } = useResourceContext();
+const ServicesTabContent = ({
+  details,
+  setSelectedResourceId,
+  setSelectedResourceType,
+  setSelectedResourceParentId,
+  setSelectedResourceParentType,
+  setOpenDetailsTabId,
+  tabParameters,
+  setServicesTabParameters,
+}: ServicesTabContentProps): JSX.Element => {
+  const { t } = useTranslation();
 
   const [graphMode, setGraphMode] = React.useState<boolean>(
     tabParameters.services?.graphMode || false,
@@ -191,6 +203,36 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
         }}
       </InfiniteScroll>
     </>
+  );
+};
+
+const MemoizedServiceTabContent = memoizeComponent<ServicesTabContentProps>({
+  memoProps: ['details', 'tabParameters'],
+  Component: ServicesTabContent,
+});
+
+const ServicesTab = ({ details }: TabProps): JSX.Element => {
+  const {
+    setSelectedResourceId,
+    setSelectedResourceType,
+    setSelectedResourceParentId,
+    setSelectedResourceParentType,
+    setOpenDetailsTabId,
+    tabParameters,
+    setServicesTabParameters,
+  } = useResourceContext();
+
+  return (
+    <MemoizedServiceTabContent
+      details={details}
+      tabParameters={tabParameters}
+      setSelectedResourceId={setSelectedResourceId}
+      setSelectedResourceType={setSelectedResourceType}
+      setSelectedResourceParentId={setSelectedResourceParentId}
+      setSelectedResourceParentType={setSelectedResourceParentType}
+      setOpenDetailsTabId={setOpenDetailsTabId}
+      setServicesTabParameters={setServicesTabParameters}
+    />
   );
 };
 

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, makeStyles, Grid } from '@material-ui/core';
 
-import { SelectField, SearchField, Filters } from '@centreon/ui';
+import { MemoizedFilters as Filters, SearchField } from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -26,6 +26,7 @@ import {
   resourceProblemsFilter,
   allFilter,
 } from './models';
+import SelectFilter from './Fields/SelectFilter';
 
 const useStyles = makeStyles(() => ({
   filterSelect: {
@@ -63,6 +64,8 @@ const Filter = (): JSX.Element => {
     setNewFilter,
   } = useResourceContext();
 
+  const memoProps = [filter, nextSearch, customFilters, customFiltersLoading];
+
   const requestSearch = (): void => {
     setCriteria({ name: 'search', value: nextSearch });
   };
@@ -97,7 +100,7 @@ const Filter = (): JSX.Element => {
     allFilter,
   ].map(({ id, name }) => ({ id, name: t(name) }));
 
-  const expandFilters = () => setExpanded((expandState) => !expandState);
+  const expandFilters = () => setExpanded((expand) => !expand);
 
   const customFilterOptions = isEmpty(customFilters)
     ? []
@@ -132,11 +135,11 @@ const Filter = (): JSX.Element => {
             {customFiltersLoading ? (
               <FilterLoadingSkeleton />
             ) : (
-              <SelectField
+              <SelectFilter
                 options={options.map(pick(['id', 'name', 'type']))}
                 selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
                 onChange={changeFilter}
-                aria-label={t(labelStateFilter)}
+                ariaLabel={t(labelStateFilter)}
                 className={classes.filterSelect}
               />
             )}
@@ -163,6 +166,7 @@ const Filter = (): JSX.Element => {
         </Grid>
       }
       expandableFilters={<Criterias />}
+      memoProps={memoProps}
     />
   );
 };
