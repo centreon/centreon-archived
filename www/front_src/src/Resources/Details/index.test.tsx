@@ -89,6 +89,7 @@ jest.mock('../icons/Downtime');
 jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
 
 const resourceId = 1;
+const resourceType = 'host';
 
 const retrievedDetails = {
   id: resourceId,
@@ -1009,6 +1010,7 @@ describe(Details, () => {
     });
 
     act(() => {
+      context.setSelectedResourceType(resourceType);
       context.setSelectedResourceId(resourceId);
     });
 
