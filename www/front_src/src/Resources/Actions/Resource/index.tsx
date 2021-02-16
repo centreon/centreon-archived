@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { all, allPass, head, pathEq, pick } from 'ramda';
+import { all, head, pathEq, pick } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
