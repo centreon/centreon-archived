@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { head, pick } from 'ramda';
+import { all, allPass, head, pathEq, pick } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
@@ -185,7 +185,13 @@ const ResourceActionsContent = ({
     setMoreActionsMenuAnchor(event.currentTarget);
   };
 
-  const disableAcknowledge = !canAcknowledge(selectedResources);
+  const areSelectedResourcesOk = all(
+    pathEq(['status', 'severity_code'], 5),
+    selectedResources,
+  );
+
+  const disableAcknowledge =
+    !canAcknowledge(selectedResources) || areSelectedResourcesOk;
   const disableDowntime = !canDowntime(selectedResources);
   const disableCheck = !canCheck(selectedResources);
   const disableDisacknowledge = !canDisacknowledge(selectedResources);

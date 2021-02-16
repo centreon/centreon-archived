@@ -883,4 +883,31 @@ describe(Actions, () => {
       );
     });
   });
+
+  it('disables the acknowledge action when selected resources have an OK or UP status', async () => {
+    const { getByText } = renderActions();
+
+    act(() => {
+      context.setSelectedResources([
+        {
+          ...host,
+          status: {
+            name: 'UP',
+            severity_code: 5,
+          },
+        },
+        {
+          ...service,
+          status: {
+            name: 'OK',
+            severity_code: 5,
+          },
+        },
+      ]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelAcknowledge).parentElement).toBeDisabled();
+    });
+  });
 });
