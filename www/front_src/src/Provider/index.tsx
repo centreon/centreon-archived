@@ -13,7 +13,7 @@ import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import { useRequest, getData, Loader } from '@centreon/ui';
+import { useRequest, getData } from '@centreon/ui';
 import {
   Context,
   useUser,
@@ -24,8 +24,8 @@ import {
   Actions,
 } from '@centreon/ui-context';
 
-import App from '../App';
 import createStore from '../store';
+import PageLoader from '../components/PageLoader';
 
 import {
   parametersEndpoint,
@@ -38,6 +38,8 @@ import { DefaultParameters } from './models';
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
 dayjs.extend(timezonePlugin);
+
+const App = React.lazy(() => import('../App'));
 
 const store = createStore();
 
@@ -130,7 +132,7 @@ const AppProvider = (): JSX.Element | null => {
   }, []);
 
   if (!dataLoaded) {
-    return <Loader fullContent />;
+    return <PageLoader />;
   }
 
   return (
@@ -145,7 +147,9 @@ const AppProvider = (): JSX.Element | null => {
       }}
     >
       <Provider store={store}>
-        <App />
+        <React.Suspense fallback={<PageLoader />}>
+          <App />
+        </React.Suspense>
       </Provider>
     </Context.Provider>
   );

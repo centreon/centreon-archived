@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { pipe, split, head, propOr, T } from 'ramda';
+import { pipe, split, head, propOr, T, pathEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
@@ -94,7 +94,13 @@ const StatusColumnOnHover = ({
 
   const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
 
-  const disableAcknowledge = !canAcknowledge([row]);
+  const isResourceOk = pathEq(
+    ['status', 'severity_code'],
+    SeverityCode.Ok,
+    row,
+  );
+
+  const disableAcknowledge = !canAcknowledge([row]) || isResourceOk;
   const disableDowntime = !canDowntime([row]);
   const disableCheck = !canCheck([row]);
 

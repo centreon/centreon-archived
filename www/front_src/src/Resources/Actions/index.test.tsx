@@ -14,6 +14,7 @@ import {
 import userEvent from '@testing-library/user-event';
 
 import { useUserContext } from '@centreon/ui-context';
+import { SeverityCode } from '@centreon/ui';
 
 import {
   labelAcknowledgedBy,
@@ -881,6 +882,33 @@ describe(Actions, () => {
         'aria-disabled',
         'false',
       );
+    });
+  });
+
+  it('disables the acknowledge action when selected resources have an OK or UP status', async () => {
+    const { getByText } = renderActions();
+
+    act(() => {
+      context.setSelectedResources([
+        {
+          ...host,
+          status: {
+            name: 'UP',
+            severity_code: SeverityCode.Ok,
+          },
+        },
+        {
+          ...service,
+          status: {
+            name: 'OK',
+            severity_code: SeverityCode.Ok,
+          },
+        },
+      ]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelAcknowledge).parentElement).toBeDisabled();
     });
   });
 });
