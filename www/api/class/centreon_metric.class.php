@@ -77,7 +77,7 @@ class CentreonMetric extends CentreonWebService
         }
 
         $query = 'SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as "metric_name" ' .
-            'FROM `metrics` ' .
+            'FROM `metrics` m, `index_data` i ' .
             'WHERE metric_name LIKE ? ';
 
         /**
