@@ -41,12 +41,12 @@ if ($type == "Service") {
     $arg = "id=" . $id;
 }
 
-$arg .= "&color[UP]=#".$colors["up"]."&color[UNDETERMINED]=#".$colors["undetermined"].
-        "&color[DOWN]=#".$colors["down"]."&color[UNREACHABLE]=#".$colors["unreachable"].
-        "&color[OK]=#".$colors["ok"]."&color[WARNING]=#".$colors["warning"].
-        "&color[CRITICAL]=#".$colors["critical"]."&color[UNKNOWN]=#".$colors["unknown"];
+$arg .= "&color[UP]=#" . $colors["up"] . "&color[UNDETERMINED]=#" . $colors["undetermined"] .
+        "&color[DOWN]=#" . $colors["down"] . "&color[UNREACHABLE]=#" . $colors["unreachable"] .
+        "&color[OK]=#" . $colors["ok"] . "&color[WARNING]=#" . $colors["warning"] .
+        "&color[CRITICAL]=#" . $colors["critical"] . "&color[UNKNOWN]=#" . $colors["unknown"];
 $arg = str_replace("#", "%23", $arg);
-$url = "./include/reporting/dashboard/xmlInformations/GetXml".$type.".php?".$arg;
+$url = "./include/reporting/dashboard/xmlInformations/GetXml" . $type . ".php?" . $arg;
 
 ?>
 <script type="text/javascript">
