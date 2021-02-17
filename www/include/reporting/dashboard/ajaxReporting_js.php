@@ -36,9 +36,9 @@
 require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
 
 if ($type == "Service") {
-    $arg = "id=".$service_id."&host_id=".$host_id;
+    $arg = "id=" . $serviceId . "&host_id=" . $hostId;
 } else {
-    $arg = "id=".$id;
+    $arg = "id=" . $id;
 }
 
 $arg .= "&color[UP]=#".$colors["up"]."&color[UNDETERMINED]=#".$colors["undetermined"].

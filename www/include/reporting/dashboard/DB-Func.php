@@ -409,9 +409,9 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
  * me must specify the host id because one service can be linked to many hosts
  *
  * @param int $servicegroupId
- * @param string $startDate
- * @param string $endDate
- * @param string $reportTimePeriod
+ * @param int $startDate
+ * @param int $endDate
+ * @param array $reportTimePeriod
  * @return array
  */
 function getServicesLogs(array $services, $startDate, $endDate, $reportTimePeriod)
@@ -536,9 +536,9 @@ function getServicesLogs(array $services, $startDate, $endDate, $reportTimePerio
  * and alerts (the sum of alerts of all services from servicegroup) for given servicegroup defined by $servicegroup_id
  *
  * @param int $servicegroupId
- * @param string $startDate
- * @param string $endDate
- * @param string $reportTimePeriod
+ * @param int $startDate
+ * @param int $endDate
+ * @param array $reportTimePeriod
  * @return array
  */
 function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $reportTimePeriod)
