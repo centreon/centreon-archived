@@ -108,6 +108,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         // try to avoid exception from the regexp bad syntax in search criteria
         try {
             $list = $this->resourceRepository->findResources($filter);
+            // replace macros in external links
+            foreach ($list as $resource) {
+                $this->replaceMacrosInExternalLinks($resource);
+            }
         } catch (RepositoryException $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
@@ -231,11 +235,11 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     private function replaceMacrosInUrlsForHostResource(ResourceEntity $resource, string $url): string
     {
-        $url = str_replace("\$HOSTADDRESS\$", $resource->getFqdn(), $url);
-        $url = str_replace("\$HOSTNAME\$", $resource->getName(), $url);
-        $url = str_replace("\$HOSTSTATE\$", $resource->getStatus()->getName(), $url);
-        $url = str_replace("\$HOSTSTATEID\$", $resource->getStatus()->getCode(), $url);
-        $url = str_replace("\$HOSTALIAS\$", $resource->getAlias(), $url);
+        $url = str_replace('$HOSTADDRESS$', $resource->getFqdn(), $url);
+        $url = str_replace('$HOSTNAME$', $resource->getName(), $url);
+        $url = str_replace('$HOSTSTATE$', $resource->getStatus()->getName(), $url);
+        $url = str_replace('$HOSTSTATEID$', $resource->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTALIAS$', $resource->getAlias(), $url);
 
         return $url;
     }
@@ -249,14 +253,14 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     private function replaceMacrosInUrlsForServiceResource(ResourceEntity $resource, string $url): string
     {
-        $url = str_replace("\$HOSTADDRESS\$", $resource->getParent()->getFqdn(), $url);
-        $url = str_replace("\$HOSTNAME\$", $resource->getParent()->getName(), $url);
-        $url = str_replace("\$HOSTSTATE\$", $resource->getParent()->getStatus()->getName(), $url);
-        $url = str_replace("\$HOSTSTATEID\$", $resource->getParent()->getStatus()->getCode(), $url);
-        $url = str_replace("\$HOSTALIAS\$", $resource->getParent()->getAlias(), $url);
-        $url = str_replace("\$SERVICEDESC\$", $resource->getName(), $url);
-        $url = str_replace("\$SERVICESTATE\$", $resource->getStatus()->getName(), $url);
-        $url = str_replace("\$SERVICESTATEID\$", $resource->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTADDRESS$', $resource->getParent()->getFqdn(), $url);
+        $url = str_replace('$HOSTNAME$', $resource->getParent()->getName(), $url);
+        $url = str_replace('$HOSTSTATE$', $resource->getParent()->getStatus()->getName(), $url);
+        $url = str_replace('$HOSTSTATEID$', $resource->getParent()->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTALIAS$', $resource->getParent()->getAlias(), $url);
+        $url = str_replace('$SERVICEDESC$', $resource->getName(), $url);
+        $url = str_replace('$SERVICESTATE$', $resource->getStatus()->getName(), $url);
+        $url = str_replace('$SERVICESTATEID$', $resource->getStatus()->getCode(), $url);
 
         return $url;
     }
