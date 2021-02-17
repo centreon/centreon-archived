@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -45,22 +46,22 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service to report
  */
-$host_id = filter_var($_GET['host_id'] ?? $_POST['host_id'] ?? false, FILTER_VALIDATE_INT);
-$service_id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
+$hostId = filter_var($_GET['host_id'] ?? $_POST['host_id'] ?? false, FILTER_VALIDATE_INT);
+$serviceId = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
 
 /*
  * FORMS
  */
 $form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
 
-$host_name = getMyHostName($host_id);
-$items = $centreon->user->access->getHostServices($pearDBO, $host_id);
+$host_name = getMyHostName($hostId);
+$items = $centreon->user->access->getHostServices($pearDBO, $hostId);
 
 $itemsForUrl = array();
 foreach ($items as $key => $value) {
     $itemsForUrl[str_replace(":", "%3A", $key)] = str_replace(":", "%3A", $value);
 }
-$service_name = $itemsForUrl[$service_id];
+$service_name = $itemsForUrl[$serviceId];
 
 $select = $form->addElement(
     'select',
@@ -113,36 +114,44 @@ $formPeriod->addElement(
 /*
  * Set service id with period selection form
  */
-if ($service_id !== false && $host_id !== false) {
+if ($serviceId !== false && $hostId !== false) {
     $formPeriod->addElement(
         'hidden',
         'item',
-        $service_id
+        $serviceId
     );
     $formPeriod->addElement(
         'hidden',
         'host_id',
-        $host_id
+        $hostId
     );
     $form->addElement(
         'hidden',
         'host_id',
-        $host_id
+        $hostId
     );
-    $form->setDefaults(array('item' => $service_id));
+    $form->setDefaults(array('item' => $serviceId));
 
     /*
      * Getting periods values
      */
     $dates = getPeriodToReport("alternate");
-    $start_date = $dates[0];
-    $end_date = $dates[1];
+    $startDate = $dates[0];
+    $endDate = $dates[1];
 
     /*
      * Getting hostgroup and his hosts stats
      */
-    $serviceStats = array();
-    $serviceStats = getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportingTimePeriod);
+    $servicesStats = getServicesLogs(
+        [[
+            'hostId' => $hostId,
+            'serviceId' => $serviceId
+        ]],
+        $startDate,
+        $endDate,
+        $reportingTimePeriod
+    );
+    $serviceStats = $servicesStats[$hostId][$serviceId];
 
     /*
      * Chart datas
@@ -158,16 +167,16 @@ if ($service_id !== false && $host_id !== false) {
      * Exporting variables for ihtml
      */
     $tpl->assign('host_name', $host_name);
-    $tpl->assign('name', $itemsForUrl[$service_id]);
+    $tpl->assign('name', $itemsForUrl[$serviceId]);
     $tpl->assign('totalAlert', $serviceStats["TOTAL_ALERTS"]);
     $tpl->assign('totalTime', $serviceStats["TOTAL_TIME_F"]);
     $tpl->assign('summary', $serviceStats);
     $tpl->assign('from', _("From"));
-    $tpl->assign('date_start', $start_date);
+    $tpl->assign('date_start', $startDate);
     $tpl->assign('to', _("to"));
-    $tpl->assign('date_end', $end_date);
-    $formPeriod->setDefaults(array('period' => $period));
-    $tpl->assign('id', $service_id);
+    $tpl->assign('date_end', $endDate);
+    $formPeriod->setDefaults(['period' => $period]);
+    $tpl->assign('id', $serviceId);
 
     /*
      * Ajax timeline and CSV export initialization
@@ -176,7 +185,7 @@ if ($service_id !== false && $host_id !== false) {
     $tpl->assign(
         "link_csv_url",
         "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?host="
-        . $host_id . "&service=" . $service_id . "&start=" . $start_date . "&end=" . $end_date
+        . $hostId . "&service=" . $serviceId . "&start=" . $startDate . "&end=" . $endDate
     );
     $tpl->assign("link_csv_name", _("Export in CSV format"));
 
