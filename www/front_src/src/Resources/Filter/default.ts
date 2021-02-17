@@ -1,5 +1,4 @@
 import {
-  hasPath,
   indexBy,
   isNil,
   map,
