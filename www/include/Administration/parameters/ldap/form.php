@@ -54,7 +54,7 @@ $filterVarOptions = array(
 
 if (isset($_POST['ar_id'])) {
     $arId = filter_var($_POST['ar_id'], FILTER_VALIDATE_INT, $filterVarOptions);
-} elseif (isset($_GET['arId'])) {
+} elseif (isset($_GET['ar_id'])) {
     $arId = filter_var($_GET['ar_id'], FILTER_VALIDATE_INT, $filterVarOptions);
 }
 
