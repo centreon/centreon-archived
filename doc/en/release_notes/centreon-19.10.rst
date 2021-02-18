@@ -1,4 +1,27 @@
 =====================
+Centreon Web 19.10.20
+=====================
+
+Bug fixes
+---------
+
+* [Configuration] Non-admin users can't create host/service
+* [Core] PHP 7.3 issue with recurrent downtimes
+
+Security fixes
+--------------
+
+* [Administration] Cross-site Scripting (XSS) Stored/Persistent in Ressource Access form
+* [Administration] XSS stored in the LDAP form
+* [Authentication] Session is active longer than expected
+* [Authentication] User enumeration in login page
+* [Configuration] Cross-site Scripting (XSS) Reflected in Hosts form
+* [Core] Vulnerable handlebars.js library
+* [Reporting] Cross-site Scripting (XSS) Reflected in "Dashboard > Hosts" page
+* [Service details] Too much "Unable to hide passwords in command"
+
+
+=====================
 Centreon Web 19.10.19
 =====================
 
