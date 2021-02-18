@@ -13,6 +13,7 @@ Security fixes
 
 * [Administration] Cross-site Scripting (XSS) Stored/Persistent in Ressource Access form
 * [Administration] XSS stored in the LDAP form
+* [Apache] Remove deprecated ciphers for HTTPS configuration example
 * [Authentication] Session is active longer than expected
 * [Authentication] User enumeration in login page
 * [Configuration] Cross-site Scripting (XSS) Reflected in Hosts form
