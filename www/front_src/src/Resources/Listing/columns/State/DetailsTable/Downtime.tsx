@@ -94,3 +94,4 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
 };
 
 export default DowntimeDetailsTable;
+
