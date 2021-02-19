@@ -20,6 +20,15 @@ on the market; it is absolutely free and Open Souce.
 * Using the [**ISO**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-centreon-iso.html)
 * Using the [**VM**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-virtual-machines.html) (tutorial available on [Youtube](https://www.youtube.com/watch?v=rnq9QnljaQE))
 
+<h2> Supported versions <h2>
+
+Regarding the [Products Lifecycle Policy](https://docs.centreon.com/current/en/releases/lifecycle.html),
+only the following versions are supported:
+
+* Centreon 20.10.x, released the October 21, 2020, full support
+* Centreon 20.04.x, released the April 22, 2020, security and blocking issue support only
+* Centreon 19.10.x, released the April 23, 2019, security support only
+
 <h3> Authors </h3>
 
 <h4> Project leaders </h4>
