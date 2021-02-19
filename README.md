@@ -29,6 +29,10 @@ only the following versions are supported:
 * Centreon 20.04.x, released the April 22, 2020, security and blocking issue support only
 * Centreon 19.10.x, released the April 23, 2019, security support only
 
+If your version is not one of the 3 versions specified above, we recommend that
+you [upgrade your platform](https://docs.centreon.com/current/en/upgrade/introduction.html)
+immediately.
+
 <h3> Authors </h3>
 
 <h4> Project leaders </h4>
