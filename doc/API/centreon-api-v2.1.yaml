@@ -105,7 +105,13 @@ paths:
         - Host template
       summary: "List all host templates"
       description: |
-        List of all host template configurations
+        Return all host templates configurations.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * id
+        * name
+        * alias
       responses:
         "200":
           description: "OK"
