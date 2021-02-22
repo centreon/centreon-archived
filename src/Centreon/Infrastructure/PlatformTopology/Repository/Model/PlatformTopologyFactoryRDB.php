@@ -24,53 +24,96 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology\Repository\Model;
 
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
-use Centreon\Domain\PlatformTopology\Model\Platform;
 use Centreon\Domain\PlatformTopology\Model\PlatformPending;
+use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
 
 class PlatformTopologyFactoryRDB
 {
-    public function __construct()
-    {
-    }
-
     /**
+     * Return a Registered platform entity
+     *
      * @param array $platformData
-     * @return PlatformInterface
+     * @return PlatformRegistered
      */
-    public function create(array $platformData): PlatformInterface
+    public function createPlatformRegistered(array $platformData): PlatformRegistered
     {
-        if (true === $platformData['pending']) {
-            $platform = new PlatformPending();
-        } else {
-            $platform = new Platform();
-        }
+        $platformReturned = new PlatformRegistered();
         foreach ($platformData as $key => $value) {
             switch ($key) {
                 case 'id':
-                    $platform->setId($value);
-                    break;
-                case 'address':
-                    $platform->setAddress($value);
-                    break;
-                case 'hostname':
-                    $platform->setHostname($value);
+                    $platformReturned->setId($value);
                     break;
                 case 'name':
-                    $platform->setName($value);
+                    $platformReturned->setName($value);
+                    break;
+                case 'hostname':
+                    $platformReturned->setHostname($value);
                     break;
                 case 'type':
-                    $platform->setType($value);
+                    $platformReturned->setType($value);
                     break;
-                case 'parent_id':
-                    $platform->setParentId($value);
+                case 'address':
+                    $platformReturned->setAddress($value);
                     break;
-                case 'server_id':
-                    $platform->setServerId($value);
+                case 'parentAddress':
+                    $platformReturned->setParentAddress($value);
+                    break;
+                case 'parentId':
+                    $platformReturned->setParentId($value);
+                    break;
+                case 'serverId':
+                    $platformReturned->setServerId($value);
+                    break;
+                case 'isLinkedToAnotherServer':
+                    $platformReturned->setLinkedToAnotherServer($value);
                     break;
             }
         }
 
-        return $platform;
+        return $platformReturned;
+    }
+
+    /**
+     * Return a pending platform pending
+     *
+     * @param array $platformData
+     * @return PlatformPending
+     */
+    public function createPlatformPending(array $platformData): PlatformPending
+    {
+        $platformReturned = new PlatformPending();
+        foreach ($platformData as $key => $value) {
+            switch ($key) {
+                case 'id':
+                    $platformReturned->setId($value);
+                    break;
+                case 'name':
+                    $platformReturned->setName($value);
+                    break;
+                case 'hostname':
+                    $platformReturned->setHostname($value);
+                    break;
+                case 'type':
+                    $platformReturned->setType($value);
+                    break;
+                case 'address':
+                    $platformReturned->setAddress($value);
+                    break;
+                case 'parentAddress':
+                    $platformReturned->setParentAddress($value);
+                    break;
+                case 'parentId':
+                    $platformReturned->setParentId($value);
+                    break;
+                case 'serverId':
+                    $platformReturned->setServerId($value);
+                    break;
+                case 'isLinkedToAnotherServer':
+                    $platformReturned->setLinkedToAnotherServer($value);
+                    break;
+            }
+        }
+
+        return $platformReturned;
     }
 }

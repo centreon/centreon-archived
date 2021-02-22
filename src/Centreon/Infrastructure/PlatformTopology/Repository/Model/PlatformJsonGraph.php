@@ -1,6 +1,7 @@
 <?php
 
 /*
+ *
  * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,10 +22,9 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\PlatformTopology\Model;
+namespace Centreon\Infrastructure\PlatformTopology\Repository\Model;
 
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
-use Centreon\Domain\PlatformTopology\Model\Platform;
 use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 
 /**

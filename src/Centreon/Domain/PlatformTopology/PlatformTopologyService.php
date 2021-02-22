@@ -26,7 +26,7 @@ namespace Centreon\Domain\PlatformTopology;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
-use Centreon\Domain\PlatformTopology\Model\Platform;
+use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
 use Centreon\Domain\PlatformTopology\Model\PlatformPending;
 use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 use Centreon\Domain\Repository\RepositoryException;

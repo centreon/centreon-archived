@@ -23,19 +23,21 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+
 use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Context\Context;
 use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
-use Centreon\Domain\PlatformTopology\Model\Platform;
-use Centreon\Domain\PlatformTopology\Model\PlatformPending;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Infrastructure\PlatformTopology\Model\PlatformJsonGraph;
+use Centreon\Infrastructure\PlatformTopology\Repository\Model\PlatformJsonGraph;
+use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
+use Centreon\Domain\PlatformTopology\Model\PlatformPending;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 
 /**
  * This controller is designed to manage platform topology API requests and register new servers.
@@ -151,7 +153,7 @@ class PlatformTopologyController extends AbstractController
 
         try {
             /**
-             * @var Platform[] $platformTopology
+             * @var PlatformInterface[] $platformTopology
              */
             $platformTopology = $this->platformTopologyService->getPlatformTopology();
             $edges = [];
