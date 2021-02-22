@@ -96,4 +96,3 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
 };
 
 export default AcknowledgementDetailsTable;
-

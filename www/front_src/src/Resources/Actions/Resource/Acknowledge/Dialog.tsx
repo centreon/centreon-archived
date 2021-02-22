@@ -127,4 +127,3 @@ const DialogAcknowledge = ({
 };
 
 export default DialogAcknowledge;
-
