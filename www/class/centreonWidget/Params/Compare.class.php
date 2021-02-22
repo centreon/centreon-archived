@@ -57,8 +57,8 @@ class CentreonWidgetParamsCompare extends CentreonWidgetParams
                 "ne" => "!=",
                 "like" => "LIKE",
                 "notlike" => "NOT LIKE",
-                "regex"   => "REGEXP",
-                "notregex"=> "NOT REGEXP"
+                "regex" => "REGEXP",
+                "notregex" => "NOT REGEXP"
             );
             $elems[] = $this->quickform->addElement('select', 'op_' . $params['parameter_id'], '', $operands);
             $elems[] = $this->quickform->addElement(
