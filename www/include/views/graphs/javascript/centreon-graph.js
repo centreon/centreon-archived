@@ -717,7 +717,7 @@
               jQuery('<div>')
                 .addClass('chart-legend-color')
                 .css({
-                  'background-color': self.chart.color(curveId)
+                  'background-color': legend.ds_data.ds_color_line
                 })
             )
             .append(
