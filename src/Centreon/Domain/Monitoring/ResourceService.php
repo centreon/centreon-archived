@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -266,7 +266,8 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     public function replaceMacrosInExternalLinks(ResourceEntity $resource): void
     {
         $actionUrl = $resource->getLinks()->getExternals()->getActionUrl();
-        $notesUrl = $resource->getLinks()->getExternals()->getNotesUrl();
+        $notesObject = $resource->getLinks()->getExternals()->getNotes();
+        $notesUrl = ($notesObject !== null) ? $notesObject->getUrl() : null;
         $resourceType = $resource->getType();
 
         if ($actionUrl !== null) {
@@ -284,7 +285,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
             } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
                 $notesUrl = $this->replaceMacrosInUrlsForServiceResource($resource, $notesUrl);
             }
-            $resource->getLinks()->getExternals()->setNotesUrl($notesUrl);
+            $resource->getLinks()->getExternals()->getNotes()->setUrl($notesUrl);
         }
     }
 
