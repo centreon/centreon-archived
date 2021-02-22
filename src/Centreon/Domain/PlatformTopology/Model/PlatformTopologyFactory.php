@@ -36,7 +36,7 @@ class PlatformTopologyFactory
         if (true === $platformData->isPending()) {
             $platform = new PlatformPending();
         } else {
-            $platform = new Platform();
+            $platform = new PlatformRegistered();
         }
 
         foreach ($platformData as $key => $value) {

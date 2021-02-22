@@ -85,7 +85,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             /**
-             * @var Platform $platform
+             * @var PlatformModel $platform
              */
             $platform = EntityCreator::createEntityByArray(
                 Platform::class,
@@ -114,7 +114,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             /**
-             * @var Platform $platform
+             * @var PlatformModel $platform
              */
             $platform = EntityCreator::createEntityByArray(
                 Platform::class,
@@ -143,7 +143,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             /**
-             * @var Platform $platform
+             * @var PlatformModel $platform
              */
             $platform = EntityCreator::createEntityByArray(
                 Platform::class,
@@ -173,7 +173,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             /**
-             * @var Platform $platform
+             * @var PlatformModel $platform
              */
             $platform = EntityCreator::createEntityByArray(
                 Platform::class,
@@ -195,7 +195,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         if ($statement !== false) {
             foreach ($statement as $topology) {
                 /**
-                 * @var Platform $platform
+                 * @var PlatformModel $platform
                  */
                 $platform = EntityCreator::createEntityByArray(Platform::class, $topology);
                 $platformTopology[] = $platform;
@@ -251,7 +251,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             /**
-             * @var Platform $platform
+             * @var PlatformModel $platform
              */
             $platform = EntityCreator::createEntityByArray(Platform::class, $result);
         }

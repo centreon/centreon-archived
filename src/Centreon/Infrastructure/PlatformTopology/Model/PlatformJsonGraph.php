@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology\Model;
 
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\PlatformTopology\Model\Platform;
 use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 
@@ -57,7 +58,7 @@ class PlatformJsonGraph
      */
     private $relation = [];
 
-    public function __construct(Platform $platform)
+    public function __construct(PlatformInterface $platform)
     {
         $this->setId((string) $platform->getId());
         $this->setType($platform->getType());
