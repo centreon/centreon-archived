@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
 
-import { Listing } from '@centreon/ui';
+import { MemoizedListing as Listing } from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
@@ -16,10 +16,10 @@ import {
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
-import { Resource } from '../models';
+import { Resource, SortOrder } from '../models';
 
-import useLoadResources from './useLoadResources';
 import { getColumns } from './columns';
+import useLoadResources from './useLoadResources';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
@@ -27,10 +27,6 @@ const ResourceListing = (): JSX.Element => {
 
   const {
     listing,
-    sortf,
-    setSortf,
-    sorto,
-    setSorto,
     setLimit,
     page,
     setPage,
@@ -46,13 +42,14 @@ const ResourceListing = (): JSX.Element => {
     setResourcesToSetDowntime,
     setResourcesToCheck,
     sending,
+    setCriteria,
+    getCriteriaValue,
   } = useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
 
   const changeSort = ({ order, orderBy }): void => {
-    setSortf(orderBy);
-    setSorto(order);
+    setCriteria({ name: 'sort', value: [orderBy, order] });
   };
 
   const changeLimit = (event): void => {
@@ -101,6 +98,11 @@ const ResourceListing = (): JSX.Element => {
 
   const loading = sending;
 
+  const [sortField, sortOrder] = getCriteriaValue('sort') as [
+    string,
+    SortOrder,
+  ];
+
   return (
     <Listing
       checkable
@@ -117,8 +119,8 @@ const ResourceListing = (): JSX.Element => {
       onSort={changeSort}
       onPaginationLimitChanged={changeLimit}
       onPaginate={changePage}
-      sortf={sortf}
-      sorto={sorto}
+      sortf={sortField}
+      sorto={sortOrder}
       labelRowsPerPage={t(labelRowsPerPage)}
       labelDisplayedRows={labelDisplayedRows}
       totalRows={listing?.meta.total}
@@ -127,6 +129,15 @@ const ResourceListing = (): JSX.Element => {
       onRowClick={selectResource}
       innerScrollDisabled={false}
       emptyDataMessage={t(labelNoResultsFound)}
+      memoProps={[
+        listing,
+        sortField,
+        sortOrder,
+        page,
+        selectedResources,
+        selectedResourceId,
+        sending,
+      ]}
     />
   );
 };

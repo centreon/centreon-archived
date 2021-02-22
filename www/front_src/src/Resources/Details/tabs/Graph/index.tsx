@@ -8,7 +8,8 @@ import { TabProps } from '..';
 import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
 import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
-import { useResourceContext } from '../../../Context';
+import { ResourceContext, useResourceContext } from '../../../Context';
+import memoizeComponent from '../../../memoizedComponent';
 
 import { TimePeriodId } from './models';
 
@@ -35,10 +36,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const GraphTab = ({ details }: TabProps): JSX.Element => {
-  const classes = useStyles();
+type GraphTabContentProps = TabProps &
+  Pick<ResourceContext, 'tabParameters' | 'setGraphTabParameters'>;
 
-  const { tabParameters, setGraphTabParameters } = useResourceContext();
+const GraphTabContent = ({
+  details,
+  tabParameters,
+  setGraphTabParameters,
+}: GraphTabContentProps): JSX.Element => {
+  const classes = useStyles();
 
   const {
     selectedTimePeriod,
@@ -71,6 +77,23 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
         selectedTimePeriod={selectedTimePeriod}
       />
     </div>
+  );
+};
+
+const MemoizedGraphTabContent = memoizeComponent<GraphTabContentProps>({
+  memoProps: ['details', 'tabParameters'],
+  Component: GraphTabContent,
+});
+
+const GraphTab = ({ details }: TabProps): JSX.Element => {
+  const { tabParameters, setGraphTabParameters } = useResourceContext();
+
+  return (
+    <MemoizedGraphTabContent
+      details={details}
+      tabParameters={tabParameters}
+      setGraphTabParameters={setGraphTabParameters}
+    />
   );
 };
 

@@ -7,14 +7,14 @@ import IconRefresh from '@material-ui/icons/Refresh';
 import IconPlay from '@material-ui/icons/PlayArrow';
 import IconPause from '@material-ui/icons/Pause';
 
-import { IconButton } from '@centreon/ui';
+import { IconButton, useMemoComponent } from '@centreon/ui';
 
 import {
   labelRefresh,
   labelDisableAutorefresh,
   labelEnableAutorefresh,
 } from '../../translatedLabels';
-import { useResourceContext } from '../../Context';
+import { ResourceContext, useResourceContext } from '../../Context';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;
@@ -43,18 +43,25 @@ const AutorefreshButton = ({
   );
 };
 
-interface Props {
+export interface ActionsProps {
   onRefresh: () => void;
 }
 
-const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
-  const { t } = useTranslation();
+type ResourceContextProps = Pick<
+  ResourceContext,
+  | 'enabledAutorefresh'
+  | 'setEnabledAutorefresh'
+  | 'sending'
+  | 'selectedResourceId'
+>;
 
-  const {
-    enabledAutorefresh,
-    setEnabledAutorefresh,
-    sending,
-  } = useResourceContext();
+const RefreshActionsContent = ({
+  onRefresh,
+  enabledAutorefresh,
+  setEnabledAutorefresh,
+  sending,
+}: ActionsProps & ResourceContextProps): JSX.Element => {
+  const { t } = useTranslation();
 
   const toggleAutorefresh = (): void => {
     setEnabledAutorefresh(!enabledAutorefresh);
@@ -81,6 +88,27 @@ const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
       </Grid>
     </Grid>
   );
+};
+
+const RefreshActions = ({ onRefresh }: ActionsProps): JSX.Element => {
+  const {
+    enabledAutorefresh,
+    setEnabledAutorefresh,
+    sending,
+    selectedResourceId,
+  } = useResourceContext();
+
+  return useMemoComponent({
+    Component: (
+      <RefreshActionsContent
+        onRefresh={onRefresh}
+        enabledAutorefresh={enabledAutorefresh}
+        setEnabledAutorefresh={setEnabledAutorefresh}
+        sending={sending}
+      />
+    ),
+    memoProps: [sending, enabledAutorefresh, selectedResourceId],
+  });
 };
 
 export default RefreshActions;

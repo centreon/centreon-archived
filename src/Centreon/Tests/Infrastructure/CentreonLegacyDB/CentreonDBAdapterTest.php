@@ -42,8 +42,8 @@ use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\CentreonDBManagerService;
-use Centreon\Tests\Resource\Mock;
-use Centreon\Tests\Resource\CheckPoint;
+use Centreon\Tests\Resources\Mock;
+use Centreon\Tests\Resources\CheckPoint;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
 
 class CentreonDBAdapterTest extends TestCase
