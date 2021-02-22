@@ -96,7 +96,6 @@ Given('a set of filters applied to the resources list', () => {
 });
 When('the user leaves the page', () => {
   cy.visitCentreon('/centreon/main.php?p=103');
-  cy.get('div[class^="loader-inner"]');
   cy.get('iframe#main-content').should('be.visible');
 });
 Then('the set of filters should be retained on his next visit', () => {
