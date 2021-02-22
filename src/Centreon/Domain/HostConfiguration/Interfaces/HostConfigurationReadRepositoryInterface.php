@@ -25,6 +25,7 @@ namespace Centreon\Domain\HostConfiguration\Interfaces;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\HostConfiguration\Model\HostTemplate;
+use Centreon\Domain\Repository\RepositoryException;
 
 /**
  * This interface gathers all the reading operations on the repository.
@@ -57,6 +58,8 @@ interface HostConfigurationReadRepositoryInterface
      * Find all host templates.
      *
      * @return HostTemplate[]
+     * @throws RepositoryException
+     * @throws \Throwable
      */
     public function findHostTemplates(): array;
 
