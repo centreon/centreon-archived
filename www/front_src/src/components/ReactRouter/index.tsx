@@ -1,10 +1,12 @@
-import React, { Suspense } from 'react';
+import * as React from 'react';
 
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { isEmpty, equals } from 'ramda';
 
 import { styled } from '@material-ui/core';
+
+import { PageSkeleton } from '@centreon/ui';
 
 import internalPagesRoutes from '../../route-maps';
 import { dynamicImport } from '../../helpers/dynamicImport';
@@ -66,10 +68,10 @@ interface Props {
 const ReactRouter = React.memo<Props>(
   ({ allowedPages, history, pages, externalPagesFetched }: Props) => {
     if (isEmpty(allowedPages)) {
-      return null;
+      return <PageSkeleton />;
     }
     return (
-      <Suspense fallback={null}>
+      <React.Suspense fallback={<PageSkeleton />}>
         <Switch>
           {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
             <Route
@@ -94,7 +96,7 @@ const ReactRouter = React.memo<Props>(
           {getExternalPageRoutes({ history, allowedPages, pages })}
           {externalPagesFetched && <Route component={NotAllowedPage} />}
         </Switch>
-      </Suspense>
+      </React.Suspense>
     );
   },
   (previousProps, nextProps) =>

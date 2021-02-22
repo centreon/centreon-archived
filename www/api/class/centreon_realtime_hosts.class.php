@@ -340,7 +340,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
 
         if ($this->criticality) {
             $query .= " AND h.host_id = cvs.host_id ";
-            $query .= " AND cvs.name = 'CRITICALITY_ID' ";
+            $query .= " AND cvs.name = 'CRITICALITY_LEVEL' ";
             $query .= " AND cvs.service_id IS NULL ";
             $query .= " AND cvs.value = :criticality ";
             $queryValues['criticality'] = (string)$this->criticality;

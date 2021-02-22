@@ -20,6 +20,7 @@ import {
   labelLinkCopied,
   labelSomethingWentWrong,
 } from '../translatedLabels';
+import memoizeComponent from '../memoizedComponent';
 
 import { DetailsSectionProps } from '.';
 
@@ -125,4 +126,7 @@ const Header = ({ details }: DetailsSectionProps): JSX.Element => {
   );
 };
 
-export default Header;
+export default memoizeComponent<DetailsSectionProps>({
+  memoProps: ['details'],
+  Component: Header,
+});

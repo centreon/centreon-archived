@@ -743,7 +743,7 @@ $help["date_format"] = dgettext(
 );
 $help["instance_heartbeat_interval"] = dgettext(
     "help",
-    "Time interval in seconds between two heartbeat events. This event is the one responsible of the ‘Last Update’ "
+    "Time interval in seconds between two heartbeat events. This event is the one responsible of the 'Last Update' "
     . "column update in the Pollers listing. Value must be between 5 and 600. Default value is 30."
 );
 $help["admin_email"] = dgettext(

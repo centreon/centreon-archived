@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import axios from '../../../axios';
 import styles from '../header.scss';
 import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
+import MenuLoader from '../../MenuLoader';
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901';
 
@@ -162,7 +163,7 @@ class PollerMenu extends Component {
     const { data, toggled } = this.state;
 
     if (!data) {
-      return null;
+      return <MenuLoader />;
     }
 
     // check if poller configuration page is allowed

@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 
-import { Dialog, TextField, Loader } from '@centreon/ui';
+import { Dialog, TextField } from '@centreon/ui';
 
 import {
   labelCancel,
@@ -32,7 +32,6 @@ interface Props {
   values;
   handleChange;
   submitting: boolean;
-  loading: boolean;
 }
 
 const DialogAcknowledge = ({
@@ -44,7 +43,6 @@ const DialogAcknowledge = ({
   values,
   submitting,
   handleChange,
-  loading,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 
@@ -71,7 +69,6 @@ const DialogAcknowledge = ({
       confirmDisabled={!canConfirm}
       submitting={submitting}
     >
-      {loading && <Loader fullContent />}
       <Grid direction="column" container spacing={1}>
         {deniedTypeAlert && (
           <Grid item>
