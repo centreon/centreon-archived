@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { pipe, split, head, propOr, T } from 'ramda';
+import { pipe, split, head, propOr, T, pathEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
@@ -29,6 +29,7 @@ import {
   labelSetDowntimeOn,
   labelCheck,
   labelSetDowntime,
+  labelParent,
 } from '../../translatedLabels';
 import useAclQuery from '../../Actions/Resource/aclQuery';
 import truncate from '../../truncate';
@@ -93,7 +94,13 @@ const StatusColumnOnHover = ({
 
   const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
 
-  const disableAcknowledge = !canAcknowledge([row]);
+  const isResourceOk = pathEq(
+    ['status', 'severity_code'],
+    SeverityCode.Ok,
+    row,
+  );
+
+  const disableAcknowledge = !canAcknowledge([row]) || isResourceOk;
   const disableDowntime = !canDowntime([row]);
   const disableCheck = !canCheck([row]);
 
@@ -239,11 +246,11 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   },
   {
     id: 'parent_resource',
-    label: '',
+    label: t(labelParent),
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
     Component: ParentResourceColumn,
-    sortable: false,
+    sortField: 'parent_name',
     width: 200,
   },
   {
@@ -290,6 +297,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     id: 'information',
     label: t(labelInformation),
     type: ColumnType.string,
+    sortable: false,
     getFormattedString: pipe(
       propOr('', 'information'),
       split('\n'),
@@ -307,6 +315,3 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     width: 80,
   },
 ];
-
-export const defaultSortField = 'status_severity_code';
-export const defaultSortOrder = 'asc';

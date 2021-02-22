@@ -255,7 +255,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`nagios_id` , `nagios_name` , `use_timezone`, `nagios_server_id`, `log_file` , `cfg_dir` , "
         . "`temp_file` , "
         . "`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , "
-        . "`enable_notifications` , `execute_service_checks` , "
+        . "`postpone_notification_to_timeperiod`, `enable_notifications` , `execute_service_checks` , "
         . "`accept_passive_service_checks` , `execute_host_checks` , "
         . "`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , "
         . "`check_external_commands` , `command_check_interval` , `command_file` , `downtime_file` , `comment_file` , "
@@ -289,7 +289,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`check_for_orphaned_services` , `check_service_freshness` , "
         . "`service_freshness_check_interval` , `cached_host_check_horizon`, "
         . "`cached_service_check_horizon` , `additional_freshness_latency` , "
-        . "`check_host_freshness` , `host_freshness_check_interval` , `date_format` , "
+        . "`check_host_freshness` , `host_freshness_check_interval` , `instance_heartbeat_interval` , `date_format` , "
         . "`illegal_object_name_chars` , `illegal_macro_output_chars`, "
         . "`use_large_installation_tweaks` , `debug_file` , `debug_level` , "
         . "`debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , `daemon_dumps_core`, "
@@ -361,7 +361,17 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["enable_notifications"]["enable_notifications"])
+    if (
+        isset($ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"])
+        && $ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"] === '1'
+    ) {
+        $rq .= "1, ";
+    } else {
+        $rq .= "0, ";
+    }
+
+    if (
+        isset($ret["enable_notifications"]["enable_notifications"])
         && $ret["enable_notifications"]["enable_notifications"] != 2
     ) {
         $rq .= "'" . $ret["enable_notifications"]["enable_notifications"] . "',  ";
@@ -369,7 +379,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["execute_service_checks"]["execute_service_checks"])
+    if (
+        isset($ret["execute_service_checks"]["execute_service_checks"])
         && $ret["execute_service_checks"]["execute_service_checks"] != 2
     ) {
         $rq .= "'" . $ret["execute_service_checks"]["execute_service_checks"] . "',  ";
@@ -377,7 +388,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["accept_passive_service_checks"]["accept_passive_service_checks"])
+    if (
+        isset($ret["accept_passive_service_checks"]["accept_passive_service_checks"])
         && $ret["accept_passive_service_checks"]["accept_passive_service_checks"] != 2
     ) {
         $rq .= "'" . $ret["accept_passive_service_checks"]["accept_passive_service_checks"] . "',  ";
@@ -385,7 +397,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["execute_host_checks"]["execute_host_checks"])
+    if (
+        isset($ret["execute_host_checks"]["execute_host_checks"])
         && $ret["execute_host_checks"]["execute_host_checks"] != 2
     ) {
         $rq .= "'" . $ret["execute_host_checks"]["execute_host_checks"] . "',  ";
@@ -393,7 +406,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["accept_passive_host_checks"]["accept_passive_host_checks"])
+    if (
+        isset($ret["accept_passive_host_checks"]["accept_passive_host_checks"])
         && $ret["accept_passive_host_checks"]["accept_passive_host_checks"] != 2
     ) {
         $rq .= "'" . $ret["accept_passive_host_checks"]["accept_passive_host_checks"] . "',  ";
@@ -401,7 +415,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["enable_event_handlers"]["enable_event_handlers"])
+    if (
+        isset($ret["enable_event_handlers"]["enable_event_handlers"])
         && $ret["enable_event_handlers"]["enable_event_handlers"] != 2
     ) {
         $rq .= "'" . $ret["enable_event_handlers"]["enable_event_handlers"] . "',  ";
@@ -409,7 +424,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["log_rotation_method"]["log_rotation_method"])
+    if (
+        isset($ret["log_rotation_method"]["log_rotation_method"])
         && $ret["log_rotation_method"]["log_rotation_method"] != 2
     ) {
         $rq .= "'" . $ret["log_rotation_method"]["log_rotation_method"] . "',  ";
@@ -423,7 +439,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["check_external_commands"]["check_external_commands"])
+    if (
+        isset($ret["check_external_commands"]["check_external_commands"])
         && $ret["check_external_commands"]["check_external_commands"] != 2
     ) {
         $rq .= "'" . $ret["check_external_commands"]["check_external_commands"] . "',  ";
@@ -461,7 +478,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["retain_state_information"]["retain_state_information"])
+    if (
+        isset($ret["retain_state_information"]["retain_state_information"])
         && $ret["retain_state_information"]["retain_state_information"] != 2
     ) {
         $rq .= "'" . $ret["retain_state_information"]["retain_state_information"] . "',  ";
@@ -481,16 +499,18 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["use_retained_program_state"]["use_retained_program_state"]) &&
-        $ret["use_retained_program_state"]["use_retained_program_state"] != 2
+    if (
+        isset($ret["use_retained_program_state"]["use_retained_program_state"])
+        && $ret["use_retained_program_state"]["use_retained_program_state"] != 2
     ) {
         $rq .= "'" . $ret["use_retained_program_state"]["use_retained_program_state"] . "',  ";
     } else {
         $rq .= "'2', ";
     }
 
-    if (isset($ret["use_retained_scheduling_info"]["use_retained_scheduling_info"]) &&
-        $ret["use_retained_scheduling_info"]["use_retained_scheduling_info"] != 2
+    if (
+        isset($ret["use_retained_scheduling_info"]["use_retained_scheduling_info"])
+        && $ret["use_retained_scheduling_info"]["use_retained_scheduling_info"] != 2
     ) {
         $rq .= "'" . $ret["use_retained_scheduling_info"]["use_retained_scheduling_info"] . "',  ";
     } else {
@@ -503,8 +523,9 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["retained_contact_service_attribute_mask"]) &&
-        $ret["retained_contact_service_attribute_mask"] != null
+    if (
+        isset($ret["retained_contact_service_attribute_mask"])
+        && $ret["retained_contact_service_attribute_mask"] != null
     ) {
         $rq .= "'" . htmlentities($ret["retained_contact_service_attribute_mask"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
@@ -517,8 +538,9 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["retained_process_service_attribute_mask"]) &&
-        $ret["retained_process_service_attribute_mask"] != null
+    if (
+        isset($ret["retained_process_service_attribute_mask"])
+        && $ret["retained_process_service_attribute_mask"] != null
     ) {
         $rq .= "'" . htmlentities($ret["retained_process_service_attribute_mask"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
@@ -549,8 +571,9 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["log_service_retries"]["log_service_retries"]) &&
-        $ret["log_service_retries"]["log_service_retries"] != 2
+    if (
+        isset($ret["log_service_retries"]["log_service_retries"])
+        && $ret["log_service_retries"]["log_service_retries"] != 2
     ) {
         $rq .= "'" . $ret["log_service_retries"]["log_service_retries"] . "',  ";
     } else {
@@ -563,7 +586,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["log_event_handlers"]["log_event_handlers"])
+    if (
+        isset($ret["log_event_handlers"]["log_event_handlers"])
         && $ret["log_event_handlers"]["log_event_handlers"] != 2
     ) {
         $rq .= "'" . $ret["log_event_handlers"]["log_event_handlers"] . "',  ";
@@ -571,7 +595,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["log_external_commands"]["log_external_commands"])
+    if (
+        isset($ret["log_external_commands"]["log_external_commands"])
         && $ret["log_external_commands"]["log_external_commands"] != 2
     ) {
         $rq .= "'" . $ret["log_external_commands"]["log_external_commands"] . "',  ";
@@ -579,7 +604,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["log_passive_checks"]["log_passive_checks"])
+    if (
+        isset($ret["log_passive_checks"]["log_passive_checks"])
         && $ret["log_passive_checks"]["log_passive_checks"] != 2
     ) {
         $rq .= "'" . $ret["log_passive_checks"]["log_passive_checks"] . "',  ";
@@ -653,7 +679,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["auto_reschedule_checks"]["auto_reschedule_checks"])
+    if (
+        isset($ret["auto_reschedule_checks"]["auto_reschedule_checks"])
         && $ret["auto_reschedule_checks"]["auto_reschedule_checks"] != 2
     ) {
         $rq .= "'" . $ret["auto_reschedule_checks"]["auto_reschedule_checks"] . "',  ";
@@ -673,7 +700,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
+    if (
+        isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
         && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 0
     ) {
         $rq .= "'" . $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] . "',  ";
@@ -681,7 +709,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'0', ";
     }
 
-    if (isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"])
+    if (
+        isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"])
         && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2
     ) {
         $rq .= "'" .
@@ -690,7 +719,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["enable_flap_detection"]["enable_flap_detection"])
+    if (
+        isset($ret["enable_flap_detection"]["enable_flap_detection"])
         && $ret["enable_flap_detection"]["enable_flap_detection"] != 2
     ) {
         $rq .= "'" . $ret["enable_flap_detection"]["enable_flap_detection"] . "',  ";
@@ -722,7 +752,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["soft_state_dependencies"]["soft_state_dependencies"])
+    if (
+        isset($ret["soft_state_dependencies"]["soft_state_dependencies"])
         && $ret["soft_state_dependencies"]["soft_state_dependencies"] != 2
     ) {
         $rq .= "'" . $ret["soft_state_dependencies"]["soft_state_dependencies"] . "',  ";
@@ -730,7 +761,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"])
+    if (
+        isset($ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"])
         && $ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"] != 2
     ) {
         $rq .= "'" .
@@ -781,7 +813,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["obsess_over_services"]["obsess_over_services"])
+    if (
+        isset($ret["obsess_over_services"]["obsess_over_services"])
         && $ret["obsess_over_services"]["obsess_over_services"] != 2
     ) {
         $rq .= "'" . $ret["obsess_over_services"]["obsess_over_services"] . "',  ";
@@ -795,7 +828,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["obsess_over_hosts"]["obsess_over_hosts"])
+    if (
+        isset($ret["obsess_over_hosts"]["obsess_over_hosts"])
         && $ret["obsess_over_hosts"]["obsess_over_hosts"] != 2
     ) {
         $rq .= "'" . $ret["obsess_over_hosts"]["obsess_over_hosts"] . "',  ";
@@ -809,7 +843,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["process_performance_data"]["process_performance_data"])
+    if (
+        isset($ret["process_performance_data"]["process_performance_data"])
         && $ret["process_performance_data"]["process_performance_data"] != 2
     ) {
         $rq .= "'" . $ret["process_performance_data"]["process_performance_data"] . "',  ";
@@ -853,7 +888,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["host_perfdata_file_mode"]["host_perfdata_file_mode"])
+    if (
+        isset($ret["host_perfdata_file_mode"]["host_perfdata_file_mode"])
         && $ret["host_perfdata_file_mode"]["host_perfdata_file_mode"] != null
     ) {
         $rq .= "'" . $ret["host_perfdata_file_mode"]["host_perfdata_file_mode"] . "',  ";
@@ -861,7 +897,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["service_perfdata_file_mode"]["service_perfdata_file_mode"])
+    if (
+        isset($ret["service_perfdata_file_mode"]["service_perfdata_file_mode"])
         && $ret["service_perfdata_file_mode"]["service_perfdata_file_mode"] != null
     ) {
         $rq .= "'" . $ret["service_perfdata_file_mode"]["service_perfdata_file_mode"] . "',  ";
@@ -877,7 +914,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["service_perfdata_file_processing_interval"])
+    if (
+        isset($ret["service_perfdata_file_processing_interval"])
         && $ret["service_perfdata_file_processing_interval"] != null
     ) {
         $rq .= "'" . htmlentities($ret["service_perfdata_file_processing_interval"], ENT_QUOTES, "UTF-8") . "',  ";
@@ -885,7 +923,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["host_perfdata_file_processing_command"])
+    if (
+        isset($ret["host_perfdata_file_processing_command"])
         && $ret["host_perfdata_file_processing_command"] != null
     ) {
         $rq .= "'" . htmlentities($ret["host_perfdata_file_processing_command"]) . "',  ";
@@ -893,7 +932,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["service_perfdata_file_processing_command"])
+    if (
+        isset($ret["service_perfdata_file_processing_command"])
         && $ret["service_perfdata_file_processing_command"] != null
     ) {
         $rq .= "'" . htmlentities($ret["service_perfdata_file_processing_command"], ENT_QUOTES, "UTF-8") . "',  ";
@@ -901,7 +941,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["check_for_orphaned_services"]["check_for_orphaned_services"])
+    if (
+        isset($ret["check_for_orphaned_services"]["check_for_orphaned_services"])
         && $ret["check_for_orphaned_services"]["check_for_orphaned_services"] != 2
     ) {
         $rq .= "'" . $ret["check_for_orphaned_services"]["check_for_orphaned_services"] . "',  ";
@@ -909,7 +950,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["check_service_freshness"]["check_service_freshness"])
+    if (
+        isset($ret["check_service_freshness"]["check_service_freshness"])
         && $ret["check_service_freshness"]["check_service_freshness"] != 2
     ) {
         $rq .= "'" . $ret["check_service_freshness"]["check_service_freshness"] . "',  ";
@@ -941,7 +983,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["check_host_freshness"]["check_host_freshness"])
+    if (
+        isset($ret["check_host_freshness"]["check_host_freshness"])
         && $ret["check_host_freshness"]["check_host_freshness"] != 2
     ) {
         $rq .= "'" . $ret["check_host_freshness"]["check_host_freshness"] . "',  ";
@@ -953,6 +996,16 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" . htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "NULL, ";
+    }
+
+    if (
+        isset($ret["instance_heartbeat_interval"])
+        && $ret["instance_heartbeat_interval"] != null
+        && is_numeric($ret["instance_heartbeat_interval"])
+    ) {
+        $rq .= (int)$ret["instance_heartbeat_interval"] . ",  ";
+    } else {
+        $rq .= "30, ";
     }
 
     if (isset($ret["date_format"]) && $ret["date_format"] != null) {
@@ -973,7 +1026,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
+    if (
+        isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
         && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2
     ) {
         $rq .= "'" . $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] . "',  ";
@@ -1019,7 +1073,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'0', ";
     }
 
-    if (isset($ret["enable_environment_macros"]["enable_environment_macros"])
+    if (
+        isset($ret["enable_environment_macros"]["enable_environment_macros"])
         && $ret["enable_environment_macros"]["enable_environment_macros"] != 2
     ) {
         $rq .= "'" . $ret["enable_environment_macros"]["enable_environment_macros"] . "',  ";
@@ -1033,7 +1088,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["use_regexp_matching"]["use_regexp_matching"])
+    if (
+        isset($ret["use_regexp_matching"]["use_regexp_matching"])
         && $ret["use_regexp_matching"]["use_regexp_matching"] != 2
     ) {
         $rq .= "'" . $ret["use_regexp_matching"]["use_regexp_matching"] . "',  ";
@@ -1041,7 +1097,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["use_true_regexp_matching"]["use_true_regexp_matching"])
+    if (
+        isset($ret["use_true_regexp_matching"]["use_true_regexp_matching"])
         && $ret["use_true_regexp_matching"]["use_true_regexp_matching"] != 2
     ) {
         $rq .= "'" . $ret["use_true_regexp_matching"]["use_true_regexp_matching"] . "',  ";
@@ -1080,7 +1137,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'-1', ";
     }
 
-    if (isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"])
+    if (
+        isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"])
         && $ret["translate_passive_host_checks"]["translate_passive_host_checks"] != 2
     ) {
         $rq .= "'" . $ret["translate_passive_host_checks"]["translate_passive_host_checks"] . "', ";
@@ -1088,7 +1146,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"])
+    if (
+        isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"])
         && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != 2
     ) {
         $rq .= "'" . $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] . "', ";
@@ -1096,7 +1155,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"])
+    if (
+        isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"])
         && $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] != 2
     ) {
         $rq .= "'" . $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] . "', ";
@@ -1104,7 +1164,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (isset($ret["external_command_buffer_slots"]["external_command_buffer_slots"])
+    if (
+        isset($ret["external_command_buffer_slots"]["external_command_buffer_slots"])
         && $ret["external_command_buffer_slots"]["external_command_buffer_slots"] != 2
     ) {
         $rq .= "'" . $ret["external_command_buffer_slots"]["external_command_buffer_slots"] . "', ";
@@ -1124,8 +1185,10 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'0', ";
     }
 
-    if (isset($ret['enable_macros_filter']['enable_macros_filter'])
-        && $ret['enable_macros_filter']['enable_macros_filter']) {
+    if (
+        isset($ret['enable_macros_filter']['enable_macros_filter'])
+        && $ret['enable_macros_filter']['enable_macros_filter']
+    ) {
         $rq .= "'1', ";
     } else {
         $rq .= "'0', ";
@@ -1253,7 +1316,17 @@ function updateNagios($nagios_id = null)
         $rq .= "nagios_group = NULL, ";
     }
 
-    if (isset($ret["enable_notifications"]["enable_notifications"])
+    if (
+        isset($ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"])
+        && $ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"] === '1'
+    ) {
+        $rq .= "postpone_notification_to_timeperiod = 1, ";
+    } else {
+        $rq .= "postpone_notification_to_timeperiod = 0, ";
+    }
+
+    if (
+        isset($ret["enable_notifications"]["enable_notifications"])
         && $ret["enable_notifications"]["enable_notifications"] != 2
     ) {
         $rq .= "enable_notifications = '" . $ret["enable_notifications"]["enable_notifications"] . "',  ";
@@ -1261,7 +1334,8 @@ function updateNagios($nagios_id = null)
         $rq .= "enable_notifications = '2', ";
     }
 
-    if (isset($ret["execute_service_checks"]["execute_service_checks"])
+    if (
+        isset($ret["execute_service_checks"]["execute_service_checks"])
         && $ret["execute_service_checks"]["execute_service_checks"] != 2
     ) {
         $rq .= "execute_service_checks = '" . $ret["execute_service_checks"]["execute_service_checks"] . "',  ";
@@ -1269,7 +1343,8 @@ function updateNagios($nagios_id = null)
         $rq .= "execute_service_checks = '2', ";
     }
 
-    if (isset($ret["accept_passive_service_checks"]["accept_passive_service_checks"])
+    if (
+        isset($ret["accept_passive_service_checks"]["accept_passive_service_checks"])
         && $ret["accept_passive_service_checks"]["accept_passive_service_checks"] != 2
     ) {
         $rq .= "accept_passive_service_checks = '"
@@ -1279,7 +1354,8 @@ function updateNagios($nagios_id = null)
         $rq .= "accept_passive_service_checks = '2', ";
     }
 
-    if (isset($ret["execute_host_checks"]["execute_host_checks"])
+    if (
+        isset($ret["execute_host_checks"]["execute_host_checks"])
         && $ret["execute_host_checks"]["execute_host_checks"] != 2
     ) {
         $rq .= "execute_host_checks = '" . $ret["execute_host_checks"]["execute_host_checks"] . "',  ";
@@ -1287,7 +1363,8 @@ function updateNagios($nagios_id = null)
         $rq .= "execute_host_checks = '2', ";
     }
 
-    if (isset($ret["accept_passive_host_checks"]["accept_passive_host_checks"])
+    if (
+        isset($ret["accept_passive_host_checks"]["accept_passive_host_checks"])
         && $ret["accept_passive_host_checks"]["accept_passive_host_checks"] != 2
     ) {
         $rq .= "accept_passive_host_checks = '"
@@ -1297,7 +1374,8 @@ function updateNagios($nagios_id = null)
         $rq .= "accept_passive_host_checks = '2', ";
     }
 
-    if (isset($ret["enable_event_handlers"]["enable_event_handlers"])
+    if (
+        isset($ret["enable_event_handlers"]["enable_event_handlers"])
         && $ret["enable_event_handlers"]["enable_event_handlers"] != 2
     ) {
         $rq .= "enable_event_handlers = '" . $ret["enable_event_handlers"]["enable_event_handlers"] . "',  ";
@@ -1305,7 +1383,8 @@ function updateNagios($nagios_id = null)
         $rq .= "enable_event_handlers = '2', ";
     }
 
-    if (isset($ret["log_rotation_method"]["log_rotation_method"])
+    if (
+        isset($ret["log_rotation_method"]["log_rotation_method"])
         && $ret["log_rotation_method"]["log_rotation_method"] != 2
     ) {
         $rq .= "log_rotation_method = '" . $ret["log_rotation_method"]["log_rotation_method"] . "',  ";
@@ -1319,7 +1398,8 @@ function updateNagios($nagios_id = null)
         $rq .= "log_archive_path = NULL, ";
     }
 
-    if (isset($ret["check_external_commands"]["check_external_commands"])
+    if (
+        isset($ret["check_external_commands"]["check_external_commands"])
         && $ret["check_external_commands"]["check_external_commands"] != 2
     ) {
         $rq .= "check_external_commands = '" . $ret["check_external_commands"]["check_external_commands"] . "',  ";
@@ -1359,7 +1439,8 @@ function updateNagios($nagios_id = null)
         $rq .= "lock_file = NULL, ";
     }
 
-    if (isset($ret["retain_state_information"]["retain_state_information"])
+    if (
+        isset($ret["retain_state_information"]["retain_state_information"])
         && $ret["retain_state_information"]["retain_state_information"] != 2
     ) {
         $rq .= "retain_state_information = '" . $ret["retain_state_information"]["retain_state_information"] . "',  ";
@@ -1381,7 +1462,8 @@ function updateNagios($nagios_id = null)
         $rq .= "retention_update_interval = NULL, ";
     }
 
-    if (isset($ret["use_retained_program_state"]["use_retained_program_state"])
+    if (
+        isset($ret["use_retained_program_state"]["use_retained_program_state"])
         && $ret["use_retained_program_state"]["use_retained_program_state"] != 2
     ) {
         $rq .= "use_retained_program_state = '"
@@ -1391,7 +1473,8 @@ function updateNagios($nagios_id = null)
         $rq .= "use_retained_program_state = '2', ";
     }
 
-    if (isset($ret["use_retained_scheduling_info"]["use_retained_scheduling_info"])
+    if (
+        isset($ret["use_retained_scheduling_info"]["use_retained_scheduling_info"])
         && $ret["use_retained_scheduling_info"]["use_retained_scheduling_info"] != 2
     ) {
         $rq .= "use_retained_scheduling_info = '"
@@ -1409,7 +1492,8 @@ function updateNagios($nagios_id = null)
         $rq .= "retained_contact_host_attribute_mask = NULL, ";
     }
 
-    if (isset($ret["retained_contact_service_attribute_mask"])
+    if (
+        isset($ret["retained_contact_service_attribute_mask"])
         && $ret["retained_contact_service_attribute_mask"] != null
     ) {
         $rq .= "retained_contact_service_attribute_mask = '"
@@ -1427,7 +1511,8 @@ function updateNagios($nagios_id = null)
         $rq .= "retained_process_host_attribute_mask = NULL, ";
     }
 
-    if (isset($ret["retained_process_service_attribute_mask"])
+    if (
+        isset($ret["retained_process_service_attribute_mask"])
         && $ret["retained_process_service_attribute_mask"] != null
     ) {
         $rq .= "retained_process_service_attribute_mask = '"
@@ -1465,7 +1550,8 @@ function updateNagios($nagios_id = null)
         $rq .= "log_notifications = '2', ";
     }
 
-    if (isset($ret["log_service_retries"]["log_service_retries"])
+    if (
+        isset($ret["log_service_retries"]["log_service_retries"])
         && $ret["log_service_retries"]["log_service_retries"] != 2
     ) {
         $rq .= "log_service_retries = '" . $ret["log_service_retries"]["log_service_retries"] . "',  ";
@@ -1479,7 +1565,8 @@ function updateNagios($nagios_id = null)
         $rq .= "log_host_retries = '2', ";
     }
 
-    if (isset($ret["log_event_handlers"]["log_event_handlers"])
+    if (
+        isset($ret["log_event_handlers"]["log_event_handlers"])
         && $ret["log_event_handlers"]["log_event_handlers"] != 2
     ) {
         $rq .= "log_event_handlers = '" . $ret["log_event_handlers"]["log_event_handlers"] . "',  ";
@@ -1487,7 +1574,8 @@ function updateNagios($nagios_id = null)
         $rq .= "log_event_handlers = '2', ";
     }
 
-    if (isset($ret["log_external_commands"]["log_external_commands"])
+    if (
+        isset($ret["log_external_commands"]["log_external_commands"])
         && $ret["log_external_commands"]["log_external_commands"] != 2
     ) {
         $rq .= "log_external_commands = '" . $ret["log_external_commands"]["log_external_commands"] . "',  ";
@@ -1495,7 +1583,8 @@ function updateNagios($nagios_id = null)
         $rq .= "log_external_commands = '2', ";
     }
 
-    if (isset($ret["log_passive_checks"]["log_passive_checks"])
+    if (
+        isset($ret["log_passive_checks"]["log_passive_checks"])
         && $ret["log_passive_checks"]["log_passive_checks"] != 2
     ) {
         $rq .= "log_passive_checks = '" . $ret["log_passive_checks"]["log_passive_checks"] . "',  ";
@@ -1579,7 +1668,8 @@ function updateNagios($nagios_id = null)
         $rq .= "max_host_check_spread = NULL, ";
     }
 
-    if (isset($ret["auto_reschedule_checks"]["auto_reschedule_checks"])
+    if (
+        isset($ret["auto_reschedule_checks"]["auto_reschedule_checks"])
         && $ret["auto_reschedule_checks"]["auto_reschedule_checks"] != 2
     ) {
         $rq .= "auto_reschedule_checks = '" . $ret["auto_reschedule_checks"]["auto_reschedule_checks"] . "',  ";
@@ -1603,7 +1693,8 @@ function updateNagios($nagios_id = null)
         $rq .= "auto_rescheduling_window = NULL, ";
     }
 
-    if (isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
+    if (
+        isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
         && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 2
     ) {
         $rq .= "use_aggressive_host_checking = '"
@@ -1613,7 +1704,8 @@ function updateNagios($nagios_id = null)
         $rq .= "use_aggressive_host_checking = '2', ";
     }
 
-    if (isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"])
+    if (
+        isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"])
         && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2
     ) {
         $rq .= "enable_predictive_host_dependency_checks = '"
@@ -1623,7 +1715,8 @@ function updateNagios($nagios_id = null)
         $rq .= "enable_predictive_host_dependency_checks = '2', ";
     }
 
-    if (isset($ret["enable_flap_detection"]["enable_flap_detection"])
+    if (
+        isset($ret["enable_flap_detection"]["enable_flap_detection"])
         && $ret["enable_flap_detection"]["enable_flap_detection"] != 2
     ) {
         $rq .= "enable_flap_detection = '" . $ret["enable_flap_detection"]["enable_flap_detection"] . "',  ";
@@ -1663,7 +1756,8 @@ function updateNagios($nagios_id = null)
         $rq .= "high_host_flap_threshold = NULL, ";
     }
 
-    if (isset($ret["soft_state_dependencies"]["soft_state_dependencies"])
+    if (
+        isset($ret["soft_state_dependencies"]["soft_state_dependencies"])
         && $ret["soft_state_dependencies"]["soft_state_dependencies"] != 2
     ) {
         $rq .= "soft_state_dependencies = '" . $ret["soft_state_dependencies"]["soft_state_dependencies"] . "',  ";
@@ -1671,7 +1765,8 @@ function updateNagios($nagios_id = null)
         $rq .= "soft_state_dependencies = '2', ";
     }
 
-    if (isset($ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"])
+    if (
+        isset($ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"])
         && $ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"] != 2
     ) {
         $rq .= "enable_predictive_service_dependency_checks = '"
@@ -1723,8 +1818,9 @@ function updateNagios($nagios_id = null)
         $rq .= "perfdata_timeout = NULL, ";
     }
 
-    if (isset($ret["obsess_over_services"]["obsess_over_services"]) &&
-        $ret["obsess_over_services"]["obsess_over_services"] != 2
+    if (
+        isset($ret["obsess_over_services"]["obsess_over_services"])
+        && $ret["obsess_over_services"]["obsess_over_services"] != 2
     ) {
         $rq .= "obsess_over_services = '" . $ret["obsess_over_services"]["obsess_over_services"] . "',  ";
     } else {
@@ -1737,7 +1833,9 @@ function updateNagios($nagios_id = null)
         $rq .= "ocsp_command = NULL, ";
     }
 
-    if (isset($ret["obsess_over_hosts"]["obsess_over_hosts"]) && $ret["obsess_over_hosts"]["obsess_over_hosts"] != 2
+    if (
+        isset($ret["obsess_over_hosts"]["obsess_over_hosts"])
+        && $ret["obsess_over_hosts"]["obsess_over_hosts"] != 2
     ) {
         $rq .= "obsess_over_hosts = '" . $ret["obsess_over_hosts"]["obsess_over_hosts"] . "',  ";
     } else {
@@ -1750,7 +1848,8 @@ function updateNagios($nagios_id = null)
         $rq .= "ochp_command = NULL, ";
     }
 
-    if (isset($ret["process_performance_data"]["process_performance_data"])
+    if (
+        isset($ret["process_performance_data"]["process_performance_data"])
         && $ret["process_performance_data"]["process_performance_data"] != 2
     ) {
         $rq .= "process_performance_data = '" . $ret["process_performance_data"]["process_performance_data"] . "',  ";
@@ -1796,7 +1895,8 @@ function updateNagios($nagios_id = null)
         $rq .= "service_perfdata_file_template = NULL, ";
     }
 
-    if (isset($ret["host_perfdata_file_mode"]["host_perfdata_file_mode"])
+    if (
+        isset($ret["host_perfdata_file_mode"]["host_perfdata_file_mode"])
         && $ret["host_perfdata_file_mode"]["host_perfdata_file_mode"] != null
     ) {
         $rq .= "host_perfdata_file_mode  = '" . $ret["host_perfdata_file_mode"]["host_perfdata_file_mode"] . "',  ";
@@ -1804,7 +1904,8 @@ function updateNagios($nagios_id = null)
         $rq .= "host_perfdata_file_mode  = NULL, ";
     }
 
-    if (isset($ret["service_perfdata_file_mode"]["service_perfdata_file_mode"])
+    if (
+        isset($ret["service_perfdata_file_mode"]["service_perfdata_file_mode"])
         && $ret["service_perfdata_file_mode"]["service_perfdata_file_mode"] != null
     ) {
         $rq .= "service_perfdata_file_mode  = '"
@@ -1814,7 +1915,8 @@ function updateNagios($nagios_id = null)
         $rq .= "service_perfdata_file_mode  = NULL, ";
     }
 
-    if (isset($ret["host_perfdata_file_processing_interval"])
+    if (
+        isset($ret["host_perfdata_file_processing_interval"])
         && $ret["host_perfdata_file_processing_interval"] != null
     ) {
         $rq .= "host_perfdata_file_processing_interval  = '"
@@ -1824,7 +1926,8 @@ function updateNagios($nagios_id = null)
         $rq .= "host_perfdata_file_processing_interval = NULL, ";
     }
 
-    if (isset($ret["service_perfdata_file_processing_interval"])
+    if (
+        isset($ret["service_perfdata_file_processing_interval"])
         && $ret["service_perfdata_file_processing_interval"] != null
     ) {
         $rq .= "service_perfdata_file_processing_interval  = '"
@@ -1834,7 +1937,8 @@ function updateNagios($nagios_id = null)
         $rq .= "service_perfdata_file_processing_interval = NULL, ";
     }
 
-    if (isset($ret["host_perfdata_file_processing_command"])
+    if (
+        isset($ret["host_perfdata_file_processing_command"])
         && $ret["host_perfdata_file_processing_command"] != null
     ) {
         $rq .= "host_perfdata_file_processing_command  = '"
@@ -1844,7 +1948,8 @@ function updateNagios($nagios_id = null)
         $rq .= "host_perfdata_file_processing_command  = NULL, ";
     }
 
-    if (isset($ret["service_perfdata_file_processing_command"])
+    if (
+        isset($ret["service_perfdata_file_processing_command"])
         && $ret["service_perfdata_file_processing_command"] != null
     ) {
         $rq .= "service_perfdata_file_processing_command  = '"
@@ -1854,7 +1959,8 @@ function updateNagios($nagios_id = null)
         $rq .= "service_perfdata_file_processing_command  = NULL, ";
     }
 
-    if (isset($ret["check_for_orphaned_services"]["check_for_orphaned_services"])
+    if (
+        isset($ret["check_for_orphaned_services"]["check_for_orphaned_services"])
         && $ret["check_for_orphaned_services"]["check_for_orphaned_services"] != 2
     ) {
         $rq .= "check_for_orphaned_services = '"
@@ -1864,7 +1970,8 @@ function updateNagios($nagios_id = null)
         $rq .= "check_for_orphaned_services = '2', ";
     }
 
-    if (isset($ret["check_service_freshness"]["check_service_freshness"])
+    if (
+        isset($ret["check_service_freshness"]["check_service_freshness"])
         && $ret["check_service_freshness"]["check_service_freshness"] != 2
     ) {
         $rq .= "check_service_freshness = '"
@@ -1906,7 +2013,8 @@ function updateNagios($nagios_id = null)
         $rq .= "additional_freshness_latency  = NULL, ";
     }
 
-    if (isset($ret["check_host_freshness"]["check_host_freshness"])
+    if (
+        isset($ret["check_host_freshness"]["check_host_freshness"])
         && $ret["check_host_freshness"]["check_host_freshness"] != 2
     ) {
         $rq .= "check_host_freshness = '" . $ret["check_host_freshness"]["check_host_freshness"] . "',  ";
@@ -1920,6 +2028,16 @@ function updateNagios($nagios_id = null)
             . "',  ";
     } else {
         $rq .= "host_freshness_check_interval  = NULL, ";
+    }
+
+    if (
+        isset($ret["instance_heartbeat_interval"])
+        && $ret["instance_heartbeat_interval"] != null
+        && is_numeric($ret["instance_heartbeat_interval"])
+    ) {
+        $rq .= "instance_heartbeat_interval = " . (int)$ret["instance_heartbeat_interval"] . ",  ";
+    } else {
+        $rq .= "instance_heartbeat_interval = 30, ";
     }
 
     if (isset($ret["date_format"]) && $ret["date_format"] != null) {
@@ -1940,7 +2058,8 @@ function updateNagios($nagios_id = null)
         $rq .= "illegal_macro_output_chars = NULL, ";
     }
 
-    if (isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
+    if (
+        isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"])
         && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2
     ) {
         $rq .= "use_large_installation_tweaks = '"
@@ -1950,7 +2069,8 @@ function updateNagios($nagios_id = null)
         $rq .= "use_large_installation_tweaks = '2', ";
     }
 
-    if (isset($ret["enable_environment_macros"]["enable_environment_macros"])
+    if (
+        isset($ret["enable_environment_macros"]["enable_environment_macros"])
         && $ret["enable_environment_macros"]["enable_environment_macros"] != 2
     ) {
         $rq .= "enable_environment_macros = '"
@@ -1966,7 +2086,8 @@ function updateNagios($nagios_id = null)
         $rq .= "use_setpgid = '2', ";
     }
 
-    if (isset($ret["use_regexp_matching"]["use_regexp_matching"])
+    if (
+        isset($ret["use_regexp_matching"]["use_regexp_matching"])
         && $ret["use_regexp_matching"]["use_regexp_matching"] != 2
     ) {
         $rq .= "use_regexp_matching = '" . $ret["use_regexp_matching"]["use_regexp_matching"] . "',  ";
@@ -1974,7 +2095,8 @@ function updateNagios($nagios_id = null)
         $rq .= "use_regexp_matching = '2', ";
     }
 
-    if (isset($ret["use_true_regexp_matching"]["use_true_regexp_matching"])
+    if (
+        isset($ret["use_true_regexp_matching"]["use_true_regexp_matching"])
         && $ret["use_true_regexp_matching"]["use_true_regexp_matching"] != 2
     ) {
         $rq .= "use_true_regexp_matching = '" . $ret["use_true_regexp_matching"]["use_true_regexp_matching"] . "',  ";
@@ -2045,7 +2167,8 @@ function updateNagios($nagios_id = null)
         $rq .= "daemon_dumps_core = '0', ";
     }
 
-    if (isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"])
+    if (
+        isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"])
         && $ret["translate_passive_host_checks"]["translate_passive_host_checks"] != null
     ) {
         $rq .= "translate_passive_host_checks = '"
@@ -2055,7 +2178,8 @@ function updateNagios($nagios_id = null)
         $rq .= "translate_passive_host_checks = NULL, ";
     }
 
-    if (isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"])
+    if (
+        isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"])
         && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != null
     ) {
         $rq .= "passive_host_checks_are_soft = '"
@@ -2065,7 +2189,8 @@ function updateNagios($nagios_id = null)
         $rq .= "passive_host_checks_are_soft = NULL, ";
     }
 
-    if (isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"])
+    if (
+        isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"])
         && $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] != null
     ) {
         $rq .= "check_for_orphaned_hosts = '"
@@ -2099,7 +2224,8 @@ function updateNagios($nagios_id = null)
         $rq .= "log_pid = '0', ";
     }
 
-    if (isset($ret['enable_macros_filter']['enable_macros_filter'])
+    if (
+        isset($ret['enable_macros_filter']['enable_macros_filter'])
         && $ret['enable_macros_filter']['enable_macros_filter']
     ) {
         $rq .= "enable_macros_filter = '1', ";

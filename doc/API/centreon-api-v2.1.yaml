@@ -149,6 +149,31 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/hosts/severities:
+    get:
+      tags:
+        - Host severity
+      summary: "List all host severities"
+      description: |
+        List of all host severity configurations
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.Host.Severity'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/hosts/groups:
     get:
       tags:
@@ -3022,6 +3047,35 @@ components:
           type: string
           description: "Host category comments"
           nullable: true
+    Configuration.Host.Severity:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "Host severity id"
+          example: 1
+        name:
+          type: string
+          description: "Host severity name"
+          example: "host-severity"
+        alias:
+          type: string
+          description: "Host severity alias"
+          example: "host-severity"
+        level:
+          type: integer
+          description: "Host severity priority"
+          example: 2
+        icon:
+          $ref: '#/components/schemas/Media.Image'
+          description: "Define the image associated with this severity"
+        comments:
+          type: string
+          description: "Host severity comments"
+          nullable: true
+        is_activated:
+          type: boolean
+          description: "Indicates whether this host severity is enabled or not"
     Configuration.Host.Template:
       type: object
       properties:

@@ -131,6 +131,14 @@ interface ResourceServiceInterface
     public function enrichServiceWithDetails(ResourceEntity $resource): void;
 
     /**
+     * Replace macros set in the external links by their actual values
+     *
+     * @param ResourceEntity $resource
+     * @return void
+     */
+    public function replaceMacrosInExternalLinks(ResourceEntity $resource): void;
+
+    /**
      * Used to filter requests according to a contact.
      * If the filter is defined, all requests will use the ACL of the contact
      * to fetch data.

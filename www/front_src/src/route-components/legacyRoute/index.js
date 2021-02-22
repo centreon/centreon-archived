@@ -6,9 +6,9 @@ import React, { Component } from 'react';
 
 import classnames from 'classnames';
 
+import { PageSkeleton } from '@centreon/ui';
+
 import styles from '../../components/header/header.scss';
-import loaderStyles from '../../components/loader/loader.scss';
-import Loader from '../../components/loader';
 
 class LegacyRoute extends Component {
   constructor(props) {
@@ -79,11 +79,7 @@ class LegacyRoute extends Component {
 
     return (
       <>
-        {loading && (
-          <span className={loaderStyles['main-loader']}>
-            <Loader />
-          </span>
-        )}
+        {loading && <PageSkeleton />}
         <iframe
           id="main-content"
           title="Main Content"

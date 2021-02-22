@@ -534,6 +534,7 @@ ENGINECFG;setparam;Centreon Engine Central;temp_file;/var/log/centreon-engine/ce
 ENGINECFG;setparam;Centreon Engine Central;status_file;/var/log/centreon-engine/status.dat
 ENGINECFG;setparam;Centreon Engine Central;nagios_user;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;nagios_group;centreon-engine
+ENGINECFG;setparam;Centreon Engine Central;postpone_notification_to_timeperiod;0
 ENGINECFG;setparam;Centreon Engine Central;enable_notifications;1
 ENGINECFG;setparam;Centreon Engine Central;execute_service_checks;1
 ENGINECFG;setparam;Centreon Engine Central;accept_passive_service_checks;1
@@ -590,6 +591,7 @@ ENGINECFG;setparam;Centreon Engine Central;check_for_orphaned_hosts;0
 ENGINECFG;setparam;Centreon Engine Central;check_service_freshness;1
 ENGINECFG;setparam;Centreon Engine Central;check_host_freshness;2
 ENGINECFG;setparam;Centreon Engine Central;date_format;euro
+ENGINECFG;setparam;Centreon Engine Central;instance_heartbeat_interval;30
 ENGINECFG;setparam;Centreon Engine Central;illegal_object_name_chars;~!$%^&*"|'<>?,()=
 ENGINECFG;setparam;Centreon Engine Central;illegal_macro_output_chars;`~$^&"|'<>
 ENGINECFG;setparam;Centreon Engine Central;use_regexp_matching;2
@@ -5587,4 +5589,3 @@ ACLGROUP;SETACTION;ALL;Simple User;
 ACLGROUP;SETRESOURCE;ALL;All Resources;
 ACLGROUP;SETCONTACT;ALL;test_contact;
 ACLGROUP;SETCONTACTGROUP;ALL;Guest|test_contact-group;
-

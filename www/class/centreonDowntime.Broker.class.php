@@ -90,7 +90,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         } catch (\PDOException $e) {
             return false;
         }
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             if (isset($row['name2']) && $row['name2'] != "") {
                 $list['services'] = array('host_name' => $row['name1'], 'service_name' => $row['name2']);
             } elseif (isset($row['name1']) && $row['name1'] != "") {
@@ -129,7 +129,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
         } catch (\PDOException $e) {
             return false;
         }
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         return $row['internal_downtime_id'];
     }
 
@@ -220,19 +220,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $isApproaching;
     }
 
-    private function setTime($hourMinute, $timezone, $tomorrow)
-    {
-        list($hour, $minute) = explode(':', $hourMinute);
-        $currentDate = new DateTime();
-        $currentDate->setTimezone($timezone);
-        $currentDate->setTime($hour, $minute, '00');
-        if ($tomorrow) {
-            $currentDate->add(new DateInterval('P1D'));
-        }
-
-        return $currentDate;
-    }
-
     private function isTomorrow($downtimeStartTime, $now, $delay)
     {
         $tomorrow = false;
@@ -279,20 +266,25 @@ class CentreonDowntimeBroker extends CentreonDowntime
         return $approachingTime;
     }
 
-    private function manageWinterToSummerTimestamp($time, $timestamp, $timezone)
+    /**
+     * reset timestamp at beginning of hour if we jump forward
+     * example:
+     *   - current date is 2021-03-28
+     *   - $time is 02:30
+     *   ==> return timestamp corresponding to 02:00 cause 02:30 does not exist (jump from 02:00 to 03:00)
+     *
+     * @param \DateTime $datetime
+     * @param string $time time formatted as HH:mm
+     * @return integer the calculated timestamp
+     */
+    private function manageWinterToSummerTimestamp(\Datetime $datetime, string $time): int
     {
-        $dstDate = new DateTime('now', $timezone);
-        $dstDate->setTimestamp($timestamp);
-        $dstHour = $dstDate->format('H');
-        $hour = $time->format('H');
-
-        $offset = $dstHour - $hour;
-        if ($offset > 0) {
-            $time->setTime($hour, '00');
-            $timestamp = $time->getTimestamp();
+        $hour = explode(':', $time)[0];
+        if ((int)$datetime->format('H') > (int)$hour) {
+            $datetime->setTime($hour, '00');
         }
 
-        return $timestamp;
+        return $datetime->getTimestamp();
     }
 
     private function manageSummerToWinterTimestamp($timestamp, $timezone)
@@ -315,11 +307,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
 
         $downtimes = $this->getDowntime();
 
-        $hostObj = new CentreonHost($this->db);
         $gmtObj = new CentreonGMT($this->db);
-
-        $startDelay = new DateTime('now');
-        $endDelay = new DateTime('now +' . $delay . 'seconds');
 
         foreach ($downtimes as $downtime) {
             /* Convert HH::mm::ss to HH:mm */
@@ -332,20 +320,23 @@ class CentreonDowntimeBroker extends CentreonDowntime
 
             $currentHostDate = $gmtObj->getHostCurrentDatetime($downtime['host_id']);
             $timezone = $currentHostDate->getTimezone();
-            $startDelay->setTimezone($timezone);
-            $endDelay->setTimezone($timezone);
+            $startDelay = new DateTime('now', $timezone);
+            $endDelay = new DateTime('now +' . $delay . 'seconds', $timezone);
 
             $tomorrow = $this->isTomorrow($downtime['dtp_start_time'], $startDelay, $delay);
 
-            $startTime = $this->setTime($downtime['dtp_start_time'], $timezone, $tomorrow);
-            $startTimestamp = $startTime->getTimestamp();
+            $downtimeStartDate = new \DateTime($downtime['dtp_start_time'], $timezone);
+            $downtimeEndDate = new \DateTime($downtime['dtp_end_time'], $timezone);
 
-            $endTime = $this->setTime($downtime['dtp_end_time'], $timezone, $tomorrow);
-            $endTimestamp = $endTime->getTimestamp();
+            if ($tomorrow) {
+                $downtimeStartDate->add(new \DateInterval('P1D'));
+                $downtimeEndDate->add(new \DateInterval('P1D'));
+            }
 
             # Check if we jump an hour
-            $startTimestamp = $this->manageWinterToSummerTimestamp($startTime, $startTimestamp, $timezone);
-            $endTimestamp = $this->manageWinterToSummerTimestamp($endTime, $endTimestamp, $timezone);
+            $startTimestamp = $this->manageWinterToSummerTimestamp($downtimeStartDate, $downtime['dtp_start_time']);
+            $endTimestamp = $this->manageWinterToSummerTimestamp($downtimeEndDate, $downtime['dtp_end_time']);
+
             if ($startTimestamp == $endTimestamp) {
                 continue;
             }
@@ -476,7 +467,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
                 AND cn.nagios_activate = '1'
                 AND ns.ns_activate = '1'";
             $res = $this->db->query($query);
-            while ($row = $res->fetchRow()) {
+            while ($row = $res->fetch()) {
                 $cmdData[$row['host_host_id']] = $row['id'];
             }
         }

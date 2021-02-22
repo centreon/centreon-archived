@@ -1858,6 +1858,17 @@ msgstr ""
 "moteur de supervision abandonnera ses privilèges effectifs et se lancera avec "
 "ce groupe. Vous pouvez donner un nom de groupe ou un GID."
 
+#: centreon-web/www/include/configuration/configNagios/help.php:
+msgid ""
+"This option determines whether or not Monitoring Engine will postpone unique notifications that should have been "
+"sent after an event but no timeperiods were valid at that time. Only Hosts, Services and BA notification "
+"timeperiods are checked, Users notification timeperiods are ignored."
+msgstr ""
+"Cette option détermine si le moteur de supervision reportera ou non les notifications uniques "
+"qui auraient dû être envoyées après un événement, mais que celui ci a eu lieu lors d'une période de temps non valide. "
+"Seules les périodes de notification des hôtes, des services et de la BA sont vérifiées, "
+"les périodes de notification des utilisateurs sont ignorées."
+
 #: centreon-web/www/include/configuration/configNagios/help.php:98
 msgid ""
 "This option determines whether or not Monitoring Engine will send out "
@@ -3213,6 +3224,15 @@ msgstr ""
 "ajoutera comme seuil de rafraîchissement qu'il calcule automatiquement pour "
 "tous les hôtes ou services (par exemple ceux qui n'ont pas été spécifié "
 "explicitement par l'utilisateur)."
+
+#: centreon-web/www/include/configuration/configNagios/help.php:461
+msgid ""
+"Time interval in seconds between two heartbeat events. This event is the one responsible of the ‘Last Update’ "
+"column update in the Pollers listing. Value must be between 5 and 600. Default value is 30."
+msgstr ""
+"Intervalle de temps en secondes entre deux événements heartbeat. Cet événement est le responsable de "
+"la mise à jour de la colonne 'Dernière mise à jour' dans la liste des Poller. La valeur doit "
+"être comprise entre 5 et 600. La valeur par défaut est 30."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:461
 msgid ""

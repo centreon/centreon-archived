@@ -33,6 +33,11 @@ Centreon\Domain\HostConfiguration\Host:
       groups:
         - 'host_group_1'
         - 'host_conf_full'
+    categories:
+      since_version: 2.1
+      type: array<Centreon\Domain\HostConfiguration\Model\HostCategory>
+      groups:
+        - 'host_categories'
     comment:
       type: string
       groups:
