@@ -14,7 +14,7 @@ const getStatusCriterias = (status) => {
 const downCriterias = getStatusCriterias({ id: 'DOWN', name: 'Down' });
 const unreachableCriterias = getStatusCriterias({
   id: 'UNREACHABLE',
-  name: 'Uhreachable',
+  name: 'Unreachable',
 });
 const upCriterias = getStatusCriterias({ id: 'UP', name: 'Up' });
 const pendingCriterias = getStatusCriterias({ id: 'PENDING', name: 'Pending' });
