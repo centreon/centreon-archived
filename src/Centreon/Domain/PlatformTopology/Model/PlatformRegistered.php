@@ -29,7 +29,7 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
  * Class designed to retrieve servers to be added using the wizard
  *
  */
-class Platform implements PlatformInterface
+class PlatformRegistered implements PlatformInterface
 {
     public const TYPE_CENTRAL = 'central';
     public const TYPE_POLLER = 'poller';
