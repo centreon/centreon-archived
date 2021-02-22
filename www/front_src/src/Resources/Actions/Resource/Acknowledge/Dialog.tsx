@@ -100,9 +100,9 @@ const DialogAcknowledge = ({
                 size="small"
               />
             }
-            label={labelNotify}
+            label={t(labelNotify)}
           />
-          <FormHelperText>{labelNotifyHelpCaption}</FormHelperText>
+          <FormHelperText>{t(labelNotifyHelpCaption)}</FormHelperText>
         </Grid>
         {hasHosts && (
           <Grid item>
