@@ -15994,5 +15994,11 @@ msgstr "Sélectionner les critères"
 msgid "Error when searching for the host category (%s)"
 msgstr "Erreur lors de la recherche de la catégorie de l'hôte (%s)"
 
+msgid "Error when searching for the host group (%s)"
+msgstr "Erreur lors de la recherche du groupe d'hôte (%s)"
+
 msgid "Host category (%s) not found"
 msgstr "Catégorie de l'hôte (%s) non trouvé"
+
+msgid "Host group (%s) not found"
+msgstr "Groupe d'hôte (%s) non trouvé"

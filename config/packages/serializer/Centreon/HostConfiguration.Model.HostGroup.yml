@@ -1,0 +1,6 @@
+Centreon\Domain\HostConfiguration\Model\HostGroup:
+  properties:
+    name:
+      type: string
+      groups:
+        - 'host_group_conf_name'
