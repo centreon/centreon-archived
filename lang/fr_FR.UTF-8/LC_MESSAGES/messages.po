@@ -624,55 +624,46 @@ msgid "Yes"
 msgstr "Oui"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:150
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:127
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:160
 msgid "Host Check Execution Time"
 msgstr "Durée de contrôle de l'hôte"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:151
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:128
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:161
 msgid "Hosts Actively Checked"
 msgstr "Hôtes actuellement contrôlés"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:152
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:129
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:162
 msgid "Host check latency"
 msgstr "Latence du contrôle de l'hôte"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:153
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:130
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:163
 msgid "Service Check Execution Time"
 msgstr "Durée de contrôle du service"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:154
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:131
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:164
 msgid "Services Actively Checked"
 msgstr "Services actuellement contrôlés"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:155
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:132
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:165
 msgid "Service check latency"
 msgstr "Latence du contrôle du service"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:156
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:133
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:166
 msgid "Commands in buffer"
 msgstr "Commandes dans le tampon"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:157
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:134
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:167
 msgid "Host status"
 msgstr "Etat des hôtes"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:158
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:135
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:168
 msgid "Service status"
 msgstr "Etat du service"
@@ -2528,7 +2519,7 @@ msgstr "Date de génération"
 #: centreon-web/www/include/monitoring/comments/AddSvcComment.php:124
 #: centreon-web/www/include/monitoring/comments/AddComment.php:125
 msgid "Persistent"
-msgstr "Acquittement persistant en cas de redémarrage de l'ordonnanceur."
+msgstr "Persistant"
 
 #: centreon-web/www/install/smarty_translate.php:915
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:82
@@ -5466,7 +5457,7 @@ msgstr "Intervalle de rafraîchissement de la page"
 #: centreon-web/www/include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php:85
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:114
 msgid "Sticky"
-msgstr "Acquittement persistant en cas de changement de statut non-OK"
+msgstr "Persistant (non-OK)"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:99
 #: centreon-web/www/include/monitoring/acknowlegement/hostAcknowledge.php:77
@@ -8310,12 +8301,24 @@ msgid "Default"
 msgstr "Défaut"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:181
+msgid "Postpone Notification Option"
+msgstr "Report de notification"
+
+#: centreon-web/www/include/configuration/configNagios/formNagios.php:181
 msgid "Notification Option"
 msgstr "Notification"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:187
 msgid "Service Check Execution Option"
 msgstr "Contrôle actif des services"
+
+#: centreon-web/www/include/configuration/configNagios/formNagios.php
+msgid "Heartbeat Interval"
+msgstr "Intervalle du Heartbeat"
+
+#: centreon-web/www/include/configuration/configNagios/formNagios.php
+msgid "Number between 5 and 600"
+msgstr "Nombre entre 5 et 600"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:193
 msgid "Passive Service Check Acceptance Option"
@@ -13934,6 +13937,9 @@ msgstr "Configurer une plage de maintenance pour les services des hôtes"
 #~ msgid "ACL rules"
 #~ msgstr "Règles d'accès"
 
+msgid "ACL Resource name can't be empty"
+msgstr "Le nom de la Resource ACL ne peut pas être vide"
+
 #~ msgid "All Graphs"
 #~ msgstr "Tous les graphiques"
 
@@ -15149,6 +15155,10 @@ msgstr "Erreur lors de la recherche de ressources"
 msgid "Error when searching for monitoring servers"
 msgstr "Erreur lors de la recherche de serveurs de supervision"
 
+#:Centreon/Domain/MonitoringServer/MonitoringServerService.php:142
+msgid "Error when deleting a monitoring server"
+msgstr "Erreur lors de la supression d'un serveur de supervision"
+
 #:Centreon/Domain/MonitoringServer/MonitoringServerService.php:69
 msgid "Error when searching for a resource of monitoring server"
 msgstr "Erreur lors de la recherche de la ressource attachée au serveur de supervision"
@@ -15268,8 +15278,8 @@ msgstr "Acquitter les services attachés à l'hôte"
 msgid "at"
 msgstr "à"
 
-msgid "Clear all"
-msgstr "Effacer tout"
+msgid "Clear"
+msgstr "Effacer"
 
 msgid "Criterias"
 msgstr "Critères"
@@ -15346,7 +15356,7 @@ msgstr "Dernier changement d'état"
 msgid "Next check"
 msgstr "Prochain contrôle"
 
-msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
+msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident on the resource has been acknowledged"
 msgstr "Si cette option est cochée, une notification sera envoyée aux contacts liés à l'objet afin d'avertir que l'incident de la ressource a été acquitté"
 
 msgid "Open"
@@ -15535,6 +15545,43 @@ msgstr "par"
 msgid "Notification sent to"
 msgstr "Notification envoyée à"
 
+#: api/platform
+msgid "Unable to convert in remote server, no Central to link provided"
+msgstr "Impossible de convertir en remote, aucun Central à lier renseigné"
+
+
+#: api/platform
+msgid "Unable to update the platform information"
+msgstr "Impossible de mettre à jour les informations de la plateforme"
+
+#: api/platform
+msgid "An error occured while converting your platform"
+msgstr "Une erreur est survenue lors de la conversion de la plateforme"
+
+#: api/platform
+msgid "An error occured while searching any remote children"
+msgstr "Une erreur est survenue lors de la recherche de remote enfants"
+
+#: api/platform
+msgid "An error occured while your platform update"
+msgstr "Une erreur est survenue lors de la mise à jour de la platforme"
+
+#: api/platform
+msgid "An error occured while disabling the central menus"
+msgstr "Une erreur est survenue lors de la désactivation des menus du central"
+
+#: api/platform
+msgid "An error occured while enabling the central menus"
+msgstr "Une erreur est survenue lors de l'activation des menus du central"
+
+#: api/platform
+msgid "An error occured while updating the platform topology"
+msgstr "Une erreur est survenue lors de la mise à jour de la topology de la plateforme"
+
+#: api/platform
+msgid "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
+msgstr "Votre central est lié a d'autre remote(s), la conversion en Remote n'est pas autorisée"
+
 #: api/platform/topology
 msgid "The address '%s' of '%s' is not valid or not resolvable"
 msgstr "L'adresse '%s' de la plateforme '%s' n'est pas valide ou ne peut être résolue"
@@ -15660,8 +15707,15 @@ msgid "Unable to decipher central's credentials. Please check the credentials in
 msgstr "Impossible de déchiffrer les identifiants du Central. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/platform/topology
-msgid "Failed to get the auth token. Cannot register the platform : '%s'@'%s' on the Central"
-msgstr "Echec d'obtention du token d'auth. Impossible d'enregistrer sur le Central: '%s'@'%s'"
+msgid "Failed to get the auth token from Central : '%s'"
+msgstr "Echec d'obtention du token d'auth. sur le Central: '%s'@'%s'"
+
+#: api/platform/topology
+msgid "The platform: '%s'@'%s' cannot be found on the Central"
+msgstr "La plateforme: '%s'@'%s' ne peut pas être trouvé sur le Central"
+
+msgid "The platform: '%s'@'%s' cannot be delete from the Central"
+msgstr "La plateforme: '%s'@'%s' ne peut pas être supprimé depuis le Central"
 
 #: api/platform/topology
 msgid "Request to the Central's API failed"
@@ -15706,6 +15760,22 @@ msgstr "Impossible de trouver la clef de déchiffrement. Veuillez vérifer le fi
 #: api/platform/topology
 msgid "No Platform Topology found."
 msgstr "Aucune Topologie trouvée."
+
+#: api/platform/topology
+msgid "No top level platform found to link the child platforms"
+msgstr "Aucune platforme principale trouvée pour lier les plateformes enfants"
+
+#: api/platform/topology
+msgid "An error occured while deleting the platform"
+msgstr "Une erreur est survenue lors de la suppression de la plateforme"
+
+#: api/platform/topology
+msgid "An error occured while updating the platform"
+msgstr "Une erreur est survenue lors de la mise à jour de la plateforme"
+
+#: api/platform/topology
+msgid "platform not found"
+msgstr "plateforme non trouvée"
 
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
@@ -15855,14 +15925,80 @@ msgstr "EN ATTENTE"
 msgid "FQDN / Address"
 msgstr "FQDN / Adresse"
 
-msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
-msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas avoir plus de %d caractères, mais a %d caractères"
-
-msgid "[%s] The value \"%s\" is too short, it should have at least %d characters, but only has %d characters"
-msgstr "[%s] La valeur \"%s\" est trop courte, elle devrait avoir au moins %d caractères, mais n'a que %d caractères"
+msgid "Comment added"
+msgstr "Commentaire ajouté"
 
 msgid "Error when searching for services"
 msgstr "Erreur lors de la recherche des services"
 
 msgid "Error when searching for hosts"
 msgstr "Erreur lors de la recherche des hôtes"
+
+msgid "Groups"
+msgstr "Groupes"
+
+msgid "Display events"
+msgstr "Afficher les évènements"
+
+msgid "Export to png"
+msgstr "Exporter comme png"
+
+msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
+msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas comporter plus de %d caractères mais n'en comporte que %d"
+
+msgid "[%s] The value \"%s\" is too short, it should have at least %d characters, but only has %d characters"
+msgstr "[%s] La valeur \"%s\" est trop courte, elle devrait comporter au moins %d caractères mais n'en a que %d"
+
+msgid "[%s] The value \"%d\" was expected to be at least %d"
+msgstr "[%s] La valeur \"%d\" devait être au moins égale à %d"
+
+msgid "[%s] The value \"%d\" was expected to be at most %d"
+msgstr "[%s] La valeur \"%d\" devait être au plus égale à %d"
+
+msgid "[%s] The value \"%d\" is not greater or equal than %d"
+msgstr "[%s] La valeur \"%d\" n'est pas supérieure ou égale à %d"
+
+msgid "[%s] The value is empty, but non empty value was expected"
+msgstr "[%s] La valeur est vide, mais une valeur non vide était attendue"
+
+msgid "[%s] The value is null, but non null value was expected"
+msgstr "[%] La valeur est nulle, mais une valeur non nulle était attendue"
+
+msgid "Switch to graph mode"
+msgstr "Basculer vers le mode graphique"
+
+msgid "Switch to list mode"
+msgstr "Basculer vers le mode liste"
+
+msgid "Parent of service resource type cannot be null"
+msgstr "Le parent de la resource de type service ne peut être null"
+
+msgid "One of the elements provided is not a ResourceGroup type"
+msgstr "Un des éléments fourni n'est pas de type ResourceGroup"
+
+msgid "Error when searching for host categories"
+msgstr "Erreur lors de la recherche des catégories d'hôtes"
+
+msgid "Parent"
+msgstr "Parent"
+
+msgid "Error when searching for host severities"
+msgstr "Erreur lors de la recherche des sévérités d'hôtes"
+
+msgid "Error when searching for host groups"
+msgstr "Erreur lors de la recherche de groupes d'hôtes"
+
+msgid "Select criterias"
+msgstr "Sélectionner les critères"
+
+msgid "Error when searching for the host category (%s)"
+msgstr "Erreur lors de la recherche de la catégorie de l'hôte (%s)"
+
+msgid "Error when searching for the host group (%s)"
+msgstr "Erreur lors de la recherche du groupe d'hôte (%s)"
+
+msgid "Host category (%s) not found"
+msgstr "Catégorie de l'hôte (%s) non trouvé"
+
+msgid "Host group (%s) not found"
+msgstr "Groupe d'hôte (%s) non trouvé"

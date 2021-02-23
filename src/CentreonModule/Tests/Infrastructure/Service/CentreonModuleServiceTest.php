@@ -47,18 +47,17 @@ use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 use CentreonModule\Tests\Infrastructure\Source\WidgetSourceTest;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
-use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
+use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class CentreonModuleServiceTest extends TestCase
 {
+    use TestCaseExtensionTrait;
+    use SourceDependencyTrait;
 
-    use TestCaseExtensionTrait,
-        SourceDependencyTrait;
-
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->service = $this->getMockBuilder(CentreonModuleService::class)
-            ->setMethods([
+            ->onlyMethods([
                 'initSources',
             ])
             ->setConstructorArgs([new ContainerWrap(new Container)])
@@ -75,7 +74,7 @@ class CentreonModuleServiceTest extends TestCase
             $sources[$type] = $this
                 ->getMockBuilder($class)
                 ->disableOriginalConstructor()
-                ->setMethods([
+                ->onlyMethods([
                     'getList',
                     'getDetail',
                     'install',

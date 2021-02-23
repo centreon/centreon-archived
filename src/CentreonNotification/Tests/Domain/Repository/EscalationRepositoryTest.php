@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
 use CentreonNotification\Domain\Entity\Escalation;
 use CentreonNotification\Domain\Repository\EscalationRepository;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group CentreonNotification
@@ -44,7 +44,7 @@ class EscalationRepositoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->db = new CentreonDB();
         $this->repository = new EscalationRepository($this->db);

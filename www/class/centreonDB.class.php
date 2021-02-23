@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -253,8 +254,8 @@ class CentreonDB extends \PDO
         }
 
         /*
-    	 * Launch request
-    	 */
+         * Launch request
+         */
         $sth = null;
         try {
             if (is_null($parameters)) {
@@ -420,10 +421,10 @@ class CentreonDB extends \PDO
         $column = filter_var($column, FILTER_SANITIZE_STRING);
 
         $query = "SELECT COLUMN_NAME
-		    FROM INFORMATION_SCHEMA.COLUMNS
-		    WHERE TABLE_SCHEMA = :dbName
-		    AND TABLE_NAME = :tableName
-		    AND COLUMN_NAME = :columnName";
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = :dbName
+            AND TABLE_NAME = :tableName
+            AND COLUMN_NAME = :columnName";
 
         $stmt = $this->prepare($query);
 

@@ -44,20 +44,20 @@ use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 use CentreonModule\ServiceProvider;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 class CentreonModuleWebserviceTest extends TestCase
 {
-    use Traits\WebServiceAuthorizeRestApiTrait,
-        Traits\WebServiceExecuteTestTrait;
+    use Traits\WebServiceAuthorizeRestApiTrait;
+    use Traits\WebServiceExecuteTestTrait;
 
-    const METHOD_GET_LIST = 'getList';
-    const METHOD_GET_DETAILS = 'getDetails';
-    const METHOD_POST_INSTALL = 'postInstall';
-    const METHOD_POST_UPDATE = 'postUpdate';
-    const METHOD_DELETE_REMOVE = 'deleteRemove';
+    public const METHOD_GET_LIST = 'getList';
+    public const METHOD_GET_DETAILS = 'getDetails';
+    public const METHOD_POST_INSTALL = 'postInstall';
+    public const METHOD_POST_UPDATE = 'postUpdate';
+    public const METHOD_DELETE_REMOVE = 'deleteRemove';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $container = new Container;
@@ -197,7 +197,7 @@ class CentreonModuleWebserviceTest extends TestCase
 
         // load dependencies
         $this->webservice->setDi($container);
-        $this->fixturePath = __DIR__ . '/../../Resource/Fixture/';
+        $this->fixturePath = __DIR__ . '/../../Resources/Fixture/';
     }
 
     public function testGetList()

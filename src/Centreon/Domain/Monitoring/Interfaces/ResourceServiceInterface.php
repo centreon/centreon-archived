@@ -24,6 +24,7 @@ namespace Centreon\Domain\Monitoring\Interfaces;
 
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Exception\ResourceException;
 
 interface ResourceServiceInterface
 {
@@ -125,8 +126,17 @@ interface ResourceServiceInterface
      * Enrich resource object with specific service data
      *
      * @param ResourceEntity $resource
+     * @throws ResourceException
      */
     public function enrichServiceWithDetails(ResourceEntity $resource): void;
+
+    /**
+     * Replace macros set in the external links by their actual values
+     *
+     * @param ResourceEntity $resource
+     * @return void
+     */
+    public function replaceMacrosInExternalLinks(ResourceEntity $resource): void;
 
     /**
      * Used to filter requests according to a contact.

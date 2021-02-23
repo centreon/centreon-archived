@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 CENTREON
+ * Copyright 2005-2020 CENTREON
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -47,33 +48,47 @@ class Centreon_Object_RtAcknowledgement extends Centreon_ObjectRt
     protected $uniqueLabelField = "comment_data";
 
     /**
-     * @param array $hostList
+     * @param int[] $hostIds
      * @return array
      */
-    public function getHostAcknowledgement($hostList = array())
+    public function getLastHostAcknowledgement($hostIds = array())
     {
         $hostFilter = '';
-        if (!empty($hostList)) {
-            $hostFilter = "AND h.name IN ('" . implode("','", $hostList) . "') ";
+        if (!empty($hostIds)) {
+            $hostFilter = "AND hosts.host_id IN (" . implode(",", $hostIds) . ")";
         }
 
-        $query = "SELECT DISTINCT a.acknowledgement_id, h.name, MAX(a.entry_time) as entry_time, a.author, " .
-            "a.comment_data, a.sticky, a.notify_contacts, a.persistent_comment " .
-            "FROM acknowledgements a, hosts h " .
-            "WHERE a.host_id = h.host_id " .
-            "AND h.acknowledged = 1 " .
-            "AND service_id IS NULL " .
-            $hostFilter .
-            " GROUP BY h.name ORDER BY a.entry_time, h.name";
-
-        return $this->getResult($query);
+        return $this->getResult(
+            sprintf(
+                'SELECT  ack.acknowledgement_id, hosts.name, ack.entry_time as entry_time,
+                    ack.author, ack.comment_data, ack.sticky, ack.notify_contacts, ack.persistent_comment
+                FROM acknowledgements ack
+                INNER JOIN hosts
+                    ON hosts.host_id = ack.host_id
+                INNER JOIN
+                    (SELECT MAX(ack.entry_time) AS entry_time, ack.host_id
+                    FROM acknowledgements ack
+                    INNER JOIN hosts
+                        ON hosts.host_id = ack.host_id
+                    WHERE hosts.acknowledged = 1
+                    AND ack.service_id = 0
+                    %s
+                    GROUP BY ack.host_id
+                    ) AS tmp
+                    ON tmp.entry_time = ack.entry_time
+                    AND tmp.host_id = ack.host_id
+                    AND ack.service_id = 0
+                ORDER BY ack.entry_time, hosts.name',
+                $hostFilter
+            )
+        );
     }
 
     /**
-     * @param array $svcList
+     * @param string[] $svcList
      * @return array
      */
-    public function getSvcAcknowledgement($svcList = array())
+    public function getLastSvcAcknowledgement($svcList = array())
     {
         $serviceFilter = '';
 
@@ -83,22 +98,43 @@ class Centreon_Object_RtAcknowledgement extends Centreon_ObjectRt
             for ($i = 0; $i < count($svcList); $i += 2) {
                 $hostname = $svcList[$i];
                 $serviceDescription = $svcList[$i + 1];
-                $filterTab[] = '(h.name = "' . $hostname . '" AND s.description = "' . $serviceDescription . '")';
+                $filterTab[] = '(host.name = "'
+                    . $hostname
+                    . '" AND service.description = "'
+                    . $serviceDescription
+                    . '")';
             }
             $serviceFilter .= implode(' AND ', $filterTab) . ') ';
         }
 
-        $query = "SELECT a.acknowledgement_id, h.name, s.description, MAX(a.entry_time) as entry_time, a.author, " .
-            "a.comment_data , a.sticky, a.notify_contacts, a.persistent_comment " .
-            "FROM acknowledgements a, hosts h, services s " .
-            "WHERE a.service_id = s.service_id " .
-            "AND a.host_id = s.host_id " .
-            "AND s.host_id = h.host_id " .
-            "AND s.acknowledged = 1 " .
-            $serviceFilter .
-            " GROUP BY h.name, s.description ORDER BY a.entry_time, h.name, s.description";
-
-        return $this->getResult($query);
+        return $this->getResult(
+            sprintf(
+                'SELECT ack.acknowledgement_id, host.name, service.description, ack.entry_time,
+                       ack.author, ack.comment_data , ack.sticky, ack.notify_contacts, ack.persistent_comment
+                FROM acknowledgements ack
+                INNER JOIN services service
+                    ON service.service_id = ack.service_id
+                INNER JOIN hosts host
+                    ON host.host_id = service.host_id
+                    AND host.host_id = ack.host_id
+                INNER JOIN
+                    (SELECT max(ack.entry_time) AS entry_time, host.host_id, service.service_id
+                    FROM acknowledgements ack
+                    INNER JOIN services service
+                        ON service.service_id = ack.service_id
+                    INNER JOIN hosts host
+                        ON host.host_id = service.host_id
+                        AND host.host_id = ack.host_id
+                    WHERE service.acknowledged = 1
+                    %s
+                    GROUP BY host.name, service.description) AS tmp
+                    ON tmp.entry_time = ack.entry_time
+                    AND tmp.host_id = ack.host_id
+                    AND tmp.service_id = ack.service_id
+                ORDER BY ack.entry_time, host.name, service.description',
+                $serviceFilter
+            )
+        );
     }
 
     /**

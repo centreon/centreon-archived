@@ -40,6 +40,7 @@ import {
   pendingCriterias,
   unhandledStateCriterias,
 } from '../getResourcesUrl';
+import MenuLoader from '../../MenuLoader';
 
 const numberFormat = yup.number().required().integer();
 
@@ -140,7 +141,7 @@ class ServiceStatusMenu extends Component {
 
     // do not display service information until having data
     if (!data) {
-      return null;
+      return <MenuLoader width={33} />;
     }
 
     return (

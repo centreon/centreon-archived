@@ -116,7 +116,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
     /**
      * @inheritDoc
      */
-    public function findPlatformByType(string $serverType): ?Platform
+    public function findTopLevelPlatformByType(string $serverType): ?Platform
     {
         $statement = $this->db->prepare(
             $this->translateDbName('
@@ -208,5 +208,125 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         }
 
         return $platform;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deletePlatform(int $serverId): void
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName('DELETE FROM `:db`.`platform_topology` WHERE id = :serverId')
+        );
+        $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findTopLevelPlatform(): ?Platform
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName('
+                SELECT * FROM `:db`.platform_topology
+                WHERE `parent_id` IS NULL
+            ')
+        );
+        $statement->execute();
+
+        $platform = null;
+
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            /**
+             * @var Platform $platform
+             */
+            $platform = EntityCreator::createEntityByArray(
+                Platform::class,
+                $result
+            );
+        }
+
+        return $platform;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findChildrenPlatformsByParentId(int $parentId): array
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName('SELECT * FROM `:db`.`platform_topology` WHERE parent_id = :parentId')
+        );
+        $statement->bindValue(':parentId', $parentId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $childrenPlatforms = [];
+        if ($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
+            foreach ($result as $platform) {
+                /**
+                 * @var Platform[] $childrenPlatforms
+                 */
+                $childrenPlatforms[] = EntityCreator::createEntityByArray(Platform::class, $platform);
+            }
+        }
+
+        return $childrenPlatforms;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updatePlatformParameters(Platform $platform): void
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                "UPDATE `:db`.`platform_topology` SET
+                `address` = :address,
+                `hostname` = :hostname,
+                `name` = :name,
+                `type` = :type,
+                `parent_id` = :parentId,
+                `server_id` = :serverId
+                WHERE id = :id"
+            )
+        );
+        $statement->bindValue(':address', $platform->getAddress(), \PDO::PARAM_STR);
+        $statement->bindValue(':hostname', $platform->getHostname(), \PDO::PARAM_STR);
+        $statement->bindValue(':name', $platform->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':type', $platform->getType(), \PDO::PARAM_STR);
+        $statement->bindValue(':parentId', $platform->getParentId(), \PDO::PARAM_INT);
+        $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
+        $statement->bindValue(':id', $platform->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findCentralRemoteChildren(): array
+    {
+        $central = $this->findTopLevelPlatformByType('central');
+        $remoteChildren = [];
+        if ($central !== null) {
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    "SELECT * FROM `:db`.platform_topology WHERE `type` = 'remote' AND `parent_id` = :parentId"
+                )
+            );
+            $statement->bindValue(':parentId', $central->getId(), \PDO::PARAM_INT);
+            $statement->execute();
+
+            if ($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
+                foreach ($result as $platform) {
+                    /**
+                     * @var Platform[] $childrenPlatforms
+                     */
+                    $remoteChildren[] = EntityCreator::createEntityByArray(Platform::class, $platform);
+                }
+            }
+        }
+
+        return $remoteChildren;
     }
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { head } from 'ramda';
+import { all, head, pathEq, pick } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
@@ -8,7 +8,12 @@ import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 import IconMore from '@material-ui/icons/MoreHoriz';
 
-import { useCancelTokenSource, Severity, useSnackbar } from '@centreon/ui';
+import {
+  useCancelTokenSource,
+  Severity,
+  useSnackbar,
+  SeverityCode,
+} from '@centreon/ui';
 
 import IconDowntime from '../../icons/Downtime';
 import {
@@ -20,11 +25,14 @@ import {
   labelMoreActions,
   labelDisacknowledge,
   labelSubmitStatus,
+  labelAddComment,
 } from '../../translatedLabels';
-import { useResourceContext } from '../../Context';
+import { ResourceContext, useResourceContext } from '../../Context';
 import { checkResources } from '../api';
 import { Resource } from '../../models';
 import ActionButton from '../ActionButton';
+import AddCommentForm from '../../Graph/Performance/Graph/AddCommentForm';
+import memoizeComponent from '../../memoizedComponent';
 
 import useAclQuery from './aclQuery';
 import DowntimeForm from './Downtime';
@@ -36,7 +44,32 @@ const ContainedActionButton = (props: ButtonProps): JSX.Element => (
   <ActionButton variant="contained" {...props} />
 );
 
-const ResourceActions = (): JSX.Element => {
+type Props = Pick<
+  ResourceContext,
+  | 'resourcesToCheck'
+  | 'selectedResources'
+  | 'resourcesToAcknowledge'
+  | 'resourcesToSetDowntime'
+  | 'resourcesToDisacknowledge'
+  | 'setSelectedResources'
+  | 'setResourcesToAcknowledge'
+  | 'setResourcesToSetDowntime'
+  | 'setResourcesToCheck'
+  | 'setResourcesToDisacknowledge'
+>;
+
+const ResourceActionsContent = ({
+  resourcesToCheck,
+  selectedResources,
+  resourcesToAcknowledge,
+  resourcesToSetDowntime,
+  resourcesToDisacknowledge,
+  setSelectedResources,
+  setResourcesToAcknowledge,
+  setResourcesToSetDowntime,
+  setResourcesToCheck,
+  setResourcesToDisacknowledge,
+}: Props): JSX.Element => {
   const { t } = useTranslation();
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
@@ -47,21 +80,12 @@ const ResourceActions = (): JSX.Element => {
 
   const [
     resourceToSubmitStatus,
-    setresourceToSubmitStatus,
+    setResourceToSubmitStatus,
   ] = React.useState<Resource | null>();
-
-  const {
-    resourcesToCheck,
-    setSelectedResources,
-    selectedResources,
-    resourcesToAcknowledge,
-    setResourcesToAcknowledge,
-    resourcesToSetDowntime,
-    setResourcesToSetDowntime,
-    setResourcesToCheck,
-    resourcesToDisacknowledge,
-    setResourcesToDisacknowledge,
-  } = useResourceContext();
+  const [
+    resourceToComment,
+    setResourceToComment,
+  ] = React.useState<Resource | null>();
 
   const showError = (message): void =>
     showMessage({ message, severity: Severity.error });
@@ -74,6 +98,7 @@ const ResourceActions = (): JSX.Element => {
     canCheck,
     canDisacknowledge,
     canSubmitStatus,
+    canComment,
   } = useAclQuery();
 
   const hasResourcesToCheck = resourcesToCheck.length > 0;
@@ -83,8 +108,9 @@ const ResourceActions = (): JSX.Element => {
     setResourcesToAcknowledge([]);
     setResourcesToSetDowntime([]);
     setResourcesToCheck([]);
-    setresourceToSubmitStatus(null);
+    setResourceToSubmitStatus(null);
     setResourcesToDisacknowledge([]);
+    setResourceToComment(null);
   };
 
   React.useEffect(() => {
@@ -142,18 +168,35 @@ const ResourceActions = (): JSX.Element => {
     closeMoreActionsMenu();
     const [selectedResource] = selectedResources;
 
-    setresourceToSubmitStatus(selectedResource);
+    setResourceToSubmitStatus(selectedResource);
   };
 
   const cancelSubmitStatus = (): void => {
-    setresourceToSubmitStatus(null);
+    setResourceToSubmitStatus(null);
+  };
+
+  const prepareToAddComment = (): void => {
+    closeMoreActionsMenu();
+    const [selectedResource] = selectedResources;
+
+    setResourceToComment(selectedResource);
+  };
+
+  const cancelComment = (): void => {
+    setResourceToComment(null);
   };
 
   const openMoreActionsMenu = (event: React.MouseEvent): void => {
     setMoreActionsMenuAnchor(event.currentTarget);
   };
 
-  const disableAcknowledge = !canAcknowledge(selectedResources);
+  const areSelectedResourcesOk = all(
+    pathEq(['status', 'severity_code'], SeverityCode.Ok),
+    selectedResources,
+  );
+
+  const disableAcknowledge =
+    !canAcknowledge(selectedResources) || areSelectedResourcesOk;
   const disableDowntime = !canDowntime(selectedResources);
   const disableCheck = !canCheck(selectedResources);
   const disableDisacknowledge = !canDisacknowledge(selectedResources);
@@ -162,6 +205,9 @@ const ResourceActions = (): JSX.Element => {
     selectedResources.length !== 1 ||
     !canSubmitStatus(selectedResources) ||
     !head(selectedResources)?.passive_checks;
+
+  const disableAddComment =
+    selectedResources.length !== 1 || !canComment(selectedResources);
 
   return (
     <Grid container spacing={1}>
@@ -214,6 +260,9 @@ const ResourceActions = (): JSX.Element => {
           >
             {t(labelSubmitStatus)}
           </MenuItem>
+          <MenuItem disabled={disableAddComment} onClick={prepareToAddComment}>
+            {t(labelAddComment)}
+          </MenuItem>
         </Menu>
       </Grid>
       {resourcesToAcknowledge.length > 0 && (
@@ -244,8 +293,46 @@ const ResourceActions = (): JSX.Element => {
           onSuccess={confirmAction}
         />
       )}
+      {resourceToComment && (
+        <AddCommentForm
+          resource={resourceToComment as Resource}
+          onClose={cancelComment}
+          onSuccess={confirmAction}
+          date={new Date()}
+        />
+      )}
     </Grid>
   );
+};
+
+const memoProps = [
+  'resourcesToCheck',
+  'selectedResources',
+  'resourcesToAcknowledge',
+  'resourcesToSetDowntime',
+  'resourcesToDisacknowledge',
+];
+
+const MemoizedResourceActionsContent = memoizeComponent<Props>({
+  memoProps,
+  Component: ResourceActionsContent,
+});
+
+const functionProps = [
+  'setSelectedResources',
+  'setResourcesToAcknowledge',
+  'setResourcesToSetDowntime',
+  'setResourcesToCheck',
+  'setResourcesToDisacknowledge',
+];
+
+const ResourceActions = (): JSX.Element => {
+  const resourceContextProps = pick(
+    [...memoProps, ...functionProps],
+    useResourceContext(),
+  );
+
+  return <MemoizedResourceActionsContent {...resourceContextProps} />;
 };
 
 export default ResourceActions;

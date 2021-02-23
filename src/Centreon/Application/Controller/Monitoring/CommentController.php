@@ -30,13 +30,10 @@ use Centreon\Domain\Monitoring\Host;
 use JsonSchema\Constraints\Constraint;
 use Centreon\Domain\Monitoring\Service;
 use Symfony\Component\HttpFoundation\Request;
-use Centreon\Domain\Monitoring\ResourceStatus;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Monitoring\Comment\Comment;
-use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Comment\Interfaces\CommentServiceInterface;
 
 class CommentController extends AbstractController
@@ -48,19 +45,9 @@ class CommentController extends AbstractController
      */
     private $commentService;
 
-    /**
-     * Monitoring
-     *
-     * @var MonitoringServiceInterface
-     */
-    private $monitoringService;
-
-    public function __construct(
-        CommentServiceInterface $commentService,
-        MonitoringServiceInterface $monitoringService
-    ) {
+    public function __construct(CommentServiceInterface $commentService)
+    {
         $this->commentService = $commentService;
-        $this->monitoringService = $monitoringService;
     }
 
     /**

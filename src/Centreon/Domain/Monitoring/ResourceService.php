@@ -22,17 +22,18 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
+use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\Monitoring\ResourceGroup;
+use Centreon\Domain\Monitoring\ResourceFilter;
+use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\Exception\ResourceException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Centreon\Domain\Service\AbstractCentreonService;
-use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
-use Centreon\Domain\Entity\EntityValidator;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -72,9 +73,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     }
 
     /**
-     * {@inheritDoc}
-     * @param Contact $contact
-     * @return self
+     * @inheritDoc
      */
     public function filterByContact($contact): self
     {
@@ -109,6 +108,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         // try to avoid exception from the regexp bad syntax in search criteria
         try {
             $list = $this->resourceRepository->findResources($filter);
+            // replace macros in external links
+            foreach ($list as $resource) {
+                $this->replaceMacrosInExternalLinks($resource);
+            }
         } catch (RepositoryException $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
@@ -143,6 +146,24 @@ class ResourceService extends AbstractCentreonService implements ResourceService
                 $resource->setAcknowledgement($acknowledgements[0]);
             }
         }
+
+        /**
+         * Get hostgroups on which the actual host belongs
+         */
+        $hostGroups = $this->monitoringRepository
+            ->findHostGroups($resource->getId());
+
+
+        $resourceGroups = [];
+
+        foreach ($hostGroups as $hostGroup) {
+            $resourceGroups[] = new ResourceGroup($hostGroup->getId(), $hostGroup->getName());
+        }
+
+        /**
+         * Assign those resource groups to the actual resource
+         */
+        $resource->setGroups($resourceGroups);
     }
 
     /**
@@ -150,6 +171,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function enrichServiceWithDetails(ResourceEntity $resource): void
     {
+        if ($resource->getParent() === null) {
+            throw new ResourceException(_('Parent of resource type service cannot be null'));
+        }
+
         $downtimes = $this->monitoringRepository->findDowntimes(
             $resource->getParent()->getId(),
             $resource->getId()
@@ -165,6 +190,23 @@ class ResourceService extends AbstractCentreonService implements ResourceService
                 $resource->setAcknowledgement($acknowledgements[0]);
             }
         }
+
+        /**
+         * Get servicegroups to which belongs the actual service resource.
+         */
+        $serviceGroups = $this->monitoringRepository
+            ->findServiceGroupsByHostAndService($resource->getParent()->getId(), $resource->getId());
+
+        $resourceGroups = [];
+
+        foreach ($serviceGroups as $serviceGroup) {
+            $resourceGroups[] = new ResourceGroup($serviceGroup->getId(), $serviceGroup->getName());
+        }
+
+        /**
+         * Add those groups to the actual resource detailed.
+         */
+        $resource->setGroups($resourceGroups);
     }
 
     /**
@@ -185,11 +227,78 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     }
 
     /**
+     * Replaces macros in the URL for host resource type
+     *
+     * @param ResourceEntity $resource
+     * @param string $url
+     * @return string
+     */
+    private function replaceMacrosInUrlsForHostResource(ResourceEntity $resource, string $url): string
+    {
+        $url = str_replace('$HOSTADDRESS$', $resource->getFqdn(), $url);
+        $url = str_replace('$HOSTNAME$', $resource->getName(), $url);
+        $url = str_replace('$HOSTSTATE$', $resource->getStatus()->getName(), $url);
+        $url = str_replace('$HOSTSTATEID$', $resource->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTALIAS$', $resource->getAlias(), $url);
+
+        return $url;
+    }
+
+    /**
+     * Replaces macros in the URL for service resource type
+     *
+     * @param ResourceEntity $resource
+     * @param string $url
+     * @return string
+     */
+    private function replaceMacrosInUrlsForServiceResource(ResourceEntity $resource, string $url): string
+    {
+        $url = str_replace('$HOSTADDRESS$', $resource->getParent()->getFqdn(), $url);
+        $url = str_replace('$HOSTNAME$', $resource->getParent()->getName(), $url);
+        $url = str_replace('$HOSTSTATE$', $resource->getParent()->getStatus()->getName(), $url);
+        $url = str_replace('$HOSTSTATEID$', $resource->getParent()->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTALIAS$', $resource->getParent()->getAlias(), $url);
+        $url = str_replace('$SERVICEDESC$', $resource->getName(), $url);
+        $url = str_replace('$SERVICESTATE$', $resource->getStatus()->getName(), $url);
+        $url = str_replace('$SERVICESTATEID$', $resource->getStatus()->getCode(), $url);
+
+        return $url;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function replaceMacrosInExternalLinks(ResourceEntity $resource): void
+    {
+        $actionUrl = $resource->getLinks()->getExternals()->getActionUrl();
+        $notesUrl = $resource->getLinks()->getExternals()->getNotesUrl();
+        $resourceType = $resource->getType();
+
+        if ($actionUrl !== null) {
+            if ($resourceType === ResourceEntity::TYPE_HOST) {
+                $actionUrl = $this->replaceMacrosInUrlsForHostResource($resource, $actionUrl);
+            } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
+                $actionUrl = $this->replaceMacrosInUrlsForServiceResource($resource, $actionUrl);
+            }
+            $resource->getLinks()->getExternals()->setActionUrl($actionUrl);
+        }
+
+        if ($notesUrl !== null) {
+            if ($resourceType === ResourceEntity::TYPE_HOST) {
+                $notesUrl = $this->replaceMacrosInUrlsForHostResource($resource, $notesUrl);
+            } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
+                $notesUrl = $this->replaceMacrosInUrlsForServiceResource($resource, $notesUrl);
+            }
+            $resource->getLinks()->getExternals()->setNotesUrl($notesUrl);
+        }
+    }
+
+    /**
      * Validates input for resource based on groups
      * @param EntityValidator $validator
      * @param ResourceEntity $resource
-     * @param array $contextGroups
-     * @return ConstraintViolationListInterface
+     * @param array<string, mixed> $contextGroups
+     * @return ConstraintViolationListInterface<mixed>
      */
     public static function validateResource(
         EntityValidator $validator,

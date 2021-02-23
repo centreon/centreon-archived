@@ -5,7 +5,7 @@ import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { Line, TimeValue } from '../../models';
+import { Line } from '../../models';
 
 import YAxes from './Y';
 
@@ -15,7 +15,6 @@ const commonTickLabelProps = {
 };
 
 interface Props {
-  timeSeries: Array<TimeValue>;
   lines: Array<Line>;
   graphHeight: number;
   graphWidth: number;
@@ -27,7 +26,6 @@ interface Props {
 }
 
 const Axes = ({
-  timeSeries,
   lines,
   graphHeight,
   graphWidth,
@@ -42,21 +40,22 @@ const Axes = ({
   const formatXAxisTick = (tick): string =>
     format({ date: new Date(tick), formatString: xAxisTickFormat });
 
+  const xTickCount = Math.ceil(graphWidth / 60);
+
   return (
     <>
       <AxisBottom
         top={graphHeight}
         scale={xScale}
         tickFormat={formatXAxisTick}
-        numTicks={7}
-        tickLabelProps={(): {} => ({
+        numTicks={xTickCount}
+        tickLabelProps={(): Record<string, unknown> => ({
           ...commonTickLabelProps,
           textAnchor: 'middle',
         })}
       />
       <YAxes
         lines={lines}
-        timeSeries={timeSeries}
         graphWidth={graphWidth}
         graphHeight={graphHeight}
         base={base}

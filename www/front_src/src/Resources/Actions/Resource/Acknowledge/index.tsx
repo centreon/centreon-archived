@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
@@ -37,7 +36,7 @@ const AcknowledgeForm = ({
   const { t } = useTranslation();
   const { showMessage } = useSnackbar();
 
-  const { username } = useUserContext();
+  const { alias } = useUserContext();
 
   const {
     sendRequest: sendAcknowledgeResources,
@@ -68,7 +67,7 @@ const AcknowledgeForm = ({
   });
 
   React.useEffect(() => {
-    form.setFieldValue('comment', `${t(labelAcknowledgedBy)} ${username}`);
+    form.setFieldValue('comment', `${t(labelAcknowledgedBy)} ${alias}`);
   }, []);
 
   return (
@@ -81,7 +80,6 @@ const AcknowledgeForm = ({
       values={form.values}
       handleChange={form.handleChange}
       submitting={sendingAcknowledgeResources}
-      loading={isNil(form.values.comment)}
     />
   );
 };

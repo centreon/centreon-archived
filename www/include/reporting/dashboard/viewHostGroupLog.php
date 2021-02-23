@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -209,4 +210,9 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('formItem', $renderer->toArray());
 
-$tpl->display("template/viewHostGroupLog.ihtml");
+if (
+    !$formPeriod->isSubmitted()
+    || ($formPeriod->isSubmitted() && $formPeriod->validate())
+) {
+    $tpl->display("template/viewHostGroupLog.ihtml");
+}

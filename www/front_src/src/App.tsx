@@ -6,14 +6,12 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 
-import React, { Component, ReactNode } from 'react';
+import React, { Component, ReactNode, Suspense } from 'react';
 
-import { hot } from 'react-hot-loader/root';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-import { pipe } from 'ramda';
 
 import { withStyles, createStyles } from '@material-ui/core';
 
@@ -24,10 +22,12 @@ import { history } from './store';
 import NavigationComponent from './components/navigation';
 import Tooltip from './components/tooltip';
 import Footer from './components/footer';
-import MainRouter from './components/mainRouter';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import footerStyles from './components/footer/footer.scss';
+import PageLoader from './components/PageLoader';
+
+const MainRouter = React.lazy(() => import('./components/mainRouter'));
 
 const styles = createStyles({
   wrapper: {
@@ -149,38 +149,40 @@ class App extends Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <ConnectedRouter history={history}>
-        <ThemeProvider>
-          <div className={classes.wrapper}>
-            {!min && <NavigationComponent />}
-            <Tooltip />
-            <div id="content" className={classes.content}>
-              {!min && <Header />}
-              <div
-                id="fullscreen-wrapper"
-                className={classes.fullScreenWrapper}
-              >
-                <Fullscreen
-                  enabled={this.state.isFullscreenEnabled}
-                  onClose={this.removeFullscreenParams}
-                  onChange={(isFullscreenEnabled): void => {
-                    this.setState({ isFullscreenEnabled });
-                  }}
+      <Suspense fallback={<PageLoader />}>
+        <ConnectedRouter history={history}>
+          <ThemeProvider>
+            <div className={classes.wrapper}>
+              {!min && <NavigationComponent />}
+              <Tooltip />
+              <div id="content" className={classes.content}>
+                {!min && <Header />}
+                <div
+                  id="fullscreen-wrapper"
+                  className={classes.fullScreenWrapper}
                 >
-                  <div className={classes.mainContent}>
-                    <MainRouter />
-                  </div>
-                </Fullscreen>
+                  <Fullscreen
+                    enabled={this.state.isFullscreenEnabled}
+                    onClose={this.removeFullscreenParams}
+                    onChange={(isFullscreenEnabled): void => {
+                      this.setState({ isFullscreenEnabled });
+                    }}
+                  >
+                    <div className={classes.mainContent}>
+                      <MainRouter />
+                    </div>
+                  </Fullscreen>
+                </div>
+                {!min && <Footer />}
               </div>
-              {!min && <Footer />}
+              <span
+                className={footerStyles['full-screen']}
+                onClick={this.goFull}
+              />
             </div>
-            <span
-              className={footerStyles['full-screen']}
-              onClick={this.goFull}
-            />
-          </div>
-        </ThemeProvider>
-      </ConnectedRouter>
+          </ThemeProvider>
+        </ConnectedRouter>
+      </Suspense>
     );
   }
 }
@@ -197,8 +199,4 @@ const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
   };
 };
 
-export default pipe(
-  hot,
-  connect(null, mapDispatchToProps),
-  withStyles(styles),
-)(App);
+export default connect(null, mapDispatchToProps)(withStyles(styles)(App));

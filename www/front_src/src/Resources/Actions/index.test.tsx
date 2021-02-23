@@ -14,6 +14,7 @@ import {
 import userEvent from '@testing-library/user-event';
 
 import { useUserContext } from '@centreon/ui-context';
+import { SeverityCode } from '@centreon/ui';
 
 import {
   labelAcknowledgedBy,
@@ -45,12 +46,13 @@ import {
   labelWarning,
   labelCritical,
   labelUnknown,
+  labelAddComment,
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
 import useFilter from '../Filter/useFilter';
 import Context, { ResourceContext } from '../Context';
-import { mockAppStateSelector, cancelTokenRequestParam } from '../testUtils';
+import { mockAppStateSelector } from '../testUtils';
 import { Resource } from '../models';
 import useDetails from '../Details/useDetails';
 
@@ -75,7 +77,8 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockUserContext = {
-  username: 'admin',
+  alias: 'admin',
+  name: 'admin',
   locale: 'en',
   timezone: 'Europe/Paris',
 
@@ -87,6 +90,7 @@ const mockUserContext = {
         disacknowledgement: true,
         check: true,
         submit_status: true,
+        comment: true,
       },
       host: {
         downtime: true,
@@ -94,9 +98,15 @@ const mockUserContext = {
         disacknowledgement: true,
         check: true,
         submit_status: true,
+        comment: true,
       },
     },
   },
+
+  downtime: {
+    default_duration: 7200,
+  },
+  refresh_interval: 15,
 };
 
 jest.mock('@centreon/ui-context', () => ({
@@ -294,7 +304,7 @@ describe(Actions, () => {
             with_services: true,
           },
         },
-        cancelTokenRequestParam,
+        expect.anything(),
       ),
     );
   });
@@ -379,7 +389,7 @@ describe(Actions, () => {
     await findByText(labelDowntimeByAdmin);
 
     fireEvent.click(getByLabelText(labelFixed));
-    fireEvent.change(getByDisplayValue('3600'), {
+    fireEvent.change(getByDisplayValue('7200'), {
       target: { value: '' },
     });
 
@@ -449,14 +459,14 @@ describe(Actions, () => {
           resources: map(pick(['type', 'id', 'parent']), selectedResources),
           downtime: {
             comment: labelDowntimeByAdmin,
-            duration: 3600,
+            duration: 7200,
             start_time: '2020-01-01T00:00:00Z',
             end_time: '2020-01-01T02:00:00Z',
             is_fixed: true,
             with_services: true,
           },
         },
-        cancelTokenRequestParam,
+        expect.anything(),
       ),
     );
   });
@@ -482,7 +492,7 @@ describe(Actions, () => {
         {
           resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
-        cancelTokenRequestParam,
+        expect.anything(),
       );
     });
   });
@@ -538,7 +548,7 @@ describe(Actions, () => {
             },
           ],
         },
-        cancelTokenRequestParam,
+        expect.anything(),
       );
     });
 
@@ -567,6 +577,7 @@ describe(Actions, () => {
             acknowledgement: false,
             disacknowledgement: false,
             submit_status: false,
+            comment: false,
           },
           host: {
             downtime: false,
@@ -574,6 +585,7 @@ describe(Actions, () => {
             acknowledgement: false,
             disacknowledgement: false,
             submit_status: false,
+            comment: false,
           },
         },
       },
@@ -599,6 +611,7 @@ describe(Actions, () => {
       'aria-disabled',
       'true',
     );
+    expect(getByText(labelAddComment)).toHaveAttribute('aria-disabled', 'true');
   });
 
   const cannotDowntimeServicesAcl = {
@@ -819,6 +832,83 @@ describe(Actions, () => {
         'aria-disabled',
         'true',
       );
+    });
+  });
+
+  it('disables the comment action when the ACL are not sufficient or more than one resource is selected', async () => {
+    const { getByText } = renderActions();
+
+    mockedUserContext.mockReset().mockReturnValue({
+      ...mockUserContext,
+      acl: {
+        actions: {
+          ...mockUserContext.acl.actions,
+          host: {
+            ...mockUserContext.acl.actions.host,
+            comment: false,
+          },
+        },
+      },
+    });
+
+    act(() => {
+      context.setSelectedResources([host, service]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelAddComment)).toHaveAttribute(
+        'aria-disabled',
+        'true',
+      );
+    });
+
+    act(() => {
+      context.setSelectedResources([host]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelAddComment)).toHaveAttribute(
+        'aria-disabled',
+        'true',
+      );
+    });
+
+    act(() => {
+      context.setSelectedResources([service]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelAddComment)).toHaveAttribute(
+        'aria-disabled',
+        'false',
+      );
+    });
+  });
+
+  it('disables the acknowledge action when selected resources have an OK or UP status', async () => {
+    const { getByText } = renderActions();
+
+    act(() => {
+      context.setSelectedResources([
+        {
+          ...host,
+          status: {
+            name: 'UP',
+            severity_code: SeverityCode.Ok,
+          },
+        },
+        {
+          ...service,
+          status: {
+            name: 'OK',
+            severity_code: SeverityCode.Ok,
+          },
+        },
+      ]);
+    });
+
+    await waitFor(() => {
+      expect(getByText(labelAcknowledge).parentElement).toBeDisabled();
     });
   });
 });

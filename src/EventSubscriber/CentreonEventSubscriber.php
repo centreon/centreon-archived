@@ -1,7 +1,7 @@
 <?php
 
-/**
- * Copyright 2005-2020 Centreon
+/*
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -32,11 +32,10 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 declare(strict_types=1);
 
-namespace App\EventSubscriber;
+namespace EventSubscriber;
 
 use Centreon\Application\ApiPlatform;
 use Centreon\Domain\Contact\Contact;
@@ -66,7 +65,7 @@ use Symfony\Component\Security\Core\Security;
  * This class is automatically calls by Symfony through the dependency injector
  * and because it's defined as a service.
  *
- * @package App\EventSubscriber
+ * @package EventSubscriber
  */
 class CentreonEventSubscriber implements EventSubscriberInterface
 {
@@ -107,23 +106,30 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @var ApiPlatform
      */
     private $apiPlatform;
+    /**
+     * @var ContactInterface
+     */
+    private $contact;
 
     /**
      * @param RequestParametersInterface $requestParameters
      * @param ContainerInterface $container
      * @param Security $security
      * @param ApiPlatform $apiPlatform
+     * @param ContactInterface $contact
      */
     public function __construct(
         RequestParametersInterface $requestParameters,
         ContainerInterface $container,
         Security $security,
-        ApiPlatform $apiPlatform
+        ApiPlatform $apiPlatform,
+        ContactInterface $contact
     ) {
         $this->container = $container;
         $this->requestParameters = $requestParameters;
         $this->security = $security;
         $this->apiPlatform = $apiPlatform;
+        $this->contact = $contact;
     }
 
     /**
@@ -410,11 +416,18 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     /**
      * Set contact if he is logged in
      */
-    public function initUser()
+    public function initUser(): void
     {
         if ($user = $this->security->getUser()) {
+            /**
+             * @var Contact $user
+             */
             EntityCreator::setContact($user);
+            /**
+             * @var ContactInterface $user
+             */
             $this->initLanguage($user);
+            $this->initGlobalContact($user);
         }
     }
 
@@ -424,7 +437,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @param ContactInterface $user
      * @return void
      */
-    private function initLanguage(Contact $user): void
+    private function initLanguage(ContactInterface $user): void
     {
         $locale = $user->getLocale() ?? $this->getBrowserLocale();
         $lang = $locale . '.' . Contact::DEFAULT_CHARSET;
@@ -450,5 +463,35 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         }
 
         return $locale;
+    }
+
+    /**
+     * Initialize the contact for the global context.
+     *
+     * @param ContactInterface $user Local contact with information to be used
+     */
+    private function initGlobalContact(ContactInterface $user): void
+    {
+        /**
+         * @var Contact $globalContact
+         */
+        $globalContact = $this->contact;
+        $globalContact->setId($user->getId())
+            ->setName($user->getName())
+            ->setAlias($user->getAlias())
+            ->setEmail($user->getEmail())
+            ->setTemplateId($user->getTemplateId())
+            ->setIsActive($user->isActive())
+            ->setAdmin($user->isAdmin())
+            ->setTimezone($user->getTimezone())
+            ->setLocale($user->getLocale());
+
+        foreach ($user->getRoles() as $role) {
+            if (substr($role, 0, 8) === 'ROLE_API') {
+                $globalContact->addRole($role);
+            } else {
+                $globalContact->addTopologyRule($role);
+            }
+        }
     }
 }

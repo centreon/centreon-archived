@@ -39,6 +39,7 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
 
 /**
  * Service intended to register a new server to the platform topology
@@ -83,6 +84,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     private $brokerRepository;
 
     /**
+     * @var RemoteServerRepositoryInterface
+     */
+    private $remoteServerRepository;
+
+    /**
      * Broker Retention Parameter
      */
     public const BROKER_PEER_RETENTION = "one_peer_retention_mode";
@@ -105,7 +111,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         EngineConfigurationServiceInterface $engineConfigurationService,
         MonitoringServerServiceInterface $monitoringServerService,
         BrokerRepositoryInterface $brokerRepository,
-        PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
+        PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository,
+        RemoteServerRepositoryInterface $remoteServerRepository
     ) {
         $this->platformTopologyRepository = $platformTopologyRepository;
         $this->platformInformationService = $platformInformationService;
@@ -114,6 +121,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         $this->monitoringServerService = $monitoringServerService;
         $this->brokerRepository = $brokerRepository;
         $this->platformTopologyRegisterRepository = $platformTopologyRegisterRepository;
+        $this->remoteServerRepository = $remoteServerRepository;
     }
 
     /**
@@ -415,14 +423,14 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     private function searchAlreadyRegisteredTopLevelPlatformByType(string $type): void
     {
-        $foundAlreadyRegisteredPlatformByType = $this->platformTopologyRepository->findPlatformByType($type);
-        if (null !== $foundAlreadyRegisteredPlatformByType) {
+        $foundAlreadyRegisteredTopLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatformByType($type);
+        if (null !== $foundAlreadyRegisteredTopLevelPlatform) {
             throw new PlatformConflictException(
                 sprintf(
                     _("A '%s': '%s'@'%s' is already registered"),
                     $type,
-                    $foundAlreadyRegisteredPlatformByType->getName(),
-                    $foundAlreadyRegisteredPlatformByType->getAddress()
+                    $foundAlreadyRegisteredTopLevelPlatform->getName(),
+                    $foundAlreadyRegisteredTopLevelPlatform->getAddress()
                 )
             );
         }
@@ -578,7 +586,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
          * @var Platform[] $platformTopology
          */
         $platformTopology = $this->platformTopologyRepository->getPlatformTopology();
-        if ($platformTopology === null) {
+        if (empty($platformTopology)) {
             throw new EntityNotFoundException(_('No Platform Topology found.'));
         }
 
@@ -608,5 +616,81 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             }
         }
         return $platformTopology;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deletePlatformAndReallocateChildren(int $serverId): void
+    {
+        try {
+            if (($deletedPlatform = $this->platformTopologyRepository->findPlatform($serverId)) === null) {
+                throw new EntityNotFoundException(_('Platform not found'));
+            }
+            /**
+             * @var Platform[] $childPlatforms
+             */
+            $childPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId($serverId);
+
+            if (!empty($childPlatforms)) {
+                /**
+                 * If at least one children platform was found,
+                 * find the Top Parent platform and link children platform(s) to it.
+                 *
+                 * @var Platform $topLevelPlatform
+                 */
+                $topLevelPlatform = $this->findTopLevelPlatform();
+
+                if ($topLevelPlatform === null) {
+                    throw new EntityNotFoundException(_('No top level platform found to link the child platforms'));
+                }
+
+                /**
+                 * Update children parent_id.
+                 */
+                foreach ($childPlatforms as $platform) {
+                    $platform->setParentId($topLevelPlatform->getId());
+                    $this->updatePlatformParameters($platform);
+                }
+            }
+
+            /**
+             * Delete the monitoring server and the topology.
+             */
+            if ($deletedPlatform->getServerId() !== null) {
+                if ($deletedPlatform->getType() === Platform::TYPE_REMOTE) {
+                    $this->remoteServerRepository->deleteRemoteServerByAddress($deletedPlatform->getAddress());
+                    $this->remoteServerRepository->deleteAdditionalRemoteServer($deletedPlatform->getServerId());
+                }
+
+                $this->monitoringServerService->deleteServer($deletedPlatform->getServerId());
+            } else {
+                $this->platformTopologyRepository->deletePlatform($deletedPlatform->getId());
+            }
+        } catch (EntityNotFoundException | PlatformException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            throw new PlatformException(_('An error occured while deleting the platform'), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updatePlatformParameters(Platform $platform): void
+    {
+        try {
+            $this->platformTopologyRepository->updatePlatformParameters($platform);
+        } catch (\Exception $ex) {
+            throw new PlatformException(_('An error occured while updating the platform'), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findTopLevelPlatform(): ?Platform
+    {
+        return $this->platformTopologyRepository->findTopLevelPlatform();
     }
 }

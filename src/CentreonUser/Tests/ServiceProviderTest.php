@@ -24,7 +24,7 @@ namespace CentreonUser\Tests;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use CentreonUser\ServiceProvider;
-use Centreon\Tests\Resource\Traits\WebserviceTrait;
+use Centreon\Tests\Resources\Traits\WebserviceTrait;
 use CentreonUser\Application\Webservice;
 
 /**
@@ -48,7 +48,7 @@ class ServiceProviderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new ServiceProvider();
         $this->container = new Container();

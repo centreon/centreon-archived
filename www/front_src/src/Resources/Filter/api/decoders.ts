@@ -1,36 +1,54 @@
 import { JsonDecoder } from 'ts.data.json';
 
-import { buildListingDecoder } from '@centreon/ui';
+import { buildListingDecoder, SelectEntry } from '@centreon/ui';
 
-import { CriteriaValue, RawCriteria, RawFilter } from '../models';
+import { Filter } from '../models';
+import { Criteria } from '../Criterias/models';
+import { SortOrder } from '../../models';
 
-const entityDecoder = JsonDecoder.object<RawFilter>(
+const entityDecoder = JsonDecoder.object<Filter>(
   {
     id: JsonDecoder.number,
     name: JsonDecoder.string,
-    criterias: JsonDecoder.array<RawCriteria>(
-      JsonDecoder.object<RawCriteria>(
+    criterias: JsonDecoder.array<Criteria>(
+      JsonDecoder.object<Criteria>(
         {
           name: JsonDecoder.string,
-          object_type: JsonDecoder.optional(JsonDecoder.string),
+          object_type: JsonDecoder.nullable(JsonDecoder.string),
           type: JsonDecoder.string,
           value: JsonDecoder.optional(
-            JsonDecoder.oneOf<string | boolean | Array<CriteriaValue>>(
+            JsonDecoder.oneOf<
+              | string
+              | Array<Pick<SelectEntry, 'id' | 'name'>>
+              | [string, SortOrder]
+            >(
               [
                 JsonDecoder.string,
-                JsonDecoder.boolean,
-                JsonDecoder.array<CriteriaValue>(
-                  JsonDecoder.object<CriteriaValue>(
+                JsonDecoder.array<Pick<SelectEntry, 'id' | 'name'>>(
+                  JsonDecoder.object<Pick<SelectEntry, 'id' | 'name'>>(
                     {
                       id: JsonDecoder.oneOf<number | string>(
                         [JsonDecoder.number, JsonDecoder.string],
-                        'FilterCriteriaMilteSelectId',
+                        'FilterCriteriaMultiSelectId',
                       ),
                       name: JsonDecoder.string,
                     },
                     'FilterCriteriaMultiSelectValue',
                   ),
                   'FilterCriteriaValues',
+                ),
+                JsonDecoder.tuple(
+                  [
+                    JsonDecoder.string,
+                    JsonDecoder.oneOf<'asc' | 'desc'>(
+                      [
+                        JsonDecoder.isExactly('asc'),
+                        JsonDecoder.isExactly('desc'),
+                      ],
+                      'FilterCriteriaSortOrder',
+                    ),
+                  ],
+                  'FilterCriteriaTuple',
                 ),
               ],
               'FilterCriteriaValue',
@@ -45,7 +63,7 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
   'CustomFilter',
 );
 
-const listCustomFiltersDecoder = buildListingDecoder<RawFilter>({
+const listCustomFiltersDecoder = buildListingDecoder<Filter>({
   entityDecoder,
   entityDecoderName: 'CustomFilter',
   listingDecoderName: 'CustomFilters',

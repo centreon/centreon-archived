@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
 use CentreonUser\Domain\Entity\Timeperiod;
 use CentreonUser\Domain\Repository\TimeperiodRepository;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group CentreonUser
@@ -44,7 +44,7 @@ class TimeperiodRepositoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->db = new CentreonDB();
         $this->repository = new TimeperiodRepository($this->db);

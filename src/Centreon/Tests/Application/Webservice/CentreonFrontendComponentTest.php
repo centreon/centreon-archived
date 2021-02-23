@@ -41,7 +41,7 @@ use Pimple\Container;
 use Centreon\ServiceProvider;
 use Centreon\Application\Webservice\CentreonFrontendComponent;
 use Centreon\Domain\Service\FrontendComponentService;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group Centreon
@@ -61,7 +61,7 @@ class CentreonFrontendComponentTest extends TestCase
         'hooks' => ['list of hooks'],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $container = new Container;

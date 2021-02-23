@@ -48,13 +48,12 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonModule\Infrastructure\Source\WidgetSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
-use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
+use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class WidgetSourceTest extends TestCase
 {
-
-    use TestCaseExtensionTrait,
-        SourceDependencyTrait;
+    use TestCaseExtensionTrait;
+    use SourceDependencyTrait;
 
     public static $widgetName = 'test-widget';
     public static $widgetInfo = [
@@ -84,7 +83,7 @@ class WidgetSourceTest extends TestCase
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
@@ -111,7 +110,7 @@ class WidgetSourceTest extends TestCase
         $containerWrap = new ContainerWrap($container);
 
         $this->source = $this->getMockBuilder(WidgetSource::class)
-            ->setMethods([
+            ->onlyMethods([
                 'getPath',
             ])
             ->setConstructorArgs([
@@ -129,7 +128,7 @@ class WidgetSourceTest extends TestCase
         ;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();
@@ -174,14 +173,6 @@ class WidgetSourceTest extends TestCase
         $this->assertEquals(static::$widgetInfo['keywords'], $result->getKeywords());
         $this->assertTrue($result->isInstalled());
         $this->assertFalse($result->isUpdated());
-    }
-
-    public function testInitInfo()
-    {
-        $this->source->initInfo();
-        $this->assertAttributeEquals([
-            'test-widget' => 'x.y.z',
-            ], 'info', $this->source);
     }
 
     public static function getConfFilePath(): string

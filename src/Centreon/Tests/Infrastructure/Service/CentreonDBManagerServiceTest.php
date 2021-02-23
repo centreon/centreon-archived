@@ -42,7 +42,7 @@ use Pimple\Psr11\Container as ContainerWrap;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 use Centreon\Test\Mock\CentreonDB;
-use Centreon\Tests\Resource\Mock\RepositoryMock;
+use Centreon\Tests\Resources\Mock\RepositoryMock;
 
 class CentreonDBManagerServiceTest extends TestCase
 {
@@ -52,7 +52,7 @@ class CentreonDBManagerServiceTest extends TestCase
      */
     protected $service;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->db1 = new CentreonDB('database_1');
         $this->db2 = new CentreonDB('database_2');

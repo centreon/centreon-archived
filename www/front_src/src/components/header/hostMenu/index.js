@@ -39,6 +39,7 @@ import {
   pendingCriterias,
   unhandledStateCriterias,
 } from '../getResourcesUrl';
+import MenuLoader from '../../MenuLoader';
 
 const numberFormat = yup.number().required().integer();
 
@@ -135,7 +136,7 @@ class HostMenu extends Component {
 
     // do not display host information until having data
     if (!data) {
-      return null;
+      return <MenuLoader width={27} />;
     }
 
     return (

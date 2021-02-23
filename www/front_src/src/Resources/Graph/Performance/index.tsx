@@ -1,26 +1,48 @@
 import * as React from 'react';
 
 import { ParentSize } from '@visx/visx';
-import { map, prop, propEq, find, reject, sortBy, isEmpty, isNil } from 'ramda';
+import {
+  map,
+  prop,
+  propEq,
+  find,
+  reject,
+  sortBy,
+  isEmpty,
+  isNil,
+  head,
+  equals,
+  pipe,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData, timeFormat } from '@centreon/ui';
 
+import { TimelineEvent } from '../../Details/tabs/Timeline/models';
+import { Resource } from '../../models';
+import { ResourceDetails } from '../../Details/models';
+import { CommentParameters } from '../../Actions/api';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 
-import { getTimeSeries, getLineData } from './timeSeries';
-import { GraphData, TimeValue, Line as LineModel } from './models';
-import LoadingSkeleton from './LoadingSkeleton';
-import Legend from './Legend';
 import Graph from './Graph';
+import Legend from './Legend';
+import LoadingSkeleton from './LoadingSkeleton';
+import { GraphData, TimeValue, Line as LineModel } from './models';
+import { getTimeSeries, getLineData } from './timeSeries';
 
 interface Props {
   endpoint?: string;
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
+  eventAnnotationsActive?: boolean;
+  resource: Resource | ResourceDetails;
+  timeline?: Array<TimelineEvent>;
+  onAddComment?: (commentParameters: CommentParameters) => void;
+  tooltipPosition?: [number, number];
+  onTooltipDisplay?: (position?: [number, number]) => void;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -31,6 +53,7 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
     gridGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
+    width: 'auto',
   },
   noDataContainer: {
     display: 'flex',
@@ -52,16 +75,22 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
+  eventAnnotationsActive = false,
+  timeline,
+  tooltipPosition,
+  onTooltipDisplay,
+  resource,
+  onAddComment,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
-  const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
+  const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
 
-  const { sendRequest, sending } = useRequest<GraphData>({
+  const { sendRequest: sendGetGraphDataRequest } = useRequest<GraphData>({
     request: getData,
   });
 
@@ -70,7 +99,9 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendRequest(endpoint).then((graphData) => {
+    setLineData(undefined);
+
+    sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);
@@ -78,8 +109,8 @@ const PerformanceGraph = ({
     });
   }, [endpoint]);
 
-  if (sending || isNil(endpoint)) {
-    return <LoadingSkeleton />;
+  if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
+    return <LoadingSkeleton graphHeight={graphHeight} />;
   }
 
   if (isEmpty(timeSeries) || isEmpty(lineData)) {
@@ -99,7 +130,7 @@ const PerformanceGraph = ({
     return find(propEq('metric', metric), lineData) as LineModel;
   };
 
-  const toggleMetricDisplay = (metric): void => {
+  const toggleMetricLine = (metric): void => {
     const line = getLineByMetric(metric);
 
     setLineData([
@@ -121,9 +152,40 @@ const PerformanceGraph = ({
     setLineData(map((line) => ({ ...line, highlight: undefined }), lineData));
   };
 
+  const selectMetricLine = (metric: string): void => {
+    const metricLine = getLineByMetric(metric);
+
+    const isLineDisplayed = pipe(head, equals(metricLine))(displayedLines);
+    const isOnlyLineDisplayed = displayedLines.length === 1 && isLineDisplayed;
+
+    if (isOnlyLineDisplayed || isEmpty(displayedLines)) {
+      setLineData(
+        map(
+          (line) => ({
+            ...line,
+            display: true,
+          }),
+          lineData,
+        ),
+      );
+
+      return;
+    }
+
+    setLineData(
+      map(
+        (line) => ({
+          ...line,
+          display: equals(line, metricLine),
+        }),
+        lineData,
+      ),
+    );
+  };
+
   return (
     <div className={classes.container}>
-      <Typography variant="body1" color="textPrimary">
+      <Typography variant="body1" color="textPrimary" align="center">
         {title}
       </Typography>
 
@@ -136,16 +198,23 @@ const PerformanceGraph = ({
             lines={displayedLines}
             base={base as number}
             xAxisTickFormat={xAxisTickFormat}
+            timeline={timeline}
+            onTooltipDisplay={onTooltipDisplay}
+            tooltipPosition={tooltipPosition}
+            resource={resource}
+            onAddComment={onAddComment}
+            eventAnnotationsActive={eventAnnotationsActive}
           />
         )}
       </ParentSize>
       <div className={classes.legend}>
         <Legend
           lines={sortedLines}
-          onItemToggle={toggleMetricDisplay}
+          onToggle={toggleMetricLine}
+          onSelect={selectMetricLine}
           toggable={toggableLegend}
-          onItemHighlight={highlightLine}
-          onClearItemHighlight={clearHighlight}
+          onHighlight={highlightLine}
+          onClearHighlight={clearHighlight}
         />
       </div>
     </div>

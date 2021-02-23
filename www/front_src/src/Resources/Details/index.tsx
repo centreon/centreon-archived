@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Tab, useTheme, fade } from '@material-ui/core';
 
-import { Panel } from '@centreon/ui';
+import { MemoizedPanel as Panel } from '@centreon/ui';
 
 import { useResourceContext } from '../Context';
 import { rowColorConditions } from '../colors';
@@ -19,15 +19,17 @@ export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = (): JSX.Element | null => {
+const Details = (): JSX.Element => {
   const { t } = useTranslation();
   const theme = useTheme();
 
   const {
     openDetailsTabId,
+    details,
+    panelWidth,
     setOpenDetailsTabId,
     clearSelectedResource,
-    details,
+    setPanelWidth,
   } = useResourceContext();
 
   React.useEffect(() => {
@@ -96,6 +98,9 @@ const Details = (): JSX.Element | null => {
       ))}
       selectedTabId={getTabIndex(openDetailsTabId)}
       selectedTab={<TabById id={openDetailsTabId} details={details} />}
+      width={panelWidth}
+      onResize={setPanelWidth}
+      memoProps={[openDetailsTabId, details, panelWidth]}
     />
   );
 };

@@ -26,7 +26,7 @@ use Centreon\Domain\Entity\ImageDir;
 use Centreon\Domain\Repository\ImagesRepository;
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group Centreon
@@ -49,7 +49,7 @@ class ImagesRepositoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $db = new CentreonDB;
         $this->datasets = [

@@ -39,9 +39,8 @@ import {
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
 import { Filter } from '../models';
-import { useResourceContext } from '../../Context';
-import useFilterModels from '../useFilterModels';
-import useAdapters from '../api/adapters';
+import { ResourceContext, useResourceContext } from '../../Context';
+import memoizeComponent from '../../memoizedComponent';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {
@@ -51,25 +50,32 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     gridTemplateColumns: 'auto 1fr',
   },
-  filterNameInput: {},
 }));
 
-interface Props {
+interface EditFilterCardProps {
   filter: Filter;
 }
 
-const EditFilterCard = ({ filter }: Props): JSX.Element => {
+interface Props
+  extends EditFilterCardProps,
+    Pick<
+      ResourceContext,
+      'customFilters' | 'setFilter' | 'setCustomFilters' | 'setNewFilter'
+    > {
+  currentFilter: Filter;
+}
+
+const EditFilterCardContent = ({
+  filter,
+  currentFilter,
+  customFilters,
+  setFilter,
+  setCustomFilters,
+  setNewFilter,
+}: Props): JSX.Element => {
   const classes = useStyles();
 
-  const { newFilter } = useFilterModels();
-  const { toRawFilter } = useAdapters();
   const { t } = useTranslation();
-  const {
-    setFilter,
-    filter: currentFilter,
-    setCustomFilters,
-    customFilters,
-  } = useResourceContext();
 
   const { showMessage } = useSnackbar();
 
@@ -105,7 +111,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
       const updatedFilter = { ...filter, name: values.name };
 
       sendUpdateFilterRequest({
-        rawFilter: omit(['id'], toRawFilter(updatedFilter)),
+        filter: omit(['id'], updatedFilter),
         id: updatedFilter.id,
       }).then(() => {
         showMessage({
@@ -138,7 +144,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
       });
 
       if (equals(filter.id, currentFilter.id)) {
-        setFilter(newFilter as Filter);
+        setNewFilter();
       }
 
       setCustomFilters(reject(equals(filter), customFilters));
@@ -184,7 +190,6 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
         </IconButton>
       </ContentWithCircularLoading>
       <TextField
-        className={classes.filterNameInput}
         ariaLabel={`${t(labelFilter)}-${id}-${t(labelName)}`}
         value={form.values.name}
         error={form.errors.name}
@@ -205,6 +210,34 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
         />
       )}
     </div>
+  );
+};
+
+const memoProps = ['filter', 'currentFilter', 'customFilters'];
+
+const MemoizedEditFilterCardContent = memoizeComponent<Props>({
+  memoProps,
+  Component: EditFilterCardContent,
+});
+
+const EditFilterCard = ({ filter }: EditFilterCardProps): JSX.Element => {
+  const {
+    setFilter,
+    filter: currentFilter,
+    setCustomFilters,
+    customFilters,
+    setNewFilter,
+  } = useResourceContext();
+
+  return (
+    <MemoizedEditFilterCardContent
+      filter={filter}
+      currentFilter={currentFilter}
+      customFilters={customFilters}
+      setFilter={setFilter}
+      setCustomFilters={setCustomFilters}
+      setNewFilter={setNewFilter}
+    />
   );
 };
 

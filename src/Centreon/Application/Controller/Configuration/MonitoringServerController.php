@@ -28,6 +28,7 @@ use FOS\RestBundle\Context\Context;
 use Centreon\Application\Controller\AbstractController;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * This class is designed to manage all requests concerning pollers
@@ -54,23 +55,26 @@ class MonitoringServerController extends AbstractController
      * Entry point to find the last hosts acknowledgements.
      *
      * @param RequestParametersInterface $requestParameters
+     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function findServer(RequestParametersInterface $requestParameters): View
+    public function findServer(RequestParametersInterface $requestParameters, Request $request): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-
+        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $server = $this->monitoringServerService->findServers();
         $context = (new Context())->setGroups([
             MonitoringServer::SERIALIZER_GROUP_MAIN,
         ]);
 
-        return $this->view([
-            'result' => $server,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
+        return $this->view(
+            [
+                'result' => $server,
+                'meta' => !$isBeta
+                    ? ['pagination' => $requestParameters->toArray()]
+                    : $requestParameters->toArray()
             ]
-        ])->setContext($context);
+        )->setContext($context);
     }
 }

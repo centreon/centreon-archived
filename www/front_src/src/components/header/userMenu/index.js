@@ -17,6 +17,7 @@ import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowe
 import styles from '../header.scss';
 import Clock from '../clock';
 import axios from '../../../axios';
+import MenuLoader from '../../MenuLoader';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
@@ -100,7 +101,7 @@ class UserMenu extends Component {
     const { data, toggled, copied } = this.state;
 
     if (!data) {
-      return null;
+      return <MenuLoader width={21} />;
     }
 
     // check if edit profile page (My Account) is allowed

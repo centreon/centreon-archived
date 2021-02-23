@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { last, head, equals, reject, path } from 'ramda';
+import { last, head, equals, reject, path, isNil } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import {
@@ -16,7 +16,6 @@ import {
   ThemeProvider,
   setUrlQueryParameters,
   getUrlQueryParameters,
-  buildListingEndpoint,
 } from '@centreon/ui';
 import copyToClipboard from '@centreon/ui/src/utils/copy';
 
@@ -58,12 +57,18 @@ import {
   labelServices,
   labelFqdn,
   labelAlias,
+  labelGroups,
+  labelAcknowledgement,
+  labelSwitchToGraph,
+  labelDowntime,
+  labelDisplayEvents,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
-import { cancelTokenRequestParam } from '../testUtils';
 import useListing from '../Listing/useListing';
-import { resourcesEndpoint, monitoringEndpoint } from '../api/endpoint';
+import { resourcesEndpoint } from '../api/endpoint';
+import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
+import { last7Days, last31Days } from './tabs/Graph/models';
 import {
   graphTabId,
   timelineTabId,
@@ -84,6 +89,7 @@ jest.mock('../icons/Downtime');
 jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
 
 const resourceId = 1;
+const resourceType = 'host';
 
 const retrievedDetails = {
   id: resourceId,
@@ -153,12 +159,32 @@ const retrievedDetails = {
       reporting: undefined,
     },
   },
+  groups: [{ id: 0, name: 'Linux-servers' }],
 };
 
-const performanceGraphData = {
-  global: {},
-  times: [],
-  metrics: [],
+const retrievedPerformanceGraphData = {
+  global: {
+    title: 'Ping graph',
+  },
+  times: [
+    '2020-06-19T07:30:00Z',
+    '2020-06-20T06:55:00Z',
+    '2020-06-23T06:55:00Z',
+  ],
+  metrics: [
+    {
+      data: [2, 0, 1],
+      ds_data: {
+        ds_color_line: '#fff',
+        ds_filled: false,
+        ds_color_area: 'transparent',
+        ds_transparency: 80,
+      },
+      metric: 'rta',
+      unit: 'ms',
+      legend: 'Round-Trip-Time Average (ms)',
+    },
+  ],
 };
 
 const retrievedTimeline = {
@@ -248,22 +274,27 @@ const retrievedServices = {
   result: [
     {
       id: 3,
-      display_name: 'Ping',
+      name: 'Ping',
       status: {
         severity_code: 5,
         name: 'Ok',
       },
-      output: 'OK - 127.0.0.1 rta 0ms lost 0%',
+      information: 'OK - 127.0.0.1 rta 0ms lost 0%',
       duration: '22m',
+      links: {
+        endpoints: {
+          performance_graph: 'ping-performance',
+        },
+      },
     },
     {
       id: 4,
-      display_name: 'Disk',
+      name: 'Disk',
       status: {
         severity_code: 6,
         name: 'Unknown',
       },
-      output: 'No output',
+      information: 'No output',
       duration: '21m',
     },
   ],
@@ -274,7 +305,7 @@ const retrievedServices = {
   },
 };
 
-const currentDateIsoString = '2020-06-20T20:00:00.000Z';
+const currentDateIsoString = '2020-06-21T06:00:00.000Z';
 
 let context: ResourceContext;
 
@@ -320,6 +351,9 @@ describe(Details, () => {
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+    act(() => {
+      context.clearSelectedResource();
+    });
   });
 
   it('displays resource details information', async () => {
@@ -333,8 +367,8 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        context.getSelectedResourceDetailsEndpoint(),
-        cancelTokenRequestParam,
+        context.getSelectedResourceDetailsEndpoint() as string,
+        expect.anything(),
       );
     });
 
@@ -360,15 +394,17 @@ describe(Details, () => {
 
     expect(getAllByText(labelComment)).toHaveLength(3);
     expect(getAllByText(labelDowntimeDuration)).toHaveLength(2);
-    expect(getByText(`${labelFrom} 01/18/2020 18:57`)).toBeInTheDocument();
-    expect(getByText(`${labelTo} 01/18/2020 19:57`)).toBeInTheDocument();
-    expect(getByText(`${labelFrom} 02/18/2020 18:57`)).toBeInTheDocument();
-    expect(getByText(`${labelTo} 02/18/2020 19:57`)).toBeInTheDocument();
+    expect(getByText(`${labelFrom} 01/18/2020 6:57 PM`)).toBeInTheDocument();
+    expect(getByText(`${labelTo} 01/18/2020 7:57 PM`)).toBeInTheDocument();
+    expect(getByText(`${labelFrom} 02/18/2020 6:57 PM`)).toBeInTheDocument();
+    expect(getByText(`${labelTo} 02/18/2020 7:57 PM`)).toBeInTheDocument();
     expect(getByText('First downtime set by Admin'));
     expect(getByText('Second downtime set by Admin'));
 
     expect(getByText(labelAcknowledgedBy)).toBeInTheDocument();
-    expect(getByText(`Admin ${labelAt} 03/18/2020 19:57`)).toBeInTheDocument();
+    expect(
+      getByText(`Admin ${labelAt} 03/18/2020 7:57 PM`),
+    ).toBeInTheDocument();
     expect(getByText('Acknowledged by Admin'));
 
     expect(getByText(labelTimezone)).toBeInTheDocument();
@@ -380,15 +416,15 @@ describe(Details, () => {
 
     expect(getByText(labelLastStateChange)).toBeInTheDocument();
     expect(getByText('04/18/2020')).toBeInTheDocument();
-    expect(getByText('17:00')).toBeInTheDocument();
+    expect(getByText('5:00 PM')).toBeInTheDocument();
 
     expect(getByText(labelLastCheck)).toBeInTheDocument();
     expect(getByText('05/18/2020')).toBeInTheDocument();
-    expect(getByText('18:00')).toBeInTheDocument();
+    expect(getByText('6:00 PM')).toBeInTheDocument();
 
     expect(getByText(labelNextCheck)).toBeInTheDocument();
     expect(getByText('06/18/2020')).toBeInTheDocument();
-    expect(getByText('19:15')).toBeInTheDocument();
+    expect(getByText('7:15 PM')).toBeInTheDocument();
 
     expect(getAllByText(labelActive)).toHaveLength(2);
 
@@ -406,10 +442,13 @@ describe(Details, () => {
 
     expect(getByText(labelLastNotification)).toBeInTheDocument();
     expect(getByText('07/18/2020')).toBeInTheDocument();
-    expect(getByText('19:30')).toBeInTheDocument();
+    expect(getByText('7:30 PM')).toBeInTheDocument();
 
     expect(getByText(labelCurrentNotificationNumber)).toBeInTheDocument();
     expect(getByText('3')).toBeInTheDocument();
+
+    expect(getByText(labelGroups)).toBeInTheDocument();
+    expect(getByText('Linux-servers')).toBeInTheDocument();
 
     expect(getByText(labelPerformanceData)).toBeInTheDocument();
     expect(
@@ -423,16 +462,18 @@ describe(Details, () => {
   });
 
   it.each([
-    [labelLast24h, '2020-06-19T20:00:00.000Z'],
-    [labelLast7Days, '2020-06-13T20:00:00.000Z'],
-    [labelLast31Days, '2020-05-20T20:00:00.000Z'],
+    [labelLast24h, '2020-06-20T06:00:00.000Z', 20, undefined],
+    [labelLast7Days, '2020-06-14T06:00:00.000Z', 100, last7Days.id],
+    [labelLast31Days, '2020-05-21T06:00:00.000Z', 500, last31Days.id],
   ])(
-    `queries performance graphs with %p period when the Graph tab is selected`,
-    async (period, startIsoString) => {
+    `queries performance graphs and timelines with %p period when the Graph tab is selected`,
+    async (period, startIsoString, timelineEventsLimit, periodId) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
-        .mockResolvedValueOnce({ data: performanceGraphData })
-        .mockResolvedValueOnce({ data: performanceGraphData });
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedTimeline })
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedTimeline });
 
       const { getByText, getAllByText } = renderDetails({
         openTabId: graphTabId,
@@ -448,14 +489,78 @@ describe(Details, () => {
 
       userEvent.click(last(getAllByText(period)) as HTMLElement);
 
-      await waitFor(() =>
+      await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           `${retrievedDetails.links.endpoints.performance_graph}?start=${startIsoString}&end=${currentDateIsoString}`,
-          cancelTokenRequestParam,
-        ),
-      );
+          expect.anything(),
+        );
+
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          buildListTimelineEventsEndpoint({
+            endpoint: retrievedDetails.links.endpoints.timeline,
+            parameters: {
+              limit: timelineEventsLimit,
+              search: {
+                conditions: [
+                  {
+                    field: 'date',
+                    values: {
+                      $gt: startIsoString,
+                      $lt: currentDateIsoString,
+                    },
+                  },
+                ],
+              },
+            },
+          }),
+          expect.anything(),
+        );
+
+        if (!isNil(periodId)) {
+          expect(context.tabParameters.graph).toEqual({
+            selectedTimePeriodId: periodId,
+          });
+        }
+      });
     },
   );
+
+  it('displays event annotations when the corresponding switch is triggered and the Graph tab is clicked', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+      .mockResolvedValueOnce({
+        data: retrievedTimeline,
+      });
+
+    const { findAllByLabelText, queryByLabelText, getByText } = renderDetails({
+      openTabId: graphTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(3);
+    });
+
+    expect(queryByLabelText(labelComment)).toBeNull();
+    expect(queryByLabelText(labelAcknowledgement)).toBeNull();
+    expect(queryByLabelText(labelDowntime)).toBeNull();
+
+    userEvent.click(getByText(labelDisplayEvents));
+
+    const commentAnnotations = await findAllByLabelText(labelComment);
+    const acknowledgementAnnotations = await findAllByLabelText(
+      labelAcknowledgement,
+    );
+    const downtimeAnnotations = await findAllByLabelText(labelDowntime);
+
+    expect(commentAnnotations).toHaveLength(1);
+    expect(acknowledgementAnnotations).toHaveLength(1);
+    expect(downtimeAnnotations).toHaveLength(2);
+  });
 
   it('copies the command line to clipboard when the copy button is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
@@ -482,7 +587,12 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText, getAllByText, baseElement } = renderDetails({
+    const {
+      getByText,
+      getAllByText,
+      getAllByLabelText,
+      baseElement,
+    } = renderDetails({
       openTabId: timelineTabId,
     });
 
@@ -513,15 +623,15 @@ describe(Details, () => {
 
     expect(getByText('06/22/2020')).toBeInTheDocument();
 
-    expect(getByText('10:40')).toBeInTheDocument();
-    expect(getAllByText('Event')).toHaveLength(4);
+    expect(getByText('10:40 AM')).toBeInTheDocument();
+    expect(getAllByLabelText('Event')).toHaveLength(3); // 2 events + 1 selected option
     expect(getByText('UP')).toBeInTheDocument();
     expect(getByText('Tries: 1')).toBeInTheDocument();
     expect(
       getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;'),
     ).toBeInTheDocument();
 
-    expect(getByText('10:35')).toBeInTheDocument();
+    expect(getByText('10:35 AM')).toBeInTheDocument();
     expect(getByText('DOWN')).toBeInTheDocument();
     expect(getByText('Tries: 3')).toBeInTheDocument();
     expect(
@@ -530,36 +640,31 @@ describe(Details, () => {
 
     expect(getByText('06/21/2020')).toBeInTheDocument();
 
-    expect(getByText('09:40')).toBeInTheDocument();
-    expect(getByText('Notification sent to admin')).toBeInTheDocument();
+    expect(getByText('9:40 AM')).toBeInTheDocument();
     expect(getByText('My little notification'));
 
     expect(getByText('06/20/2020')).toBeInTheDocument();
 
-    expect(getByText('09:35')).toBeInTheDocument();
-    expect(getByText('Acknowledgement by admin')).toBeInTheDocument();
+    expect(getByText('9:35 AM')).toBeInTheDocument();
     expect(getByText('My little ack'));
 
-    expect(getByText('09:30')).toBeInTheDocument();
-    expect(getByText('Downtime by admin')).toBeInTheDocument();
     expect(
-      getByText('From 06/20/2020 09:30 To 06/22/2020 09:33'),
+      getByText('From 06/20/2020 9:30 AM To 06/22/2020 9:33 AM'),
     ).toBeInTheDocument();
     expect(getByText('My little dt'));
 
-    expect(getByText('08:57')).toBeInTheDocument();
-    expect(getByText('Downtime by super_admin')).toBeInTheDocument();
-    expect(getByText('From 06/19/2020 09:30')).toBeInTheDocument();
+    expect(getByText('From 06/19/2020 9:30 AM')).toBeInTheDocument();
     expect(getByText('My little ongoing dt'));
 
-    expect(getByText('08:55')).toBeInTheDocument();
-    expect(getByText('Comment by admin')).toBeInTheDocument();
+    expect(getByText('8:55 AM')).toBeInTheDocument();
     expect(getByText('My little comment'));
 
     const dateRegExp = /\d+\/\d+\/\d+$/;
 
     expect(
-      getAllByText(dateRegExp).map((element) => element.textContent),
+      getAllByText(dateRegExp)
+        .map((element) => element.textContent)
+        .filter((text) => text !== '06/23/2020'), // corresponds to one of the graph X Scale ticks
     ).toEqual(['06/22/2020', '06/21/2020', '06/20/2020']);
 
     const removeEventIcon = baseElement.querySelectorAll(
@@ -718,7 +823,7 @@ describe(Details, () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${resourcesEndpoint}/${retrievedServiceDetails.parentType}s/${retrievedServiceDetails.parentId}/${retrievedServiceDetails.type}s/${retrievedServiceDetails.id}`,
-        cancelTokenRequestParam,
+        expect.anything(),
       );
 
       expect(context.openDetailsTabId).toEqual(shortcutsTabId);
@@ -740,6 +845,16 @@ describe(Details, () => {
       context.setSelectedResourceParentId(undefined);
       context.setSelectedResourceParentType(undefined);
       context.setSelectedResourceType('host');
+      context.setGraphTabParameters({
+        selectedTimePeriodId: last7Days.id,
+      });
+    });
+
+    act(() => {
+      context.setServicesTabParameters({
+        selectedTimePeriodId: last31Days.id,
+        graphMode: true,
+      });
     });
 
     const updatedDetailsFromQueryParameters = getUrlQueryParameters()
@@ -748,13 +863,22 @@ describe(Details, () => {
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
         id: 1,
-        type: 'host',
         tab: 'details',
+        tabParameters: {
+          graph: {
+            selectedTimePeriodId: last7Days.id,
+          },
+          services: {
+            graphMode: true,
+            selectedTimePeriodId: last31Days.id,
+          },
+        },
+        type: 'host',
       });
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${resourcesEndpoint}/${updatedDetailsFromQueryParameters.type}s/${updatedDetailsFromQueryParameters.id}`,
-        cancelTokenRequestParam,
+        expect.anything(),
       );
     });
   });
@@ -813,13 +937,26 @@ describe(Details, () => {
     });
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      buildListingEndpoint({
-        baseEndpoint: `${monitoringEndpoint}/hosts/${resourceId}/services`,
-        parameters: {
-          limit: 100,
+      buildResourcesEndpoint({
+        limit: 30,
+        page: 1,
+        resourceTypes: ['service'],
+        statuses: [],
+        states: [],
+        hostGroupIds: [],
+        serviceGroupIds: [],
+        search: {
+          conditions: [
+            {
+              field: 'h.name',
+              values: {
+                $eq: retrievedDetails.name,
+              },
+            },
+          ],
         },
       }),
-      cancelTokenRequestParam,
+      expect.anything(),
     );
 
     expect(getByText('OK')).toBeInTheDocument();
@@ -845,5 +982,59 @@ describe(Details, () => {
     await waitFor(() => {
       expect(queryByText(labelServices)).toBeNull();
     });
+  });
+
+  it('displays the linked service graphs when the service tab of a host is clicked and the graph mode is activated', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          ...retrievedDetails,
+          type: 'host',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: retrievedServices,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedServices,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedPerformanceGraphData,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedPerformanceGraphData,
+      });
+
+    const { getByLabelText, findByText, getAllByText } = renderDetails({
+      openTabId: servicesTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceType(resourceType);
+      context.setSelectedResourceId(resourceId);
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    fireEvent.click(
+      getByLabelText(labelSwitchToGraph).firstElementChild as HTMLElement,
+    );
+
+    await findByText(retrievedPerformanceGraphData.global.title);
+
+    expect(context.tabParameters?.services?.graphMode).toEqual(true);
+
+    userEvent.click(head(getAllByText(labelLast24h)) as HTMLElement);
+    userEvent.click(last(getAllByText(labelLast7Days)) as HTMLElement);
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(5);
+    });
+
+    expect(context.tabParameters?.services?.selectedTimePeriodId).toEqual(
+      last7Days.id,
+    );
   });
 });

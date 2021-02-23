@@ -48,13 +48,13 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
-use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
+use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class ModuleSourceTest extends TestCase
 {
 
-    use TestCaseExtensionTrait,
-        SourceDependencyTrait;
+    use TestCaseExtensionTrait;
+    use SourceDependencyTrait;
 
     public static $moduleName = 'test-module';
     public static $moduleNameMissing = 'missing-module';
@@ -84,7 +84,7 @@ class ModuleSourceTest extends TestCase
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
@@ -114,21 +114,20 @@ class ModuleSourceTest extends TestCase
         $this->containerWrap = new ContainerWrap($container);
 
         $this->source = $this->getMockBuilder(ModuleSource::class)
-            ->setMethods([
+            ->onlyMethods([
                 'getPath',
                 'getModuleConf',
             ])
             ->setConstructorArgs([
                 $this->containerWrap,
             ])
-            ->getMock()
-        ;
+            ->getMock();
         $this->source
             ->method('getPath')
             ->will($this->returnCallback(function () {
-                    $result = 'vfs://modules/';
+                $result = 'vfs://modules/';
 
-                    return $result;
+                return $result;
             }))
         ;
         $this->source
@@ -143,7 +142,7 @@ class ModuleSourceTest extends TestCase
         ;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();
@@ -196,14 +195,6 @@ class ModuleSourceTest extends TestCase
         }
 
         $this->source->update(static::$moduleName);
-    }
-
-    public function testInitInfo()
-    {
-        $this->source->initInfo();
-        $this->assertAttributeEquals([
-            'test-module' => 'x.y.z',
-            ], 'info', $this->source);
     }
 
     public function testCreateEntityFromConfig()
