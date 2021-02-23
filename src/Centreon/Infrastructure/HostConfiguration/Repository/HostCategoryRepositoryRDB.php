@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
+use Assert\AssertionFailedException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryWriteRepositoryInterface;
@@ -81,7 +82,8 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
      *
      * @param int|null $contactId Contact id related to host categories
      * @return HostCategory[]
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
+     * @throws \InvalidArgumentException
      */
     private function findAllRequest(?int $contactId): array
     {
@@ -174,7 +176,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
 
     /**
      * @inheritDoc
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     public function findById(int $categoryId): ?HostCategory
     {
@@ -183,7 +185,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
 
     /**
      * @inheritDoc
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     public function findByIdAndContact(int $categoryId, ContactInterface $contact): ?HostCategory
     {
@@ -196,7 +198,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
      * @param int $categoryId Id of the host category to be found
      * @param int|null $contactId Contact id related to host categories
      * @return HostCategory|null
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     private function findByIdRequest(int $categoryId, ?int $contactId): ?HostCategory
     {
@@ -241,7 +243,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
 
     /**
      * @inheritDoc
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     public function findByName(string $name): ?HostCategory
     {
@@ -250,7 +252,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
 
     /**
      * @inheritDoc
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     public function findByNameAndContact(string $name, ContactInterface $contact): ?HostCategory
     {
@@ -263,7 +265,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
      * @param string $hostCategoryName Name of the host category to be found
      * @param int|null $contactId Contact id related to host categories
      * @return HostCategory|null
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     private function findByNameRequest(string $hostCategoryName, ?int $contactId): ?HostCategory
     {

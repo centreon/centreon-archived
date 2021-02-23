@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostGroup;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\HostConfiguration\Model\HostCategory;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Repository\RepositoryException;
 
@@ -64,10 +63,10 @@ interface HostGroupReadRepositoryInterface
     public function findById(int $hostGroupId): ?HostGroup;
 
     /**
-     * Find a host group by id and access groups.
+     * Find a host group by id and contact.
      *
      * @param int $hostGroupId Id of the host group to be found
-     * @param ContactInterface $contact Contact related to host categories
+     * @param ContactInterface $contact Contact related to host group
      * @return HostGroup|null
      * @throws RepositoryException
      * @throws \Exception
