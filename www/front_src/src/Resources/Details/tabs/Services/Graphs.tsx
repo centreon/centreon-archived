@@ -15,11 +15,14 @@ const MemoizedPerformanceGraph = React.memo(
     const nextPeriodQueryParameters = nextProps.periodQueryParameters;
     const prevTooltipPosition = prevProps.tooltipPosition;
     const nextTooltipPosition = nextProps.tooltipPosition;
+    const prevSelectedTimePeriod = prevProps.selectedTimePeriod;
+    const nextSelectedTimePeriod = nextProps.selectedTimePeriod;
 
     return (
       equals(prevResource?.id, nextResource?.id) &&
       equals(prevPeriodQueryParameters, nextPeriodQueryParameters) &&
-      equals(prevTooltipPosition, nextTooltipPosition)
+      equals(prevTooltipPosition, nextTooltipPosition) &&
+      equals(prevSelectedTimePeriod, nextSelectedTimePeriod)
     );
   },
 );
@@ -59,8 +62,8 @@ const ServiceGraphs = ({
               resource={service}
               graphHeight={120}
               periodQueryParameters={periodQueryParameters}
-              getIntervalDates={getIntervalDates}
               selectedTimePeriod={selectedTimePeriod}
+              getIntervalDates={getIntervalDates}
               onTooltipDisplay={setTooltipPosition}
               tooltipPosition={tooltipPosition}
             />
