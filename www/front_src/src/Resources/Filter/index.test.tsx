@@ -52,7 +52,7 @@ import useDetails from '../Details/useDetails';
 
 import { allFilter, Filter as FilterModel } from './models';
 import useFilter from './useFilter';
-import { key as filterStorageKey } from './storedFilter';
+import { filterKey } from './storedFilter';
 import { defaultSortField, defaultSortOrder } from './Criterias/default';
 
 import Filter from '.';
@@ -411,13 +411,15 @@ describe(Filter, () => {
 
   describe('Filter storage', () => {
     it('populates filter with values from localStorage if available', async () => {
-      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(filter));
+      mockedLocalStorageGetItem
+        .mockReturnValueOnce(JSON.stringify(filter))
+        .mockReturnValueOnce(JSON.stringify(true));
 
       const { getByText, getByDisplayValue, queryByLabelText } = renderFilter();
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
-      expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterStorageKey);
+      expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterKey);
       expect(queryByLabelText(labelUnhandledProblems)).not.toBeInTheDocument();
       expect(getByDisplayValue('Search me')).toBeInTheDocument();
       expect(getByText(labelHost)).toBeInTheDocument();
@@ -443,7 +445,7 @@ describe(Filter, () => {
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
       expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
-        filterStorageKey,
+        filterKey,
         JSON.stringify(allFilter),
       );
 
@@ -453,7 +455,7 @@ describe(Filter, () => {
 
       await waitFor(() =>
         expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
-          filterStorageKey,
+          filterKey,
           JSON.stringify(
             getFilterWithUpdatedCriteria({
               filter: { ...allFilter, id: '', name: labelNewFilter },
@@ -466,7 +468,9 @@ describe(Filter, () => {
     });
 
     it('clears all filters and set filter group to all when the clear all button is clicked', async () => {
-      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(filter));
+      mockedLocalStorageGetItem
+        .mockReturnValueOnce(JSON.stringify(filter))
+        .mockReturnValueOnce(JSON.stringify(true));
 
       mockedAxios.get.mockResolvedValue({ data: {} });
 
@@ -564,7 +568,9 @@ describe(Filter, () => {
     });
 
     it('resets the filter criterias which are not set in the filter URL query parameter when given', async () => {
-      mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(filter));
+      mockedLocalStorageGetItem
+        .mockReturnValueOnce(JSON.stringify(filter))
+        .mockReturnValueOnce(JSON.stringify(true));
 
       setUrlQueryParameters([
         {
