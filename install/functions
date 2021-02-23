@@ -443,7 +443,7 @@ delete_file() {
         echo_error "Not a file '$file'" "FAILED"
         return 1
     else
-        result="$(rm -f $file 2>&1 > /dev/null)"
+        result="$(find $file -type f -exec rm -f -- {} \; 2>&1 > /dev/null)"
         if [ $? -ne 0 ] ; then
             echo_error "Could not delete file '$file'" "FAILED"
             echo_error "$result"
@@ -1336,7 +1336,7 @@ replace_macro() {
                 -e 's|@CENTREON_CACHE_DIR@|'"$CENTREON_CACHE_DIR"'|gi' \
                 -e 's|@CENTREONPLUGINS@|'"$CENTREON_PLUGINS_DIR"'|gi' \
                 -e 's|@CENTREON_PLUGINS_DIR@|'"$CENTREON_PLUGINS_DIR"'|gi' \
-                -e 's|@NAGIOS_PLUGINS_DIR@|'"$CENTREON_PLUGINS_DIR"'|gi' \
+                -e 's|@PLUGIN_DIR@|'"$NAGIOS_PLUGINS_DIR"'|gi' \
                 -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_INSTALL_DIR/bin"'|gi' \
                 -e 's|@CENTREON_ENGINE_CONNECTORS@|'"$ENGINE_CONNECTORS_DIR/bin"'|gi' \
                 -e 's|%APP_SECRET%|'"$HEX_KEY"'|gi' \

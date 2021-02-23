@@ -680,8 +680,9 @@ if [[ "${INSTALLATION_TYPE}" =~ ^central|poller$ ]] ; then
     copy_file "$TMP_DIR/source/tmpl/install/sudoersCentreonEngine" "$SUDOERSD_ETC_DIR/centreon" \
         "" "" "600"
 
-    ### Centreon Broker configurations (kind of a workaround induced by components source installs)
-    delete_file "$BROKER_ETC_DIR/*"
+    ### Centreon Engine and Broker configurations (kind of a workaround induced by components source installs)
+    delete_file "$ENGINE_ETC_DIR/"
+    delete_file "$BROKER_ETC_DIR/"
 fi
 if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
     ### Centreon CLAPI
