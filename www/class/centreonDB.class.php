@@ -340,7 +340,7 @@ class CentreonDB extends \PDO
         if (isset($data["number"])) {
             $number = $data["number"];
         }
-        return $number;
+        return (int) $number;
     }
 
     /**
