@@ -10,8 +10,9 @@ import {
   Theme,
 } from '@material-ui/core';
 
-import { useResourceContext } from '../../../Context';
+import { ResourceContext, useResourceContext } from '../../../Context';
 import { Line } from '../models';
+import memoizeComponent from '../../../memoizedComponent';
 
 import LegendMarker from './Marker';
 
@@ -54,15 +55,17 @@ interface Props {
   onClearHighlight: () => void;
 }
 
-const Legend = ({
+type LegendContentProps = Props & Pick<ResourceContext, 'panelWidth'>;
+
+const LegendContent = ({
   lines,
   onToggle,
   onSelect,
   toggable,
   onHighlight,
   onClearHighlight,
-}: Props): JSX.Element => {
-  const { panelWidth } = useResourceContext();
+  panelWidth,
+}: LegendContentProps): JSX.Element => {
   const classes = useStyles({ panelWidth });
   const theme = useTheme();
 
@@ -118,6 +121,19 @@ const Legend = ({
       })}
     </>
   );
+};
+
+const memoProps = ['panelWidth', 'lines', 'toggable'];
+
+const MemoizedLegendContent = memoizeComponent<LegendContentProps>({
+  memoProps,
+  Component: LegendContent,
+});
+
+const Legend = (props: Props): JSX.Element => {
+  const { panelWidth } = useResourceContext();
+
+  return <MemoizedLegendContent {...props} panelWidth={panelWidth} />;
 };
 
 export default Legend;

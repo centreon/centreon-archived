@@ -52,6 +52,7 @@ import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import { TabBounds, TabContext } from '../../../Details';
+import memoizeComponent from '../../../memoizedComponent';
 
 import MetricsTooltip from './MetricsTooltip';
 import AddCommentForm from './AddCommentForm';
@@ -112,7 +113,7 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   },
 }));
 
-interface Props {
+interface GraphContentProps {
   width: number;
   height: number;
   timeSeries: Array<TimeValue>;
@@ -120,11 +121,17 @@ interface Props {
   lines: Array<LineModel>;
   xAxisTickFormat: string;
   timeline?: Array<TimelineEvent>;
-  onTooltipDisplay?: (position?: [number, number]) => void;
   tooltipPosition?: [number, number];
   resource: Resource | ResourceDetails;
-  onAddComment?: (commentParameters: CommentParameters) => void;
   eventAnnotationsActive: boolean;
+  addCommentTooltipLeft?: number;
+  addCommentTooltipTop?: number;
+  addCommentTooltipOpen: boolean;
+  onAddComment?: (commentParameters: CommentParameters) => void;
+  onTooltipDisplay?: (position?: [number, number]) => void;
+  hideAddCommentTooltip: () => void;
+  showAddCommentTooltip: (args) => void;
+  format: (parameters) => string;
 }
 
 const getScale = ({
@@ -144,7 +151,7 @@ const getScale = ({
   });
 };
 
-const Graph = ({
+const GraphContent = ({
   width,
   height,
   timeSeries,
@@ -153,14 +160,19 @@ const Graph = ({
   xAxisTickFormat,
   timeline,
   tooltipPosition,
-  onTooltipDisplay,
   resource,
-  onAddComment,
   eventAnnotationsActive,
-}: Props): JSX.Element => {
+  addCommentTooltipLeft,
+  addCommentTooltipTop,
+  addCommentTooltipOpen,
+  onTooltipDisplay,
+  onAddComment,
+  hideAddCommentTooltip,
+  showAddCommentTooltip,
+  format,
+}: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles({ onAddComment });
-  const { format } = useLocaleDateTimeFormat();
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
@@ -175,13 +187,6 @@ const Graph = ({
     hideTooltip,
   } = useTooltip();
   const [isMouseOver, setIsMouseOver] = React.useState(false);
-  const {
-    tooltipLeft: addCommentTooltipLeft,
-    tooltipTop: addCommentTooltipTop,
-    tooltipOpen: addCommentTooltipOpen,
-    showTooltip: showAddCommentTooltip,
-    hideTooltip: hideAddCommentTooltip,
-  } = useTooltip();
 
   const { containerRef, containerBounds, TooltipInPortal } = useTooltipInPortal(
     {
@@ -487,6 +492,60 @@ const Graph = ({
         )}
       </div>
     </ClickAwayListener>
+  );
+};
+
+const memoProps = [
+  'addCommentTooltipLeft',
+  'addCommentTooltipTop',
+  'addCommentTooltipOpen',
+  'width',
+  'height',
+  'timeSeries',
+  'base',
+  'lines',
+  'xAxisTickFormat',
+  'timeline',
+  'tooltipPosition',
+  'resource',
+  'eventAnnotationsActive',
+];
+
+const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
+  memoProps,
+  Component: GraphContent,
+});
+
+const Graph = (
+  props: Omit<
+    GraphContentProps,
+    | 'addCommentTooltipLeft'
+    | 'addCommentTooltipTop'
+    | 'addCommentTooltipOpen'
+    | 'showAddCommentTooltip'
+    | 'hideAddCommentTooltip'
+    | 'format'
+  >,
+): JSX.Element => {
+  const { format } = useLocaleDateTimeFormat();
+  const {
+    tooltipLeft: addCommentTooltipLeft,
+    tooltipTop: addCommentTooltipTop,
+    tooltipOpen: addCommentTooltipOpen,
+    showTooltip: showAddCommentTooltip,
+    hideTooltip: hideAddCommentTooltip,
+  } = useTooltip();
+
+  return (
+    <MemoizedGraphContent
+      {...props}
+      addCommentTooltipLeft={addCommentTooltipLeft}
+      addCommentTooltipTop={addCommentTooltipTop}
+      addCommentTooltipOpen={addCommentTooltipOpen}
+      showAddCommentTooltip={showAddCommentTooltip}
+      hideAddCommentTooltip={hideAddCommentTooltip}
+      format={format}
+    />
   );
 };
 

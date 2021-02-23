@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
 
-import { Listing } from '@centreon/ui';
+import { MemoizedListing as Listing } from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
@@ -18,8 +18,8 @@ import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource, SortOrder } from '../models';
 
-import useLoadResources from './useLoadResources';
 import { getColumns } from './columns';
+import useLoadResources from './useLoadResources';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
@@ -129,6 +129,15 @@ const ResourceListing = (): JSX.Element => {
       onRowClick={selectResource}
       innerScrollDisabled={false}
       emptyDataMessage={t(labelNoResultsFound)}
+      memoProps={[
+        listing,
+        sortField,
+        sortOrder,
+        page,
+        selectedResources,
+        selectedResourceId,
+        sending,
+      ]}
     />
   );
 };
