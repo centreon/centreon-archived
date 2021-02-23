@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -53,9 +54,8 @@ $conf_centreon['monitoring_group'] = "@ENGINE_GROUP@";
 $conf_centreon['monitoring_etc'] = "@ENGINE_ETC_DIR@";
 $conf_centreon['monitoring_binary'] = "@ENGINE_BINARY@";
 $conf_centreon['monitoring_varlog'] = "@ENGINE_LOG_DIR@";
-$conf_centreon['plugin_dir'] = "@CENTREON_PLUGINS_DIR@";
+$conf_centreon['plugin_dir'] = "@NAGIOS_PLUGINS_DIR@";
 $conf_centreon['centreon_engine_connectors'] = "@ENGINE_CONNECTORS_DIR@";
 $conf_centreon['centreon_engine_lib'] = "@ENGINE_LIB_DIR@";
 $conf_centreon['centreonbroker_cbmod'] = "@BROKER_MOD_BINARY@";
 $conf_centreon['centreon_plugins'] = "@CENTREON_PLUGINS_DIR@";
-?>
