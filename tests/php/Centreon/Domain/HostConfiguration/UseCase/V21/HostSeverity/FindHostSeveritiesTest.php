@@ -20,22 +20,23 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
+namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity;
 
-use Centreon\Domain\HostConfiguration\Interfaces\HostSeverityReadRepositoryInterface;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityServiceInterface;
 use Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities;
-use PHPStan\Testing\TestCase;
+use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostSeverityTest;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21
+ * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity
  */
 class FindHostSeveritiesTest extends TestCase
 {
     /**
-     * @var HostSeverityReadRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var HostSeverityServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
-    private $hostSeverityReadRepository;
+    private $hostSeveritySerive;
     /**
      * @var \Centreon\Domain\HostConfiguration\Model\HostSeverity
      */
@@ -43,22 +44,41 @@ class FindHostSeveritiesTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->hostSeverityReadRepository = $this->createMock(HostSeverityReadRepositoryInterface::class);
+        $this->hostSeveritySerive = $this->createMock(HostSeverityServiceInterface::class);
         $this->hostSeverity = hostSeverityTest::createEntity();
     }
 
     /**
+     * @param bool $isAdmin
      * @return FindHostSeverities
      */
-    private function createHostSeverityUseCase(): FindHostSeverities
+    private function createHostSeverityUseCase(bool $isAdmin = false): FindHostSeverities
     {
-        return (new FindHostSeverities($this->hostSeverityReadRepository));
+        $contact = new Contact();
+        $contact->setAdmin($isAdmin);
+        return (new FindHostSeverities($this->hostSeveritySerive, $contact));
     }
 
-    public function testExecute(): void
+    /**
+     * Test as admin user
+     */
+    public function testExecuteAsAdmin(): void
     {
-        $this->hostSeverityReadRepository->expects($this->once())
-            ->method('findHostSeverities')
+        $this->hostSeveritySerive->expects($this->once())
+            ->method('findAllWithoutAcl')
+            ->willReturn([$this->hostSeverity]);
+        $findHostSeverities = $this->createHostSeverityUseCase(true);
+        $response = $findHostSeverities->execute();
+        $this->assertCount(1, $response->getHostSeverities());
+    }
+
+    /**
+     * Test as non admin user
+     */
+    public function testExecuteAsNonAdmin(): void
+    {
+        $this->hostSeveritySerive->expects($this->once())
+            ->method('findAllWithAcl')
             ->willReturn([$this->hostSeverity]);
         $findHostSeverities = $this->createHostSeverityUseCase();
         $response = $findHostSeverities->execute();

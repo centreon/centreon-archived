@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,16 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\UseCase\V21;
+namespace Centreon\Domain\HostConfiguration\UseCase\V21\HostTemplate;
 
 use Centreon\Domain\HostConfiguration\Exception\HostTemplateException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationReadRepositoryInterface;
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplatesResponse;
+use Centreon\Domain\Repository\RepositoryException;
 
 /**
  * This class is designed to represent a use case to find all host templates
  *
- * @package Centreon\Domain\HostConfiguration\UseCase\V21
+ * @package Centreon\Domain\HostConfiguration\UseCase\V21\HostTemplate
  */
 class FindHostTemplates
 {
@@ -50,12 +50,16 @@ class FindHostTemplates
      * Execute the use case for which this class was designed.
      *
      * @return FindHostTemplatesResponse
-     * @throws \Exception
+     * @throws RepositoryException
+     * @throws HostTemplateException
+     * @throws \Throwable
      */
     public function execute(): FindHostTemplatesResponse
     {
         try {
             $hostTemplates = $this->configurationReadRepository->findHostTemplates();
+        } catch (RepositoryException $ex) {
+            throw $ex;
         } catch (\Exception $ex) {
             throw HostTemplateException::searchHostTemplatesException($ex);
         }

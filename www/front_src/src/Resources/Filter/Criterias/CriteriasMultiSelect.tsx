@@ -15,7 +15,7 @@ import {
 } from 'ramda';
 
 import AddIcon from '@material-ui/icons/AddCircle';
-import { ClickAwayListener, Popper, useTheme } from '@material-ui/core';
+import { ClickAwayListener, Paper, Popper, useTheme } from '@material-ui/core';
 
 import {
   IconButton,
@@ -127,12 +127,12 @@ const CriteriasMultiSelectContent = ({
           <AddIcon />
         </IconButton>
         <Popper
-          placement="bottom-end"
-          disablePortal
+          style={{ zIndex: theme.zIndex.tooltip }}
           open={isOpen}
           anchorEl={anchorEl}
+          placement="bottom-start"
         >
-          <div style={{ backgroundColor: theme.palette.common.white }}>
+          <Paper>
             <MultiAutocompleteField
               onClose={close}
               label={t(labelCriterias)}
@@ -142,7 +142,7 @@ const CriteriasMultiSelectContent = ({
               open={isOpen}
               limitTags={1}
             />
-          </div>
+          </Paper>
         </Popper>
       </div>
     </ClickAwayListener>

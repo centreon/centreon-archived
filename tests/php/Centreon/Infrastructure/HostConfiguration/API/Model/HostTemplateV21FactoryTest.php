@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Tests\Centreon\Infrastructure\HostConfiguration\API\Model;
 
 use Centreon\Domain\HostConfiguration\Model\HostTemplate;
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplatesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostTemplate\FindHostTemplatesResponse;
 use Centreon\Infrastructure\HostConfiguration\API\Model\HostTemplateV21Factory;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;

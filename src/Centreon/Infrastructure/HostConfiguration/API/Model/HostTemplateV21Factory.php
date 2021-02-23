@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\API\Model;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplatesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostTemplate\FindHostTemplatesResponse;
 
 /**
  * This class is designed to create the hostTemplateV21 entity
