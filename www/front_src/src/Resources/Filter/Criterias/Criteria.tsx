@@ -26,10 +26,8 @@ const CriteriaContent = ({
   name,
   value,
   parentWidth,
-  setCriteria,
-  setNewFilter,
-}: Props &
-  Pick<ResourceContext, 'setCriteria' | 'setNewFilter'>): JSX.Element => {
+  setCriteriaAndNewFilter,
+}: Props & Pick<ResourceContext, 'setCriteriaAndNewFilter'>): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
   const limitTags = parentWidth < 1000 ? 1 : 2;
@@ -42,8 +40,7 @@ const CriteriaContent = ({
   };
 
   const changeCriteria = (updatedValue): void => {
-    setCriteria({ name, value: updatedValue });
-    setNewFilter();
+    setCriteriaAndNewFilter({ name, value: updatedValue });
   };
 
   const getUntranslated = (values): Array<SelectEntry> => {
@@ -97,8 +94,7 @@ const CriteriaContent = ({
 
 const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
   const {
-    setCriteria,
-    setNewFilter,
+    setCriteriaAndNewFilter,
     getMultiSelectCriterias,
     nextSearch,
   } = useResourceContext();
@@ -106,8 +102,7 @@ const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
   return useMemoComponent({
     Component: (
       <CriteriaContent
-        setCriteria={setCriteria}
-        setNewFilter={setNewFilter}
+        setCriteriaAndNewFilter={setCriteriaAndNewFilter}
         value={value}
         name={name}
         parentWidth={parentWidth}
