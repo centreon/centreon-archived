@@ -22,12 +22,17 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
+use Assert\AssertionFailedException;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface;
+use Centreon\Domain\HostConfiguration\Model\HostGroup as HostGroupAlias;
+use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostGroupFactoryRdb;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\Interfaces\NormalizerInterface;
+use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
 /**
@@ -42,6 +47,10 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
      */
     private $sqlRequestTranslator;
 
+    /**
+     * @param DatabaseConnection $db
+     * @param SqlRequestParametersTranslator $sqlRequestTranslator
+     */
     public function __construct(DatabaseConnection $db, SqlRequestParametersTranslator $sqlRequestTranslator)
     {
         $this->db = $db;
@@ -50,6 +59,278 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAll(): array
+    {
+        try {
+            return $this->findAllRequest(null);
+        } catch (
+            RequestParametersTranslatorException
+            | \InvalidArgumentException
+            | \Assert\AssertionFailedException $ex
+        ) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAllByContact(ContactInterface $contact): array
+    {
+        try {
+            return $this->findAllRequest($contact->getId());
+        } catch (
+            RequestParametersTranslatorException
+            | \InvalidArgumentException
+            | \Assert\AssertionFailedException $ex
+        ) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        }
+    }
+
+    /**
+     * Find all groups filtered by contact id.
+     *
+     * @param int|null $contactId Contact id related to host categories
+     * @return HostGroupAlias[]
+     * @throws \Assert\AssertionFailedException
+     * @throws \InvalidArgumentException
+     * @throws RequestParametersTranslatorException
+     */
+    private function findAllRequest(?int $contactId): array
+    {
+        $this->sqlRequestTranslator->setConcordanceArray([
+            'id' => 'hg.hg_id',
+            'name' => 'hg.hg_name',
+            'alias' => 'hg.hg_alias',
+            'is_activated' => 'hg.hg_activate',
+        ]);
+        $this->sqlRequestTranslator->addNormalizer(
+            'is_activated',
+            new class implements NormalizerInterface
+            {
+                /**
+                 * @inheritDoc
+                 */
+                public function normalize($valueToNormalize)
+                {
+                    if (is_bool($valueToNormalize)) {
+                        return ($valueToNormalize === true) ? '1' : '0';
+                    }
+                    return $valueToNormalize;
+                }
+            }
+        );
+        if ($contactId === null) {
+            $request = $this->translateDbName(
+                'SELECT SQL_CALC_FOUND_ROWS hg.*, icon.img_id AS icon_id, icon.img_name AS icon_name,
+                    CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
+                    icon.img_comment AS icon_comment, imap.img_id AS imap_id, imap.img_name AS imap_name,
+                    CONCAT(imapD.dir_name,\'/\',imap.img_path) AS imap_path, imap.img_comment AS imap_comment
+                FROM `:db`.hostgroup hg
+                LEFT JOIN `:db`.view_img icon
+                    ON icon.img_id = hg.hg_icon_image
+                LEFT JOIN `:db`.view_img_dir_relation iconR
+                    ON iconR.img_img_id = icon.img_id
+                LEFT JOIN `:db`.view_img_dir iconD
+                    ON iconD.dir_id = iconR.dir_dir_parent_id
+                LEFT JOIN `:db`.view_img imap
+                    ON imap.img_id = hg.hg_map_icon_image
+                LEFT JOIN `:db`.view_img_dir_relation imapR
+                    ON imapR.img_img_id = imap.img_id
+                LEFT JOIN `:db`.view_img_dir imapD
+                    ON imapD.dir_id = imapR.dir_dir_parent_id'
+            );
+        } else {
+            $request = $this->translateDbName(
+                'SELECT SQL_CALC_FOUND_ROWS hg.*, icon.img_id AS icon_id, icon.img_name AS icon_name,
+                    CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
+                    icon.img_comment AS icon_comment, imap.img_id AS imap_id, imap.img_name AS imap_name,
+                    CONCAT(imapD.dir_name,\'/\',imap.img_path) AS imap_path, imap.img_comment AS imap_comment
+                FROM `:db`.hostgroup hg
+                LEFT JOIN `:db`.view_img icon
+                    ON icon.img_id = hg.hg_icon_image
+                LEFT JOIN `:db`.view_img_dir_relation iconR
+                    ON iconR.img_img_id = icon.img_id
+                LEFT JOIN `:db`.view_img_dir iconD
+                    ON iconD.dir_id = iconR.dir_dir_parent_id
+                LEFT JOIN `:db`.view_img imap
+                    ON imap.img_id = hg.hg_map_icon_image
+                LEFT JOIN `:db`.view_img_dir_relation imapR
+                    ON imapR.img_img_id = imap.img_id
+                LEFT JOIN `:db`.view_img_dir imapD
+                    ON imapD.dir_id = imapR.dir_dir_parent_id
+                INNER JOIN `:db`.acl_resources_hg_relations arhr
+                    ON hg.hg_id = arhr.hg_hg_id
+                INNER JOIN `:db`.acl_resources res
+                    ON arhr.acl_res_id = res.acl_res_id
+                INNER JOIN `:db`.acl_res_group_relations argr
+                    ON res.acl_res_id = argr.acl_res_id
+                INNER JOIN `:db`.acl_groups ag
+                    ON argr.acl_group_id = ag.acl_group_id
+                LEFT JOIN `:db`.acl_group_contacts_relations agcr
+                    ON ag.acl_group_id = agcr.acl_group_id
+                LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
+                    ON ag.acl_group_id = agcgr.acl_group_id
+                LEFT JOIn `:db`.contactgroup_contact_relation cgcr
+                    ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id'
+            );
+        }
+
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        $request .= $searchRequest;
+        if ($contactId !== null) {
+            $request .= ($searchRequest !== null) ? ' AND' : ' WHERE';
+            $request .= ' (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)';
+        }
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+        $request .= !is_null($sortRequest)
+            ? $sortRequest
+            : ' ORDER BY hg.hg_name ASC';
+
+        // Pagination
+        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+        $statement = $this->db->prepare($request);
+
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+        if ($contactId !== null) {
+            $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
+        }
+        $statement->execute();
+
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        if ($result !== false && ($total = $result->fetchColumn()) !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
+        }
+
+        $hostGroups = [];
+        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostGroups[] = HostGroupFactoryRdb::create($record);
+        }
+        return $hostGroups;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findById(int $hostGroupId): ?HostGroupAlias
+    {
+        try {
+            return $this->findByIdRequest($hostGroupId, null);
+        } catch (AssertionFailedException | \InvalidArgumentException $ex) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByIdAndContact(int $hostGroupId, ContactInterface $contact): ?HostGroupAlias
+    {
+        try {
+            return $this->findByIdRequest($hostGroupId, $contact->getId());
+        } catch (AssertionFailedException | \InvalidArgumentException $ex) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        }
+    }
+
+    /**
+     * Find a group by id and contact id.
+     *
+     * @param int $hostGroupId Id of the host group to be found
+     * @param int|null $contactId Contact id related to host groups
+     * @return HostGroupAlias|null
+     * @throws \Assert\AssertionFailedException
+     * @throws \InvalidArgumentException
+     */
+    private function findByIdRequest(int $hostGroupId, ?int $contactId): ?HostGroupAlias
+    {
+        if ($contactId === null) {
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    'SELECT hg.*, icon.img_id AS icon_id, icon.img_name AS icon_name,
+                        CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
+                        icon.img_comment AS icon_comment, imap.img_id AS imap_id, imap.img_name AS imap_name,
+                        CONCAT(imapD.dir_name,\'/\',imap.img_path) AS imap_path, imap.img_comment AS imap_comment
+                    FROM `:db`.hostgroup hg
+                    LEFT JOIN `:db`.view_img icon
+                        ON icon.img_id = hg.hg_icon_image
+                    LEFT JOIN `:db`.view_img_dir_relation iconR
+                        ON iconR.img_img_id = icon.img_id
+                    LEFT JOIN `:db`.view_img_dir iconD
+                        ON iconD.dir_id = iconR.dir_dir_parent_id
+                    LEFT JOIN `:db`.view_img imap
+                        ON imap.img_id = hg.hg_map_icon_image
+                    LEFT JOIN `:db`.view_img_dir_relation imapR
+                        ON imapR.img_img_id = imap.img_id
+                    LEFT JOIN `:db`.view_img_dir imapD
+                        ON imapD.dir_id = imapR.dir_dir_parent_id
+                    WHERE hg.hg_id = :id'
+                )
+            );
+        } else {
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    'SELECT hg.*, icon.img_id AS icon_id, icon.img_name AS icon_name,
+                        CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
+                        icon.img_comment AS icon_comment, imap.img_id AS imap_id, imap.img_name AS imap_name,
+                        CONCAT(imapD.dir_name,\'/\',imap.img_path) AS imap_path, imap.img_comment AS imap_comment
+                    FROM `:db`.hostgroup hg
+                    LEFT JOIN `:db`.view_img icon
+                        ON icon.img_id = hg.hg_icon_image
+                    LEFT JOIN `:db`.view_img_dir_relation iconR
+                        ON iconR.img_img_id = icon.img_id
+                    LEFT JOIN `:db`.view_img_dir iconD
+                        ON iconD.dir_id = iconR.dir_dir_parent_id
+                    LEFT JOIN `:db`.view_img imap
+                        ON imap.img_id = hg.hg_map_icon_image
+                    LEFT JOIN `:db`.view_img_dir_relation imapR
+                        ON imapR.img_img_id = imap.img_id
+                    LEFT JOIN `:db`.view_img_dir imapD
+                        ON imapD.dir_id = imapR.dir_dir_parent_id
+                    INNER JOIN `:db`.acl_resources_hc_relations arhr
+                        ON hg.hg_id = arhr.hc_id
+                    INNER JOIN `:db`.acl_resources res
+                        ON arhr.acl_res_id = res.acl_res_id
+                    INNER JOIN `:db`.acl_res_group_relations argr
+                        ON res.acl_res_id = argr.acl_res_id
+                    INNER JOIN `:db`.acl_groups ag
+                        ON argr.acl_group_id = ag.acl_group_id
+                    LEFT JOIN `:db`.acl_group_contacts_relations agcr
+                        ON ag.acl_group_id = agcr.acl_group_id
+                    LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
+                        ON ag.acl_group_id = agcgr.acl_group_id
+                    LEFT JOIn `:db`.contactgroup_contact_relation cgcr
+                        ON  cgcr.contactgroup_cg_id = agcgr.cg_cg_id
+                    WHERE hg.hg_id = :id
+                        AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)'
+                )
+            );
+            $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
+        }
+
+        $statement->bindValue(':id', $hostGroupId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            return HostGroupFactoryRdb::create($result);
+        }
+        return null;
+    }
+
 
     /**
      * @inheritDoc
