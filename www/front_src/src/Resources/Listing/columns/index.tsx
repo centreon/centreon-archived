@@ -105,7 +105,7 @@ const StatusColumnOnHover = ({
   const disableCheck = !canCheck([row]);
 
   return (
-    <Grid container spacing={1} alignItems="center">
+    <Grid container alignItems="center">
       <Grid item>
         <IconButton
           title={t(labelAcknowledge)}
@@ -222,7 +222,6 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: SeverityColumn,
     sortField: 'severity_level',
-    width: 50,
   },
   {
     id: 'status',
@@ -233,7 +232,6 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     sortField: 'status_severity_code',
     clickable: true,
-    width: 145,
   },
   {
     id: 'resource',
@@ -242,7 +240,6 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: ResourceColumn,
     sortField: 'name',
-    width: 200,
   },
   {
     id: 'parent_resource',
@@ -251,7 +248,6 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: ParentResourceColumn,
     sortField: 'parent_name',
-    width: 200,
   },
   {
     id: 'url',
@@ -260,7 +256,6 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: UrlColumn,
     sortable: false,
-    width: 50,
   },
   {
     id: 'graph',
@@ -269,7 +264,6 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: GraphColumn({ onClick: actions.onDisplayGraph }),
     sortable: false,
-    width: 50,
   },
   {
     id: 'duration',
@@ -277,27 +271,25 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     type: ColumnType.string,
     getFormattedString: ({ duration }): string => duration,
     sortField: 'last_status_change',
-    width: 125,
   },
   {
     id: 'tries',
     label: t(labelTries),
     type: ColumnType.string,
     getFormattedString: ({ tries }): string => tries,
-    width: 125,
   },
   {
     id: 'last_check',
     label: t(labelLastCheck),
     type: ColumnType.string,
     getFormattedString: ({ last_check }): string => last_check,
-    width: 125,
   },
   {
     id: 'information',
     label: t(labelInformation),
     type: ColumnType.string,
     sortable: false,
+    width: '1fr',
     getFormattedString: pipe(
       propOr('', 'information'),
       split('\n'),
@@ -312,6 +304,5 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: StateColumn,
     sortable: false,
-    width: 80,
   },
 ];
