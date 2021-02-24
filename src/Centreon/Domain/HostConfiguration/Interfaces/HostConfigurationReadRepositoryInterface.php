@@ -81,8 +81,7 @@ interface HostConfigurationReadRepositoryInterface
     /**
      * Find the command of a host.
      *
-     * A recursive search will be performed in the inherited templates in the
-     * case where the host does not have a command.
+     * Recursively search in the inherited templates if no result found.
      *
      * @param int $hostId Host id
      * @return string|null Return the command if found
