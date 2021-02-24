@@ -47,7 +47,7 @@ interface ContactServiceInterface
      *
      * @param ContactInterface $contact Contact to be added
      */
-    public function addContact(ContactInterface $contact): void;
+    public function addUser(ContactInterface $contact): void;
 
     /**
      * Update the contact.

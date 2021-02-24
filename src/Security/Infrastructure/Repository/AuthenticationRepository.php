@@ -161,4 +161,19 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     {
         // TODO: Implement deleteSession() method.
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findProviderConfigurationByConfigurationName(
+        string $providerConfigurationName
+    ): ?ProviderConfiguration {
+        return (new ProviderConfiguration())
+            ->setId(1)
+            ->setProviderName('local')
+            ->setConfigurationName('local_user')
+            ->setConfiguration([
+                'login_url' => 'centreon/login'
+            ]);
+    }
 }

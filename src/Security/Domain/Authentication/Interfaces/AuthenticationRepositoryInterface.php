@@ -82,7 +82,9 @@ interface AuthenticationRepositoryInterface
      * Find the provider configuration by name
      *
      * @param string $providerConfigurationName
-     * @return ProviderConfiguration
+     * @return ProviderConfiguration|null
      */
-    public function findProviderConfigurationByConfigurationName(string $providerConfigurationName);
+    public function findProviderConfigurationByConfigurationName(
+        string $providerConfigurationName
+    ): ?ProviderConfiguration;
 }

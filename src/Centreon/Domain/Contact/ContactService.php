@@ -41,7 +41,15 @@ class ContactService implements ContactServiceInterface
     /**
      * @inheritDoc
      */
-    public function addContact(ContactInterface $contact): void
+    public function addUser(ContactInterface $contact): void
+    {
+
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateUser(ContactInterface $contact): void
     {
 
     }

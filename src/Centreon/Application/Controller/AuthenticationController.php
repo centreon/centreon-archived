@@ -24,7 +24,6 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface as previousAuthenticationServiceInterface;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
@@ -38,7 +37,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 /**
  * @package Centreon\Application\Controller
  */
-class AuthenticationController extends AbstractFOSRestController
+class AuthenticationController extends AbstractController
 {
     /**
      * @var previousAuthenticationServiceInterface
@@ -162,10 +161,6 @@ class AuthenticationController extends AbstractFOSRestController
      */
     public function redirection(Request $request): View
     {
-        if (!$this->providers) {
-            throw new \InvalidArgumentException('You must at least add one authentication provider');
-        }
-
         $redirectionUrl = $this->getParameter('default_login_url');
 
         if ($redirectionUrl === null) {
@@ -244,20 +239,16 @@ class AuthenticationController extends AbstractFOSRestController
         if (empty($requestParameters)) {
             $sessionId = $this->extractSessionId($request);
             if ($sessionId !== null) {
-                if (!$this->authenticationService->hasValidSession($sessionId, $authenticationProvider)) {
-                    $session->start();
-                    $session->clear();
-                    $session->invalidate();
-                    $this->authenticationService->deleteSession($sessionId);
-                    $urlToRedirect = $this->generateUrl('centreon_security_authentication_redirection');
-                    return View::createRedirect($urlToRedirect);
-                } else {
-                    return View::createRedirect('/centreon');
+                if ($this->authenticationService->hasValidSession($sessionId, $authenticationProvider)) {
+                    return View::createRedirect($this->getBaseUri());
                 }
-            } else {
-                $urlToRedirect = $this->generateUrl('centreon_security_authentication_redirection');
-                return View::createRedirect($urlToRedirect);
+                $session->start();
+                $session->clear();
+                $session->invalidate();
+                $this->authenticationService->deleteSession($sessionId);
             }
+            $urlToRedirect = $this->generateUrl('centreon_security_authentication_redirection');
+            return View::createRedirect($urlToRedirect);
         } else {
             $authenticationProvider->authenticate($requestParameters);
             if ($authenticationProvider->isAuthenticated()) {
@@ -269,7 +260,7 @@ class AuthenticationController extends AbstractFOSRestController
                 }
                 if (!$this->contactService->exists($providerUser)) {
                     if ($authenticationProvider->canCreateUser()) {
-                        $this->contactService->addContact($providerUser);
+                        $this->contactService->addUser($providerUser);
                     } else {
                         // error can not create user
                         return View::create(['error' => '...'], Response::HTTP_BAD_REQUEST);
@@ -290,7 +281,7 @@ class AuthenticationController extends AbstractFOSRestController
 
                 $response = new Response(null, Response::HTTP_OK, ['content-type' => 'text/html']);
                 $response->headers->setCookie(Cookie::create('PHPSESSID', $session->getId()));
-                $response->headers->set("Location", "/centreon");
+                $response->headers->set("Location", $this->getBaseUri());
                 return $response;
             }
         }

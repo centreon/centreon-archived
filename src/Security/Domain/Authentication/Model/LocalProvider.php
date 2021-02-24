@@ -63,7 +63,7 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
-    public function refreshToken(AuthenticationTokens $refreshToken): ?AuthenticationTokens
+    public function refreshToken(AuthenticationTokens $authenticationTokens): ?AuthenticationTokens
     {
         return null;
     }
