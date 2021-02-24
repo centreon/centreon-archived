@@ -37,7 +37,7 @@ class HostGroupFactoryRdb
      *
      * @param array<string, mixed> $data
      * @return HostGroup
-     * @throw \InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws \Assert\AssertionFailedException
      */
     public static function create(array $data): HostGroup

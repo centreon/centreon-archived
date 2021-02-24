@@ -162,6 +162,8 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         } else {
             $this->instance = null;
         }
+        // set criticality
+        $this->criticality = $this->arguments['criticality'] ?? null;
 
         /* view properties */
         if (isset($this->arguments['viewType'])) {
@@ -390,7 +392,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
         if ($this->criticality) {
             $query .= " AND s.service_id = cvs. service_id " .
                 "AND cvs.host_id = h.host_id " .
-                "AND cvs.name = 'CRITICALITY_ID' " .
+                "AND cvs.name = 'CRITICALITY_LEVEL' " .
                 "AND cvs.value =  :criticality";
             $queryValues['criticality'] = (string)$this->criticality;
         }

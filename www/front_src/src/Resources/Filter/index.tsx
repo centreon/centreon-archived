@@ -48,7 +48,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Filter = (): JSX.Element => {
-  const [expanded, setExpanded] = React.useState(false);
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -62,6 +61,8 @@ const Filter = (): JSX.Element => {
     customFiltersLoading,
     setCriteria,
     setNewFilter,
+    filterExpanded,
+    toggleFilterExpanded,
   } = useResourceContext();
 
   const memoProps = [filter, nextSearch, customFilters, customFiltersLoading];
@@ -100,8 +101,6 @@ const Filter = (): JSX.Element => {
     allFilter,
   ].map(({ id, name }) => ({ id, name: t(name) }));
 
-  const expandFilters = () => setExpanded((expand) => !expand);
-
   const customFilterOptions = isEmpty(customFilters)
     ? []
     : [
@@ -123,9 +122,9 @@ const Filter = (): JSX.Element => {
 
   return (
     <Filters
-      expanded={expanded}
+      expanded={filterExpanded}
+      onExpand={toggleFilterExpanded}
       expandLabel={labelShowCriteriasFilters}
-      onExpand={expandFilters}
       filters={
         <Grid container spacing={1} alignItems="center">
           <Grid item>
