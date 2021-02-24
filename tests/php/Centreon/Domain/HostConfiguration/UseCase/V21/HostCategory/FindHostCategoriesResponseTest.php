@@ -20,14 +20,14 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
+namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory;
 
 use Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory\FindHostCategoriesResponse;
-use PHPStan\Testing\TestCase;
+use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostCategoryTest;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21
+ * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory
  */
 class FindHostCategoriesResponseTest extends TestCase
 {
