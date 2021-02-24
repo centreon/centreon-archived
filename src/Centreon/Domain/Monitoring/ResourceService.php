@@ -126,11 +126,6 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function enrichHostWithDetails(ResourceEntity $resource): void
     {
-        $host = $this->monitoringRepository->findOneHost($resource->getId());
-        if ($host !== null) {
-            $resource->setPollerName($host->getPollerName());
-        }
-
         $downtimes = $this->monitoringRepository->findDowntimes(
             $resource->getId(),
             0

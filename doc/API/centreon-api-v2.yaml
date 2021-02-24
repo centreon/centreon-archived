@@ -520,6 +520,7 @@ paths:
         * tries
         * last_check
         * information
+        * monitoring_server_name
 
         Only for **searching**:
 
@@ -4042,6 +4043,10 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Monitoring.ResourceGroup'
+            monitoring_server_name:
+              type: string
+              description: "Monitoring Server from which is monitored the Resource"
+              example: "Central"
             status:
               type: object
               properties:
