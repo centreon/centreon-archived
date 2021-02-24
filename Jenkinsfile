@@ -52,78 +52,78 @@ stage('Source') {
 }
 
 try {
-  // stage('Unit tests') {
-  //   parallel 'centos7': {
-  //     node {
-  //       sh 'setup_centreon_build.sh'
-  //       unstash 'tar-sources'
-  //       sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
-  //       junit 'ut-be.xml,ut-fe.xml'
+  stage('Unit tests') {
+    parallel 'centos7': {
+      node {
+        sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
+        junit 'ut-be.xml,ut-fe.xml'
 
-  //       if (env.CHANGE_ID) { // pull request to comment with coding style issues
-  //         ViolationsToGitHub([
-  //           repositoryName: 'centreon',
-  //           pullRequestId: env.CHANGE_ID,
+        if (env.CHANGE_ID) { // pull request to comment with coding style issues
+          ViolationsToGitHub([
+            repositoryName: 'centreon',
+            pullRequestId: env.CHANGE_ID,
 
-  //           createSingleFileComments: true,
-  //           commentOnlyChangedContent: true,
-  //           commentOnlyChangedFiles: true,
-  //           keepOldComments: false,
+            createSingleFileComments: true,
+            commentOnlyChangedContent: true,
+            commentOnlyChangedFiles: true,
+            keepOldComments: false,
 
-  //           commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
+            commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
 
-  //           violationConfigs: [
-  //             [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
-  //             [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle'],
-  //             [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle']
-  //           ]
-  //         ])
-  //       }
+            violationConfigs: [
+              [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
+              [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle'],
+              [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle']
+            ]
+          ])
+        }
 
-  //       recordIssues(
-  //         enabledForFailure: true,
-  //         qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-  //         tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
-  //         referenceJobName: 'centreon-web/master',
-  //         trendChartType: 'NONE'
-  //       )
-  //       recordIssues(
-  //         enabledForFailure: true,
-  //         qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-  //         tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
-  //         referenceJobName: 'centreon-web/master',
-  //         trendChartType: 'NONE'
-  //       )
-  //       recordIssues(
-  //         enabledForFailure: true,
-  //         failOnError: true,
-  //         qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-  //         tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
-  //         referenceJobName: 'centreon-web/master',
-  //         trendChartType: 'NONE'
-  //       )
+        recordIssues(
+          enabledForFailure: true,
+          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+          tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
+          referenceJobName: 'centreon-web/master',
+          trendChartType: 'NONE'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+          tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
+          referenceJobName: 'centreon-web/master',
+          trendChartType: 'NONE'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          failOnError: true,
+          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+          tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
+          referenceJobName: 'centreon-web/master',
+          trendChartType: 'NONE'
+        )
 
-  //       if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
-  //         unstash 'git-sources'
-  //         sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-  //         withSonarQubeEnv('SonarQube') {
-  //           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-  //         }
-  //       }
-  //     }
-  //   },
-  //   'centos8': {
-  //     node {
-  //       sh 'setup_centreon_build.sh'
-  //       unstash 'tar-sources'
-  //       sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
-  //       junit 'ut-be.xml,ut-fe.xml'
-  //     }
-  //   }
-  //   if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-  //     error('Unit tests stage failure.');
-  //   }
-  // }
+        if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+          unstash 'git-sources'
+          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+          withSonarQubeEnv('SonarQube') {
+            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+          }
+        }
+      }
+    },
+    'centos8': {
+      node {
+        sh 'setup_centreon_build.sh'
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
+        junit 'ut-be.xml,ut-fe.xml'
+      }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Unit tests stage failure.');
+    }
+  }
 
   stage('Package') {
     parallel 'centos7': {
@@ -133,14 +133,14 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: 'rpms-centos7.tar.gz'
       }
-    //},
-    //'centos8': {
-    //  node {
-    //    sh 'setup_centreon_build.sh'
-    //    unstash 'tar-sources'
-    //    sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
-    //    archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
-    //  }
+    },
+    'centos8': {
+     node {
+       sh 'setup_centreon_build.sh'
+       unstash 'tar-sources'
+       sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
+       archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
+     }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Package stage failure.');
