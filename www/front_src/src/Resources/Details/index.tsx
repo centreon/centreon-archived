@@ -42,7 +42,7 @@ const Details = (): JSX.Element | null => {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const grosseRef = React.useRef<HTMLDivElement>();
+  const panelRef = React.useRef<HTMLDivElement>();
 
   const {
     openDetailsTabId,
@@ -107,11 +107,11 @@ const Details = (): JSX.Element | null => {
     <Context.Provider
       value={pick(
         ['top', 'bottom'],
-        grosseRef.current?.getBoundingClientRect() || { top: 0, bottom: 0 },
+        panelRef.current?.getBoundingClientRect() || { top: 0, bottom: 0 },
       )}
     >
       <Panel
-        ref={grosseRef as React.RefObject<HTMLDivElement>}
+        ref={panelRef as React.RefObject<HTMLDivElement>}
         onClose={clearSelectedResource}
         header={<Header details={details} />}
         headerBackgroundColor={getHeaderBackgroundColor()}
