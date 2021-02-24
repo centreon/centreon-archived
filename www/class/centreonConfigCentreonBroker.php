@@ -78,7 +78,7 @@ class CentreonConfigCentreonBroker
      * @var type
      */
     private $tagsCache = null;
-    
+
     /**
      *
      * @var type
@@ -224,8 +224,7 @@ class CentreonConfigCentreonBroker
         if (!is_null($this->logsCache)) {
             return $this->logsCache;
         }
-        $query = "SELECT log.`id`, log.`name`
-                FROM `cb_log` log";
+        $query = "SELECT log.`id`, log.`name` FROM `cb_log` log";
         try {
             $res = $this->db->query($query);
         } catch (\PDOException $e) {
@@ -748,7 +747,7 @@ class CentreonConfigCentreonBroker
             $stmt = $this->db->prepare($queryLog);
             $stmt->bindValue(':id_centreonbroker', (int) $id, \PDO::PARAM_INT);
             foreach ($logs as $logId => $logName) {
-                $stmt->bindValue(':log_' . $logId , (int) $logId, \PDO::PARAM_INT);
+                $stmt->bindValue(':log_' . $logId, (int) $logId, \PDO::PARAM_INT);
                 $stmt->bindValue(':level_' . $logId, (int) $values['log_' . $logName], \PDO::PARAM_INT);
             }
             $stmt->execute();

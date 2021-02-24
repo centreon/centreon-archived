@@ -108,6 +108,7 @@ $form->addElement('text', 'pool_size', _('Pool size'), $attrsText);
 
 //logger
 $form->addElement('text', 'log_directory', _('Log directory'), $attrsText);
+$form->addRule('log_directory', _("Mandatory directory"), 'required');
 $form->addElement('text', 'log_filename', _('Log filename'), $attrsText);
 $form->addElement('text', 'log_max_size', _('Maximum files size (in bytes)'), $attrsText2);
 
