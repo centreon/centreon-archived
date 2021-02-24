@@ -67,6 +67,8 @@ interface HostConfigurationServiceInterface
 
     /**
      * Find the command of a host.
+     * A recursive search will be performed in the inherited templates in the
+     * case where the host does not have a command.
      *
      * @param int $hostId Host id
      * @return string|null Return the command if found
