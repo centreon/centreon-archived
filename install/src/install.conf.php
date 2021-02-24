@@ -59,4 +59,13 @@ $conf_centreon['centreon_engine_connectors'] = "@ENGINE_CONNECTORS_DIR@";
 $conf_centreon['centreon_engine_lib'] = "@ENGINE_LIB_DIR@";
 $conf_centreon['centreonbroker_cbmod'] = "@BROKER_MOD_BINARY@";
 $conf_centreon['centreon_plugins'] = "@CENTREON_PLUGINS_DIR@";
-
+// https://github.com/centreon/centreon/blob/master/www/install/var/engines/centreon-engine
+$conf_centreon['install_dir_engine'] = "@ENGINE_LIB_DIR@"; // Seems totally useless, putting ENGINE_LIB_DIR
+$conf_centreon['centreon_engine_stats_binary'] = "@ENGINE_STATS_BINARY@";
+$conf_centreon['monitoring_var_lib'] = "@ENGINE_VARLIB_DIR@";
+$conf_centreon['centreonplugins'] = "@CENTREON_PLUGINS_DIR@";
+// https://github.com/centreon/centreon/blob/master/www/install/var/brokers/centreon-broker
+$conf_centreon['centreonbroker_etc'] = "@BROKER_ETC_DIR@";
+$conf_centreon['centreonbroker_log'] = "@BROKER_LOG_DIR@";
+$conf_centreon['centreonbroker_varlib'] = "@BROKER_VARLIB_DIR@";
+$conf_centreon['centreonbroker_lib'] = "@BROKER_LIB_DIR@";

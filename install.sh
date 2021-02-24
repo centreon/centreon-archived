@@ -287,7 +287,9 @@ if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
     test_user_from_var "ENGINE_USER" "Engine user"
     test_group_from_var "ENGINE_GROUP" "Engine group"
     test_file_from_var "ENGINE_BINARY" "Engine binary"
+    test_file_from_var "ENGINE_STATS_BINARY" "Engine statistics binary"
     test_dir_from_var "ENGINE_ETC_DIR" "Engine configuration directory"
+    test_dir_from_var "ENGINE_VARLIB_DIR" "Engine variable library directory"
     test_dir_from_var "ENGINE_LOG_DIR" "Engine log directory" 
     test_dir_from_var "ENGINE_LIB_DIR" "Engine library directory"
     test_dir_from_var "ENGINE_CONNECTORS_DIR" "Engine Connectors directory"
@@ -298,6 +300,7 @@ if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
     test_dir_from_var "BROKER_ETC_DIR" "Broker configuration directory"
     test_dir_from_var "BROKER_VARLIB_DIR" "Broker variable library directory"
     test_dir_from_var "BROKER_LOG_DIR" "Broker log directory"
+    test_dir_from_var "BROKER_LIB_DIR" "Broker libraries directory"
     test_file_from_var "BROKER_MOD_BINARY" "Broker module binary"
 
     ## Gorgone information
