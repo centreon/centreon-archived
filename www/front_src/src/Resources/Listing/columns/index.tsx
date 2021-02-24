@@ -215,7 +215,6 @@ const ParentResourceColumn = ({
 };
 
 interface ColumnsProps {
-  isSmallScreen?: boolean;
   actions;
   t: (value: string) => string;
 }
