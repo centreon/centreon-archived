@@ -431,21 +431,21 @@ create_dir() {
 
 #----
 ## delete_file
-##  Delete a file or multiple files if wildcard specified.
-## @param    file absolute path
+##  Delete a file or files in a directory.
+## @param    file or directory absolute path
 ## @return 0     file deleted
 ## @return 1     error message using echo_error
 #----
 delete_file() {
-    local file="$1"
+    local file_dir="$1"
 
-    if [ ! -f "$file" ] && [[ ! "$file" =~ \*$ ]] ; then
-        echo_error "Not a file '$file'" "FAILED"
+    if [ ! -f "$file_dir" ] && [ ! -d "$file_dir" ] ; then
+        echo_error "Not a file or directory '$file_dir'" "FAILED"
         return 1
     else
-        result="$(find $file -type f -exec rm -f -- {} \; 2>&1 > /dev/null)"
+        result="$(find $file_dir -type f -exec rm -f -- {} \; 2>&1 > /dev/null)"
         if [ $? -ne 0 ] ; then
-            echo_error "Could not delete file '$file'" "FAILED"
+            echo_error "Could not delete file '$file_dir'" "FAILED"
             echo_error "$result"
             return 1
         fi
@@ -1317,52 +1317,47 @@ replace_macro() {
     {
         for folder in $srclistcp ; do
             result="$(find $TMP_DIR/source/$folder -type f | xargs --delimiter='\n' sed -i \
-                -e 's|@INSTALL_DIR_CENTREON@|'"$CENTREON_INSTALL_DIR"'|gi' \
-                -e 's|@CENTREON_INSTALL_DIR@|'"$CENTREON_INSTALL_DIR"'|gi' \
-                -e 's|@PHP_BIN@|'"$PHP_BINARY"'|gi' \
-                -e 's|@BIN_MAIL@|'"$MAIL_BINARY"'|gi' \
-                -e 's|@MAIL_BINARY@|'"$MAIL_BINARY"'|gi' \
-                -e 's|@CENTREON_ETC@|'"$CENTREON_ETC_DIR"'|gi' \
-                -e 's|@CENTREON_ETC_DIR@|'"$CENTREON_ETC_DIR"'|gi' \
-                -e 's|@CENTREON_LOG@|'"$CENTREON_LOG_DIR"'|gi' \
-                -e 's|@CENTREON_LOG_DIR@|'"$CENTREON_LOG_DIR"'|gi' \
-                -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB_DIR"'|gi' \
-                -e 's|@CENTREON_VARLIB_DIR@|'"$CENTREON_VARLIB_DIR"'|gi' \
-                -e 's|@RRDTOOL_BINARY@|'"$RRDTOOL_BINARY"'|gi' \
-                -e 's|@SNMP_ETC_DIR@|'"$SNMP_ETC_DIR"'|gi' \
-                -e 's|@SYSCONFIG_ETC_DIR@|'"$SYSCONFIG_ETC_DIR"'|gi' \
-                -e 's|@MONITORING_VARLOG@|'"$ENGINE_LOG_DIR"'|gi' \
-                -e 's|@CENTREON_CACHEDIR@|'"$CENTREON_CACHE_DIR"'|gi' \
-                -e 's|@CENTREON_CACHE_DIR@|'"$CENTREON_CACHE_DIR"'|gi' \
-                -e 's|@CENTREONPLUGINS@|'"$CENTREON_PLUGINS_DIR"'|gi' \
-                -e 's|@CENTREON_PLUGINS_DIR@|'"$CENTREON_PLUGINS_DIR"'|gi' \
-                -e 's|@PLUGIN_DIR@|'"$NAGIOS_PLUGINS_DIR"'|gi' \
-                -e 's|@NAGIOS_PLUGINS_DIR@|'"$NAGIOS_PLUGINS_DIR"'|gi' \
-                -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_INSTALL_DIR/bin"'|gi' \
-                -e 's|@CENTREON_ENGINE_CONNECTORS@|'"$ENGINE_CONNECTORS_DIR/bin"'|gi' \
-                -e 's|%APP_SECRET%|'"$HEX_KEY"'|gi' \
-                -e 's|@CENTREON_USER@|'"$CENTREON_USER"'|gi' \
-                -e 's|@CENTREON_GROUP@|'"$CENTREON_GROUP"'|gi' \
-                -e 's|@ENGINE_USER@|'"$ENGINE_USER"'|gi' \
-                -e 's|@ENGINE_GROUP@|'"$ENGINE_GROUP"'|gi' \
-                -e 's|@ENGINE_ETC_DIR@|'"$ENGINE_ETC_DIR"'|gi' \
-                -e 's|@ENGINE_BINARY@|'"$ENGINE_BINARY"'|gi' \
-                -e 's|@ENGINE_LOG_DIR@|'"$ENGINE_LOG_DIR"'|gi' \
-                -e 's|@ENGINE_CONNECTORS_DIR@|'"$ENGINE_CONNECTORS_DIR"'|gi' \
-                -e 's|@ENGINE_LIB_DIR@|'"$ENGINE_LIB_DIR"'|gi' \
-                -e 's|@BROKER_USER@|'"$BROKER_USER"'|gi' \
-                -e 's|@BROKER_GROUP@|'"$BROKER_GROUP"'|gi' \
-                -e 's|@BROKER_ETC_DIR@|'"$BROKER_ETC_DIR"'|gi' \
-                -e 's|@BROKER_MOD_BINARY@|'"$BROKER_MOD_BINARY"'|gi' \
-                -e 's|@WEB_USER@|'"$APACHE_USER"'|gi' \
-                -e 's|@APACHE_USER@|'"$APACHE_USER"'|gi' \
-                -e 's|@APACHE_GROUP@|'"$APACHE_GROUP"'|gi' \
-                -e 's|@PHPFPM_LOG_DIR@|'"$PHPFPM_LOG_DIR"'|gi' \
-                -e 's|@PHPFPM_VARLIB_DIR@|'"$PHPFPM_VARLIB_DIR"'|gi' \
-                -e 's|@PHP_TIMEZONE@|'"$PHP_TIMEZONE"'|gi'\
-                -e 's|@MARIADB_SOCKET@|'"$MARIADB_SOCKET"'|gi' \
-                -e 's|@HTTPS_CERTIFICATE_FILE@|'"$HTTPS_CERTIFICATE_FILE"'|gi' \
-                -e 's|@HTTPS_CERTIFICATE_KEY_FILE@|'"$HTTPS_CERTIFICATE_KEY_FILE"'|gi' 2>&1 > /dev/null)"
+                -e 's|@INSTALL_DIR_CENTREON@|'"$CENTREON_INSTALL_DIR"'|g' \
+                -e 's|@CENTREON_INSTALL_DIR@|'"$CENTREON_INSTALL_DIR"'|g' \
+                -e 's|@PHP_BIN@|'"$PHP_BINARY"'|g' \
+                -e 's|@MAIL_BINARY@|'"$MAIL_BINARY"'|g' \
+                -e 's|@CENTREON_ETC@|'"$CENTREON_ETC_DIR"'|g' \
+                -e 's|@CENTREON_ETC_DIR@|'"$CENTREON_ETC_DIR"'|g' \
+                -e 's|@CENTREON_LOG@|'"$CENTREON_LOG_DIR"'|g' \
+                -e 's|@CENTREON_LOG_DIR@|'"$CENTREON_LOG_DIR"'|g' \
+                -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB_DIR"'|g' \
+                -e 's|@CENTREON_VARLIB_DIR@|'"$CENTREON_VARLIB_DIR"'|g' \
+                -e 's|@RRDTOOL_BINARY@|'"$RRDTOOL_BINARY"'|g' \
+                -e 's|@SNMP_ETC_DIR@|'"$SNMP_ETC_DIR"'|g' \
+                -e 's|@SYSCONFIG_ETC_DIR@|'"$SYSCONFIG_ETC_DIR"'|g' \
+                -e 's|@CENTREON_CACHEDIR@|'"$CENTREON_CACHE_DIR"'|g' \
+                -e 's|@CENTREON_CACHE_DIR@|'"$CENTREON_CACHE_DIR"'|g' \
+                -e 's|@CENTREON_PLUGINS_DIR@|'"$CENTREON_PLUGINS_DIR"'|g' \
+                -e 's|@NAGIOS_PLUGINS_DIR@|'"$NAGIOS_PLUGINS_DIR"'|g' \
+                -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_INSTALL_DIR/bin"'|g' \
+                -e 's|%APP_SECRET%|'"$HEX_KEY"'|g' \
+                -e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
+                -e 's|@CENTREON_GROUP@|'"$CENTREON_GROUP"'|g' \
+                -e 's|@ENGINE_USER@|'"$ENGINE_USER"'|g' \
+                -e 's|@ENGINE_GROUP@|'"$ENGINE_GROUP"'|g' \
+                -e 's|@ENGINE_ETC_DIR@|'"$ENGINE_ETC_DIR"'|g' \
+                -e 's|@ENGINE_BINARY@|'"$ENGINE_BINARY"'|g' \
+                -e 's|@ENGINE_LOG_DIR@|'"$ENGINE_LOG_DIR"'|g' \
+                -e 's|@ENGINE_CONNECTORS_DIR@|'"$ENGINE_CONNECTORS_DIR"'|g' \
+                -e 's|@ENGINE_LIB_DIR@|'"$ENGINE_LIB_DIR"'|g' \
+                -e 's|@BROKER_USER@|'"$BROKER_USER"'|g' \
+                -e 's|@BROKER_GROUP@|'"$BROKER_GROUP"'|g' \
+                -e 's|@BROKER_ETC_DIR@|'"$BROKER_ETC_DIR"'|g' \
+                -e 's|@BROKER_MOD_BINARY@|'"$BROKER_MOD_BINARY"'|g' \
+                -e 's|@WEB_USER@|'"$APACHE_USER"'|g' \
+                -e 's|@APACHE_USER@|'"$APACHE_USER"'|g' \
+                -e 's|@APACHE_GROUP@|'"$APACHE_GROUP"'|g' \
+                -e 's|@PHPFPM_LOG_DIR@|'"$PHPFPM_LOG_DIR"'|g' \
+                -e 's|@PHPFPM_VARLIB_DIR@|'"$PHPFPM_VARLIB_DIR"'|g' \
+                -e 's|@PHP_TIMEZONE@|'"$PHP_TIMEZONE"'|g'\
+                -e 's|@MARIADB_SOCKET@|'"$MARIADB_SOCKET"'|g' \
+                -e 's|@HTTPS_CERTIFICATE_FILE@|'"$HTTPS_CERTIFICATE_FILE"'|g' \
+                -e 's|@HTTPS_CERTIFICATE_KEY_FILE@|'"$HTTPS_CERTIFICATE_KEY_FILE"'|g' 2>&1 > /dev/null)"
         done
     } || {
         add_error_message "Replacing macros failed: $result"

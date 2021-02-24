@@ -76,7 +76,7 @@ do
         s ) silent_install="1"
             _tmp_install_opts="1"
             ;;
-        u ) silent_install="1"
+        u ) silent_install="0"
             UPGRADE_FILE="${OPTARG%/}"
             upgrade="1"
             _tmp_install_opts="1"
@@ -277,7 +277,7 @@ if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
     test_var "PHP_TIMEZONE" "PHP timezone"
     test_dir_from_var "PHPFPM_LOG_DIR" "PHP FPM log directory"
     test_dir_from_var "PHPFPM_CONF_DIR" "PHP FPM configuration directory"
-    test_dir_from_var "PHPFPM_SERVICE_DIR" "PHP FPM service directory"
+    test_dir_from_var "PHPFPM_SERVICE_DIR" "PHP FPM systemd directory"
     test_var "PHPFPM_SERVICE" "PHP FPM service"
     test_dir_from_var "PHP_ETC_DIR" "PHP configuration directory"
     test_file_from_var "PHP_BINARY" "PHP binary"
@@ -710,7 +710,7 @@ if [[ "${INSTALLATION_TYPE}" =~ ^central$ ]] ; then
     ### PHP FPM
     restart_php_fpm="0"
     create_dir "$PHPFPM_VARLIB_DIR/session" "root" "$APACHE_GROUP" "770"
-    delete_file "$PHPFPM_VARLIB_DIR/session/*"
+    delete_file "$PHPFPM_VARLIB_DIR/session/"
     create_dir "$PHPFPM_VARLIB_DIR/wsdlcache" "root" "$APACHE_GROUP" "775"
     copy_file_no_replace "$TMP_DIR/source/install/src/php-fpm.conf" "$PHPFPM_CONF_DIR/centreon.conf" \
         "PHP FPM configuration" && restart_php_fpm="1"

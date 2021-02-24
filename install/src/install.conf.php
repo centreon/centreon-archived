@@ -59,3 +59,4 @@ $conf_centreon['centreon_engine_connectors'] = "@ENGINE_CONNECTORS_DIR@";
 $conf_centreon['centreon_engine_lib'] = "@ENGINE_LIB_DIR@";
 $conf_centreon['centreonbroker_cbmod'] = "@BROKER_MOD_BINARY@";
 $conf_centreon['centreon_plugins'] = "@CENTREON_PLUGINS_DIR@";
+
