@@ -78,20 +78,14 @@ $attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
 $attrsTextarea = array("rows" => "4", "cols" => "60");
 $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br />'
     . '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
-$hostRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list';
+$hostRoute = './api/internal.php?object=centreon_configuration_host&action=list';
 $attrHosts = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $hostRoute,
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
-$hostGrRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
-$attrHostgroups = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => $hostGrRoute,
-    'multiple' => true,
-    'linkedObject' => 'centreonHostgroups'
-);
+$hostGrRoute = './api/internal.php?object=centreon_configuration_hostgroup&action=list';
 
 /*
  * Create formulary
@@ -116,20 +110,12 @@ $form->addElement('text', 'hg_alias', _("Alias"), $attrsText);
  * Hosts Selection
  */
 $hostRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host'
-    . '&action=defaultValues&target=hostgroups&field=hg_hosts&id=' . $hg_id;
+    . '&action=defaultValues&target=hostgroups&field=hg_hosts&id=' . ($hg_id > 0 ? $hg_id : '');
 $attrHost1 = array_merge(
     $attrHosts,
     array('defaultDatasetRoute' => $hostRoute)
 );
 $form->addElement('select2', 'hg_hosts', _("Linked Hosts"), array(), $attrHost1);
-
-$hostGrRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup'
-    . '&action=defaultValues&target=hostgroups&field=hg_hg&id=' . $hg_id;
-$attrHostgroup1 = array_merge(
-    $attrHostgroups,
-    array('defaultDatasetRoute' => $hostGrRoute)
-);
-$form->addElement('select2', 'hg_hg', _("Linked Host Groups"), array(), $attrHostgroup1);
 
 /*
  * Extended information
