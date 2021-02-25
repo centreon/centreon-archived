@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,8 +38,8 @@ if (!isset($centreon)) {
     exit();
 }
 
-$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-$release = $DBRESULT->fetchRow();
+$dbResult = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+$release = $dbResult->fetchRow();
 
 ?><center>
     <div style="width:700px;padding:20px;border:1px #CDCDCD solid;">
@@ -46,7 +47,9 @@ $release = $DBRESULT->fetchRow();
                 <tr>
                     <td>
                         <h3>Centreon <?php print $release["value"]; ?></h3>
-                        <p><em>(commit <a href="https://github.com/centreon/centreon/tree/@COMMIT@">@COMMIT@</a>)</em></p><br>
+                        <p>
+                            <em>(commit <a href="https://github.com/centreon/centreon/tree/@COMMIT@">@COMMIT@</a>)</em>
+                        </p><br>
                     </td>
                     <td>
                         Developed by <a href="http://www.centreon.com">Centreon</a> and <a href="https://centreon.github.io/">community</a>
