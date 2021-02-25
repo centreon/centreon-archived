@@ -66,12 +66,12 @@ class Information
     {
         if (strlen($key) < self::MIN_KEY_LENGTH) {
             throw new \InvalidArgumentException(
-                sprintf(_("key length is too short, minimum %d character(s) required"),self::MIN_KEY_LENGTH)
+                sprintf(_("key length is too short, minimum %d character(s) required"), self::MIN_KEY_LENGTH)
             );
         }
         if (strlen($key) > self::MAX_KEY_LENGTH) {
             throw new \InvalidArgumentException(
-                sprintf(_("key length is too long, maximum %d character(s) required"),self::MAX_KEY_LENGTH)
+                sprintf(_("key length is too long, maximum %d character(s) required"), self::MAX_KEY_LENGTH)
             );
         }
         $this->key = $key;
@@ -96,12 +96,12 @@ class Information
         if ($value !== null && is_string($value)) {
             if (strlen($value) < self::MIN_VALUE_LENGTH) {
                 throw new \InvalidArgumentException(
-                    sprintf(_("value length is too short, minimum %d character(s) required"),self::MIN_VALUE_LENGTH)
+                    sprintf(_("value length is too short, minimum %d character(s) required"), self::MIN_VALUE_LENGTH)
                 );
             }
             if (strlen($value) > self::MAX_VALUE_LENGTH) {
                 throw new \InvalidArgumentException(
-                    sprintf(_("value length is too long, maximum %d character(s) required"),self::MAX_VALUE_LENGTH)
+                    sprintf(_("value length is too long, maximum %d character(s) required"), self::MAX_VALUE_LENGTH)
                 );
             }
         }
