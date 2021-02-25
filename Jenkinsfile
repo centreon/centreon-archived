@@ -113,6 +113,7 @@ try {
         sh 'setup_centreon_build.sh'
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
+        archiveArtifacts artifacts: 'ut-fe.xml'
         junit 'ut-be.xml,ut-fe.xml'
       }
     }
