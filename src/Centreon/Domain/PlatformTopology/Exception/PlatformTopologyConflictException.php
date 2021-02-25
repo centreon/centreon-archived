@@ -26,8 +26,24 @@ namespace Centreon\Domain\PlatformTopology\Exception;
 /**
  * This class is designed to represent a business exception in the 'Platform status' context.
  *
- * @package Centreon\Domain\PlatformTopology
+ * @package Centreon\Domain\PlatformTopology\Exception
  */
 class PlatformTopologyConflictException extends \Exception
 {
+    /**
+     * Fail to found the platform on the central type parent
+     * @param string $name
+     * @param string $address
+     * @return static
+     */
+    public static function notFoundOnCentral(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("The platform '%s'@'%s' cannot be found on the Central."),
+                $name,
+                $address
+            )
+        );
+    }
 }
