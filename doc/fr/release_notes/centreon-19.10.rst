@@ -11,7 +11,7 @@ Bug fixes
 Security fixes
 --------------
 
-* [Administration] Cross-site Scripting (XSS) Stored/Persistent in Ressource Access form
+* [Administration] Cross-site Scripting (XSS) Stored/Persistent in Ressource Access form - CVE-2020-22425
 * [Administration] XSS stored in the LDAP form
 * [Apache] Remove deprecated ciphers for HTTPS configuration example
 * [Authentication] Session is active longer than expected
