@@ -72,23 +72,25 @@ $release = $dbResult->fetchRow();
                     </td>
                     <td style="padding-top :10px;">
                         <p>Adrien Gelibert</p>
+                        <p>Adrien Morais</p>
+                        <p>Bruno D'auria</p>
                         <p>Colin Gagnaire</p>
-                        <p>Danijel Halupka</p>
                         <p>David Boucher</p>
                         <p>Etienne Gautier</p>
                         <p>Jérémy Delpierre</p>
+                        <p>Jérémy Jaouen</p>
                         <p>Jiliang Wang</p>
                         <p>Kevin Duret</p>
                         <p>Laurent Calvet</p>
                         <p>Laurent Pinsivy</p>
                         <p>Loïc Laurent</p>
-                        <p>Matthieu Kermagoret</p>
                         <p>Maximilien Bersoult</p>
                         <p>Quentin Garnier</p>
+                        <p>Samir Brizini</p>
                         <p>Stéphane Chapron</p>
-                        <p>Sylvestre Gallon</p>
-                        <p>Valentin Hristov</p>
-                        <p>Victor Vassilev</p>
+                        <p>Remi Grès</p>
+                        <p>Tom Darneix</p>
+                        <p>Thomas Arnaud</p>
                     </td>
                     <td></td>
                 </tr>
@@ -97,7 +99,19 @@ $release = $dbResult->fetchRow();
                     <td style="padding-top: 10px;" colspan="2">
                         <table class="table">
                             <tr>
-                                <td>Adrien Morais</td>
+                                <td>Thi Uyên Dang</td>
+                                <td>Thomas Untoja</td>
+                            </tr>
+                            <tr>
+                                <td>Charles Gautier</td>
+                                <td>Luiz Gustavo Costa</td>
+                            </tr>
+                            <tr>
+                                <td>Eric Coquard</td>
+                                <td>Simon Bomm</td>
+                            </tr>
+                            <tr>
+                                <td>Fabien Thepaut</td>
                                 <td>Loïc Fontaine</td>
                             </tr>
                             <tr>
@@ -109,40 +123,36 @@ $release = $dbResult->fetchRow();
                                 <td>Luiz Felipe Aranha</td>
                             </tr>
                             <tr>
-                                <td>Cédric Meschin</td>
-                                <td>Luiz Gustavo Costa</td>
+                                <td>Lionel Assepo</td>
+                                <td>Matthieu Kermagoret</td>
                             </tr>
                             <tr>
-                                <td>Charles Gautier</td>
+                                <td>Victor Vassilev</td>
+                                <td>Valentin Hristov</td>
+                            </tr>
+                            <tr>
+                                <td>Sylvestre Gallon</td>
+                                <td>Danijel Halupka</td>
+                            </tr>
+                            <tr>
+                                <td>uncleflo</td>
                                 <td>Marie Gallardo</td>
                             </tr>
                             <tr>
-                                <td>CPbN</td>
-                                <td>Remi Werquin</td>
+                                <td>Cédric Meschin</td>
+                                <td>UrBnW</td>
                             </tr>
                             <tr>
-                                <td>Eric Coquard</td>
+                                <td>Remi Werquin</td>
                                 <td>Samuel Mutel</td>
                             </tr>
                             <tr>
-                                <td>Fabien Thepaut</td>
                                 <td>Sebastien Boulianne</td>
-                            </tr>
-                            <tr>
                                 <td>Guillaume Watteeux</td>
-                                <td>Simon Bomm</td>
                             </tr>
                             <tr>
                                 <td>Ira Janssen</td>
                                 <td>SuL</td>
-                            </tr>
-                            <tr>
-                                <td>Jean Baptiste Borrel</td>
-                                <td>Thi Uyên Dang</td>
-                            </tr>
-                            <tr>
-                                <td>Lionel Assepo</td>
-                                <td>uncleflo</td>
                             </tr>
                             <tr>
                                 <td colspan="2">
