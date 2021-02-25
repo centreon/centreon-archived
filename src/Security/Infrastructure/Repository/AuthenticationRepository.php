@@ -34,7 +34,7 @@ use Security\Encryption;
 
 /*
 CREATE TABLE `security_token` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `token` varchar(255) NOT NULL,
   `creation_date` datetime NOT NULL,
   `expiration_date` datetime DEFAULT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `security_authentication_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 CREATE TABLE `provider_configuration` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `provider_name` varchar(255) NOT NULL,
   `provider_configuration_name` varchar(255) NOT NULL,
   `configuration` text NOT NULL,
@@ -100,8 +100,8 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         string $sessionToken,
         int $providerConfigurationId,
         int $contactId,
-        ProviderToken $providerToken,
-        ProviderToken $providerRefreshToken
+        ?ProviderToken $providerToken,
+        ?ProviderToken $providerRefreshToken
     ): void {
         // TODO: Implement addAuthenticationTokens() method.
     }
@@ -137,13 +137,24 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
      */
     public function findProviderConfiguration(int $id): ?ProviderConfiguration
     {
-        return (new ProviderConfiguration())
-            ->setId(1)
-            ->setProviderName('local')
-            ->setConfigurationName('local_user')
-            ->setConfiguration([
-                'login_url' => 'centreon/login'
-            ]);
+        $statement = $this->db->prepare($this->translateDbName(
+            "SELECT * FROM `:db`.provider_configuration
+            WHERE id = :id
+            "
+        ));
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $providerConfiguration = null;
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $providerConfiguration = (new ProviderConfiguration())
+                ->setId((int) $result['id'])
+                ->setProviderName($result['provider_name'])
+                ->setConfigurationName($result['provider_configuration_name']);
+
+            $configuration = json_decode($result['configuration'], true);
+            $providerConfiguration->setConfiguration($configuration);
+        }
+        return $providerConfiguration;
     }
 
     /**
@@ -168,12 +179,23 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     public function findProviderConfigurationByConfigurationName(
         string $providerConfigurationName
     ): ?ProviderConfiguration {
-        return (new ProviderConfiguration())
-            ->setId(1)
-            ->setProviderName('local')
-            ->setConfigurationName('local_user')
-            ->setConfiguration([
-                'login_url' => 'centreon/login'
-            ]);
+        $statement = $this->db->prepare($this->translateDbName(
+            "SELECT * FROM `:db`.provider_configuration
+            WHERE provider_name = :name
+            "
+        ));
+        $statement->bindValue(':name', $providerConfigurationName, \PDO::PARAM_STR);
+        $statement->execute();
+        $providerConfiguration = null;
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $providerConfiguration = (new ProviderConfiguration())
+                ->setId((int) $result['id'])
+                ->setProviderName($result['provider_name'])
+                ->setConfigurationName($result['provider_configuration_name']);
+
+            $configuration = json_decode($result['configuration'], true);
+            $providerConfiguration->setConfiguration($configuration);
+        }
+        return $providerConfiguration;
     }
 }
