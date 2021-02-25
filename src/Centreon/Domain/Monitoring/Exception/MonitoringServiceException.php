@@ -43,7 +43,7 @@ class MonitoringServiceException extends \Exception
     /**
      * @return self
      */
-    public static function configurationhasChanged(): self
+    public static function configurationHasChanged(): self
     {
         return new self(_('Configuration has changed'));
     }

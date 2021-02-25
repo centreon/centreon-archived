@@ -47,8 +47,10 @@ trait CommandLineTrait
         $macroPasswordNames = [];
         foreach ($macros as $macro) {
             if ($macro->isPassword()) {
+                // if macro is a password, store its name and let macro in configuration command
                 $macroPasswordNames[] = $macro->getName();
             } elseif ($macro->getName() !== null && $macro->getValue() !== null) {
+                // if macro is not a password, replace it by its configuration value
                 $configurationCommand = str_replace($macro->getName(), $macro->getValue(), $configurationCommand);
             }
         }
@@ -57,28 +59,48 @@ trait CommandLineTrait
             return $monitoringCommand;
         }
 
+        $foundMacroNames = $this->extractMacroNamesFromCommandLine($configurationCommand);
+
         $macroPattern = $this->generateCommandMacroPattern($configurationCommand);
 
+        if (preg_match('/' . $macroPattern . '/', $monitoringCommand, $foundMacroValues)) {
+            array_shift($foundMacroValues); // remove global string matching
+
+            // replace macros found in configuration command by matched value from monitoring command
+            foreach ($foundMacroNames as $index => $foundMacroName) {
+                $foundMacroValue = $foundMacroValues[$index];
+
+                // if macro is a password, we replace it by replacement value (usually ****)
+                $macroValue = in_array($foundMacroName, $macroPasswordNames) ? $replacementValue : $foundMacroValue;
+                $configurationCommand = str_replace($foundMacroName, $macroValue, $configurationCommand);
+            }
+        } else {
+            // configuration and monitoring commands do not match
+            // so last configuration has not been applied
+            throw MonitoringServiceException::configurationHasChanged();
+        }
+
+        return $configurationCommand;
+    }
+
+    /**
+     * Extra macro names from configuration command line
+     * example : ['$HOSTADDRESS$', '$_SERVICEPASSWORD$']
+     *
+     * @param string $commandLine
+     * @return array The list of macro names
+     */
+    private function extractMacroNamesFromCommandLine(string $commandLine): array
+    {
         $foundMacroNames = [];
-        if (preg_match_all('/(\$\S+?\$)/', $configurationCommand, $matches)) {
+
+        if (preg_match_all('/(\$\S+?\$)/', $commandLine, $matches)) {
             if (isset($matches[0])) {
                 $foundMacroNames = $matches[0];
             }
         }
 
-        if (preg_match('/' . $macroPattern . '/', $monitoringCommand, $foundMacroValues)) {
-            array_shift($foundMacroValues); // remove global string matching
-
-            foreach ($foundMacroNames as $index => $foundMacroName) {
-                $foundMacroValue = $foundMacroValues[$index];
-                $macroValue = in_array($foundMacroName, $macroPasswordNames) ? $replacementValue : $foundMacroValue;
-                $configurationCommand = str_replace($foundMacroName, $macroValue, $configurationCommand);
-            }
-        } else {
-            throw MonitoringServiceException::configurationhasChanged();
-        }
-
-        return $configurationCommand;
+        return $foundMacroNames;
     }
 
     /**
