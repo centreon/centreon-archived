@@ -92,8 +92,11 @@ class LocalProvider implements ProviderInterface
             "",
             "WEB"
         );
-        if ($auth->userInfos !== null) {
-            $this->contactId = (int) $auth->userInfos['contact_id'];
+
+        if ($auth->passwdOk === 1) {
+            if ($auth->userInfos !== null) {
+                $this->contactId = (int) $auth->userInfos['contact_id'];
+            }
             $this->isAuthenticated = true;
         } else {
             $this->isAuthenticated = false;
