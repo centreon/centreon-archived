@@ -9,7 +9,7 @@
 <h2> Introduction </h2>
 
 Centreon is one of the most flexible and powerful monitoring softwares
-on the market; it is absolutely free and Open Souce.
+on the market; it is absolutely free and Open Source.
 
 <h2> Getting Started </h2>
 
@@ -29,7 +29,8 @@ on the market; it is absolutely free and Open Souce.
 
 <h4> Product managers </h4>
 
-<a href="https://github.com/Moujimouja"><img src="https://avatars2.githubusercontent.com/u/6620287?s=400&v=4" title="Etienne Gautier" width="80" height="80"></a> &nbsp; <a href="https://github.com/lpinsivy"><img src="https://avatars2.githubusercontent.com/u/3351916?s=400&v=4" title="Laurent Pinsivy" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/lpinsivy"><img src="https://avatars2.githubusercontent.com/u/3351916?s=400&v=4" title="Laurent Pinsivy" width="80" height="80"></a>&nbsp;
+<a href="https://github.com/sbrizini"><img src="https://avatars.githubusercontent.com/u/40829131?s=400&v=4" title="Samir Brizini" width="80" height="80"></a>&nbsp;
 
 <h4> Product Owner </h4>
 
@@ -53,10 +54,11 @@ on the market; it is absolutely free and Open Souce.
 <a href="https://github.com/adr-mo "><img src="https://avatars2.githubusercontent.com/u/31647811?s=400&v=4" title="Adrien Morais" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/jeremyjaouen "><img src="https://avatars.githubusercontent.com/u/61694165?s=400&v=4" title="Jérémy Jaouen" width="80" height="80"></a> &nbsp;
 
-<h4> Quality Assurance </h2>
+<h4> Quality Assurance </h4>
 
 <a href="https://github.com/thiuyendang"><img src="https://avatars2.githubusercontent.com/u/25612980?s=400&v=4" title="Thi Uyên Dang" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/tuntoja"><img src="https://avatars1.githubusercontent.com/u/58987095?s=400&v=4" title="Thomas Untoja" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/chgautier"><img src="https://avatars.githubusercontent.com/u/33026375?s=400&v=4" title="Charles Gautier" width="80" height="80"></a> &nbsp;
 
 See also the list of our [**contributors**](https://github.com/centreon/centreon/graphs/contributors)
 
