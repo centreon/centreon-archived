@@ -10,5 +10,5 @@ centreon_security_authentication_find_providers:
 
 centreon_security_authentication_login:
     methods: GET|POST
-    path: /authentication/providers/{providerName}
-    controller: 'Centreon\Application\Controller\AuthenticationController::Authentication'
+    path: /authentication/providers/{providerConfigurationName}
+    controller: 'Centreon\Application\Controller\AuthenticationController::authentication'
