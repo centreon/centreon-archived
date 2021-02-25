@@ -136,7 +136,7 @@ const getDetailCardLines = ({
       field: details.execution_time,
       getLines: (): Lines => [
         {
-          key: 'check duration',
+          key: 'check_duration',
           line: <DetailsLine line={`${details.execution_time} s`} />,
         },
       ],
