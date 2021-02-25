@@ -31,9 +31,9 @@ interface MacroInterface
 
     /**
      * @param int|null $id
-     * @return MacroInterface
+     * @return self
      */
-    public function setId(?int $id): MacroInterface;
+    public function setId(?int $id);
 
     /**
      * @return string|null
@@ -42,9 +42,9 @@ interface MacroInterface
 
     /**
      * @param string|null $name
-     * @return MacroInterface
+     * @return self
      */
-    public function setName(?string $name): MacroInterface;
+    public function setName(?string $name);
 
     /**
      * @return string|null
@@ -53,9 +53,9 @@ interface MacroInterface
 
     /**
      * @param string|null $value
-     * @return MacroInterface
+     * @return self
      */
-    public function setValue(?string $value): MacroInterface;
+    public function setValue(?string $value);
 
     /**
      * @return bool
@@ -64,9 +64,9 @@ interface MacroInterface
 
     /**
      * @param bool $isPassword
-     * @return MacroInterface
+     * @return self
      */
-    public function setPassword(bool $isPassword): MacroInterface;
+    public function setPassword(bool $isPassword);
 
     /**
      * @return string|null
@@ -75,9 +75,9 @@ interface MacroInterface
 
     /**
      * @param string|null $description
-     * @return MacroInterface
+     * @return self
      */
-    public function setDescription(?string $description): MacroInterface;
+    public function setDescription(?string $description);
 
     /**
      * @return int|null
@@ -86,7 +86,7 @@ interface MacroInterface
 
     /**
      * @param int|null $order
-     * @return MacroInterface
+     * @return self
      */
-    public function setOrder(?int $order): MacroInterface;
+    public function setOrder(?int $order);
 }

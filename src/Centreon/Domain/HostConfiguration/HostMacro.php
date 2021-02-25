@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,9 +73,9 @@ class HostMacro implements MacroInterface
 
     /**
      * @param int|null $id
-     * @return MacroInterface
+     * @return self
      */
-    public function setId(?int $id): MacroInterface
+    public function setId(?int $id): self
     {
         $this->id = $id;
         return $this;
@@ -91,9 +91,9 @@ class HostMacro implements MacroInterface
 
     /**
      * @param string|null $name
-     * @return MacroInterface
+     * @return self
      */
-    public function setName(?string $name): MacroInterface
+    public function setName(?string $name): self
     {
         if ($name !== null) {
             if (strpos($name, '$_HOST') !== 0) {
@@ -119,9 +119,9 @@ class HostMacro implements MacroInterface
 
     /**
      * @param string|null $value
-     * @return MacroInterface
+     * @return self
      */
-    public function setValue(?string $value): MacroInterface
+    public function setValue(?string $value): self
     {
         $this->value = $value;
         return $this;
@@ -137,9 +137,9 @@ class HostMacro implements MacroInterface
 
     /**
      * @param bool $isPassword
-     * @return MacroInterface
+     * @return self
      */
-    public function setPassword(bool $isPassword): MacroInterface
+    public function setPassword(bool $isPassword): self
     {
         $this->isPassword = $isPassword;
         return $this;
@@ -155,9 +155,9 @@ class HostMacro implements MacroInterface
 
     /**
      * @param string|null $description
-     * @return MacroInterface
+     * @return self
      */
-    public function setDescription(?string $description): MacroInterface
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
         return $this;
@@ -173,9 +173,9 @@ class HostMacro implements MacroInterface
 
     /**
      * @param int|null $order
-     * @return MacroInterface
+     * @return self
      */
-    public function setOrder(?int $order): MacroInterface
+    public function setOrder(?int $order): self
     {
         $this->order = $order;
         return $this;
@@ -191,9 +191,9 @@ class HostMacro implements MacroInterface
 
     /**
      * @param int|null $hostId
-     * @return HostMacro
+     * @return self
      */
-    public function setHostId(?int $hostId): HostMacro
+    public function setHostId(?int $hostId): self
     {
         $this->hostId = $hostId;
         return $this;
