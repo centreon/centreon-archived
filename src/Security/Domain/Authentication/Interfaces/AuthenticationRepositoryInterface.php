@@ -42,8 +42,8 @@ interface AuthenticationRepositoryInterface
         string $sessionToken,
         int $providerConfigurationId,
         int $contactId,
-        ProviderToken $providerToken,
-        ProviderToken $providerRefreshToken
+        ?ProviderToken $providerToken,
+        ?ProviderToken $providerRefreshToken
     ): void;
 
     /**
