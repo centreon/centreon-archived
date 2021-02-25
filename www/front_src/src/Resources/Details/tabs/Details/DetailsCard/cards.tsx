@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import { Grid, Chip } from '@material-ui/core';
 
 import {
@@ -48,7 +46,6 @@ const getDetailCardLines = ({
   toDate,
   toTime,
 }: DetailCardLineProps): Array<DetailCardLines> => {
-  const { t } = useTranslation();
   const getDateTimeLines = ({ label, field }): DetailCardLines => ({
     title: label,
     field,
@@ -77,7 +74,7 @@ const getDetailCardLines = ({
 
   return [
     {
-      title: t(labelFqdn),
+      title: labelFqdn,
       field: details.fqdn,
       xs: 12,
       getLines: (): Lines => [
@@ -88,7 +85,7 @@ const getDetailCardLines = ({
       ],
     },
     {
-      title: t(labelAlias),
+      title: labelAlias,
       field: details.alias,
       getLines: (): Lines => [
         {
@@ -98,7 +95,7 @@ const getDetailCardLines = ({
       ],
     },
     {
-      title: t(labelPoller),
+      title: labelPoller,
       field: details.poller_name,
       getLines: (): Lines => [
         {
@@ -108,7 +105,7 @@ const getDetailCardLines = ({
       ],
     },
     {
-      title: t(labelTimezone),
+      title: labelTimezone,
       field: details.timezone,
       getLines: (): Lines => [
         {
@@ -118,7 +115,7 @@ const getDetailCardLines = ({
       ],
     },
     {
-      title: t(labelCurrentStateDuration),
+      title: labelCurrentStateDuration,
       field: details.duration,
       getLines: (): Lines => [
         { key: 'duration', line: <DetailsLine line={details.duration} /> },
@@ -135,7 +132,7 @@ const getDetailCardLines = ({
     getCheckLines({ label: labelLastCheck, field: details.last_check }),
     getCheckLines({ label: labelNextCheck, field: details.next_check }),
     {
-      title: t(labelCheckDuration),
+      title: labelCheckDuration,
       field: details.execution_time,
       getLines: (): Lines => [
         {
@@ -145,7 +142,7 @@ const getDetailCardLines = ({
       ],
     },
     {
-      title: t(labelLatency),
+      title: labelLatency,
       field: details.latency,
       getLines: (): Lines => [
         {
@@ -155,7 +152,7 @@ const getDetailCardLines = ({
       ],
     },
     {
-      title: t(labelResourceFlapping),
+      title: labelResourceFlapping,
       field: details.flapping,
       getLines: (): Lines => [
         {
@@ -165,7 +162,7 @@ const getDetailCardLines = ({
       ],
     },
     {
-      title: t(labelPercentStateChange),
+      title: labelPercentStateChange,
       field: details.percent_state_change,
       getLines: (): Lines => [
         {
@@ -175,11 +172,11 @@ const getDetailCardLines = ({
       ],
     },
     getDateTimeLines({
-      label: t(labelLastNotification),
+      label: labelLastNotification,
       field: details.last_notification,
     }),
     {
-      title: t(labelCurrentNotificationNumber),
+      title: labelCurrentNotificationNumber,
       field: details.notification_number,
       getLines: (): Lines => [
         {
@@ -189,7 +186,7 @@ const getDetailCardLines = ({
       ],
     },
     {
-      title: t(labelGroups),
+      title: labelGroups,
       field: details.groups,
       xs: 12,
       getLines: (): Lines => [

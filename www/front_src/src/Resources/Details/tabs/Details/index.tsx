@@ -116,8 +116,8 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
               title={t(labelDowntimeDuration)}
               contentLines={[
                 ...[
-                  { prefix: labelFrom, time: start_time },
-                  { prefix: labelTo, time: end_time },
+                  { prefix: t(labelFrom), time: start_time },
+                  { prefix: t(labelTo), time: end_time },
                 ].map(({ prefix, time }) => `${prefix} ${toDateTime(time)}`),
               ]}
               commentLine={comment}
