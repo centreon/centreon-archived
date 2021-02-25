@@ -67,7 +67,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         string $sessionToken,
         string $providerConfigurationName,
         ContactInterface $contact,
-        ProviderToken $providerToken,
+        ?ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken
     ): void {
         $providerConfiguration = $this->findProviderConfigurationByConfigurationName($providerConfigurationName);

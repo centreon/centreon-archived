@@ -39,14 +39,14 @@ interface AuthenticationServiceInterface
      * @param string $sessionToken
      * @param string $providerConfigurationName
      * @param ContactInterface $contact
-     * @param ProviderToken $providerToken
+     * @param ProviderToken|null $providerToken
      * @param ProviderToken|null $providerRefreshToken
      */
     public function createAuthenticationTokens(
         string $sessionToken,
         string $providerConfigurationName,
         ContactInterface $contact,
-        ProviderToken $providerToken,
+        ?ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken
     ): void;
 
