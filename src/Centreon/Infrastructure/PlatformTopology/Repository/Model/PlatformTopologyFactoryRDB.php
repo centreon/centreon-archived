@@ -24,18 +24,33 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology\Repository\Model;
 
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\PlatformTopology\Model\PlatformPending;
 use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
 
 class PlatformTopologyFactoryRDB
 {
     /**
+     * Create a platform entity depending on the pending status
+     * @param array $platformData
+     * @return PlatformInterface
+     */
+    public static function create(array $platformData): PlatformInterface
+    {
+        if (true === $platformData['pending']) {
+            return self::createPlatformPending($platformData);
+        }
+
+        return self::createPlatformRegistered($platformData);
+    }
+
+    /**
      * Return a Registered platform entity
      *
      * @param array $platformData
      * @return PlatformRegistered
      */
-    public function createPlatformRegistered(array $platformData): PlatformRegistered
+    private static function createPlatformRegistered(array $platformData): PlatformRegistered
     {
         $platformReturned = new PlatformRegistered();
         foreach ($platformData as $key => $value) {
@@ -79,7 +94,7 @@ class PlatformTopologyFactoryRDB
      * @param array $platformData
      * @return PlatformPending
      */
-    public function createPlatformPending(array $platformData): PlatformPending
+    private static function createPlatformPending(array $platformData): PlatformPending
     {
         $platformReturned = new PlatformPending();
         foreach ($platformData as $key => $value) {
