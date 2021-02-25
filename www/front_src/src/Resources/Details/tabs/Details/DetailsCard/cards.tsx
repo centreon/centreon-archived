@@ -1,8 +1,9 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Grid, Chip } from '@material-ui/core';
 
-import { useTranslation } from 'react-i18next';
 import {
   labelCurrentStateDuration,
   labelPoller,
@@ -47,9 +48,7 @@ const getDetailCardLines = ({
   toDate,
   toTime,
 }: DetailCardLineProps): Array<DetailCardLines> => {
-
   const { t } = useTranslation();
-
   const getDateTimeLines = ({ label, field }): DetailCardLines => ({
     title: label,
     field,
