@@ -258,7 +258,7 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
                         ON ag.acl_group_id = agcgr.acl_group_id
                     LEFT JOIn `:db`.contactgroup_contact_relation cgcr
                         ON  cgcr.contactgroup_cg_id = agcgr.cg_cg_id
-                    WHERE hc.hc_id = :id AND AND hc.level IS NOT NULL
+                    WHERE hc.hc_id = :id AND hc.level IS NOT NULL
                         AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)'
                 )
             );
