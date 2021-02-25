@@ -35,6 +35,14 @@ interface ContactServiceInterface
     public function findBySession(string $session): ?Contact;
 
     /**
+     * Find a contact based on its id
+     *
+     * @param integer $id
+     * @return Contact|null
+     */
+    public function findContact(int $id): ?Contact;
+
+    /**
      * Indicates whether or not the contact exists.
      *
      * @param ContactInterface $contact

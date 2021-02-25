@@ -57,6 +57,14 @@ class ContactService implements ContactServiceInterface
     /**
      * @inheritDoc
      */
+    public function findContact(int $id): ?Contact
+    {
+        return $this->contactRepository->findById($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function exists(ContactInterface $contact): bool
     {
         if ($contact->getId() !== null) {
