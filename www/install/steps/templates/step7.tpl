@@ -57,8 +57,8 @@
 
         jQuery.ajax({
             type: 'POST',
-            url: dbSteps[key].file
-        }).success(function (response) {
+            url: dbSteps[key].file,
+            success: (response) => {
             var data = jQuery.parseJSON(response);
             if (data['result'] == 0) {
                 jQuery('#' + data['id']).html('<span style="color:#88b917;">OK</span>');
