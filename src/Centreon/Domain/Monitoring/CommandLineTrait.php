@@ -88,7 +88,7 @@ trait CommandLineTrait
      * example : ['$HOSTADDRESS$', '$_SERVICEPASSWORD$']
      *
      * @param string $commandLine
-     * @return array The list of macro names
+     * @return string[] The list of macro names
      */
     private function extractMacroNamesFromCommandLine(string $commandLine): array
     {
