@@ -22,8 +22,9 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
-use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 
 /**
@@ -36,13 +37,37 @@ class LocalProvider implements ProviderInterface
     private $loginUrl;
 
     /**
+     * @var boolean
+     */
+    private $isAuthenticated;
+
+    /**
+     * @var int
+     */
+    private $contactId;
+
+    /**
+     * @var ContactServiceInterface
+     */
+    private $contactService;
+
+    /**
+     * @var Container
+     */
+    private $dependencyInjector;
+
+    /**
      * LocalProvider constructor.
      *
      * @param string $loginUrl
+     * @param ContactServiceInterface $contactService
+     * @param Container $dependencyInjector
      */
-    public function __construct(string $loginUrl)
+    public function __construct(string $loginUrl, ContactServiceInterface $contactService, Container $dependencyInjector)
     {
         $this->loginUrl = $loginUrl;
+        $this->contactService = $contactService;
+        $this->dependencyInjector = $dependencyInjector;
     }
 
     /**
@@ -50,6 +75,29 @@ class LocalProvider implements ProviderInterface
      */
     public function authenticate(array $data): void
     {
+        $pearDB = new \CentreonDB(
+            'centreon',
+            3,
+            true
+        );
+        $log = new \CentreonUserLog(0, $pearDB);
+        $auth = new \CentreonAuth(
+            $this->dependencyInjector,
+            $data['useralias'],
+            $data['password'],
+            0,
+            $pearDB,
+            $log,
+            1,
+            "",
+            "WEB"
+        );
+        if ($auth->userInfos !== null) {
+            $this->contactId = (int) $auth->userInfos['contact_id'];
+            $this->isAuthenticated = true;
+        } else {
+            $this->isAuthenticated = false;
+        }
     }
 
     /**
@@ -86,7 +134,7 @@ class LocalProvider implements ProviderInterface
 
     public function getUser(): ?ContactInterface
     {
-        return (new Contact())->setId(1);
+        return $this->contactService->findContact($this->contactId);
     }
 
     /**
@@ -125,7 +173,7 @@ class LocalProvider implements ProviderInterface
      */
     public function isAuthenticated(): bool
     {
-        return true;
+        return $this->isAuthenticated;
     }
 
     /**
