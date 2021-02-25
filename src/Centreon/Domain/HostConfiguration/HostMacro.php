@@ -22,9 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration;
 
+use Centreon\Domain\Macro\Interfaces\MacroInterface;
 use Centreon\Domain\Annotation\EntityDescriptor;
 
-class HostMacro
+class HostMacro implements MacroInterface
 {
     /**
      * @var int|null
@@ -72,9 +73,9 @@ class HostMacro
 
     /**
      * @param int|null $id
-     * @return HostMacro
+     * @return MacroInterface
      */
-    public function setId(?int $id): HostMacro
+    public function setId(?int $id): MacroInterface
     {
         $this->id = $id;
         return $this;
@@ -90,9 +91,9 @@ class HostMacro
 
     /**
      * @param string|null $name
-     * @return HostMacro
+     * @return MacroInterface
      */
-    public function setName(?string $name): HostMacro
+    public function setName(?string $name): MacroInterface
     {
         if ($name !== null) {
             if (strpos($name, '$_HOST') !== 0) {
@@ -118,9 +119,9 @@ class HostMacro
 
     /**
      * @param string|null $value
-     * @return HostMacro
+     * @return MacroInterface
      */
-    public function setValue(?string $value): HostMacro
+    public function setValue(?string $value): MacroInterface
     {
         $this->value = $value;
         return $this;
@@ -136,9 +137,9 @@ class HostMacro
 
     /**
      * @param bool $isPassword
-     * @return HostMacro
+     * @return MacroInterface
      */
-    public function setPassword(bool $isPassword): HostMacro
+    public function setPassword(bool $isPassword): MacroInterface
     {
         $this->isPassword = $isPassword;
         return $this;
@@ -154,9 +155,9 @@ class HostMacro
 
     /**
      * @param string|null $description
-     * @return HostMacro
+     * @return MacroInterface
      */
-    public function setDescription(?string $description): HostMacro
+    public function setDescription(?string $description): MacroInterface
     {
         $this->description = $description;
         return $this;
@@ -172,9 +173,9 @@ class HostMacro
 
     /**
      * @param int|null $order
-     * @return HostMacro
+     * @return MacroInterface
      */
-    public function setOrder(?int $order): HostMacro
+    public function setOrder(?int $order): MacroInterface
     {
         $this->order = $order;
         return $this;

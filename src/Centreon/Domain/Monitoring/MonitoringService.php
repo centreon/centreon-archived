@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
 use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
@@ -32,7 +31,7 @@ use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
-use Centreon\Domain\ServiceConfiguration\ServiceMacro;
+use Centreon\Domain\Macro\Interfaces\MacroInterface;
 use Centreon\Domain\HostConfiguration\Exception\HostCommandException;
 use Centreon\Domain\ServiceConfiguration\Exception\ServiceCommandException;
 
@@ -413,7 +412,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         );
 
         /**
-         * @var HostMacro[]|ServiceMacro[] $macros
+         * @var MacroInterface[] $macros
          */
         $macros = array_merge($hostMacros, $serviceMacros);
 

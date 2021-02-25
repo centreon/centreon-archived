@@ -22,8 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\HostConfiguration\HostMacro;
-use Centreon\Domain\ServiceConfiguration\ServiceMacro;
+use Centreon\Domain\Macro\Interfaces\MacroInterface;
 use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 
 trait CommandLineTrait
@@ -34,7 +33,7 @@ trait CommandLineTrait
      *
      * @param string $configurationCommand
      * @param string $monitoringCommand
-     * @param HostMacro[]|ServiceMacro[] $macros
+     * @param MacroInterface[] $macros
      * @param string $replacementValue
      * @return string
      */
