@@ -218,10 +218,16 @@ class AuthenticationController extends AbstractController
         SessionInterface $session,
         string $providerConfigurationName
     ) {
+        // @todo : check if it can be replace
+        // if ($request->getMethod() === 'POST') {
+        //     foreach ($request->request->getIterator() as $key => $value) {
+        //         $requestParameters[$key] = $value;
+        //     }
+        // }
         if ($request->getMethod() === 'GET') {
             $data = $request->query->getIterator();
         } else {
-            $data = $request->request->getIterator() ;
+            $data = $request->request->getIterator();
         }
         $requestParameters = [];
         foreach ($data as $key => $value) {
@@ -271,6 +277,7 @@ class AuthenticationController extends AbstractController
 
                 $session->start();
 
+                //TODO : How it is handle with local ? ProviderToken is null ? 
                 $this->authenticationService->createAuthenticationTokens(
                     $session->getId(),
                     $providerConfigurationName,

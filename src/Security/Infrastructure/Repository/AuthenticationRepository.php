@@ -103,6 +103,28 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         ?ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken
     ): void {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                "DELETE FROM `:db`.session WHERE user_id = :userId AND ip_address = :ipAddress"
+            )
+        );
+        $statement->bindValue(':userId', $contactId, \PDO::PARAM_INT);
+        $statement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
+        $statement->execute();
+
+        $query = "INSERT INTO `:db`.session (`session_id` , `user_id` , `last_reload`, `ip_address`) " .
+            "VALUES (:sessionId, :userId, :lastReload, :ipAddress)";
+        $statement = $this->db->prepare($this->translateDbName($query));
+        $statement->bindValue(':sessionId', $sessionToken, \PDO::PARAM_STR);
+        $statement->bindValue(':userId', $contactId, \PDO::PARAM_INT);
+        $statement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
+        $statement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR); // @todo get addr from controller
+        $statement->execute();
+        // $statement = $this->db->prepare($this->translateDbName(
+        //     "INSERT INTO `:db`.security_token (`token`, `creation_date`, `expiration_date`)
+        //     VALUES (:token, :creationDate, :expirationDate)"
+        // ));
+        // $statement->bindValue(":token", $sessionToken, \PDO::PARAM_STR);
         // TODO: Implement addAuthenticationTokens() method.
     }
 

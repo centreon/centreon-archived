@@ -57,6 +57,11 @@ class LocalProvider implements ProviderInterface
     private $dependencyInjector;
 
     /**
+     * @var array
+     */
+    private $configuration;
+
+    /**
      * LocalProvider constructor.
      *
      * @param string $loginUrl
@@ -75,18 +80,13 @@ class LocalProvider implements ProviderInterface
      */
     public function authenticate(array $data): void
     {
-        $pearDB = new \CentreonDB(
-            'centreon',
-            3,
-            true
-        );
-        $log = new \CentreonUserLog(0, $pearDB);
+        $log = new \CentreonUserLog(0, $this->dependencyInjector['configuration_db']);
         $auth = new \CentreonAuth(
             $this->dependencyInjector,
             $data['useralias'],
             $data['password'],
             0,
-            $pearDB,
+            $this->dependencyInjector['configuration_db'],
             $log,
             1,
             "",
@@ -141,6 +141,7 @@ class LocalProvider implements ProviderInterface
     }
 
     /**
+     * @todo : what is the purpose
      * @inheritDoc
      */
     public function exportConfiguration(): array
@@ -149,10 +150,12 @@ class LocalProvider implements ProviderInterface
     }
 
     /**
+     * @todo : what is the purpose
      * @inheritDoc
      */
     public function importConfiguration(array $configuration): void
     {
+        $this->configuration = $configuration;
     }
 
     /**
@@ -168,7 +171,7 @@ class LocalProvider implements ProviderInterface
      */
     public function isForced(): bool
     {
-        return true;
+        return $this->configuration['isForced'];
     }
 
     /**
