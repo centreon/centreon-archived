@@ -83,20 +83,21 @@
         jQuery.ajax({
             type: 'POST',
             url: './steps/process/process_step6.php',
-            data: jQuery('#form_step6').serialize()
-        }).success(function (data) {
-            var result = JSON.parse(data);
-            if (!result.required.length && result.password && result.connection == '') {
-                nextStep();
-            } else {
-                result.required.forEach(function (element) {
-                    jQuery("input[name=" + element + "]").next().html("Parameter is required");
-                });
-                if (!result.password) {
-                    jQuery('input[name="db_password_confirm"]').next().html("Password does not match");
-                }
-                if (result.connection != '') {
-                    jQuery('input[name="address"]').next().html(result.connection);
+            data: jQuery('#form_step6').serialize(),
+            success: (data) => {
+                var result = JSON.parse(data);
+                if (!result.required.length && result.password && result.connection == '') {
+                    loadStep("nextStep");
+                } else {
+                    result.required.forEach(function (element) {
+                        jQuery("input[name=" + element + "]").next().html("Parameter is required");
+                    });
+                    if (!result.password) {
+                        jQuery('input[name="db_password_confirm"]').next().html("Password does not match");
+                    }
+                    if (result.connection != '') {
+                        jQuery('input[name="address"]').next().html(result.connection);
+                    }
                 }
             }
         });
