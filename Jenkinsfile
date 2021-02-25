@@ -114,6 +114,7 @@ try {
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
         junit 'ut-be.xml,ut-fe.xml'
+        archiveArtifacts artifacts: 'ut-fe.xml'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
