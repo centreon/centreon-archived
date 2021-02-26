@@ -22,60 +22,65 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Monitoring\Notes;
-
 /**
- * Resource external Links model for resource repository
+ * Class representing a record of a note in the repository.
  *
  * @package Centreon\Domain\Monitoring
  */
-class ResourceExternalLinks
+class Notes
 {
+
     /**
      * @var string|null
      */
-    private $actionUrl;
+    private $label;
 
     /**
-     * @var Notes|null
+     * @var string|null
      */
-    private $notes;
+    private $url;
 
     /**
+     * Get label
+     *
      * @return string|null
      */
-    public function getActionUrl(): ?string
+    public function getLabel(): ?string
     {
-        return $this->actionUrl;
+        return $this->label;
     }
 
     /**
-     * @param string|null $actionUrl
+     * Set notes
+     *
+     * @param string|null $label
      * @return self
      */
-    public function setActionUrl(?string $actionUrl): self
+    public function setLabel(?string $label): self
     {
-        $this->actionUrl = $actionUrl;
-
+        $this->label = $label;
         return $this;
     }
 
     /**
-     * @return Notes|null
+     * Get url
+     *
+     * @return string|null
      */
-    public function getNotes(): ?Notes
+    public function getUrl(): ?string
     {
-        return $this->notes;
+        return $this->url;
     }
 
     /**
-     * @param Notes|null $notes
+     * Set url
+     *
+     * @param string|null $url
      * @return self
      */
-    public function setNotes(?Notes $notes): self
+    public function setUrl(?string $url): self
     {
-        $this->notes = $notes;
-
+        $this->url = $url;
         return $this;
     }
 }
