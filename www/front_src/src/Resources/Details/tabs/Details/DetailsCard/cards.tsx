@@ -47,7 +47,7 @@ const getDetailCardLines = ({
   toTime,
 }: DetailCardLineProps): Array<DetailCardLines> => {
   const getDateTimeLines = ({ label, field }): DetailCardLines => ({
-    title: label,
+    title: t(label),
     field,
     getLines: (): Lines => [
       {

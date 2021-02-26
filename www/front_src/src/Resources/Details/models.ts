@@ -28,7 +28,6 @@ export interface ResourceDetails extends NamedEntity {
   next_check: string;
   active_checks: boolean;
   execution_time: number;
-  check_duration: number;
   latency: number;
   flapping: boolean;
   percent_state_change: number;
