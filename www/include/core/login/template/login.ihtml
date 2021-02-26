@@ -38,7 +38,7 @@
                 </div>
                 <div class="LoginInvitVersion">
                     <span id="LoginInvitcpy">
-                        &copy; <a href="https://www.centreon.com">Centreon</a> 2005 - {$copyrightYear}
+                        &copy; <a href="https://www.centreon.com">Centreon</a> 2005 - 2021
                     </span>
                     <br>
                     <span>
