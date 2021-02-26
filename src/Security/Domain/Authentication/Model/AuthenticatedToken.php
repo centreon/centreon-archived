@@ -64,7 +64,9 @@ class AuthenticatedToken implements TokenInterface
             if (\is_string($role)) {
                 $role = new Role($role, false);
             } elseif (!$role instanceof Role) {
-                throw new \InvalidArgumentException(sprintf('$roles must be an array of strings, but got "%s".', \gettype($role)));
+                throw new \InvalidArgumentException(
+                    sprintf('$roles must be an array of strings, but got "%s".', \gettype($role))
+                );
             }
 
             $this->roles[] = $role;
@@ -126,7 +128,8 @@ class AuthenticatedToken implements TokenInterface
             '%s(user="%s", authenticated=%s, roles="%s")',
             $class,
             $this->getUsername(),
-            json_encode($this->isAuthenticated), implode(', ', $roles)
+            json_encode($this->isAuthenticated),
+            implode(', ', $roles)
         );
     }
 

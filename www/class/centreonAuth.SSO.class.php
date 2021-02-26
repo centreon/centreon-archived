@@ -348,8 +348,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientSecret,
         string $token,
         bool $verifyPeer
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "token" => $token,
             "client_id" => $clientId,
@@ -418,8 +417,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $refreshToken,
         bool $verifyPeer,
         string $scope = null
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "client_id" => $clientId,
             "client_secret" => $clientSecret,
@@ -460,8 +458,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientSecret,
         string $refreshToken,
         bool $verifyPeer
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "client_id" => $clientId,
             "client_secret" => $clientSecret,

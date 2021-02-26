@@ -70,7 +70,7 @@ class AuthenticationController extends AbstractController
         ContactServiceInterface $contactService
     ) {
         $this->auth = $auth;
-        if (!$providers) {
+        if (count($providers) === 0) {
             throw new \InvalidArgumentException('You must at least add one authentication provider');
         }
         $this->providers = iterator_to_array($providers);
@@ -277,7 +277,7 @@ class AuthenticationController extends AbstractController
 
                 $session->start();
 
-                //TODO : How it is handle with local ? ProviderToken is null ? 
+                //TODO : How it is handle with local ? ProviderToken is null ?
                 $this->authenticationService->createAuthenticationTokens(
                     $session->getId(),
                     $providerConfigurationName,

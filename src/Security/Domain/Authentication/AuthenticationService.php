@@ -160,8 +160,9 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @inheritDoc
      */
-    public function findProviderConfigurationByConfigurationName(string $providerConfigurationName): ?ProviderConfiguration
-    {
+    public function findProviderConfigurationByConfigurationName(
+        string $providerConfigurationName
+    ): ?ProviderConfiguration {
         return $this->repository->findProviderConfigurationByConfigurationName($providerConfigurationName);
     }
 

@@ -60,7 +60,9 @@ class AuthenticationTokensFactory
         ProviderToken $providerToken,
         ProviderToken $providerRefreshToken
     ) {
-        $providerConfiguration = $this->authenticationService->findProviderConfigurationByConfigurationName($providerConfigurationName);
+        $providerConfiguration = $this->authenticationService->findProviderConfigurationByConfigurationName(
+            $providerConfigurationName
+        );
         if ($providerConfiguration == null) {
             throw new \Exception('Provider configuration not found');
         }

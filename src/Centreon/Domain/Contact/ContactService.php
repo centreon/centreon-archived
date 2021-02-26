@@ -43,7 +43,6 @@ class ContactService implements ContactServiceInterface
      */
     public function addUser(ContactInterface $contact): void
     {
-
     }
 
     /**
@@ -51,7 +50,6 @@ class ContactService implements ContactServiceInterface
      */
     public function updateUser(ContactInterface $contact): void
     {
-
     }
 
     /**
@@ -67,11 +65,8 @@ class ContactService implements ContactServiceInterface
      */
     public function exists(ContactInterface $contact): bool
     {
-        if ($contact->getId() !== null) {
-            $contact = $this->contactRepository->findById($contact->getId());
-            return $contact !== null;
-        }
-        return false;
+        $contact = $this->contactRepository->findById($contact->getId());
+        return $contact !== null;
     }
 
     /**

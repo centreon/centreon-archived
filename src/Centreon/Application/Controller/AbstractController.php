@@ -39,7 +39,9 @@ abstract class AbstractController extends AbstractFOSRestController
     public function denyAccessUnlessGrantedForApiConfiguration(): void
     {
         parent::denyAccessUnlessGranted(
-            static::ROLE_API_CONFIGURATION, static::ROLE_API_CONFIGURATION_EXCEPTION_MESSAGE);
+            static::ROLE_API_CONFIGURATION,
+            static::ROLE_API_CONFIGURATION_EXCEPTION_MESSAGE
+        );
     }
 
     public function denyAccessUnlessGrantedForApiRealtime(): void

@@ -50,9 +50,12 @@ CREATE TABLE `security_authentication_tokens` (
   KEY `security_authentication_tokens_id_fk` (`token_id`),
   KEY `security_authentication_tokens_refresh_id__fk` (`token_refresh_id`),
   KEY `security_authentication_tokens_configuration_id_fk` (`provider_configuration_id`),
-  CONSTRAINT `security_authentication_tokens_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`) REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `security_authentication_tokens_id_fk` FOREIGN KEY (`token_id`) REFERENCES `security_token` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `security_authentication_tokens_refresh_id__fk` FOREIGN KEY (`token_refresh_id`) REFERENCES `security_token` (`id`) ON DELETE SET NULL
+  CONSTRAINT `security_authentication_tokens_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
+  REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `security_authentication_tokens_id_fk` FOREIGN KEY (`token_id`)
+  REFERENCES `security_token` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `security_authentication_tokens_refresh_id__fk` FOREIGN KEY (`token_refresh_id`)
+  REFERENCES `security_token` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 CREATE TABLE `provider_configuration` (

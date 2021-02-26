@@ -68,8 +68,11 @@ class LocalProvider implements ProviderInterface
      * @param ContactServiceInterface $contactService
      * @param Container $dependencyInjector
      */
-    public function __construct(string $loginUrl, ContactServiceInterface $contactService, Container $dependencyInjector)
-    {
+    public function __construct(
+        string $loginUrl,
+        ContactServiceInterface $contactService,
+        Container $dependencyInjector
+    ) {
         $this->loginUrl = $loginUrl;
         $this->contactService = $contactService;
         $this->dependencyInjector = $dependencyInjector;
