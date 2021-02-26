@@ -52,9 +52,13 @@ $release = $dbResult->fetchRow();
                         </p><br>
                     </td>
                     <td>
-                        Developed by <a href="http://www.centreon.com">Centreon</a> and <a href="https://centreon.github.io/">community</a>
+                        Developed by <a
+                                href="http://www.centreon.com">Centreon</a> and <a
+                                href="https://centreon.github.io/">community</a>
                     </td>
-                    <td style="text-align: center" rowspan="3"><img src="./img/centreon.png" alt="logo centreon" /></td>
+                    <td style="text-align: center" rowspan="3">
+                        <img src="./img/centreon.png" alt="logo centreon" />
+                    </td>
                 </tr>
                 <tr>
                     <td style="vertical-align: top;">
@@ -84,6 +88,7 @@ $release = $dbResult->fetchRow();
                         <p>Laurent Calvet</p>
                         <p>Laurent Pinsivy</p>
                         <p>Loïc Laurent</p>
+                        <p>Lotfi Zaouche</p>
                         <p>Maximilien Bersoult</p>
                         <p>Quentin Garnier</p>
                         <p>Samir Brizini</p>
@@ -95,7 +100,9 @@ $release = $dbResult->fetchRow();
                     <td></td>
                 </tr>
                 <tr>
-                    <td  style="vertical-align: top;padding-top :10px;"><h3 style='text-align:left;'><?php echo _("Contributors"); ?></h3></td>
+                    <td  style="vertical-align: top;padding-top :10px;">
+                        <h3 style='text-align:left;'><?php echo _("Contributors"); ?></h3>
+                    </td>
                     <td style="padding-top: 10px;" colspan="2">
                         <table class="table">
                             <tr>
