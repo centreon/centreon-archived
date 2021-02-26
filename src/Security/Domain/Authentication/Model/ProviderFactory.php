@@ -55,9 +55,7 @@ class ProviderFactory
     {
         foreach ($this->providers as $provider) {
             if ($provider->getName() === $configuration->getProviderName()) {
-                // @todo : check if can be replaced by :
-                // $provider->importConfiguration($configuration->getConfiguration());
-                call_user_func_array([$provider, 'importConfiguration'], [$configuration->getConfiguration()]);
+                $provider->setConfiguration($configuration->getConfiguration());
                 return $provider;
             }
         }

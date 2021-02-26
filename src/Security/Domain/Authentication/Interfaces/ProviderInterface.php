@@ -75,16 +75,18 @@ interface ProviderInterface
     /**
      * Return the provider refresh token.
      *
+     * @param string $sessionToken
      * @return ProviderToken|null
      */
-    public function getProviderRefreshToken(): ?ProviderToken;
+    public function getProviderRefreshToken(string $sessionToken): ?ProviderToken;
 
     /**
      * Return the provider token.
      *
-     * @return ProviderToken|null
+     * @param string $sessionToken
+     * @return ProviderToken
      */
-    public function getProviderToken(): ?ProviderToken;
+    public function getProviderToken(string $sessionToken): ProviderToken;
 
     /**
      * Retrieve the contact.
@@ -98,7 +100,7 @@ interface ProviderInterface
      *
      * @param array<string, mixed> $configuration
      */
-    public function importConfiguration(array $configuration): void;
+    public function setConfiguration(array $configuration): void;
 
     /**
      * Indicates whether this provider is the one selected for authentication.

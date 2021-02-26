@@ -218,15 +218,11 @@ class AuthenticationController extends AbstractController
         SessionInterface $session,
         string $providerConfigurationName
     ) {
-        // @todo : check if it can be replace
-        // if ($request->getMethod() === 'POST') {
-        //     foreach ($request->request->getIterator() as $key => $value) {
-        //         $requestParameters[$key] = $value;
-        //     }
-        // }
         if ($request->getMethod() === 'GET') {
+            // redirect from external idp
             $data = $request->query->getIterator();
         } else {
+            // submitted from form directly
             $data = $request->request->getIterator();
         }
         $requestParameters = [];
@@ -282,8 +278,8 @@ class AuthenticationController extends AbstractController
                     $session->getId(),
                     $providerConfigurationName,
                     $providerUser,
-                    $authenticationProvider->getProviderToken(),
-                    $authenticationProvider->getProviderRefreshToken()
+                    $authenticationProvider->getProviderToken($session->getId()),
+                    $authenticationProvider->getProviderRefreshToken($session->getId())
                 );
 
                 $response = new Response(null, Response::HTTP_OK, ['content-type' => 'text/html']);

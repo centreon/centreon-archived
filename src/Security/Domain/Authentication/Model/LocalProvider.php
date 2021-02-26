@@ -26,6 +26,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 /**
  * @package Security\Authentication\Model
@@ -52,6 +53,11 @@ class LocalProvider implements ProviderInterface
     private $contactService;
 
     /**
+     * @var AuthenticationServiceInterface
+     */
+    private $authenticationService;
+
+    /**
      * @var Container
      */
     private $dependencyInjector;
@@ -66,15 +72,18 @@ class LocalProvider implements ProviderInterface
      *
      * @param string $loginUrl
      * @param ContactServiceInterface $contactService
+     * @param AuthenticationServiceInterface $authenticationService
      * @param Container $dependencyInjector
      */
     public function __construct(
         string $loginUrl,
         ContactServiceInterface $contactService,
+        AuthenticationServiceInterface $authenticationService,
         Container $dependencyInjector
     ) {
         $this->loginUrl = $loginUrl;
         $this->contactService = $contactService;
+        $this->authenticationService = $authenticationService;
         $this->dependencyInjector = $dependencyInjector;
     }
 
@@ -147,7 +156,7 @@ class LocalProvider implements ProviderInterface
      * @todo : what is the purpose
      * @inheritDoc
      */
-    public function exportConfiguration(): array
+    public function getConfiguration(): array
     {
         return [];
     }
@@ -156,7 +165,7 @@ class LocalProvider implements ProviderInterface
      * @todo : what is the purpose
      * @inheritDoc
      */
-    public function importConfiguration(array $configuration): void
+    public function setConfiguration(array $configuration): void
     {
         $this->configuration = $configuration;
     }
@@ -188,7 +197,7 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
-    public function getProviderRefreshToken(): ?ProviderToken
+    public function getProviderRefreshToken(string $sessionToken): ?ProviderToken
     {
         return null;
     }
@@ -196,8 +205,14 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
-    public function getProviderToken(): ?ProviderToken
+    public function getProviderToken(string $sessionToken): ProviderToken
     {
-        return null;
+        $token = null;
+        // $token = $this->authenticationService->getProviderToken($sessionToken);
+        if ($token === null) {
+            $token = new ProviderToken(null, $sessionToken, null, null, null);
+            // generate token
+        }
+        return $token;
     }
 }
