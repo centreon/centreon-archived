@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-
 use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Context\Context;
