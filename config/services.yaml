@@ -75,10 +75,5 @@ services:
     Security\Domain\Authentication\Model\LocalProvider:
         arguments: [ '%default_login_url%' ]
 
-    security.authentication.manager:
-        class: Security\Domain\Authentication\AuthenticationManager
-        arguments:
-            - '@Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface'
-            - '@Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface'
-            - '@Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface'
-            - '%security.authentication.manager.erase_credentials%'
+#    security.authentication.manager:
+#        class: Security\Domain\Authentication\AuthenticationManager

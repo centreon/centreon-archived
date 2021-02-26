@@ -36,39 +36,25 @@ use Symfony\Component\Security\Guard\Token\PreAuthenticationGuardToken;
  */
 class AuthenticationManager implements AuthenticationManagerInterface
 {
-
-    /**
-     * @var bool
-     */
-    private $eraseCredentials;
     /**
      * @var ContactRepositoryInterface
      */
     private $contactRepository;
-    /**
-     * @var AuthenticationRepositoryInterface
-     */
-    private $authenticationRepository;
+
     /**
      * @var AuthenticationService
      */
     private $authenticationService;
 
     /**
-     * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param AuthenticationServiceInterface $authenticationService
      * @param ContactRepositoryInterface $contactRepository
-     * @param bool $eraseCredentials
      */
     public function __construct(
-        AuthenticationRepositoryInterface $authenticationRepository,
         AuthenticationServiceInterface $authenticationService,
-        ContactRepositoryInterface $contactRepository,
-        bool $eraseCredentials = true
+        ContactRepositoryInterface $contactRepository
     ) {
-        $this->eraseCredentials = $eraseCredentials;
         $this->contactRepository = $contactRepository;
-        $this->authenticationRepository = $authenticationRepository;
         $this->authenticationService = $authenticationService;
     }
 
@@ -88,6 +74,7 @@ class AuthenticationManager implements AuthenticationManagerInterface
         } else {
             throw AuthenticationManagerException::sessionTokenNotFoundException();
         }
+
         $authenticationToken = $this->authenticationService->findAuthenticationTokenBySessionToken($sessionToken);
         if ($authenticationToken === null) {
             throw AuthenticationManagerException::sessionNotFoundException();
