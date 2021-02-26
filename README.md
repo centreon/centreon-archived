@@ -51,8 +51,9 @@ on the market; it is absolutely free and Open Source.
 <a href="https://github.com/agelibert"><img src="https://avatars1.githubusercontent.com/u/28709386?s=400&v=4" title="Adrien Gélibert" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/Thebarda"><img src="https://avatars3.githubusercontent.com/u/12515407?s=400&u=5642f34672a7c1ea887c6c3e12cd28880aa3971e&v=4" title="Tom Darneix" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/bdauria"><img src="https://avatars0.githubusercontent.com/u/8367233?s=400&u=563bd982e8d1557bdfd39627b029610d9c83fdc6&v=4" title="Bruno D'Auria" width="80" height="80"></a> &nbsp;
-<a href="https://github.com/adr-mo "><img src="https://avatars2.githubusercontent.com/u/31647811?s=400&v=4" title="Adrien Morais" width="80" height="80"></a> &nbsp;
-<a href="https://github.com/jeremyjaouen "><img src="https://avatars.githubusercontent.com/u/61694165?s=400&v=4" title="Jérémy Jaouen" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/adr-mo"><img src="https://avatars2.githubusercontent.com/u/31647811?s=400&v=4" title="Adrien Morais" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/jeremyjaouen"><img src="https://avatars.githubusercontent.com/u/61694165?s=400&v=4" title="Jérémy Jaouen" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/zaouchelo"><img src="https://avatars.githubusercontent.com/u/42534944?s=400&u=bed32195d47b193e010c9423fa6909bcdeee2fa9&v=4" title="Jérémy Jaouen" width="80" height="80"></a> &nbsp;
 
 <h4> Quality Assurance </h4>
 
