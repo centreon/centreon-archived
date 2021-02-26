@@ -88,7 +88,16 @@ if (file_exists("./install/setup.php")) {
 /**
  * Install frontend assets if needed
  */
-$basePath = '/' . trim(explode('index.php', $_SERVER['REQUEST_URI'])[0], "/") . '/';
+$requestUri = filter_var(
+    $_SERVER['REQUEST_URI'],
+    FILTER_SANITIZE_STRING,
+    [
+        'options' => [
+            'default' => '/centreon/'
+        ]
+    ]
+);
+$basePath = '/' . trim(explode('index.php', $requestUri)[0], "/") . '/';
 $basePath = str_replace('//', '/', $basePath);
 $indexHtmlPath = './index.html';
 $indexHtmlContent = file_get_contents($indexHtmlPath);

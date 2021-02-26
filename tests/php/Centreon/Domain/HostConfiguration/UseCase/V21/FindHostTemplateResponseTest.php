@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplatesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostTemplate\FindHostTemplatesResponse;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;
 
 /**

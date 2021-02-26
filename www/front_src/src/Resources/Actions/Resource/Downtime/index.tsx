@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useFormik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
 
 import {
   Severity,
@@ -175,7 +174,6 @@ const DowntimeForm = ({
       handleChange={form.handleChange}
       setFieldValue={form.setFieldValue}
       submitting={sendingSetDowntingOnResources}
-      loading={isNil(form.values.comment)}
     />
   );
 };

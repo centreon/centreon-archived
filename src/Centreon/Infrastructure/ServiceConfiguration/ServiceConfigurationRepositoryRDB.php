@@ -228,6 +228,7 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
                 $record
             );
         }
+
         return $serviceMacros;
     }
 

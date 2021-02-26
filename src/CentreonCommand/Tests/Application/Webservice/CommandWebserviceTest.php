@@ -25,8 +25,8 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\ServiceProvider;
 use CentreonCommand\Application\Webservice\CommandWebservice;
-use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Mock\CentreonPaginationServiceMock;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group CentreonCommand

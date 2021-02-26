@@ -11,7 +11,7 @@ import {
 } from '@centreon/ui';
 
 import { baseEndpoint } from '../../api/endpoint';
-import { RawFilter, Filter } from '../models';
+import { Filter } from '../models';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
 
@@ -29,34 +29,34 @@ const buildListCustomFiltersEndpoint = (
   });
 
 const listCustomFilters = (cancelToken: CancelToken) => (): Promise<
-  ListingModel<RawFilter>
+  ListingModel<Filter>
 > =>
-  getData<ListingModel<RawFilter>>(cancelToken)(
+  getData<ListingModel<Filter>>(cancelToken)(
     buildListCustomFiltersEndpoint({ limit: 100, page: 1 }),
   );
 
-type RawFilterWithoutId = Omit<RawFilter, 'id'>;
+type FilterWithoutId = Omit<Filter, 'id'>;
 
 const createFilter = (cancelToken: CancelToken) => (
-  rawFilter: RawFilterWithoutId,
-): Promise<RawFilter> => {
-  return postData<RawFilterWithoutId, RawFilter>(cancelToken)({
+  filter: FilterWithoutId,
+): Promise<Filter> => {
+  return postData<FilterWithoutId, Filter>(cancelToken)({
     endpoint: filterEndpoint,
-    data: rawFilter,
+    data: filter,
   });
 };
 
 interface UpdateFilterProps {
   id: number;
-  rawFilter: RawFilterWithoutId;
+  filter: FilterWithoutId;
 }
 
 const updateFilter = (cancelToken: CancelToken) => (
   parameters: UpdateFilterProps,
-): Promise<RawFilter> => {
-  return putData<RawFilterWithoutId, RawFilter>(cancelToken)({
+): Promise<Filter> => {
+  return putData<FilterWithoutId, Filter>(cancelToken)({
     endpoint: `${filterEndpoint}/${parameters.id}`,
-    data: parameters.rawFilter,
+    data: parameters.filter,
   });
 };
 

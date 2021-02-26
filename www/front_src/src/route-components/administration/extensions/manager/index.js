@@ -407,6 +407,23 @@ class ExtensionsRoute extends Component {
       });
   };
 
+  getEntityByIdAndType = (id, type) => {
+    const { extensions } = this.state;
+
+    if (type === 'module') {
+      return extensions.result.module.entities.find(
+        (entity) => entity.id === id,
+      );
+    }
+    return extensions.result.widget.entities.find((entity) => entity.id === id);
+  };
+
+  toggleDeleteModalByIdAndType = (id, type) => {
+    const entity = this.getEntityByIdAndType(id, type);
+
+    this.toggleDeleteModal(entity, type);
+  };
+
   render() {
     const {
       extensions,
@@ -560,7 +577,7 @@ class ExtensionsRoute extends Component {
             loading={modalDetailsLoading}
             onCloseClicked={this.hideExtensionDetails.bind(this)}
             onInstallClicked={this.installById}
-            onDeleteClicked={this.deleteById}
+            onDeleteClicked={this.toggleDeleteModalByIdAndType}
             onUpdateClicked={this.updateById}
             modalDetails={extensionDetails}
           />

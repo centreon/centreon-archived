@@ -58,8 +58,6 @@ class PartEngine
                 $dbResult = $db->query(
                     "ALTER TABLE " . $tableName . " ADD PARTITION (PARTITION `pmax` VALUES LESS THAN MAXVALUE)"
                 );
-                print "[" . date(DATE_RFC822) . "][updateParts] Create new part for table " . $tableName . " : "
-                    . "pmax - Range: MAXVALUE\n";
             } catch (\PDOException $e) {
                 throw new Exception(
                     "Error: cannot add a maxvalue partition for table "
@@ -93,9 +91,6 @@ class PartEngine
         if ($day < 10) {
             $day = "0" . $day;
         }
-
-        print "[" . date(DATE_RFC822) . "][updateParts] Create new part for table " . $tableName . " : "
-            . ($ntime[5] + 1900) . $month . $day . " - Range: $current_time\n";
 
         $partitionQuery = "PARTITION `p" . ($ntime[5] + 1900) . $month . $day
             . "` VALUES LESS THAN(" . $current_time . ")";

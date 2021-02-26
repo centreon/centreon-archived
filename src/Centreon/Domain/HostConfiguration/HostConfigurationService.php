@@ -210,6 +210,18 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     /**
      * @inheritDoc
      */
+    public function findCommandLine(int $hostId): ?string
+    {
+        try {
+            return $this->hostConfigurationRepository->findCommandLine($hostId);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_('Error while searching for the command of host'), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array
     {
         try {
@@ -222,19 +234,27 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     /**
      * @inheritDoc
      */
-    public function findHostMacrosPassword(int $hostId, string $command): array
+    public function findHostMacrosFromCommandLine(int $hostId, string $command): array
     {
-        $hostMacrosPassword = [];
-        // If contains on-demand host macros
-        if (strpos($command, '$_HOST') !== false) {
-            $onDemandHostMacros = $this->findOnDemandHostMacros($hostId, true);
-            foreach ($onDemandHostMacros as $hostMacro) {
-                if ($hostMacro->isPassword()) {
-                    $hostMacrosPassword[] = $hostMacro;
+        $hostMacros = [];
+        if (preg_match_all('/(\$_HOST\S+?\$)/', $command, $matches)) {
+            $matchedMacros = $matches[0];
+
+            foreach ($matchedMacros as $matchedMacroName) {
+                $hostMacros[$matchedMacroName] = (new HostMacro())
+                    ->setName($matchedMacroName)
+                    ->setValue('');
+            }
+
+            $linkedHostMacros = $this->findOnDemandHostMacros($hostId, true);
+            foreach ($linkedHostMacros as $linkedHostMacro) {
+                if (in_array($linkedHostMacro->getName(), $matchedMacros)) {
+                    $hostMacros[$linkedHostMacro->getName()] = $linkedHostMacro;
                 }
             }
         }
-        return $hostMacrosPassword;
+
+        return array_values($hostMacros);
     }
 
     /**

@@ -20,7 +20,12 @@ import {
 } from '@material-ui/pickers';
 import { Alert } from '@material-ui/lab';
 
-import { Dialog, TextField, SelectField, Loader } from '@centreon/ui';
+import {
+  Dialog,
+  TextField,
+  SelectField,
+  useLocaleDateTimeFormat,
+} from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
 import {
@@ -58,7 +63,6 @@ interface Props {
   handleChange;
   setFieldValue;
   submitting: boolean;
-  loading: boolean;
 }
 
 const pickerCommonProps = {
@@ -79,7 +83,7 @@ const datePickerProps = {
 
 const timePickerProps = {
   ...pickerCommonProps,
-  format: 'HH:mm',
+  format: 'LT',
   ampm: false,
 } as Omit<TimePickerProps, 'onChange'>;
 
@@ -93,11 +97,11 @@ const DialogDowntime = ({
   submitting,
   handleChange,
   setFieldValue,
-  loading,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { locale, timezone } = useUserContext();
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
+  const { format } = useLocaleDateTimeFormat();
 
   const open = resources.length > 0;
 
@@ -111,11 +115,11 @@ const DialogDowntime = ({
 
   class Adapter extends DayjsAdapter {
     public format(date, formatString): string {
-      return dayjs(date).tz(timezone).format(formatString);
+      return format({ date, formatString });
     }
 
     public date(value): dayjs.Dayjs {
-      return dayjs(value).tz(timezone);
+      return dayjs(value).locale(locale).tz(timezone);
     }
   }
 
@@ -131,7 +135,6 @@ const DialogDowntime = ({
       confirmDisabled={!canConfirm}
       submitting={submitting}
     >
-      {loading && <Loader fullContent />}
       {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
       <MuiPickersUtilsProvider utils={Adapter} locale={locale.substring(0, 2)}>
         <Grid direction="column" container spacing={1}>
@@ -209,7 +212,7 @@ const DialogDowntime = ({
                   size="small"
                 />
               }
-              label={labelFixed}
+              label={t(labelFixed)}
             />
           </Grid>
           <Grid item>

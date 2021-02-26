@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -122,9 +123,8 @@ if ($id !== false) {
     $end_date = $dates[1];
 
     /*
-     * Getting hostgroup and his hosts stats
+     * Getting servicegroups logs
      */
-    $servicesgroupStats = array();
     $servicesgroupStats = getLogInDbForServicesGroup($id, $start_date, $end_date, $reportingTimePeriod);
 
     /*

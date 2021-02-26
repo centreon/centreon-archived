@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,9 @@ use Centreon\Domain\Common\Assertion\Assertion;
 class HostCategory
 {
     public const MAX_NAME_LENGTH = 200,
+                 MIN_NAME_LENGTH = 1,
                  MAX_ALIAS_LENGTH = 200,
+                 MIN_ALIAS_LENGTH = 1,
                  MAX_COMMENTS_LENGTH = 65535;
 
     /**
@@ -59,6 +61,17 @@ class HostCategory
      * @var bool Indicates whether this host category is enabled or not (TRUE by default)
      */
     private $isActivated = true;
+
+    /**
+     * @param string $name Name of the host category
+     * @param string $alias Alias of the host category
+     * @throws \Assert\AssertionFailedException
+     */
+    public function __construct(string $name, string $alias)
+    {
+        $this->setName($name);
+        $this->setAlias($alias);
+    }
 
     /**
      * @return int|null
@@ -93,9 +106,8 @@ class HostCategory
      */
     public function setName(string $name): HostCategory
     {
-        if ($name !== null) {
-            Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'HostCategory::name');
-        }
+        Assertion::minLength($name, self::MIN_NAME_LENGTH, 'HostCategory::name');
+        Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'HostCategory::name');
         $this->name = $name;
         return $this;
     }
@@ -115,9 +127,8 @@ class HostCategory
      */
     public function setAlias(string $alias): HostCategory
     {
-        if ($alias !== null) {
-            Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'HostCategory::alias');
-        }
+        Assertion::minLength($alias, self::MIN_ALIAS_LENGTH, 'HostCategory::alias');
+        Assertion::maxLength($alias, self::MAX_ALIAS_LENGTH, 'HostCategory::alias');
         $this->alias = $alias;
         return $this;
     }
@@ -134,7 +145,7 @@ class HostCategory
      * @param bool $isActivated
      * @return HostCategory
      */
-    public function setIsActivated(bool $isActivated): HostCategory
+    public function setActivated(bool $isActivated): HostCategory
     {
         $this->isActivated = $isActivated;
         return $this;
