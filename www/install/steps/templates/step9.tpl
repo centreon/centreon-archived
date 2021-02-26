@@ -50,10 +50,11 @@
             type: 'POST',
             url: './steps/process/process_step9.php',
             data: jQuery('input[name="send_statistics"]').serialize(),
-        }).success(function (data) {
-            var data = JSON.parse(data);
-            if (data.result) {
-                javascript:self.location = "../index.php";
+            success: (data) => {
+                var data = JSON.parse(data);
+                if (data.result) {
+                    javascript:self.location = "../index.php";
+                }
             }
         });
     }
