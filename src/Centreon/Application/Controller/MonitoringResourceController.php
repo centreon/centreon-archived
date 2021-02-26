@@ -311,6 +311,14 @@ class MonitoringResourceController extends AbstractController
             ->filterByContact($this->getUser())
             ->findOneHost($hostId);
 
+        try {
+            $this->monitoring->hidePasswordInHostCommandLine($host);
+        } catch (\Throwable $ex) {
+            $host->setCommandLine(
+                sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
+            );
+        }
+
         if ($host === null) {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
@@ -346,10 +354,10 @@ class MonitoringResourceController extends AbstractController
             ->filterByContact($this->getUser())
             ->findOneService($hostId, $serviceId);
         try {
-            $this->monitoring->hidePasswordInCommandLine($service);
+            $this->monitoring->hidePasswordInServiceCommandLine($service);
         } catch (\Throwable $ex) {
             $service->setCommandLine(
-                sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
+                sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
             );
         }
 
