@@ -144,7 +144,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
 
                 return (
                   displayCard && (
-                    <Grid key={title} item xs={variableXs}>
+                    <Grid key={t(title)} item xs={variableXs}>
                       <DetailsCard title={t(title)} lines={getLines()} />
                     </Grid>
                   )
@@ -169,7 +169,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
                   <Grid container alignItems="center" spacing={1}>
                     <Grid item>{t(labelCommand)}</Grid>
                     <Grid item>
-                      <Tooltip onClick={copyCommandLine} title={labelCopy}>
+                      <Tooltip onClick={copyCommandLine} title={t(labelCopy)}>
                         <IconButton size="small">
                           <IconCopyFile color="primary" fontSize="small" />
                         </IconButton>
