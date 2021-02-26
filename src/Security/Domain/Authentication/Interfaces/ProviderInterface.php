@@ -52,13 +52,6 @@ interface ProviderInterface
     public function canRefreshToken(): bool;
 
     /**
-     * Export the provider's configuration (ex: client_id, client_secret, grant_type, ...).
-     *
-     * @return array<string, mixed>
-     */
-    public function exportConfiguration(): array;
-
-    /**
      * Get the provider's authentication uri (ex: https://www.okta.com/.../auth).
      *
      * @return string
@@ -96,7 +89,14 @@ interface ProviderInterface
     public function getUser(): ?ContactInterface;
 
     /**
-     * Import the provider's configuration to initialize it (ex: client_id, client_secret, grant_type, ...).
+     * Get the provider's configuration (ex: client_id, client_secret, grant_type, ...).
+     *
+     * @return array<string, mixed>
+     */
+    public function getConfiguration(): array;
+
+    /**
+     * Set the provider's configuration to initialize it (ex: client_id, client_secret, grant_type, ...).
      *
      * @param array<string, mixed> $configuration
      */
