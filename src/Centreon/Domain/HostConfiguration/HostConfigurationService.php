@@ -241,9 +241,12 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             $matchedMacros = $matches[0];
 
             foreach ($matchedMacros as $matchedMacroName) {
-                $hostMacros[$matchedMacroName] = (new HostMacro())
-                    ->setName($matchedMacroName)
-                    ->setValue('');
+                // snmp macros are not custom macros
+                if (!in_array($matchedMacroName, ['$_HOSTSNMPCOMMUNITY$', '$_HOSTSNMPVERSION$'])) {
+                    $hostMacros[$matchedMacroName] = (new HostMacro())
+                        ->setName($matchedMacroName)
+                        ->setValue('');
+                }
             }
 
             $linkedHostMacros = $this->findOnDemandHostMacros($hostId, true);
