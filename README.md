@@ -47,7 +47,7 @@ on the market; it is absolutely free and Open Source.
 <a href="https://github.com/loiclau"><img src="https://avatars3.githubusercontent.com/u/2759315?s=400&v=4" title="Loic Laurent" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/leoncx"><img src="https://avatars1.githubusercontent.com/u/3930276?s=400&v=4" title="Maximilien Bersoult" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/jiliangWANG"><img src="https://avatars1.githubusercontent.com/u/48441685?s=400&v=4" title="Jiliang Wang" width="80" height="80"></a> &nbsp;
-<a href="https://github.com/Pontissalien"><img src="https://avatars3.githubusercontent.com/u/38663853?s=400&v=4" title="Thomas Arnaud" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/Nohzoh"><img src="https://avatars3.githubusercontent.com/u/38663853?s=400&v=4" title="Thomas Arnaud" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/agelibert"><img src="https://avatars1.githubusercontent.com/u/28709386?s=400&v=4" title="Adrien Gélibert" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/Thebarda"><img src="https://avatars3.githubusercontent.com/u/12515407?s=400&u=5642f34672a7c1ea887c6c3e12cd28880aa3971e&v=4" title="Tom Darneix" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/bdauria"><img src="https://avatars0.githubusercontent.com/u/8367233?s=400&u=563bd982e8d1557bdfd39627b029610d9c83fdc6&v=4" title="Bruno D'Auria" width="80" height="80"></a> &nbsp;
