@@ -81,14 +81,14 @@ interface ServiceConfigurationServiceInterface extends ContactFilterInterface
     public function findServicesByHost(Host $host): array;
 
     /**
-     * Find all on-demand service macros of type password needed for this command.
+     * Find all on-demand service macros needed for this command.
      *
      * @param int $serviceId Service id
      * @param string $command Command to analyse
-     * @return ServiceMacro[] List of service macros of type password
+     * @return ServiceMacro[] List of service macros
      * @throws ServiceConfigurationException
      */
-    public function findServiceMacrosPassword(int $serviceId, string $command): array;
+    public function findServiceMacrosFromCommandLine(int $serviceId, string $command): array;
 
     /**
      * Find the command of a service.
