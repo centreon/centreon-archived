@@ -23,13 +23,21 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\RemoteServer\Interfaces;
 
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 
 interface RemoteServerServiceInterface
 {
     /**
      * Convert a Central into a Remote Server
      * @param PlatformInformation $platformInformation
+     * @throws PlatformTopologyException
+     * @throws EntityNotFoundException
+     * @throws MenuException
+     * @throws PlatformTopologyException
+     * @throws MenuException
      */
     public function convertCentralToRemote(PlatformInformation $platformInformation): void;
 
