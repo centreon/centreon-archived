@@ -32,12 +32,12 @@ class PlatformTopologyFactoryRDB
 {
     /**
      * Create a platform entity depending on the pending status
-     * @param array $platformData
+     * @param array<int|string> $platformData
      * @return PlatformInterface
      */
     public static function create(array $platformData): PlatformInterface
     {
-        if (true === $platformData['pending']) {
+        if ('1' === $platformData['pending']) {
             return self::createPlatformPending($platformData);
         }
 
@@ -46,8 +46,7 @@ class PlatformTopologyFactoryRDB
 
     /**
      * Return a Registered platform entity
-     *
-     * @param array $platformData
+     * @param array<int|string> $platformData
      * @return PlatformRegistered
      */
     private static function createPlatformRegistered(array $platformData): PlatformRegistered
@@ -56,31 +55,39 @@ class PlatformTopologyFactoryRDB
         foreach ($platformData as $key => $value) {
             switch ($key) {
                 case 'id':
-                    $platformReturned->setId($value);
+                    if (null !== $value && is_int($value)) {
+                        $platformReturned->setId($value);
+                    }
                     break;
                 case 'name':
-                    $platformReturned->setName($value);
+                    if (null !== $value && is_string($value)) {
+                        $platformReturned->setName($value);
+                    }
                     break;
                 case 'hostname':
-                    $platformReturned->setHostname($value);
+                    if (null !== $value && is_string($value)) {
+                        $platformReturned->setHostname($value);
+                    }
                     break;
                 case 'type':
-                    $platformReturned->setType($value);
+                    if (null !== $value && is_string($value)) {
+                        $platformReturned->setType($value);
+                    }
                     break;
                 case 'address':
-                    $platformReturned->setAddress($value);
-                    break;
-                case 'parentAddress':
-                    $platformReturned->setParentAddress($value);
+                    if (null !== $value && is_string($value)) {
+                        $platformReturned->setAddress($value);
+                    }
                     break;
                 case 'parentId':
-                    $platformReturned->setParentId($value);
+                    if (null !== $value && is_int($value)) {
+                        $platformReturned->setParentId($value);
+                    }
                     break;
                 case 'serverId':
-                    $platformReturned->setServerId($value);
-                    break;
-                case 'isLinkedToAnotherServer':
-                    $platformReturned->setLinkedToAnotherServer($value);
+                    if (null !== $value && is_int($value)) {
+                        $platformReturned->setServerId($value);
+                    }
                     break;
             }
         }
@@ -90,8 +97,7 @@ class PlatformTopologyFactoryRDB
 
     /**
      * Return a pending platform pending
-     *
-     * @param array $platformData
+     * @param array<int|string> $platformData
      * @return PlatformPending
      */
     private static function createPlatformPending(array $platformData): PlatformPending
@@ -100,31 +106,39 @@ class PlatformTopologyFactoryRDB
         foreach ($platformData as $key => $value) {
             switch ($key) {
                 case 'id':
-                    $platformReturned->setId($value);
+                    if (null !== $value && is_int($value)) {
+                        $platformReturned->setId($value);
+                    }
                     break;
                 case 'name':
-                    $platformReturned->setName($value);
+                    if (null !== $value && is_string($value)) {
+                        $platformReturned->setName($value);
+                    }
                     break;
                 case 'hostname':
-                    $platformReturned->setHostname($value);
+                    if (null !== $value && is_string($value)) {
+                        $platformReturned->setHostname($value);
+                    }
                     break;
                 case 'type':
-                    $platformReturned->setType($value);
+                    if (null !== $value && is_string($value)) {
+                        $platformReturned->setType($value);
+                    }
                     break;
                 case 'address':
-                    $platformReturned->setAddress($value);
-                    break;
-                case 'parentAddress':
-                    $platformReturned->setParentAddress($value);
+                    if (null !== $value && is_string($value)) {
+                        $platformReturned->setAddress($value);
+                    }
                     break;
                 case 'parentId':
-                    $platformReturned->setParentId($value);
+                    if (null !== $value && is_int($value)) {
+                        $platformReturned->setParentId($value);
+                    }
                     break;
                 case 'serverId':
-                    $platformReturned->setServerId($value);
-                    break;
-                case 'isLinkedToAnotherServer':
-                    $platformReturned->setLinkedToAnotherServer($value);
+                    if (null !== $value && is_int($value)) {
+                        $platformReturned->setServerId($value);
+                    }
                     break;
             }
         }

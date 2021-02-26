@@ -409,7 +409,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             null === $platform->getParentAddress()
             && !in_array(
                 $platform->getType(),
-                [Platform::TYPE_CENTRAL, Platform::TYPE_REMOTE],
+                [PlatformRegistered::TYPE_CENTRAL, PlatformRegistered::TYPE_REMOTE],
                 false
             )
         ) {
@@ -551,8 +551,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
         // Avoid to link a remote to another remote
         if (
-            Platform::TYPE_REMOTE === $platform->getType()
-            && Platform::TYPE_REMOTE === $registeredParentInTopology->getType()
+            PlatformRegistered::TYPE_REMOTE === $platform->getType()
+            && PlatformRegistered::TYPE_REMOTE === $registeredParentInTopology->getType()
         ) {
             throw new PlatformTopologyConflictException(
                 sprintf(
@@ -567,7 +567,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (
             !in_array(
                 $registeredParentInTopology->getType(),
-                [Platform::TYPE_REMOTE, Platform::TYPE_CENTRAL],
+                [PlatformRegistered::TYPE_REMOTE, PlatformRegistered::TYPE_CENTRAL],
                 false
             )
         ) {
@@ -587,7 +587,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         // A platform behind a remote needs to send the data to the Central too
         if (
             null === $registeredParentInTopology->getParentId()
-            && $registeredParentInTopology->getType() === Platform::TYPE_REMOTE
+            && $registeredParentInTopology->getType() === PlatformRegistered::TYPE_REMOTE
         ) {
             $registeredParentInTopology->setLinkedToAnotherServer(true);
             return $registeredParentInTopology;
@@ -600,9 +600,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function getPlatformTopology(): array
     {
-        /**
-         * @var Platform[] $platformTopology
-         */
         $platformTopology = $this->platformTopologyRepository->getPlatformTopology();
         if (empty($platformTopology)) {
             throw new EntityNotFoundException(_('No Platform Topology found.'));
@@ -614,7 +611,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $platformParent = $this->platformTopologyRepository->findPlatform(
                     $platform->getParentId()
                 );
-                $platform->setParentAddress($platformParent->getAddress());
+                if (null !== $platformParent) {
+                    $platform->setParentAddress($platformParent->getAddress());
+                }
             }
 
             //Set the broker relation type if the platform is completely registered
@@ -645,17 +644,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             if (($deletedPlatform = $this->platformTopologyRepository->findPlatform($serverId)) === null) {
                 throw new EntityNotFoundException(_('Platform not found'));
             }
-            /**
-             * @var Platform[] $childPlatforms
-             */
             $childPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId($serverId);
 
             if (!empty($childPlatforms)) {
                 /**
                  * If at least one children platform was found,
                  * find the Top Parent platform and link children platform(s) to it.
-                 *
-                 * @var Platform|null $topLevelPlatform
                  */
                 $topLevelPlatform = $this->findTopLevelPlatform();
 
@@ -676,7 +670,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              * Delete the monitoring server and the topology.
              */
             if ($deletedPlatform->getServerId() !== null) {
-                if ($deletedPlatform->getType() === Platform::TYPE_REMOTE) {
+                if ($deletedPlatform->getType() === PlatformRegistered::TYPE_REMOTE) {
                     $this->remoteServerRepository->deleteRemoteServerByAddress($deletedPlatform->getAddress());
                     $this->remoteServerRepository->deleteAdditionalRemoteServer($deletedPlatform->getServerId());
                 }

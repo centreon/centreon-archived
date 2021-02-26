@@ -29,7 +29,7 @@ class PlatformDto
 {
     /**
      * @param PlatformInterface $platformSource
-     * @return array
+     * @return array<int|string>
      */
     public function createPlatformDto(PlatformInterface $platformSource): array
     {
@@ -59,15 +59,9 @@ class PlatformDto
             $platformToCreate['parentAddress'] = $platformSource->getParentAddress();
         }
 
-        if (null !== $platformSource->getParentId()) {
-            $platformToCreate['parentId'] = $platformSource->getParentId();
-        }
-
         if (null !== $platformSource->getServerId()) {
             $platformToCreate['serverId'] = $platformSource->getServerId();
         }
-
-        $platformToCreate['isLinkedToAnotherServer'] = $platformSource->isLinkedToAnotherServer();
 
         $platformToCreate['pending'] = (true === $platformSource->isPending() ? '1' : '0');
 
