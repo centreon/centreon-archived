@@ -417,6 +417,44 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     /**
      * @inheritDoc
      */
+    public function findCommandLine(int $hostId): ?string
+    {
+        $request = $this->translateDbName(
+            'WITH RECURSIVE inherite AS (
+                SELECT relation.host_host_id, relation.host_tpl_id, relation.order, host.command_command_id,
+                0 AS level
+                FROM `:db`.host
+                LEFT JOIN `:db`.host_template_relation relation
+                    ON relation.host_host_id  = host.host_id
+                WHERE host.host_id = :host_id
+                UNION ALL
+                SELECT relation.host_host_id, relation.host_tpl_id, relation.order, host.command_command_id,
+                inherite.level + 1
+                FROM `:db`.host
+                INNER JOIN inherite
+                    ON inherite.host_tpl_id = host.host_id
+                LEFT JOIN `:db`.host_template_relation relation
+                    ON relation.host_host_id  = host.host_id
+            )
+            SELECT command.command_line
+            FROM inherite
+            INNER JOIN `:db`.command
+                ON command.command_id = inherite.command_command_id'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            return (string)$record['command_line'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array
     {
         if ($isUsingInheritance) {
