@@ -144,7 +144,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
 
                 return (
                   displayCard && (
-                    <Grid key={t(title)} item xs={variableXs}>
+                    <Grid key={title} item xs={variableXs}>
                       <DetailsCard title={t(title)} lines={getLines()} />
                     </Grid>
                   )
