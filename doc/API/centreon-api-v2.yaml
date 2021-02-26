@@ -4230,6 +4230,7 @@ components:
           example: "ESX-France|Cpus"
     Monitoring.Notes:
       type: object
+      nullable: true
       properties:
         url:
           type: string
