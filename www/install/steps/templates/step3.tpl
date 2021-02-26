@@ -34,23 +34,23 @@
         jQuery.ajax({
             type: 'POST',
             url: './steps/process/process_step3.php',
-            data: jQuery('#form_step3').serialize()
-        }).success(function(data){
-            var errors = JSON.parse(data);
-            if (!errors.required.length && !errors.directory_not_found.length && !errors.file_not_found.length) {
-                nextStep();
-            } else {
-                errors.required.forEach(function(element){
-                    jQuery("input[name=" + element + "]").next().html("Parameter is required");
-                });
-                errors.directory_not_found.forEach(function(element){
-                    jQuery("input[name=" + element + "]").next().html("Directory not found");
-                });
-                errors.file_not_found.forEach(function(element){
-                    jQuery("input[name=" + element + "]").next().html("File not found");
-                });
+            data: jQuery('#form_step3').serialize(),
+            success: (data) => {
+                var errors = JSON.parse(data);
+                if (!errors.required.length && !errors.directory_not_found.length && !errors.file_not_found.length) {
+                    loadStep("nextStep");
+                } else {
+                    errors.required.forEach(function(element){
+                        jQuery("input[name=" + element + "]").next().html("Parameter is required");
+                    });
+                    errors.directory_not_found.forEach(function(element){
+                        jQuery("input[name=" + element + "]").next().html("Directory not found");
+                    });
+                    errors.file_not_found.forEach(function(element){
+                        jQuery("input[name=" + element + "]").next().html("File not found");
+                    });
+                }
             }
-
         });
 
         return false;
