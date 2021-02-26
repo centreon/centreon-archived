@@ -164,7 +164,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         /**
-         * @var Platform|null $registeredParentInTopology
+         * @var PlatformInterface|null $registeredParentInTopology
          */
         $registeredParentInTopology = $this->findParentPlatform($platformPending);
 

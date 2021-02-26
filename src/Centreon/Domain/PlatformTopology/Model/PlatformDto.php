@@ -27,6 +27,10 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 
 class PlatformDto
 {
+    /**
+     * @param PlatformInterface $platformSource
+     * @return array
+     */
     public function createPlatformDto(PlatformInterface $platformSource): array
     {
         $platformToCreate = [];

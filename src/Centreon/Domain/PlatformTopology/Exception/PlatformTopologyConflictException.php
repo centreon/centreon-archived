@@ -34,7 +34,7 @@ class PlatformTopologyConflictException extends \Exception
      * Fail to found the platform on the central type parent
      * @param string $name
      * @param string $address
-     * @return static
+     * @return self
      */
     public static function notFoundOnCentral(string $name, string $address): self
     {

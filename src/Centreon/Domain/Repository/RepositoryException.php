@@ -30,7 +30,7 @@ class RepositoryException extends \Exception
     /**
      * Failure on authentication token retrieval
      * @param string $centralServerAddress
-     * @return static
+     * @return self
      */
     public static function failToGetToken(string $centralServerAddress): self
     {
@@ -45,7 +45,7 @@ class RepositoryException extends \Exception
     /**
      * Failure returned from the API calling the Central
      * @param string $details
-     * @return static
+     * @return self
      */
     public static function apiRequestOnCentralException(string $details): self
     {
@@ -55,7 +55,7 @@ class RepositoryException extends \Exception
     /**
      * Transport exception related to the client
      * @param string $details
-     * @return static
+     * @return self
      */
     public static function apiClientException(string $details): self
     {
@@ -65,7 +65,7 @@ class RepositoryException extends \Exception
     /**
      * Transport exception related to the redirection
      * @param string $details
-     * @return static
+     * @return self
      */
     public static function apiRedirectionException(string $details): self
     {
@@ -76,7 +76,7 @@ class RepositoryException extends \Exception
      * Transport exception related to the server
      * @param string $message concatenated message with the central response
      * @param string $details
-     * @return static
+     * @return self
      */
     public static function apiServerException(string $message, string $details): self
     {
@@ -86,7 +86,7 @@ class RepositoryException extends \Exception
     /**
      * Central response decoding failure
      * @param string $details
-     * @return static
+     * @return self
      */
     public static function apiDecodingException(string $details): self
     {
@@ -96,7 +96,7 @@ class RepositoryException extends \Exception
     /**
      * Undetermined error when calling the central's API
      * @param string $details
-     * @return static
+     * @return self
      */
     public static function apiUndeterminedError(string $details): self
     {
