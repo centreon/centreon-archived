@@ -169,7 +169,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
                   <Grid container alignItems="center" spacing={1}>
                     <Grid item>{t(labelCommand)}</Grid>
                     <Grid item>
-                      <Tooltip onClick={copyCommandLine} title={(labelCopy)}>
+                      <Tooltip onClick={copyCommandLine} title={labelCopy}>
                         <IconButton size="small">
                           <IconCopyFile color="primary" fontSize="small" />
                         </IconButton>
