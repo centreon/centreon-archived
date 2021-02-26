@@ -23,41 +23,18 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Exception;
 
 /**
- * This class is designed to contain all exceptions for the context of the host group.
+ * This class is designed to contain all exceptions for the context of the host macro.
  *
  * @package Centreon\Domain\HostConfiguration\Exception
  */
-class HostGroupException extends \Exception
+class HostMacroException extends \Exception
 {
     /**
      * @param \Throwable $ex
-     * @return HostGroupException
-     */
-    public static function addGroupException(\Throwable $ex)
-    {
-        return new self(_('Error when adding a host groups'), 0, $ex);
-    }
-
-    /**
-     * @param \Throwable $ex
      * @return self
      */
-    public static function findHostGroupsException(\Throwable $ex): self
+    public static function addMacroException(\Throwable $ex): self
     {
-        return new self(_('Error when searching for host groups'), 0, $ex);
-    }
-
-    /**
-     * @param \Throwable $ex
-     * @param array<string, mixed> $data
-     * @return self
-     */
-    public static function findHostGroupException(\Throwable $ex, array $data = []): self
-    {
-        return new self(
-            sprintf(_('Error when searching for the host group (%s)'), $data['id'] ?? $data['name'] ?? null),
-            0,
-            $ex
-        );
+        return new self(_('Error when adding a host macro'), 0, $ex);
     }
 }

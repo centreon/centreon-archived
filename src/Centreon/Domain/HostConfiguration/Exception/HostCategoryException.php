@@ -31,6 +31,15 @@ class HostCategoryException extends \Exception
 {
     /**
      * @param \Throwable $ex
+     * @return HostCategoryException
+     */
+    public static function addCategoryException(\Throwable $ex): self
+    {
+        return new self(_('Error when adding a host category'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
      * @return self
      */
     public static function findHostCategoriesException(\Throwable $ex): self

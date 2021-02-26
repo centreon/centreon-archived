@@ -27,7 +27,7 @@ use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Repository\RepositoryException;
 
 /**
- * This interface gathers all the reading operations on the repository.
+ * This interface gathers all the reading operations on the host group repository.
  *
  * @package Centreon\Domain\HostConfiguration\Interfaces\HostGroup
  */
@@ -72,6 +72,14 @@ interface HostGroupReadRepositoryInterface
      * @throws \Exception
      */
     public function findByIdAndContact(int $hostGroupId, ContactInterface $contact): ?HostGroup;
+
+    /**
+     * Find host groups by name (for admin user).
+     *
+     * @param string[] $groupsName List of names of host groups to be found
+     * @return HostGroup[]
+     */
+    public function findByNames(array $groupsName): array;
 
     /**
      * Find all host groups.

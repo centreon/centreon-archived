@@ -20,22 +20,13 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces\HostCategory;
-
-use Centreon\Domain\HostConfiguration\Model\HostCategory;
+namespace Centreon\Domain\HostConfiguration\Interfaces\HostMacro;
 
 /**
- * This interface gathers all the writing operations on the host category repository.
+ * This interface gathers all the reading operations on the repository.
  *
- * @package Centreon\Domain\HostConfiguration\Interfaces\HostCategory
+ * @package Centreon\Domain\HostConfiguration\Interfaces\HostMacro
  */
-interface HostCategoryWriteRepositoryInterface
+interface HostMacroReadRepositoryInterface
 {
-    /**
-     * Add a host category.
-     *
-     * @param HostCategory $category Host category to be added
-     * @throws \Throwable
-     */
-    public function addCategory(HostCategory $category): void;
 }
