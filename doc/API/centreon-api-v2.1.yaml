@@ -581,6 +581,8 @@ paths:
         * status_code
         * status
         * action_url
+        * notes_label
+        * notes_url
         * parent_name
         * parent_status
         * severity_level
@@ -4237,11 +4239,22 @@ components:
               nullable: true
               description: "URL that can be used to provide more actions to be performed on the resource"
               example: "http://mediawiki/resource/name"
-            notes_url:
-              type: string
-              nullable: true
-              description: "URL that can be used to provide more information on the resource"
-              example: "http://mediawiki/resource/name"
+            notes:
+              $ref: '#/components/schemas/Monitoring.Notes'
+    Monitoring.Notes:
+      type: object
+      nullable: true
+      properties:
+        url:
+          type: string
+          nullable: true
+          description: "URL that can be used to provide more information on the resource"
+          example: "http://mediawiki/resource/name"
+        label:
+          type: string
+          nullable: true
+          description: "Note that can be used to describe the note url"
+          example: "How to turn back on the server"
     Monitoring.ResourceStatus:
       type: object
       properties:
