@@ -282,5 +282,4 @@ services:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
 
     Centreon\Application\Controller\AuthenticationController:
-        arguments:
-            -  !tagged_iterator 'authentication.providers'
+        arguments: [!tagged_iterator 'authentication.providers']

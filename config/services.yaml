@@ -68,12 +68,11 @@ services:
     Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface:
         class: Security\Domain\Authentication\AuthenticationService
 
-    Security\Domain\Authentication\Model\ProviderFactory:
-        arguments:
-            - !tagged_iterator 'authentication.providers'
-
     Security\Domain\Authentication\Model\LocalProvider:
         arguments: [ '%default_login_url%' ]
+
+    Security\Domain\Authentication\Model\ProviderFactory:
+        arguments: [!tagged_iterator authentication.providers]
 
 #    security.authentication.manager:
 #        class: Security\Domain\Authentication\AuthenticationManager

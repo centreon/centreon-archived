@@ -39,12 +39,15 @@ class ProviderFactory
      * @param \Traversable $providers
      * @throws \InvalidArgumentException
      */
-    public function __construct(\Traversable $providers)
-    {
+    public function __construct(
+        //\Traversable $providers
+    ) {
+        /*
         if (!$providers) {
             throw new \InvalidArgumentException('You must at least add one authentication provider');
         }
         $this->providers = iterator_to_array($providers);
+        */
     }
 
     /**
