@@ -28,7 +28,6 @@ use FOS\RestBundle\View\View;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Security\Domain\Authentication\Model\ProviderFactory;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,18 +63,20 @@ class AuthenticationController extends AbstractController
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        previousAuthenticationServiceInterface $auth,
-        AuthenticationServiceInterface $authenticationService,
         \Traversable $providers,
-        ContactServiceInterface $contactService
+        previousAuthenticationServiceInterface $auth,
+        ContactServiceInterface $contactService,
+        AuthenticationServiceInterface $authenticationService
     ) {
         $this->auth = $auth;
+
         if (count($providers) === 0) {
             throw new \InvalidArgumentException('You must at least add one authentication provider');
         }
         $this->providers = iterator_to_array($providers);
-        $this->authenticationService = $authenticationService;
+
         $this->contactService = $contactService;
+        $this->authenticationService = $authenticationService;
     }
 
     /**

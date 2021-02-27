@@ -53,11 +53,12 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param ProviderFactory $providerFactory
      */
     public function __construct(
-        AuthenticationRepositoryInterface $authenticationRepository,
-        ProviderFactory $providerFactory
+//        AuthenticationRepositoryInterface $authenticationRepository,
+//        ProviderFactory $providerFactory
     ) {
-        $this->repository = $authenticationRepository;
-        $this->providerFactory = $providerFactory;
+        // @todo autoload seems broken here
+//        $this->repository = $authenticationRepository;
+//        $this->providerFactory = $providerFactory;
     }
 
     /**

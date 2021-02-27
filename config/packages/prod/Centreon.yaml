@@ -283,6 +283,4 @@ services:
 
     Centreon\Application\Controller\AuthenticationController:
         arguments:
-            - '@Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface'
-            - '@Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface'
-            - !tagged_iterator 'authentication.providers'
+            -  !tagged_iterator 'authentication.providers'

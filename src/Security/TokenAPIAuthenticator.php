@@ -69,7 +69,7 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
 
     public function createAuthenticatedToken(UserInterface $user, $providerKey)
     {
-        return parrent::PostAuthenticationGuardToken(
+        return new PostAuthenticationGuardToken(
             $user,
             'token_API',
             $user->getRoles()

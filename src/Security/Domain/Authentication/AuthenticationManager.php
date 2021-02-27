@@ -24,12 +24,10 @@ namespace Security\Domain\Authentication;
 
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Security\Domain\Authentication\Exceptions\AuthenticationManagerException;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Guard\Token\PreAuthenticationGuardToken;
 
 /**
  * @package Security
