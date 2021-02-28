@@ -64,7 +64,7 @@ const StateCard = ({
             variant="subtitle2"
             color="textSecondary"
           >
-            {(title)}
+            {title}
           </Typography>
           <div className={classes.content}>{contentLines.map(Line)}</div>
 

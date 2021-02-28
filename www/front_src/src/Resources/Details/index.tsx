@@ -91,7 +91,7 @@ const Details = (): JSX.Element => {
         <Tab
           style={{ minWidth: 'unset' }}
           key={id}
-          label={title}
+          label={t(title)}
           disabled={isNil(details)}
           onClick={changeSelectedTabId(id)}
         />
