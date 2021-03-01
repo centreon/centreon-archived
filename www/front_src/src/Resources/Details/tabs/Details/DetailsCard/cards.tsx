@@ -40,7 +40,7 @@ interface DetailCardLineProps {
   toDate: (date: string | Date) => string;
   toTime: (date: string | Date) => string;
   t: (label: string) => string;
-
+}
 const getDetailCardLines = ({
   details,
   toDate,
