@@ -38,6 +38,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class AuthenticationController extends AbstractController
 {
+    private const DEFAULT_LOGIN_URI = '/authentication/login';
+
     /**
      * @var previousAuthenticationServiceInterface
      */
@@ -162,25 +164,22 @@ class AuthenticationController extends AbstractController
      */
     public function redirection(Request $request): View
     {
-        $redirectionUrl = $this->getParameter('default_login_url');
-
-        if ($redirectionUrl === null) {
-            throw new \InvalidArgumentException('You must define the default login url');
-        }
+        $redirectionUri = self::DEFAULT_LOGIN_URI;
 
         foreach ($this->providers as $provider) {
+            $provider->setCentreonBaseUri($this->getBaseUri());
             if ($provider->isForced()) {
-                $redirectionUrl = $provider->getAuthenticationUri();
+                $redirectionUri = $provider->getAuthenticationUri();
                 break;
             }
         }
 
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
-            return View::create(['authentication_uri' => $redirectionUrl]);
+            return View::create(['authentication_uri' => $redirectionUri]);
         } else {
             // Otherwise, we send a redirection response.
-            $view = View::createRedirect($redirectionUrl);
+            $view = View::createRedirect($redirectionUri);
             $view->setHeader('Content-Type', 'text/html');
             return $view;
         }

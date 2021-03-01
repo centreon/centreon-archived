@@ -25,6 +25,7 @@ namespace Security\Domain\Authentication\Interfaces;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderToken;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
 
 /**
  * @package Security\Authentication\Interfaces
@@ -50,6 +51,20 @@ interface ProviderInterface
      * @return bool
      */
     public function canRefreshToken(): bool;
+
+    /**
+     * Get centreon base uri
+     *
+     * @return string
+     */
+    public function getCentreonBaseUri(): string;
+
+    /**
+     * Set centreon base uri
+     *
+     * @param string $centreonBaseUri
+     */
+    public function setCentreonBaseUri(string $centreonBaseUri): void;
 
     /**
      * Get the provider's authentication uri (ex: https://www.okta.com/.../auth).
@@ -91,16 +106,16 @@ interface ProviderInterface
     /**
      * Get the provider's configuration (ex: client_id, client_secret, grant_type, ...).
      *
-     * @return array<string, mixed>
+     * @return ProviderConfiguration
      */
-    public function getConfiguration(): array;
+    public function getConfiguration(): ProviderConfiguration;
 
     /**
      * Set the provider's configuration to initialize it (ex: client_id, client_secret, grant_type, ...).
      *
-     * @param array<string, mixed> $configuration
+     * @param ProviderConfiguration $configuration
      */
-    public function setConfiguration(array $configuration): void;
+    public function setConfiguration(ProviderConfiguration $configuration): void;
 
     /**
      * Indicates whether this provider is the one selected for authentication.

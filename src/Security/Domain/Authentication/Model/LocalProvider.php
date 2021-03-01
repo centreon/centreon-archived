@@ -28,6 +28,7 @@ use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
 
 /**
  * @package Security\Authentication\Model
@@ -36,7 +37,10 @@ class LocalProvider implements ProviderInterface
 {
     public const NAME = 'local';
 
-    private $loginUrl;
+    /**
+     * @var string|null
+     */
+    private $centreonBaseUri = '/centreon';
 
     /**
      * @var boolean
@@ -64,7 +68,7 @@ class LocalProvider implements ProviderInterface
     private $dependencyInjector;
 
     /**
-     * @var array
+     * @var ProviderConfiguration
      */
     private $configuration;
 
@@ -76,20 +80,17 @@ class LocalProvider implements ProviderInterface
     /**
      * LocalProvider constructor.
      *
-     * @param string $loginUrl
      * @param ContactServiceInterface $contactService
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param Container $dependencyInjector
      * @param OptionServiceInterface $optionService
      */
     public function __construct(
-        string $loginUrl,
         ContactServiceInterface $contactService,
         AuthenticationRepositoryInterface $authenticationRepository,
         Container $dependencyInjector,
         OptionServiceInterface $optionService
     ) {
-        $this->loginUrl = $loginUrl;
         $this->contactService = $contactService;
         $this->authenticationRepository = $authenticationRepository;
         $this->dependencyInjector = $dependencyInjector;
@@ -143,9 +144,26 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
+    public function getCentreonBaseUri(): string
+    {
+        return $this->centreonBaseUri;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setCentreonBaseUri(string $centreonBaseUri): void
+    {
+        $this->centreonBaseUri = $centreonBaseUri;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getAuthenticationUri(): string
     {
-        return $this->loginUrl;
+        return $this->getCentreonBaseUri() . '/authentication/providers/'
+            . $this->getConfiguration()->getConfigurationName();
     }
 
     /**
@@ -162,19 +180,17 @@ class LocalProvider implements ProviderInterface
     }
 
     /**
-     * @todo : what is the purpose
      * @inheritDoc
      */
-    public function getConfiguration(): array
+    public function getConfiguration(): ProviderConfiguration
     {
-        return [];
+        return $this->configuration;
     }
 
     /**
-     * @todo : what is the purpose
      * @inheritDoc
      */
-    public function setConfiguration(array $configuration): void
+    public function setConfiguration(ProviderConfiguration $configuration): void
     {
         $this->configuration = $configuration;
     }
