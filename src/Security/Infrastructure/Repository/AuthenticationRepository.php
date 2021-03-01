@@ -41,14 +41,17 @@ CREATE TABLE `security_token` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 CREATE TABLE `security_authentication_tokens` (
-  `session_token` varchar(255) NOT NULL,
+  `session_token_id` int(11) NOT NULL,
   `token_id` int(11) NOT NULL,
   `token_refresh_id` int(11) DEFAULT NULL,
   `provider_configuration_id` int(11) NOT NULL,
-  PRIMARY KEY (`session_token`),
+  PRIMARY KEY (`session_token_id`),
+  KEY `security_authentication_session_tokens_id_fk` (`session_token_id`),
   KEY `security_authentication_tokens_id_fk` (`token_id`),
-  KEY `security_authentication_tokens_refresh_id__fk` (`token_refresh_id`),
+  KEY `security_authentication_tokens_refresh_id_fk` (`token_refresh_id`),
   KEY `security_authentication_tokens_configuration_id_fk` (`provider_configuration_id`),
+  CONSTRAINT `security_authentication_session_tokens_id_fk` FOREIGN KEY (`session_token_id`)
+  REFERENCES `session` (`id`) ON DELETE CASCADE,
   CONSTRAINT `security_authentication_tokens_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
   REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
   CONSTRAINT `security_authentication_tokens_id_fk` FOREIGN KEY (`token_id`)
@@ -62,6 +65,8 @@ CREATE TABLE `provider_configuration` (
   `provider_name` varchar(255) NOT NULL,
   `provider_configuration_name` varchar(255) NOT NULL,
   `configuration` text NOT NULL,
+  `isActive` BOOLEAN NOT NULL ,
+  `isForced` BOOLEAN NOT NULL ,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 */
@@ -198,7 +203,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     ): ?ProviderConfiguration {
         $statement = $this->db->prepare($this->translateDbName(
             "SELECT * FROM `:db`.provider_configuration
-            WHERE provider_name = :name
+            WHERE provider_configuration_name = :name
             "
         ));
         $statement->bindValue(':name', $providerConfigurationName, \PDO::PARAM_STR);
