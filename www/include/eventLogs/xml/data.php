@@ -673,9 +673,9 @@ if (isset($req) && $req) {
 
     $limitReq = "";
     if ($export !== "1") {
-        $queryValues['limit'] = [\PDO::PARAM_INT => $limit];
         $offset = $num * $limit;
         $queryValues['offset'] = [\PDO::PARAM_INT => $offset];
+        $queryValues['limit'] = [\PDO::PARAM_INT => $limit];
         $limitReq = " LIMIT :offset, :limit";
     }
     $stmt = $pearDBO->prepare($req . $limitReq);
