@@ -52,7 +52,6 @@ class ProviderFactory
      */
     public function create(ProviderConfiguration $configuration): ?ProviderInterface
     {
-        dd($configuration);
         foreach ($this->providers as $provider) {
             if ($provider->getName() === $configuration->getProviderName()) {
                 $provider->setConfiguration($configuration);
