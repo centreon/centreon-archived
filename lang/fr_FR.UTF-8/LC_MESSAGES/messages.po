@@ -16002,3 +16002,27 @@ msgstr "Catégorie de l'hôte (%s) non trouvé"
 
 msgid "Host group (%s) not found"
 msgstr "Groupe d'hôte (%s) non trouvé"
+
+msgid "Service id cannot be null"
+msgstr "L'id du service ne peut pas être nul"
+
+msgid "Configuration has changed"
+msgstr "La configuration a changé"
+
+msgid "Macro passwords cannot be detected"
+msgstr "Les macros de type mot de passe ne peuvent pas être détectées"
+
+msgid "Configuration command cannot be splitted by macros"
+msgstr "La commande de configuration ne peut être séparée par macros"
+
+msgid "Unable to hide passwords in command (Reason: %s)"
+msgstr "Impossible de cacher les mots de passe dans la commande (Raison: %s)"
+
+msgid "Check command of host id %d not found"
+msgstr "Commande de contrôle de l'id d'hôte %d non trouvée"
+
+msgid "Check command of service id %d not found"
+msgstr "Commande de contrôle de l'id de service %d non trouvée"
+
+msgid "Error while searching for the command of host"
+msgstr "Erreur lors de la recheche de la commande de l'hôte"
