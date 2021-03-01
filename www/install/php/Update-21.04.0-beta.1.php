@@ -64,6 +64,17 @@ try {
         $id = $filter['id'];
         $decodedCriterias = json_decode($filter['criterias'], true);
         // Adding the default sorting in the criterias
+        foreach ($decodedCriterias as $criteriaKey => $criteria) {
+            $name = $criteria['name'];
+            // Checking if the filter contains criterias we want to migrate
+            if (array_key_exists($name, $criteriasConcordanceArray) === true) {
+                foreach ($criteria['value'] as $index => $value) {
+                    $decodedCriterias[$criteriaKey]['value'][$index]['name'] =
+                        $criteriasConcordanceArray[$name][$value['id']];
+                }
+            }
+        }
+
         $decodedCriterias[] = [
             'name' => 'sort',
             'type' => 'array',
@@ -71,27 +82,25 @@ try {
                 'status_severity_code' => "asc"
             ],
         ];
-        foreach ($decodedCriterias as $criteriaKey => $criteria) {
-            $name = $criteria['name'];
-            // Checking if the filter contains criterias we want to migrate
-            if (array_key_exists($name, $criteriasConcordanceArray) === true) {
-                foreach ($criteria['value'] as $index => $value) {
-                    $decodedCriterias[$criteriaKey]['value'][$index]['name'] = $criteriasConcordanceArray[$name][$value['id']];
-                }
-            }
-            $translatedFilters[$id] = $decodedCriterias;
-        }
 
-        /**
-         * UPDATE SQL request on the filters
-         */
-        foreach ($translatedFilters as $id => $criterias) {
-            $query = "UPDATE `user_filter` SET `criterias` = '" . json_encode($criterias) . "' WHERE `id` = " . $id;
-            $stmt = $pearDB->query($query);
-        }
-
-        $pearDB->commit();
+        $translatedFilters[$id] = json_encode($decodedCriterias);
     }
+
+    /**
+     * UPDATE SQL request on the filters
+     */
+
+    foreach ($translatedFilters as $id => $criterias) {
+        $errorMessage = "Unable to update filter values in user_filter table.";
+        $statement = $pearDB->prepare(
+            "UPDATE `user_filter` SET `criterias` = :criterias WHERE `id` = :id"
+        );
+        $statement->bindValue(':id', (int) $id, \PDO::PARAM_INT);
+        $statement->bindValue(':criterias', $criterias, \PDO::PARAM_STR);
+        $statement->execute();
+    }
+
+    $pearDB->commit();
 } catch (\Exception $e) {
     $pearDB->rollBack();
     $centreonLog->insertLog(
