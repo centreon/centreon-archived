@@ -26,7 +26,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 
 /**
  * @package Security\Authentication\Model
@@ -53,9 +53,9 @@ class LocalProvider implements ProviderInterface
     private $contactService;
 
     /**
-     * @var AuthenticationServiceInterface
+     * @var AuthenticationRepositoryInterface
      */
-    private $authenticationService;
+    private $authenticationRepository;
 
     /**
      * @var Container
@@ -72,18 +72,18 @@ class LocalProvider implements ProviderInterface
      *
      * @param string $loginUrl
      * @param ContactServiceInterface $contactService
-     * @param AuthenticationServiceInterface $authenticationService
+     * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param Container $dependencyInjector
      */
     public function __construct(
         string $loginUrl,
         ContactServiceInterface $contactService,
-        AuthenticationServiceInterface $authenticationService,
+        AuthenticationRepositoryInterface $authenticationRepository,
         Container $dependencyInjector
     ) {
         $this->loginUrl = $loginUrl;
         $this->contactService = $contactService;
-        $this->authenticationService = $authenticationService;
+        $this->authenticationRepository = $authenticationRepository;
         $this->dependencyInjector = $dependencyInjector;
     }
 
@@ -208,10 +208,13 @@ class LocalProvider implements ProviderInterface
     public function getProviderToken(string $sessionToken): ProviderToken
     {
         $token = null;
-        // $token = $this->authenticationService->getProviderToken($sessionToken);
-        if ($token === null) {
+        $tokens = null;
+        // $tokens = $this->authenticationRepository->findAuthenticationTokensBySessionToken($sessionToken);
+        if ($tokens === null) {
             $token = new ProviderToken(null, $sessionToken, null, null, null);
             // generate token
+        } else {
+            //$token = $tokens->getProviderToken();
         }
         return $token;
     }
