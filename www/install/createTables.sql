@@ -2358,14 +2358,6 @@ COMMENT='Registration and parent relation Table used to set the platform topolog
 
 -- Create authentication tables
 
-CREATE TABLE `security_token` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(255) NOT NULL,
-  `creation_date` datetime NOT NULL,
-  `expiration_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-
 CREATE TABLE `provider_configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `provider_name` varchar(255) NOT NULL,
@@ -2374,7 +2366,15 @@ CREATE TABLE `provider_configuration` (
   `isActive` BOOLEAN NOT NULL DEFAULT 1,
   `isForced` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `security_token` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(255) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  `expiration_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (
   `session_token_id` int(11) NOT NULL,
@@ -2394,7 +2394,7 @@ CREATE TABLE `security_authentication_tokens` (
   REFERENCES `security_token` (`id`) ON DELETE CASCADE,
   CONSTRAINT `security_authentication_tokens_refresh_id__fk` FOREIGN KEY (`token_refresh_id`)
   REFERENCES `security_token` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -242,22 +242,40 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
      */
     public function findAuthenticationTokensBySessionToken(string $sessionToken): ?AuthenticationTokens
     {
-        // just for testing
-        if ($sessionToken === '45pmbngq6r6s0c5rq9b2ob55en') {
+        $statement = $this->db->prepare($this->translateDbName("
+            SELECT s.user_id, sat.provider_configuration_id,
+              provider_token.token AS provider_token, refresh_token.token AS refresh_token
+            FROM `:db`.security_authentication_tokens sat
+            INNER JOIN `:db`.session s ON s.id = sat.session_token_id
+              AND s.session_id = ':token'
+            INNER JOIN `:db`.security_token provider_token ON provider_token.id = sat.token_id
+            LEFT JOIN `:db`.security_token refresh_token ON refresh_token.id = sat.token_refresh_id
+        "));
+        $statement->bindValue(':token', $sessionToken, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $providerToken = new ProviderToken(
                 null,
-                $sessionToken,
+                $result['provider_token'],
                 new \DateTime(),
                 (new \DateTime())->add(new \DateInterval('P1D'))
             );
             $providerRefreshToken = new ProviderToken(
                 null,
-                Encryption::generateRandomString(32),
+                $result['refresh_token'],
                 new \DateTime(),
                 (new \DateTime())->add(new \DateInterval('P1Y'))
             );
-            return new AuthenticationTokens(1, 1, $sessionToken, $providerToken, $providerRefreshToken);
+            return new AuthenticationTokens(
+                $result['user_id'],
+                $result['provider_configuration_id'],
+                $sessionToken,
+                $providerToken,
+                $providerRefreshToken
+            );
         }
+
         return null;
     }
 

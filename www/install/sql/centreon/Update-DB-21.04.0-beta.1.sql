@@ -1,12 +1,4 @@
--- Create authentication tables
-
-CREATE TABLE `security_token` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(255) NOT NULL,
-  `creation_date` datetime NOT NULL,
-  `expiration_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+-- Create authentication tables and insert local configuration
 
 CREATE TABLE `provider_configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -16,7 +8,18 @@ CREATE TABLE `provider_configuration` (
   `isActive` BOOLEAN NOT NULL DEFAULT 1,
   `isForced` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `provider_configuration` (provider_name, provider_configuration_name, configuration, isActive, isForced)
+VALUES ('local', 'local', '{}', true, false);
+
+CREATE TABLE `security_token` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(255) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  `expiration_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (
   `session_token_id` int(11) NOT NULL,
@@ -36,4 +39,4 @@ CREATE TABLE `security_authentication_tokens` (
   REFERENCES `security_token` (`id`) ON DELETE CASCADE,
   CONSTRAINT `security_authentication_tokens_refresh_id__fk` FOREIGN KEY (`token_refresh_id`)
   REFERENCES `security_token` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
