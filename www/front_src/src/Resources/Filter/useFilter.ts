@@ -6,9 +6,11 @@ import {
   isNil,
   lensPath,
   omit,
+  pipe,
   propEq,
   reject,
   set,
+  sortBy,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -21,7 +23,12 @@ import {
 
 import { labelNewFilter } from '../translatedLabels';
 
-import { clearCachedFilter, storeFilter } from './storedFilter';
+import {
+  clearCachedFilter,
+  clearCachedFilterExpanded,
+  storeFilter,
+  storeFilterExpanded,
+} from './storedFilter';
 import { listCustomFilters } from './api';
 import { listCustomFiltersDecoder } from './api/decoders';
 import {
@@ -35,8 +42,9 @@ import {
   isCustom,
   Filter,
   resourceProblemsFilter,
+  newFilter,
 } from './models';
-import getDefaultFilter from './default';
+import { getDefaultFilter, getDefaultFilterExpanded } from './default';
 
 type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
 type EditPanelOpenDitpach = React.Dispatch<React.SetStateAction<boolean>>;
@@ -49,9 +57,12 @@ export interface FilterState {
   filters: Array<Filter>;
   filter: Filter;
   updatedFilter: Filter;
+  filterExpanded: boolean;
+  toggleFilterExpanded: () => void;
   setFilter: (filter: Filter) => void;
   setNewFilter: () => void;
   setCriteria: ({ name, value }: { name: string; value }) => void;
+  setCriteriaAndNewFilter: ({ name, value }: { name: string; value }) => void;
   nextSearch?: string;
   setNextSearch: SearchDispatch;
   getCriteriaValue: (name: string) => CriteriaValue | undefined;
@@ -84,6 +95,9 @@ const useFilter = (): FilterState => {
   const [nextSearch, setNextSearch] = React.useState<string | undefined>(
     getDefaultSearchCriteria().value as string,
   );
+  const [filterExpanded, setFilterExpanded] = React.useState(
+    getDefaultFilterExpanded(),
+  );
 
   const [editPanelOpen, setEditPanelOpen] = React.useState<boolean>(false);
 
@@ -115,6 +129,13 @@ const useFilter = (): FilterState => {
 
   const setCriteria = ({ name, value }): void => {
     setFilter(getFilterWithUpdatedCriteria({ name, value }));
+  };
+
+  const setCriteriaAndNewFilter = ({ name, value }): void => {
+    setFilter({
+      ...getFilterWithUpdatedCriteria({ name, value }),
+      ...newFilter,
+    });
   };
 
   useDeepCompareEffect(() => {
@@ -159,7 +180,19 @@ const useFilter = (): FilterState => {
 
   React.useEffect(() => (): void => {
     clearCachedFilter();
+    clearCachedFilterExpanded();
   });
+
+  React.useEffect(() => {
+    setUrlQueryParameters([
+      {
+        name: 'filterExpanded',
+        value: filterExpanded,
+      },
+    ]);
+
+    storeFilterExpanded(filterExpanded);
+  }, [filterExpanded]);
 
   const updatedFilter = getFilterWithUpdatedCriteria({
     name: 'search',
@@ -185,9 +218,23 @@ const useFilter = (): FilterState => {
   };
 
   const getMultiSelectCriterias = (): Array<Criteria> => {
-    return reject<Criteria>(({ name }) => isNil(selectableCriterias[name]))(
-      filter.criterias,
-    );
+    const getSelectableCriteriaByName = (name: string) =>
+      selectableCriterias[name];
+
+    const isNonSelectableCriteria = (criteria: Criteria) =>
+      pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
+
+    const getSortId = ({ name }: Criteria) =>
+      getSelectableCriteriaByName(name).sortId;
+
+    return pipe(
+      reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
+      sortBy(getSortId),
+    )(filter.criterias);
+  };
+
+  const toggleFilterExpanded = (): void => {
+    setFilterExpanded(!filterExpanded);
   };
 
   return {
@@ -195,6 +242,7 @@ const useFilter = (): FilterState => {
     filters,
     setFilter,
     setCriteria,
+    setCriteriaAndNewFilter,
     updatedFilter,
     customFilters,
     nextSearch,
@@ -207,6 +255,8 @@ const useFilter = (): FilterState => {
     setNewFilter,
     getCriteriaValue,
     getMultiSelectCriterias,
+    filterExpanded,
+    toggleFilterExpanded,
   };
 };
 

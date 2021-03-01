@@ -212,7 +212,7 @@ const DialogDowntime = ({
                   size="small"
                 />
               }
-              label={labelFixed}
+              label={t(labelFixed)}
             />
           </Grid>
           <Grid item>

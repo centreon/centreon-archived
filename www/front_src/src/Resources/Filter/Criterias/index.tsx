@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, Grid } from '@material-ui/core';
 
-import { SelectEntry, useMemoComponent } from '@centreon/ui/src';
+import { SelectEntry, useMemoComponent } from '@centreon/ui';
 
 import { ResourceContext, useResourceContext } from '../../Context';
 import { labelClear } from '../../translatedLabels';

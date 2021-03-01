@@ -26,6 +26,8 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Exception\HostSeverityException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityServiceInterface;
+use Centreon\Domain\HostConfiguration\Model\HostSeverity;
+use Centreon\Domain\Repository\RepositoryException;
 
 /**
  * This class is designed to manage the host severities.
@@ -77,6 +79,34 @@ class HostSeverityService implements HostSeverityServiceInterface
             return $this->readRepository->findAll();
         } catch (\Throwable $ex) {
             throw HostSeverityException::findHostSeveritiesException($ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findWithAcl(int $severityId): ?HostSeverity
+    {
+        try {
+            return $this->readRepository->findByIdAndContact($severityId, $this->contact);
+        } catch (RepositoryException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            throw HostSeverityException::findHostSeverityException(['id' => $severityId], $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findWithoutAcl(int $severityId): ?HostSeverity
+    {
+        try {
+            return $this->readRepository->findById($severityId);
+        } catch (RepositoryException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            throw HostSeverityException::findHostSeverityException(['id' => $severityId], $ex);
         }
     }
 }
