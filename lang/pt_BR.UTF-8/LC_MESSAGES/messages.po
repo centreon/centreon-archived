@@ -15086,3 +15086,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Select criterias"
 #  msgstr ""
+
+#  msgid "Monitoring server"
+#  msgstr ""
