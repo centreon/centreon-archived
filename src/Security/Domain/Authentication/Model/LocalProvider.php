@@ -27,6 +27,7 @@ use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
 
 /**
  * @package Security\Authentication\Model
@@ -34,6 +35,11 @@ use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 class LocalProvider implements ProviderInterface
 {
     public const NAME = 'local';
+
+    /**
+     * @var string|null
+     */
+    private $centreonBaseUri = '/centreon';
 
     /**
      * @var boolean
@@ -61,7 +67,7 @@ class LocalProvider implements ProviderInterface
     private $dependencyInjector;
 
     /**
-     * @var array
+     * @var ProviderConfiguration
      */
     private $configuration;
 
@@ -129,9 +135,26 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
+    public function getCentreonBaseUri(): string
+    {
+        return $this->centreonBaseUri;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setCentreonBaseUri(string $centreonBaseUri): void
+    {
+        $this->centreonBaseUri = $centreonBaseUri;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getAuthenticationUri(): string
     {
-        return '/' . self::NAME;
+        return $this->getCentreonBaseUri() . '/authentication/providers/'
+            . $this->getConfiguration()->getConfigurationName();
     }
 
     /**
@@ -148,19 +171,17 @@ class LocalProvider implements ProviderInterface
     }
 
     /**
-     * @todo : what is the purpose
      * @inheritDoc
      */
-    public function getConfiguration(): array
+    public function getConfiguration(): ProviderConfiguration
     {
-        return [];
+        return $this->configuration;
     }
 
     /**
-     * @todo : what is the purpose
      * @inheritDoc
      */
-    public function setConfiguration(array $configuration): void
+    public function setConfiguration(ProviderConfiguration $configuration): void
     {
         $this->configuration = $configuration;
     }

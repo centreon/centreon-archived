@@ -54,7 +54,7 @@ class ProviderFactory
     {
         foreach ($this->providers as $provider) {
             if ($provider->getName() === $configuration->getProviderName()) {
-                $provider->setConfiguration($configuration->getConfiguration());
+                $provider->setConfiguration($configuration);
                 return $provider;
             }
         }

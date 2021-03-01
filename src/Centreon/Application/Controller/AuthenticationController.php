@@ -167,13 +167,12 @@ class AuthenticationController extends AbstractController
         $redirectionUri = self::DEFAULT_LOGIN_URI;
 
         foreach ($this->providers as $provider) {
+            $provider->setCentreonBaseUri($this->getBaseUri());
             if ($provider->isForced()) {
                 $redirectionUri = $provider->getAuthenticationUri();
                 break;
             }
         }
-
-        $redirectionUri = $this->getBaseUri() . $redirectionUri;
 
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request

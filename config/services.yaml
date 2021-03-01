@@ -70,5 +70,5 @@ services:
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']
 
-#    security.authentication.manager:
-#        class: Security\Domain\Authentication\AuthenticationManager
+    security.authentication.manager:
+        class: Security\Domain\Authentication\AuthenticationManager
