@@ -81,8 +81,8 @@ const fillEntities = (): Array<Resource> => {
       externals: {
         action_url: null,
         notes: {
-          notes: null,
-          notes_url: 'https://centreon.com',
+          label: null,
+          url: 'https://centreon.com',
         },
       },
     },

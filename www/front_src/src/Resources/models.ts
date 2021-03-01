@@ -80,8 +80,8 @@ export interface ResourceUris {
 }
 
 interface Notes {
-  notes: string | null;
-  notes_url: string;
+  label: string | null;
+  url: string;
 }
 
 export interface ResourceExternals {
