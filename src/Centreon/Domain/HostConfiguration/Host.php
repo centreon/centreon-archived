@@ -24,6 +24,7 @@ namespace Centreon\Domain\HostConfiguration;
 
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
+use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Annotation\EntityDescriptor;
 
@@ -125,6 +126,11 @@ class Host
      * @var HostGroup[]
      */
     private $groups = [];
+
+    /**
+     * @var HostSeverity[]
+     */
+    private $severities = [];
 
     /**
      * @return int|null
@@ -460,6 +466,33 @@ class Host
     public function clearGroups(): self
     {
         $this->groups = [];
+        return $this;
+    }
+
+    /**
+     * @param HostSeverity $hostSeverity
+     * @return self
+     */
+    public function addSeverity(HostSeverity $hostSeverity): self
+    {
+        $this->severities[] = $hostSeverity;
+        return $this;
+    }
+
+    /**
+     * @return HostSeverity[]
+     */
+    public function getSeverities(): array
+    {
+        return $this->severities;
+    }
+
+    /**
+     * @return self
+     */
+    public function clearSeverities(): self
+    {
+        $this->severities = [];
         return $this;
     }
 }

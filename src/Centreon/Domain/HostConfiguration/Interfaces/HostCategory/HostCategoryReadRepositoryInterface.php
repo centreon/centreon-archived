@@ -42,10 +42,10 @@ interface HostCategoryReadRepositoryInterface
     public function findById(int $categoryId): ?HostCategory;
 
     /**
-     * Find a host category by id and access groups.
+     * Find a host category by id and contact.
      *
      * @param int $categoryId Id of the host category to be found
-     * @param ContactInterface $contact Contact related to host categories
+     * @param ContactInterface $contact Contact related to host category
      * @return HostCategory|null
      * @throws \Throwable
      */
