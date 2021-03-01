@@ -137,7 +137,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
             />
           )}
           <Grid container spacing={2} alignItems="stretch">
-            {getDetailCardLines({ details, toDate, toTime }).map(
+            {getDetailCardLines({ details, toDate, toTime, t }).map(
               ({ title, field, xs = 6, getLines }) => {
                 const variableXs = (width > 600 ? xs / 2 : xs) as 3 | 6 | 12;
                 const displayCard = !isNil(field) && !isEmpty(field);
