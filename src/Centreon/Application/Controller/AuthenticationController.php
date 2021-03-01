@@ -199,7 +199,7 @@ class AuthenticationController extends AbstractController
                 'name' => $provider->getName(),
                 'authentication_uri' => $provider->getAuthenticationUri(),
                 'is_forced' => $provider->isForced(),
-                'configuration' => $provider->exportConfiguration()
+                'configuration' => $provider->getConfiguration()
             ];
         }
         return View::create($definedProviders);
@@ -274,7 +274,6 @@ class AuthenticationController extends AbstractController
 
                 $session->start();
 
-                //TODO : How it is handle with local ? ProviderToken is null ?
                 $this->authenticationService->createAuthenticationTokens(
                     $session->getId(),
                     $providerConfigurationName,

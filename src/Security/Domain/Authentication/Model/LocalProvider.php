@@ -24,6 +24,7 @@ namespace Security\Domain\Authentication\Model;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
@@ -68,23 +69,31 @@ class LocalProvider implements ProviderInterface
     private $configuration;
 
     /**
+     * @var OptionServiceInterface
+     */
+    private $optionService;
+
+    /**
      * LocalProvider constructor.
      *
      * @param string $loginUrl
      * @param ContactServiceInterface $contactService
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param Container $dependencyInjector
+     * @param OptionServiceInterface $optionService
      */
     public function __construct(
         string $loginUrl,
         ContactServiceInterface $contactService,
         AuthenticationRepositoryInterface $authenticationRepository,
-        Container $dependencyInjector
+        Container $dependencyInjector,
+        OptionServiceInterface $optionService
     ) {
         $this->loginUrl = $loginUrl;
         $this->contactService = $contactService;
         $this->authenticationRepository = $authenticationRepository;
         $this->dependencyInjector = $dependencyInjector;
+        $this->optionService = $optionService;
     }
 
     /**
@@ -208,10 +217,20 @@ class LocalProvider implements ProviderInterface
     public function getProviderToken(string $sessionToken): ProviderToken
     {
         $token = null;
-        $tokens = null;
-        // $tokens = $this->authenticationRepository->findAuthenticationTokensBySessionToken($sessionToken);
+        $tokens = $this->authenticationRepository->findAuthenticationTokensBySessionToken($sessionToken);
         if ($tokens === null) {
-            $token = new ProviderToken(null, $sessionToken, null, null, null);
+            $expirationSessionDelay = "120";
+            $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
+            if ($sessionExpireOption !== null) {
+                $expirationSessionDelay = $sessionExpireOption[0]->getValue();
+            }
+            $token = new ProviderToken(
+                null,
+                $sessionToken,
+                new \DateTime(),
+                (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M')),
+                null
+            );
             // generate token
         } else {
             //$token = $tokens->getProviderToken();

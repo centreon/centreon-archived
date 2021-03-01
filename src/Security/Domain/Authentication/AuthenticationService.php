@@ -67,7 +67,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         string $sessionToken,
         string $providerConfigurationName,
         ContactInterface $contact,
-        ?ProviderToken $providerToken,
+        ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken
     ): void {
         $providerConfiguration = $this->findProviderConfigurationByConfigurationName($providerConfigurationName);
@@ -99,7 +99,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function hasValidSession(string $sessionToken, ProviderInterface $provider): bool
     {
-        $authenticationToken = $this->repository->findAuthenticationTokenBySessionToken($sessionToken);
+        $authenticationToken = $this->repository->findAuthenticationTokensBySessionToken($sessionToken);
         if ($authenticationToken === null) {
             return false;
         }
@@ -150,7 +150,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function findProviderBySession(string $sessionToken): ?ProviderInterface
     {
-        $authenticationToken = $this->repository->findAuthenticationTokenBySessionToken($sessionToken);
+        $authenticationToken = $this->repository->findAuthenticationTokensBySessionToken($sessionToken);
         if ($authenticationToken === null) {
             return null;
         }
@@ -173,7 +173,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function findAuthenticationTokenBySessionToken(string $sessionToken): ?AuthenticationTokens
     {
-        return $this->repository->findAuthenticationTokenBySessionToken($sessionToken);
+        return $this->repository->findAuthenticationTokensBySessionToken($sessionToken);
     }
 
     /**

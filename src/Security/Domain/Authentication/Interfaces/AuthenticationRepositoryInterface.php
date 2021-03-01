@@ -42,7 +42,7 @@ interface AuthenticationRepositoryInterface
         string $sessionToken,
         int $providerConfigurationId,
         int $contactId,
-        ?ProviderToken $providerToken,
+        ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken
     ): void;
 
@@ -59,7 +59,7 @@ interface AuthenticationRepositoryInterface
      * @param string $sessionToken Session token
      * @return AuthenticationTokens|null
      */
-    public function findAuthenticationTokenBySessionToken(string $sessionToken): ?AuthenticationTokens;
+    public function findAuthenticationTokensBySessionToken(string $sessionToken): ?AuthenticationTokens;
 
     /**
      * Find the provider's configuration.
