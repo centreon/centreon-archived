@@ -27,9 +27,9 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, et
 
-    _instanceof:
-        Security\Domain\Authentication\Interfaces\ProviderInterface:
-            tags: ['authentication.providers']
+#    _instanceof:
+#        Security\Domain\Authentication\Interfaces\ProviderInterface:
+#            tags: ['authentication.providers']
 
     EventSubscriber\:
         resource: '../src/EventSubscriber/*'
@@ -70,9 +70,10 @@ services:
 
     Security\Domain\Authentication\Model\LocalProvider:
         arguments: [ '%default_login_url%' ]
+        tags: ['authentication.providers']
 
     Security\Domain\Authentication\Model\ProviderFactory:
-        arguments: [!tagged_iterator authentication.providers]
+        arguments: [!tagged_iterator 'authentication.providers']
 
 #    security.authentication.manager:
 #        class: Security\Domain\Authentication\AuthenticationManager

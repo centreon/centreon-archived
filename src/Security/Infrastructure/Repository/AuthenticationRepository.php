@@ -28,7 +28,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Security\Domain\Authentication\Model\ProviderFactory;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Security\Encryption;
 
@@ -73,10 +72,6 @@ CREATE TABLE `provider_configuration` (
 class AuthenticationRepository extends AbstractRepositoryDRB implements AuthenticationRepositoryInterface
 {
     /**
-     * @var ProviderFactory
-     */
-    private $providerFactory;
-    /**
      * @var SqlRequestParametersTranslator
      */
     private $sqlRequestTranslator;
@@ -84,16 +79,13 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     /**
      * @param DatabaseConnection $db
      * @param SqlRequestParametersTranslator $sqlRequestTranslator
-     * @param ProviderFactory $providerFactory
      */
     public function __construct(
         DatabaseConnection $db,
-        SqlRequestParametersTranslator $sqlRequestTranslator,
-        ProviderFactory $providerFactory
+        SqlRequestParametersTranslator $sqlRequestTranslator
     ) {
         $this->db = $db;
         $this->sqlRequestTranslator = $sqlRequestTranslator;
-        $this->providerFactory = $providerFactory;
     }
 
     /**
