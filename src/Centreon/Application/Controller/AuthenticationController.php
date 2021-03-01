@@ -199,7 +199,7 @@ class AuthenticationController extends AbstractController
                 'name' => $provider->getName(),
                 'authentication_uri' => $provider->getAuthenticationUri(),
                 'is_forced' => $provider->isForced(),
-                'configuration' => $provider->exportConfiguration()
+                'configuration' => $provider->getConfiguration()
             ];
         }
         return View::create($definedProviders);
