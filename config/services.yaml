@@ -18,7 +18,6 @@ parameters:
     centreon_etc_path: "%env(_CENTREON_ETC_)%"
     translation_path: "%centreon_path%/www/locale"
     media_path: "img/media"
-    default_login_url: "/centreon/login"
 
 services:
     # Default configuration for services in *this* file
@@ -67,9 +66,6 @@ services:
 
     Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface:
         class: Security\Domain\Authentication\AuthenticationService
-
-    Security\Domain\Authentication\Model\LocalProvider:
-        arguments: [ '%default_login_url%' ]
 
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']

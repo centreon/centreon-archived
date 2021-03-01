@@ -35,8 +35,6 @@ class LocalProvider implements ProviderInterface
 {
     public const NAME = 'local';
 
-    private $loginUrl;
-
     /**
      * @var boolean
      */
@@ -70,18 +68,15 @@ class LocalProvider implements ProviderInterface
     /**
      * LocalProvider constructor.
      *
-     * @param string $loginUrl
      * @param ContactServiceInterface $contactService
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param Container $dependencyInjector
      */
     public function __construct(
-        string $loginUrl,
         ContactServiceInterface $contactService,
         AuthenticationRepositoryInterface $authenticationRepository,
         Container $dependencyInjector
     ) {
-        $this->loginUrl = $loginUrl;
         $this->contactService = $contactService;
         $this->authenticationRepository = $authenticationRepository;
         $this->dependencyInjector = $dependencyInjector;
@@ -136,7 +131,7 @@ class LocalProvider implements ProviderInterface
      */
     public function getAuthenticationUri(): string
     {
-        return $this->loginUrl;
+        return '/' . self::NAME;
     }
 
     /**
