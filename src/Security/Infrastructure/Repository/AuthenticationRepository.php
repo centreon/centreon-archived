@@ -302,6 +302,30 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
      * {@inheritDoc}
      * @throws \Assert\AssertionFailedException
      */
+    public function findProvidersConfigurations(): array
+    {
+        $statement = $this->db->prepare($this->translateDbName("SELECT * FROM `:db`.provider_configuration"));
+        $statement->execute();
+        $providersConfigurations = [];
+        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $providerConfiguration = (new ProviderConfiguration())
+                ->setId((int) $result['id'])
+                ->setProviderName($result['provider_name'])
+                ->setConfigurationName($result['provider_configuration_name'])
+                ->setForced((bool) $result['isForced'])
+                ->setActive((bool) $result['isActive']);
+
+            $configuration = json_decode($result['configuration'], true);
+            $providerConfiguration->setConfiguration($configuration);
+            $providersConfigurations[] = $providerConfiguration;
+        }
+        return $providersConfigurations;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws \Assert\AssertionFailedException
+     */
     public function findProviderConfiguration(int $id): ?ProviderConfiguration
     {
         $statement = $this->db->prepare($this->translateDbName(

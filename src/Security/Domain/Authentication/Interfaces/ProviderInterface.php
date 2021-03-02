@@ -39,6 +39,20 @@ interface ProviderInterface
     public function authenticate(array $data): void;
 
     /**
+     * Get legacy Centreon session
+     *
+     * @return \Centreon
+     */
+    public function getLegacySession(): \Centreon;
+
+    /**
+     * Set legacy Centreon session
+     *
+     * @param \CentreonSession $legacySession
+     */
+    public function setLegacySession(\Centreon $legacySession): void;
+
+    /**
      * Indicates whether we can create the authenticated user or not.
      *
      * @return bool
@@ -51,27 +65,6 @@ interface ProviderInterface
      * @return bool
      */
     public function canRefreshToken(): bool;
-
-    /**
-     * Get centreon base uri
-     *
-     * @return string
-     */
-    public function getCentreonBaseUri(): string;
-
-    /**
-     * Set centreon base uri
-     *
-     * @param string $centreonBaseUri
-     */
-    public function setCentreonBaseUri(string $centreonBaseUri): void;
-
-    /**
-     * Get the provider's authentication uri (ex: https://www.okta.com/.../auth).
-     *
-     * @return string
-     */
-    public function getAuthenticationUri(): string;
 
     /**
      * Return the provider's name.
@@ -116,19 +109,6 @@ interface ProviderInterface
      * @param ProviderConfiguration $configuration
      */
     public function setConfiguration(ProviderConfiguration $configuration): void;
-
-    /**
-     * Indicates whether this provider is the one selected for authentication.
-     *
-     * @return bool
-     */
-    public function isForced(): bool;
-
-    /**
-     * Enable or disable the Forced mode.
-     *
-     */
-    public function setForced(bool $isForced): void;
 
     /**
      * Indicates whether the authentication process is complete and the user is properly authenticated.

@@ -38,19 +38,9 @@ class LocalProvider implements ProviderInterface
     public const NAME = 'local';
 
     /**
-     * @var string|null
-     */
-    private $centreonBaseUri = '/centreon';
-
-    /**
      * @var boolean
      */
     private $isAuthenticated;
-
-    /**
-     * @var boolean
-     */
-    private $isForced;
 
     /**
      * @var int
@@ -107,6 +97,9 @@ class LocalProvider implements ProviderInterface
      */
     public function authenticate(array $data): void
     {
+        global $pearDB;
+        $pearDB = $this->dependencyInjector['configuration_db'];
+
         $log = new \CentreonUserLog(0, $this->dependencyInjector['configuration_db']);
         $auth = new \CentreonAuth(
             $this->dependencyInjector,
@@ -123,11 +116,28 @@ class LocalProvider implements ProviderInterface
         if ($auth->passwdOk === 1) {
             if ($auth->userInfos !== null) {
                 $this->contactId = (int) $auth->userInfos['contact_id'];
+                $this->setLegacySession(new \Centreon($auth->userInfos));
             }
             $this->isAuthenticated = true;
         } else {
             $this->isAuthenticated = false;
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLegacySession(): \Centreon
+    {
+        return $this->legacySession;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setLegacySession(\Centreon $legacySession): void
+    {
+        $this->legacySession = $legacySession;
     }
 
     /**
@@ -144,31 +154,6 @@ class LocalProvider implements ProviderInterface
     public function refreshToken(AuthenticationTokens $authenticationTokens): ?AuthenticationTokens
     {
         return null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getCentreonBaseUri(): string
-    {
-        return $this->centreonBaseUri;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setCentreonBaseUri(string $centreonBaseUri): void
-    {
-        $this->centreonBaseUri = $centreonBaseUri;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getAuthenticationUri(): string
-    {
-        return $this->getCentreonBaseUri() . '/authentication/providers/'
-            . $this->getConfiguration()->getConfigurationName();
     }
 
     /**
@@ -206,22 +191,6 @@ class LocalProvider implements ProviderInterface
     public function canRefreshToken(): bool
     {
         return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isForced(): bool
-    {
-        return $this->isForced;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setForced(bool $isForced): void
-    {
-        $this->isForced = $isForced;
     }
 
     /**

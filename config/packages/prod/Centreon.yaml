@@ -280,6 +280,3 @@ services:
     # Menu
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
-
-    Centreon\Application\Controller\AuthenticationController:
-        arguments: [!tagged_iterator 'authentication.providers']

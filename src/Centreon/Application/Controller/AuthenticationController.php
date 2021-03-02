@@ -38,20 +38,16 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class AuthenticationController extends AbstractController
 {
-    private const DEFAULT_LOGIN_URI = '/authentication/login';
-
     /**
      * @var previousAuthenticationServiceInterface
      */
     private $auth;
-    /**
-     * @var ProviderInterface[]
-     */
-    private $providers;
+
     /**
      * @var AuthenticationServiceInterface
      */
     private $authenticationService;
+
     /**
      * @var ContactServiceInterface
      */
@@ -60,23 +56,15 @@ class AuthenticationController extends AbstractController
     /**
      * @param previousAuthenticationServiceInterface $auth
      * @param AuthenticationServiceInterface $authenticationService
-     * @param \Traversable $providers
      * @param ContactServiceInterface $contactService
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        \Traversable $providers,
         previousAuthenticationServiceInterface $auth,
         ContactServiceInterface $contactService,
         AuthenticationServiceInterface $authenticationService
     ) {
         $this->auth = $auth;
-
-        if (count($providers) === 0) {
-            throw new \InvalidArgumentException('You must at least add one authentication provider');
-        }
-        $this->providers = iterator_to_array($providers);
-
         $this->contactService = $contactService;
         $this->authenticationService = $authenticationService;
     }
@@ -164,12 +152,11 @@ class AuthenticationController extends AbstractController
      */
     public function redirection(Request $request): View
     {
-        $redirectionUri = self::DEFAULT_LOGIN_URI;
-
-        foreach ($this->providers as $provider) {
+        $providers = $this->authenticationService->findProvidersConfigurations();
+        foreach ($providers as $provider) {
             $provider->setCentreonBaseUri($this->getBaseUri());
+            $redirectionUri = $provider->getAuthenticationUri();
             if ($provider->isForced()) {
-                $redirectionUri = $provider->getAuthenticationUri();
                 break;
             }
         }
@@ -190,10 +177,11 @@ class AuthenticationController extends AbstractController
      *
      * @return View
      */
-    public function findProviders(): View
+    public function findProvidersConfigurations(): View
     {
-        $definedProviders = [];
-        foreach ($this->providers as $provider) {
+        $providers = $this->authenticationService->findProvidersConfigurations();
+        /*
+        foreach ($providers as $provider) {
             $definedProviders[] = [
                 'name' => $provider->getName(),
                 'authentication_uri' => $provider->getAuthenticationUri(),
@@ -201,7 +189,9 @@ class AuthenticationController extends AbstractController
                 'configuration' => $provider->getConfiguration()
             ];
         }
-        return View::create($definedProviders);
+        */
+
+        return View::create($providers);
     }
 
     /**
@@ -249,8 +239,7 @@ class AuthenticationController extends AbstractController
                 $session->invalidate();
                 $this->authenticationService->deleteSession($sessionId);
             }
-            $urlToRedirect = $this->generateUrl('centreon_security_authentication_redirection');
-            return View::createRedirect($urlToRedirect);
+            return View::createRedirect($this->getBaseUri() . '/login');
         } else {
             $authenticationProvider->authenticate($requestParameters);
             if ($authenticationProvider->isAuthenticated()) {
@@ -272,6 +261,7 @@ class AuthenticationController extends AbstractController
                 }
 
                 $session->start();
+                $_SESSION['centreon'] = $authenticationProvider->getLegacySession();
 
                 $this->authenticationService->createAuthenticationTokens(
                     $session->getId(),

@@ -50,6 +50,16 @@ class ProviderConfiguration
     private $configuration;
 
     /**
+     * @var string|null
+     */
+    private $centreonBaseUri = '/centreon';
+
+    /**
+     * @var bool is the provider is enabled ?
+     */
+    private $isActive;
+
+    /**
      * @var bool is the provider forced ?
      */
     private $isForced;
@@ -126,6 +136,37 @@ class ProviderConfiguration
     {
         $this->configuration = $configuration;
         return $this;
+    }
+
+    /**
+     * Get centreon base uri
+     *
+     * @return string
+     */
+    public function getCentreonBaseUri(): string
+    {
+        return $this->centreonBaseUri;
+    }
+
+    /**
+     * Set centreon base uri
+     *
+     * @param string $centreonBaseUri
+     */
+    public function setCentreonBaseUri(string $centreonBaseUri): void
+    {
+        $this->centreonBaseUri = $centreonBaseUri;
+    }
+
+    /**
+     * Get the provider's authentication uri (ex: https://www.okta.com/.../auth).
+     *
+     * @return string
+     */
+    public function getAuthenticationUri(): string
+    {
+        return $this->getCentreonBaseUri() . '/authentication/providers/'
+            . $this->getConfigurationName();
     }
 
     /**

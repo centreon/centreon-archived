@@ -56,7 +56,6 @@ class ProviderFactory
         foreach ($this->providers as $provider) {
             if ($provider->getName() === $configuration->getProviderName()) {
                 $provider->setConfiguration($configuration);
-                $provider->setForced($configuration->isForced());
                 return $provider;
             }
         }

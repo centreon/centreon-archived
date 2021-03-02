@@ -56,6 +56,13 @@ interface AuthenticationServiceInterface
     public function deleteSession(string $sessionToken): void;
 
     /**
+     * Find providers configurations
+     *
+     * @return ProviderConfiguration[]
+     */
+    public function findProvidersConfigurations(): array;
+
+    /**
      * Find a provider by configuration id.
      *
      * @param int $providerConfigurationId

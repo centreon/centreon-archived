@@ -123,6 +123,14 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @inheritDoc
      */
+    public function findProvidersConfigurations(): array
+    {
+        return $this->repository->findProvidersConfigurations();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findProviderByConfigurationId(int $providerConfigurationId): ?ProviderInterface
     {
         $providerConfiguration = $this->repository->findProviderConfiguration(
