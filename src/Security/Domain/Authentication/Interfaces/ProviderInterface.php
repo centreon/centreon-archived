@@ -125,6 +125,12 @@ interface ProviderInterface
     public function isForced(): bool;
 
     /**
+     * Enable or disable the Forced mode.
+     *
+     */
+    public function setForced(bool $isForced): void;
+
+    /**
      * Indicates whether the authentication process is complete and the user is properly authenticated.
      *
      * @return bool

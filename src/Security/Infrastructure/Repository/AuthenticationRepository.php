@@ -297,7 +297,9 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
             $providerConfiguration = (new ProviderConfiguration())
                 ->setId((int) $result['id'])
                 ->setProviderName($result['provider_name'])
-                ->setConfigurationName($result['provider_configuration_name']);
+                ->setConfigurationName($result['provider_configuration_name'])
+                ->setForced((bool) $result['isForced'])
+                ->setActive((bool) $result['isActive']);
 
             $configuration = json_decode($result['configuration'], true);
             $providerConfiguration->setConfiguration($configuration);
@@ -339,7 +341,9 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
             $providerConfiguration = (new ProviderConfiguration())
                 ->setId((int) $result['id'])
                 ->setProviderName($result['provider_name'])
-                ->setConfigurationName($result['provider_configuration_name']);
+                ->setConfigurationName($result['provider_configuration_name'])
+                ->setForced((bool) $result['isForced'])
+                ->setActive((bool) $result['isActive']);
 
             $configuration = json_decode($result['configuration'], true);
             $providerConfiguration->setConfiguration($configuration);
