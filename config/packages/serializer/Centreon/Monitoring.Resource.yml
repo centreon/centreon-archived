@@ -165,3 +165,8 @@ Centreon\Domain\Monitoring\Resource:
             type: array<Centreon\Domain\Monitoring\ResourceGroup>
             groups:
                 - 'resource_details'
+        monitoringServerName:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_details'

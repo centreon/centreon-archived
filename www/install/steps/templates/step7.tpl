@@ -73,9 +73,9 @@
                     } else if (key == 'baseconf') {
                         nextInstallStep('dbpartitioning');
                     } else if (key == 'dbpartitioning') {
-                    nextInstallStep('generationCache');
+                        nextInstallStep('generationCache');
                     } else if (key == 'generationCache') {
-                    jQuery("#next").show();
+                        jQuery("#next").show();
                     }
                 } else {
                     jQuery("#previous").show();
