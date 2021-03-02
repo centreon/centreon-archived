@@ -3,7 +3,7 @@
   "version": "21.04.0",
   "description": "centreon web package",
   "scripts": {
-    "cypress:up": "docker-compose up --force-recreate --abort-on-container-exit --exit-code-from cypress",
+    "cypress:up": "UID=${UID} GID=${GID} docker-compose up --force-recreate --abort-on-container-exit --exit-code-from cypress",
     "cypress:local": "npx cypress run --config-file cypress.dev.json",
     "cypress:local:chrome": "npx cypress run --config-file cypress.dev.json -b chrome",
     "cypress:local:open": "npx cypress open --config-file cypress.dev.json"
