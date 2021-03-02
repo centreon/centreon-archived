@@ -231,7 +231,7 @@ class LocalProvider implements ProviderInterface
             );
             // generate token
         } else {
-            //$token = $tokens->getProviderToken();
+            $token = $tokens->getProviderToken();
         }
         return $token;
     }
