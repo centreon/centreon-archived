@@ -217,8 +217,7 @@ class LocalProvider implements ProviderInterface
     }
 
     /**
-     * @param boolean $isForced
-     * @return void
+     * @inheritDoc
      */
     public function setForced(bool $isForced): void
     {
