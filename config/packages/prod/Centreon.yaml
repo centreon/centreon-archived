@@ -111,7 +111,7 @@ services:
         class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRepositoryRDB
 
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRegisterRepositoryAPI
+        class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRegisterRepositoryAPI
 
     # Real time monitoring
     sqlRequestTranslator:
