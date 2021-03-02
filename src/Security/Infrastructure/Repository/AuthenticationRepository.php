@@ -261,7 +261,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
               provider_token.token AS provider_token, refresh_token.token AS refresh_token
             FROM `:db`.security_authentication_tokens sat
             INNER JOIN `:db`.session s ON s.id = sat.session_token_id
-              AND s.session_id = ':token'
+              AND s.session_id = :token
             INNER JOIN `:db`.security_token provider_token ON provider_token.id = sat.token_id
             LEFT JOIN `:db`.security_token refresh_token ON refresh_token.id = sat.token_refresh_id
         "));

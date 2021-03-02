@@ -183,7 +183,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param string $sessionToken
      * @return AuthenticationTokens|null
      */
-    public function findAuthenticationTokenBySessionToken(string $sessionToken): ?AuthenticationTokens
+    public function findAuthenticationTokensBySessionToken(string $sessionToken): ?AuthenticationTokens
     {
         return $this->repository->findAuthenticationTokensBySessionToken($sessionToken);
     }

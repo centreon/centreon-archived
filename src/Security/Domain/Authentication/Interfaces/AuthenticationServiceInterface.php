@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Security\Domain\Authentication\Interfaces;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Security\Domain\Authentication\Model\ProviderToken;
@@ -103,7 +102,7 @@ interface AuthenticationServiceInterface
      * @param string $sessionToken
      * @return AuthenticationTokens|null
      */
-    public function findAuthenticationTokenBySessionToken(string $sessionToken): ?AuthenticationTokens;
+    public function findAuthenticationTokensBySessionToken(string $sessionToken): ?AuthenticationTokens;
 
     /**
      * Check if the session is valid (use the refresh token if necessary).

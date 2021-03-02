@@ -40,7 +40,7 @@ class AuthenticationManager implements AuthenticationManagerInterface
     private $contactRepository;
 
     /**
-     * @var AuthenticationService
+     * @var AuthenticationServiceInterface
      */
     private $authenticationService;
 
@@ -73,7 +73,7 @@ class AuthenticationManager implements AuthenticationManagerInterface
             throw AuthenticationManagerException::sessionTokenNotFoundException();
         }
 
-        $authenticationToken = $this->authenticationService->findAuthenticationTokenBySessionToken($sessionToken);
+        $authenticationToken = $this->authenticationService->findAuthenticationTokensBySessionToken($sessionToken);
         if ($authenticationToken === null) {
             throw AuthenticationManagerException::sessionNotFoundException();
         }
