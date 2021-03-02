@@ -61,10 +61,15 @@ const MetricsTooltip = ({
 
   return (
     <div className={classes.tooltip}>
-      <Typography variant="caption" className={classes.emphasized}>
+      <Typography
+        variant="caption"
+        align="center"
+        className={classes.emphasized}
+      >
         {format({
           date: new Date(timeValue.timeTick),
           formatString: dateTimeFormat,
+
         })}
       </Typography>
       {metrics.map((metric) => {
