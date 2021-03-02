@@ -74,5 +74,15 @@ const getDefaultCriterias = (
   ];
 };
 
+const getAllCriterias = (): Array<Criteria> => [
+  ...getDefaultCriterias(),
+  {
+    name: 'monitoring_servers',
+    value: [],
+    type: 'multi_select',
+    object_type: 'monitoring_servers',
+  },
+];
+
 export default getDefaultCriterias;
-export { defaultSortField, defaultSortOrder };
+export { defaultSortField, defaultSortOrder, getAllCriterias };

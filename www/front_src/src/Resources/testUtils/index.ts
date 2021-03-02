@@ -14,6 +14,7 @@ interface EndpointParams {
   resourceTypes?: Array<string>;
   hostGroupIds?: Array<number>;
   serviceGroupIds?: Array<number>;
+  monitoringServerIds?: Array<number>;
 }
 
 const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
@@ -37,6 +38,7 @@ const getListingEndpoint = ({
   resourceTypes = defaultResourceTypes,
   hostGroupIds = [],
   serviceGroupIds = [],
+  monitoringServerIds = [],
   search,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
@@ -62,6 +64,7 @@ const getListingEndpoint = ({
     resourceTypes,
     hostGroupIds,
     serviceGroupIds,
+    monitoringServerIds,
   });
 
 const cancelTokenRequestParam = { cancelToken: {} };

@@ -4,7 +4,7 @@ import { Grid, Chip } from '@material-ui/core';
 
 import {
   labelCurrentStateDuration,
-  labelPoller,
+  labelMonitoringServer,
   labelTimezone,
   labelLastStateChange,
   labelLastCheck,
@@ -95,7 +95,7 @@ const getDetailCardLines = ({
       ],
     },
     {
-      title: labelPoller,
+      title: labelMonitoringServer,
       field: details.poller_name,
       getLines: (): Lines => [
         {
