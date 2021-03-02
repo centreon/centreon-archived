@@ -261,15 +261,20 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
                 new \DateTime(),
                 (new \DateTime())->add(new \DateInterval('P1D'))
             );
-            $providerRefreshToken = new ProviderToken(
-                null,
-                $result['refresh_token'],
-                new \DateTime(),
-                (new \DateTime())->add(new \DateInterval('P1Y'))
-            );
+
+            $providerRefreshToken = null;
+            if ($result['refresh_token'] !== null) {
+                $providerRefreshToken = new ProviderToken(
+                    null,
+                    $result['refresh_token'],
+                    new \DateTime(),
+                    (new \DateTime())->add(new \DateInterval('P1Y'))
+                );
+            }
+
             return new AuthenticationTokens(
-                $result['user_id'],
-                $result['provider_configuration_id'],
+                (int) $result['user_id'],
+                (int) $result['provider_configuration_id'],
                 $sessionToken,
                 $providerToken,
                 $providerRefreshToken

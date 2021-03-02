@@ -61,7 +61,7 @@ class AuthenticationTokens
      * @param int $configurationProviderId
      * @param string $sessionToken
      * @param ProviderToken $providerToken
-     * @param ProviderToken $providerRefreshToken
+     * @param ProviderToken|null $providerRefreshToken
      * @throws \Assert\AssertionFailedException
      */
     public function __construct(
@@ -69,7 +69,7 @@ class AuthenticationTokens
         int $configurationProviderId,
         string $sessionToken,
         ProviderToken $providerToken,
-        ProviderToken $providerRefreshToken
+        ?ProviderToken $providerRefreshToken
     ) {
         Assertion::minLength($sessionToken, self::SESSION_TOKEN_MIN_LENGTH, 'AuthenticationToken::sessionToken');
         $this->userId = $userId;
@@ -96,9 +96,9 @@ class AuthenticationTokens
     }
 
     /**
-     * @return ProviderToken
+     * @return ProviderToken|null
      */
-    public function getProviderRefreshToken(): ProviderToken
+    public function getProviderRefreshToken(): ?ProviderToken
     {
         return $this->providerRefreshToken;
     }

@@ -99,15 +99,19 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function hasValidSession(string $sessionToken, ProviderInterface $provider): bool
     {
-        $authenticationToken = $this->repository->findAuthenticationTokensBySessionToken($sessionToken);
-        if ($authenticationToken === null) {
+        $authenticationTokens = $this->repository->findAuthenticationTokensBySessionToken($sessionToken);
+        if ($authenticationTokens === null) {
             return false;
         }
-        if ($authenticationToken->getProviderToken()->isExpired()) {
-            if ($provider->canRefreshToken() && !$authenticationToken->getProviderRefreshToken()->isExpired()) {
-                $newAuthenticationTokens = $provider->refreshToken($authenticationToken);
+        if ($authenticationTokens->getProviderToken()->isExpired()) {
+            if (
+                $provider->canRefreshToken()
+                && $authenticationTokens->getProviderRefreshToken() !== null
+                && !$authenticationTokens->getProviderRefreshToken()->isExpired()
+            ) {
+                $newAuthenticationTokens = $provider->refreshToken($authenticationTokens);
                 if ($newAuthenticationTokens !== null && !$newAuthenticationTokens->getProviderToken()->isExpired()) {
-                    $this->updateAuthenticationToken($newAuthenticationTokens);
+                    $this->updateAuthenticationTokens($newAuthenticationTokens);
                     return true;
                 }
             }
@@ -179,7 +183,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @inheritDoc
      */
-    public function updateAuthenticationToken(AuthenticationTokens $authenticationTokens): void
+    public function updateAuthenticationTokens(AuthenticationTokens $authenticationTokens): void
     {
         $this->repository->updateAuthenticationTokens($authenticationTokens);
     }

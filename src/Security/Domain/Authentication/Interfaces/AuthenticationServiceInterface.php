@@ -88,7 +88,7 @@ interface AuthenticationServiceInterface
     /**
      * @param AuthenticationTokens $authenticationToken
      */
-    public function updateAuthenticationToken(AuthenticationTokens $authenticationToken): void;
+    public function updateAuthenticationTokens(AuthenticationTokens $authenticationToken): void;
 
     /**
      * @param string $sessionToken
