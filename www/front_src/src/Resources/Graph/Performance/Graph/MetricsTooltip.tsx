@@ -69,7 +69,6 @@ const MetricsTooltip = ({
         {format({
           date: new Date(timeValue.timeTick),
           formatString: dateTimeFormat,
-
         })}
       </Typography>
       {metrics.map((metric) => {
