@@ -136,6 +136,11 @@ class CentreonSession
                 WHERE `key` = \'session_expire\')
             OR last_reload IS NULL'
         );
+
+        $db->query(
+            "DELETE FROM `security_token`
+            WHERE expiration_date < NOW()"
+        );
     }
 
     /**

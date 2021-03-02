@@ -271,10 +271,13 @@ class AuthenticationController extends AbstractController
                     $authenticationProvider->getProviderRefreshToken($session->getId())
                 );
 
-                $response = new Response(null, Response::HTTP_OK, ['content-type' => 'text/html']);
-                $response->headers->setCookie(Cookie::create('PHPSESSID', $session->getId()));
-                $response->headers->set("Location", $this->getBaseUri());
-                return $response;
+                //$response = new Response(null, Response::HTTP_OK, ['content-type' => 'text/html']);
+                //$response->headers->setCookie(Cookie::create('PHPSESSID', $session->getId()));
+                //$response->headers->set("Location", $this->getBaseUri() . '/authentication/login');
+                return $this->view([
+                    'redirect_uri' => $this->getBaseUri() . '/monitoring/resources',
+                ]);
+                //return $response;
             }
         }
         // Authentication failed

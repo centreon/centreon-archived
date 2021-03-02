@@ -73,7 +73,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
             $this->db->beginTransaction();
         }
         try {
-            $this->deleteExistingToken($contactId);
+            //$this->deleteExistingToken($contactId);
             $this->insertTokens(
                 $sessionToken,
                 $providerConfigurationId,
