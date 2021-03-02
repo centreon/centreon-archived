@@ -50,6 +50,11 @@ class ProviderConfiguration
     private $configuration;
 
     /**
+     * @var bool is the provider forced ?
+     */
+    private $isForced;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -120,6 +125,42 @@ class ProviderConfiguration
     public function setConfiguration(array $configuration): ProviderConfiguration
     {
         $this->configuration = $configuration;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @param boolean $isActive
+     * @return self
+     */
+    public function setActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isForced(): bool
+    {
+        return $this->isForced;
+    }
+
+    /**
+     * @param boolean $isForced
+     * @return self
+     */
+    public function setForced(bool $isForced): self
+    {
+        $this->isForced = $isForced;
         return $this;
     }
 }

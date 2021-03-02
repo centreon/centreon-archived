@@ -48,6 +48,11 @@ class LocalProvider implements ProviderInterface
     private $isAuthenticated;
 
     /**
+     * @var boolean
+     */
+    private $isForced;
+
+    /**
      * @var int
      */
     private $contactId;
@@ -208,7 +213,15 @@ class LocalProvider implements ProviderInterface
      */
     public function isForced(): bool
     {
-        return $this->configuration['isForced'];
+        return $this->isForced;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setForced(bool $isForced): void
+    {
+        $this->isForced = $isForced;
     }
 
     /**
