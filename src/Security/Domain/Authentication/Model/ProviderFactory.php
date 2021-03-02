@@ -39,7 +39,8 @@ class ProviderFactory
      * @param \Traversable $providers
      * @throws \InvalidArgumentException
      */
-    public function __construct(\Traversable $providers) {
+    public function __construct(\Traversable $providers)
+    {
         if (count($providers) === 0) {
             throw new \InvalidArgumentException('You must at least add one authentication provider');
         }

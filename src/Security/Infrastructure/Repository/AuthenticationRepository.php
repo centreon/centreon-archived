@@ -77,7 +77,8 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
             $this->insertTokens(
                 $sessionToken,
                 $providerConfigurationId,
-                $contactId, $providerToken,
+                $contactId,
+                $providerToken,
                 $providerRefreshToken
             );
             if (!$isAlreadyInTransaction) {
@@ -185,7 +186,8 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         $insertSessionStatement->bindValue(':sessionId', $sessionToken, \PDO::PARAM_STR);
         $insertSessionStatement->bindValue(':userId', $contactId, \PDO::PARAM_INT);
         $insertSessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
-        $insertSessionStatement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR); // @todo get addr from controller
+        // @todo get addr from controller
+        $insertSessionStatement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
         $insertSessionStatement->execute();
     }
 
@@ -202,9 +204,17 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
                 "VALUES (:token, :createdAt, :expireAt)"
             )
         );
-        $insertSecurityTokenStatement->bindValue(':token', $providerToken->getToken());
-        $insertSecurityTokenStatement->bindValue(':createdAt', $providerToken->getCreationDate()->format('Y-m-d H:i:s'));
-        $insertSecurityTokenStatement->bindValue(':expireAt', $providerToken->getExpirationDate()->format('Y-m-d H:i:s'));
+        $insertSecurityTokenStatement->bindValue(':token', $providerToken->getToken(), \PDO::PARAM_STR);
+        $insertSecurityTokenStatement->bindValue(
+            ':createdAt',
+            $providerToken->getCreationDate()->format('Y-m-d H:i:s'),
+            \PDO::PARAM_STR
+        );
+        $insertSecurityTokenStatement->bindValue(
+            ':expireAt',
+            $providerToken->getExpirationDate()->format('Y-m-d H:i:s'),
+            \PDO::PARAM_STR
+        );
         $insertSecurityTokenStatement->execute();
     }
 
@@ -232,7 +242,11 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         $insertSecurityAuthenticationStatement->bindValue(':sessionTokenId', $sessionId, \PDO::PARAM_INT);
         $insertSecurityAuthenticationStatement->bindValue(':tokenId', $securityTokenId, \PDO::PARAM_INT);
         $insertSecurityAuthenticationStatement->bindValue(':refreshTokenId', $securityRefreshTokenId, \PDO::PARAM_INT);
-        $insertSecurityAuthenticationStatement->bindValue(':configurationId', $providerConfigurationId, \PDO::PARAM_INT);
+        $insertSecurityAuthenticationStatement->bindValue(
+            ':configurationId',
+            $providerConfigurationId,
+            \PDO::PARAM_INT
+        );
         $insertSecurityAuthenticationStatement->execute();
     }
 

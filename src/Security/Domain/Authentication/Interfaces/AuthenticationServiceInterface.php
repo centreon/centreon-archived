@@ -76,7 +76,9 @@ interface AuthenticationServiceInterface
      * @param string $providerConfigurationName
      * @return ProviderConfiguration|null
      */
-    public function findProviderConfigurationByConfigurationName(string $providerConfigurationName): ?ProviderConfiguration;
+    public function findProviderConfigurationByConfigurationName(
+        string $providerConfigurationName
+    ): ?ProviderConfiguration;
 
     /**
      * @param string $sessionToken
