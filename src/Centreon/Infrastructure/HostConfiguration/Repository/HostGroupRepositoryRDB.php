@@ -25,7 +25,7 @@ namespace Centreon\Infrastructure\HostConfiguration\Repository;
 use Assert\AssertionFailedException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface;
-use Centreon\Domain\HostConfiguration\Model\HostGroup as HostGroupAlias;
+use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
@@ -70,7 +70,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         } catch (
             RequestParametersTranslatorException
             | \InvalidArgumentException
-            | \Assert\AssertionFailedException $ex
+            | AssertionFailedException $ex
         ) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
@@ -88,7 +88,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         } catch (
             RequestParametersTranslatorException
             | \InvalidArgumentException
-            | \Assert\AssertionFailedException $ex
+            | AssertionFailedException $ex
         ) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
@@ -98,8 +98,8 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
      * Find all groups filtered by contact id.
      *
      * @param int|null $contactId Contact id related to host categories
-     * @return HostGroupAlias[]
-     * @throws \Assert\AssertionFailedException
+     * @return HostGroup[]
+     * @throws AssertionFailedException
      * @throws \InvalidArgumentException
      * @throws RequestParametersTranslatorException
      */
@@ -226,11 +226,11 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
     /**
      * @inheritDoc
      */
-    public function findById(int $hostGroupId): ?HostGroupAlias
+    public function findById(int $hostGroupId): ?HostGroup
     {
         try {
             return $this->findByIdRequest($hostGroupId, null);
-        } catch (AssertionFailedException | \InvalidArgumentException $ex) {
+        } catch (AssertionFailedException $ex) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
     }
@@ -238,11 +238,11 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
     /**
      * @inheritDoc
      */
-    public function findByIdAndContact(int $hostGroupId, ContactInterface $contact): ?HostGroupAlias
+    public function findByIdAndContact(int $hostGroupId, ContactInterface $contact): ?HostGroup
     {
         try {
             return $this->findByIdRequest($hostGroupId, $contact->getId());
-        } catch (AssertionFailedException | \InvalidArgumentException $ex) {
+        } catch (AssertionFailedException $ex) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
     }
@@ -252,11 +252,10 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
      *
      * @param int $hostGroupId Id of the host group to be found
      * @param int|null $contactId Contact id related to host groups
-     * @return HostGroupAlias|null
-     * @throws \Assert\AssertionFailedException
-     * @throws \InvalidArgumentException
+     * @return HostGroup|null
+     * @throws AssertionFailedException
      */
-    private function findByIdRequest(int $hostGroupId, ?int $contactId): ?HostGroupAlias
+    private function findByIdRequest(int $hostGroupId, ?int $contactId): ?HostGroup
     {
         if ($contactId === null) {
             $statement = $this->db->prepare(
@@ -331,10 +330,10 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         return null;
     }
 
-
     /**
      * @inheritDoc
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
+     * @throws \InvalidArgumentException
      */
     public function findHostGroups(): array
     {

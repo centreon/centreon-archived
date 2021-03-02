@@ -299,19 +299,27 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
     /**
      * @inheritDoc
      */
-    public function findServiceMacrosPassword(int $serviceId, string $command): array
+    public function findServiceMacrosFromCommandLine(int $serviceId, string $command): array
     {
-        $serviceMacrosPassword = [];
-        // If contains on-demand service macros
-        if (strpos($command, '$_SERVICE') !== false) {
-            $onDemandServiceMacros = $this->findOnDemandServiceMacros($serviceId, true);
-            foreach ($onDemandServiceMacros as $serviceMacro) {
-                if ($serviceMacro->isPassword()) {
-                    $serviceMacrosPassword[] = $serviceMacro;
+        $serviceMacros = [];
+        if (preg_match_all('/(\$_SERVICE\S+?\$)/', $command, $matches)) {
+            $matchedMacros = $matches[0];
+
+            foreach ($matchedMacros as $matchedMacroName) {
+                $hostMacros[$matchedMacroName] = (new ServiceMacro())
+                    ->setName($matchedMacroName)
+                    ->setValue('');
+            }
+
+            $linkedServiceMacros = $this->findOnDemandServiceMacros($serviceId, true);
+            foreach ($linkedServiceMacros as $linkedServiceMacro) {
+                if (in_array($linkedServiceMacro->getName(), $matchedMacros)) {
+                    $serviceMacros[$linkedServiceMacro->getName()] = $linkedServiceMacro;
                 }
             }
         }
-        return $serviceMacrosPassword;
+
+        return array_values($serviceMacros);
     }
 
     /**
