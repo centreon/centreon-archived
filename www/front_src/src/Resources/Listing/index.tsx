@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals } from 'ramda';
+import { equals, path } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
@@ -103,6 +103,12 @@ const ResourceListing = (): JSX.Element => {
     SortOrder,
   ];
 
+  const getCompositeId = (row: Resource): [number, number] => {
+    const parentId = path<number>(['parent', 'id'], row);
+
+    return [parentId || row.id, row.id];
+  };
+
   return (
     <Listing
       checkable
@@ -129,6 +135,7 @@ const ResourceListing = (): JSX.Element => {
       onRowClick={selectResource}
       innerScrollDisabled={false}
       emptyDataMessage={t(labelNoResultsFound)}
+      getCompositeId={getCompositeId}
       memoProps={[
         listing,
         sortField,
