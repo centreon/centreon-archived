@@ -14,12 +14,10 @@ const ActionUrlColumn = ({ row }: ComponentColumnProps): JSX.Element => {
     row,
   );
 
-  const title = 'action';
-
   return (
     <UrlColumn
       endpoint={endpoint}
-      title={title}
+      title={endpoint}
       icon={<IconAction fontSize="small" />}
     />
   );
