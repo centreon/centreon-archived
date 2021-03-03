@@ -268,13 +268,11 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $providerConfiguration = (new ProviderConfiguration())
                 ->setId((int) $result['id'])
-                ->setProviderName($result['provider_name'])
-                ->setConfigurationName($result['provider_configuration_name'])
+                ->setType($result['type'])
+                ->setName($result['name'])
                 ->setForced((bool) $result['isForced'])
                 ->setActive((bool) $result['isActive']);
 
-            $configuration = json_decode($result['configuration'], true);
-            $providerConfiguration->setConfiguration($configuration);
             $providersConfigurations[] = $providerConfiguration;
         }
         return $providersConfigurations;
@@ -297,13 +295,10 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $providerConfiguration = (new ProviderConfiguration())
                 ->setId((int) $result['id'])
-                ->setProviderName($result['provider_name'])
-                ->setConfigurationName($result['provider_configuration_name'])
+                ->setType($result['type'])
+                ->setName($result['name'])
                 ->setForced((bool) $result['isForced'])
                 ->setActive((bool) $result['isActive']);
-
-            $configuration = json_decode($result['configuration'], true);
-            $providerConfiguration->setConfiguration($configuration);
         }
         return $providerConfiguration;
     }
@@ -341,8 +336,8 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $providerConfiguration = (new ProviderConfiguration())
                 ->setId((int) $result['id'])
-                ->setProviderName($result['type'])
-                ->setConfigurationName($result['name'])
+                ->setType($result['type'])
+                ->setName($result['name'])
                 ->setForced((bool) $result['isForced'])
                 ->setActive((bool) $result['isActive']);
         }

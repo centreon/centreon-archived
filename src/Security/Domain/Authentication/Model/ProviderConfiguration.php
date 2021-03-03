@@ -35,19 +35,14 @@ class ProviderConfiguration
     private $id;
 
     /**
-     * @var string Provider's name
+     * @var string Provider's type
      */
-    private $providerName;
+    private $type;
 
     /**
      * @var string Provider configuration name
      */
-    private $configurationName;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private $configuration;
+    private $name;
 
     /**
      * @var string|null
@@ -85,56 +80,38 @@ class ProviderConfiguration
     /**
      * @return string
      */
-    public function getProviderName(): ?string
+    public function getType(): ?string
     {
-        return $this->providerName;
+        return $this->type;
     }
 
     /**
-     * @param string $providerName
+     * @param string $type
      * @return ProviderConfiguration
      * @throws \Assert\AssertionFailedException
      */
-    public function setProviderName(string $providerName): ProviderConfiguration
+    public function setType(string $type): ProviderConfiguration
     {
-        Assertion::minLength($providerName, 1, 'ConfigurationProvider::providerName');
-        $this->providerName = $providerName;
+        Assertion::minLength($type, 1, 'ConfigurationProvider::type');
+        $this->type = $type;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getConfigurationName(): string
+    public function getName(): string
     {
-        return $this->configurationName;
+        return $this->name;
     }
 
     /**
-     * @param string $configurationName
+     * @param string $name
      * @return ProviderConfiguration
      */
-    public function setConfigurationName(string $configurationName): ProviderConfiguration
+    public function setName(string $name): ProviderConfiguration
     {
-        $this->configurationName = $configurationName;
-        return $this;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getConfiguration(): array
-    {
-        return $this->configuration;
-    }
-
-    /**
-     * @param array<string, mixed> $configuration
-     * @return ProviderConfiguration
-     */
-    public function setConfiguration(array $configuration): ProviderConfiguration
-    {
-        $this->configuration = $configuration;
+        $this->name = $name;
         return $this;
     }
 
@@ -166,7 +143,7 @@ class ProviderConfiguration
     public function getAuthenticationUri(): string
     {
         return $this->getCentreonBaseUri() . '/authentication/providers/'
-            . $this->getConfigurationName();
+            . $this->getName();
     }
 
     /**
