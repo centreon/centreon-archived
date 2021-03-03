@@ -16028,4 +16028,4 @@ msgid "Error while searching for the command of host"
 msgstr "Erreur lors de la recheche de la commande de l'hôte"
 
 msgid "Monitoring server"
-msgstr "Server de supervision"
+msgstr "Serveur de supervision"
