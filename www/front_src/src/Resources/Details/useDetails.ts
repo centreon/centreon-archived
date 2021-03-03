@@ -52,6 +52,7 @@ export interface DetailsState {
   setGraphTabParameters: (parameters: GraphTabParameters) => void;
   panelWidth: number;
   setPanelWidth: React.Dispatch<React.SetStateAction<number>>;
+  selectedResourceParentId?: number;
 }
 
 const useDetails = (): DetailsState => {
@@ -170,7 +171,7 @@ const useDetails = (): DetailsState => {
   React.useEffect(() => {
     setDetails(undefined);
     loadDetails();
-  }, [selectedResourceId]);
+  }, [selectedResourceId, selectedResourceParentId]);
 
   React.useEffect(() => {
     storePanelWidth(panelWidth);
@@ -189,6 +190,7 @@ const useDetails = (): DetailsState => {
   return {
     clearSelectedResource,
     selectedResourceId,
+    selectedResourceParentId,
     setSelectedResourceId,
     setSelectedResourceType,
     setSelectedResourceParentId,

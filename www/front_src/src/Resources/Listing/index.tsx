@@ -44,6 +44,7 @@ const ResourceListing = (): JSX.Element => {
     sending,
     setCriteria,
     getCriteriaValue,
+    selectedResourceParentId,
   } = useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
@@ -69,7 +70,17 @@ const ResourceListing = (): JSX.Element => {
 
   const resourceDetailsOpenCondition = {
     name: 'detailsOpen',
-    condition: ({ id }): boolean => equals(id, selectedResourceId),
+    condition: (row): boolean => {
+      const { id, parent } = row;
+      const parentId = parent?.id;
+
+      // console.log(selectedResourceId, selectedResourceParentId);
+
+      return (
+        equals(id, selectedResourceId) &&
+        equals(parentId, selectedResourceParentId)
+      );
+    },
     color: fade(theme.palette.primary.main, 0.08),
   };
 
@@ -143,6 +154,7 @@ const ResourceListing = (): JSX.Element => {
         page,
         selectedResources,
         selectedResourceId,
+        selectedResourceParentId,
         sending,
       ]}
     />
