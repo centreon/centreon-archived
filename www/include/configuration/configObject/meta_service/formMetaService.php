@@ -117,7 +117,7 @@ $attrTimeperiods = array(
     'multiple' => false,
     'linkedObject' => 'centreonTimeperiod'
 );
-$metricAvRoute = './include/common/webServices/rest/internal.php?object=centreon_metric&action=listMetrics';
+$metricAvRoute = './api/internal.php?object=centreon_metric&action=listMetrics';
 $attrMetric = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $metricAvRoute,
