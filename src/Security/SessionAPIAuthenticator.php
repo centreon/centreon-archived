@@ -26,7 +26,7 @@ use Centreon\Domain\Exception\ContactDisabledException;
 use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Exceptions\GuardAuthenticatorException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,6 +46,11 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 class SessionAPIAuthenticator extends AbstractGuardAuthenticator
 {
     /**
+     * @var AuthenticationServiceInterface
+     */
+    private $authenticationService;
+
+    /**
      * @var AuthenticationRepositoryInterface
      */
     private $authenticationRepository;
@@ -58,13 +63,16 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
     /**
      * SessionAPIAuthenticator constructor.
      *
+     * @param AuthenticationServiceInterface $authenticationService
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param ContactRepositoryInterface $contactRepository
      */
     public function __construct(
+        AuthenticationServiceInterface $authenticationService,
         AuthenticationRepositoryInterface $authenticationRepository,
         ContactRepositoryInterface $contactRepository
     ) {
+        $this->authenticationService = $authenticationService;
         $this->authenticationRepository = $authenticationRepository;
         $this->contactRepository = $contactRepository;
     }
@@ -213,7 +221,7 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
         if (!array_key_exists('session', $credentials)) {
             throw GuardAuthenticatorException::sessionTokenNotFoundException();
         }
-        $sessionToken = $credentials['token'];
+        $sessionToken = $credentials['session'];
 
         $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($sessionToken);
         if ($authenticationTokens === null) {
