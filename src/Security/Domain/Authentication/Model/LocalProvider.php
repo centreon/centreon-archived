@@ -217,10 +217,10 @@ class LocalProvider implements ProviderInterface
         $token = null;
         $tokens = $this->authenticationRepository->findAuthenticationTokensBySessionToken($sessionToken);
         if ($tokens === null) {
-            $expirationSessionDelay = "120";
+            $expirationSessionDelay = 120;
             $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
-            if ($sessionExpireOption !== null) {
-                $expirationSessionDelay = $sessionExpireOption[0]->getValue();
+            if (!empty($sessionExpireOption)) {
+                $expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();
             }
             $token = new ProviderToken(
                 null,
