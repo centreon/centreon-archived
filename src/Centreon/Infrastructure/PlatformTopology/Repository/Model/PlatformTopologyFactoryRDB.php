@@ -55,7 +55,8 @@ class PlatformTopologyFactoryRDB
         foreach ($platformData as $key => $value) {
             switch ($key) {
                 case 'id':
-                    if (null !== $value && is_int($value)) {
+                    $value = (int) $value;
+                    if (null !== $value && $value > 0) {
                         $platformReturned->setId($value);
                     }
                     break;
@@ -79,13 +80,15 @@ class PlatformTopologyFactoryRDB
                         $platformReturned->setAddress($value);
                     }
                     break;
-                case 'parentId':
-                    if (null !== $value && is_int($value)) {
+                case 'parent_id':
+                    $value = (int) $value;
+                    if (null !== $value && $value > 0) {
                         $platformReturned->setParentId($value);
                     }
                     break;
-                case 'serverId':
-                    if (null !== $value && is_int($value)) {
+                case 'server_id':
+                    $value = (int) $value;
+                    if (null !== $value && $value > 0) {
                         $platformReturned->setServerId($value);
                     }
                     break;
@@ -106,7 +109,8 @@ class PlatformTopologyFactoryRDB
         foreach ($platformData as $key => $value) {
             switch ($key) {
                 case 'id':
-                    if (null !== $value && is_int($value)) {
+                    $value = (int) $value;
+                    if (null !== $value && $value > 0) {
                         $platformReturned->setId($value);
                     }
                     break;
@@ -130,13 +134,15 @@ class PlatformTopologyFactoryRDB
                         $platformReturned->setAddress($value);
                     }
                     break;
-                case 'parentId':
-                    if (null !== $value && is_int($value)) {
+                case 'parent_id':
+                    $value = (int) $value;
+                    if (null !== $value && $value > 0) {
                         $platformReturned->setParentId($value);
                     }
                     break;
-                case 'serverId':
-                    if (null !== $value && is_int($value)) {
+                case 'server_id':
+                    $value = (int) $value;
+                    if (null !== $value && $value > 0) {
                         $platformReturned->setServerId($value);
                     }
                     break;

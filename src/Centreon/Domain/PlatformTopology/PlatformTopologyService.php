@@ -632,6 +632,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 }
             }
         }
+
         return $platformTopology;
     }
 
