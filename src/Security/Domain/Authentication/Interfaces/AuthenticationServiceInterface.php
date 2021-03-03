@@ -102,7 +102,7 @@ interface AuthenticationServiceInterface
      * @param string $sessionToken
      * @return AuthenticationTokens|null
      */
-    public function findAuthenticationTokensBySessionToken(string $sessionToken): ?AuthenticationTokens;
+    public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens;
 
     /**
      * Check if the session is valid (use the refresh token if necessary).
