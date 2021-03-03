@@ -139,7 +139,7 @@ class CentreonSession
 
         $db->query(
             "DELETE FROM `security_token`
-            WHERE expiration_date < NOW()"
+            WHERE expiration_date < UNIX_TIMESTAMP(NOW())"
         );
     }
 
@@ -179,11 +179,11 @@ class CentreonSession
 
                 $expirationDate = (new \Datetime())
                     ->add(new DateInterval('PT' . $sessionExpire . 'M'))
-                    ->format('Y-m-d H:i:s');
+                    ->getTimestamp();
                 $tokenStatement = $pearDB->prepare(
                     "UPDATE `security_token`
                     SET `expiration_date` = :expirationDate
-                    WHERE `session_id` = :sessionId"
+                    WHERE `token` = :sessionId"
                 );
                 $tokenStatement->bindValue(':expirationDate', $expirationDate, \PDO::PARAM_STR);
                 $tokenStatement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
