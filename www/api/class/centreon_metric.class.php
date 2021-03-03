@@ -115,7 +115,7 @@ class CentreonMetric extends CentreonWebService
         return $metrics;
     }
 
-        /**
+    /**
      * Get metric list usualy for select2
      *
      * @return array
