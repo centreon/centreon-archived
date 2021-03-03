@@ -25,7 +25,7 @@ namespace Security\Domain\Authentication\Exceptions;
 /**
  * @package Security\Domain\Authentication\Exceptions
  */
-class AuthenticationManagerException extends \Exception
+class GuardAuthenticatorException extends \Exception
 {
     public static function refreshTokenException(): self
     {
@@ -50,10 +50,5 @@ class AuthenticationManagerException extends \Exception
     public static function sessionNotFoundException(): self
     {
         return new self(_('Session not found'));
-    }
-
-    public static function userNotFoundException(): self
-    {
-        return new self(_('User not found'));
     }
 }
