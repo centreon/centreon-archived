@@ -150,9 +150,6 @@ class CentreonMetric extends CentreonWebService
         $stmt = $this->pearDBMonitoring->prepare($query);
         $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
         $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
 
         $metrics = array();
         while ($row = $stmt->fetch()) {
