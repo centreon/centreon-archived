@@ -22,7 +22,7 @@ const NotesUrlColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   return (
     <UrlColumn
       endpoint={endpoint}
-      title={title}
+      title={title || endpoint}
       icon={<IconLink fontSize="small" />}
     />
   );
