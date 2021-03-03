@@ -167,7 +167,7 @@ class CentreonSession
                 $sessionStatement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
                 $sessionStatement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
 
-                $sessionExpire = 60;
+                $sessionExpire = 120;
                 $optionResult = $pearDB->query(
                     "SELECT `value`
                     FROM `options`
