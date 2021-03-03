@@ -33,6 +33,14 @@ use Security\Domain\Authentication\Model\ProviderToken;
 interface AuthenticationServiceInterface
 {
     /**
+     * Check authentication token
+     *
+     * @param string $token
+     * @return boolean
+     */
+    public function checkToken(string $token): bool;
+
+    /**
      * Create the authentication tokens.
      *
      * @param string $sessionToken

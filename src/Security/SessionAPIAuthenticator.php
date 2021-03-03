@@ -27,7 +27,7 @@ use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Security\Domain\Authentication\Exceptions\GuardAuthenticatorException;
+use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -219,35 +219,11 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
     public function checkCredentials($credentials, UserInterface $user)
     {
         if (!array_key_exists('session', $credentials)) {
-            throw GuardAuthenticatorException::sessionTokenNotFoundException();
+            throw AuthenticationServiceException::sessionTokenNotFoundException();
         }
         $sessionToken = $credentials['session'];
 
-        $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($sessionToken);
-        if ($authenticationTokens === null) {
-            throw GuardAuthenticatorException::sessionNotFoundException();
-        }
-
-        $provider = $this->authenticationService->findProviderByConfigurationId(
-            $authenticationTokens->getConfigurationProviderId()
-        );
-
-        if ($provider === null) {
-            throw GuardAuthenticatorException::providerNotFoundException();
-        }
-
-        if ($authenticationTokens->getProviderToken()->isExpired()) {
-            if (!$provider->canRefreshToken() || $authenticationTokens->getProviderRefreshToken()->isExpired()) {
-                throw GuardAuthenticatorException::sessionExpiredException();
-            }
-            $newAuthenticationTokens = $provider->refreshToken($authenticationTokens);
-            if ($newAuthenticationTokens === null) {
-                throw GuardAuthenticatorException::refreshTokenException();
-            }
-            $this->authenticationService->updateAuthenticationTokens($newAuthenticationTokens);
-        }
-
-        return true;
+        return $this->authenticationService->checkToken($sessionToken);
     }
 
     /**

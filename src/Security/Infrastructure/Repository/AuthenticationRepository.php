@@ -216,7 +216,12 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     {
         $statement = $this->db->prepare($this->translateDbName("
             SELECT s.user_id, sat.provider_configuration_id,
-              provider_token.token AS provider_token, refresh_token.token AS refresh_token
+              provider_token.token AS provider_token,
+              provider_token.creation_date as provider_token_creation_date,
+              provider_token.expiration_date as provider_token_expiration_date,
+              refresh_token.token AS refresh_token,
+              refresh_token.creation_date as refresh_token_creation_date,
+              refresh_token.expiration_date as refresh_token_expiration_date
             FROM `:db`.security_authentication_tokens sat
             INNER JOIN `:db`.session s ON s.session_id = sat.token
               AND s.session_id = :token
@@ -227,20 +232,26 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         $statement->execute();
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $expirationDate = $result['provider_token_expiration_date'] !== null
+                ? (new \DateTime())->setTimestamp((int) $result['provider_token_expiration_date'])
+                : null;
             $providerToken = new ProviderToken(
                 null,
                 $result['provider_token'],
-                new \DateTime(),
-                (new \DateTime())->add(new \DateInterval('P1D'))
+                (new \Datetime())->setTimestamp((int) $result['provider_token_creation_date']),
+                $expirationDate
             );
 
             $providerRefreshToken = null;
             if ($result['refresh_token'] !== null) {
+                $expirationDate = $result['refresh_token_expiration_date'] !== null
+                    ? (new \DateTime())->setTimestamp((int) $result['refresh_token_expiration_date'])
+                    : null;
                 $providerRefreshToken = new ProviderToken(
                     null,
                     $result['refresh_token'],
-                    new \DateTime(),
-                    (new \DateTime())->add(new \DateInterval('P1Y'))
+                    (new \Datetime())->setTimestamp((int) $result['refresh_token_creation_date']),
+                    $expirationDate
                 );
             }
 
