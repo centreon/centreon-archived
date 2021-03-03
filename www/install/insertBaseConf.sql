@@ -1347,5 +1347,5 @@ VALUES
   ('partitioning_backup_directory', '/var/cache/centreon/backup');
 
 -- Insert local authentication provider configuration
-INSERT INTO `provider_configuration` (provider_name, provider_configuration_name, configuration, isActive, isForced)
-VALUES ('local', 'local', '{}', true, false);
+INSERT INTO `provider_configuration` (type, name, isActive, isForced)
+VALUES ('local', 'local', true, false);
