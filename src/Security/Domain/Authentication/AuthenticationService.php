@@ -97,9 +97,9 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param ProviderInterface $provider Provider that will be used to refresh the token if necessary
      * @return bool
      */
-    public function hasValidSession(string $sessionToken, ProviderInterface $provider): bool
+    public function hasValidSession(string $token, ProviderInterface $provider): bool
     {
-        $authenticationTokens = $this->repository->findAuthenticationTokensBySessionToken($sessionToken);
+        $authenticationTokens = $this->repository->findAuthenticationTokensByToken($token);
         if ($authenticationTokens === null) {
             return false;
         }
@@ -160,9 +160,9 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @inheritDoc
      */
-    public function findProviderBySession(string $sessionToken): ?ProviderInterface
+    public function findProviderBySession(string $token): ?ProviderInterface
     {
-        $authenticationToken = $this->repository->findAuthenticationTokensBySessionToken($sessionToken);
+        $authenticationToken = $this->repository->findAuthenticationTokensByToken($token);
         if ($authenticationToken === null) {
             return null;
         }
@@ -183,9 +183,9 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @param string $sessionToken
      * @return AuthenticationTokens|null
      */
-    public function findAuthenticationTokensBySessionToken(string $sessionToken): ?AuthenticationTokens
+    public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens
     {
-        return $this->repository->findAuthenticationTokensBySessionToken($sessionToken);
+        return $this->repository->findAuthenticationTokensByToken($token);
     }
 
     /**

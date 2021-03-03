@@ -61,7 +61,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
      * @inheritDoc
      */
     public function addAuthenticationTokens(
-        string $sessionToken,
+        string $token,
         int $providerConfigurationId,
         int $contactId,
         ProviderToken $providerToken,
@@ -73,9 +73,8 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
             $this->db->beginTransaction();
         }
         try {
-            //$this->deleteExistingToken($contactId);
             $this->insertTokens(
-                $sessionToken,
+                $token,
                 $providerConfigurationId,
                 $contactId,
                 $providerToken,
@@ -93,49 +92,9 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     }
 
     /**
-     * Delete the user existing token.
-     *
-     * @param integer $contactId
-     */
-    private function deleteExistingToken(int $contactId): void
-    {
-        // Get the current session token.
-        $getSessionStatement = $this->db->prepare(
-            $this->translateDbName(
-                "SELECT session_id FROM `:db`.session WHERE user_id = :userId AND ip_address = :ipAddress"
-            )
-        );
-        $getSessionStatement->bindValue(':userId', $contactId, \PDO::PARAM_INT);
-        $getSessionStatement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
-        $getSessionStatement->execute();
-
-        // If any token found, also delete them from security_token
-        if (($result = $getSessionStatement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            $session = $result['session_id'];
-            $deleteSecurityTokenStatement = $this->db->prepare(
-                $this->translateDbName(
-                    "DELETE FROM `:db`.security_token WHERE token = :token"
-                )
-            );
-            $deleteSecurityTokenStatement->bindValue(':token', $session, \PDO::PARAM_STR);
-            $deleteSecurityTokenStatement->execute();
-
-            //Then delete it from session
-            $statement = $this->db->prepare(
-                $this->translateDbName(
-                    "DELETE FROM `:db`.session WHERE user_id = :userId AND ip_address = :ipAddress"
-                )
-            );
-            $statement->bindValue(':userId', $contactId, \PDO::PARAM_INT);
-            $statement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
-            $statement->execute();
-        }
-    }
-
-    /**
      * Insert session, security and refresh tokens
      *
-     * @param string $sessionToken
+     * @param string $token
      * @param integer $providerConfigurationId
      * @param integer $contactId
      * @param ProviderToken $providerToken
@@ -143,14 +102,13 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
      * @return void
      */
     private function insertTokens(
-        string $sessionToken,
+        string $token,
         int $providerConfigurationId,
         int $contactId,
         ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken
     ): void {
-        $this->insertSessionToken($sessionToken, $contactId);
-        $sessionId = (int) $this->db->lastInsertId();
+        $this->insertSessionToken($token, $contactId);
 
         $this->insertSecurityToken($providerToken);
         $securityTokenId = (int) $this->db->lastInsertId();
@@ -162,7 +120,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         }
 
         $this->insertSecurityAuthenticationToken(
-            $sessionId,
+            $token,
             $securityTokenId,
             $securityRefreshTokenId,
             $providerConfigurationId
@@ -172,10 +130,10 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     /**
      * Insert token into session table.
      *
-     * @param string $sessionToken
+     * @param string $token
      * @param integer $contactId
      */
-    private function insertSessionToken(string $sessionToken, int $contactId): void
+    private function insertSessionToken(string $token, int $contactId): void
     {
         $insertSessionStatement = $this->db->prepare(
             $this->translateDbName(
@@ -183,7 +141,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
                 "VALUES (:sessionId, :userId, :lastReload, :ipAddress)"
             )
         );
-        $insertSessionStatement->bindValue(':sessionId', $sessionToken, \PDO::PARAM_STR);
+        $insertSessionStatement->bindValue(':sessionId', $token, \PDO::PARAM_STR);
         $insertSessionStatement->bindValue(':userId', $contactId, \PDO::PARAM_INT);
         $insertSessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
         // @todo get addr from controller
@@ -207,12 +165,12 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         $insertSecurityTokenStatement->bindValue(':token', $providerToken->getToken(), \PDO::PARAM_STR);
         $insertSecurityTokenStatement->bindValue(
             ':createdAt',
-            $providerToken->getCreationDate()->format('Y-m-d H:i:s'),
+            $providerToken->getCreationDate()->getTimestamp(),
             \PDO::PARAM_STR
         );
         $insertSecurityTokenStatement->bindValue(
             ':expireAt',
-            $providerToken->getExpirationDate()->format('Y-m-d H:i:s'),
+            $providerToken->getExpirationDate()->getTimestamp(),
             \PDO::PARAM_STR
         );
         $insertSecurityTokenStatement->execute();
@@ -227,7 +185,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
      * @param integer $providerConfigurationId
      */
     private function insertSecurityAuthenticationToken(
-        int $sessionId,
+        string $sessionId,
         int $securityTokenId,
         ?int $securityRefreshTokenId,
         int $providerConfigurationId
@@ -235,11 +193,11 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         $insertSecurityAuthenticationStatement = $this->db->prepare(
             $this->translateDbName(
                 "INSERT INTO `:db`.security_authentication_tokens " .
-                "(`session_token_id`, `token_id`, `token_refresh_id`, `provider_configuration_id`) " .
+                "(`token`, `provider_token_id`, `provider_token_refresh_id`, `provider_configuration_id`) " .
                 "VALUES (:sessionTokenId, :tokenId, :refreshTokenId, :configurationId)"
             )
         );
-        $insertSecurityAuthenticationStatement->bindValue(':sessionTokenId', $sessionId, \PDO::PARAM_INT);
+        $insertSecurityAuthenticationStatement->bindValue(':sessionTokenId', $sessionId, \PDO::PARAM_STR);
         $insertSecurityAuthenticationStatement->bindValue(':tokenId', $securityTokenId, \PDO::PARAM_INT);
         $insertSecurityAuthenticationStatement->bindValue(':refreshTokenId', $securityRefreshTokenId, \PDO::PARAM_INT);
         $insertSecurityAuthenticationStatement->bindValue(
@@ -254,18 +212,18 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
      * {@inheritDoc}
      * @throws \Assert\AssertionFailedException
      */
-    public function findAuthenticationTokensBySessionToken(string $sessionToken): ?AuthenticationTokens
+    public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens
     {
         $statement = $this->db->prepare($this->translateDbName("
             SELECT s.user_id, sat.provider_configuration_id,
               provider_token.token AS provider_token, refresh_token.token AS refresh_token
             FROM `:db`.security_authentication_tokens sat
-            INNER JOIN `:db`.session s ON s.id = sat.session_token_id
+            INNER JOIN `:db`.session s ON s.session_id = sat.token
               AND s.session_id = :token
-            INNER JOIN `:db`.security_token provider_token ON provider_token.id = sat.token_id
-            LEFT JOIN `:db`.security_token refresh_token ON refresh_token.id = sat.token_refresh_id
+            INNER JOIN `:db`.security_token provider_token ON provider_token.id = sat.provider_token_id
+            LEFT JOIN `:db`.security_token refresh_token ON refresh_token.id = sat.provider_token_refresh_id
         "));
-        $statement->bindValue(':token', $sessionToken, \PDO::PARAM_STR);
+        $statement->bindValue(':token', $token, \PDO::PARAM_STR);
         $statement->execute();
 
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
@@ -289,7 +247,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
             return new AuthenticationTokens(
                 (int) $result['user_id'],
                 (int) $result['provider_configuration_id'],
-                $sessionToken,
+                $token,
                 $providerToken,
                 $providerRefreshToken
             );
@@ -361,7 +319,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     /**
      * @inheritDoc
      */
-    public function deleteSession(string $sessionToken): void
+    public function deleteSession(string $token): void
     {
         // TODO: Implement deleteSession() method.
     }
@@ -374,7 +332,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     ): ?ProviderConfiguration {
         $statement = $this->db->prepare($this->translateDbName(
             "SELECT * FROM `:db`.provider_configuration
-            WHERE provider_configuration_name = :name
+            WHERE name = :name
             "
         ));
         $statement->bindValue(':name', $providerConfigurationName, \PDO::PARAM_STR);
@@ -383,13 +341,10 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $providerConfiguration = (new ProviderConfiguration())
                 ->setId((int) $result['id'])
-                ->setProviderName($result['provider_name'])
-                ->setConfigurationName($result['provider_configuration_name'])
+                ->setProviderName($result['type'])
+                ->setConfigurationName($result['name'])
                 ->setForced((bool) $result['isForced'])
                 ->setActive((bool) $result['isActive']);
-
-            $configuration = json_decode($result['configuration'], true);
-            $providerConfiguration->setConfiguration($configuration);
         }
         return $providerConfiguration;
     }
