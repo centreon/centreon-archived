@@ -58,6 +58,11 @@ class PlatformJsonGraph
      */
     private $relation = [];
 
+    /**
+     * @var bool
+     */
+    private $isPending = false;
+
     public function __construct(PlatformInterface $platform)
     {
         $this->setId((string) $platform->getId());
@@ -68,6 +73,7 @@ class PlatformJsonGraph
         }
 
         $metadata = [];
+        $metadata['pending'] = (string) $platform->isPending();
         if ($platform->getServerId() !== null) {
             $metadata['centreon-id'] = (string) $platform->getServerId();
         }
