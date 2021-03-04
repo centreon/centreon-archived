@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { flip, includes, isEmpty, pipe, reject, slice } from 'ramda';
+import { isEmpty, pipe, reject, slice } from 'ramda';
 
 import {
   Typography,
