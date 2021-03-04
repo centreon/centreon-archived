@@ -31,7 +31,7 @@
         "twig/twig": "^2.0"
     },
     "require": {
-        "php": "^7.3",
+        "php": ">=7.2.24",
         "ext-phar": "*",
         "pear/pear-core-minimal": "^1.10",
         "pimple/pimple": "^3.2",
