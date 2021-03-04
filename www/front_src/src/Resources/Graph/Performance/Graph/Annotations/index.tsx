@@ -14,7 +14,22 @@ export interface Props {
   graphHeight: number;
 }
 
+export interface Annotations {
+  annotationHovered: TimelineEvent | null;
+  setAnnotationHovered: React.Dispatch<
+    React.SetStateAction<TimelineEvent | null>
+  >;
+}
+
+export const AnnotationsContext = React.createContext<Annotations | undefined>(
+  undefined,
+);
+
 const Annotations = ({ xScale, timeline, graphHeight }: Props): JSX.Element => {
+  const [
+    annotationHovered,
+    setAnnotationHovered,
+  ] = React.useState<TimelineEvent | null>(null);
   const props = {
     xScale,
     timeline,
@@ -22,11 +37,16 @@ const Annotations = ({ xScale, timeline, graphHeight }: Props): JSX.Element => {
   };
 
   return (
-    <>
+    <AnnotationsContext.Provider
+      value={{
+        annotationHovered,
+        setAnnotationHovered,
+      }}
+    >
       <CommentAnnotations {...props} />
       <AcknowledgementAnnotations {...props} />
       <DowntimeAnnotations {...props} />
-    </>
+    </AnnotationsContext.Provider>
   );
 };
 
