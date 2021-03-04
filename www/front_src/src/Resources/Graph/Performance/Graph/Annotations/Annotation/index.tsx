@@ -1,8 +1,15 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { always, cond, equals, isNil, not, pipe, T } from 'ramda';
 
-import { makeStyles, Tooltip, Paper, Typography } from '@material-ui/core';
+import {
+  makeStyles,
+  Tooltip,
+  Paper,
+  Typography,
+  fade,
+} from '@material-ui/core';
 
 import truncate from '../../../../../truncate';
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
@@ -21,12 +28,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface Props {
-  icon: JSX.Element;
   xIcon: number;
   header: string;
   event: TimelineEvent;
   marker: JSX.Element;
+  icon: JSX.Element;
+  setAnnotationHovered: React.Dispatch<
+    React.SetStateAction<TimelineEvent | null>
+  >;
 }
+
+interface GetIconColor {
+  annotationHovered: TimelineEvent | null;
+  event: TimelineEvent;
+  color: string;
+}
+
+export const getIconColor = ({
+  annotationHovered,
+  color,
+  event,
+}: GetIconColor): string =>
+  cond<TimelineEvent | null, string>([
+    [isNil, always(color)],
+    [pipe(equals<TimelineEvent | null>(event), not), always(fade(color, 0.5))],
+    [T, always(color)],
+  ])(annotationHovered);
 
 const Annotation = ({
   icon,
@@ -34,6 +61,7 @@ const Annotation = ({
   event,
   xIcon,
   marker,
+  setAnnotationHovered,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -53,7 +81,14 @@ const Annotation = ({
           </Paper>
         }
       >
-        <svg y={yMargin} x={xIcon} height={iconSize} width={iconSize}>
+        <svg
+          y={yMargin}
+          x={xIcon}
+          height={iconSize}
+          width={iconSize}
+          onMouseEnter={() => setAnnotationHovered(() => event)}
+          onMouseLeave={() => setAnnotationHovered(() => null)}
+        >
           <rect width={iconSize} height={iconSize} fill="transparent" />
           {icon}
         </svg>
