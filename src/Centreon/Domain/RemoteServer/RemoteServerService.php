@@ -133,6 +133,9 @@ class RemoteServerService implements RemoteServerServiceInterface
          */
         $topLevelPlatform->setParentAddress($platformInformation->getCentralServerAddress());
 
+        if ($platformInformation->getPlatformName() !== null) {
+            $topLevelPlatform->setName($platformInformation->getPlatformName());
+        }
         /**
          * Find any children platform and forward them to Central Parent.
          *

@@ -36,6 +36,11 @@ class PlatformInformation
     private $isRemote;
 
     /**
+     * @var string|null
+     */
+    private $platformName;
+
+    /**
      * @var string|null central's address
      */
     private $centralServerAddress;
@@ -97,6 +102,24 @@ class PlatformInformation
     public function setRemote(bool $isRemote): self
     {
         $this->isRemote = $isRemote;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPlatformName(): ?string
+    {
+        return $this->platformName;
+    }
+
+    /**
+     * @param string|null $name
+     * @return self
+     */
+    public function setPlatformName(?string $name): self
+    {
+        $this->platformName = filter_var($name, FILTER_SANITIZE_STRING);
         return $this;
     }
 
