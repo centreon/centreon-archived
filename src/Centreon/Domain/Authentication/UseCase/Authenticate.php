@@ -59,6 +59,13 @@ class Authenticate
         $this->session = $session;
     }
 
+    /**
+     * Execute authentication scenario
+     *
+     * @param AuthenticateRequest $request
+     * @param string $providerConfigurationName
+     * @return AuthenticateResponse
+     */
     public function execute(AuthenticateRequest $request, string $providerConfigurationName): AuthenticateResponse
     {
         $response = new AuthenticateResponse();
