@@ -63,7 +63,7 @@ export const useAnnotations = (graphWidth: number): Annotations => {
     mouseX,
     timeline,
   }: ChangeAnnotationHoveredProps): void => {
-    const isBetweenErorMargin = getIsBetween({
+    const isWithinErrorMargin = getIsBetween({
       xStart: dec(mouseX),
       xEnd: inc(mouseX),
     });
