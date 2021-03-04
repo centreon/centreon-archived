@@ -30,23 +30,23 @@ export interface Annotations {
   >;
   getStrokeWidth: (event: TimelineEvent) => number;
   getStrokeOpacity: (event: TimelineEvent) => number;
-  getFill: (props: GetColor) => string;
-  getIconColor: (props: GetColor) => string;
-  changeAnnotationHovered: (props: ChangeAnnotationHovered) => void;
+  getFill: (props: GetColorProps) => string;
+  getIconColor: (props: GetColorProps) => string;
+  changeAnnotationHovered: (props: ChangeAnnotationHoveredProps) => void;
 }
 
-interface GetColor {
+interface GetColorProps {
   event: TimelineEvent;
   color: string;
 }
 
-interface ChangeAnnotationHovered {
+interface ChangeAnnotationHoveredProps {
   xScale: ScaleTime<number, number>;
   mouseX: number;
   timeline: Array<TimelineEvent> | undefined;
 }
 
-export const useAnnotations = (): Annotations => {
+export const useAnnotations = (graphWidth: number): Annotations => {
   const [annotationHovered, setAnnotationHovered] = React.useState<
     TimelineEvent | undefined
   >(undefined);
@@ -62,7 +62,7 @@ export const useAnnotations = (): Annotations => {
     xScale,
     mouseX,
     timeline,
-  }: ChangeAnnotationHovered): void => {
+  }: ChangeAnnotationHoveredProps): void => {
     const isBetweenErorMargin = getIsBetween({
       xStart: dec(mouseX),
       xEnd: inc(mouseX),
@@ -77,7 +77,7 @@ export const useAnnotations = (): Annotations => {
         const isBetweenStartAndEndDate = getIsBetween({
           xStart: xScale(new Date(startDate as string)),
           xEnd: xScale(
-            endDate ? new Date(endDate) : (last(xScale.domain()) as Date),
+            endDate ? new Date(endDate) : last(xScale.domain()) || graphWidth,
           ),
         });
 
@@ -100,14 +100,14 @@ export const useAnnotations = (): Annotations => {
       [T, always(0.2)],
     ])(annotationHovered);
 
-  const getFill = ({ color, event }: GetColor): string =>
+  const getFill = ({ color, event }: GetColorProps): string =>
     cond<TimelineEvent | undefined, string>([
       [isNil, always(fade(color, 0.3))],
       [equals<TimelineEvent | undefined>(event), always(fade(color, 0.5))],
       [T, always(fade(color, 0.1))],
     ])(annotationHovered);
 
-  const getIconColor = ({ color, event }: GetColor): string =>
+  const getIconColor = ({ color, event }: GetColorProps): string =>
     cond<TimelineEvent | undefined, string>([
       [isNil, always(color)],
       [

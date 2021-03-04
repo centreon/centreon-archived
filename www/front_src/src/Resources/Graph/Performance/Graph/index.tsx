@@ -199,10 +199,10 @@ const GraphContent = ({
 
   const context = React.useContext<TabBounds>(TabContext);
 
-  const annotations = useAnnotations();
-
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
+
+  const annotations = useAnnotations(graphWidth);
 
   const hideAddCommentTooltipOnEspcapePress = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
