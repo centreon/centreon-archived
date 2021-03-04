@@ -51,7 +51,7 @@ export const getIconColor = ({
 }: GetIconColor): string =>
   cond<TimelineEvent | null, string>([
     [isNil, always(color)],
-    [pipe(equals<TimelineEvent | null>(event), not), always(fade(color, 0.5))],
+    [pipe(equals<TimelineEvent | null>(event), not), always(fade(color, 0.2))],
     [T, always(color)],
   ])(annotationHovered);
 
