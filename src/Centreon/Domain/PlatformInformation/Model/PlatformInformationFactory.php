@@ -76,6 +76,8 @@ class PlatformInformationFactory
                     break;
                 case 'peerValidation':
                     $platformInformation->setApiPeerValidation($value);
+                case 'platformName':
+                    $platformInformation->setPlatformName($value);
                     break;
             }
         }
