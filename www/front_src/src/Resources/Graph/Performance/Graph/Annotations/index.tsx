@@ -3,8 +3,6 @@ import * as React from 'react';
 import { ScaleTime } from 'd3-scale';
 
 import { TimelineEvent } from '../../../../Details/tabs/Timeline/models';
-import useAnnotations, { Annotations } from '../useAnnotations';
-import { AnnotationsContext } from '../Context';
 
 import CommentAnnotations from './Line/Comments';
 import AcknowledgementAnnotations from './Line/Acknowledgement';
@@ -17,7 +15,6 @@ export interface Props {
 }
 
 const Annotations = ({ xScale, timeline, graphHeight }: Props): JSX.Element => {
-  const annotations = useAnnotations();
   const props = {
     xScale,
     timeline,
@@ -25,11 +22,11 @@ const Annotations = ({ xScale, timeline, graphHeight }: Props): JSX.Element => {
   };
 
   return (
-    <AnnotationsContext.Provider value={annotations}>
+    <>
       <CommentAnnotations {...props} />
       <AcknowledgementAnnotations {...props} />
       <DowntimeAnnotations {...props} />
-    </AnnotationsContext.Provider>
+    </>
   );
 };
 

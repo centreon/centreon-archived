@@ -65,8 +65,6 @@ const LineAnnotation = ({
       stroke={color}
       strokeWidth={getStrokeWidth(prop('event', props))}
       strokeOpacity={getStrokeOpacity(prop('event', props))}
-      onMouseEnter={() => setAnnotationHovered(() => prop('event', props))}
-      onMouseLeave={() => setAnnotationHovered(() => null)}
     />
   );
 

@@ -67,7 +67,7 @@ const AreaAnnotation = ({
       height={graphHeight + iconSize / 2}
       fill={getFill({ event: prop('event', props), color })}
       onMouseEnter={() => setAnnotationHovered(() => prop('event', props))}
-      onMouseLeave={() => setAnnotationHovered(() => null)}
+      onMouseLeave={() => setAnnotationHovered(() => undefined)}
     />
   );
 

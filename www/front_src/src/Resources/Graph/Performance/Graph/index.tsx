@@ -1,6 +1,21 @@
 import * as React from 'react';
 
-import { equals, isNil, isEmpty, identity, min, max, not } from 'ramda';
+import {
+  equals,
+  isNil,
+  isEmpty,
+  identity,
+  min,
+  max,
+  not,
+  find,
+  __,
+  gte,
+  lte,
+  dec,
+  inc,
+  both,
+} from 'ramda';
 import {
   Line,
   Bar,
@@ -58,6 +73,8 @@ import MetricsTooltip from './MetricsTooltip';
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
 import Axes from './Axes';
+import { AnnotationsContext } from './Context';
+import useAnnotations from './useAnnotations';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -197,6 +214,8 @@ const GraphContent = ({
 
   const context = React.useContext<TabBounds>(TabContext);
 
+  const annotations = useAnnotations();
+
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
 
@@ -319,8 +338,14 @@ const GraphContent = ({
       showTooltipAt({ x, y });
 
       onTooltipDisplay?.([x, y]);
+
+      annotations.changeAnnotationHovered({
+        mouseX: x - margin.left,
+        xScale,
+        timeline,
+      });
     },
-    [showTooltip, containerBounds, lines],
+    [showTooltip, containerBounds, lines, timeline],
   );
 
   React.useEffect(() => {
@@ -382,116 +407,118 @@ const GraphContent = ({
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
   return (
-    <ClickAwayListener onClickAway={hideAddCommentTooltip}>
-      <div className={classes.container}>
-        {tooltipOpen && tooltipData && (
-          <TooltipInPortal
-            key={Math.random()}
-            top={tooltipTop}
-            left={tooltipLeft}
-            className={classes.tooltip}
-          >
-            {tooltipData}
-          </TooltipInPortal>
-        )}
-        <svg width="100%" height={height} ref={containerRef}>
-          <Group left={margin.left} top={margin.top}>
-            <MemoizedGridRows
-              scale={leftScale}
-              width={graphWidth}
-              height={graphHeight}
-              stroke={grey[100]}
-            />
-            <MemoizedGridColumns
-              scale={xScale}
-              width={graphWidth}
-              height={graphHeight}
-              stroke={grey[100]}
-            />
-            <MemoizedAxes
-              base={base}
-              graphHeight={graphHeight}
-              graphWidth={graphWidth}
-              lines={lines}
-              leftScale={leftScale}
-              rightScale={rightScale}
-              xScale={xScale}
-              xAxisTickFormat={xAxisTickFormat}
-            />
-            <MemoizedLines
-              timeSeries={timeSeries}
-              lines={lines}
-              leftScale={leftScale}
-              rightScale={rightScale}
-              xScale={xScale}
-              graphHeight={graphHeight}
-            />
-            <MemoizedBar
-              x={0}
-              y={0}
-              width={graphWidth}
-              height={graphHeight}
-              fill="transparent"
-              className={classes.overlay}
-              onClick={displayAddCommentTooltip}
-              onMouseMove={displayTooltip}
-              onMouseLeave={closeTooltip}
-            />
-            {eventAnnotationsActive && (
-              <MemoizedAnnotations
+    <AnnotationsContext.Provider value={annotations}>
+      <ClickAwayListener onClickAway={hideAddCommentTooltip}>
+        <div className={classes.container}>
+          {tooltipOpen && tooltipData && (
+            <TooltipInPortal
+              key={Math.random()}
+              top={tooltipTop}
+              left={tooltipLeft}
+              className={classes.tooltip}
+            >
+              {tooltipData}
+            </TooltipInPortal>
+          )}
+          <svg width="100%" height={height} ref={containerRef}>
+            <Group left={margin.left} top={margin.top}>
+              <MemoizedGridRows
+                scale={leftScale}
+                width={graphWidth}
+                height={graphHeight}
+                stroke={grey[100]}
+              />
+              <MemoizedGridColumns
+                scale={xScale}
+                width={graphWidth}
+                height={graphHeight}
+                stroke={grey[100]}
+              />
+              <MemoizedAxes
+                base={base}
+                graphHeight={graphHeight}
+                graphWidth={graphWidth}
+                lines={lines}
+                leftScale={leftScale}
+                rightScale={rightScale}
+                xScale={xScale}
+                xAxisTickFormat={xAxisTickFormat}
+              />
+              <MemoizedLines
+                timeSeries={timeSeries}
+                lines={lines}
+                leftScale={leftScale}
+                rightScale={rightScale}
                 xScale={xScale}
                 graphHeight={graphHeight}
-                timeline={timeline as Array<TimelineEvent>}
               />
-            )}
-            {tooltipData && (
-              <Line
-                from={{ x: tooltipLineLeft, y: 0 }}
-                to={{ x: tooltipLineLeft, y: graphHeight }}
-                stroke={grey[400]}
-                strokeWidth={1}
-                pointerEvents="none"
+              {eventAnnotationsActive && (
+                <MemoizedAnnotations
+                  xScale={xScale}
+                  graphHeight={graphHeight}
+                  timeline={timeline as Array<TimelineEvent>}
+                />
+              )}
+              <MemoizedBar
+                x={0}
+                y={0}
+                width={graphWidth}
+                height={graphHeight}
+                fill="transparent"
+                className={classes.overlay}
+                onClick={displayAddCommentTooltip}
+                onMouseMove={displayTooltip}
+                onMouseLeave={closeTooltip}
               />
-            )}
-          </Group>
-        </svg>
-        {addCommentTooltipOpen && (
-          <Paper
-            className={classes.addCommentTooltip}
-            style={{
-              left: addCommentTooltipLeft,
-              top: addCommentTooltipTop,
-              width: commentTooltipWidth,
-            }}
-          >
-            <Typography variant="caption">
-              {format({
-                date: new Date(commentDate as Date),
-                formatString: dateTimeFormat,
-              })}
-            </Typography>
-            <Button
-              size="small"
-              color="primary"
-              className={classes.addCommentButton}
-              onClick={prepareAddComment}
+              {tooltipData && (
+                <Line
+                  from={{ x: tooltipLineLeft, y: 0 }}
+                  to={{ x: tooltipLineLeft, y: graphHeight }}
+                  stroke={grey[400]}
+                  strokeWidth={1}
+                  pointerEvents="none"
+                />
+              )}
+            </Group>
+          </svg>
+          {addCommentTooltipOpen && (
+            <Paper
+              className={classes.addCommentTooltip}
+              style={{
+                left: addCommentTooltipLeft,
+                top: addCommentTooltipTop,
+                width: commentTooltipWidth,
+              }}
             >
-              {t(labelAddComment)}
-            </Button>
-          </Paper>
-        )}
-        {addingComment && (
-          <AddCommentForm
-            onSuccess={confirmAddComment}
-            date={commentDate as Date}
-            resource={resource}
-            onClose={(): void => {
-              setAddingComment(false);
-            }}
-          />
-        )}
-      </div>
-    </ClickAwayListener>
+              <Typography variant="caption">
+                {format({
+                  date: new Date(commentDate as Date),
+                  formatString: dateTimeFormat,
+                })}
+              </Typography>
+              <Button
+                size="small"
+                color="primary"
+                className={classes.addCommentButton}
+                onClick={prepareAddComment}
+              >
+                {t(labelAddComment)}
+              </Button>
+            </Paper>
+          )}
+          {addingComment && (
+            <AddCommentForm
+              onSuccess={confirmAddComment}
+              date={commentDate as Date}
+              resource={resource}
+              onClose={(): void => {
+                setAddingComment(false);
+              }}
+            />
+          )}
+        </div>
+      </ClickAwayListener>
+    </AnnotationsContext.Provider>
   );
 };
 

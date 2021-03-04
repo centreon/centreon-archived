@@ -3,13 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { always, cond, equals, isNil, not, pipe, T } from 'ramda';
 
-import {
-  makeStyles,
-  Tooltip,
-  Paper,
-  Typography,
-  fade,
-} from '@material-ui/core';
+import { makeStyles, Tooltip, Paper, Typography } from '@material-ui/core';
 
 import truncate from '../../../../../truncate';
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
@@ -34,7 +28,7 @@ export interface Props {
   marker: JSX.Element;
   icon: JSX.Element;
   setAnnotationHovered: React.Dispatch<
-    React.SetStateAction<TimelineEvent | null>
+    React.SetStateAction<TimelineEvent | undefined>
   >;
 }
 
@@ -70,7 +64,7 @@ const Annotation = ({
           height={iconSize}
           width={iconSize}
           onMouseEnter={() => setAnnotationHovered(() => event)}
-          onMouseLeave={() => setAnnotationHovered(() => null)}
+          onMouseLeave={() => setAnnotationHovered(() => undefined)}
         >
           <rect width={iconSize} height={iconSize} fill="transparent" />
           {icon}
