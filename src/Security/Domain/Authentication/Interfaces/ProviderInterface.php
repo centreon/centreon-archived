@@ -82,14 +82,6 @@ interface ProviderInterface
     public function getProviderRefreshToken(string $sessionToken): ?ProviderToken;
 
     /**
-     * Return the provider token.
-     *
-     * @param string $sessionToken
-     * @return ProviderToken
-     */
-    public function getProviderToken(string $sessionToken): ProviderToken;
-
-    /**
      * Retrieve the contact.
      *
      * @return ContactInterface|null
