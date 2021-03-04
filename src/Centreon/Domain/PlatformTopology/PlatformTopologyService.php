@@ -630,6 +630,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                         break;
                     }
                 }
+            } else {
+                $platform->setRelation(PlatformRelation::NORMAL_RELATION);
             }
         }
 
