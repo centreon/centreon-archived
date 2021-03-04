@@ -22,11 +22,13 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
+use Security\Domain\Authentication\Model\ProviderToken;
+use Security\Domain\Authentication\AuthenticationService;
+use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use Security\Domain\Authentication\AuthenticationService;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Authenticate
 {
@@ -49,15 +51,18 @@ class Authenticate
      * @param AuthenticationService $authenticationService
      * @param ContactServiceInterface $contactService
      * @param SessionInterface $session
+     * @param OptionServiceInterface $optionService
      */
     public function __construct(
         AuthenticationService $authenticationService,
         ContactServiceInterface $contactService,
-        SessionInterface $session
+        SessionInterface $session,
+        OptionServiceInterface $optionService
     ) {
         $this->authenticationService = $authenticationService;
         $this->contactService = $contactService;
         $this->session = $session;
+        $this->optionService = $optionService;
     }
 
     /**
@@ -102,12 +107,45 @@ class Authenticate
         $this->session->start();
         $_SESSION['centreon'] = $authenticationProvider->getLegacySession();
 
+        /*
+        @TODO: Maybe check here if the tokens exist (SAT,Security_token)
+         If So, create a method updateAuthenticationsTokens(
+            string $token (the session token),
+            string $request->getProviderConfigurationName(),
+            ContactInterface $providerUser,
+            ProviderToken $providerToken,
+            ?ProviderToken $providerRefreshToken)
+        )
+        */
+        $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
+        if ($authenticationTokens === null) {
+            $providerToken = $this->createProviderToken($this->session->getId());
+        } else {
+            $providerToken = $authenticationTokens->getProviderToken($authenticationTokens);
+        }
+
         $this->authenticationService->createAuthenticationTokens(
             $this->session->getId(),
             $request->getProviderConfigurationName(),
             $providerUser,
-            $authenticationProvider->getProviderToken($this->session->getId()),
+            $providerToken,
             $authenticationProvider->getProviderRefreshToken($this->session->getId())
+        );
+    }
+
+    private function createProviderToken(string $token): ProviderToken
+    {
+        $expirationSessionDelay = 120;
+        $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
+        if (!empty($sessionExpireOption)) {
+            $expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();
+        }
+        return new ProviderToken(
+            null,
+            $token,
+            new \DateTime(),
+            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M')),
+            null
         );
     }
 }
