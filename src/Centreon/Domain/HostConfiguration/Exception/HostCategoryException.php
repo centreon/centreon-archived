@@ -62,11 +62,11 @@ class HostCategoryException extends \Exception
     }
 
     /**
-     * @param \Throwable $ex
      * @param array<string, mixed> $data
+     * @param \Throwable|null $ex
      * @return self
      */
-    public static function notFoundException(\Throwable $ex, array $data = []): self
+    public static function notFoundException(array $data = [], \Throwable $ex = null): self
     {
         return new self(
             sprintf(_('Host category (%s) not found'), $data['id'] ?? $data['name'] ?? null),

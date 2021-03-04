@@ -24,6 +24,9 @@ namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
 use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\HostConfiguration\Exception\HostCategoryException;
+use Centreon\Domain\HostConfiguration\Exception\HostGroupException;
+use Centreon\Domain\HostConfiguration\Exception\HostSeverityException;
 use Centreon\Domain\HostConfiguration\ExtendedHost;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostMacro;
@@ -612,22 +615,27 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * Link the categories to host only if their id is not null.
      *
      * @param Host $host
+     * @throws HostCategoryException
      */
     private function linkCategoryToHost(Host $host): void
     {
         foreach ($host->getCategories() as $category) {
-            if ($category->getId() === null) {
-                continue;
-            }
-            $statement = $this->db->prepare(
-                $this->translateDbName('
+            try {
+                if ($category->getId() === null) {
+                    continue;
+                }
+                $statement = $this->db->prepare(
+                    $this->translateDbName('
                     INSERT INTO `:db`.hostcategories_relation (host_host_id, hostcategories_hc_id)
                     VALUES (:host_id, :category_id)
                 ')
-            );
-            $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
-            $statement->bindValue(':category_id', $category->getId(), \PDO::PARAM_INT);
-            $statement->execute();
+                );
+                $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+                $statement->bindValue(':category_id', $category->getId(), \PDO::PARAM_INT);
+                $statement->execute();
+            } catch (\Throwable $ex) {
+                throw HostCategoryException::notFoundException(['id' => $category->getId()], $ex);
+            }
         }
     }
 
@@ -635,22 +643,29 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * Link the groups to host only if their id is not null.
      *
      * @param Host $host
+     * @throws HostGroupException
      */
     private function linkGroupToHost(Host $host): void
     {
         foreach ($host->getGroups() as $group) {
-            if ($group->getId() === null) {
-                continue;
-            }
-            $statement = $this->db->prepare(
-                $this->translateDbName('
+            try {
+                if ($group->getId() === null) {
+                    continue;
+                }
+                $statement = $this->db->prepare(
+                    $this->translateDbName(
+                        '
                     INSERT INTO `:db`.hostgroup_relation (host_host_id, hostgroup_hg_id)
                     VALUES (:host_id, :group_id)
-                ')
-            );
-            $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
-            $statement->bindValue(':group_id', $group->getId(), \PDO::PARAM_INT);
-            $statement->execute();
+                '
+                    )
+                );
+                $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+                $statement->bindValue(':group_id', $group->getId(), \PDO::PARAM_INT);
+                $statement->execute();
+            } catch (\Throwable $ex) {
+                throw HostGroupException::notFoundException(['id' => $group->getId()], $ex);
+            }
         }
     }
 
@@ -658,22 +673,27 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * Link the severities to host only if their id is not null.
      *
      * @param Host $host
+     * @throws HostSeverityException
      */
     private function linkSeveritiesToHost(Host $host): void
     {
         foreach ($host->getSeverities() as $severity) {
-            if ($severity->getId() === null) {
-                continue;
-            }
-            $statement = $this->db->prepare(
-                $this->translateDbName('
+            try {
+                if ($severity->getId() === null) {
+                    continue;
+                }
+                $statement = $this->db->prepare(
+                    $this->translateDbName('
                     INSERT INTO `:db`.hostcategories_relation (host_host_id, hostcategories_hc_id)
                     VALUES (:host_id, :severity_id)
                 ')
-            );
-            $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
-            $statement->bindValue(':severity_id', $severity->getId(), \PDO::PARAM_INT);
-            $statement->execute();
+                );
+                $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+                $statement->bindValue(':severity_id', 55555, \PDO::PARAM_INT);
+                $statement->execute();
+            } catch (\Throwable $ex) {
+                throw HostSeverityException::notFoundException(['id' => $severity->getId()], $ex);
+            }
         }
     }
 }
