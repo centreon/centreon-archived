@@ -418,13 +418,6 @@ const GraphContent = ({
               xScale={xScale}
               xAxisTickFormat={xAxisTickFormat}
             />
-            {eventAnnotationsActive && (
-              <MemoizedAnnotations
-                xScale={xScale}
-                graphHeight={graphHeight}
-                timeline={timeline as Array<TimelineEvent>}
-              />
-            )}
             <MemoizedLines
               timeSeries={timeSeries}
               lines={lines}
@@ -444,6 +437,13 @@ const GraphContent = ({
               onMouseMove={displayTooltip}
               onMouseLeave={closeTooltip}
             />
+            {eventAnnotationsActive && (
+              <MemoizedAnnotations
+                xScale={xScale}
+                graphHeight={graphHeight}
+                timeline={timeline as Array<TimelineEvent>}
+              />
+            )}
             {tooltipData && (
               <Line
                 from={{ x: tooltipLineLeft, y: 0 }}
