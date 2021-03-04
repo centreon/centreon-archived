@@ -73,7 +73,7 @@ class PlatformJsonGraph
         }
 
         $metadata = [];
-        $metadata['pending'] = (string) $platform->isPending();
+        $metadata['pending'] = ($platform->isPending() ? "true" : "false");
         if ($platform->getServerId() !== null) {
             $metadata['centreon-id'] = (string) $platform->getServerId();
         }
