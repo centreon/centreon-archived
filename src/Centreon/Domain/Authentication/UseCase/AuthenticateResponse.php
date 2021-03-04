@@ -24,5 +24,37 @@ namespace Centreon\Domain\Authentication\UseCase;
 
 class AuthenticateResponse
 {
+    private $isAuthenticated = false;
+    private $isUserFound;
+    private $shouldAndCannotCreateUser = false;
 
+    public function isAuthenticated()
+    {
+        return $this->isAuthenticated;
+    }
+
+    public function setAuthenticated(bool $isAuthenticated)
+    {
+        $this->isAuthenticated = $isAuthenticated;
+    }
+
+    public function isUserFound()
+    {
+        return $this->isUserFound;
+    }
+
+    public function setUserFound(bool $isUserFound)
+    {
+        $this->isUserFound = $isUserFound;
+    }
+
+    public function shouldAndCannotCreateUser()
+    {
+        return $this->shouldAndCannotCreateUser;
+    }
+
+    public function setShouldAndCannotCreateUser(bool $shouldAndCannotCreateUser)
+    {
+        $this->shouldAndCannotCreateUser = $shouldAndCannotCreateUser;
+    }
 }

@@ -73,6 +73,11 @@ class LocalProvider implements ProviderInterface
     private $optionService;
 
     /**
+     * @var \Centreon
+     */
+    private $legacySession;
+
+    /**
      * LocalProvider constructor.
      *
      * @param ContactServiceInterface $contactService
@@ -127,7 +132,7 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
-    public function getLegacySession(): \Centreon
+    public function getLegacySession(): ?\Centreon
     {
         return $this->legacySession;
     }
@@ -135,7 +140,7 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
-    public function setLegacySession(\Centreon $legacySession): void
+    public function setLegacySession(?\Centreon $legacySession): void
     {
         $this->legacySession = $legacySession;
     }

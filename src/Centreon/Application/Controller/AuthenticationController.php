@@ -22,16 +22,14 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface as previousAuthenticationServiceInterface;
+use Centreon\Domain\Authentication\UseCase\Authenticate;
+use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
 use FOS\RestBundle\View\View;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @package Centreon\Application\Controller
@@ -49,23 +47,15 @@ class AuthenticationController extends AbstractController
     private $authenticationService;
 
     /**
-     * @var ContactServiceInterface
-     */
-    private $contactService;
-
-    /**
      * @param previousAuthenticationServiceInterface $auth
      * @param AuthenticationServiceInterface $authenticationService
-     * @param ContactServiceInterface $contactService
      * @throws \InvalidArgumentException
      */
     public function __construct(
         previousAuthenticationServiceInterface $auth,
-        ContactServiceInterface $contactService,
         AuthenticationServiceInterface $authenticationService
     ) {
         $this->auth = $auth;
-        $this->contactService = $contactService;
         $this->authenticationService = $authenticationService;
     }
 
@@ -186,7 +176,7 @@ class AuthenticationController extends AbstractController
 
     /**
      * @param Request $request
-     * @param SessionInterface $session
+     * @param Authenticate $authenticate
      * @param string $providerConfigurationName
      * @return Response|View
      * @throws \InvalidArgumentException
@@ -195,7 +185,7 @@ class AuthenticationController extends AbstractController
      */
     public function authentication(
         Request $request,
-        SessionInterface $session,
+        Authenticate $authenticate,
         string $providerConfigurationName
     ) {
         if ($request->getMethod() === 'GET') {
@@ -211,10 +201,37 @@ class AuthenticationController extends AbstractController
             $requestParameters[$key] = $value;
         }
 
-        if (empty($requestParameters)) {
-            throw new \InvalidArgumentException(_('Missing credentials arguments'));
+        $authenticateRequest = new AuthenticateRequest($requestParameters);
+        $authenticateResponse = $authenticate->execute($authenticateRequest, $providerConfigurationName);
+
+        if (!$authenticateResponse->isAuthenticated()) {
+            return View::create(null, Response::HTTP_UNAUTHORIZED);
         }
 
+        if ($authenticateResponse->isUserFound() === null) {
+            return View::create(
+                ['error' => 'The user cannot be retrieved from the provider'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if ($authenticateResponse->shouldAndCannotCreateUser()) {
+            return View::create(['error' => '...'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($request->headers->get('Content-Type') === 'application/json') {
+            // Send redirection_uri in JSON format only for API request
+            return View::create(['redirect_uri' => $this->getBaseUri() . '/monitoring/resources']);
+        } else {
+            // Otherwise, we send a redirection response.
+            return View::createRedirect(
+                $this->getBaseUri() . '/authentication/login',
+                Response::HTTP_OK,
+                ['content-type' => 'text/html']
+            );
+        }
+
+        /*
         $authenticationProvider = $this->authenticationService->findProviderByConfigurationName(
             $providerConfigurationName
         );
@@ -268,5 +285,6 @@ class AuthenticationController extends AbstractController
 
         // Authentication failed
         return View::create(null, Response::HTTP_UNAUTHORIZED);
+        */
     }
 }

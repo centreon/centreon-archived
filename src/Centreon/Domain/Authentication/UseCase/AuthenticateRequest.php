@@ -24,5 +24,27 @@ namespace Centreon\Domain\Authentication\UseCase;
 
 class AuthenticateRequest
 {
+    /**
+     * @var array
+     */
+    private $parameters;
 
+    public function __construct(array $parameters)
+    {
+        if (empty($parameters)) {
+            throw new \InvalidArgumentException(_('Missing credentials arguments'));
+        }
+
+        $this->parameters = $parameters;
+    }
+
+    /**
+     * Get parameters
+     *
+     * @return array
+     */
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
 }

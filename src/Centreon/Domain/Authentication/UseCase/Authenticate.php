@@ -23,6 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Domain\Authentication\UseCase;
 
 use Security\Domain\Authentication\AuthenticationService;
+use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Authenticate
 {
@@ -32,15 +35,77 @@ class Authenticate
     private $authenticationService;
 
     /**
-     * @param AuthenticationService $authenticationService
+     * @var ContactServiceInterface
      */
-    public function __construct(AuthenticationService $authenticationService)
-    {
+    private $contactService;
+
+    /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    /**
+     * @param AuthenticationService $authenticationService
+     * @param ContactServiceInterface $contactService
+     * @param SessionInterface $session
+     */
+    public function __construct(
+        AuthenticationService $authenticationService,
+        ContactServiceInterface $contactService,
+        SessionInterface $session
+    ) {
         $this->authenticationService = $authenticationService;
+        $this->contactService = $contactService;
+        $this->session = $session;
     }
 
-    public function execute(AuthenticateRequest $request): AuthenticateResponse
+    public function execute(AuthenticateRequest $request, string $providerConfigurationName): AuthenticateResponse
     {
-        return new AuthenticateResponse();
+        $response = new AuthenticateResponse();
+
+        $authenticationProvider = $this->authenticationService->findProviderByConfigurationName(
+            $providerConfigurationName
+        );
+
+        if ($authenticationProvider === null) {
+            throw AuthenticationServiceException::providerConfigurationNotFound($providerConfigurationName);
+        }
+
+        $authenticationProvider->authenticate($request->getParameters());
+
+        $response->setAuthenticated($authenticationProvider->isAuthenticated());
+        if (!$response->isAuthenticated()) {
+            return $response;
+        }
+
+        $providerUser = $authenticationProvider->getUser();
+        $response->setUserFound($providerUser !== null);
+        if (!$response->isUserFound()) {
+            return $response;
+        }
+
+        if (!$this->contactService->exists($providerUser)) {
+            if ($authenticationProvider->canCreateUser()) {
+                $this->contactService->addUser($providerUser);
+            } else {
+                $response->shouldAndCannotCreateUser(true);
+                return $response;
+            }
+        } else {
+            $this->contactService->updateUser($providerUser);
+        }
+
+        $this->session->start();
+        $_SESSION['centreon'] = $authenticationProvider->getLegacySession();
+
+        $this->authenticationService->createAuthenticationTokens(
+            $this->session->getId(),
+            $providerConfigurationName,
+            $providerUser,
+            $authenticationProvider->getProviderToken($this->session->getId()),
+            $authenticationProvider->getProviderRefreshToken($this->session->getId())
+        );
+
+        return $response;
     }
 }
