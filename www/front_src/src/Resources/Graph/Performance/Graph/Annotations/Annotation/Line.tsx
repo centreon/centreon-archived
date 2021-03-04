@@ -8,8 +8,8 @@ import { makeStyles } from '@material-ui/core';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { Annotations, AnnotationsContext } from '..';
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
+import useAnnotationsContext from '../../Context';
 
 import Annotation, {
   Props as AnnotationProps,
@@ -51,9 +51,7 @@ const LineAnnotation = ({
 
   const classes = useStyles();
 
-  const { annotationHovered, setAnnotationHovered } = React.useContext(
-    AnnotationsContext,
-  ) as Annotations;
+  const { annotationHovered, setAnnotationHovered } = useAnnotationsContext();
 
   const xIconMargin = -iconSize / 2;
 

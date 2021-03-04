@@ -10,7 +10,7 @@ import { useLocaleDateTimeFormat } from '@centreon/ui';
 
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
 import { labelFrom, labelTo } from '../../../../../translatedLabels';
-import { Annotations, AnnotationsContext } from '..';
+import useAnnotationsContext from '../../Context';
 
 import Annotation, {
   Props as AnnotationProps,
@@ -54,9 +54,7 @@ const AreaAnnotation = ({
 
   const classes = useStyles();
 
-  const { annotationHovered, setAnnotationHovered } = React.useContext(
-    AnnotationsContext,
-  ) as Annotations;
+  const { annotationHovered, setAnnotationHovered } = useAnnotationsContext();
 
   const xIconMargin = -iconSize / 2;
 
