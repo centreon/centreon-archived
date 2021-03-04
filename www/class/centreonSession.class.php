@@ -133,7 +133,7 @@ class CentreonSession
             WHERE last_reload <
                 (SELECT UNIX_TIMESTAMP(NOW() - INTERVAL (`value` * 60) SECOND)
                 FROM `options`
-                WHERE `key` = \'session_expire\')
+                WHERE `key` = 'session_expire')
             OR last_reload IS NULL"
         );
 
