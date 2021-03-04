@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,9 +92,9 @@ class Resource
     protected $commandLine;
 
     /**
-     * @var string|null
+     * @var string
      */
-    private $pollerName;
+    private $monitoringServerName;
 
     /**
      * @var string|null
@@ -405,21 +405,20 @@ class Resource
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getPollerName(): ?string
+    public function getMonitoringServerName(): string
     {
-        return $this->pollerName;
+        return $this->monitoringServerName;
     }
 
-    /**
-     * @param string|null $pollerName
+   /**
+     * @param string $monitoringServerName
      * @return self
      */
-    public function setPollerName(?string $pollerName): self
+    public function setMonitoringServerName(string $monitoringServerName): self
     {
-        $this->pollerName = $pollerName;
-
+        $this->monitoringServerName = $monitoringServerName;
         return $this;
     }
 

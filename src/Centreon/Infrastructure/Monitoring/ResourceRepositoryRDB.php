@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
+use Centreon\Domain\Monitoring\Notes;
 use Centreon\Domain\Monitoring\ResourceExternalLinks;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
@@ -85,6 +86,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'last_check' => 'resource.last_check',
         'h.group' => 'hg.name',
         'h.group.id' => 'hhg.hostgroup_id',
+        'monitoring_server_name' => 'resource.monitoring_server_name',
     ];
 
     /**
@@ -214,7 +216,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.parent_id, resource.parent_name, resource.parent_type, ' // parent
             . 'resource.parent_alias, resource.parent_fqdn, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
-            . 'resource.action_url, resource.notes_url, ' // external urls
+            . 'resource.action_url, resource.notes_url, resource.notes_label, ' // external urls
+            . 'resource.monitoring_server_name, ' // monitoring server
             // parent status
             . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
             . 'resource.flapping, resource.percent_state_change, '
@@ -435,6 +438,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.icon_image AS `icon_url`,
             s.action_url AS `action_url`,
             s.notes_url AS `notes_url`,
+            s.notes AS `notes_label`,
+            i.name AS `monitoring_server_name`,
             s.command_line AS `command_line`,
             NULL AS `timezone`,
             sh.host_id AS `parent_id`,
@@ -505,6 +510,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 AND service_acl.service_id = s.service_id
                 AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
         }
+
+        // get monitoring server information
+        $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id";
 
         // Join the service groups
         $sql .= " LEFT JOIN `:dbstg`.`services_servicegroups` AS ssg"
@@ -639,6 +647,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.icon_image AS `icon_url`,
             h.action_url AS `action_url`,
             h.notes_url AS `notes_url`,
+            h.notes AS `notes_label`,
+            i.name AS `monitoring_server_name`,
             h.command_line AS `command_line`,
             h.timezone AS `timezone`,
             NULL AS `parent_id`,
@@ -693,6 +703,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                   AND host_acl.service_id IS NULL
                   AND host_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
         }
+
+        // get monitoring server information
+        $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = h.instance_id";
 
         // get Severity level, name, icon
         $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
@@ -844,11 +857,15 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $resource->setParent($parent);
         }
 
-        // parse external links object
-        $resource->getLinks()->setExternals(EntityCreator::createEntityByArray(
-            ResourceExternalLinks::class,
-            $data
-        ));
+        // Setting the External links
+        $externalLinks = $resource->getLinks()->getExternals();
+        $externalLinks->setActionUrl($data['action_url']);
+        $notes = (new Notes())
+            ->setUrl($data['notes_url'])
+            ->setLabel($data['notes_label']);
+        $externalLinks->setNotes($notes);
+
+        $resource->getLinks()->setExternals($externalLinks);
 
         return $resource;
     }

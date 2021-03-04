@@ -3,7 +3,7 @@ import React from 'react';
 import { pipe, split, head, propOr, T, pathEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 
@@ -36,7 +36,8 @@ import truncate from '../../truncate';
 
 import StateColumn from './State';
 import GraphColumn from './Graph';
-import UrlColumn from './Url';
+import NotesUrlColumn from './Url/Notes';
+import ActionUrlColumn from './Url/Action';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -59,6 +60,18 @@ const useStyles = makeStyles((theme) => ({
   },
   smallChipLabel: {
     padding: theme.spacing(0.5),
+  },
+  statusColumn: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+  },
+  actions: {
+    display: 'flex',
+    flexWrap: 'nowrap',
+    gridGap: theme.spacing(0.75),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 }));
 
@@ -105,65 +118,58 @@ const StatusColumnOnHover = ({
   const disableCheck = !canCheck([row]);
 
   return (
-    <Grid container spacing={1} alignItems="center">
-      <Grid item>
-        <IconButton
-          title={t(labelAcknowledge)}
-          disabled={disableAcknowledge}
-          color="primary"
-          onClick={(): void => actions.onAcknowledge(row)}
-          ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
-        >
-          <IconAcknowledge fontSize="small" />
-        </IconButton>
-      </Grid>
-      <Grid item>
-        <IconButton
-          title={t(labelSetDowntime)}
-          disabled={disableDowntime}
-          onClick={(): void => actions.onDowntime(row)}
-          ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
-        >
-          <IconDowntime fontSize="small" />
-        </IconButton>
-      </Grid>
-      <Grid item>
-        <IconButton
-          title={t(labelCheck)}
-          disabled={disableCheck}
-          onClick={(): void => actions.onCheck(row)}
-          ariaLabel={`${t(labelCheck)} ${row.name}`}
-        >
-          <IconCheck fontSize="small" />
-        </IconButton>
-      </Grid>
-      <Grid item>
-        <StatusChip
-          label={row.status.name[0]}
-          severityCode={row.status.severity_code}
-          classes={{
-            root: classes.smallChipContainer,
-            label: classes.smallChipLabel,
-          }}
-        />
-      </Grid>
-    </Grid>
+    <div className={classes.actions}>
+      <IconButton
+        title={t(labelAcknowledge)}
+        disabled={disableAcknowledge}
+        color="primary"
+        onClick={(): void => actions.onAcknowledge(row)}
+        ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
+      >
+        <IconAcknowledge fontSize="small" />
+      </IconButton>
+      <IconButton
+        title={t(labelSetDowntime)}
+        disabled={disableDowntime}
+        onClick={(): void => actions.onDowntime(row)}
+        ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
+      >
+        <IconDowntime fontSize="small" />
+      </IconButton>
+      <IconButton
+        title={t(labelCheck)}
+        disabled={disableCheck}
+        onClick={(): void => actions.onCheck(row)}
+        ariaLabel={`${t(labelCheck)} ${row.name}`}
+      >
+        <IconCheck fontSize="small" />
+      </IconButton>
+    </div>
   );
 };
 
-const StatusColumn = ({ actions, t }) => ({
-  row,
-  isHovered,
-}: ComponentColumnProps): JSX.Element => {
-  return isHovered ? (
-    <StatusColumnOnHover actions={actions} row={row} />
-  ) : (
-    <StatusChip
-      style={{ width: 100, height: 20, margin: 2 }}
-      label={t(row.status.name)}
-      severityCode={row.status.severity_code}
-    />
-  );
+const StatusColumn = ({ actions, t }) => {
+  const Status = ({ row, isHovered }: ComponentColumnProps): JSX.Element => {
+    const classes = useStyles();
+
+    const statusName = row.status.name;
+
+    return (
+      <div className={classes.statusColumn}>
+        {isHovered ? (
+          <StatusColumnOnHover actions={actions} row={row} />
+        ) : (
+          <StatusChip
+            style={{ height: 20, width: '100%' }}
+            label={t(statusName)}
+            severityCode={row.status.severity_code}
+          />
+        )}
+      </div>
+    );
+  };
+
+  return Status;
 };
 
 const ResourceColumn = ({ row }: ComponentColumnProps): JSX.Element => {
@@ -222,7 +228,6 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: SeverityColumn,
     sortField: 'severity_level',
-    width: 50,
   },
   {
     id: 'status',
@@ -233,7 +238,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     sortField: 'status_severity_code',
     clickable: true,
-    width: 145,
+    width: 'minmax(100px, max-content)',
   },
   {
     id: 'resource',
@@ -242,7 +247,6 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: ResourceColumn,
     sortField: 'name',
-    width: 200,
   },
   {
     id: 'parent_resource',
@@ -251,16 +255,22 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: ParentResourceColumn,
     sortField: 'parent_name',
-    width: 200,
   },
   {
-    id: 'url',
+    id: 'notes_url',
     label: '',
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
-    Component: UrlColumn,
+    Component: NotesUrlColumn,
     sortable: false,
-    width: 50,
+  },
+  {
+    id: 'action_url',
+    label: '',
+    type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
+    Component: ActionUrlColumn,
+    sortable: false,
   },
   {
     id: 'graph',
@@ -269,7 +279,6 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: GraphColumn({ onClick: actions.onDisplayGraph }),
     sortable: false,
-    width: 50,
   },
   {
     id: 'duration',
@@ -277,27 +286,25 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     type: ColumnType.string,
     getFormattedString: ({ duration }): string => duration,
     sortField: 'last_status_change',
-    width: 125,
   },
   {
     id: 'tries',
     label: t(labelTries),
     type: ColumnType.string,
     getFormattedString: ({ tries }): string => tries,
-    width: 125,
   },
   {
     id: 'last_check',
     label: t(labelLastCheck),
     type: ColumnType.string,
     getFormattedString: ({ last_check }): string => last_check,
-    width: 125,
   },
   {
     id: 'information',
     label: t(labelInformation),
     type: ColumnType.string,
     sortable: false,
+    width: '1fr',
     getFormattedString: pipe(
       propOr('', 'information'),
       split('\n'),
@@ -312,6 +319,5 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: StateColumn,
     sortable: false,
-    width: 80,
   },
 ];

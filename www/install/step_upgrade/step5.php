@@ -117,9 +117,10 @@ if ($moveable) {
             jQuery.ajax({
                 type: 'POST',
                 url: './step_upgrade/process/process_step5.php',
-                data: jQuery('input[name="send_statistics"]').serialize()
-            }).success(function () {
-                javascript:self.location = "../index.php"
+                data: jQuery('input[name="send_statistics"]').serialize(),
+                success: () => {
+                    javascript:self.location = "../index.php"
+                }
             })
         }
     </script>

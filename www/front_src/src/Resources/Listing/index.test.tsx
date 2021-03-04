@@ -79,7 +79,11 @@ const fillEntities = (): Array<Resource> => {
         reporting: index % 3 === 0 ? 'uri' : null,
       },
       externals: {
-        notes_url: 'https://centreon.com',
+        action_url: null,
+        notes: {
+          label: null,
+          url: 'https://centreon.com',
+        },
       },
     },
     passive_checks: index % 8 === 0,
@@ -328,7 +332,9 @@ describe(Listing, () => {
 
     const chipLabel = `${entityInDowntime?.name} ${labelInDowntime}`;
 
-    const chip = await findByLabelText(chipLabel);
+    const chip = await findByLabelText(chipLabel, undefined, {
+      timeout: 10000,
+    });
 
     fireEvent.mouseEnter(chip);
     fireEvent.mouseOver(chip);
@@ -371,7 +377,9 @@ describe(Listing, () => {
 
     const chipLabel = `${acknowledgedEntity?.name} ${labelAcknowledged}`;
 
-    const chip = await findByLabelText(chipLabel);
+    const chip = await findByLabelText(chipLabel, undefined, {
+      timeout: 10000,
+    });
 
     fireEvent.mouseEnter(chip);
     fireEvent.mouseOver(chip);
