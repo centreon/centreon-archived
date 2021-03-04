@@ -1,21 +1,6 @@
 import * as React from 'react';
 
-import {
-  equals,
-  isNil,
-  isEmpty,
-  identity,
-  min,
-  max,
-  not,
-  find,
-  __,
-  gte,
-  lte,
-  dec,
-  inc,
-  both,
-} from 'ramda';
+import { equals, isNil, isEmpty, identity, min, max, not } from 'ramda';
 import {
   Line,
   Bar,
