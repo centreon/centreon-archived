@@ -225,7 +225,7 @@ class PlatformInformation
      */
     public function setApiUsername(?string $username): self
     {
-        $this->apiUsername = $username;
+        $this->apiUsername = filter_var($username, FILTER_SANITIZE_STRING);
         return $this;
     }
 
