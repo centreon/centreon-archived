@@ -27,24 +27,44 @@ class AuthenticateRequest
     /**
      * @var array
      */
-    private $parameters;
+    private $credentials;
 
-    public function __construct(array $parameters)
+    /**
+     * @var string
+     */
+    private $providerConfigurationName;
+
+    /**
+     * @param array $credentials
+     * @param string $providerConfigurationName
+     */
+    public function __construct(array $credentials, string $providerConfigurationName)
     {
-        if (empty($parameters)) {
+        if (empty($credentials)) {
             throw new \InvalidArgumentException(_('Missing credentials arguments'));
         }
 
-        $this->parameters = $parameters;
+        $this->credentials = $credentials;
+        $this->providerConfigurationName = $providerConfigurationName;
     }
 
     /**
-     * Get parameters
+     * Get credentials
      *
      * @return array
      */
-    public function getParameters(): array
+    public function getCredentials(): array
     {
-        return $this->parameters;
+        return $this->credentials;
+    }
+
+    /**
+     * Get provider configuration name
+     *
+     * @return string
+     */
+    public function getProviderConfigurationName(): string
+    {
+        return $this->providerConfigurationName;
     }
 }

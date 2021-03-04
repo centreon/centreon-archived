@@ -22,8 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
-use Security\Domain\Authentication\AuthenticationService;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Security\Domain\Authentication\AuthenticationService;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -63,40 +64,36 @@ class Authenticate
      * Execute authentication scenario
      *
      * @param AuthenticateRequest $request
-     * @param string $providerConfigurationName
-     * @return AuthenticateResponse
+     * @return void
      */
-    public function execute(AuthenticateRequest $request, string $providerConfigurationName): AuthenticateResponse
+    public function execute(AuthenticateRequest $request): void
     {
-        $response = new AuthenticateResponse();
-
         $authenticationProvider = $this->authenticationService->findProviderByConfigurationName(
-            $providerConfigurationName
+            $request->getProviderConfigurationName()
         );
 
         if ($authenticationProvider === null) {
-            throw AuthenticationServiceException::providerConfigurationNotFound($providerConfigurationName);
+            throw AuthenticationServiceException::providerConfigurationNotFound(
+                $request->getProviderConfigurationName()
+            );
         }
 
-        $authenticationProvider->authenticate($request->getParameters());
+        $authenticationProvider->authenticate($request->getCredentials());
 
-        $response->setAuthenticated($authenticationProvider->isAuthenticated());
-        if (!$response->isAuthenticated()) {
-            return $response;
+        if (!$authenticationProvider->isAuthenticated()) {
+            throw AuthenticationException::NotAuthenticatedException();
         }
 
         $providerUser = $authenticationProvider->getUser();
-        $response->setUserFound($providerUser !== null);
-        if (!$response->isUserFound()) {
-            return $response;
+        if ($providerUser === null) {
+            throw AuthenticationException::UserNotFoundException();
         }
 
         if (!$this->contactService->exists($providerUser)) {
             if ($authenticationProvider->canCreateUser()) {
                 $this->contactService->addUser($providerUser);
             } else {
-                $response->shouldAndCannotCreateUser(true);
-                return $response;
+                throw AuthenticationException::CannotCreateUserException();
             }
         } else {
             $this->contactService->updateUser($providerUser);
@@ -107,12 +104,10 @@ class Authenticate
 
         $this->authenticationService->createAuthenticationTokens(
             $this->session->getId(),
-            $providerConfigurationName,
+            $request->getProviderConfigurationName(),
             $providerUser,
             $authenticationProvider->getProviderToken($this->session->getId()),
             $authenticationProvider->getProviderRefreshToken($this->session->getId())
         );
-
-        return $response;
     }
 }

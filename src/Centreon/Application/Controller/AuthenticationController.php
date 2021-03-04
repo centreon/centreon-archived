@@ -201,23 +201,8 @@ class AuthenticationController extends AbstractController
             $requestParameters[$key] = $value;
         }
 
-        $authenticateRequest = new AuthenticateRequest($requestParameters);
-        $authenticateResponse = $authenticate->execute($authenticateRequest, $providerConfigurationName);
-
-        if (!$authenticateResponse->isAuthenticated()) {
-            return View::create(null, Response::HTTP_UNAUTHORIZED);
-        }
-
-        if ($authenticateResponse->isUserFound() === null) {
-            return View::create(
-                ['error' => 'The user cannot be retrieved from the provider'],
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        if ($authenticateResponse->shouldAndCannotCreateUser()) {
-            return View::create(['error' => '...'], Response::HTTP_BAD_REQUEST);
-        }
+        $authenticateRequest = new AuthenticateRequest($requestParameters, $providerConfigurationName);
+        $authenticate->execute($authenticateRequest);
 
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
@@ -230,61 +215,5 @@ class AuthenticationController extends AbstractController
                 ['content-type' => 'text/html']
             );
         }
-
-        /*
-        $authenticationProvider = $this->authenticationService->findProviderByConfigurationName(
-            $providerConfigurationName
-        );
-
-        if ($authenticationProvider === null) {
-            throw AuthenticationServiceException::providerConfigurationNotFound($providerConfigurationName);
-        }
-
-        $authenticationProvider->authenticate($requestParameters);
-        if ($authenticationProvider->isAuthenticated()) {
-            if (($providerUser = $authenticationProvider->getUser()) === null) {
-                return View::create(
-                    ['error' => 'The user cannot be retrieved from the provider'],
-                    Response::HTTP_BAD_REQUEST
-                );
-            }
-            if (!$this->contactService->exists($providerUser)) {
-                if ($authenticationProvider->canCreateUser()) {
-                    $this->contactService->addUser($providerUser);
-                } else {
-                    // error can not create user
-                    return View::create(['error' => '...'], Response::HTTP_BAD_REQUEST);
-                }
-            } else {
-                $this->contactService->updateUser($providerUser);
-            }
-
-            $session->start();
-            $_SESSION['centreon'] = $authenticationProvider->getLegacySession();
-
-            $this->authenticationService->createAuthenticationTokens(
-                $session->getId(),
-                $providerConfigurationName,
-                $providerUser,
-                $authenticationProvider->getProviderToken($session->getId()),
-                $authenticationProvider->getProviderRefreshToken($session->getId())
-            );
-
-            if ($request->headers->get('Content-Type') === 'application/json') {
-                // Send redirection_uri in JSON format only for API request
-                return View::create(['redirect_uri' => $this->getBaseUri() . '/monitoring/resources']);
-            } else {
-                // Otherwise, we send a redirection response.
-                return View::createRedirect(
-                    $this->getBaseUri() . '/authentication/login',
-                    Response::HTTP_OK,
-                    ['content-type' => 'text/html']
-                );
-            }
-        }
-
-        // Authentication failed
-        return View::create(null, Response::HTTP_UNAUTHORIZED);
-        */
     }
 }
