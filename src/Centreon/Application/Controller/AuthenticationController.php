@@ -133,13 +133,13 @@ class AuthenticationController extends AbstractController
         try {
             $token = $request->headers->get('X-AUTH-TOKEN');
             $this->auth->logout($token);
-
-            return $this->view([
-                'message' => 'Successful logout'
-            ]);
         } catch (\Exception $ex) {
             throw new \RestException($ex->getMessage(), $ex->getCode(), $ex);
         }
+
+        return $this->view([
+            'message' => 'Successful logout'
+        ]);
     }
 
     /**
@@ -180,16 +180,6 @@ class AuthenticationController extends AbstractController
     public function findProvidersConfigurations(): View
     {
         $providers = $this->authenticationService->findProvidersConfigurations();
-        /*
-        foreach ($providers as $provider) {
-            $definedProviders[] = [
-                'name' => $provider->getName(),
-                'authentication_uri' => $provider->getAuthenticationUri(),
-                'is_forced' => $provider->isForced(),
-                'configuration' => $provider->getConfiguration()
-            ];
-        }
-        */
 
         return View::create($providers);
     }
@@ -215,9 +205,14 @@ class AuthenticationController extends AbstractController
             // submitted from form directly
             $data = $request->request->getIterator();
         }
+
         $requestParameters = [];
         foreach ($data as $key => $value) {
             $requestParameters[$key] = $value;
+        }
+
+        if (empty($requestParameters)) {
+            throw new \InvalidArgumentException(_('Missing credentials arguments'));
         }
 
         $authenticationProvider = $this->authenticationService->findProviderByConfigurationName(
@@ -228,79 +223,50 @@ class AuthenticationController extends AbstractController
             throw AuthenticationServiceException::providerConfigurationNotFound($providerConfigurationName);
         }
 
-        if (empty($requestParameters)) {
-            $sessionId = $this->extractSessionId($request);
-            if ($sessionId !== null) {
-                if ($this->authenticationService->hasValidSession($sessionId, $authenticationProvider)) {
-                    return View::createRedirect($this->getBaseUri());
-                }
-                $session->start();
-                $session->clear();
-                $session->invalidate();
-                $this->authenticationService->deleteSession($sessionId);
-            }
-            return View::createRedirect($this->getBaseUri() . '/login');
-        } else {
-            $authenticationProvider->authenticate($requestParameters);
-            if ($authenticationProvider->isAuthenticated()) {
-                if (($providerUser = $authenticationProvider->getUser()) === null) {
-                    return View::create(
-                        ['error' => 'The user cannot be retrieved from the provider'],
-                        Response::HTTP_BAD_REQUEST
-                    );
-                }
-                if (!$this->contactService->exists($providerUser)) {
-                    if ($authenticationProvider->canCreateUser()) {
-                        $this->contactService->addUser($providerUser);
-                    } else {
-                        // error can not create user
-                        return View::create(['error' => '...'], Response::HTTP_BAD_REQUEST);
-                    }
-                } else {
-                    $this->contactService->updateUser($providerUser);
-                }
-
-                $session->start();
-                $_SESSION['centreon'] = $authenticationProvider->getLegacySession();
-
-                $this->authenticationService->createAuthenticationTokens(
-                    $session->getId(),
-                    $providerConfigurationName,
-                    $providerUser,
-                    $authenticationProvider->getProviderToken($session->getId()),
-                    $authenticationProvider->getProviderRefreshToken($session->getId())
+        $authenticationProvider->authenticate($requestParameters);
+        if ($authenticationProvider->isAuthenticated()) {
+            if (($providerUser = $authenticationProvider->getUser()) === null) {
+                return View::create(
+                    ['error' => 'The user cannot be retrieved from the provider'],
+                    Response::HTTP_BAD_REQUEST
                 );
+            }
+            if (!$this->contactService->exists($providerUser)) {
+                if ($authenticationProvider->canCreateUser()) {
+                    $this->contactService->addUser($providerUser);
+                } else {
+                    // error can not create user
+                    return View::create(['error' => '...'], Response::HTTP_BAD_REQUEST);
+                }
+            } else {
+                $this->contactService->updateUser($providerUser);
+            }
 
-                //$response = new Response(null, Response::HTTP_OK, ['content-type' => 'text/html']);
-                //$response->headers->setCookie(Cookie::create('PHPSESSID', $session->getId()));
-                //$response->headers->set("Location", $this->getBaseUri() . '/authentication/login');
-                return $this->view([
-                    'redirect_uri' => $this->getBaseUri() . '/monitoring/resources',
-                ]);
-                //return $response;
+            $session->start();
+            $_SESSION['centreon'] = $authenticationProvider->getLegacySession();
+
+            $this->authenticationService->createAuthenticationTokens(
+                $session->getId(),
+                $providerConfigurationName,
+                $providerUser,
+                $authenticationProvider->getProviderToken($session->getId()),
+                $authenticationProvider->getProviderRefreshToken($session->getId())
+            );
+
+            if ($request->headers->get('Content-Type') === 'application/json') {
+                // Send redirection_uri in JSON format only for API request
+                return View::create(['redirect_uri' => $this->getBaseUri() . '/monitoring/resources']);
+            } else {
+                // Otherwise, we send a redirection response.
+                return View::createRedirect(
+                    $this->getBaseUri() . '/authentication/login',
+                    Response::HTTP_OK,
+                    ['content-type' => 'text/html']
+                );
             }
         }
+
         // Authentication failed
         return View::create(null, Response::HTTP_UNAUTHORIZED);
-    }
-
-    /**
-     * Extract the session id from the request.
-     *
-     * @param Request $request
-     * @return string|null
-     */
-    private function extractSessionId(Request $request): ?string
-    {
-        if ($request->headers->has('Cookie')) {
-            $cookies = explode(';', $request->headers->get('Cookie'));
-            foreach ($cookies as $cookie) {
-                list($key, $value) = explode('=', $cookie);
-                if (trim($key) === 'PHPSESSID') {
-                    return trim($value);
-                }
-            }
-        }
-        return null;
     }
 }
