@@ -2,22 +2,16 @@ import * as React from 'react';
 
 import { Bar } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
-import { always, cond, equals, isNil, max, prop, T } from 'ramda';
+import { max, prop } from 'ramda';
 
-import { fade, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
 import { labelFrom, labelTo } from '../../../../../translatedLabels';
 import useAnnotationsContext from '../../Context';
 
-import Annotation, {
-  Props as AnnotationProps,
-  yMargin,
-  iconSize,
-  getIconColor,
-} from '.';
+import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
 type Props = {
   color: string;
@@ -54,19 +48,16 @@ const AreaAnnotation = ({
 
   const classes = useStyles();
 
-  const { annotationHovered, setAnnotationHovered } = useAnnotationsContext();
+  const {
+    setAnnotationHovered,
+    getFill,
+    getIconColor,
+  } = useAnnotationsContext();
 
   const xIconMargin = -iconSize / 2;
 
   const xStart = max(xScale(new Date(startDate)), 0);
   const xEnd = endDate ? xScale(new Date(endDate)) : xScale.range()[1];
-
-  const getFill = () =>
-    cond<TimelineEvent | null, string>([
-      [isNil, always(fade(color, 0.3))],
-      [equals<TimelineEvent | null>(props.event), always(fade(color, 0.5))],
-      [T, always(fade(color, 0.1))],
-    ])(annotationHovered);
 
   const area = (
     <Bar
@@ -74,8 +65,8 @@ const AreaAnnotation = ({
       y={yMargin + iconSize + 2}
       width={xEnd - xStart}
       height={graphHeight + iconSize / 2}
-      fill={getFill()}
-      onMouseEnter={() => setAnnotationHovered(() => props.event)}
+      fill={getFill({ event: prop('event', props), color })}
+      onMouseEnter={() => setAnnotationHovered(() => prop('event', props))}
       onMouseLeave={() => setAnnotationHovered(() => null)}
     />
   );
@@ -93,7 +84,6 @@ const AreaAnnotation = ({
       className={classes.icon}
       style={{
         color: getIconColor({
-          annotationHovered,
           color,
           event: prop('event', props),
         }),

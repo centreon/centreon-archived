@@ -2,21 +2,15 @@ import * as React from 'react';
 
 import { Line } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
-import { always, cond, equals, isNil, prop, T } from 'ramda';
+import { prop } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
 import useAnnotationsContext from '../../Context';
 
-import Annotation, {
-  Props as AnnotationProps,
-  yMargin,
-  iconSize,
-  getIconColor,
-} from '.';
+import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
 type Props = {
   color: string;
@@ -51,7 +45,12 @@ const LineAnnotation = ({
 
   const classes = useStyles();
 
-  const { annotationHovered, setAnnotationHovered } = useAnnotationsContext();
+  const {
+    setAnnotationHovered,
+    getStrokeWidth,
+    getStrokeOpacity,
+    getIconColor,
+  } = useAnnotationsContext();
 
   const xIconMargin = -iconSize / 2;
 
@@ -59,28 +58,14 @@ const LineAnnotation = ({
 
   const header = toDateTime(date);
 
-  const getStrokeWidth = () =>
-    cond<TimelineEvent | null, number>([
-      [isNil, always(1)],
-      [equals<TimelineEvent | null>(props.event), always(3)],
-      [T, always(1)],
-    ])(annotationHovered);
-
-  const getStrokeOpacity = () =>
-    cond<TimelineEvent | null, number>([
-      [isNil, always(0.5)],
-      [equals<TimelineEvent | null>(props.event), always(0.7)],
-      [T, always(0.2)],
-    ])(annotationHovered);
-
   const line = (
     <Line
       from={{ x: xIcon, y: yMargin + iconSize + 2 }}
       to={{ x: xIcon, y: graphHeight }}
       stroke={color}
-      strokeWidth={getStrokeWidth()}
-      strokeOpacity={getStrokeOpacity()}
-      onMouseEnter={() => setAnnotationHovered(() => props.event)}
+      strokeWidth={getStrokeWidth(prop('event', props))}
+      strokeOpacity={getStrokeOpacity(prop('event', props))}
+      onMouseEnter={() => setAnnotationHovered(() => prop('event', props))}
       onMouseLeave={() => setAnnotationHovered(() => null)}
     />
   );
@@ -92,7 +77,6 @@ const LineAnnotation = ({
       width={iconSize}
       style={{
         color: getIconColor({
-          annotationHovered,
           color,
           event: prop('event', props),
         }),

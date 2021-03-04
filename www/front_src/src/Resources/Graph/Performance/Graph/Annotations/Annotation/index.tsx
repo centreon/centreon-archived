@@ -38,23 +38,6 @@ export interface Props {
   >;
 }
 
-interface GetIconColor {
-  annotationHovered: TimelineEvent | null;
-  event: TimelineEvent;
-  color: string;
-}
-
-export const getIconColor = ({
-  annotationHovered,
-  color,
-  event,
-}: GetIconColor): string =>
-  cond<TimelineEvent | null, string>([
-    [isNil, always(color)],
-    [pipe(equals<TimelineEvent | null>(event), not), always(fade(color, 0.2))],
-    [T, always(color)],
-  ])(annotationHovered);
-
 const Annotation = ({
   icon,
   header,
