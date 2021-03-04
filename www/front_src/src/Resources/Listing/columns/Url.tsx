@@ -6,13 +6,11 @@ import IconLink from '@material-ui/icons/Link';
 
 import { IconButton, ComponentColumnProps } from '@centreon/ui';
 
-import { labelUrl } from '../../translatedLabels';
-
 const UrlColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
-  const endpoint = path<string | undefined>(
-    ['links', 'externals', 'notes_url'],
-    row,
-  );
+  const notesPath = ['links', 'externals', 'notes'];
+
+  const endpoint = path<string | undefined>([...notesPath, 'url'], row);
+  const title = path<string | undefined>([...notesPath, 'label'], row);
 
   if (isNil(endpoint) || isEmpty(endpoint)) {
     return null;
@@ -26,8 +24,8 @@ const UrlColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
       }}
     >
       <IconButton
-        title={labelUrl}
-        ariaLabel={labelUrl}
+        title={title || endpoint}
+        ariaLabel={title || endpoint}
         onClick={(): null => {
           return null;
         }}
