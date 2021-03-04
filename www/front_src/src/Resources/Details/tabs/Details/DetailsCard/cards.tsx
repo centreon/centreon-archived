@@ -96,11 +96,11 @@ const getDetailCardLines = ({
     },
     {
       title: labelMonitoringServer,
-      field: details.poller_name,
+      field: details.monitoring_server_name,
       getLines: (): Lines => [
         {
           key: 'poller',
-          line: <DetailsLine line={details.poller_name} />,
+          line: <DetailsLine line={details.monitoring_server_name} />,
         },
       ],
     },

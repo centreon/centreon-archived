@@ -665,6 +665,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             i.name AS `monitoring_server_name`,
             i.instance_id AS `monitoring_server_id`,
             h.notes AS `notes_label`,
+            i.name AS `monitoring_server_name`,
             h.command_line AS `command_line`,
             h.timezone AS `timezone`,
             NULL AS `parent_id`,

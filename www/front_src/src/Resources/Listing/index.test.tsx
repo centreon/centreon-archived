@@ -79,7 +79,11 @@ const fillEntities = (): Array<Resource> => {
         reporting: index % 3 === 0 ? 'uri' : null,
       },
       externals: {
-        notes_url: 'https://centreon.com',
+        action_url: null,
+        notes: {
+          label: null,
+          url: 'https://centreon.com',
+        },
       },
     },
     passive_checks: index % 8 === 0,

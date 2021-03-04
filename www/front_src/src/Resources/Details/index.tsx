@@ -1,6 +1,15 @@
 import * as React from 'react';
 
-import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
+import {
+  isNil,
+  isEmpty,
+  pipe,
+  not,
+  defaultTo,
+  propEq,
+  findIndex,
+  pick,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Tab, useTheme, fade } from '@material-ui/core';
@@ -19,9 +28,21 @@ export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = (): JSX.Element => {
+export interface TabBounds {
+  top: number;
+  bottom: number;
+}
+
+const Context = React.createContext<TabBounds>({
+  top: 0,
+  bottom: 0,
+});
+
+const Details = (): JSX.Element | null => {
   const { t } = useTranslation();
   const theme = useTheme();
+
+  const panelRef = React.useRef<HTMLDivElement>();
 
   const {
     openDetailsTabId,
@@ -83,26 +104,35 @@ const Details = (): JSX.Element => {
   };
 
   return (
-    <Panel
-      onClose={clearSelectedResource}
-      header={<Header details={details} />}
-      headerBackgroundColor={getHeaderBackgroundColor()}
-      tabs={getVisibleTabs().map(({ id, title }) => (
-        <Tab
-          style={{ minWidth: 'unset' }}
-          key={id}
-          label={t(title)}
-          disabled={isNil(details)}
-          onClick={changeSelectedTabId(id)}
-        />
-      ))}
-      selectedTabId={getTabIndex(openDetailsTabId)}
-      selectedTab={<TabById id={openDetailsTabId} details={details} />}
-      width={panelWidth}
-      onResize={setPanelWidth}
-      memoProps={[openDetailsTabId, details, panelWidth]}
-    />
+    <Context.Provider
+      value={pick(
+        ['top', 'bottom'],
+        panelRef.current?.getBoundingClientRect() || { top: 0, bottom: 0 },
+      )}
+    >
+      <Panel
+        ref={panelRef as React.RefObject<HTMLDivElement>}
+        onClose={clearSelectedResource}
+        header={<Header details={details} />}
+        headerBackgroundColor={getHeaderBackgroundColor()}
+        tabs={getVisibleTabs().map(({ id, title }) => (
+          <Tab
+            style={{ minWidth: 'unset' }}
+            key={id}
+            label={t(title)}
+            disabled={isNil(details)}
+            onClick={changeSelectedTabId(id)}
+          />
+        ))}
+        selectedTabId={getTabIndex(openDetailsTabId)}
+        selectedTab={<TabById id={openDetailsTabId} details={details} />}
+        width={panelWidth}
+        onResize={setPanelWidth}
+        memoProps={[openDetailsTabId, details, panelWidth]}
+      />
+    </Context.Provider>
   );
 };
 
 export default Details;
+export { Context as TabContext };
