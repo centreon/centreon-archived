@@ -89,7 +89,7 @@ class PlatformInformationService implements PlatformInformationServiceInterface
          * Convert the Remote to Central or opposite
          */
         try {
-            if ($platformInformationUpdate->isRemote() && !$currentPlatformInformation->isRemote()) {
+            if ($platformInformationUpdate->isRemote()) {
                 if ($platformInformationUpdate->getCentralServerAddress() !== null) {
                     $this->remoteServerService->convertCentralToRemote(
                         $platformInformationUpdate

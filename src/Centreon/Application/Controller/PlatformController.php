@@ -212,6 +212,8 @@ class PlatformController extends AbstractController
                     case 'peerValidation':
                         $platformInformationUpdate->setApiPeerValidation($platformValue);
                         break;
+                    case 'platformName':
+                        $platformInformationUpdate->setPlatformName($platformValue);
                 }
             }
 

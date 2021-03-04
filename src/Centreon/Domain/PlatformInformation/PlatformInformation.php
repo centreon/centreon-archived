@@ -46,6 +46,11 @@ class PlatformInformation
     private $appKey;
 
     /**
+     * @var string|null
+     */
+    private $platformName;
+
+    /**
      * @var bool platform type
      */
     private $isRemote = false;
@@ -128,6 +133,24 @@ class PlatformInformation
     public function setAppKey(?string $value): self
     {
         $this->appKey = $value;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPlatformName(): ?string
+    {
+        return $this->platformName;
+    }
+
+    /**
+     * @param string|null $name
+     * @return self
+     */
+    public function setPlatformName(?string $name): self
+    {
+        $this->platformName = $name;
         return $this;
     }
 

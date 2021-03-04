@@ -4,6 +4,9 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "platformName": {
+      "type": "string"
+    },
     "isRemote": {
       "type": "boolean"
     },
