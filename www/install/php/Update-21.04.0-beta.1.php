@@ -74,13 +74,13 @@ try {
             'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_max_size` INT(255)'
         );
     }
-    
+
     $errorMessage = 'Impossible to create the table cb_log';
     $pearDB->query(
         'CREATE TABLE IF NOT EXISTS `cb_log`
         (`id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,`name` varchar(255) NOT NULL)'
     );
-    
+
     $errorMessage = 'Impossible to create the table cb_log_level';
     $pearDB->query(
         'CREATE TABLE IF NOT EXISTS `cb_log_level`
@@ -151,7 +151,7 @@ try {
         $statement->bindValue(':criterias', $criterias, \PDO::PARAM_STR);
         $statement->execute();
     }
-    
+
     //queries for broker logs
     $errorMessage = "Unable to Update cfg_centreonbroker";
     $pearDB->query(
