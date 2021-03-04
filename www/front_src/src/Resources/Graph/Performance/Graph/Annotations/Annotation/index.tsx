@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { always, cond, equals, isNil, not, pipe, T } from 'ramda';
 
 import { makeStyles, Tooltip, Paper, Typography } from '@material-ui/core';
 
