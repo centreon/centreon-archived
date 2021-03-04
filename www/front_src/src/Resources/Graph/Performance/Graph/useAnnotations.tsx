@@ -10,6 +10,7 @@ import {
   gte,
   inc,
   isNil,
+  last,
   lte,
   not,
   pipe,
@@ -62,20 +63,22 @@ export const useAnnotations = (): Annotations => {
     mouseX,
     timeline,
   }: ChangeAnnotationHovered): void => {
-    const isBetweenErorMarin = getIsBetween({
+    const isBetweenErorMargin = getIsBetween({
       xStart: dec(mouseX),
       xEnd: inc(mouseX),
     });
 
     setAnnotationHovered(
-      find((currentEvent) => {
-        if (isNil(currentEvent.startDate) && isNil(currentEvent.endDate)) {
-          return isBetweenErorMarin(xScale(new Date(currentEvent.date)));
+      find(({ startDate, endDate, date }: TimelineEvent) => {
+        if (isNil(startDate)) {
+          return isBetweenErorMargin(xScale(new Date(date)));
         }
 
         const isBetweenStartAndEndDate = getIsBetween({
-          xStart: xScale(new Date(currentEvent.startDate as string)),
-          xEnd: xScale(new Date(currentEvent.endDate as string)),
+          xStart: xScale(new Date(startDate as string)),
+          xEnd: xScale(
+            endDate ? new Date(endDate) : (last(xScale.domain()) as Date),
+          ),
         });
 
         return isBetweenStartAndEndDate(mouseX);

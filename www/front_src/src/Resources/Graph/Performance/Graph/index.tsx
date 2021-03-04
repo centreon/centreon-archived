@@ -357,6 +357,7 @@ const GraphContent = ({
     hideTooltip();
     setIsMouseOver(false);
     onTooltipDisplay?.();
+    annotations.setAnnotationHovered(undefined);
   };
 
   const displayAddCommentTooltip = (event): void => {
