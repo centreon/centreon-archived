@@ -67,7 +67,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
+            {"message":"A 'central': 'Central'@'1.1.1.10' is already saved"}
             """
 
         # Register a Central linked to another Central
@@ -310,6 +310,7 @@ Feature:
                             "type": "central",
                             "label": "Central",
                             "metadata": {
+                                "pending": "true",
                                 "centreon-id": "1",
                                 "hostname": "central.test.localhost.localdomain",
                                 "address": "1.1.1.10"
@@ -319,6 +320,7 @@ Feature:
                             "type": "poller",
                             "label": "my_poller",
                             "metadata": {
+                                "pending": "true",
                                 "hostname": "poller.test.localhost.localdomain",
                                 "address": "1.1.1.1"
                             }
@@ -327,12 +329,24 @@ Feature:
                             "type": "poller",
                             "label": "my_poller_2",
                             "metadata": {
+                                "pending": "true",
                                 "hostname": "poller2.test.localhost.localdomain",
                                 "address": "1.1.1.2"
                             }
                         }
                     },
-                    "edges": []
+                    "edges": [
+                        {
+                            "source": "2",
+                            "relation": "normal",
+                            "target": "1"
+                        },
+                        {
+                            "source": "3",
+                            "relation": "normal",
+                            "target": "1"
+                        }
+                    ]
                 }
             }
             """

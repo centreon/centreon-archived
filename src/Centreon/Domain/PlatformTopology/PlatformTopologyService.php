@@ -186,12 +186,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             // add the new platform
             $this->platformTopologyRepository->addPlatformToTopology($platformPending);
         } catch (\Exception $ex) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("Error when adding in topology the platform : '%s'@'%s'"),
-                    $platformPending->getName(),
-                    $platformPending->getAddress()
-                )
+            throw PlatformTopologyException::errorWhenAddingThePlatform(
+                $platformPending->getName(),
+                $platformPending->getAddress()
             );
         }
     }
@@ -219,12 +216,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             );
         }
         if (false === $foundPlatformInformation->isRemote()) {
-            throw new PlatformTopologyConflictException(
-                sprintf(
-                    _("The platform: '%s'@'%s' is not declared as a 'remote'."),
-                    $platformPending->getName(),
-                    $platformPending->getAddress()
-                )
+            throw PlatformTopologyConflictException::notTypeRemote(
+                $platformPending->getName(),
+                $platformPending->getAddress()
             );
         }
         if (null === $foundPlatformInformation->getCentralServerAddress()) {
@@ -424,12 +418,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
         // or Check for similar parent_address and address
         if ($platform->getParentAddress() === $platform->getAddress()) {
-            throw new PlatformTopologyConflictException(
-                sprintf(
-                    _("Same address and parent_address for platform : '%s'@'%s'."),
-                    $platform->getName(),
-                    $platform->getAddress()
-                )
+            throw PlatformTopologyConflictException::addressConflict(
+                $platform->getName(),
+                $platform->getAddress()
             );
         }
     }
@@ -445,13 +436,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     {
         $foundAlreadyRegisteredTopLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatformByType($type);
         if (null !== $foundAlreadyRegisteredTopLevelPlatform) {
-            throw new PlatformTopologyConflictException(
-                sprintf(
-                    _("A '%s': '%s'@'%s' is already registered"),
-                    $type,
-                    $foundAlreadyRegisteredTopLevelPlatform->getName(),
-                    $foundAlreadyRegisteredTopLevelPlatform->getAddress()
-                )
+            throw PlatformTopologyConflictException::platformAlreadySaved(
+                $type,
+                $foundAlreadyRegisteredTopLevelPlatform->getName(),
+                $foundAlreadyRegisteredTopLevelPlatform->getAddress()
             );
         }
     }
@@ -473,13 +461,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         if (null === $foundServerInNagiosTable) {
-            throw new PlatformTopologyConflictException(
-                sprintf(
-                    _("The server type '%s' : '%s'@'%s' does not match the one configured in Centreon or is disabled"),
-                    $platform->getType(),
-                    $platform->getName(),
-                    $platform->getAddress()
-                )
+            throw PlatformTopologyConflictException::platformDoesNotMatchTheSavedOne(
+                $platform->getType(),
+                $platform->getName(),
+                $platform->getAddress()
             );
         }
         $platform->setServerId($foundServerInNagiosTable->getId());
@@ -511,12 +496,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         $addressAlreadyRegistered = $this->platformTopologyRepository->findPlatformByAddress($platform->getAddress());
         $nameAlreadyRegistered = $this->platformTopologyRepository->findPlatformByName($platform->getName());
         if (null !== $nameAlreadyRegistered || null !== $addressAlreadyRegistered) {
-            throw new PlatformTopologyConflictException(
-                sprintf(
-                    _("A platform using the name : '%s' or address : '%s' already exists"),
-                    $platform->getName(),
-                    $platform->getAddress()
-                )
+            throw PlatformTopologyConflictException::platformNameOrAddressAlreadyExist(
+                $platform->getName(),
+                $platform->getAddress()
             );
         }
     }
@@ -554,12 +536,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             PlatformRegistered::TYPE_REMOTE === $platform->getType()
             && PlatformRegistered::TYPE_REMOTE === $registeredParentInTopology->getType()
         ) {
-            throw new PlatformTopologyConflictException(
-                sprintf(
-                    _("Unable to link a 'remote': '%s'@'%s' to another remote platform"),
-                    $registeredParentInTopology->getName(),
-                    $registeredParentInTopology->getAddress()
-                )
+            throw PlatformTopologyConflictException::unableToLinkARemoteToAnotherRemote(
+                $registeredParentInTopology->getName(),
+                $registeredParentInTopology->getAddress()
             );
         }
 
@@ -571,14 +550,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 false
             )
         ) {
-            throw new PlatformTopologyConflictException(
-                sprintf(
-                    _("Cannot register the '%s' platform : '%s'@'%s' behind a '%s' platform"),
-                    $platform->getType(),
-                    $platform->getName(),
-                    $platform->getAddress(),
-                    $registeredParentInTopology->getType()
-                )
+            throw PlatformTopologyConflictException::inconsistentTypeToLinkThePlatformTo(
+                $platform->getType(),
+                $platform->getName(),
+                $platform->getAddress(),
+                $registeredParentInTopology->getType()
             );
         }
 

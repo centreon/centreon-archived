@@ -30,4 +30,14 @@ namespace Centreon\Domain\PlatformTopology\Exception;
  */
 class PlatformTopologyException extends \Exception
 {
+    public static function errorWhenAddingThePlatform(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("Error when adding in topology the platform : '%s'@'%s'"),
+                $name,
+                $address
+            )
+        );
+    }
 }

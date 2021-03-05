@@ -46,4 +46,128 @@ class PlatformTopologyConflictException extends \Exception
             )
         );
     }
+
+    /**
+     * @param string $name
+     * @param string $address
+     * @return static
+     */
+    public static function notTypeRemote(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("The platform: '%s'@'%s' is not declared as a 'remote'."),
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $address
+     * @return static
+     */
+    public static function addressConflict(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("Same address and parent_address for platform : '%s'@'%s'."),
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $type
+     * @param string $name
+     * @param string $address
+     * @return static
+     */
+    public static function platformAlreadySaved(string $type, string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("A '%s': '%s'@'%s' is already saved"),
+                $type,
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $type
+     * @param string $name
+     * @param string $address
+     * @return static
+     */
+    public static function platformDoesNotMatchTheSavedOne(string $type, string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("The server type '%s' : '%s'@'%s' does not match the one configured in Centreon or is disabled"),
+                $type,
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $address
+     * @return static
+     */
+    public static function platformNameOrAddressAlreadyExist(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("A platform using the name : '%s' or address : '%s' already exists"),
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $address
+     * @return static
+     */
+    public static function unableToLinkARemoteToAnotherRemote(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("Unable to link a 'remote': '%s'@'%s' to another remote platform"),
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $type
+     * @param string $name
+     * @param string $address
+     * @param string $parentType
+     * @return static
+     */
+    public static function inconsistentTypeToLinkThePlatformTo(
+        string $type,
+        string $name,
+        string $address,
+        string $parentType
+    ): self {
+        return new self(
+            sprintf(
+                _("Cannot register the '%s' platform : '%s'@'%s' behind a '%s' platform"),
+                $type,
+                $name,
+                $address,
+                $parentType
+            )
+        );
+    }
 }
