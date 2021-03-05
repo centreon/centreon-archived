@@ -63,7 +63,7 @@ export const useAnnotations = (graphWidth: number): Annotations => {
     mouseX,
     timeline,
   }: ChangeAnnotationHoveredProps): void => {
-    const isBetweenErorMargin = getIsBetween({
+    const isWithinErrorMargin = getIsBetween({
       xStart: dec(mouseX),
       xEnd: inc(mouseX),
     });
@@ -71,7 +71,7 @@ export const useAnnotations = (graphWidth: number): Annotations => {
     setAnnotationHovered(
       find(({ startDate, endDate, date }: TimelineEvent) => {
         if (isNil(startDate)) {
-          return isBetweenErorMargin(xScale(new Date(date)));
+          return isWithinErrorMargin(xScale(new Date(date)));
         }
 
         const isBetweenStartAndEndDate = getIsBetween({
