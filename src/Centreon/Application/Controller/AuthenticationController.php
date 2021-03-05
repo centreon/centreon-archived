@@ -90,6 +90,17 @@ class AuthenticationController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
+        $token = $this->auth->generateToken($contact->getAlias());
+
+        $localProvider = $this->authenticationService->findProviderByConfigurationName('local');
+        $this->authenticationService->createAuthenticationTokens(
+            $token,
+            'local', // LocalProvider::name
+            $contact,
+            (new ProviderToken(...)),
+            null
+        );
+
         return $this->view([
             'contact' => [
                 'id' => $contact->getId(),
@@ -178,7 +189,7 @@ class AuthenticationController extends AbstractController
      * @param Request $request
      * @param Authenticate $authenticate
      * @param string $providerConfigurationName
-     * @return Response|View
+     * @return View
      * @throws \InvalidArgumentException
      * @throws AuthenticationServiceException
      * @throws \Exception

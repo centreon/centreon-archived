@@ -53,11 +53,6 @@ class LocalProvider implements ProviderInterface
     private $contactService;
 
     /**
-     * @var AuthenticationRepositoryInterface
-     */
-    private $authenticationRepository;
-
-    /**
      * @var Container
      */
     private $dependencyInjector;
@@ -209,7 +204,27 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
-    public function getProviderRefreshToken(string $sessionToken): ?ProviderToken
+    public function getProviderToken(): ProviderToken
+    {
+        $expirationSessionDelay = 120;
+        $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
+        if (!empty($sessionExpireOption)) {
+            $expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();
+        }
+
+        return new ProviderToken(
+            null,
+            session_id(),
+            new \DateTime(),
+            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M')),
+            null
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProviderRefreshToken(): ?ProviderToken
     {
         return null;
     }

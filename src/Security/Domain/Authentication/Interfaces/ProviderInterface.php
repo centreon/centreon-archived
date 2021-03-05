@@ -74,12 +74,18 @@ interface ProviderInterface
     public function getName(): string;
 
     /**
+     * Return the provider token
+     *
+     * @return ProviderToken
+     */
+    public function getProviderToken(): ProviderToken;
+
+    /**
      * Return the provider refresh token.
      *
-     * @param string $sessionToken
      * @return ProviderToken|null
      */
-    public function getProviderRefreshToken(string $sessionToken): ?ProviderToken;
+    public function getProviderRefreshToken(): ?ProviderToken;
 
     /**
      * Retrieve the contact.

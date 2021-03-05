@@ -26,7 +26,6 @@ use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {
@@ -34,8 +33,9 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @var AuthenticationRepositoryInterface
      */
     private $authenticationRepository;
+
     /**
-     * @var UserProviderInterface
+     * @var ContactRepositoryInterface
      */
     private $contactRepository;
 

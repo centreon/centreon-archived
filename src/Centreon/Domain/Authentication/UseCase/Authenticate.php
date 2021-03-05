@@ -119,33 +119,13 @@ class Authenticate
         */
         $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
         if ($authenticationTokens === null) {
-            $providerToken = $this->createProviderToken($this->session->getId());
-        } else {
-            $providerToken = $authenticationTokens->getProviderToken($authenticationTokens);
+            $this->authenticationService->createAuthenticationTokens(
+                $this->session->getId(),
+                $request->getProviderConfigurationName(),
+                $providerUser,
+                $authenticationProvider->getProviderToken($this->session->getId()),
+                $authenticationProvider->getProviderRefreshToken($this->session->getId())
+            );
         }
-
-        $this->authenticationService->createAuthenticationTokens(
-            $this->session->getId(),
-            $request->getProviderConfigurationName(),
-            $providerUser,
-            $providerToken,
-            $authenticationProvider->getProviderRefreshToken($this->session->getId())
-        );
-    }
-
-    private function createProviderToken(string $token): ProviderToken
-    {
-        $expirationSessionDelay = 120;
-        $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
-        if (!empty($sessionExpireOption)) {
-            $expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();
-        }
-        return new ProviderToken(
-            null,
-            $token,
-            new \DateTime(),
-            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M')),
-            null
-        );
     }
 }
