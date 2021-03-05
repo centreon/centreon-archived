@@ -375,7 +375,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             null === $platform->getParentAddress()
             && !in_array(
                 $platform->getType(),
-                [PlatformRegistered::TYPE_CENTRAL, PlatformRegistered::TYPE_REMOTE],
+                [PlatformPending::TYPE_CENTRAL, PlatformPending::TYPE_REMOTE],
                 false
             )
         ) {
@@ -505,8 +505,8 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
         // Avoid to link a remote to another remote
         if (
-            PlatformRegistered::TYPE_REMOTE === $platform->getType()
-            && PlatformRegistered::TYPE_REMOTE === $registeredParentInTopology->getType()
+            PlatformPending::TYPE_REMOTE === $platform->getType()
+            && PlatformPending::TYPE_REMOTE === $registeredParentInTopology->getType()
         ) {
             throw PlatformTopologyConflictException::unableToLinkARemoteToAnotherRemote(
                 $registeredParentInTopology->getName(),
@@ -518,7 +518,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (
             !in_array(
                 $registeredParentInTopology->getType(),
-                [PlatformRegistered::TYPE_REMOTE, PlatformRegistered::TYPE_CENTRAL],
+                [PlatformPending::TYPE_REMOTE, PlatformPending::TYPE_CENTRAL],
                 false
             )
         ) {
@@ -535,7 +535,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         // A platform behind a remote needs to send the data to the Central too
         if (
             null === $registeredParentInTopology->getParentId()
-            && $registeredParentInTopology->getType() === PlatformRegistered::TYPE_REMOTE
+            && $registeredParentInTopology->getType() === PlatformPending::TYPE_REMOTE
         ) {
             $registeredParentInTopology->setLinkedToAnotherServer(true);
             return $registeredParentInTopology;
@@ -621,7 +621,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              * Delete the monitoring server and the topology.
              */
             if ($deletedPlatform->getServerId() !== null) {
-                if ($deletedPlatform->getType() === PlatformRegistered::TYPE_REMOTE) {
+                if ($deletedPlatform->getType() === PlatformPending::TYPE_REMOTE) {
                     $this->remoteServerRepository->deleteRemoteServerByAddress($deletedPlatform->getAddress());
                     $this->remoteServerRepository->deleteAdditionalRemoteServer($deletedPlatform->getServerId());
                 }
