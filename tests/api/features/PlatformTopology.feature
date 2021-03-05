@@ -368,6 +368,7 @@ Feature:
                             "type": "central",
                             "label": "Central",
                             "metadata": {
+                                "pending": "true",
                                 "centreon-id": "1",
                                 "hostname": "central.test.localhost.localdomain",
                                 "address": "1.1.1.10"
@@ -377,12 +378,19 @@ Feature:
                             "type": "poller",
                             "label": "my_poller",
                             "metadata": {
+                                "pending": "true",
                                 "hostname": "poller.test.localhost.localdomain",
                                 "address": "1.1.1.1"
                             }
                         }
                     },
-                    "edges": []
+                    "edges": [
+                        {
+                            "source": "2",
+                            "relation": "normal",
+                            "target": "1"
+                        }
+                    ]
                 }
             }
             """
