@@ -61,46 +61,9 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @inheritDoc
      */
-    public function findContactByCredentials(string $username, string $password): ?Contact
-    {
-        if ($this->authenticationRepository->isGoodCredentials($username, $password)) {
-            return $this->contactRepository->findByName($username);
-        }
-        return null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function generateToken(string $username): string
-    {
-        $contact = $this->contactRepository->findByName($username);
-        if (is_null($contact)) {
-            throw new NotFoundException(_('Contact not found'));
-        }
-
-        $this->generatedToken = md5(bin2hex(random_bytes(128)));
-        $this->authenticationRepository->addToken(
-            $contact->getId(),
-            $this->generatedToken
-        );
-        return $this->generatedToken;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getGeneratedToken():string
     {
         return $this->generatedToken;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function deleteExpiredTokens(): int
-    {
-        return $this->authenticationRepository->deleteExpiredTokens();
     }
 
     /**

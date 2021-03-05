@@ -22,10 +22,11 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
+use Centreon\Domain\Contact\Contact;
+use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Security\Domain\Authentication\Model\ProviderToken;
 
 /**
  * @package Security\Domain\Authentication\Interfaces
@@ -62,12 +63,29 @@ interface AuthenticationServiceInterface
      */
     public function deleteSession(string $sessionToken): void;
 
+/**
+     * @param string $sessionToken
+     */
+    public function deleteAPISession(string $sessionToken): void;
+
+    /**
+     * Delete all expired API tokens
+     *
+     */
+    public function deleteExpiredAPITokens(): void;
+
     /**
      * Find providers configurations
      *
      * @return ProviderConfiguration[]
      */
     public function findProvidersConfigurations(): array;
+
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteTokenFromContact(string $authToken): void;
 
     /**
      * Find a provider by configuration id.

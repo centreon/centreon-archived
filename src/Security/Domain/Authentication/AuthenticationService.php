@@ -22,15 +22,16 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication;
 
+use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Security\Domain\Authentication\Model\ProviderFactory;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Security\Domain\Authentication\Model\ProviderFactory;
-use Security\Domain\Authentication\Model\ProviderToken;
+use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\LocalProviderRepositoryInterface;
 
 /**
  * @package Security\Authentication
@@ -41,10 +42,16 @@ class AuthenticationService implements AuthenticationServiceInterface
      * @var AuthenticationRepositoryInterface
      */
     private $repository;
+
     /**
      * @var ProviderFactory
      */
     private $providerFactory;
+
+    /**
+     * @var LocalProviderRepositoryInterface
+     */
+    private $localProviderRepository;
 
     /**
      * AuthenticationService constructor.
@@ -54,10 +61,12 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,
-        ProviderFactory $providerFactory
+        ProviderFactory $providerFactory,
+        LocalProviderRepositoryInterface $localProviderRepository
     ) {
         $this->repository = $authenticationRepository;
         $this->providerFactory = $providerFactory;
+        $this->localProviderRepository = $localProviderRepository;
     }
 
     /**
@@ -122,6 +131,32 @@ class AuthenticationService implements AuthenticationServiceInterface
         $this->repository->deleteSession($sessionToken);
     }
 
+    public function deleteAPISession(string $sessionToken): void
+    {
+        $this->localProviderRepository->deleteSession($sessionToken);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteExpiredAPITokens(): void
+    {
+        $this->localProviderRepository->deleteExpiredAPITokens();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteTokenFromContact(string $authToken): void
+    {
+        //@TODO: reimplement this
+        $token = $this->findAuthenticationTokensByToken($authToken);
+        if ($token !== null) {
+            $this->repository->deleteSession(
+                $token->getSessionToken()
+            );
+        }
+    }
     /**
      * Check if the session is valid.
      *

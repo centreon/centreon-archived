@@ -22,8 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface as previousAuthenticationServiceInterface;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
+use Centreon\Domain\Authentication\UseCase\AuthenticateAPI;
+use Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
 use FOS\RestBundle\View\View;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
@@ -37,25 +38,17 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthenticationController extends AbstractController
 {
     /**
-     * @var previousAuthenticationServiceInterface
-     */
-    private $auth;
-
-    /**
      * @var AuthenticationServiceInterface
      */
     private $authenticationService;
 
     /**
-     * @param previousAuthenticationServiceInterface $auth
      * @param AuthenticationServiceInterface $authenticationService
      * @throws \InvalidArgumentException
      */
     public function __construct(
-        previousAuthenticationServiceInterface $auth,
         AuthenticationServiceInterface $authenticationService
     ) {
-        $this->auth = $auth;
         $this->authenticationService = $authenticationService;
     }
 
@@ -69,50 +62,23 @@ class AuthenticationController extends AbstractController
      * @return View
      * @throws \Exception
      */
-    public function login(Request $request)
+    public function login(Request $request, AuthenticateAPI $authenticate)
     {
-        try {
-            // We take this opportunity to delete all expired tokens
-            $this->auth->deleteExpiredTokens();
-        } catch (\Exception $ex) {
-            // We don't propagate this error
-        }
-
         $contentBody = json_decode($request->getContent(), true);
-        $username = $contentBody['security']['credentials']['login'] ?? '';
-        $password = $contentBody['security']['credentials']['password'] ?? '';
-        $contact = $this->auth->findContactByCredentials($username, $password);
+        $credentials = [
+            "useralias" => $contentBody['security']['credentials']['login'] ?? '',
+            "password" => $contentBody['security']['credentials']['password'] ?? ''
+        ];
 
-        if (!$contact) {
-            return $this->view([
-                "code" => Response::HTTP_UNAUTHORIZED,
-                "message" => 'Invalid credentials'
-            ], Response::HTTP_UNAUTHORIZED);
+        $request =  new AuthenticateAPIRequest($credentials);
+        $response = $authenticate->execute($request);
+        if (!empty($response)){
+            return $this->view($response);
         }
-
-        $token = $this->auth->generateToken($contact->getAlias());
-
-        $localProvider = $this->authenticationService->findProviderByConfigurationName('local');
-        $this->authenticationService->createAuthenticationTokens(
-            $token,
-            'local', // LocalProvider::name
-            $contact,
-            (new ProviderToken(...)),
-            null
-        );
-
         return $this->view([
-            'contact' => [
-                'id' => $contact->getId(),
-                'name' => $contact->getName(),
-                'alias' => $contact->getAlias(),
-                'email' => $contact->getEmail(),
-                'is_admin' => $contact->isAdmin()
-            ],
-            'security' => [
-                'token' => $this->auth->generateToken($contact->getAlias())
-            ]
-        ]);
+            "code" => Response::HTTP_UNAUTHORIZED,
+            "message" => 'Invalid credentials'
+        ], Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -126,14 +92,14 @@ class AuthenticationController extends AbstractController
     {
         try {
             // We take this opportunity to delete all expired tokens
-            $this->auth->deleteExpiredTokens();
+            $this->authenticationService->deleteExpiredAPITokens();
         } catch (\Exception $ex) {
             // We don't propagate this error
         }
 
         try {
             $token = $request->headers->get('X-AUTH-TOKEN');
-            $this->auth->logout($token);
+            $this->authenticationService->deleteAPISession($token);
         } catch (\Exception $ex) {
             throw new \RestException($ex->getMessage(), $ex->getCode(), $ex);
         }

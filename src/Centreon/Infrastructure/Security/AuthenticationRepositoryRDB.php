@@ -101,17 +101,6 @@ class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function deleteExpiredTokens():int
-    {
-        $statement = $this->db->query(
-            'DELETE FROM ws_token WHERE generate_date < DATE_SUB(NOW(), INTERVAL 1 HOUR)'
-        );
-        return $statement->rowCount();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function deleteTokenFromContact(int $contactId, string $token): bool
     {
         $statement = $this->db->prepare(

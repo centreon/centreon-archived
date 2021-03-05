@@ -69,3 +69,6 @@ services:
 
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']
+
+    Security\Domain\Authentication\Interfaces\LocalProviderRepositoryInterface:
+        class: Security\Infrastructure\Repository\LocalProviderRepository

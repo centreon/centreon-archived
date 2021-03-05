@@ -22,29 +22,10 @@ declare(strict_types=1);
 namespace Centreon\Domain\Security\Interfaces;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Security\AuthenticationService;
 
 interface AuthenticationServiceInterface
 {
-    /**
-     * Find a contact according to the credentials.
-     *
-     * @param string $username Username
-     * @param string $password Password
-     * @return Contact|null
-     * @throws \Exception
-     */
-    public function findContactByCredentials(string $username, string $password): ?Contact;
 
-    /**
-     * Generate a new token.
-     * There is no limit to the number of tokens per contact.
-     *
-     * @param string $username Username for which we want to generate a token
-     * @return string Returns the new generated token
-     * @throws \Exception
-     */
-    public function generateToken(string $username): string;
 
     /**
      * Get the generated token.
@@ -61,11 +42,4 @@ interface AuthenticationServiceInterface
      * @throws \Exception
      */
     public function logout(string $authToken): bool;
-
-    /**
-     * Delete all expired tokens
-     *.
-     * @return int Returns the number of expired tokens deleted
-     */
-    public function deleteExpiredTokens(): int;
 }
