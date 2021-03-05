@@ -36,7 +36,8 @@ import truncate from '../../truncate';
 
 import StateColumn from './State';
 import GraphColumn from './Graph';
-import UrlColumn from './Url';
+import NotesUrlColumn from './Url/Notes';
+import ActionUrlColumn from './Url/Action';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -256,11 +257,19 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     sortField: 'parent_name',
   },
   {
-    id: 'url',
+    id: 'notes_url',
     label: '',
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
-    Component: UrlColumn,
+    Component: NotesUrlColumn,
+    sortable: false,
+  },
+  {
+    id: 'action_url',
+    label: '',
+    type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
+    Component: ActionUrlColumn,
     sortable: false,
   },
   {

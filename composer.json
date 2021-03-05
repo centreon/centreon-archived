@@ -24,10 +24,14 @@
         "symfony/var-dumper": "4.4.*",
         "symfony/profiler-pack": "^1.0",
         "phpstan/phpstan": "^0.12.59",
-        "webmozart/assert": "^1.8"
+        "webmozart/assert": "^1.8",
+        "symfony/stopwatch": "^4.4",
+        "symfony/twig-bundle": "^4.4",
+        "symfony/web-profiler-bundle": "^4.4",
+        "twig/twig": "^2.0"
     },
     "require": {
-        "php": ">=7.1.3",
+        "php": ">=7.2.24",
         "ext-phar": "*",
         "pear/pear-core-minimal": "^1.10",
         "pimple/pimple": "^3.2",

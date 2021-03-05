@@ -109,7 +109,7 @@ const retrievedDetails = {
   },
   fqdn: 'central.centreon.com',
   alias: 'Central-Centreon',
-  poller_name: 'Poller',
+  monitoring_server_name: 'Poller',
   acknowledged: false,
   checked: true,
   execution_time: 0.070906,
