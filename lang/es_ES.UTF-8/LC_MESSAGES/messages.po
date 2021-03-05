@@ -14643,3 +14643,6 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Select criterias"
 #  msgstr ""
+
+#  msgid "Monitoring server"
+#  msgstr ""

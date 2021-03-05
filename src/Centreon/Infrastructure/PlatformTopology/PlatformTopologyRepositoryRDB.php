@@ -320,7 +320,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             if ($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
                 foreach ($result as $platform) {
                     /**
-                     * @var Platform[] $childrenPlatforms
+                     * @var Platform[] $remoteChildren
                      */
                     $remoteChildren[] = EntityCreator::createEntityByArray(Platform::class, $platform);
                 }
