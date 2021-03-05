@@ -207,12 +207,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
          */
         $foundPlatformInformation = $this->platformInformationService->getInformation();
         if (null === $foundPlatformInformation) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."),
-                    $platformPending->getName(),
-                    $platformPending->getAddress()
-                )
+            throw PlatformTopologyException::missingMandatoryData(
+                $platformPending->getName(),
+                $platformPending->getAddress()
             );
         }
         if (false === $foundPlatformInformation->isRemote()) {
@@ -222,51 +219,36 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             );
         }
         if (null === $foundPlatformInformation->getCentralServerAddress()) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."),
-                    $platformPending->getName(),
-                    $platformPending->getAddress()
-                )
+            throw PlatformTopologyException::platformNotLinkedToTheCentral(
+                $platformPending->getName(),
+                $platformPending->getAddress()
             );
         }
         if (
             null === $foundPlatformInformation->getApiUsername()
             || null === $foundPlatformInformation->getApiCredentials()
         ) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."),
-                    $platformPending->getName(),
-                    $platformPending->getAddress()
-                )
+            throw PlatformTopologyException::missingCentralCredentials(
+                $platformPending->getName(),
+                $platformPending->getAddress()
             );
         }
         if (null === $foundPlatformInformation->getApiScheme()) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."),
-                    $platformPending->getName(),
-                    $platformPending->getAddress()
-                )
+            throw PlatformTopologyException::missingCentralScheme(
+                $platformPending->getName(),
+                $platformPending->getAddress()
             );
         }
         if (null === $foundPlatformInformation->getApiPort()) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."),
-                    $platformPending->getName(),
-                    $platformPending->getAddress()
-                )
+            throw PlatformTopologyException::missingCentralPort(
+                $platformPending->getName(),
+                $platformPending->getAddress()
             );
         }
         if (null === $foundPlatformInformation->getApiPath()) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."),
-                    $platformPending->getName(),
-                    $platformPending->getAddress()
-                )
+            throw PlatformTopologyException::missingCentralPath(
+                $platformPending->getName(),
+                $platformPending->getAddress()
             );
         }
 
@@ -303,16 +285,14 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
         $monitoringServerName = $this->monitoringServerService->findLocalServer();
         if (null === $monitoringServerName || null === $monitoringServerName->getName()) {
-            throw new PlatformTopologyException(
-                _('Unable to find local monitoring server name')
-            );
+            throw PlatformTopologyException::unableToFindMonitoringServerName();
         }
 
         $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByName(
             $monitoringServerName->getName()
         );
         if (null === $engineConfiguration) {
-            throw new PlatformTopologyException(_('Unable to find the Engine configuration'));
+            throw PlatformTopologyException::unableToFindEngineConfiguration();
         }
 
         $foundIllegalCharacters = EngineConfiguration::hasIllegalCharacters(
@@ -320,12 +300,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             $engineConfiguration->getIllegalObjectNameCharacters()
         );
         if (true === $foundIllegalCharacters) {
-            throw new PlatformTopologyException(
-                sprintf(
-                    _("At least one illegal character in '%s' was found in platform's name: '%s'"),
-                    $engineConfiguration->getIllegalObjectNameCharacters(),
-                    $stringToCheck
-                )
+            throw PlatformTopologyException::illegalCharacterFound(
+                $engineConfiguration->getIllegalObjectNameCharacters(),
+                $stringToCheck
             );
         }
     }
@@ -361,7 +338,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         if (false === $this->isHostnameValid($stringToCheck)) {
-            throw new PlatformTopologyException(
+            throw PlatformTopologyException::illegalRfcCharacterFound(
                 sprintf(
                     _("At least one non RFC compliant character was found in platform's hostname: '%s'"),
                     $stringToCheck

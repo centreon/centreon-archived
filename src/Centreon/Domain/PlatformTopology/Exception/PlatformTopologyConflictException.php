@@ -50,7 +50,7 @@ class PlatformTopologyConflictException extends \Exception
     /**
      * @param string $name
      * @param string $address
-     * @return static
+     * @return self
      */
     public static function notTypeRemote(string $name, string $address): self
     {
@@ -66,7 +66,7 @@ class PlatformTopologyConflictException extends \Exception
     /**
      * @param string $name
      * @param string $address
-     * @return static
+     * @return self
      */
     public static function addressConflict(string $name, string $address): self
     {
@@ -83,7 +83,7 @@ class PlatformTopologyConflictException extends \Exception
      * @param string $type
      * @param string $name
      * @param string $address
-     * @return static
+     * @return self
      */
     public static function platformAlreadySaved(string $type, string $name, string $address): self
     {
@@ -101,7 +101,7 @@ class PlatformTopologyConflictException extends \Exception
      * @param string $type
      * @param string $name
      * @param string $address
-     * @return static
+     * @return self
      */
     public static function platformDoesNotMatchTheSavedOne(string $type, string $name, string $address): self
     {
@@ -118,7 +118,7 @@ class PlatformTopologyConflictException extends \Exception
     /**
      * @param string $name
      * @param string $address
-     * @return static
+     * @return self
      */
     public static function platformNameOrAddressAlreadyExist(string $name, string $address): self
     {
@@ -134,7 +134,7 @@ class PlatformTopologyConflictException extends \Exception
     /**
      * @param string $name
      * @param string $address
-     * @return static
+     * @return self
      */
     public static function unableToLinkARemoteToAnotherRemote(string $name, string $address): self
     {
@@ -152,7 +152,7 @@ class PlatformTopologyConflictException extends \Exception
      * @param string $name
      * @param string $address
      * @param string $parentType
-     * @return static
+     * @return self
      */
     public static function inconsistentTypeToLinkThePlatformTo(
         string $type,

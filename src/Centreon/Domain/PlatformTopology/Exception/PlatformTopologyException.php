@@ -30,6 +30,11 @@ namespace Centreon\Domain\PlatformTopology\Exception;
  */
 class PlatformTopologyException extends \Exception
 {
+    /**
+     * @param string $name
+     * @param string $address
+     * @return self
+     */
     public static function errorWhenAddingThePlatform(string $name, string $address): self
     {
         return new self(
@@ -37,6 +42,152 @@ class PlatformTopologyException extends \Exception
                 _("Error when adding in topology the platform : '%s'@'%s'"),
                 $name,
                 $address
+            )
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $address
+     * @return self
+     */
+    public static function missingMandatoryData(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."),
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $address
+     * @return self
+     */
+    public static function platformNotLinkedToTheCentral(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."),
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $address
+     * @return self
+     */
+    public static function missingCentralCredentials(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."),
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $address
+     * @return self
+     */
+    public static function missingCentralScheme(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $address
+     * @return self
+     */
+    public static function missingCentralPort(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $address
+     * @return self
+     */
+    public static function missingCentralPath(string $name, string $address): self
+    {
+        return new self(
+            sprintf(
+                _("Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                $name,
+                $address
+            )
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function unableToFindMonitoringServerName(): self
+    {
+        return new self(
+            sprintf(_('Unable to find local monitoring server name'))
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function unableToFindEngineConfiguration(): self
+    {
+        return new self(
+            sprintf(_('Unable to find the Engine configuration'))
+        );
+    }
+
+    /**
+     * @param string $illegalCharacters
+     * @param string $stringToCheck
+     * @return self
+     */
+    public static function illegalCharacterFound(string $illegalCharacters, string $stringToCheck): self
+    {
+        return new self(
+            sprintf(
+                _("At least one illegal character in '%s' was found in platform's name: '%s'"),
+                $illegalCharacters,
+                $stringToCheck
+            )
+        );
+    }
+
+    /**
+     * @param string $stringToCheck
+     * @return self
+     */
+    public static function illegalRfcCharacterFound(string $stringToCheck): self
+    {
+        return new self(
+            sprintf(
+                _("At least one non RFC compliant character was found in platform's hostname: '%s'"),
+                $stringToCheck
             )
         );
     }
