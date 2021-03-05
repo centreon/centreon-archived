@@ -120,6 +120,9 @@ class PlatformInformation
     public function setPlatformName(?string $name): self
     {
         $this->platformName = filter_var($name, FILTER_SANITIZE_STRING);
+        if (empty($this->platformName)) {
+            throw new \InvalidArgumentException(_("Platform name can't be empty"));
+        }
         return $this;
     }
 
