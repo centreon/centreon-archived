@@ -51,7 +51,7 @@ Feature:
         Then the response code should be "409"
         And the response should be equal to:
             """
-            {"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
+            {"message":"A platform using the name : 'Central' or address : '1.1.1.10' already exists"}
             """
 
         # Register a second Central while the first is still registered / Should fail and an error should be returned
