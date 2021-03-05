@@ -22,8 +22,8 @@
 namespace CentreonRemote\Application\Webservice;
 
 use Centreon\Domain\Entity\Task;
+use Centreon\Domain\PlatformTopology\Model\PlatformPending;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
-use Centreon\Domain\PlatformTopology\Platform;
 use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
 
 /**
@@ -86,10 +86,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function postGetWaitList(): array
     {
-        $statement = $this->pearDB->query('
+        $statement = $this->pearDB->query("
             SELECT id, address as ip, name as server_name FROM `platform_topology`
-            WHERE `type` = "remote" AND server_id IS NULL
-        ');
+            WHERE `type` = 'remote' AND pending = '1'
+        ");
 
         return $statement->fetchAll();
     }
@@ -101,10 +101,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function postGetPollerWaitList(): array
     {
-        $statement = $this->pearDB->query('
+        $statement = $this->pearDB->query("
             SELECT id, address as ip, name as server_name FROM `platform_topology`
-            WHERE `type` = "poller" AND server_id IS NULL
-        ');
+            WHERE `type` = 'poller' AND pending = '1'
+        ");
 
         return $statement->fetchAll();
     }
@@ -348,9 +348,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $noProxy = isset($this->arguments['no_proxy']) && $this->arguments['no_proxy'] === true;
         $serverWizardIdentity = new ServerWizardIdentity();
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
-        $configurationServiceName = $isRemoteConnection ?
-            'centreon_remote.remote_connection_service' :
-            'centreon_remote.poller_connection_service';
+        $configurationServiceName = $isRemoteConnection
+            ? 'centreon_remote.remote_connection_service'
+            : 'centreon_remote.poller_connection_service';
 
         // validate form fields
         WizardConfigurationRequestValidator::validate();
@@ -478,7 +478,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             );
             $this->setCentreonInstanceAsCentral();
             $this->updateServerInPlatformTopology([
-                'type' => Platform::TYPE_REMOTE,
+                'type' => PlatformPending::TYPE_REMOTE,
                 'server_name' => $serverName,
                 'nagios_id' => $serverId,
                 'address' => $serverIP,
@@ -493,7 +493,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $additionalRemotes = $pollerConfigurationBridge->getAdditionalRemoteServers();
             $pollerConfigurationService->linkPollerToAdditionalRemoteServers($pollers[0], $additionalRemotes);
             $this->updateServerInPlatformTopology([
-                'type' => Platform::TYPE_POLLER,
+                'type' => PlatformPending::TYPE_POLLER,
                 'server_name' => $serverName,
                 'nagios_id' => $serverId,
                 'address' => $serverIP,
@@ -501,7 +501,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             ]);
         } else {
             $this->updateServerInPlatformTopology([
-                'type' => Platform::TYPE_POLLER,
+                'type' => PlatformPending::TYPE_POLLER,
                 'server_name' => $serverName,
                 'nagios_id' => $serverId,
                 'address' => $serverIP,
@@ -536,17 +536,17 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * @param string $centreonPath the path to access to Centreon
      * @param string $httpMethod the method to access to server (HTTP/HTTPS)
      * @param string $httpPort the port to access to the server
-     * @param boolean $noCheckCertificate to do not check SSL CA
-     * @param boolean $noProxy to do not use configured proxy
+     * @param bool $noCheckCertificate to do not check SSL CA
+     * @param bool $noProxy to do not use configured proxy
      */
     private function addServerToListOfRemotes(
-        $serverIP,
-        $centreonPath,
-        $httpMethod,
-        $httpPort,
-        $noCheckCertificate,
-        $noProxy
-    ) {
+        string $serverIP,
+        string $centreonPath,
+        string $httpMethod,
+        string $httpPort,
+        bool $noCheckCertificate,
+        bool $noProxy
+    ): void {
         $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
 
@@ -605,8 +605,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * Create New Task for export
      *
-     * @var $params array
      * @return bool|int
+     * @var $params array
      */
     private function createExportTask(array $params)
     {
