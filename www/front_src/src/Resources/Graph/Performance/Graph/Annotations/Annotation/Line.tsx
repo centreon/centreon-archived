@@ -6,7 +6,7 @@ import { prop } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 
-import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
 
 import useAnnotationsContext from '../../Context';
 
@@ -46,6 +46,7 @@ const LineAnnotation = ({
   const classes = useStyles();
 
   const {
+    annotationHovered,
     setAnnotationHovered,
     getStrokeWidth,
     getStrokeOpacity,
@@ -83,16 +84,19 @@ const LineAnnotation = ({
     />
   );
 
-  return (
-    <Annotation
-      xIcon={xIcon + xIconMargin}
-      marker={line}
-      header={header}
-      icon={icon}
-      setAnnotationHovered={setAnnotationHovered}
-      {...props}
-    />
-  );
+  return useMemoComponent({
+    Component: (
+      <Annotation
+        xIcon={xIcon + xIconMargin}
+        marker={line}
+        header={header}
+        icon={icon}
+        setAnnotationHovered={setAnnotationHovered}
+        {...props}
+      />
+    ),
+    memoProps: [annotationHovered],
+  });
 };
 
 export default LineAnnotation;

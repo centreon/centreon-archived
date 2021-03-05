@@ -6,7 +6,7 @@ import { max, prop } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 
-import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
 
 import { labelFrom, labelTo } from '../../../../../translatedLabels';
 import useAnnotationsContext from '../../Context';
@@ -49,6 +49,7 @@ const AreaAnnotation = ({
   const classes = useStyles();
 
   const {
+    annotationHovered,
     setAnnotationHovered,
     getFill,
     getIconColor,
@@ -91,16 +92,19 @@ const AreaAnnotation = ({
     />
   );
 
-  return (
-    <Annotation
-      xIcon={xStart + (xEnd - xStart) / 2 + xIconMargin}
-      marker={area}
-      header={header}
-      icon={icon}
-      setAnnotationHovered={setAnnotationHovered}
-      {...props}
-    />
-  );
+  return useMemoComponent({
+    Component: (
+      <Annotation
+        xIcon={xStart + (xEnd - xStart) / 2 + xIconMargin}
+        marker={area}
+        header={header}
+        icon={icon}
+        setAnnotationHovered={setAnnotationHovered}
+        {...props}
+      />
+    ),
+    memoProps: [annotationHovered],
+  });
 };
 
 export default AreaAnnotation;
