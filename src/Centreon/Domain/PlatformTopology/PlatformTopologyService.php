@@ -338,12 +338,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         if (false === $this->isHostnameValid($stringToCheck)) {
-            throw PlatformTopologyException::illegalRfcCharacterFound(
-                sprintf(
-                    _("At least one non RFC compliant character was found in platform's hostname: '%s'"),
-                    $stringToCheck
-                )
-            );
+            throw PlatformTopologyException::illegalRfcCharacterFound($stringToCheck);
         }
     }
 
