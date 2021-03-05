@@ -48,7 +48,7 @@ class WizardConfigurationRequestValidator
      */
     public function validateServerPostData(): void
     {
-        $isRemoteConnection = (new ServerWizardIdentity)->requestConfigurationIsRemote();
+        $isRemoteConnection = (new ServerWizardIdentity())->requestConfigurationIsRemote();
 
         $this->validateServerGeneralFields();
 

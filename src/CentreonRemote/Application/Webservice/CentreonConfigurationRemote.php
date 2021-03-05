@@ -610,8 +610,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     private function createExportTask(array $params)
     {
-        $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('params' => $params));
-        return $result;
+        return $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('params' => $params));
     }
 
     /**
