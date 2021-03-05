@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation;
 
+use InvalidArgumentException;
 use Security\Encryption;
 
 /**
@@ -150,7 +151,11 @@ class PlatformInformation
      */
     public function setPlatformName(?string $name): self
     {
-        $this->platformName = $name;
+        $this->platformName = filter_var($name, FILTER_SANITIZE_STRING);
+        if (empty($this->platformName)) {
+            throw new InvalidArgumentException(_("Platform name can't be empty"));
+        }
+
         return $this;
     }
 
@@ -225,7 +230,7 @@ class PlatformInformation
      */
     public function setApiUsername(?string $username): self
     {
-        $this->apiUsername = filter_var($username, FILTER_SANITIZE_STRING);
+        $this->apiUsername = $username;
         return $this;
     }
 
