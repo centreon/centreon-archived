@@ -3,12 +3,9 @@
   "testFiles": "**/*.feature",
   "supportFile": "cypress/support/index.ts",
   "pluginsFile": "cypress/plugins/index.ts",
-  "video": true,
+  "video": false,
   "videosFolder": "cypress/results/videos",
+  "screenshotOnRunFailure": false,
   "screenshotsFolder": "cypress/results/screenshots",
-  "reporter": "junit",
-  "reporterOptions": {
-    "mochaFile": "cypress/results/reports/junit-report.xml"
-  },
   "baseUrl": "http://centreon-web"
 }
