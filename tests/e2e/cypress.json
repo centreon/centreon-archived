@@ -7,5 +7,9 @@
   "videosFolder": "cypress/results/videos",
   "screenshotOnRunFailure": false,
   "screenshotsFolder": "cypress/results/screenshots",
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "cypress/results/reports/junit-report.xml"
+  },
   "baseUrl": "http://centreon-web"
 }
