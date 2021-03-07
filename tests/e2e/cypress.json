@@ -3,9 +3,9 @@
   "testFiles": "**/*.feature",
   "supportFile": "cypress/support/index.ts",
   "pluginsFile": "cypress/plugins/index.ts",
-  "video": false,
+  "video": true,
   "videosFolder": "cypress/results/videos",
-  "screenshotOnRunFailure": false,
+  "screenshotOnRunFailure": true,
   "screenshotsFolder": "cypress/results/screenshots",
   "reporter": "junit",
   "reporterOptions": {
