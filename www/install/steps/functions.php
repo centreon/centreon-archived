@@ -28,7 +28,7 @@ function getTemplate($dir)
     $template = new \Smarty();
     $template->setTemplateDir($dir);
     $template->setCompileDir($libDir . '/SmartyCache/compile');
-    $template->setConfigDir( $libDir . '/SmartyCache/config');
+    $template->setConfigDir($libDir . '/SmartyCache/config');
     $template->setCacheDir($libDir . '/SmartyCache/cache');
     $template->addPluginsDir($libDir . '/smarty-plugins');
     $template->setForceCompile(true);
