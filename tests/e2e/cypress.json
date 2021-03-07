@@ -1,11 +1,11 @@
 {
   "$schema": "https://on.cypress.io/cypress.schema.json",
   "testFiles": "**/*.feature",
+  "ignoreTestFiles": ["*.js", "*.ts", "*.md"],
   "supportFile": "cypress/support/index.ts",
   "pluginsFile": "cypress/plugins/index.ts",
   "video": true,
   "videosFolder": "cypress/results/videos",
-  "screenshotOnRunFailure": true,
   "screenshotsFolder": "cypress/results/screenshots",
   "reporter": "junit",
   "reporterOptions": {
