@@ -74,8 +74,6 @@ const ResourceListing = (): JSX.Element => {
       const { id, parent } = row;
       const parentId = parent?.id;
 
-      // console.log(selectedResourceId, selectedResourceParentId);
-
       return (
         equals(id, selectedResourceId) &&
         equals(parentId, selectedResourceParentId)
