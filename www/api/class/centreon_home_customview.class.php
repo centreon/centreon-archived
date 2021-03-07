@@ -220,14 +220,12 @@ class CentreonHomeCustomview extends CentreonWebService
          */
         $libDir = __DIR__ . "/../../../GPL_LIB";
         $tpl = new \Smarty();
-        $tpl->compile_dir = $libDir . '/SmartyCache/compile';
-        $tpl->config_dir = $libDir . '/SmartyCache/config';
-        $tpl->cache_dir = $libDir . '/SmartyCache/cache';
-        $tpl->template_dir = _CENTREON_PATH_ . '/www/include/home/customViews/';
-        $tpl->plugins_dir[] = $libDir . '/smarty-plugins';
-        $tpl->caching = 0;
-        $tpl->compile_check = true;
-        $tpl->force_compile = true;
+        $tpl->setTemplateDir(_CENTREON_PATH_ . '/www/include/home/customViews/');
+        $tpl->setCompileDir($libDir . '/SmartyCache/compile');
+        $tpl->setConfigDir($libDir . '/SmartyCache/config');
+        $tpl->setCacheDir($libDir . '/SmartyCache/cache');
+        $tpl->addPluginsDir($libDir . '/smarty-plugins');
+        $tpl->setForceCompile(true);
 
         $form = new HTML_QuickFormCustom('Form', 'post', "?p=103");
         $form->addElement('header', 'title', $title);

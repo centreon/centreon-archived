@@ -176,14 +176,14 @@ function initSmartyTpl($path = null, $tpl = null, $subDir = null)
     if (!$tpl) {
         return;
     }
-    $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/cache";
-    $tpl->plugins_dir[] = __DIR__ . "/../../../GPL_LIB/smarty-plugins";
-    $tpl->caching = 0;
-    $tpl->compile_check = true;
-    $tpl->force_compile = true;
+
+    $tpl->setTemplateDir($path . $subDir);
+    $tpl->setCompileDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/compile');
+    $tpl->setConfigDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/config');
+    $tpl->setCacheDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/cache');
+    $tpl->addPluginsDir(__DIR__ . '/../../../GPL_LIB/smarty-plugins');
+    $tpl->setForceCompile(true);
+
     return $tpl;
 }
 

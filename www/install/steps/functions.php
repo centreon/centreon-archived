@@ -24,15 +24,15 @@ function getTemplate($dir)
     $libDir = __DIR__ . '/../../../GPL_LIB';
     $smartyDir = __DIR__ . '/../../../vendor/smarty/smarty/';
     require_once $smartyDir . 'libs/Smarty.class.php';
+
     $template = new \Smarty();
-    $template->compile_dir = $libDir . '/SmartyCache/compile';
-    $template->config_dir = $libDir . '/SmartyCache/config';
-    $template->cache_dir = $libDir . '/SmartyCache/cache';
-    $template->plugins_dir[] = $libDir . "/smarty-plugins";
-    $template->template_dir = $dir;
-    $template->caching = 0;
-    $template->compile_check = true;
-    $template->force_compile = true;
+    $template->setTemplateDir($dir);
+    $template->setCompileDir($libDir . '/SmartyCache/compile');
+    $template->setConfigDir( $libDir . '/SmartyCache/config');
+    $template->setCacheDir($libDir . '/SmartyCache/cache');
+    $template->addPluginsDir($libDir . '/smarty-plugins');
+    $template->setForceCompile(true);
+
     return $template;
 }
 
