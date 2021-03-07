@@ -114,10 +114,10 @@ const ResourceListing = (): JSX.Element => {
     SortOrder,
   ];
 
-  const getCompositeId = (row: Resource): [number, number] => {
+  const getCompositeId = (row: Resource): [number, number?] => {
     const parentId = path<number>(['parent', 'id'], row);
 
-    return [parentId || row.id, row.id];
+    return [row.id, parentId];
   };
 
   return (
