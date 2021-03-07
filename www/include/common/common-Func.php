@@ -182,6 +182,7 @@ function initSmartyTpl($path = null, $tpl = null, $subDir = null)
     $tpl->setConfigDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/config');
     $tpl->setCacheDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/cache');
     $tpl->addPluginsDir(__DIR__ . '/../../../GPL_LIB/smarty-plugins');
+    $tpl->loadPlugin('smarty_function_eval');
     $tpl->setForceCompile(true);
 
     return $tpl;

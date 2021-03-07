@@ -31,6 +31,7 @@ function getTemplate($dir)
     $template->setConfigDir($libDir . '/SmartyCache/config');
     $template->setCacheDir($libDir . '/SmartyCache/cache');
     $template->addPluginsDir($libDir . '/smarty-plugins');
+    $template->loadPlugin('smarty_function_eval');
     $template->setForceCompile(true);
 
     return $template;
