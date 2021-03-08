@@ -3,4 +3,4 @@ Centreon\Domain\HostConfiguration\Model\HostSeverity:
     name:
       type: string
       groups:
-        - 'host_severity_conf_name'
+        - 'host_severity_conf_min'
