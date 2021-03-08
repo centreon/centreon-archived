@@ -103,7 +103,7 @@ class LocalProvider implements ProviderInterface
         $log = new \CentreonUserLog(0, $this->dependencyInjector['configuration_db']);
         $auth = new \CentreonAuth(
             $this->dependencyInjector,
-            $data['useralias'],
+            $data['login'],
             $data['password'],
             0,
             $this->dependencyInjector['configuration_db'],
