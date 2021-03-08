@@ -102,20 +102,44 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
     {
         $ip = $_SERVER['REMOTE_ADDR'] ?? null;
 
+        /**
+         * Check mandatory parameters and request arguments
+         */
         if (!$ip) {
             throw new \RestBadRequestException('Can not access your address.');
         }
 
-        if (!isset($_POST['app_key']) || !$_POST['app_key']) {
+        if (
+            !isset($_POST['app_key'])
+            || !$_POST['app_key']
+            || empty($appKey = filter_var($_POST['app_key'], FILTER_SANITIZE_STRING))
+        ) {
             throw new \RestBadRequestException('Please send \'app_key\' in the request.');
         }
 
-        if (!isset($_POST['version']) || !$_POST['version']) {
+        if (
+            !isset($_POST['version'])
+            || !$_POST['version']
+            || empty($version = filter_var($_POST['version'], FILTER_SANITIZE_STRING))
+        ) {
             throw new \RestBadRequestException('Please send \'version\' in the request.');
         }
 
+        $filterOptions = ['options' => ['min_range' => 1, 'max_range' => 65535]];
+        if (
+            !isset($_POST['http_port'])
+            || !$_POST['http_port']
+            || false === ($httpPort = filter_var($_POST['http_port'], FILTER_VALIDATE_INT, $filterOptions))
+        ) {
+            throw new \RestBadRequestException('Inconsistent \'http port\' in the request.');
+        }
+
+        $noCheckCertificate = ($_POST['no_check_certificate'] === '1' ? '1' : '0');
+        $httpScheme = ($_POST['http_method'] === 'https' ? 'https' : 'http');
+
         $statement = $this->pearDB->prepare('SELECT COUNT(id) as count FROM `remote_servers` WHERE `ip` = :ip');
-        $statement->execute([':ip' => $ip]);
+        $statement->bindValue(':ip', $ip, \PDO::PARAM_STR);
+        $statement->execute();
         $result = $statement->fetch();
 
         if ((bool)$result['count']) {
@@ -130,19 +154,16 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
             )";
 
         $insert = $this->pearDB->prepare($insertQuery);
-        $bindings = [
-            ':ip' => $ip,
-            ':app_key' => $_POST['app_key'],
-            ':version' => $_POST['version'],
-            ':http_method' => $_POST['http_method'] ?? 'http',
-            ':http_port' => $_POST['http_port'] ?? null,
-            ':no_check_certificate' => $_POST['no_check_certificate'] ?? 0,
-        ];
-
+        $insert->bindValue(':ip', $ip, \PDO::PARAM_STR);
+        $insert->bindValue(':app_key', $appKey, \PDO::PARAM_STR);
+        $insert->bindValue(':version', $version, \PDO::PARAM_STR);
+        $insert->bindValue(':http_method', $httpScheme, \PDO::PARAM_STR);
+        $insert->bindValue(':http_port', $httpPort, \PDO::PARAM_INT);
+        $insert->bindValue(':no_check_certificate', $noCheckCertificate, \PDO::PARAM_STR);
         try {
-            $insert->execute($bindings);
+            $insert->execute();
         } catch (\Exception $e) {
-            throw new \RestBadRequestException('There was an error saving the data.');
+            throw new \RestBadRequestException('There was an error while saving the data.');
         }
 
         return '';
