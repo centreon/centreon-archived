@@ -107,16 +107,6 @@ class Authenticate
         $this->session->start();
         $_SESSION['centreon'] = $authenticationProvider->getLegacySession();
 
-        /*
-        @TODO: Maybe check here if the tokens exist (SAT,Security_token)
-         If So, create a method updateAuthenticationsTokens(
-            string $token (the session token),
-            string $request->getProviderConfigurationName(),
-            ContactInterface $providerUser,
-            ProviderToken $providerToken,
-            ?ProviderToken $providerRefreshToken)
-        )
-        */
         $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
         if ($authenticationTokens === null) {
             $this->authenticationService->createAuthenticationTokens(

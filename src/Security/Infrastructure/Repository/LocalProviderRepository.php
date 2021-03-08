@@ -4,6 +4,7 @@ namespace Security\Infrastructure\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Repository\AbstractRepositoryDRB;
+use DateTime;
 use Security\Domain\Authentication\Interfaces\LocalProviderRepositoryInterface;
 
 class LocalProviderRepository extends AbstractRepositoryDRB implements LocalProviderRepositoryInterface
@@ -46,10 +47,14 @@ class LocalProviderRepository extends AbstractRepositoryDRB implements LocalProv
      */
     public function deleteExpiredAPITokens(): void
     {
-        //@TODO: reimplement this without using ws_token
-        $this->db->query(
-            'DELETE FROM ws_token WHERE generate_date < DATE_SUB(NOW(), INTERVAL 1 HOUR)'
-        );
-    }
+        $nowTimestamp = (new DateTime())->getTimestamp();
 
+        $deleteStatement = $this->db->prepare(
+            $this->translateDbName(
+                "DELETE FROM security_token WHERE expiration_date < :now"
+            )
+        );
+        $deleteStatement->bindValue(':now', $nowTimestamp, \PDO::PARAM_INT);
+        $deleteStatement->execute();
+    }
 }

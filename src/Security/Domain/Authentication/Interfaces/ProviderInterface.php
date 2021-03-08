@@ -76,9 +76,10 @@ interface ProviderInterface
     /**
      * Return the provider token
      *
+     * @param string $token
      * @return ProviderToken
      */
-    public function getProviderToken(): ProviderToken;
+    public function getProviderToken(string $token): ProviderToken;
 
     /**
      * Return the provider refresh token.

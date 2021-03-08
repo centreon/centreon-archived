@@ -29,13 +29,14 @@ class AuthenticateAPI
             $contact = $localProvider->getUser();
             $token = md5(bin2hex(random_bytes(128)));
 
-            $this->authenticationService->createAuthenticationTokens(
-                $token,
-                'local', // LocalProvider::name
-                $contact,
-                $localProvider->getProviderToken($token),
-                null
-            );
+                $this->authenticationService->createAuthenticationTokens(
+                    $token,
+                    'local', // LocalProvider::name
+                    $contact,
+                    $localProvider->getProviderToken($token),
+                    null
+                );
+
             $response = [
                 'contact' => [
                     'id' => $contact->getId(),

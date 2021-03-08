@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Security;
 
 use Centreon\Domain\Exception\ContactDisabledException;
-use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -173,18 +173,18 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
         if (null === $apiToken) {
             return null;
         }
-        $token = $this->authenticationRepository->findToken($apiToken);
+        $token = $this->authenticationRepository->findAuthenticationTokensByToken($apiToken);
         if (is_null($token)) {
             throw new TokenNotFoundException();
         }
-        if (!$token->isValid()) {
-            throw new CredentialsExpiredException();
-        }
-        $contact = $this->contactRepository->findById($token->getContactId());
+        // if (!$token->isValid()) {
+        //     throw new CredentialsExpiredException();
+        // }
+        $contact = $this->contactRepository->findById($token->getUserId());
         if ($contact->isActive() === false) {
             throw new ContactDisabledException();
         }
-        $this->authenticationRepository->refreshToken($token->getToken());
+        $this->authenticationRepository->refreshToken($token->getProviderRefreshToken());
         return $contact;
     }
 
