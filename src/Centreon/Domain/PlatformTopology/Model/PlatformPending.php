@@ -102,7 +102,7 @@ class PlatformPending implements PlatformInterface
      * @var bool define if the platform is in a pending state or is already registered
      * By default PlatformPending entities are pending platforms
      */
-    private $isPending;
+    private $isPending = true;
 
     /**
      * @inheritDoc
@@ -339,7 +339,7 @@ class PlatformPending implements PlatformInterface
     /**
      * @inheritDoc
      */
-    public function setPending(bool $isPending = true): PlatformInterface
+    public function setPending(bool $isPending): PlatformInterface
     {
         $this->isPending = $isPending;
         return $this;
