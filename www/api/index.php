@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     $authenticateApiUseCase = $kernel->getContainer()->get(
         \Centreon\Domain\Authentication\UseCase\AuthenticateAPI::class
     );
-    $request =  new \Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest($credentials);
+    $request = new \Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest($credentials);
     $authenticateApiUseCase->execute($request);
 
     if (isset($response['security']['token'])){
