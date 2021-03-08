@@ -200,7 +200,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             }
             throw RepositoryException::apiServerException($message, $e->getMessage());
         } catch (DecodingExceptionInterface $e) {
-            throw RepositoryException::apiDecodingException($e->getMessage());
+            throw RepositoryException::apiDecodingResponseFailure($e->getMessage());
         } catch (\Exception $e) {
             throw RepositoryException::apiUndeterminedError($e->getMessage());
         }
@@ -303,7 +303,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             }
             throw RepositoryException::apiServerException($message, $e->getMessage());
         } catch (DecodingExceptionInterface $e) {
-            throw RepositoryException::apiDecodingException($e->getMessage());
+            throw RepositoryException::apiDecodingResponseFailure($e->getMessage());
         } catch (\Exception $e) {
             throw RepositoryException::apiUndeterminedError($e->getMessage());
         }

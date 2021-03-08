@@ -88,7 +88,7 @@ class RepositoryException extends \Exception
      * @param string $details
      * @return self
      */
-    public static function apiDecodingException(string $details): self
+    public static function apiDecodingResponseFailure(string $details): self
     {
         return new self(_("Unable to convert Central's API response") . (' : ') . $details);
     }
