@@ -260,10 +260,9 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
               refresh_token.creation_date as refresh_token_creation_date,
               refresh_token.expiration_date as refresh_token_expiration_date
             FROM `:db`.security_authentication_tokens sat
-            INNER JOIN `:db`.session s ON s.session_id = sat.token
-              AND s.session_id = :token
             INNER JOIN `:db`.security_token provider_token ON provider_token.id = sat.provider_token_id
             LEFT JOIN `:db`.security_token refresh_token ON refresh_token.id = sat.provider_token_refresh_id
+            WHERE sat.token = :token
         "));
         $statement->bindValue(':token', $token, \PDO::PARAM_STR);
         $statement->execute();
@@ -390,5 +389,20 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
                 ->setActive((bool) $result['isActive']);
         }
         return $providerConfiguration;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateProviderToken(ProviderToken $providerToken): void
+    {
+        $updateStatement = $this->db->prepare(
+            $this->translateDbName(
+                "UPDATE `:db`.security_token SET expiration_date = :expiredAt WHERE token = :token"
+            )
+        );
+        $updateStatement->bindValue(':expiredAt', $providerToken->getExpirationDate()->getTimestamp(), \PDO::PARAM_INT);
+        $updateStatement->bindValue(':token', $providerToken->getToken(), \PDO::PARAM_STR);
+        $updateStatement->execute();
     }
 }

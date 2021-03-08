@@ -173,18 +173,24 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
         if (null === $apiToken) {
             return null;
         }
-        $token = $this->authenticationRepository->findAuthenticationTokensByToken($apiToken);
-        if (is_null($token)) {
+        $tokens = $this->authenticationRepository->findAuthenticationTokensByToken($apiToken);
+
+        if (is_null($tokens)) {
             throw new TokenNotFoundException();
         }
-        // if (!$token->isValid()) {
-        //     throw new CredentialsExpiredException();
-        // }
-        $contact = $this->contactRepository->findById($token->getUserId());
+
+        $providerToken = $tokens->getProviderToken();
+        $expirationDate = $providerToken->getExpirationDate();
+        if ($expirationDate !== null && $expirationDate->getTimestamp() < time()) {
+            throw new CredentialsExpiredException();
+        }
+
+        $contact = $this->contactRepository->findById($tokens->getUserId());
         if ($contact->isActive() === false) {
             throw new ContactDisabledException();
         }
-        $this->authenticationRepository->refreshToken($token->getProviderRefreshToken());
+        $providerToken->setExpirationDate(new \DateTime());
+        $this->authenticationRepository->updateProviderToken($providerToken);
         return $contact;
     }
 

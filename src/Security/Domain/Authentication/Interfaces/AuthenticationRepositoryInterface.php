@@ -93,12 +93,20 @@ interface AuthenticationRepositoryInterface
     public function findProviderConfiguration(int $id): ?ProviderConfiguration;
 
     /**
-     * Updates the provider tokens.
+     * Updates the provider authentication tokens.
      *
      * @param AuthenticationTokens $authenticationTokens Provider tokens
      * @return mixed
      */
     public function updateAuthenticationTokens(AuthenticationTokens $authenticationTokens): void;
+
+    /**
+     * Updates the provider token.
+     *
+     * @param ProviderToken $providerToken
+     * @return void
+     */
+    public function updateProviderToken(ProviderToken $providerToken): void;
 
     /**
      * Find the provider configuration by name

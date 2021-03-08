@@ -100,6 +100,16 @@ class ProviderToken
     }
 
     /**
+     * @param \DateTime|null $expirationDate
+     * @return self
+     */
+    public function setExpirationDate(?\DateTime $expirationDate): self
+    {
+        $this->expirationDate = $expirationDate;
+        return $this;
+    }
+
+    /**
      * Indicates whether or not the token is expired.
      *
      * @param \DateTime|null $now
