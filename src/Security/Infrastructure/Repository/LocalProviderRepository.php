@@ -4,6 +4,7 @@ namespace Security\Infrastructure\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Repository\AbstractRepositoryDRB;
+use Security\Domain\Authentication\Interfaces\LocalProviderRepositoryInterface;
 
 class LocalProviderRepository extends AbstractRepositoryDRB implements LocalProviderRepositoryInterface
 {
