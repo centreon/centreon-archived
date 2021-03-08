@@ -29,12 +29,12 @@ class AuthenticateAPI
             $contact = $localProvider->getUser();
             $token = md5(bin2hex(random_bytes(128)));
 
-                $this->authenticationService->createAPIAuthenticationTokens(
-                    $token,
-                    $contact,
-                    $localProvider->getProviderToken($token),
-                    null
-                );
+            $this->authenticationService->createAPIAuthenticationTokens(
+                $token,
+                $contact,
+                $localProvider->getProviderToken($token),
+                null
+            );
 
             $response = [
                 'contact' => [

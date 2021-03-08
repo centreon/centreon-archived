@@ -1,3 +1,7 @@
+-- Drop legacy API authentication table
+
+DROP TABLE `ws_token`;
+
 -- Create authentication tables and insert local configuration
 
 CREATE TABLE `provider_configuration` (

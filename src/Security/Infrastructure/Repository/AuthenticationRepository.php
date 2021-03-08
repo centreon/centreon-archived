@@ -29,11 +29,6 @@ use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Security\Domain\Authentication\Model\ProviderToken;
-use Security\Encryption;
-
-/*
-
-*/
 
 /**
  * @package Security\Repository

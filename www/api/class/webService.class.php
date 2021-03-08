@@ -253,11 +253,16 @@ class CentreonWebService
     protected static function updateTokenTtl()
     {
         global $pearDB;
+
         if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
-            $query = 'UPDATE ws_token SET generate_date = NOW() WHERE token = :token';
             try {
-                $stmt = $pearDB->prepare($query);
-                $stmt->bindParam(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], PDO::PARAM_STR);
+                $stmt = $pearDB->prepare(
+                    'UPDATE security_token
+                    SET expiration_date = :expiredAt
+                    WHERE token = :token'
+                );
+                $stmt->bindValue(':expiredAt', (new \DateTime())->getTimestamp(), \PDO::PARAM_INT);
+                $stmt->bindValue(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], \PDO::PARAM_STR);
                 $stmt->execute();
             } catch (Exception $e) {
                 static::sendResult("Internal error", 500);
