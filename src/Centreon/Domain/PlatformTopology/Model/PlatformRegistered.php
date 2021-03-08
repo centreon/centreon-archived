@@ -102,7 +102,7 @@ class PlatformRegistered implements PlatformInterface
      * @var bool define if the platform is in a pending state or is already registered
      * By default Platform entities are not pending platforms
      */
-    private $isPending = false;
+    private $isPending;
 
     /**
      * @inheritDoc
