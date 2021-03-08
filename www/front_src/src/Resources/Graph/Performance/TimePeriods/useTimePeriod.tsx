@@ -8,7 +8,7 @@ import {
 } from '../../../Details/tabs/Graph/models';
 
 interface TimePeriodState {
-  changeSelectedTimePeriod: (event) => void;
+  changeSelectedTimePeriod: (timePeriod: TimePeriodId) => void;
   selectedTimePeriod: TimePeriod;
   periodQueryParameters: string;
   getIntervalDates: () => [string, string];
@@ -47,8 +47,7 @@ const useTimePeriod = ({
     getGraphQueryParameters(selectedTimePeriod),
   );
 
-  const changeSelectedTimePeriod = (event): void => {
-    const timePeriodId = event.target.value;
+  const changeSelectedTimePeriod = (timePeriodId: TimePeriodId): void => {
     const timePeriod = getTimePeriodById(timePeriodId);
 
     setSelectedTimePeriod(timePeriod);
