@@ -126,7 +126,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
         $insertQuery = "INSERT INTO `remote_servers` (`ip`, `app_key`, `version`, `is_connected`,
             `created_at`, `http_method`, `http_port`, `no_check_certificate`)
             VALUES (:ip, :app_key, :version, 0, '{$createdAt}',
-                    :http_method, :http_port, :no_check_certificate
+                :http_method, :http_port, :no_check_certificate
             )";
 
         $insert = $this->pearDB->prepare($insertQuery);
