@@ -58,11 +58,6 @@ class PlatformJsonGraph
      */
     private $relation = [];
 
-    /**
-     * @var bool
-     */
-    private $isPending = false;
-
     public function __construct(PlatformInterface $platform)
     {
         $this->setId((string) $platform->getId());
