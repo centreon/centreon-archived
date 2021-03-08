@@ -83,7 +83,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
 
   const copyCommandLine = (): void => {
     try {
-      copy(details.command_line);
+      copy(details.command_line as string);
 
       showMessage({
         message: labelCommandCopied,

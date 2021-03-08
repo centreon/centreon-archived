@@ -7,8 +7,17 @@ import { fade } from '@material-ui/core';
 
 import { fontFamily } from '.';
 import formatMetricValue from './formatMetricValue';
+import { Line as LineModel } from './models';
 
-const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
+interface GraphLinesProps {
+  lines: Array<LineModel>;
+  base?: number;
+}
+
+const getGraphLines = ({
+  lines,
+  base,
+}: GraphLinesProps): Array<JSX.Element> => {
   const getUnits = (): Array<string> => {
     return pipe(map(prop('unit')), uniq)(lines);
   };

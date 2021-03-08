@@ -170,8 +170,8 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
         </div>
         <Typography variant="caption">
           {`${labelFrom} ${getFormattedDateTime(
-            event.startDate,
-          )} ${labelTo} ${getFormattedDateTime(event.endDate)}`}
+            event.startDate as string,
+          )} ${labelTo} ${getFormattedDateTime(event.endDate as string)}`}
         </Typography>
         <Content event={event} />
       </div>

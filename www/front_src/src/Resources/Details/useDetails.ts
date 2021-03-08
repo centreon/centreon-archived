@@ -13,9 +13,10 @@ export interface DetailsState {
 }
 
 const useDetails = (): DetailsState => {
-  const [selectedDetailsLinks, setSelectedDetailsLinks] = React.useState<
-    ResourceLinks
-  >();
+  const [
+    selectedDetailsLinks,
+    setSelectedDetailsLinks,
+  ] = React.useState<ResourceLinks>();
 
   const [openDetailsTabId, setOpenDetailsTabId] = React.useState<TabId>(
     detailsTabId,

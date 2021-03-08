@@ -21,7 +21,6 @@ const useStyles = makeStyles({
 interface Props {
   breadcrumbsByPath: BreadcrumbsByPath;
   path: string;
-  children: React.ReactNode;
 }
 
 const getBreadcrumbs = ({

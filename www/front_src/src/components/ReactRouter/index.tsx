@@ -60,7 +60,7 @@ const getExternalPageRoutes = ({
 interface Props {
   allowedPages: Array<string>;
   history;
-  pages: {};
+  pages: Record<string, unknown>;
   externalPagesFetched: boolean;
 }
 
@@ -104,7 +104,7 @@ const ReactRouter = React.memo<Props>(
     isEqual(previousProps.externalPagesFetched, nextProps.externalPagesFetched),
 );
 
-const mapStateToProps = (state): {} => ({
+const mapStateToProps = (state): Record<string, unknown> => ({
   allowedPages: allowedPagesSelector(state),
   pages: state.externalComponents.pages,
   externalPagesFetched: state.externalComponents.fetched,

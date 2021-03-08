@@ -65,7 +65,7 @@ const tabs: Array<Tab> = [
   },
 ];
 
-const getVisibleTabs = (links): Array<Tab> => {
+const getVisibleTabs = (links: ResourceLinks): Array<Tab> => {
   return tabs.filter(({ getIsVisible }) => getIsVisible(links));
 };
 

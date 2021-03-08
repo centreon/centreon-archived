@@ -1,4 +1,4 @@
-const copy = (text): void => {
+const copy = (text: string): void => {
   const textArea = document.createElement('textarea');
   document.body.appendChild(textArea);
   textArea.value = text;

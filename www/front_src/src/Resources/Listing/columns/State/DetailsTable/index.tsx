@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useState, useEffect } from 'react';
 
 import { map, prop, sum, pipe } from 'ramda';
@@ -21,7 +22,7 @@ import {
   labelNo,
 } from '../../../../translatedLabels';
 
-const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
+const getYesNoLabel = (value: string): string => (value ? labelYes : labelNo);
 
 interface DetailsTableColumn extends Column {
   getContent: (details) => string | JSX.Element;
