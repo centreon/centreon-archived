@@ -25,6 +25,10 @@ namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 
+/**
+ * Interface required to managed registered and pending platforms' entity
+ * @package Centreon\Domain\PlatformTopology\Interfaces
+ */
 interface PlatformInterface
 {
     /**
