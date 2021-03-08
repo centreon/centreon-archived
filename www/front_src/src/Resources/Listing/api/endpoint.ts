@@ -22,7 +22,7 @@ const buildResourcesEndpoint = (parameters: ListResourcesProps): string => {
       { name: 'statuses', value: parameters.statuses },
       { name: 'hostgroup_ids', value: parameters.hostGroupIds },
       { name: 'servicegroup_ids', value: parameters.serviceGroupIds },
-      { name: 'monitoringserver_ids', value: parameters.monitoringServerIds },
+      { name: 'monitoring_server_ids', value: parameters.monitoringServerIds },
       {
         name: 'only_with_performance_data',
         value: parameters.onlyWithPerformanceData,
