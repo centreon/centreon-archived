@@ -120,4 +120,11 @@ interface ContactInterface
      * @return string|null
      */
     public function getLocale(): ?string;
+
+    /**
+     * Contact default page.
+     *
+     * @return string|null
+     */
+    public function getDefaultPage(): ?string;
 }

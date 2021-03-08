@@ -148,6 +148,11 @@ class Contact implements UserInterface, ContactInterface
     private $locale;
 
     /**
+     * @var string|null
+     */
+    private $defaultPage;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -540,5 +545,20 @@ class Contact implements UserInterface, ContactInterface
     public function getLocale(): ?string
     {
         return $this->locale;
+    }
+
+    /**
+     * @param string|null $defaultPage
+     * @return self
+     */
+    public function setDefaultPage(?string $defaultPage): self
+    {
+        $this->defaultPage = $defaultPage;
+        return $this;
+    }
+
+    public function getDefaultPage(): ?string
+    {
+        return $this->defaultPage;
     }
 }

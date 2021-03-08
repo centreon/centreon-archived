@@ -179,7 +179,7 @@ class AuthenticationController extends AbstractController
         }
 
         $authenticateRequest = new AuthenticateRequest($requestParameters, $providerConfigurationName);
-        $authenticate->execute($authenticateRequest);
+        $response = $authenticate->execute($authenticateRequest);
 
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request

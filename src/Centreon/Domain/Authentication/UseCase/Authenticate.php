@@ -71,7 +71,7 @@ class Authenticate
      * @param AuthenticateRequest $request
      * @return void
      */
-    public function execute(AuthenticateRequest $request): void
+    public function execute(AuthenticateRequest $request): array
     {
         $authenticationProvider = $this->authenticationService->findProviderByConfigurationName(
             $request->getProviderConfigurationName()
@@ -117,5 +117,7 @@ class Authenticate
                 $authenticationProvider->getProviderRefreshToken($this->session->getId())
             );
         }
+
+        return ["redirect_uri" => $providerUser->getDefaultPage()];
     }
 }

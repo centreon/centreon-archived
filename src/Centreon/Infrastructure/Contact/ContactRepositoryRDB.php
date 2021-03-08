@@ -328,7 +328,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setAccessToApiRealTime($contact['reach_api_rt'] === '1')
             ->setAccessToApiConfiguration($contact['reach_api'] === '1')
             ->setTimezone(new \DateTimeZone($contactTimezoneName))
-            ->setLocale($contactLocale);
+            ->setLocale($contactLocale)
+            ->setDefaultPage($contact['default_page']);
     }
 
     /**
