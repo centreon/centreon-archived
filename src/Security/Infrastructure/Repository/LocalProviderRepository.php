@@ -58,38 +58,7 @@ class LocalProviderRepository extends AbstractRepositoryDRB implements LocalProv
         $deleteStatement->execute();
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function addAPIAuthenticationTokens(
-        string $token,
-        int $providerConfigurationId,
-        int $contactId,
-        ProviderToken $providerToken,
-        ?ProviderToken $providerRefreshToken
-    ): void {
-        // We avoid to start again a database transaction
-        $isAlreadyInTransaction = $this->db->inTransaction();
-        if (!$isAlreadyInTransaction) {
-            $this->db->beginTransaction();
-        }
-        try {
-            $this->insertTokens(
-                $token,
-                $providerConfigurationId,
-                $providerToken,
-                $providerRefreshToken
-            );
-            if (!$isAlreadyInTransaction) {
-                $this->db->commit();
-            }
-        } catch (\Exception $e) {
-            if (!$isAlreadyInTransaction) {
-                $this->db->rollBack();
-            }
-            throw $e;
-        }
-    }
+
 
     /**
      * Insert session, security and refresh tokens

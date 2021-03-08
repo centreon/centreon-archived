@@ -73,7 +73,42 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
             $this->db->beginTransaction();
         }
         try {
-            $this->insertTokens(
+            $this->insertSessionToken($token, $contactId);
+            $this->insertProviderTokens(
+                $token,
+                $providerConfigurationId,
+                $contactId,
+                $providerToken,
+                $providerRefreshToken
+            );
+            if (!$isAlreadyInTransaction) {
+                $this->db->commit();
+            }
+        } catch (\Exception $e) {
+            if (!$isAlreadyInTransaction) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addApiAuthenticationTokens(
+        string $token,
+        int $providerConfigurationId,
+        int $contactId,
+        ProviderToken $providerToken,
+        ?ProviderToken $providerRefreshToken
+    ): void {
+        // We avoid to start again a database transaction
+        $isAlreadyInTransaction = $this->db->inTransaction();
+        if (!$isAlreadyInTransaction) {
+            $this->db->beginTransaction();
+        }
+        try {
+            $this->insertProviderTokens(
                 $token,
                 $providerConfigurationId,
                 $contactId,
@@ -101,14 +136,13 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
      * @param ProviderToken|null $providerRefreshToken
      * @return void
      */
-    private function insertTokens(
+    private function insertProviderTokens(
         string $token,
         int $providerConfigurationId,
         int $contactId,
         ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken
     ): void {
-        $this->insertSessionToken($token, $contactId);
 
         $this->insertSecurityToken($providerToken);
         $securityTokenId = (int) $this->db->lastInsertId();
@@ -121,6 +155,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
 
         $this->insertSecurityAuthenticationToken(
             $token,
+            $contactId,
             $securityTokenId,
             $securityRefreshTokenId,
             $providerConfigurationId
@@ -186,6 +221,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
      */
     private function insertSecurityAuthenticationToken(
         string $sessionId,
+        int $contactId,
         int $securityTokenId,
         ?int $securityRefreshTokenId,
         int $providerConfigurationId
@@ -193,8 +229,8 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         $insertSecurityAuthenticationStatement = $this->db->prepare(
             $this->translateDbName(
                 "INSERT INTO `:db`.security_authentication_tokens " .
-                "(`token`, `provider_token_id`, `provider_token_refresh_id`, `provider_configuration_id`) " .
-                "VALUES (:sessionTokenId, :tokenId, :refreshTokenId, :configurationId)"
+                "(`token`, `provider_token_id`, `provider_token_refresh_id`, `provider_configuration_id`, `user_id`) " .
+                "VALUES (:sessionTokenId, :tokenId, :refreshTokenId, :configurationId, :userId)"
             )
         );
         $insertSecurityAuthenticationStatement->bindValue(':sessionTokenId', $sessionId, \PDO::PARAM_STR);
@@ -205,6 +241,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
             $providerConfigurationId,
             \PDO::PARAM_INT
         );
+        $insertSecurityAuthenticationStatement->bindValue(':userId', $contactId, \PDO::PARAM_INT);
         $insertSecurityAuthenticationStatement->execute();
     }
 
@@ -215,7 +252,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens
     {
         $statement = $this->db->prepare($this->translateDbName("
-            SELECT s.user_id, sat.provider_configuration_id,
+            SELECT sat.user_id, sat.provider_configuration_id,
               provider_token.token AS provider_token,
               provider_token.creation_date as provider_token_creation_date,
               provider_token.expiration_date as provider_token_expiration_date,

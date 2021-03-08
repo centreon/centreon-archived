@@ -25,15 +25,19 @@ CREATE TABLE `security_authentication_tokens` (
   `provider_token_id` int(11) DEFAULT NULL,
   `provider_token_refresh_id` int(11) DEFAULT NULL,
   `provider_configuration_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   PRIMARY KEY (`token`),
   KEY `security_authentication_tokens_token_fk` (`token`),
   KEY `security_authentication_tokens_provider_token_id_fk` (`provider_token_id`),
   KEY `security_authentication_tokens_provider_token_refresh_id_fk` (`provider_token_refresh_id`),
   KEY `security_authentication_tokens_configuration_id_fk` (`provider_configuration_id`),
+  KEY `security_authentication_tokens_user_id_fk` (`user_id`),
   CONSTRAINT `security_authentication_tokens_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
   REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
   CONSTRAINT `security_authentication_tokens_provider_token_id_fk` FOREIGN KEY (`provider_token_id`)
   REFERENCES `security_token` (`id`) ON DELETE CASCADE,
   CONSTRAINT `security_authentication_tokens_provider_token_refresh_id_fk` FOREIGN KEY (`provider_token_refresh_id`)
-  REFERENCES `security_token` (`id`) ON DELETE SET NULL
+  REFERENCES `security_token` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `security_authentication_tokens_user_id_fk` FOREIGN KEY (`user_id`)
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

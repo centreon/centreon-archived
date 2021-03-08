@@ -47,6 +47,21 @@ interface AuthenticationRepositoryInterface
     ): void;
 
     /**
+     * @param string $token Session token
+     * @param int $providerConfigurationId Provider configuration id
+     * @param int $contactId Contact id
+     * @param ProviderToken $providerToken Provider token
+     * @param ProviderToken $providerRefreshToken Provider refresh token
+     */
+    public function addApiAuthenticationTokens(
+        string $token,
+        int $providerConfigurationId,
+        int $contactId,
+        ProviderToken $providerToken,
+        ?ProviderToken $providerRefreshToken
+    ): void;
+
+    /**
      * Clear all information about the session token.
      *
      * @param string $sessionToken

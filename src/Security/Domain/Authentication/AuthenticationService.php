@@ -138,7 +138,7 @@ class AuthenticationService implements AuthenticationServiceInterface
                 sprintf(_('Provider configuration (%) not found'), 'local')
             );
         }
-        $this->localProviderRepository->addAPIAuthenticationTokens(
+        $this->repository->addAPIAuthenticationTokens(
             $token,
             $providerConfiguration->getId(),
             $contact->getId(),
