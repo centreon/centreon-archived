@@ -291,6 +291,7 @@ class PlatformTopologyServiceTest extends TestCase
      * @throws RepositoryException
      */
     /*
+     * @TODO refacto the test when MBI, MAP and failover
     public function testaddPendingPlatformToTopologySuccess(): void
     {
         $this->platform->setParentId(1);
