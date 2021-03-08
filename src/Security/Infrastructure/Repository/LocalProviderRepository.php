@@ -12,7 +12,7 @@ class LocalProviderRepository extends AbstractRepositoryDRB implements LocalProv
      * @param DatabaseConnection $db
      */
     public function __construct(
-        DatabaseConnection $db,
+        DatabaseConnection $db
     ) {
         $this->db = $db;
     }

@@ -45,13 +45,6 @@ interface AuthenticationRepositoryInterface
     public function addToken(int $contactId, string $token);
 
     /**
-     * Delete all expired tokens registered.
-     *
-     * @return int Returns the number of tokens deleted
-     */
-    public function deleteExpiredTokens():int;
-
-    /**
      * Find a session.
      *
      * @param string $sessionId Session ID
