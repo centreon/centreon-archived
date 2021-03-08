@@ -8301,10 +8301,6 @@ msgid "Default"
 msgstr "Défaut"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:181
-msgid "Postpone Notification Option"
-msgstr "Report de notification"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:181
 msgid "Notification Option"
 msgstr "Notification"
 
