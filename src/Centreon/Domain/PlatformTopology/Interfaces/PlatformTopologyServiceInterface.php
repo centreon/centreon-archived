@@ -45,7 +45,7 @@ interface PlatformTopologyServiceInterface
      * @throws PlatformInformationException
      * @throws RepositoryException
      */
-    public function addPlatformToTopology(PlatformInterface $platformPending): void;
+    public function addPendingPlatformToTopology(PlatformInterface $platformPending): void;
 
     /**
      * Get a topology with detailed nodes

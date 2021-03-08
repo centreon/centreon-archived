@@ -180,7 +180,7 @@ class PlatformTopologyServiceTest extends TestCase
     }
 
     /**
-     * test addPlatformToTopology with already existing platform
+     * test addPendingPlatformToTopology with already existing platform
      * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
@@ -189,7 +189,7 @@ class PlatformTopologyServiceTest extends TestCase
      * @throws RepositoryException
      * @throws PlatformInformationException
      */
-    public function testAddPlatformToTopologyAlreadyExists(): void
+    public function testaddPendingPlatformToTopologyAlreadyExists(): void
     {
         $this->platformTopologyRepository
             ->expects($this->once())
@@ -224,11 +224,11 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->expectException(PlatformTopologyConflictException::class);
         $this->expectExceptionMessage("A platform using the name : 'poller1' or address : '1.1.1.2' already exists");
-        $platformTopologyService->addPlatformToTopology($this->platform);
+        $platformTopologyService->addPendingPlatformToTopology($this->platform);
     }
 
     /**
-     * test addPlatformToTopology with not found parent
+     * test addPendingPlatformToTopology with not found parent
      * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
@@ -237,7 +237,7 @@ class PlatformTopologyServiceTest extends TestCase
      * @throws PlatformInformationException
      * @throws RepositoryException
      */
-    public function testAddPlatformToTopologyNotFoundParent(): void
+    public function testaddPendingPlatformToTopologyNotFoundParent(): void
     {
         $this->platformTopologyRepository
             ->expects($this->any())
@@ -277,11 +277,11 @@ class PlatformTopologyServiceTest extends TestCase
 
         $this->expectException(EntityNotFoundException::class);
         $this->expectExceptionMessage("No parent platform was found for : 'poller1'@'1.1.1.2'");
-        $platformTopologyService->addPlatformToTopology($this->platform);
+        $platformTopologyService->addPendingPlatformToTopology($this->platform);
     }
 
     /**
-     * test addPlatformToTopology which succeed
+     * test addPendingPlatformToTopology which succeed
      * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
@@ -291,7 +291,7 @@ class PlatformTopologyServiceTest extends TestCase
      * @throws RepositoryException
      */
     /*
-    public function testAddPlatformToTopologySuccess(): void
+    public function testaddPendingPlatformToTopologySuccess(): void
     {
         $this->platform->setParentId(1);
 
@@ -331,7 +331,7 @@ class PlatformTopologyServiceTest extends TestCase
             $this->remoteServerRepository
         );
 
-        $this->assertNull($platformTopologyService->addPlatformToTopology($this->platform));
+        $this->assertNull($platformTopologyService->addPendingPlatformToTopology($this->platform));
     }*/
 
     public function testGetPlatformTopologySuccess(): void

@@ -133,7 +133,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * @inheritDoc
      */
-    public function addPlatformToTopology(PlatformInterface $platformPending): void
+    public function addPendingPlatformToTopology(PlatformInterface $platformPending): void
     {
         // check entity consistency
         $this->checkEntityConsistency($platformPending);

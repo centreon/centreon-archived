@@ -127,7 +127,7 @@ class PlatformTopologyController extends AbstractController
                 ->setHostname($platformToAdd['hostname'])
                 ->setParentAddress($platformToAdd['parent_address']);
 
-            $this->platformTopologyService->addPlatformToTopology($platformTopology);
+            $this->platformTopologyService->addPendingPlatformToTopology($platformTopology);
 
             return $this->view(null, Response::HTTP_CREATED);
         } catch (EntityNotFoundException $ex) {
