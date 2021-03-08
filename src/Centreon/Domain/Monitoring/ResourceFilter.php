@@ -109,7 +109,7 @@ class ResourceFilter
     /**
      * @var int[]
      */
-    private $monitoringserverIds = [];
+    private $monitoringServerIds = [];
 
     /**
      * @var int[]
@@ -254,18 +254,18 @@ class ResourceFilter
     /**
      * @return int[]
      */
-    public function getMonitoringserverIds(): array
+    public function getMonitoringServerIds(): array
     {
-        return $this->monitoringserverIds;
+        return $this->monitoringServerIds;
     }
 
     /**
-     * @param int[] $monitoringserverIds
+     * @param int[] $monitoringServerIds
      * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
-    public function setMonitoringserverIds(array $monitoringserverIds): self
+    public function setMonitoringServerIds(array $monitoringServerIds): self
     {
-        $this->monitoringserverIds = $monitoringserverIds;
+        $this->monitoringServerIds = $monitoringServerIds;
 
         return $this;
     }

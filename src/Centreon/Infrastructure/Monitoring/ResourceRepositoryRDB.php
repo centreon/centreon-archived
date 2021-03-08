@@ -623,17 +623,17 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         }
 
         // apply the monitoring server filter to SQL query
-        if (!empty($filter->getMonitoringserverIds())) {
-            $monitoringserverIds = [];
+        if (!empty($filter->getMonitoringServerIds())) {
+            $monitoringServerIds = [];
 
-            foreach ($filter->getMonitoringserverIds() as $index => $monitoringserverId) {
-                $key = ":monitoringserverId_{$index}";
+            foreach ($filter->getMonitoringServerIds() as $index => $monitoringServerId) {
+                $key = ":monitoringServerId_{$index}";
 
-                $monitoringserverIds[] = $key;
-                $collector->addValue($key, $monitoringserverId, PDO::PARAM_INT);
+                $monitoringServerIds[] = $key;
+                $collector->addValue($key, $monitoringServerId, PDO::PARAM_INT);
             }
 
-            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringserverIds) . ')';
+            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
         }
 
         // group by the service ID to preventing the duplication
@@ -799,17 +799,17 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         }
 
         // apply the monitoring server filter to SQL query
-        if (!empty($filter->getMonitoringserverIds())) {
-            $monitoringserverIds = [];
+        if (!empty($filter->getMonitoringServerIds())) {
+            $monitoringServerIds = [];
 
-            foreach ($filter->getMonitoringserverIds() as $index => $monitoringserverId) {
-                $key = ":monitoringserverId_{$index}";
+            foreach ($filter->getMonitoringServerIds() as $index => $monitoringServerId) {
+                $key = ":monitoringServerId_{$index}";
 
-                $monitoringserverIds[] = $key;
-                $collector->addValue($key, $monitoringserverId, PDO::PARAM_INT);
+                $monitoringServerIds[] = $key;
+                $collector->addValue($key, $monitoringServerId, PDO::PARAM_INT);
             }
 
-            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringserverIds) . ')';
+            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
         }
 
         // prevent duplication

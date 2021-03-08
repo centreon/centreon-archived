@@ -238,7 +238,7 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 - Type:
                     type: int
                     groups: [Default]
-        monitoringserverIds:
+        monitoringServerIds:
             - Type:
                 type: array
                 groups: [Default]
