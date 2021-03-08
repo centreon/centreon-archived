@@ -15769,8 +15769,8 @@ msgid "Please check the 'Centreon UI' and 'Remote access' forms"
 msgstr "Veuillez vérifier les formulaires 'Centreon Web' et 'Accès du Remote'"
 
 #: api/platform/topology
-msgid "Unable to convert Central's API response"
-msgstr "Impossible de convertir la réponse de L'API provenant du Central"
+msgid "Unable to decode Central's API response"
+msgstr "Impossible de décoder la réponse de L'API provenant du Central"
 
 #: api/platform/topology
 msgid "Error from Central's register API : "
