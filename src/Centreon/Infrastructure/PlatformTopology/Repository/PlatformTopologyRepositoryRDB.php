@@ -56,7 +56,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
             $this->translateDbName("
                 INSERT INTO `:db`.platform_topology
                     (`address`, `name`, `type`, `parent_id`, `server_id`, `hostname`, `pending`)
-                VALUES (:address, :name, :type, :parentId, :serverId, :hostname, '1')
+                VALUES (:address, :name, :type, :parentId, :serverId, :hostname, :pendingStatus)
             ")
         );
         $statement->bindValue(':address', $platform->getAddress(), \PDO::PARAM_STR);
@@ -65,6 +65,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':parentId', $platform->getParentId(), \PDO::PARAM_INT);
         $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
         $statement->bindValue(':hostname', $platform->getHostname(), \PDO::PARAM_STR);
+        $statement->bindValue(':pendingStatus', ($platform->isPending() ? '1' : '0'), \PDO::PARAM_STR);
         $statement->execute();
     }
 
@@ -275,7 +276,7 @@ class PlatformTopologyRepositoryRDB extends AbstractRepositoryDRB implements Pla
         $statement->bindValue(':parentId', $platform->getParentId(), \PDO::PARAM_INT);
         $statement->bindValue(':serverId', $platform->getServerId(), \PDO::PARAM_INT);
         $statement->bindValue(':id', $platform->getId(), \PDO::PARAM_INT);
-        $statement->bindValue(':id', ($platform->isPending() ? '1' : '0'), \PDO::PARAM_STR);
+        $statement->bindValue(':pendingStatus', ($platform->isPending() ? '1' : '0'), \PDO::PARAM_STR);
         $statement->execute();
     }
 
