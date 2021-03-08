@@ -59,14 +59,33 @@ interface AuthenticationServiceInterface
     ): void;
 
     /**
+     * Delete a Centreon UI session.
+     *
      * @param string $sessionToken
      */
     public function deleteSession(string $sessionToken): void;
 
-/**
+    /**
+     * Delete a Centreon API session.
+     *
      * @param string $sessionToken
      */
     public function deleteAPISession(string $sessionToken): void;
+
+    /**
+     * Create the authentication tokens for API.
+     *
+     * @param string $token
+     * @param ContactInterface $contact
+     * @param ProviderToken|null $providerToken
+     * @param ProviderToken|null $providerRefreshToken
+     */
+    public function createAPIAuthenticationTokens(
+        string $token,
+        ContactInterface $contact,
+        ProviderToken $providerToken,
+        ?ProviderToken $providerRefreshToken
+    ): void;
 
     /**
      * Delete all expired API tokens

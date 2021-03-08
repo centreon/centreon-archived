@@ -29,9 +29,8 @@ class AuthenticateAPI
             $contact = $localProvider->getUser();
             $token = md5(bin2hex(random_bytes(128)));
 
-                $this->authenticationService->createAuthenticationTokens(
+                $this->authenticationService->createAPIAuthenticationTokens(
                     $token,
-                    'local', // LocalProvider::name
                     $contact,
                     $localProvider->getProviderToken($token),
                     null

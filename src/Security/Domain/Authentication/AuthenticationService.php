@@ -126,6 +126,27 @@ class AuthenticationService implements AuthenticationServiceInterface
         );
     }
 
+    public function createAPIAuthenticationTokens(
+        string $token,
+        ContactInterface $contact,
+        ProviderToken $providerToken,
+        ?ProviderToken $providerRefreshToken
+    ): void {
+        $providerConfiguration = $this->findProviderConfigurationByConfigurationName('local');
+        if ($providerConfiguration === null) {
+            throw new \InvalidArgumentException(
+                sprintf(_('Provider configuration (%) not found'), 'local')
+            );
+        }
+        $this->localProviderRepository->addAPIAuthenticationTokens(
+            $token,
+            $providerConfiguration->getId(),
+            $contact->getId(),
+            $providerToken,
+            $providerRefreshToken
+        );
+    }
+
     public function deleteSession(string $sessionToken): void
     {
         $this->repository->deleteSession($sessionToken);
