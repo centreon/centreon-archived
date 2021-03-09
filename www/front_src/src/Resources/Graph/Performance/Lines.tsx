@@ -16,7 +16,7 @@ interface GraphLinesProps {
 
 const getGraphLines = ({
   lines,
-  base,
+  base = 1000,
 }: GraphLinesProps): Array<JSX.Element> => {
   const getUnits = (): Array<string> => {
     return pipe(map(prop('unit')), uniq)(lines);
