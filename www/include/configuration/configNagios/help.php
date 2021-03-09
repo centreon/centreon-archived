@@ -79,12 +79,6 @@ $help["Monitoring Engine_group"] = dgettext(
     . "After initial program startup and before starting to monitor anything, Monitoring Engine "
     . "will drop its effective privileges and run as this group. You may specify either a groupname or a GID."
 );
-$help["postpone_notification_to_timeperiod"] = dgettext(
-    "help",
-    "This option determines whether or not Monitoring Engine will postpone unique notifications that should have been "
-    . "sent after an event but no timeperiods were valid at that time. Only Hosts, Services and BA notification "
-    . "timeperiods are checked, Users notification timeperiods are ignored."
-);
 $help["enable_notifications"] = dgettext(
     "help",
     "This option determines whether or not Monitoring Engine will send out notifications "
