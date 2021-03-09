@@ -87,19 +87,19 @@ class Authenticate
         $authenticationProvider->authenticate($request->getCredentials());
 
         if (!$authenticationProvider->isAuthenticated()) {
-            throw AuthenticationException::NotAuthenticatedException();
+            throw AuthenticationException::notAuthenticatedException();
         }
 
         $providerUser = $authenticationProvider->getUser();
         if ($providerUser === null) {
-            throw AuthenticationException::UserNotFoundException();
+            throw AuthenticationException::userNotFoundException();
         }
 
         if (!$this->contactService->exists($providerUser)) {
             if ($authenticationProvider->canCreateUser()) {
                 $this->contactService->addUser($providerUser);
             } else {
-                throw AuthenticationException::CannotCreateUserException();
+                throw AuthenticationException::cannotCreateUserException();
             }
         } else {
             $this->contactService->updateUser($providerUser);

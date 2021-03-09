@@ -322,10 +322,10 @@ class CentreonWebService
             $dependencyInjector['translator'];
 
             // Use the web service if has been initialized or initialize it
-            if(isset($dependencyInjector[$webService['class']])) {
+            if (isset($dependencyInjector[$webService['class']])) {
                 $wsObj = $dependencyInjector[$webService['class']];
             } else {
-                $wsObj = new $webService['class'];
+                $wsObj = new $webService['class']();
                 $wsObj->setDi($dependencyInjector);
             }
         } else {
@@ -340,7 +340,7 @@ class CentreonWebService
             } else {
                 /* Initialize the webservice */
                 require_once($webService['path']);
-                $wsObj = new $webService['class'];
+                $wsObj = new $webService['class']();
             }
         }
 

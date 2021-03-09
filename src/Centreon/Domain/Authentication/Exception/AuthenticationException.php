@@ -29,17 +29,17 @@ namespace Centreon\Domain\Authentication\Exception;
  */
 class AuthenticationException extends \Exception
 {
-    public static function NotAuthenticatedException(): self
+    public static function notAuthenticatedException(): self
     {
         return new self(_('Authentication failed'));
     }
 
-    public static function UserNotFoundException(): self
+    public static function userNotFoundException(): self
     {
         return new self(_('User cannot be retrieved from the provider'));
     }
 
-    public static function CannotCreateUserException(): self
+    public static function cannotCreateUserException(): self
     {
         return new self(_('Cannot create user'));
     }

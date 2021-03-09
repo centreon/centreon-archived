@@ -72,7 +72,7 @@ class AuthenticationController extends AbstractController
 
         $request =  new AuthenticateAPIRequest($credentials);
         $response = $authenticate->execute($request);
-        if (!empty($response)){
+        if (!empty($response)) {
             return $this->view($response);
         }
         return $this->view([

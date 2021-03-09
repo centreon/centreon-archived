@@ -149,7 +149,7 @@ class CentreonSession
      * @param \CentreonDB $pearDB
      * @return bool If the session is updated or not
      */
-    public function updateSession($pearDB) : bool
+    public function updateSession($pearDB): bool
     {
         $sessionUpdated = false;
 

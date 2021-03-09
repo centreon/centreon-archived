@@ -61,7 +61,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @inheritDoc
      */
-    public function getGeneratedToken():string
+    public function getGeneratedToken(): string
     {
         return $this->generatedToken;
     }

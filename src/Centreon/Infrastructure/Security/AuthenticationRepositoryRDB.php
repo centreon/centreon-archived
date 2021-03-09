@@ -140,9 +140,7 @@ class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface
             'SELECT * FROM session WHERE session_id = :session_id LIMIT 1'
         );
         $statement->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
-        if ($statement->execute()
-            && $result = $statement->fetch(\PDO::FETCH_ASSOC)
-        ) {
+        if ($statement->execute() && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             return EntityCreator::createEntityByArray(
                 Session::class,
                 $result

@@ -72,7 +72,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             if ($result['default_page'] !== null) {
                 $this->addDefaultPage($contact, (int) $result['default_page']);
             }
-
         }
 
         return $contact;
@@ -394,17 +393,19 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         }
     }
 
-    private function addDefaultPage(Contact $contact, int $defaultPage): void {
+    private function addDefaultPage(Contact $contact, int $defaultPage): void
+    {
         $defaultPageStatement = $this->db->prepare(
             $this->translateDbName(
-                "SELECT topology_page, topology_url, is_react, topology_url_opt FROM topology WHERE topology_page = :defaultPage"
+                "SELECT topology_page, topology_url, is_react, topology_url_opt FROM topology " .
+                "WHERE topology_page = :defaultPage"
             )
         );
         $defaultPageStatement->bindValue(':defaultPage', $defaultPage, \PDO::PARAM_INT);
         $defaultPageStatement->execute();
         if (($result = $defaultPageStatement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-           $defaultPage = $this->buildDefaultPage($result);
-           $contact->setDefaultPage($defaultPage);
+            $defaultPage = $this->buildDefaultPage($result);
+            $contact->setDefaultPage($defaultPage);
         }
     }
 
@@ -425,7 +426,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         );
     }
 
-    private function buildDefaultPage(array $defaultPage): string {
+    private function buildDefaultPage(array $defaultPage): string
+    {
 
         if ($defaultPage['is_react'] === "1") {
             // redirect to the react path

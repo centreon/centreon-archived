@@ -32,7 +32,7 @@ interface AuthenticationServiceInterface
      *
      * @return string Returns the generated token
      */
-    public function getGeneratedToken():string;
+    public function getGeneratedToken(): string;
 
     /**
      * Delete an existing authentication token

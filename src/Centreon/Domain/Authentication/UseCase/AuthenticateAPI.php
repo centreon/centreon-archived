@@ -11,7 +11,8 @@ class AuthenticateAPI
      */
     private $authenticationService;
 
-    public function __construct(AuthenticationServiceInterface $authenticationService){
+    public function __construct(AuthenticationServiceInterface $authenticationService)
+    {
         $this->authenticationService = $authenticationService;
     }
 
@@ -19,7 +20,7 @@ class AuthenticateAPI
     {
         try {
             $this->authenticationService->deleteExpiredAPITokens();
-        } catch (\Exception $ex) {
+        } catch(\Exception $ex) {
 
         }
         $localProvider = $this->authenticationService->findProviderByConfigurationName('local');

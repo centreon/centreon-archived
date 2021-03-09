@@ -46,9 +46,7 @@ $pearDB = $dependencyInjector['configuration_db'];
 $kernel = \App\Kernel::createForWeb();
 
 /* Test if the call is for authenticate */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
-    isset($_GET['action']) && $_GET['action'] == 'authenticate'
-) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] == 'authenticate') {
     if (false === isset($_POST['username']) || false === isset($_POST['password'])) {
         CentreonWebService::sendResult("Bad parameters", 400);
     }
@@ -63,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     $request = new \Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest($credentials);
     $authenticateApiUseCase->execute($request);
 
-    if (isset($response['security']['token'])){
+    if (isset($response['security']['token'])) {
         CentreonWebService::sendResult(['authToken' => $response['security']['token']]);
     } else {
         CentreonWebService::sendResult('Invalid credentials', 403);
