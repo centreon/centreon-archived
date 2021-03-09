@@ -214,6 +214,7 @@ class PlatformController extends AbstractController
                         break;
                     case 'platformName':
                         $platformInformationUpdate->setPlatformName($platformValue);
+                        break;
                 }
             }
 
