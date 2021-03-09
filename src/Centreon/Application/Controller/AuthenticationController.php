@@ -66,7 +66,7 @@ class AuthenticationController extends AbstractController
     {
         $contentBody = json_decode($request->getContent(), true);
         $credentials = [
-            "useralias" => $contentBody['security']['credentials']['login'] ?? '',
+            "login" => $contentBody['security']['credentials']['login'] ?? '',
             "password" => $contentBody['security']['credentials']['password'] ?? ''
         ];
 
