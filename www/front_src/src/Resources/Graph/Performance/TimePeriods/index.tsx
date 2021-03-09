@@ -21,7 +21,7 @@ interface Props {
 
 const timePeriodOptions = map(pick(['id', 'name']), timePeriods);
 
-const TimePeriods = ({
+const TimePeriodButtonGroup = ({
   selectedTimePeriodId,
   onChange,
   disabled = false,
@@ -54,4 +54,4 @@ const TimePeriods = ({
   );
 };
 
-export default TimePeriods;
+export default TimePeriodButtonGroup;

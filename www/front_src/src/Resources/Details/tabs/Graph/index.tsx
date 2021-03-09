@@ -6,7 +6,7 @@ import { Theme, makeStyles } from '@material-ui/core';
 
 import { TabProps } from '..';
 import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
-import TimePeriods from '../../../Graph/Performance/TimePeriods';
+import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { ResourceContext, useResourceContext } from '../../../Context';
 import memoizeComponent from '../../../memoizedComponent';
@@ -65,7 +65,7 @@ const GraphTabContent = ({
 
   return (
     <div className={classes.container}>
-      <TimePeriods
+      <TimePeriodButtonGroup
         selectedTimePeriodId={selectedTimePeriod.id}
         onChange={changeSelectedTimePeriod}
       />
