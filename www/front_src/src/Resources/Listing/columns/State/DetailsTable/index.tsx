@@ -35,13 +35,11 @@ interface DetailsTableColumn extends Column {
   type: ColumnType;
   getContent: (details) => string | JSX.Element;
   width: number;
-  t: string;
 }
 
 export interface DetailsTableProps {
   endpoint: string;
   columns: Array<DetailsTableColumn>;
-  t: (label) => string;
 }
 
 const DetailsTable = <TDetails extends { id: number }>({
