@@ -189,4 +189,47 @@ class CommandLineTraitTest extends TestCase
             $this->replacementValue
         );
     }
+
+    /**
+     * Test built host command line which contains service macros which can be replaced and applied spaces
+     *
+     * @return void
+     */
+    public function testBuildCommandLineFromConfigurationWithSpaceSeparatedValues(): void
+    {
+        $configurationCommand = '$CENTREONPLUGINS$/centreon_linux_snmp.pl --plugin=os::linux::snmp::plugin '
+            . '--mode=time --hostname=$HOSTADDRESS$ --snmp-version="$_HOSTSNMPVERSION$" '
+            . '--snmp-community="$_HOSTSNMPCOMMUNITY$" $_HOSTSNMPEXTRAOPTIONS$ '
+            . '--ntp-hostname="$_SERVICENTPADDR$" --ntp-port="$_SERVICENTPPORT$" '
+            . '--warning-offset="$_SERVICEWARNING$" --critical-offset="$_SERVICECRITICAL$" '
+            . '--timezone="$_SERVICETIMEZONE$" $_SERVICEEXTRAOPTIONS$ $_HOSTSNMPEXTRAOPTIONS_2$';
+        $macros = [
+            (new HostMacro())
+                ->setName('$_HOSTSNMPEXTRAOPTIONS$')
+                ->setValue('test_host_snmp_extra'),
+            (new HostMacro())
+                ->setName('$_HOSTSNMPEXTRAOPTIONS_2$')
+                ->setValue('test_host_snmp_extra_2 extra texte')
+                ->setPassword(true),
+        ];
+
+        $monitoringCommand = '/usr/lib/centreon/plugins//centreon_linux_snmp.pl --plugin=os::linux::snmp::plugin '
+            . '--mode=time --hostname=localhost --snmp-version="2c" '
+            . '--snmp-community="public" test_host_snmp_extra '
+            . '--ntp-hostname="" --ntp-port="" '
+            . '--warning-offset="" --critical-offset="" '
+            . '--timezone=""  test_host_snmp_extra_2 extra texte';
+
+        // $_SERVICEEXTRAOPTIONS$ $_HOSTSNMPEXTRAOPTIONS_2$ will be converted as "  test_host_snmp_extra_2 extra texte"
+        // then, pattern cannot detect which word is from $_SERVICEEXTRAOPTIONS$ or $_HOSTSNMPEXTRAOPTIONS_2$
+        $this->expectException(MonitoringServiceException::class);
+        $this->expectExceptionMessage('Macro passwords cannot be detected');
+
+        $this->buildCommandLineFromConfiguration(
+            $configurationCommand,
+            $monitoringCommand,
+            $macros,
+            $this->replacementValue
+        );
+    }
 }
