@@ -196,12 +196,12 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         $insertSecurityTokenStatement->bindValue(
             ':createdAt',
             $providerToken->getCreationDate()->getTimestamp(),
-            \PDO::PARAM_STR
+            \PDO::PARAM_INT
         );
         $insertSecurityTokenStatement->bindValue(
             ':expireAt',
             $providerToken->getExpirationDate()->getTimestamp(),
-            \PDO::PARAM_STR
+            \PDO::PARAM_INT
         );
         $insertSecurityTokenStatement->execute();
     }

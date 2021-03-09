@@ -258,10 +258,13 @@ class CentreonWebService
             try {
                 $stmt = $pearDB->prepare(
                     'UPDATE security_token
-                    SET expiration_date = :expiredAt
+                    SET expiration_date = (
+                        SELECT UNIX_TIMESTAMP(NOW() + INTERVAL (`value` * 60) SECOND)
+                        FROM `options`
+                        wHERE `key` = \'session_expire\'
+                    )
                     WHERE token = :token'
                 );
-                $stmt->bindValue(':expiredAt', (new \DateTime())->getTimestamp(), \PDO::PARAM_INT);
                 $stmt->bindValue(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], \PDO::PARAM_STR);
                 $stmt->execute();
             } catch (Exception $e) {
