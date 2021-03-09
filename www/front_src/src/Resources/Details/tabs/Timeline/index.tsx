@@ -24,6 +24,7 @@ import {
   labelNoResultsFound,
   labelRefresh,
 } from '../../../translatedLabels';
+import { TabProps } from '..';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -31,8 +32,6 @@ import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
-
-import { TabProps } from '..';
 
 type TimelineListing = ListingModel<TimelineEvent>;
 

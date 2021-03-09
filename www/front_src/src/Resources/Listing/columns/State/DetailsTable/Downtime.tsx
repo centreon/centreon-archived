@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import * as React from 'react';
 
 import parse from 'html-react-parser';
@@ -30,6 +31,7 @@ const useStyles = makeStyles({
 });
 
 interface DowntimeDetails {
+  id: number;
   author_name: string;
   is_fixed: boolean;
   start_time: string;
