@@ -99,7 +99,7 @@ class AuthenticationController extends AbstractController
 
         try {
             $token = $request->headers->get('X-AUTH-TOKEN');
-            $this->authenticationService->deleteAPISession($token);
+            $this->authenticationService->deleteSession($token);
         } catch (\Exception $ex) {
             throw new \RestException($ex->getMessage(), $ex->getCode(), $ex);
         }
@@ -180,10 +180,9 @@ class AuthenticationController extends AbstractController
 
         $authenticateRequest = new AuthenticateRequest($requestParameters, $providerConfigurationName);
         $response = $authenticate->execute($authenticateRequest);
-
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
-            return View::create(['redirect_uri' => $this->getBaseUri() . '/monitoring/resources']);
+            return View::create(['redirect_uri' => $this->getBaseUri() . $response]);
         } else {
             // Otherwise, we send a redirection response.
             return View::createRedirect(

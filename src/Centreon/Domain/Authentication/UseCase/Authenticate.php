@@ -32,6 +32,7 @@ use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 
 class Authenticate
 {
+    public const REDIRECT_DEFAULT_PAGE = "/monitoring/resources";
     /**
      * @var AuthenticationService
      */
@@ -66,12 +67,12 @@ class Authenticate
     }
 
     /**
-     * Execute authentication scenario
+     * Execute authentication scenario and return the redirection URI.
      *
      * @param AuthenticateRequest $request
-     * @return void
+     * @return string
      */
-    public function execute(AuthenticateRequest $request): array
+    public function execute(AuthenticateRequest $request): string
     {
         $authenticationProvider = $this->authenticationService->findProviderByConfigurationName(
             $request->getProviderConfigurationName()
@@ -118,6 +119,10 @@ class Authenticate
             );
         }
 
-        return ["redirect_uri" => $providerUser->getDefaultPage()];
+        if ($providerUser->getDefaultPage() !== null) {
+            return $providerUser->getDefaultPage();
+        } else {
+            return self::REDIRECT_DEFAULT_PAGE;
+        }
     }
 }

@@ -152,11 +152,6 @@ class AuthenticationService implements AuthenticationServiceInterface
         $this->repository->deleteSession($sessionToken);
     }
 
-    public function deleteAPISession(string $sessionToken): void
-    {
-        $this->localProviderRepository->deleteSession($sessionToken);
-    }
-
     /**
      * @inheritDoc
      */

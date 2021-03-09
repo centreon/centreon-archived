@@ -69,7 +69,12 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             $contact = $this->createContact($result);
             $this->addActionRules($contact);
             $this->addTopologyRules($contact);
+            if ($result['default_page'] !== null) {
+                $this->addDefaultPage($contact, (int) $result['default_page']);
+            }
+
         }
+
         return $contact;
     }
 
@@ -96,6 +101,9 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             $contact = $this->createContact($result);
             $this->addActionRules($contact);
             $this->addTopologyRules($contact);
+            if ($result['default_page'] !== null) {
+                $this->addDefaultPage($contact, (int) $result['default_page']);
+            }
         }
 
         return $contact;
@@ -125,6 +133,9 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             $contact = $this->createContact($result);
             $this->addActionRules($contact);
             $this->addTopologyRules($contact);
+            if ($result['default_page'] !== null) {
+                $this->addDefaultPage($contact, (int) $result['default_page']);
+            }
         }
 
         return $contact;
@@ -328,8 +339,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setAccessToApiRealTime($contact['reach_api_rt'] === '1')
             ->setAccessToApiConfiguration($contact['reach_api'] === '1')
             ->setTimezone(new \DateTimeZone($contactTimezoneName))
-            ->setLocale($contactLocale)
-            ->setDefaultPage($contact['default_page']);
+            ->setLocale($contactLocale);
     }
 
     /**
@@ -384,6 +394,20 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         }
     }
 
+    private function addDefaultPage(Contact $contact, int $defaultPage): void {
+        $defaultPageStatement = $this->db->prepare(
+            $this->translateDbName(
+                "SELECT topology_page, topology_url, is_react, topology_url_opt FROM topology WHERE topology_page = :defaultPage"
+            )
+        );
+        $defaultPageStatement->bindValue(':defaultPage', $defaultPage, \PDO::PARAM_INT);
+        $defaultPageStatement->execute();
+        if (($result = $defaultPageStatement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+           $defaultPage = $this->buildDefaultPage($result);
+           $contact->setDefaultPage($defaultPage);
+        }
+    }
+
     /**
      * Replace all instances of :dbstg and :db by the real db names.
      * The table names of the database are defined in the services.yaml
@@ -399,5 +423,19 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             array($this->db->getStorageDbName(), $this->db->getCentreonDbName()),
             $request
         );
+    }
+
+    private function buildDefaultPage(array $defaultPage): string {
+
+        if ($defaultPage['is_react'] === "1") {
+            // redirect to the react path
+            $redirectUri = $defaultPage['topology_url'];
+        } else {
+            $redirectUri = "/main.php?p=" . $defaultPage['topology_page'];
+            if ($redirectUri['topology_url_opt'] !== null) {
+                $redirectUri .= $defaultPage['topology_url_opt'];
+            }
+        }
+        return $redirectUri;
     }
 }
