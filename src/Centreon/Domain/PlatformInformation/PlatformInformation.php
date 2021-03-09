@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformInformation;
 
-use InvalidArgumentException;
 use Security\Encryption;
 
 /**
@@ -153,7 +152,7 @@ class PlatformInformation
     {
         $this->platformName = filter_var($name, FILTER_SANITIZE_STRING);
         if (empty($this->platformName)) {
-            throw new InvalidArgumentException(_("Platform name can't be empty"));
+            throw new \InvalidArgumentException(_("Platform name can't be empty"));
         }
 
         return $this;
