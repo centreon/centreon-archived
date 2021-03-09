@@ -66,6 +66,7 @@ services:
 
     Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface:
         class: Security\Domain\Authentication\AuthenticationService
+        public: true
 
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']

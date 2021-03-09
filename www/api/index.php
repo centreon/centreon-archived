@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
     }
 } else { // Purge old tokens
     $authenticationService = $kernel->getContainer()->get(
-        \Centreon\Domain\Authentication\Interfaces\AuthenticationServiceInterface::class
+        \Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface::class
     );
     $authenticationService->deleteExpiredAPITokens();
 }
