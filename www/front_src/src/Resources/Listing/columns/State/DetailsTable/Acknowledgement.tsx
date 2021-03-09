@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import * as React from 'react';
 
 import parse from 'html-react-parser';
@@ -28,6 +29,7 @@ const useStyles = makeStyles({
 });
 
 interface AcknowledgementDetails {
+  id: number;
   author_name: string;
   entry_time: string;
   is_persistent_comment: string;

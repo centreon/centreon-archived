@@ -6,7 +6,7 @@ const key = 'centreon-resource-status-filter';
 
 let cachedFilter;
 
-const getStoredOrDefaultFilter = (defaultFilter): Filter => {
+const getStoredOrDefaultFilter = (defaultFilter: Filter): Filter => {
   if (!isNil(cachedFilter)) {
     return cachedFilter;
   }
@@ -22,7 +22,7 @@ const getStoredOrDefaultFilter = (defaultFilter): Filter => {
   return cachedFilter;
 };
 
-const storeFilter = (filter): void => {
+const storeFilter = (filter: Filter): void => {
   localStorage.setItem(key, JSON.stringify(filter));
 };
 

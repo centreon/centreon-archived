@@ -10,12 +10,11 @@ import { useRequest, StatusChip } from '@centreon/ui';
 
 import { useResourceContext } from '../../../Context';
 import { labelNoResultsFound } from '../../../translatedLabels';
+import { TabProps, detailsTabId } from '..';
 
 import { listServices } from './api';
 import { listServicesDecoder } from './api/decoders';
 import { Service } from './models';
-
-import { TabProps, detailsTabId } from '..';
 
 const useStyles = makeStyles((theme) => ({
   services: {
