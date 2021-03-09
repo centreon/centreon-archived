@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Security;
 
 use Centreon\Domain\Exception\ContactDisabledException;
+use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -58,13 +59,16 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
      *
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param ContactRepositoryInterface $contactRepository
+     * @param OptionServiceInterface $optionService
      */
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,
-        ContactRepositoryInterface $contactRepository
+        ContactRepositoryInterface $contactRepository,
+        OptionServiceInterface $optionService
     ) {
         $this->authenticationRepository = $authenticationRepository;
         $this->contactRepository = $contactRepository;
+        $this->optionService = $optionService;
     }
 
     public function createAuthenticatedToken(UserInterface $user, $providerKey)
@@ -189,8 +193,18 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
         if ($contact->isActive() === false) {
             throw new ContactDisabledException();
         }
-        $providerToken->setExpirationDate(new \DateTime());
+
+        $expirationSessionDelay = 120;
+        $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
+        if (!empty($sessionExpireOption)) {
+            $expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();
+        }
+        $providerToken->setExpirationDate(
+            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M'))
+        );
+
         $this->authenticationRepository->updateProviderToken($providerToken);
+
         return $contact;
     }
 
