@@ -456,7 +456,6 @@ CREATE TABLE `cfg_nagios` (
   `status_update_interval` int(11) DEFAULT NULL,
   `nagios_user` varchar(255) DEFAULT NULL,
   `nagios_group` varchar(255) DEFAULT NULL,
-  `postpone_notification_to_timeperiod` boolean DEFAULT false,
   `enable_notifications` enum('0','1','2') DEFAULT NULL,
   `execute_service_checks` enum('0','1','2') DEFAULT NULL,
   `accept_passive_service_checks` enum('0','1','2') DEFAULT NULL,
