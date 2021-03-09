@@ -41,12 +41,10 @@ class LocalProviderRepository extends AbstractRepositoryDRB implements LocalProv
      */
     public function deleteExpiredAPITokens(): void
     {
-        $deleteStatement = $this->db->prepare(
+        $this->db->query(
             $this->translateDbName(
-                "DELETE FROM `:db`.security_token WHERE expiration_date < :now"
+                "DELETE FROM `:db`.security_token WHERE expiration_date < UNIX_TIMESTAMP(NOW())"
             )
         );
-        $deleteStatement->bindValue(':now', (new \DateTime())->getTimestamp(), \PDO::PARAM_INT);
-        $deleteStatement->execute();
     }
 }
