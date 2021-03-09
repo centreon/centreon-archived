@@ -12,3 +12,15 @@ Feature:
         Then the response code should be "401"
         And the JSON node "code" should be equal to the number "401"
         And the JSON node "message" should be equal to the string "Invalid credentials"
+
+    # Internal local authentication
+    Scenario:
+        Given I send a POST request to '/authentication/providers/local' with body:
+        """
+        {
+            "login": "admin",
+            "password": "centreon"
+        }
+        """
+        Then the response code should be "200"
+        # check Set-Cookie header response
