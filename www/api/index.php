@@ -52,14 +52,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
     }
 
     $credentials = [
-        "useralias" => $_POST['username'],
+        "login" => $_POST['username'],
         "password" => $_POST['password'],
     ];
     $authenticateApiUseCase = $kernel->getContainer()->get(
         \Centreon\Domain\Authentication\UseCase\AuthenticateAPI::class
     );
     $request = new \Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest($credentials);
-    $authenticateApiUseCase->execute($request);
+    $response = $authenticateApiUseCase->execute($request);
 
     if (isset($response['security']['token'])) {
         CentreonWebService::sendResult(['authToken' => $response['security']['token']]);

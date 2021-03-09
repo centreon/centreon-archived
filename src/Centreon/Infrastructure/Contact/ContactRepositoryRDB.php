@@ -393,6 +393,13 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         }
     }
 
+    /**
+     * Add default page to contact.
+     *
+     * @param Contact $contact
+     * @param integer $defaultPage
+     * @return void
+     */
     private function addDefaultPage(Contact $contact, int $defaultPage): void
     {
         $defaultPageStatement = $this->db->prepare(
@@ -410,6 +417,27 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     }
 
     /**
+     * Build Default Page URI.
+     *
+     * @param array $defaultPage
+     * @return string
+     */
+    private function buildDefaultPage(array $defaultPage): string
+    {
+
+        if ($defaultPage['is_react'] === "1") {
+            // redirect to the react path
+            $redirectUri = $defaultPage['topology_url'];
+        } else {
+            $redirectUri = "/main.php?p=" . $defaultPage['topology_page'];
+            if ($defaultPage['topology_url_opt'] !== null) {
+                $redirectUri .= $defaultPage['topology_url_opt'];
+            }
+        }
+        return $redirectUri;
+    }
+
+    /**
      * Replace all instances of :dbstg and :db by the real db names.
      * The table names of the database are defined in the services.yaml
      * configuration file.
@@ -424,20 +452,5 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             array($this->db->getStorageDbName(), $this->db->getCentreonDbName()),
             $request
         );
-    }
-
-    private function buildDefaultPage(array $defaultPage): string
-    {
-
-        if ($defaultPage['is_react'] === "1") {
-            // redirect to the react path
-            $redirectUri = $defaultPage['topology_url'];
-        } else {
-            $redirectUri = "/main.php?p=" . $defaultPage['topology_page'];
-            if ($redirectUri['topology_url_opt'] !== null) {
-                $redirectUri .= $defaultPage['topology_url_opt'];
-            }
-        }
-        return $redirectUri;
     }
 }

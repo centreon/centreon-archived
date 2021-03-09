@@ -280,3 +280,6 @@ services:
     # Menu
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
+
+    Centreon\Domain\Authentication\UseCase\AuthenticateAPI:
+        public: true
