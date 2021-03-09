@@ -534,7 +534,6 @@ ENGINECFG;setparam;Centreon Engine Central;temp_file;/var/log/centreon-engine/ce
 ENGINECFG;setparam;Centreon Engine Central;status_file;/var/log/centreon-engine/status.dat
 ENGINECFG;setparam;Centreon Engine Central;nagios_user;centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;nagios_group;centreon-engine
-ENGINECFG;setparam;Centreon Engine Central;postpone_notification_to_timeperiod;0
 ENGINECFG;setparam;Centreon Engine Central;enable_notifications;1
 ENGINECFG;setparam;Centreon Engine Central;execute_service_checks;1
 ENGINECFG;setparam;Centreon Engine Central;accept_passive_service_checks;1

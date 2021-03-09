@@ -20,22 +20,21 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces\HostCategory;
+namespace Centreon\Domain\HostConfiguration\Interfaces\HostGroup;
 
-use Centreon\Domain\HostConfiguration\Model\HostCategory;
+use Centreon\Domain\HostConfiguration\Model\HostGroup;
 
 /**
- * This interface gathers all the writing operations on the host category repository.
+ * This interface gathers all the writing operations on the host group repository.
  *
- * @package Centreon\Domain\HostConfiguration\Interfaces\HostCategory
+ * @package Centreon\Domain\HostConfiguration\Interfaces\HostGroup
  */
-interface HostCategoryWriteRepositoryInterface
+interface HostGroupWriteRepositoryInterface
 {
     /**
-     * Add a host category.
+     * Add a host group.
      *
-     * @param HostCategory $category Host category to be added
-     * @throws \Throwable
+     * @param HostGroup $group Host group to be added
      */
-    public function addCategory(HostCategory $category): void;
+    public function addGroup(HostGroup $group): void;
 }

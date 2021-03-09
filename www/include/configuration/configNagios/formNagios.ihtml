@@ -148,7 +148,6 @@
                 <h4>{$MiscOptions}</h4>
               </td>
             </tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="postpone_notification_to_timeperiod">&nbsp;{$form.postpone_notification_to_timeperiod.label}</td><td class="FormRowValue">{$form.postpone_notification_to_timeperiod.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="enable_notifications">&nbsp;{$form.enable_notifications.label}</td><td class="FormRowValue">{$form.enable_notifications.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="execute_service_checks">&nbsp;{$form.execute_service_checks.label}</td><td class="FormRowValue">{$form.execute_service_checks.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="accept_passive_service_checks">&nbsp;{$form.accept_passive_service_checks.label}</td><td class="FormRowValue">{$form.accept_passive_service_checks.html}</td></tr>

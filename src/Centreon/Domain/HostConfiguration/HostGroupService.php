@@ -26,6 +26,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Exception\HostGroupException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupServiceInterface;
+use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupWriteRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Repository\RepositoryException;
 
@@ -45,17 +46,36 @@ class HostGroupService implements HostGroupServiceInterface
      * @var ContactInterface
      */
     private $contact;
+    /**
+     * @var HostGroupWriteRepositoryInterface
+     */
+    private $writeRepository;
 
     /**
-     * @param HostGroupReadRepositoryInterface $repository
+     * @param HostGroupReadRepositoryInterface $readRepository
+     * @param HostGroupWriteRepositoryInterface $writeRepository
      * @param ContactInterface $contact
      */
     public function __construct(
-        HostGroupReadRepositoryInterface $repository,
+        HostGroupReadRepositoryInterface $readRepository,
+        HostGroupWriteRepositoryInterface $writeRepository,
         ContactInterface $contact
     ) {
-        $this->readRepository = $repository;
+        $this->readRepository = $readRepository;
+        $this->writeRepository = $writeRepository;
         $this->contact = $contact;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addGroup(HostGroup $group): void
+    {
+        try {
+            $this->writeRepository->addGroup($group);
+        } catch (\Throwable $ex) {
+            throw HostGroupException::addGroupException($ex);
+        }
     }
 
     /**
@@ -82,6 +102,18 @@ class HostGroupService implements HostGroupServiceInterface
         } catch (RepositoryException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
+            throw HostGroupException::findHostGroupsException($ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByNamesWithoutAcl(array $groupsName): array
+    {
+        try {
+            return $this->readRepository->findByNames($groupsName);
+        } catch (\Throwable $ex) {
             throw HostGroupException::findHostGroupsException($ex);
         }
     }

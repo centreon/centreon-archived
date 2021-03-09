@@ -8301,10 +8301,6 @@ msgid "Default"
 msgstr "Défaut"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:181
-msgid "Postpone Notification Option"
-msgstr "Report de notification"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:181
 msgid "Notification Option"
 msgstr "Notification"
 
@@ -16029,3 +16025,15 @@ msgstr "Erreur lors de la recheche de la commande de l'hôte"
 
 msgid "Monitoring server"
 msgstr "Serveur de supervision"
+
+msgid "Error when adding a host macro"
+msgstr "Erreur lors de l'ajout d'une macro hôte"
+
+msgid "Error when adding a host"
+msgstr "Erreur lors de l'ajout d'un hôte"
+
+msgid "Error when adding a host category"
+msgstr "Erreur lors de l'ajout d'une catégorie hôte"
+
+msgid "Error when adding a host group"
+msgstr "Erreur lors de l'ajout d'un groupe d'hôte"
