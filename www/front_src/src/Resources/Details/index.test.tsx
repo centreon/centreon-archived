@@ -1069,16 +1069,16 @@ describe(Details, () => {
     userEvent.click(getByText(labelStartDate));
 
     await waitFor(() => {
-      expect(getByText(/^19$/)).toBeInTheDocument();
+      expect(getByText(/^12$/)).toBeInTheDocument();
     });
 
     userEvent.click(
-      getByText(/^19$/).parentElement?.parentElement as HTMLElement,
+      getByText(/^12$/).parentElement?.parentElement as HTMLElement,
     );
 
     userEvent.click(getByText(labelOk));
 
-    const startISOString = '2020-06-19T06:00:00.000Z';
+    const startISOString = '2020-06-12T06:00:00.000Z';
     const endISOString = '2020-06-21T06:00:00.000Z';
 
     await waitFor(() => {
