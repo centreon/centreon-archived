@@ -190,3 +190,5 @@ export const labelDisplayEvents = 'Display events';
 export const labelExportToPng = 'Export to png';
 export const labelParent = 'Parent';
 export const labelSelectCriterias = 'Select criterias';
+export const labelStartDateIsSameOrAfterEndDate =
+  'The start date is the same or after the end date';

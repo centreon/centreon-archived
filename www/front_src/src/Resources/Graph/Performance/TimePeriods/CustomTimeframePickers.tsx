@@ -2,11 +2,11 @@ import * as React from 'react';
 
 import DayjsUtils from '@date-io/dayjs';
 import dayjs from 'dayjs';
-import { equals, or } from 'ramda';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import { and, equals, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { FormHelperText, makeStyles } from '@material-ui/core';
 
 import { useUserContext } from '@centreon/ui-context';
@@ -16,6 +16,7 @@ import {
   labelEndDate,
   labelOk,
   labelStartDate,
+  labelStartDateIsSameOrAfterEndDate,
 } from '../../../translatedLabels';
 import {
   Timeframe,
@@ -32,6 +33,8 @@ interface Props {
   acceptDate: (props: AcceptDateProps) => void;
 }
 
+dayjs.extend(isSameOrAfter);
+
 const useStyles = makeStyles((theme) => ({
   pickers: {
     display: 'grid',
@@ -47,25 +50,55 @@ const CustomTimeframePickers = ({
   timeframe,
   acceptDate,
 }: Props): JSX.Element => {
+  const [start, setStart] = React.useState<Date>(timeframe.start);
+  const [end, setEnd] = React.useState<Date>(timeframe.end);
   const { locale } = useUserContext();
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const startIsAfterEnd = dayjs(timeframe.start).isAfter(dayjs(timeframe.end));
+  const isInvalidDate = ({ startDate, endDate }) =>
+    dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
-  const changeDate = (property: TimeframeProperties) => (
-    value: MaterialUiPickersDate,
-  ) => {
+  const changeStartDate = (property: TimeframeProperties) => (value) => {
+    setStart(value.toDate());
     if (
       or(
-        startIsAfterEnd,
-        equals(value?.toDate().getTime(), timeframe[property].getTime()),
+        isInvalidDate({ startDate: value.toDate(), endDate: end }),
+        equals(value?.toDate().getTime(), start.getTime()),
       )
     ) {
       return;
     }
-    acceptDate({ date: value?.toDate() || new Date(), property });
+    acceptDate({ date: value.toDate(), property });
   };
+
+  const changeEndDate = (property: TimeframeProperties) => (value) => {
+    setEnd(value.toDate());
+    if (
+      or(
+        isInvalidDate({ startDate: start, endDate: value.toDate() }),
+        equals(value?.toDate().getTime(), end.getTime()),
+      )
+    ) {
+      return;
+    }
+    acceptDate({ date: value.toDate(), property });
+  };
+
+  React.useEffect(() => {
+    if (
+      and(
+        dayjs(timeframe.start).isSame(dayjs(start), 'minute'),
+        dayjs(timeframe.end).isSame(dayjs(end), 'minute'),
+      )
+    ) {
+      return;
+    }
+    setStart(timeframe.start);
+    setEnd(timeframe.end);
+  }, [timeframe.start, timeframe.end]);
+
+  const isError = isInvalidDate({ startDate: start, endDate: end });
 
   const commonPickersProps = {
     autoOk: true,
@@ -84,8 +117,8 @@ const CustomTimeframePickers = ({
         >
           <DateTimePicker
             {...commonPickersProps}
-            value={timeframe.start}
-            onChange={changeDate(TimeframeProperties.start)}
+            value={start}
+            onChange={changeStartDate(TimeframeProperties.start)}
             label={t(labelStartDate)}
             maxDate={timeframe.end}
             size="small"
@@ -95,8 +128,8 @@ const CustomTimeframePickers = ({
           />
           <DateTimePicker
             {...commonPickersProps}
-            value={timeframe.end}
-            onChange={changeDate(TimeframeProperties.end)}
+            value={end}
+            onChange={changeEndDate(TimeframeProperties.end)}
             label={t(labelEndDate)}
             minDate={timeframe.start}
             size="small"
@@ -106,9 +139,9 @@ const CustomTimeframePickers = ({
           />
         </MuiPickersUtilsProvider>
       </div>
-      {startIsAfterEnd && (
+      {isError && (
         <FormHelperText error className={classes.error}>
-          Start date is after end date
+          {t(labelStartDateIsSameOrAfterEndDate)}
         </FormHelperText>
       )}
     </div>

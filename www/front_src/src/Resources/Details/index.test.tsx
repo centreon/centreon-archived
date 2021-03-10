@@ -63,9 +63,9 @@ import {
   labelDowntime,
   labelDisplayEvents,
   labelStartDate,
-  labelStartTime,
   labelEndDate,
   labelOk,
+  labelStartDateIsSameOrAfterEndDate,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -1112,7 +1112,7 @@ describe(Details, () => {
     });
   });
 
-  it('display the correct date time on pickers when a time period is selected and Graph tab is selected', async () => {
+  it('display the correct date time on pickers when a time period is selected and the Graph tab is selected', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
@@ -1149,5 +1149,43 @@ describe(Details, () => {
         cancelTokenRequestParam,
       );
     });
+  });
+
+  it('display an error message when the start date of the timeframe is the same as the end date and the Graph tab is selected', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+      .mockResolvedValueOnce({ data: retrievedTimeline })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+      .mockResolvedValueOnce({ data: retrievedTimeline });
+
+    const { getByText } = renderDetails({
+      openTabId: graphTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-06-20T06:00:00.000Z&end=2020-06-21T06:00:00.000Z`,
+        cancelTokenRequestParam,
+      );
+    });
+
+    userEvent.click(getByText(labelStartDate));
+
+    await waitFor(() => {
+      expect(getByText(/^21$/)).toBeInTheDocument();
+    });
+
+    userEvent.click(
+      getByText(/^21$/).parentElement?.parentElement as HTMLElement,
+    );
+
+    userEvent.click(getByText(labelOk));
+
+    expect(getByText(labelStartDateIsSameOrAfterEndDate)).toBeInTheDocument();
   });
 });
