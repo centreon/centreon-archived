@@ -61,14 +61,14 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
       label: t(labelPersistent),
       type: ColumnType.string,
       getContent: ({ is_persistent_comment }): string =>
-        getYesNoLabel(is_persistent_comment),
+        t(getYesNoLabel(is_persistent_comment)),
       width: 100,
     },
     {
       id: 'is_sticky',
       label: t(labelSticky),
       type: ColumnType.string,
-      getContent: ({ is_sticky }): string => getYesNoLabel(is_sticky),
+      getContent: ({ is_sticky }): string => t(getYesNoLabel(is_sticky)),
       width: 100,
     },
 

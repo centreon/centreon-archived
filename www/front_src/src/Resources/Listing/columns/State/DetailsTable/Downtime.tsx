@@ -55,7 +55,7 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       id: 'is_fixed',
       label: t(labelFixed),
       type: ColumnType.string,
-      getContent: ({ is_fixed }): string => (is_fixed ? labelYes : labelNo),
+      getContent: ({ is_fixed }): string => t(is_fixed ? labelYes : labelNo),
       width: 100,
     },
     {
