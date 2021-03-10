@@ -40,7 +40,7 @@ const Details = (): JSX.Element | null => {
     request: getData,
   });
 
-  const visibleTabs = getVisibleTabs(selectedDetailsLinks);
+  const visibleTabs = getVisibleTabs(links);
 
   React.useEffect(() => {
     if (details !== undefined) {

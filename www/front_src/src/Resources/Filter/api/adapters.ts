@@ -28,12 +28,10 @@ const toFilter = ({ id: filterId, name, criterias }: RawFilter): Filter => {
       resourceTypes: getStandardMultiSelectCriteriaValue('resource_types'),
       states: getStandardMultiSelectCriteriaValue('states'),
       statuses: getStandardMultiSelectCriteriaValue('statuses'),
-      hostGroups: findCriteriaByName('host_groups').value as Array<
-        CriteriaValue
-      >,
-      serviceGroups: findCriteriaByName('service_groups').value as Array<
-        CriteriaValue
-      >,
+      hostGroups: findCriteriaByName('host_groups')
+        .value as Array<CriteriaValue>,
+      serviceGroups: findCriteriaByName('service_groups')
+        .value as Array<CriteriaValue>,
       search: findCriteriaByName('search').value as string | undefined,
     },
   };

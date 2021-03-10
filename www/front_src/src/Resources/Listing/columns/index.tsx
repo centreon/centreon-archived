@@ -197,7 +197,14 @@ const ParentResourceColumn = ({
   );
 };
 
-export const getColumns = (actions): Array<Column> => [
+interface Actions {
+  onDisplayGraph;
+  onAcknowledge;
+  onDowntime;
+  onCheck;
+}
+
+export const getColumns = (actions: Actions): Array<Column> => [
   {
     id: 'severity',
     label: 'S',

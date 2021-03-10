@@ -1,6 +1,16 @@
 import numeral from 'numeral';
 
-const formatMetricValue = ({ value, unit, base = 1000 }): string => {
+interface FormatMetricValueProps {
+  value: number | null;
+  unit: string;
+  base?: number;
+}
+
+const formatMetricValue = ({
+  value,
+  unit,
+  base = 1000,
+}: FormatMetricValueProps): string => {
   const base2Units = [
     'B',
     'bytes',

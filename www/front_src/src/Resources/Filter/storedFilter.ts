@@ -24,7 +24,7 @@ const getStoredOrDefaultFilter = (): Filter => {
   return cachedFilter;
 };
 
-const storeFilter = (filter): void => {
+const storeFilter = (filter: Filter): void => {
   localStorage.setItem(key, JSON.stringify(filter));
 };
 

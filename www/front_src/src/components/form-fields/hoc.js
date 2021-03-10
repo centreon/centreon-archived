@@ -32,16 +32,6 @@ const fieldHoc = (WrapComponent) => {
       );
     }
 
-    getId() {
-      const { name } = this.props.input;
-
-      if (!this.fieldId) {
-        this.fieldId = nextId();
-      }
-
-      return `field-${name}-${this.fieldId}`;
-    }
-
     handleFocus(e) {
       const {
         input: { onFocus },
@@ -62,6 +52,16 @@ const fieldHoc = (WrapComponent) => {
       if (onBlur) {
         return onBlur(value);
       }
+    }
+
+    getId() {
+      const { name } = this.props.input;
+
+      if (!this.fieldId) {
+        this.fieldId = nextId();
+      }
+
+      return `field-${name}-${this.fieldId}`;
     }
 
     isInputValue(value) {

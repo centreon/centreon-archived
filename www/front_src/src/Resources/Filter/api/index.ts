@@ -6,7 +6,9 @@ import {
   putData,
   deleteData,
   patchData,
+  ListingParameters,
 } from '@centreon/ui';
+import { CancelToken } from 'axios';
 
 import { baseEndpoint } from '../../api/endpoint';
 import { RawFilter, Filter } from '../models';
@@ -14,13 +16,15 @@ import { toRawFilter, toFilter } from './adapters';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;
 
-const buildListCustomFiltersEndpoint = (parameters): string =>
+const buildListCustomFiltersEndpoint = (
+  parameters: ListingParameters,
+): string =>
   buildListingEndpoint({
     baseEndpoint: filterEndpoint,
     parameters,
   });
 
-const listCustomFilters = (cancelToken) => (): Promise<
+const listCustomFilters = (cancelToken: CancelToken) => (): Promise<
   ListingModel<RawFilter>
 > =>
   getData<ListingModel<RawFilter>>(cancelToken)(
@@ -29,14 +33,18 @@ const listCustomFilters = (cancelToken) => (): Promise<
 
 type RawFilterWithoutId = Omit<RawFilter, 'id'>;
 
-const createFilter = (cancelToken) => (parameters): Promise<Filter> => {
+const createFilter = (cancelToken: CancelToken) => (
+  parameters: Filter,
+): Promise<Filter> => {
   return postData<RawFilterWithoutId, RawFilter>(cancelToken)({
     endpoint: filterEndpoint,
     data: toRawFilter(parameters),
   }).then(toFilter);
 };
 
-const updateFilter = (cancelToken) => (parameters): Promise<Filter> => {
+const updateFilter = (cancelToken: CancelToken) => (
+  parameters: Filter,
+): Promise<Filter> => {
   return putData<RawFilterWithoutId, RawFilter>(cancelToken)({
     endpoint: `${filterEndpoint}/${parameters.id}`,
     data: toRawFilter(parameters),
@@ -47,14 +55,18 @@ interface PatchFilterProps {
   order: number;
 }
 
-const patchFilter = (cancelToken) => (parameters): Promise<Filter> => {
+const patchFilter = (cancelToken: CancelToken) => (
+  parameters: PatchFilterProps & { id: number },
+): Promise<Filter> => {
   return patchData<PatchFilterProps, Filter>(cancelToken)({
     endpoint: `${filterEndpoint}/${parameters.id}`,
     data: { order: parameters.order },
   });
 };
 
-const deleteFilter = (cancelToken) => (parameters): Promise<void> => {
+const deleteFilter = (cancelToken: CancelToken) => (parameters: {
+  id: number;
+}): Promise<void> => {
   return deleteData<void>(cancelToken)(`${filterEndpoint}/${parameters.id}`);
 };
 
