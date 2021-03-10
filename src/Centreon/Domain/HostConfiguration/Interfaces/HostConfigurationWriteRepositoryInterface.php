@@ -36,11 +36,10 @@ interface HostConfigurationWriteRepositoryInterface
      * Add a host
      *
      * @param Host $host Host to add
-     * @return int Returns the host id
      * @throws RepositoryException
-     * @throws \Exception
+     * @throws \Throwable
      */
-    public function addHost(Host $host): int;
+    public function addHost(Host $host): void;
 
     /**
      * Change the activation status of host.

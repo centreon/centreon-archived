@@ -116,7 +116,6 @@ class Engine extends AbstractObject
         service_perfdata_command as service_perfdata_command_id,
         host_perfdata_file_processing_command as host_perfdata_file_processing_command_id,
         service_perfdata_file_processing_command as service_perfdata_file_processing_command_id,
-        postpone_notification_to_timeperiod,
         enable_notifications,
         execute_service_checks,
         accept_passive_service_checks,
@@ -231,7 +230,6 @@ class Engine extends AbstractObject
         'grpc_port'
     );
     protected $attributes_default = array(
-        'postpone_notification_to_timeperiod',
         'instance_heartbeat_interval',
         'enable_notifications',
         'execute_service_checks',

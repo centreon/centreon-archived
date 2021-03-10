@@ -32,10 +32,9 @@ interface HostConfigurationServiceInterface
      * Add a host.
      *
      * @param Host $host
-     * @return int Returns the host id
      * @throws HostConfigurationException
      */
-    public function addHost(Host $host): int;
+    public function addHost(Host $host): void;
 
     /**
      * Find a host.

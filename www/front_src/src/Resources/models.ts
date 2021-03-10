@@ -79,8 +79,14 @@ export interface ResourceUris {
   reporting: string | null;
 }
 
+interface Notes {
+  label: string | null;
+  url: string;
+}
+
 export interface ResourceExternals {
-  notes_url: string | null;
+  action_url: string | null;
+  notes: Notes | null;
 }
 
 export interface ResourceLinks {
