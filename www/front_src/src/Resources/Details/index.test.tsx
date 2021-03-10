@@ -1087,29 +1087,6 @@ describe(Details, () => {
         cancelTokenRequestParam,
       );
     });
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        buildListTimelineEventsEndpoint({
-          endpoint: retrievedDetails.links.endpoints.timeline,
-          parameters: {
-            limit: 500,
-            search: {
-              conditions: [
-                {
-                  field: 'date',
-                  values: {
-                    $gt: startISOString,
-                    $lt: endISOString,
-                  },
-                },
-              ],
-            },
-          },
-        }),
-        cancelTokenRequestParam,
-      );
-    });
   });
 
   it('display the correct date time on pickers when a time period is selected and the Graph tab is selected', async () => {
