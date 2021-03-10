@@ -15,7 +15,7 @@ Feature:
 
     # Internal local authentication
     Scenario:
-        Given I send a POST request to '/authentication/providers/local' with body:
+        Given I send a POST request to '/v2.1/authentication/providers/local' with body:
         """
         {
             "login": "admin",
@@ -23,4 +23,9 @@ Feature:
         }
         """
         Then the response code should be "200"
-        # check Set-Cookie header response
+        And the header "set-cookie" should contain "PHPSESSID="
+
+    Scenario:
+        Given I am logged in with local provider
+        When I send a GET request to '/beta/monitoring/resources'
+        Then the response code should be "200"
