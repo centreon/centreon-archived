@@ -163,6 +163,39 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
     /**
      * @inheritDoc
      */
+    public function addMetaServiceComment(Comment $comment, Service $metaService): void
+    {
+        // We validate the comment entity sent
+        $errors = $this->validator->validate(
+            $comment,
+            null,
+            self::VALIDATION_GROUPS_SERVICE_ADD_COMMENT
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $hostComment = $this->monitoringService
+            ->filterByContact($this->contact)
+            ->findOneHost($service->getHost()->getId());
+
+        if (is_null($hostComment)) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Meta host %d not found'),
+                    $service->getHost()->getId()
+                )
+            );
+        }
+        $service->setHost($hostComment);
+
+        $this->engineService->addServiceComment($comment, $service);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function addHostComment(Comment $comment, Host $host): void
     {
         // We validate the comment entity sent
@@ -241,6 +274,18 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
                     throw new CommentException(_('Error when searching for services'), 0, $ex);
                 }
             }
+
+            if (!empty($resourceIds['metaservice'])) {
+                try {
+                    foreach ($$resourceIds as $id) {
+                        $metaServices = $this->monitoringRepository
+                            ->filterByAccessGroups($accessGroups)
+                            ->findOneServiceByDescription('meta_' . $id);
+                    }
+                } catch (\Throwable $ex) {
+                    throw new CommentException(_('Error when searching for meta services'), 0, $ex);
+                }
+            }
         }
 
         foreach ($hosts as $host) {
@@ -249,6 +294,10 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
 
         foreach ($services as $service) {
             $this->addServiceComment($comments[$service->getId()], $service);
+        }
+
+        foreach ($metaServices as $metaService) {
+            $this->addMetaServiceComment($comments[$service->getId()], $service);
         }
     }
 }

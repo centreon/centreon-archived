@@ -111,6 +111,15 @@ interface MonitoringRepositoryInterface
     public function findOneService(int $hostId, int $serviceId): ?Service;
 
     /**
+     * Find one service based on its id and according to ACL.
+     *
+     * @param string $serviceDescription
+     * @return Service|null
+     * @throws \Exception
+     */
+    public function findOneServiceByDescription(string $serviceDescription): ?Service;
+
+    /**
      * Find all services from an array of serviceIds for a non admin user
      *
      * @param array $serviceIds

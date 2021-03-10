@@ -57,6 +57,13 @@ centreon_application_acknowledgement_addserviceacknowledgement:
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::addServiceAcknowledgement'
 
+centreon_application_acknowledgement_addmetaserviceacknowledgement:
+    methods: POST
+    path: /monitoring/metaservices/{metaId}/acknowledgements
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::addMetaServiceAcknowledgement'
+
 centreon_application_acknowledgement_disacknowledgeservice:
     methods: DELETE
     path: /monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements

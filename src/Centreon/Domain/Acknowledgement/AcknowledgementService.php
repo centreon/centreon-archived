@@ -207,6 +207,36 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
+    public function addMetaServiceAcknowledgement(Acknowledgement $acknowledgement): void
+    {
+        // We validate the acknowledgement instance
+        $errors = $this->validator->validate(
+            $acknowledgement,
+            null,
+            AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK
+        );
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $acknowledgement->getResourceId());
+
+        if (is_null($service)) {
+            throw new EntityNotFoundException(_('Service not found'));
+        }
+
+        $host = $this->monitoringRepository->findOneHost($service->getId());
+        if (is_null($host)) {
+            throw new EntityNotFoundException(_('Host not found'));
+        }
+        $service->setHost($host);
+
+        $this->engineService->addServiceAcknowledgement($acknowledgement, $service);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findHostsAcknowledgements(): array
     {
         return $this->acknowledgementRepository->findHostsAcknowledgements();

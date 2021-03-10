@@ -108,15 +108,15 @@ Centreon\Domain\Check\Check:
         checkTime:
             - Type:
                 type: DateTime
-                groups: [Default, check_host, check_service]
+                groups: [Default, check_host, check_service, check_meta_service]
         isForced:
             - Type:
                 type: boolean
-                groups: [Default, check_host, check_service]
+                groups: [Default, check_host, check_service, check_meta_service]
         resourceId:
             - Type:
                 type: int
-                groups: [Default, check_host, check_service]
+                groups: [Default, check_host, check_service, check_meta_service]
             - GreaterThan: 0
             - NotNull: ~
         parentResourceId:

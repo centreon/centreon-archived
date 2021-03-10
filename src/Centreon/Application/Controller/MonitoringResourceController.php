@@ -46,6 +46,7 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Resource;
 
 /**
  * Resource APIs for the Unified View page
@@ -69,6 +70,13 @@ class MonitoringResourceController extends AbstractController
     ];
 
     public const FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY = 'only_with_performance_data';
+
+
+    private const META_SERVICE_CONFIGURATION_URI = '/main.php?p=60204&o=c&meta_id={resource_id}';
+    private const META_SERVICE_DETAILS_ROUTE = 'centreon_application_monitoring_resource_details_meta_service';
+    private const META_SERVICE_TIMELINE_ROUTE = 'centreon_application_monitoring_gettimelinebymetaservices';
+    private const META_SERVICE_DOWNTIME_ROUTE = 'monitoring.downtime.addMetaServiceDowntime';
+    private const META_SERVICE_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addmetaserviceacknowledgement';
 
     private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id={resource_id}';
     private const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id={resource_id}';
@@ -369,6 +377,55 @@ class MonitoringResourceController extends AbstractController
     }
 
     /**
+     * Get resource details related to the service
+     *
+     * @return View
+     */
+    public function detailsMetaService(int $metaId): View
+    {
+        // ACL check
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        $filter = (new ResourceFilter())
+            ->setTypes([ResourceFilter::TYPE_META])
+            ->setMetaServiceIds([$metaId]);
+
+        $resources = $this->resource
+            ->filterByContact($contact)
+            ->findResources($filter);
+
+        if (empty($resources)) {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
+
+        $resource = $resources[0];
+
+        // $this->providePerformanceGraphEndpoint([$resource]);
+        $this->provideLinks($resource, $contact);
+
+        $this->resource->enrichMetaServiceWithDetails($resource);
+
+        $context = (new Context())
+            ->setGroups(array_merge(
+                static::SERIALIZER_GROUPS_LISTING,
+                [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
+                Downtime::SERIALIZER_GROUPS_SERVICE
+            ))
+            ->enableMaxDepth();
+
+        $context->addExclusionStrategy(new ResourceExclusionStrategy());
+
+        return $this
+            ->view($resource)
+            ->setContext($context);
+    }
+
+    /**
      * Add performance graph endpoint on resources which have performance data
      *
      * @param ResourceEntity[] $resources
@@ -494,6 +551,45 @@ class MonitoringResourceController extends AbstractController
                     $parameters
                 )
             );
+        } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
+            $parameters = [
+                'metaId' => $resource->getId(),
+            ];
+
+            $resource->getLinks()->getEndpoints()->setDetails(
+                $this->router->generate(
+                    static::META_SERVICE_DETAILS_ROUTE,
+                    $parameters
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setTimeline(
+                $this->router->generate(
+                    static::META_SERVICE_TIMELINE_ROUTE,
+                    $parameters
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setAcknowledgement(
+                $this->router->generate(
+                    static::META_SERVICE_ACKNOWLEDGEMENT_ROUTE,
+                    array_merge($parameters, $acknowledgementFilter)
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setDowntime(
+                $this->router->generate(
+                    static::META_SERVICE_DOWNTIME_ROUTE,
+                    array_merge($parameters, $downtimeFilter)
+                )
+            );
+
+/*             $resource->getLinks()->getEndpoints()->setStatusGraph(
+                $this->router->generate(
+                    static::SERVICE_STATUS_GRAPH_ROUTE,
+                    $parameters
+                )
+            ); */
         }
 
         if ($hostResource !== null) {
@@ -543,6 +639,8 @@ class MonitoringResourceController extends AbstractController
         if ($resource->getType() === ResourceEntity::TYPE_SERVICE && $resource->getParent()) {
             $this->provideHostInternalUris($resource->getParent(), $contact);
             $this->provideServiceInternalUris($resource, $contact);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
+            $this->provideMetaServiceInternalUris($resource, $contact);
         } else {
             $this->provideHostInternalUris($resource, $contact);
         }
@@ -608,6 +706,38 @@ class MonitoringResourceController extends AbstractController
                 $this->generateResourceUri($resource, static::SERVICE_REPORTING_URI)
             );
         }
+    }
+
+    /**
+     * Add service internal uris (configuration, logs, reporting) to the given resource
+     *
+     * @param ResourceEntity $resource
+     * @param Contact $contact
+     * @return void
+     */
+    private function provideMetaServiceInternalUris(ResourceEntity $resource, Contact $contact): void
+    {
+        if (
+            $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_META_SERVICES_WRITE)
+            || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_META_SERVICES_READ)
+            || $contact->isAdmin()
+        ) {
+            $resource->getLinks()->getUris()->setConfiguration(
+                $this->generateResourceUri($resource, static::META_SERVICE_CONFIGURATION_URI)
+            );
+        }
+
+/*         if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
+            $resource->getLinks()->getUris()->setLogs(
+                $this->generateResourceUri($resource, static::SERVICE_LOGS_URI)
+            );
+        } */
+
+/*         if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)) {
+            $resource->getLinks()->getUris()->setReporting(
+                $this->generateResourceUri($resource, static::SERVICE_REPORTING_URI)
+            );
+        } */
     }
 
     /**

@@ -445,6 +445,58 @@ class AcknowledgementController extends AbstractController
     }
 
     /**
+     * Entry point to add a service acknowledgement.
+     *
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @param int $metaId
+     * @return View
+     * @throws \Exception
+     */
+    public function addMetaServiceAcknowledgement(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer,
+        int $metaId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $errors = $entityValidator->validateEntity(
+            Acknowledgement::class,
+            json_decode($request->getContent(), true),
+            AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK,
+            false // To show errors on not expected fields
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        /**
+         * @var Acknowledgement $acknowledgement
+         */
+        $acknowledgement = $serializer->deserialize(
+            $request->getContent(),
+            Acknowledgement::class,
+            'json'
+        );
+        $acknowledgement
+            ->setResourceId($metaId);
+
+        $this->acknowledgementService
+            ->filterByContact($contact)
+            ->addMetaServiceAcknowledgement($acknowledgement);
+
+        return $this->view();
+    }
+
+    /**
      * Entry point to disacknowledge an acknowledgement.
      *
      * @param int $hostId Host id for which we want to cancel the acknowledgement
