@@ -86,7 +86,7 @@ Please describe precisely the steps to reproduce the encountered issue.
 **PHP error logs**
 
 ```
-tail -f /var/opt/rh/rh-php72/log/php-fpm/centreon-error.log
+tail -f /var/opt/rh/rh-php73/log/php-fpm/centreon-error.log
 ```
 **centreon-engine logs (*if needed*)**
 
