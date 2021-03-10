@@ -1082,13 +1082,12 @@ describe(Details, () => {
     const endISOString = '2020-06-21T06:00:00.000Z';
 
     await waitFor(() => {
+      console.log(mockedAxios.get.mock.calls);
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
         cancelTokenRequestParam,
       );
     });
-
-    console.log(mockedAxios.get.mock.calls);
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
