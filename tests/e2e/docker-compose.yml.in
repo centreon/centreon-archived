@@ -6,7 +6,7 @@ services:
       - 80
   cypress:
     image: cypress/included:6.3.0
-    user: "${UID}:${GID}"
+    user: "@UID@"
     volumes:
       - .:/e2e
     working_dir: /e2e
