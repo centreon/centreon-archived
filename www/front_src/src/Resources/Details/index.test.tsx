@@ -1069,20 +1069,19 @@ describe(Details, () => {
     userEvent.click(getByText(labelStartDate));
 
     await waitFor(() => {
-      expect(getByText(/^5$/)).toBeInTheDocument();
+      expect(getByText(/^19$/)).toBeInTheDocument();
     });
 
     userEvent.click(
-      getByText(/^5$/).parentElement?.parentElement as HTMLElement,
+      getByText(/^19$/).parentElement?.parentElement as HTMLElement,
     );
 
     userEvent.click(getByText(labelOk));
 
-    const startISOString = '2020-06-05T06:00:00.000Z';
+    const startISOString = '2020-06-19T06:00:00.000Z';
     const endISOString = '2020-06-21T06:00:00.000Z';
 
     await waitFor(() => {
-      console.log(mockedAxios.get.mock.calls);
       expect(mockedAxios.get).toHaveBeenCalledWith(
         `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
         cancelTokenRequestParam,
