@@ -72,7 +72,7 @@ class CommandLineTraitTest extends TestCase
 
         $this->configurationCommand = '$USER1$/plugin.pl --a="' . $this->hostMacroWithoutSpace->getName() . '" '
             . $this->serviceMacroWithoutSpace->getName() . ' '
-            . '-b ' . $this->hostMacroWithSpace->getName() . ' '
+            . '-b "' . $this->hostMacroWithSpace->getName() . '" '
             . $this->serviceMacroWithSpace->getName() . ' -f $_SERVICEEXTRAOPTIONS$';
 
         $this->replacementValue = '*****';
@@ -94,7 +94,7 @@ class CommandLineTraitTest extends TestCase
 
         $monitoringCommand = '/centreon/plugins/plugin.pl --a="' . $this->hostMacroWithoutSpace->getValue() . '" '
             . $this->serviceMacroWithoutSpace->getValue() . ' '
-            . '-b ' . $this->hostMacroWithSpace->getValue() . ' '
+            . '-b "' . $this->hostMacroWithSpace->getValue() . '" '
             . $this->serviceMacroWithSpace->getValue() . ' -f extra options';
         $result = $this->buildCommandLineFromConfiguration(
             $this->configurationCommand,
@@ -127,7 +127,7 @@ class CommandLineTraitTest extends TestCase
 
         $monitoringCommand = '/centreon/plugins/plugin.pl --a="' . $this->replacementValue . '" '
             . $this->replacementValue . ' '
-            . '-b ' . $this->replacementValue . ' '
+            . '-b "' . $this->replacementValue . '" '
             . $this->replacementValue . ' -f extra options';
         $result = $this->buildCommandLineFromConfiguration(
             $this->configurationCommand,
@@ -176,7 +176,7 @@ class CommandLineTraitTest extends TestCase
 
         $monitoringCommand = '/centreon/plugins/plugin.pl --a="' . $this->replacementValue . '" '
             . $this->replacementValue . ' '
-            . '-b ' . $this->replacementValue . ' '
+            . '-b "' . $this->replacementValue . '" '
             . $this->replacementValue . ' -f extra options';
 
         $this->expectException(MonitoringServiceException::class);
