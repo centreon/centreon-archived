@@ -5,18 +5,37 @@ import { map, pick } from 'ramda';
 
 import { Paper, makeStyles, ButtonGroup, Button } from '@material-ui/core';
 
-import { TimePeriodId, timePeriods } from '../../../Details/tabs/Graph/models';
+import {
+  ChangeTimeframeProps,
+  Timeframe,
+  TimePeriodId,
+  timePeriods,
+} from '../../../Details/tabs/Graph/models';
+
+import CustomTimeframePickers from './CustomTimeframePickers';
 
 const useStyles = makeStyles((theme) => ({
   header: {
     padding: theme.spacing(2),
+    display: 'grid',
+    gridTemplateColumns: `repeat(auto-fit, minmax(${theme.spacing(
+      25,
+    )}px, ${theme.spacing(43)}px))`,
+    columnGap: `${theme.spacing(1)}px`,
+    rowGap: `${theme.spacing(1)}px`,
+    justifyItems: 'center',
+  },
+  buttonGroup: {
+    alignSelf: 'center',
   },
 }));
 
 interface Props {
-  selectedTimePeriodId: string;
+  selectedTimePeriodId?: string;
   onChange: (timePeriod: TimePeriodId) => void;
   disabled?: boolean;
+  timeframe: Timeframe;
+  changeTimeframe: (props: ChangeTimeframeProps) => void;
 }
 
 const timePeriodOptions = map(pick(['id', 'name']), timePeriods);
@@ -25,6 +44,8 @@ const TimePeriodButtonGroup = ({
   selectedTimePeriodId,
   onChange,
   disabled = false,
+  timeframe,
+  changeTimeframe,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
@@ -34,9 +55,17 @@ const TimePeriodButtonGroup = ({
     name: t(timePeriod.name),
   }));
 
+  const changeDate = ({ property, date }) =>
+    changeTimeframe({ date, property });
+
   return (
     <Paper className={classes.header}>
-      <ButtonGroup fullWidth size="small" disabled={disabled} color="primary">
+      <ButtonGroup
+        size="small"
+        disabled={disabled}
+        color="primary"
+        className={classes.buttonGroup}
+      >
         {map(
           ({ id, name }) => (
             <Button
@@ -50,6 +79,7 @@ const TimePeriodButtonGroup = ({
           translatedTimePeriodOptions,
         )}
       </ButtonGroup>
+      <CustomTimeframePickers timeframe={timeframe} acceptDate={changeDate} />
     </Paper>
   );
 };
