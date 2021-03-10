@@ -14817,13 +14817,13 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "In downtime"
 #  msgstr ""
 
-#  msgid "Last 24 hours"
+#  msgid "24 hours"
 #  msgstr ""
 
-#  msgid "Last 7 days"
+#  msgid "7 days"
 #  msgstr ""
 
-#  msgid "Last 31 days"
+#  msgid "31 days"
 #  msgstr ""
 
 #  msgid "Set downtime on"

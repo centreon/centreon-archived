@@ -15329,14 +15329,14 @@ msgstr "Plannifier une plage de maintenance"
 msgid "In downtime"
 msgstr "En plage de maintenance"
 
-msgid "Last 24 hours"
-msgstr "24 dernières heures"
+msgid "24 hours"
+msgstr "24 heures"
 
-msgid "Last 7 days"
-msgstr "7 derniers jours"
+msgid "7 days"
+msgstr "7 jours"
 
-msgid "Last 31 days"
-msgstr "31 derniers jours"
+msgid "31 days"
+msgstr "31 jours"
 
 msgid "Set downtime on"
 msgstr "Programmer une plage de maintenance sur"
