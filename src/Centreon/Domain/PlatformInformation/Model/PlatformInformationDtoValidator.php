@@ -26,7 +26,6 @@ namespace Centreon\Domain\PlatformInformation\Model;
 use JsonSchema\Validator;
 use JsonSchema\Constraints\Constraint;
 use Centreon\Domain\PlatformInformation\Interfaces\DtoValidatorInterface;
-use Centreon\Domain\PlatformInformation\Exception\PlatformInformationDtoValidatorException;
 
 class PlatformInformationDtoValidator implements DtoValidatorInterface
 {

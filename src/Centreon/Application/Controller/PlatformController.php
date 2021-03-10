@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
@@ -98,6 +99,13 @@ class PlatformController extends AbstractController
         ];
     }
 
+    /**
+     * Update the platform
+     * @param Request $request
+     * @param UpdatePartiallyPlatformInformation $updatePartiallyPlatformInformation
+     * @return View
+     * @throws \Throwable
+     */
     public function updatePlatform(
         Request $request,
         UpdatePartiallyPlatformInformation $updatePartiallyPlatformInformation

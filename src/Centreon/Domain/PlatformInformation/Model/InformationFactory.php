@@ -30,6 +30,7 @@ class InformationFactory
     /**
      * @param array<string,mixed> $request
      * @return array<Information>
+     * @throws \Assert\AssertionFailedException
      */
     public static function createFromDto(array $request): array
     {

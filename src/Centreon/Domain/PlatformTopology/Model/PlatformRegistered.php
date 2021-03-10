@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,15 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformTopology;
+namespace Centreon\Domain\PlatformTopology\Model;
 
-use Centreon\Domain\PlatformTopology\PlatformRelation;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 
 /**
  * Class designed to retrieve servers to be added using the wizard
  *
  */
-class Platform
+class PlatformRegistered implements PlatformInterface
 {
     public const TYPE_CENTRAL = 'central';
     public const TYPE_POLLER = 'poller';
@@ -94,12 +94,18 @@ class Platform
     private $isLinkedToAnotherServer = false;
 
     /**
-     * @var PlatformRelation Communication type between topology and parent
+     * @var PlatformRelation|null Communication type between topology and parent
      */
-    private $relation = null;
+    private $relation;
 
     /**
-     * @return int|null
+     * @var bool define if the platform is in a pending state or is already registered
+     * By default Platform entities are not pending platforms
+     */
+    private $isPending = false;
+
+    /**
+     * @inheritDoc
      */
     public function getId(): ?int
     {
@@ -107,17 +113,16 @@ class Platform
     }
 
     /**
-     * @param int|null $id
-     * @return $this
+     * @inheritDoc
      */
-    public function setId(?int $id): self
+    public function setId(?int $id): PlatformInterface
     {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @inheritDoc
      */
     public function getType(): ?string
     {
@@ -125,11 +130,9 @@ class Platform
     }
 
     /**
-     * @param string|null $type server type: central, poller, remote, map or mbi
-     *
-     * @return $this
+     * @inheritDoc
      */
-    public function setType(?string $type): self
+    public function setType(?string $type): PlatformInterface
     {
         if (null !== $type) {
             $type = strtolower($type);
@@ -150,7 +153,7 @@ class Platform
     }
 
     /**
-     * @return string|null
+     * @inheritDoc
      */
     public function getName(): ?string
     {
@@ -158,17 +161,16 @@ class Platform
     }
 
     /**
-     * @param string|null $name
-     * @return $this
+     * @inheritDoc
      */
-    public function setName(?string $name): self
+    public function setName(?string $name): PlatformInterface
     {
         $this->name = $name;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @inheritDoc
      */
     public function getHostname(): ?string
     {
@@ -176,10 +178,9 @@ class Platform
     }
 
     /**
-     * @param string|null $hostname
-     * @return $this
+     * @inheritDoc
      */
-    public function setHostname(?string $hostname): self
+    public function setHostname(?string $hostname): PlatformInterface
     {
         $this->hostname = $hostname;
         return $this;
@@ -214,7 +215,7 @@ class Platform
     }
 
     /**
-     * @return string|null
+     * @inheritDoc
      */
     public function getAddress(): ?string
     {
@@ -222,18 +223,16 @@ class Platform
     }
 
     /**
-     * @param string|null $address
-     *
-     * @return $this
+     * @inheritDoc
      */
-    public function setAddress(?string $address): self
+    public function setAddress(?string $address): PlatformInterface
     {
         $this->address = $this->checkIpAddress($address);
         return $this;
     }
 
     /**
-     * @return string|null
+     * @inheritDoc
      */
     public function getParentAddress(): ?string
     {
@@ -241,11 +240,9 @@ class Platform
     }
 
     /**
-     * @param string|null $parentAddress
-     *
-     * @return $this
+     * @inheritDoc
      */
-    public function setParentAddress(?string $parentAddress): self
+    public function setParentAddress(?string $parentAddress): PlatformInterface
     {
         if (null !== $parentAddress && $this->getType() === static::TYPE_CENTRAL) {
             throw new \InvalidArgumentException(_("Cannot use parent address on a Central server type"));
@@ -255,7 +252,7 @@ class Platform
     }
 
     /**
-     * @return int|null
+     * @inheritDoc
      */
     public function getParentId(): ?int
     {
@@ -263,11 +260,9 @@ class Platform
     }
 
     /**
-     * @param int|null $parentId
-     *
-     * @return $this
+     * @inheritDoc
      */
-    public function setParentId(?int $parentId): self
+    public function setParentId(?int $parentId): PlatformInterface
     {
         if (null !== $parentId && $this->getType() === static::TYPE_CENTRAL) {
             throw new \InvalidArgumentException(_("Cannot set parent id to a central server"));
@@ -277,7 +272,7 @@ class Platform
     }
 
     /**
-     * @return int|null
+     * @inheritDoc
      */
     public function getServerId(): ?int
     {
@@ -285,17 +280,16 @@ class Platform
     }
 
     /**
-     * @param int|null $serverId nagios_server ID
-     * @return Platform
+     * @inheritDoc
      */
-    public function setServerId(?int $serverId): self
+    public function setServerId(?int $serverId): PlatformInterface
     {
         $this->serverId = $serverId;
         return $this;
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isLinkedToAnotherServer(): bool
     {
@@ -303,17 +297,16 @@ class Platform
     }
 
     /**
-     * @param bool $isLinked
-     * @return $this
+     * @inheritDoc
      */
-    public function setLinkedToAnotherServer(bool $isLinked): self
+    public function setLinkedToAnotherServer(bool $isLinked): PlatformInterface
     {
         $this->isLinkedToAnotherServer = $isLinked;
         return $this;
     }
 
     /**
-     * @return PlatformRelation
+     * @inheritDoc
      */
     public function getRelation(): ?PlatformRelation
     {
@@ -321,10 +314,9 @@ class Platform
     }
 
     /**
-     * @param string|null $relationType
-     * @return self
+     * @inheritDoc
      */
-    public function setRelation(?string $relationType): self
+    public function setRelation(?string $relationType): PlatformInterface
     {
         if ($this->getParentId() !== null) {
             $this->relation = (new PlatformRelation())
@@ -333,6 +325,23 @@ class Platform
                 ->setTarget($this->getParentId());
         }
 
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isPending(): bool
+    {
+        return $this->isPending;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setPending(bool $isPending): PlatformInterface
+    {
+        $this->isPending = $isPending;
         return $this;
     }
 }

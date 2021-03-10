@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ *
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +22,10 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\PlatformTopology\Model;
+namespace Centreon\Infrastructure\PlatformTopology\Repository\Model;
 
-use Centreon\Domain\PlatformTopology\Platform;
-use Centreon\Domain\PlatformTopology\PlatformRelation;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
+use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 
 /**
  * Format Platform to fit the JSON Graph Schema specification
@@ -57,7 +58,7 @@ class PlatformJsonGraph
      */
     private $relation = [];
 
-    public function __construct(Platform $platform)
+    public function __construct(PlatformInterface $platform)
     {
         $this->setId((string) $platform->getId());
         $this->setType($platform->getType());
@@ -67,6 +68,7 @@ class PlatformJsonGraph
         }
 
         $metadata = [];
+        $metadata['pending'] = ($platform->isPending() ? "true" : "false");
         if ($platform->getServerId() !== null) {
             $metadata['centreon-id'] = (string) $platform->getServerId();
         }

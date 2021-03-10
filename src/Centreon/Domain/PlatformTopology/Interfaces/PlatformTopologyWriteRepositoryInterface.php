@@ -1,6 +1,7 @@
 <?php
 
 /*
+ *
  * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,29 +22,33 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Domain\RemoteServer\Interfaces;
+namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\Menu\MenuException;
-use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
-use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
+use Centreon\Domain\Repository\RepositoryException;
 
-interface RemoteServerServiceInterface
+interface PlatformTopologyWriteRepositoryInterface
 {
     /**
-     * Convert a Central into a Remote Server
-     * @param PlatformInformation $platformInformation
-     * @throws PlatformTopologyException
-     * @throws EntityNotFoundException
-     * @throws MenuException
-     * @throws PlatformTopologyException
-     * @throws MenuException
+     * Register a new platform to topology
+     *
+     * @param PlatformInterface $platform
      */
-    public function convertCentralToRemote(PlatformInformation $platformInformation): void;
+    public function addPlatformToTopology(PlatformInterface $platform): void;
 
     /**
-     * Convert a Remote Server into a Central
-     * @param PlatformInformation $platformInformation
+     * Delete a Platform.
+     *
+     * @param int $serverId
+     * @throws EntityNotFoundException
+     * @throws RepositoryException
      */
-    public function convertRemoteToCentral(PlatformInformation $platformInformation): void;
+    public function deletePlatform(int $serverId): void;
+
+    /**
+     * Update a Platform.
+     *
+     * @param PlatformInterface $platform
+     */
+    public function updatePlatformParameters(PlatformInterface $platform): void;
 }

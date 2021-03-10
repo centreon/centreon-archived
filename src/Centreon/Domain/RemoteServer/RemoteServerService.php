@@ -24,7 +24,8 @@ declare(strict_types=1);
 namespace Centreon\Domain\RemoteServer;
 
 use Centreon\Domain\Menu\MenuException;
-use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
+use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
@@ -34,10 +35,10 @@ use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
@@ -75,6 +76,10 @@ class RemoteServerService implements RemoteServerServiceInterface
     /**
      * @param MenuRepositoryInterface $menuRepository
      * @param PlatformTopologyRepositoryInterface $platformTopologyRepository
+     * @param RemoteServerLocalConfigurationRepositoryInterface $remoteServerRepository
+     * @param PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
+     * @param ProxyServiceInterface $proxyService
+     * @param MonitoringServerServiceInterface $monitoringServerService
      */
     public function __construct(
         MenuRepositoryInterface $menuRepository,
@@ -94,6 +99,7 @@ class RemoteServerService implements RemoteServerServiceInterface
 
     /**
      * @inheritDoc
+
      */
     public function convertCentralToRemote(PlatformInformation $platformInformation): void
     {
@@ -110,18 +116,16 @@ class RemoteServerService implements RemoteServerServiceInterface
         } catch (RemoteServerException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
-            throw new RemoteServerException(_('An error occured while searching any remote children'), 0, $ex);
+            throw new RemoteServerException(_('An error occurred while searching any remote children'), 0, $ex);
         }
 
         /**
          * Set Remote type into Platform_Topology
          */
-        $this->updatePlatformTypeParameters(Platform::TYPE_REMOTE);
+        $this->updatePlatformTypeParameters(PlatformRegistered::TYPE_REMOTE);
 
         /**
          * Get the parent platform to register it later.
-         *
-         * @var Platform|null $topLevelPlatform
          */
         $topLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatform();
         if ($topLevelPlatform === null) {
@@ -135,8 +139,6 @@ class RemoteServerService implements RemoteServerServiceInterface
 
         /**
          * Find any children platform and forward them to Central Parent.
-         *
-         * @var Platform[] $platforms
          */
         $platforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
             $topLevelPlatform->getId()
@@ -165,10 +167,10 @@ class RemoteServerService implements RemoteServerServiceInterface
 
             $this->menuRepository->disableCentralMenus();
         } catch (RepositoryException | PlatformTopologyConflictException $ex) {
-            $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
+            $this->updatePlatformTypeParameters(PlatformRegistered::TYPE_CENTRAL);
             throw $ex;
         } catch (\Exception $ex) {
-            $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
+            $this->updatePlatformTypeParameters(PlatformRegistered::TYPE_CENTRAL);
             throw new MenuException(_('An error occurred while disabling the central menus'));
         }
 
@@ -197,8 +199,6 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Find any children platform and remove them,
          * as they are now attached to the Central and no longer to this platform.
-         *
-         * @var Platform[] $childrenPlatforms
          */
         $childrenPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId(
             $platform->getId()
@@ -213,12 +213,12 @@ class RemoteServerService implements RemoteServerServiceInterface
         /**
          * Set Central type into Platform_Topology
          */
-        $this->updatePlatformTypeParameters(Platform::TYPE_CENTRAL);
+        $this->updatePlatformTypeParameters(PlatformRegistered::TYPE_CENTRAL);
 
         try {
             $this->menuRepository->enableCentralMenus();
         } catch (\Exception $ex) {
-            throw new MenuException(_('An error occured while enabling the central menus'));
+            throw new MenuException(_('An error occurred while enabling the central menus'));
         }
 
         /**
@@ -229,8 +229,8 @@ class RemoteServerService implements RemoteServerServiceInterface
 
     /**
      * Update the platform type
-     *
      * @param string $type
+     * @throws PlatformTopologyException
      */
     private function updatePlatformTypeParameters(string $type): void
     {
@@ -239,7 +239,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             $platform->setType($type);
             $this->platformTopologyRepository->updatePlatformParameters($platform);
         } catch (\Exception $ex) {
-            throw new PlatformTopologyException(_('An error occured while updating the platform topology'));
+            throw new PlatformTopologyException(_('An error occurred while updating the platform topology'));
         }
     }
 }

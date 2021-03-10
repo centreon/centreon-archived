@@ -198,6 +198,7 @@ class PlatformInformation
     /**
      * @param int $port
      * @return int
+     * @throws PlatformInformationException
      */
     private function checkPortConsistency(int $port): int
     {
@@ -219,6 +220,7 @@ class PlatformInformation
     /**
      * @param int|null $port
      * @return $this
+     * @throws PlatformInformationException
      */
     public function setApiPort(?int $port): self
     {
@@ -242,6 +244,7 @@ class PlatformInformation
     /**
      * @param string|null $path
      * @return $this
+     * @throws PlatformInformationException
      */
     public function setApiPath(?string $path): self
     {
