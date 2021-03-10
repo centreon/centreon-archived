@@ -3229,8 +3229,11 @@ msgstr "Métriques"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: centreon-web/www/install/menu_translation.php:109
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:129
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Divers"
 
@@ -11766,10 +11769,6 @@ msgstr "Informations Gorgone"
 msgid "Monitoring Engine Information"
 msgstr "Information sur le moteur de supervision"
 
-#: centreon-web/www/include/configuration/configServers/formServers.php:104
-msgid "Miscelleneous"
-msgstr "Divers"
-
 #: centreon-web/www/include/configuration/configServers/formServers.php:105
 msgid "Centreon Trap Collector"
 msgstr "Colleteur de traps SNMP Centreon"
@@ -15651,7 +15650,7 @@ msgid "Cannot link a 'remote': '%s'@'%s' to another Remote server type"
 msgstr "Il n'est pas possible de lier un 'remote': '%s'@'%s' à un autre serveur de type 'Remote'"
 
 #: api/platform/topology
-msgid "A '%s': '%s'@'%s' is already registered"
+msgid "A '%s': '%s'@'%s' is already saved"
 msgstr "Un '%s': '%s'@'%s' est déjà enregistré"
 
 #: api/platform/topology
@@ -15766,8 +15765,8 @@ msgid "Please check the 'Centreon UI' and 'Remote access' forms"
 msgstr "Veuillez vérifier les formulaires 'Centreon Web' et 'Accès du Remote'"
 
 #: api/platform/topology
-msgid "Unable to convert Central's API response"
-msgstr "Impossible de convertir la réponse de L'API provenant du Central"
+msgid "Unable to decode Central's API response"
+msgstr "Impossible de décoder la réponse de L'API provenant du Central"
 
 #: api/platform/topology
 msgid "Error from Central's register API : "
@@ -15794,11 +15793,11 @@ msgid "No top level platform found to link the child platforms"
 msgstr "Aucune platforme principale trouvée pour lier les plateformes enfants"
 
 #: api/platform/topology
-msgid "An error occured while deleting the platform"
+msgid "An error occurred while deleting the platform"
 msgstr "Une erreur est survenue lors de la suppression de la plateforme"
 
 #: api/platform/topology
-msgid "An error occured while updating the platform"
+msgid "An error occurred while updating the platform"
 msgstr "Une erreur est survenue lors de la mise à jour de la plateforme"
 
 #: api/platform/topology

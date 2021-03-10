@@ -46,6 +46,7 @@ class PlatformInformationFactory
     /**
      * @param array<string, mixed> $information
      * @return PlatformInformation
+     * @throws \Exception
      */
     public function createRemoteInformation(array $information): PlatformInformation
     {
@@ -83,7 +84,7 @@ class PlatformInformationFactory
     }
 
     /**
-     * Create a PlatformInformation with isRemote false and other informations are null.
+     * Create a PlatformInformation with isRemote false and other information are null.
      *
      * @return PlatformInformation
      */
@@ -99,6 +100,7 @@ class PlatformInformationFactory
      *
      * @param string $password
      * @return string
+     * @throws \Exception
      */
     private function encryptApiCredentials(string $password): string
     {

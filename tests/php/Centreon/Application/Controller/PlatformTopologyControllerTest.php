@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,19 @@
 
 namespace Tests\Centreon\Application\Controller;
 
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
 use FOS\RestBundle\Context\Context;
 use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\Request;
-use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
+use Centreon\Domain\PlatformTopology\Model\PlatformPending;
 use Symfony\Component\HttpFoundation\Response;
-use Centreon\Domain\PlatformTopology\PlatformRelation;
+use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
-use Centreon\Infrastructure\PlatformTopology\Model\PlatformJsonGraph;
+use Centreon\Infrastructure\PlatformTopology\Repository\Model\PlatformJsonGraph;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Application\Controller\PlatformTopologyController;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
@@ -46,17 +48,17 @@ class PlatformTopologyControllerTest extends TestCase
     protected $badJsonPlatform;
 
     /**
-     * @var Platform|null $platform
+     * @var PlatformPending|null $platform
      */
     protected $platform;
 
     /**
-     * @var Platform
+     * @var PlatformRegistered
      */
     protected $centralPlatform;
 
     /**
-     * @var Platform
+     * @var PlatformPending
      */
     protected $pollerPlatform;
 
@@ -91,7 +93,7 @@ class PlatformTopologyControllerTest extends TestCase
 
         $this->goodJsonPlatform = json_encode($goodJsonPlatform);
 
-        $this->platform = (new Platform())
+        $this->platform = (new PlatformPending())
             ->setName($goodJsonPlatform['name'])
             ->setRelation('normal')
             ->setHostname($goodJsonPlatform['hostname'])
@@ -99,20 +101,20 @@ class PlatformTopologyControllerTest extends TestCase
             ->setType($goodJsonPlatform['type'])
             ->setParentAddress($goodJsonPlatform['parent_address']);
 
-        $this->centralPlatform = (new Platform())
+        $this->centralPlatform = (new PlatformRegistered())
             ->setId(1)
             ->setName('Central')
             ->setHostname('localhost.localdomain')
-            ->setType(Platform::TYPE_CENTRAL)
+            ->setType(PlatformRegistered::TYPE_CENTRAL)
             ->setAddress('192.168.1.1')
             ->setServerId(1)
             ->setRelation(PlatformRelation::NORMAL_RELATION);
 
-        $this->pollerPlatform = (new Platform())
+        $this->pollerPlatform = (new PlatformPending())
             ->setId(2)
             ->setName('Poller')
             ->setHostname('poller.poller1')
-            ->setType(Platform::TYPE_POLLER)
+            ->setType(PlatformRegistered::TYPE_POLLER)
             ->setAddress('192.168.1.2')
             ->setParentAddress('192.168.1.1')
             ->setParentId(1)

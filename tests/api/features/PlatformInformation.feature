@@ -11,7 +11,7 @@ Feature:
         Given I am logged in
 
         # This step is mandatory, otherwise the platform_topology is empty on the test container.
-        When I send a POST request to '/beta/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
         """
         {
             "name": "Central",
@@ -22,7 +22,7 @@ Feature:
         """
         Then the response code should be "201"
 
-        When I send a PATCH request to '/beta/platform' with body:
+        When I send a PATCH request to '/latest/platform' with body:
         """
         {
             "apiUsername": "admin",
