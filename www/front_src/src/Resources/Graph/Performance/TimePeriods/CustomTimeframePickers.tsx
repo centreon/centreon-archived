@@ -38,7 +38,7 @@ dayjs.extend(isSameOrAfter);
 const useStyles = makeStyles((theme) => ({
   pickers: {
     display: 'grid',
-    gridTemplateColumns: `repeat(2, ${theme.spacing(16)}px)`,
+    gridTemplateColumns: `repeat(2, ${theme.spacing(14.5)}px)`,
     columnGap: `${theme.spacing(3)}px`,
   },
   error: {

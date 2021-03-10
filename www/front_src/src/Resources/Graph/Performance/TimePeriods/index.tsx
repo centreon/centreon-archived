@@ -16,17 +16,19 @@ import CustomTimeframePickers from './CustomTimeframePickers';
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     display: 'grid',
-    gridTemplateColumns: `repeat(auto-fit, minmax(${theme.spacing(
-      25,
-    )}px, ${theme.spacing(43)}px))`,
-    columnGap: `${theme.spacing(1)}px`,
-    rowGap: `${theme.spacing(1)}px`,
-    justifyItems: 'center',
+    gridTemplateColumns: `repeat(2, auto)`,
+    columnGap: `${theme.spacing(2)}px`,
+    justifyContent: 'center',
   },
   buttonGroup: {
     alignSelf: 'center',
+  },
+  button: {
+    padding: theme.spacing(0.8, 0.5),
+    fontSize: '0.75rem',
+    lineHeight: 1.2,
   },
 }));
 
@@ -72,6 +74,7 @@ const TimePeriodButtonGroup = ({
               key={name}
               onClick={() => onChange(id)}
               variant={selectedTimePeriodId === id ? 'contained' : 'outlined'}
+              className={classes.button}
             >
               {name}
             </Button>

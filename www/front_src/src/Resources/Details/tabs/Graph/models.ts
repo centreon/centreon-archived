@@ -4,9 +4,9 @@ import { find, propEq } from 'ramda';
 import { timeFormat, dateFormat } from '@centreon/ui';
 
 import {
-  labelLast24h,
-  labelLast7Days,
-  labelLast31Days,
+  label24hours,
+  label7Days,
+  label31Days,
 } from '../../../translatedLabels';
 
 export type TimePeriodId = 'last_24_h' | 'last_7_days' | 'last_31_days';
@@ -42,7 +42,7 @@ export interface ChangeTimeframeProps {
 }
 
 const last24hPeriod: TimePeriod = {
-  name: labelLast24h,
+  name: label24hours,
   id: 'last_24_h',
   getStart: (): Date => dayjs(Date.now()).subtract(24, 'hour').toDate(),
   dateTimeFormat: timeFormat,
@@ -50,7 +50,7 @@ const last24hPeriod: TimePeriod = {
 };
 
 const last7Days: TimePeriod = {
-  name: labelLast7Days,
+  name: label7Days,
   id: 'last_7_days',
   getStart: (): Date => dayjs(Date.now()).subtract(7, 'day').toDate(),
   dateTimeFormat: dateFormat,
@@ -58,7 +58,7 @@ const last7Days: TimePeriod = {
 };
 
 const last31Days: TimePeriod = {
-  name: labelLast31Days,
+  name: label31Days,
   id: 'last_31_days',
   getStart: (): Date => dayjs(Date.now()).subtract(31, 'day').toDate(),
   dateTimeFormat: dateFormat,
