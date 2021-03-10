@@ -65,7 +65,6 @@ import {
   labelDisplayEvents,
   labelStartDate,
   labelEndDate,
-  labelOk,
   labelStartDateIsSameOrAfterEndDate,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
