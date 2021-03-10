@@ -12,9 +12,7 @@ import { FormHelperText, makeStyles } from '@material-ui/core';
 import { useUserContext } from '@centreon/ui-context';
 
 import {
-  labelCancel,
   labelEndDate,
-  labelOk,
   labelStartDate,
   labelStartDateIsSameOrAfterEndDate,
 } from '../../../translatedLabels';
@@ -59,30 +57,14 @@ const CustomTimeframePickers = ({
   const isInvalidDate = ({ startDate, endDate }) =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
-  const changeStartDate = (property: TimeframeProperties) => (value) => {
-    setStart(value.toDate());
-    if (
-      or(
-        isInvalidDate({ startDate: value.toDate(), endDate: end }),
-        equals(value?.toDate().getTime(), start.getTime()),
-      )
-    ) {
+  const changeDate = (property: TimeframeProperties) => () => {
+    if (isInvalidDate({ startDate: start, endDate: end })) {
       return;
     }
-    acceptDate({ date: value.toDate(), property });
-  };
-
-  const changeEndDate = (property: TimeframeProperties) => (value) => {
-    setEnd(value.toDate());
-    if (
-      or(
-        isInvalidDate({ startDate: start, endDate: value.toDate() }),
-        equals(value?.toDate().getTime(), end.getTime()),
-      )
-    ) {
-      return;
-    }
-    acceptDate({ date: value.toDate(), property });
+    acceptDate({
+      date: equals(property === TimeframeProperties.start) ? start : end,
+      property,
+    });
   };
 
   React.useEffect(() => {
@@ -104,8 +86,6 @@ const CustomTimeframePickers = ({
     autoOk: true,
     ampm: false,
     format: 'YYYY/MM/DD HH:mm',
-    okLabel: t(labelOk),
-    cancelLabel: t(labelCancel),
   };
 
   return (
@@ -117,8 +97,10 @@ const CustomTimeframePickers = ({
         >
           <DateTimePicker
             {...commonPickersProps}
+            variant="inline"
             value={start}
-            onChange={changeStartDate(TimeframeProperties.start)}
+            onChange={(value) => setStart(new Date(value?.toDate() || 0))}
+            onClose={changeDate(TimeframeProperties.start)}
             label={t(labelStartDate)}
             maxDate={timeframe.end}
             size="small"
@@ -128,8 +110,10 @@ const CustomTimeframePickers = ({
           />
           <DateTimePicker
             {...commonPickersProps}
+            variant="inline"
             value={end}
-            onChange={changeEndDate(TimeframeProperties.end)}
+            onChange={(value) => setEnd(new Date(value?.toDate() || 0))}
+            onClose={changeDate(TimeframeProperties.end)}
             label={t(labelEndDate)}
             minDate={timeframe.start}
             size="small"

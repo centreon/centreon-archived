@@ -1087,7 +1087,7 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText } = renderDetails({
+    const { getByText, container } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -1104,17 +1104,10 @@ describe(Details, () => {
 
     userEvent.click(getByText(labelStartDate));
 
-    await waitFor(() => {
-      expect(getByText(/^12$/)).toBeInTheDocument();
-    });
+    fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
+    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
 
-    userEvent.click(
-      getByText(/^12$/).parentElement?.parentElement as HTMLElement,
-    );
-
-    userEvent.click(getByText(labelOk));
-
-    const startISOString = '2020-06-12T06:00:00.000Z';
+    const startISOString = '2020-06-19T06:00:00.000Z';
     const endISOString = '2020-06-21T06:00:00.000Z';
 
     await waitFor(() => {
@@ -1129,7 +1122,7 @@ describe(Details, () => {
         buildListTimelineEventsEndpoint({
           endpoint: retrievedDetails.links.endpoints.timeline,
           parameters: {
-            limit: 500,
+            limit: 100,
             search: {
               conditions: [
                 {
@@ -1195,7 +1188,7 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText } = renderDetails({
+    const { getByText, container } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -1220,7 +1213,7 @@ describe(Details, () => {
       getByText(/^21$/).parentElement?.parentElement as HTMLElement,
     );
 
-    userEvent.click(getByText(labelOk));
+    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
 
     expect(getByText(labelStartDateIsSameOrAfterEndDate)).toBeInTheDocument();
   });
