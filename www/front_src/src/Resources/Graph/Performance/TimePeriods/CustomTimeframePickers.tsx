@@ -3,6 +3,7 @@ import * as React from 'react';
 import DayjsUtils from '@date-io/dayjs';
 import dayjs from 'dayjs';
 import { equals, or } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
@@ -10,7 +11,12 @@ import { FormHelperText, makeStyles } from '@material-ui/core';
 
 import { useUserContext } from '@centreon/ui-context';
 
-import { labelEndDate, labelStartDate } from '../../../translatedLabels';
+import {
+  labelCancel,
+  labelEndDate,
+  labelOk,
+  labelStartDate,
+} from '../../../translatedLabels';
 import {
   Timeframe,
   TimeframeProperties,
@@ -41,41 +47,33 @@ const CustomTimeframePickers = ({
   timeframe,
   acceptDate,
 }: Props): JSX.Element => {
-  const [start, setStart] = React.useState<Date>(timeframe.start);
-  const [end, setEnd] = React.useState<Date>(timeframe.end);
   const { locale } = useUserContext();
   const classes = useStyles();
+  const { t } = useTranslation();
 
-  const changeStartDate = (value: MaterialUiPickersDate) => {
-    setStart(value?.toDate() || new Date());
-  };
+  const startIsAfterEnd = dayjs(timeframe.start).isAfter(dayjs(timeframe.end));
 
-  const changeEndDate = (value: MaterialUiPickersDate) => {
-    setEnd(value?.toDate() || new Date());
-  };
-
-  const startIsAfterEnd = dayjs(start).isAfter(dayjs(end));
-
-  const closeDateTimePicker = ({ date, property }: AcceptDateProps) => () => {
+  const changeDate = (property: TimeframeProperties) => (
+    value: MaterialUiPickersDate,
+  ) => {
     if (
-      or(startIsAfterEnd, equals(date.getTime(), timeframe[property].getTime()))
+      or(
+        startIsAfterEnd,
+        equals(value?.toDate().getTime(), timeframe[property].getTime()),
+      )
     ) {
       return;
     }
-
-    acceptDate({ date, property });
+    acceptDate({ date: value?.toDate() || new Date(), property });
   };
 
   const commonPickersProps = {
     autoOk: true,
     ampm: false,
     format: 'YYYY/MM/DD HH:mm',
+    okLabel: t(labelOk),
+    cancelLabel: t(labelCancel),
   };
-
-  React.useEffect(() => {
-    setStart(timeframe.start);
-    setEnd(timeframe.end);
-  }, [timeframe.start, timeframe.end]);
 
   return (
     <div>
@@ -86,29 +84,25 @@ const CustomTimeframePickers = ({
         >
           <DateTimePicker
             {...commonPickersProps}
-            variant="inline"
-            value={start}
-            onChange={changeStartDate}
-            onClose={closeDateTimePicker({
-              property: TimeframeProperties.start,
-              date: start,
-            })}
-            label={labelStartDate}
-            maxDate={end}
+            value={timeframe.start}
+            onChange={changeDate(TimeframeProperties.start)}
+            label={t(labelStartDate)}
+            maxDate={timeframe.end}
             size="small"
+            inputProps={{
+              'aria-label': t(labelStartDate),
+            }}
           />
           <DateTimePicker
             {...commonPickersProps}
-            variant="inline"
-            value={end}
-            onChange={changeEndDate}
-            onClose={closeDateTimePicker({
-              property: TimeframeProperties.end,
-              date: end,
-            })}
-            label={labelEndDate}
-            minDate={start}
+            value={timeframe.end}
+            onChange={changeDate(TimeframeProperties.end)}
+            label={t(labelEndDate)}
+            minDate={timeframe.start}
             size="small"
+            inputProps={{
+              'aria-label': t(labelEndDate),
+            }}
           />
         </MuiPickersUtilsProvider>
       </div>
