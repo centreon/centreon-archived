@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil, path } from 'ramda';
+import { isNil, path, pathOr } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 import GraphIcon from '@material-ui/icons/BarChart';
@@ -18,10 +18,9 @@ import {
 import { listResources } from '../../../Listing/api';
 import { Resource } from '../../../models';
 import InfiniteScroll from '../../InfiniteScroll';
+import memoizeComponent from '../../../memoizedComponent';
 import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
-import { TimePeriodId } from '../Graph/models';
-import memoizeComponent from '../../../memoizedComponent';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -82,15 +81,21 @@ const ServicesTabContent = ({
     changeSelectedTimePeriod,
     periodQueryParameters,
     getIntervalDates,
+    timeframe,
+    changeTimeframe,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
-      ['services', 'selectedTimePeriodId'],
+      ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
       tabParameters,
     ),
-    onTimePeriodChange: (timePeriodId: TimePeriodId) => {
+    defaultSelectedTimeframe: path(
+      ['services', 'graphTimePeriod', 'selectedTimeframe'],
+      tabParameters,
+    ),
+    onTimePeriodChange: (graphTimePeriod) => {
       setServicesTabParameters({
         graphMode,
-        selectedTimePeriodId: timePeriodId,
+        graphTimePeriod,
       });
     },
   });
@@ -139,8 +144,12 @@ const ServicesTabContent = ({
     setGraphMode(mode);
 
     setServicesTabParameters({
+      graphTimePeriod: pathOr(
+        {},
+        ['services', 'graphTimePeriod'],
+        tabParameters,
+      ),
       graphMode: mode,
-      selectedTimePeriodId: selectedTimePeriod.id,
     });
   };
 
@@ -172,9 +181,11 @@ const ServicesTabContent = ({
         filter={
           graphMode ? (
             <TimePeriodButtonGroup
-              selectedTimePeriodId={selectedTimePeriod.id}
+              selectedTimePeriodId={selectedTimePeriod?.id}
               onChange={changeSelectedTimePeriod}
               disabled={loading}
+              timeframe={timeframe}
+              changeTimeframe={changeTimeframe}
             />
           ) : undefined
         }
@@ -192,6 +203,7 @@ const ServicesTabContent = ({
               periodQueryParameters={periodQueryParameters}
               getIntervalDates={getIntervalDates}
               selectedTimePeriod={selectedTimePeriod}
+              timeframe={timeframe}
             />
           ) : (
             <ServiceList

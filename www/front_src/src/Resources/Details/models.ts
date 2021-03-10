@@ -8,7 +8,7 @@ import {
   NamedEntity,
 } from '../models';
 
-import { TimePeriodId } from './tabs/Graph/models';
+import { StoredTimeframe, TimePeriodId } from './tabs/Graph/models';
 
 export interface ResourceDetails extends NamedEntity {
   status: Status;
@@ -40,15 +40,16 @@ export interface ResourceDetails extends NamedEntity {
   alias?: string;
   groups?: Array<NamedEntity>;
 }
+export interface GraphTabParameters {
+  selectedTimePeriodId?: TimePeriodId;
+  selectedTimeframe?: StoredTimeframe;
+}
 
 export interface ServicesTabParameters {
   graphMode: boolean;
-  selectedTimePeriodId?: TimePeriodId;
+  graphTimePeriod: GraphTabParameters;
 }
 
-export interface GraphTabParameters {
-  selectedTimePeriodId?: TimePeriodId;
-}
 export interface TabParameters {
   services?: ServicesTabParameters;
   graph?: GraphTabParameters;

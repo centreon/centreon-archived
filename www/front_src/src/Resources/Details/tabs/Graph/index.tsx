@@ -11,8 +11,6 @@ import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/E
 import { ResourceContext, useResourceContext } from '../../../Context';
 import memoizeComponent from '../../../memoizedComponent';
 
-import { TimePeriodId } from './models';
-
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     display: 'grid',
@@ -51,23 +49,27 @@ const GraphTabContent = ({
     changeSelectedTimePeriod,
     periodQueryParameters,
     getIntervalDates,
+    timeframe,
+    changeTimeframe,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['graph', 'selectedTimePeriodId'],
       tabParameters,
     ),
-    onTimePeriodChange: (timePeriodId: TimePeriodId) => {
-      setGraphTabParameters({
-        selectedTimePeriodId: timePeriodId,
-      });
-    },
+    defaultSelectedTimeframe: path(
+      ['graph', 'selectedTimeframe'],
+      tabParameters,
+    ),
+    onTimePeriodChange: setGraphTabParameters,
   });
 
   return (
     <div className={classes.container}>
       <TimePeriodButtonGroup
-        selectedTimePeriodId={selectedTimePeriod.id}
+        selectedTimePeriodId={selectedTimePeriod?.id}
         onChange={changeSelectedTimePeriod}
+        timeframe={timeframe}
+        changeTimeframe={changeTimeframe}
       />
       <ExportablePerformanceGraphWithTimeline
         resource={details}
@@ -75,6 +77,7 @@ const GraphTabContent = ({
         periodQueryParameters={periodQueryParameters}
         getIntervalDates={getIntervalDates}
         selectedTimePeriod={selectedTimePeriod}
+        timeframe={timeframe}
       />
     </div>
   );

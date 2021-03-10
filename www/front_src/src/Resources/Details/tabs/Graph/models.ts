@@ -19,6 +19,28 @@ export interface TimePeriod {
   timelineEventsLimit: number;
 }
 
+export interface Timeframe {
+  start: Date;
+  end: Date;
+  xAxisTickFormat?: string;
+  timelineLimit?: number;
+}
+
+export interface StoredTimeframe {
+  start: string;
+  end: string;
+}
+
+export enum TimeframeProperties {
+  start = 'start',
+  end = 'end',
+}
+
+export interface ChangeTimeframeProps {
+  date: Date;
+  property: TimeframeProperties;
+}
+
 const last24hPeriod: TimePeriod = {
   name: labelLast24h,
   id: 'last_24_h',
