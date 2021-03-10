@@ -22,7 +22,7 @@
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 
 // error specific content
-$versionOfTheUpgrade = 'UPGRADE - 20.10.5 : ';
+$versionOfTheUpgrade = 'UPGRADE - 20.10.6 : ';
 
 // Part requiring rollback management
 try {
