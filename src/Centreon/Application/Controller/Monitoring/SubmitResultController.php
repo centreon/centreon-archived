@@ -170,6 +170,9 @@ class SubmitResultController extends AbstractController
                 } elseif ($submitResource['type'] === ResourceEntity::TYPE_HOST) {
                     $this->submitResultService
                         ->submitHostResult($result);
+                } elseif ($submitResource['type'] === ResourceEntity::TYPE_META) {
+                    $this->submitResultService
+                        ->submitMetaServiceResult($result);
                 }
             } catch (EntityNotFoundException $e) {
                 throw $e;

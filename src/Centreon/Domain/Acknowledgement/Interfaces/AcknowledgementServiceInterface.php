@@ -114,6 +114,18 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     public function addServiceAcknowledgement(Acknowledgement $acknowledgement): void;
 
     /**
+     * Adds a Meta service acknowledgement.
+     *
+     * @param Acknowledgement $acknowledgement Meta service acknowledgement to add
+     * @throws AcknowledgementException
+     * @throws EngineException
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     * @throws ValidationFailedException
+     */
+    public function addMetaServiceAcknowledgement(Acknowledgement $acknowledgement): void;
+
+    /**
      * Disacknowledge a host.
      *
      * @param int $hostId Host id of acknowledgement to be cancelled

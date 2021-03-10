@@ -207,6 +207,36 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
+    public function addMetaServiceAcknowledgement(Acknowledgement $acknowledgement): void
+    {
+        // We validate the acknowledgement instance
+        $errors = $this->validator->validate(
+            $acknowledgement,
+            null,
+            AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK
+        );
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $acknowledgement->getResourceId());
+
+        if (is_null($service)) {
+            throw new EntityNotFoundException(_('Service not found'));
+        }
+
+        $host = $this->monitoringRepository->findOneHost($service->getId());
+        if (is_null($host)) {
+            throw new EntityNotFoundException(_('Host not found'));
+        }
+        $service->setHost($host);
+
+        $this->engineService->addServiceAcknowledgement($acknowledgement, $service);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findHostsAcknowledgements(): array
     {
         return $this->acknowledgementRepository->findHostsAcknowledgements();
@@ -285,12 +315,11 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
      */
     public function disacknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void
     {
-        $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
-        if (is_null($host)) {
-            throw new EntityNotFoundException(_('Host not found'));
-        }
-
         if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+            if (is_null($host)) {
+                throw new EntityNotFoundException(_('Host not found'));
+            }
             $this->engineService->disacknowledgeHost($host);
             if ($ack->isWithServices()) {
                 $services = $this->monitoringRepository->findServicesByHostWithoutRequestParameters($host->getId());
@@ -300,6 +329,10 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                 }
             }
         } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+            if (is_null($host)) {
+                throw new EntityNotFoundException(_('Host not found'));
+            }
             $service = $this->monitoringRepository->findOneService(
                 (int)$resource->getParent()->getId(),
                 (int)$resource->getId()
@@ -315,6 +348,22 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             }
             $service->setHost($host);
             $this->engineService->disacknowledgeService($service);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
+            $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
+            if (is_null($service)) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _('Meta Service %d not found'),
+                        $resource->getId()
+                    )
+                );
+            }
+            $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());
+            if (is_null($host)) {
+                throw new EntityNotFoundException(_('Host not found'));
+            }
+            $service->setHost($host);
+            $this->engineService->disacknowledgeService($service);
         } else {
             throw new ResourceException(
                 sprintf(_('Incorrect Resource type: %s'), $resource->getType())
@@ -327,11 +376,11 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
      */
     public function acknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void
     {
-        $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
-        if (is_null($host)) {
-            throw new EntityNotFoundException(_('Host not found'));
-        }
         if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+            if (is_null($host)) {
+                throw new EntityNotFoundException(_('Host not found'));
+            }
             $this->engineService->addHostAcknowledgement($ack, $host);
             if ($ack->isWithServices()) {
                 $services = $this->monitoringRepository->findServicesByHostWithoutRequestParameters($host->getId());
@@ -341,6 +390,10 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                 }
             }
         } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+            if (is_null($host)) {
+                throw new EntityNotFoundException(_('Host not found'));
+            }
             $service = $this->monitoringRepository->findOneService(
                 (int)$resource->getParent()->getId(),
                 (int)$resource->getId()
@@ -353,6 +406,23 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                         $resource->getParent()->getId()
                     )
                 );
+            }
+            $service->setHost($host);
+            $this->engineService->addServiceAcknowledgement($ack, $service);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
+            $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
+            if (is_null($service)) {
+                throw new EntityNotFoundException(
+                    sprintf(
+                        _('Meta Service %d not found'),
+                        $resource->getId(),
+                        $resource->getParent()->getId()
+                    )
+                );
+            }
+            $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());
+            if (is_null($host)) {
+                throw new EntityNotFoundException(_('Host not found'));
             }
             $service->setHost($host);
             $this->engineService->addServiceAcknowledgement($ack, $service);

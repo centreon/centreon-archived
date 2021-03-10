@@ -809,6 +809,93 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @inheritDoc
      */
+    public function findOneServiceByDescription(string $serviceDescription): ?Service
+    {
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return null;
+        }
+
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                  ON acl.host_id = h.host_id
+                  AND acl.service_id = srv.service_id
+                INNER JOIN `:db`.`acl_groups` acg
+                  ON acg.acl_group_id = acl.group_id
+                  AND acg.acl_group_activate = \'1\'
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+
+        $request =
+            'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`,
+              srv.state AS `status_code`,
+              CASE
+                WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
+                WHEN srv.state = 1 THEN "' . ResourceStatus::STATUS_NAME_WARNING . '"
+                WHEN srv.state = 2 THEN "' . ResourceStatus::STATUS_NAME_CRITICAL . '"
+                WHEN srv.state = 3 THEN "' . ResourceStatus::STATUS_NAME_UNKNOWN . '"
+                WHEN srv.state = 4 THEN "' . ResourceStatus::STATUS_NAME_PENDING . '"
+              END AS `status_name`,
+              CASE
+                WHEN srv.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN srv.state = 1 THEN ' . ResourceStatus::SEVERITY_MEDIUM . '
+                WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+              END AS `status_severity_code`
+            FROM `:dbstg`.services srv
+            LEFT JOIN `:dbstg`.hosts h
+              ON h.host_id = srv.host_id'
+            . $accessGroupFilter
+            . ' WHERE srv.enabled = \'1\'
+              AND h.enabled = \'1\'
+              AND srv.description = :service_description
+            GROUP BY srv.service_id';
+
+        $request = $this->translateDbName($request);
+
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':service_description', $serviceDescription, \PDO::PARAM_STR);
+
+        $statement->execute();
+
+        if (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $service = EntityCreator::createEntityByArray(
+                Service::class,
+                $row
+            );
+
+            $service->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $row,
+                'status_'
+            ));
+
+            $service->setHost(
+                EntityCreator::createEntityByArray(Host::class, $row, 'host_')
+            );
+        } else {
+            return null;
+        }
+
+        //get downtimes for service
+        $downtimes = $this->findDowntimes($service->getHost()->getId(), $service->getId());
+        $service->setDowntimes($downtimes);
+
+        //get active acknowledgment for service
+        if ($service->isAcknowledged()) {
+            $acknowledgements = $this->findAcknowledgements($service->getHost()->getId(), $service->getId());
+
+            if (!empty($acknowledgements)) {
+                $service->setAcknowledgement($acknowledgements[0]);
+            }
+        }
+
+        return $service;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findServicesByIdsForNonAdminUser(array $serviceIds): array
     {
         $services = [];

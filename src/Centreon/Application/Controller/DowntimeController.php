@@ -353,6 +353,77 @@ class DowntimeController extends AbstractController
     }
 
     /**
+     * Entry point to add a service downtime
+     *
+     * @param Request $request
+     * @param JsonValidatorInterface $jsonValidator
+     * @param SerializerInterface $serializer
+     * @param int $metaId ID of the Meta Service
+     * @param string $version
+     * @return View
+     * @throws \Exception
+     */
+    public function addMetaServiceDowntime(
+        Request $request,
+        JsonValidatorInterface $jsonValidator,
+        SerializerInterface $serializer,
+        int $metaId,
+        string $version
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $errors = $jsonValidator
+            ->forVersion($version)
+            ->validate(
+                (string) $request->getContent(),
+                'add_downtime'
+            );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        } else {
+            /**
+             * @var Downtime $downtime
+             */
+            $downtime = $serializer->deserialize(
+                (string) $request->getContent(),
+                Downtime::class,
+                'json'
+            );
+            $this->monitoringService->filterByContact($contact);
+
+            $service = $this->monitoringService->findOneServiceByDescription('meta_' . $metaId);
+            if (is_null($service)) {
+                throw new EntityNotFoundException(
+                    sprintf(_('Meta Service linked to service %d not found'), $metaId)
+                );
+            }
+
+            $host = $this->monitoringService->findOneHost($service->getHost()->getId());
+
+            if (is_null($host)) {
+                throw new EntityNotFoundException(
+                    sprintf(_('Meta Host %d not found'), $metaId)
+                );
+            }
+            $service->setHost($host);
+
+            $this->downtimeService
+                ->filterByContact($contact)
+                ->addServiceDowntime($downtime, $service);
+            return $this->view();
+        }
+    }
+
+    /**
      * Entry point to find the last hosts downtimes.
      *
      * @param RequestParametersInterface $requestParameters
@@ -667,6 +738,12 @@ class DowntimeController extends AbstractController
                     $resource,
                     ResourceEntity::VALIDATION_GROUP_DOWNTIME_HOST
                 ));
+            } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
+                $errorList->addAll(ResourceService::validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_DOWNTIME_META
+                ));
             } else {
                 throw new \RestBadRequestException(_('Incorrect resource type for downtime'));
             }
@@ -720,7 +797,10 @@ class DowntimeController extends AbstractController
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME);
         } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
-        }
+        } elseif ($resouce->getType() === ResourceEntity::TYPE_META) {
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
+    }
+
 
         return $hasRights;
     }
