@@ -67,7 +67,7 @@ class RealTimeMonitoringServer
     private $isRunning = false;
 
     /**
-     * @var string Defines the version of the Monitoring Server (Centreon Engine version)
+     * @var string|null Defines the version of the Monitoring Server (Centreon Engine version)
      */
     private $version;
 

@@ -3549,10 +3549,12 @@ components:
           type: string
           description: "IP address of the server"
           example: "127.0.0.1"
+          nullable: true
         description:
           type: string
           description: "Description of the server"
           example: "Central server"
+          nullable: true
         isRunning:
           type: boolean
           description: "Indicates if the server is running or not"
@@ -3560,10 +3562,12 @@ components:
         lastAlive:
           type: integer
           description: "Timestamp of last time server was alive"
+          nullable: true
         version:
           type: string
           description: "Version of the server (centreon-engine)"
           example: "20.10.0"
+          nullable: true
     Acknowledgement.Resource:
       type: object
       properties:
