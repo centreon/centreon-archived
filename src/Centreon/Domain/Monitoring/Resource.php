@@ -280,7 +280,7 @@ class Resource
     /**
      * @return string|null
      */
-    public function getUuid(): ?int
+    public function getUuid(): ?string
     {
         return $this->uuid;
     }
