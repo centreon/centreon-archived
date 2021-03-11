@@ -7,7 +7,7 @@ import { baseEndpoint, monitoringEndpoint } from '../../api/endpoint';
 
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
-const monitoringServersEndpoint = `${baseEndpoint}/configuration/monitoring-servers`;
+const monitoringServersEndpoint = `${baseEndpoint}/monitoring/servers`;
 
 const buildHostGroupsEndpoint = (
   parameters: BuildListingEndpointParameters,
