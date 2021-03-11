@@ -2,8 +2,13 @@ import * as React from 'react';
 
 import { Line } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
+import { prop } from 'ramda';
 
-import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { makeStyles } from '@material-ui/core';
+
+import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
+
+import useAnnotationsContext from '../../Context';
 
 import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
@@ -12,16 +17,41 @@ type Props = {
   graphHeight: number;
   xScale: ScaleTime<number, number>;
   date: string;
-} & Omit<AnnotationProps, 'marker' | 'xIcon' | 'header'>;
+  Icon: (props) => JSX.Element;
+  ariaLabel: string;
+} & Omit<
+  AnnotationProps,
+  'marker' | 'xIcon' | 'header' | 'icon' | 'setAnnotationHovered'
+>;
+
+const useStyles = makeStyles((theme) => ({
+  icon: {
+    transition: theme.transitions.create('color', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+}));
 
 const LineAnnotation = ({
   color,
   graphHeight,
   xScale,
   date,
+  Icon,
+  ariaLabel,
   ...props
 }: Props): JSX.Element => {
   const { toDateTime } = useLocaleDateTimeFormat();
+
+  const classes = useStyles();
+
+  const {
+    annotationHovered,
+    setAnnotationHovered,
+    getStrokeWidth,
+    getStrokeOpacity,
+    getIconColor,
+  } = useAnnotationsContext();
 
   const xIconMargin = -iconSize / 2;
 
@@ -34,20 +64,39 @@ const LineAnnotation = ({
       from={{ x: xIcon, y: yMargin + iconSize + 2 }}
       to={{ x: xIcon, y: graphHeight }}
       stroke={color}
-      strokeWidth={1}
-      strokeOpacity={0.5}
-      pointerEvents="none"
+      strokeWidth={getStrokeWidth(prop('event', props))}
+      strokeOpacity={getStrokeOpacity(prop('event', props))}
     />
   );
 
-  return (
-    <Annotation
-      xIcon={xIcon + xIconMargin}
-      marker={line}
-      header={header}
-      {...props}
+  const icon = (
+    <Icon
+      aria-label={ariaLabel}
+      height={iconSize}
+      width={iconSize}
+      style={{
+        color: getIconColor({
+          color,
+          event: prop('event', props),
+        }),
+      }}
+      className={classes.icon}
     />
   );
+
+  return useMemoComponent({
+    Component: (
+      <Annotation
+        xIcon={xIcon + xIconMargin}
+        marker={line}
+        header={header}
+        icon={icon}
+        setAnnotationHovered={setAnnotationHovered}
+        {...props}
+      />
+    ),
+    memoProps: [annotationHovered],
+  });
 };
 
 export default LineAnnotation;
