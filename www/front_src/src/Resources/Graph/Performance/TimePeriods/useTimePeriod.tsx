@@ -4,7 +4,6 @@ import { always, and, cond, gte, isNil, not, pipe, propOr, T } from 'ramda';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
-import { useUserContext } from '@centreon/ui-context';
 import { dateFormat, timeFormat } from '@centreon/ui';
 
 import {
@@ -53,8 +52,6 @@ const useTimePeriod = ({
   defaultSelectedTimeframe,
   onTimePeriodChange,
 }: Props): TimePeriodState => {
-  const { timezone, locale } = useUserContext();
-
   const defaultTimePeriod = cond([
     [
       (timePeriodId) =>
@@ -77,16 +74,8 @@ const useTimePeriod = ({
     timePeriod: TimePeriod | null,
   ): Timeframe => {
     return {
-      start: new Date(
-        timePeriod
-          ?.getStart()
-          .toLocaleString(locale.substring(0, 2), { timeZone: timezone }) || 0,
-      ),
-      end: new Date(
-        new Date(Date.now()).toLocaleString(locale.substring(0, 2), {
-          timeZone: timezone,
-        }),
-      ),
+      start: new Date(timePeriod?.getStart() || 0),
+      end: new Date(Date.now()),
     };
   };
 
@@ -157,6 +146,7 @@ const useTimePeriod = ({
     onTimePeriodChange?.({ selectedTimePeriodId: timePeriod.id });
 
     const newTimeframeDates = getLocalizedIntervalDates(timePeriod);
+
     setTimeframe(newTimeframeDates);
 
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({

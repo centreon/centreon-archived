@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import DayjsUtils from '@date-io/dayjs';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { and, equals } from 'ramda';
@@ -20,6 +19,7 @@ import {
   Timeframe,
   TimeframeProperties,
 } from '../../../Details/tabs/Graph/models';
+import useAdapter from '../../../useAdapter';
 
 interface AcceptDateProps {
   property: TimeframeProperties;
@@ -50,9 +50,10 @@ const CustomTimeframePickers = ({
 }: Props): JSX.Element => {
   const [start, setStart] = React.useState<Date>(timeframe.start);
   const [end, setEnd] = React.useState<Date>(timeframe.end);
-  const { locale } = useUserContext();
   const classes = useStyles();
   const { t } = useTranslation();
+  const { locale } = useUserContext();
+  const Adapter = useAdapter();
 
   const isInvalidDate = ({ startDate, endDate }) =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
@@ -85,14 +86,13 @@ const CustomTimeframePickers = ({
   const commonPickersProps = {
     autoOk: true,
     ampm: false,
-    format: 'YYYY/MM/DD HH:mm',
   };
 
   return (
     <div>
       <div className={classes.pickers}>
         <MuiPickersUtilsProvider
-          utils={DayjsUtils}
+          utils={Adapter}
           locale={locale.substring(0, 2)}
         >
           <DateTimePicker
