@@ -400,7 +400,7 @@ function request_to_remote() {
   fi
 
   # Prepare Remote Payload
-  REMOTE_PAYLOAD='{"isRemote":true,"centralServerAddress":"'"${TARGET_NODE_ADDRESS}"'","apiUsername":"'"${API_USERNAME}"'","apiCredentials":"'"${API_TARGET_PASSWORD}"'","apiScheme":"'"${PARSED_URL[SCHEME]}"'","apiPort":'"${PARSED_URL[PORT]}"',"apiPath":"'"${ROOT_CENTREON_FOLDER}"'",'"${PEER_VALIDATION}"
+  REMOTE_PAYLOAD='{"isRemote":true,"platformName":"'"${CURRENT_NODE_NAME}"'","centralServerAddress":"'"${TARGET_NODE_ADDRESS}"'","apiUsername":"'"${API_USERNAME}"'","apiCredentials":"'"${API_TARGET_PASSWORD}"'","apiScheme":"'"${PARSED_URL[SCHEME]}"'","apiPort":'"${PARSED_URL[PORT]}"',"apiPath":"'"${ROOT_CENTREON_FOLDER}"'",'"${PEER_VALIDATION}"
   if [[ -n PROXY_PAYLOAD ]]; then
     REMOTE_PAYLOAD="${REMOTE_PAYLOAD}""${PROXY_PAYLOAD}"
   fi
