@@ -4885,14 +4885,13 @@ components:
     Platform.Full:
       type: object
       properties:
+        platformName:
+          type: string
+          description: "The name of the platform"
         isRemote:
           type: boolean
           example: true
           description: "Platform is a remote server"
-        isCentral:
-          type: boolean
-          example: true
-          description: "Platform is a central"
         centralServerAddress:
           type: string
           example: "192.168.0.1"
@@ -4926,18 +4925,22 @@ components:
           properties:
             host:
               type: string
+              nullable: true
               example: "example.proxy.com"
               description: "Host of your proxy"
             port:
               type: integer
+              nullable: true
               example: 80
               description: "Proxy port"
             user:
               type: string
+              nullable: true
               example: "admin"
               description: "proxy username"
             password:
               type: string
+              nullable: true
               example: "centreon"
               description: "proxy password"
     Gorgone.Response:
