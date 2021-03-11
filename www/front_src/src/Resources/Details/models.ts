@@ -8,7 +8,7 @@ import {
   NamedEntity,
 } from '../models';
 
-import { StoredTimeframe, TimePeriodId } from './tabs/Graph/models';
+import { StoredCustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
 
 export interface ResourceDetails extends NamedEntity {
   status: Status;
@@ -42,7 +42,7 @@ export interface ResourceDetails extends NamedEntity {
 }
 export interface GraphTabParameters {
   selectedTimePeriodId?: TimePeriodId;
-  selectedTimeframe?: StoredTimeframe;
+  selectedCustomPeriod?: StoredCustomTimePeriod;
 }
 
 export interface ServicesTabParameters {

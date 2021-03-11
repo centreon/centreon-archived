@@ -2967,8 +2967,11 @@ msgstr "métrica"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: centreon-web/www/install/menu_translation.php:109
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:129
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Diverso"
 
@@ -11261,10 +11264,6 @@ msgstr "Información Gorgone"
 #: centreon-web/www/include/configuration/configServers/formServers.php:103
 msgid "Monitoring Engine Information"
 msgstr "Información sobre el motor de supervisión."
-
-#: centreon-web/www/include/configuration/configServers/formServers.php:104
-msgid "Miscelleneous"
-msgstr "Diverso"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:105
 msgid "Centreon Trap Collector"

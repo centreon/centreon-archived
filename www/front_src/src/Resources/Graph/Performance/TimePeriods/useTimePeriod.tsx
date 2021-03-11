@@ -11,9 +11,9 @@ import {
   TimePeriod,
   getTimePeriodById,
   TimePeriodId,
-  Timeframe,
-  ChangeTimeframeProps,
-  StoredTimeframe,
+  CustomTimePeriod,
+  ChangeCustomTimePeriodProps,
+  StoredCustomTimePeriod,
 } from '../../../Details/tabs/Graph/models';
 
 dayjs.extend(duration);
@@ -23,21 +23,21 @@ interface TimePeriodState {
   selectedTimePeriod: TimePeriod | null;
   periodQueryParameters: string;
   getIntervalDates: () => [string, string];
-  timeframe: Timeframe;
-  changeTimeframe: (props: ChangeTimeframeProps) => void;
+  customTimePeriod: CustomTimePeriod;
+  changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
 }
 
 interface OnTimePeriodChangeProps {
   selectedTimePeriodId?: TimePeriodId;
-  selectedTimeframe?: StoredTimeframe;
+  selectedCustomTimePeriod?: StoredCustomTimePeriod;
 }
 
 interface Props {
   defaultSelectedTimePeriodId?: TimePeriodId;
-  defaultSelectedTimeframe?: StoredTimeframe;
+  defaultSelectedCustomTimePeriod?: StoredCustomTimePeriod;
   onTimePeriodChange?: ({
     selectedTimePeriodId,
-    selectedTimeframe,
+    selectedCustomTimePeriod,
   }: OnTimePeriodChangeProps) => void;
 }
 
@@ -49,13 +49,13 @@ interface GetGraphQueryParametersProps {
 
 const useTimePeriod = ({
   defaultSelectedTimePeriodId,
-  defaultSelectedTimeframe,
+  defaultSelectedCustomTimePeriod,
   onTimePeriodChange,
 }: Props): TimePeriodState => {
   const defaultTimePeriod = cond([
     [
       (timePeriodId) =>
-        and(isNil(timePeriodId), isNil(defaultSelectedTimeframe)),
+        and(isNil(timePeriodId), isNil(defaultSelectedCustomTimePeriod)),
       always(last24hPeriod),
     ],
     [
@@ -72,23 +72,25 @@ const useTimePeriod = ({
 
   const getLocalizedIntervalDates = (
     timePeriod: TimePeriod | null,
-  ): Timeframe => {
+  ): CustomTimePeriod => {
     return {
       start: new Date(timePeriod?.getStart() || 0),
       end: new Date(Date.now()),
     };
   };
 
-  const getNewTimeframe = ({ start, end }): Timeframe => {
-    const timeframeInDay = dayjs
+  const getNewCustomTimePeriod = ({ start, end }): CustomTimePeriod => {
+    const customTimePeriodInDay = dayjs
       .duration(dayjs(end).diff(dayjs(start)))
       .asDays();
-    const xAxisTickFormat = gte(timeframeInDay, 2) ? dateFormat : timeFormat;
+    const xAxisTickFormat = gte(customTimePeriodInDay, 2)
+      ? dateFormat
+      : timeFormat;
     const timelineLimit = cond<number, number>([
       [gte(1), always(20)],
       [gte(7), always(100)],
       [T, always(500)],
-    ])(timeframeInDay);
+    ])(customTimePeriodInDay);
 
     return {
       start,
@@ -98,18 +100,24 @@ const useTimePeriod = ({
     };
   };
 
-  const [timeframe, setTimeframe] = React.useState<Timeframe>(
-    defaultSelectedTimeframe
-      ? getNewTimeframe({
-          start: new Date(propOr(0, 'start', defaultSelectedTimeframe)),
-          end: new Date(propOr(0, 'end', defaultSelectedTimeframe)),
+  const [
+    customTimePeriod,
+    setCustomTimePeriod,
+  ] = React.useState<CustomTimePeriod>(
+    defaultSelectedCustomTimePeriod
+      ? getNewCustomTimePeriod({
+          start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
+          end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
         })
       : getLocalizedIntervalDates(defaultTimePeriod),
   );
 
   const getIntervalDates = (timePeriod): [string, string] => {
     if (isNil(timePeriod)) {
-      return [timeframe.start.toISOString(), timeframe.end.toISOString()];
+      return [
+        customTimePeriod.start.toISOString(),
+        customTimePeriod.end.toISOString(),
+      ];
     }
     return [
       timePeriod.getStart().toISOString(),
@@ -135,7 +143,7 @@ const useTimePeriod = ({
     getGraphQueryParameters(
       selectedTimePeriod
         ? { timePeriod: selectedTimePeriod }
-        : { startDate: timeframe.start, endDate: timeframe.end },
+        : { startDate: customTimePeriod.start, endDate: customTimePeriod.end },
     ),
   );
 
@@ -145,9 +153,9 @@ const useTimePeriod = ({
     setSelectedTimePeriod(timePeriod);
     onTimePeriodChange?.({ selectedTimePeriodId: timePeriod.id });
 
-    const newTimeframeDates = getLocalizedIntervalDates(timePeriod);
+    const newCustomTimePeriodDates = getLocalizedIntervalDates(timePeriod);
 
-    setTimeframe(newTimeframeDates);
+    setCustomTimePeriod(newCustomTimePeriodDates);
 
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
       timePeriod,
@@ -155,22 +163,25 @@ const useTimePeriod = ({
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
   };
 
-  const changeTimeframe = ({ date, property }: ChangeTimeframeProps): void => {
-    const newTimeframe = getNewTimeframe({
-      ...timeframe,
+  const changeCustomTimePeriod = ({
+    date,
+    property,
+  }: ChangeCustomTimePeriodProps): void => {
+    const newCustomTimePeriod = getNewCustomTimePeriod({
+      ...customTimePeriod,
       [property]: date,
     });
-    setTimeframe(newTimeframe);
+    setCustomTimePeriod(newCustomTimePeriod);
     onTimePeriodChange?.({
-      selectedTimeframe: {
-        start: newTimeframe.start.toISOString(),
-        end: newTimeframe.end.toISOString(),
+      selectedCustomTimePeriod: {
+        start: newCustomTimePeriod.start.toISOString(),
+        end: newCustomTimePeriod.end.toISOString(),
       },
     });
     setSelectedTimePeriod(null);
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
-      startDate: newTimeframe.start,
-      endDate: newTimeframe.end,
+      startDate: newCustomTimePeriod.start,
+      endDate: newCustomTimePeriod.end,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
   };
@@ -181,8 +192,8 @@ const useTimePeriod = ({
     periodQueryParameters,
     getIntervalDates: (): [string, string] =>
       getIntervalDates(selectedTimePeriod),
-    timeframe,
-    changeTimeframe,
+    customTimePeriod,
+    changeCustomTimePeriod,
   };
 };
 

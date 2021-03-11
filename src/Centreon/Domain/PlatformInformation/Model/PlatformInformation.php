@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformInformation;
+namespace Centreon\Domain\PlatformInformation\Model;
 
-use Security\Encryption;
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 
 /**
  * Class designed to retrieve servers' specific information
@@ -31,29 +31,14 @@ use Security\Encryption;
 class PlatformInformation
 {
     /**
-     * Credentials encryption key
+     * @var bool platform type
      */
-    public const ENCRYPT_SECOND_KEY = 'api_remote_credentials';
-
-    /**
-     * @var string|null platform version
-     */
-    private $version;
+    private $isRemote;
 
     /**
      * @var string|null
      */
-    private $appKey;
-
-    /**
-     * @var bool platform type
-     */
-    private $isRemote = false;
-
-    /**
-     * @var bool platform type
-     */
-    private $isCentral = false;
+    private $platformName;
 
     /**
      * @var string|null central's address
@@ -91,45 +76,15 @@ class PlatformInformation
     private $apiPath;
 
     /**
-     * @var bool|null SSL peer validation
+     * @var bool SSL peer validation
      */
-    private $apiPeerValidation;
+    private $apiPeerValidation = false;
 
-    /**
-     * @return string|null
-     */
-    public function getVersion(): ?string
+    public function __construct(bool $isRemote)
     {
-        return $this->version;
+        $this->isRemote = $isRemote;
     }
 
-    /**
-     * @param string|null $version
-     * @return $this
-     */
-    public function setVersion(?string $version): self
-    {
-        $this->version = $version;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAppKey(): ?string
-    {
-        return $this->appKey;
-    }
-
-    /**
-     * @param string|null $value
-     * @return $this
-     */
-    public function setAppKey(?string $value): self
-    {
-        $this->appKey = $value;
-        return $this;
-    }
 
     /**
      *
@@ -144,29 +99,30 @@ class PlatformInformation
      * @param bool $isRemote
      * @return $this
      */
-    public function setIsRemote(bool $isRemote): self
+    public function setRemote(bool $isRemote): self
     {
         $this->isRemote = $isRemote;
-        $this->isCentral = !$isRemote;
         return $this;
     }
 
     /**
-     * @return bool
+     * @return string|null
      */
-    public function isCentral(): bool
+    public function getPlatformName(): ?string
     {
-        return $this->isCentral;
+        return $this->platformName;
     }
 
     /**
-     * @param bool $isCentral
-     * @return $this
+     * @param string|null $name
+     * @return self
      */
-    public function setIsCentral(bool $isCentral): self
+    public function setPlatformName(?string $name): self
     {
-        $this->isCentral = $isCentral;
-        $this->isRemote = !$isCentral;
+        $this->platformName = filter_var($name, FILTER_SANITIZE_STRING);
+        if (empty($this->platformName)) {
+            throw new \InvalidArgumentException(_("Platform name can't be empty"));
+        }
         return $this;
     }
 
@@ -207,56 +163,6 @@ class PlatformInformation
     }
 
     /**
-     * @param string|null $encryptedKey
-     * @return string|null
-     */
-    private function decryptApiCredentials(?string $encryptedKey): ?string
-    {
-        if (empty($encryptedKey)) {
-            return null;
-        }
-
-        if (!isset($_ENV['APP_SECRET'])) {
-            throw new \InvalidArgumentException(
-                _("Unable to find the encryption key. Please check the '.env.local.php' file.")
-            );
-        }
-
-        // second key
-        $secondKey = base64_encode(self::ENCRYPT_SECOND_KEY);
-
-        try {
-            $centreonEncryption = new Encryption();
-            $centreonEncryption->setFirstKey($_ENV['APP_SECRET'])->setSecondKey($secondKey);
-            return $centreonEncryption->decrypt($encryptedKey);
-        } catch (\throwable $e) {
-            throw new \InvalidArgumentException(
-                _("Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form")
-            );
-        }
-    }
-
-    /**
-     * encrypt the Central API Password
-     *
-     * @param string $password
-     * @return string
-     */
-    private function encryptApiCredentials(string $password): string
-    {
-        if (!isset($_ENV['APP_SECRET'])) {
-            throw new \InvalidArgumentException(
-                _("Unable to find the encryption key. Please check the '.env.local.php' file.")
-            );
-        }
-
-        $secondKey = base64_encode(self::ENCRYPT_SECOND_KEY);
-        $centreonEncryption = new Encryption();
-        $centreonEncryption->setFirstKey($_ENV['APP_SECRET'])->setSecondKey($secondKey);
-        return $centreonEncryption->crypt($password);
-    }
-
-    /**
      * @return string|null
      */
     public function getApiCredentials(): ?string
@@ -271,10 +177,6 @@ class PlatformInformation
     public function setApiCredentials(?string $apiCredentials): self
     {
         $this->apiCredentials = $apiCredentials;
-        if (null !== $apiCredentials) {
-            $apiCredentials = $this->encryptApiCredentials($apiCredentials);
-        }
-        $this->encryptedApiCredentials = $apiCredentials;
         return $this;
     }
 
@@ -295,11 +197,6 @@ class PlatformInformation
     public function setEncryptedApiCredentials(?string $encryptedKey): self
     {
         $this->encryptedApiCredentials = $encryptedKey;
-        if (null !== $encryptedKey) {
-            $encryptedKey = $this->decryptApiCredentials($encryptedKey);
-        }
-        $this->apiCredentials = $encryptedKey;
-
         return $this;
     }
 
@@ -325,16 +222,16 @@ class PlatformInformation
     }
 
     /**
-     * @param int|null $port
+     * @param int $port
      * @return int
+     * @throws PlatformInformationException
      */
-    private function checkPortConsistency(?int $port): int
+    private function checkPortConsistency(int $port): int
     {
-        if (null === $port || 1 > $port || $port > 65535) {
-            throw new \InvalidArgumentException(
-                _("Central platform's API port is not consistent. Please check the 'Remote Access' form.")
-            );
+        if (1 > $port || $port > 65535) {
+            throw PlatformInformationException::inconsistentDataException();
         }
+
         return $port;
     }
 
@@ -349,10 +246,16 @@ class PlatformInformation
     /**
      * @param int|null $port
      * @return $this
+     * @throws PlatformInformationException
      */
     public function setApiPort(?int $port): self
     {
-        $this->apiPort = $this->checkPortConsistency($port);
+        if ($port !== null) {
+            $this->apiPort = $this->checkPortConsistency($port);
+        } else {
+            $this->apiPort = $port;
+        }
+
         return $this;
     }
 
@@ -367,32 +270,33 @@ class PlatformInformation
     /**
      * @param string|null $path
      * @return $this
+     * @throws PlatformInformationException
      */
     public function setApiPath(?string $path): self
     {
-        $path = trim(filter_var($path, FILTER_SANITIZE_STRING, ['options' => ['default' => '']]), '/');
-        if (empty($path)) {
-            throw new \InvalidArgumentException(
-                _("Central platform's data are not consistent. Please check the 'Remote Access' form")
-            );
+        if ($path !== null) {
+            $path = trim(filter_var($path, FILTER_SANITIZE_STRING), '/');
+            if (empty($path)) {
+                throw PlatformInformationException::inconsistentDataException();
+            }
         }
         $this->apiPath = $path;
         return $this;
     }
 
     /**
-     * @return bool|null
+     * @return bool
      */
-    public function hasApiPeerValidation(): ?bool
+    public function hasApiPeerValidation(): bool
     {
         return $this->apiPeerValidation;
     }
 
     /**
-     * @param bool|null $status
+     * @param bool $status
      * @return $this
      */
-    public function setApiPeerValidation(?bool $status): self
+    public function setApiPeerValidation(bool $status): self
     {
         $this->apiPeerValidation = $status;
         return $this;

@@ -57,7 +57,6 @@ try {
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
         junit 'ut-be.xml,ut-fe.xml'
-        archiveArtifacts artifacts: 'ut-fe.xml'
 
         if (env.CHANGE_ID) { // pull request to comment with coding style issues
           ViolationsToGitHub([
