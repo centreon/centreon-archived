@@ -361,6 +361,7 @@ const GraphContent = ({
           start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
           end: gte(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
         });
+        hideTooltip();
         return;
       }
 
@@ -396,6 +397,8 @@ const GraphContent = ({
     setIsMouseOver(false);
     onTooltipDisplay?.();
     annotations.setAnnotationHovered(undefined);
+    setZoomBoundaries(null);
+    setZoomPivotPosition(null);
   };
 
   const displayAddCommentTooltip = (event): void => {
@@ -517,6 +520,7 @@ const GraphContent = ({
                 width={zoomBarWidth}
                 height={graphHeight}
                 fill={fade(theme.palette.primary.main, 0.2)}
+                stroke={fade(theme.palette.primary.main, 0.5)}
               />
               <MemoizedBar
                 x={0}
