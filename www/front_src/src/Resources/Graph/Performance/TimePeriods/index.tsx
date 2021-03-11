@@ -6,13 +6,13 @@ import { map, pick } from 'ramda';
 import { Paper, makeStyles, ButtonGroup, Button } from '@material-ui/core';
 
 import {
-  ChangeTimeframeProps,
-  Timeframe,
+  ChangeCustomTimePeriodProps,
+  CustomTimePeriod,
   TimePeriodId,
   timePeriods,
 } from '../../../Details/tabs/Graph/models';
 
-import CustomTimeframePickers from './CustomTimeframePickers';
+import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -36,8 +36,8 @@ interface Props {
   selectedTimePeriodId?: string;
   onChange: (timePeriod: TimePeriodId) => void;
   disabled?: boolean;
-  timeframe: Timeframe;
-  changeTimeframe: (props: ChangeTimeframeProps) => void;
+  customTimePeriod: CustomTimePeriod;
+  changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
 }
 
 const timePeriodOptions = map(pick(['id', 'name']), timePeriods);
@@ -46,8 +46,8 @@ const TimePeriodButtonGroup = ({
   selectedTimePeriodId,
   onChange,
   disabled = false,
-  timeframe,
-  changeTimeframe,
+  customTimePeriod,
+  changeCustomTimePeriod,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
@@ -58,7 +58,7 @@ const TimePeriodButtonGroup = ({
   }));
 
   const changeDate = ({ property, date }) =>
-    changeTimeframe({ date, property });
+    changeCustomTimePeriod({ date, property });
 
   return (
     <Paper className={classes.header}>
@@ -82,7 +82,10 @@ const TimePeriodButtonGroup = ({
           translatedTimePeriodOptions,
         )}
       </ButtonGroup>
-      <CustomTimeframePickers timeframe={timeframe} acceptDate={changeDate} />
+      <CustomTimePeriodPickers
+        customTimePeriod={customTimePeriod}
+        acceptDate={changeDate}
+      />
     </Paper>
   );
 };

@@ -81,15 +81,15 @@ const ServicesTabContent = ({
     changeSelectedTimePeriod,
     periodQueryParameters,
     getIntervalDates,
-    timeframe,
-    changeTimeframe,
+    customTimePeriod,
+    changeCustomTimePeriod,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
       tabParameters,
     ),
-    defaultSelectedTimeframe: path(
-      ['services', 'graphTimePeriod', 'selectedTimeframe'],
+    defaultSelectedCustomTimePeriod: path(
+      ['services', 'graphTimePeriod', 'selectedCustomTimePeriod'],
       tabParameters,
     ),
     onTimePeriodChange: (graphTimePeriod) => {
@@ -184,8 +184,8 @@ const ServicesTabContent = ({
               selectedTimePeriodId={selectedTimePeriod?.id}
               onChange={changeSelectedTimePeriod}
               disabled={loading}
-              timeframe={timeframe}
-              changeTimeframe={changeTimeframe}
+              customTimePeriod={customTimePeriod}
+              changeCustomTimePeriod={changeCustomTimePeriod}
             />
           ) : undefined
         }
@@ -203,7 +203,7 @@ const ServicesTabContent = ({
               periodQueryParameters={periodQueryParameters}
               getIntervalDates={getIntervalDates}
               selectedTimePeriod={selectedTimePeriod}
-              timeframe={timeframe}
+              customTimePeriod={customTimePeriod}
             />
           ) : (
             <ServiceList

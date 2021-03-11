@@ -16,18 +16,18 @@ import {
   labelStartDateIsSameOrAfterEndDate,
 } from '../../../translatedLabels';
 import {
-  Timeframe,
-  TimeframeProperties,
+  CustomTimePeriod,
+  CustomTimePeriodProperties,
 } from '../../../Details/tabs/Graph/models';
 import useAdapter from '../../../useAdapter';
 
 interface AcceptDateProps {
-  property: TimeframeProperties;
+  property: CustomTimePeriodProperties;
   date: Date;
 }
 
 interface Props {
-  timeframe: Timeframe;
+  customTimePeriod: CustomTimePeriod;
   acceptDate: (props: AcceptDateProps) => void;
 }
 
@@ -44,12 +44,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomTimeframePickers = ({
-  timeframe,
+const CustomTimePeriodPickers = ({
+  customTimePeriod,
   acceptDate,
 }: Props): JSX.Element => {
-  const [start, setStart] = React.useState<Date>(timeframe.start);
-  const [end, setEnd] = React.useState<Date>(timeframe.end);
+  const [start, setStart] = React.useState<Date>(customTimePeriod.start);
+  const [end, setEnd] = React.useState<Date>(customTimePeriod.end);
   const classes = useStyles();
   const { t } = useTranslation();
   const { locale } = useUserContext();
@@ -58,14 +58,14 @@ const CustomTimeframePickers = ({
   const isInvalidDate = ({ startDate, endDate }) =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
-  const changeDate = (property: TimeframeProperties) => () => {
-    const dateToAccept = equals(property, TimeframeProperties.start)
+  const changeDate = (property: CustomTimePeriodProperties) => () => {
+    const dateToAccept = equals(property, CustomTimePeriodProperties.start)
       ? start
       : end;
 
     if (
       or(
-        dayjs(dateToAccept).isSame(dayjs(timeframe[property])),
+        dayjs(dateToAccept).isSame(dayjs(customTimePeriod[property])),
         isInvalidDate({ startDate: start, endDate: end }),
       )
     ) {
@@ -80,15 +80,15 @@ const CustomTimeframePickers = ({
   React.useEffect(() => {
     if (
       and(
-        dayjs(timeframe.start).isSame(dayjs(start), 'minute'),
-        dayjs(timeframe.end).isSame(dayjs(end), 'minute'),
+        dayjs(customTimePeriod.start).isSame(dayjs(start), 'minute'),
+        dayjs(customTimePeriod.end).isSame(dayjs(end), 'minute'),
       )
     ) {
       return;
     }
-    setStart(timeframe.start);
-    setEnd(timeframe.end);
-  }, [timeframe.start, timeframe.end]);
+    setStart(customTimePeriod.start);
+    setEnd(customTimePeriod.end);
+  }, [customTimePeriod.start, customTimePeriod.end]);
 
   const isError = isInvalidDate({ startDate: start, endDate: end });
 
@@ -109,9 +109,9 @@ const CustomTimeframePickers = ({
             variant="inline"
             value={start}
             onChange={(value) => setStart(new Date(value?.toDate() || 0))}
-            onClose={changeDate(TimeframeProperties.start)}
+            onClose={changeDate(CustomTimePeriodProperties.start)}
             label={t(labelStartDate)}
-            maxDate={timeframe.end}
+            maxDate={customTimePeriod.end}
             size="small"
             inputProps={{
               'aria-label': t(labelStartDate),
@@ -122,9 +122,9 @@ const CustomTimeframePickers = ({
             variant="inline"
             value={end}
             onChange={(value) => setEnd(new Date(value?.toDate() || 0))}
-            onClose={changeDate(TimeframeProperties.end)}
+            onClose={changeDate(CustomTimePeriodProperties.end)}
             label={t(labelEndDate)}
-            minDate={timeframe.start}
+            minDate={customTimePeriod.start}
             size="small"
             inputProps={{
               'aria-label': t(labelEndDate),
@@ -141,4 +141,4 @@ const CustomTimeframePickers = ({
   );
 };
 
-export default CustomTimeframePickers;
+export default CustomTimePeriodPickers;

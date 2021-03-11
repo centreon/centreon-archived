@@ -49,15 +49,15 @@ const GraphTabContent = ({
     changeSelectedTimePeriod,
     periodQueryParameters,
     getIntervalDates,
-    timeframe,
-    changeTimeframe,
+    customTimePeriod,
+    changeCustomTimePeriod,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['graph', 'selectedTimePeriodId'],
       tabParameters,
     ),
-    defaultSelectedTimeframe: path(
-      ['graph', 'selectedTimeframe'],
+    defaultSelectedCustomTimePeriod: path(
+      ['graph', 'selectedCustomTimePeriod'],
       tabParameters,
     ),
     onTimePeriodChange: setGraphTabParameters,
@@ -68,8 +68,8 @@ const GraphTabContent = ({
       <TimePeriodButtonGroup
         selectedTimePeriodId={selectedTimePeriod?.id}
         onChange={changeSelectedTimePeriod}
-        timeframe={timeframe}
-        changeTimeframe={changeTimeframe}
+        customTimePeriod={customTimePeriod}
+        changeCustomTimePeriod={changeCustomTimePeriod}
       />
       <ExportablePerformanceGraphWithTimeline
         resource={details}
@@ -77,7 +77,7 @@ const GraphTabContent = ({
         periodQueryParameters={periodQueryParameters}
         getIntervalDates={getIntervalDates}
         selectedTimePeriod={selectedTimePeriod}
-        timeframe={timeframe}
+        customTimePeriod={customTimePeriod}
       />
     </div>
   );
