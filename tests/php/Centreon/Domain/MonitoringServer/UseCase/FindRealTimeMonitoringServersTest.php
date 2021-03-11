@@ -60,7 +60,10 @@ class FindRealTimeMonitoringServersTest extends TestCase
 
         $contact = new Contact();
         $contact->setAdmin(true);
-        $findRealTimeMonitoringServers = new FindRealTimeMonitoringServers($this->realTimeMonitoringServerService, $contact);
+        $findRealTimeMonitoringServers = new FindRealTimeMonitoringServers(
+            $this->realTimeMonitoringServerService,
+            $contact
+        );
         $response = $findRealTimeMonitoringServers->execute();
         $this->assertCount(1, $response->getRealTimeMonitoringServers());
     }
@@ -77,7 +80,10 @@ class FindRealTimeMonitoringServersTest extends TestCase
 
         $contact = new Contact();
         $contact->setAdmin(false);
-        $findRealTimeMonitoringServers = new FindRealTimeMonitoringServers($this->realTimeMonitoringServerService, $contact);
+        $findRealTimeMonitoringServers = new FindRealTimeMonitoringServers(
+            $this->realTimeMonitoringServerService,
+            $contact
+        );
         $response = $findRealTimeMonitoringServers->execute();
         $this->assertCount(1, $response->getRealTimeMonitoringServers());
     }
