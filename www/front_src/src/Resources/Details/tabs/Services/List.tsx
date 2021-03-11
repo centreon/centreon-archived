@@ -5,9 +5,9 @@ import { equals, last } from 'ramda';
 
 import { Paper, Typography, makeStyles } from '@material-ui/core';
 
-import { StatusChip } from '@centreon/ui';
-
 import { Resource } from '../../../models';
+import CompactStatusChip from '../CompactStatusChip';
+import OutputInformation from '../OutputInformation';
 
 const useStyles = makeStyles((theme) => ({
   serviceCard: {
@@ -51,7 +51,7 @@ const ServiceList = ({
           <div key={id}>
             <Paper className={classes.serviceCard}>
               <div className={classes.serviceDetails}>
-                <StatusChip
+                <CompactStatusChip
                   label={t(status.name)}
                   severityCode={status.severity_code}
                 />
@@ -63,10 +63,10 @@ const ServiceList = ({
                   >
                     {name}
                   </Typography>
-                  <Typography variant="body2">{information}</Typography>
+                  <OutputInformation content={information} />
                 </div>
                 {duration && (
-                  <Typography variant="body2">{duration}</Typography>
+                  <Typography variant="caption">{duration}</Typography>
                 )}
               </div>
             </Paper>

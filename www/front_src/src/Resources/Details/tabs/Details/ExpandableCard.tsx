@@ -5,13 +5,12 @@ import { isEmpty, pipe, reject, slice } from 'ramda';
 
 import {
   Typography,
-  Card,
-  CardContent,
   Divider,
   CardActions,
   Button,
   makeStyles,
   Theme,
+  Paper,
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 
@@ -28,6 +27,7 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
 
   return {
     card: ({ severityCode }): CreateCSSProperties => ({
+      padding: theme.spacing(1, 2, 2, 2),
       ...(severityCode && {
         borderWidth: 2,
         borderStyle: 'solid',
@@ -71,19 +71,17 @@ const ExpandableCard = ({
   );
 
   return (
-    <Card className={classes.card}>
-      <CardContent>
-        <Typography
-          className={classes.title}
-          variant="subtitle2"
-          color="textSecondary"
-          gutterBottom
-        >
-          {title}
-        </Typography>
-        {threeFirstLines.map(Line)}
-        {outputExpanded && lastLines.map(Line)}
-      </CardContent>
+    <Paper className={classes.card}>
+      <Typography
+        className={classes.title}
+        variant="subtitle2"
+        color="textSecondary"
+        gutterBottom
+      >
+        {title}
+      </Typography>
+      {threeFirstLines.map(Line)}
+      {outputExpanded && lastLines.map(Line)}
       {lastLines.length > 0 && (
         <>
           <Divider />
@@ -94,7 +92,7 @@ const ExpandableCard = ({
           </CardActions>
         </>
       )}
-    </Card>
+    </Paper>
   );
 };
 

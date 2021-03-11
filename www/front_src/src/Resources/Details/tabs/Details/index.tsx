@@ -76,7 +76,7 @@ interface Props {
 
 const DetailsTab = ({ details }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { toDateTime, toDate, toTime } = useLocaleDateTimeFormat();
+  const { toDateTime } = useLocaleDateTimeFormat();
   const classes = useStyles();
 
   const { showMessage } = useSnackbar();
@@ -136,16 +136,20 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
               chip={<AcknowledgeChip />}
             />
           )}
-          <Grid container spacing={2} alignItems="stretch">
-            {getDetailCardLines({ details, toDate, toTime }).map(
-              ({ title, field, xs = 6, getLines }) => {
+          <Grid container spacing={1}>
+            {getDetailCardLines({ details, toDateTime }).map(
+              ({ title, field, xs = 6, line, active }) => {
                 const variableXs = (width > 600 ? xs / 2 : xs) as 3 | 6 | 12;
                 const displayCard = !isNil(field) && !isEmpty(field);
 
                 return (
                   displayCard && (
                     <Grid key={title} item xs={variableXs}>
-                      <DetailsCard title={t(title)} lines={getLines()} />
+                      <DetailsCard
+                        title={t(title)}
+                        line={line}
+                        active={active}
+                      />
                     </Grid>
                   )
                 );
