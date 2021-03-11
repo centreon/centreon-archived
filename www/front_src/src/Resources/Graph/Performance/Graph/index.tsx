@@ -190,7 +190,7 @@ const GraphContent = ({
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
-  const [baseMouseDownPosition, setBaseMouseDownPosition] = React.useState<
+  const [zoomPivotPosition, setZoomPivotPosition] = React.useState<
     number | null
   >(null);
   const [zoomBoundaries, setZoomBoundaries] = React.useState<{
@@ -349,15 +349,15 @@ const GraphContent = ({
         timeline,
       });
 
-      if (baseMouseDownPosition) {
-        setZoomBoundaries((currentZoomBoundaries) => ({
-          start: lt(xPosition, baseMouseDownPosition)
+      if (zoomPivotPosition) {
+        setZoomBoundaries({
+          start: lt(xPosition, zoomPivotPosition)
             ? xPosition
-            : currentZoomBoundaries?.start || 0,
-          end: gte(xPosition, baseMouseDownPosition)
+            : zoomPivotPosition,
+          end: gte(xPosition, zoomPivotPosition)
             ? xPosition
-            : currentZoomBoundaries?.end || 0,
-        }));
+            : zoomPivotPosition,
+        });
         return;
       }
 
@@ -397,7 +397,7 @@ const GraphContent = ({
 
   const displayAddCommentTooltip = (event): void => {
     setZoomBoundaries(null);
-    setBaseMouseDownPosition(null);
+    setZoomPivotPosition(null);
     if (
       !canComment([resource]) ||
       isNil(onAddComment) ||
@@ -509,7 +509,7 @@ const GraphContent = ({
                 onMouseDown={(event) => {
                   const { x } = localPoint(event) || { x: 0 };
                   const xPosition = x - margin.left;
-                  setBaseMouseDownPosition(xPosition);
+                  setZoomPivotPosition(xPosition);
                   setZoomBoundaries({
                     start: xPosition,
                     end: xPosition,
