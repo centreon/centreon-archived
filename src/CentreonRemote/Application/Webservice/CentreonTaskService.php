@@ -1,5 +1,24 @@
 <?php
 
+/*
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Application\Webservice;
 
 use Centreon\Domain\Entity\Task;
@@ -75,9 +94,9 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      * Get Status of task
      *
      * @return array
+     * @throws \RestBadRequestException
      * @example ['success' => true, 'status' => 'status of the task']
      *
-     * @throws \RestBadRequestException
      */
     public function postGetTaskStatus(): array
     {
@@ -94,9 +113,9 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      * Find task status by parent id (used on remote server)
      *
      * @return array
+     * @throws \RestBadRequestException
      * @example ['success' => true, 'status' => 'status of the task']
      *
-     * @throws \RestBadRequestException
      */
     public function postGetTaskStatusByParent(): array
     {
@@ -168,9 +187,9 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      * Add new import task with parent ID
      *
      * @return array
+     * @throws \RestBadRequestException|\RestUnauthorizedException
      * @example ['success' => true, 'status' => 'status of the task']
      *
-     * @throws \RestBadRequestException
      */
     public function postAddImportTaskWithParent(): array
     {
@@ -201,7 +220,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
         $parentId = $this->arguments['parent_id'];
         $params = isset($this->arguments['params']) ? $this->arguments['params'] : '';
 
-        // try to unserialize params string to array
+        // try to deserialize params string to array
         if (!$params = unserialize($params)) {
             $params = [];
         }
@@ -217,9 +236,9 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      *
      * @param string $action The action name
      * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
+     * @param bool $isInternal If the api is call in internal
      *
-     * @return boolean If the user has access to the action
+     * @return bool If the user has access to the action
      */
     public function authorize($action, $user, $isInternal = false): bool
     {

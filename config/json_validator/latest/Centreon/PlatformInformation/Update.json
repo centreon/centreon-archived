@@ -4,10 +4,10 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "isRemote": {
-      "type": "boolean"
+    "platformName": {
+      "type": "string"
     },
-    "isCentral": {
+    "isRemote": {
       "type": "boolean"
     },
     "centralServerAddress": {
@@ -33,18 +33,19 @@
     },
     "proxy": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "host": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "port": {
-          "type": "integer"
+          "type": ["integer", "null"]
         },
         "user": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "password": {
-          "type": "string"
+          "type": ["string", "null"]
         }
       }
     }

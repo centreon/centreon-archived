@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,20 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\PlatformTopology;
+namespace Centreon\Domain\PlatformInformation\Exception;
 
 /**
- * This class is designed to represent a business exception in the 'Platform status' context.
+ * This class is designed to represent a business exception in the 'Platform information' context.
  *
- * @package Centreon\Domain\PlatformTopology
+ * @package Centreon\Domain\PlatformInformation
  */
-class PlatformException extends \Exception
+class PlatformInformationException extends \Exception
 {
+    /**
+     * @return PlatformInformationException
+     */
+    public static function inconsistentDataException(): self
+    {
+        return new self(_("Central platform's API data is not consistent. Please check the 'Remote Access' form."));
+    }
 }
