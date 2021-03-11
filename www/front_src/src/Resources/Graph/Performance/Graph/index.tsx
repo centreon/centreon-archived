@@ -191,7 +191,7 @@ const GraphContent = ({
   const [baseMouseDownPosition, setBaseMouseDownPosition] = React.useState<
     number | null
   >(null);
-  const [zoomBoundary, setZoomBoundary] = React.useState<{
+  const [zoomBoundaries, setZoomBoundaries] = React.useState<{
     start: number;
     end: number;
   } | null>(null);
@@ -340,7 +340,7 @@ const GraphContent = ({
       const xPosition = x - margin.left;
 
       if (baseMouseDownPosition) {
-        setZoomBoundary((currentZoomBoundaries) => ({
+        setZoomBoundaries((currentZoomBoundaries) => ({
           start: lt(xPosition, baseMouseDownPosition)
             ? xPosition
             : currentZoomBoundaries?.start || 0,
@@ -355,7 +355,7 @@ const GraphContent = ({
 
       onTooltipDisplay?.([x, y]);
     },
-    [showTooltip, containerBounds, lines, zoomBoundary],
+    [showTooltip, containerBounds, lines, zoomBoundaries],
   );
 
   React.useEffect(() => {
@@ -385,12 +385,12 @@ const GraphContent = ({
   };
 
   const displayAddCommentTooltip = (event): void => {
-    setZoomBoundary(null);
+    setZoomBoundaries(null);
     setBaseMouseDownPosition(null);
     if (
       !canComment([resource]) ||
       isNil(onAddComment) ||
-      zoomBoundary?.start !== zoomBoundary?.end
+      zoomBoundaries?.start !== zoomBoundaries?.end
     ) {
       return;
     }
@@ -423,7 +423,7 @@ const GraphContent = ({
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
   const zoomBarWidth = Math.abs(
-    (zoomBoundary?.end || 0) - (zoomBoundary?.start || 0),
+    (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
   );
 
   return (
@@ -479,7 +479,7 @@ const GraphContent = ({
               graphHeight={graphHeight}
             />
             <MemoizedBar
-              x={zoomBoundary?.start || 0}
+              x={zoomBoundaries?.start || 0}
               y={0}
               width={zoomBarWidth}
               height={graphHeight}
@@ -498,9 +498,9 @@ const GraphContent = ({
                 const { x } = localPoint(event) || { x: 0 };
                 const xPosition = x - margin.left;
                 setBaseMouseDownPosition(xPosition);
-                setZoomBoundary({
-                  start: x - margin.left,
-                  end: x - margin.left,
+                setZoomBoundaries({
+                  start: xPosition,
+                  end: xPosition,
                 });
               }}
               onMouseUp={displayAddCommentTooltip}
