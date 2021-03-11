@@ -112,11 +112,14 @@ class PlatformController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        /**
+         * @var string $centreonPath
+         */
+        $centreonPath = $this->getParameter('centreon_path');
         $updatePartiallyPlatformInformation->addValidators(
             [
                 new PlatformInformationDtoValidator(
-                    $this->getParameter('centreon_path')
-                    . 'config/json_validator/latest/Centreon/PlatformInformation/Update.json'
+                    $centreonPath . 'config/json_validator/latest/Centreon/PlatformInformation/Update.json'
                 )
             ]
         );
