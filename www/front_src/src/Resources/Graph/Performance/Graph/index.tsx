@@ -431,6 +431,17 @@ const GraphContent = ({
     onAddComment?.(comment);
   };
 
+  const displayZoomPreview = (event) => {
+    const { x } = localPoint(event) || { x: 0 };
+    const xPosition = x - margin.left;
+    setZoomPivotPosition(xPosition);
+    setZoomBoundaries({
+      start: xPosition,
+      end: xPosition,
+    });
+    hideAddCommentTooltip();
+  };
+
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
   const zoomBarWidth = Math.abs(
@@ -506,15 +517,7 @@ const GraphContent = ({
                 className={classes.overlay}
                 onMouseMove={displayTooltip}
                 onMouseLeave={closeTooltip}
-                onMouseDown={(event) => {
-                  const { x } = localPoint(event) || { x: 0 };
-                  const xPosition = x - margin.left;
-                  setZoomPivotPosition(xPosition);
-                  setZoomBoundaries({
-                    start: xPosition,
-                    end: xPosition,
-                  });
-                }}
+                onMouseDown={displayZoomPreview}
                 onMouseUp={displayAddCommentTooltip}
               />
               {tooltipData && (
