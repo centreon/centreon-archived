@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\MonitoringServer\API\Model;
 
-use stdClass;
 use Centreon\Infrastructure\MonitoringServer\API\Model\RealTimeMonitoringServer;
 use Centreon\Domain\MonitoringServer\UseCase\RealTimeMonitoringServer\FindRealTimeMonitoringServersResponse;
 
