@@ -112,11 +112,7 @@ const ResourceListing = (): JSX.Element => {
     SortOrder,
   ];
 
-  const getCompositeId = (row: Resource): [number, number?] => {
-    const parentId = path<number>(['parent', 'id'], row);
-
-    return [row.id, parentId];
-  };
+  const getId = ({ uuid }) => uuid;
 
   return (
     <Listing
@@ -144,7 +140,7 @@ const ResourceListing = (): JSX.Element => {
       onRowClick={selectResource}
       innerScrollDisabled={false}
       emptyDataMessage={t(labelNoResultsFound)}
-      getCompositeId={getCompositeId}
+      getId={getId}
       memoProps={[
         listing,
         sortField,

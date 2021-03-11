@@ -110,6 +110,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
             $list = $this->resourceRepository->findResources($filter);
             // replace macros in external links
             foreach ($list as $resource) {
+                $this->generateResourceUuid($resource);
                 $this->replaceMacrosInExternalLinks($resource);
             }
         } catch (RepositoryException $ex) {
@@ -287,6 +288,31 @@ class ResourceService extends AbstractCentreonService implements ResourceService
             }
             $resource->getLinks()->getExternals()->getNotes()->setUrl($notesUrl);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function generateResourceUuid(ResourceEntity $resource): void
+    {
+        $uuid = '';
+
+        if ($resource->getShortType() !== null && $resource->getId() !== null) {
+            $uuid = $resource->getShortType() . $resource->getId();
+        }
+
+        if (
+            $resource->getParent() !== null
+            && $resource->getParent()->getShortType() !== null
+            && $resource->getParent()->getId() !== null
+        ) {
+            $parentUuid = $resource->getParent()->getShortType() . $resource->getParent()->getId();
+            $uuid = $parentUuid . '-' . $uuid;
+
+            $resource->getParent()->setUuid($parentUuid);
+        }
+
+        $resource->setUuid($uuid);
     }
 
     /**

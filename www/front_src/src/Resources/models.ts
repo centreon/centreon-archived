@@ -1,6 +1,7 @@
 import { ListingModel } from '@centreon/ui';
 
 export interface NamedEntity {
+  uuid: string;
   id: number;
   name: string;
 }

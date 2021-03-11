@@ -57,6 +57,11 @@ class Resource
     public const TYPE_HOST = 'host';
 
     /**
+     * @var string|null
+     */
+    private $uuid;
+
+    /**
      * @var int|null
      */
     private $id;
@@ -270,6 +275,25 @@ class Resource
         }
 
         return $result;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUuid(): ?int
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @param string|null $uuid
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setUuid(?string $uuid): self
+    {
+        $this->uuid = $uuid;
+
+        return $this;
     }
 
     /**

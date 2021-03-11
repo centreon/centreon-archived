@@ -80,7 +80,7 @@
     "webpack-merge": "^5.7.2"
   },
   "dependencies": {
-    "@centreon/ui": "github:centreon/centreon-ui",
+    "@centreon/ui": "github:centreon/centreon-ui#MON-6284-uuid",
     "@centreon/ui-context": "github:centreon/ui-context",
     "@date-io/dayjs": "^1.3.13",
     "@material-ui/core": "4.11.2",
