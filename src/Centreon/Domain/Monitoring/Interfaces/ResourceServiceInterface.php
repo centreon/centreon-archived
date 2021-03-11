@@ -139,14 +139,6 @@ interface ResourceServiceInterface
     public function replaceMacrosInExternalLinks(ResourceEntity $resource): void;
 
     /**
-     * Generate resource uuid from resource and its parent
-     *
-     * @param ResourceEntity $resource
-     * @return void
-     */
-    public function generateResourceUuid(ResourceEntity $resource): void;
-
-    /**
      * Used to filter requests according to a contact.
      * If the filter is defined, all requests will use the ACL of the contact
      * to fetch data.

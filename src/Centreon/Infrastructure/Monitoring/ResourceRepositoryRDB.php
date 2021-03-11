@@ -35,7 +35,6 @@ use Centreon\Domain\Monitoring\ResourceSeverity;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Monitoring\Notes;
-use Centreon\Domain\Monitoring\ResourceExternalLinks;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
@@ -84,8 +83,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'last_status_change' => 'resource.last_status_change',
         'tries' => 'resource.tries',
         'last_check' => 'resource.last_check',
-        'h.group' => 'hg.name',
-        'h.group.id' => 'hhg.hostgroup_id',
         'monitoring_server_name' => 'resource.monitoring_server_name',
     ];
 
@@ -109,8 +106,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'h.address' => 'sh.address',
         'h.fqdn' => 'sh.address',
         's.description' => 's.description',
-        's.group' => 'sg.name',
-        's.group.id' => 'ssg.servicegroup_id',
         'information' => 's.output',
     ];
 
@@ -251,22 +246,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $request .= implode('UNION ALL ', $subRequests);
         unset($subRequests);
 
-        $request .= ') AS `resource`'
-            // Join the host groups
-            . ' LEFT JOIN `:dbstg`.`hosts_hostgroups` AS hhg ON hhg.host_id = resource.host_id'
-            . ' LEFT JOIN `:dbstg`.`hostgroups` AS hg ON hg.hostgroup_id = hhg.hostgroup_id';
+        $request .= ') AS `resource`';
 
-        /**
-         * If we specify that user only wants resources with available performance datas.
-         * Then only resources with existing metrics referencing index_data services will be returned.
-         */
-        if ($filter->getOnlyWithPerformanceData() === true) {
-            $request .= ' INNER JOIN (SELECT host_id, service_id FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i '
-                . 'WHERE i.id = m.index_id AND m.hidden = "0" GROUP BY host_id, service_id) AS gdata '
-                . 'ON gdata.host_id = resource.parent_id AND gdata.service_id = resource.id';
-        }
-
-        $request = $this->translateDbName($request);
+        $hasWhereCondition = false;
 
         // Search
         $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
@@ -275,12 +257,18 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         } catch (RequestParametersTranslatorException $ex) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
+
+        if ($searchRequest !== null) {
+            $hasWhereCondition = true;
+            $request .= $searchRequest;
+        }
+
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
             $collector->addValue($key, current($data), key($data));
         }
-        $request .= $searchRequest ? $searchRequest : '';
 
-        // apply the service group filter to SQL query
+
+        // apply the host group filter to SQL query
         if ($filter->getHostgroupIds()) {
             $groupList = [];
 
@@ -291,8 +279,28 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 $collector->addValue($key, $groupId, PDO::PARAM_INT);
             }
 
-            $request .= ($searchRequest ? ' AND ' : ' WHERE ')
-                . 'hg.hostgroup_id IN (' . implode(', ', $groupList) . ')';
+            $request .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
+                . 'EXISTS (SELECT hhg.hostgroup_id
+                FROM `:dbstg`.`hosts_hostgroups` AS hhg
+                WHERE hhg.host_id = resource.host_id
+                AND hhg.hostgroup_id IN (' . implode(', ', $groupList) . '))';
+            $hasWhereCondition = true;
+        }
+
+        /**
+         * If we specify that user only wants resources with available performance datas.
+         * Then only resources with existing metrics referencing index_data services will be returned.
+         */
+        if ($filter->getOnlyWithPerformanceData() === true) {
+            $request .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
+                . 'EXISTS (
+                    SELECT m.metric_id
+                    FROM `:dbstg`.`metrics` AS m, `:dbstg`.`index_data` AS idata
+                    WHERE m.index_id = idata.id
+                    AND m.hidden = "0"
+                    AND idata.host_id = resource.parent_id
+                    AND idata.service_id = resource.id
+                )';
         }
 
         // Sort
@@ -302,7 +310,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
 
-        $statement = $this->db->prepare($request);
+        $statement = $this->db->prepare(
+            $this->translateDbName($request)
+        );
         $collector->bind($statement);
 
         $statement->execute();
@@ -511,11 +521,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         // get monitoring server information
         $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id";
 
-        // Join the service groups
-        $sql .= " LEFT JOIN `:dbstg`.`services_servicegroups` AS ssg"
-            . " ON ssg.host_id = s.host_id AND ssg.service_id = s.service_id"
-            . ' LEFT JOIN `:dbstg`.`servicegroups` AS sg ON sg.servicegroup_id = ssg.servicegroup_id';
-
         // get Severity level, name, icon
         $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = s.host_id
             AND service_cvl.service_id = s.service_id
@@ -588,8 +593,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 $groupList[] = $key;
                 $collector->addValue($key, $groupId, PDO::PARAM_INT);
             }
-
-            $sql .= ' AND sg.servicegroup_id IN (' . implode(', ', $groupList) . ')';
+            $sql .= ' AND EXISTS (SELECT ssg.servicegroup_id
+                FROM `:dbstg`.`services_servicegroups` AS ssg
+                WHERE ssg.service_id = s.service_id
+                AND ssg.host_id = s.host_id
+                AND ssg.servicegroup_id IN (' . implode(', ', $groupList) . '))';
         }
 
         if (!empty($filter->getHostIds())) {

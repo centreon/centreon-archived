@@ -291,9 +291,12 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     }
 
     /**
-     * {@inheritDoc}
+     * Generate resource uuid from resource and its parent
+     *
+     * @param ResourceEntity $resource
+     * @return void
      */
-    public function generateResourceUuid(ResourceEntity $resource): void
+    private function generateResourceUuid(ResourceEntity $resource): void
     {
         $uuid = '';
 
