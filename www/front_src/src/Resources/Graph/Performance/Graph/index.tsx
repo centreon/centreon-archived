@@ -1,6 +1,16 @@
 import * as React from 'react';
 
-import { equals, isNil, isEmpty, identity, min, max, not } from 'ramda';
+import {
+  equals,
+  isNil,
+  isEmpty,
+  identity,
+  min,
+  max,
+  not,
+  lt,
+  gte,
+} from 'ramda';
 import {
   Line,
   Bar,
@@ -24,6 +34,8 @@ import {
   Paper,
   Typography,
   Theme,
+  fade,
+  useTheme,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
@@ -176,7 +188,16 @@ const GraphContent = ({
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
+  const [baseMouseDownPosition, setBaseMouseDownPosition] = React.useState<
+    number | null
+  >(null);
+  const [zoomBoundary, setZoomBoundary] = React.useState<{
+    start: number;
+    end: number;
+  } | null>(null);
   const { canComment } = useAclQuery();
+
+  const theme = useTheme();
 
   const {
     tooltipData,
@@ -316,11 +337,25 @@ const GraphContent = ({
       setIsMouseOver(true);
       const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
+      const xPosition = x - margin.left;
+
+      if (baseMouseDownPosition) {
+        setZoomBoundary((currentZoomBoundaries) => ({
+          start: lt(xPosition, baseMouseDownPosition)
+            ? xPosition
+            : currentZoomBoundaries?.start || 0,
+          end: gte(xPosition, baseMouseDownPosition)
+            ? xPosition
+            : currentZoomBoundaries?.end || 0,
+        }));
+        return;
+      }
+
       showTooltipAt({ x, y });
 
       onTooltipDisplay?.([x, y]);
     },
-    [showTooltip, containerBounds, lines],
+    [showTooltip, containerBounds, lines, zoomBoundary],
   );
 
   React.useEffect(() => {
@@ -350,7 +385,13 @@ const GraphContent = ({
   };
 
   const displayAddCommentTooltip = (event): void => {
-    if (!canComment([resource]) || isNil(onAddComment)) {
+    setZoomBoundary(null);
+    setBaseMouseDownPosition(null);
+    if (
+      !canComment([resource]) ||
+      isNil(onAddComment) ||
+      zoomBoundary?.start !== zoomBoundary?.end
+    ) {
       return;
     }
 
@@ -380,6 +421,10 @@ const GraphContent = ({
   };
 
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
+
+  const zoomBarWidth = Math.abs(
+    (zoomBoundary?.end || 0) - (zoomBoundary?.start || 0),
+  );
 
   return (
     <ClickAwayListener onClickAway={hideAddCommentTooltip}>
@@ -434,15 +479,31 @@ const GraphContent = ({
               graphHeight={graphHeight}
             />
             <MemoizedBar
+              x={zoomBoundary?.start || 0}
+              y={0}
+              width={zoomBarWidth}
+              height={graphHeight}
+              fill={fade(theme.palette.primary.main, 0.2)}
+            />
+            <MemoizedBar
               x={0}
               y={0}
               width={graphWidth}
               height={graphHeight}
               fill="transparent"
               className={classes.overlay}
-              onClick={displayAddCommentTooltip}
               onMouseMove={displayTooltip}
               onMouseLeave={closeTooltip}
+              onMouseDown={(event) => {
+                const { x } = localPoint(event) || { x: 0 };
+                const xPosition = x - margin.left;
+                setBaseMouseDownPosition(xPosition);
+                setZoomBoundary({
+                  start: x - margin.left,
+                  end: x - margin.left,
+                });
+              }}
+              onMouseUp={displayAddCommentTooltip}
             />
             {tooltipData && (
               <Line
