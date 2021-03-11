@@ -58,6 +58,7 @@ services:
     # Contact
     Centreon\Domain\Contact\Interfaces\ContactInterface:
         class: Centreon\Domain\Contact\Contact
+        public: true
 
     Centreon\Domain\Contact\Interfaces\ContactServiceInterface:
         class: Centreon\Domain\Contact\ContactService

@@ -20,22 +20,21 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces\HostCategory;
-
-use Centreon\Domain\HostConfiguration\Model\HostCategory;
+namespace Centreon\Domain\HostConfiguration\Exception;
 
 /**
- * This interface gathers all the writing operations on the host category repository.
+ * This class is designed to contain all exceptions for the context of the host macro.
  *
- * @package Centreon\Domain\HostConfiguration\Interfaces\HostCategory
+ * @package Centreon\Domain\HostConfiguration\Exception
  */
-interface HostCategoryWriteRepositoryInterface
+class HostMacroException extends \Exception
 {
     /**
-     * Add a host category.
-     *
-     * @param HostCategory $category Host category to be added
-     * @throws \Throwable
+     * @param \Throwable $ex
+     * @return self
      */
-    public function addCategory(HostCategory $category): void;
+    public static function addMacroException(\Throwable $ex): self
+    {
+        return new self(_('Error when adding a host macro'), 0, $ex);
+    }
 }

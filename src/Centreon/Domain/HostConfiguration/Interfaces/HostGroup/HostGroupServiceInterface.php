@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostGroup;
 
 use Centreon\Domain\HostConfiguration\Exception\HostGroupException;
+use Centreon\Domain\HostConfiguration\HostGroupService;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Repository\RepositoryException;
 
@@ -31,6 +32,41 @@ use Centreon\Domain\Repository\RepositoryException;
  */
 interface HostGroupServiceInterface
 {
+    /**
+     * Add a host group.
+     *
+     * @param HostGroup $group
+     * @throws HostGroupException
+     */
+    public function addGroup(HostGroup $group): void;
+
+    /**
+     * Find all host groups (for non admin user).
+     *
+     * @return HostGroup[]
+     * @throws HostGroupException
+     * @throws RepositoryException
+     */
+    public function findAllWithAcl(): array;
+
+    /**
+     * Find all host groups (for admin user).
+     *
+     * @return HostGroup[]
+     * @throws HostGroupException
+     * @throws RepositoryException
+     */
+    public function findAllWithoutAcl(): array;
+
+    /**
+     * Find host groups by name (for admin user).
+     *
+     * @param string[] $groupsName List of names of host groups to be found
+     * @return HostGroup[]
+     * @throws HostGroupException
+     */
+    public function findByNamesWithoutAcl(array $groupsName): array;
+
     /**
      * Find a host group (for non admin user).
      *
@@ -50,22 +86,4 @@ interface HostGroupServiceInterface
      * @throws RepositoryException
      */
     public function findWithoutAcl(int $groupId): ?HostGroup;
-
-    /**
-     * Find all host groups (for non admin user).
-     *
-     * @return HostGroup[]
-     * @throws HostGroupException
-     * @throws RepositoryException
-     */
-    public function findAllWithAcl(): array;
-
-    /**
-     * Find all host groups (for admin user).
-     *
-     * @return HostGroup[]
-     * @throws HostGroupException
-     * @throws RepositoryException
-     */
-    public function findAllWithoutAcl(): array;
 }

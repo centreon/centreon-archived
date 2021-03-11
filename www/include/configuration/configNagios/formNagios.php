@@ -221,10 +221,6 @@ $form->addElement('text', 'nagios_group', _("Monitoring system Group"), $attrsTe
 /* *****************************************************
  * Enable / Disable functionalities
  */
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'postpone_notification_to_timeperiod', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'postpone_notification_to_timeperiod', null, _("No"), '0');
-$form->addGroup($nagTab, 'postpone_notification_to_timeperiod', _("Postpone Notification Option"), '&nbsp;');
 
 $nagTab = array();
 $nagTab[] = $form->createElement('radio', 'enable_notifications', null, _("Yes"), '1');
