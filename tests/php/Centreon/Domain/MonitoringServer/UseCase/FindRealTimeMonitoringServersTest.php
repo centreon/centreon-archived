@@ -38,7 +38,7 @@ class FindRealTimeMonitoringServersTest extends TestCase
      */
     private $realTimeMonitoringServerService;
     /**
-     * @var \Centreon\Domain\MonitoringServer\Model
+     * @var \Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServer
      */
     private $realTimeMonitoringServer;
 
