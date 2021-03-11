@@ -116,8 +116,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         } catch (RepositoryException $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
-            throw new ResourceException($ex->getMessage(), 0, $ex);
-            //throw new ResourceException(_('Error while searching for resources'), 0, $ex);
+            throw new ResourceException(_('Error while searching for resources'), 0, $ex);
         }
 
         return $list;
