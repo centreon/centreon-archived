@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -65,8 +66,10 @@ $next = '';
 if ($handle = opendir('../php')) {
     while (false !== ($file = readdir($handle))) {
         if (preg_match('/Update-([a-zA-Z0-9\-\.]+)\.php/', $file, $matches)) {
-            if ((version_compare($current, $matches[1]) < 0) &&
-                (empty($next) || (version_compare($next, $matches[1]) < 0))) {
+            if (
+                (version_compare($current, $matches[1]) < 0)
+                && (empty($next) || (version_compare($next, $matches[1]) < 0))
+            ) {
                 $next = $matches[1];
             }
         }
@@ -83,9 +86,11 @@ $releaseNoteLink = "https://documentation.centreon.com/" . $matches[1] . '/en/re
 $title = _('Release notes');
 
 $contents = '<p><b>' . _('Everything is ready !') . '</b></p>';
-$contents .= '<p>' . _('Your Centreon Platform is about to be upgraded from version ') . $current . _(' to ') . $next . '</p>';
+$contents .= '<p>' . _('Your Centreon Platform is about to be upgraded from version ') . $current . _(' to ') .
+    $next . '</p>';
 $contents .= '<p>' . _('For further details on changes, please find the complete changelog on ');
-$contents .= '<a href="' . $releaseNoteLink . '"target="_blank" style="text-decoration:underline;font-size:11px">documentation.centreon.com</a></p>';
+$contents .= '<a href="' . $releaseNoteLink .
+    '" target="_blank" style="text-decoration:underline;font-size:11px">documentation.centreon.com</a></p>';
 
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
