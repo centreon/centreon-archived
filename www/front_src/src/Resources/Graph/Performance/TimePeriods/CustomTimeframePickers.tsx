@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { and, equals } from 'ramda';
+import { and, equals, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -59,11 +59,20 @@ const CustomTimeframePickers = ({
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
   const changeDate = (property: TimeframeProperties) => () => {
-    if (isInvalidDate({ startDate: start, endDate: end })) {
+    const dateToAccept = equals(property, TimeframeProperties.start)
+      ? start
+      : end;
+
+    if (
+      or(
+        dayjs(dateToAccept).isSame(dayjs(timeframe[property])),
+        isInvalidDate({ startDate: start, endDate: end }),
+      )
+    ) {
       return;
     }
     acceptDate({
-      date: equals(property === TimeframeProperties.start) ? start : end,
+      date: dateToAccept,
       property,
     });
   };
