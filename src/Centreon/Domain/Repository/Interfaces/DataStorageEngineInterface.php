@@ -20,22 +20,34 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces\HostCategory;
-
-use Centreon\Domain\HostConfiguration\Model\HostCategory;
+namespace Centreon\Domain\Repository\Interfaces;
 
 /**
- * This interface gathers all the writing operations on the host category repository.
+ * This interface is designed to perform specific operations on the data storage engine
  *
- * @package Centreon\Domain\HostConfiguration\Interfaces\HostCategory
+ * @package Centreon\Domain\Repository\Interfaces
  */
-interface HostCategoryWriteRepositoryInterface
+interface DataStorageEngineInterface
 {
+
     /**
-     * Add a host category.
+     * Rollback the operations in the transaction
      *
-     * @param HostCategory $category Host category to be added
-     * @throws \Throwable
+     * @return bool
      */
-    public function addCategory(HostCategory $category): void;
+    public function rollbackTransaction(): bool;
+
+    /**
+     * Start a transaction
+     *
+     * @return bool
+     */
+    public function startTransaction(): bool;
+
+    /**
+     * Commit the operations in the transaction
+     *
+     * @return bool
+     */
+    public function commitTransaction(): bool;
 }

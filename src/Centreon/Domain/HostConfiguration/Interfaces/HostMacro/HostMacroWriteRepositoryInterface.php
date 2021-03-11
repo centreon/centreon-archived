@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,32 +20,24 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces;
+namespace Centreon\Domain\HostConfiguration\Interfaces\HostMacro;
 
 use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\HostConfiguration\HostMacro;
 
 /**
  * This interface gathers all the writing operations on the repository.
  *
- * @package Centreon\Domain\HostConfiguration\Interfaces
+ * @package Centreon\Domain\HostConfiguration\Interfaces\HostMacro
  */
-interface HostConfigurationWriteRepositoryInterface
+interface HostMacroWriteRepositoryInterface
 {
     /**
-     * Add a host
+     * Add a host macro to a host.
      *
-     * @param Host $host Host to add
-     * @throws RepositoryException
+     * @param Host $host Host linked to host macro to be added
+     * @param HostMacro $hostMacro Host macro to be added
      * @throws \Throwable
      */
-    public function addHost(Host $host): void;
-
-    /**
-     * Change the activation status of host.
-     *
-     * @param int $hostId Host id for which we want to change the activation status
-     * @param bool $shouldBeActivated TRUE to activate a host
-     */
-    public function changeActivationStatus(int $hostId, bool $shouldBeActivated): void;
+    public function addMacroToHost(Host $host, HostMacro $hostMacro): void;
 }
