@@ -344,7 +344,7 @@ const retrievedServices = {
   },
 };
 
-const currentDateIsoString = '2020-06-21T06:00:00.000Z';
+const currentDateIsoString = '2020-01-21T06:00:00.000Z';
 
 let context: ResourceContext;
 
@@ -502,9 +502,9 @@ describe(Details, () => {
   });
 
   it.each([
-    [label24hours, '2020-06-20T06:00:00.000Z', 20, undefined],
-    [label7Days, '2020-06-14T06:00:00.000Z', 100, last7Days.id],
-    [label31Days, '2020-05-21T06:00:00.000Z', 500, last31Days.id],
+    [label24hours, '2020-01-20T06:00:00.000Z', 20, undefined],
+    [label7Days, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
+    [label31Days, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected`,
     async (period, startIsoString, timelineEventsLimit, periodId) => {
@@ -1096,7 +1096,7 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-06-20T06:00:00.000Z&end=2020-06-21T06:00:00.000Z`,
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
         cancelTokenRequestParam,
       );
     });
@@ -1106,8 +1106,8 @@ describe(Details, () => {
     fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
 
-    const startISOString = '2020-06-19T06:00:00.000Z';
-    const endISOString = '2020-06-21T06:00:00.000Z';
+    const startISOString = '2020-01-19T06:00:00.000Z';
+    const endISOString = '2020-01-21T06:00:00.000Z';
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1158,22 +1158,22 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-06-20T06:00:00.000Z&end=2020-06-21T06:00:00.000Z`,
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
         cancelTokenRequestParam,
       );
     });
 
-    expect(getByLabelText(labelStartDate)).toHaveValue('2020/06/20 08:00');
-    expect(getByLabelText(labelEndDate)).toHaveValue('2020/06/21 08:00');
+    expect(getByLabelText(labelStartDate)).toHaveValue('January 20th 07:00');
+    expect(getByLabelText(labelEndDate)).toHaveValue('January 21st 07:00');
 
     userEvent.click(getByText(label7Days).parentElement as HTMLElement);
 
-    expect(getByLabelText(labelStartDate)).toHaveValue('2020/06/14 08:00');
-    expect(getByLabelText(labelEndDate)).toHaveValue('2020/06/21 08:00');
+    expect(getByLabelText(labelStartDate)).toHaveValue('January 14th 07:00');
+    expect(getByLabelText(labelEndDate)).toHaveValue('January 21st 07:00');
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-06-14T06:00:00.000Z&end=2020-06-21T06:00:00.000Z`,
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-14T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
         cancelTokenRequestParam,
       );
     });
@@ -1197,7 +1197,7 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-06-20T06:00:00.000Z&end=2020-06-21T06:00:00.000Z`,
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
         cancelTokenRequestParam,
       );
     });
