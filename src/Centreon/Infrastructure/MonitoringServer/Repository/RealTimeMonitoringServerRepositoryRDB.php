@@ -124,7 +124,7 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
                     ON ag.acl_group_id = agcr.acl_group_id
                 LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
                     ON ag.acl_group_id = agcgr.acl_group_id
-                LEFT JOIn `:db`.contactgroup_contact_relation cgcr
+                LEFT JOIN `:db`.contactgroup_contact_relation cgcr
                     ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id'
             );
         }
