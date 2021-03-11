@@ -21,6 +21,8 @@ import InfiniteScroll from '../../InfiniteScroll';
 import memoizeComponent from '../../../memoizedComponent';
 import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
+import { ApplyZoomProps } from '../../../Graph/Performance/models';
+import { ServicesTabParameters } from '../../models';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -153,6 +155,19 @@ const ServicesTabContent = ({
     });
   };
 
+  const applyZoom = ({ start, end }: ApplyZoomProps) => {
+    const newServicesTabParameters = {
+      graphMode,
+      graphTimePeriod: {
+        selectedCustomTimePeriod: {
+          start: start.toISOString(),
+          end: end.toISOString(),
+        },
+      },
+    } as ServicesTabParameters;
+    setServicesTabParameters(newServicesTabParameters);
+  };
+
   React.useEffect(() => {
     // To make sure that graphs are not displayed until 'entities' are reset
     setCanDisplayGraphs(true);
@@ -204,6 +219,7 @@ const ServicesTabContent = ({
               getIntervalDates={getIntervalDates}
               selectedTimePeriod={selectedTimePeriod}
               customTimePeriod={customTimePeriod}
+              applyZoom={applyZoom}
             />
           ) : (
             <ServiceList

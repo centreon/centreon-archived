@@ -41,7 +41,7 @@ import { grey } from '@material-ui/core/colors';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { TimeValue, Line as LineModel } from '../models';
+import { TimeValue, Line as LineModel, ApplyZoomProps } from '../models';
 import {
   getTime,
   getMin,
@@ -127,6 +127,11 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   },
 }));
 
+interface ZoomBoundaries {
+  start: number;
+  end: number;
+}
+
 interface GraphContentProps {
   width: number;
   height: number;
@@ -146,6 +151,7 @@ interface GraphContentProps {
   hideAddCommentTooltip: () => void;
   showAddCommentTooltip: (args) => void;
   format: (parameters) => string;
+  applyZoom?: (props: ApplyZoomProps) => void;
 }
 
 const getScale = ({
@@ -184,6 +190,7 @@ const GraphContent = ({
   hideAddCommentTooltip,
   showAddCommentTooltip,
   format,
+  applyZoom,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles({ onAddComment });
@@ -193,10 +200,10 @@ const GraphContent = ({
   const [zoomPivotPosition, setZoomPivotPosition] = React.useState<
     number | null
   >(null);
-  const [zoomBoundaries, setZoomBoundaries] = React.useState<{
-    start: number;
-    end: number;
-  } | null>(null);
+  const [
+    zoomBoundaries,
+    setZoomBoundaries,
+  ] = React.useState<ZoomBoundaries | null>(null);
   const { canComment } = useAclQuery();
 
   const theme = useTheme();
@@ -341,22 +348,18 @@ const GraphContent = ({
       setIsMouseOver(true);
       const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
-      const xPosition = x - margin.left;
+      const mouseX = x - margin.left;
 
       annotations.changeAnnotationHovered({
-        mouseX: xPosition,
+        mouseX,
         xScale,
         timeline,
       });
 
       if (zoomPivotPosition) {
         setZoomBoundaries({
-          start: lt(xPosition, zoomPivotPosition)
-            ? xPosition
-            : zoomPivotPosition,
-          end: gte(xPosition, zoomPivotPosition)
-            ? xPosition
-            : zoomPivotPosition,
+          start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
+          end: gte(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
         });
         return;
       }
@@ -398,11 +401,15 @@ const GraphContent = ({
   const displayAddCommentTooltip = (event): void => {
     setZoomBoundaries(null);
     setZoomPivotPosition(null);
-    if (
-      !canComment([resource]) ||
-      isNil(onAddComment) ||
-      zoomBoundaries?.start !== zoomBoundaries?.end
-    ) {
+    if (!canComment([resource]) || isNil(onAddComment)) {
+      return;
+    }
+
+    if (zoomBoundaries?.start !== zoomBoundaries?.end) {
+      applyZoom?.({
+        start: xScale.invert(zoomBoundaries?.start || 0),
+        end: xScale.invert(zoomBoundaries?.end || graphWidth),
+      });
       return;
     }
 
@@ -432,12 +439,15 @@ const GraphContent = ({
   };
 
   const displayZoomPreview = (event) => {
+    if (isNil(onAddComment)) {
+      return;
+    }
     const { x } = localPoint(event) || { x: 0 };
-    const xPosition = x - margin.left;
-    setZoomPivotPosition(xPosition);
+    const mouseX = x - margin.left;
+    setZoomPivotPosition(mouseX);
     setZoomBoundaries({
-      start: xPosition,
-      end: xPosition,
+      start: mouseX,
+      end: mouseX,
     });
     hideAddCommentTooltip();
   };

@@ -186,6 +186,42 @@ const useTimePeriod = ({
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
   };
 
+  const onDefaultCustomTimePeriodChange = (
+    newDefaultCustomTimePeriod,
+  ): void => {
+    setCustomTimePeriod(getNewCustomTimePeriod(newDefaultCustomTimePeriod));
+    setSelectedTimePeriod(null);
+    const queryParamsForSelectedPeriodId = getGraphQueryParameters({
+      startDate: newDefaultCustomTimePeriod.start,
+      endDate: newDefaultCustomTimePeriod.end,
+    });
+    setPeriodQueryParameters(queryParamsForSelectedPeriodId);
+  };
+
+  React.useEffect(() => {
+    if (isNil(defaultSelectedCustomTimePeriod)) {
+      return;
+    }
+    const newDefaultCustomTimePeriod = {
+      start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
+      end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
+    };
+    if (
+      and(
+        dayjs(newDefaultCustomTimePeriod.start).isSame(
+          dayjs(customTimePeriod.start, 'minute'),
+        ),
+        dayjs(newDefaultCustomTimePeriod.end).isSame(
+          dayjs(customTimePeriod.end, 'minute'),
+        ),
+      )
+    ) {
+      return;
+    }
+
+    onDefaultCustomTimePeriodChange(newDefaultCustomTimePeriod);
+  }, [defaultSelectedCustomTimePeriod]);
+
   return {
     changeSelectedTimePeriod,
     selectedTimePeriod,

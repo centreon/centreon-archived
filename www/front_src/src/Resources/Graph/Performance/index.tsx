@@ -29,7 +29,12 @@ import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import Graph from './Graph';
 import Legend from './Legend';
 import LoadingSkeleton from './LoadingSkeleton';
-import { GraphData, TimeValue, Line as LineModel } from './models';
+import {
+  GraphData,
+  TimeValue,
+  Line as LineModel,
+  ApplyZoomProps,
+} from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
 
 interface Props {
@@ -43,6 +48,7 @@ interface Props {
   onAddComment?: (commentParameters: CommentParameters) => void;
   tooltipPosition?: [number, number];
   onTooltipDisplay?: (position?: [number, number]) => void;
+  applyZoom?: (props: ApplyZoomProps) => void;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -81,6 +87,7 @@ const PerformanceGraph = ({
   onTooltipDisplay,
   resource,
   onAddComment,
+  applyZoom,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
@@ -204,6 +211,7 @@ const PerformanceGraph = ({
             resource={resource}
             onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}
+            applyZoom={applyZoom}
           />
         )}
       </ParentSize>

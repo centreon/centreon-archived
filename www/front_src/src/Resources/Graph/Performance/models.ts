@@ -41,3 +41,8 @@ export interface Line {
   invert: string | null;
   stackOrder: number | null;
 }
+
+export interface ApplyZoomProps {
+  start: Date;
+  end: Date;
+}

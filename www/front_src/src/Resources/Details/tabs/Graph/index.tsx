@@ -10,6 +10,8 @@ import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { ResourceContext, useResourceContext } from '../../../Context';
 import memoizeComponent from '../../../memoizedComponent';
+import { ApplyZoomProps } from '../../../Graph/Performance/models';
+import { GraphTabParameters } from '../../models';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -63,6 +65,16 @@ const GraphTabContent = ({
     onTimePeriodChange: setGraphTabParameters,
   });
 
+  const applyZoom = ({ start, end }: ApplyZoomProps) => {
+    const newGraphTabParameters = {
+      selectedCustomTimePeriod: {
+        start: start.toISOString(),
+        end: end.toISOString(),
+      },
+    } as GraphTabParameters;
+    setGraphTabParameters(newGraphTabParameters);
+  };
+
   return (
     <div className={classes.container}>
       <TimePeriodButtonGroup
@@ -78,6 +90,7 @@ const GraphTabContent = ({
         getIntervalDates={getIntervalDates}
         selectedTimePeriod={selectedTimePeriod}
         customTimePeriod={customTimePeriod}
+        applyZoom={applyZoom}
       />
     </div>
   );
