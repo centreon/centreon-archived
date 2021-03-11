@@ -897,7 +897,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["host_perfdata_file_processing_interval"])
+    if (
+        isset($ret["host_perfdata_file_processing_interval"])
         && $ret["host_perfdata_file_processing_interval"] != null
     ) {
         $rq .= "'" . htmlentities($ret["host_perfdata_file_processing_interval"], ENT_QUOTES, "UTF-8") . "',  ";
