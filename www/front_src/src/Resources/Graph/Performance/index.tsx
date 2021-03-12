@@ -24,6 +24,7 @@ import {
   Typography,
   Theme,
   CircularProgress,
+  useTheme,
 } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -110,6 +111,10 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
       canNavigateInGraph ? 'space-between' : 'center',
     margin: theme.spacing(0, 1),
   },
+  loadingContainer: {
+    width: theme.spacing(2),
+    height: theme.spacing(2),
+  },
 }));
 
 const translationRatio = 2;
@@ -133,6 +138,7 @@ const PerformanceGraph = ({
     canNavigateInGraph: not(isNil(navigateInGraph)),
   });
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
@@ -285,14 +291,18 @@ const PerformanceGraph = ({
             onClick={translate(Direction.backward)}
             disabled={sendingGetGraphDataRequest}
           >
-            <ArrowBackIosIcon />
+            <ArrowBackIosIcon fontSize="small" />
           </IconButton>
         )}
         <div className={classes.graphHeader}>
           <Typography variant="body1" color="textPrimary" align="center">
             {title}
           </Typography>
-          {sendingGetGraphDataRequest && <CircularProgress size={16} />}
+          <div className={classes.loadingContainer}>
+            {sendingGetGraphDataRequest && (
+              <CircularProgress size={theme.spacing(2)} />
+            )}
+          </div>
         </div>
         {navigateInGraph && (
           <IconButton
@@ -301,7 +311,7 @@ const PerformanceGraph = ({
             onClick={translate(Direction.forward)}
             disabled={sendingGetGraphDataRequest}
           >
-            <ArrowForwardIosIcon />
+            <ArrowForwardIosIcon fontSize="small" />
           </IconButton>
         )}
       </div>
