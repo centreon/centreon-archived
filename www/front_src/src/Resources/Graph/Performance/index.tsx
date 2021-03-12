@@ -68,7 +68,11 @@ interface Props {
   customTimePeriod?: CustomTimePeriod;
 }
 
-const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
+interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
+  canNavigateInGraph: boolean;
+}
+
+const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   container: {
     display: 'grid',
     flexDirection: 'column',
@@ -98,10 +102,12 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
   },
   graphTranslation: {
     display: 'grid',
-    gridTemplateColumns: 'min-content auto min-content',
+    gridTemplateColumns: ({ canNavigateInGraph }) =>
+      canNavigateInGraph ? 'min-content auto min-content' : 'auto',
     columnGap: `${theme.spacing(1)}px`,
     width: '90%',
-    justifyContent: 'space-between',
+    justifyContent: ({ canNavigateInGraph }) =>
+      canNavigateInGraph ? 'space-between' : 'center',
     margin: theme.spacing(0, 1),
   },
 }));
@@ -122,7 +128,10 @@ const PerformanceGraph = ({
   navigateInGraph,
   customTimePeriod,
 }: Props): JSX.Element | null => {
-  const classes = useStyles({ graphHeight });
+  const classes = useStyles({
+    graphHeight,
+    canNavigateInGraph: not(isNil(navigateInGraph)),
+  });
   const { t } = useTranslation();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
@@ -241,6 +250,7 @@ const PerformanceGraph = ({
     if (isNil(customTimePeriod)) {
       return;
     }
+    setNavigatingInGraph(true);
     const timestampToTranslate =
       (customTimePeriod.end.getTime() - customTimePeriod.start.getTime()) /
       translationRatio;
@@ -268,26 +278,32 @@ const PerformanceGraph = ({
   return (
     <div className={classes.container}>
       <div className={classes.graphTranslation}>
-        <IconButton
-          title="Backward"
-          ariaLabel="Backward"
-          onClick={translate(Direction.backward)}
-        >
-          <ArrowBackIosIcon />
-        </IconButton>
+        {navigateInGraph && (
+          <IconButton
+            title="Backward"
+            ariaLabel="Backward"
+            onClick={translate(Direction.backward)}
+            disabled={sendingGetGraphDataRequest}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
+        )}
         <div className={classes.graphHeader}>
           <Typography variant="body1" color="textPrimary" align="center">
             {title}
           </Typography>
           {sendingGetGraphDataRequest && <CircularProgress size={16} />}
         </div>
-        <IconButton
-          title="Forward"
-          ariaLabel="Forward"
-          onClick={translate(Direction.forward)}
-        >
-          <ArrowForwardIosIcon />
-        </IconButton>
+        {navigateInGraph && (
+          <IconButton
+            title="Forward"
+            ariaLabel="Forward"
+            onClick={translate(Direction.forward)}
+            disabled={sendingGetGraphDataRequest}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        )}
       </div>
 
       <ParentSize>
