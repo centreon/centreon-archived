@@ -17,7 +17,7 @@ import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    padding: theme.spacing(0.5),
+    padding: theme.spacing(1, 0.5),
     display: 'grid',
     gridTemplateColumns: `repeat(2, auto)`,
     columnGap: `${theme.spacing(2)}px`,
