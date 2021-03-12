@@ -863,7 +863,7 @@ describe(Details, () => {
     });
 
     act(() => {
-      setSelectedHostResource()
+      setSelectedHostResource();
       context.setGraphTabParameters({
         selectedTimePeriodId: last7Days.id,
       });
