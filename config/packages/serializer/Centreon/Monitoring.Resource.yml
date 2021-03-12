@@ -1,5 +1,13 @@
 Centreon\Domain\Monitoring\Resource:
     virtual_properties:
+        getUuid:
+            name: getUuid
+            serialized_name: uuid
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+                - 'resource_details'
         getDuration:
             name: getDuration
             serialized_name: duration
@@ -20,12 +28,6 @@ Centreon\Domain\Monitoring\Resource:
                 - 'resource_main'
                 - 'resource_parent'
     properties:
-        uuid:
-            type: string
-            groups:
-                - 'resource_main'
-                - 'resource_parent'
-                - 'resource_details'
         id:
             type: int
             groups:
