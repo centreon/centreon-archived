@@ -21,8 +21,6 @@ import InfiniteScroll from '../../InfiniteScroll';
 import memoizeComponent from '../../../memoizedComponent';
 import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
-import { ApplyZoomProps } from '../../../Graph/Performance/models';
-import { ServicesTabParameters } from '../../models';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -85,7 +83,7 @@ const ServicesTabContent = ({
     getIntervalDates,
     customTimePeriod,
     changeCustomTimePeriod,
-    applyZoom,
+    navigateInGraph,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
@@ -207,7 +205,7 @@ const ServicesTabContent = ({
               getIntervalDates={getIntervalDates}
               selectedTimePeriod={selectedTimePeriod}
               customTimePeriod={customTimePeriod}
-              applyZoom={applyZoom}
+              navigateInGraph={navigateInGraph}
             />
           ) : (
             <ServiceList

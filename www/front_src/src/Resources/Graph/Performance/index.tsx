@@ -14,6 +14,8 @@ import {
   equals,
   pipe,
   not,
+  add,
+  negate,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -23,14 +25,17 @@ import {
   Theme,
   CircularProgress,
 } from '@material-ui/core';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
-import { useRequest, getData, timeFormat } from '@centreon/ui';
+import { useRequest, getData, timeFormat, IconButton } from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 
 import Graph from './Graph';
 import Legend from './Legend';
@@ -39,9 +44,14 @@ import {
   GraphData,
   TimeValue,
   Line as LineModel,
-  ApplyZoomProps,
+  NavigateInGraphProps,
 } from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
+
+enum Direction {
+  backward,
+  forward,
+}
 
 interface Props {
   endpoint?: string;
@@ -54,7 +64,8 @@ interface Props {
   onAddComment?: (commentParameters: CommentParameters) => void;
   tooltipPosition?: [number, number];
   onTooltipDisplay?: (position?: [number, number]) => void;
-  applyZoom?: (props: ApplyZoomProps) => void;
+  navigateInGraph?: (props: NavigateInGraphProps) => void;
+  customTimePeriod?: CustomTimePeriod;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
@@ -85,7 +96,17 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
     gridTemplateColumns: 'auto auto',
     columnGap: `${theme.spacing(3)}px`,
   },
+  graphTranslation: {
+    display: 'grid',
+    gridTemplateColumns: 'min-content auto min-content',
+    columnGap: `${theme.spacing(1)}px`,
+    width: '90%',
+    justifyContent: 'space-between',
+    margin: theme.spacing(0, 1),
+  },
 }));
+
+const translationRatio = 2;
 
 const PerformanceGraph = ({
   endpoint,
@@ -98,7 +119,8 @@ const PerformanceGraph = ({
   onTooltipDisplay,
   resource,
   onAddComment,
-  applyZoom,
+  navigateInGraph,
+  customTimePeriod,
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
@@ -107,7 +129,9 @@ const PerformanceGraph = ({
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
-  const [zoomApplied, setZoomApplied] = React.useState<boolean>(false);
+  const [navigatingInGraph, setNavigatingInGraph] = React.useState<boolean>(
+    false,
+  );
 
   const {
     sendRequest: sendGetGraphDataRequest,
@@ -121,7 +145,7 @@ const PerformanceGraph = ({
       return;
     }
 
-    if (not(zoomApplied)) {
+    if (not(navigatingInGraph)) {
       setLineData(undefined);
     }
 
@@ -130,7 +154,7 @@ const PerformanceGraph = ({
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);
       setBase(graphData.global.base);
-      setZoomApplied(false);
+      setNavigatingInGraph(false);
     });
   }, [endpoint]);
 
@@ -208,18 +232,62 @@ const PerformanceGraph = ({
     );
   };
 
-  const displayZoomLoader = (props: ApplyZoomProps) => {
-    setZoomApplied(true);
-    applyZoom?.(props);
+  const displayZoomLoader = (props: NavigateInGraphProps) => {
+    setNavigatingInGraph(true);
+    navigateInGraph?.(props);
+  };
+
+  const translate = (direction: Direction) => () => {
+    if (isNil(customTimePeriod)) {
+      return;
+    }
+    const timestampToTranslate =
+      (customTimePeriod.end.getTime() - customTimePeriod.start.getTime()) /
+      translationRatio;
+
+    navigateInGraph?.({
+      start: new Date(
+        add(
+          customTimePeriod.start.getTime(),
+          equals(direction, Direction.backward)
+            ? negate(timestampToTranslate)
+            : timestampToTranslate,
+        ),
+      ),
+      end: new Date(
+        add(
+          customTimePeriod.end.getTime(),
+          equals(direction, Direction.backward)
+            ? negate(timestampToTranslate)
+            : timestampToTranslate,
+        ),
+      ),
+    });
   };
 
   return (
     <div className={classes.container}>
-      <div className={classes.graphHeader}>
-        <Typography variant="body1" color="textPrimary" align="center">
-          {title}
-        </Typography>
-        {sendingGetGraphDataRequest && <CircularProgress size={16} />}
+      <div className={classes.graphTranslation}>
+        <IconButton
+          title="Backward"
+          ariaLabel="Backward"
+          onClick={translate(Direction.backward)}
+        >
+          <ArrowBackIosIcon />
+        </IconButton>
+        <div className={classes.graphHeader}>
+          <Typography variant="body1" color="textPrimary" align="center">
+            {title}
+          </Typography>
+          {sendingGetGraphDataRequest && <CircularProgress size={16} />}
+        </div>
+        <IconButton
+          title="Forward"
+          ariaLabel="Forward"
+          onClick={translate(Direction.forward)}
+        >
+          <ArrowForwardIosIcon />
+        </IconButton>
       </div>
 
       <ParentSize>

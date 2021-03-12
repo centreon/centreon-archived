@@ -35,7 +35,7 @@ import {
 } from '../../../Details/tabs/Graph/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
-import { ApplyZoomProps } from '../models';
+import { NavigateInGraphProps } from '../models';
 
 import exportToPng from './exportToPng';
 
@@ -66,7 +66,7 @@ interface Props {
   onTooltipDisplay?: (position?: [number, number]) => void;
   tooltipPosition?: [number, number];
   customTimePeriod: CustomTimePeriod;
-  applyZoom?: (props: ApplyZoomProps) => void;
+  navigateInGraph?: (props: NavigateInGraphProps) => void;
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
@@ -78,7 +78,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   onTooltipDisplay,
   tooltipPosition,
   customTimePeriod,
-  applyZoom,
+  navigateInGraph,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -229,7 +229,8 @@ const ExportablePerformanceGraphWithTimeline = ({
           onAddComment={addCommentToTimeline}
           onTooltipDisplay={onTooltipDisplay}
           tooltipPosition={tooltipPosition}
-          applyZoom={applyZoom}
+          navigateInGraph={navigateInGraph}
+          customTimePeriod={customTimePeriod}
         />
       </div>
     </Paper>

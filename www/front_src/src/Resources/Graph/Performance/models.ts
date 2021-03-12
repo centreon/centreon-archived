@@ -42,7 +42,7 @@ export interface Line {
   stackOrder: number | null;
 }
 
-export interface ApplyZoomProps {
+export interface NavigateInGraphProps {
   start: Date;
   end: Date;
 }

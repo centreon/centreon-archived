@@ -41,7 +41,7 @@ import { grey } from '@material-ui/core/colors';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { TimeValue, Line as LineModel, ApplyZoomProps } from '../models';
+import { TimeValue, Line as LineModel, NavigateInGraphProps } from '../models';
 import {
   getTime,
   getMin,
@@ -151,7 +151,7 @@ interface GraphContentProps {
   hideAddCommentTooltip: () => void;
   showAddCommentTooltip: (args) => void;
   format: (parameters) => string;
-  applyZoom?: (props: ApplyZoomProps) => void;
+  applyZoom?: (props: NavigateInGraphProps) => void;
 }
 
 const getScale = ({

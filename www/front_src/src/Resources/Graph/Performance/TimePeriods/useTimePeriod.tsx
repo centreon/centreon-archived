@@ -15,7 +15,7 @@ import {
   ChangeCustomTimePeriodProps,
   StoredCustomTimePeriod,
 } from '../../../Details/tabs/Graph/models';
-import { ApplyZoomProps } from '../models';
+import { NavigateInGraphProps } from '../models';
 
 dayjs.extend(duration);
 
@@ -26,7 +26,7 @@ interface TimePeriodState {
   getIntervalDates: () => [string, string];
   customTimePeriod: CustomTimePeriod;
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
-  applyZoom: (props: ApplyZoomProps) => void;
+  navigateInGraph: (props: NavigateInGraphProps) => void;
 }
 
 interface OnTimePeriodChangeProps {
@@ -188,30 +188,18 @@ const useTimePeriod = ({
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
   };
 
-  const onDefaultCustomTimePeriodChange = (
-    newDefaultCustomTimePeriod,
-  ): void => {
-    setCustomTimePeriod(getNewCustomTimePeriod(newDefaultCustomTimePeriod));
+  const navigateInGraph = (zoomOrTranslationProps: NavigateInGraphProps) => {
+    setCustomTimePeriod(getNewCustomTimePeriod(zoomOrTranslationProps));
     setSelectedTimePeriod(null);
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
-      startDate: newDefaultCustomTimePeriod.start,
-      endDate: newDefaultCustomTimePeriod.end,
-    });
-    setPeriodQueryParameters(queryParamsForSelectedPeriodId);
-  };
-
-  const applyZoom = (zoomProps: ApplyZoomProps) => {
-    setCustomTimePeriod(getNewCustomTimePeriod(zoomProps));
-    setSelectedTimePeriod(null);
-    const queryParamsForSelectedPeriodId = getGraphQueryParameters({
-      startDate: zoomProps.start,
-      endDate: zoomProps.end,
+      startDate: zoomOrTranslationProps.start,
+      endDate: zoomOrTranslationProps.end,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
     onTimePeriodChange?.({
       selectedCustomTimePeriod: {
-        start: zoomProps.start.toISOString(),
-        end: zoomProps.end.toISOString(),
+        start: zoomOrTranslationProps.start.toISOString(),
+        end: zoomOrTranslationProps.end.toISOString(),
       },
     });
   };
@@ -224,7 +212,7 @@ const useTimePeriod = ({
       getIntervalDates(selectedTimePeriod),
     customTimePeriod,
     changeCustomTimePeriod,
-    applyZoom,
+    navigateInGraph,
   };
 };
 

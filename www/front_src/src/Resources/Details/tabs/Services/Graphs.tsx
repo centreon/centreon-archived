@@ -5,7 +5,7 @@ import { path, isNil, equals, last, pipe, not } from 'ramda';
 import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { CustomTimePeriod, TimePeriod } from '../Graph/models';
-import { ApplyZoomProps } from '../../../Graph/Performance/models';
+import { NavigateInGraphProps } from '../../../Graph/Performance/models';
 
 const MemoizedPerformanceGraph = React.memo(
   ExportablePerformanceGraphWithTimeline,
@@ -35,7 +35,7 @@ interface Props {
   getIntervalDates: () => [string, string];
   selectedTimePeriod: TimePeriod | null;
   customTimePeriod: CustomTimePeriod;
-  applyZoom: (props: ApplyZoomProps) => void;
+  navigateInGraph: (props: NavigateInGraphProps) => void;
 }
 
 const ServiceGraphs = ({
@@ -45,7 +45,7 @@ const ServiceGraphs = ({
   getIntervalDates,
   selectedTimePeriod,
   customTimePeriod,
-  applyZoom,
+  navigateInGraph,
 }: Props): JSX.Element => {
   const [tooltipPosition, setTooltipPosition] = React.useState<
     [number, number]
@@ -72,7 +72,7 @@ const ServiceGraphs = ({
               onTooltipDisplay={setTooltipPosition}
               tooltipPosition={tooltipPosition}
               customTimePeriod={customTimePeriod}
-              applyZoom={applyZoom}
+              navigateInGraph={navigateInGraph}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>
