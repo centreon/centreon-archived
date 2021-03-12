@@ -30,6 +30,10 @@ import { getStoredOrDefaultPanelWidth, storePanelWidth } from './storedDetails';
 export interface DetailsState {
   clearSelectedResource: () => void;
   getSelectedResourceDetailsEndpoint: () => string | undefined;
+  selectedResourceUuid?: string;
+  setSelectedResourceUuid: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
   selectedResourceId?: number;
   setSelectedResourceId: React.Dispatch<
     React.SetStateAction<number | undefined>
@@ -59,6 +63,10 @@ const useDetails = (): DetailsState => {
   const [openDetailsTabId, setOpenDetailsTabId] = React.useState<TabId>(
     detailsTabId,
   );
+  const [
+    selectedResourceUuid,
+    setSelectedResourceUuid,
+  ] = React.useState<string>();
   const [selectedResourceId, setSelectedResourceId] = React.useState<number>();
   const [
     selectedResourceParentId,
@@ -99,6 +107,7 @@ const useDetails = (): DetailsState => {
     }
 
     const {
+      uuid,
       id,
       parentId,
       type,
@@ -111,6 +120,7 @@ const useDetails = (): DetailsState => {
       setOpenDetailsTabId(getTabIdFromLabel(tab));
     }
 
+    setSelectedResourceUuid(uuid);
     setSelectedResourceId(id);
     setSelectedResourceParentId(parentId);
     setSelectedResourceType(type);
@@ -123,6 +133,7 @@ const useDetails = (): DetailsState => {
       {
         name: 'details',
         value: {
+          uuid: selectedResourceUuid,
           id: selectedResourceId,
           parentId: selectedResourceParentId,
           type: selectedResourceType,
@@ -150,6 +161,7 @@ const useDetails = (): DetailsState => {
   };
 
   const clearSelectedResource = (): void => {
+    setSelectedResourceUuid(undefined);
     setSelectedResourceId(undefined);
     setSelectedResourceParentId(undefined);
     setSelectedResourceParentType(undefined);
@@ -189,8 +201,10 @@ const useDetails = (): DetailsState => {
 
   return {
     clearSelectedResource,
+    selectedResourceUuid,
     selectedResourceId,
     selectedResourceParentId,
+    setSelectedResourceUuid,
     setSelectedResourceId,
     setSelectedResourceType,
     setSelectedResourceParentId,

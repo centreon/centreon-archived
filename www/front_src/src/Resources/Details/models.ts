@@ -11,6 +11,7 @@ import {
 import { TimePeriodId } from './tabs/Graph/models';
 
 export interface ResourceDetails extends NamedEntity {
+  uuid: string;
   status: Status;
   parent: Parent;
   links: ResourceLinks;
@@ -55,6 +56,7 @@ export interface TabParameters {
 }
 
 export interface DetailsUrlQueryParameters {
+  uuid: string;
   id: number;
   parentId?: number;
   parentType?: string;

@@ -31,11 +31,12 @@ const ResourceListing = (): JSX.Element => {
     page,
     setPage,
     setOpenDetailsTabId,
+    setSelectedResourceUuid,
     setSelectedResourceId,
     setSelectedResourceParentId,
     setSelectedResourceType,
     setSelectedResourceParentType,
-    selectedResourceId,
+    selectedResourceUuid,
     setSelectedResources,
     selectedResources,
     setResourcesToAcknowledge,
@@ -44,7 +45,6 @@ const ResourceListing = (): JSX.Element => {
     sending,
     setCriteria,
     getCriteriaValue,
-    selectedResourceParentId,
   } = useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
@@ -61,7 +61,8 @@ const ResourceListing = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const selectResource = ({ id, type, parent }: Resource): void => {
+  const selectResource = ({ uuid, id, type, parent }: Resource): void => {
+    setSelectedResourceUuid(uuid);
     setSelectedResourceId(id);
     setSelectedResourceParentId(parent?.id);
     setSelectedResourceType(type);
@@ -70,15 +71,7 @@ const ResourceListing = (): JSX.Element => {
 
   const resourceDetailsOpenCondition = {
     name: 'detailsOpen',
-    condition: (row): boolean => {
-      const { id, parent } = row;
-      const parentId = parent?.id;
-
-      return (
-        equals(id, selectedResourceId) &&
-        equals(parentId, selectedResourceParentId)
-      );
-    },
+    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
     color: fade(theme.palette.primary.main, 0.08),
   };
 
@@ -147,8 +140,7 @@ const ResourceListing = (): JSX.Element => {
         sortOrder,
         page,
         selectedResources,
-        selectedResourceId,
-        selectedResourceParentId,
+        selectedResourceUuid,
         sending,
       ]}
     />
