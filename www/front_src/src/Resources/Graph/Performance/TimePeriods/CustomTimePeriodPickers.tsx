@@ -9,7 +9,7 @@ import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { FormHelperText, makeStyles, Typography } from '@material-ui/core';
 
 import { useUserContext } from '@centreon/ui-context';
-import { TextField } from '@centreon/ui';
+import { dateTimeFormat, TextField } from '@centreon/ui';
 
 import {
   labelEndDate,
@@ -103,6 +103,7 @@ const CustomTimePeriodPickers = ({
     InputProps: {
       disableUnderline: true,
     },
+    format: dateTimeFormat,
   };
 
   const startDateInputProp = {
