@@ -18,7 +18,6 @@ import {
   getUrlQueryParameters,
 } from '@centreon/ui';
 import copyToClipboard from '@centreon/ui/src/utils/copy';
-import { useUserContext } from '@centreon/ui-context';
 
 import {
   labelMore,
