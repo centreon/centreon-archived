@@ -267,8 +267,6 @@ const PerformanceGraph = ({
     });
   };
 
-  console.log(sendingGetGraphDataRequest);
-
   return (
     <div className={classes.container}>
       <Typography variant="body1" color="textPrimary" align="center">
