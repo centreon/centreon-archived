@@ -52,6 +52,7 @@ const fillEntities = (): Array<Resource> => {
     uuid: `${index}`,
     id: index,
     name: `E${index}`,
+    severity_level: 1,
     status: {
       name: 'OK',
       severity_code: 5,
