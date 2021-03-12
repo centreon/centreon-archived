@@ -482,7 +482,7 @@ const GraphContent = ({
     const { x } = localPoint(event) || { x: 0 };
 
     const mouseX = x - margin.left;
-    
+
     setZoomPivotPosition(mouseX);
     setZoomBoundaries({
       start: mouseX,
@@ -506,10 +506,10 @@ const GraphContent = ({
     className: classes.translationZone,
   });
 
-  const getIconColor = (direction: TranslationDirection) => sendingGetGraphDataRequest || not(equals(
-                        directionHovered,
-                        direction,
-                      )) ? 'disabled' : 'primary'
+  const getIconColor = (direction: TranslationDirection) =>
+    sendingGetGraphDataRequest || not(equals(directionHovered, direction))
+      ? 'disabled'
+      : 'primary';
 
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
@@ -616,11 +616,9 @@ const GraphContent = ({
                   <TranslationIcon
                     xIcon={-30}
                     icon={
-                      (
-                        <ArrowBackIosIcon
-                          color={getIconColor(TranslationDirection.backward)}
-                        />
-                      )
+                      <ArrowBackIosIcon
+                        color={getIconColor(TranslationDirection.backward)}
+                      />
                     }
                     direction={TranslationDirection.backward}
                     disabled={sendingGetGraphDataRequest}
@@ -630,11 +628,9 @@ const GraphContent = ({
                   <TranslationIcon
                     xIcon={graphWidth + 15}
                     icon={
-                      (
-                        <ArrowForwardIosIcon
-                          color={getIconColor(TranslationDirection.forward)}
-                        />
-                      )
+                      <ArrowForwardIosIcon
+                        color={getIconColor(TranslationDirection.forward)}
+                      />
                     }
                     direction={TranslationDirection.forward}
                     disabled={sendingGetGraphDataRequest}
