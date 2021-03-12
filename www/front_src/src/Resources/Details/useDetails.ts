@@ -183,7 +183,7 @@ const useDetails = (): DetailsState => {
   React.useEffect(() => {
     setDetails(undefined);
     loadDetails();
-  }, [selectedResourceId, selectedResourceParentId]);
+  }, [selectedResourceUuid]);
 
   React.useEffect(() => {
     storePanelWidth(panelWidth);
