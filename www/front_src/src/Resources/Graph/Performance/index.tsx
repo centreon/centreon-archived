@@ -19,17 +19,9 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import {
-  makeStyles,
-  Typography,
-  Theme,
-  CircularProgress,
-  useTheme,
-} from '@material-ui/core';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import { makeStyles, Typography, Theme } from '@material-ui/core';
 
-import { useRequest, getData, timeFormat, IconButton } from '@centreon/ui';
+import { useRequest, getData, timeFormat } from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource } from '../../models';
@@ -133,7 +125,6 @@ const PerformanceGraph = ({
     canNavigateInGraph: not(isNil(navigateInGraph)),
   });
   const { t } = useTranslation();
-  const theme = useTheme();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
@@ -276,18 +267,13 @@ const PerformanceGraph = ({
     });
   };
 
+  console.log(sendingGetGraphDataRequest);
+
   return (
     <div className={classes.container}>
-      <div className={classes.graphHeader}>
-        <Typography variant="body1" color="textPrimary" align="center">
-          {title}
-        </Typography>
-        <div className={classes.loadingContainer}>
-          {sendingGetGraphDataRequest && (
-            <CircularProgress size={theme.spacing(2)} />
-          )}
-        </div>
-      </div>
+      <Typography variant="body1" color="textPrimary" align="center">
+        {title}
+      </Typography>
 
       <ParentSize>
         {({ width, height }): JSX.Element => (

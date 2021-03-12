@@ -37,6 +37,7 @@ import {
   Theme,
   fade,
   useTheme,
+  CircularProgress,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
@@ -133,6 +134,15 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   },
   translationZone: {
     cursor: 'pointer',
+  },
+  graphLoader: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: fade(theme.palette.common.white, 0.5),
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 }));
 
@@ -514,6 +524,11 @@ const GraphContent = ({
               {tooltipData}
             </TooltipInPortal>
           )}
+          {sendingGetGraphDataRequest && (
+            <div className={classes.graphLoader}>
+              <CircularProgress />
+            </div>
+          )}
           <svg width="100%" height={height} ref={containerRef}>
             <Group left={margin.left / 2} top={margin.top}>
               <MemoizedGridRows
@@ -699,6 +714,8 @@ const memoProps = [
   'tooltipPosition',
   'resource',
   'eventAnnotationsActive',
+  'sendingGetGraphDataRequest',
+  'canNavigateInGraph',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
