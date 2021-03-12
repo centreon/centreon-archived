@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { map, pick } from 'ramda';
+import { always, cond, lte, map, pick, T } from 'ramda';
+import { ParentSize } from '@visx/visx';
 
 import { Paper, makeStyles, ButtonGroup, Button } from '@material-ui/core';
 
@@ -16,7 +17,7 @@ import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(0.5),
     display: 'grid',
     gridTemplateColumns: `repeat(2, auto)`,
     columnGap: `${theme.spacing(2)}px`,
@@ -26,11 +27,12 @@ const useStyles = makeStyles((theme) => ({
     alignSelf: 'center',
   },
   button: {
-    padding: theme.spacing(0.8, 0.5),
-    fontSize: '0.75rem',
-    lineHeight: 1.2,
+    fontSize: theme.typography.body2.fontSize,
   },
 }));
+
+const normalStep = 640;
+const largeStep = 820;
 
 interface Props {
   selectedTimePeriodId?: string;
@@ -40,7 +42,10 @@ interface Props {
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
 }
 
-const timePeriodOptions = map(pick(['id', 'name']), timePeriods);
+const timePeriodOptions = map(
+  pick(['id', 'name', 'compactName', 'largeName']),
+  timePeriods,
+);
 
 const TimePeriodButtonGroup = ({
   selectedTimePeriodId,
@@ -55,38 +60,52 @@ const TimePeriodButtonGroup = ({
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,
     name: t(timePeriod.name),
+    compactName: t(timePeriod.compactName),
+    largeName: t(timePeriod.largeName),
   }));
 
   const changeDate = ({ property, date }) =>
     changeCustomTimePeriod({ date, property });
 
   return (
-    <Paper className={classes.header}>
-      <ButtonGroup
-        size="small"
-        disabled={disabled}
-        color="primary"
-        className={classes.buttonGroup}
-      >
-        {map(
-          ({ id, name }) => (
-            <Button
-              key={name}
-              onClick={() => onChange(id)}
-              variant={selectedTimePeriodId === id ? 'contained' : 'outlined'}
-              className={classes.button}
+    <ParentSize>
+      {({ width }) => {
+        return (
+          <Paper className={classes.header}>
+            <ButtonGroup
+              size="small"
+              disabled={disabled}
+              color="primary"
+              className={classes.buttonGroup}
             >
-              {name}
-            </Button>
-          ),
-          translatedTimePeriodOptions,
-        )}
-      </ButtonGroup>
-      <CustomTimePeriodPickers
-        customTimePeriod={customTimePeriod}
-        acceptDate={changeDate}
-      />
-    </Paper>
+              {map(
+                ({ id, name, compactName, largeName }) => (
+                  <Button
+                    key={name}
+                    onClick={() => onChange(id)}
+                    variant={
+                      selectedTimePeriodId === id ? 'contained' : 'outlined'
+                    }
+                    className={classes.button}
+                  >
+                    {cond<number, string>([
+                      [lte(largeStep), always(largeName)],
+                      [lte(normalStep), always(name)],
+                      [T, always(compactName)],
+                    ])(width)}
+                  </Button>
+                ),
+                translatedTimePeriodOptions,
+              )}
+            </ButtonGroup>
+            <CustomTimePeriodPickers
+              customTimePeriod={customTimePeriod}
+              acceptDate={changeDate}
+            />
+          </Paper>
+        );
+      }}
+    </ParentSize>
   );
 };
 

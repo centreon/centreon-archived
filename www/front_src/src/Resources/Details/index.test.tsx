@@ -40,9 +40,9 @@ import {
   labelLastCheck,
   labelCurrentNotificationNumber,
   labelPerformanceData,
-  label7Days,
-  label24hours,
-  label31Days,
+  label7D,
+  label24H,
+  label31D,
   labelCopy,
   labelCommand,
   labelResourceFlapping,
@@ -502,9 +502,9 @@ describe(Details, () => {
   });
 
   it.each([
-    [label24hours, '2020-01-20T06:00:00.000Z', 20, undefined],
-    [label7Days, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
-    [label31Days, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
+    [label24H, '2020-01-20T06:00:00.000Z', 20, undefined],
+    [label7D, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
+    [label31D, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected`,
     async (period, startIsoString, timelineEventsLimit, periodId) => {
@@ -1066,8 +1066,8 @@ describe(Details, () => {
 
     expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
-    userEvent.click(head(getAllByText(label24hours)) as HTMLElement);
-    userEvent.click(last(getAllByText(label7Days)) as HTMLElement);
+    userEvent.click(head(getAllByText(label24H)) as HTMLElement);
+    userEvent.click(last(getAllByText(label7D)) as HTMLElement);
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(5);
@@ -1078,7 +1078,7 @@ describe(Details, () => {
     ).toEqual(last7Days.id);
   });
 
-  it('queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected', async () => {
+  it('queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected and a custom time period is selected', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
@@ -1086,7 +1086,7 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText, container } = renderDetails({
+    const { getByLabelText, container } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -1101,7 +1101,7 @@ describe(Details, () => {
       );
     });
 
-    userEvent.click(getByText(labelStartDate));
+    userEvent.click(getByLabelText(labelStartDate));
 
     fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
@@ -1140,7 +1140,7 @@ describe(Details, () => {
     });
   });
 
-  it('display the correct date time on pickers when a time period is selected and the Graph tab is selected', async () => {
+  it('displays the correct date time on pickers when the Graph tab is selected and a time period is selected', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
@@ -1163,13 +1163,13 @@ describe(Details, () => {
       );
     });
 
-    expect(getByLabelText(labelStartDate)).toHaveValue('January 20th 07:00');
-    expect(getByLabelText(labelEndDate)).toHaveValue('January 21st 07:00');
+    expect(getByLabelText(labelStartDate)).toHaveValue('January 20th 07:00 am');
+    expect(getByLabelText(labelEndDate)).toHaveValue('January 21st 07:00 am');
 
-    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
+    userEvent.click(getByText(label7D).parentElement as HTMLElement);
 
-    expect(getByLabelText(labelStartDate)).toHaveValue('January 14th 07:00');
-    expect(getByLabelText(labelEndDate)).toHaveValue('January 21st 07:00');
+    expect(getByLabelText(labelStartDate)).toHaveValue('January 14th 07:00 am');
+    expect(getByLabelText(labelEndDate)).toHaveValue('January 21st 07:00 am');
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1179,7 +1179,7 @@ describe(Details, () => {
     });
   });
 
-  it('display an error message when the start date of the timeperiod is the same as the end date and the Graph tab is selected', async () => {
+  it('displays an error message when Graph tab is selected and the start date of the time period is the same as the end date', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
@@ -1187,7 +1187,7 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText, container } = renderDetails({
+    const { getByLabelText, getByText, container } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -1202,7 +1202,7 @@ describe(Details, () => {
       );
     });
 
-    userEvent.click(getByText(labelStartDate));
+    userEvent.click(getByLabelText(labelStartDate));
 
     await waitFor(() => {
       expect(getByText(/^21$/)).toBeInTheDocument();

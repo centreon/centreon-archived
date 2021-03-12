@@ -15324,6 +15324,15 @@ msgstr "Plannifier une plage de maintenance"
 msgid "In downtime"
 msgstr "En plage de maintenance"
 
+msgid "24 H"
+msgstr "24 H"
+
+msgid "7 D"
+msgstr "7 J"
+
+msgid "31 D"
+msgstr "31 J"
+
 msgid "24 hours"
 msgstr "24 heures"
 
@@ -15332,6 +15341,15 @@ msgstr "7 jours"
 
 msgid "31 days"
 msgstr "31 jours"
+
+msgid "Last 24 hours"
+msgstr "Dernières 24 heures"
+
+msgid "Last 7 days"
+msgstr "Derniers 7 jours"
+
+msgid "Last 31 days"
+msgstr "Derniers 31 jours"
 
 msgid "Set downtime on"
 msgstr "Programmer une plage de maintenance sur"
