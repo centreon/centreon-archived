@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { always, cond, gte, lte, map, pick, T } from 'ramda';
-import { ParentSize } from '@visx/responsive';
+import { always, cond, lte, map, pick, T } from 'ramda';
+import { ParentSize } from '@visx/visx';
 
 import { Paper, makeStyles, ButtonGroup, Button } from '@material-ui/core';
 
