@@ -21,7 +21,7 @@ import {
   CustomTimePeriod,
   CustomTimePeriodProperties,
 } from '../../../Details/tabs/Graph/models';
-import useAdapter from '../../../useAdapter';
+import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
 interface AcceptDateProps {
   property: CustomTimePeriodProperties;
@@ -58,7 +58,7 @@ const CustomTimePeriodPickers = ({
   const classes = useStyles();
   const { t } = useTranslation();
   const { locale } = useUserContext();
-  const Adapter = useAdapter();
+  const Adapter = useDateTimePickerAdapter();
 
   const isInvalidDate = ({ startDate, endDate }) =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
