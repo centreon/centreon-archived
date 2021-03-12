@@ -10,6 +10,7 @@ import {
   not,
   lt,
   gte,
+  negate,
 } from 'ramda';
 import {
   Line,
@@ -38,6 +39,8 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
@@ -72,6 +75,7 @@ import Annotations from './Annotations';
 import Axes from './Axes';
 import { AnnotationsContext } from './Context';
 import useAnnotations from './useAnnotations';
+import TranslationIcon from './TranslationIcon';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -86,6 +90,8 @@ const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 const margin = { top: 30, right: 45, bottom: 30, left: 45 };
 
 const commentTooltipWidth = 165;
+
+const translationZoneWidth = 50;
 
 interface Props {
   width: number;
@@ -125,11 +131,19 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   addCommentButton: {
     fontSize: 10,
   },
+  translationZone: {
+    cursor: 'pointer',
+  },
 }));
 
 interface ZoomBoundaries {
   start: number;
   end: number;
+}
+
+export enum TranslationDirection {
+  backward,
+  forward,
 }
 
 interface GraphContentProps {
@@ -152,6 +166,8 @@ interface GraphContentProps {
   showAddCommentTooltip: (args) => void;
   format: (parameters) => string;
   applyZoom?: (props: NavigateInGraphProps) => void;
+  translate: (direction: TranslationDirection) => void;
+  sendingGetGraphDataRequest: boolean;
 }
 
 const getScale = ({
@@ -191,6 +207,8 @@ const GraphContent = ({
   showAddCommentTooltip,
   format,
   applyZoom,
+  translate,
+  sendingGetGraphDataRequest,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles({ onAddComment });
@@ -204,6 +222,10 @@ const GraphContent = ({
     zoomBoundaries,
     setZoomBoundaries,
   ] = React.useState<ZoomBoundaries | null>(null);
+  const [
+    directionHovered,
+    setDirectionHovered,
+  ] = React.useState<TranslationDirection | null>(null);
   const { canComment } = useAclQuery();
 
   const theme = useTheme();
@@ -455,6 +477,21 @@ const GraphContent = ({
     hideAddCommentTooltip();
   };
 
+  const hoverDirection = (direction: TranslationDirection | null) => () =>
+    setDirectionHovered(direction);
+
+  const getTranslationZoneProps = (direction: TranslationDirection) => ({
+    onMouseOver: hoverDirection(direction),
+    onMouseLeave: hoverDirection(null),
+    onClick: () => translate(direction),
+    fill: equals(directionHovered, direction)
+      ? fade(theme.palette.common.white, 0.5)
+      : 'transparent',
+    width: translationZoneWidth,
+    height: graphHeight,
+    className: classes.translationZone,
+  });
+
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
   const zoomBarWidth = Math.abs(
@@ -476,7 +513,7 @@ const GraphContent = ({
             </TooltipInPortal>
           )}
           <svg width="100%" height={height} ref={containerRef}>
-            <Group left={margin.left} top={margin.top}>
+            <Group left={margin.left / 2} top={margin.top}>
               <MemoizedGridRows
                 scale={leftScale}
                 width={graphWidth}
@@ -515,6 +552,20 @@ const GraphContent = ({
                 />
               )}
               <MemoizedBar
+                {...getTranslationZoneProps(TranslationDirection.backward)}
+                x={negate(translationZoneWidth)}
+                y={0}
+                width={translationZoneWidth}
+                height={graphHeight}
+              />
+              <MemoizedBar
+                {...getTranslationZoneProps(TranslationDirection.forward)}
+                x={graphWidth}
+                y={0}
+                width={translationZoneWidth}
+                height={graphHeight}
+              />
+              <MemoizedBar
                 x={zoomBoundaries?.start || 0}
                 y={0}
                 width={zoomBarWidth}
@@ -543,6 +594,38 @@ const GraphContent = ({
                   pointerEvents="none"
                 />
               )}
+              <TranslationIcon
+                xIcon={-20}
+                icon={
+                  equals(directionHovered, TranslationDirection.backward) && (
+                    <ArrowBackIosIcon
+                      color={
+                        sendingGetGraphDataRequest ? 'disabled' : 'primary'
+                      }
+                    />
+                  )
+                }
+                direction={TranslationDirection.backward}
+                disabled={sendingGetGraphDataRequest}
+                translate={translate}
+                hoverDirection={hoverDirection}
+              />
+              <TranslationIcon
+                xIcon={graphWidth + 20}
+                icon={
+                  equals(directionHovered, TranslationDirection.forward) && (
+                    <ArrowForwardIosIcon
+                      color={
+                        sendingGetGraphDataRequest ? 'disabled' : 'primary'
+                      }
+                    />
+                  )
+                }
+                direction={TranslationDirection.forward}
+                disabled={sendingGetGraphDataRequest}
+                translate={translate}
+                hoverDirection={hoverDirection}
+              />
             </Group>
           </svg>
           {addCommentTooltipOpen && (

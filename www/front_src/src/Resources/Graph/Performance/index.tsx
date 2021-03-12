@@ -38,7 +38,7 @@ import { CommentParameters } from '../../Actions/api';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
 
-import Graph from './Graph';
+import Graph, { TranslationDirection } from './Graph';
 import Legend from './Legend';
 import LoadingSkeleton from './LoadingSkeleton';
 import {
@@ -48,11 +48,6 @@ import {
   NavigateInGraphProps,
 } from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
-
-enum Direction {
-  backward,
-  forward,
-}
 
 interface Props {
   endpoint?: string;
@@ -252,7 +247,7 @@ const PerformanceGraph = ({
     navigateInGraph?.(props);
   };
 
-  const translate = (direction: Direction) => () => {
+  const translate = (direction: TranslationDirection) => {
     if (isNil(customTimePeriod)) {
       return;
     }
@@ -265,7 +260,7 @@ const PerformanceGraph = ({
       start: new Date(
         add(
           customTimePeriod.start.getTime(),
-          equals(direction, Direction.backward)
+          equals(direction, TranslationDirection.backward)
             ? negate(timestampToTranslate)
             : timestampToTranslate,
         ),
@@ -273,7 +268,7 @@ const PerformanceGraph = ({
       end: new Date(
         add(
           customTimePeriod.end.getTime(),
-          equals(direction, Direction.backward)
+          equals(direction, TranslationDirection.backward)
             ? negate(timestampToTranslate)
             : timestampToTranslate,
         ),
@@ -283,37 +278,15 @@ const PerformanceGraph = ({
 
   return (
     <div className={classes.container}>
-      <div className={classes.graphTranslation}>
-        {navigateInGraph && (
-          <IconButton
-            title="Backward"
-            ariaLabel="Backward"
-            onClick={translate(Direction.backward)}
-            disabled={sendingGetGraphDataRequest}
-          >
-            <ArrowBackIosIcon fontSize="small" />
-          </IconButton>
-        )}
-        <div className={classes.graphHeader}>
-          <Typography variant="body1" color="textPrimary" align="center">
-            {title}
-          </Typography>
-          <div className={classes.loadingContainer}>
-            {sendingGetGraphDataRequest && (
-              <CircularProgress size={theme.spacing(2)} />
-            )}
-          </div>
+      <div className={classes.graphHeader}>
+        <Typography variant="body1" color="textPrimary" align="center">
+          {title}
+        </Typography>
+        <div className={classes.loadingContainer}>
+          {sendingGetGraphDataRequest && (
+            <CircularProgress size={theme.spacing(2)} />
+          )}
         </div>
-        {navigateInGraph && (
-          <IconButton
-            title="Forward"
-            ariaLabel="Forward"
-            onClick={translate(Direction.forward)}
-            disabled={sendingGetGraphDataRequest}
-          >
-            <ArrowForwardIosIcon fontSize="small" />
-          </IconButton>
-        )}
       </div>
 
       <ParentSize>
@@ -332,6 +305,8 @@ const PerformanceGraph = ({
             onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}
             applyZoom={displayZoomLoader}
+            translate={translate}
+            sendingGetGraphDataRequest={sendingGetGraphDataRequest}
           />
         )}
       </ParentSize>
