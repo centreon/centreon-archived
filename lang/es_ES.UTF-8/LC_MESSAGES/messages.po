@@ -14664,7 +14664,7 @@ msgstr ""
 #  msgid "Monitoring server"
 #  msgstr ""
 
-mdgid "Forward"
+msgid "Forward"
 msgstr ""
 
 msgid "Backward"
