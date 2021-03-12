@@ -480,7 +480,9 @@ const GraphContent = ({
       return;
     }
     const { x } = localPoint(event) || { x: 0 };
+
     const mouseX = x - margin.left;
+    
     setZoomPivotPosition(mouseX);
     setZoomBoundaries({
       start: mouseX,
@@ -530,7 +532,7 @@ const GraphContent = ({
             </div>
           )}
           <svg width="100%" height={height} ref={containerRef}>
-            <Group left={margin.left / 2} top={margin.top}>
+            <Group left={margin.left} top={margin.top}>
               <MemoizedGridRows
                 scale={leftScale}
                 width={graphWidth}
@@ -618,7 +620,7 @@ const GraphContent = ({
               {canNavigateInGraph && (
                 <>
                   <TranslationIcon
-                    xIcon={-20}
+                    xIcon={-30}
                     icon={
                       equals(
                         directionHovered,
@@ -637,7 +639,7 @@ const GraphContent = ({
                     hoverDirection={hoverDirection}
                   />
                   <TranslationIcon
-                    xIcon={graphWidth + 20}
+                    xIcon={graphWidth + 15}
                     icon={
                       equals(
                         directionHovered,
