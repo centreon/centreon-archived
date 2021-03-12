@@ -19,12 +19,12 @@ import {
 } from '../../../translatedLabels';
 import {
   CustomTimePeriod,
-  CustomTimePeriodProperties,
+  CustomTimePeriodProperty,
 } from '../../../Details/tabs/Graph/models';
-import useAdapter from '../../../useAdapter';
+import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
 interface AcceptDateProps {
-  property: CustomTimePeriodProperties;
+  property: CustomTimePeriodProperty;
   date: Date;
 }
 
@@ -58,13 +58,13 @@ const CustomTimePeriodPickers = ({
   const classes = useStyles();
   const { t } = useTranslation();
   const { locale } = useUserContext();
-  const Adapter = useAdapter();
+  const Adapter = useDateTimePickerAdapter();
 
   const isInvalidDate = ({ startDate, endDate }) =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
-  const changeDate = (property: CustomTimePeriodProperties) => () => {
-    const dateToAccept = equals(property, CustomTimePeriodProperties.start)
+  const changeDate = (property: CustomTimePeriodProperty) => () => {
+    const dateToAccept = equals(property, CustomTimePeriodProperty.start)
       ? start
       : end;
 
@@ -95,7 +95,7 @@ const CustomTimePeriodPickers = ({
     setEnd(customTimePeriod.end);
   }, [customTimePeriod.start, customTimePeriod.end]);
 
-  const isError = isInvalidDate({ startDate: start, endDate: end });
+  const error = isInvalidDate({ startDate: start, endDate: end });
 
   const commonPickersProps = {
     autoOk: true,
@@ -132,7 +132,7 @@ const CustomTimePeriodPickers = ({
             inputVariant="filled"
             value={start}
             onChange={(value) => setStart(new Date(value?.toDate() || 0))}
-            onClose={changeDate(CustomTimePeriodProperties.start)}
+            onClose={changeDate(CustomTimePeriodProperty.start)}
             maxDate={customTimePeriod.end}
             size="small"
           />
@@ -144,13 +144,13 @@ const CustomTimePeriodPickers = ({
             inputVariant="filled"
             value={end}
             onChange={(value) => setEnd(new Date(value?.toDate() || 0))}
-            onClose={changeDate(CustomTimePeriodProperties.end)}
+            onClose={changeDate(CustomTimePeriodProperty.end)}
             minDate={customTimePeriod.start}
             size="small"
           />
         </MuiPickersUtilsProvider>
       </div>
-      {isError && (
+      {error && (
         <FormHelperText error className={classes.error}>
           {t(labelStartDateIsSameOrAfterEndDate)}
         </FormHelperText>

@@ -45,7 +45,7 @@ import {
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
-import useAdapter from '../../../useAdapter';
+import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
 interface Props {
   resources: Array<Resource>;
@@ -95,7 +95,7 @@ const DialogDowntime = ({
   const { t } = useTranslation();
   const { locale } = useUserContext();
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
-  const Adapter = useAdapter();
+  const Adapter = useDateTimePickerAdapter();
 
   const open = resources.length > 0;
 

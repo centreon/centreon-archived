@@ -18,7 +18,6 @@ import {
   getUrlQueryParameters,
 } from '@centreon/ui';
 import copyToClipboard from '@centreon/ui/src/utils/copy';
-import { useUserContext } from '@centreon/ui-context';
 
 import {
   labelMore,
@@ -94,40 +93,6 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
 jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
-jest.mock('@centreon/ui-context', () => ({
-  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
-  useUserContext: jest.fn(),
-}));
-
-const mockedUserContext = useUserContext as jest.Mock;
-
-const mockUserContext = {
-  name: 'admin',
-  alias: 'admin',
-  locale: 'en',
-  timezone: 'Europe/Paris',
-
-  acl: {
-    actions: {
-      service: {
-        downtime: true,
-        acknowledgement: true,
-        disacknowledgement: true,
-        check: true,
-        submit_status: true,
-        comment: false,
-      },
-      host: {
-        downtime: true,
-        acknowledgement: true,
-        disacknowledgement: true,
-        check: true,
-        submit_status: true,
-        comment: false,
-      },
-    },
-  },
-};
 
 const resourceId = 1;
 const resourceType = 'host';
@@ -387,7 +352,6 @@ const renderDetails = (
 describe(Details, () => {
   beforeEach(() => {
     mockDate.set(currentDateIsoString);
-    mockedUserContext.mockReturnValue(mockUserContext);
   });
 
   afterEach(() => {

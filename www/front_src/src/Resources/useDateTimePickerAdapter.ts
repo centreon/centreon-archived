@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
-const useAdapter = (): typeof DayjsAdapter => {
+const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
   const { locale, timezone } = useUserContext();
   const { format } = useLocaleDateTimeFormat();
 
@@ -22,4 +22,4 @@ const useAdapter = (): typeof DayjsAdapter => {
   return Adapter;
 };
 
-export default useAdapter;
+export default useDateTimePickerAdapter;

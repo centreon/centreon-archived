@@ -43,7 +43,7 @@ interface Props {
   }: OnTimePeriodChangeProps) => void;
 }
 
-interface GetGraphQueryParametersProps {
+interface GraphQueryParametersProps {
   timePeriod?: TimePeriod | null;
   startDate?: Date;
   endDate?: Date;
@@ -131,7 +131,7 @@ const useTimePeriod = ({
     timePeriod,
     startDate,
     endDate,
-  }: GetGraphQueryParametersProps): string => {
+  }: GraphQueryParametersProps): string => {
     if (pipe(isNil, not)(timePeriod)) {
       const [start, end] = getIntervalDates(timePeriod);
 
