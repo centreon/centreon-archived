@@ -4131,6 +4131,7 @@ components:
           type: integer
           nullable: true
           description: "level of the severity"
+          example: 1
         duration:
           type: string
           nullable: true
