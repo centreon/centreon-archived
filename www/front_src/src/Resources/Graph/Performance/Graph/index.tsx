@@ -506,6 +506,11 @@ const GraphContent = ({
     className: classes.translationZone,
   });
 
+  const getIconColor = (direction: TranslationDirection) => sendingGetGraphDataRequest || not(equals(
+                        directionHovered,
+                        direction,
+                      )) ? 'disabled' : 'primary'
+
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
   const zoomBarWidth = Math.abs(
@@ -532,6 +537,13 @@ const GraphContent = ({
             </div>
           )}
           <svg width="100%" height={height} ref={containerRef}>
+            <MemoizedBar
+              {...getTranslationZoneProps(TranslationDirection.backward)}
+              x={negate(translationZoneWidth) + margin.left}
+              y={margin.top}
+              width={translationZoneWidth}
+              height={graphHeight}
+            />
             <Group left={margin.left} top={margin.top}>
               <MemoizedGridRows
                 scale={leftScale}
@@ -570,24 +582,6 @@ const GraphContent = ({
                   timeline={timeline as Array<TimelineEvent>}
                 />
               )}
-              {canNavigateInGraph && (
-                <>
-                  <MemoizedBar
-                    {...getTranslationZoneProps(TranslationDirection.backward)}
-                    x={negate(translationZoneWidth)}
-                    y={0}
-                    width={translationZoneWidth}
-                    height={graphHeight}
-                  />
-                  <MemoizedBar
-                    {...getTranslationZoneProps(TranslationDirection.forward)}
-                    x={graphWidth}
-                    y={0}
-                    width={translationZoneWidth}
-                    height={graphHeight}
-                  />
-                </>
-              )}
               <MemoizedBar
                 x={zoomBoundaries?.start || 0}
                 y={0}
@@ -622,14 +616,9 @@ const GraphContent = ({
                   <TranslationIcon
                     xIcon={-30}
                     icon={
-                      equals(
-                        directionHovered,
-                        TranslationDirection.backward,
-                      ) && (
+                      (
                         <ArrowBackIosIcon
-                          color={
-                            sendingGetGraphDataRequest ? 'disabled' : 'primary'
-                          }
+                          color={getIconColor(TranslationDirection.backward)}
                         />
                       )
                     }
@@ -641,14 +630,9 @@ const GraphContent = ({
                   <TranslationIcon
                     xIcon={graphWidth + 15}
                     icon={
-                      equals(
-                        directionHovered,
-                        TranslationDirection.forward,
-                      ) && (
+                      (
                         <ArrowForwardIosIcon
-                          color={
-                            sendingGetGraphDataRequest ? 'disabled' : 'primary'
-                          }
+                          color={getIconColor(TranslationDirection.forward)}
                         />
                       )
                     }
@@ -660,6 +644,13 @@ const GraphContent = ({
                 </>
               )}
             </Group>
+            <MemoizedBar
+              {...getTranslationZoneProps(TranslationDirection.forward)}
+              x={graphWidth + margin.left}
+              y={margin.top}
+              width={translationZoneWidth}
+              height={graphHeight}
+            />
           </svg>
           {addCommentTooltipOpen && (
             <Paper
