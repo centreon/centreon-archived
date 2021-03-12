@@ -15106,3 +15106,9 @@ msgstr ""
 
 #  msgid "Monitoring server"
 #  msgstr ""
+
+mdgid "Forward"
+msgstr ""
+
+msgid "Backward"
+msgstr ""

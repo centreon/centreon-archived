@@ -16086,3 +16086,9 @@ msgstr "Erreur lors de l'ajout d'une catégorie hôte"
 
 msgid "Error when adding a host group"
 msgstr "Erreur lors de l'ajout d'un groupe d'hôte"
+
+mdgid "Forward"
+msgstr "En avant"
+
+msgid "Backward"
+msgstr "En arrière"
