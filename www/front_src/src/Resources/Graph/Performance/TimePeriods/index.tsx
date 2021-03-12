@@ -16,18 +16,18 @@ import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(0.5),
     display: 'grid',
     gridTemplateColumns: `repeat(2, auto)`,
-    columnGap: `${theme.spacing(2)}px`,
+    columnGap: `${theme.spacing(0.5)}px`,
     justifyContent: 'center',
   },
   buttonGroup: {
     alignSelf: 'center',
   },
   button: {
-    padding: theme.spacing(0.8, 0.5),
-    fontSize: '0.75rem',
+    padding: theme.spacing(0.8, 0.3),
+    fontSize: '0.6rem',
     lineHeight: 1.2,
   },
 }));

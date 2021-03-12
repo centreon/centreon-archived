@@ -6,9 +6,10 @@ import { and, equals, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { FormHelperText, makeStyles } from '@material-ui/core';
+import { FormHelperText, makeStyles, TextFieldProps } from '@material-ui/core';
 
 import { useUserContext } from '@centreon/ui-context';
+import { TextField } from '@centreon/ui';
 
 import {
   labelEndDate,
@@ -36,8 +37,10 @@ dayjs.extend(isSameOrAfter);
 const useStyles = makeStyles((theme) => ({
   pickers: {
     display: 'grid',
-    gridTemplateColumns: `repeat(2, ${theme.spacing(14.5)}px)`,
-    columnGap: `${theme.spacing(3)}px`,
+    gridTemplateColumns: `repeat(2, minmax(${theme.spacing(
+      18,
+    )}px, ${theme.spacing(20)}px))`,
+    columnGap: `${theme.spacing(0.5)}px`,
   },
   error: {
     textAlign: 'center',
@@ -94,7 +97,13 @@ const CustomTimePeriodPickers = ({
 
   const commonPickersProps = {
     autoOk: true,
-    ampm: false,
+    error: undefined,
+    TextFieldComponent: TextField as
+      | React.ComponentType<TextFieldProps>
+      | undefined,
+    InputProps: {
+      disableUnderline: true,
+    },
   };
 
   return (
@@ -107,6 +116,7 @@ const CustomTimePeriodPickers = ({
           <DateTimePicker
             {...commonPickersProps}
             variant="inline"
+            inputVariant="filled"
             value={start}
             onChange={(value) => setStart(new Date(value?.toDate() || 0))}
             onClose={changeDate(CustomTimePeriodProperties.start)}
@@ -120,6 +130,7 @@ const CustomTimePeriodPickers = ({
           <DateTimePicker
             {...commonPickersProps}
             variant="inline"
+            inputVariant="filled"
             value={end}
             onChange={(value) => setEnd(new Date(value?.toDate() || 0))}
             onClose={changeDate(CustomTimePeriodProperties.end)}
