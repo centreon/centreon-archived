@@ -13,10 +13,16 @@ import {
   head,
   equals,
   pipe,
+  not,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Typography, Theme } from '@material-ui/core';
+import {
+  makeStyles,
+  Typography,
+  Theme,
+  CircularProgress,
+} from '@material-ui/core';
 
 import { useRequest, getData, timeFormat } from '@centreon/ui';
 
@@ -74,6 +80,11 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
     alignItems: 'center',
     width: '100%',
   },
+  graphHeader: {
+    display: 'grid',
+    gridTemplateColumns: 'auto auto',
+    columnGap: `${theme.spacing(3)}px`,
+  },
 }));
 
 const PerformanceGraph = ({
@@ -96,8 +107,12 @@ const PerformanceGraph = ({
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
+  const [zoomApplied, setZoomApplied] = React.useState<boolean>(false);
 
-  const { sendRequest: sendGetGraphDataRequest } = useRequest<GraphData>({
+  const {
+    sendRequest: sendGetGraphDataRequest,
+    sending: sendingGetGraphDataRequest,
+  } = useRequest<GraphData>({
     request: getData,
   });
 
@@ -106,13 +121,16 @@ const PerformanceGraph = ({
       return;
     }
 
-    setLineData(undefined);
+    if (not(zoomApplied)) {
+      setLineData(undefined);
+    }
 
     sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);
       setBase(graphData.global.base);
+      setZoomApplied(false);
     });
   }, [endpoint]);
 
@@ -190,11 +208,19 @@ const PerformanceGraph = ({
     );
   };
 
+  const displayZoomLoader = (props: ApplyZoomProps) => {
+    setZoomApplied(true);
+    applyZoom?.(props);
+  };
+
   return (
     <div className={classes.container}>
-      <Typography variant="body1" color="textPrimary" align="center">
-        {title}
-      </Typography>
+      <div className={classes.graphHeader}>
+        <Typography variant="body1" color="textPrimary" align="center">
+          {title}
+        </Typography>
+        {sendingGetGraphDataRequest && <CircularProgress size={16} />}
+      </div>
 
       <ParentSize>
         {({ width, height }): JSX.Element => (
@@ -211,7 +237,7 @@ const PerformanceGraph = ({
             resource={resource}
             onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}
-            applyZoom={applyZoom}
+            applyZoom={displayZoomLoader}
           />
         )}
       </ParentSize>

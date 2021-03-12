@@ -15,6 +15,7 @@ import {
   ChangeCustomTimePeriodProps,
   StoredCustomTimePeriod,
 } from '../../../Details/tabs/Graph/models';
+import { ApplyZoomProps } from '../models';
 
 dayjs.extend(duration);
 
@@ -25,6 +26,7 @@ interface TimePeriodState {
   getIntervalDates: () => [string, string];
   customTimePeriod: CustomTimePeriod;
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
+  applyZoom: (props: ApplyZoomProps) => void;
 }
 
 interface OnTimePeriodChangeProps {
@@ -198,29 +200,21 @@ const useTimePeriod = ({
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
   };
 
-  React.useEffect(() => {
-    if (isNil(defaultSelectedCustomTimePeriod)) {
-      return;
-    }
-    const newDefaultCustomTimePeriod = {
-      start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
-      end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
-    };
-    if (
-      and(
-        dayjs(newDefaultCustomTimePeriod.start).isSame(
-          dayjs(customTimePeriod.start, 'minute'),
-        ),
-        dayjs(newDefaultCustomTimePeriod.end).isSame(
-          dayjs(customTimePeriod.end, 'minute'),
-        ),
-      )
-    ) {
-      return;
-    }
-
-    onDefaultCustomTimePeriodChange(newDefaultCustomTimePeriod);
-  }, [defaultSelectedCustomTimePeriod]);
+  const applyZoom = (zoomProps: ApplyZoomProps) => {
+    setCustomTimePeriod(getNewCustomTimePeriod(zoomProps));
+    setSelectedTimePeriod(null);
+    const queryParamsForSelectedPeriodId = getGraphQueryParameters({
+      startDate: zoomProps.start,
+      endDate: zoomProps.end,
+    });
+    setPeriodQueryParameters(queryParamsForSelectedPeriodId);
+    onTimePeriodChange?.({
+      selectedCustomTimePeriod: {
+        start: zoomProps.start.toISOString(),
+        end: zoomProps.end.toISOString(),
+      },
+    });
+  };
 
   return {
     changeSelectedTimePeriod,
@@ -230,6 +224,7 @@ const useTimePeriod = ({
       getIntervalDates(selectedTimePeriod),
     customTimePeriod,
     changeCustomTimePeriod,
+    applyZoom,
   };
 };
 

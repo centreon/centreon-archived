@@ -53,6 +53,7 @@ const GraphTabContent = ({
     getIntervalDates,
     customTimePeriod,
     changeCustomTimePeriod,
+    applyZoom,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['graph', 'selectedTimePeriodId'],
@@ -64,16 +65,6 @@ const GraphTabContent = ({
     ),
     onTimePeriodChange: setGraphTabParameters,
   });
-
-  const applyZoom = ({ start, end }: ApplyZoomProps) => {
-    const newGraphTabParameters = {
-      selectedCustomTimePeriod: {
-        start: start.toISOString(),
-        end: end.toISOString(),
-      },
-    } as GraphTabParameters;
-    setGraphTabParameters(newGraphTabParameters);
-  };
 
   return (
     <div className={classes.container}>

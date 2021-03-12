@@ -85,6 +85,7 @@ const ServicesTabContent = ({
     getIntervalDates,
     customTimePeriod,
     changeCustomTimePeriod,
+    applyZoom,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
@@ -153,19 +154,6 @@ const ServicesTabContent = ({
       ),
       graphMode: mode,
     });
-  };
-
-  const applyZoom = ({ start, end }: ApplyZoomProps) => {
-    const newServicesTabParameters = {
-      graphMode,
-      graphTimePeriod: {
-        selectedCustomTimePeriod: {
-          start: start.toISOString(),
-          end: end.toISOString(),
-        },
-      },
-    } as ServicesTabParameters;
-    setServicesTabParameters(newServicesTabParameters);
   };
 
   React.useEffect(() => {
