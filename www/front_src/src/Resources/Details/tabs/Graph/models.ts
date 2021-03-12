@@ -39,14 +39,14 @@ export interface StoredCustomTimePeriod {
   end: string;
 }
 
-export enum CustomTimePeriodProperties {
+export enum CustomTimePeriodProperty {
   start = 'start',
   end = 'end',
 }
 
 export interface ChangeCustomTimePeriodProps {
   date: Date;
-  property: CustomTimePeriodProperties;
+  property: CustomTimePeriodProperty;
 }
 
 const last24hPeriod: TimePeriod = {
