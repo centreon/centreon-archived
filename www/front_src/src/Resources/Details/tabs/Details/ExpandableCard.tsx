@@ -10,13 +10,14 @@ import {
   Button,
   makeStyles,
   Theme,
-  Paper,
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 
 import { getStatusColors } from '@centreon/ui';
 
 import { labelMore, labelLess } from '../../../translatedLabels';
+
+import Card from './Card';
 
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
@@ -27,7 +28,6 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
 
   return {
     card: ({ severityCode }): CreateCSSProperties => ({
-      padding: theme.spacing(1, 2, 2, 2),
       ...(severityCode && {
         borderWidth: 2,
         borderStyle: 'solid',
@@ -71,7 +71,7 @@ const ExpandableCard = ({
   );
 
   return (
-    <Paper className={classes.card}>
+    <Card className={classes.card}>
       <Typography
         className={classes.title}
         variant="subtitle2"
@@ -92,7 +92,7 @@ const ExpandableCard = ({
           </CardActions>
         </>
       )}
-    </Paper>
+    </Card>
   );
 };
 

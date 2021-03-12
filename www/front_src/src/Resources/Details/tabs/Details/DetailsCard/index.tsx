@@ -2,16 +2,11 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import {
-  Typography,
-  Grid,
-  Paper,
-  makeStyles,
-  Tooltip,
-} from '@material-ui/core';
+import { Typography, makeStyles, Tooltip } from '@material-ui/core';
 import IconCheck from '@material-ui/icons/Check';
 
 import { labelActive } from '../../../../translatedLabels';
+import Card from '../Card';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -40,21 +35,19 @@ const DetailsCard = ({ title, line, active }: Props): JSX.Element => {
   const { t } = useTranslation();
 
   return (
-    <Paper className={classes.container}>
-      <div className={classes.content}>
-        <div className={classes.title}>
-          <Typography variant="body1" color="textSecondary" gutterBottom>
-            {title}
-          </Typography>
-          {active && (
-            <Tooltip title={t(labelActive) as string}>
-              <IconCheck fontSize="small" className={classes.active} />
-            </Tooltip>
-          )}
-        </div>
-        {line}
+    <Card className={classes.container}>
+      <div className={classes.title}>
+        <Typography variant="body1" color="textSecondary" gutterBottom>
+          {title}
+        </Typography>
+        {active && (
+          <Tooltip title={t(labelActive) as string}>
+            <IconCheck fontSize="small" className={classes.active} />
+          </Tooltip>
+        )}
       </div>
-    </Paper>
+      {line}
+    </Card>
   );
 };
 

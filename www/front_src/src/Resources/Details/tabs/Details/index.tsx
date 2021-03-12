@@ -6,8 +6,6 @@ import { ParentSize } from '@visx/visx';
 
 import {
   Grid,
-  Card,
-  CardContent,
   Typography,
   styled,
   Tooltip,
@@ -37,6 +35,7 @@ import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
 import { ResourceDetails } from '../../models';
 
+import Card from './Card';
 import ExpandableCard from './ExpandableCard';
 import StateCard from './StateCard';
 import DetailsCard from './DetailsCard';
@@ -164,25 +163,19 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           )}
           {details.command_line && (
             <Card>
-              <CardContent>
-                <Typography
-                  variant="subtitle2"
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  <Grid container alignItems="center" spacing={1}>
-                    <Grid item>{t(labelCommand)}</Grid>
-                    <Grid item>
-                      <Tooltip onClick={copyCommandLine} title={labelCopy}>
-                        <IconButton size="small">
-                          <IconCopyFile color="primary" fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Grid>
+              <Typography variant="body1" color="textSecondary" gutterBottom>
+                <Grid container alignItems="center" spacing={1}>
+                  <Grid item>{t(labelCommand)}</Grid>
+                  <Grid item>
+                    <Tooltip onClick={copyCommandLine} title={labelCopy}>
+                      <IconButton size="small">
+                        <IconCopyFile color="primary" fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </Grid>
-                </Typography>
-                <Typography variant="body2">{details.command_line}</Typography>
-              </CardContent>
+                </Grid>
+              </Typography>
+              <Typography variant="body2">{details.command_line}</Typography>
             </Card>
           )}
         </div>
