@@ -3229,8 +3229,11 @@ msgstr "Métriques"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: centreon-web/www/install/menu_translation.php:109
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:129
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Divers"
 
@@ -11766,10 +11769,6 @@ msgstr "Informations Gorgone"
 msgid "Monitoring Engine Information"
 msgstr "Information sur le moteur de supervision"
 
-#: centreon-web/www/include/configuration/configServers/formServers.php:104
-msgid "Miscelleneous"
-msgstr "Divers"
-
 #: centreon-web/www/include/configuration/configServers/formServers.php:105
 msgid "Centreon Trap Collector"
 msgstr "Colleteur de traps SNMP Centreon"
@@ -15151,6 +15150,9 @@ msgstr "Erreur lors de la recherche de ressources"
 msgid "Error when searching for monitoring servers"
 msgstr "Erreur lors de la recherche de serveurs de supervision"
 
+msgid "Error when searching for real time monitoring servers"
+msgstr "Erreur lors de la recherche de serveurs de supervision dans le temps réel"
+
 #:Centreon/Domain/MonitoringServer/MonitoringServerService.php:142
 msgid "Error when deleting a monitoring server"
 msgstr "Erreur lors de la supression d'un serveur de supervision"
@@ -15578,6 +15580,38 @@ msgstr "Une erreur est survenue lors de la mise à jour de la topology de la pla
 msgid "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
 msgstr "Votre central est lié a d'autre remote(s), la conversion en Remote n'est pas autorisée"
 
+#: api/platform
+msgid "Additional properties are not allowed"
+msgstr "Les propriétés additionnelles ne sont pas autorisées"
+
+#: api/platform
+msgid "Nullable property is not allowed"
+msgstr "Les propriétés nullable ne sont pas autorisées"
+
+#: api/platform
+msgid "Missing required property: %s"
+msgstr "propriété requise manquante: %s"
+
+#: api/platform
+msgid "Invalid property type %s for %s, type %s expected"
+msgstr "Type de propriétés invalide %s pour %s, type %s attendu"
+
+#: api/platform
+msgid "Bad JSON schema format"
+msgstr "Mauvais format de JSON schema"
+
+#: api/platform
+msgid "Bad JSON schema path"
+msgstr "Mauvais chemin de JSON Schema"
+
+#: api/platform
+msgid "the address %s is already used in the topology and can't be provided as Central Server Address"
+msgstr "l'adresse %s est déjà utilisé dans la topology et ne peut pas être renseigné comme Adresse de Serveur Central"
+
+#: api/platform
+msgid "the address %s is already used has proxy address and can't be provided as Central Server Address"
+msgstr "l'adresse %s est déjà utilisé comme addresse de proxy et ne peut pas être renseigné comme Adresse de Serveur Central"
+
 #: api/platform/topology
 msgid "The address '%s' of '%s' is not valid or not resolvable"
 msgstr "L'adresse '%s' de la plateforme '%s' n'est pas valide ou ne peut être résolue"
@@ -15619,7 +15653,7 @@ msgid "Cannot link a 'remote': '%s'@'%s' to another Remote server type"
 msgstr "Il n'est pas possible de lier un 'remote': '%s'@'%s' à un autre serveur de type 'Remote'"
 
 #: api/platform/topology
-msgid "A '%s': '%s'@'%s' is already registered"
+msgid "A '%s': '%s'@'%s' is already saved"
 msgstr "Un '%s': '%s'@'%s' est déjà enregistré"
 
 #: api/platform/topology
@@ -15734,8 +15768,8 @@ msgid "Please check the 'Centreon UI' and 'Remote access' forms"
 msgstr "Veuillez vérifier les formulaires 'Centreon Web' et 'Accès du Remote'"
 
 #: api/platform/topology
-msgid "Unable to convert Central's API response"
-msgstr "Impossible de convertir la réponse de L'API provenant du Central"
+msgid "Unable to decode Central's API response"
+msgstr "Impossible de décoder la réponse de L'API provenant du Central"
 
 #: api/platform/topology
 msgid "Error from Central's register API : "
@@ -15762,11 +15796,11 @@ msgid "No top level platform found to link the child platforms"
 msgstr "Aucune platforme principale trouvée pour lier les plateformes enfants"
 
 #: api/platform/topology
-msgid "An error occured while deleting the platform"
+msgid "An error occurred while deleting the platform"
 msgstr "Une erreur est survenue lors de la suppression de la plateforme"
 
 #: api/platform/topology
-msgid "An error occured while updating the platform"
+msgid "An error occurred while updating the platform"
 msgstr "Une erreur est survenue lors de la mise à jour de la plateforme"
 
 #: api/platform/topology

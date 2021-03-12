@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,14 @@ use FOS\RestBundle\View\View;
 use FOS\RestBundle\Context\Context;
 use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
-use Centreon\Domain\PlatformTopology\Platform;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Infrastructure\PlatformTopology\Model\PlatformJsonGraph;
-use Centreon\Domain\PlatformTopology\PlatformException;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
+use Centreon\Infrastructure\PlatformTopology\Repository\Model\PlatformJsonGraph;
+use Centreon\Domain\PlatformTopology\Model\PlatformPending;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 
 /**
  * This controller is designed to manage platform topology API requests and register new servers.
@@ -66,7 +67,7 @@ class PlatformTopologyController extends AbstractController
      * @param array<mixed> $platformToAdd data sent in json
      * @param string $schemaPath
      * @return void
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      */
     private function validatePlatformTopologySchema(array $platformToAdd, string $schemaPath): void
     {
@@ -83,7 +84,7 @@ class PlatformTopologyController extends AbstractController
             foreach ($validator->getErrors() as $error) {
                 $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
             }
-            throw new PlatformException($message);
+            throw new PlatformTopologyException($message);
         }
     }
 
@@ -92,7 +93,7 @@ class PlatformTopologyController extends AbstractController
      *
      * @param Request $request
      * @return View
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      */
     public function addPlatformToTopology(Request $request): View
     {
@@ -102,33 +103,36 @@ class PlatformTopologyController extends AbstractController
         // get http request content
         $platformToAdd = json_decode((string) $request->getContent(), true);
         if (!is_array($platformToAdd)) {
-            throw new PlatformException(
+            throw new PlatformTopologyException(
                 _('Error when decoding sent data'),
                 Response::HTTP_BAD_REQUEST
             );
         }
 
+        /**
+         * @var string $centreonPath
+         */
+        $centreonPath = $this->getParameter('centreon_path');
         // validate request payload consistency
         $this->validatePlatformTopologySchema(
             $platformToAdd,
-            $this->getParameter('centreon_path')
-                . 'config/json_validator/latest/Centreon/PlatformTopology/Register.json'
+            $centreonPath . 'config/json_validator/latest/Centreon/PlatformTopology/Register.json'
         );
 
         try {
-            $platformTopology = (new Platform())
+            $platformTopology = (new PlatformPending())
                 ->setName($platformToAdd['name'])
                 ->setAddress($platformToAdd['address'])
                 ->setType($platformToAdd['type'])
                 ->setHostname($platformToAdd['hostname'])
                 ->setParentAddress($platformToAdd['parent_address']);
 
-            $this->platformTopologyService->addPlatformToTopology($platformTopology);
+            $this->platformTopologyService->addPendingPlatformToTopology($platformTopology);
 
             return $this->view(null, Response::HTTP_CREATED);
         } catch (EntityNotFoundException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
-        } catch (PlatformConflictException  $ex) {
+        } catch (PlatformTopologyConflictException  $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_CONFLICT);
         } catch (\Throwable $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -139,15 +143,13 @@ class PlatformTopologyController extends AbstractController
      * Get the Topology of a platform with an adapted Json Graph Format.
      *
      * @return View
+     * @throws PlatformTopologyException
      */
     public function getPlatformJsonGraph(): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         try {
-            /**
-             * @var Platform[] $platformTopology
-             */
             $platformTopology = $this->platformTopologyService->getPlatformTopology();
             $edges = [];
             $nodes = [];
