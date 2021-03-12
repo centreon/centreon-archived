@@ -95,7 +95,7 @@ const CustomTimePeriodPickers = ({
     setEnd(customTimePeriod.end);
   }, [customTimePeriod.start, customTimePeriod.end]);
 
-  const isError = isInvalidDate({ startDate: start, endDate: end });
+  const error = isInvalidDate({ startDate: start, endDate: end });
 
   const commonPickersProps = {
     autoOk: true,
@@ -150,7 +150,7 @@ const CustomTimePeriodPickers = ({
           />
         </MuiPickersUtilsProvider>
       </div>
-      {isError && (
+      {error && (
         <FormHelperText error className={classes.error}>
           {t(labelStartDateIsSameOrAfterEndDate)}
         </FormHelperText>

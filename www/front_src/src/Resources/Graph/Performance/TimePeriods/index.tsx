@@ -4,7 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { always, cond, lte, map, pick, T } from 'ramda';
 import { ParentSize } from '@visx/visx';
 
-import { Paper, makeStyles, ButtonGroup, Button } from '@material-ui/core';
+import {
+  Paper,
+  makeStyles,
+  ButtonGroup,
+  Button,
+  useTheme,
+} from '@material-ui/core';
 
 import {
   ChangeCustomTimePeriodProps,
@@ -31,9 +37,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const normalStep = 640;
-const largeStep = 820;
-
 interface Props {
   selectedTimePeriodId?: string;
   onChange: (timePeriod: TimePeriodId) => void;
@@ -56,6 +59,7 @@ const TimePeriodButtonGroup = ({
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
+  const theme = useTheme();
 
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,
@@ -89,8 +93,8 @@ const TimePeriodButtonGroup = ({
                     className={classes.button}
                   >
                     {cond<number, string>([
-                      [lte(largeStep), always(largeName)],
-                      [lte(normalStep), always(name)],
+                      [lte(theme.breakpoints.values.md), always(largeName)],
+                      [lte(theme.breakpoints.values.sm), always(name)],
                       [T, always(compactName)],
                     ])(width)}
                   </Button>
