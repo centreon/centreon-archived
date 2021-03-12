@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { makeStyles } from '@material-ui/core';
 
 import { TranslationDirection } from '.';
@@ -14,6 +16,7 @@ interface Props {
   disabled: boolean;
   translate?: (direction: TranslationDirection) => void;
   hoverDirection: (direction: TranslationDirection | null) => () => void;
+  ariaLabel: string;
 }
 
 const useStyles = makeStyles({
@@ -29,8 +32,10 @@ const TranslationIcon = ({
   disabled,
   translate,
   hoverDirection,
+  ariaLabel,
 }: Props): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <g>
@@ -43,6 +48,7 @@ const TranslationIcon = ({
         onMouseEnter={hoverDirection(direction)}
         onMouseLeave={hoverDirection(null)}
         className={classes.icon}
+        aria-label={t(ariaLabel)}
       >
         <rect width={iconSize} height={iconSize} fill="transparent" />
         {icon}

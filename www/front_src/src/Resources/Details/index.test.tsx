@@ -66,6 +66,8 @@ import {
   labelStartDate,
   labelEndDate,
   labelStartDateIsSameOrAfterEndDate,
+  labelForward,
+  labelBackward,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -1215,5 +1217,64 @@ describe(Details, () => {
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
 
     expect(getByText(labelStartDateIsSameOrAfterEndDate)).toBeInTheDocument();
+  });
+
+  it.each([
+    [labelForward, '2020-01-20T18:00:00.000Z', '2020-01-21T18:00:00.000Z', 20],
+    [labelBackward, '2020-01-19T18:00:00.000Z', '2020-01-20T18:00:00.000Z', 20],
+  ])(`queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected and the "%p" icon is clicked`, async (iconLabel, startISOString, endISOString, timelineLimit) => {
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+      .mockResolvedValueOnce({ data: retrievedTimeline })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+      .mockResolvedValueOnce({ data: retrievedTimeline });
+
+    const { getByLabelText, container } = renderDetails({
+      openTabId: graphTabId,
+    });
+
+    act(() => {
+      context.setSelectedResourceId(resourceId);
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
+        cancelTokenRequestParam,
+      );
+    });
+
+    userEvent.click(getByLabelText(iconLabel));
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
+        cancelTokenRequestParam,
+      );
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListTimelineEventsEndpoint({
+          endpoint: retrievedDetails.links.endpoints.timeline,
+          parameters: {
+            limit: timelineLimit,
+            search: {
+              conditions: [
+                {
+                  field: 'date',
+                  values: {
+                    $gt: startISOString,
+                    $lt: endISOString,
+                  },
+                },
+              ],
+            },
+          },
+        }),
+        cancelTokenRequestParam,
+      );
+    });
   });
 });
