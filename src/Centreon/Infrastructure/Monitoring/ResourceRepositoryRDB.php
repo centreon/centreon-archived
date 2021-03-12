@@ -511,13 +511,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 AND sh.name NOT LIKE '_Module_%'
                 AND sh.enabled = 1";
 
-        // set ACL limitations
-        if (!$this->isAdmin()) {
-            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-                AND service_acl.service_id = s.service_id
-                AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
-        }
-
         // get monitoring server information
         $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id";
 
@@ -535,6 +528,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             AND sc.icon_id IS NOT NULL
             LEFT JOIN `:db`.`view_img` AS service_vi ON service_vi.img_id = sc.icon_id';
 
+        $hasWhereCondition = false;
+
         $this->sqlRequestTranslator->setConcordanceArray($this->serviceConcordances);
         try {
             $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
@@ -542,11 +537,25 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
 
-        $sql .= $searchRequest;
-        $sql .= !is_null($searchRequest) ? ' AND' : ' WHERE';
+        if ($searchRequest !== null) {
+            $hasWhereCondition = true;
+            $sql .= $searchRequest;
+        }
 
         // show active services only
-        $sql .= ' s.enabled = 1';
+        $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
+            . 's.enabled = 1';
+
+        // set ACL limitations
+        if (!$this->isAdmin()) {
+            $sql .= ' AND EXISTS (
+                SELECT service_acl.service_id
+                FROM `:dbstg`.`centreon_acl` AS service_acl
+                WHERE service_acl.host_id = s.host_id
+                AND service_acl.service_id = s.service_id
+                AND service_acl.group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ')
+                )';
+        }
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
@@ -703,13 +712,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.latency AS `latency`
             FROM `:dbstg`.`hosts` AS h";
 
-        // set ACL limitations
-        if (!$this->isAdmin()) {
-            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS host_acl ON host_acl.host_id = h.host_id
-                  AND host_acl.service_id IS NULL
-                  AND host_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
-        }
-
         // get monitoring server information
         $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = h.instance_id";
 
@@ -727,6 +729,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             AND hc.icon_id IS NOT NULL
             LEFT JOIN `:db`.`view_img` AS host_vi ON host_vi.img_id = hc.icon_id';
 
+        $hasWhereCondition = false;
+
         $this->sqlRequestTranslator->setConcordanceArray($this->hostConcordances);
         try {
             $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
@@ -734,11 +738,25 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
 
-        $sql .= $searchRequest;
-        $sql .= !is_null($searchRequest) ? ' AND' : ' WHERE';
+        if ($searchRequest !== null) {
+            $hasWhereCondition = true;
+            $sql .= $searchRequest;
+        }
 
         // show active hosts and aren't related to some module
-        $sql .= ' h.enabled = 1 AND h.name NOT LIKE "_Module_%"';
+        $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
+            . 'h.enabled = 1 AND h.name NOT LIKE "_Module_%"';
+
+        // set ACL limitations
+        if (!$this->isAdmin()) {
+            $sql .= ' AND EXISTS (
+                SELECT host_acl.host_id
+                FROM `:dbstg`.`centreon_acl` AS host_acl
+                WHERE host_acl.host_id = h.host_id
+                AND host_acl.service_id IS NULL
+                AND host_acl.group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ')
+                )';
+        }
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
