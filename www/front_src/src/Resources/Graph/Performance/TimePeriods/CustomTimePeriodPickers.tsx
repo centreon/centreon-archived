@@ -6,7 +6,7 @@ import { and, equals, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { FormHelperText, makeStyles, TextFieldProps } from '@material-ui/core';
+import { FormHelperText, makeStyles, Typography } from '@material-ui/core';
 
 import { useUserContext } from '@centreon/ui-context';
 import { TextField } from '@centreon/ui';
@@ -15,6 +15,7 @@ import {
   labelEndDate,
   labelStartDate,
   labelStartDateIsSameOrAfterEndDate,
+  labelTo,
 } from '../../../translatedLabels';
 import {
   CustomTimePeriod,
@@ -37,10 +38,11 @@ dayjs.extend(isSameOrAfter);
 const useStyles = makeStyles((theme) => ({
   pickers: {
     display: 'grid',
-    gridTemplateColumns: `repeat(2, minmax(${theme.spacing(
-      18,
-    )}px, ${theme.spacing(20)}px))`,
+    gridTemplateColumns: `minmax(${theme.spacing(18)}px, ${theme.spacing(
+      20,
+    )}px) min-content minmax(${theme.spacing(18)}px, ${theme.spacing(20)}px)`,
     columnGap: `${theme.spacing(0.5)}px`,
+    alignItems: 'center',
   },
   error: {
     textAlign: 'center',
@@ -98,12 +100,21 @@ const CustomTimePeriodPickers = ({
   const commonPickersProps = {
     autoOk: true,
     error: undefined,
-    TextFieldComponent: TextField as
-      | React.ComponentType<TextFieldProps>
-      | undefined,
     InputProps: {
       disableUnderline: true,
     },
+  };
+
+  const startDateInputProp = {
+    TextFieldComponent: (textFieldProps) => (
+      <TextField {...textFieldProps} ariaLabel={t(labelStartDate)} />
+    ),
+  };
+
+  const endDateInputProp = {
+    TextFieldComponent: (textFieldProps) => (
+      <TextField {...textFieldProps} ariaLabel={t(labelEndDate)} />
+    ),
   };
 
   return (
@@ -115,31 +126,26 @@ const CustomTimePeriodPickers = ({
         >
           <DateTimePicker
             {...commonPickersProps}
+            {...startDateInputProp}
             variant="inline"
             inputVariant="filled"
             value={start}
             onChange={(value) => setStart(new Date(value?.toDate() || 0))}
             onClose={changeDate(CustomTimePeriodProperties.start)}
-            label={t(labelStartDate)}
             maxDate={customTimePeriod.end}
             size="small"
-            inputProps={{
-              'aria-label': t(labelStartDate),
-            }}
           />
+          <Typography>{t(labelTo).toLowerCase()}</Typography>
           <DateTimePicker
             {...commonPickersProps}
+            {...endDateInputProp}
             variant="inline"
             inputVariant="filled"
             value={end}
             onChange={(value) => setEnd(new Date(value?.toDate() || 0))}
             onClose={changeDate(CustomTimePeriodProperties.end)}
-            label={t(labelEndDate)}
             minDate={customTimePeriod.start}
             size="small"
-            inputProps={{
-              'aria-label': t(labelEndDate),
-            }}
           />
         </MuiPickersUtilsProvider>
       </div>

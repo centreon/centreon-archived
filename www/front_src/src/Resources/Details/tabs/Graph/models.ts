@@ -4,16 +4,24 @@ import { find, propEq } from 'ramda';
 import { timeFormat, dateFormat } from '@centreon/ui';
 
 import {
-  label24hours,
-  label7Days,
+  label24H,
+  label7D,
+  label31D,
   label31Days,
+  labelLast31Days,
+  label7Days,
+  labelLast7Days,
+  label24Hours,
+  labelLast24Hours,
 } from '../../../translatedLabels';
 
 export type TimePeriodId = 'last_24_h' | 'last_7_days' | 'last_31_days';
 
 export interface TimePeriod {
   id: TimePeriodId;
+  compactName: string;
   name: string;
+  largeName: string;
   getStart: () => Date;
   dateTimeFormat: string;
   timelineEventsLimit: number;
@@ -42,7 +50,9 @@ export interface ChangeCustomTimePeriodProps {
 }
 
 const last24hPeriod: TimePeriod = {
-  name: label24hours,
+  compactName: label24H,
+  name: label24Hours,
+  largeName: labelLast24Hours,
   id: 'last_24_h',
   getStart: (): Date => dayjs(Date.now()).subtract(24, 'hour').toDate(),
   dateTimeFormat: timeFormat,
@@ -50,7 +60,9 @@ const last24hPeriod: TimePeriod = {
 };
 
 const last7Days: TimePeriod = {
+  compactName: label7D,
   name: label7Days,
+  largeName: labelLast7Days,
   id: 'last_7_days',
   getStart: (): Date => dayjs(Date.now()).subtract(7, 'day').toDate(),
   dateTimeFormat: dateFormat,
@@ -58,7 +70,9 @@ const last7Days: TimePeriod = {
 };
 
 const last31Days: TimePeriod = {
+  compactName: label31D,
   name: label31Days,
+  largeName: labelLast31Days,
   id: 'last_31_days',
   getStart: (): Date => dayjs(Date.now()).subtract(31, 'day').toDate(),
   dateTimeFormat: dateFormat,
