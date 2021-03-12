@@ -130,9 +130,6 @@ const PerformanceGraph = ({
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
-  const [navigatingInGraph, setNavigatingInGraph] = React.useState<boolean>(
-    false,
-  );
 
   const {
     sendRequest: sendGetGraphDataRequest,
@@ -146,16 +143,11 @@ const PerformanceGraph = ({
       return;
     }
 
-    if (not(navigatingInGraph)) {
-      setLineData(undefined);
-    }
-
     sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
       setLineData(getLineData(graphData));
       setTitle(graphData.global.title);
       setBase(graphData.global.base);
-      setNavigatingInGraph(false);
     });
   }, [endpoint]);
 
@@ -234,7 +226,6 @@ const PerformanceGraph = ({
   };
 
   const displayZoomLoader = (props: NavigateInGraphProps) => {
-    setNavigatingInGraph(true);
     navigateInGraph?.(props);
   };
 
@@ -242,7 +233,6 @@ const PerformanceGraph = ({
     if (isNil(customTimePeriod)) {
       return;
     }
-    setNavigatingInGraph(true);
     const timestampToTranslate =
       (customTimePeriod.end.getTime() - customTimePeriod.start.getTime()) /
       translationRatio;
