@@ -1078,7 +1078,7 @@ describe(Details, () => {
     ).toEqual(last7Days.id);
   });
 
-  it('queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected', async () => {
+  it('queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected and a custom time period is selected', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
@@ -1140,7 +1140,7 @@ describe(Details, () => {
     });
   });
 
-  it('display the correct date time on pickers when a time period is selected and the Graph tab is selected', async () => {
+  it('displays the correct date time on pickers when the Graph tab is selected and a time period is selected', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
@@ -1179,7 +1179,7 @@ describe(Details, () => {
     });
   });
 
-  it('display an error message when the start date of the timeperiod is the same as the end date and the Graph tab is selected', async () => {
+  it('displays an error message when Graph tab is selected and the start date of the time period is the same as the end date', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
