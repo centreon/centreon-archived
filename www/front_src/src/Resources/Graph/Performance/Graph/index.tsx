@@ -61,7 +61,11 @@ import {
   hasUnitStackedLines,
 } from '../timeSeries';
 import Lines from '../Lines';
-import { labelAddComment, labelBackward, labelForward } from '../../../translatedLabels';
+import {
+  labelAddComment,
+  labelBackward,
+  labelForward,
+} from '../../../translatedLabels';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
@@ -537,13 +541,15 @@ const GraphContent = ({
             </div>
           )}
           <svg width="100%" height={height} ref={containerRef}>
-            {canNavigateInGraph && (<MemoizedBar
-              {...getTranslationZoneProps(TranslationDirection.backward)}
-              x={negate(translationZoneWidth) + margin.left}
-              y={margin.top}
-              width={translationZoneWidth}
-              height={graphHeight}
-            />)}
+            {canNavigateInGraph && (
+              <MemoizedBar
+                {...getTranslationZoneProps(TranslationDirection.backward)}
+                x={negate(translationZoneWidth) + margin.left}
+                y={margin.top}
+                width={translationZoneWidth}
+                height={graphHeight}
+              />
+            )}
             <Group left={margin.left} top={margin.top}>
               <MemoizedGridRows
                 scale={leftScale}
@@ -642,13 +648,15 @@ const GraphContent = ({
                 </>
               )}
             </Group>
-            {canNavigateInGraph && (<MemoizedBar
-              {...getTranslationZoneProps(TranslationDirection.forward)}
-              x={graphWidth + margin.left}
-              y={margin.top}
-              width={translationZoneWidth}
-              height={graphHeight}
-            />)}
+            {canNavigateInGraph && (
+              <MemoizedBar
+                {...getTranslationZoneProps(TranslationDirection.forward)}
+                x={graphWidth + margin.left}
+                y={margin.top}
+                width={translationZoneWidth}
+                height={graphHeight}
+              />
+            )}
           </svg>
           {addCommentTooltipOpen && (
             <Paper
