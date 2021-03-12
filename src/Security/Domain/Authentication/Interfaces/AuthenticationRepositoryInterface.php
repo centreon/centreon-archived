@@ -69,6 +69,11 @@ interface AuthenticationRepositoryInterface
     public function deleteSession(string $sessionToken): void;
 
     /**
+     * Delete all expired sessions.
+     */
+    public function deleteExpiredSession(): void;
+
+    /**
      * Find providers configurations
      *
      * @return ProviderConfiguration[]

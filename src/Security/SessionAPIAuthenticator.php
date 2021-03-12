@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Security;
 
 use Centreon\Domain\Exception\ContactDisabledException;
-use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
@@ -177,11 +177,6 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
         }
 
         $this->authenticationRepository->deleteExpiredSession();
-
-        $session = $this->authenticationRepository->findSession($sessionId);
-        if ($session === null) {
-            throw new NotFoundException('Session not found');
-        }
 
         $contact = $this->contactRepository->findBySession($sessionId);
         if ($contact === null) {
