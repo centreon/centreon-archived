@@ -119,8 +119,8 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-        severity:
-            type: Centreon\Domain\Monitoring\ResourceSeverity
+        severityLevel:
+            type: int
             groups:
                 - 'resource_main'
         chartUrl:

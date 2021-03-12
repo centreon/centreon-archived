@@ -4,7 +4,6 @@ import {
   Downtime,
   Parent,
   ResourceLinks,
-  Severity,
   NamedEntity,
 } from '../models';
 
@@ -15,7 +14,7 @@ export interface ResourceDetails extends NamedEntity {
   status: Status;
   parent: Parent;
   links: ResourceLinks;
-  severity: Severity;
+  severity_level: number;
   information: string;
   downtimes: Array<Downtime>;
   acknowledgement?: Acknowledgement;

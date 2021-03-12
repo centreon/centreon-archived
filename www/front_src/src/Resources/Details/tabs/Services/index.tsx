@@ -126,13 +126,13 @@ const ServicesTabContent = ({
     });
   };
 
-  const selectService = (serviceId): void => {
+  const selectService = (service): void => {
     setOpenDetailsTabId(detailsTabId);
-    setSelectedResourceUuid(details?.uuid);
-    setSelectedResourceParentType('host');
-    setSelectedResourceParentId(details?.parent?.id);
-    setSelectedResourceId(serviceId);
-    setSelectedResourceType('service');
+    setSelectedResourceUuid(service.uuid);
+    setSelectedResourceId(service.id);
+    setSelectedResourceType(service.type);
+    setSelectedResourceParentType(service?.parent?.type);
+    setSelectedResourceParentId(service?.parent?.id);
   };
 
   const switchMode = (): void => {

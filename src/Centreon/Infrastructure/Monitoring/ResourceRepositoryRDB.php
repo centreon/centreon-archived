@@ -31,7 +31,6 @@ use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
-use Centreon\Domain\Monitoring\ResourceSeverity;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Monitoring\Notes;
@@ -216,7 +215,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             // parent status
             . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
             . 'resource.flapping, resource.percent_state_change, '
-            . 'resource.severity_level, resource.severity_name, ' // severity
+            . 'resource.severity_level, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
             . 'resource.active_checks, resource.passive_checks,'
             . 'resource.last_status_change, '
@@ -491,7 +490,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.active_checks AS `active_checks`,
             s.passive_checks AS `passive_checks`,
             service_cvl.value AS `severity_level`,
-            sc.sc_name AS `severity_name`,
             s.last_state_change AS `last_status_change`,
             s.last_notification AS `last_notification`,
             s.notification_number AS `notification_number`,
@@ -517,16 +515,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         // get Severity level, name, icon
         $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = s.host_id
             AND service_cvl.service_id = s.service_id
-            AND service_cvl.name = "CRITICALITY_LEVEL"
-            LEFT JOIN `:db`.`service_categories` AS sc ON sc.sc_id = (
-                SELECT scr.sc_id
-                FROM `:db`.`service_categories_relation` AS scr
-                WHERE scr.service_service_id = s.service_id
-                LIMIT 1
-            )
-            AND sc.level IS NOT NULL
-            AND sc.icon_id IS NOT NULL
-            LEFT JOIN `:db`.`view_img` AS service_vi ON service_vi.img_id = sc.icon_id';
+            AND service_cvl.name = "CRITICALITY_LEVEL"';
 
         $hasWhereCondition = false;
 
@@ -696,7 +685,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.active_checks AS `active_checks`,
             h.passive_checks AS `passive_checks`,
             host_cvl.value AS `severity_level`,
-            hc.hc_comment AS `severity_name`,
             h.last_state_change AS `last_status_change`,
             h.last_notification AS `last_notification`,
             h.notification_number AS `notification_number`,
@@ -718,16 +706,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         // get Severity level, name, icon
         $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
             AND host_cvl.service_id = 0
-            AND host_cvl.name = "CRITICALITY_LEVEL"
-            LEFT JOIN `:db`.`hostcategories` AS hc ON hc.hc_id = (
-                SELECT hcr.hostcategories_hc_id
-                FROM `:db`.`hostcategories_relation` AS hcr
-                WHERE hcr.host_host_id = h.host_id
-                LIMIT 1
-            )
-            AND hc.level IS NOT NULL
-            AND hc.icon_id IS NOT NULL
-            LEFT JOIN `:db`.`view_img` AS host_vi ON host_vi.img_id = hc.icon_id';
+            AND host_cvl.name = "CRITICALITY_LEVEL"';
 
         $hasWhereCondition = false;
 
@@ -842,17 +821,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         if ($icon->getUrl()) {
             $resource->setIcon($icon);
-        }
-
-        // parse severity Icon object
-        $severity = EntityCreator::createEntityByArray(
-            ResourceSeverity::class,
-            $data,
-            'severity_'
-        );
-
-        if ($severity->getLevel() !== null) {
-            $resource->setSeverity($severity);
         }
 
         // parse parent Resource object
