@@ -15150,6 +15150,9 @@ msgstr "Erreur lors de la recherche de ressources"
 msgid "Error when searching for monitoring servers"
 msgstr "Erreur lors de la recherche de serveurs de supervision"
 
+msgid "Error when searching for real time monitoring servers"
+msgstr "Erreur lors de la recherche de serveurs de supervision dans le temps réel"
+
 #:Centreon/Domain/MonitoringServer/MonitoringServerService.php:142
 msgid "Error when deleting a monitoring server"
 msgstr "Erreur lors de la supression d'un serveur de supervision"

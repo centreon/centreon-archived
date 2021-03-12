@@ -941,6 +941,7 @@ describe(Details, () => {
         states: [],
         hostGroupIds: [],
         serviceGroupIds: [],
+        monitoringServerIds: [],
         search: {
           conditions: [
             {
