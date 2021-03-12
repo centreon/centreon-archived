@@ -1163,13 +1163,13 @@ describe(Details, () => {
       );
     });
 
-    expect(getByLabelText(labelStartDate)).toHaveValue('January 20th 07:00');
-    expect(getByLabelText(labelEndDate)).toHaveValue('January 21st 07:00');
+    expect(getByLabelText(labelStartDate)).toHaveValue('January 20th 07:00 am');
+    expect(getByLabelText(labelEndDate)).toHaveValue('January 21st 07:00 am');
 
     userEvent.click(getByText(label7Days).parentElement as HTMLElement);
 
-    expect(getByLabelText(labelStartDate)).toHaveValue('January 14th 07:00');
-    expect(getByLabelText(labelEndDate)).toHaveValue('January 21st 07:00');
+    expect(getByLabelText(labelStartDate)).toHaveValue('January 14th 07:00 am');
+    expect(getByLabelText(labelEndDate)).toHaveValue('January 21st 07:00 am');
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
