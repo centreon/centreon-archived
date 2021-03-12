@@ -166,8 +166,9 @@ interface GraphContentProps {
   showAddCommentTooltip: (args) => void;
   format: (parameters) => string;
   applyZoom?: (props: NavigateInGraphProps) => void;
-  translate: (direction: TranslationDirection) => void;
+  translate?: (direction: TranslationDirection) => void;
   sendingGetGraphDataRequest: boolean;
+  canNavigateInGraph: boolean;
 }
 
 const getScale = ({
@@ -209,6 +210,7 @@ const GraphContent = ({
   applyZoom,
   translate,
   sendingGetGraphDataRequest,
+  canNavigateInGraph,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles({ onAddComment });
@@ -483,7 +485,7 @@ const GraphContent = ({
   const getTranslationZoneProps = (direction: TranslationDirection) => ({
     onMouseOver: hoverDirection(direction),
     onMouseLeave: hoverDirection(null),
-    onClick: () => translate(direction),
+    onClick: () => translate?.(direction),
     fill: equals(directionHovered, direction)
       ? fade(theme.palette.common.white, 0.5)
       : 'transparent',
@@ -551,20 +553,24 @@ const GraphContent = ({
                   timeline={timeline as Array<TimelineEvent>}
                 />
               )}
-              <MemoizedBar
-                {...getTranslationZoneProps(TranslationDirection.backward)}
-                x={negate(translationZoneWidth)}
-                y={0}
-                width={translationZoneWidth}
-                height={graphHeight}
-              />
-              <MemoizedBar
-                {...getTranslationZoneProps(TranslationDirection.forward)}
-                x={graphWidth}
-                y={0}
-                width={translationZoneWidth}
-                height={graphHeight}
-              />
+              {canNavigateInGraph && (
+                <>
+                  <MemoizedBar
+                    {...getTranslationZoneProps(TranslationDirection.backward)}
+                    x={negate(translationZoneWidth)}
+                    y={0}
+                    width={translationZoneWidth}
+                    height={graphHeight}
+                  />
+                  <MemoizedBar
+                    {...getTranslationZoneProps(TranslationDirection.forward)}
+                    x={graphWidth}
+                    y={0}
+                    width={translationZoneWidth}
+                    height={graphHeight}
+                  />
+                </>
+              )}
               <MemoizedBar
                 x={zoomBoundaries?.start || 0}
                 y={0}
@@ -594,38 +600,48 @@ const GraphContent = ({
                   pointerEvents="none"
                 />
               )}
-              <TranslationIcon
-                xIcon={-20}
-                icon={
-                  equals(directionHovered, TranslationDirection.backward) && (
-                    <ArrowBackIosIcon
-                      color={
-                        sendingGetGraphDataRequest ? 'disabled' : 'primary'
-                      }
-                    />
-                  )
-                }
-                direction={TranslationDirection.backward}
-                disabled={sendingGetGraphDataRequest}
-                translate={translate}
-                hoverDirection={hoverDirection}
-              />
-              <TranslationIcon
-                xIcon={graphWidth + 20}
-                icon={
-                  equals(directionHovered, TranslationDirection.forward) && (
-                    <ArrowForwardIosIcon
-                      color={
-                        sendingGetGraphDataRequest ? 'disabled' : 'primary'
-                      }
-                    />
-                  )
-                }
-                direction={TranslationDirection.forward}
-                disabled={sendingGetGraphDataRequest}
-                translate={translate}
-                hoverDirection={hoverDirection}
-              />
+              {canNavigateInGraph && (
+                <>
+                  <TranslationIcon
+                    xIcon={-20}
+                    icon={
+                      equals(
+                        directionHovered,
+                        TranslationDirection.backward,
+                      ) && (
+                        <ArrowBackIosIcon
+                          color={
+                            sendingGetGraphDataRequest ? 'disabled' : 'primary'
+                          }
+                        />
+                      )
+                    }
+                    direction={TranslationDirection.backward}
+                    disabled={sendingGetGraphDataRequest}
+                    translate={translate}
+                    hoverDirection={hoverDirection}
+                  />
+                  <TranslationIcon
+                    xIcon={graphWidth + 20}
+                    icon={
+                      equals(
+                        directionHovered,
+                        TranslationDirection.forward,
+                      ) && (
+                        <ArrowForwardIosIcon
+                          color={
+                            sendingGetGraphDataRequest ? 'disabled' : 'primary'
+                          }
+                        />
+                      )
+                    }
+                    direction={TranslationDirection.forward}
+                    disabled={sendingGetGraphDataRequest}
+                    translate={translate}
+                    hoverDirection={hoverDirection}
+                  />
+                </>
+              )}
             </Group>
           </svg>
           {addCommentTooltipOpen && (

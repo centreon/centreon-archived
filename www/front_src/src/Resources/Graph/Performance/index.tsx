@@ -307,6 +307,7 @@ const PerformanceGraph = ({
             applyZoom={displayZoomLoader}
             translate={translate}
             sendingGetGraphDataRequest={sendingGetGraphDataRequest}
+            canNavigateInGraph={not(isNil(navigateInGraph))}
           />
         )}
       </ParentSize>
