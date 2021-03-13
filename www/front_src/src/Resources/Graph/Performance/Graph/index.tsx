@@ -524,18 +524,6 @@ const GraphContent = ({
             </div>
           )}
           <svg width="100%" height={height} ref={containerRef}>
-            {canNavigateInGraph && (
-              <TranslationZone
-                graphWidth={graphWidth}
-                graphHeight={graphHeight}
-                marginTop={margin.top}
-                marginLeft={margin.left}
-                direction={TranslationDirection.backward}
-                directionHovered={directionHovered}
-                hoverDirection={hoverDirection}
-                translate={translate}
-              />
-            )}
             <Group left={margin.left} top={margin.top}>
               <MemoizedGridRows
                 scale={leftScale}
@@ -635,16 +623,28 @@ const GraphContent = ({
               )}
             </Group>
             {canNavigateInGraph && (
-              <TranslationZone
-                graphWidth={graphWidth}
-                graphHeight={graphHeight}
-                marginTop={margin.top}
-                marginLeft={margin.left}
-                direction={TranslationDirection.forward}
-                directionHovered={directionHovered}
-                hoverDirection={hoverDirection}
-                translate={translate}
-              />
+              <>
+                <TranslationZone
+                  graphWidth={graphWidth}
+                  graphHeight={graphHeight}
+                  marginTop={margin.top}
+                  marginLeft={margin.left}
+                  direction={TranslationDirection.backward}
+                  directionHovered={directionHovered}
+                  hoverDirection={hoverDirection}
+                  translate={translate}
+                />
+                <TranslationZone
+                  graphWidth={graphWidth}
+                  graphHeight={graphHeight}
+                  marginTop={margin.top}
+                  marginLeft={margin.left}
+                  direction={TranslationDirection.forward}
+                  directionHovered={directionHovered}
+                  hoverDirection={hoverDirection}
+                  translate={translate}
+                />
+              </>
             )}
           </svg>
           {addCommentTooltipOpen && (

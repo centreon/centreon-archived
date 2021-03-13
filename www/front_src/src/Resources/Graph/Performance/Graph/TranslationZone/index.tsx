@@ -63,7 +63,13 @@ const TranslationZone = ({
         className={classes.translationZone}
       />
     ),
-    memoProps: [directionHovered],
+    memoProps: [
+      directionHovered,
+      graphHeight,
+      graphWidth,
+      marginLeft,
+      marginTop,
+    ],
   });
 };
 
