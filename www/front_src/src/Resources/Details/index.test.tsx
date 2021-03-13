@@ -64,9 +64,9 @@ import {
   labelDisplayEvents,
   labelStartDate,
   labelEndDate,
-  labelStartDateIsSameOrAfterEndDate,
   labelForward,
   labelBackward,
+  labelEndDateGreaterThanStartDate,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -1180,7 +1180,7 @@ describe(Details, () => {
 
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
 
-    expect(getByText(labelStartDateIsSameOrAfterEndDate)).toBeInTheDocument();
+    expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
   });
 
   it.each([

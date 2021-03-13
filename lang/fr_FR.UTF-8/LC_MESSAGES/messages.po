@@ -16092,3 +16092,6 @@ msgstr "En avant"
 
 msgid "Backward"
 msgstr "En arrière"
+
+msgid "The end date must be greater than the start date"
+msgstr "La date de fin doit être supérieur à la date de début"

@@ -72,7 +72,7 @@ const useTimePeriod = ({
     setSelectedTimePeriod,
   ] = React.useState<TimePeriod | null>(defaultTimePeriod);
 
-  const getLocalizedIntervalDates = (
+  const getTimeperiodFromNow = (
     timePeriod: TimePeriod | null,
   ): CustomTimePeriod => {
     return {
@@ -111,10 +111,10 @@ const useTimePeriod = ({
           start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
           end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
         })
-      : getLocalizedIntervalDates(defaultTimePeriod),
+      : getTimeperiodFromNow(defaultTimePeriod),
   );
 
-  const getIntervalDates = (timePeriod): [string, string] => {
+  const getDates = (timePeriod): [string, string] => {
     if (isNil(timePeriod)) {
       return [
         customTimePeriod.start.toISOString(),
@@ -133,7 +133,7 @@ const useTimePeriod = ({
     endDate,
   }: GraphQueryParametersProps): string => {
     if (pipe(isNil, not)(timePeriod)) {
-      const [start, end] = getIntervalDates(timePeriod);
+      const [start, end] = getDates(timePeriod);
 
       return `?start=${start}&end=${end}`;
     }
@@ -155,9 +155,9 @@ const useTimePeriod = ({
     setSelectedTimePeriod(timePeriod);
     onTimePeriodChange?.({ selectedTimePeriodId: timePeriod.id });
 
-    const newCustomTimePeriodDates = getLocalizedIntervalDates(timePeriod);
+    const newTimePeriod = getTimeperiodFromNow(timePeriod);
 
-    setCustomTimePeriod(newCustomTimePeriodDates);
+    setCustomTimePeriod(newTimePeriod);
 
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
       timePeriod,
@@ -208,8 +208,7 @@ const useTimePeriod = ({
     changeSelectedTimePeriod,
     selectedTimePeriod,
     periodQueryParameters,
-    getIntervalDates: (): [string, string] =>
-      getIntervalDates(selectedTimePeriod),
+    getIntervalDates: (): [string, string] => getDates(selectedTimePeriod),
     customTimePeriod,
     changeCustomTimePeriod,
     navigateInGraph,

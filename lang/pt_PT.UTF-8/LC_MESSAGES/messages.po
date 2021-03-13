@@ -15113,3 +15113,6 @@ msgstr ""
 
 msgid "Backward"
 msgstr ""
+
+msgid "The end date must be greater than the start date"
+msgstr ""

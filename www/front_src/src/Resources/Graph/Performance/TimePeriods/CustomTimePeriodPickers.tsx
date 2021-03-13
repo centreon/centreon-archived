@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { and, equals, or } from 'ramda';
+import { and, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -14,7 +14,7 @@ import { dateTimeFormat, TextField } from '@centreon/ui';
 import {
   labelEndDate,
   labelStartDate,
-  labelStartDateIsSameOrAfterEndDate,
+  labelEndDateGreaterThanStartDate,
   labelTo,
 } from '../../../translatedLabels';
 import {
@@ -63,21 +63,19 @@ const CustomTimePeriodPickers = ({
   const isInvalidDate = ({ startDate, endDate }) =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
-  const changeDate = (property: CustomTimePeriodProperty) => () => {
-    const dateToAccept = equals(property, CustomTimePeriodProperty.start)
-      ? start
-      : end;
+  const changeDate = ({ property, date }) => () => {
+    const currentDate = customTimePeriod[property];
 
     if (
       or(
-        dayjs(dateToAccept).isSame(dayjs(customTimePeriod[property])),
+        dayjs(date).isSame(dayjs(currentDate)),
         isInvalidDate({ startDate: start, endDate: end }),
       )
     ) {
       return;
     }
     acceptDate({
-      date: dateToAccept,
+      date,
       property,
     });
   };
@@ -132,7 +130,10 @@ const CustomTimePeriodPickers = ({
             inputVariant="filled"
             value={start}
             onChange={(value) => setStart(new Date(value?.toDate() || 0))}
-            onClose={changeDate(CustomTimePeriodProperty.start)}
+            onClose={changeDate({
+              property: CustomTimePeriodProperty.start,
+              date: start,
+            })}
             maxDate={customTimePeriod.end}
             size="small"
           />
@@ -144,7 +145,10 @@ const CustomTimePeriodPickers = ({
             inputVariant="filled"
             value={end}
             onChange={(value) => setEnd(new Date(value?.toDate() || 0))}
-            onClose={changeDate(CustomTimePeriodProperty.end)}
+            onClose={changeDate({
+              property: CustomTimePeriodProperty.end,
+              date: end,
+            })}
             minDate={customTimePeriod.start}
             size="small"
           />
@@ -152,7 +156,7 @@ const CustomTimePeriodPickers = ({
       </div>
       {error && (
         <FormHelperText error className={classes.error}>
-          {t(labelStartDateIsSameOrAfterEndDate)}
+          {t(labelEndDateGreaterThanStartDate)}
         </FormHelperText>
       )}
     </div>
