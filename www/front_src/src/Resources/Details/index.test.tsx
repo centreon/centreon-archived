@@ -10,7 +10,7 @@ import {
   RenderResult,
   act,
 } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import userEvent, { TargetElement } from '@testing-library/user-event';
 
 import {
   ThemeProvider,
@@ -1065,7 +1065,10 @@ describe(Details, () => {
       );
     });
 
-    userEvent.click(getByLabelText(labelStartDate));
+    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
+      ?.firstChild;
+
+    userEvent.click(startDateInput as TargetElement);
 
     fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
@@ -1127,13 +1130,19 @@ describe(Details, () => {
       );
     });
 
-    expect(getByLabelText(labelStartDate)).toHaveValue('01/20/2020 7:00 AM');
-    expect(getByLabelText(labelEndDate)).toHaveValue('01/21/2020 7:00 AM');
+    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
+      ?.firstChild;
+
+    const endDateInput = getByLabelText(labelEndDate).firstChild?.firstChild
+      ?.firstChild;
+
+    expect(startDateInput).toHaveValue('01/20/2020 7:00 AM');
+    expect(endDateInput).toHaveValue('01/21/2020 7:00 AM');
 
     userEvent.click(getByText(label7D).parentElement as HTMLElement);
 
-    expect(getByLabelText(labelStartDate)).toHaveValue('01/14/2020 7:00 AM');
-    expect(getByLabelText(labelEndDate)).toHaveValue('01/21/2020 7:00 AM');
+    expect(startDateInput).toHaveValue('01/14/2020 7:00 AM');
+    expect(endDateInput).toHaveValue('01/21/2020 7:00 AM');
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1166,7 +1175,10 @@ describe(Details, () => {
       );
     });
 
-    userEvent.click(getByLabelText(labelStartDate));
+    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
+      ?.firstChild;
+
+    userEvent.click(startDateInput as TargetElement);
 
     await waitFor(() => {
       expect(getByText(/^21$/)).toBeInTheDocument();
