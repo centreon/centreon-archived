@@ -79,8 +79,8 @@ import Annotations from './Annotations';
 import Axes from './Axes';
 import { AnnotationsContext } from './Context';
 import useAnnotations from './useAnnotations';
-import TranslationIcon from './TranslationZone/Icon';
-import TranslationZone from './TranslationZone';
+import TranslationIcon, { translationIconSize } from './TranslationZone/Icon';
+import TranslationZone, { translationZoneWidth } from './TranslationZone';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -591,36 +591,6 @@ const GraphContent = ({
                   pointerEvents="none"
                 />
               )}
-              {canNavigateInGraph && (
-                <>
-                  <TranslationIcon
-                    xIcon={-30}
-                    icon={
-                      <ArrowBackIosIcon
-                        color={getIconColor(TranslationDirection.backward)}
-                      />
-                    }
-                    direction={TranslationDirection.backward}
-                    disabled={sendingGetGraphDataRequest}
-                    translate={translate}
-                    hoverDirection={hoverDirection}
-                    ariaLabel={labelBackward}
-                  />
-                  <TranslationIcon
-                    xIcon={graphWidth + 15}
-                    icon={
-                      <ArrowForwardIosIcon
-                        color={getIconColor(TranslationDirection.forward)}
-                      />
-                    }
-                    direction={TranslationDirection.forward}
-                    disabled={sendingGetGraphDataRequest}
-                    translate={translate}
-                    hoverDirection={hoverDirection}
-                    ariaLabel={labelForward}
-                  />
-                </>
-              )}
             </Group>
             {canNavigateInGraph && (
               <>
@@ -643,6 +613,38 @@ const GraphContent = ({
                   directionHovered={directionHovered}
                   hoverDirection={hoverDirection}
                   translate={translate}
+                />
+                <TranslationIcon
+                  xIcon={0}
+                  icon={
+                    <ArrowBackIosIcon
+                      color={getIconColor(TranslationDirection.backward)}
+                    />
+                  }
+                  direction={TranslationDirection.backward}
+                  disabled={sendingGetGraphDataRequest}
+                  translate={translate}
+                  hoverDirection={hoverDirection}
+                  ariaLabel={labelBackward}
+                  graphHeight={graphHeight}
+                  marginTop={margin.top}
+                />
+                <TranslationIcon
+                  xIcon={
+                    graphWidth + translationZoneWidth + translationIconSize
+                  }
+                  icon={
+                    <ArrowForwardIosIcon
+                      color={getIconColor(TranslationDirection.forward)}
+                    />
+                  }
+                  direction={TranslationDirection.forward}
+                  disabled={sendingGetGraphDataRequest}
+                  translate={translate}
+                  hoverDirection={hoverDirection}
+                  ariaLabel={labelForward}
+                  graphHeight={graphHeight}
+                  marginTop={margin.top}
                 />
               </>
             )}

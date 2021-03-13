@@ -8,8 +8,7 @@ import { useMemoComponent } from '@centreon/ui/src';
 
 import { TranslationDirection } from '..';
 
-const iconSize = 20;
-const yMargin = -32;
+export const translationIconSize = 20;
 
 interface Props {
   xIcon: number;
@@ -19,6 +18,8 @@ interface Props {
   translate?: (direction: TranslationDirection) => void;
   hoverDirection: (direction: TranslationDirection | null) => () => void;
   ariaLabel: string;
+  graphHeight: number;
+  marginTop: number;
 }
 
 const useStyles = makeStyles({
@@ -35,6 +36,8 @@ const TranslationIcon = ({
   ariaLabel,
   translate,
   hoverDirection,
+  graphHeight,
+  marginTop,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -43,17 +46,21 @@ const TranslationIcon = ({
     Component: (
       <g>
         <svg
-          y={yMargin}
+          y={graphHeight / 2 - translationIconSize / 2 + marginTop}
           x={xIcon}
-          height={iconSize}
-          width={iconSize}
+          height={translationIconSize}
+          width={translationIconSize}
           onClick={() => !disabled && translate && translate?.(direction)}
           onMouseEnter={hoverDirection(direction)}
           onMouseLeave={hoverDirection(null)}
           className={classes.icon}
           aria-label={t(ariaLabel)}
         >
-          <rect width={iconSize} height={iconSize} fill="transparent" />
+          <rect
+            width={translationIconSize}
+            height={translationIconSize}
+            fill="transparent"
+          />
           {icon}
         </svg>
       </g>

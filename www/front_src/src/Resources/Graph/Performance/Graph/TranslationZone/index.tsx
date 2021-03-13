@@ -9,7 +9,7 @@ import { useMemoComponent } from '@centreon/ui';
 
 import { TranslationDirection } from '..';
 
-const translationZoneWidth = 50;
+export const translationZoneWidth = 50;
 
 const useStyles = makeStyles({
   translationZone: {
