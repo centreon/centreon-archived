@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { and, equals, or } from 'ramda';
+import { and, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
