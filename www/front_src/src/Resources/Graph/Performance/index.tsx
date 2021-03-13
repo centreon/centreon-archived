@@ -225,10 +225,6 @@ const PerformanceGraph = ({
     );
   };
 
-  const displayZoomLoader = (props: NavigateInGraphProps) => {
-    navigateInGraph?.(props);
-  };
-
   const translate = (direction: TranslationDirection) => {
     if (isNil(customTimePeriod)) {
       return;
@@ -278,7 +274,7 @@ const PerformanceGraph = ({
             resource={resource}
             onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}
-            applyZoom={displayZoomLoader}
+            applyZoom={navigateInGraph}
             translate={translate}
             sendingGetGraphDataRequest={sendingGetGraphDataRequest}
             canNavigateInGraph={not(isNil(navigateInGraph))}
