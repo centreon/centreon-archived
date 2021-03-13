@@ -95,7 +95,7 @@ const LineAnnotation = ({
         {...props}
       />
     ),
-    memoProps: [annotationHovered],
+    memoProps: [annotationHovered, xIcon],
   });
 };
 
