@@ -16086,3 +16086,6 @@ msgstr "Erreur lors de l'ajout d'une catégorie hôte"
 
 msgid "Error when adding a host group"
 msgstr "Erreur lors de l'ajout d'un groupe d'hôte"
+
+msgid "The end date must be greater than the start date"
+msgstr "La date de fin doit être supérieur à la date de début"

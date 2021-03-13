@@ -14,7 +14,7 @@ import { dateTimeFormat, TextField } from '@centreon/ui';
 import {
   labelEndDate,
   labelStartDate,
-  labelStartDateIsSameOrAfterEndDate,
+  labelEndDateGreaterThanStartDate,
   labelTo,
 } from '../../../translatedLabels';
 import {
@@ -156,7 +156,7 @@ const CustomTimePeriodPickers = ({
       </div>
       {error && (
         <FormHelperText error className={classes.error}>
-          {t(labelStartDateIsSameOrAfterEndDate)}
+          {t(labelEndDateGreaterThanStartDate)}
         </FormHelperText>
       )}
     </div>
