@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core';
 
-import { TranslationDirection } from '.';
+import { useMemoComponent } from '@centreon/ui/src';
+
+import { TranslationDirection } from '..';
 
 const iconSize = 20;
 const yMargin = -32;
@@ -30,31 +32,34 @@ const TranslationIcon = ({
   icon,
   direction,
   disabled,
+  ariaLabel,
   translate,
   hoverDirection,
-  ariaLabel,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  return (
-    <g>
-      <svg
-        y={yMargin}
-        x={xIcon}
-        height={iconSize}
-        width={iconSize}
-        onClick={() => !disabled && translate && translate?.(direction)}
-        onMouseEnter={hoverDirection(direction)}
-        onMouseLeave={hoverDirection(null)}
-        className={classes.icon}
-        aria-label={t(ariaLabel)}
-      >
-        <rect width={iconSize} height={iconSize} fill="transparent" />
-        {icon}
-      </svg>
-    </g>
-  );
+  return useMemoComponent({
+    Component: (
+      <g>
+        <svg
+          y={yMargin}
+          x={xIcon}
+          height={iconSize}
+          width={iconSize}
+          onClick={() => !disabled && translate && translate?.(direction)}
+          onMouseEnter={hoverDirection(direction)}
+          onMouseLeave={hoverDirection(null)}
+          className={classes.icon}
+          aria-label={t(ariaLabel)}
+        >
+          <rect width={iconSize} height={iconSize} fill="transparent" />
+          {icon}
+        </svg>
+      </g>
+    ),
+    memoProps: [xIcon, direction, ariaLabel, disabled, icon],
+  });
 };
 
 export default TranslationIcon;

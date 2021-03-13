@@ -80,7 +80,8 @@ import Annotations from './Annotations';
 import Axes from './Axes';
 import { AnnotationsContext } from './Context';
 import useAnnotations from './useAnnotations';
-import TranslationIcon from './TranslationIcon';
+import TranslationIcon from './TranslationZone/Icon';
+import TranslationZone from './TranslationZone';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -95,8 +96,6 @@ const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 const margin = { top: 30, right: 45, bottom: 30, left: 45 };
 
 const commentTooltipWidth = 165;
-
-const translationZoneWidth = 50;
 
 interface Props {
   width: number;
@@ -135,9 +134,6 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   },
   addCommentButton: {
     fontSize: 10,
-  },
-  translationZone: {
-    cursor: 'pointer',
   },
   graphLoader: {
     position: 'absolute',
@@ -498,18 +494,6 @@ const GraphContent = ({
   const hoverDirection = (direction: TranslationDirection | null) => () =>
     setDirectionHovered(direction);
 
-  const getTranslationZoneProps = (direction: TranslationDirection) => ({
-    onMouseOver: hoverDirection(direction),
-    onMouseLeave: hoverDirection(null),
-    onClick: () => translate?.(direction),
-    fill: equals(directionHovered, direction)
-      ? fade(theme.palette.common.white, 0.5)
-      : 'transparent',
-    width: translationZoneWidth,
-    height: graphHeight,
-    className: classes.translationZone,
-  });
-
   const getIconColor = (direction: TranslationDirection) =>
     sendingGetGraphDataRequest || not(equals(directionHovered, direction))
       ? 'disabled'
@@ -542,12 +526,15 @@ const GraphContent = ({
           )}
           <svg width="100%" height={height} ref={containerRef}>
             {canNavigateInGraph && (
-              <MemoizedBar
-                {...getTranslationZoneProps(TranslationDirection.backward)}
-                x={negate(translationZoneWidth) + margin.left}
-                y={margin.top}
-                width={translationZoneWidth}
-                height={graphHeight}
+              <TranslationZone
+                graphWidth={graphWidth}
+                graphHeight={graphHeight}
+                marginTop={margin.top}
+                marginLeft={margin.left}
+                direction={TranslationDirection.backward}
+                directionHovered={directionHovered}
+                hoverDirection={hoverDirection}
+                translate={translate}
               />
             )}
             <Group left={margin.left} top={margin.top}>
@@ -649,12 +636,15 @@ const GraphContent = ({
               )}
             </Group>
             {canNavigateInGraph && (
-              <MemoizedBar
-                {...getTranslationZoneProps(TranslationDirection.forward)}
-                x={graphWidth + margin.left}
-                y={margin.top}
-                width={translationZoneWidth}
-                height={graphHeight}
+              <TranslationZone
+                graphWidth={graphWidth}
+                graphHeight={graphHeight}
+                marginTop={margin.top}
+                marginLeft={margin.left}
+                direction={TranslationDirection.forward}
+                directionHovered={directionHovered}
+                hoverDirection={hoverDirection}
+                translate={translate}
               />
             )}
           </svg>
