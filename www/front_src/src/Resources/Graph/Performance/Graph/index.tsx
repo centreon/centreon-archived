@@ -10,7 +10,6 @@ import {
   not,
   lt,
   gte,
-  negate,
 } from 'ramda';
 import {
   Line,
