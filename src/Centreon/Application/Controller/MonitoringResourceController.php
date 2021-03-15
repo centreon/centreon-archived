@@ -314,7 +314,7 @@ class MonitoringResourceController extends AbstractController
         try {
             $this->monitoring->hidePasswordInHostCommandLine($host);
         } catch (\Throwable $ex) {
-            $host->setCommandLine(
+            $host->setCheckCommand(
                 sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
             );
         }
