@@ -13123,7 +13123,7 @@ msgid "Next Scheduled Active Check"
 msgstr "Prochain contrôle actif planifié"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:462
-msgid "Check Duration"
+msgid "Check duration"
 msgstr "Temps d'exécution"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:465
