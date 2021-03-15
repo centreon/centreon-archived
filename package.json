@@ -24,7 +24,7 @@
     "@babel/preset-env": "^7.13.10",
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.13.0",
-    "@centreon/frontend-core": "github:centreon/frontend-core#update-packages",
+    "@centreon/frontend-core": "github:centreon/frontend-core",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.11.9",
@@ -83,7 +83,7 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
-    "@centreon/ui": "github:centreon/centreon-ui#update-packages",
+    "@centreon/ui": "github:centreon/centreon-ui",
     "@centreon/ui-context": "github:centreon/ui-context#update-packages",
     "@date-io/dayjs": "1.3.13",
     "@material-ui/core": "4.11.3",
