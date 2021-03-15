@@ -80,7 +80,7 @@ const fillEntities = (): Array<Resource> => {
       },
       externals: {
         notes_url: index % 5 === 0 ? 'uri' : null,
-      }
+      },
     },
     passive_checks: index % 8 === 0,
   }));
