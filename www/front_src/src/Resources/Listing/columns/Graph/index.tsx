@@ -59,6 +59,7 @@ const GraphColumn = ({
             graphHeight={150}
             resource={row}
             timeline={[]}
+            getIntervalDates={getIntervalDates}
           />
         </Paper>
       </HoverChip>
