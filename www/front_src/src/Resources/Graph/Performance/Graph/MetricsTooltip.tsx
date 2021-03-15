@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isEmpty, isNil, take, takeLast } from 'ramda';
+import { take, takeLast } from 'ramda';
 import clsx from 'clsx';
 
 import { Typography, makeStyles } from '@material-ui/core';
