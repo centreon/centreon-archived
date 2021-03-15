@@ -5187,10 +5187,6 @@ components:
           type: boolean
           example: true
           description: "Platform is a remote server"
-        isCentral:
-          type: boolean
-          example: true
-          description: "Platform is a central"
         centralServerAddress:
           type: string
           example: "192.168.0.1"
