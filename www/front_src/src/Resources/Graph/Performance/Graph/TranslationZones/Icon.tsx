@@ -1,12 +1,13 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { not } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 
-import { useMemoComponent } from '@centreon/ui/src';
+import { useMemoComponent } from '@centreon/ui';
 
-import { TranslationDirection } from '..';
+import { TranslationDirection, useTranslationsContext } from '.';
 
 export const translationIconSize = 20;
 
@@ -14,12 +15,8 @@ interface Props {
   xIcon: number;
   icon: JSX.Element | false;
   direction: TranslationDirection;
-  disabled: boolean;
-  translate?: (direction: TranslationDirection) => void;
   hoverDirection: (direction: TranslationDirection | null) => () => void;
   ariaLabel: string;
-  graphHeight: number;
-  marginTop: number;
 }
 
 const useStyles = makeStyles({
@@ -32,15 +29,18 @@ const TranslationIcon = ({
   xIcon,
   icon,
   direction,
-  disabled,
   ariaLabel,
-  translate,
   hoverDirection,
-  graphHeight,
-  marginTop,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const {
+    graphHeight,
+    marginTop,
+    translate,
+    sendingGetGraphDataRequest,
+  } = useTranslationsContext();
 
   return useMemoComponent({
     Component: (
@@ -50,7 +50,8 @@ const TranslationIcon = ({
           x={xIcon}
           height={translationIconSize}
           width={translationIconSize}
-          onClick={() => !disabled && translate && translate?.(direction)}
+          onClick={() =>
+            not(sendingGetGraphDataRequest) && translate?.(direction)}
           onMouseEnter={hoverDirection(direction)}
           onMouseLeave={hoverDirection(null)}
           className={classes.icon}
@@ -65,7 +66,7 @@ const TranslationIcon = ({
         </svg>
       </g>
     ),
-    memoProps: [xIcon, direction, ariaLabel, disabled, icon],
+    memoProps: [xIcon, direction, ariaLabel, sendingGetGraphDataRequest, icon],
   });
 };
 

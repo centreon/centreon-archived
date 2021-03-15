@@ -7,7 +7,7 @@ import { fade, makeStyles, useTheme } from '@material-ui/core';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { TranslationDirection } from '..';
+import { useTranslationsContext, TranslationDirection } from '.';
 
 export const translationZoneWidth = 50;
 
@@ -18,28 +18,26 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-  graphWidth: number;
-  graphHeight: number;
-  marginLeft: number;
-  marginTop: number;
   direction: TranslationDirection;
   directionHovered: TranslationDirection | null;
-  translate?: (direction: TranslationDirection) => void;
   hoverDirection: (direction: TranslationDirection | null) => () => void;
 }
 
 const TranslationZone = ({
-  graphWidth,
-  graphHeight,
-  marginLeft,
-  marginTop,
   direction,
   hoverDirection,
-  translate,
   directionHovered,
 }: Props): JSX.Element => {
   const theme = useTheme();
   const classes = useStyles();
+
+  const {
+    graphHeight,
+    graphWidth,
+    marginLeft,
+    marginTop,
+    translate,
+  } = useTranslationsContext();
 
   return useMemoComponent({
     Component: (

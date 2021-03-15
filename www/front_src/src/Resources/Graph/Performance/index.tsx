@@ -33,7 +33,7 @@ import {
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
 
-import Graph, { TranslationDirection } from './Graph';
+import Graph from './Graph';
 import Legend from './Legend';
 import LoadingSkeleton from './LoadingSkeleton';
 import {
@@ -43,6 +43,7 @@ import {
   NavigateInGraphProps,
 } from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
+import { TranslationDirection } from './Graph/TranslationZones';
 
 interface Props {
   endpoint?: string;

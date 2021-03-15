@@ -39,8 +39,6 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
@@ -60,11 +58,7 @@ import {
   hasUnitStackedLines,
 } from '../timeSeries';
 import Lines from '../Lines';
-import {
-  labelAddComment,
-  labelBackward,
-  labelForward,
-} from '../../../translatedLabels';
+import { labelAddComment } from '../../../translatedLabels';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
@@ -79,8 +73,10 @@ import Annotations from './Annotations';
 import Axes from './Axes';
 import { AnnotationsContext } from './Context';
 import useAnnotations from './useAnnotations';
-import TranslationIcon, { translationIconSize } from './TranslationZone/Icon';
-import TranslationZone, { translationZoneWidth } from './TranslationZone';
+import TranslationZones, {
+  TranslationContext,
+  TranslationDirection,
+} from './TranslationZones';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -148,11 +144,6 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
 interface ZoomBoundaries {
   start: number;
   end: number;
-}
-
-export enum TranslationDirection {
-  backward,
-  forward,
 }
 
 interface GraphContentProps {
@@ -233,10 +224,6 @@ const GraphContent = ({
     zoomBoundaries,
     setZoomBoundaries,
   ] = React.useState<ZoomBoundaries | null>(null);
-  const [
-    directionHovered,
-    setDirectionHovered,
-  ] = React.useState<TranslationDirection | null>(null);
   const { canComment } = useAclQuery();
 
   const theme = useTheme();
@@ -490,14 +477,6 @@ const GraphContent = ({
     hideAddCommentTooltip();
   };
 
-  const hoverDirection = (direction: TranslationDirection | null) => () =>
-    setDirectionHovered(direction);
-
-  const getIconColor = (direction: TranslationDirection) =>
-    sendingGetGraphDataRequest || not(equals(directionHovered, direction))
-      ? 'disabled'
-      : 'primary';
-
   const tooltipLineLeft = (tooltipLeft as number) - margin.left;
 
   const zoomBarWidth = Math.abs(
@@ -592,62 +571,19 @@ const GraphContent = ({
                 />
               )}
             </Group>
-            {canNavigateInGraph && (
-              <>
-                <TranslationZone
-                  graphWidth={graphWidth}
-                  graphHeight={graphHeight}
-                  marginTop={margin.top}
-                  marginLeft={margin.left}
-                  direction={TranslationDirection.backward}
-                  directionHovered={directionHovered}
-                  hoverDirection={hoverDirection}
-                  translate={translate}
-                />
-                <TranslationZone
-                  graphWidth={graphWidth}
-                  graphHeight={graphHeight}
-                  marginTop={margin.top}
-                  marginLeft={margin.left}
-                  direction={TranslationDirection.forward}
-                  directionHovered={directionHovered}
-                  hoverDirection={hoverDirection}
-                  translate={translate}
-                />
-                <TranslationIcon
-                  xIcon={0}
-                  icon={
-                    <ArrowBackIosIcon
-                      color={getIconColor(TranslationDirection.backward)}
-                    />
-                  }
-                  direction={TranslationDirection.backward}
-                  disabled={sendingGetGraphDataRequest}
-                  translate={translate}
-                  hoverDirection={hoverDirection}
-                  ariaLabel={labelBackward}
-                  graphHeight={graphHeight}
-                  marginTop={margin.top}
-                />
-                <TranslationIcon
-                  xIcon={
-                    graphWidth + translationZoneWidth + translationIconSize
-                  }
-                  icon={
-                    <ArrowForwardIosIcon
-                      color={getIconColor(TranslationDirection.forward)}
-                    />
-                  }
-                  direction={TranslationDirection.forward}
-                  disabled={sendingGetGraphDataRequest}
-                  translate={translate}
-                  hoverDirection={hoverDirection}
-                  ariaLabel={labelForward}
-                  graphHeight={graphHeight}
-                  marginTop={margin.top}
-                />
-              </>
-            )}
+            <TranslationContext.Provider
+              value={{
+                graphHeight,
+                graphWidth,
+                canNavigateInGraph,
+                sendingGetGraphDataRequest,
+                marginTop: margin.top,
+                marginLeft: margin.left,
+                translate,
+              }}
+            >
+              <TranslationZones />
+            </TranslationContext.Provider>
           </svg>
           {addCommentTooltipOpen && (
             <Paper
