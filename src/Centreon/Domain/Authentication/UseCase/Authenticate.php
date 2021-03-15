@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Authentication\UseCase;
 
 use Security\Domain\Authentication\Model\ProviderToken;
-use Security\Domain\Authentication\AuthenticationService;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
@@ -34,7 +34,7 @@ class Authenticate
 {
     public const REDIRECT_DEFAULT_PAGE = "/monitoring/resources";
     /**
-     * @var AuthenticationService
+     * @var AuthenticationServiceInterface
      */
     private $authenticationService;
 
@@ -49,13 +49,13 @@ class Authenticate
     private $session;
 
     /**
-     * @param AuthenticationService $authenticationService
+     * @param AuthenticationServiceInterface $authenticationService
      * @param ContactServiceInterface $contactService
      * @param SessionInterface $session
      * @param OptionServiceInterface $optionService
      */
     public function __construct(
-        AuthenticationService $authenticationService,
+        AuthenticationServiceInterface $authenticationService,
         ContactServiceInterface $contactService,
         SessionInterface $session,
         OptionServiceInterface $optionService
