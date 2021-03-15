@@ -38,19 +38,10 @@ const Translations = (): JSX.Element | null => {
     setDirectionHovered,
   ] = React.useState<TranslationDirection | null>(null);
 
-  const {
-    graphWidth,
-    sendingGetGraphDataRequest,
-    canNavigateInGraph,
-  } = useTranslationsContext();
+  const { graphWidth, canNavigateInGraph } = useTranslationsContext();
 
   const hoverDirection = (direction: TranslationDirection | null) => () =>
     setDirectionHovered(direction);
-
-  const getIconColor = (direction: TranslationDirection) =>
-    sendingGetGraphDataRequest || not(equals(directionHovered, direction))
-      ? 'disabled'
-      : 'primary';
 
   if (not(canNavigateInGraph)) {
     return null;
@@ -70,22 +61,16 @@ const Translations = (): JSX.Element | null => {
       />
       <TranslationIcon
         xIcon={0}
-        icon={
-          <ArrowBackIosIcon
-            color={getIconColor(TranslationDirection.backward)}
-          />
-        }
+        Icon={ArrowBackIosIcon}
+        directionHovered={directionHovered}
         direction={TranslationDirection.backward}
         hoverDirection={hoverDirection}
         ariaLabel={labelBackward}
       />
       <TranslationIcon
         xIcon={graphWidth + translationZoneWidth + translationIconSize}
-        icon={
-          <ArrowForwardIosIcon
-            color={getIconColor(TranslationDirection.forward)}
-          />
-        }
+        Icon={ArrowForwardIosIcon}
+        directionHovered={directionHovered}
         direction={TranslationDirection.forward}
         hoverDirection={hoverDirection}
         ariaLabel={labelForward}

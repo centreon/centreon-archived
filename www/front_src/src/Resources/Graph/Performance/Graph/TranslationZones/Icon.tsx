@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { not } from 'ramda';
+import { equals, not } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -13,8 +13,9 @@ export const translationIconSize = 20;
 
 interface Props {
   xIcon: number;
-  icon: JSX.Element | false;
+  Icon: (props) => JSX.Element;
   direction: TranslationDirection;
+  directionHovered: TranslationDirection | null;
   hoverDirection: (direction: TranslationDirection | null) => () => void;
   ariaLabel: string;
 }
@@ -27,8 +28,9 @@ const useStyles = makeStyles({
 
 const TranslationIcon = ({
   xIcon,
-  icon,
+  Icon,
   direction,
+  directionHovered,
   ariaLabel,
   hoverDirection,
 }: Props): JSX.Element => {
@@ -42,6 +44,14 @@ const TranslationIcon = ({
     sendingGetGraphDataRequest,
   } = useTranslationsContext();
 
+  const translateWithIcon = () =>
+    not(sendingGetGraphDataRequest) && translate?.(direction);
+
+  const getIconColor = () =>
+    sendingGetGraphDataRequest || not(equals(directionHovered, direction))
+      ? 'disabled'
+      : 'primary';
+
   return useMemoComponent({
     Component: (
       <g>
@@ -50,8 +60,7 @@ const TranslationIcon = ({
           x={xIcon}
           height={translationIconSize}
           width={translationIconSize}
-          onClick={() =>
-            not(sendingGetGraphDataRequest) && translate?.(direction)}
+          onClick={translateWithIcon}
           onMouseEnter={hoverDirection(direction)}
           onMouseLeave={hoverDirection(null)}
           className={classes.icon}
@@ -62,11 +71,17 @@ const TranslationIcon = ({
             height={translationIconSize}
             fill="transparent"
           />
-          {icon}
+          <Icon color={getIconColor()} />
         </svg>
       </g>
     ),
-    memoProps: [xIcon, direction, ariaLabel, sendingGetGraphDataRequest, icon],
+    memoProps: [
+      xIcon,
+      direction,
+      ariaLabel,
+      sendingGetGraphDataRequest,
+      directionHovered,
+    ],
   });
 };
 
