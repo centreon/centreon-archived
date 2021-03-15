@@ -44,6 +44,7 @@ import {
 } from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
 import { TranslationDirection } from './Graph/TranslationZones';
+import useMetricsValue, { MetricsValueContext } from './Graph/useMetricsValue';
 
 interface Props {
   endpoint?: string;
@@ -141,6 +142,7 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
+  const metricsValueProps = useMetricsValue();
 
   React.useEffect(() => {
     if (isNil(endpoint)) {
@@ -264,44 +266,46 @@ const PerformanceGraph = ({
   };
 
   return (
-    <div className={classes.container}>
-      <Typography variant="body1" color="textPrimary" align="center">
-        {title}
-      </Typography>
+    <MetricsValueContext.Provider value={metricsValueProps}>
+      <div className={classes.container}>
+        <Typography variant="body1" color="textPrimary" align="center">
+          {title}
+        </Typography>
 
-      <ParentSize>
-        {({ width, height }): JSX.Element => (
-          <Graph
-            width={width}
-            height={height}
-            timeSeries={timeSeries}
-            lines={displayedLines}
-            base={base as number}
-            xAxisTickFormat={xAxisTickFormat}
-            timeline={timeline}
-            onTooltipDisplay={onTooltipDisplay}
-            tooltipPosition={tooltipPosition}
-            resource={resource}
-            onAddComment={onAddComment}
-            eventAnnotationsActive={eventAnnotationsActive}
-            applyZoom={navigateInGraph}
-            translate={translate}
-            sendingGetGraphDataRequest={sendingGetGraphDataRequest}
-            canNavigateInGraph={not(isNil(navigateInGraph))}
+        <ParentSize>
+          {({ width, height }): JSX.Element => (
+            <Graph
+              width={width}
+              height={height}
+              timeSeries={timeSeries}
+              lines={displayedLines}
+              base={base as number}
+              xAxisTickFormat={xAxisTickFormat}
+              timeline={timeline}
+              onTooltipDisplay={onTooltipDisplay}
+              tooltipPosition={tooltipPosition}
+              resource={resource}
+              onAddComment={onAddComment}
+              eventAnnotationsActive={eventAnnotationsActive}
+              applyZoom={navigateInGraph}
+              translate={translate}
+              sendingGetGraphDataRequest={sendingGetGraphDataRequest}
+              canNavigateInGraph={not(isNil(navigateInGraph))}
+            />
+          )}
+        </ParentSize>
+        <div className={classes.legend}>
+          <Legend
+            lines={sortedLines}
+            onToggle={toggleMetricLine}
+            onSelect={selectMetricLine}
+            toggable={toggableLegend}
+            onHighlight={highlightLine}
+            onClearHighlight={clearHighlight}
           />
-        )}
-      </ParentSize>
-      <div className={classes.legend}>
-        <Legend
-          lines={sortedLines}
-          onToggle={toggleMetricLine}
-          onSelect={selectMetricLine}
-          toggable={toggableLegend}
-          onHighlight={highlightLine}
-          onClearHighlight={clearHighlight}
-        />
+        </div>
       </div>
-    </div>
+    </MetricsValueContext.Provider>
   );
 };
 

@@ -84,6 +84,7 @@ import TranslationZones, {
   TranslationContext,
   TranslationDirection,
 } from './TranslationZones';
+import { useMetricsValueContext } from './useMetricsValue';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -254,6 +255,7 @@ const GraphContent = ({
 
   const context = React.useContext<TabBounds>(TabContext);
   const { graphOptions } = useGraphOptionsContext();
+  const { setMetricsValue, metricsValue } = useMetricsValueContext();
 
   const displayTooltipValues = path(
     [GraphOptionId.tooltipValues, 'value'],
@@ -351,7 +353,7 @@ const GraphContent = ({
     return timeSeries[index];
   };
 
-  const showTooltipAt = ({ x, y }): void => {
+  const updateMetricsValue = ({ x, y }): void => {
     const timeValue = getTimeValue(x);
 
     const metrics = getMetrics(timeValue);
@@ -362,17 +364,13 @@ const GraphContent = ({
       return !isNil(timeValue[metric]) && !isNil(line);
     });
 
-    showTooltip({
-      tooltipLeft: x,
-      tooltipTop: y,
-      tooltipData: isEmpty(metricsToDisplay) ? undefined : (
-        <MetricsTooltip
-          timeValue={timeValue}
-          lines={lines}
-          base={base}
-          metrics={metricsToDisplay}
-        />
-      ),
+    setMetricsValue({
+      x,
+      y,
+      timeValue,
+      metrics: metricsToDisplay,
+      lines,
+      base,
     });
   };
 
@@ -398,11 +396,7 @@ const GraphContent = ({
         return;
       }
 
-      if (not(displayTooltipValues)) {
-        return;
-      }
-
-      showTooltipAt({ x, y });
+      updateMetricsValue({ x, y });
 
       onTooltipDisplay?.([x, y]);
     },
@@ -433,8 +427,21 @@ const GraphContent = ({
 
     const [x, y] = tooltipPosition;
 
-    showTooltipAt({ x, y });
+    updateMetricsValue({ x, y });
   }, [tooltipPosition]);
+
+  React.useEffect(() => {
+    if (not(displayTooltipValues)) {
+      return;
+    }
+    showTooltip({
+      tooltipLeft: metricsValue?.x || 0,
+      tooltipTop: metricsValue?.y || 0,
+      tooltipData: isEmpty(metricsValue?.metrics) ? undefined : (
+        <MetricsTooltip />
+      ),
+    });
+  }, [metricsValue]);
 
   const closeTooltip = (): void => {
     hideTooltip();
