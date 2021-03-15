@@ -109,6 +109,11 @@ class ResourceFilter
     /**
      * @var int[]
      */
+    private $monitoringServerIds = [];
+
+    /**
+     * @var int[]
+     */
     private $hostIds = [];
 
     /**
@@ -242,6 +247,25 @@ class ResourceFilter
     public function setHostgroupIds(array $hostgroupIds): self
     {
         $this->hostgroupIds = $hostgroupIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getMonitoringServerIds(): array
+    {
+        return $this->monitoringServerIds;
+    }
+
+    /**
+     * @param int[] $monitoringServerIds
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setMonitoringServerIds(array $monitoringServerIds): self
+    {
+        $this->monitoringServerIds = $monitoringServerIds;
 
         return $this;
     }

@@ -24,6 +24,8 @@ const formatMetricValue = ({
     'B/sec',
     'o',
     'octets',
+    'b/s',
+    'b',
   ];
 
   const base1024 = base2Units.includes(unit) || Number(base) === 1024;
