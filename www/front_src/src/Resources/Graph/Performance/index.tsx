@@ -28,7 +28,10 @@ import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
-import { CustomTimePeriod } from '../../Details/tabs/Graph/models';
+import {
+  CustomTimePeriod,
+  CustomTimePeriodProperty,
+} from '../../Details/tabs/Graph/models';
 
 import Graph, { TranslationDirection } from './Graph';
 import Legend from './Legend';
@@ -225,31 +228,37 @@ const PerformanceGraph = ({
     );
   };
 
+  const getTranslatedDate = ({ property, direction, timePeriod }): Date => {
+    const timestampToTranslate =
+      (timePeriod.end.getTime() - timePeriod.start.getTime()) /
+      translationRatio;
+
+    return new Date(
+      add(
+        prop(property, timePeriod).getTime(),
+        equals(direction, TranslationDirection.backward)
+          ? negate(timestampToTranslate)
+          : timestampToTranslate,
+      ),
+    );
+  };
+
   const translate = (direction: TranslationDirection) => {
     if (isNil(customTimePeriod)) {
       return;
     }
-    const timestampToTranslate =
-      (customTimePeriod.end.getTime() - customTimePeriod.start.getTime()) /
-      translationRatio;
 
     navigateInGraph?.({
-      start: new Date(
-        add(
-          customTimePeriod.start.getTime(),
-          equals(direction, TranslationDirection.backward)
-            ? negate(timestampToTranslate)
-            : timestampToTranslate,
-        ),
-      ),
-      end: new Date(
-        add(
-          customTimePeriod.end.getTime(),
-          equals(direction, TranslationDirection.backward)
-            ? negate(timestampToTranslate)
-            : timestampToTranslate,
-        ),
-      ),
+      start: getTranslatedDate({
+        property: CustomTimePeriodProperty.start,
+        direction,
+        timePeriod: customTimePeriod,
+      }),
+      end: getTranslatedDate({
+        property: CustomTimePeriodProperty.end,
+        direction,
+        timePeriod: customTimePeriod,
+      }),
     });
   };
 
