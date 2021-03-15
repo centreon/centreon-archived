@@ -14,6 +14,11 @@ const formatMetricValue = ({ value, unit, base = 1000 }): string | null => {
     'B/sec',
     'o',
     'octets',
+<<<<<<< HEAD
+=======
+    'b/s',
+    'b',
+>>>>>>> 793a286a59 (Adapt-graph-scale-for-b/s-unit-Bis)
   ];
 
   const base1024 = base2Units.includes(unit) || Number(base) === 1024;
