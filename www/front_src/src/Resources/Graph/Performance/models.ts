@@ -46,3 +46,7 @@ export interface NavigateInGraphProps {
   start: Date;
   end: Date;
 }
+
+export enum GraphOptionId {
+  tooltipValues = 'tooltipValues',
+}

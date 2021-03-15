@@ -10,6 +10,7 @@ import {
   not,
   lt,
   gte,
+  path,
 } from 'ramda';
 import {
   Line,
@@ -42,7 +43,12 @@ import { grey } from '@material-ui/core/colors';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { TimeValue, Line as LineModel, NavigateInGraphProps } from '../models';
+import {
+  TimeValue,
+  Line as LineModel,
+  NavigateInGraphProps,
+  GraphOptionId,
+} from '../models';
 import {
   getTime,
   getMin,
@@ -66,6 +72,7 @@ import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import { TabBounds, TabContext } from '../../../Details';
 import memoizeComponent from '../../../memoizedComponent';
+import { useGraphOptionsContext } from '../ExportableGraphWithTimeline/useGraphOptions';
 
 import MetricsTooltip from './MetricsTooltip';
 import AddCommentForm from './AddCommentForm';
@@ -246,6 +253,12 @@ const GraphContent = ({
   );
 
   const context = React.useContext<TabBounds>(TabContext);
+  const { graphOptions } = useGraphOptionsContext();
+
+  const displayTooltipValues = path(
+    [GraphOptionId.tooltipValues, 'value'],
+    graphOptions,
+  );
 
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
@@ -385,11 +398,22 @@ const GraphContent = ({
         return;
       }
 
+      if (not(displayTooltipValues)) {
+        return;
+      }
+
       showTooltipAt({ x, y });
 
       onTooltipDisplay?.([x, y]);
     },
-    [showTooltip, containerBounds, lines, zoomBoundaries, timeline],
+    [
+      showTooltip,
+      containerBounds,
+      lines,
+      zoomBoundaries,
+      timeline,
+      displayTooltipValues,
+    ],
   );
 
   React.useEffect(() => {

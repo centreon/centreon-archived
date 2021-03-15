@@ -38,6 +38,8 @@ import { ResourceDetails } from '../../../Details/models';
 import { NavigateInGraphProps } from '../models';
 
 import exportToPng from './exportToPng';
+import useGraphOptions, { GraphOptionsContext } from './useGraphOptions';
+import GraphOptions from './GraphOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
   exportToPngButton: {
@@ -54,6 +56,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: 'auto',
     height: '100%',
     width: '100%',
+  },
+  rightButtons: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, min-content)',
+    columnGap: `${theme.spacing(1)}px`,
   },
 }));
 
@@ -98,6 +105,8 @@ const ExportablePerformanceGraphWithTimeline = ({
   );
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const [exporting, setExporting] = React.useState(false);
+
+  const graphOptions = useGraphOptions();
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], resource);
   const timelineEndpoint = path<string>(
@@ -182,58 +191,63 @@ const ExportablePerformanceGraphWithTimeline = ({
   };
 
   return (
-    <Paper className={classes.graphContainer}>
-      <div className={classes.exportToPngButton}>
-        <FormControlLabel
-          disabled={isNil(timeline)}
-          control={
-            <Switch
-              color="primary"
-              size="small"
-              onChange={changeEventAnnotationsActive}
-            />
-          }
-          label={
-            <Typography variant="body2">{t(labelDisplayEvents)}</Typography>
-          }
-        />
-        <ContentWithCircularLoading
-          loading={exporting}
-          loadingIndicatorSize={16}
-          alignCenter={false}
-        >
-          <IconButton
+    <GraphOptionsContext.Provider value={graphOptions}>
+      <Paper className={classes.graphContainer}>
+        <div className={classes.exportToPngButton}>
+          <FormControlLabel
             disabled={isNil(timeline)}
-            title={t(labelExportToPng)}
-            onClick={convertToPng}
-          >
-            <SaveAsImageIcon style={{ fontSize: 18 }} />
-          </IconButton>
-        </ContentWithCircularLoading>
-      </div>
-      <div
-        className={classes.graph}
-        ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
-      >
-        <PerformanceGraph
-          endpoint={getEndpoint()}
-          graphHeight={graphHeight}
-          xAxisTickFormat={
-            selectedTimePeriod?.dateTimeFormat ||
-            customTimePeriod.xAxisTickFormat
-          }
-          toggableLegend
-          resource={resource as Resource}
-          eventAnnotationsActive={eventAnnotationsActive}
-          timeline={timeline}
-          onAddComment={addCommentToTimeline}
-          onTooltipDisplay={onTooltipDisplay}
-          tooltipPosition={tooltipPosition}
-          navigateInGraph={navigateInGraph}
-          customTimePeriod={customTimePeriod}
-        />
-      </div>
-    </Paper>
+            control={
+              <Switch
+                color="primary"
+                size="small"
+                onChange={changeEventAnnotationsActive}
+              />
+            }
+            label={
+              <Typography variant="body2">{t(labelDisplayEvents)}</Typography>
+            }
+          />
+          <div className={classes.rightButtons}>
+            <ContentWithCircularLoading
+              loading={exporting}
+              loadingIndicatorSize={16}
+              alignCenter={false}
+            >
+              <IconButton
+                disabled={isNil(timeline)}
+                title={t(labelExportToPng)}
+                onClick={convertToPng}
+              >
+                <SaveAsImageIcon style={{ fontSize: 18 }} />
+              </IconButton>
+            </ContentWithCircularLoading>
+            <GraphOptions />
+          </div>
+        </div>
+        <div
+          className={classes.graph}
+          ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
+        >
+          <PerformanceGraph
+            endpoint={getEndpoint()}
+            graphHeight={graphHeight}
+            xAxisTickFormat={
+              selectedTimePeriod?.dateTimeFormat ||
+              customTimePeriod.xAxisTickFormat
+            }
+            toggableLegend
+            resource={resource as Resource}
+            eventAnnotationsActive={eventAnnotationsActive}
+            timeline={timeline}
+            onAddComment={addCommentToTimeline}
+            onTooltipDisplay={onTooltipDisplay}
+            tooltipPosition={tooltipPosition}
+            navigateInGraph={navigateInGraph}
+            customTimePeriod={customTimePeriod}
+          />
+        </div>
+      </Paper>
+    </GraphOptionsContext.Provider>
   );
 };
 
