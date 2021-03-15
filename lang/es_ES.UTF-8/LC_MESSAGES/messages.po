@@ -12568,7 +12568,7 @@ msgid "Next Scheduled Active Check"
 msgstr "Siguiente control activo planificado"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:462
-msgid "Check duration"
+msgid "Check Duration"
 msgstr "Tiempo de ejecución"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:465
@@ -14646,3 +14646,6 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Monitoring server"
 #  msgstr ""
+
+msgid "Check duration"
+msgstr "Temps d'exécution"

@@ -13123,7 +13123,7 @@ msgid "Next Scheduled Active Check"
 msgstr "Prochain contrôle actif planifié"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:462
-msgid "Check duration"
+msgid "Check Duration"
 msgstr "Temps d'exécution"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:465
@@ -16037,3 +16037,6 @@ msgstr "Erreur lors de l'ajout d'une catégorie hôte"
 
 msgid "Error when adding a host group"
 msgstr "Erreur lors de l'ajout d'un groupe d'hôte"
+
+msgid "Check duration"
+msgstr "Temps d'exécution"

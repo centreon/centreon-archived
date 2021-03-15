@@ -5094,7 +5094,7 @@ msgid "Next Scheduled Active Check"
 msgstr "Próximo Agendamento de Checagem Ativa"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:574
-msgid "Check duration"
+msgid "Check Duration"
 msgstr "Duração da Checagem"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:577
@@ -15089,3 +15089,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Monitoring server"
 #  msgstr ""
+
+msgid "Check duration"
+msgstr "Temps d'exécution"
