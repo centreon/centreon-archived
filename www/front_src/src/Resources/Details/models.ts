@@ -4,17 +4,17 @@ import {
   Downtime,
   Parent,
   ResourceLinks,
-  Severity,
   NamedEntity,
 } from '../models';
 
 import { StoredCustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
 
 export interface ResourceDetails extends NamedEntity {
+  uuid: string;
   status: Status;
   parent: Parent;
   links: ResourceLinks;
-  severity: Severity;
+  severity_level: number;
   information: string;
   downtimes: Array<Downtime>;
   acknowledgement?: Acknowledgement;
@@ -56,6 +56,7 @@ export interface TabParameters {
 }
 
 export interface DetailsUrlQueryParameters {
+  uuid: string;
   id: number;
   parentId?: number;
   parentType?: string;

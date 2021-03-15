@@ -1,6 +1,7 @@
 import { ListingModel } from '@centreon/ui';
 
 export interface NamedEntity {
+  uuid: string;
   id: number;
   name: string;
 }
@@ -24,11 +25,6 @@ export interface Status {
   name: string;
 }
 
-export interface Severity {
-  name: string;
-  level: number;
-}
-
 export interface Resource extends NamedEntity {
   icon?: Icon;
   parent?: Parent;
@@ -40,7 +36,7 @@ export interface Resource extends NamedEntity {
   tries: string;
   last_check: string;
   information: string;
-  severity?: Severity;
+  severity_level: number;
   short_type: 'h' | 's';
   type: 'host' | 'service';
   passive_checks: boolean;

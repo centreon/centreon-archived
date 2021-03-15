@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   services: Array<Resource>;
-  onSelectService: (id: number) => void;
+  onSelectService: (service: Resource) => void;
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -58,7 +58,7 @@ const ServiceList = ({
                 <div className={classes.description}>
                   <Typography
                     variant="body1"
-                    onClick={(): void => onSelectService(id)}
+                    onClick={(): void => onSelectService(service)}
                     style={{ cursor: 'pointer' }}
                   >
                     {name}
