@@ -34,7 +34,11 @@ import {
   TimePeriod,
 } from '../../../Details/tabs/Graph/models';
 import { Resource } from '../../../models';
-import { ResourceDetails } from '../../../Details/models';
+import {
+  GraphOptions as GraphOptionsProps,
+  GraphTabParameters,
+  ResourceDetails,
+} from '../../../Details/models';
 import { NavigateInGraphProps } from '../models';
 
 import exportToPng from './exportToPng';
@@ -74,6 +78,8 @@ interface Props {
   tooltipPosition?: [number, number];
   customTimePeriod: CustomTimePeriod;
   navigateInGraph?: (props: NavigateInGraphProps) => void;
+  graphTabParameters?: GraphTabParameters;
+  changeTabGraphOptions: (graphOptions: GraphOptionsProps) => void;
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
@@ -86,6 +92,8 @@ const ExportablePerformanceGraphWithTimeline = ({
   tooltipPosition,
   customTimePeriod,
   navigateInGraph,
+  graphTabParameters,
+  changeTabGraphOptions,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -106,7 +114,10 @@ const ExportablePerformanceGraphWithTimeline = ({
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const [exporting, setExporting] = React.useState(false);
 
-  const graphOptions = useGraphOptions();
+  const graphOptions = useGraphOptions({
+    graphTabParameters,
+    changeTabGraphOptions,
+  });
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], resource);
   const timelineEndpoint = path<string>(

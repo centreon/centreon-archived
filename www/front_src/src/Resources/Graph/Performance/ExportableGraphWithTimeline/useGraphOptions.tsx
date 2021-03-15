@@ -1,17 +1,8 @@
 import * as React from 'react';
 
+import { GraphOptions, GraphTabParameters } from '../../../Details/models';
 import { labelToggleTooltipValues } from '../../../translatedLabels';
 import { GraphOptionId } from '../models';
-
-interface GraphOption {
-  id: GraphOptionId;
-  label: string;
-  value: boolean;
-}
-
-interface GraphOptions {
-  tooltipValues: GraphOption;
-}
 
 interface UseGraphOptions {
   graphOptions: GraphOptions;
@@ -33,21 +24,30 @@ const defaultGraphOptions = {
   },
 };
 
-const useGraphOptions = (): UseGraphOptions => {
+interface UseGraphOptionsProps {
+  graphTabParameters?: GraphTabParameters;
+  changeTabGraphOptions: (graphOptions: GraphOptions) => void;
+}
+
+const useGraphOptions = ({
+  graphTabParameters,
+  changeTabGraphOptions,
+}: UseGraphOptionsProps): UseGraphOptions => {
   const [graphOptions, setGraphOptions] = React.useState<GraphOptions>(
-    defaultGraphOptions,
+    graphTabParameters?.graphOptions || defaultGraphOptions,
   );
 
-  const changeGraphOptions = (graphOptionId: GraphOptionId) => () =>
-    setGraphOptions((currentGraphOptions) => {
-      return {
-        ...currentGraphOptions,
-        [graphOptionId]: {
-          ...currentGraphOptions[graphOptionId],
-          value: !currentGraphOptions[graphOptionId].value,
-        },
-      };
-    });
+  const changeGraphOptions = (graphOptionId: GraphOptionId) => () => {
+    const newGraphOptions = {
+      ...graphOptions,
+      [graphOptionId]: {
+        ...graphOptions[graphOptionId],
+        value: !graphOptions[graphOptionId].value,
+      },
+    };
+    setGraphOptions(newGraphOptions);
+    changeTabGraphOptions(newGraphOptions);
+  };
 
   return {
     graphOptions,

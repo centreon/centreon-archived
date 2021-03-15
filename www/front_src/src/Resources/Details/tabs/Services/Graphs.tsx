@@ -6,6 +6,7 @@ import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { CustomTimePeriod, TimePeriod } from '../Graph/models';
 import { NavigateInGraphProps } from '../../../Graph/Performance/models';
+import { GraphOptions, GraphTabParameters } from '../../models';
 
 const MemoizedPerformanceGraph = React.memo(
   ExportablePerformanceGraphWithTimeline,
@@ -36,6 +37,8 @@ interface Props {
   selectedTimePeriod: TimePeriod | null;
   customTimePeriod: CustomTimePeriod;
   navigateInGraph: (props: NavigateInGraphProps) => void;
+  graphTabParameters?: GraphTabParameters;
+  changeTabGraphOptions: (props: GraphOptions) => void;
 }
 
 const ServiceGraphs = ({
@@ -46,6 +49,8 @@ const ServiceGraphs = ({
   selectedTimePeriod,
   customTimePeriod,
   navigateInGraph,
+  graphTabParameters,
+  changeTabGraphOptions,
 }: Props): JSX.Element => {
   const [tooltipPosition, setTooltipPosition] = React.useState<
     [number, number]
@@ -73,6 +78,8 @@ const ServiceGraphs = ({
               tooltipPosition={tooltipPosition}
               customTimePeriod={customTimePeriod}
               navigateInGraph={navigateInGraph}
+              graphTabParameters={graphTabParameters}
+              changeTabGraphOptions={changeTabGraphOptions}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>

@@ -16,6 +16,7 @@ import {
   StoredCustomTimePeriod,
 } from '../../../Details/tabs/Graph/models';
 import { NavigateInGraphProps } from '../models';
+import { GraphOptions, GraphTabParameters } from '../../../Details/models';
 
 dayjs.extend(duration);
 
@@ -29,18 +30,15 @@ interface TimePeriodState {
   navigateInGraph: (props: NavigateInGraphProps) => void;
 }
 
-interface OnTimePeriodChangeProps {
-  selectedTimePeriodId?: TimePeriodId;
-  selectedCustomTimePeriod?: StoredCustomTimePeriod;
-}
-
 interface Props {
   defaultSelectedTimePeriodId?: TimePeriodId;
   defaultSelectedCustomTimePeriod?: StoredCustomTimePeriod;
+  defaultGraphOptions?: GraphOptions;
   onTimePeriodChange?: ({
     selectedTimePeriodId,
-    selectedCustomTimePeriod,
-  }: OnTimePeriodChangeProps) => void;
+    selectedCustomPeriod,
+    graphOptions,
+  }: GraphTabParameters) => void;
 }
 
 interface GraphQueryParametersProps {
@@ -52,6 +50,7 @@ interface GraphQueryParametersProps {
 const useTimePeriod = ({
   defaultSelectedTimePeriodId,
   defaultSelectedCustomTimePeriod,
+  defaultGraphOptions,
   onTimePeriodChange,
 }: Props): TimePeriodState => {
   const defaultTimePeriod = cond([
@@ -153,7 +152,10 @@ const useTimePeriod = ({
     const timePeriod = getTimePeriodById(timePeriodId);
 
     setSelectedTimePeriod(timePeriod);
-    onTimePeriodChange?.({ selectedTimePeriodId: timePeriod.id });
+    onTimePeriodChange?.({
+      selectedTimePeriodId: timePeriod.id,
+      graphOptions: defaultGraphOptions,
+    });
 
     const newTimePeriod = getTimeperiodFromNow(timePeriod);
 
@@ -175,10 +177,11 @@ const useTimePeriod = ({
     });
     setCustomTimePeriod(newCustomTimePeriod);
     onTimePeriodChange?.({
-      selectedCustomTimePeriod: {
+      selectedCustomPeriod: {
         start: newCustomTimePeriod.start.toISOString(),
         end: newCustomTimePeriod.end.toISOString(),
       },
+      graphOptions: defaultGraphOptions,
     });
     setSelectedTimePeriod(null);
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
@@ -197,10 +200,11 @@ const useTimePeriod = ({
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
     onTimePeriodChange?.({
-      selectedCustomTimePeriod: {
+      selectedCustomPeriod: {
         start: zoomOrTranslationProps.start.toISOString(),
         end: zoomOrTranslationProps.end.toISOString(),
       },
+      graphOptions: defaultGraphOptions,
     });
   };
 

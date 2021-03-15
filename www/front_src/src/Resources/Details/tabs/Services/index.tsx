@@ -21,6 +21,7 @@ import InfiniteScroll from '../../InfiniteScroll';
 import memoizeComponent from '../../../memoizedComponent';
 import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
+import { GraphOptions } from '../../models';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -95,6 +96,10 @@ const ServicesTabContent = ({
       ['services', 'graphTimePeriod', 'selectedCustomTimePeriod'],
       tabParameters,
     ),
+    defaultGraphOptions: path(
+      ['services', 'graphTimePeriod', 'selectedCustomTimePeriod'],
+      tabParameters,
+    ),
     onTimePeriodChange: (graphTimePeriod) => {
       setServicesTabParameters({
         graphMode,
@@ -157,6 +162,16 @@ const ServicesTabContent = ({
     });
   };
 
+  const changeTabGraphOptions = (graphOptions: GraphOptions) => {
+    setServicesTabParameters({
+      graphMode: tabParameters.services?.graphMode || false,
+      graphTimePeriod: {
+        ...tabParameters.services?.graphTimePeriod,
+        graphOptions,
+      },
+    });
+  };
+
   React.useEffect(() => {
     // To make sure that graphs are not displayed until 'entities' are reset
     setCanDisplayGraphs(true);
@@ -209,6 +224,8 @@ const ServicesTabContent = ({
               selectedTimePeriod={selectedTimePeriod}
               customTimePeriod={customTimePeriod}
               navigateInGraph={navigateInGraph}
+              graphTabParameters={tabParameters.services?.graphTimePeriod}
+              changeTabGraphOptions={changeTabGraphOptions}
             />
           ) : (
             <ServiceList

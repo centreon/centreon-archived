@@ -10,6 +10,7 @@ import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { ResourceContext, useResourceContext } from '../../../Context';
 import memoizeComponent from '../../../memoizedComponent';
+import { GraphOptions } from '../../models';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -61,8 +62,19 @@ const GraphTabContent = ({
       ['graph', 'selectedCustomTimePeriod'],
       tabParameters,
     ),
+    defaultGraphOptions: path(
+      ['graph', 'selectedCustomTimePeriod'],
+      tabParameters,
+    ),
     onTimePeriodChange: setGraphTabParameters,
   });
+
+  const changeTabGraphOptions = (graphOptions: GraphOptions) => {
+    setGraphTabParameters({
+      ...tabParameters,
+      graphOptions,
+    });
+  };
 
   return (
     <div className={classes.container}>
@@ -80,6 +92,8 @@ const GraphTabContent = ({
         selectedTimePeriod={selectedTimePeriod}
         customTimePeriod={customTimePeriod}
         navigateInGraph={navigateInGraph}
+        graphTabParameters={tabParameters.graph}
+        changeTabGraphOptions={changeTabGraphOptions}
       />
     </div>
   );
