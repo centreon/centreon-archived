@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { equals, isNil, or } from 'ramda';
+
 import { GraphOptions, GraphTabParameters } from '../../../Details/models';
 import { labelToggleTooltipValues } from '../../../translatedLabels';
 import { GraphOptionId } from '../models';
@@ -48,6 +50,19 @@ const useGraphOptions = ({
     setGraphOptions(newGraphOptions);
     changeTabGraphOptions(newGraphOptions);
   };
+
+  React.useEffect(() => {
+    if (
+      or(
+        isNil(graphTabParameters?.graphOptions),
+        equals(graphTabParameters?.graphOptions, graphOptions),
+      )
+    ) {
+      return;
+    }
+
+    setGraphOptions(graphTabParameters?.graphOptions as GraphOptions);
+  }, [graphTabParameters?.graphOptions]);
 
   return {
     graphOptions,
