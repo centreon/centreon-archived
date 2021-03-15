@@ -78,6 +78,9 @@ const fillEntities = (): Array<Resource> => {
         logs: index % 4 === 0 ? 'uri' : null,
         reporting: index % 3 === 0 ? 'uri' : null,
       },
+      externals: {
+        notes_url: index % 5 === 0 ? 'uri' : null,
+      }
     },
     passive_checks: index % 8 === 0,
   }));
