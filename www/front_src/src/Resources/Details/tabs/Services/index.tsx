@@ -18,8 +18,8 @@ import {
 import { listResources } from '../../../Listing/api';
 import { Resource } from '../../../models';
 import InfiniteScroll from '../../InfiniteScroll';
-import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
-import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
+import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
+import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import { TimePeriodId } from '../Graph/models';
 import memoizeComponent from '../../../memoizedComponent';
 
@@ -171,7 +171,7 @@ const ServicesTabContent = ({
         loadingSkeleton={<LoadingSkeleton />}
         filter={
           graphMode ? (
-            <TimePeriodSelect
+            <TimePeriodButtonGroup
               selectedTimePeriodId={selectedTimePeriod.id}
               onChange={changeSelectedTimePeriod}
               disabled={loading}

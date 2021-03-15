@@ -36,7 +36,7 @@ import {
   CriteriaDisplayProps,
   selectableCriterias,
 } from './models';
-import getDefaultCriterias from './default';
+import { getAllCriterias } from './default';
 
 const toCriteriaPairs = (criteriaById: CriteriaById) =>
   toPairs<CriteriaDisplayProps>(criteriaById);
@@ -102,7 +102,7 @@ const CriteriasMultiSelectContent = ({
       criterias,
     );
 
-    const criteriasToAdd = getDefaultCriterias()
+    const criteriasToAdd = getAllCriterias()
       .filter(nameIsIn(criteriaNamesToAdd))
       .map((criteria) => {
         return { ...criteria, value: [] };

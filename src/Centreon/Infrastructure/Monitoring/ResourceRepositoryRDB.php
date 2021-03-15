@@ -217,7 +217,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.parent_alias, resource.parent_fqdn, ' // parent
             . 'resource.parent_icon_name, resource.parent_icon_url, ' // parent icon
             . 'resource.action_url, resource.notes_url, resource.notes_label, ' // external urls
-            . 'resource.monitoring_server_name, ' // monitoring server
+            . 'resource.monitoring_server_name, resource.monitoring_server_id, ' // monitoring server
             // parent status
             . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
             . 'resource.flapping, resource.percent_state_change, '
@@ -440,6 +440,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.notes_url AS `notes_url`,
             s.notes AS `notes_label`,
             i.name AS `monitoring_server_name`,
+            i.instance_id AS `monitoring_server_id`,
             s.command_line AS `command_line`,
             NULL AS `timezone`,
             sh.host_id AS `parent_id`,
@@ -621,6 +622,20 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $sql .= ' AND s.service_id IN (' . implode(', ', $serviceIds) . ')';
         }
 
+        // apply the monitoring server filter to SQL query
+        if (!empty($filter->getMonitoringServerIds())) {
+            $monitoringServerIds = [];
+
+            foreach ($filter->getMonitoringServerIds() as $index => $monitoringServerId) {
+                $key = ":monitoringServerId_{$index}";
+
+                $monitoringServerIds[] = $key;
+                $collector->addValue($key, $monitoringServerId, PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
+        }
+
         // group by the service ID to preventing the duplication
         $sql .= ' GROUP BY s.service_id';
 
@@ -649,6 +664,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.notes_url AS `notes_url`,
             h.notes AS `notes_label`,
             i.name AS `monitoring_server_name`,
+            i.instance_id AS `monitoring_server_id`,
             h.command_line AS `command_line`,
             h.timezone AS `timezone`,
             NULL AS `parent_id`,
@@ -779,6 +795,20 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             }
 
             $sql .= ' AND h.host_id IN (' . implode(', ', $hostIds) . ')';
+        }
+
+        // apply the monitoring server filter to SQL query
+        if (!empty($filter->getMonitoringServerIds())) {
+            $monitoringServerIds = [];
+
+            foreach ($filter->getMonitoringServerIds() as $index => $monitoringServerId) {
+                $key = ":monitoringServerId_{$index}";
+
+                $monitoringServerIds[] = $key;
+                $collector->addValue($key, $monitoringServerId, PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
         }
 
         // prevent duplication

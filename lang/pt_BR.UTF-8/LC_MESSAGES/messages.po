@@ -7837,10 +7837,6 @@ msgstr "Informações Gorgone"
 msgid "Monitoring Engine Information"
 msgstr "Informação do Motor de Monitoramento"
 
-#: centreon-web/www/include/configuration/configServers/formServers.php:137
-msgid "Miscelleneous"
-msgstr "Diversos"
-
 #: centreon-web/www/include/configuration/configServers/formServers.php:138
 msgid "Centreon Trap Collector"
 msgstr "Coletor Centreon Trap"
@@ -8126,8 +8122,11 @@ msgstr "Serviços Utilizados"
 msgid "Check"
 msgstr "Checagem"
 
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:118
-#: centreon-web/www/install/menu_translation.php:109
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Diversos"
 

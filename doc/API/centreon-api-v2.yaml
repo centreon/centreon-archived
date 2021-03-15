@@ -221,6 +221,42 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/servers:
+    get:
+      tags:
+        - Monitoring Server
+      summary: "List all real time monitoring servers"
+      description: |
+        List all monitoring servers configured and stored in real time.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+          * running
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.Servers'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /users/acl/actions:
     get:
       tags:
@@ -3336,6 +3372,41 @@ components:
           type: boolean
           description: "Indicates whether the server configuration is activated"
           example: true
+    Monitoring.Servers:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the server"
+          example: 2
+        name:
+          type: string
+          description: "Name of the server"
+          example: "Central"
+        address:
+          type: string
+          description: "IP address of the server"
+          example: "127.0.0.1"
+          nullable: true
+        description:
+          type: string
+          description: "Description of the server"
+          example: "Central server"
+          nullable: true
+        isRunning:
+          type: boolean
+          description: "Indicates if the server is running or not"
+          example: true
+        lastAlive:
+          type: integer
+          description: "Timestamp of last time server was alive"
+          nullable: true
+        version:
+          type: string
+          description: "Version of the server (centreon-engine)"
+          example: "20.10.0"
+          nullable: true
     Acknowledgement.Resource:
       type: object
       properties:
@@ -4885,14 +4956,13 @@ components:
     Platform.Full:
       type: object
       properties:
+        platformName:
+          type: string
+          description: "The name of the platform"
         isRemote:
           type: boolean
           example: true
           description: "Platform is a remote server"
-        isCentral:
-          type: boolean
-          example: true
-          description: "Platform is a central"
         centralServerAddress:
           type: string
           example: "192.168.0.1"
@@ -4926,18 +4996,22 @@ components:
           properties:
             host:
               type: string
+              nullable: true
               example: "example.proxy.com"
               description: "Host of your proxy"
             port:
               type: integer
+              nullable: true
               example: 80
               description: "Proxy port"
             user:
               type: string
+              nullable: true
               example: "admin"
               description: "proxy username"
             password:
               type: string
+              nullable: true
               example: "centreon"
               description: "proxy password"
     Gorgone.Response:
