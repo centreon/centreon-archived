@@ -11,6 +11,7 @@ import {
   lt,
   gte,
   path,
+  or,
 } from 'ramda';
 import {
   Line,
@@ -392,6 +393,7 @@ const GraphContent = ({
           start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
           end: gte(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
         });
+        setMetricsValue(null);
         hideTooltip();
         return;
       }
@@ -421,6 +423,7 @@ const GraphContent = ({
     }
 
     if (isNil(tooltipPosition)) {
+      setMetricsValue(null);
       hideTooltip();
       return;
     }
@@ -431,7 +434,7 @@ const GraphContent = ({
   }, [tooltipPosition]);
 
   React.useEffect(() => {
-    if (not(displayTooltipValues)) {
+    if (or(not(displayTooltipValues), isNil(metricsValue))) {
       return;
     }
     showTooltip({
@@ -443,7 +446,14 @@ const GraphContent = ({
     });
   }, [metricsValue]);
 
+  React.useEffect(() => {
+    if (not(displayTooltipValues)) {
+      hideTooltip();
+    }
+  }, [displayTooltipValues]);
+
   const closeTooltip = (): void => {
+    setMetricsValue(null);
     hideTooltip();
     setIsMouseOver(false);
     onTooltipDisplay?.();

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import clsx from 'clsx';
+import { equals, find, lt, propOr } from 'ramda';
 
 import {
   Typography,
@@ -13,14 +14,22 @@ import {
 import { ResourceContext, useResourceContext } from '../../../Context';
 import { Line } from '../models';
 import memoizeComponent from '../../../memoizedComponent';
+import { useMetricsValueContext } from '../Graph/useMetricsValue';
 
 import LegendMarker from './Marker';
 
 const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
+  items: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, 160px)',
+    width: '100%',
+    justifyContent: 'center',
+  },
   item: {
-    display: 'flex',
-    alignItems: 'center',
+    display: 'grid',
+    gridTemplateColumns: 'min-content 1fr',
     margin: theme.spacing(0, 1, 1, 0),
+    height: theme.spacing(8.5),
   },
   icon: {
     width: 9,
@@ -44,6 +53,14 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
       color: theme.palette.common.black,
     },
   },
+  legendData: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  legendValue: {
+    margin: 0,
+  },
 }));
 
 interface Props {
@@ -57,6 +74,8 @@ interface Props {
 
 type LegendContentProps = Props & Pick<ResourceContext, 'panelWidth'>;
 
+const maxCharactersToDisplay = 40;
+
 const LegendContent = ({
   lines,
   onToggle,
@@ -68,8 +87,21 @@ const LegendContent = ({
 }: LegendContentProps): JSX.Element => {
   const classes = useStyles({ panelWidth });
   const theme = useTheme();
+  const { metricsValue, getFormattedMetricData } = useMetricsValueContext();
 
-  const getLegendName = ({ metric, name, display }: Line): JSX.Element => {
+  const getFormattedName = ({ name, unit }) => {
+    if (lt(name.length, maxCharactersToDisplay)) {
+      return name;
+    }
+    return `${name.substring(0, maxCharactersToDisplay - 8)}... (${unit})`;
+  };
+
+  const getLegendName = ({
+    metric,
+    name,
+    display,
+    unit,
+  }: Line): JSX.Element => {
     return (
       <div
         onMouseEnter={(): void => onHighlight(metric)}
@@ -97,14 +129,17 @@ const LegendContent = ({
             onSelect(metric);
           }}
         >
-          {name}
+          {getFormattedName({
+            name,
+            unit,
+          })}
         </Typography>
       </div>
     );
   };
 
   return (
-    <>
+    <div className={classes.items}>
       {lines.map((line) => {
         const { color, name, display } = line;
 
@@ -112,14 +147,29 @@ const LegendContent = ({
           ? color
           : fade(theme.palette.text.disabled, 0.2);
 
+        const metric = find(
+          equals(line.metric),
+          propOr([], 'metrics', metricsValue),
+        );
+
+        const formattedValue =
+          metric && getFormattedMetricData(metric)?.formattedValue;
+
         return (
           <div className={classes.item} key={name}>
             <LegendMarker disabled={!display} color={markerColor} />
-            {getLegendName(line)}
+            <div className={classes.legendData}>
+              {getLegendName(line)}
+              {formattedValue && (
+                <Typography variant="h6" className={classes.legendValue}>
+                  {formattedValue}
+                </Typography>
+              )}
+            </div>
           </div>
         );
       })}
-    </>
+    </div>
   );
 };
 

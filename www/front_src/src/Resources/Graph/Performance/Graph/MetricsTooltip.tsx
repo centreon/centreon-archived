@@ -62,7 +62,7 @@ const MetricsTooltip = (): JSX.Element | null => {
 
         return (
           <div className={classes.metric} key={metric}>
-            <LegendMarker color={data?.color || ''} />
+            <LegendMarker color={data?.color || ''} isInTooltip />
             <Typography variant="caption" noWrap>
               {truncateInMiddle(data?.name || '')}
             </Typography>
