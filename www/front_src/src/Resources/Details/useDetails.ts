@@ -96,7 +96,7 @@ const useDetails = (): DetailsState => {
       parentId,
       type,
       parentType,
-      tab
+      tab,
     } = detailsUrlQueryParameters;
 
     if (!isNil(tab)) {
