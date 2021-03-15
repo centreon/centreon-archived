@@ -53,7 +53,7 @@ const GraphOptions = (): JSX.Element => {
         onClick={openGraphOptions}
         size="small"
       >
-        <SettingsIcon fontSize="small" />
+        <SettingsIcon style={{ fontSize: 18 }} />
       </IconButton>
       <Popover
         open={not(isNil(anchorEl))}
