@@ -29,7 +29,7 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
     display: 'grid',
     gridTemplateColumns: 'min-content 1fr',
     margin: theme.spacing(0, 1, 1, 0),
-    height: theme.spacing(8.5),
+    height: theme.spacing(7),
   },
   icon: {
     width: 9,
@@ -60,6 +60,8 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
   },
   legendValue: {
     margin: 0,
+    lineHeight: 1.2,
+    fontSize: '1.15rem',
   },
 }));
 
