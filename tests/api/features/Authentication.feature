@@ -15,13 +15,7 @@ Feature:
 
     # Internal local authentication
     Scenario:
-        Given I send a POST request to '/v2.1/authentication/providers/local' with body:
-        """
-        {
-            "login": "admin",
-            "password": "centreon"
-        }
-        """
+        Given I am logged in with local provider
         Then the response code should be "200"
         And the header "set-cookie" should contain "PHPSESSID="
 
