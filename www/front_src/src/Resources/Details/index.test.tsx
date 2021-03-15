@@ -1237,7 +1237,7 @@ describe(Details, () => {
       });
 
       act(() => {
-        context.setSelectedResourceId(resourceId);
+        setSelectedServiceResource();
       });
 
       await waitFor(() => {
