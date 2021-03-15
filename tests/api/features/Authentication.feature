@@ -18,8 +18,3 @@ Feature:
         Given I am logged in with local provider
         Then the response code should be "200"
         And the header "set-cookie" should contain "PHPSESSID="
-
-    Scenario:
-        Given I am logged in with local provider
-        When I send a GET request to '/beta/monitoring/resources'
-        Then the response code should be "200"
