@@ -564,15 +564,11 @@ paths:
 
         ---
 
-        * h.group
-        * h.group.id
         * h.name
         * h.alias
         * h.address
         * h.fqdn
         * s.description
-        * s.group
-        * s.group.id
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
@@ -4178,18 +4174,11 @@ components:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        severity:
-          type: object
+        severity_level:
+          type: integer
           nullable: true
-          properties:
-            level:
-              type: integer
-              description: "level of the severity"
-              example: 1
-            name:
-              type: string
-              description: "Name of the severity"
-              example: "severity 1"
+          description: "level of the severity"
+          example: 1
         duration:
           type: string
           nullable: true
