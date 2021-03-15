@@ -109,7 +109,7 @@ const retrievedDetails = {
   },
   fqdn: 'central.centreon.com',
   alias: 'Central-Centreon',
-  poller_name: 'Poller',
+  monitoring_server_name: 'Poller',
   acknowledged: false,
   checked: true,
   execution_time: 0.070906,
@@ -475,7 +475,7 @@ describe(Details, () => {
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline });
 
-      const { getByText, getAllByText } = renderDetails({
+      const { getByText } = renderDetails({
         openTabId: graphTabId,
       });
 
@@ -483,11 +483,7 @@ describe(Details, () => {
         context.setSelectedResourceId(resourceId);
       });
 
-      await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
-
-      userEvent.click(head(getAllByText(labelLast24h)) as HTMLElement);
-
-      userEvent.click(last(getAllByText(period)) as HTMLElement);
+      userEvent.click(getByText(period) as HTMLElement);
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -945,6 +941,7 @@ describe(Details, () => {
         states: [],
         hostGroupIds: [],
         serviceGroupIds: [],
+        monitoringServerIds: [],
         search: {
           conditions: [
             {

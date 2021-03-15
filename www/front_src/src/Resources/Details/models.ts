@@ -21,7 +21,7 @@ export interface ResourceDetails extends NamedEntity {
   acknowledged: boolean;
   duration: string;
   tries: string;
-  poller_name?: string;
+  monitoring_server_name?: string;
   timezone?: string;
   last_status_change: string;
   last_check: string;
