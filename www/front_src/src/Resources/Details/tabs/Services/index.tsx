@@ -67,6 +67,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
+    setSelectedResourceUuid,
     setSelectedResourceId,
     setSelectedResourceType,
     setSelectedResourceParentId,
@@ -96,12 +97,13 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     }
   }, [selectedResourceId]);
 
-  const selectService = (serviceId) => (): void => {
+  const selectService = (service) => (): void => {
     setOpenDetailsTabId(detailsTabId);
-    setSelectedResourceParentType('host');
-    setSelectedResourceParentId(details?.id);
-    setSelectedResourceId(serviceId);
-    setSelectedResourceType('service');
+    setSelectedResourceUuid(service.uuid);
+    setSelectedResourceId(service.id);
+    setSelectedResourceType(service.type);
+    setSelectedResourceParentType(service?.parent?.type);
+    setSelectedResourceParentId(service?.parent?.id);
   };
 
   const getContent = (): JSX.Element => {
@@ -121,7 +123,9 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
 
     return (
       <>
-        {services.map(({ id, status, name, output, duration }) => {
+        {services.map((service) => {
+          const { id, name, status, output, duration } = service;
+
           return (
             <Paper key={id} className={classes.service}>
               <StatusChip
@@ -131,7 +135,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
               <div className={classes.description}>
                 <Typography
                   variant="body1"
-                  onClick={selectService(id)}
+                  onClick={selectService(service)}
                   style={{ cursor: 'pointer' }}
                 >
                   {name}

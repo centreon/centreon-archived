@@ -23,6 +23,10 @@ import { DetailsUrlQueryParameters, ResourceDetails } from './models';
 export interface DetailsState {
   clearSelectedResource: () => void;
   getSelectedResourceDetailsEndpoint: () => string | undefined;
+  selectedResourceUuid?: string;
+  setSelectedResourceUuid: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
   selectedResourceId?: number;
   setSelectedResourceId: React.Dispatch<
     React.SetStateAction<number | undefined>
@@ -30,6 +34,7 @@ export interface DetailsState {
   setSelectedResourceType: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
+  selectedResourceParentId?: number;
   setSelectedResourceParentId: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
@@ -46,6 +51,10 @@ const useDetails = (): DetailsState => {
   const [openDetailsTabId, setOpenDetailsTabId] = React.useState<TabId>(
     detailsTabId,
   );
+  const [
+    selectedResourceUuid,
+    setSelectedResourceUuid,
+  ] = React.useState<string>();
   const [selectedResourceId, setSelectedResourceId] = React.useState<number>();
   const [
     selectedResourceParentId,
@@ -81,12 +90,20 @@ const useDetails = (): DetailsState => {
       return;
     }
 
-    const { id, parentId, type, parentType, tab } = detailsUrlQueryParameters;
+    const {
+      uuid,
+      id,
+      parentId,
+      type,
+      parentType,
+      tab
+    } = detailsUrlQueryParameters;
 
     if (!isNil(tab)) {
       setOpenDetailsTabId(getTabIdFromLabel(tab));
     }
 
+    setSelectedResourceUuid(uuid);
     setSelectedResourceId(id);
     setSelectedResourceParentId(parentId);
     setSelectedResourceType(type);
@@ -98,6 +115,7 @@ const useDetails = (): DetailsState => {
       {
         name: 'details',
         value: {
+          uuid: selectedResourceUuid,
           id: selectedResourceId,
           parentId: selectedResourceParentId,
           type: selectedResourceType,
@@ -123,6 +141,7 @@ const useDetails = (): DetailsState => {
   };
 
   const clearSelectedResource = (): void => {
+    setSelectedResourceUuid(undefined);
     setSelectedResourceId(undefined);
     setSelectedResourceParentId(undefined);
     setSelectedResourceParentType(undefined);
@@ -144,11 +163,14 @@ const useDetails = (): DetailsState => {
   React.useEffect(() => {
     setDetails(undefined);
     loadDetails();
-  }, [selectedResourceId]);
+  }, [selectedResourceUuid]);
 
   return {
     clearSelectedResource,
+    selectedResourceUuid,
     selectedResourceId,
+    selectedResourceParentId,
+    setSelectedResourceUuid,
     setSelectedResourceId,
     setSelectedResourceType,
     setSelectedResourceParentId,

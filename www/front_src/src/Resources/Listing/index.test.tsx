@@ -46,8 +46,10 @@ const appState = {
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
   return new Array(entityCount).fill(0).map((_, index) => ({
+    uuid: `${index}`,
     id: index,
     name: `E${index}`,
+    severity_level: 1,
     status: {
       code: 0,
       name: 'OK',

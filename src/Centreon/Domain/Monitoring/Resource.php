@@ -24,7 +24,6 @@ namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\ResourceStatus;
-use Centreon\Domain\Monitoring\ResourceSeverity;
 use Centreon\Domain\Monitoring\ResourceLinks;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
@@ -151,9 +150,9 @@ class Resource
     private $links;
 
     /**
-     * @var \Centreon\Domain\Monitoring\ResourceSeverity|null
+     * @var int|null
      */
-    private $severity;
+    private $severityLevel;
 
     /**
      * @var string|null
@@ -262,6 +261,24 @@ class Resource
         }
 
         return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUuid(): string
+    {
+        $uuid = '';
+
+        if ($this->getShortType() !== null && $this->getId() !== null) {
+            $uuid = $this->getShortType() . $this->getId();
+        }
+
+        if ($this->getParent() !== null) {
+            $uuid = $this->getParent()->getUuid() . '-' . $uuid;
+        }
+
+        return $uuid;
     }
 
     /**
@@ -628,20 +645,20 @@ class Resource
     }
 
     /**
-     * @return \Centreon\Domain\Monitoring\ResourceSeverity|null
+     * @return int|null
      */
-    public function getSeverity(): ?ResourceSeverity
+    public function getSeverityLevel(): ?int
     {
-        return $this->severity;
+        return $this->severityLevel;
     }
 
     /**
-     * @param \Centreon\Domain\Monitoring\ResourceSeverity|null $severity
+     * @param int|null $severityLevel
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setSeverity(?ResourceSeverity $severity): self
+    public function setSeverityLevel(?int $severityLevel): self
     {
-        $this->severity = $severity;
+        $this->severityLevel = $severityLevel;
 
         return $this;
     }
