@@ -17,7 +17,7 @@ interface MetricsValue {
   base: number;
 }
 
-interface GetFormmatedMetricData {
+interface FormattedMetricData {
   color: string;
   name: string;
   unit: string;
@@ -28,7 +28,7 @@ interface UseMetricsValue {
   metricsValue: MetricsValue | null;
   setMetricsValue: React.Dispatch<React.SetStateAction<MetricsValue | null>>;
   formatDate: () => string;
-  getFormattedMetricData: (metric: string) => GetFormmatedMetricData | null;
+  getFormattedMetricData: (metric: string) => FormattedMetricData | null;
 }
 
 const useMetricsValue = (): UseMetricsValue => {
