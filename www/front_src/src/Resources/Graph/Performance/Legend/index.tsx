@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import clsx from 'clsx';
-import { equals, find, lt, propOr } from 'ramda';
+import { equals, find, includes, propOr, split } from 'ramda';
 
 import {
   Typography,
@@ -9,6 +9,7 @@ import {
   useTheme,
   fade,
   Theme,
+  Tooltip,
 } from '@material-ui/core';
 
 import { ResourceContext, useResourceContext } from '../../../Context';
@@ -21,15 +22,15 @@ import LegendMarker from './Marker';
 const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
   items: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, 160px)',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
     width: '100%',
     justifyContent: 'center',
   },
   item: {
     display: 'grid',
-    gridTemplateColumns: 'min-content 1fr',
+    gridTemplateColumns: 'min-content minmax(50px, 1fr)',
     margin: theme.spacing(0, 1, 1, 0),
-    height: theme.spacing(7),
+    height: theme.spacing(5.5),
   },
   icon: {
     width: 9,
@@ -41,8 +42,10 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
     marginRight: theme.spacing(1),
     color: fade(theme.palette.common.black, 0.6),
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
     maxWidth: 0.85 * panelWidth,
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    lineHeight: 1.2,
   }),
   hidden: {
     color: theme.palette.text.disabled,
@@ -59,9 +62,7 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
     justifyContent: 'space-between',
   },
   legendValue: {
-    margin: 0,
     lineHeight: 1.2,
-    fontSize: '1.15rem',
   },
 }));
 
@@ -76,8 +77,6 @@ interface Props {
 
 type LegendContentProps = Props & Pick<ResourceContext, 'panelWidth'>;
 
-const maxCharactersToDisplay = 40;
-
 const LegendContent = ({
   lines,
   onToggle,
@@ -91,51 +90,40 @@ const LegendContent = ({
   const theme = useTheme();
   const { metricsValue, getFormattedMetricData } = useMetricsValueContext();
 
-  const getFormattedName = ({ name, unit }) => {
-    if (lt(name.length, maxCharactersToDisplay)) {
-      return name;
-    }
-    return `${name.substring(0, maxCharactersToDisplay - 8)}... (${unit})`;
-  };
-
-  const getLegendName = ({
-    metric,
-    name,
-    display,
-    unit,
-  }: Line): JSX.Element => {
+  const getLegendName = ({ metric, name, display }: Line): JSX.Element => {
+    const metricName = includes('#', name) ? split('#')[1] : name;
     return (
       <div
         onMouseEnter={(): void => onHighlight(metric)}
         onMouseLeave={(): void => onClearHighlight()}
       >
-        <Typography
-          className={clsx(
-            {
-              [classes.hidden]: !display,
-              [classes.toggable]: toggable,
-            },
-            classes.caption,
-          )}
-          variant="body2"
-          onClick={(event: React.MouseEvent): void => {
-            if (!toggable) {
-              return;
-            }
+        <Tooltip title={name} placement="top">
+          <Typography
+            className={clsx(
+              {
+                [classes.hidden]: !display,
+                [classes.toggable]: toggable,
+              },
+              classes.caption,
+            )}
+            variant="caption"
+            component="p"
+            onClick={(event: React.MouseEvent): void => {
+              if (!toggable) {
+                return;
+              }
 
-            if (event.ctrlKey || event.metaKey) {
-              onToggle(metric);
-              return;
-            }
+              if (event.ctrlKey || event.metaKey) {
+                onToggle(metric);
+                return;
+              }
 
-            onSelect(metric);
-          }}
-        >
-          {getFormattedName({
-            name,
-            unit,
-          })}
-        </Typography>
+              onSelect(metric);
+            }}
+          >
+            {metricName}
+          </Typography>
+        </Tooltip>
       </div>
     );
   };
@@ -161,9 +149,18 @@ const LegendContent = ({
           <div className={classes.item} key={name}>
             <LegendMarker disabled={!display} color={markerColor} />
             <div className={classes.legendData}>
-              {getLegendName(line)}
+              <div>
+                {getLegendName(line)}
+                <Typography
+                  variant="caption"
+                  component="p"
+                  className={classes.caption}
+                >
+                  {`(${line.unit})`}
+                </Typography>
+              </div>
               {formattedValue && (
-                <Typography variant="h6" className={classes.legendValue}>
+                <Typography variant="body1" className={classes.legendValue}>
                   {formattedValue}
                 </Typography>
               )}
