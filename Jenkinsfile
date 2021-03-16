@@ -5,16 +5,6 @@ properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
 def serie = '21.04'
 def maintenanceBranch = "${serie}.x"
 env.PROJECT='centreon-web'
-
-
-
-
-//debug -> to initiate ref on sonarQ
-env.BRANCH_NAME = 'master'
-
-
-
-
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
 } else if ((env.BRANCH_NAME == 'master') || (env.BRANCH_NAME == maintenanceBranch)) {
