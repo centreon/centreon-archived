@@ -135,6 +135,7 @@ const PerformanceGraph = ({
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
+  const [displayLoader, setDisplayLoader] = React.useState<boolean>(false);
 
   const {
     sendRequest: sendGetGraphDataRequest,
@@ -155,7 +156,15 @@ const PerformanceGraph = ({
       setTitle(graphData.global.title);
       setBase(graphData.global.base);
     });
+  }, [endpoint, resource]);
+
+  React.useEffect(() => {
+    setDisplayLoader(true);
   }, [endpoint]);
+
+  React.useEffect(() => {
+    setDisplayLoader(false);
+  }, [resource]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return <LoadingSkeleton graphHeight={graphHeight} />;
@@ -289,7 +298,9 @@ const PerformanceGraph = ({
               eventAnnotationsActive={eventAnnotationsActive}
               applyZoom={adjustTimePeriod}
               shiftTime={shiftTime}
-              sendingGetGraphDataRequest={sendingGetGraphDataRequest}
+              sendingGetGraphDataRequest={
+                displayLoader && sendingGetGraphDataRequest
+              }
               canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
             />
           )}

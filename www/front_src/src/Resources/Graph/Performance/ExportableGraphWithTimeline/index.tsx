@@ -148,7 +148,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     }
 
     retrieveTimeline();
-  }, [endpoint, selectedTimePeriod, customTimePeriod]);
+  }, [endpoint, selectedTimePeriod, customTimePeriod, resource]);
 
   const getEndpoint = (): string | undefined => {
     if (isNil(endpoint)) {
