@@ -51,19 +51,6 @@ const useGraphOptions = ({
     changeTabGraphOptions(newGraphOptions);
   };
 
-  React.useEffect(() => {
-    if (
-      or(
-        isNil(graphTabParameters?.graphOptions),
-        equals(graphTabParameters?.graphOptions, graphOptions),
-      )
-    ) {
-      return;
-    }
-
-    setGraphOptions(graphTabParameters?.graphOptions as GraphOptions);
-  }, [graphTabParameters?.graphOptions]);
-
   return {
     graphOptions,
     changeGraphOptions,

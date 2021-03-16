@@ -11,6 +11,9 @@ import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/E
 import { ResourceContext, useResourceContext } from '../../../Context';
 import memoizeComponent from '../../../memoizedComponent';
 import { GraphOptions } from '../../models';
+import useGraphOptions, {
+  GraphOptionsContext,
+} from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -76,6 +79,11 @@ const GraphTabContent = ({
     });
   };
 
+  const graphOptions = useGraphOptions({
+    graphTabParameters: tabParameters.graph,
+    changeTabGraphOptions,
+  });
+
   return (
     <div className={classes.container}>
       <TimePeriodButtonGroup
@@ -84,17 +92,17 @@ const GraphTabContent = ({
         customTimePeriod={customTimePeriod}
         changeCustomTimePeriod={changeCustomTimePeriod}
       />
-      <ExportablePerformanceGraphWithTimeline
-        resource={details}
-        graphHeight={280}
-        periodQueryParameters={periodQueryParameters}
-        getIntervalDates={getIntervalDates}
-        selectedTimePeriod={selectedTimePeriod}
-        customTimePeriod={customTimePeriod}
-        navigateInGraph={navigateInGraph}
-        graphTabParameters={tabParameters.graph}
-        changeTabGraphOptions={changeTabGraphOptions}
-      />
+      <GraphOptionsContext.Provider value={graphOptions}>
+        <ExportablePerformanceGraphWithTimeline
+          resource={details}
+          graphHeight={280}
+          periodQueryParameters={periodQueryParameters}
+          getIntervalDates={getIntervalDates}
+          selectedTimePeriod={selectedTimePeriod}
+          customTimePeriod={customTimePeriod}
+          navigateInGraph={navigateInGraph}
+        />
+      </GraphOptionsContext.Provider>
     </div>
   );
 };

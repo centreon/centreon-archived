@@ -22,6 +22,9 @@ import memoizeComponent from '../../../memoizedComponent';
 import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import { GraphOptions } from '../../models';
+import useGraphOptions, {
+  GraphOptionsContext,
+} from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -172,6 +175,11 @@ const ServicesTabContent = ({
     });
   };
 
+  const graphOptions = useGraphOptions({
+    graphTabParameters: tabParameters.services?.graphTimePeriod,
+    changeTabGraphOptions,
+  });
+
   React.useEffect(() => {
     // To make sure that graphs are not displayed until 'entities' are reset
     setCanDisplayGraphs(true);
@@ -216,17 +224,17 @@ const ServicesTabContent = ({
           const displayGraphs = graphMode && canDisplayGraphs;
 
           return displayGraphs ? (
-            <ServiceGraphs
-              services={entities}
-              infiniteScrollTriggerRef={infiniteScrollTriggerRef}
-              periodQueryParameters={periodQueryParameters}
-              getIntervalDates={getIntervalDates}
-              selectedTimePeriod={selectedTimePeriod}
-              customTimePeriod={customTimePeriod}
-              navigateInGraph={navigateInGraph}
-              graphTabParameters={tabParameters.services?.graphTimePeriod}
-              changeTabGraphOptions={changeTabGraphOptions}
-            />
+            <GraphOptionsContext.Provider value={graphOptions}>
+              <ServiceGraphs
+                services={entities}
+                infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+                periodQueryParameters={periodQueryParameters}
+                getIntervalDates={getIntervalDates}
+                selectedTimePeriod={selectedTimePeriod}
+                customTimePeriod={customTimePeriod}
+                navigateInGraph={navigateInGraph}
+              />
+            </GraphOptionsContext.Provider>
           ) : (
             <ServiceList
               services={entities}

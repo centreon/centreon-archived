@@ -37,8 +37,6 @@ interface Props {
   selectedTimePeriod: TimePeriod | null;
   customTimePeriod: CustomTimePeriod;
   navigateInGraph: (props: NavigateInGraphProps) => void;
-  graphTabParameters?: GraphTabParameters;
-  changeTabGraphOptions: (props: GraphOptions) => void;
 }
 
 const ServiceGraphs = ({
@@ -49,8 +47,6 @@ const ServiceGraphs = ({
   selectedTimePeriod,
   customTimePeriod,
   navigateInGraph,
-  graphTabParameters,
-  changeTabGraphOptions,
 }: Props): JSX.Element => {
   const [tooltipPosition, setTooltipPosition] = React.useState<
     [number, number]
@@ -78,8 +74,6 @@ const ServiceGraphs = ({
               tooltipPosition={tooltipPosition}
               customTimePeriod={customTimePeriod}
               navigateInGraph={navigateInGraph}
-              graphTabParameters={graphTabParameters}
-              changeTabGraphOptions={changeTabGraphOptions}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>
