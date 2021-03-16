@@ -229,7 +229,7 @@ const PerformanceGraph = ({
     );
   };
 
-  const getTranslatedDate = ({ property, direction, timePeriod }): Date => {
+  const getShiftedDate = ({ property, direction, timePeriod }): Date => {
     const timestampToTranslate =
       (timePeriod.end.getTime() - timePeriod.start.getTime()) /
       translationRatio;
@@ -250,12 +250,12 @@ const PerformanceGraph = ({
     }
 
     adjustTimePeriod?.({
-      start: getTranslatedDate({
+      start: getShiftedDate({
         property: CustomTimePeriodProperty.start,
         direction,
         timePeriod: customTimePeriod,
       }),
-      end: getTranslatedDate({
+      end: getShiftedDate({
         property: CustomTimePeriodProperty.end,
         direction,
         timePeriod: customTimePeriod,
