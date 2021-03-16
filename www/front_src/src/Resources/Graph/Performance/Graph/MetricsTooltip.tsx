@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { take, takeLast } from 'ramda';
 import clsx from 'clsx';
+import { take, takeLast } from 'ramda';
 
 import { Typography, makeStyles } from '@material-ui/core';
 
-import LegendMarker from '../Legend/Marker';
+import LegendMarker, { LegendMarkerVariant } from '../Legend/Marker';
 
 import { useMetricsValueContext } from './useMetricsValue';
 
@@ -62,7 +62,10 @@ const MetricsTooltip = (): JSX.Element | null => {
 
         return (
           <div className={classes.metric} key={metric}>
-            <LegendMarker color={data?.color || ''} isInTooltip />
+            <LegendMarker
+              color={data?.color || ''}
+              variant={LegendMarkerVariant.dot}
+            />
             <Typography variant="caption" noWrap>
               {truncateInMiddle(data?.name || '')}
             </Typography>
