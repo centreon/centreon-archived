@@ -288,16 +288,16 @@ function sanitizeResourceParameters(array $resources): array
     if (empty($sanitizedParameters['dep_name'])) {
         throw new InvalidArgumentException(_("Dependency name can't be empty"));
     }
-    
+
     $sanitizedParameters['dep_description'] = filter_var($resources['dep_description'], FILTER_SANITIZE_STRING);
     if (empty($sanitizedParameters['dep_description'])) {
         throw new InvalidArgumentException(_("Dependency description can't be empty"));
     }
-    
+
     $resources["inherits_parent"]["inherits_parent"] == 1
         ? $sanitizedParameters["inherits_parent"] = '1'
         : $sanitizedParameters["inherits_parent"] = '0';
-    
+
     $sanitizedParameters['execution_failure_criteria'] = filter_var(
         implode(
             ",",
@@ -305,7 +305,7 @@ function sanitizeResourceParameters(array $resources): array
         ),
         FILTER_SANITIZE_STRING
     );
-    
+
     $sanitizedParameters['notification_failure_criteria'] = filter_var(
         implode(
             ",",
@@ -314,7 +314,6 @@ function sanitizeResourceParameters(array $resources): array
         FILTER_SANITIZE_STRING
     );
     $sanitizedParameters['dep_comment'] = filter_var($resources['dep_comment'], FILTER_SANITIZE_STRING);
-    
     return $sanitizedParameters;
 }
 

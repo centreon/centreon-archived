@@ -316,7 +316,6 @@ function sanitizeResourceParameters(array $resources): array
         FILTER_SANITIZE_STRING
     );
     $sanitizedParameters['dep_comment'] = filter_var($resources['dep_comment'], FILTER_SANITIZE_STRING);
-
     return $sanitizedParameters;
 }
 
