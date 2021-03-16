@@ -116,56 +116,6 @@ class CentreonMetric extends CentreonWebService
     }
 
     /**
-     * Get metric list usualy for select2
-     *
-     * @return array
-     *
-     * @throws Exception
-     */
-    public function getListMetrics()
-    {
-        global $centreon;
-
-        $queryValues = array();
-        if (isset($this->arguments['q'])) {
-            $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
-        } else {
-            $queryValues['name'] = '%%';
-        }
-
-        $query = 'SELECT DISTINCT(`metric_name`)
-            COLLATE utf8_bin as "metric_name" FROM `metrics` as m, index_data i
-            WHERE metric_name LIKE :name ';
-
-        /**
-         * If ACLs on, then only return metrics linked to services that the user can see.
-         */
-        if (!$centreon->user->admin) {
-            $acl = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
-            $query .= ' AND m.index_id = i.id AND i.service_id IN (' .
-                $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
-        }
-
-        $query .= ' ORDER BY `metric_name` COLLATE utf8_general_ci ';
-        $stmt = $this->pearDBMonitoring->prepare($query);
-        $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
-        $dbResult = $stmt->execute();
-
-        $metrics = array();
-        while ($row = $stmt->fetch()) {
-            $metrics[] = array(
-                'id' => $row['metric_name'],
-                'text' => $row['metric_name']
-            );
-        }
-
-        return array(
-            'items' => $metrics,
-            'total' => (int) $this->pearDBMonitoring->numberRows()
-        );
-    }
-
-    /**
      * @return array
      *
      * @throws RestBadRequestException

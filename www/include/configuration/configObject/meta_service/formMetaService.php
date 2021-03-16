@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -117,7 +118,7 @@ $attrTimeperiods = array(
     'multiple' => false,
     'linkedObject' => 'centreonTimeperiod'
 );
-$metricAvRoute = './api/internal.php?object=centreon_metric&action=listMetrics';
+$metricAvRoute = './api/internal.php?object=centreon_monitoring_metric&action=list';
 $attrMetric = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $metricAvRoute,
