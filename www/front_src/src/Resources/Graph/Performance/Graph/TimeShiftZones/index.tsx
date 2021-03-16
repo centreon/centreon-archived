@@ -7,40 +7,40 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import { labelBackward, labelForward } from '../../../../translatedLabels';
 
-import TranslationZone, { translationZoneWidth } from './Zone';
-import TranslationIcon, { translationIconSize } from './Icon';
+import TimeShiftZone, { timeShiftZoneWidth } from './Zone';
+import TimeShiftIcon, { timeShiftIconSize } from './Icon';
 
-export enum TranslationDirection {
+export enum TimeShiftDirection {
   backward,
   forward,
 }
 
-interface TranslationContextProps {
+interface TimeShiftContextProps {
   graphHeight: number;
   graphWidth: number;
   marginLeft: number;
   marginTop: number;
   canNavigateInGraph: boolean;
   sendingGetGraphDataRequest: boolean;
-  translate?: (direction: TranslationDirection) => void;
+  shiftTime?: (direction: TimeShiftDirection) => void;
 }
 
-export const TranslationContext = React.createContext<
-  TranslationContextProps | undefined
+export const TimeShiftContext = React.createContext<
+  TimeShiftContextProps | undefined
 >(undefined);
 
-export const useTranslationsContext = (): TranslationContextProps =>
-  React.useContext(TranslationContext) as TranslationContextProps;
+export const useTimeShiftContext = (): TimeShiftContextProps =>
+  React.useContext(TimeShiftContext) as TimeShiftContextProps;
 
-const Translations = (): JSX.Element | null => {
+const TimeShifts = (): JSX.Element | null => {
   const [
     directionHovered,
     setDirectionHovered,
-  ] = React.useState<TranslationDirection | null>(null);
+  ] = React.useState<TimeShiftDirection | null>(null);
 
-  const { graphWidth, canNavigateInGraph } = useTranslationsContext();
+  const { graphWidth, canNavigateInGraph } = useTimeShiftContext();
 
-  const hoverDirection = (direction: TranslationDirection | null) => () =>
+  const hoverDirection = (direction: TimeShiftDirection | null) => () =>
     setDirectionHovered(direction);
 
   if (not(canNavigateInGraph)) {
@@ -49,29 +49,29 @@ const Translations = (): JSX.Element | null => {
 
   return (
     <>
-      <TranslationZone
-        direction={TranslationDirection.backward}
+      <TimeShiftZone
+        direction={TimeShiftDirection.backward}
         directionHovered={directionHovered}
         hoverDirection={hoverDirection}
       />
-      <TranslationZone
-        direction={TranslationDirection.forward}
+      <TimeShiftZone
+        direction={TimeShiftDirection.forward}
         directionHovered={directionHovered}
         hoverDirection={hoverDirection}
       />
-      <TranslationIcon
+      <TimeShiftIcon
         xIcon={0}
         Icon={ArrowBackIosIcon}
         directionHovered={directionHovered}
-        direction={TranslationDirection.backward}
+        direction={TimeShiftDirection.backward}
         hoverDirection={hoverDirection}
         ariaLabel={labelBackward}
       />
-      <TranslationIcon
-        xIcon={graphWidth + translationZoneWidth + translationIconSize}
+      <TimeShiftIcon
+        xIcon={graphWidth + timeShiftZoneWidth + timeShiftIconSize}
         Icon={ArrowForwardIosIcon}
         directionHovered={directionHovered}
-        direction={TranslationDirection.forward}
+        direction={TimeShiftDirection.forward}
         hoverDirection={hoverDirection}
         ariaLabel={labelForward}
       />
@@ -79,4 +79,4 @@ const Translations = (): JSX.Element | null => {
   );
 };
 
-export default Translations;
+export default TimeShifts;

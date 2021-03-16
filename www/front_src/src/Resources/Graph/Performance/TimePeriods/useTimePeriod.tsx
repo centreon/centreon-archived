@@ -191,18 +191,18 @@ const useTimePeriod = ({
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
   };
 
-  const navigateInGraph = (zoomOrTranslationProps: NavigateInGraphProps) => {
-    setCustomTimePeriod(getNewCustomTimePeriod(zoomOrTranslationProps));
+  const navigateInGraph = (zoomOrShiftedTimeProps: NavigateInGraphProps) => {
+    setCustomTimePeriod(getNewCustomTimePeriod(zoomOrShiftedTimeProps));
     setSelectedTimePeriod(null);
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
-      startDate: zoomOrTranslationProps.start,
-      endDate: zoomOrTranslationProps.end,
+      startDate: zoomOrShiftedTimeProps.start,
+      endDate: zoomOrShiftedTimeProps.end,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
     onTimePeriodChange?.({
       selectedCustomPeriod: {
-        start: zoomOrTranslationProps.start.toISOString(),
-        end: zoomOrTranslationProps.end.toISOString(),
+        start: zoomOrShiftedTimeProps.start.toISOString(),
+        end: zoomOrShiftedTimeProps.end.toISOString(),
       },
       graphOptions: defaultGraphOptions,
     });

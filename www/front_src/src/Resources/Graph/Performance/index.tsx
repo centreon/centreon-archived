@@ -43,8 +43,8 @@ import {
   NavigateInGraphProps,
 } from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
-import { TranslationDirection } from './Graph/TranslationZones';
 import useMetricsValue, { MetricsValueContext } from './Graph/useMetricsValue';
+import { TimeShiftDirection } from './Graph/TimeShiftZones';
 
 interface Props {
   endpoint?: string;
@@ -239,14 +239,14 @@ const PerformanceGraph = ({
     return new Date(
       add(
         prop(property, timePeriod).getTime(),
-        equals(direction, TranslationDirection.backward)
+        equals(direction, TimeShiftDirection.backward)
           ? negate(timestampToTranslate)
           : timestampToTranslate,
       ),
     );
   };
 
-  const translate = (direction: TranslationDirection) => {
+  const shiftTime = (direction: TimeShiftDirection) => {
     if (isNil(customTimePeriod)) {
       return;
     }
@@ -288,7 +288,7 @@ const PerformanceGraph = ({
               onAddComment={onAddComment}
               eventAnnotationsActive={eventAnnotationsActive}
               applyZoom={navigateInGraph}
-              translate={translate}
+              shiftTime={shiftTime}
               sendingGetGraphDataRequest={sendingGetGraphDataRequest}
               canNavigateInGraph={not(isNil(navigateInGraph))}
             />
