@@ -242,13 +242,16 @@
         "version": "1.1.0"
     },
     "phpoption/phpoption": {
-        "version": "1.7.4"
+        "version": "1.7.5"
     },
     "phpspec/prophecy": {
         "version": "v1.10.3"
     },
     "phpstan/phpstan": {
         "version": "0.12.28"
+    },
+    "phpstan/phpstan-beberlei-assert": {
+        "version": "0.12.6"
     },
     "phpunit/php-code-coverage": {
         "version": "6.1.4"

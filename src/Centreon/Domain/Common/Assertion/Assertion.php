@@ -166,11 +166,11 @@ class Assertion
     /**
      * Assert that value is not empty.
      *
-     * @param string $value Value to test
+     * @param mixed $value Value to test
      * @param string|null $propertyPath Property's path (ex: Host::name)
      * @throws \Assert\AssertionFailedException
      */
-    public static function notEmpty(string $value, string $propertyPath = null): void
+    public static function notEmpty($value, string $propertyPath = null): void
     {
         Assert::notEmpty(
             $value,
