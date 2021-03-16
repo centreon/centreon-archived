@@ -518,7 +518,9 @@ const GraphContent = ({
     hideAddCommentTooltip();
   };
 
-  const tooltipLineLeft = (tooltipLeft as number) - margin.left;
+  const containsMetrics = metricsValue && not(isEmpty(metricsValue?.metrics));
+
+  const tooltipLineLeft = (metricsValue?.x || 0) - margin.left;
 
   const zoomBarWidth = Math.abs(
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
@@ -602,7 +604,7 @@ const GraphContent = ({
                 onMouseDown={displayZoomPreview}
                 onMouseUp={displayAddCommentTooltip}
               />
-              {tooltipData && (
+              {isMouseOver && containsMetrics && (
                 <Line
                   from={{ x: tooltipLineLeft, y: 0 }}
                   to={{ x: tooltipLineLeft, y: graphHeight }}
