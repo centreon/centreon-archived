@@ -58,6 +58,7 @@ services:
     # Contact
     Centreon\Domain\Contact\Interfaces\ContactInterface:
         class: Centreon\Domain\Contact\Contact
+        public: true
 
     Centreon\Domain\Contact\Interfaces\ContactServiceInterface:
         class: Centreon\Domain\Contact\ContactService
@@ -108,10 +109,10 @@ services:
         class: Centreon\Domain\PlatformTopology\PlatformTopologyService
 
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRepositoryRDB
+        class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRepositoryRDB
 
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRegisterRepositoryAPI
+        class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRegisterRepositoryAPI
 
     # Real time monitoring
     sqlRequestTranslator:
@@ -178,7 +179,19 @@ services:
         class: Centreon\Domain\PlatformInformation\PlatformInformationService
 
     Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformInformation\PlatformInformationRepositoryRDB
+        class: Centreon\Infrastructure\PlatformInformation\Repository\PlatformInformationRepositoryRDB
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
+
+    Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface:
+        class: Centreon\Infrastructure\PlatformInformation\Repository\PlatformInformationRepositoryRDB
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
+
+    Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation:
+        class: Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
 
     # Monitoring resources
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:

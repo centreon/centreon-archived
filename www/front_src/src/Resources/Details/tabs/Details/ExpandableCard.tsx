@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { isEmpty, pipe, reject, slice } from 'ramda';
 
 import {
   Typography,
@@ -56,8 +57,8 @@ const ExpandableCard = ({
   const [outputExpanded, setOutputExpanded] = React.useState(false);
 
   const lines = content.split(/\n|\\n/);
-  const threeFirstlines = lines.slice(0, 3);
-  const lastlines = lines.slice(2, lines.length);
+  const threeFirstLines = lines.slice(0, 3);
+  const lastLines = pipe(slice(3, lines.length), reject(isEmpty))(lines);
 
   const toggleOutputExpanded = (): void => {
     setOutputExpanded(!outputExpanded);
@@ -80,10 +81,10 @@ const ExpandableCard = ({
         >
           {title}
         </Typography>
-        {threeFirstlines.map(Line)}
-        {outputExpanded && lastlines.map(Line)}
+        {threeFirstLines.map(Line)}
+        {outputExpanded && lastLines.map(Line)}
       </CardContent>
-      {lastlines.length > 0 && (
+      {lastLines.length > 0 && (
         <>
           <Divider />
           <CardActions>

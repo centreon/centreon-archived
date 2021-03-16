@@ -2,13 +2,14 @@ import * as React from 'react';
 
 import { Bar } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
-import { max } from 'ramda';
+import { max, prop } from 'ramda';
 
-import { fade } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
-import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
 
 import { labelFrom, labelTo } from '../../../../../translatedLabels';
+import useAnnotationsContext from '../../Context';
 
 import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
@@ -18,9 +19,24 @@ type Props = {
   xScale: ScaleTime<number, number>;
   startDate: string;
   endDate: string;
-} & Omit<AnnotationProps, 'marker' | 'xIcon' | 'header'>;
+  Icon: (props) => JSX.Element;
+  ariaLabel: string;
+} & Omit<
+  AnnotationProps,
+  'marker' | 'xIcon' | 'header' | 'icon' | 'setAnnotationHovered'
+>;
+
+const useStyles = makeStyles((theme) => ({
+  icon: {
+    transition: theme.transitions.create('color', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+}));
 
 const AreaAnnotation = ({
+  Icon,
+  ariaLabel,
   color,
   graphHeight,
   xScale,
@@ -29,6 +45,15 @@ const AreaAnnotation = ({
   ...props
 }: Props): JSX.Element => {
   const { toDateTime } = useLocaleDateTimeFormat();
+
+  const classes = useStyles();
+
+  const {
+    annotationHovered,
+    setAnnotationHovered,
+    getFill,
+    getIconColor,
+  } = useAnnotationsContext();
 
   const xIconMargin = -iconSize / 2;
 
@@ -41,7 +66,9 @@ const AreaAnnotation = ({
       y={yMargin + iconSize + 2}
       width={xEnd - xStart}
       height={graphHeight + iconSize / 2}
-      fill={fade(color, 0.3)}
+      fill={getFill({ event: prop('event', props), color })}
+      onMouseEnter={() => setAnnotationHovered(() => prop('event', props))}
+      onMouseLeave={() => setAnnotationHovered(() => undefined)}
     />
   );
 
@@ -50,14 +77,34 @@ const AreaAnnotation = ({
 
   const header = `${from}${to}`;
 
-  return (
-    <Annotation
-      xIcon={xStart + (xEnd - xStart) / 2 + xIconMargin}
-      marker={area}
-      header={header}
-      {...props}
+  const icon = (
+    <Icon
+      aria-label={ariaLabel}
+      height={iconSize}
+      width={iconSize}
+      className={classes.icon}
+      style={{
+        color: getIconColor({
+          color,
+          event: prop('event', props),
+        }),
+      }}
     />
   );
+
+  return useMemoComponent({
+    Component: (
+      <Annotation
+        xIcon={xStart + (xEnd - xStart) / 2 + xIconMargin}
+        marker={area}
+        header={header}
+        icon={icon}
+        setAnnotationHovered={setAnnotationHovered}
+        {...props}
+      />
+    ),
+    memoProps: [annotationHovered],
+  });
 };
 
 export default AreaAnnotation;

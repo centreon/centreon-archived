@@ -4,24 +4,24 @@ import {
   Downtime,
   Parent,
   ResourceLinks,
-  Severity,
   NamedEntity,
 } from '../models';
 
 import { TimePeriodId } from './tabs/Graph/models';
 
 export interface ResourceDetails extends NamedEntity {
+  uuid: string;
   status: Status;
   parent: Parent;
   links: ResourceLinks;
-  severity: Severity;
+  severity_level: number;
   information: string;
   downtimes: Array<Downtime>;
   acknowledgement?: Acknowledgement;
   acknowledged: boolean;
   duration: string;
   tries: string;
-  poller_name?: string;
+  monitoring_server_name?: string;
   timezone?: string;
   last_status_change: string;
   last_check: string;
@@ -55,6 +55,7 @@ export interface TabParameters {
 }
 
 export interface DetailsUrlQueryParameters {
+  uuid: string;
   id: number;
   parentId?: number;
   parentType?: string;

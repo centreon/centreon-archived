@@ -49,8 +49,10 @@ const appState = {
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
   return new Array(entityCount).fill(0).map((_, index) => ({
+    uuid: `${index}`,
     id: index,
     name: `E${index}`,
+    severity_level: 1,
     status: {
       name: 'OK',
       severity_code: 5,
@@ -79,7 +81,11 @@ const fillEntities = (): Array<Resource> => {
         reporting: index % 3 === 0 ? 'uri' : null,
       },
       externals: {
-        notes_url: 'https://centreon.com',
+        action_url: null,
+        notes: {
+          label: null,
+          url: 'https://centreon.com',
+        },
       },
     },
     passive_checks: index % 8 === 0,

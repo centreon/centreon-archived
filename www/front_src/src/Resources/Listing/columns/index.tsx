@@ -36,7 +36,8 @@ import truncate from '../../truncate';
 
 import StateColumn from './State';
 import GraphColumn from './Graph';
-import UrlColumn from './Url';
+import NotesUrlColumn from './Url/Notes';
+import ActionUrlColumn from './Url/Action';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -77,13 +78,13 @@ const useStyles = makeStyles((theme) => ({
 const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
   const classes = useStyles();
 
-  if (!row.severity) {
+  if (!row.severity_level) {
     return null;
   }
 
   return (
     <StatusChip
-      label={row.severity.level.toString()}
+      label={row.severity_level?.toString()}
       severityCode={SeverityCode.None}
       classes={{
         root: classes.extraSmallChipContainer,
@@ -256,11 +257,19 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     sortField: 'parent_name',
   },
   {
-    id: 'url',
+    id: 'notes_url',
     label: '',
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
-    Component: UrlColumn,
+    Component: NotesUrlColumn,
+    sortable: false,
+  },
+  {
+    id: 'action_url',
+    label: '',
+    type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
+    Component: ActionUrlColumn,
     sortable: false,
   },
   {

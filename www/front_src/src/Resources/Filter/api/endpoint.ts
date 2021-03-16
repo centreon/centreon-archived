@@ -3,10 +3,11 @@ import {
   BuildListingEndpointParameters,
 } from '@centreon/ui';
 
-import { monitoringEndpoint } from '../../api/endpoint';
+import { baseEndpoint, monitoringEndpoint } from '../../api/endpoint';
 
 const hostgroupsEndpoint = `${monitoringEndpoint}/hostgroups`;
 const serviceGroupsEndpoint = `${monitoringEndpoint}/servicegroups`;
+const monitoringServersEndpoint = `${baseEndpoint}/monitoring/servers`;
 
 const buildHostGroupsEndpoint = (
   parameters: BuildListingEndpointParameters,
@@ -26,4 +27,17 @@ const buildServiceGroupsEndpoint = (
   });
 };
 
-export { buildHostGroupsEndpoint, buildServiceGroupsEndpoint };
+const buildMonitoringServersEndpoint = (
+  parameters: BuildListingEndpointParameters,
+): string => {
+  return buildListingEndpoint({
+    baseEndpoint: monitoringServersEndpoint,
+    parameters,
+  });
+};
+
+export {
+  buildHostGroupsEndpoint,
+  buildServiceGroupsEndpoint,
+  buildMonitoringServersEndpoint,
+};

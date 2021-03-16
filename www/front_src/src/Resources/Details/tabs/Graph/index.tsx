@@ -5,8 +5,8 @@ import { path } from 'ramda';
 import { Theme, makeStyles } from '@material-ui/core';
 
 import { TabProps } from '..';
-import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
-import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
+import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
+import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { ResourceContext, useResourceContext } from '../../../Context';
 import memoizeComponent from '../../../memoizedComponent';
@@ -65,7 +65,7 @@ const GraphTabContent = ({
 
   return (
     <div className={classes.container}>
-      <TimePeriodSelect
+      <TimePeriodButtonGroup
         selectedTimePeriodId={selectedTimePeriod.id}
         onChange={changeSelectedTimePeriod}
       />

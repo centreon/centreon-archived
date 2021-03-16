@@ -13,7 +13,8 @@ interface Props {
   xScale: ScaleTime<number, number>;
   timeline: Array<TimelineEvent>;
   graphHeight: number;
-  icon: JSX.Element;
+  Icon: (props) => JSX.Element;
+  ariaLabel: string;
   color: string;
 }
 
@@ -22,7 +23,8 @@ const EventAnnotations = ({
   xScale,
   timeline,
   graphHeight,
-  icon,
+  Icon,
+  ariaLabel,
   color,
 }: Props): JSX.Element => {
   const events = filter<TimelineEvent>(propEq('type', type), timeline);
@@ -31,7 +33,8 @@ const EventAnnotations = ({
     <>
       {events.map((event) => {
         const props = {
-          icon,
+          Icon,
+          ariaLabel,
           graphHeight,
           color,
           xScale,
