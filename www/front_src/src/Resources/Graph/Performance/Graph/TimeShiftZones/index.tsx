@@ -20,7 +20,7 @@ interface TimeShiftContextProps {
   graphWidth: number;
   marginLeft: number;
   marginTop: number;
-  canNavigateInGraph: boolean;
+  canAdjustTimePeriod: boolean;
   sendingGetGraphDataRequest: boolean;
   shiftTime?: (direction: TimeShiftDirection) => void;
 }
@@ -38,12 +38,16 @@ const TimeShifts = (): JSX.Element | null => {
     setDirectionHovered,
   ] = React.useState<TimeShiftDirection | null>(null);
 
-  const { graphWidth, canNavigateInGraph } = useTimeShiftContext();
+  const {
+    graphWidth,
+    canAdjustTimePeriod,
+    sendingGetGraphDataRequest,
+  } = useTimeShiftContext();
 
   const hoverDirection = (direction: TimeShiftDirection | null) => () =>
-    setDirectionHovered(direction);
+    not(sendingGetGraphDataRequest) && setDirectionHovered(direction);
 
-  if (not(canNavigateInGraph)) {
+  if (not(canAdjustTimePeriod)) {
     return null;
   }
 

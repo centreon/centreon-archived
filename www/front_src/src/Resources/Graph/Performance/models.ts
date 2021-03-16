@@ -42,7 +42,7 @@ export interface Line {
   stackOrder: number | null;
 }
 
-export interface NavigateInGraphProps {
+export interface AdjustTimePeriodProps {
   start: Date;
   end: Date;
 }
