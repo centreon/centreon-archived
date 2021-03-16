@@ -16098,3 +16098,9 @@ msgstr "En arrière"
 
 msgid "The end date must be greater than the start date"
 msgstr "La date de fin doit être supérieure à la date de début"
+
+msgid "Graph options"
+mststr "Options de graph"
+
+msgid "Toggle tooltip values"
+msgstr "Basculer l'info-bulle des valeurs"

@@ -15115,3 +15115,9 @@ msgstr ""
 
 msgid "The end date must be greater than the start date"
 msgstr ""
+
+msgid "Graph options"
+mststr ""
+
+msgid "Toggle tooltip values"
+msgstr ""
