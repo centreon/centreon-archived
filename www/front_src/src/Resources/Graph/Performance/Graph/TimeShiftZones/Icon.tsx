@@ -44,28 +44,27 @@ const TimeShiftIcon = ({
     sendingGetGraphDataRequest,
   } = useTimeShiftContext();
 
-  const translateWithIcon = () =>
-    not(sendingGetGraphDataRequest) && shiftTime?.(direction);
-
   const getIconColor = () =>
     sendingGetGraphDataRequest || not(equals(directionHovered, direction))
       ? 'disabled'
       : 'primary';
 
+  const svgProps = {
+    y: graphHeight / 2 - timeShiftIconSize / 2 + marginTop,
+    x: xIcon,
+    height: timeShiftIconSize,
+    width: timeShiftIconSize,
+    onMouseEnter: hoverDirection(direction),
+    onMouseLeave: hoverDirection(null),
+    onClick: () => not(sendingGetGraphDataRequest) && shiftTime?.(direction),
+    className: classes.icon,
+    'aria-label': t(ariaLabel),
+  };
+
   return useMemoComponent({
     Component: (
       <g>
-        <svg
-          y={graphHeight / 2 - timeShiftIconSize / 2 + marginTop}
-          x={xIcon}
-          height={timeShiftIconSize}
-          width={timeShiftIconSize}
-          onClick={translateWithIcon}
-          onMouseEnter={hoverDirection(direction)}
-          onMouseLeave={hoverDirection(null)}
-          className={classes.icon}
-          aria-label={t(ariaLabel)}
-        >
+        <svg {...svgProps}>
           <rect
             width={timeShiftIconSize}
             height={timeShiftIconSize}
@@ -81,6 +80,7 @@ const TimeShiftIcon = ({
       ariaLabel,
       sendingGetGraphDataRequest,
       directionHovered,
+      graphHeight,
     ],
   });
 };

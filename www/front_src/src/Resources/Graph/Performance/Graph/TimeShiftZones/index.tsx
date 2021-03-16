@@ -38,10 +38,14 @@ const TimeShifts = (): JSX.Element | null => {
     setDirectionHovered,
   ] = React.useState<TimeShiftDirection | null>(null);
 
-  const { graphWidth, canAdjustTimePeriod } = useTimeShiftContext();
+  const {
+    graphWidth,
+    canAdjustTimePeriod,
+    sendingGetGraphDataRequest,
+  } = useTimeShiftContext();
 
   const hoverDirection = (direction: TimeShiftDirection | null) => () =>
-    setDirectionHovered(direction);
+    not(sendingGetGraphDataRequest) && setDirectionHovered(direction);
 
   if (not(canAdjustTimePeriod)) {
     return null;
