@@ -54,7 +54,7 @@ export interface GraphOptions {
 
 export interface GraphTabParameters {
   selectedTimePeriodId?: TimePeriodId;
-  selectedCustomPeriod?: StoredCustomTimePeriod;
+  selectedCustomTimePeriod?: StoredCustomTimePeriod;
   graphOptions?: GraphOptions;
 }
 

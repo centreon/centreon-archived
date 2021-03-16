@@ -48,6 +48,8 @@ const GraphTabContent = ({
 }: GraphTabContentProps): JSX.Element => {
   const classes = useStyles();
 
+  console.log(tabParameters);
+
   const {
     selectedTimePeriod,
     changeSelectedTimePeriod,
@@ -65,16 +67,13 @@ const GraphTabContent = ({
       ['graph', 'selectedCustomTimePeriod'],
       tabParameters,
     ),
-    defaultGraphOptions: path(
-      ['graph', 'selectedCustomTimePeriod'],
-      tabParameters,
-    ),
+    defaultGraphOptions: path(['graph', 'graphOptions'], tabParameters),
     onTimePeriodChange: setGraphTabParameters,
   });
 
   const changeTabGraphOptions = (graphOptions: GraphOptions) => {
     setGraphTabParameters({
-      ...tabParameters,
+      ...tabParameters.graph,
       graphOptions,
     });
   };

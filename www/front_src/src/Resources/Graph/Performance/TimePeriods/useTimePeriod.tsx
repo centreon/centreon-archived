@@ -36,7 +36,7 @@ interface Props {
   defaultGraphOptions?: GraphOptions;
   onTimePeriodChange?: ({
     selectedTimePeriodId,
-    selectedCustomPeriod,
+    selectedCustomTimePeriod,
     graphOptions,
   }: GraphTabParameters) => void;
 }
@@ -177,7 +177,7 @@ const useTimePeriod = ({
     });
     setCustomTimePeriod(newCustomTimePeriod);
     onTimePeriodChange?.({
-      selectedCustomPeriod: {
+      selectedCustomTimePeriod: {
         start: newCustomTimePeriod.start.toISOString(),
         end: newCustomTimePeriod.end.toISOString(),
       },
@@ -200,7 +200,7 @@ const useTimePeriod = ({
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
     onTimePeriodChange?.({
-      selectedCustomPeriod: {
+      selectedCustomTimePeriod: {
         start: zoomOrShiftedTimeProps.start.toISOString(),
         end: zoomOrShiftedTimeProps.end.toISOString(),
       },

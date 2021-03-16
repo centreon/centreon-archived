@@ -100,7 +100,7 @@ const ServicesTabContent = ({
       tabParameters,
     ),
     defaultGraphOptions: path(
-      ['services', 'graphTimePeriod', 'selectedCustomTimePeriod'],
+      ['services', 'graphTimePeriod', 'graphOptions'],
       tabParameters,
     ),
     onTimePeriodChange: (graphTimePeriod) => {
