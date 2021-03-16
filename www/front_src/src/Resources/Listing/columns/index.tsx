@@ -78,13 +78,13 @@ const useStyles = makeStyles((theme) => ({
 const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
   const classes = useStyles();
 
-  if (!row.severity) {
+  if (!row.severity_level) {
     return null;
   }
 
   return (
     <StatusChip
-      label={row.severity.level.toString()}
+      label={row.severity_level?.toString()}
       severityCode={SeverityCode.None}
       classes={{
         root: classes.extraSmallChipContainer,
