@@ -29,7 +29,7 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
   item: {
     display: 'grid',
     gridTemplateColumns: 'min-content minmax(50px, 1fr)',
-    margin: theme.spacing(0, 1, 1, 0),
+    margin: theme.spacing(0, 1, 1, 1),
     height: theme.spacing(5.5),
   },
   icon: {
