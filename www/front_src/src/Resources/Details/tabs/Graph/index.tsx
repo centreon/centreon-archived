@@ -48,8 +48,6 @@ const GraphTabContent = ({
 }: GraphTabContentProps): JSX.Element => {
   const classes = useStyles();
 
-  console.log(tabParameters);
-
   const {
     selectedTimePeriod,
     changeSelectedTimePeriod,
