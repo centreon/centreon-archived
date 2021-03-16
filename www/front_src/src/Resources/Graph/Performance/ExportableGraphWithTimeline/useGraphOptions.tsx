@@ -16,7 +16,7 @@ export const GraphOptionsContext = React.createContext<
 export const useGraphOptionsContext = (): UseGraphOptions =>
   React.useContext(GraphOptionsContext) as UseGraphOptions;
 
-const defaultGraphOptions = {
+export const defaultGraphOptions = {
   tooltipValues: {
     id: GraphOptionId.tooltipValues,
     label: labelToggleTooltipValues,

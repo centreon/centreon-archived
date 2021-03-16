@@ -73,7 +73,10 @@ import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import { TabBounds, TabContext } from '../../../Details';
 import memoizeComponent from '../../../memoizedComponent';
-import { useGraphOptionsContext } from '../ExportableGraphWithTimeline/useGraphOptions';
+import {
+  defaultGraphOptions,
+  useGraphOptionsContext,
+} from '../ExportableGraphWithTimeline/useGraphOptions';
 
 import MetricsTooltip from './MetricsTooltip';
 import AddCommentForm from './AddCommentForm';
@@ -255,7 +258,9 @@ const GraphContent = ({
   );
 
   const context = React.useContext<TabBounds>(TabContext);
-  const { graphOptions } = useGraphOptionsContext();
+  const graphOptions =
+    useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
+
   const { setMetricsValue, metricsValue } = useMetricsValueContext();
 
   const displayTooltipValues = path(
