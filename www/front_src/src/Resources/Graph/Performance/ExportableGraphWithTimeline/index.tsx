@@ -34,15 +34,10 @@ import {
   TimePeriod,
 } from '../../../Details/tabs/Graph/models';
 import { Resource } from '../../../models';
-import {
-  GraphOptions as GraphOptionsProps,
-  GraphTabParameters,
-  ResourceDetails,
-} from '../../../Details/models';
+import { ResourceDetails } from '../../../Details/models';
 import { NavigateInGraphProps } from '../models';
 
 import exportToPng from './exportToPng';
-import useGraphOptions, { GraphOptionsContext } from './useGraphOptions';
 import GraphOptions from './GraphOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({

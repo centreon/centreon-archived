@@ -6,7 +6,6 @@ import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { CustomTimePeriod, TimePeriod } from '../Graph/models';
 import { NavigateInGraphProps } from '../../../Graph/Performance/models';
-import { GraphOptions, GraphTabParameters } from '../../models';
 
 const MemoizedPerformanceGraph = React.memo(
   ExportablePerformanceGraphWithTimeline,

@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { equals, isNil, or } from 'ramda';
-
 import { GraphOptions, GraphTabParameters } from '../../../Details/models';
 import { labelToggleTooltipValues } from '../../../translatedLabels';
 import { GraphOptionId } from '../models';
