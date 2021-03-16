@@ -7,9 +7,9 @@ import { fade, makeStyles, useTheme } from '@material-ui/core';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { useTranslationsContext, TranslationDirection } from '.';
+import { useTimeShiftContext, TimeShiftDirection } from '.';
 
-export const translationZoneWidth = 50;
+export const timeShiftZoneWidth = 50;
 
 const useStyles = makeStyles({
   translationZone: {
@@ -18,12 +18,12 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-  direction: TranslationDirection;
-  directionHovered: TranslationDirection | null;
-  hoverDirection: (direction: TranslationDirection | null) => () => void;
+  direction: TimeShiftDirection;
+  directionHovered: TimeShiftDirection | null;
+  hoverDirection: (direction: TimeShiftDirection | null) => () => void;
 }
 
-const TranslationZone = ({
+const TimeShiftZone = ({
   direction,
   hoverDirection,
   directionHovered,
@@ -36,23 +36,23 @@ const TranslationZone = ({
     graphWidth,
     marginLeft,
     marginTop,
-    translate,
-  } = useTranslationsContext();
+    shiftTime,
+  } = useTimeShiftContext();
 
   return useMemoComponent({
     Component: (
       <Bar
         x={
-          (equals(direction, TranslationDirection.backward)
-            ? negate(translationZoneWidth)
+          (equals(direction, TimeShiftDirection.backward)
+            ? negate(timeShiftZoneWidth)
             : graphWidth) + marginLeft
         }
         y={marginTop}
-        width={translationZoneWidth}
+        width={timeShiftZoneWidth}
         height={graphHeight}
         onMouseOver={hoverDirection(direction)}
         onMouseLeave={hoverDirection(null)}
-        onClick={() => translate?.(direction)}
+        onClick={() => shiftTime?.(direction)}
         fill={
           equals(directionHovered, direction)
             ? fade(theme.palette.common.white, 0.5)
@@ -71,4 +71,4 @@ const TranslationZone = ({
   });
 };
 
-export default TranslationZone;
+export default TimeShiftZone;

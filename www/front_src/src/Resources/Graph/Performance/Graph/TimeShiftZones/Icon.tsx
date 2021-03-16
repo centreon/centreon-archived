@@ -7,16 +7,16 @@ import { makeStyles } from '@material-ui/core';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { TranslationDirection, useTranslationsContext } from '.';
+import { TimeShiftDirection, useTimeShiftContext } from '.';
 
-export const translationIconSize = 20;
+export const timeShiftIconSize = 20;
 
 interface Props {
   xIcon: number;
   Icon: (props) => JSX.Element;
-  direction: TranslationDirection;
-  directionHovered: TranslationDirection | null;
-  hoverDirection: (direction: TranslationDirection | null) => () => void;
+  direction: TimeShiftDirection;
+  directionHovered: TimeShiftDirection | null;
+  hoverDirection: (direction: TimeShiftDirection | null) => () => void;
   ariaLabel: string;
 }
 
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
   },
 });
 
-const TranslationIcon = ({
+const TimeShiftIcon = ({
   xIcon,
   Icon,
   direction,
@@ -40,12 +40,12 @@ const TranslationIcon = ({
   const {
     graphHeight,
     marginTop,
-    translate,
+    shiftTime,
     sendingGetGraphDataRequest,
-  } = useTranslationsContext();
+  } = useTimeShiftContext();
 
   const translateWithIcon = () =>
-    not(sendingGetGraphDataRequest) && translate?.(direction);
+    not(sendingGetGraphDataRequest) && shiftTime?.(direction);
 
   const getIconColor = () =>
     sendingGetGraphDataRequest || not(equals(directionHovered, direction))
@@ -56,10 +56,10 @@ const TranslationIcon = ({
     Component: (
       <g>
         <svg
-          y={graphHeight / 2 - translationIconSize / 2 + marginTop}
+          y={graphHeight / 2 - timeShiftIconSize / 2 + marginTop}
           x={xIcon}
-          height={translationIconSize}
-          width={translationIconSize}
+          height={timeShiftIconSize}
+          width={timeShiftIconSize}
           onClick={translateWithIcon}
           onMouseEnter={hoverDirection(direction)}
           onMouseLeave={hoverDirection(null)}
@@ -67,8 +67,8 @@ const TranslationIcon = ({
           aria-label={t(ariaLabel)}
         >
           <rect
-            width={translationIconSize}
-            height={translationIconSize}
+            width={timeShiftIconSize}
+            height={timeShiftIconSize}
             fill="transparent"
           />
           <Icon color={getIconColor()} />
@@ -85,4 +85,4 @@ const TranslationIcon = ({
   });
 };
 
-export default TranslationIcon;
+export default TimeShiftIcon;

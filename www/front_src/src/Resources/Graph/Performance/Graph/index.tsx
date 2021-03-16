@@ -73,10 +73,10 @@ import Annotations from './Annotations';
 import Axes from './Axes';
 import { AnnotationsContext } from './Context';
 import useAnnotations from './useAnnotations';
-import TranslationZones, {
-  TranslationContext,
-  TranslationDirection,
-} from './TranslationZones';
+import TimeShiftZones, {
+  TimeShiftContext,
+  TimeShiftDirection,
+} from './TimeShiftZones';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -166,7 +166,7 @@ interface GraphContentProps {
   showAddCommentTooltip: (args) => void;
   format: (parameters) => string;
   applyZoom?: (props: NavigateInGraphProps) => void;
-  translate?: (direction: TranslationDirection) => void;
+  shiftTime?: (direction: TimeShiftDirection) => void;
   sendingGetGraphDataRequest: boolean;
   canNavigateInGraph: boolean;
 }
@@ -208,7 +208,7 @@ const GraphContent = ({
   showAddCommentTooltip,
   format,
   applyZoom,
-  translate,
+  shiftTime,
   sendingGetGraphDataRequest,
   canNavigateInGraph,
 }: GraphContentProps): JSX.Element => {
@@ -571,7 +571,7 @@ const GraphContent = ({
                 />
               )}
             </Group>
-            <TranslationContext.Provider
+            <TimeShiftContext.Provider
               value={{
                 graphHeight,
                 graphWidth,
@@ -579,11 +579,11 @@ const GraphContent = ({
                 sendingGetGraphDataRequest,
                 marginTop: margin.top,
                 marginLeft: margin.left,
-                translate,
+                shiftTime,
               }}
             >
-              <TranslationZones />
-            </TranslationContext.Provider>
+              <TimeShiftZones />
+            </TimeShiftContext.Provider>
           </svg>
           {addCommentTooltipOpen && (
             <Paper
