@@ -101,7 +101,7 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
         $stmt = $this->pearDBMonitoring->prepare($query);
         foreach ($queryValues as $name => $parameters) {
             list($value, $type) = $parameters;
-            $stmt->bindParam($name, $value, $type);
+            $stmt->bindValue($name, $value, $type);
         }
         $stmt->execute();
 

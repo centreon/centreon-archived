@@ -118,12 +118,11 @@ $attrTimeperiods = array(
     'multiple' => false,
     'linkedObject' => 'centreonTimeperiod'
 );
-$metricAvRoute = './api/internal.php?object=centreon_monitoring_metric&action=list';
-$attrMetric = array(
+$attrMetric = [
     'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => $metricAvRoute,
+    'availableDatasetRoute' => './api/internal.php?object=centreon_monitoring_metric&action=list',
     'multiple' => false
-);
+];
 $contactAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list';
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
@@ -171,7 +170,7 @@ $form->addGroup($tab, 'meta_select_mode', _("Selection Mode"), '<br />');
 $form->setDefaults(array('meta_select_mode' => array('meta_select_mode' => '1')));
 
 $form->addElement('text', 'regexp_str', _("SQL LIKE-clause expression"), $attrsText);
-$form->addElement('select2', 'metric', _("Metric"), array(), $attrMetric);
+$form->addElement('select2', 'metric', _("Metric"), [], $attrMetric);
 
 /*
  * Check information
