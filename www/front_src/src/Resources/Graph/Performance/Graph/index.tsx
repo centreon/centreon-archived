@@ -42,7 +42,7 @@ import { grey } from '@material-ui/core/colors';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
-import { TimeValue, Line as LineModel, NavigateInGraphProps } from '../models';
+import { TimeValue, Line as LineModel, AdjustTimePeriodProps } from '../models';
 import {
   getTime,
   getMin,
@@ -165,10 +165,10 @@ interface GraphContentProps {
   hideAddCommentTooltip: () => void;
   showAddCommentTooltip: (args) => void;
   format: (parameters) => string;
-  applyZoom?: (props: NavigateInGraphProps) => void;
+  applyZoom?: (props: AdjustTimePeriodProps) => void;
   shiftTime?: (direction: TimeShiftDirection) => void;
   sendingGetGraphDataRequest: boolean;
-  canNavigateInGraph: boolean;
+  canAdjustTimePeriod: boolean;
 }
 
 const getScale = ({
@@ -210,7 +210,7 @@ const GraphContent = ({
   applyZoom,
   shiftTime,
   sendingGetGraphDataRequest,
-  canNavigateInGraph,
+  canAdjustTimePeriod,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles({ onAddComment });
@@ -575,7 +575,7 @@ const GraphContent = ({
               value={{
                 graphHeight,
                 graphWidth,
-                canNavigateInGraph,
+                canAdjustTimePeriod,
                 sendingGetGraphDataRequest,
                 marginTop: margin.top,
                 marginLeft: margin.left,
@@ -641,7 +641,7 @@ const memoProps = [
   'resource',
   'eventAnnotationsActive',
   'sendingGetGraphDataRequest',
-  'canNavigateInGraph',
+  'canAdjustTimePeriod',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({

@@ -15,7 +15,7 @@ import {
   ChangeCustomTimePeriodProps,
   StoredCustomTimePeriod,
 } from '../../../Details/tabs/Graph/models';
-import { NavigateInGraphProps } from '../models';
+import { AdjustTimePeriodProps } from '../models';
 
 dayjs.extend(duration);
 
@@ -26,7 +26,7 @@ interface TimePeriodState {
   getIntervalDates: () => [string, string];
   customTimePeriod: CustomTimePeriod;
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
-  navigateInGraph: (props: NavigateInGraphProps) => void;
+  adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
 }
 
 interface OnTimePeriodChangeProps {
@@ -188,7 +188,7 @@ const useTimePeriod = ({
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
   };
 
-  const navigateInGraph = (zoomOrShiftedTimeProps: NavigateInGraphProps) => {
+  const adjustTimePeriod = (zoomOrShiftedTimeProps: AdjustTimePeriodProps) => {
     setCustomTimePeriod(getNewCustomTimePeriod(zoomOrShiftedTimeProps));
     setSelectedTimePeriod(null);
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
@@ -211,7 +211,7 @@ const useTimePeriod = ({
     getIntervalDates: (): [string, string] => getDates(selectedTimePeriod),
     customTimePeriod,
     changeCustomTimePeriod,
-    navigateInGraph,
+    adjustTimePeriod,
   };
 };
 

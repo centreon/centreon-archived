@@ -85,7 +85,7 @@ const ServicesTabContent = ({
     getIntervalDates,
     customTimePeriod,
     changeCustomTimePeriod,
-    navigateInGraph,
+    adjustTimePeriod,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
@@ -208,7 +208,7 @@ const ServicesTabContent = ({
               getIntervalDates={getIntervalDates}
               selectedTimePeriod={selectedTimePeriod}
               customTimePeriod={customTimePeriod}
-              navigateInGraph={navigateInGraph}
+              adjustTimePeriod={adjustTimePeriod}
             />
           ) : (
             <ServiceList

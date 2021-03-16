@@ -40,7 +40,7 @@ import {
   GraphData,
   TimeValue,
   Line as LineModel,
-  NavigateInGraphProps,
+  AdjustTimePeriodProps,
 } from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
 import { TimeShiftDirection } from './Graph/TimeShiftZones';
@@ -56,12 +56,12 @@ interface Props {
   onAddComment?: (commentParameters: CommentParameters) => void;
   tooltipPosition?: [number, number];
   onTooltipDisplay?: (position?: [number, number]) => void;
-  navigateInGraph?: (props: NavigateInGraphProps) => void;
+  adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
 }
 
 interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
-  canNavigateInGraph: boolean;
+  canAdjustTimePeriod: boolean;
 }
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
@@ -94,12 +94,12 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   },
   graphTranslation: {
     display: 'grid',
-    gridTemplateColumns: ({ canNavigateInGraph }) =>
-      canNavigateInGraph ? 'min-content auto min-content' : 'auto',
+    gridTemplateColumns: ({ canAdjustTimePeriod }) =>
+      canAdjustTimePeriod ? 'min-content auto min-content' : 'auto',
     columnGap: `${theme.spacing(1)}px`,
     width: '90%',
-    justifyContent: ({ canNavigateInGraph }) =>
-      canNavigateInGraph ? 'space-between' : 'center',
+    justifyContent: ({ canAdjustTimePeriod }) =>
+      canAdjustTimePeriod ? 'space-between' : 'center',
     margin: theme.spacing(0, 1),
   },
   loadingContainer: {
@@ -121,12 +121,12 @@ const PerformanceGraph = ({
   onTooltipDisplay,
   resource,
   onAddComment,
-  navigateInGraph,
+  adjustTimePeriod,
   customTimePeriod,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     graphHeight,
-    canNavigateInGraph: not(isNil(navigateInGraph)),
+    canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
   });
   const { t } = useTranslation();
 
@@ -249,7 +249,7 @@ const PerformanceGraph = ({
       return;
     }
 
-    navigateInGraph?.({
+    adjustTimePeriod?.({
       start: getTranslatedDate({
         property: CustomTimePeriodProperty.start,
         direction,
@@ -284,10 +284,10 @@ const PerformanceGraph = ({
             resource={resource}
             onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}
-            applyZoom={navigateInGraph}
+            applyZoom={adjustTimePeriod}
             shiftTime={shiftTime}
             sendingGetGraphDataRequest={sendingGetGraphDataRequest}
-            canNavigateInGraph={not(isNil(navigateInGraph))}
+            canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
           />
         )}
       </ParentSize>

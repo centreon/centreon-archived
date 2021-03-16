@@ -35,7 +35,7 @@ import {
 } from '../../../Details/tabs/Graph/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
-import { NavigateInGraphProps } from '../models';
+import { AdjustTimePeriodProps } from '../models';
 
 import exportToPng from './exportToPng';
 
@@ -66,7 +66,7 @@ interface Props {
   onTooltipDisplay?: (position?: [number, number]) => void;
   tooltipPosition?: [number, number];
   customTimePeriod: CustomTimePeriod;
-  navigateInGraph?: (props: NavigateInGraphProps) => void;
+  adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
@@ -78,7 +78,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   onTooltipDisplay,
   tooltipPosition,
   customTimePeriod,
-  navigateInGraph,
+  adjustTimePeriod,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -229,7 +229,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           onAddComment={addCommentToTimeline}
           onTooltipDisplay={onTooltipDisplay}
           tooltipPosition={tooltipPosition}
-          navigateInGraph={navigateInGraph}
+          adjustTimePeriod={adjustTimePeriod}
           customTimePeriod={customTimePeriod}
         />
       </div>
