@@ -15,7 +15,11 @@ import {
   ChangeCustomTimePeriodProps,
   StoredCustomTimePeriod,
 } from '../../../Details/tabs/Graph/models';
-import { GraphOptions, GraphTabParameters } from '../../../Details/models';
+import {
+  GraphOptions,
+  GraphTabParameters,
+  ResourceDetails,
+} from '../../../Details/models';
 import { AdjustTimePeriodProps } from '../models';
 
 dayjs.extend(duration);
@@ -26,6 +30,7 @@ interface TimePeriodState {
   periodQueryParameters: string;
   getIntervalDates: () => [string, string];
   customTimePeriod: CustomTimePeriod;
+  displayLoader: boolean;
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
   adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
 }
@@ -34,6 +39,7 @@ interface Props {
   defaultSelectedTimePeriodId?: TimePeriodId;
   defaultSelectedCustomTimePeriod?: StoredCustomTimePeriod;
   defaultGraphOptions?: GraphOptions;
+  details?: ResourceDetails;
   onTimePeriodChange?: ({
     selectedTimePeriodId,
     selectedCustomTimePeriod,
@@ -51,8 +57,10 @@ const useTimePeriod = ({
   defaultSelectedTimePeriodId,
   defaultSelectedCustomTimePeriod,
   defaultGraphOptions,
+  details,
   onTimePeriodChange,
 }: Props): TimePeriodState => {
+  const [displayLoader, setDisplayLoader] = React.useState<boolean>(true);
   const defaultTimePeriod = cond([
     [
       (timePeriodId) =>
@@ -165,6 +173,7 @@ const useTimePeriod = ({
       timePeriod,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
+    setDisplayLoader(true);
   };
 
   const changeCustomTimePeriod = ({
@@ -189,9 +198,11 @@ const useTimePeriod = ({
       endDate: newCustomTimePeriod.end,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
+    setDisplayLoader(true);
   };
 
   const adjustTimePeriod = (zoomOrShiftedTimeProps: AdjustTimePeriodProps) => {
+    setDisplayLoader(true);
     setCustomTimePeriod(getNewCustomTimePeriod(zoomOrShiftedTimeProps));
     setSelectedTimePeriod(null);
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
@@ -208,6 +219,24 @@ const useTimePeriod = ({
     });
   };
 
+  React.useEffect(() => {
+    console.log(selectedTimePeriod);
+    if (isNil(selectedTimePeriod)) {
+      return;
+    }
+
+    setPeriodQueryParameters(
+      getGraphQueryParameters({
+        timePeriod: selectedTimePeriod,
+      }),
+    );
+
+    const newTimePeriod = getTimeperiodFromNow(selectedTimePeriod);
+
+    setCustomTimePeriod(newTimePeriod);
+    setDisplayLoader(false);
+  }, [details]);
+
   return {
     changeSelectedTimePeriod,
     selectedTimePeriod,
@@ -216,6 +245,7 @@ const useTimePeriod = ({
     customTimePeriod,
     changeCustomTimePeriod,
     adjustTimePeriod,
+    displayLoader,
   };
 };
 

@@ -90,6 +90,7 @@ const ServicesTabContent = ({
     customTimePeriod,
     changeCustomTimePeriod,
     adjustTimePeriod,
+    displayLoader,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
@@ -103,6 +104,7 @@ const ServicesTabContent = ({
       ['services', 'graphTimePeriod', 'graphOptions'],
       tabParameters,
     ),
+    details,
     onTimePeriodChange: (graphTimePeriod) => {
       setServicesTabParameters({
         graphMode,
@@ -233,6 +235,7 @@ const ServicesTabContent = ({
                 selectedTimePeriod={selectedTimePeriod}
                 customTimePeriod={customTimePeriod}
                 adjustTimePeriod={adjustTimePeriod}
+                displayLoader={displayLoader}
               />
             </GraphOptionsContext.Provider>
           ) : (

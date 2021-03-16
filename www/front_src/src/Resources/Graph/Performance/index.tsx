@@ -59,6 +59,7 @@ interface Props {
   onTooltipDisplay?: (position?: [number, number]) => void;
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
+  displayLoader?: boolean;
 }
 
 interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
@@ -124,6 +125,7 @@ const PerformanceGraph = ({
   onAddComment,
   adjustTimePeriod,
   customTimePeriod,
+  displayLoader = true,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     graphHeight,
@@ -135,7 +137,6 @@ const PerformanceGraph = ({
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
-  const [displayLoader, setDisplayLoader] = React.useState<boolean>(false);
 
   const {
     sendRequest: sendGetGraphDataRequest,
@@ -156,15 +157,7 @@ const PerformanceGraph = ({
       setTitle(graphData.global.title);
       setBase(graphData.global.base);
     });
-  }, [endpoint, resource]);
-
-  React.useEffect(() => {
-    setDisplayLoader(true);
   }, [endpoint]);
-
-  React.useEffect(() => {
-    setDisplayLoader(false);
-  }, [resource]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return <LoadingSkeleton graphHeight={graphHeight} />;
@@ -299,7 +292,7 @@ const PerformanceGraph = ({
               applyZoom={adjustTimePeriod}
               shiftTime={shiftTime}
               sendingGetGraphDataRequest={
-                displayLoader && sendingGetGraphDataRequest
+                sendingGetGraphDataRequest && displayLoader
               }
               canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
             />
