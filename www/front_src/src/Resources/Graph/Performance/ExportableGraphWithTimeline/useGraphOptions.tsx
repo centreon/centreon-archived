@@ -1,7 +1,10 @@
 import * as React from 'react';
 
 import { GraphOptions, GraphTabParameters } from '../../../Details/models';
-import { labelToggleTooltipValues } from '../../../translatedLabels';
+import {
+  labelDisplayEvents,
+  labelTooltipValues,
+} from '../../../translatedLabels';
 import { GraphOptionId } from '../models';
 
 interface UseGraphOptions {
@@ -19,7 +22,12 @@ export const useGraphOptionsContext = (): UseGraphOptions =>
 export const defaultGraphOptions = {
   tooltipValues: {
     id: GraphOptionId.tooltipValues,
-    label: labelToggleTooltipValues,
+    label: labelTooltipValues,
+    value: false,
+  },
+  displayEvents: {
+    id: GraphOptionId.displayEvents,
+    label: labelDisplayEvents,
     value: false,
   },
 };
@@ -33,9 +41,10 @@ const useGraphOptions = ({
   graphTabParameters,
   changeTabGraphOptions,
 }: UseGraphOptionsProps): UseGraphOptions => {
-  const [graphOptions, setGraphOptions] = React.useState<GraphOptions>(
-    graphTabParameters?.graphOptions || defaultGraphOptions,
-  );
+  const [graphOptions, setGraphOptions] = React.useState<GraphOptions>({
+    ...defaultGraphOptions,
+    ...graphTabParameters?.graphOptions,
+  });
 
   const changeGraphOptions = (graphOptionId: GraphOptionId) => () => {
     const newGraphOptions = {

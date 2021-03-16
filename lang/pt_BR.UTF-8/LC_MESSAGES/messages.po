@@ -15119,5 +15119,5 @@ msgstr ""
 msgid "Graph options"
 mststr ""
 
-msgid "Toggle tooltip values"
+msgid "Tooltip values"
 msgstr ""

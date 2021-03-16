@@ -116,7 +116,6 @@ interface Props {
   timeline?: Array<TimelineEvent>;
   resource: Resource | ResourceDetails;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  eventAnnotationsActive: boolean;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
@@ -168,7 +167,6 @@ interface GraphContentProps {
   timeline?: Array<TimelineEvent>;
   tooltipPosition?: [number, number];
   resource: Resource | ResourceDetails;
-  eventAnnotationsActive: boolean;
   addCommentTooltipLeft?: number;
   addCommentTooltipTop?: number;
   addCommentTooltipOpen: boolean;
@@ -210,7 +208,6 @@ const GraphContent = ({
   timeline,
   tooltipPosition,
   resource,
-  eventAnnotationsActive,
   addCommentTooltipLeft,
   addCommentTooltipTop,
   addCommentTooltipOpen,
@@ -265,6 +262,10 @@ const GraphContent = ({
 
   const displayTooltipValues = path(
     [GraphOptionId.tooltipValues, 'value'],
+    graphOptions,
+  );
+  const displayEventAnnotations = path(
+    [GraphOptionId.displayEvents, 'value'],
     graphOptions,
   );
 
@@ -582,7 +583,7 @@ const GraphContent = ({
                 xScale={xScale}
                 graphHeight={graphHeight}
               />
-              {eventAnnotationsActive && (
+              {displayEventAnnotations && (
                 <MemoizedAnnotations
                   xScale={xScale}
                   graphHeight={graphHeight}

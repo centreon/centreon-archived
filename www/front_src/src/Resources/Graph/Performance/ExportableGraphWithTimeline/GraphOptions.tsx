@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   optionLabel: {
     margin: 0,
+    justifyContent: 'space-between',
   },
 }));
 

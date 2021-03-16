@@ -51,7 +51,6 @@ interface Props {
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
-  eventAnnotationsActive?: boolean;
   resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
   onAddComment?: (commentParameters: CommentParameters) => void;
@@ -117,7 +116,6 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
-  eventAnnotationsActive = false,
   timeline,
   tooltipPosition,
   onTooltipDisplay,
@@ -288,7 +286,6 @@ const PerformanceGraph = ({
               tooltipPosition={tooltipPosition}
               resource={resource}
               onAddComment={onAddComment}
-              eventAnnotationsActive={eventAnnotationsActive}
               applyZoom={adjustTimePeriod}
               shiftTime={shiftTime}
               sendingGetGraphDataRequest={

@@ -220,7 +220,6 @@ const useTimePeriod = ({
   };
 
   React.useEffect(() => {
-    console.log(selectedTimePeriod);
     if (isNil(selectedTimePeriod)) {
       return;
     }
