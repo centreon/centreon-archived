@@ -178,19 +178,19 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
 
         $hostComment = $this->monitoringService
             ->filterByContact($this->contact)
-            ->findOneHost($service->getHost()->getId());
+            ->findOneHost($metaService->getHost()->getId());
 
         if (is_null($hostComment)) {
             throw new EntityNotFoundException(
                 sprintf(
                     _('Meta host %d not found'),
-                    $service->getHost()->getId()
+                    $metaService->getHost()->getId()
                 )
             );
         }
-        $service->setHost($hostComment);
+        $metaService->setHost($hostComment);
 
-        $this->engineService->addServiceComment($comment, $service);
+        $this->engineService->addServiceComment($comment, $metaService);
     }
 
     /**
@@ -232,6 +232,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
     {
         $hosts = [];
         $services = [];
+        $metaServices = [];
         /**
          * Retrieving at this point all the host and services entities linked to
          * the resource ids provided
@@ -248,6 +249,17 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
             if (!empty($resourceIds['service'])) {
                 try {
                     $services = $this->monitoringRepository->findServicesByIdsForAdminUser($resourceIds['service']);
+                } catch (\Throwable $ex) {
+                    throw new CommentException(_('Error when searching for services'), 0, $ex);
+                }
+            }
+
+            if (!empty($resourceIds['metaservice'])) {
+                try {
+                    foreach ($resourceIds['metaservice'] as $resourceId) {
+                        $metaServices[$resourceId['service_id']] = $this->monitoringRepository
+                            ->findOneServiceByDescription('meta_' . $resourceId['service_id']);
+                    }
                 } catch (\Throwable $ex) {
                     throw new CommentException(_('Error when searching for services'), 0, $ex);
                 }
@@ -277,8 +289,8 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
 
             if (!empty($resourceIds['metaservice'])) {
                 try {
-                    foreach ($$resourceIds as $id) {
-                        $metaServices = $this->monitoringRepository
+                    foreach ($$resourceIds as $resourceId) {
+                        $metaServices[$resourceId['service_id']] = $this->monitoringRepository
                             ->filterByAccessGroups($accessGroups)
                             ->findOneServiceByDescription('meta_' . $id);
                     }
@@ -296,8 +308,8 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
             $this->addServiceComment($comments[$service->getId()], $service);
         }
 
-        foreach ($metaServices as $metaService) {
-            $this->addMetaServiceComment($comments[$service->getId()], $service);
+        foreach ($metaServices as $metaId => $metaService) {
+            $this->addMetaServiceComment($comments[$metaId], $metaService);
         }
     }
 }

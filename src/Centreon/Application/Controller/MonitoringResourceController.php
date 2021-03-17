@@ -76,7 +76,8 @@ class MonitoringResourceController extends AbstractController
     private const META_SERVICE_DETAILS_ROUTE = 'centreon_application_monitoring_resource_details_meta_service';
     private const META_SERVICE_TIMELINE_ROUTE = 'centreon_application_monitoring_gettimelinebymetaservices';
     private const META_SERVICE_DOWNTIME_ROUTE = 'monitoring.downtime.addMetaServiceDowntime';
-    private const META_SERVICE_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addmetaserviceacknowledgement';
+    private const META_SERVICE_ACKNOWLEDGEMENT_ROUTE =
+        'centreon_application_acknowledgement_addmetaserviceacknowledgement';
     private const META_SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getMetaServicePerformanceMetrics';
 
     private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id={resource_id}';

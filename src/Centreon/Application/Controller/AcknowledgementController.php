@@ -707,6 +707,12 @@ class AcknowledgementController extends AbstractController
                     $resource,
                     ResourceEntity::VALIDATION_GROUP_ACK_HOST
                 ));
+            } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
+                $errorList->addAll(ResourceService::validateResource(
+                    $entityValidator,
+                    $resource,
+                    ResourceEntity::VALIDATION_GROUP_ACK_META
+                ));
             } else {
                 throw new \RestBadRequestException(_('Incorrect resource type for acknowledgement'));
             }
@@ -793,6 +799,8 @@ class AcknowledgementController extends AbstractController
         if ($resource->getType() === ResourceEntity::TYPE_HOST) {
             $hasRights = $contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT);
         } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
             $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT);
         }
 

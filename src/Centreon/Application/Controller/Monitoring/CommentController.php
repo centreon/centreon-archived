@@ -198,7 +198,7 @@ class CommentController extends AbstractController
                     'service_id' => $commentResource['id']
                 ];
             } elseif ($commentResource['type'] === ResourceEntity::TYPE_META) {
-                $resourceIds['metaservices'][] = [
+                $resourceIds['metaservice'][] = [
                     'service_id' => $commentResource['id']
                 ];
             }
