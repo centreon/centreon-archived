@@ -120,7 +120,7 @@ try {
   }
 
   // sonarQube step to get qualityGate result
-  /* stage('SonarQube quality gate') {
+  stage('SonarQube quality gate') {
     timeout(time: 10, unit: 'MINUTES') {
       def qualityGate = waitForQualityGate()
       if (qualityGate.status != 'OK') {
@@ -129,16 +129,6 @@ try {
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Quality gate failure: ${qualityGate.status}.');
-    }
-  } */
-
-  stage("Quality Gate declarative mode") {
-    steps {
-      timeout(time: 10, unit: 'MINUTES') {
-        // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-        // true = set pipeline to UNSTABLE, false = don't
-        waitForQualityGate abortPipeline: true
-      }
     }
   }
 
