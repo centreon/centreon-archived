@@ -236,16 +236,16 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $subRequests = [];
 
-        if ($this->hasServiceFilter($filter)) {
+        if ($this->shouldSearchServices($filter)) {
             $subRequests[] = '(' . $this->prepareQueryForServiceResources($collector, $filter) . ') ';
         }
 
         // do not get hosts if a service filter is given
-        if ($this->hasHostFilter($filter)) {
+        if ($this->shouldSearchHosts($filter)) {
             $subRequests[] = '(' . $this->prepareQueryForHostResources($collector, $filter) . ')';
         }
 
-        if ($this->hasMetaServiceFilter($filter)) {
+        if ($this->shouldSearchMetaServices($filter)) {
             $subRequests[] = '(' . $this->prepareQueryForMetaServiceResources($collector, $filter) . ')';
         }
 
@@ -399,7 +399,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      * @param ResourceFilter $filter
      * @return bool
      */
-    private function hasServiceFilter(ResourceFilter $filter): bool
+    private function shouldSearchServices(ResourceFilter $filter): bool
     {
         if (
             ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_SERVICE)) ||
@@ -420,7 +420,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      * @param ResourceFilter $filter
      * @return bool
      */
-    private function hasHostFilter(ResourceFilter $filter): bool
+    private function shouldSearchHosts(ResourceFilter $filter): bool
     {
         if (
             $this->hasServiceSearch() ||
@@ -443,9 +443,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      * @param ResourceFilter $filter
      * @return bool
      */
-    private function hasMetaServiceFilter(ResourceFilter $filter): bool
+    private function shouldSearchMetaServices(ResourceFilter $filter): bool
     {
         if (
+            $this->hasServiceSearch() ||
             ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_META)) ||
             ($filter->getStatuses() && !ResourceFilter::map(
                 $filter->getStatuses(),

@@ -308,8 +308,9 @@ class MetricController extends AbstractController
          */
         $contact = $this->getUser();
 
-        $this->monitoringService->filterByContact($contact);
-        $service = $this->monitoringService->findOneServiceByDescription('meta_' . $metaId);
+        $service = $this->monitoringService
+            ->filterByContact($contact)
+            ->findOneServiceByDescription('meta_' . $metaId);
         if ($service === null) {
             throw new EntityNotFoundException(
                 sprintf(_('Meta Service linked to service %d not found'), $metaId)
