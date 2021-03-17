@@ -50,11 +50,7 @@ const CriteriaContent = ({
     }));
   };
 
-  const {
-    label,
-    options,
-    buildAutocompleteEndpoint,
-  } = selectableCriterias[name];
+  const { label, options, buildAutocompleteEndpoint } = selectableCriterias[name];
 
   const commonProps = {
     limitTags,
