@@ -54,7 +54,6 @@ const CriteriaContent = ({
     label,
     options,
     buildAutocompleteEndpoint,
-    autocompleteSearch,
   } = selectableCriterias[name];
 
   const commonProps = {
@@ -63,7 +62,6 @@ const CriteriaContent = ({
     className: classes.field,
     openText: `${t(labelOpen)} ${t(label)}`,
     value,
-    search: autocompleteSearch,
   };
 
   if (isNil(options)) {
