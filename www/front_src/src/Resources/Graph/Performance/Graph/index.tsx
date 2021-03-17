@@ -526,7 +526,8 @@ const GraphContent = ({
 
   const containsMetrics = metricsValue && not(isEmpty(metricsValue?.metrics));
 
-  const tooltipLineLeft = (metricsValue?.x || 0) - margin.left;
+  const tooltipLineX = (metricsValue?.x || 0) - margin.left;
+  const tooltipLineY = (metricsValue?.y || 0) - margin.top;
 
   const zoomBarWidth = Math.abs(
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
@@ -554,7 +555,7 @@ const GraphContent = ({
           <svg width="100%" height={height} ref={containerRef}>
             <Group left={margin.left} top={margin.top}>
               <MemoizedGridRows
-                scale={leftScale}
+                scale={rightScale || leftScale}
                 width={graphWidth}
                 height={graphHeight}
                 stroke={grey[100]}
@@ -611,13 +612,22 @@ const GraphContent = ({
                 onMouseUp={displayAddCommentTooltip}
               />
               {isMouseOver && containsMetrics && (
-                <Line
-                  from={{ x: tooltipLineLeft, y: 0 }}
-                  to={{ x: tooltipLineLeft, y: graphHeight }}
-                  stroke={grey[400]}
-                  strokeWidth={1}
-                  pointerEvents="none"
-                />
+                <>
+                  <Line
+                    from={{ x: tooltipLineX, y: 0 }}
+                    to={{ x: tooltipLineX, y: graphHeight }}
+                    stroke={grey[400]}
+                    strokeWidth={1}
+                    pointerEvents="none"
+                  />
+                  <Line
+                    from={{ x: 0, y: tooltipLineY }}
+                    to={{ x: graphWidth, y: tooltipLineY }}
+                    stroke={grey[400]}
+                    strokeWidth={1}
+                    pointerEvents="none"
+                  />
+                </>
               )}
             </Group>
             <TimeShiftContext.Provider
