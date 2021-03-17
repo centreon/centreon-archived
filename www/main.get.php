@@ -52,14 +52,6 @@ if (function_exists('filter_var')) {
     }
 }
 
-// TO REMOVE !
-// test sonarQube
-$password = 'password';
-$password2 = 'password2';
-$password = preg_match('/^(\.([0-2]))|([0-2])((\.0)|(\.([1-9][0-9]*)))*$/', $password);
-//make my fu**ing build fail... please
-$password2 = md5(bin2hex(random_bytes(64)));
-
 $inputArguments = array(
     'p' => FILTER_SANITIZE_NUMBER_INT,
     'o' => FILTER_SANITIZE_STRING,
