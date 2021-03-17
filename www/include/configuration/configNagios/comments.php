@@ -287,12 +287,6 @@ $nagios_comment["interval_length"]="This is the seconds per unit interval as use
     . "that each interval is one minute long (60 seconds).  Other settings "
     . "have not been tested much, so your mileage is likely to vary... ";
 
-$nagios_comment["use_aggressive_host_checking"]="If you don\'t want to turn on agressive host checking features, set "
-    . "this value to 0 (the default).  Otherwise set this value to 1 to "
-    . "enable the agressive check option.  Read the docs for more info "
-    . "on what agressive host check is or check out the source code in "
-    . "base/checks.c ";
-
 $nagios_comment["execute_service_checks"]="This determines whether or not Nagios will actively execute "
     . "service checks when it initially starts.  If this option is  "
     . "disabled, checks are not actively made, but Nagios can still "

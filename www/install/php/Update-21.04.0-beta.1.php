@@ -86,6 +86,12 @@ try {
         'CREATE TABLE IF NOT EXISTS `cb_log_level`
         (`id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,`name` varchar(255) NOT NULL)'
     );
+
+    if ($pearDB->isColumnExist('cfg_nagios', 'use_aggressive_host_checking')) {
+        // An update is required
+        $errorMessage = 'Impossible to drop use_aggressive_host_checking from cfg_nagios';
+        $pearDB->query('ALTER TABLE `cfg_nagios` DROP COLUMN `use_aggressive_host_checking`');
+    }
     $errorMessage = "";
 } catch (\Exception $e) {
     $centreonLog->insertLog(

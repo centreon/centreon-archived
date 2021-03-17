@@ -272,7 +272,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . " `max_concurrent_checks` , `max_service_check_spread` , "
         . "`max_host_check_spread` , `check_result_reaper_frequency` , `max_check_result_reaper_time`, "
         . "`auto_reschedule_checks` , `auto_rescheduling_interval` , "
-        . "`auto_rescheduling_window` , `use_aggressive_host_checking` , "
+        . "`auto_rescheduling_window` , "
         . "`enable_predictive_host_dependency_checks`, `enable_flap_detection` , `low_service_flap_threshold` , "
         . "`high_service_flap_threshold` , `low_host_flap_threshold` , `high_host_flap_threshold` ,"
         . " `soft_state_dependencies` ,`enable_predictive_service_dependency_checks` , "
@@ -689,15 +689,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" . htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "NULL, ";
-    }
-
-    if (
-        isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
-        && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 0
-    ) {
-        $rq .= "'" . $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] . "',  ";
-    } else {
-        $rq .= "'0', ";
     }
 
     if (
@@ -1673,17 +1664,6 @@ function updateNagios($nagios_id = null)
             . "',  ";
     } else {
         $rq .= "auto_rescheduling_window = NULL, ";
-    }
-
-    if (
-        isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
-        && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 2
-    ) {
-        $rq .= "use_aggressive_host_checking = '"
-            . $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]
-            . "',  ";
-    } else {
-        $rq .= "use_aggressive_host_checking = '2', ";
     }
 
     if (

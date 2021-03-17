@@ -534,7 +534,6 @@ CREATE TABLE `cfg_nagios` (
   `auto_reschedule_checks` enum('0','1','2') DEFAULT NULL,
   `auto_rescheduling_interval` int(11) DEFAULT NULL,
   `auto_rescheduling_window` int(11) DEFAULT NULL,
-  `use_aggressive_host_checking` enum('0','1','2') DEFAULT NULL,
   `enable_flap_detection` enum('0','1','2') DEFAULT NULL,
   `low_service_flap_threshold` varchar(255) DEFAULT NULL,
   `high_service_flap_threshold` varchar(255) DEFAULT NULL,
