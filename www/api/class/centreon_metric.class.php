@@ -111,9 +111,9 @@ class CentreonMetric extends CentreonWebService
                 'text' => $row['metric_name']
             );
         }
+
         return $metrics;
     }
-
 
     /**
      * @return array
