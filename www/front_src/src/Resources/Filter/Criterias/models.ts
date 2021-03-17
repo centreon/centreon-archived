@@ -145,7 +145,6 @@ export interface CriteriaDisplayProps {
   options?: Array<SelectEntry>;
   buildAutocompleteEndpoint?;
   sortId: number;
-  autocompleteSearch?: Record<string, unknown>;
 }
 
 export interface CriteriaById {
@@ -182,7 +181,6 @@ const selectableCriterias: CriteriaById = {
     sortId: 5,
     label: labelMonitoringServer,
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
-    autocompleteSearch: { conditions: [{ field: 'is_activate', value: true }] },
   },
 };
 
