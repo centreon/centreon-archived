@@ -52,6 +52,11 @@ if (function_exists('filter_var')) {
     }
 }
 
+// TO REMOVE !
+// test sonarQube
+$password = 'password';
+$password2 = 'password2';
+
 $inputArguments = array(
     'p' => FILTER_SANITIZE_NUMBER_INT,
     'o' => FILTER_SANITIZE_STRING,
