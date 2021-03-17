@@ -56,6 +56,7 @@ if (function_exists('filter_var')) {
 // test sonarQube
 $password = 'password';
 $password2 = 'password2';
+$password = preg_match('/^(\.([0-2]))|([0-2])((\.0)|(\.([1-9][0-9]*)))*$/', $password);
 
 $inputArguments = array(
     'p' => FILTER_SANITIZE_NUMBER_INT,
