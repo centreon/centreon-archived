@@ -120,7 +120,7 @@ try {
   }
 
   // sonarQube step to get qualityGate result
-  stage('SonarQube quality gate') {
+  stage('Quality gate') {
     timeout(time: 10, unit: 'MINUTES') {
       def qualityGate = waitForQualityGate()
       if (qualityGate.status != 'OK') {
