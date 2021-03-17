@@ -457,6 +457,35 @@ INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps
 -- Insert init configuration Centreon Broker
 
 --
+-- Contenu de la table `cb_log`
+--
+
+INSERT INTO `cb_log` (`id`, `name`) VALUES
+(1, 'core'),
+(2, 'config'),
+(3, 'sql'),
+(4, 'processing'),
+(5, 'perfdata'),
+(6, 'bbdo'),
+(7, 'tcp'),
+(8, 'tls'),
+(9, 'lua'),
+(10, 'bam');
+
+--
+-- Contenu de la table `cb_log_level`
+--
+
+INSERT INTO `cb_log_level` (`id`, `name`) VALUES
+(1, 'disabled'),
+(2, 'critical'),
+(3, 'error'),
+(4, 'warning'),
+(5, 'information'),
+(6, 'debug'),
+(7, 'trace');
+
+--
 -- Contenu de la table `cb_tag`
 --
 
