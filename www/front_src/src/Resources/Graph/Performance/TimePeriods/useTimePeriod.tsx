@@ -60,6 +60,7 @@ const useTimePeriod = ({
   details,
   onTimePeriodChange,
 }: Props): TimePeriodState => {
+  const preventQueryParametersUpdate = React.useRef<boolean>(false);
   const [displayLoader, setDisplayLoader] = React.useState<boolean>(true);
   const defaultTimePeriod = cond([
     [
@@ -220,7 +221,12 @@ const useTimePeriod = ({
   };
 
   React.useEffect(() => {
-    if (isNil(selectedTimePeriod)) {
+    if (isNil(selectedTimePeriod) || isNil(details)) {
+      return;
+    }
+
+    if (not(preventQueryParametersUpdate.current)) {
+      preventQueryParametersUpdate.current = true;
       return;
     }
 
