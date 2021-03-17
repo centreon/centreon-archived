@@ -390,7 +390,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
                 OR last_reload IS NULL'
             );
             if ($results = $sessionIdStatement->fetchAll(\PDO::FETCH_ASSOC)) {
-                foreach($results as $result) {
+                foreach ($results as $result) {
                     $this->deleteSession($result['session_id']);
                 }
             }

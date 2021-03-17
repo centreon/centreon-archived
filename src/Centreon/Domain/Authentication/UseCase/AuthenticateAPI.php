@@ -11,17 +11,24 @@ class AuthenticateAPI
      */
     private $authenticationService;
 
+    /**
+     * @param AuthenticationServiceInterface $authenticationService
+     */
     public function __construct(AuthenticationServiceInterface $authenticationService)
     {
         $this->authenticationService = $authenticationService;
     }
 
+    /**
+     * @param AuthenticateAPIRequest $request
+     * @return array
+     */
     public function execute(AuthenticateAPIRequest $request): array
     {
         try {
             $this->authenticationService->deleteExpiredAPITokens();
-        } catch(\Exception $ex) {
-
+        } catch (\Exception $ex) {
+            // We don't propagate this error.
         }
         $localProvider = $this->authenticationService->findProviderByConfigurationName('local');
         $localProvider->authenticate($request->getCredentials());

@@ -119,6 +119,7 @@ class AuthenticationController extends AbstractController
      */
     public function redirection(Request $request): View
     {
+        $redirectionUri = $this->getBaseUri();
         $providers = $this->authenticationService->findProvidersConfigurations();
         foreach ($providers as $provider) {
             $provider->setCentreonBaseUri($this->getBaseUri());

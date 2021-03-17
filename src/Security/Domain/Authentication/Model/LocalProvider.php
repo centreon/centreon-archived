@@ -223,7 +223,7 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
-    public function getProviderRefreshToken(): ?ProviderToken
+    public function getProviderRefreshToken(string $token): ?ProviderToken
     {
         return null;
     }

@@ -58,12 +58,10 @@ class Authenticate
         AuthenticationServiceInterface $authenticationService,
         ContactServiceInterface $contactService,
         SessionInterface $session,
-        OptionServiceInterface $optionService
     ) {
         $this->authenticationService = $authenticationService;
         $this->contactService = $contactService;
         $this->session = $session;
-        $this->optionService = $optionService;
     }
 
     /**
