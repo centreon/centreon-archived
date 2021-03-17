@@ -23,6 +23,8 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\MetaServiceConfiguration\Exception\MetaServiceConfigurationException;
+use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
 use Centreon\Domain\Monitoring\ResourceGroup;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Repository\RepositoryException;
@@ -58,6 +60,11 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $accessGroupRepository;
 
     /**
+     * @var MetaServiceConfigurationReadRepositoryInterface
+     */
+    private $metaServiceConfigurationRepository;
+
+    /**
      * @param ResourceRepositoryInterface $resourceRepository
      * @param MonitoringRepositoryInterface $monitoringRepository,
      * @param AccessGroupRepositoryInterface $accessGroupRepository
@@ -65,11 +72,13 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     public function __construct(
         ResourceRepositoryInterface $resourceRepository,
         MonitoringRepositoryInterface $monitoringRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        AccessGroupRepositoryInterface $accessGroupRepository,
+        MetaServiceConfigurationReadRepositoryInterface $metaServiceConfigurationRepository
     ) {
         $this->resourceRepository = $resourceRepository;
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
+        $this->metaServiceConfigurationRepository = $metaServiceConfigurationRepository;
     }
 
     /**
@@ -231,6 +240,15 @@ class ResourceService extends AbstractCentreonService implements ResourceService
                 $resource->setAcknowledgement($acknowledgements[0]);
             }
         }
+        /**
+         * Specific to the Meta Service Resource Type
+         * we need to add the Meta Service calculationType
+         */
+        $metaConfiguration = $this->contact->isAdmin()
+            ? $this->metaServiceConfigurationRepository->findById($resource->getId())
+            : $this->metaServiceConfigurationRepository->findByIdAndContact($resource->getId(), $this->contact);
+
+        $resource->setCalculationType($metaConfiguration->getCalculationType());
     }
 
     /**
