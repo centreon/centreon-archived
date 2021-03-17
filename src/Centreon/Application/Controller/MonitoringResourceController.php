@@ -77,6 +77,7 @@ class MonitoringResourceController extends AbstractController
     private const META_SERVICE_TIMELINE_ROUTE = 'centreon_application_monitoring_gettimelinebymetaservices';
     private const META_SERVICE_DOWNTIME_ROUTE = 'monitoring.downtime.addMetaServiceDowntime';
     private const META_SERVICE_ACKNOWLEDGEMENT_ROUTE = 'centreon_application_acknowledgement_addmetaserviceacknowledgement';
+    private const META_SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getMetaServicePerformanceMetrics';
 
     private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id={resource_id}';
     private const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id={resource_id}';
@@ -405,7 +406,7 @@ class MonitoringResourceController extends AbstractController
 
         $resource = $resources[0];
 
-        // $this->providePerformanceGraphEndpoint([$resource]);
+        $this->providePerformanceGraphEndpoint([$resource]);
         $this->provideLinks($resource, $contact);
 
         $this->resource->enrichMetaServiceWithDetails($resource);
@@ -436,23 +437,34 @@ class MonitoringResourceController extends AbstractController
         $resourcesWithGraphData = $this->resource->extractResourcesWithGraphData($resources);
 
         foreach ($resources as $resource) {
-            if ($resource->getParent() !== null) {
-                foreach ($resourcesWithGraphData as $resourceWithGraphData) {
-                    if (
-                        $resource->getParent()->getId() === $resourceWithGraphData->getParent()->getId()
-                        && $resource->getId() === $resourceWithGraphData->getId()
-                    ) {
-                        // set service performance graph endpoint from metrics controller
-                        $resource->getLinks()->getEndpoints()->setPerformanceGraph(
-                            $this->router->generate(
-                                static::SERVICE_PERFORMANCE_GRAPH_ROUTE,
-                                [
-                                    'hostId' => $resource->getParent()->getId(),
-                                    'serviceId' => $resource->getId(),
-                                ]
-                            )
-                        );
-                    }
+            foreach ($resourcesWithGraphData as $resourceWithGraphData) {
+                if (
+                    $resource->getType() === ResourceEntity::TYPE_SERVICE
+                    && $resourceWithGraphData->getType() === ResourceEntity::TYPE_SERVICE
+                    && $resource->getParent()->getId() === $resourceWithGraphData->getParent()->getId()
+                    && $resource->getId() === $resourceWithGraphData->getId()
+                ) {
+                    // set service performance graph endpoint from metrics controller
+                    $resource->getLinks()->getEndpoints()->setPerformanceGraph(
+                        $this->router->generate(
+                            self::SERVICE_PERFORMANCE_GRAPH_ROUTE,
+                            [
+                                'hostId' => $resource->getParent()->getId(),
+                                'serviceId' => $resource->getId(),
+                            ]
+                        )
+                    );
+                } elseif (
+                    $resource->getType() === ResourceEntity::TYPE_META
+                    && $resource->getId() === $resourceWithGraphData->getId()
+                ) {
+                    // set service performance graph endpoint from metrics controller
+                    $resource->getLinks()->getEndpoints()->setPerformanceGraph(
+                        $this->router->generate(
+                            self::META_SERVICE_PERFORMANCE_GRAPH_ROUTE,
+                            ['metaId' => $resource->getId()]
+                        )
+                    );
                 }
             }
         }

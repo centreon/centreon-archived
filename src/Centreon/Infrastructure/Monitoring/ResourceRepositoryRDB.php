@@ -146,19 +146,18 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     public function extractResourcesWithGraphData(array $resources): array
     {
         $resourcesWithGraphData = [];
-        $serviceResources = [];
         $collector = new StatementCollector();
         $where = [];
 
         foreach ($resources as $key => $resource) {
-            if (!$resource->getParent()) {
-                continue;
+            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                $where[] = "(i.host_id = :host_id_{$key} AND i.service_id = :service_id_{$key})";
+                $collector->addValue(":service_id_{$key}", $resource->getId(), PDO::PARAM_INT);
+                $collector->addValue(":host_id_{$key}", $resource->getParent()->getId(), PDO::PARAM_INT);
+            } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
+                $where[] = "(s.description = :service_description_{$key})";
+                $collector->addValue(":service_description_{$key}", 'meta_' . $resource->getId(), PDO::PARAM_STR);
             }
-            $serviceResources[] = $resource;
-
-            $where[] = "(i.host_id = :host_id_{$key} AND i.service_id = :service_id_{$key})";
-            $collector->addValue(":service_id_{$key}", $resource->getId(), PDO::PARAM_INT);
-            $collector->addValue(":host_id_{$key}", $resource->getParent()->getId(), PDO::PARAM_INT);
         }
 
         if (!$where) {
@@ -167,9 +166,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $statement = $this->db->prepare(
             $this->translateDbName(
-                'SELECT host_id, service_id FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i '
-                . 'WHERE (' . implode(' OR ', $where) . ') AND i.id = m.index_id AND m.hidden = "0" '
-                . 'GROUP BY host_id, service_id'
+                'SELECT i.host_id, i.service_id, s.description
+                FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i, `:dbstg`.services AS s
+                WHERE (' . implode(' OR ', $where) . ')
+                AND i.id = m.index_id
+                AND i.service_id = s.service_id
+                AND m.hidden = "0"
+                GROUP BY host_id, service_id'
             )
         );
         $collector->bind($statement);
@@ -177,12 +180,18 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $statement->execute();
 
         while ($row = $statement->fetch()) {
-            foreach ($serviceResources as $serviceResource) {
+            foreach ($resources as $resource) {
                 if (
-                    $serviceResource->getParent()->getId() === (int)$row['host_id']
-                    && $serviceResource->getId() === (int)$row['service_id']
+                    $resource->getType() === ResourceEntity::TYPE_SERVICE
+                    && $resource->getParent()->getId() === (int)$row['host_id']
+                    && $resource->getId() === (int)$row['service_id']
                 ) {
-                    $resourcesWithGraphData[] = $serviceResource;
+                    $resourcesWithGraphData[] = $resource;
+                } elseif (
+                    $resource->getType() === ResourceEntity::TYPE_META
+                    && $resource->getId() === (int)substr($row['description'], 5)
+                ) {
+                    $resourcesWithGraphData[] = $resource;
                 }
             }
         }

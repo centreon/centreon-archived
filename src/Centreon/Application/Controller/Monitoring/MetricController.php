@@ -287,4 +287,42 @@ class MetricController extends AbstractController
 
         return $this->view($status);
     }
+
+    /**
+     * Entry point to get meta service performance metrics
+     *
+     * @param int $metaId
+     * @return View
+     * @throws \Exception
+     */
+    public function getMetaServicePerformanceMetrics(
+        RequestParametersInterface $requestParameters,
+        int $metaId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        list($start, $end) = $this->extractDatesFromRequestParameters($requestParameters);
+
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+
+        $this->monitoringService->filterByContact($contact);
+        $service = $this->monitoringService->findOneServiceByDescription('meta_' . $metaId);
+        if ($service === null) {
+            throw new EntityNotFoundException(
+                sprintf(_('Meta Service linked to service %d not found'), $metaId)
+            );
+        }
+
+        $metrics = $this->metricService
+            ->filterByContact($contact)
+            ->findMetricsByService($service, $start, $end);
+
+        $metrics = $this->normalizePerformanceMetricsDates($metrics);
+
+        return $this->view($metrics);
+    }
+
 }
