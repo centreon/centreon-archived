@@ -72,7 +72,7 @@ class CommandLineTraitTest extends TestCase
 
         $this->configurationCommand = '$USER1$/plugin.pl --a="' . $this->hostMacroWithoutSpace->getName() . '" '
             . $this->serviceMacroWithoutSpace->getName() . ' '
-            . '-b ' . $this->hostMacroWithSpace->getName() . ' '
+            . '-b "' . $this->hostMacroWithSpace->getName() . '" '
             . $this->serviceMacroWithSpace->getName() . ' -f $_SERVICEEXTRAOPTIONS$';
 
         $this->replacementValue = '*****';
@@ -94,7 +94,7 @@ class CommandLineTraitTest extends TestCase
 
         $monitoringCommand = '/centreon/plugins/plugin.pl --a="' . $this->hostMacroWithoutSpace->getValue() . '" '
             . $this->serviceMacroWithoutSpace->getValue() . ' '
-            . '-b ' . $this->hostMacroWithSpace->getValue() . ' '
+            . '-b "' . $this->hostMacroWithSpace->getValue() . '" '
             . $this->serviceMacroWithSpace->getValue() . ' -f extra options';
         $result = $this->buildCommandLineFromConfiguration(
             $this->configurationCommand,
@@ -127,7 +127,7 @@ class CommandLineTraitTest extends TestCase
 
         $monitoringCommand = '/centreon/plugins/plugin.pl --a="' . $this->replacementValue . '" '
             . $this->replacementValue . ' '
-            . '-b ' . $this->replacementValue . ' '
+            . '-b "' . $this->replacementValue . '" '
             . $this->replacementValue . ' -f extra options';
         $result = $this->buildCommandLineFromConfiguration(
             $this->configurationCommand,
@@ -176,7 +176,7 @@ class CommandLineTraitTest extends TestCase
 
         $monitoringCommand = '/centreon/plugins/plugin.pl --a="' . $this->replacementValue . '" '
             . $this->replacementValue . ' '
-            . '-b ' . $this->replacementValue . ' '
+            . '-b "' . $this->replacementValue . '" '
             . $this->replacementValue . ' -f extra options';
 
         $this->expectException(MonitoringServiceException::class);
@@ -184,6 +184,49 @@ class CommandLineTraitTest extends TestCase
 
         $this->buildCommandLineFromConfiguration(
             $this->configurationCommand,
+            $monitoringCommand,
+            $macros,
+            $this->replacementValue
+        );
+    }
+
+    /**
+     * Test built host command line which contains service macros which can be replaced and applied spaces
+     *
+     * @return void
+     */
+    public function testBuildCommandLineFromConfigurationWithSpaceSeparatedValues(): void
+    {
+        $configurationCommand = '$CENTREONPLUGINS$/centreon_linux_snmp.pl --plugin=os::linux::snmp::plugin '
+            . '--mode=time --hostname=$HOSTADDRESS$ --snmp-version="$_HOSTSNMPVERSION$" '
+            . '--snmp-community="$_HOSTSNMPCOMMUNITY$" $_HOSTSNMPEXTRAOPTIONS$ '
+            . '--ntp-hostname="$_SERVICENTPADDR$" --ntp-port="$_SERVICENTPPORT$" '
+            . '--warning-offset="$_SERVICEWARNING$" --critical-offset="$_SERVICECRITICAL$" '
+            . '--timezone="$_SERVICETIMEZONE$" $_SERVICEEXTRAOPTIONS$ $_HOSTSNMPEXTRAOPTIONS_2$';
+        $macros = [
+            (new HostMacro())
+                ->setName('$_HOSTSNMPEXTRAOPTIONS$')
+                ->setValue('test_host_snmp_extra'),
+            (new HostMacro())
+                ->setName('$_HOSTSNMPEXTRAOPTIONS_2$')
+                ->setValue('test_host_snmp_extra_2 extra texte')
+                ->setPassword(true),
+        ];
+
+        $monitoringCommand = '/usr/lib/centreon/plugins//centreon_linux_snmp.pl --plugin=os::linux::snmp::plugin '
+            . '--mode=time --hostname=localhost --snmp-version="2c" '
+            . '--snmp-community="public" test_host_snmp_extra '
+            . '--ntp-hostname="" --ntp-port="" '
+            . '--warning-offset="" --critical-offset="" '
+            . '--timezone=""  test_host_snmp_extra_2 extra texte';
+
+        // $_SERVICEEXTRAOPTIONS$ $_HOSTSNMPEXTRAOPTIONS_2$ will be converted as "  test_host_snmp_extra_2 extra texte"
+        // then, pattern cannot detect which word is from $_SERVICEEXTRAOPTIONS$ or $_HOSTSNMPEXTRAOPTIONS_2$
+        $this->expectException(MonitoringServiceException::class);
+        $this->expectExceptionMessage('Macro passwords cannot be detected');
+
+        $this->buildCommandLineFromConfiguration(
+            $configurationCommand,
             $monitoringCommand,
             $macros,
             $this->replacementValue

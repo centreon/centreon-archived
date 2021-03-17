@@ -136,8 +136,8 @@ trait CommandLineTrait
         }
         $macroPattern .= '$';
 
-        // if two macros are glued, regex cannot detect properly password string
-        if (str_contains($macroPattern, '(.*)(.*)')) {
+        // if two macros are glued or separated by spaces, regex cannot detect properly password string
+        if (preg_match('/\(\.\*\)\s*\(\.\*\)/', $macroPattern)) {
             throw MonitoringServiceException::macroPasswordNotDetected();
         }
 
