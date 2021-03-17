@@ -16071,3 +16071,12 @@ msgstr "Erreur lors de l'ajout d'une catégorie hôte"
 
 msgid "Error when adding a host group"
 msgstr "Erreur lors de l'ajout d'un groupe d'hôte"
+
+msgid "Error when searching for the meta services configurations"
+msgstr "Erreur lors de la recherche des configurations des meta services"
+
+msgid "Error when searching for the meta service configuration (%s)"
+msgstr "Erreur lors de la recherche du meta service (%s)"
+
+msgid "Calculation method provided not supported (%s)"
+msgstr "Méthode de calcul fournie non supportée (%s)"

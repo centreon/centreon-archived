@@ -231,6 +231,13 @@ class Resource
     private $groups = [];
 
     /**
+     * Calculation type of the Resource
+     *
+     * @var string|null
+     */
+    private $calculationType;
+
+    /**
      * Resource constructor.
      */
     public function __construct()
@@ -941,5 +948,23 @@ class Resource
         $this->groups = $groups;
 
         return $this;
+    }
+
+    /**
+     * @param string|null $calculationType
+     * @return self
+     */
+    public function setCalculationType(?string $calculationType): self
+    {
+        $this->calculationType = $calculationType;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCalculationType(): ?string
+    {
+        return $this->calculationType;
     }
 }

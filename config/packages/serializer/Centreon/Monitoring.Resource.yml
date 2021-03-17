@@ -178,3 +178,7 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_details'
+        calculationType:
+            type: string
+            groups:
+                - 'resource_details'

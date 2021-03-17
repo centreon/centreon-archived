@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,26 +20,26 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\MonitoringServer\Repository;
+namespace Centreon\Infrastructure\MetaServiceConfiguration\Repository;
 
 use Assert\AssertionFailedException;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServer;
+use Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfiguration;
 use Centreon\Infrastructure\RequestParameters\Interfaces\NormalizerInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
-use Centreon\Domain\MonitoringServer\Interfaces\RealTimeMonitoringServerRepositoryInterface;
-use Centreon\Infrastructure\MonitoringServer\Repository\Model\RealTimeMonitoringServerFactoryRdb;
+use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
+use Centreon\Infrastructure\MetaServiceConfiguration\Repository\Model\MetaServiceConfigurationFactoryRdb;
 
 /**
- * This class is designed to represent the MariaDb repository to manage host category.
+ * This class is designed to represent the MariaDb repository to manage meta service configuration.
  *
- * @package Centreon\Infrastructure\MonitoringServer\Repository
+ * @package Centreon\Infrastructure\MetaServiceConfiguration\Repository
  */
-class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements
-    RealTimeMonitoringServerRepositoryInterface
+class MetaServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
+    MetaServiceConfigurationReadRepositoryInterface
 {
     /**
      * @var SqlRequestParametersTranslator
@@ -76,22 +76,22 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
     }
 
     /**
-     * Find all RealTime Monitoring Servers filtered by contact id.
+     * Find all meta services configurations filtered by contact id.
      *
-     * @param int|null $contactId Contact id related to Real Time Monitoring Servers
-     * @return RealTimeMonitoringServer[]
+     * @param int|null $contactId Contact id related to host categories
+     * @return MetaServiceConfiguration[]
      * @throws AssertionFailedException
      * @throws \InvalidArgumentException
      */
     private function findAllRequest(?int $contactId): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
-            'id' => 'instances.instance_id',
-            'name' => 'instances.name',
-            'running' => 'instances.running',
+            'id' => 'ms.meta_id',
+            'name' => 'ms.meta_name',
+            'is_activated' => 'ms.meta_activate',
         ]);
         $this->sqlRequestTranslator->addNormalizer(
-            'running',
+            'is_activated',
             new class implements NormalizerInterface
             {
                 /**
@@ -107,15 +107,17 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
             }
         );
         if ($contactId === null) {
-            $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS * FROM `:dbstg`.instances');
+            $request = $this->translateDbName(
+                'SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.meta_service ms'
+            );
         } else {
             $request = $this->translateDbName(
-                'SELECT SQL_CALC_FOUND_ROWS instances.*
-                FROM `:dbstg`.instances
-                INNER JOIN `:db`.acl_resources_poller_relation arpr
-                    ON instances.instance_id = arpr.poller_id
+                'SELECT SQL_CALC_FOUND_ROWS ms.*
+                FROM `:db`.meta_service ms
+                INNER JOIN `:db`.acl_resources_meta_relations armr
+                    ON ms.meta_id = armr.meta_id
                 INNER JOIN `:db`.acl_resources res
-                    ON arpr.acl_res_id = res.acl_res_id
+                    ON armr.acl_res_id = res.acl_res_id
                 INNER JOIN `:db`.acl_res_group_relations argr
                     ON res.acl_res_id = argr.acl_res_id
                 INNER JOIN `:db`.acl_groups ag
@@ -124,7 +126,7 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
                     ON ag.acl_group_id = agcr.acl_group_id
                 LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
                     ON ag.acl_group_id = agcgr.acl_group_id
-                LEFT JOIN `:db`.contactgroup_contact_relation cgcr
+                LEFT JOIn `:db`.contactgroup_contact_relation cgcr
                     ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id'
             );
         }
@@ -141,7 +143,7 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest)
             ? $sortRequest
-            : ' ORDER BY instances.name ASC';
+            : ' ORDER BY ms.meta_name ASC';
 
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
@@ -162,10 +164,77 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
             $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
         }
 
-        $realTimeMonitoringServers = [];
+        $metaServicesConfigurations = [];
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            $realTimeMonitoringServers[] = RealTimeMonitoringServerFactoryRdb::create($record);
+            $metaServicesConfigurations[] = MetaServiceConfigurationFactoryRdb::create($record);
         }
-        return $realTimeMonitoringServers;
+        return $metaServicesConfigurations;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws AssertionFailedException
+     */
+    public function findById(int $metaId): ?MetaServiceConfiguration
+    {
+        return $this->findByIdRequest($metaId, null);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws AssertionFailedException
+     */
+    public function findByIdAndContact(int $metaId, ContactInterface $contact): ?MetaServiceConfiguration
+    {
+        return $this->findByIdRequest($metaId, $contact->getId());
+    }
+
+    /**
+     * Find a category by id and contact id.
+     *
+     * @param int $metaId Id of the meta service configuration to be found
+     * @param int|null $contactId Contact id related to host categories
+     * @return MetaServiceConfiguration|null
+     * @throws AssertionFailedException
+     */
+    private function findByIdRequest(int $metaId, ?int $contactId): ?MetaServiceConfiguration
+    {
+        if ($contactId === null) {
+            $statement = $this->db->prepare(
+                $this->translateDbName('SELECT * FROM `:db`.meta_service WHERE meta_id = :id')
+            );
+        } else {
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    'SELECT ms.*
+                    FROM `:db`.meta_service ms
+                    INNER JOIN `:db`.acl_resources_meta_relations armr
+                        ON ms.meta_id = armr.meta_id
+                    INNER JOIN `:db`.acl_resources res
+                        ON armr.acl_res_id = res.acl_res_id
+                    INNER JOIN `:db`.acl_res_group_relations argr
+                        ON res.acl_res_id = argr.acl_res_id
+                    INNER JOIN `:db`.acl_groups ag
+                        ON argr.acl_group_id = ag.acl_group_id
+                    LEFT JOIN `:db`.acl_group_contacts_relations agcr
+                        ON ag.acl_group_id = agcr.acl_group_id
+                    LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
+                        ON ag.acl_group_id = agcgr.acl_group_id
+                    LEFT JOIN `:db`.contactgroup_contact_relation cgcr
+                        ON  cgcr.contactgroup_cg_id = agcgr.cg_cg_id
+                    WHERE ms.meta_id = :id
+                        AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)'
+                )
+            );
+            $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
+        }
+
+        $statement->bindValue(':id', $metaId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            return MetaServiceConfigurationFactoryRdb::create($result);
+        }
+        return null;
     }
 }
