@@ -57,7 +57,7 @@ class Authenticate
     public function __construct(
         AuthenticationServiceInterface $authenticationService,
         ContactServiceInterface $contactService,
-        SessionInterface $session,
+        SessionInterface $session
     ) {
         $this->authenticationService = $authenticationService;
         $this->contactService = $contactService;
