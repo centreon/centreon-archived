@@ -44,6 +44,10 @@ export interface Resource extends NamedEntity {
   notification_enabled?: boolean;
 }
 
+export type CompactParent = Pick<Resource, 'id' | 'status' | 'name'>;
+
+export type CompactResource = CompactParent & { parent?: CompactParent };
+
 export type ResourceListing = ListingModel<Resource>;
 
 export interface Downtime {
@@ -69,6 +73,7 @@ export interface ResourceEndpoints {
   timeline: string | null;
   acknowledgement: string | null;
   downtime: string | null;
+  metrics: string | null;
 }
 
 export interface ResourceUris {

@@ -20,12 +20,14 @@ import { Tab, TabId } from './models';
 import TimelineTab from './Timeline';
 import ShortcutsTab from './Shortcuts';
 import ServicesTab from './Services';
+import MetricsTab from './Metrics';
 
 const detailsTabId = 0;
 const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
-const shortcutsTabId = 4;
+const metricsTab = 4;
+const shortcutsTabId = 5;
 
 export interface TabProps {
   details?: ResourceDetails;
@@ -62,6 +64,18 @@ const tabs: Array<Tab> = [
       }
 
       return !isNil(path(['links', 'endpoints', 'performance_graph'], details));
+    },
+  },
+  {
+    id: metricsTab,
+    Component: MetricsTab,
+    title: labelGraph,
+    getIsActive: (details: ResourceDetails): boolean => {
+      if (isNil(details)) {
+        return false;
+      }
+
+      return details.type === 'meta_service';
     },
   },
   {

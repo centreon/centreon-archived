@@ -91,6 +91,7 @@ const fillEntities = (): Array<Resource> => {
         performance_graph: index % 6 === 0 ? 'endpoint' : null,
         status_graph: index % 3 === 0 ? 'endpoint' : null,
         timeline: 'endpoint',
+        metrics: 'endpoint',
       },
       uris: {
         configuration: index % 7 === 0 ? 'uri' : null,
