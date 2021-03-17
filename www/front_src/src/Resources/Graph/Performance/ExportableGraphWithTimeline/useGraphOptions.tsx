@@ -3,7 +3,7 @@ import * as React from 'react';
 import { GraphOptions, GraphTabParameters } from '../../../Details/models';
 import {
   labelDisplayEvents,
-  labelTooltipValues,
+  labelDisplayTooltips,
 } from '../../../translatedLabels';
 import { GraphOptionId } from '../models';
 
@@ -20,12 +20,12 @@ export const useGraphOptionsContext = (): UseGraphOptions =>
   React.useContext(GraphOptionsContext) as UseGraphOptions;
 
 export const defaultGraphOptions = {
-  tooltipValues: {
-    id: GraphOptionId.tooltipValues,
-    label: labelTooltipValues,
+  [GraphOptionId.displayTooltips]: {
+    id: GraphOptionId.displayTooltips,
+    label: labelDisplayTooltips,
     value: false,
   },
-  displayEvents: {
+  [GraphOptionId.displayEvents]: {
     id: GraphOptionId.displayEvents,
     label: labelDisplayEvents,
     value: false,

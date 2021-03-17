@@ -14676,5 +14676,5 @@ msgstr ""
 msgid "Graph options"
 msgstr ""
 
-msgid "Tooltip values"
+msgid "Display tooltips"
 msgstr ""

@@ -48,6 +48,6 @@ export interface AdjustTimePeriodProps {
 }
 
 export enum GraphOptionId {
-  tooltipValues = 'tooltipValues',
+  displayTooltips = 'displayTooltips',
   displayEvents = 'displayEvents',
 }

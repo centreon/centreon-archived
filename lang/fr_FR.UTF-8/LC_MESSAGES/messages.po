@@ -16102,5 +16102,5 @@ msgstr "La date de fin doit être supérieure à la date de début"
 msgid "Graph options"
 msgstr "Options de graph"
 
-msgid "Tooltip values"
-msgstr "Info-bulle des valeurs"
+msgid "Display tooltips"
+msgstr "Afficher les info-bulles"

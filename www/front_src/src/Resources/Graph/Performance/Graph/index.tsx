@@ -261,7 +261,7 @@ const GraphContent = ({
   const { setMetricsValue, metricsValue } = useMetricsValueContext();
 
   const displayTooltipValues = path(
-    [GraphOptionId.tooltipValues, 'value'],
+    [GraphOptionId.displayTooltips, 'value'],
     graphOptions,
   );
   const displayEventAnnotations = path(

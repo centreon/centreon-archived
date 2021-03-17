@@ -201,4 +201,4 @@ export const labelBackward = 'Backward';
 export const labelEndDateGreaterThanStartDate =
   'The end date must be greater than the start date';
 export const labelGraphOptions = 'Graph options';
-export const labelTooltipValues = 'Tooltip values';
+export const labelDisplayTooltips = 'Display tooltips';

@@ -49,7 +49,8 @@ interface GraphOption {
 }
 
 export interface GraphOptions {
-  tooltipValues: GraphOption;
+  [GraphOptionId.displayTooltips]: GraphOption;
+  [GraphOptionId.displayTooltips]: GraphOption;
 }
 
 export interface GraphTabParameters {
