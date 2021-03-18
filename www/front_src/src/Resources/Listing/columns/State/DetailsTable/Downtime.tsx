@@ -11,14 +11,12 @@ import { ColumnType, useLocaleDateTimeFormat } from '@centreon/ui';
 import {
   labelAuthor,
   labelFixed,
-  labelYes,
-  labelNo,
   labelStartTime,
   labelEndTime,
   labelComment,
 } from '../../../../translatedLabels';
 
-import DetailsTable, { DetailsTableProps } from '.';
+import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
 
 const useStyles = makeStyles({
   comment: {
