@@ -771,6 +771,7 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
+        uuid: 'h1',
         id: 1,
         type: 'host',
         tab: 'details',
@@ -784,11 +785,19 @@ describe(Details, () => {
   });
 
   it('copies the current URL when the copy resource link button is clicked', async () => {
-    mockedAxios.get.mockResolvedValueOnce({
-      data: retrievedDetails,
-    });
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: retrievedDetails,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedDetails,
+      });
 
     const { getByLabelText } = renderDetails();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
 
     act(() => {
       setSelectedServiceResource();
@@ -812,6 +821,9 @@ describe(Details, () => {
   it('displays the linked services when the services tab of a host is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({
+        data: retrievedDetails,
+      })
+      .mockResolvedValueOnce({
         data: {
           ...retrievedDetails,
           type: 'host',
@@ -826,6 +838,10 @@ describe(Details, () => {
 
     const { getByText, queryByText } = renderDetails({
       openTabId: servicesTabId,
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
     });
 
     act(() => {
