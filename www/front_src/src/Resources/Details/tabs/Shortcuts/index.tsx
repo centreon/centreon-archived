@@ -9,10 +9,9 @@ import { Skeleton } from '@material-ui/lab';
 import hasDefinedValues from '../../../hasDefinedValues';
 import { labelHost, labelService } from '../../../translatedLabels';
 import { ResourceUris } from '../../../models';
+import { TabProps } from '..';
 
 import ShortcutsSection from './ShortcutsSection';
-
-import { TabProps } from '..';
 
 const useStyles = makeStyles((theme) => {
   return {

@@ -18,6 +18,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
+  // eslint-disable-next-line react/no-unused-prop-types
   index: number;
   last: boolean;
   breadcrumb: BreadcrumbModel;

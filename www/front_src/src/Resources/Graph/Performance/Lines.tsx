@@ -5,6 +5,7 @@ import { pipe, uniq, prop, map, isNil } from 'ramda';
 
 import { fade } from '@material-ui/core';
 
+import { Line as LineModel } from './models';
 import formatMetricValue from './formatMetricValue';
 
 import { fontFamily } from '.';
@@ -17,7 +18,15 @@ const formatTick = ({ unit, base }) => (value): string => {
   return formatMetricValue({ value, unit, base }) as string;
 };
 
-const getGraphLines = ({ lines, base }): Array<JSX.Element> => {
+interface GraphLinesProps {
+  lines: Array<LineModel>;
+  base?: number;
+}
+
+const getGraphLines = ({
+  lines,
+  base = 1000,
+}: GraphLinesProps): Array<JSX.Element> => {
   const getUnits = (): Array<string> => {
     return pipe(map(prop('unit')), uniq)(lines);
   };
