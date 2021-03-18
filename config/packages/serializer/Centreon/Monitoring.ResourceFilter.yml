@@ -10,5 +10,7 @@ Centreon\Domain\Monitoring\ResourceFilter:
             type: array<int>
         servicegroupIds:
             type: array<int>
+        monitoringServerIds:
+            type: array<int>
         onlyWithPerformanceData:
             type: boolean

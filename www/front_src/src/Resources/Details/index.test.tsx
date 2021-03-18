@@ -88,15 +88,24 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../icons/Downtime');
 jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
 
-const resourceId = 1;
-const resourceType = 'host';
+const resourceServiceUuid = 'h1-s1';
+const resourceServiceId = 1;
+const resourceServiceType = 'service';
+
+const resourceHostUuid = 'h1';
+const resourceHostId = 1;
+const resourceHostType = 'host';
 
 const retrievedDetails = {
-  id: resourceId,
+  uuid: resourceServiceUuid,
+  id: resourceServiceId,
+  type: resourceServiceType,
   name: 'Central',
-  severity: { name: 'severity_1', level: 10 },
+  severity_level: 10,
   status: { name: 'Critical', severity_code: 1 },
   parent: {
+    id: resourceHostId,
+    type: resourceHostType,
     name: 'Centreon',
     status: { severity_code: 1 },
     links: {
@@ -309,6 +318,22 @@ const currentDateIsoString = '2020-06-21T06:00:00.000Z';
 
 let context: ResourceContext;
 
+const setSelectedServiceResource = () => {
+  context.setSelectedResourceUuid(resourceServiceUuid);
+  context.setSelectedResourceId(resourceServiceId);
+  context.setSelectedResourceType(resourceServiceType);
+  context.setSelectedResourceParentId(resourceHostId);
+  context.setSelectedResourceParentType(resourceHostType);
+};
+
+const setSelectedHostResource = () => {
+  context.setSelectedResourceUuid(resourceHostUuid);
+  context.setSelectedResourceId(resourceHostId);
+  context.setSelectedResourceType(resourceHostType);
+  context.setSelectedResourceParentId(undefined);
+  context.setSelectedResourceParentType(undefined);
+};
+
 interface Props {
   openTabId?: TabId;
 }
@@ -362,7 +387,7 @@ describe(Details, () => {
     const { getByText, queryByText, getAllByText } = renderDetails();
 
     act(() => {
-      context.setSelectedResourceId(resourceId);
+      setSelectedServiceResource();
     });
 
     await waitFor(() => {
@@ -475,19 +500,15 @@ describe(Details, () => {
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline });
 
-      const { getByText, getAllByText } = renderDetails({
+      const { getByText } = renderDetails({
         openTabId: graphTabId,
       });
 
       act(() => {
-        context.setSelectedResourceId(resourceId);
+        setSelectedServiceResource();
       });
 
-      await waitFor(() => expect(getByText(labelLast24h)).toBeInTheDocument());
-
-      userEvent.click(head(getAllByText(labelLast24h)) as HTMLElement);
-
-      userEvent.click(last(getAllByText(period)) as HTMLElement);
+      userEvent.click(getByText(period) as HTMLElement);
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -538,7 +559,7 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.setSelectedResourceId(resourceId);
+      setSelectedServiceResource();
     });
 
     await waitFor(() => {
@@ -568,7 +589,7 @@ describe(Details, () => {
     const { getByTitle } = renderDetails();
 
     act(() => {
-      context.setSelectedResourceId(resourceId);
+      setSelectedServiceResource();
     });
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
@@ -597,7 +618,7 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.setSelectedResourceId(resourceId);
+      setSelectedServiceResource();
     });
 
     await waitFor(() =>
@@ -725,7 +746,7 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.setSelectedResourceId(resourceId);
+      setSelectedServiceResource();
     });
 
     await waitFor(() => {
@@ -779,7 +800,7 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.setSelectedResourceId(resourceId);
+      setSelectedServiceResource();
     });
 
     await waitFor(() => {
@@ -804,6 +825,7 @@ describe(Details, () => {
       });
 
     const retrievedServiceDetails = {
+      uuid: 'h3-s2',
       id: 2,
       parentId: 3,
       parentType: 'host',
@@ -841,10 +863,7 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.setSelectedResourceId(1);
-      context.setSelectedResourceParentId(undefined);
-      context.setSelectedResourceParentType(undefined);
-      context.setSelectedResourceType('host');
+      setSelectedHostResource();
       context.setGraphTabParameters({
         selectedTimePeriodId: last7Days.id,
       });
@@ -862,6 +881,7 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
+        uuid: 'h1',
         id: 1,
         tab: 'details',
         tabParameters: {
@@ -891,7 +911,7 @@ describe(Details, () => {
     const { getByLabelText } = renderDetails();
 
     act(() => {
-      context.setSelectedResourceId(resourceId);
+      setSelectedServiceResource();
     });
 
     await waitFor(() => {
@@ -929,7 +949,7 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.setSelectedResourceId(resourceId);
+      setSelectedHostResource();
     });
 
     await waitFor(() => {
@@ -945,6 +965,7 @@ describe(Details, () => {
         states: [],
         hostGroupIds: [],
         serviceGroupIds: [],
+        monitoringServerIds: [],
         search: {
           conditions: [
             {
@@ -1010,8 +1031,7 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.setSelectedResourceType(resourceType);
-      context.setSelectedResourceId(resourceId);
+      setSelectedServiceResource();
     });
 
     await waitFor(() => {

@@ -79,6 +79,7 @@ const useLoadResources = (): LoadResources => {
       statuses: getCriteriaIds('statuses'),
       hostGroupIds: getCriteriaIds('host_groups'),
       serviceGroupIds: getCriteriaIds('service_groups'),
+      monitoringServerIds: getCriteriaIds('monitoring_servers'),
       sort: getSort(),
       limit,
       page,

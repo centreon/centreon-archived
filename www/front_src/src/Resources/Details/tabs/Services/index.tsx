@@ -18,8 +18,8 @@ import {
 import { listResources } from '../../../Listing/api';
 import { Resource } from '../../../models';
 import InfiniteScroll from '../../InfiniteScroll';
-import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
-import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
+import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
+import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import { TimePeriodId } from '../Graph/models';
 import memoizeComponent from '../../../memoizedComponent';
 
@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 type ServicesTabContentProps = TabProps &
   Pick<
     ResourceContext,
+    | 'setSelectedResourceUuid'
     | 'setSelectedResourceId'
     | 'setSelectedResourceType'
     | 'setSelectedResourceParentId'
@@ -61,6 +62,7 @@ type ServicesTabContentProps = TabProps &
 
 const ServicesTabContent = ({
   details,
+  setSelectedResourceUuid,
   setSelectedResourceId,
   setSelectedResourceType,
   setSelectedResourceParentId,
@@ -124,12 +126,13 @@ const ServicesTabContent = ({
     });
   };
 
-  const selectService = (serviceId): void => {
+  const selectService = (service): void => {
     setOpenDetailsTabId(detailsTabId);
-    setSelectedResourceParentType('host');
-    setSelectedResourceParentId(details?.id);
-    setSelectedResourceId(serviceId);
-    setSelectedResourceType('service');
+    setSelectedResourceUuid(service.uuid);
+    setSelectedResourceId(service.id);
+    setSelectedResourceType(service.type);
+    setSelectedResourceParentType(service?.parent?.type);
+    setSelectedResourceParentId(service?.parent?.id);
   };
 
   const switchMode = (): void => {
@@ -171,7 +174,7 @@ const ServicesTabContent = ({
         loadingSkeleton={<LoadingSkeleton />}
         filter={
           graphMode ? (
-            <TimePeriodSelect
+            <TimePeriodButtonGroup
               selectedTimePeriodId={selectedTimePeriod.id}
               onChange={changeSelectedTimePeriod}
               disabled={loading}
@@ -213,6 +216,7 @@ const MemoizedServiceTabContent = memoizeComponent<ServicesTabContentProps>({
 
 const ServicesTab = ({ details }: TabProps): JSX.Element => {
   const {
+    setSelectedResourceUuid,
     setSelectedResourceId,
     setSelectedResourceType,
     setSelectedResourceParentId,
@@ -226,6 +230,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     <MemoizedServiceTabContent
       details={details}
       tabParameters={tabParameters}
+      setSelectedResourceUuid={setSelectedResourceUuid}
       setSelectedResourceId={setSelectedResourceId}
       setSelectedResourceType={setSelectedResourceType}
       setSelectedResourceParentId={setSelectedResourceParentId}
