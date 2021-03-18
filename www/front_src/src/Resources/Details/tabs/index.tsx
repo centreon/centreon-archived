@@ -10,6 +10,7 @@ import {
   labelTimeline,
   labelShortcuts,
   labelServices,
+  labelMetrics,
 } from '../../translatedLabels';
 import { ResourceDetails } from '../models';
 import hasDefinedValues from '../../hasDefinedValues';
@@ -69,13 +70,13 @@ const tabs: Array<Tab> = [
   {
     id: metricsTab,
     Component: MetricsTab,
-    title: labelGraph,
+    title: labelMetrics,
     getIsActive: (details: ResourceDetails): boolean => {
       if (isNil(details)) {
         return false;
       }
 
-      return details.type === 'meta_service';
+      return details.type === 'service';
     },
   },
   {

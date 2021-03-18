@@ -17,7 +17,9 @@ import Metrics from './Metrics';
 const limit = 30;
 
 const MetricsTab = ({ details }: TabProps): JSX.Element => {
-  const endpoint = path(['links', 'endpoints', 'metrics'], details);
+  // const endpoint = path(['links', 'endpoints', 'metrics'], details);
+
+  const endpoint = 'http://localhost:5000/api/metrics';
 
   const { sendRequest, sending } = useRequest<MetaServiceMetricListing>({
     request: listMetaServiceMetrics,

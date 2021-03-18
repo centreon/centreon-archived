@@ -207,3 +207,4 @@ export const labelNotes = 'Notes';
 export const labelChecksDisabled = 'Checks disabled';
 export const labelNotificationDisabled = 'Notifications disabled';
 export const labelNotificationEnabled = 'Notifications enabled';
+export const labelMetrics = 'Metrics';
