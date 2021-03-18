@@ -52,7 +52,7 @@ class MetaServiceConfigurationController extends AbstractController
         $response = $findMetaServiceConfiguration->execute($metaId);
         return $this->view(
             [
-                'result' => MetaServiceConfigurationV21Factory::createFromResponseSingle($response),
+                'result' => MetaServiceConfigurationV21Factory::createOneMetaServiceConfigurationFromResponse($response),
                 'meta' => $requestParameters->toArray()
             ]
         );
@@ -72,7 +72,7 @@ class MetaServiceConfigurationController extends AbstractController
         $response = $findMetasServicesConfigurations->execute();
         return $this->view(
             [
-                'result' => MetaServiceConfigurationV21Factory::createFromResponseMultiple($response),
+                'result' => MetaServiceConfigurationV21Factory::createMultipleMetaServicesConfigurationsFromResponse($response),
                 'meta' => $requestParameters->toArray()
             ]
         );

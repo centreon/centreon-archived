@@ -37,8 +37,9 @@ class MetaServiceConfigurationV21Factory
      * @param FindOneMetaServiceConfigurationResponse $response
      * @return MetaServiceConfigurationV21
      */
-    public static function createFromResponseSingle(FindOneMetaServiceConfigurationResponse $response): MetaServiceConfigurationV21
-    {
+    public static function createOneMetaServiceConfigurationFromResponse(
+        FindOneMetaServiceConfigurationResponse $response
+    ): MetaServiceConfigurationV21 {
         $newMetaServiceConfiguration = new MetaServiceConfigurationV21();
         $metaServiceConfiguration = $response->getMetaServiceConfiguration();
         $newMetaServiceConfiguration->id = $metaServiceConfiguration['id'];
@@ -59,8 +60,9 @@ class MetaServiceConfigurationV21Factory
      * @param FindMetaServicesConfigurationsResponse $response
      * @return MetaServiceConfigurationV21[]
      */
-    public static function createFromResponseMultiple(FindMetaServicesConfigurationsResponse $response): array
-    {
+    public static function createMultipleMetaServicesConfigurationsFromResponse(
+        FindMetaServicesConfigurationsResponse $response
+    ): array {
         foreach ($response->getMetaServicesConfigurations() as $metaServiceConfiguration) {
             $newMetaServiceConfiguration = new MetaServiceConfigurationV21();
             $newMetaServiceConfiguration->id = $metaServiceConfiguration['id'];

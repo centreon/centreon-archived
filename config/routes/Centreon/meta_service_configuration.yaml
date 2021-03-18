@@ -1,6 +1,6 @@
 centreon_application_find_meta_service_configuration:
   methods: GET
-  path: /configuration/{metaId}/metaservice
+  path: /configuration/metaservices/{metaId}
   requirements:
     metaId: '\d+'
   controller: 'Centreon\Application\Controller\MetaServiceConfigurationController::findOneMetaServiceConfiguration'
