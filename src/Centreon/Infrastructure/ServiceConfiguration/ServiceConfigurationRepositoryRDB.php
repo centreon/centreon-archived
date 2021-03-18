@@ -195,7 +195,7 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
          *           LEFT JOIN `:db`.on_demand_macro_service demand
          *               ON srv.service_id = demand.svc_svc_id
          *       )
-         *       SELECT demand.svc_macro_id AS id, demand.svc_macro_name AS name, 
+         *       SELECT demand.svc_macro_id AS id, demand.svc_macro_name AS name,
          *         demand.svc_macro_value AS `value`,
          *         demand.macro_order AS `order`, demand.description, demand.svc_svc_id AS service_id
          *           CASE
@@ -209,7 +209,8 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
          */
         $request = $this->translateDbName(
             'SELECT
-                srv.service_id AS service_id, demand.svc_macro_id AS id, svc_macro_name AS name, svc_macro_value AS `value`,
+                srv.service_id AS service_id, demand.svc_macro_id AS id, 
+                svc_macro_name AS name, svc_macro_value AS `value`,
                 macro_order AS `order`, is_password, description, service_template_model_stm_id
              FROM `:db`.service srv
                 LEFT JOIN `:db`.on_demand_macro_service demand ON srv.service_id = demand.svc_svc_id

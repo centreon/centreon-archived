@@ -296,22 +296,22 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
          * CTE recurse request next release:
          *   WITH RECURSIVE template AS (
          *       SELECT htr.*, 0 AS level
-         *       FROM `:db`.host_template_relation htr 
+         *       FROM `:db`.host_template_relation htr
          *       WHERE htr.host_host_id  = :host_id
          *       UNION
          *       SELECT htr2.*, template.level + 1
          *       FROM `:db`.host_template_relation htr2
-         *       INNER JOIN template 
+         *       INNER JOIN template
          *           ON template.host_tpl_id = htr2.host_host_id
-         *       INNER JOIN `:db`.host 
-         *           ON host.host_id = htr2.host_tpl_id 
+         *       INNER JOIN `:db`.host
+         *           ON host.host_id = htr2.host_tpl_id
          *           AND host.host_register = 1
          *   )
-         *   SELECT host_host_id AS template_host_id, host_tpl_id AS template_id, `order` AS template_order, 
+         *   SELECT host_host_id AS template_host_id, host_tpl_id AS template_id, `order` AS template_order,
          *       `level` AS template_level, host.host_id AS id, host.host_name AS name, host.host_alias AS alias,
          *       host.host_register AS type, host.host_activate AS is_activated
          *   FROM template
-         *   INNER JOIN `:db`.host 
+         *   INNER JOIN `:db`.host
          *       ON host.host_id = template.host_tpl_id
          *   ORDER BY `level`, host_host_id, `order`
          */
@@ -362,9 +362,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 $hostTpl[] = [$currentLevel + 1, $record['id'], $hostTemplate];
             }
 
-            if (!is_null($hostTpl)) {
-                $stack = array_merge($hostTpl, $stack);
-            }
+            $stack = array_merge($hostTpl, $stack);
         }
 
         return $hostTemplates;
