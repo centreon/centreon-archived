@@ -315,7 +315,9 @@ describe(Listing, () => {
 
     const chipLabel = `${entityInDowntime?.name} ${labelInDowntime}`;
 
-    const chip = await findByLabelText(chipLabel);
+    const chip = await findByLabelText(chipLabel, undefined, {
+      timeout: 10000,
+    });
 
     fireEvent.mouseEnter(chip);
     fireEvent.mouseOver(chip);
@@ -357,7 +359,9 @@ describe(Listing, () => {
 
     const chipLabel = `${acknowledgedEntity?.name} ${labelAcknowledged}`;
 
-    const chip = await findByLabelText(chipLabel);
+    const chip = await findByLabelText(chipLabel, undefined, {
+      timeout: 10000,
+    });
 
     fireEvent.mouseEnter(chip);
     fireEvent.mouseOver(chip);
