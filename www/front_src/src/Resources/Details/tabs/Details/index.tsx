@@ -163,7 +163,12 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           )}
           {details.command_line && (
             <Card>
-              <Typography variant="body1" color="textSecondary" gutterBottom>
+              <Typography
+                variant="body1"
+                color="textSecondary"
+                gutterBottom
+                component="div"
+              >
                 <Grid container alignItems="center" spacing={1}>
                   <Grid item>{t(labelCommand)}</Grid>
                   <Grid item>

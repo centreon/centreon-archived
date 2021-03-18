@@ -384,7 +384,12 @@ describe(Details, () => {
   it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const { getByText, queryByText, getAllByText } = renderDetails();
+    const {
+      getByText,
+      queryByText,
+      getAllByText,
+      getAllByTitle,
+    } = renderDetails();
 
     act(() => {
       setSelectedServiceResource();
@@ -436,22 +441,18 @@ describe(Details, () => {
     expect(getByText('Europe/Paris')).toBeInTheDocument();
 
     expect(getByText(labelCurrentStateDuration)).toBeInTheDocument();
-    expect(getByText('22m')).toBeInTheDocument();
-    expect(getByText('3/3 (Hard)')).toBeInTheDocument();
+    expect(getByText('22m - 3/3 (Hard)')).toBeInTheDocument();
 
     expect(getByText(labelLastStateChange)).toBeInTheDocument();
-    expect(getByText('04/18/2020')).toBeInTheDocument();
-    expect(getByText('5:00 PM')).toBeInTheDocument();
+    expect(getByText('04/18/2020 5:00 PM')).toBeInTheDocument();
 
     expect(getByText(labelLastCheck)).toBeInTheDocument();
-    expect(getByText('05/18/2020')).toBeInTheDocument();
-    expect(getByText('6:00 PM')).toBeInTheDocument();
+    expect(getByText('05/18/2020 6:00 PM')).toBeInTheDocument();
 
     expect(getByText(labelNextCheck)).toBeInTheDocument();
-    expect(getByText('06/18/2020')).toBeInTheDocument();
-    expect(getByText('7:15 PM')).toBeInTheDocument();
+    expect(getByText('06/18/2020 7:15 PM')).toBeInTheDocument();
 
-    expect(getAllByText(labelActive)).toHaveLength(2);
+    expect(getAllByTitle(labelActive)).toHaveLength(2);
 
     expect(getByText(labelCheckDuration)).toBeInTheDocument();
     expect(getByText('0.070906 s')).toBeInTheDocument();
@@ -466,8 +467,7 @@ describe(Details, () => {
     expect(getByText('3.5%')).toBeInTheDocument();
 
     expect(getByText(labelLastNotification)).toBeInTheDocument();
-    expect(getByText('07/18/2020')).toBeInTheDocument();
-    expect(getByText('7:30 PM')).toBeInTheDocument();
+    expect(getByText('07/18/2020 7:30 PM')).toBeInTheDocument();
 
     expect(getByText(labelCurrentNotificationNumber)).toBeInTheDocument();
     expect(getByText('3')).toBeInTheDocument();
