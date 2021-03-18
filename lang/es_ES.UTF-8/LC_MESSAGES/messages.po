@@ -14648,4 +14648,4 @@ msgstr "Permitir certificado autofirmado"
 #  msgstr ""
 
 msgid "Check duration"
-msgstr "Temps d'exécution"
+msgstr ""
