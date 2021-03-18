@@ -50,12 +50,9 @@ const CriteriaContent = ({
     }));
   };
 
-  const {
-    label,
-    options,
-    buildAutocompleteEndpoint,
-    autocompleteSearch,
-  } = selectableCriterias[name];
+  const { label, options, buildAutocompleteEndpoint } = selectableCriterias[
+    name
+  ];
 
   const commonProps = {
     limitTags,
@@ -63,7 +60,6 @@ const CriteriaContent = ({
     className: classes.field,
     openText: `${t(labelOpen)} ${t(label)}`,
     value,
-    search: autocompleteSearch,
   };
 
   if (isNil(options)) {
