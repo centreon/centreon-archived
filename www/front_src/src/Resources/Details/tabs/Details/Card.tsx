@@ -3,18 +3,8 @@ import * as React from 'react';
 import { Paper, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    height: '100%',
-  },
   content: {
     padding: theme.spacing(1, 2, 2, 2),
-  },
-  title: {
-    display: 'flex',
-    gridGap: theme.spacing(1),
-  },
-  active: {
-    color: theme.palette.success.main,
   },
 }));
 

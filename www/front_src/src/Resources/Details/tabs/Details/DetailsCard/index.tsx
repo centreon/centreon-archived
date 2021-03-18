@@ -12,9 +12,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     height: '100%',
   },
-  content: {
-    padding: theme.spacing(1, 2, 2, 2),
-  },
   title: {
     display: 'flex',
     gridGap: theme.spacing(1),
