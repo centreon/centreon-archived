@@ -1,4 +1,21 @@
 =====================
+Centreon Web 19.10.21
+=====================
+
+Bug fixes
+---------
+
+- [Core] Update centreon copyright dates
+- [Install] Complete the Last step upgrade redirection
+- [Administration/About] Update about page with current team
+
+Security fixes
+--------------
+
+- [Core] Cross-site Scripting (XSS) in index.php
+- [Lib] Update jQuery to version >= 3.5.1
+
+=====================
 Centreon Web 19.10.20
 =====================
 
