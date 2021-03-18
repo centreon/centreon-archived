@@ -211,7 +211,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         }
 
         $collector = new StatementCollector();
-        $request = 'SELECT SQL_CALC_FOUND_ROWS '
+        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT '
             . 'resource.id, resource.type, resource.name, resource.alias, resource.fqdn, '
             . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
@@ -260,7 +260,34 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $request .= ') AS `resource`';
 
-        $hasWhereCondition = false;
+        // apply the host group filter to SQL query
+        if ($filter->getHostgroupIds()) {
+            $groupList = [];
+
+            foreach ($filter->getHostgroupIds() as $index => $groupId) {
+                $key = ":resourceHostgroupId_{$index}";
+                $groupList[] = $key;
+                $collector->addValue($key, $groupId, PDO::PARAM_INT);
+            }
+
+            $request .= ' INNER JOIN `:dbstg`.`hosts_hostgroups` AS hhg
+                ON hhg.host_id = resource.host_id
+                AND hhg.hostgroup_id IN (' . implode(', ', $groupList) . ') ';
+        }
+
+        /**
+         * If we specify that user only wants resources with available performance datas.
+         * Then only resources with existing metrics referencing index_data services will be returned.
+         */
+        if ($filter->getOnlyWithPerformanceData() === true) {
+            $request .= ' INNER JOIN `:dbstg`.index_data AS idata
+                  ON idata.host_id = resource.parent_id
+                  AND idata.service_id = resource.id
+                  AND resource.type = "service"
+                INNER JOIN `:dbstg`.metrics AS m
+                  ON m.index_id = idata.id
+                  AND m.hidden = "0" ';
+        }
 
         // Search
         $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
@@ -270,49 +297,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
 
-        if ($searchRequest !== null) {
-            $hasWhereCondition = true;
-            $request .= $searchRequest;
-        }
+        $request .= $searchRequest !== null ? $searchRequest : '';
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
             $collector->addValue($key, current($data), key($data));
-        }
-
-
-        // apply the host group filter to SQL query
-        if ($filter->getHostgroupIds()) {
-            $groupList = [];
-
-            foreach ($filter->getHostgroupIds() as $index => $groupId) {
-                $key = ":resourceHostgroupId_{$index}";
-
-                $groupList[] = $key;
-                $collector->addValue($key, $groupId, PDO::PARAM_INT);
-            }
-
-            $request .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
-                . 'EXISTS (SELECT hhg.hostgroup_id
-                FROM `:dbstg`.`hosts_hostgroups` AS hhg
-                WHERE hhg.host_id = resource.host_id
-                AND hhg.hostgroup_id IN (' . implode(', ', $groupList) . '))';
-            $hasWhereCondition = true;
-        }
-
-        /**
-         * If we specify that user only wants resources with available performance datas.
-         * Then only resources with existing metrics referencing index_data services will be returned.
-         */
-        if ($filter->getOnlyWithPerformanceData() === true) {
-            $request .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
-                . 'EXISTS (
-                    SELECT m.metric_id
-                    FROM `:dbstg`.`metrics` AS m, `:dbstg`.`index_data` AS idata
-                    WHERE m.index_id = idata.id
-                    AND m.hidden = "0"
-                    AND idata.host_id = resource.parent_id
-                    AND idata.service_id = resource.id
-                )';
         }
 
         // Sort
@@ -468,7 +456,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     protected function prepareQueryForServiceResources(StatementCollector $collector, ResourceFilter $filter): string
     {
-        $sql = "SELECT
+        $sql = "SELECT DISTINCT
             s.service_id AS `id`,
             'service' AS `type`,
             sh.host_id AS `host_id`,
@@ -553,6 +541,30 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             AND service_cvl.service_id = s.service_id
             AND service_cvl.name = "CRITICALITY_LEVEL"';
 
+        // set ACL limitations
+        if (!$this->isAdmin()) {
+            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
+                AND service_acl.service_id = s.service_id
+                AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+        }
+
+        // apply the service group filter to SQL query
+        if ($filter->getServicegroupIds()) {
+            $groupList = [];
+
+            foreach ($filter->getServicegroupIds() as $index => $groupId) {
+                $key = ":serviceServicegroupId_{$index}";
+
+                $groupList[] = $key;
+                $collector->addValue($key, $groupId, PDO::PARAM_INT);
+            }
+
+            $sql .= ' INNER JOIN `:dbstg`.`services_servicegroups` AS ssg
+                  ON ssg.host_id = s.host_id
+                  AND ssg.service_id = s.service_id
+                  AND ssg.servicegroup_id IN (' . implode(', ', $groupList) . ') ';
+        }
+
         $hasWhereCondition = false;
 
         $this->sqlRequestTranslator->setConcordanceArray($this->serviceConcordances);
@@ -570,17 +582,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         // show active services only
         $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
             . 's.enabled = 1';
-
-        // set ACL limitations
-        if (!$this->isAdmin()) {
-            $sql .= ' AND EXISTS (
-                SELECT service_acl.service_id
-                FROM `:dbstg`.`centreon_acl` AS service_acl
-                WHERE service_acl.host_id = s.host_id
-                AND service_acl.service_id = s.service_id
-                AND service_acl.group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ')
-                )';
-        }
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
@@ -619,23 +620,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             }
 
             $sql .= ' AND s.state IN (' . implode(', ', $statusList) . ')';
-        }
-
-        // apply the service group filter to SQL query
-        if ($filter->getServicegroupIds()) {
-            $groupList = [];
-
-            foreach ($filter->getServicegroupIds() as $index => $groupId) {
-                $key = ":serviceServicegroupId_{$index}";
-
-                $groupList[] = $key;
-                $collector->addValue($key, $groupId, PDO::PARAM_INT);
-            }
-            $sql .= ' AND EXISTS (SELECT ssg.servicegroup_id
-                FROM `:dbstg`.`services_servicegroups` AS ssg
-                WHERE ssg.service_id = s.service_id
-                AND ssg.host_id = s.host_id
-                AND ssg.servicegroup_id IN (' . implode(', ', $groupList) . '))';
         }
 
         if (!empty($filter->getHostIds())) {
@@ -692,7 +676,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         StatementCollector $collector,
         ResourceFilter $filter
     ): string {
-        $sql = "SELECT
+        $sql = "SELECT DISTINCT
             SUBSTRING(s.description, 6) AS `id`,
             'metaservice' AS `type`,
             sh.host_id AS `host_id`,
@@ -833,7 +817,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     protected function prepareQueryForHostResources(StatementCollector $collector, ResourceFilter $filter): string
     {
-        $sql = "SELECT
+        $sql = "SELECT DISTINCT
             h.host_id AS `id`,
             'host' AS `type`,
             h.host_id AS `host_id`,
@@ -902,6 +886,13 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             AND host_cvl.service_id = 0
             AND host_cvl.name = "CRITICALITY_LEVEL"';
 
+        // set ACL limitations
+        if (!$this->isAdmin()) {
+            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS host_acl ON host_acl.host_id = h.host_id
+                  AND host_acl.service_id IS NULL
+                  AND host_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+        }
+
         $hasWhereCondition = false;
 
         $this->sqlRequestTranslator->setConcordanceArray($this->hostConcordances);
@@ -919,17 +910,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         // show active hosts and aren't related to some module
         $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
             . 'h.enabled = 1 AND h.name NOT LIKE "_Module_%"';
-
-        // set ACL limitations
-        if (!$this->isAdmin()) {
-            $sql .= ' AND EXISTS (
-                SELECT host_acl.host_id
-                FROM `:dbstg`.`centreon_acl` AS host_acl
-                WHERE host_acl.host_id = h.host_id
-                AND host_acl.service_id IS NULL
-                AND host_acl.group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ')
-                )';
-        }
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
