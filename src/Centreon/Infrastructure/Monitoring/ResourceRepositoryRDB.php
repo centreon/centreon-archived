@@ -504,10 +504,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 $collector->addValue($key, $groupId, PDO::PARAM_INT);
             }
 
-            $sql .= ' LEFT JOIN `:dbstg`.`services_servicegroups` AS ssg
+            $sql .= ' INNER JOIN `:dbstg`.`services_servicegroups` AS ssg
                   ON ssg.host_id = s.host_id
                   AND ssg.service_id = s.service_id
-                  AND ssg.servicegroup_id IN (' . implode(', ', $groupList) . '))';
+                  AND ssg.servicegroup_id IN (' . implode(', ', $groupList) . ') ';
         }
 
         $hasWhereCondition = false;
