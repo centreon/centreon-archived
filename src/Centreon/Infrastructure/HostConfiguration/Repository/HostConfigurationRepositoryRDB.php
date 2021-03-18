@@ -326,20 +326,19 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
              FROM `:db`.host_template_relation htr, `:db`.host
              WHERE
                 htr.host_host_id = :host_id AND
-                host.host_tpl_id = host.host_id AND
+                htr.host_tpl_id = host.host_id AND
                 host.host_register = 1
              ORDER BY htr.`order` ASC'
         );
         $statement = $this->db->prepare($request);
 
         $hostTemplates = [];
-        $loop = [];
-        $stack = [[$host->getId(), 0]];
+        $stack = [[$host->getId(), 0, null, []]];
         while (($hostTest = array_shift($stack))) {
-            if (isset($loop[$hostTest[0]])) {
+            if (isset($hostTest[3][$hostTest[0]])) {
                 continue;
             }
-            $loop[$hostTest[0]] = 1;
+            $hostTest[3][$hostTest[0]] = 1;
 
             $statement = $this->db->prepare($request);
             $statement->bindValue(':host_id', $hostTest[0], \PDO::PARAM_INT);
@@ -359,7 +358,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 } else {
                     $hostTest[2]->addTemplate($hostTemplate);
                 }
-                $hostTpl[] = [$currentLevel + 1, $record['id'], $hostTemplate];
+                $hostTpl[] = [$record['id'], $currentLevel + 1, $hostTemplate, $hostTest[3]];
             }
 
             $stack = array_merge($hostTpl, $stack);
