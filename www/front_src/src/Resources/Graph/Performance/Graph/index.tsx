@@ -611,7 +611,7 @@ const GraphContent = ({
                 onMouseDown={displayZoomPreview}
                 onMouseUp={displayAddCommentTooltip}
               />
-              {((isMouseOver && containsMetrics) || tooltipData) && (
+              {(containsMetrics || tooltipData) && (
                 <>
                   <Line
                     from={{ x: tooltipLineX, y: 0 }}
