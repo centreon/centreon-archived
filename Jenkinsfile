@@ -97,19 +97,10 @@ try {
 
         unstash 'git-sources'
         sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-        withSonarQubeEnv('SonarQube') {
+        withSonarQubeEnv('SonarQubeDev') {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
       }
-//    },
-//    'debian9': {
-//      node {
-//        sh 'setup_centreon_build.sh'
-//        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh debian9"
-//        junit 'ut.xml'
-//        if (currentBuild.result == 'UNSTABLE')
-//          currentBuild.result = 'FAILURE'
-//      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests stage failure.');
@@ -136,12 +127,6 @@ try {
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
       }
-//    },
-//    'debian9': {
-//      node {
-//        sh 'setup_centreon_build.sh'
-//        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh debian9"
-//      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Package stage failure.');
