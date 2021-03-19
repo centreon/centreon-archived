@@ -146,10 +146,11 @@ services:
         class: Centreon\Domain\Monitoring\ResourceService
 
     Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
-        class: Centreon\Infrastructure\Monitoring\ResourceRepositoryRDB
+        class: Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryRDB
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
+            - method: setResourceSearchRepository
 
     # Filters
     Centreon\Domain\Filter\Interfaces\FilterServiceInterface:

@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\Monitoring;
+namespace Centreon\Infrastructure\Monitoring\Resource;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
@@ -34,34 +34,39 @@ use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Monitoring\Notes;
+use Centreon\Infrastructure\Monitoring\Resource\ResourceSearchRepositoryRDB;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
-use PDO;
 
 /**
  * Database repository for the real time monitoring of services and host.
  *
- * @package Centreon\Infrastructure\Monitoring
+ * @package Centreon\Infrastructure\Monitoring\Resource
  */
 final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements ResourceRepositoryInterface
 {
-    /**
-     * @var AccessGroup[] List of access group used to filter the requests
-     */
-    private $accessGroups = [];
-
     /**
      * @var SqlRequestParametersTranslator
      */
     private $sqlRequestTranslator;
 
     /**
+     * @var ResourceSearchRepository
+     */
+    private $resourceSearchRepository;
+
+    /**
      * @var ContactInterface
      */
     private $contact;
+
+    /**
+     * @var AccessGroup[] List of access group used to filter the requests
+     */
+    private $accessGroups = [];
 
     /**
      * @var array Association of resource search parameters
@@ -131,11 +136,22 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     }
 
     /**
+     * Initialized by the dependency injector.
+     *
+     * @param ResourceSearchRepositoryRDB $resourceSearchRepository
+     */
+    public function setResourceSearchRepository(ResourceSearchRepositoryRDB $resourceSearchRepository): void
+    {
+        $this->resourceSearchRepository = $resourceSearchRepository;
+        $this->resourceSearchRepository->setServiceConcordances($this->serviceConcordances);
+    }
+
+    /**
      * {@inheritDoc}
      */
-    public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface
+    public function setContact(ContactInterface $contact): ResourceRepositoryInterface
     {
-        $this->accessGroups = $accessGroups;
+        $this->contact = $contact;
 
         return $this;
     }
@@ -143,60 +159,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * {@inheritDoc}
      */
-    public function extractResourcesWithGraphData(array $resources): array
+    public function filterByAccessGroups(?array $accessGroups): ResourceRepositoryInterface
     {
-        $resourcesWithGraphData = [];
-        $collector = new StatementCollector();
-        $where = [];
+        $this->accessGroups = $accessGroups;
 
-        foreach ($resources as $key => $resource) {
-            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-                $where[] = "(i.host_id = :host_id_{$key} AND i.service_id = :service_id_{$key})";
-                $collector->addValue(":service_id_{$key}", $resource->getId(), PDO::PARAM_INT);
-                $collector->addValue(":host_id_{$key}", $resource->getParent()->getId(), PDO::PARAM_INT);
-            } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
-                $where[] = "(s.description = :service_description_{$key})";
-                $collector->addValue(":service_description_{$key}", 'meta_' . $resource->getId(), PDO::PARAM_STR);
-            }
-        }
-
-        if (!$where) {
-            return $resourcesWithGraphData;
-        }
-
-        $statement = $this->db->prepare(
-            $this->translateDbName(
-                'SELECT i.host_id, i.service_id, s.description
-                FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i, `:dbstg`.services AS s
-                WHERE (' . implode(' OR ', $where) . ')
-                AND i.id = m.index_id
-                AND i.service_id = s.service_id
-                AND m.hidden = "0"
-                GROUP BY host_id, service_id'
-            )
-        );
-        $collector->bind($statement);
-
-        $statement->execute();
-
-        while ($row = $statement->fetch()) {
-            foreach ($resources as $resource) {
-                if (
-                    $resource->getType() === ResourceEntity::TYPE_SERVICE
-                    && $resource->getParent()->getId() === (int)$row['host_id']
-                    && $resource->getId() === (int)$row['service_id']
-                ) {
-                    $resourcesWithGraphData[] = $resource;
-                } elseif (
-                    $resource->getType() === ResourceEntity::TYPE_META
-                    && $resource->getId() === (int)substr($row['description'], 5)
-                ) {
-                    $resourcesWithGraphData[] = $resource;
-                }
-            }
-        }
-
-        return $resourcesWithGraphData;
+        return $this;
     }
 
     /**
@@ -236,16 +203,16 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         $subRequests = [];
 
-        if ($this->shouldSearchServices($filter)) {
+        if ($this->resourceSearchRepository->shouldSearchServices($filter)) {
             $subRequests[] = '(' . $this->prepareQueryForServiceResources($collector, $filter) . ') ';
         }
 
         // do not get hosts if a service filter is given
-        if ($this->shouldSearchHosts($filter)) {
+        if ($this->resourceSearchRepository->shouldSearchHosts($filter)) {
             $subRequests[] = '(' . $this->prepareQueryForHostResources($collector, $filter) . ')';
         }
 
-        if ($this->shouldSearchMetaServices($filter)) {
+        if ($this->resourceSearchRepository->shouldSearchMetaServices($filter)) {
             $subRequests[] = '(' . $this->prepareQueryForMetaServiceResources($collector, $filter) . ')';
         }
 
@@ -267,7 +234,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             foreach ($filter->getHostgroupIds() as $index => $groupId) {
                 $key = ":resourceHostgroupId_{$index}";
                 $groupList[] = $key;
-                $collector->addValue($key, $groupId, PDO::PARAM_INT);
+                $collector->addValue($key, $groupId, \PDO::PARAM_INT);
             }
 
             $request .= ' INNER JOIN `:dbstg`.`hosts_hostgroups` AS hhg
@@ -326,486 +293,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         }
 
         return $resources;
-    }
-
-    /**
-     * Check if a service filter is given in request parameters
-     *
-     * @return bool
-     */
-    private function hasServiceSearch(): bool
-    {
-        $search = $this->sqlRequestTranslator->getRequestParameters()->getSearch();
-
-        if (empty($search)) {
-            return false;
-        }
-
-        $operator = array_keys($search)[0];
-
-        if ($operator === RequestParameters::AGGREGATE_OPERATOR_OR) {
-            return !$this->extractSpecificSearchCriteria('/^h\./');
-        }
-
-        return $this->extractSpecificSearchCriteria('/^s\./');
-    }
-
-    /**
-     * Extract request parameters
-     *
-     * @param string $key
-     * @return bool
-     */
-    private function extractSpecificSearchCriteria(string $key)
-    {
-        $requestParameters = $this->sqlRequestTranslator->getRequestParameters();
-        $search = $requestParameters->getSearch();
-
-        $serviceConcordances = array_reduce(
-            array_keys($this->serviceConcordances),
-            function ($acc, $concordanceKey) use ($key) {
-                if (preg_match($key, $concordanceKey)) {
-                    $acc[] = $concordanceKey;
-                }
-                return $acc;
-            },
-            []
-        );
-
-        foreach ($serviceConcordances as $serviceConcordance) {
-            if ($requestParameters->hasSearchParameter($serviceConcordance, $search)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if the filters are compatible to extract services
-     *
-     * @param ResourceFilter $filter
-     * @return bool
-     */
-    private function shouldSearchServices(ResourceFilter $filter): bool
-    {
-        if (
-            ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_SERVICE)) ||
-            ($filter->getStatuses() && !ResourceFilter::map(
-                $filter->getStatuses(),
-                ResourceFilter::MAP_STATUS_SERVICE
-            ))
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if the filters are compatible to extract hosts
-     *
-     * @param ResourceFilter $filter
-     * @return bool
-     */
-    private function shouldSearchHosts(ResourceFilter $filter): bool
-    {
-        if (
-            $this->hasServiceSearch() ||
-            ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_HOST)) ||
-            ($filter->getStatuses() && !ResourceFilter::map(
-                $filter->getStatuses(),
-                ResourceFilter::MAP_STATUS_HOST
-            )) ||
-            $filter->getServicegroupIds()
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if the filters are compatible to extract services
-     *
-     * @param ResourceFilter $filter
-     * @return bool
-     */
-    private function shouldSearchMetaServices(ResourceFilter $filter): bool
-    {
-        if (
-            $this->hasServiceSearch() ||
-            ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_META)) ||
-            ($filter->getStatuses() && !ResourceFilter::map(
-                $filter->getStatuses(),
-                ResourceFilter::MAP_STATUS_SERVICE
-            ))
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Prepare SQL query for services
-     *
-     * @param StatementCollector $collector
-     * @param ResourceFilter $filter
-     * @return string
-     */
-    protected function prepareQueryForServiceResources(StatementCollector $collector, ResourceFilter $filter): string
-    {
-        $sql = "SELECT DISTINCT
-            s.service_id AS `id`,
-            'service' AS `type`,
-            sh.host_id AS `host_id`,
-            s.description AS `name`,
-            NULL AS `alias`,
-            NULL AS `fqdn`,
-            s.icon_image_alt AS `icon_name`,
-            s.icon_image AS `icon_url`,
-            s.action_url AS `action_url`,
-            s.notes_url AS `notes_url`,
-            s.notes AS `notes_label`,
-            i.name AS `monitoring_server_name`,
-            i.instance_id AS `monitoring_server_id`,
-            s.command_line AS `command_line`,
-            NULL AS `timezone`,
-            sh.host_id AS `parent_id`,
-            sh.name AS `parent_name`,
-            sh.alias AS `parent_alias`,
-            sh.address AS `parent_fqdn`,
-            'host' AS `parent_type`,
-            sh.icon_image_alt AS `parent_icon_name`,
-            sh.icon_image AS `parent_icon_url`,
-            sh.state AS `parent_status_code`,
-            CASE
-                WHEN sh.state = 0 THEN 'UP'
-                WHEN sh.state = 1 THEN 'DOWN'
-                WHEN sh.state = 2 THEN 'UNREACHABLE'
-                WHEN sh.state = 4 THEN 'PENDING'
-            END AS `parent_status_name`,
-            CASE
-                WHEN sh.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
-                WHEN sh.state = 1 THEN " . ResourceStatus::SEVERITY_HIGH . "
-                WHEN sh.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . "
-                WHEN sh.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
-            END AS `parent_status_severity_code`,
-            s.state AS `status_code`,
-            CASE
-                WHEN s.state = 0 THEN 'OK'
-                WHEN s.state = 1 THEN 'WARNING'
-                WHEN s.state = 2 THEN 'CRITICAL'
-                WHEN s.state = 3 THEN 'UNKNOWN'
-                WHEN s.state = 4 THEN 'PENDING'
-            END AS `status_name`,
-            CASE
-                WHEN s.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
-                WHEN s.state = 1 THEN " . ResourceStatus::SEVERITY_MEDIUM . "
-                WHEN s.state = 2 THEN " . ResourceStatus::SEVERITY_HIGH . "
-                WHEN s.state = 3 THEN " . ResourceStatus::SEVERITY_LOW . "
-                WHEN s.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
-            END AS `status_severity_code`,
-            s.flapping AS `flapping`,
-            s.percent_state_change AS `percent_state_change`,
-            s.scheduled_downtime_depth AS `in_downtime`,
-            s.acknowledged AS `acknowledged`,
-            s.active_checks AS `active_checks`,
-            s.passive_checks AS `passive_checks`,
-            service_cvl.value AS `severity_level`,
-            s.last_state_change AS `last_status_change`,
-            s.last_notification AS `last_notification`,
-            s.notification_number AS `notification_number`,
-            CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
-                WHEN s.state_type = 1 THEN 'H'
-                WHEN s.state_type = 0 THEN 'S'
-            END, ')') AS `tries`,
-            s.last_check AS `last_check`,
-            s.next_check AS `next_check`,
-            s.output AS `information`,
-            s.perfdata AS `performance_data`,
-            s.execution_time AS `execution_time`,
-            s.latency AS `latency`
-            FROM `:dbstg`.`services` AS s
-            INNER JOIN `:dbstg`.`hosts` sh
-                ON sh.host_id = s.host_id
-                AND sh.name NOT LIKE '_Module_%'
-                AND sh.enabled = 1";
-
-        // get monitoring server information
-        $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id";
-
-        // get Severity level, name, icon
-        $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = s.host_id
-            AND service_cvl.service_id = s.service_id
-            AND service_cvl.name = "CRITICALITY_LEVEL"';
-
-        // set ACL limitations
-        if (!$this->isAdmin()) {
-            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-                AND service_acl.service_id = s.service_id
-                AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
-        }
-
-        // apply the service group filter to SQL query
-        if ($filter->getServicegroupIds()) {
-            $groupList = [];
-
-            foreach ($filter->getServicegroupIds() as $index => $groupId) {
-                $key = ":serviceServicegroupId_{$index}";
-
-                $groupList[] = $key;
-                $collector->addValue($key, $groupId, PDO::PARAM_INT);
-            }
-
-            $sql .= ' INNER JOIN `:dbstg`.`services_servicegroups` AS ssg
-                  ON ssg.host_id = s.host_id
-                  AND ssg.service_id = s.service_id
-                  AND ssg.servicegroup_id IN (' . implode(', ', $groupList) . ') ';
-        }
-
-        $hasWhereCondition = false;
-
-        $this->sqlRequestTranslator->setConcordanceArray($this->serviceConcordances);
-        try {
-            $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        } catch (RequestParametersTranslatorException $ex) {
-            throw new RepositoryException($ex->getMessage(), 0, $ex);
-        }
-
-        if ($searchRequest !== null) {
-            $hasWhereCondition = true;
-            $sql .= $searchRequest;
-        }
-
-        // show active services only
-        $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
-            . 's.enabled = 1';
-
-        // apply the state filter to SQL query
-        if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
-            $sqlState = [];
-            $sqlStateCatalog = [
-                ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS => "(s.state_type = '1'"
-                    . " AND s.acknowledged = 0"
-                    . " AND s.scheduled_downtime_depth = 0"
-                    . " AND sh.acknowledged = 0"
-                    . " AND sh.scheduled_downtime_depth = 0"
-                    . " AND s.state != 0"
-                    . " AND s.state != 4)",
-                ResourceServiceInterface::STATE_RESOURCES_PROBLEMS => '(s.state != 0 AND s.state != 4)',
-                ResourceServiceInterface::STATE_IN_DOWNTIME => '(s.scheduled_downtime_depth = 1'
-                    . ' OR sh.scheduled_downtime_depth = 1)',
-                ResourceServiceInterface::STATE_ACKNOWLEDGED => '(s.acknowledged = 1 OR sh.acknowledged = 1)',
-            ];
-
-            foreach ($filter->getStates() as $state) {
-                $sqlState[] = $sqlStateCatalog[$state];
-            }
-
-            $sql .= ' AND (' . implode(' OR ', $sqlState) . ')';
-        }
-
-        // apply the status filter to SQL query
-        $statuses = ResourceFilter::map($filter->getStatuses(), ResourceFilter::MAP_STATUS_SERVICE);
-        if ($statuses) {
-            $statusList = [];
-
-            foreach ($statuses as $index => $status) {
-                $key = ":serviceStatuses_{$index}";
-
-                $statusList[] = $key;
-                $collector->addValue($key, $status, PDO::PARAM_INT);
-            }
-
-            $sql .= ' AND s.state IN (' . implode(', ', $statusList) . ')';
-        }
-
-        if (!empty($filter->getHostIds())) {
-            $hostIds = [];
-
-            foreach ($filter->getHostIds() as $index => $hostId) {
-                $key = ":hostId_{$index}";
-
-                $hostIds[] = $key;
-                $collector->addValue($key, $hostId, PDO::PARAM_INT);
-            }
-
-            $sql .= ' AND sh.host_id IN (' . implode(', ', $hostIds) . ')';
-        }
-
-        if (!empty($filter->getServiceIds())) {
-            $serviceIds = [];
-
-            foreach ($filter->getServiceIds() as $index => $serviceId) {
-                $key = ":serviceId_{$index}";
-
-                $serviceIds[] = $key;
-                $collector->addValue($key, $serviceId, PDO::PARAM_INT);
-            }
-
-            $sql .= ' AND s.service_id IN (' . implode(', ', $serviceIds) . ')';
-        }
-
-        // apply the monitoring server filter to SQL query
-        if (!empty($filter->getMonitoringServerIds())) {
-            $monitoringServerIds = [];
-
-            foreach ($filter->getMonitoringServerIds() as $index => $monitoringServerId) {
-                $key = ":monitoringServerId_{$index}";
-
-                $monitoringServerIds[] = $key;
-                $collector->addValue($key, $monitoringServerId, PDO::PARAM_INT);
-            }
-
-            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
-        }
-
-        return $sql;
-    }
-
-    /**
-     * Prepare SQL query for services
-     *
-     * @param StatementCollector $collector
-     * @param ResourceFilter $filter
-     * @return string
-     */
-    protected function prepareQueryForMetaServiceResources(
-        StatementCollector $collector,
-        ResourceFilter $filter
-    ): string {
-        $sql = "SELECT DISTINCT
-            SUBSTRING(s.description, 6) AS `id`,
-            'metaservice' AS `type`,
-            sh.host_id AS `host_id`,
-            s.display_name AS `name`,
-            NULL AS `alias`,
-            NULL AS `fqdn`,
-            NULL AS `icon_name`,
-            NULL AS `icon_url`,
-            NULL AS `action_url`,
-            NULL AS `notes_url`,
-            NULL AS `notes_label`,
-            NULL AS `monitoring_server_name`,
-            NULL AS `monitoring_server_id`,
-            s.command_line AS `command_line`,
-            NULL AS `timezone`,
-            NULL AS `parent_id`,
-            NULL AS `parent_name`,
-            NULL AS `parent_alias`,
-            NULL AS `parent_fqdn`,
-            NULL AS `parent_type`,
-            NULL AS `parent_icon_name`,
-            NULL AS `parent_icon_url`,
-            NULL AS `parent_status_code`,
-            NULL AS `parent_status_name`,
-            NULL AS `parent_status_severity_code`,
-            s.state AS `status_code`,
-            CASE
-                WHEN s.state = 0 THEN 'OK'
-                WHEN s.state = 1 THEN 'WARNING'
-                WHEN s.state = 2 THEN 'CRITICAL'
-                WHEN s.state = 3 THEN 'UNKNOWN'
-                WHEN s.state = 4 THEN 'PENDING'
-            END AS `status_name`,
-            CASE
-                WHEN s.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
-                WHEN s.state = 1 THEN " . ResourceStatus::SEVERITY_MEDIUM . "
-                WHEN s.state = 2 THEN " . ResourceStatus::SEVERITY_HIGH . "
-                WHEN s.state = 3 THEN " . ResourceStatus::SEVERITY_LOW . "
-                WHEN s.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
-            END AS `status_severity_code`,
-            s.flapping AS `flapping`,
-            s.percent_state_change AS `percent_state_change`,
-            s.scheduled_downtime_depth AS `in_downtime`,
-            s.acknowledged AS `acknowledged`,
-            1 AS `active_checks`,
-            1 AS `passive_checks`,
-            NULL AS `severity_level`,
-            s.last_state_change AS `last_status_change`,
-            s.last_notification AS `last_notification`,
-            s.notification_number AS `notification_number`,
-            CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
-                WHEN s.state_type = 1 THEN 'H'
-                WHEN s.state_type = 0 THEN 'S'
-            END, ')') AS `tries`,
-            s.last_check AS `last_check`,
-            s.next_check AS `next_check`,
-            s.output AS `information`,
-            s.perfdata AS `performance_data`,
-            s.execution_time AS `execution_time`,
-            s.latency AS `latency`
-            FROM `:dbstg`.`services` AS s
-            INNER JOIN `:dbstg`.`hosts` sh
-            ON sh.host_id = s.host_id
-            AND sh.name LIKE '_Module_Meta%'
-            AND sh.enabled = 1";
-
-        // set ACL limitations
-        if (!$this->isAdmin()) {
-            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-                AND service_acl.service_id = s.service_id
-                AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
-        }
-
-        // show active services only
-        $sql .= ' WHERE s.enabled = 1';
-
-        // apply the state filter to SQL query
-        if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
-            $sqlState = [];
-            $sqlStateCatalog = [
-                ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS => "(s.state_type = '1'"
-                    . " AND s.acknowledged = 0"
-                    . " AND s.scheduled_downtime_depth = 0"
-                    . " AND sh.acknowledged = 0"
-                    . " AND sh.scheduled_downtime_depth = 0"
-                    . " AND s.state != 0"
-                    . " AND s.state != 4)",
-                ResourceServiceInterface::STATE_RESOURCES_PROBLEMS => '(s.state != 0 AND s.state != 4)',
-                ResourceServiceInterface::STATE_IN_DOWNTIME => '(s.scheduled_downtime_depth = 1'
-                    . ' OR sh.scheduled_downtime_depth = 1)',
-                ResourceServiceInterface::STATE_ACKNOWLEDGED => '(s.acknowledged = 1 OR sh.acknowledged = 1)',
-            ];
-
-            foreach ($filter->getStates() as $state) {
-                $sqlState[] = $sqlStateCatalog[$state];
-            }
-
-            $sql .= ' AND (' . implode(' OR ', $sqlState) . ')';
-        }
-
-        // apply the status filter to SQL query
-        $statuses = ResourceFilter::map($filter->getStatuses(), ResourceFilter::MAP_STATUS_SERVICE);
-        if ($statuses) {
-            $statusList = [];
-
-            foreach ($statuses as $index => $status) {
-                $key = ":serviceStatuses_{$index}";
-
-                $statusList[] = $key;
-                $collector->addValue($key, $status, PDO::PARAM_INT);
-            }
-
-            $sql .= ' AND s.state IN (' . implode(', ', $statusList) . ')';
-        }
-
-        if (!empty($filter->getMetaServiceIds())) {
-            $metaServiceIds = [];
-
-            foreach ($filter->getMetaServiceIds() as $index => $metaServiceId) {
-                $key = ":metaServiceId_{$index}";
-
-                $metaServiceIds[] = $key;
-                $collector->addValue($key, 'meta_' . $metaServiceId, PDO::PARAM_STR);
-            }
-
-            $sql .= ' AND s.description IN (' . implode(', ', $metaServiceIds) . ')';
-        }
-
-        return $sql;
     }
 
     /**
@@ -943,7 +430,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 $key = ":hostStatuses_{$index}";
 
                 $statusList[] = $key;
-                $collector->addValue($key, $status, PDO::PARAM_INT);
+                $collector->addValue($key, $status, \PDO::PARAM_INT);
             }
 
             $sql .= ' AND h.state IN (' . implode(', ', $statusList) . ')';
@@ -956,7 +443,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 $key = ":hostId_{$index}";
 
                 $hostIds[] = $key;
-                $collector->addValue($key, $hostId, PDO::PARAM_INT);
+                $collector->addValue($key, $hostId, \PDO::PARAM_INT);
             }
 
             $sql .= ' AND h.host_id IN (' . implode(', ', $hostIds) . ')';
@@ -970,10 +457,371 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 $key = ":monitoringServerId_{$index}";
 
                 $monitoringServerIds[] = $key;
-                $collector->addValue($key, $monitoringServerId, PDO::PARAM_INT);
+                $collector->addValue($key, $monitoringServerId, \PDO::PARAM_INT);
             }
 
             $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
+        }
+
+        return $sql;
+    }
+
+    /**
+     * Prepare SQL query for services
+     *
+     * @param StatementCollector $collector
+     * @param ResourceFilter $filter
+     * @return string
+     */
+    protected function prepareQueryForServiceResources(StatementCollector $collector, ResourceFilter $filter): string
+    {
+        $sql = "SELECT DISTINCT
+            s.service_id AS `id`,
+            'service' AS `type`,
+            sh.host_id AS `host_id`,
+            s.description AS `name`,
+            NULL AS `alias`,
+            NULL AS `fqdn`,
+            s.icon_image_alt AS `icon_name`,
+            s.icon_image AS `icon_url`,
+            s.action_url AS `action_url`,
+            s.notes_url AS `notes_url`,
+            s.notes AS `notes_label`,
+            i.name AS `monitoring_server_name`,
+            i.instance_id AS `monitoring_server_id`,
+            s.command_line AS `command_line`,
+            NULL AS `timezone`,
+            sh.host_id AS `parent_id`,
+            sh.name AS `parent_name`,
+            sh.alias AS `parent_alias`,
+            sh.address AS `parent_fqdn`,
+            'host' AS `parent_type`,
+            sh.icon_image_alt AS `parent_icon_name`,
+            sh.icon_image AS `parent_icon_url`,
+            sh.state AS `parent_status_code`,
+            CASE
+                WHEN sh.state = 0 THEN 'UP'
+                WHEN sh.state = 1 THEN 'DOWN'
+                WHEN sh.state = 2 THEN 'UNREACHABLE'
+                WHEN sh.state = 4 THEN 'PENDING'
+            END AS `parent_status_name`,
+            CASE
+                WHEN sh.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
+                WHEN sh.state = 1 THEN " . ResourceStatus::SEVERITY_HIGH . "
+                WHEN sh.state = 2 THEN " . ResourceStatus::SEVERITY_LOW . "
+                WHEN sh.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
+            END AS `parent_status_severity_code`,
+            s.state AS `status_code`,
+            CASE
+                WHEN s.state = 0 THEN 'OK'
+                WHEN s.state = 1 THEN 'WARNING'
+                WHEN s.state = 2 THEN 'CRITICAL'
+                WHEN s.state = 3 THEN 'UNKNOWN'
+                WHEN s.state = 4 THEN 'PENDING'
+            END AS `status_name`,
+            CASE
+                WHEN s.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
+                WHEN s.state = 1 THEN " . ResourceStatus::SEVERITY_MEDIUM . "
+                WHEN s.state = 2 THEN " . ResourceStatus::SEVERITY_HIGH . "
+                WHEN s.state = 3 THEN " . ResourceStatus::SEVERITY_LOW . "
+                WHEN s.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
+            END AS `status_severity_code`,
+            s.flapping AS `flapping`,
+            s.percent_state_change AS `percent_state_change`,
+            s.scheduled_downtime_depth AS `in_downtime`,
+            s.acknowledged AS `acknowledged`,
+            s.active_checks AS `active_checks`,
+            s.passive_checks AS `passive_checks`,
+            service_cvl.value AS `severity_level`,
+            s.last_state_change AS `last_status_change`,
+            s.last_notification AS `last_notification`,
+            s.notification_number AS `notification_number`,
+            CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
+                WHEN s.state_type = 1 THEN 'H'
+                WHEN s.state_type = 0 THEN 'S'
+            END, ')') AS `tries`,
+            s.last_check AS `last_check`,
+            s.next_check AS `next_check`,
+            s.output AS `information`,
+            s.perfdata AS `performance_data`,
+            s.execution_time AS `execution_time`,
+            s.latency AS `latency`
+            FROM `:dbstg`.`services` AS s
+            INNER JOIN `:dbstg`.`hosts` sh
+                ON sh.host_id = s.host_id
+                AND sh.name NOT LIKE '_Module_%'
+                AND sh.enabled = 1";
+
+        // get monitoring server information
+        $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id";
+
+        // get Severity level, name, icon
+        $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = s.host_id
+            AND service_cvl.service_id = s.service_id
+            AND service_cvl.name = "CRITICALITY_LEVEL"';
+
+        // set ACL limitations
+        if (!$this->isAdmin()) {
+            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
+                AND service_acl.service_id = s.service_id
+                AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+        }
+
+        // apply the service group filter to SQL query
+        if ($filter->getServicegroupIds()) {
+            $groupList = [];
+
+            foreach ($filter->getServicegroupIds() as $index => $groupId) {
+                $key = ":serviceServicegroupId_{$index}";
+
+                $groupList[] = $key;
+                $collector->addValue($key, $groupId, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' INNER JOIN `:dbstg`.`services_servicegroups` AS ssg
+                  ON ssg.host_id = s.host_id
+                  AND ssg.service_id = s.service_id
+                  AND ssg.servicegroup_id IN (' . implode(', ', $groupList) . ') ';
+        }
+
+        $hasWhereCondition = false;
+
+        $this->sqlRequestTranslator->setConcordanceArray($this->serviceConcordances);
+        try {
+            $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        } catch (RequestParametersTranslatorException $ex) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        }
+
+        if ($searchRequest !== null) {
+            $hasWhereCondition = true;
+            $sql .= $searchRequest;
+        }
+
+        // show active services only
+        $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
+            . 's.enabled = 1';
+
+        // apply the state filter to SQL query
+        if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
+            $sqlState = [];
+            $sqlStateCatalog = [
+                ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS => "(s.state_type = '1'"
+                    . " AND s.acknowledged = 0"
+                    . " AND s.scheduled_downtime_depth = 0"
+                    . " AND sh.acknowledged = 0"
+                    . " AND sh.scheduled_downtime_depth = 0"
+                    . " AND s.state != 0"
+                    . " AND s.state != 4)",
+                ResourceServiceInterface::STATE_RESOURCES_PROBLEMS => '(s.state != 0 AND s.state != 4)',
+                ResourceServiceInterface::STATE_IN_DOWNTIME => '(s.scheduled_downtime_depth = 1'
+                    . ' OR sh.scheduled_downtime_depth = 1)',
+                ResourceServiceInterface::STATE_ACKNOWLEDGED => '(s.acknowledged = 1 OR sh.acknowledged = 1)',
+            ];
+
+            foreach ($filter->getStates() as $state) {
+                $sqlState[] = $sqlStateCatalog[$state];
+            }
+
+            $sql .= ' AND (' . implode(' OR ', $sqlState) . ')';
+        }
+
+        // apply the status filter to SQL query
+        $statuses = ResourceFilter::map($filter->getStatuses(), ResourceFilter::MAP_STATUS_SERVICE);
+        if ($statuses) {
+            $statusList = [];
+
+            foreach ($statuses as $index => $status) {
+                $key = ":serviceStatuses_{$index}";
+
+                $statusList[] = $key;
+                $collector->addValue($key, $status, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND s.state IN (' . implode(', ', $statusList) . ')';
+        }
+
+        if (!empty($filter->getHostIds())) {
+            $hostIds = [];
+
+            foreach ($filter->getHostIds() as $index => $hostId) {
+                $key = ":hostId_{$index}";
+
+                $hostIds[] = $key;
+                $collector->addValue($key, $hostId, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND sh.host_id IN (' . implode(', ', $hostIds) . ')';
+        }
+
+        if (!empty($filter->getServiceIds())) {
+            $serviceIds = [];
+
+            foreach ($filter->getServiceIds() as $index => $serviceId) {
+                $key = ":serviceId_{$index}";
+
+                $serviceIds[] = $key;
+                $collector->addValue($key, $serviceId, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND s.service_id IN (' . implode(', ', $serviceIds) . ')';
+        }
+
+        // apply the monitoring server filter to SQL query
+        if (!empty($filter->getMonitoringServerIds())) {
+            $monitoringServerIds = [];
+
+            foreach ($filter->getMonitoringServerIds() as $index => $monitoringServerId) {
+                $key = ":monitoringServerId_{$index}";
+
+                $monitoringServerIds[] = $key;
+                $collector->addValue($key, $monitoringServerId, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
+        }
+
+        return $sql;
+    }
+
+    /**
+     * Prepare SQL query for services
+     *
+     * @param StatementCollector $collector
+     * @param ResourceFilter $filter
+     * @return string
+     */
+    protected function prepareQueryForMetaServiceResources(
+        StatementCollector $collector,
+        ResourceFilter $filter
+    ): string {
+        $sql = "SELECT DISTINCT
+            SUBSTRING(s.description, 6) AS `id`,
+            'metaservice' AS `type`,
+            sh.host_id AS `host_id`,
+            s.display_name AS `name`,
+            NULL AS `alias`,
+            NULL AS `fqdn`,
+            NULL AS `icon_name`,
+            NULL AS `icon_url`,
+            NULL AS `action_url`,
+            NULL AS `notes_url`,
+            NULL AS `notes_label`,
+            NULL AS `monitoring_server_name`,
+            NULL AS `monitoring_server_id`,
+            s.command_line AS `command_line`,
+            NULL AS `timezone`,
+            NULL AS `parent_id`,
+            NULL AS `parent_name`,
+            NULL AS `parent_alias`,
+            NULL AS `parent_fqdn`,
+            NULL AS `parent_type`,
+            NULL AS `parent_icon_name`,
+            NULL AS `parent_icon_url`,
+            NULL AS `parent_status_code`,
+            NULL AS `parent_status_name`,
+            NULL AS `parent_status_severity_code`,
+            s.state AS `status_code`,
+            CASE
+                WHEN s.state = 0 THEN 'OK'
+                WHEN s.state = 1 THEN 'WARNING'
+                WHEN s.state = 2 THEN 'CRITICAL'
+                WHEN s.state = 3 THEN 'UNKNOWN'
+                WHEN s.state = 4 THEN 'PENDING'
+            END AS `status_name`,
+            CASE
+                WHEN s.state = 0 THEN " . ResourceStatus::SEVERITY_OK . "
+                WHEN s.state = 1 THEN " . ResourceStatus::SEVERITY_MEDIUM . "
+                WHEN s.state = 2 THEN " . ResourceStatus::SEVERITY_HIGH . "
+                WHEN s.state = 3 THEN " . ResourceStatus::SEVERITY_LOW . "
+                WHEN s.state = 4 THEN " . ResourceStatus::SEVERITY_PENDING . "
+            END AS `status_severity_code`,
+            s.flapping AS `flapping`,
+            s.percent_state_change AS `percent_state_change`,
+            s.scheduled_downtime_depth AS `in_downtime`,
+            s.acknowledged AS `acknowledged`,
+            1 AS `active_checks`,
+            1 AS `passive_checks`,
+            NULL AS `severity_level`,
+            s.last_state_change AS `last_status_change`,
+            s.last_notification AS `last_notification`,
+            s.notification_number AS `notification_number`,
+            CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
+                WHEN s.state_type = 1 THEN 'H'
+                WHEN s.state_type = 0 THEN 'S'
+            END, ')') AS `tries`,
+            s.last_check AS `last_check`,
+            s.next_check AS `next_check`,
+            s.output AS `information`,
+            s.perfdata AS `performance_data`,
+            s.execution_time AS `execution_time`,
+            s.latency AS `latency`
+            FROM `:dbstg`.`services` AS s
+            INNER JOIN `:dbstg`.`hosts` sh
+            ON sh.host_id = s.host_id
+            AND sh.name LIKE '_Module_Meta%'
+            AND sh.enabled = 1";
+
+        // set ACL limitations
+        if (!$this->isAdmin()) {
+            $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
+                AND service_acl.service_id = s.service_id
+                AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
+        }
+
+        // show active services only
+        $sql .= ' WHERE s.enabled = 1';
+
+        // apply the state filter to SQL query
+        if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
+            $sqlState = [];
+            $sqlStateCatalog = [
+                ResourceServiceInterface::STATE_UNHANDLED_PROBLEMS => "(s.state_type = '1'"
+                    . " AND s.acknowledged = 0"
+                    . " AND s.scheduled_downtime_depth = 0"
+                    . " AND sh.acknowledged = 0"
+                    . " AND sh.scheduled_downtime_depth = 0"
+                    . " AND s.state != 0"
+                    . " AND s.state != 4)",
+                ResourceServiceInterface::STATE_RESOURCES_PROBLEMS => '(s.state != 0 AND s.state != 4)',
+                ResourceServiceInterface::STATE_IN_DOWNTIME => '(s.scheduled_downtime_depth = 1'
+                    . ' OR sh.scheduled_downtime_depth = 1)',
+                ResourceServiceInterface::STATE_ACKNOWLEDGED => '(s.acknowledged = 1 OR sh.acknowledged = 1)',
+            ];
+
+            foreach ($filter->getStates() as $state) {
+                $sqlState[] = $sqlStateCatalog[$state];
+            }
+
+            $sql .= ' AND (' . implode(' OR ', $sqlState) . ')';
+        }
+
+        // apply the status filter to SQL query
+        $statuses = ResourceFilter::map($filter->getStatuses(), ResourceFilter::MAP_STATUS_SERVICE);
+        if ($statuses) {
+            $statusList = [];
+
+            foreach ($statuses as $index => $status) {
+                $key = ":serviceStatuses_{$index}";
+
+                $statusList[] = $key;
+                $collector->addValue($key, $status, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND s.state IN (' . implode(', ', $statusList) . ')';
+        }
+
+        if (!empty($filter->getMetaServiceIds())) {
+            $metaServiceIds = [];
+
+            foreach ($filter->getMetaServiceIds() as $index => $metaServiceId) {
+                $key = ":metaServiceId_{$index}";
+
+                $metaServiceIds[] = $key;
+                $collector->addValue($key, 'meta_' . $metaServiceId, \PDO::PARAM_STR);
+            }
+
+            $sql .= ' AND s.description IN (' . implode(', ', $metaServiceIds) . ')';
         }
 
         return $sql;
@@ -1053,6 +901,65 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function extractResourcesWithGraphData(array $resources): array
+    {
+        $resourcesWithGraphData = [];
+        $collector = new StatementCollector();
+        $where = [];
+
+        foreach ($resources as $key => $resource) {
+            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+                $where[] = "(i.host_id = :host_id_{$key} AND i.service_id = :service_id_{$key})";
+                $collector->addValue(":service_id_{$key}", $resource->getId(), \PDO::PARAM_INT);
+                $collector->addValue(":host_id_{$key}", $resource->getParent()->getId(), \PDO::PARAM_INT);
+            } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
+                $where[] = "(s.description = :service_description_{$key})";
+                $collector->addValue(":service_description_{$key}", 'meta_' . $resource->getId(), \PDO::PARAM_STR);
+            }
+        }
+
+        if (!$where) {
+            return $resourcesWithGraphData;
+        }
+
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT i.host_id, i.service_id, s.description
+                FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i, `:dbstg`.services AS s
+                WHERE (' . implode(' OR ', $where) . ')
+                AND i.id = m.index_id
+                AND i.service_id = s.service_id
+                AND m.hidden = "0"
+                GROUP BY host_id, service_id'
+            )
+        );
+        $collector->bind($statement);
+
+        $statement->execute();
+
+        while ($row = $statement->fetch()) {
+            foreach ($resources as $resource) {
+                if (
+                    $resource->getType() === ResourceEntity::TYPE_SERVICE
+                    && $resource->getParent()->getId() === (int)$row['host_id']
+                    && $resource->getId() === (int)$row['service_id']
+                ) {
+                    $resourcesWithGraphData[] = $resource;
+                } elseif (
+                    $resource->getType() === ResourceEntity::TYPE_META
+                    && $resource->getId() === (int)substr($row['description'], 5)
+                ) {
+                    $resourcesWithGraphData[] = $resource;
+                }
+            }
+        }
+
+        return $resourcesWithGraphData;
+    }
+
+    /**
      * Check if the contact is admin
      *
      * @return bool
@@ -1062,16 +969,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         return ($this->contact !== null)
             ? $this->contact->isAdmin()
             : false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setContact(ContactInterface $contact): ResourceRepositoryInterface
-    {
-        $this->contact = $contact;
-
-        return $this;
     }
 
     /**

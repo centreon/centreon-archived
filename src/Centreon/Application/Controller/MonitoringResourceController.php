@@ -46,7 +46,6 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Resource;
 
 /**
  * Resource APIs for the Unified View page
