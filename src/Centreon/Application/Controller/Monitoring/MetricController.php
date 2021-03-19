@@ -326,4 +326,39 @@ class MetricController extends AbstractController
         return $this->view($metrics);
     }
 
+    /**
+     * Entry point to get metaservice status metrics
+     *
+     * @param int $metaId
+     * @return View
+     * @throws \Exception
+     */
+    public function getMetaServiceStatusMetrics(
+        RequestParametersInterface $requestParameters,
+        int $metaId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        list($start, $end) = $this->extractDatesFromRequestParameters($requestParameters);
+
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+
+        $service = $this->monitoringService
+            ->filterByContact($contact)
+            ->findOneServiceByDescription('meta_' . $metaId);
+        if ($service === null) {
+            throw new EntityNotFoundException(
+                sprintf(_('Meta Service linked to service %d not found'), $metaId)
+            );
+        }
+
+        $status = $this->metricService
+            ->filterByContact($contact)
+            ->findStatusByService($service, $start, $end);
+
+        return $this->view($status);
+    }
 }
