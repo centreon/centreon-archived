@@ -15092,4 +15092,4 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgstr ""
 
 msgid "Check duration"
-msgstr "Temps d'exécution"
+msgstr ""
