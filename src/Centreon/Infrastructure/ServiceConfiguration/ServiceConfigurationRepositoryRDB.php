@@ -280,7 +280,6 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
              WHERE srv.service_id = :service_id LIMIT 1'
         );
         $statement = $this->db->prepare($request);
-        $statement = $this->db->prepare($request);
 
         $serviceMacros = [];
         $loop = [];
