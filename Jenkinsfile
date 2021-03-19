@@ -1,12 +1,23 @@
+/*
+** Variables.
+*/
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
+def serie = '3.4'
 
+/*
+** Pipeline code.
+*/
 stage('Source') {
   node {
     sh 'setup_centreon_build.sh'
     dir('centreon-web') {
       checkout scm
     }
-    sh './centreon-build/jobs/web/3.4/mon-web-source.sh'
+    // git repository is stored for the Sonar analysis below.
+    sh 'tar czf centreon-web-git.tar.gz centreon-web'
+    stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
+    // resuming process
+    sh "./centreon-build/jobs/web/${serie}/mon-web-source.sh"
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
@@ -26,7 +37,7 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/3.4/mon-web-unittest.sh centos7'
+        sh './centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7'
         step([
           $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
           pattern: 'codestyle.xml',
@@ -34,11 +45,12 @@ try {
           useDeltaValues: true,
           failedNewAll: '0'
         ])
+
         junit 'jest-test-results.xml'
-        if (env.BRANCH_NAME == '2.8.x') {
-          withSonarQubeEnv('SonarQube') {
-            sh './centreon-build/jobs/web/3.4/mon-web-analysis.sh'
-          }
+        unstash 'git-sources'
+        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+        withSonarQubeEnv('SonarQubeDev') {
+          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
       }
     }
@@ -47,12 +59,31 @@ try {
     }
   }
 
+  // sonarQube step to get qualityGate result
+  stage('Quality gate') {
+    timeout(time: 10, unit: 'MINUTES') {
+      def qualityGate = waitForQualityGate()
+      if (qualityGate.status != 'OK') {
+        currentBuild.result = 'FAIL'
+      }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Quality gate failure: ${qualityGate.status}.');
+    }
+  }
+
   stage('Package') {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/3.4/mon-web-package.sh centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
       }
+//    },
+//    'debian9': {
+//      node {
+//        sh 'setup_centreon_build.sh'
+//        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh debian9"
+//      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Package stage failure.');
@@ -63,7 +94,7 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/3.4/mon-web-bundle.sh centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -75,7 +106,7 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 @critical'
+        sh './centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 @critical'
         junit 'xunit-reports/**/*.xml'
         if (currentBuild.result == 'UNSTABLE')
           currentBuild.result = 'FAILURE'
