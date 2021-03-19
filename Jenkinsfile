@@ -96,7 +96,7 @@ try {
 
         unstash 'git-sources'
         sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-        withSonarQubeEnv('SonarQube') {
+        withSonarQubeEnv('SonarQubeDev') {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
       }
