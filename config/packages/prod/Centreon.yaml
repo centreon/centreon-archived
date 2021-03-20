@@ -194,6 +194,13 @@ services:
             - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
 
     # Monitoring resources
+    _instanceof:
+        Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface:
+            tags: ['monitoring.resource.providers']
+            calls:
+                - method: setSqlRequestTranslator
+                  arguments: ['@sqlRequestTranslator']
+
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
         class: Centreon\Domain\Monitoring\ResourceService
 
@@ -202,7 +209,8 @@ services:
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
-            - method: setResourceSearchRepository
+            - method: setProviders
+              arguments: [!tagged_iterator 'monitoring.resource.providers']
 
     # Filters
     Centreon\Domain\Filter\Interfaces\FilterServiceInterface:

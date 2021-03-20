@@ -75,17 +75,28 @@ final class ResourceSearchRepositoryRDB
      */
     public function shouldSearchServices(ResourceFilter $filter): bool
     {
-        if (
-            ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_SERVICE)) ||
-            ($filter->getStatuses() && !ResourceFilter::map(
-                $filter->getStatuses(),
-                ResourceFilter::MAP_STATUS_SERVICE
-            ))
-        ) {
+        if ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_SERVICE)) {
+            return false;
+        }
+
+        //dump($filter);
+        if ($filter->getStatuses() && !ResourceFilter::map(
+            $filter->getStatuses(),
+            ResourceFilter::MAP_STATUS_SERVICE
+        )) {
+            return false;
+        }
+
+        if ($this->hasMetaServiceSearchParameters($filter)) {
             return false;
         }
 
         return true;
+    }
+
+    private function hasMetaServiceSearchParameters(ResourceFilter $filter): bool
+    {
+        return false;
     }
 
     /**
