@@ -41,7 +41,6 @@ abstract class Provider implements ProviderInterface
         'h.alias' => 'h.alias',
         'h.address' => 'h.address',
         'h.fqdn' => 'h.address',
-        'information' => 'h.output',
     ];
 
     /**
@@ -53,7 +52,6 @@ abstract class Provider implements ProviderInterface
         'h.address' => 'sh.address',
         'h.fqdn' => 'sh.address',
         's.description' => 's.description',
-        'information' => 's.output',
     ];
 
     /**

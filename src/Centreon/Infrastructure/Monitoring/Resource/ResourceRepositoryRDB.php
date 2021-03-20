@@ -73,12 +73,15 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     private $resourceConcordances = [
         'id' => 'resource.id',
         'name' => 'resource.name',
+        'alias' => 'resource.alias',
+        'fqdn' => 'resource.fqdn',
         'type' => 'resource.type',
         'status_code' => 'resource.status_code',
         'status' => 'resource.status_name',
         'status_severity_code' => 'resource.status_severity_code',
         'action_url' => 'resource.action_url',
         'parent_name' => 'resource.parent_name',
+        'parent_alias' => 'resource.parent_alias',
         'parent_status' => 'resource.parent_status_name',
         'severity_level' => 'resource.severity_level',
         'in_downtime' => 'resource.in_downtime',
@@ -87,6 +90,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'tries' => 'resource.tries',
         'last_check' => 'resource.last_check',
         'monitoring_server_name' => 'resource.monitoring_server_name',
+        'information' => 'resource.information',
     ];
 
     /**
