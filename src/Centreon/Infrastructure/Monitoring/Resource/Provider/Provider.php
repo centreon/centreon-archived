@@ -73,50 +73,42 @@ abstract class Provider implements ProviderInterface
      *
      * @return bool
      */
-    protected function hasServiceSearch(): bool
+    protected function hasOnlyHostSearch(): bool
     {
-        $search = $this->sqlRequestTranslator->getRequestParameters()->getSearch();
-
-        if (empty($search)) {
-            return false;
-        }
-
-        $operator = array_keys($search)[0];
-
-        if ($operator === RequestParameters::AGGREGATE_OPERATOR_OR) {
-            return !$this->extractSpecificSearchCriteria('/^h\./');
-        }
-
-        return $this->extractSpecificSearchCriteria('/^s\./');
+        return $this->hasOnlyConcordanceSearch($this->hostConcordances);
     }
 
     /**
-     * Extract request parameters
+     * Check if a service filter is given in request parameters
      *
-     * @param string $key
      * @return bool
      */
-    private function extractSpecificSearchCriteria(string $key)
+    protected function hasOnlyServiceSearch(): bool
+    {
+        return $this->hasOnlyConcordanceSearch($this->serviceConcordances);
+    }
+
+    private function hasOnlyConcordanceSearch(array $concordances): bool
     {
         $search = $this->sqlRequestTranslator->getRequestParameters()->getSearch();
+        $searchNames = $this->sqlRequestTranslator->getRequestParameters()->extractSearchNames();
 
-        $serviceConcordances = array_reduce(
-            array_keys($this->serviceConcordances),
-            function ($acc, $concordanceKey) use ($key) {
-                if (preg_match($key, $concordanceKey)) {
-                    $acc[] = $concordanceKey;
-                }
-                return $acc;
-            },
-            []
-        );
+        if (empty($searchNames)) {
+            return false;
+        }
 
-        foreach ($serviceConcordances as $serviceConcordance) {
-            if ($this->sqlRequestTranslator->getRequestParameters()->hasSearchParameter($serviceConcordance, $search)) {
-                return true;
+        $concordanceMatches = [];
+        foreach ($searchNames as $searchName) {
+            if (in_array($searchName, array_keys($concordances))) {
+                $concordanceMatches[] = $searchName;
             }
         }
 
-        return false;
+        $operator = array_keys($search)[0];
+        if ($operator === RequestParameters::AGGREGATE_OPERATOR_OR) {
+            return count($searchNames) === count($concordanceMatches);
+        }
+
+        return !empty($searchNames);
     }
 }

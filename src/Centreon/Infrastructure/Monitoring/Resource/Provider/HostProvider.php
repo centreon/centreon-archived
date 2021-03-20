@@ -33,21 +33,18 @@ use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorExcepti
 final class HostProvider extends Provider
 {
     /**
-     * Check if the filters are compatible to extract services
-     *
-     * @param ResourceFilter $filter
-     * @return bool
+     * @inheritDoc
      */
     public function shouldBeSearched(ResourceFilter $filter): bool
     {
         if (
-            $this->hasServiceSearch() ||
-            ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_HOST)) ||
-            ($filter->getStatuses() && !ResourceFilter::map(
+            $this->hasOnlyServiceSearch()
+            || ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_HOST))
+            || ($filter->getStatuses() && !ResourceFilter::map(
                 $filter->getStatuses(),
                 ResourceFilter::MAP_STATUS_HOST
-            )) ||
-            $filter->getServicegroupIds()
+            ))
+            || $filter->getServicegroupIds()
         ) {
             return false;
         }
@@ -79,7 +76,7 @@ final class HostProvider extends Provider
     }
 
     /**
-     * Prepare SQL query for services
+     * Prepare SQL query
      *
      * @param ResourceFilter $filter
      * @param StatementCollector $collector

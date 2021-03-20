@@ -28,12 +28,39 @@ use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 
 interface ProviderInterface
 {
+    /**
+     * Initialized by the dependency injector.
+     *
+     * @param SqlRequestParametersTranslator $sqlRequestTranslator
+     */
     public function setSqlRequestTranslator(SqlRequestParametersTranslator $sqlRequestTranslator): void;
 
+    /**
+     * Check if filter match criterias to be searched
+     *
+     * @param ResourceFilter $filter
+     * @return bool
+     */
     public function shouldBeSearched(ResourceFilter $filter): bool;
 
+    /**
+     * Prepare SQL query for an admin user
+     *
+     * @param ResourceFilter $filter
+     * @param StatementCollector $collector
+     * @param string|null $aclSubQuery
+     * @return string
+     */
     public function prepareSubQueryWithoutAcl(ResourceFilter $filter, StatementCollector $collector): string;
 
+    /**
+     * Prepare SQL query for a non admin user
+     *
+     * @param ResourceFilter $filter
+     * @param StatementCollector $collector
+     * @param int[] $accessGroupIds
+     * @return string
+     */
     public function prepareSubQueryWithAcl(
         ResourceFilter $filter,
         StatementCollector $collector,

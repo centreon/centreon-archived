@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Monitoring\Resource\Provider;
 
 use Centreon\Infrastructure\Monitoring\Resource\Provider\Provider;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
@@ -34,11 +33,7 @@ use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorExcepti
 final class ServiceProvider extends Provider
 {
     /**
-     * Check if the filters are compatible to extract services
-     *
-     * @param ResourceFilter $filter
-     * @param RequestParametersInterface $requestParameters
-     * @return bool
+     * @inheritDoc
      */
     public function shouldBeSearched(ResourceFilter $filter): bool
     {
@@ -80,7 +75,7 @@ final class ServiceProvider extends Provider
     }
 
     /**
-     * Prepare SQL query for services
+     * Prepare SQL query
      *
      * @param ResourceFilter $filter
      * @param StatementCollector $collector
