@@ -150,7 +150,8 @@ services:
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
-            - method: setResourceSearchRepository
+            - method: setProviders
+              arguments: [!tagged_iterator 'monitoring.resource.providers']
 
     # Filters
     Centreon\Domain\Filter\Interfaces\FilterServiceInterface:
