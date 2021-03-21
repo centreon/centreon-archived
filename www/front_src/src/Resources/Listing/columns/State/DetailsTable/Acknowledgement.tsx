@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
+import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -41,6 +42,7 @@ type Props = Pick<DetailsTableProps, 'endpoint'>;
 
 const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const columns = [
     {
@@ -62,14 +64,14 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
       label: labelPersistent,
       type: ColumnType.string,
       getContent: ({ is_persistent_comment }): string =>
-        getYesNoLabel(is_persistent_comment),
+        t(getYesNoLabel(is_persistent_comment)),
       width: 100,
     },
     {
       id: 'is_sticky',
       label: labelSticky,
       type: ColumnType.string,
-      getContent: ({ is_sticky }): string => getYesNoLabel(is_sticky),
+      getContent: ({ is_sticky }): string => t(getYesNoLabel(is_sticky)),
       width: 100,
     },
 

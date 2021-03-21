@@ -68,9 +68,15 @@ const ActiveLine = (): JSX.Element => {
   );
 };
 
-const getDetailCardLines = (
-  details: ResourceDetails,
-): Array<DetailCardLines> => {
+interface DetailCardLineProps {
+  details: ResourceDetails;
+  t: (label: string) => string;
+}
+
+const getDetailCardLines = ({
+  details,
+  t,
+}: DetailCardLineProps): Array<DetailCardLines> => {
   const getDateTimeLines = ({ label, field }): DetailCardLines => ({
     title: label,
     field,
@@ -182,7 +188,7 @@ const getDetailCardLines = (
       getLines: (): Lines => [
         {
           key: 'flapping',
-          line: <DetailsLine line={details.flapping ? labelYes : labelNo} />,
+          line: <DetailsLine line={t(details.flapping ? labelYes : labelNo)} />,
         },
       ],
     },

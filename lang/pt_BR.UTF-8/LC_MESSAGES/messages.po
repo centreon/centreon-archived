@@ -15069,9 +15069,6 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgstr ""
 
 #  msgid "FQDN / Address"
-<<<<<<< HEAD
-#  msgstr ""
-=======
 #  msgstr ""
 
 #  msgid "Groups"
@@ -15101,12 +15098,5 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Monitoring server"
 #  msgstr ""
 
-#msgid "Check duration"
-#msgstr "Temps d'exécution"
-
-
-
-<<<<<<< HEAD
->>>>>>> 15f0831c9a (Fix errors)
-=======
->>>>>>> 15f0831c9a (Fix errors)
+#  msgid "Check duration"
+#  msgstr ""
