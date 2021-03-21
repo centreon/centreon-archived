@@ -15106,4 +15106,7 @@ msgstr "Erro ao remover tokens de um contato"
 
 
 
+<<<<<<< HEAD
+>>>>>>> 15f0831c9a (Fix errors)
+=======
 >>>>>>> 15f0831c9a (Fix errors)
