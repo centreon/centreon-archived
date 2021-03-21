@@ -349,8 +349,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             ->setLabel($data['notes_label']);
         $externalLinks->setNotes($notes);
 
-        $resource->getLinks()->setExternals($externalLinks);
-
         return $resource;
     }
 
