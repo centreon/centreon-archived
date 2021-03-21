@@ -22,11 +22,13 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring\Resource\Provider;
 
+use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface;
+use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Domain\RequestParameters\RequestParameters;
 
-abstract class Provider implements ProviderInterface
+abstract class Provider extends AbstractRepositoryDRB implements ProviderInterface
 {
     /**
      * @var SqlRequestParametersTranslator
@@ -53,6 +55,13 @@ abstract class Provider implements ProviderInterface
         'h.fqdn' => 'sh.address',
         's.description' => 's.description',
     ];
+
+    /**
+     * @param DatabaseConnection $databaseConnection
+     */
+    public function __construct(DatabaseConnection $databaseConnection) {
+        $this->db = $databaseConnection;
+    }
 
     /**
      * @inheritDoc

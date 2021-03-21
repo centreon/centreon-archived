@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Monitoring\Resource\Provider;
 
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 
@@ -66,4 +67,12 @@ interface ProviderInterface
         StatementCollector $collector,
         array $accessGroupIds
     ): string;
+
+    /**
+     * Remove resources which do not have performance metrics
+     *
+     * @param Resource[] $resources
+     * @return Resource[]
+     */
+    public function excludeResourcesWithoutMetrics(array $resources): array;
 }

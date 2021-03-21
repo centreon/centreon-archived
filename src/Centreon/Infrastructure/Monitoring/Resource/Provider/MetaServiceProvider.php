@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Monitoring\Resource\Provider;
 
 use Centreon\Infrastructure\Monitoring\Resource\Provider\Provider;
+use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
@@ -216,5 +217,54 @@ final class MetaServiceProvider extends Provider
         }
 
         return $sql;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function excludeResourcesWithoutMetrics(array $resources): array
+    {
+        $filteredResources = [];
+        $collector = new StatementCollector();
+        $where = [];
+        $metaServiceResources = [];
+
+        foreach ($resources as $key => $resource) {
+            if ($resource->getType() === Resource::TYPE_META) {
+                $where[] = "(s.description = :service_description_{$key})";
+                $collector->addValue(":service_description_{$key}", 'meta_' . $resource->getId(), \PDO::PARAM_STR);
+                $metaServiceResources[] = $resource;
+            } else {
+                $filteredResources[] = $resource;
+            }
+        }
+
+        if (empty($metaServiceResources)) {
+            return $filteredResources;
+        }
+
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT i.host_id, i.service_id, s.description
+                FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i, `:dbstg`.services AS s
+                WHERE (' . implode(' OR ', $where) . ')
+                AND i.id = m.index_id
+                AND i.service_id = s.service_id
+                AND m.hidden = "0"
+                GROUP BY host_id, service_id'
+            )
+        );
+        $collector->bind($statement);
+        $statement->execute();
+
+        while ($row = $statement->fetch()) {
+            foreach ($metaServiceResources as $metaServiceResource) {
+                if ($metaServiceResource->getId() === (int)substr($row['description'], 5)) {
+                    $filteredResources[] = $metaServiceResource;
+                }
+            }
+        }
+
+        return $filteredResources;
     }
 }
