@@ -113,8 +113,8 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           title={t(labelDowntimeDuration)}
           contentLines={[
             ...[
-              { prefix: labelFrom, time: start_time },
-              { prefix: labelTo, time: end_time },
+              { prefix: t(labelFrom), time: start_time },
+              { prefix: t(labelTo), time: end_time },
             ].map(
               ({ prefix, time }) => `${prefix} ${getFormattedDateTime(time)}`,
             ),
@@ -136,7 +136,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
         />
       )}
       <Grid container spacing={2} alignItems="stretch">
-        {getDetailCardLines(details).map(
+        {getDetailCardLines({ details, t }).map(
           ({ title, field, xs = 6, getLines }) =>
             !isNil(field) && (
               <Grid key={title} item xs={xs}>

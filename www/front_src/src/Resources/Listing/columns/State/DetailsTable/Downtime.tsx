@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
+import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -10,15 +11,13 @@ import { ColumnType } from '@centreon/ui';
 import {
   labelAuthor,
   labelFixed,
-  labelYes,
-  labelNo,
   labelStartTime,
   labelEndTime,
   labelComment,
 } from '../../../../translatedLabels';
 import { getFormattedDateTime } from '../../../../dateTime';
 
-import DetailsTable, { DetailsTableProps } from '.';
+import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
 
 const useStyles = makeStyles({
   comment: {
@@ -41,6 +40,7 @@ type Props = Pick<DetailsTableProps, 'endpoint'>;
 
 const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const columns = [
     {
@@ -54,7 +54,7 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       id: 'is_fixed',
       label: labelFixed,
       type: ColumnType.string,
-      getContent: ({ is_fixed }): string => (is_fixed ? labelYes : labelNo),
+      getContent: ({ is_fixed }): string => t(getYesNoLabel(is_fixed)),
       width: 100,
     },
     {

@@ -15072,3 +15072,33 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "FQDN / Address"
 #  msgstr ""
+
+#  msgid "Groups"
+#  msgstr ""
+
+#  msgid "Comment added"
+#  msgstr ""
+
+#  msgid "Display events"
+#  msgstr ""
+
+#  msgid "Export to png"
+#  msgstr ""
+
+#  msgid "Parent"
+#  msgstr ""
+
+#  msgid "Switch to graph mode"
+#  msgstr ""
+
+#  msgid "Switch to list mode"
+#  msgstr ""
+
+#  msgid "Select criterias"
+#  msgstr ""
+
+#  msgid "Monitoring server"
+#  msgstr ""
+
+msgid "Check duration"
+msgstr ""
