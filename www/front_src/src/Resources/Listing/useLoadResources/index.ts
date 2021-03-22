@@ -55,6 +55,10 @@ const useLoadResources = (): LoadResources => {
           regex: {
             value: searchCriteria,
             fields: [
+              'h.name',
+              'h.alias',
+              'h.address',
+              's.description',
               'name',
               'alias',
               'parent_name',

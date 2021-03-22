@@ -323,11 +323,10 @@ final class ServiceProvider extends Provider
 
         $statement = $this->db->prepare(
             $this->translateDbName(
-                'SELECT i.host_id, i.service_id, s.description
-                FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i, `:dbstg`.services AS s
+                'SELECT i.host_id, i.service_id
+                FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i
                 WHERE (' . implode(' OR ', $where) . ')
                 AND i.id = m.index_id
-                AND i.service_id = s.service_id
                 AND m.hidden = "0"
                 GROUP BY host_id, service_id'
             )

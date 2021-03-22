@@ -92,9 +92,23 @@ abstract class Provider extends AbstractRepositoryDRB implements ProviderInterfa
      */
     protected function hasOnlyServiceSearch(): bool
     {
-        return $this->hasOnlyConcordanceSearch($this->serviceConcordances);
+        $serviceOnlyConcordances = [];
+        foreach (array_keys($this->serviceConcordances) as $serviceOnlyConcordanceKey) {
+            if (!in_array($serviceOnlyConcordanceKey, array_keys($this->hostConcordances))) {
+                $serviceOnlyConcordances[$serviceOnlyConcordanceKey] =
+                    $this->serviceConcordances[$serviceOnlyConcordanceKey];
+            }
+        }
+
+        return $this->hasOnlyConcordanceSearch($serviceOnlyConcordances);
     }
 
+    /**
+     * Check if search contains keys from only given concordances
+     *
+     * @param array $concordances
+     * @return boolean
+     */
     private function hasOnlyConcordanceSearch(array $concordances): bool
     {
         $search = $this->sqlRequestTranslator->getRequestParameters()->getSearch();
@@ -116,6 +130,6 @@ abstract class Provider extends AbstractRepositoryDRB implements ProviderInterfa
             return count($searchNames) === count($concordanceMatches);
         }
 
-        return !empty($searchNames);
+        return !empty($concordanceMatches);
     }
 }
