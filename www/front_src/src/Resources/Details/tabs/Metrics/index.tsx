@@ -2,12 +2,11 @@ import * as React from 'react';
 
 import { path } from 'ramda';
 
-import { Skeleton } from '@material-ui/lab';
-
 import { useRequest } from '@centreon/ui';
 
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
+import LoadingSkeleton from '../Services/LoadingSkeleton';
 
 import { MetaServiceMetricListing } from './models';
 import { listMetaServiceMetrics } from './api';
@@ -17,9 +16,7 @@ import Metrics from './Metrics';
 const limit = 30;
 
 const MetricsTab = ({ details }: TabProps): JSX.Element => {
-  // const endpoint = path(['links', 'endpoints', 'metrics'], details);
-
-  const endpoint = 'http://localhost:5000/api/metrics';
+  const endpoint = path(['links', 'endpoints', 'metrics'], details);
 
   const { sendRequest, sending } = useRequest<MetaServiceMetricListing>({
     request: listMetaServiceMetrics,
@@ -44,7 +41,7 @@ const MetricsTab = ({ details }: TabProps): JSX.Element => {
     <InfiniteScroll
       details={details}
       sendListingRequest={sendListingRequest}
-      loadingSkeleton={<Skeleton />}
+      loadingSkeleton={<LoadingSkeleton />}
       loading={sending}
       limit={limit}
     >
@@ -53,6 +50,7 @@ const MetricsTab = ({ details }: TabProps): JSX.Element => {
           <Metrics
             metrics={entities}
             infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+            calculationType={details?.calculation_type as string}
           />
         );
       }}

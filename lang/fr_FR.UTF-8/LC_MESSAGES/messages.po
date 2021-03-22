@@ -16104,6 +16104,7 @@ msgstr "Meta Service lié au service %d non trouvé"
 
 msgid "Host meta for meta %d not found"
 msgstr "Hôte lié au meta %d non trouvé"
+
 msgid "Forward"
 msgstr "En avant"
 
@@ -16133,3 +16134,6 @@ msgstr "Contrôles désactivés"
 
 msgid "Mandatory data to create the entity '%s' is missing"
 msgstr "Les données obligatoires pour créer l'entité '%s' sont manquantes"
+
+msgid "Calculation type"
+msgstr "Type de calcul"

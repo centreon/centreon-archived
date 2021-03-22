@@ -15130,14 +15130,14 @@ msgstr ""
 #  msgid "Backward"
 #  msgstr ""
 
-msgid "Graph options"
-msgstr ""
+#  msgid "Graph options"
+#  msgstr ""
 
-msgid "Display metric values tooltip"
-msgstr ""
+#  msgid "Display metric values tooltip"
+#  msgstr ""
 
-msgid "Check duration"
-msgstr ""
+#  msgid "Check duration"
+#  msgstr ""
 
 #  msgid "Check duration"
 #  msgstr ""
@@ -15149,4 +15149,7 @@ msgstr ""
 #  msgstr ""
 
 #  msgid "Checks disabled"
+#  msgstr ""
+
+#  msgid "Calculation type"
 #  msgstr ""

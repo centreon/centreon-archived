@@ -208,3 +208,5 @@ export const labelChecksDisabled = 'Checks disabled';
 export const labelNotificationDisabled = 'Notifications disabled';
 export const labelNotificationEnabled = 'Notifications enabled';
 export const labelMetrics = 'Metrics';
+export const labelMetaService = 'Meta service';
+export const labelCalculationType = 'Calculation type';

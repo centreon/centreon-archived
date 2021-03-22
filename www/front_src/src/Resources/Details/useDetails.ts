@@ -15,6 +15,7 @@ import {
   labelNoResourceFound,
   labelSomethingWentWrong,
 } from '../translatedLabels';
+import { Resource } from '../models';
 
 import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
 import { TabId } from './tabs/models';
@@ -28,6 +29,7 @@ import {
 import { getStoredOrDefaultPanelWidth, storePanelWidth } from './storedDetails';
 
 export interface DetailsState {
+  selectResource: (resource: Resource) => void;
   clearSelectedResource: () => void;
   getSelectedResourceDetailsEndpoint: () => string | undefined;
   selectedResourceUuid?: string;
@@ -96,6 +98,15 @@ const useDetails = (): DetailsState => {
       pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
     ),
   });
+
+  const selectResource = (resource: Resource): void => {
+    setOpenDetailsTabId(detailsTabId);
+    setSelectedResourceUuid(resource.uuid);
+    setSelectedResourceId(resource.id);
+    setSelectedResourceType(resource.type);
+    setSelectedResourceParentType(resource?.parent?.type);
+    setSelectedResourceParentId(resource?.parent?.id);
+  };
 
   React.useEffect(() => {
     const urlQueryParameters = getUrlQueryParameters();
@@ -200,6 +211,7 @@ const useDetails = (): DetailsState => {
   };
 
   return {
+    selectResource,
     clearSelectedResource,
     selectedResourceUuid,
     selectedResourceId,

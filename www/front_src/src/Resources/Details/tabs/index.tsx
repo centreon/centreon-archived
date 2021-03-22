@@ -27,7 +27,7 @@ const detailsTabId = 0;
 const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
-const metricsTab = 4;
+const metricsTabId = 4;
 const shortcutsTabId = 5;
 
 export interface TabProps {
@@ -68,7 +68,7 @@ const tabs: Array<Tab> = [
     },
   },
   {
-    id: metricsTab,
+    id: metricsTabId,
     Component: MetricsTab,
     title: labelMetrics,
     getIsActive: (details: ResourceDetails): boolean => {
@@ -76,7 +76,7 @@ const tabs: Array<Tab> = [
         return false;
       }
 
-      return details.type === 'service';
+      return details.type === 'metaservice';
     },
   },
   {
@@ -89,7 +89,7 @@ const tabs: Array<Tab> = [
       }
 
       const { links, parent } = details;
-      const parentUris = parent?.links.uris;
+      const parentUris = parent?.links?.uris;
 
       return any(hasDefinedValues, [parentUris, links.uris]);
     },
@@ -124,6 +124,7 @@ const tabIdByLabel = {
   services: servicesTabId,
   timeline: timelineTabId,
   shortcuts: shortcutsTabId,
+  metrics: metricsTabId,
   graph: graphTabId,
 };
 
@@ -147,6 +148,7 @@ export {
   graphTabId,
   shortcutsTabId,
   servicesTabId,
+  metricsTabId,
   tabs,
   TabById,
   getTabIdFromLabel,
