@@ -31,11 +31,9 @@ use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
-use Centreon\Domain\Monitoring\ResourceSeverity;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Monitoring\Notes;
-use Centreon\Domain\Monitoring\ResourceExternalLinks;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
@@ -84,8 +82,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'last_status_change' => 'resource.last_status_change',
         'tries' => 'resource.tries',
         'last_check' => 'resource.last_check',
-        'h.group' => 'hg.name',
-        'h.group.id' => 'hhg.hostgroup_id',
     ];
 
     /**
@@ -108,8 +104,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         'h.address' => 'sh.address',
         'h.fqdn' => 'sh.address',
         's.description' => 's.description',
-        's.group' => 'sg.name',
-        's.group.id' => 'ssg.servicegroup_id',
         'information' => 's.output',
     ];
 
@@ -207,7 +201,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         }
 
         $collector = new StatementCollector();
-        $request = 'SELECT SQL_CALC_FOUND_ROWS '
+        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT '
             . 'resource.id, resource.type, resource.name, resource.alias, resource.fqdn, '
             . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
             . 'resource.icon_name, resource.icon_url, ' // icon
@@ -219,7 +213,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             // parent status
             . 'resource.parent_status_code, resource.parent_status_name, resource.parent_status_severity_code, '
             . 'resource.flapping, resource.percent_state_change, '
-            . 'resource.severity_level, resource.severity_name, ' // severity
+            . 'resource.severity_level, ' // severity
             . 'resource.in_downtime, resource.acknowledged, '
             . 'resource.active_checks, resource.passive_checks,'
             . 'resource.last_status_change, '
@@ -249,26 +243,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $request .= implode('UNION ALL ', $subRequests);
         unset($subRequests);
 
-        $request .= ') AS `resource`'
-            // Join the host groups
-            . ' LEFT JOIN `:dbstg`.`hosts_hostgroups` AS hhg ON hhg.host_id = resource.host_id'
-            . ' LEFT JOIN `:dbstg`.`hostgroups` AS hg ON hg.hostgroup_id = hhg.hostgroup_id';
+        $request .= ') AS `resource`';
 
-        $request = $this->translateDbName($request);
-
-        // Search
-        $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
-        try {
-            $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        } catch (RequestParametersTranslatorException $ex) {
-            throw new RepositoryException($ex->getMessage(), 0, $ex);
-        }
-        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
-            $collector->addValue($key, current($data), key($data));
-        }
-        $request .= $searchRequest ? $searchRequest : '';
-
-        // apply the service group filter to SQL query
+        // apply the host group filter to SQL query
         if ($filter->getHostgroupIds()) {
             $groupList = [];
 
@@ -279,12 +256,24 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 $collector->addValue($key, $groupId, PDO::PARAM_INT);
             }
 
-            $request .= ($searchRequest ? ' AND ' : ' WHERE ')
-                . 'hg.hostgroup_id IN (' . implode(', ', $groupList) . ')';
+            $request .= ' INNER JOIN `:dbstg`.`hosts_hostgroups` AS hhg
+                ON hhg.host_id = resource.host_id
+                AND hhg.hostgroup_id IN (' . implode(', ', $groupList) . ') ';
         }
 
-        // Group
-        $request .= ' GROUP BY resource.id';
+        // Search
+        $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
+        try {
+            $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        } catch (RequestParametersTranslatorException $ex) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        }
+
+        $request .= $searchRequest !== null ? $searchRequest : '';
+
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $collector->addValue($key, current($data), key($data));
+        }
 
         // Sort
         $request .= $this->sqlRequestTranslator->translateSortParameterToSql()
@@ -293,7 +282,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         // Pagination
         $request .= $this->sqlRequestTranslator->translatePaginationToSql();
 
-        $statement = $this->db->prepare($request);
+        $statement = $this->db->prepare(
+            $this->translateDbName($request)
+        );
         $collector->bind($statement);
 
         $statement->execute();
@@ -415,7 +406,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     protected function prepareQueryForServiceResources(StatementCollector $collector, ResourceFilter $filter): string
     {
-        $sql = "SELECT
+        $sql = "SELECT DISTINCT
             s.service_id AS `id`,
             'service' AS `type`,
             sh.host_id AS `host_id`,
@@ -471,7 +462,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.active_checks AS `active_checks`,
             s.passive_checks AS `passive_checks`,
             service_cvl.value AS `severity_level`,
-            sc.sc_name AS `severity_name`,
             s.last_state_change AS `last_status_change`,
             s.last_notification AS `last_notification`,
             s.notification_number AS `notification_number`,
@@ -491,6 +481,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 AND sh.name NOT LIKE '_Module_%'
                 AND sh.enabled = 1";
 
+        // get Severity level, name, icon
+        $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = s.host_id
+            AND service_cvl.service_id = s.service_id
+            AND service_cvl.name = "CRITICALITY_LEVEL"';
+
         // set ACL limitations
         if (!$this->isAdmin()) {
             $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
@@ -498,20 +493,24 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 AND service_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
         }
 
-        // Join the service groups
-        $sql .= " LEFT JOIN `:dbstg`.`services_servicegroups` AS ssg"
-            . " ON ssg.host_id = s.host_id AND ssg.service_id = s.service_id"
-            . ' LEFT JOIN `:dbstg`.`servicegroups` AS sg ON sg.servicegroup_id = ssg.servicegroup_id';
+        // apply the service group filter to SQL query
+        if ($filter->getServicegroupIds()) {
+            $groupList = [];
 
-        // get Severity level, name, icon
-        $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = s.host_id
-            AND service_cvl.service_id = s.service_id
-            AND service_cvl.name = "CRITICALITY_LEVEL"
-        LEFT JOIN `:db`.`service_categories_relation` AS scr ON scr.service_service_id = s.service_id
-        LEFT JOIN `:db`.`service_categories` AS sc ON sc.sc_id = scr.sc_id
-            AND sc.level IS NOT NULL
-            AND sc.icon_id IS NOT NULL
-        LEFT JOIN `:db`.`view_img` AS service_vi ON service_vi.img_id = sc.icon_id';
+            foreach ($filter->getServicegroupIds() as $index => $groupId) {
+                $key = ":serviceServicegroupId_{$index}";
+
+                $groupList[] = $key;
+                $collector->addValue($key, $groupId, PDO::PARAM_INT);
+            }
+
+            $sql .= ' INNER JOIN `:dbstg`.`services_servicegroups` AS ssg
+                  ON ssg.host_id = s.host_id
+                  AND ssg.service_id = s.service_id
+                  AND ssg.servicegroup_id IN (' . implode(', ', $groupList) . ') ';
+        }
+
+        $hasWhereCondition = false;
 
         $this->sqlRequestTranslator->setConcordanceArray($this->serviceConcordances);
         try {
@@ -520,11 +519,14 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
 
-        $sql .= $searchRequest;
-        $sql .= !is_null($searchRequest) ? ' AND' : ' WHERE';
+        if ($searchRequest !== null) {
+            $hasWhereCondition = true;
+            $sql .= $searchRequest;
+        }
 
         // show active services only
-        $sql .= ' s.enabled = 1';
+        $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
+            . 's.enabled = 1';
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
@@ -565,20 +567,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $sql .= ' AND s.state IN (' . implode(', ', $statusList) . ')';
         }
 
-        // apply the service group filter to SQL query
-        if ($filter->getServicegroupIds()) {
-            $groupList = [];
-
-            foreach ($filter->getServicegroupIds() as $index => $groupId) {
-                $key = ":serviceServicegroupId_{$index}";
-
-                $groupList[] = $key;
-                $collector->addValue($key, $groupId, PDO::PARAM_INT);
-            }
-
-            $sql .= ' AND sg.servicegroup_id IN (' . implode(', ', $groupList) . ')';
-        }
-
         if (!empty($filter->getHostIds())) {
             $hostIds = [];
 
@@ -605,9 +593,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $sql .= ' AND s.service_id IN (' . implode(', ', $serviceIds) . ')';
         }
 
-        // group by the service ID to preventing the duplication
-        $sql .= ' GROUP BY s.service_id';
-
         return $sql;
     }
 
@@ -620,7 +605,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     protected function prepareQueryForHostResources(StatementCollector $collector, ResourceFilter $filter): string
     {
-        $sql = "SELECT
+        $sql = "SELECT DISTINCT
             h.host_id AS `id`,
             'host' AS `type`,
             h.host_id AS `host_id`,
@@ -664,7 +649,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.active_checks AS `active_checks`,
             h.passive_checks AS `passive_checks`,
             host_cvl.value AS `severity_level`,
-            hc.hc_comment AS `severity_name`,
             h.last_state_change AS `last_status_change`,
             h.last_notification AS `last_notification`,
             h.notification_number AS `notification_number`,
@@ -680,6 +664,11 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.latency AS `latency`
             FROM `:dbstg`.`hosts` AS h";
 
+        // get Severity level, name, icon
+        $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
+            AND host_cvl.service_id = 0
+            AND host_cvl.name = "CRITICALITY_LEVEL"';
+
         // set ACL limitations
         if (!$this->isAdmin()) {
             $sql .= " INNER JOIN `:dbstg`.`centreon_acl` AS host_acl ON host_acl.host_id = h.host_id
@@ -687,15 +676,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                   AND host_acl.group_id IN (" . $this->accessGroupIdToString($this->accessGroups) . ")";
         }
 
-        // get Severity level, name, icon
-        $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
-            AND host_cvl.service_id = 0
-            AND host_cvl.name = "CRITICALITY_LEVEL"
-        LEFT JOIN `:db`.`hostcategories_relation` AS hcr ON hcr.host_host_id = h.host_id
-        LEFT JOIN `:db`.`hostcategories` AS hc ON hc.hc_id = hcr.hostcategories_hc_id
-            AND hc.level IS NOT NULL
-            AND hc.icon_id IS NOT NULL
-        LEFT JOIN `:db`.`view_img` AS host_vi ON host_vi.img_id = hc.icon_id';
+        $hasWhereCondition = false;
 
         $this->sqlRequestTranslator->setConcordanceArray($this->hostConcordances);
         try {
@@ -704,11 +685,14 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
 
-        $sql .= $searchRequest;
-        $sql .= !is_null($searchRequest) ? ' AND' : ' WHERE';
+        if ($searchRequest !== null) {
+            $hasWhereCondition = true;
+            $sql .= $searchRequest;
+        }
 
         // show active hosts and aren't related to some module
-        $sql .= ' h.enabled = 1 AND h.name NOT LIKE "_Module_%"';
+        $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
+            . 'h.enabled = 1 AND h.name NOT LIKE "_Module_%"';
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
@@ -761,8 +745,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $sql .= ' AND h.host_id IN (' . implode(', ', $hostIds) . ')';
         }
 
-        // prevent duplication
-        $sql .= ' GROUP BY h.host_id';
         return $sql;
     }
 
@@ -796,17 +778,6 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         if ($icon->getUrl()) {
             $resource->setIcon($icon);
-        }
-
-        // parse severity Icon object
-        $severity = EntityCreator::createEntityByArray(
-            ResourceSeverity::class,
-            $data,
-            'severity_'
-        );
-
-        if ($severity->getLevel() !== null) {
-            $resource->setSeverity($severity);
         }
 
         // parse parent Resource object

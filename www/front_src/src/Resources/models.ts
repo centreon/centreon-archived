@@ -21,12 +21,8 @@ export interface Status {
   name: string;
 }
 
-export interface Severity {
-  name: string;
-  level: number;
-}
-
 export interface Resource {
+  uuid: string;
   id: number;
   name: string;
   icon?: Icon;
@@ -39,7 +35,7 @@ export interface Resource {
   tries: string;
   last_check: string;
   information: string;
-  severity?: Severity;
+  severity_level: number;
   short_type: 'h' | 's';
   type: 'host' | 'service';
   passive_checks: boolean;

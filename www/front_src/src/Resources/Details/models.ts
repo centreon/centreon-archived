@@ -4,7 +4,6 @@ import {
   Downtime,
   Parent,
   ResourceLinks,
-  Severity,
 } from '../models';
 
 export interface ResourceDetails {
@@ -13,7 +12,7 @@ export interface ResourceDetails {
   status: Status;
   parent: Parent;
   links: ResourceLinks;
-  severity: Severity;
+  severity_level: number;
   information: string;
   downtimes: Array<Downtime>;
   acknowledgement?: Acknowledgement;
@@ -40,6 +39,7 @@ export interface ResourceDetails {
 }
 
 export interface DetailsUrlQueryParameters {
+  uuid: string;
   id: number;
   parentId?: number;
   parentType?: string;

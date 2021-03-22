@@ -35,11 +35,12 @@ const ResourceListing = (): JSX.Element => {
     page,
     setPage,
     setOpenDetailsTabId,
+    setSelectedResourceUuid,
     setSelectedResourceId,
     setSelectedResourceParentId,
     setSelectedResourceType,
     setSelectedResourceParentType,
-    selectedResourceId,
+    selectedResourceUuid,
     setSelectedResources,
     selectedResources,
     setResourcesToAcknowledge,
@@ -63,7 +64,8 @@ const ResourceListing = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const selectResource = ({ id, type, parent }: Resource): void => {
+  const selectResource = ({ uuid, id, type, parent }: Resource): void => {
+    setSelectedResourceUuid(uuid);
     setSelectedResourceId(id);
     setSelectedResourceParentId(parent?.id);
     setSelectedResourceType(type);
@@ -72,7 +74,7 @@ const ResourceListing = (): JSX.Element => {
 
   const resourceDetailsOpenCondition = {
     name: 'detailsOpen',
-    condition: ({ id }): boolean => equals(id, selectedResourceId),
+    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
     color: fade(theme.palette.primary.main, 0.08),
   };
 
@@ -101,6 +103,8 @@ const ResourceListing = (): JSX.Element => {
 
   const loading = sending;
 
+  const getId = ({ uuid }) => uuid;
+
   return (
     <Listing
       checkable
@@ -127,6 +131,7 @@ const ResourceListing = (): JSX.Element => {
       onRowClick={selectResource}
       innerScrollDisabled={false}
       emptyDataMessage={t(labelNoResultsFound)}
+      getId={getId}
     />
   );
 };

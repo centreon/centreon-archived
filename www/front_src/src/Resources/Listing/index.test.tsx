@@ -46,8 +46,10 @@ const appState = {
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
   return new Array(entityCount).fill(0).map((_, index) => ({
+    uuid: `${index}`,
     id: index,
     name: `E${index}`,
+    severity_level: 1,
     status: {
       code: 0,
       name: 'OK',
@@ -75,6 +77,9 @@ const fillEntities = (): Array<Resource> => {
         configuration: index % 7 === 0 ? 'uri' : null,
         logs: index % 4 === 0 ? 'uri' : null,
         reporting: index % 3 === 0 ? 'uri' : null,
+      },
+      externals: {
+        notes_url: index % 5 === 0 ? 'uri' : null,
       },
     },
     passive_checks: index % 8 === 0,

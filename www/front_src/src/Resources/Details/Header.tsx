@@ -67,10 +67,10 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
   return (
     <>
       <Grid item>
-        {details.severity && (
+        {details.severity_level && (
           <StatusChip
             severityCode={SeverityCode.None}
-            label={details.severity.level?.toString()}
+            label={details.severity_level.toString()}
           />
         )}
       </Grid>
