@@ -31,7 +31,7 @@ class ResourceFilter
 {
     public const TYPE_SERVICE = 'service';
     public const TYPE_HOST = 'host';
-    public const TYPE_META = 'meta';
+    public const TYPE_META = 'metaservice';
 
     /**
      * Non-ok status in hard state , not acknowledged & not in downtime

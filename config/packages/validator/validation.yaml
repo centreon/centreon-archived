@@ -191,6 +191,7 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 choices:
                     - service
                     - host
+                    - metaservice
                 multiple: true
                 groups: [Default]
         states:

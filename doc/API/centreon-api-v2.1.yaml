@@ -334,7 +334,7 @@ paths:
   /configuration/metaservices:
     get:
       tags:
-        - Meta Services
+        - Meta Service
       summary: "List all meta services configurations"
       description: |
         List all meta services configurations.
@@ -365,6 +365,27 @@ paths:
                     $ref: '#/components/schemas/Meta'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/metaservices/{meta_id}:
+    get:
+      tags:
+        - Meta Service
+      summary: "Get a meta service"
+      description: "Get a meta service configuration by its id"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.MetaServices'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /monitoring/servers:
@@ -2950,6 +2971,15 @@ components:
         type: integer
         format: int64
         example: 5
+    MetaId:
+      in: path
+      name: meta_id
+      description: "ID of the meta service"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
     AcknowledgementId:
       in: path
       name: acknowledgement_id
