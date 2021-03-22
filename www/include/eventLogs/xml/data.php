@@ -639,7 +639,12 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
                 }
             }
             if ($str != "") {
-                $str_unitSVC .= $req_append . " (logs.host_id = '" . $host_id . "' AND logs.service_id IN ($str)) ";
+                if ($host_id === '_Module_Meta') {
+                    $str_unitSVC .= $req_append . " (logs.host_name = '" . $host_id . "' "
+                        . "AND logs.service_id IN (" . $str . ")) ";
+                } else {
+                    $str_unitSVC .= $req_append . " (logs.host_id = '" . $host_id . "' AND logs.service_id IN ($str)) ";
+                }
                 $req_append = " OR";
             }
         }
