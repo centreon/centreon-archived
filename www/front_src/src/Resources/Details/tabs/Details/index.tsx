@@ -115,8 +115,8 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
               title={t(labelDowntimeDuration)}
               contentLines={[
                 ...[
-                  { prefix: labelFrom, time: start_time },
-                  { prefix: labelTo, time: end_time },
+                  { prefix: t(labelFrom), time: start_time },
+                  { prefix: t(labelTo), time: end_time },
                 ].map(({ prefix, time }) => `${prefix} ${toDateTime(time)}`),
               ]}
               commentLine={comment}
@@ -136,7 +136,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
             />
           )}
           <Grid container spacing={1}>
-            {getDetailCardLines({ details, toDateTime }).map(
+            {getDetailCardLines({ details, toDateTime, t }).map(
               ({ title, field, xs = 6, line, active }) => {
                 const variableXs = (width > 600 ? xs / 2 : xs) as 3 | 6 | 12;
                 const displayCard = !isNil(field) && !isEmpty(field);
