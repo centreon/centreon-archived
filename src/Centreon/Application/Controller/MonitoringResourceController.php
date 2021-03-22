@@ -84,6 +84,7 @@ class MonitoringResourceController extends AbstractController
     private const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id={resource_id}';
     private const HOST_LOGS_URI = '/main.php?p=20301&h={resource_id}';
     private const SERVICE_LOGS_URI = '/main.php?p=20301&svc={parent_resource_id}_{resource_id}';
+    private const META_SERVICE_LOGS_URI = '/main.php?p=20301&svc={host_id}_{service_id}';
     private const HOST_REPORTING_URI = '/main.php?p=307&host={resource_id}';
     private const SERVICE_REPORTING_URI =
         '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
@@ -740,17 +741,11 @@ class MonitoringResourceController extends AbstractController
             );
         }
 
-/*         if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
+        if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
             $resource->getLinks()->getUris()->setLogs(
-                $this->generateResourceUri($resource, static::SERVICE_LOGS_URI)
+                $this->generateResourceUri($resource, static::META_SERVICE_LOGS_URI)
             );
-        } */
-
-/*         if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)) {
-            $resource->getLinks()->getUris()->setReporting(
-                $this->generateResourceUri($resource, static::SERVICE_REPORTING_URI)
-            );
-        } */
+        }
     }
 
     /**
@@ -762,13 +757,15 @@ class MonitoringResourceController extends AbstractController
      */
     private function generateResourceUri(ResourceEntity $resource, string $relativeUri): string
     {
-        $uri = str_replace('{resource_id}', $resource->getId(), $relativeUri);
+        $relativeUri = str_replace('{resource_id}', $resource->getId(), $relativeUri);
+        $relativeUri = str_replace('{host_id}', $resource->getHostId(), $relativeUri);
+        $relativeUri = str_replace('{service_id}', $resource->getServiceId(), $relativeUri);
 
         if ($resource->getParent() !== null) {
-            $uri = str_replace('{parent_resource_id}', $resource->getParent()->getId(), $uri);
+            $relativeUri = str_replace('{parent_resource_id}', $resource->getParent()->getId(), $relativeUri);
         }
 
-        return $this->getBaseUri() . $uri;
+        return $this->getBaseUri() . $relativeUri;
     }
 
     /**

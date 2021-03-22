@@ -142,6 +142,13 @@ services:
         class: Centreon\Domain\Gorgone\GorgoneService
 
     # Monitoring resources
+    _instanceof:
+        Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface:
+            tags: ['monitoring.resource.providers']
+            calls:
+                - method: setSqlRequestTranslator
+                  arguments: ['@sqlRequestTranslator']
+
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
         class: Centreon\Domain\Monitoring\ResourceService
 

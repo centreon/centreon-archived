@@ -219,22 +219,16 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function enrichMetaServiceWithDetails(ResourceEntity $resource): void
     {
-        $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
-
-        if ($service === null) {
-            throw new ResourceException(_('Could not find service attached to the Meta service'));
-        }
-
         $downtimes = $this->monitoringRepository->findDowntimes(
-            $service->getHost()->getId(),
-            $service->getId()
+            $resource->getHostId(),
+            $resource->getServiceId()
         );
         $resource->setDowntimes($downtimes);
 
         if ($resource->getAcknowledged()) {
             $acknowledgements = $this->monitoringRepository->findAcknowledgements(
-                $service->getHost()->getId(),
-                $service->getId()
+                $resource->getHostId(),
+                $resource->getServiceId()
             );
             if (!empty($acknowledgements)) {
                 $resource->setAcknowledgement($acknowledgements[0]);

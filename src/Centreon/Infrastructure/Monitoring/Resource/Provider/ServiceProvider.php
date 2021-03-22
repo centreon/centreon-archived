@@ -91,10 +91,11 @@ final class ServiceProvider extends Provider
         $sql = "SELECT DISTINCT
             s.service_id AS `id`,
             'service' AS `type`,
-            sh.host_id AS `host_id`,
             s.description AS `name`,
             NULL AS `alias`,
             NULL AS `fqdn`,
+            sh.host_id AS `host_id`,
+            s.service_id AS `service_id`,
             s.icon_image_alt AS `icon_name`,
             s.icon_image AS `icon_url`,
             s.action_url AS `action_url`,

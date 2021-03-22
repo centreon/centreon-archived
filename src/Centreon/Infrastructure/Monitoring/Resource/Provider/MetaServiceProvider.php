@@ -92,10 +92,11 @@ final class MetaServiceProvider extends Provider
         $sql = "SELECT DISTINCT
             SUBSTRING(s.description, 6) AS `id`,
             'metaservice' AS `type`,
-            sh.host_id AS `host_id`,
             s.display_name AS `name`,
             NULL AS `alias`,
             NULL AS `fqdn`,
+            sh.host_id AS `host_id`,
+            s.service_id AS `service_id`,
             NULL AS `icon_name`,
             NULL AS `icon_url`,
             NULL AS `action_url`,

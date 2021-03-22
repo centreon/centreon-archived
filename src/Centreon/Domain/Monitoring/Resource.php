@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use DateTime;
 use CentreonDuration;
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Downtime\Downtime;
@@ -82,6 +81,16 @@ class Resource
      * @var string|null
      */
     private $fqdn;
+
+    /**
+     * @var int|null
+     */
+    private $hostId;
+
+    /**
+     * @var int|null
+     */
+    private $serviceId;
 
     /**
      * @var \Centreon\Domain\Monitoring\Icon|null
@@ -381,6 +390,44 @@ class Resource
     public function getFqdn(): ?string
     {
         return $this->fqdn;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHostId(): ?int
+    {
+        return $this->hostId;
+    }
+
+    /**
+     * @param int|null $hostId
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setHostId(?int $hostId): self
+    {
+        $this->hostId = $hostId;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getServiceId(): ?int
+    {
+        return $this->serviceId;
+    }
+
+    /**
+     * @param int|null $serviceId
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setServiceId(?int $serviceId): self
+    {
+        $this->serviceId = $serviceId;
+
+        return $this;
     }
 
     /**
@@ -702,7 +749,7 @@ class Resource
     /**
      * @return \DateTime|null
      */
-    public function getLastStatusChange(): ?DateTime
+    public function getLastStatusChange(): ?\DateTime
     {
         return $this->lastStatusChange;
     }
@@ -711,7 +758,7 @@ class Resource
      * @param \DateTime|null $lastStatusChange
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setLastStatusChange(?DateTime $lastStatusChange): self
+    public function setLastStatusChange(?\DateTime $lastStatusChange): self
     {
         $this->lastStatusChange = $lastStatusChange;
 
@@ -776,7 +823,7 @@ class Resource
     /**
      * @return \DateTime|null
      */
-    public function getLastCheck(): ?DateTime
+    public function getLastCheck(): ?\DateTime
     {
         return $this->lastCheck;
     }
@@ -785,7 +832,7 @@ class Resource
      * @param \DateTime|null $lastCheck
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setLastCheck(?DateTime $lastCheck): self
+    public function setLastCheck(?\DateTime $lastCheck): self
     {
         $this->lastCheck = $lastCheck;
 
@@ -795,7 +842,7 @@ class Resource
     /**
      * @return \DateTime|null
      */
-    public function getNextCheck(): ?DateTime
+    public function getNextCheck(): ?\DateTime
     {
         return $this->nextCheck;
     }
@@ -804,7 +851,7 @@ class Resource
      * @param \DateTime|null $nextCheck
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setNextCheck(?DateTime $nextCheck): self
+    public function setNextCheck(?\DateTime $nextCheck): self
     {
         $this->nextCheck = $nextCheck;
 

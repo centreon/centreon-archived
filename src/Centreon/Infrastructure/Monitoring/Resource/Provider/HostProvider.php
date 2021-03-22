@@ -92,10 +92,11 @@ final class HostProvider extends Provider
         $sql = "SELECT DISTINCT
             h.host_id AS `id`,
             'host' AS `type`,
-            h.host_id AS `host_id`,
             h.name AS `name`,
             h.alias AS `alias`,
             h.address AS `fqdn`,
+            h.host_id AS `host_id`,
+            NULL AS `service_id`,
             h.icon_image_alt AS `icon_name`,
             h.icon_image AS `icon_url`,
             h.action_url AS `action_url`,

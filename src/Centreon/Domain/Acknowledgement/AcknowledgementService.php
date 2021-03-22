@@ -219,7 +219,9 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             throw new ValidationFailedException($errors);
         }
 
-        $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $acknowledgement->getResourceId());
+        $service = $this->monitoringRepository->findOneServiceByDescription(
+            'meta_' . $acknowledgement->getResourceId()
+        );
 
         if (is_null($service)) {
             throw new EntityNotFoundException(_('Service not found'));
