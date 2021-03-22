@@ -48,6 +48,7 @@ tags:
     description: "Login and logout endpoints to retrieve authentication token"
   - name: Proxy
   - name: Monitoring Server
+  - name: Meta Service
   - name: Host
   - name: Service
   - name: Host Group
@@ -324,6 +325,42 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Configuration.MonitoringServerMain'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/metaservices:
+    get:
+      tags:
+        - Meta Services
+      summary: "List all meta services configurations"
+      description: |
+        List all meta services configurations.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+          * is_activate
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.MetaServices'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -3548,6 +3585,69 @@ components:
         is_activate:
           type: boolean
           description: "Indicates whether the server configuration is activated"
+          example: true
+    Configuration.MetaServices:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the meta service"
+          example: 2
+        name:
+          type: string
+          description: "Name of the meta service"
+          example: "TOTAL_FIREWALL_CONNECTIONS"
+        output:
+          type: string
+          description: "Output configured for the meta service"
+          example: "Number of connections: %d"
+        calulation_type:
+          type: string
+          description: |
+            Function to be applied to calculate the meta service status.
+             * average
+             * minimum
+             * maximum
+             * sum
+          example: "average"
+        data_source_type:
+          type: string
+          description: |
+            Data source type of the meta service.
+             * gauge
+             * counter
+             * derive
+             * absolute
+          default: "gauge"
+          example: "gauge"
+        meta_select_mode:
+          type: integer
+          description: |
+            Selection mode for services to be considered for this meta service.
+              * 1 - Service list mod, mark selected services in the options on meta service list.
+              * 2 - SQL matching mod, specify a search string to be used in an SQL query
+          default: 1
+          example: 2
+        regexp_string:
+          type: string
+          description: "Search string to be used in a SQL LIKE query for service selection"
+          example: "%service_name%"
+        metric:
+          type: string
+          description: "Metric name used to measure meta service status"
+          example: "used"
+        warning:
+          type: string
+          description: "Absolute value for warning level"
+          example: "80"
+        critical:
+          type: string
+          description: "Absolute value for critical level"
+          example: "90"
+        is_activated:
+          type: boolean
+          description: "Indicates whether the meta service configuration is activated"
           example: true
     Monitoring.Servers:
       type: object

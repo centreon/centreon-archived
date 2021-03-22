@@ -40,8 +40,8 @@ class MetaServiceConfiguration
                  MAX_WARNING_LENGTH = 254,
                  MAX_CRITICAL_LENGTH = 254;
 
-    public const AVAILABLE_DATA_SOURCE_TYPES = ['GAUGE', 'COUNTER', 'DERIVE', 'ABSOLUTE'];
-    public const AVAILABLE_CALCULATION_TYPES = ['AVE', 'MIN', 'MAX', 'SUM'];
+    public const AVAILABLE_DATA_SOURCE_TYPES = ['gauge', 'counter', 'derive', 'absolute'];
+    public const AVAILABLE_CALCULATION_TYPES = ['average', 'minimum', 'maximum', 'sum'];
 
     /**
      * @var int ID of the Meta Service
@@ -64,20 +64,20 @@ class MetaServiceConfiguration
     private $calculationType;
 
     /**
-     * @var int Define the data source type of the Meta Service
+     * @var string Define the data source type of the Meta Service
      * 0 - GAUGE
      * 1 - COUNTER
      * 2 - DERIVE
      * 3 - ABSOLUTE
      */
-    private $dataSourceType = 0;
+    private $dataSourceType = 'gauge';
 
     /**
      * @var int Selection mode for services to be considered for this meta service.
      * 0 - In service list mode, mark selected services in the options on meta service list.
      * 1 - In SQL matching mode, specify a search string to be used in an SQL query.
      */
-    private $metaSelectMode;
+    private $metaSelectMode = 1;
 
     /**
      * @var string|null Search string to be used in a SQL LIKE query for service selection
@@ -220,18 +220,18 @@ class MetaServiceConfiguration
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getDataSourceType(): ?int
+    public function getDataSourceType(): string
     {
         return $this->dataSourceType;
     }
 
     /**
-     * @param int|null $dataSourceType
+     * @param string $dataSourceType
      * @return MetaServiceConfiguration
      */
-    public function setDataSourceType(?int $dataSourceType): MetaServiceConfiguration
+    public function setDataSourceType(string $dataSourceType): MetaServiceConfiguration
     {
         $this->dataSourceType = $dataSourceType;
         return $this;
