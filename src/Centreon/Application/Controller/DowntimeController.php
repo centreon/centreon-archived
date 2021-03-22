@@ -411,7 +411,7 @@ class DowntimeController extends AbstractController
 
             if (is_null($host)) {
                 throw new EntityNotFoundException(
-                    sprintf(_('Meta Host %d not found'), $metaId)
+                    sprintf(_('Host meta for meta %d not found'), $metaId)
                 );
             }
             $service->setHost($host);
