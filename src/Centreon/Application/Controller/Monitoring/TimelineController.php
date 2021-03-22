@@ -193,7 +193,7 @@ class TimelineController extends AbstractController
         $host = $this->monitoringService->findOneHost($service->getHost()->getId());
         if (is_null($host)) {
             throw new EntityNotFoundException(
-                sprintf(_('Host Meta id %d not found'), $service->getHost()->getId())
+                sprintf(_('Host meta for meta %d not found'), $metaId)
             );
         }
 

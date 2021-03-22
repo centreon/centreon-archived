@@ -16080,3 +16080,9 @@ msgstr "Erreur lors de la recherche du meta service (%s)"
 
 msgid "Calculation method provided not supported (%s)"
 msgstr "Méthode de calcul fournie non supportée (%s)"
+
+msgid "Meta Service linked to service %d not found"
+msgstr "Le Meta Service lié au service %d non trouvé"
+
+msgid "Host meta for meta %d not found"
+msgstr "L'hôte lié au meta %d non trouvé"
