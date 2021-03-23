@@ -71,7 +71,7 @@ try {
         // An update is required
         $errorMessage = 'Impossible to alter the table cfg_centreonbroker with log_max_size';
         $pearDB->query(
-            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_max_size` INT(255)'
+            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_max_size` INT(11) NOT NULL DEFAULT 0'
         );
     }
 
