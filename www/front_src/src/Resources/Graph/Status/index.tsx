@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { XAxis, ResponsiveContainer, AreaChart, Area } from 'recharts';
+
 import { useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
@@ -10,8 +12,6 @@ import { parseAndFormat } from '../../dateTime';
 
 import getTimeSeries from './timeSeries';
 import { GraphData } from './models';
-
-import { XAxis, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 const LoadingSkeleton = (): JSX.Element => {
   return <Skeleton height="100%" />;

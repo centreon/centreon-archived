@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import {
   Typography,
   Card,
@@ -15,8 +17,6 @@ import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 import { getStatusColors } from '@centreon/ui';
 
 import { labelMore, labelLess } from '../../../translatedLabels';
-
-import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>

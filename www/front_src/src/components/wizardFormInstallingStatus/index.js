@@ -3,11 +3,11 @@
 
 import React from 'react';
 
-import styles from '../../styles/partials/form/_form.scss';
-import Loader from '../loader';
-
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
+
+import styles from '../../styles/partials/form/_form.scss';
+import Loader from '../loader';
 
 export default ({ formTitle, statusCreating, statusGenerating, error }) => {
   const { t } = useTranslation();

@@ -8,6 +8,13 @@
 
 import React, { Component, ReactNode } from 'react';
 
+import { hot } from 'react-hot-loader/root';
+import { connect } from 'react-redux';
+import { ConnectedRouter } from 'connected-react-router';
+import Fullscreen from 'react-fullscreen-crossbrowser';
+import queryString from 'query-string';
+import { pipe } from 'ramda';
+
 import { withStyles, createStyles } from '@material-ui/core';
 
 import { ThemeProvider } from '@centreon/ui';
@@ -21,13 +28,6 @@ import MainRouter from './components/mainRouter';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import footerStyles from './components/footer/footer.scss';
-
-import { pipe } from 'ramda';
-import queryString from 'query-string';
-import Fullscreen from 'react-fullscreen-crossbrowser';
-import { ConnectedRouter } from 'connected-react-router';
-import { connect } from 'react-redux';
-import { hot } from 'react-hot-loader/root';
 
 const styles = createStyles({
   wrapper: {

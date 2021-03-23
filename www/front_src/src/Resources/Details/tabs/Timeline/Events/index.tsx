@@ -1,13 +1,5 @@
 import * as React from 'react';
 
-import { Typography, Paper, makeStyles } from '@material-ui/core';
-
-import { useIntersectionObserver } from '@centreon/ui';
-
-import { getFormattedDate } from '../../../../dateTime';
-import { TimelineEvent } from '../models';
-import { TimelineEventByType } from '../Event';
-
 import {
   reduceBy,
   pipe,
@@ -19,6 +11,14 @@ import {
   equals,
   last,
 } from 'ramda';
+
+import { Typography, Paper, makeStyles } from '@material-ui/core';
+
+import { useIntersectionObserver } from '@centreon/ui';
+
+import { getFormattedDate } from '../../../../dateTime';
+import { TimelineEvent } from '../models';
+import { TimelineEventByType } from '../Event';
 
 const useStyles = makeStyles((theme) => ({
   events: {

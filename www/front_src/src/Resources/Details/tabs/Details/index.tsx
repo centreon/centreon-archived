@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { isNil } from 'ramda';
+import { useTranslation } from 'react-i18next';
+
 import {
   Grid,
   Card,
@@ -38,9 +41,6 @@ import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
 import StateCard from './StateCard';
 import ExpandableCard from './ExpandableCard';
-
-import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
 
 const useStyles = makeStyles((theme) => ({
   loadingSkeleton: {

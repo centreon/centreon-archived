@@ -1,13 +1,13 @@
+import { combineReducers } from 'redux';
+import { connectRouter } from 'connected-react-router';
+import { reducer as formReducer } from 'redux-form';
+
 import pollerWizardReducer from './pollerWizardReducer';
 import navigationReducer from './navigationReducer';
 import refreshReducer from './refreshReducer';
 import externalComponentsReducer from './externalComponentsReducer';
 import tooltipReducer from './tooltipReducer';
 import axiosReducer from './axiosReducer';
-
-import { reducer as formReducer } from 'redux-form';
-import { connectRouter } from 'connected-react-router';
-import { combineReducers } from 'redux';
 
 export default (history) =>
   combineReducers({

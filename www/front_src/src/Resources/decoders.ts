@@ -1,6 +1,6 @@
-import { Status } from './models';
-
 import { JsonDecoder } from 'ts.data.json';
+
+import { Status } from './models';
 
 const statusDecoder = JsonDecoder.object<Status>(
   {

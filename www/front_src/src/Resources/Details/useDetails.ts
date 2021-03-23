@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { isNil, ifElse, pathEq, always, pathOr } from 'ramda';
+import { useTranslation } from 'react-i18next';
+
 import {
   getUrlQueryParameters,
   setUrlQueryParameters,
@@ -16,9 +19,6 @@ import {
 import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
 import { TabId } from './tabs/models';
 import { DetailsUrlQueryParameters, ResourceDetails } from './models';
-
-import { useTranslation } from 'react-i18next';
-import { isNil, ifElse, pathEq, always, pathOr } from 'ramda';
 
 export interface DetailsState {
   clearSelectedResource: () => void;

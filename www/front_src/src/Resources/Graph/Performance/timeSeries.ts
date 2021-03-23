@@ -1,6 +1,6 @@
-import { Metric, TimeValue, GraphData, Line } from './models';
-
 import { map, pipe, reduce, filter, addIndex, isNil, path } from 'ramda';
+
+import { Metric, TimeValue, GraphData, Line } from './models';
 
 interface TimeTickWithMetrics {
   timeTick: number;

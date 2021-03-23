@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { hasPath, mergeDeepLeft, mergeDeepRight, pipe } from 'ramda';
+
 import {
   useRequest,
   setUrlQueryParameters,
@@ -16,8 +18,6 @@ import useAdapters from './api/adapters';
 import { listCustomFilters } from './api';
 import { listCustomFiltersDecoder } from './api/decoders';
 import useFilterModels from './useFilterModels';
-
-import { hasPath, mergeDeepLeft, mergeDeepRight, pipe } from 'ramda';
 
 type FilterDispatch = React.Dispatch<React.SetStateAction<Filter>>;
 type CriteriaValuesDispatch = React.Dispatch<

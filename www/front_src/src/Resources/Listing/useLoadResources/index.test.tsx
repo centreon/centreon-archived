@@ -1,15 +1,15 @@
 import * as React from 'react';
 
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { render, act, waitFor } from '@testing-library/react';
+
 import useFilter from '../../Filter/useFilter';
 import useListing from '../useListing';
 import Context, { ResourceContext } from '../../Context';
 import useDetails from '../../Details/useDetails';
 
 import useLoadResources from '.';
-
-import { render, act, waitFor } from '@testing-library/react';
-import { useSelector } from 'react-redux';
-import axios from 'axios';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

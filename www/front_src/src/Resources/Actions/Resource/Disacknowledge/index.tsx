@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+import { propEq } from 'ramda';
+
 import { Alert } from '@material-ui/lab';
 import { FormControlLabel, Checkbox, Grid } from '@material-ui/core';
 
@@ -15,9 +18,6 @@ import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
 
 import { disacknowledgeResources } from './api';
-
-import { propEq } from 'ramda';
-import { useTranslation } from 'react-i18next';
 
 interface Props {
   resources: Array<Resource>;

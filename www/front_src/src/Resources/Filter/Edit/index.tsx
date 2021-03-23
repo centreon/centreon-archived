@@ -1,5 +1,9 @@
 import * as React from 'react';
 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { useTranslation } from 'react-i18next';
+import { move, isNil } from 'ramda';
+
 import {
   Typography,
   makeStyles,
@@ -15,10 +19,6 @@ import { labelEditFilters } from '../../translatedLabels';
 import { patchFilter } from '../api';
 
 import EditFilterCard from './EditFilterCard';
-
-import { move, isNil } from 'ramda';
-import { useTranslation } from 'react-i18next';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const useStyles = makeStyles((theme) => ({
   header: {

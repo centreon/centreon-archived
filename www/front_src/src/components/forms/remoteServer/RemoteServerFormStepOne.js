@@ -7,16 +7,16 @@
 
 import React, { Component } from 'react';
 
+import { Field, reduxForm as connectForm } from 'redux-form';
+import classnames from 'classnames';
+import { withTranslation } from 'react-i18next';
+
 import styles from '../../../styles/partials/form/_form.scss';
 import InputField from '../../form-fields/InputField';
 import SelectField from '../../form-fields/SelectField';
 import RadioField from '../../form-fields/PreselectedRadioField';
 import CheckboxField from '../../form-fields/CheckboxField';
 import { validateFieldRequired } from '../../../helpers/validators';
-
-import { withTranslation } from 'react-i18next';
-import classnames from 'classnames';
-import { Field, reduxForm as connectForm } from 'redux-form';
 
 class RemoteServerFormStepOne extends Component {
   state = {

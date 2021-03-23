@@ -4,12 +4,12 @@
 
 import React from 'react';
 
+import classnames from 'classnames';
+
 import styles from '../../styles/partials/form/_form.scss';
 
 import { prepareInputProps } from './utils';
 import fieldHoc from './hoc';
-
-import classnames from 'classnames';
 
 const RadioField = ({ checked, error, label, info, className, ...rest }) => (
   <div

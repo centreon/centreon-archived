@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { useResourceContext } from '../../Context';
-
 import { useSelector } from 'react-redux';
 import { isNil, equals, not } from 'ramda';
+
+import { useResourceContext } from '../../Context';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;

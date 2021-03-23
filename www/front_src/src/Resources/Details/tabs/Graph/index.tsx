@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { pick, map, path, isNil } from 'ramda';
+import { useTranslation } from 'react-i18next';
+
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { SelectField } from '@centreon/ui';
@@ -13,8 +16,6 @@ import {
   TimePeriod,
 } from './models';
 
-import { useTranslation } from 'react-i18next';
-import { pick, map, path, isNil } from 'ramda';
 import { TabProps } from '..';
 
 const useStyles = makeStyles((theme: Theme) => ({

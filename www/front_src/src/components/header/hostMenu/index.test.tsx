@@ -1,14 +1,14 @@
 import * as React from 'react';
 
-import createStore from '../../../store';
-import { setRefreshIntervals } from '../../../redux/actions/refreshActions';
-
-import HostMenu from '.';
-
 import axios from 'axios';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+
+import createStore from '../../../store';
+import { setRefreshIntervals } from '../../../redux/actions/refreshActions';
+
+import HostMenu from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 describe(HostMenu, () => {

@@ -6,14 +6,14 @@
 
 import React, { Component } from 'react';
 
+import { connect } from 'react-redux';
+
 import Form from '../../components/forms/poller/PollerFormStepOne';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
 import BaseWizard from '../../components/forms/baseWizard';
 import axios from '../../axios';
-
-import { connect } from 'react-redux';
 
 class PollerStepOneRoute extends Component {
   links = [

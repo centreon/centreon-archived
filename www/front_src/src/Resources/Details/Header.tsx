@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import CopyIcon from '@material-ui/icons/FileCopy';
@@ -20,8 +22,6 @@ import {
 } from '../translatedLabels';
 
 import { DetailsSectionProps } from '.';
-
-import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   header: {

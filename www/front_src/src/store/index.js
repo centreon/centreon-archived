@@ -1,14 +1,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import sagas from '../redux/sagas';
-import createRootReducer from '../redux/reducers';
-
 import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import { batchDispatchMiddleware } from 'redux-batched-actions';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
 import { createBrowserHistory } from 'history';
+
+import sagas from '../redux/sagas';
+import createRootReducer from '../redux/reducers';
 
 const sagaMiddleware = createSagaMiddleware();
 

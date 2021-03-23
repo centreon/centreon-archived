@@ -5,14 +5,14 @@
 
 import React, { Component } from 'react';
 
+import { connect } from 'react-redux';
+
 import Form from '../../components/forms/remoteServer/RemoteServerFormStepOne';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
 import axios from '../../axios';
 import BaseWizard from '../../components/forms/baseWizard';
-
-import { connect } from 'react-redux';
 
 class RemoteServerStepOneRoute extends Component {
   links = [

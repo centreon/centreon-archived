@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Grid } from '@material-ui/core';
 import IconRefresh from '@material-ui/icons/Refresh';
 import IconPlay from '@material-ui/icons/PlayArrow';
@@ -13,8 +15,6 @@ import {
   labelEnableAutorefresh,
 } from '../../translatedLabels';
 import { useResourceContext } from '../../Context';
-
-import { useTranslation } from 'react-i18next';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;

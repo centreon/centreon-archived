@@ -9,13 +9,13 @@
 
 import React from 'react';
 
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+
 import styles from '../../styles/partials/form/_form.scss';
 
 import fieldHoc from './hoc';
 import { prepareInputProps } from './utils';
-
-import classnames from 'classnames';
-import PropTypes from 'prop-types';
 
 const renderOption = (option, key) => {
   if (typeof option === 'string') {

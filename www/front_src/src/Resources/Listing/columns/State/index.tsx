@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { path } from 'ramda';
+
 import { Grid } from '@material-ui/core';
 
 import { ComponentColumnProps } from '@centreon/ui';
@@ -12,8 +14,6 @@ import AcknowledgeChip from '../../../Chip/Acknowledge';
 
 import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
 import DowntimeDetailsTable from './DetailsTable/Downtime';
-
-import { path } from 'ramda';
 
 interface StateChipProps {
   endpoint: string;

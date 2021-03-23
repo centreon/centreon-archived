@@ -7,14 +7,14 @@
 
 import React, { Component } from 'react';
 
+import { Field, reduxForm as connectForm } from 'redux-form';
+import { withTranslation } from 'react-i18next';
+import Select from 'react-select';
+
 import styles from '../../../styles/partials/form/_form.scss';
 import SelectField from '../../form-fields/SelectField';
 import CheckboxField from '../../form-fields/CheckboxField';
 import fieldHoc from '../../form-fields/hoc';
-
-import Select from 'react-select';
-import { withTranslation } from 'react-i18next';
-import { Field, reduxForm as connectForm } from 'redux-form';
 
 class PollerFormStepTwo extends Component {
   state = {

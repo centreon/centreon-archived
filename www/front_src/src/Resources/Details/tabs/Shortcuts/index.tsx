@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+import { path, isNil } from 'ramda';
+
 import { makeStyles, Paper } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
@@ -9,8 +12,6 @@ import { ResourceUris } from '../../../models';
 
 import ShortcutsSection from './ShortcutsSection';
 
-import { path, isNil } from 'ramda';
-import { useTranslation } from 'react-i18next';
 import { TabProps } from '..';
 
 const useStyles = makeStyles((theme) => {

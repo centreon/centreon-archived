@@ -1,5 +1,19 @@
 import * as React from 'react';
 
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import {
+  all,
+  equals,
+  any,
+  reject,
+  update,
+  findIndex,
+  propEq,
+  omit,
+} from 'ramda';
+import { useTranslation } from 'react-i18next';
+
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core';
 
@@ -28,20 +42,6 @@ import { Filter } from '../models';
 import { useResourceContext } from '../../Context';
 import useFilterModels from '../useFilterModels';
 import useAdapters from '../api/adapters';
-
-import { useTranslation } from 'react-i18next';
-import {
-  all,
-  equals,
-  any,
-  reject,
-  update,
-  findIndex,
-  propEq,
-  omit,
-} from 'ramda';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {

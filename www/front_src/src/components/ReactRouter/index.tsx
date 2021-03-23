@@ -1,5 +1,10 @@
 import React, { Suspense } from 'react';
 
+import { connect } from 'react-redux';
+import { Switch, Route, withRouter } from 'react-router-dom';
+import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
+
 import { styled } from '@material-ui/core';
 
 import internalPagesRoutes from '../../route-maps';
@@ -7,11 +12,6 @@ import { dynamicImport } from '../../helpers/dynamicImport';
 import NotAllowedPage from '../../route-components/notAllowedPage';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
-
-import isEqual from 'lodash/isEqual';
-import isEmpty from 'lodash/isEmpty';
-import { Switch, Route, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
 
 const PageContainer = styled('div')(({ theme }) => ({
   overflow: 'auto',

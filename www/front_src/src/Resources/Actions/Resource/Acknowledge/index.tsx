@@ -1,5 +1,10 @@
 import * as React from 'react';
 
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
+import { isNil } from 'ramda';
+
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
 import {
@@ -12,11 +17,6 @@ import { useUserContext } from '../../../../Provider/UserContext';
 import { acknowledgeResources } from '../../api';
 
 import DialogAcknowledge from './Dialog';
-
-import { isNil } from 'ramda';
-import { useTranslation } from 'react-i18next';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),

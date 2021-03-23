@@ -1,5 +1,16 @@
 import * as React from 'react';
 
+import { useSelector } from 'react-redux';
+import {
+  render,
+  RenderResult,
+  waitFor,
+  fireEvent,
+  Matcher,
+} from '@testing-library/react';
+import axios from 'axios';
+import { partition, where, contains, head, split, pipe, identity } from 'ramda';
+
 import { Resource } from '../models';
 import Context, { ResourceContext } from '../Context';
 import useActions from '../Actions/useActions';
@@ -12,17 +23,6 @@ import useListing from './useListing';
 import { getColumns } from './columns';
 
 import Listing from '.';
-
-import { partition, where, contains, head, split, pipe, identity } from 'ramda';
-import axios from 'axios';
-import {
-  render,
-  RenderResult,
-  waitFor,
-  fireEvent,
-  Matcher,
-} from '@testing-library/react';
-import { useSelector } from 'react-redux';
 
 const columns = getColumns({
   actions: { onAcknowledge: jest.fn() },

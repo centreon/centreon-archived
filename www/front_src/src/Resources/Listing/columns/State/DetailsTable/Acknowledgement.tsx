@@ -1,5 +1,9 @@
 import * as React from 'react';
 
+import parse from 'html-react-parser';
+import DOMPurify from 'dompurify';
+import { useTranslation } from 'react-i18next';
+
 import { makeStyles } from '@material-ui/core';
 
 import { ColumnType } from '@centreon/ui';
@@ -14,10 +18,6 @@ import {
 import { getFormattedDateTime } from '../../../../dateTime';
 
 import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
-
-import { useTranslation } from 'react-i18next';
-import DOMPurify from 'dompurify';
-import parse from 'html-react-parser';
 
 const useStyles = makeStyles({
   comment: {

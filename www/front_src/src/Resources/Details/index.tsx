@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
+import { useTranslation } from 'react-i18next';
+
 import { Tab, useTheme, fade } from '@material-ui/core';
 
 import { Panel } from '@centreon/ui';
@@ -11,9 +14,6 @@ import Header from './Header';
 import { ResourceDetails } from './models';
 import { TabById, detailsTabId, tabs } from './tabs';
 import { Tab as TabModel, TabId } from './tabs/models';
-
-import { useTranslation } from 'react-i18next';
-import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;

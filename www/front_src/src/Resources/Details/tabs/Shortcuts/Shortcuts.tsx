@@ -1,5 +1,9 @@
 import * as React from 'react';
 
+import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
+import { prop, pipe, isNil, not, filter } from 'ramda';
+
 import { makeStyles, Paper, Link } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import LogsIcon from '@material-ui/icons/Assignment';
@@ -11,10 +15,6 @@ import {
   labelViewLogs,
   labelViewReport,
 } from '../../../translatedLabels';
-
-import { prop, pipe, isNil, not, filter } from 'ramda';
-import { useTranslation } from 'react-i18next';
-import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => {
   return {

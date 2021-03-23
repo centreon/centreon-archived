@@ -1,13 +1,13 @@
 import * as React from 'react';
 
+import { Area, Line, YAxis } from 'recharts';
+import { pipe, uniq, prop, map, isNil } from 'ramda';
+
 import { fade } from '@material-ui/core';
 
 import formatMetricValue from './formatMetricValue';
 
 import { fontFamily } from '.';
-
-import { pipe, uniq, prop, map, isNil } from 'ramda';
-import { Area, Line, YAxis } from 'recharts';
 
 const formatTick = ({ unit, base }) => (value): string => {
   if (isNil(value)) {

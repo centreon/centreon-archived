@@ -1,9 +1,9 @@
+import { JsonDecoder } from 'ts.data.json';
+
 import { buildListingDecoder } from '@centreon/ui';
 
 import { statusDecoder } from '../../../../decoders';
 import { Service } from '../models';
-
-import { JsonDecoder } from 'ts.data.json';
 
 const entityDecoder = JsonDecoder.object<Service>(
   {

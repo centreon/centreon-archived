@@ -6,14 +6,14 @@
 
 import React, { Component } from 'react';
 
+import { Field, reduxForm as connectForm } from 'redux-form';
+import { withTranslation } from 'react-i18next';
+
 import styles from '../../../styles/partials/form/_form.scss';
 import InputField from '../../form-fields/InputField';
 import RadioField from '../../form-fields/PreselectedRadioField';
 import SelectField from '../../form-fields/SelectField';
 import { validateFieldRequired } from '../../../helpers/validators';
-
-import { withTranslation } from 'react-i18next';
-import { Field, reduxForm as connectForm } from 'redux-form';
 
 class PollerFormStepOne extends Component {
   state = {

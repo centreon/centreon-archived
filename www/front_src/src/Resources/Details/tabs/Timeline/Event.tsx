@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { prop, isNil } from 'ramda';
+import { useTranslation } from 'react-i18next';
+
 import NotificationIcon from '@material-ui/icons/Notifications';
 import CommentIcon from '@material-ui/icons/Comment';
 import EventIcon from '@material-ui/icons/Event';
@@ -25,9 +28,6 @@ import AcknowledgeChip from '../../../Chip/Acknowledge';
 import truncate from '../../../truncate';
 
 import { TimelineEvent, Type } from './models';
-
-import { useTranslation } from 'react-i18next';
-import { prop, isNil } from 'ramda';
 
 const types: Array<Type> = [
   {

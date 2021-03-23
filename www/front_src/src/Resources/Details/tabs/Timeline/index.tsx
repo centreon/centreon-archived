@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+import { prop, isEmpty, cond, always, T, isNil, concat, path } from 'ramda';
+
 import {
   makeStyles,
   Paper,
@@ -29,8 +32,6 @@ import { listTimelineEvents } from './api';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
 
-import { prop, isEmpty, cond, always, T, isNil, concat, path } from 'ramda';
-import { useTranslation } from 'react-i18next';
 import { TabProps } from '..';
 
 type TimelineListing = ListingModel<TimelineEvent>;

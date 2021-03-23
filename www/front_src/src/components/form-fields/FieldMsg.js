@@ -3,9 +3,9 @@
 
 import React from 'react';
 
-import styles from '../../styles/partials/form/_form.scss';
-
 import classnames from 'classnames';
+
+import styles from '../../styles/partials/form/_form.scss';
 
 const FieldMsg = ({
   className,

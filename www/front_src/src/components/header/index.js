@@ -5,6 +5,9 @@
 
 import React, { Component } from 'react';
 
+import { connect } from 'react-redux';
+import classnames from 'classnames';
+
 import Hook from '../Hook';
 import { setRefreshIntervals } from '../../redux/actions/refreshActions';
 import axios from '../../axios';
@@ -14,9 +17,6 @@ import PollerMenu from './pollerMenu';
 import UserMenu from './userMenu';
 import HostMenu from './hostMenu';
 import ServiceStatusMenu from './serviceStatusMenu';
-
-import classnames from 'classnames';
-import { connect } from 'react-redux';
 
 class TopHeader extends Component {
   refreshIntervalsApi = axios(

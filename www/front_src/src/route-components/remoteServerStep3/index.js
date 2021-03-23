@@ -6,14 +6,14 @@
 
 import React, { Component } from 'react';
 
+import { connect } from 'react-redux';
+import { withTranslation } from 'react-i18next';
+
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
 import axios from '../../axios';
 import BaseWizard from '../../components/forms/baseWizard';
-
-import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 
 class RemoteServerStepThreeRoute extends Component {
   state = {

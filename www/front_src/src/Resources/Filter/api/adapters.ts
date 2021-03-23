@@ -1,7 +1,7 @@
+import { propEq, pipe } from 'ramda';
+
 import { CriteriaValue, RawFilter, RawCriteria, Filter } from '../models';
 import useFilterModels from '../useFilterModels';
-
-import { propEq, pipe } from 'ramda';
 
 interface Adapters {
   toFilter: (rawFilter: RawFilter) => Filter;

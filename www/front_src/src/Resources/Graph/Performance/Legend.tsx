@@ -1,10 +1,10 @@
 import * as React from 'react';
 
+import clsx from 'clsx';
+
 import { Typography, makeStyles, useTheme, fade } from '@material-ui/core';
 
 import { Line } from './models';
-
-import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   item: {
