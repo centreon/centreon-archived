@@ -1,8 +1,5 @@
 import React from 'react';
 
-import { pipe, split, head, propOr, T } from 'ramda';
-import { useTranslation } from 'react-i18next';
-
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
@@ -36,6 +33,9 @@ import truncate from '../../truncate';
 import StateColumn from './State';
 import GraphColumn from './Graph';
 import UrlColumn from './Url';
+
+import { useTranslation } from 'react-i18next';
+import { pipe, split, head, propOr, T } from 'ramda';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {

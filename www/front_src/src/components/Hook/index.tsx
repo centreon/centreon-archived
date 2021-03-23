@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react';
 
+import { dynamicImport } from '../../helpers/dynamicImport';
+import centreonAxios from '../../axios';
+
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
-
-import { dynamicImport } from '../../helpers/dynamicImport';
-import centreonAxios from '../../axios';
 
 interface Props {
   history;

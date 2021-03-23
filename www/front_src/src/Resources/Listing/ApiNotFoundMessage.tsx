@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import { Link } from '@material-ui/core';
 
 import {
@@ -9,6 +7,8 @@ import {
   labelApiNotFoundContactAdmin,
   labelApiNotFoundDocumentation,
 } from '../translatedLabels';
+
+import { useTranslation } from 'react-i18next';
 
 const ApiNotFoundMessage = (): JSX.Element => {
   const { t } = useTranslation();

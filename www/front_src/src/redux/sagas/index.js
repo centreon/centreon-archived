@@ -1,6 +1,6 @@
-import { all, fork } from 'redux-saga/effects';
-
 import * as axiosSagas from './axios';
+
+import { all, fork } from 'redux-saga/effects';
 
 const rootSaga = function* rootSaga() {
   yield all([

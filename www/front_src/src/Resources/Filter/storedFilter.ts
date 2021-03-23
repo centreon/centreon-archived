@@ -1,6 +1,6 @@
-import { isNil } from 'ramda';
-
 import { Filter } from './models';
+
+import { isNil } from 'ramda';
 
 const key = 'centreon-resource-status-filter';
 

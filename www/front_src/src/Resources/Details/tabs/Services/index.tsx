@@ -1,8 +1,5 @@
 import * as React from 'react';
 
-import { isNil, isEmpty } from 'ramda';
-import { useTranslation } from 'react-i18next';
-
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, Paper, Typography } from '@material-ui/core';
 
@@ -15,6 +12,8 @@ import { listServices } from './api';
 import { listServicesDecoder } from './api/decoders';
 import { Service } from './models';
 
+import { useTranslation } from 'react-i18next';
+import { isNil, isEmpty } from 'ramda';
 import { TabProps, detailsTabId } from '..';
 
 const useStyles = makeStyles((theme) => ({

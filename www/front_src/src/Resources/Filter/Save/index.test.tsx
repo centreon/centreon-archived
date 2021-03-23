@@ -1,16 +1,5 @@
 import * as React from 'react';
 
-import {
-  render,
-  RenderResult,
-  fireEvent,
-  waitFor,
-  act,
-} from '@testing-library/react';
-import axios from 'axios';
-import { last, omit, propEq } from 'ramda';
-import userEvent from '@testing-library/user-event';
-
 import useFilter from '../useFilter';
 import Context, { ResourceContext } from '../../Context';
 import {
@@ -23,6 +12,17 @@ import { filterEndpoint } from '../api';
 import { RawFilter, Filter } from '../models';
 
 import SaveMenu from '.';
+
+import userEvent from '@testing-library/user-event';
+import { last, omit, propEq } from 'ramda';
+import axios from 'axios';
+import {
+  render,
+  RenderResult,
+  fireEvent,
+  waitFor,
+  act,
+} from '@testing-library/react';
 
 let filterState;
 

@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import { Grid } from '@material-ui/core';
 
 import {
@@ -32,6 +30,8 @@ import {
 } from '../../../translatedLabels';
 
 import { submitResourceStatus } from './api';
+
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   resource: Resource;

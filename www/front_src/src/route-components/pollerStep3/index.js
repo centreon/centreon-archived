@@ -3,12 +3,12 @@
 
 import React, { Component } from 'react';
 
-import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import ProgressBar from '../../components/progressBar';
 import BaseWizard from '../../components/forms/baseWizard';
+
+import { connect } from 'react-redux';
+import { withTranslation } from 'react-i18next';
 
 class PollerStepThreeRoute extends Component {
   state = {

@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import { path, isNil, isEmpty } from 'ramda';
-
 import IconLink from '@material-ui/icons/Link';
 
 import { IconButton, ComponentColumnProps } from '@centreon/ui';
+
+import { path, isNil, isEmpty } from 'ramda';
 
 const UrlColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
   const notesPath = ['links', 'externals', 'notes'];

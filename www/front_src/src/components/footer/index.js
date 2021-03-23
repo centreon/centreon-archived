@@ -3,9 +3,9 @@
 
 import React, { Component } from 'react';
 
-import classnames from 'classnames';
-
 import styles from './footer.scss';
+
+import classnames from 'classnames';
 
 class Footer extends Component {
   render() {

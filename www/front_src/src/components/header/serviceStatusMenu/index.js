@@ -12,14 +12,6 @@
 
 import React, { Component } from 'react';
 
-import classnames from 'classnames';
-import * as yup from 'yup';
-import PropTypes from 'prop-types';
-import numeral from 'numeral';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { withTranslation } from 'react-i18next';
-
 import {
   IconHeader,
   IconNumber,
@@ -40,6 +32,14 @@ import {
   pendingCriterias,
   unhandledStateCriterias,
 } from '../getResourcesUrl';
+
+import classnames from 'classnames';
+import * as yup from 'yup';
+import PropTypes from 'prop-types';
+import numeral from 'numeral';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { withTranslation } from 'react-i18next';
 
 const numberFormat = yup.number().required().integer();
 

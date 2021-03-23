@@ -1,10 +1,5 @@
 import * as React from 'react';
 
-import { useFormik, FormikErrors } from 'formik';
-import * as Yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
-
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
 
 import { useUserContext } from '../../../../Provider/UserContext';
@@ -18,6 +13,11 @@ import { Resource } from '../../../models';
 import { setDowntimeOnResources } from '../../api';
 
 import DialogDowntime from './Dialog';
+
+import { isNil } from 'ramda';
+import { useTranslation } from 'react-i18next';
+import * as Yup from 'yup';
+import { useFormik, FormikErrors } from 'formik';
 
 interface DateParams {
   dateStart: Date;

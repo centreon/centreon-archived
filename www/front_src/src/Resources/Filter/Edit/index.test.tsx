@@ -1,6 +1,14 @@
 import * as React from 'react';
 
-import axios from 'axios';
+import Context, { ResourceContext } from '../../Context';
+import useFilter from '../useFilter';
+import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
+import { filterEndpoint } from '../api';
+
+import EditFilterPanel from '.';
+
+import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
+import { omit, head, prop } from 'ramda';
 import {
   RenderResult,
   render,
@@ -8,15 +16,7 @@ import {
   fireEvent,
   act,
 } from '@testing-library/react';
-import { omit, head, prop } from 'ramda';
-import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
-
-import Context, { ResourceContext } from '../../Context';
-import useFilter from '../useFilter';
-import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
-import { filterEndpoint } from '../api';
-
-import EditFilterPanel from '.';
+import axios from 'axios';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

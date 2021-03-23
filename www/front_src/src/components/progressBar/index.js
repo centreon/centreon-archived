@@ -6,12 +6,12 @@
 
 import React, { Component } from 'react';
 
-import { connect } from 'react-redux';
-import classnames from 'classnames';
-
 import { history } from '../../store';
 
 import styles from './progressbar.scss';
+
+import { connect } from 'react-redux';
+import classnames from 'classnames';
 
 class ProgressBar extends Component {
   goToPath = (path) => {

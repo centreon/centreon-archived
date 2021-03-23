@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import { map, prop, sum, pipe } from 'ramda';
-
 import {
   TableContainer,
   TableRow,
@@ -20,6 +18,8 @@ import {
   labelYes,
   labelNo,
 } from '../../../../translatedLabels';
+
+import { map, prop, sum, pipe } from 'ramda';
 
 const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
 

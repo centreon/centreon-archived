@@ -1,17 +1,5 @@
 import * as React from 'react';
 
-import { last, head, equals, reject, path } from 'ramda';
-import axios from 'axios';
-import mockDate from 'mockdate';
-import {
-  render,
-  waitFor,
-  fireEvent,
-  RenderResult,
-  act,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
 import {
   ThemeProvider,
   setUrlQueryParameters,
@@ -77,6 +65,18 @@ import { getTypeIds } from './tabs/Timeline/Event';
 import { DetailsUrlQueryParameters } from './models';
 
 import Details from '.';
+
+import userEvent from '@testing-library/user-event';
+import {
+  render,
+  waitFor,
+  fireEvent,
+  RenderResult,
+  act,
+} from '@testing-library/react';
+import mockDate from 'mockdate';
+import axios from 'axios';
+import { last, head, equals, reject, path } from 'ramda';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

@@ -1,3 +1,8 @@
+import { Resource } from '../../models';
+import { useUserContext } from '../../../Provider/UserContext';
+import { labelServicesDenied, labelHostsDenied } from '../../translatedLabels';
+
+import { useTranslation } from 'react-i18next';
 import {
   pipe,
   any,
@@ -14,11 +19,6 @@ import {
   isEmpty,
   reject,
 } from 'ramda';
-import { useTranslation } from 'react-i18next';
-
-import { Resource } from '../../models';
-import { useUserContext } from '../../../Provider/UserContext';
-import { labelServicesDenied, labelHostsDenied } from '../../translatedLabels';
 
 interface AclQuery {
   canDowntime: (resources) => boolean;

@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import {
   Checkbox,
   FormControlLabel,
@@ -22,6 +20,8 @@ import {
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
+
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   resources: Array<Resource>;

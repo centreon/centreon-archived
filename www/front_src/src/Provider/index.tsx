@@ -1,10 +1,5 @@
 import * as React from 'react';
 
-import { Provider } from 'react-redux';
-import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
-import i18n, { Resource, ResourceLanguage } from 'i18next';
-import { initReactI18next } from 'react-i18next';
-
 import { useRequest, getData, Loader } from '@centreon/ui';
 
 import App from '../App';
@@ -22,6 +17,11 @@ import useUser from './useUser';
 import useAcl from './useAcl';
 import useDowntime from './useDowntime';
 import useRefreshInterval from './useRefreshInterval';
+
+import { initReactI18next } from 'react-i18next';
+import i18n, { Resource, ResourceLanguage } from 'i18next';
+import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
+import { Provider } from 'react-redux';
 
 const store = createStore();
 

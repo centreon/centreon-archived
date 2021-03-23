@@ -3,11 +3,11 @@
 
 import React from 'react';
 
+import styles from './tooltip.scss';
+
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import classnames from 'classnames';
-
-import styles from './tooltip.scss';
 
 const Tooltip = ({ x, y, label, toggled }) => {
   const { t } = useTranslation();

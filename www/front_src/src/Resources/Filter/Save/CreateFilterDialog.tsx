@@ -1,10 +1,5 @@
 import React from 'react';
 
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { path, not, or, omit } from 'ramda';
-import { useTranslation } from 'react-i18next';
-
 import { Dialog, TextField, useRequest } from '@centreon/ui';
 
 import {
@@ -17,6 +12,11 @@ import {
 import { createFilter } from '../api';
 import { Filter, RawFilter } from '../models';
 import useAdapters from '../api/adapters';
+
+import { useTranslation } from 'react-i18next';
+import { path, not, or, omit } from 'ramda';
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
 
 type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
 

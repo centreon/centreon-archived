@@ -4,11 +4,11 @@
 
 import React, { Component } from 'react';
 
-import classnames from 'classnames';
-
 import styles from '../../components/header/header.scss';
 import loaderStyles from '../../components/loader/loader.scss';
 import Loader from '../../components/loader';
+
+import classnames from 'classnames';
 
 class LegacyRoute extends Component {
   constructor(props) {
