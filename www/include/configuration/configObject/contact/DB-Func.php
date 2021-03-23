@@ -693,34 +693,86 @@ function updateContact($contact_id = null, $from_MC = false)
     $ret['contact_name'] = CentreonUtils::escapeSecure($ret['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
     $ret['contact_alias'] = CentreonUtils::escapeSecure($ret['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
 
+    $bindParams = [];
+    foreach ($ret as $inputName => $inputValue) {
+        switch($inputName) {
+            case 'timeperiod_tp_id':
+            case 'timeperiod_tp_id2':
+            case 'contact_template_id':
+            case 'contact_register':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                        ? null
+                        : (int) $inputValue
+                ];
+                break;
+            case 'contact_location':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                        ? 0
+                        : (int) $inputValue
+                ];
+                break;
+            case 'contact_name':
+            case 'contact_alias':
+            case 'contact_autologin_key':
+            case 'contact_lang':
+            case 'contact_email':
+            case 'contact_pager':
+            case 'contact_comment':
+            case 'contact_auth_type':
+            case 'contact_ldap_dn':
+            case 'contact_address1':
+            case 'contact_address2':
+            case 'contact_address3':
+            case 'contact_address4':
+            case 'contact_address5':
+            case 'contact_address6':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => filter_var($inputValue, FILTER_SANITIZE_STRING)
+                ];
+                break;
+            case 'contact_passwd':
+                if ($encryptType == 2) {
+                        $password = $dependencyInjector['utils']->encodePass($inputValue, 'sha1');
+                } else {
+                        $password = $dependencyInjector['utils']->encodePass($inputValue, 'md5');
+                }
+                $bindParams [':' . $inputName] = [
+                    \PDO::PARAM_STR => $password
+                ];
+                break;
+        }
+    }
+
     $rq = "UPDATE contact ";
-    $rq .= "SET timeperiod_tp_id = ";
+    $rq .= "SET timeperiod_tp_id = "; // DONE
     isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != null
         ? $rq .= "'" . $ret["timeperiod_tp_id"] . "', "
         : $rq .= "NULL, ";
-    $rq .= "timeperiod_tp_id2 = ";
+    $rq .= "timeperiod_tp_id2 = "; // DONE
     isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != null
         ? $rq .= "'" . $ret["timeperiod_tp_id2"] . "', "
         : $rq .= "NULL, ";
     # If we are doing a MC, we don't have to set name and alias field
 
     if (!$from_MC) {
-        $rq .= "contact_name = ";
+        $rq .= "contact_name = "; // DONE
         isset($ret["contact_name"]) && $ret["contact_name"] != null
             ? $rq .= "'" . $ret["contact_name"] . "', "
             : $rq .= "NULL, ";
-        $rq .= "contact_alias = ";
+        $rq .= "contact_alias = "; // DONE
         isset($ret["contact_alias"]) && $ret["contact_alias"] != null
             ? $rq .= "'" . $ret["contact_alias"] . "', "
             : $rq .= "NULL, ";
-        $rq .= "contact_autologin_key = ";
+        $rq .= "contact_autologin_key = "; // DONE
         isset($ret["contact_autologin_key"]) && $ret["contact_autologin_key"] != null
             ? $rq .= "'" . htmlentities($ret["contact_autologin_key"], ENT_QUOTES, "UTF-8") . "', "
             : $rq .= "NULL, ";
     }
     if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
         if ($encryptType == 1) {
-            $rq .= "contact_passwd = '" .
+            $rq .= "contact_passwd = '" . // DONE
                 $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5') . "', ";
         } elseif ($encryptType == 2) {
             $rq .= "contact_passwd = '" .
@@ -730,7 +782,7 @@ function updateContact($contact_id = null, $from_MC = false)
                 $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5') . "', ";
         }
     }
-    $rq .= "contact_lang = ";
+    $rq .= "contact_lang = "; // DONE
     isset($ret["contact_lang"]) && $ret["contact_lang"] != null
         ? $rq .= "'" . htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "'browser', ";
@@ -742,19 +794,19 @@ function updateContact($contact_id = null, $from_MC = false)
     isset($ret["contact_svNotifOpts"]) && $ret["contact_svNotifOpts"] != null
         ? $rq .= "'" . implode(",", array_keys($ret["contact_svNotifOpts"])) . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_email = ";
+    $rq .= "contact_email = "; // DONE
     isset($ret["contact_email"]) && $ret["contact_email"] != null
         ? $rq .= "'" . htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_pager = ";
+    $rq .= "contact_pager = "; // DONE
     isset($ret["contact_pager"]) && $ret["contact_pager"] != null
         ? $rq .= "'" . htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_template_id = ";
+    $rq .= "contact_template_id = "; // DONE
     isset($ret["contact_template_id"]) && $ret["contact_template_id"] != null
         ? $rq .= "'" . htmlentities($ret["contact_template_id"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_comment = ";
+    $rq .= "contact_comment = "; // DONE
     isset($ret["contact_comment"]) && $ret["contact_comment"] != null
         ? $rq .= "'" . htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8") . "', "
         : $rq .= "NULL, ";
@@ -779,7 +831,7 @@ function updateContact($contact_id = null, $from_MC = false)
     isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != null
         ? $rq .= "'" . $ret["contact_admin"]["contact_admin"] . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_register = ";
+    $rq .= "contact_register = "; // DONE
     isset($ret["contact_register"]) && $ret["contact_register"] != null
         ? $rq .= "'" . $ret["contact_register"] . "', "
         : $rq .= "NULL, ";
@@ -791,7 +843,7 @@ function updateContact($contact_id = null, $from_MC = false)
     isset($ret["contact_activate"]["contact_activate"]) && $ret["contact_activate"]["contact_activate"] != null
         ? $rq .= "'" . $ret["contact_activate"]["contact_activate"] . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_auth_type = ";
+    $rq .= "contact_auth_type = "; // DONE
     isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != null
         ? $rq .= "'" . $ret["contact_auth_type"] . "', "
         : $rq .= "'local', ";
@@ -799,31 +851,31 @@ function updateContact($contact_id = null, $from_MC = false)
     isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != null
         ? $rq .= "'" . $pearDB->escape($ret["contact_ldap_dn"], false) . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_location = ";
+    $rq .= "contact_location = "; // DONE
     isset($ret["contact_location"]) && $ret["contact_location"] != null
         ? $rq .= "'" . $ret["contact_location"] . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_address1 = ";
+    $rq .= "contact_address1 = "; // DONE
     isset($ret["contact_address1"]) && $ret["contact_address1"] != null
         ? $rq .= "'" . $ret["contact_address1"] . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_address2 = ";
+    $rq .= "contact_address2 = "; // DONE
     isset($ret["contact_address2"]) && $ret["contact_address2"] != null
         ? $rq .= "'" . $ret["contact_address2"] . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_address3 = ";
+    $rq .= "contact_address3 = "; // DONE
     isset($ret["contact_address3"]) && $ret["contact_address3"] != null
         ? $rq .= "'" . $ret["contact_address3"] . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_address4 = ";
+    $rq .= "contact_address4 = "; // DONE
     isset($ret["contact_address4"]) && $ret["contact_address4"] != null
         ? $rq .= "'" . $ret["contact_address4"] . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_address5 = ";
+    $rq .= "contact_address5 = "; // DONE
     isset($ret["contact_address5"]) && $ret["contact_address5"] != null
         ? $rq .= "'" . $ret["contact_address5"] . "', "
         : $rq .= "NULL, ";
-    $rq .= "contact_address6 = ";
+    $rq .= "contact_address6 = "; // DONE
     isset($ret["contact_address6"]) && $ret["contact_address6"] != null
         ? $rq .= "'" . $ret["contact_address6"] . "' "
         : $rq .= "NULL ";
