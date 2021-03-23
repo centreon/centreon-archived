@@ -247,8 +247,8 @@ EOF
 #========= begin of get_api_password()
 function get_api_password() {
   stty -echo
-  echo "$1 : Please enter your password:"
-  read -r API_TARGET_PASSWORD
+  read -r PASSWORD
+  echo $PASSWORD
   stty echo
 }
 #========= end of get_api_password()
@@ -400,7 +400,7 @@ function request_to_remote() {
   fi
 
   # Prepare Remote Payload
-  REMOTE_PAYLOAD='{"isRemote":true,"platformName":"'"${CURRENT_NODE_NAME}"'","centralServerAddress":"'"${TARGET_NODE_ADDRESS}"'","apiUsername":"'"${API_USERNAME}"'","apiCredentials":"'"${API_TARGET_PASSWORD}"'","apiScheme":"'"${PARSED_URL[SCHEME]}"'","apiPort":'"${PARSED_URL[PORT]}"',"apiPath":"'"${ROOT_CENTREON_FOLDER}"'",'"${PEER_VALIDATION}"
+  REMOTE_PAYLOAD='{"isRemote":true,"platformName":"'"${CURRENT_NODE_NAME}"'","centralServerAddress":"'"${PARSED_URL[HOST]}"'","apiUsername":"'"${API_USERNAME}"'","apiCredentials":"'"${API_TARGET_PASSWORD}"'","apiScheme":"'"${PARSED_URL[SCHEME]}"'","apiPort":'"${PARSED_URL[PORT]}"',"apiPath":"'"${ROOT_CENTREON_FOLDER}"'",'"${PEER_VALIDATION}"
   if [[ -n PROXY_PAYLOAD ]]; then
     REMOTE_PAYLOAD="${REMOTE_PAYLOAD}""${PROXY_PAYLOAD}"
   fi
@@ -409,7 +409,7 @@ function request_to_remote() {
   #get response
   IFS=$'\n' REMOTE_API_RESPONSE=($(curl -s -X PATCH ${INSECURE:+--insecure} -i -H "Content-Type: application/json" -H "X-AUTH-TOKEN: ${API_TOKEN}" \
     -d "${REMOTE_PAYLOAD}" \
-    "${API_CURRENT_NODE_PROTOCOL}://${CURRENT_NODE_ADDRESS}:${API_CURRENT_NODE_PORT}/${ROOT_CENTREON_FOLDER}/api/latest/platform" | grep -E "(HTTP/|message)"))
+    "${API_CURRENT_NODE_PROTOCOL}://${CURRENT_NODE_ADDRESS}:${API_CURRENT_NODE_PORT}/${API_CURRENT_NODE_CENTREON_FOLDER}/api/latest/platform" | grep -E "(HTTP/|message)"))
 
   HTTP_CODE="$(echo ${REMOTE_API_RESPONSE[0]} | cut -d ' ' -f2)"
   RESPONSE_MESSAGE=${REMOTE_API_RESPONSE[1]}
@@ -435,8 +435,9 @@ function set_remote_parameters_manually() {
     echo "A few more information are required to convert your platform into Remote : "
     echo "${CURRENT_NODE_ADDRESS} : Please enter your username:"
     read -r API_CURRENT_NODE_USERNAME
-    get_api_password "$CURRENT_NODE_ADDRESS"
-    API_CURRENT_NODE_PASSWORD=$API_TARGET_PASSWORD
+    echo "$CURRENT_NODE_ADDRESS : Please enter your password:"
+    API_CURRENT_NODE_PASSWORD=$(get_api_password)
+    # API_CURRENT_NODE_PASSWORD=$API_TARGET_PASSWORD
     echo "${CURRENT_NODE_ADDRESS} : Protocol [http]:"
     read -r INPUT_PROTOCOL
     echo "${CURRENT_NODE_ADDRESS} : Port [80]:"
@@ -490,7 +491,8 @@ parse_command_options "$@"
 if [[ ! $TEMPLATE_FILE ]];
 then
   # Ask for API TARGET Password
-  get_api_password "$TARGET_NODE_ADDRESS"
+  echo "$TARGET_NODE_ADDRESS : Please enter your password:"
+  API_TARGET_PASSWORD=$(get_api_password)
 
   if [[ ! $CURRENT_NODE_ADDRESS ]];
   then
