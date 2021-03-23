@@ -51,6 +51,7 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
     public function __construct()
     {
         parent::__construct();
+        $this->pearDBMonitoring = new \CentreonDB('centstorage');
         $this->centcore_file = _CENTREON_VARLIB_ . '/centcore.cmd';
     }
 
@@ -106,6 +107,42 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
                 foreach ($this->arguments['commands'] as $command) {
                     $commandSplitted = explode(';', $command['command']);
                     $action = $commandSplitted[0];
+                    if (!$isAdmin) {
+                        if (preg_match('/HOST(_SVC)?/', $action, $matches)) {
+                            if (!isset($commandSplitted[1])) {
+                                throw new RestBadRequestException(_('Host not found'));
+                            }
+                            $query = 'SELECT acl.host_id
+                                FROM centreon_acl acl, hosts h
+                                WHERE acl.host_id = h.host_id
+                                AND acl.service_id IS NULL
+                                AND h.name = ?
+                                AND acl.group_id IN (' . $userAcl->getAccessGroupsString() . ')';
+                            $result = $this->pearDBMonitoring->query($query, array($commandSplitted[1]));
+                            if ($result->fetchRow() === false) {
+                                throw new RestBadRequestException(_('Host not found'));
+                            }
+                        } elseif (preg_match('/(?!HOST_)SVC/', $action, $matches)) {
+                            if (!isset($commandSplitted[1]) || !isset($commandSplitted[2])) {
+                                throw new RestBadRequestException(_('Service not found'));
+                            }
+                            $query = 'SELECT acl.service_id
+                                FROM centreon_acl acl, hosts h, services s
+                                WHERE h.host_id = s.host_id
+                                AND acl.host_id = s.host_id
+                                AND acl.service_id = s.service_id
+                                AND h.name = ?
+                                AND s.description = ?
+                                AND acl.group_id IN (' . $userAcl->getAccessGroupsString() . ')';
+                            $result = $this->pearDBMonitoring->query(
+                                $query,
+                                array($commandSplitted[1], $commandSplitted[2])
+                            );
+                            if ($result->fetchRow() === false) {
+                                throw new RestBadRequestException(_('Service not found'));
+                            }
+                        }
+                    }
 
                     // checking that action provided exists
                     if (!array_key_exists($action, $availableCommands)) {
