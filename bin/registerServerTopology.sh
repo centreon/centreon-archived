@@ -437,7 +437,6 @@ function set_remote_parameters_manually() {
     read -r API_CURRENT_NODE_USERNAME
     echo "$CURRENT_NODE_ADDRESS : Please enter your password:"
     API_CURRENT_NODE_PASSWORD=$(get_api_password)
-    # API_CURRENT_NODE_PASSWORD=$API_TARGET_PASSWORD
     echo "${CURRENT_NODE_ADDRESS} : Protocol [http]:"
     read -r INPUT_PROTOCOL
     echo "${CURRENT_NODE_ADDRESS} : Port [80]:"
