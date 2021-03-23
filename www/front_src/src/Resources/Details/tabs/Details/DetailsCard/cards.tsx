@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import { Typography, Grid, makeStyles, Box } from '@material-ui/core';
 import IconCheck from '@material-ui/icons/Check';
 
@@ -26,6 +24,8 @@ import {
 } from '../../../../translatedLabels';
 import { getFormattedDate, getFormattedTime } from '../../../../dateTime';
 import { ResourceDetails } from '../../../models';
+
+import { useTranslation } from 'react-i18next';
 
 type Lines = Array<{ key: string; line: JSX.Element | null }>;
 

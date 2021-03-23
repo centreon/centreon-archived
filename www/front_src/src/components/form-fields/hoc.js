@@ -11,13 +11,13 @@
 
 import React, { Component } from 'react';
 
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
-
 import styles from '../../styles/partials/form/_form.scss';
 
 import getErrorMsg from './getErrorMsg';
 import FieldMsg from './FieldMsg';
+
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
 
 let fid = 0;
 

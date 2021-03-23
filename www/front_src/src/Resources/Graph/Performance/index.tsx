@@ -1,26 +1,5 @@
 import * as React from 'react';
 
-import {
-  ComposedChart,
-  XAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-} from 'recharts';
-import {
-  pipe,
-  map,
-  prop,
-  propEq,
-  find,
-  path,
-  reject,
-  sortBy,
-  isEmpty,
-  isNil,
-} from 'ramda';
-import { useTranslation } from 'react-i18next';
-
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData } from '@centreon/ui';
@@ -35,6 +14,27 @@ import LoadingSkeleton from './LoadingSkeleton';
 import Legend from './Legend';
 import getGraphLines from './Lines';
 import formatMetricValue from './formatMetricValue';
+
+import { useTranslation } from 'react-i18next';
+import {
+  pipe,
+  map,
+  prop,
+  propEq,
+  find,
+  path,
+  reject,
+  sortBy,
+  isEmpty,
+  isNil,
+} from 'ramda';
+import {
+  ComposedChart,
+  XAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+} from 'recharts';
 
 const fontFamily = 'Roboto, sans-serif';
 

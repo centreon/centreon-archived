@@ -3,10 +3,10 @@
 
 import React, { Component } from 'react';
 
+import styles from './loader.scss';
+
 import classnames from 'classnames';
 import loaderStyles from 'loaders.css/loaders.min.css';
-
-import styles from './loader.scss';
 
 class Loader extends Component {
   render() {

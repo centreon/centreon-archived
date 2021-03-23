@@ -1,19 +1,5 @@
 import * as React from 'react';
 
-import formatISO from 'date-fns/formatISO';
-import mockDate from 'mockdate';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { last, pick, map } from 'ramda';
-import {
-  render,
-  RenderResult,
-  waitFor,
-  fireEvent,
-  act,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
 import {
   labelAcknowledgedBy,
   labelDowntimeBy,
@@ -64,6 +50,20 @@ import { disacknowledgeEndpoint } from './Resource/Disacknowledge/api';
 import { submitStatusEndpoint } from './Resource/SubmitStatus/api';
 
 import Actions from '.';
+
+import userEvent from '@testing-library/user-event';
+import {
+  render,
+  RenderResult,
+  waitFor,
+  fireEvent,
+  act,
+} from '@testing-library/react';
+import { last, pick, map } from 'ramda';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import mockDate from 'mockdate';
+import formatISO from 'date-fns/formatISO';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

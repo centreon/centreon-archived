@@ -1,8 +1,5 @@
 import * as React from 'react';
 
-import { head } from 'ramda';
-import { useTranslation } from 'react-i18next';
-
 import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
@@ -31,6 +28,9 @@ import DowntimeForm from './Downtime';
 import AcknowledgeForm from './Acknowledge';
 import DisacknowledgeForm from './Disacknowledge';
 import SubmitStatusForm from './SubmitStatus';
+
+import { useTranslation } from 'react-i18next';
+import { head } from 'ramda';
 
 const ContainedActionButton = (props: ButtonProps): JSX.Element => (
   <ActionButton variant="contained" {...props} />

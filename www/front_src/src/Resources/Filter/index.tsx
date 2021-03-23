@@ -1,9 +1,5 @@
 import * as React from 'react';
 
-import { isEmpty, propEq, pick, find } from 'ramda';
-import clsx from 'clsx';
-import { useTranslation } from 'react-i18next';
-
 import { Skeleton } from '@material-ui/lab';
 import { Typography, Button, makeStyles } from '@material-ui/core';
 
@@ -40,6 +36,10 @@ import {
   buildServiceGroupsEndpoint,
 } from './api/endpoint';
 import useFilterModels from './useFilterModels';
+
+import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
+import { isEmpty, propEq, pick, find } from 'ramda';
 
 const useStyles = makeStyles((theme) => ({
   grid: {

@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { isNil, find, propEq, any, invertObj, path } from 'ramda';
-
 import { makeStyles } from '@material-ui/core';
 
 import {
@@ -20,6 +18,8 @@ import { Tab, TabId } from './models';
 import TimelineTab from './Timeline';
 import ShortcutsTab from './Shortcuts';
 import ServicesTab from './Services';
+
+import { isNil, find, propEq, any, invertObj, path } from 'ramda';
 
 const detailsTabId = 0;
 const servicesTabId = 1;

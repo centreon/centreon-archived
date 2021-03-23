@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
-
 import { withSnackbar, ListingPage } from '@centreon/ui';
 import WithPanel from '@centreon/ui/src/Panel/WithPanel';
 
@@ -14,6 +12,8 @@ import useListing from './Listing/useListing';
 import useActions from './Actions/useActions';
 import useDetails from './Details/useDetails';
 import EditFiltersPanel from './Filter/Edit';
+
+import { isNil } from 'ramda';
 
 const Resources = (): JSX.Element => {
   const listingContext = useListing();

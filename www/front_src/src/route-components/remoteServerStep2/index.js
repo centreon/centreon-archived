@@ -6,15 +6,15 @@
 
 import React, { Component } from 'react';
 
-import { connect } from 'react-redux';
-import { SubmissionError } from 'redux-form';
-
 import Form from '../../components/forms/remoteServer/RemoteServerFormStepTwo';
 import routeMap from '../../route-maps/route-map';
 import ProgressBar from '../../components/progressBar';
 import axios from '../../axios';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import BaseWizard from '../../components/forms/baseWizard';
+
+import { SubmissionError } from 'redux-form';
+import { connect } from 'react-redux';
 
 class RemoteServerStepTwoRoute extends Component {
   state = {

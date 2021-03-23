@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import { Tooltip, IconButton, Box, Link, makeStyles } from '@material-ui/core';
 import IconHelp from '@material-ui/icons/HelpOutline';
 import IconClose from '@material-ui/icons/HighlightOff';
@@ -20,6 +18,8 @@ import {
   labelTips,
   labelGetRegexHelp,
 } from '../translatedLabels';
+
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   tooltip: {

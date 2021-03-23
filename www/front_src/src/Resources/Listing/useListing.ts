@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { ifElse, pathEq, always, pathOr } from 'ramda';
-
 import { useRequest } from '@centreon/ui';
 
 import { ResourceListing } from '../models';
@@ -10,6 +8,8 @@ import { labelSomethingWentWrong } from '../translatedLabels';
 import { defaultSortOrder, defaultSortField } from './columns';
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { listResources } from './api';
+
+import { ifElse, pathEq, always, pathOr } from 'ramda';
 
 type SortOrder = 'asc' | 'desc';
 

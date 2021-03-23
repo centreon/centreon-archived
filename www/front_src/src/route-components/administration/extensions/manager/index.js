@@ -9,9 +9,6 @@
 
 import React, { Component } from 'react';
 
-import { connect } from 'react-redux';
-import { batchActions } from 'redux-batched-actions';
-
 import {
   TopFilters,
   Wrapper,
@@ -25,6 +22,9 @@ import Hook from '../../../../components/Hook';
 import axios from '../../../../axios';
 import { fetchNavigationData } from '../../../../redux/actions/navigationActions';
 import { fetchExternalComponents } from '../../../../redux/actions/externalComponentsActions';
+
+import { batchActions } from 'redux-batched-actions';
+import { connect } from 'react-redux';
 
 class ExtensionsRoute extends Component {
   state = {

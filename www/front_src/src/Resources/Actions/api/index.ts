@@ -1,7 +1,3 @@
-import formatISO from 'date-fns/formatISO';
-import axios, { AxiosResponse, CancelToken } from 'axios';
-import { map, pick } from 'ramda';
-
 import { Resource } from '../../models';
 
 import {
@@ -9,6 +5,10 @@ import {
   downtimeEndpoint,
   checkEndpoint,
 } from './endpoint';
+
+import formatISO from 'date-fns/formatISO';
+import axios, { AxiosResponse, CancelToken } from 'axios';
+import { map, pick } from 'ramda';
 
 interface AcknowledgeParams {
   acknowledgeAttachedResources?: boolean;

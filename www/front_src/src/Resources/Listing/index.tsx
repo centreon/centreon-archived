@@ -1,8 +1,5 @@
 import * as React from 'react';
 
-import { equals } from 'ramda';
-import { useTranslation } from 'react-i18next';
-
 import { useTheme, fade } from '@material-ui/core';
 
 import { Listing } from '@centreon/ui';
@@ -20,6 +17,9 @@ import { Resource } from '../models';
 
 import useLoadResources from './useLoadResources';
 import { getColumns } from './columns';
+
+import { useTranslation } from 'react-i18next';
+import { equals } from 'ramda';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();

@@ -2,11 +2,11 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-use-before-define */
 
+import * as actions from '../actions/axiosActions';
+
 import axios from 'axios';
 import { put, takeEvery, all, fork, take, call } from 'redux-saga/effects';
 import { eventChannel, END } from 'redux-saga';
-
-import * as actions from '../actions/axiosActions';
 
 export function* getAxiosData() {
   yield takeEvery(actions.GET_DATA, axiosRequest);

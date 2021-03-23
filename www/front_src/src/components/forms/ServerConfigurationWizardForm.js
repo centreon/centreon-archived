@@ -4,12 +4,12 @@
 
 import React from 'react';
 
+import styles from '../../styles/partials/form/_form.scss';
+import RadioGroupFields from '../form-fields/RadioGroupFields';
+
 import classnames from 'classnames';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { useTranslation } from 'react-i18next';
-
-import styles from '../../styles/partials/form/_form.scss';
-import RadioGroupFields from '../form-fields/RadioGroupFields';
 
 const configurationTypes = [
   {

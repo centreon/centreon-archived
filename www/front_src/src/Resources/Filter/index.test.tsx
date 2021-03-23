@@ -1,16 +1,5 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
-import axios from 'axios';
-import {
-  fireEvent,
-  waitFor,
-  render,
-  RenderResult,
-} from '@testing-library/react';
-import { Simulate } from 'react-dom/test-utils';
-import userEvent from '@testing-library/user-event';
-
 import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
 
 import {
@@ -51,6 +40,17 @@ import { Filter as FilterModel } from './models';
 import useFilter from './useFilter';
 
 import Filter from '.';
+
+import userEvent from '@testing-library/user-event';
+import { Simulate } from 'react-dom/test-utils';
+import {
+  fireEvent,
+  waitFor,
+  render,
+  RenderResult,
+} from '@testing-library/react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

@@ -1,8 +1,5 @@
 import * as React from 'react';
 
-import { equals, or, and, not, isEmpty, omit } from 'ramda';
-import { useTranslation } from 'react-i18next';
-
 import {
   Menu,
   MenuItem,
@@ -28,6 +25,9 @@ import useFilterModels from '../useFilterModels';
 import useAdapters from '../api/adapters';
 
 import CreateFilterDialog from './CreateFilterDialog';
+
+import { useTranslation } from 'react-i18next';
+import { equals, or, and, not, isEmpty, omit } from 'ramda';
 
 const useStyles = makeStyles((theme) => ({
   save: {

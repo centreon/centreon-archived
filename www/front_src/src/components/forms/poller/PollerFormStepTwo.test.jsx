@@ -1,11 +1,11 @@
 import '@babel/polyfill';
 import React from 'react';
 
+import PollerFormStepTwo from './PollerFormStepTwo';
+
 import configureStore from 'redux-mock-store';
 import { render, fireEvent, queryByAttribute } from '@testing-library/react';
 import { Provider } from 'react-redux';
-
-import PollerFormStepTwo from './PollerFormStepTwo';
 
 const queryByName = queryByAttribute.bind(null, 'name');
 

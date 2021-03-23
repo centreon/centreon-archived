@@ -15,15 +15,15 @@
 
 import React, { Component } from 'react';
 
+import axios from '../../../axios';
+import styles from '../header.scss';
+import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
+
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
-import axios from '../../../axios';
-import styles from '../header.scss';
-import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901';
 

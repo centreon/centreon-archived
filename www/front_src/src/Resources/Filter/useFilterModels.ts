@@ -1,6 +1,3 @@
-import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
-
 import {
   labelAcknowledged,
   labelInDowntime,
@@ -22,6 +19,9 @@ import {
 } from '../translatedLabels';
 
 import { Filter, CriteriaValue } from './models';
+
+import { useTranslation } from 'react-i18next';
+import { isNil } from 'ramda';
 
 interface FilterModelsContext {
   criteriaValueNameById: { [id: string]: string };
