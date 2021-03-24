@@ -412,13 +412,21 @@ const GraphContent = ({
     showTooltipAt({ x, y });
   }, [tooltipPosition]);
 
+  const closeZoomPreview = () => {
+    setZoomBoundaries(null);
+    setZoomPivotPosition(null);
+  };
+
   const closeTooltip = (): void => {
     hideTooltip();
     setIsMouseOver(false);
     onTooltipDisplay?.();
     annotations.setAnnotationHovered(undefined);
-    setZoomBoundaries(null);
-    setZoomPivotPosition(null);
+
+    if (not(isNil(zoomPivotPosition))) {
+      return;
+    }
+    closeZoomPreview();
   };
 
   const displayAddCommentTooltip = (event): void => {
@@ -502,7 +510,12 @@ const GraphContent = ({
               <CircularProgress />
             </div>
           )}
-          <svg width="100%" height={height} ref={containerRef}>
+          <svg
+            width="100%"
+            height={height}
+            ref={containerRef}
+            onMouseUp={closeZoomPreview}
+          >
             <Group left={margin.left} top={margin.top}>
               <MemoizedGridRows
                 scale={leftScale}
