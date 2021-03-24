@@ -24,6 +24,8 @@ import { AdjustTimePeriodProps } from '../models';
 
 dayjs.extend(duration);
 
+dayjs.extend(duration);
+
 interface TimePeriodState {
   changeSelectedTimePeriod: (timePeriod: TimePeriodId) => void;
   selectedTimePeriod: TimePeriod | null;
