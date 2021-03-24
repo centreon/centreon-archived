@@ -16098,3 +16098,6 @@ msgstr "En arrière"
 
 msgid "The end date must be greater than the start date"
 msgstr "La date de fin doit être supérieure à la date de début"
+
+msgid "Check duration"
+msgstr "Temps d'exécution"
