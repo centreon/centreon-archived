@@ -67,6 +67,11 @@ class FindOneMetaServiceConfiguration
         $metaServiceConfiguration = ($this->contact->isAdmin())
             ? $this->metaServiceConfigurationService->findWithoutAcl($metaId)
             : $this->metaServiceConfigurationService->findWithAcl($metaId);
+
+        if (is_null($metaServiceConfiguration)) {
+            throw MetaServiceConfigurationException::findOneMetaServiceConfigurationNotFound($metaId);
+        }
+
         $response->setMetaServiceConfiguration($metaServiceConfiguration);
         return $response;
     }

@@ -31,7 +31,6 @@ class MetaServiceConfigurationException extends \Exception
 {
     /**
      * @param \Throwable $ex
-     * @param array<string, mixed> $data
      * @return self
      */
     public static function findMetaServicesConfigurations(\Throwable $ex): self
@@ -45,15 +44,26 @@ class MetaServiceConfigurationException extends \Exception
 
     /**
      * @param \Throwable $ex
-     * @param array<string, mixed> $data
+     * @param int $metaId
      * @return self
      */
-    public static function findOneMetaServiceConfiguration(\Throwable $ex, array $data = []): self
+    public static function findOneMetaServiceConfiguration(\Throwable $ex, int $metaId): self
     {
         return new self(
-            sprintf(_('Error when searching for the meta service configuration (%s)'), $data['id'] ?? $data['name'] ?? null),
+            sprintf(_('Error when searching for the meta service configuration (%s)'), $metaId),
             0,
             $ex
+        );
+    }
+
+    /**
+     * @param int $metaId
+     * @return self
+     */
+    public static function findOneMetaServiceConfigurationNotFound(int $metaId): self
+    {
+        return new self(
+            sprintf(_('Meta service configuration (%s) not found'), $metaId)
         );
     }
 }

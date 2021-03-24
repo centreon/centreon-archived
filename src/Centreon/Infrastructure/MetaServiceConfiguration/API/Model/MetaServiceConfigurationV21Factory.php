@@ -22,14 +22,13 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\MetaServiceConfiguration\API\Model;
 
-use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindMetaServicesConfigurations;
 use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindMetaServicesConfigurationsResponse;
 use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindOneMetaServiceConfigurationResponse;
 
 /**
  * This class is designed to create the MetaServiceConfigurationV21 entity
  *
- * @package Centreon\Infrastructure\MetaServiceConfiguration\API\Model
+ * @package Centreon\Infrastructure\Monitoring\MetaService\API\Model
  */
 class MetaServiceConfigurationV21Factory
 {

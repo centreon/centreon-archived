@@ -65,7 +65,7 @@ class MetaServiceConfigurationService implements MetaServiceConfigurationService
         try {
             return $this->readRepository->findByIdAndContact($metaId, $this->contact);
         } catch (\Throwable $ex) {
-            throw MetaServiceConfigurationException::findOneMetaServiceConfiguration($ex, ['id' => $metaId]);
+            throw MetaServiceConfigurationException::findOneMetaServiceConfiguration($ex, $metaId);
         }
     }
 
@@ -77,7 +77,7 @@ class MetaServiceConfigurationService implements MetaServiceConfigurationService
         try {
             return $this->readRepository->findById($metaId);
         } catch (\Throwable $ex) {
-            throw MetaServiceConfigurationException::findOneMetaServiceConfiguration($ex, ['id' => $metaId]);
+            throw MetaServiceConfigurationException::findOneMetaServiceConfiguration($ex, $metaId);
         }
     }
 

@@ -42,6 +42,8 @@ class MetaServiceConfiguration
 
     public const AVAILABLE_DATA_SOURCE_TYPES = ['gauge', 'counter', 'derive', 'absolute'];
     public const AVAILABLE_CALCULATION_TYPES = ['average', 'minimum', 'maximum', 'sum'];
+    public const META_SELECT_MODE_LIST = 1;
+    public const META_SELECT_MODE_SQL_REGEXP = 2;
 
     /**
      * @var int ID of the Meta Service

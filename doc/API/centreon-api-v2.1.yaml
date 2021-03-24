@@ -388,6 +388,44 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/metrics:
+    get:
+      tags:
+        - Meta Service
+      summary: "List all meta service metrics"
+      description: |
+        List all meta services metrics from realtime.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+          * service_description
+          * host_name
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.MetaServiceMetric'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/servers:
     get:
       tags:
@@ -3679,6 +3717,28 @@ components:
           type: boolean
           description: "Indicates whether the meta service configuration is activated"
           example: true
+    Monitoring.MetaServiceMetric:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the meta service metric"
+          example: 2
+        name:
+          type: string
+          description: "Name of the meta service metric"
+          example: "rta"
+        unitName:
+          type: string
+          description: "Name of the meta service metric unit"
+          example: "ms"
+        currentValue:
+          type: number
+          description: "Current value of the metric in the realtime"
+          example: 0.250
+        resource:
+          $ref: '#/components/schemas/Monitoring.ResourceMain'
     Monitoring.Servers:
       type: object
       properties:

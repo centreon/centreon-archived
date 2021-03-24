@@ -169,22 +169,20 @@ class MetaServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implem
                     ON res.acl_res_id = argr.acl_res_id
                 INNER JOIN `:db`.acl_groups ag
                     ON argr.acl_group_id = ag.acl_group_id
+                    AND agcr.contact_contact_id = :contact_id
                 LEFT JOIN `:db`.acl_group_contacts_relations agcr
                     ON ag.acl_group_id = agcr.acl_group_id
                 LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
                     ON ag.acl_group_id = agcgr.acl_group_id
                 LEFT JOIN `:db`.contactgroup_contact_relation cgcr
-                    ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id"
+                    ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id
+                    AND cgcr.contact_contact_id = :contact_id"
             );
         }
 
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest) ? $searchRequest : '';
-
-        if ($contactId !== null) {
-            $request .= ' AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)';
-        }
 
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
