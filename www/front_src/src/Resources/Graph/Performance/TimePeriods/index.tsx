@@ -82,6 +82,7 @@ const TimePeriodButtonGroup = ({
               disabled={disabled}
               color="primary"
               className={classes.buttonGroup}
+              component="span"
             >
               {map(
                 ({ id, name, compactName, largeName }) => (
@@ -92,6 +93,7 @@ const TimePeriodButtonGroup = ({
                         selectedTimePeriodId === id ? 'contained' : 'outlined'
                       }
                       className={classes.button}
+                      component="span"
                     >
                       {cond<number, string>([
                         [lte(theme.breakpoints.values.md), always(largeName)],
