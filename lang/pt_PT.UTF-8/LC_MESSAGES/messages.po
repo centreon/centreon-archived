@@ -15110,3 +15110,6 @@ msgstr ""
 
 msgid "The end date must be greater than the start date"
 msgstr ""
+
+msgid "Check duration"
+msgstr ""
