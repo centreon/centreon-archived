@@ -16107,3 +16107,6 @@ msgstr "Afficher les info-bulles"
 
 msgid "Check duration"
 msgstr "Temps d'exécution"
+
+msgid "Compact time period"
+msgstr "Période de temps compacte"

@@ -15125,3 +15125,6 @@ msgstr ""
 
 msgid "Check duration"
 msgstr ""
+
+msgid "Compact time period"
+msgstr ""
