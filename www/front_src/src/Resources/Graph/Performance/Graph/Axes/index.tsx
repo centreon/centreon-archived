@@ -40,7 +40,7 @@ const Axes = ({
   const formatXAxisTick = (tick): string =>
     format({ date: new Date(tick), formatString: xAxisTickFormat });
 
-  const xTickCount = Math.ceil(graphWidth / 60);
+  const xTickCount = Math.ceil(graphWidth / 82);
 
   return (
     <>

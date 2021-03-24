@@ -11,14 +11,12 @@ import { ColumnType, useLocaleDateTimeFormat } from '@centreon/ui';
 import {
   labelAuthor,
   labelFixed,
-  labelYes,
-  labelNo,
   labelStartTime,
   labelEndTime,
   labelComment,
 } from '../../../../translatedLabels';
 
-import DetailsTable, { DetailsTableProps } from '.';
+import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
 
 const useStyles = makeStyles({
   comment: {
@@ -55,7 +53,7 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       id: 'is_fixed',
       label: t(labelFixed),
       type: ColumnType.string,
-      getContent: ({ is_fixed }): string => (is_fixed ? labelYes : labelNo),
+      getContent: ({ is_fixed }): string => t(getYesNoLabel(is_fixed)),
       width: 100,
     },
     {
