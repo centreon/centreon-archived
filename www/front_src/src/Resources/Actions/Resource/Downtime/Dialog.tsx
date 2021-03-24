@@ -1,8 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import * as React from 'react';
 
-import dayjs from 'dayjs';
-import DayjsAdapter from '@date-io/dayjs';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -20,12 +18,7 @@ import {
 } from '@material-ui/pickers';
 import { Alert } from '@material-ui/lab';
 
-import {
-  Dialog,
-  TextField,
-  SelectField,
-  useLocaleDateTimeFormat,
-} from '@centreon/ui';
+import { Dialog, TextField, SelectField } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
 import {
@@ -52,6 +45,7 @@ import {
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
+import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
 interface Props {
   resources: Array<Resource>;
@@ -99,9 +93,9 @@ const DialogDowntime = ({
   setFieldValue,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { locale, timezone } = useUserContext();
+  const { locale } = useUserContext();
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
-  const { format } = useLocaleDateTimeFormat();
+  const Adapter = useDateTimePickerAdapter();
 
   const open = resources.length > 0;
 
@@ -112,16 +106,6 @@ const DialogDowntime = ({
   };
 
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
-
-  class Adapter extends DayjsAdapter {
-    public format(date, formatString): string {
-      return format({ date, formatString });
-    }
-
-    public date(value): dayjs.Dayjs {
-      return dayjs(value).locale(locale).tz(timezone);
-    }
-  }
 
   return (
     <Dialog

@@ -29,7 +29,10 @@ import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/decoders';
 import PerformanceGraph from '..';
-import { TimePeriod } from '../../../Details/tabs/Graph/models';
+import {
+  CustomTimePeriod,
+  TimePeriod,
+} from '../../../Details/tabs/Graph/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 
@@ -55,12 +58,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface Props {
   resource?: Resource | ResourceDetails;
-  selectedTimePeriod: TimePeriod;
+  selectedTimePeriod: TimePeriod | null;
   getIntervalDates: () => [string, string];
   periodQueryParameters: string;
   graphHeight: number;
   onTooltipDisplay?: (position?: [number, number]) => void;
   tooltipPosition?: [number, number];
+  customTimePeriod: CustomTimePeriod;
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
@@ -71,6 +75,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   graphHeight,
   onTooltipDisplay,
   tooltipPosition,
+  customTimePeriod,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -108,7 +113,9 @@ const ExportablePerformanceGraphWithTimeline = ({
     sendGetTimelineRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        limit: selectedTimePeriod.timelineEventsLimit,
+        limit:
+          selectedTimePeriod?.timelineEventsLimit ||
+          customTimePeriod.timelineLimit,
         search: {
           conditions: [
             {
@@ -132,7 +139,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     }
 
     retrieveTimeline();
-  }, [endpoint, selectedTimePeriod]);
+  }, [endpoint, selectedTimePeriod, customTimePeriod.timelineLimit]);
 
   const getEndpoint = (): string | undefined => {
     if (isNil(endpoint)) {
@@ -208,7 +215,10 @@ const ExportablePerformanceGraphWithTimeline = ({
         <PerformanceGraph
           endpoint={getEndpoint()}
           graphHeight={graphHeight}
-          xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
+          xAxisTickFormat={
+            selectedTimePeriod?.dateTimeFormat ||
+            customTimePeriod.xAxisTickFormat
+          }
           toggableLegend
           resource={resource as Resource}
           eventAnnotationsActive={eventAnnotationsActive}
