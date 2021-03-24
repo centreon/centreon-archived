@@ -2,7 +2,13 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Typography, Button, Popover } from '@material-ui/core';
+import {
+  makeStyles,
+  Typography,
+  Button,
+  Popover,
+  FormHelperText,
+} from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
@@ -14,7 +20,9 @@ import {
   CustomTimePeriodProperty,
 } from '../../../Details/tabs/Graph/models';
 import {
+  labelCompactTimePeriod,
   labelEndDate,
+  labelEndDateGreaterThanStartDate,
   labelFrom,
   labelStartDate,
   labelTo,
@@ -49,6 +57,9 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateRows: 'auto auto',
     rowGap: `${theme.spacing(1)}px`,
   },
+  error: {
+    textAlign: 'center',
+  },
 }));
 
 interface Props {
@@ -56,6 +67,7 @@ interface Props {
   start: Date;
   end: Date;
   commonPickersProps;
+  error: boolean;
   changeDate: (props) => () => void;
   setStart: React.Dispatch<React.SetStateAction<Date>>;
   setEnd: React.Dispatch<React.SetStateAction<Date>>;
@@ -66,6 +78,7 @@ const MinimalCustomTimePeriodPickers = ({
   start,
   end,
   commonPickersProps,
+  error,
   changeDate,
   setStart,
   setEnd,
@@ -94,6 +107,7 @@ const MinimalCustomTimePeriodPickers = ({
         color="primary"
         className={classes.button}
         onClick={openPopover}
+        aria-label={t(labelCompactTimePeriod)}
       >
         <div className={classes.buttonContent}>
           <AccessTimeIcon />
@@ -160,6 +174,11 @@ const MinimalCustomTimePeriodPickers = ({
               </div>
             </div>
           </MuiPickersUtilsProvider>
+          {error && (
+            <FormHelperText error className={classes.error}>
+              {t(labelEndDateGreaterThanStartDate)}
+            </FormHelperText>
+          )}
         </div>
       </Popover>
     </>

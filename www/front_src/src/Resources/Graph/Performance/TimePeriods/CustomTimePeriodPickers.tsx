@@ -23,7 +23,7 @@ import {
 } from '../../../Details/tabs/Graph/models';
 import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
-import MinimalCustomTimePeriodPickers from './MinimalCustomTimePeriodPickers';
+import CompactCustomTimePeriodPickers from './CompactCustomTimePeriodPickers';
 import DateTimePickerInput from './DateTimePickerInput';
 
 interface AcceptDateProps {
@@ -126,11 +126,12 @@ const CustomTimePeriodPickers = ({
 
   if (isMinimalWidth) {
     return (
-      <MinimalCustomTimePeriodPickers
+      <CompactCustomTimePeriodPickers
         customTimePeriod={customTimePeriod}
         start={start}
         end={end}
         commonPickersProps={commonPickersProps}
+        error={error}
         changeDate={changeDate}
         setStart={setStart}
         setEnd={setEnd}

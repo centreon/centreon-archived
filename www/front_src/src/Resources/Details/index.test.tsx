@@ -68,6 +68,7 @@ import {
   labelBackward,
   labelEndDateGreaterThanStartDate,
   labelGraphOptions,
+  labelCompactTimePeriod,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -1102,6 +1103,8 @@ describe(Details, () => {
       );
     });
 
+    userEvent.click(getByLabelText(labelCompactTimePeriod));
+
     const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
       ?.firstChild;
 
@@ -1152,7 +1155,7 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByLabelText, getByText } = renderDetails({
+    const { getByText } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -1167,19 +1170,13 @@ describe(Details, () => {
       );
     });
 
-    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
-      ?.firstChild;
-
-    const endDateInput = getByLabelText(labelEndDate).firstChild?.firstChild
-      ?.firstChild;
-
-    expect(startDateInput).toHaveValue('01/20/2020 7:00 AM');
-    expect(endDateInput).toHaveValue('01/21/2020 7:00 AM');
+    expect(getByText('01/20/2020 7:00 AM')).toBeInTheDocument();
+    expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
 
     userEvent.click(getByText(label7D).parentElement as HTMLElement);
 
-    expect(startDateInput).toHaveValue('01/14/2020 7:00 AM');
-    expect(endDateInput).toHaveValue('01/21/2020 7:00 AM');
+    expect(getByText('01/14/2020 7:00 AM')).toBeInTheDocument();
+    expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1211,6 +1208,8 @@ describe(Details, () => {
         cancelTokenRequestParam,
       );
     });
+
+    userEvent.click(getByLabelText(labelCompactTimePeriod));
 
     const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
       ?.firstChild;
