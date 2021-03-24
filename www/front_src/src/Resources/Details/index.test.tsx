@@ -63,7 +63,6 @@ import {
   labelDowntime,
   labelDisplayEvents,
   labelStartDate,
-  labelEndDate,
   labelForward,
   labelBackward,
   labelEndDateGreaterThanStartDate,
