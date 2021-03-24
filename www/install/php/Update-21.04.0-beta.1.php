@@ -166,7 +166,7 @@ try {
     $errorMessage = "Unable to set cb_log_level";
     $pearDB->query(
         "INSERT INTO `cb_log_level` (`name`)
-        VALUES ('disabled'), ('critical'), ('error'), ('warning'), ('information'), ('debug'), ('trace')"
+        VALUES ('disabled'), ('critical'), ('error'), ('warning'), ('info'), ('debug'), ('trace')"
     );
     $stmt = $pearDB->query(
         "SELECT config_id FROM cfg_centreonbroker"
