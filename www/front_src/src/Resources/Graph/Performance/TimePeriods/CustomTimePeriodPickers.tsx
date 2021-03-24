@@ -6,12 +6,7 @@ import { and, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import {
-  FormHelperText,
-  makeStyles,
-  TextFieldProps,
-  Typography,
-} from '@material-ui/core';
+import { FormHelperText, makeStyles, Typography } from '@material-ui/core';
 
 import { useUserContext } from '@centreon/ui-context';
 import { dateTimeFormat, TextField } from '@centreon/ui';
@@ -43,9 +38,9 @@ dayjs.extend(isSameOrAfter);
 const useStyles = makeStyles((theme) => ({
   pickers: {
     display: 'grid',
-    gridTemplateColumns: `minmax(${theme.spacing(18)}px, ${theme.spacing(
-      20,
-    )}px) min-content minmax(${theme.spacing(18)}px, ${theme.spacing(20)}px)`,
+    gridTemplateColumns: `minmax(${theme.spacing(15)}px, ${theme.spacing(
+      17,
+    )}px) min-content minmax(${theme.spacing(15)}px, ${theme.spacing(17)}px)`,
     columnGap: `${theme.spacing(0.5)}px`,
     alignItems: 'center',
   },
@@ -53,6 +48,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   },
 }));
+
+const DateTimeTextField = React.forwardRef(
+  (props, ref: React.ForwardedRef<HTMLDivElement>): JSX.Element => (
+    <TextField {...props} size="small" ref={ref} />
+  ),
+);
 
 const CustomTimePeriodPickers = ({
   customTimePeriod,
@@ -110,11 +111,11 @@ const CustomTimePeriodPickers = ({
   };
 
   const startDateInputProp = {
-    TextFieldComponent: TextField as React.ComponentType<TextFieldProps>,
+    TextFieldComponent: DateTimeTextField,
   };
 
   const endDateInputProp = {
-    TextFieldComponent: TextField as React.ComponentType<TextFieldProps>,
+    TextFieldComponent: DateTimeTextField,
   };
 
   return (

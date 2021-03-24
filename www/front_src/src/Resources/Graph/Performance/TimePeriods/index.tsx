@@ -19,6 +19,7 @@ import {
   TimePeriodId,
   timePeriods,
 } from '../../../Details/tabs/Graph/models';
+import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
 
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
@@ -26,9 +27,10 @@ const useStyles = makeStyles((theme) => ({
   header: {
     padding: theme.spacing(1, 0.5),
     display: 'grid',
-    gridTemplateColumns: `repeat(2, auto)`,
+    gridTemplateColumns: `repeat(3, auto)`,
     columnGap: `${theme.spacing(2)}px`,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonGroup: {
     alignSelf: 'center',
@@ -110,6 +112,7 @@ const TimePeriodButtonGroup = ({
               customTimePeriod={customTimePeriod}
               acceptDate={changeDate}
             />
+            <GraphOptions />
           </Paper>
         );
       }}

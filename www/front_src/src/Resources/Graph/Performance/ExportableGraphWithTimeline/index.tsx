@@ -28,7 +28,6 @@ import { ResourceDetails } from '../../../Details/models';
 import { AdjustTimePeriodProps } from '../models';
 
 import exportToPng from './exportToPng';
-import GraphOptions from './GraphOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
   exportToPngButton: {
@@ -186,7 +185,6 @@ const ExportablePerformanceGraphWithTimeline = ({
             <SaveAsImageIcon style={{ fontSize: 18 }} />
           </IconButton>
         </ContentWithCircularLoading>
-        <GraphOptions />
       </div>
       <div
         className={classes.graph}
