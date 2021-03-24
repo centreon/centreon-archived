@@ -39,12 +39,13 @@ interface DetailCardLineProps {
   details: ResourceDetails;
   toDate: (date: string | Date) => string;
   toTime: (date: string | Date) => string;
+  t: (label: string) => string;
 }
-
 const getDetailCardLines = ({
   details,
   toDate,
   toTime,
+  t,
 }: DetailCardLineProps): Array<DetailCardLines> => {
   const getDateTimeLines = ({ label, field }): DetailCardLines => ({
     title: label,
@@ -157,7 +158,7 @@ const getDetailCardLines = ({
       getLines: (): Lines => [
         {
           key: 'flapping',
-          line: <DetailsLine line={details.flapping ? labelYes : labelNo} />,
+          line: <DetailsLine line={t(details.flapping ? labelYes : labelNo)} />,
         },
       ],
     },

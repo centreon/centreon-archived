@@ -40,7 +40,7 @@ import {
   labelCurrentNotificationNumber,
   labelPerformanceData,
   label7D,
-  label24H,
+  label1D,
   label31D,
   labelCopy,
   labelCommand,
@@ -494,7 +494,7 @@ describe(Details, () => {
   });
 
   it.each([
-    [label24H, '2020-01-20T06:00:00.000Z', 20, undefined],
+    [label1D, '2020-01-20T06:00:00.000Z', 20, undefined],
     [label7D, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
     [label31D, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
   ])(
@@ -1067,7 +1067,7 @@ describe(Details, () => {
 
     expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
-    userEvent.click(head(getAllByText(label24H)) as HTMLElement);
+    userEvent.click(head(getAllByText(label1D)) as HTMLElement);
     userEvent.click(last(getAllByText(label7D)) as HTMLElement);
 
     await waitFor(() => {
