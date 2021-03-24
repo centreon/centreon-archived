@@ -5,11 +5,11 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { and, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { FormHelperText, makeStyles, Typography } from '@material-ui/core';
 
 import { useUserContext } from '@centreon/ui-context';
-import { dateTimeFormat, TextField } from '@centreon/ui';
+import { dateTimeFormat } from '@centreon/ui';
 
 import {
   labelEndDate,
@@ -23,6 +23,9 @@ import {
 } from '../../../Details/tabs/Graph/models';
 import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
+import MinimalCustomTimePeriodPickers from './MinimalCustomTimePeriodPickers';
+import DateTimePickerInput from './DateTimePickerInput';
+
 interface AcceptDateProps {
   property: CustomTimePeriodProperty;
   date: Date;
@@ -31,6 +34,7 @@ interface AcceptDateProps {
 interface Props {
   customTimePeriod: CustomTimePeriod;
   acceptDate: (props: AcceptDateProps) => void;
+  isMinimalWidth: boolean;
 }
 
 dayjs.extend(isSameOrAfter);
@@ -47,17 +51,27 @@ const useStyles = makeStyles((theme) => ({
   error: {
     textAlign: 'center',
   },
+  minimalPickers: {
+    display: 'grid',
+    gridTemplateColumns: 'min-content auto',
+    columnGap: `${theme.spacing(1)}px`,
+    alignItems: 'center',
+  },
+  minimalFromTo: {
+    display: 'grid',
+    gridTemplateRows: 'repeat(2, min-content)',
+    rowGap: `${theme.spacing(0.3)}px`,
+  },
+  pickerText: {
+    lineHeight: '1.2',
+    cursor: 'pointer',
+  },
 }));
-
-const DateTimeTextField = React.forwardRef(
-  (props, ref: React.ForwardedRef<HTMLDivElement>): JSX.Element => (
-    <TextField {...props} size="small" ref={ref} />
-  ),
-);
 
 const CustomTimePeriodPickers = ({
   customTimePeriod,
   acceptDate,
+  isMinimalWidth,
 }: Props): JSX.Element => {
   const [start, setStart] = React.useState<Date>(customTimePeriod.start);
   const [end, setEnd] = React.useState<Date>(customTimePeriod.end);
@@ -110,13 +124,19 @@ const CustomTimePeriodPickers = ({
     format: dateTimeFormat,
   };
 
-  const startDateInputProp = {
-    TextFieldComponent: DateTimeTextField,
-  };
-
-  const endDateInputProp = {
-    TextFieldComponent: DateTimeTextField,
-  };
+  if (isMinimalWidth) {
+    return (
+      <MinimalCustomTimePeriodPickers
+        customTimePeriod={customTimePeriod}
+        start={start}
+        end={end}
+        commonPickersProps={commonPickersProps}
+        changeDate={changeDate}
+        setStart={setStart}
+        setEnd={setEnd}
+      />
+    );
+  }
 
   return (
     <div>
@@ -126,36 +146,24 @@ const CustomTimePeriodPickers = ({
           locale={locale.substring(0, 2)}
         >
           <div aria-label={t(labelStartDate)}>
-            <DateTimePicker
-              {...commonPickersProps}
-              {...startDateInputProp}
-              variant="inline"
-              inputVariant="filled"
-              value={start}
-              onChange={(value) => setStart(new Date(value?.toDate() || 0))}
-              onClose={changeDate({
-                property: CustomTimePeriodProperty.start,
-                date: start,
-              })}
+            <DateTimePickerInput
+              commonPickersProps={commonPickersProps}
+              date={start}
+              property={CustomTimePeriodProperty.start}
               maxDate={customTimePeriod.end}
-              size="small"
+              changeDate={changeDate}
+              setDate={setStart}
             />
           </div>
           <Typography>{t(labelTo).toLowerCase()}</Typography>
           <div aria-label={t(labelEndDate)}>
-            <DateTimePicker
-              {...commonPickersProps}
-              {...endDateInputProp}
-              variant="inline"
-              inputVariant="filled"
-              value={end}
-              onChange={(value) => setEnd(new Date(value?.toDate() || 0))}
-              onClose={changeDate({
-                property: CustomTimePeriodProperty.end,
-                date: end,
-              })}
+            <DateTimePickerInput
+              commonPickersProps={commonPickersProps}
+              date={end}
+              property={CustomTimePeriodProperty.end}
               minDate={customTimePeriod.start}
-              size="small"
+              changeDate={changeDate}
+              setDate={setEnd}
             />
           </div>
         </MuiPickersUtilsProvider>

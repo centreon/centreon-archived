@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { always, cond, lte, map, pick, T } from 'ramda';
+import { always, cond, lt, lte, map, pick, T } from 'ramda';
 import { ParentSize } from '@visx/visx';
 
 import {
@@ -77,6 +77,7 @@ const TimePeriodButtonGroup = ({
   return (
     <ParentSize>
       {({ width }) => {
+        const isMinimalWidth = lt(width, theme.breakpoints.values.sm);
         return (
           <Paper className={classes.header}>
             <ButtonGroup
@@ -111,6 +112,7 @@ const TimePeriodButtonGroup = ({
             <CustomTimePeriodPickers
               customTimePeriod={customTimePeriod}
               acceptDate={changeDate}
+              isMinimalWidth={isMinimalWidth}
             />
             <GraphOptions />
           </Paper>
