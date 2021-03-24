@@ -367,11 +367,13 @@ class Contact implements UserInterface, ContactInterface
     public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): self
     {
         $this->hasAccessToApiConfiguration = $hasAccessToApiConfiguration;
-        if ($this->hasAccessToApiRealTime) {
+
+        if ($this->hasAccessToApiConfiguration) {
             $this->addRole(self::ROLE_API_CONFIGURATION);
         } else {
             $this->removeRole(self::ROLE_API_CONFIGURATION);
         }
+
         return $this;
     }
 
