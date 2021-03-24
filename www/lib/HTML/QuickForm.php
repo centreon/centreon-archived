@@ -2028,25 +2028,26 @@ class HTML_QuickForm extends HTML_Common
         // return the textual error message corresponding to the code
         return isset($errorMessages[$value]) ? $errorMessages[$value] : $errorMessages[QUICKFORM_ERROR];
     } // end func errorMessage
-    
+
     /**
      * Create the CSRF Token to be set in every form using QuickForm
      */
     function createSecurityToken()
     {
+        $token = bin2hex(openssl_random_pseudo_bytes(16));
 
-        $token = md5(uniqid());
-        if (false === isset($_SESSION['x-centreon-token']) && (isset($_SESSION['x-centreon-token']) && false === is_array($_SESSION['x-centreon-token']))) {
+        if (!isset($_SESSION['x-centreon-token']) || !is_array($_SESSION['x-centreon-token'])) {
             $_SESSION['x-centreon-token'] = array();
             $_SESSION['x-centreon-token-generated-at'] = array();
         }
+
         $_SESSION['x-centreon-token'][] = $token;
         $_SESSION['x-centreon-token-generated-at'][(string)$token] = time();
-        
+
         $myTokenElement = $this->addElement('hidden', 'centreon_token');
         $myTokenElement->setValue($token);
     }
-    
+
     /**
      * Check if the CSRF Token is still valid
      * 
