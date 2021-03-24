@@ -57,21 +57,21 @@ try {
         // An update is required
         $errorMessage = 'Impossible to alter the table cfg_centreonbroker with log_directory';
         $pearDB->query(
-            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_directory` VARCHAR(255)'
+            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_directory` VARCHAR(255) AFTER `config_write_thread_id`'
         );
     }
     if (!$pearDB->isColumnExist('cfg_centreonbroker', 'log_filename')) {
         // An update is required
         $errorMessage = 'Impossible to alter the table cfg_centreonbroker with log_filename';
         $pearDB->query(
-            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_filename` VARCHAR(255)'
+            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_filename` VARCHAR(255) AFTER `log_directory`'
         );
     }
     if (!$pearDB->isColumnExist('cfg_centreonbroker', 'log_max_size')) {
         // An update is required
         $errorMessage = 'Impossible to alter the table cfg_centreonbroker with log_max_size';
         $pearDB->query(
-            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_max_size` INT(255)'
+            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_max_size` INT(11) NOT NULL DEFAULT 0 AFTER `log_filename`'
         );
     }
 
@@ -166,7 +166,7 @@ try {
     $errorMessage = "Unable to set cb_log_level";
     $pearDB->query(
         "INSERT INTO `cb_log_level` (`name`)
-        VALUES ('disabled'), ('critical'), ('error'), ('warning'), ('information'), ('debug'), ('trace')"
+        VALUES ('disabled'), ('critical'), ('error'), ('warning'), ('info'), ('debug'), ('trace')"
     );
     $stmt = $pearDB->query(
         "SELECT config_id FROM cfg_centreonbroker"

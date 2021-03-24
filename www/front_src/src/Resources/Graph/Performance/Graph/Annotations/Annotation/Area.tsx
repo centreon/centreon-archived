@@ -103,7 +103,7 @@ const AreaAnnotation = ({
         {...props}
       />
     ),
-    memoProps: [annotationHovered],
+    memoProps: [annotationHovered, xStart, xEnd],
   });
 };
 
