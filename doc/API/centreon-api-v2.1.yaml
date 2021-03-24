@@ -2758,11 +2758,11 @@ paths:
                   type: object
                   properties:
                     monitoring_default_downtime_duration:
-                      type: string
+                      type: integer
                       description: Default downtime duration
                       example: 3600
                     monitoring_default_refresh_interval:
-                      type: string
+                      type: integer
                       description: Default monitoring refresh interval
                       example: 15
         '403':
