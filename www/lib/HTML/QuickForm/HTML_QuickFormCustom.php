@@ -87,10 +87,7 @@ class HTML_QuickFormCustom extends HTML_QuickForm
     {
         $token = bin2hex(openssl_random_pseudo_bytes(16));
 
-        if (
-            !isset($_SESSION['x-centreon-token'])
-            || (isset($_SESSION['x-centreon-token']) && !is_array($_SESSION['x-centreon-token']))
-        ) {
+        if (!isset($_SESSION['x-centreon-token']) || !is_array($_SESSION['x-centreon-token'])) {
             $_SESSION['x-centreon-token'] = array();
             $_SESSION['x-centreon-token-generated-at'] = array();
         }
