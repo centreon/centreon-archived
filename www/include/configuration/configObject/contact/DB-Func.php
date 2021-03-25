@@ -528,7 +528,7 @@ function insertContact($ret = array())
 
     $bindParams = sanitizeFormContactParameters($ret);
     $params = [];
-    foreach(array_keys($bindParams) as $token) {
+    foreach (array_keys($bindParams) as $token) {
         $params[] = ltrim($token, ':');
     }
     $rq = "INSERT INTO `contact` ( contact_id, ";
@@ -590,7 +590,7 @@ function updateContact($contact_id = null)
 
     //Build Query with only setted values.
     $rq = "UPDATE contact SET ";
-    foreach(array_keys($bindParams) as $token) {
+    foreach (array_keys($bindParams) as $token) {
             $rq .= ltrim($token, ':') . " = " . $token .", ";
     }
     $rq = rtrim($rq, ', ');
@@ -642,7 +642,7 @@ function updateContact_MC($contact_id = null)
     $ret = $form->getSubmitValues();
     $bindParams = sanitizeFormContactParameters($ret);
     $rq = "UPDATE contact SET ";
-    foreach(array_keys($bindParams) as $token) {
+    foreach (array_keys($bindParams) as $token) {
             $rq .= ltrim($token, ':') . " = " . $token .", ";
     }
     $rq = rtrim($rq, ', ');
@@ -725,7 +725,7 @@ function updateContactHostCommands_MC($contact_id = null, $ret = array())
         $cmds[$arr["command_command_id"]] = $arr["command_command_id"];
     }
     $ret = $form->getSubmitValue("contact_hostNotifCmds");
-    if(!empty($ret)) {
+    if (!empty($ret)) {
         for ($i = 0; $i < count($ret); $i++) {
             if (!isset($cmds[$ret[$i]])) {
                 $rq = "INSERT INTO contact_hostcommands_relation ";
@@ -793,7 +793,7 @@ function updateContactServiceCommands_MC($contact_id = null, $ret = array())
         $cmds[$arr["command_command_id"]] = $arr["command_command_id"];
     }
     $ret = $form->getSubmitValue("contact_svNotifCmds");
-    if(!empty($ret)) {
+    if (!empty($ret)) {
         for ($i = 0; $i < count($ret); $i++) {
             if (!isset($cmds[$ret[$i]])) {
                 $rq = "INSERT INTO contact_servicecommands_relation ";
@@ -863,7 +863,7 @@ function updateContactContactGroup_MC($contact_id = null, $ret = array())
         $cmds[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
     }
     $ret = $form->getSubmitValue("contact_cgNotif");
-    if(!empty($ret)) {
+    if (!empty($ret)) {
         for ($i = 0; $i < count($ret); $i++) {
             if (!isset($cmds[$ret[$i]])) {
                 $dbResult = $pearDB->prepare(
@@ -901,8 +901,8 @@ function insertLdapContactInDB($tmpContacts = array())
         );
         $arId = $tmpContacts["ar_id"][$select_key];
 
-        if (isset($tmpContacts["contact_name"][$select_key]) &&
-            testContactExistence($tmpContacts["contact_name"][$select_key])
+        if (isset($tmpContacts["contact_name"][$select_key])
+            && testContactExistence($tmpContacts["contact_name"][$select_key])
         ) {
             $tmpConf["contact_name"] = $tmpContacts["contact_name"][$select_key];
             $tmpConf["contact_alias"] = $tmpContacts["contact_alias"][$select_key];
@@ -1084,7 +1084,7 @@ function sanitizeFormContactParameters(array $ret): array
     $bindParams = [];
     foreach ($ret as $inputName => $inputValue) {
         if (!empty($inputValue)) {
-            switch($inputName) {
+            switch ($inputName) {
                 case 'timeperiod_tp_id':
                 case 'timeperiod_tp_id2':
                 case 'contact_template_id':
@@ -1192,7 +1192,6 @@ function sanitizeFormContactParameters(array $ret): array
                     break;
             }
         }
-
     }
     return $bindParams;
 }
