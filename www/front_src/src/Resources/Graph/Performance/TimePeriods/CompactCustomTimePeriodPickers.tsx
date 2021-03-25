@@ -49,7 +49,6 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     padding: theme.spacing(0, 0.5),
-    color: 'inherit',
   },
   popover: {
     padding: theme.spacing(1, 2),
