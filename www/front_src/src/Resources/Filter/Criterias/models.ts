@@ -20,9 +20,11 @@ import {
   labelServiceGroup,
   labelState,
   labelStatus,
+  labelMonitoringServer,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
+  buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
 
@@ -174,6 +176,11 @@ const selectableCriterias: CriteriaById = {
     sortId: 4,
     label: labelServiceGroup,
     buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
+  },
+  monitoring_servers: {
+    sortId: 5,
+    label: labelMonitoringServer,
+    buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
   },
 };
 

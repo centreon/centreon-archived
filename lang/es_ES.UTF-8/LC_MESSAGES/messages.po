@@ -2967,8 +2967,11 @@ msgstr "métrica"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: centreon-web/www/install/menu_translation.php:109
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:129
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Diverso"
 
@@ -11262,10 +11265,6 @@ msgstr "Información Gorgone"
 msgid "Monitoring Engine Information"
 msgstr "Información sobre el motor de supervisión."
 
-#: centreon-web/www/include/configuration/configServers/formServers.php:104
-msgid "Miscelleneous"
-msgstr "Diverso"
-
 #: centreon-web/www/include/configuration/configServers/formServers.php:105
 msgid "Centreon Trap Collector"
 msgstr "Colector de trampas Centreon SNMP"
@@ -14368,14 +14367,32 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "In downtime"
 #  msgstr ""
 
-#  msgid "Last 24 hours"
-#  msgstr ""
+msgid "24 H"
+msgstr ""
 
-#  msgid "Last 7 days"
-#  msgstr ""
+msgid "7 D"
+msgstr ""
 
-#  msgid "Last 31 days"
-#  msgstr ""
+msgid "31 D"
+msgstr ""
+
+msgid "24 hours"
+msgstr ""
+
+msgid "7 days"
+msgstr ""
+
+msgid "31 days"
+msgstr ""
+
+msgid "Last 24 hours"
+msgstr ""
+
+msgid "Last 7 days"
+msgstr ""
+
+msgid "Last 31 days"
+msgstr ""
 
 #  msgid "Set downtime on"
 #  msgstr ""
@@ -14646,3 +14663,9 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Monitoring server"
 #  msgstr ""
+
+msgid "The end date must be greater than the start date"
+msgstr ""
+
+msgid "Check duration"
+msgstr ""
