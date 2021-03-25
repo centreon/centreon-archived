@@ -481,7 +481,7 @@ INSERT INTO `cb_log_level` (`id`, `name`) VALUES
 (2, 'critical'),
 (3, 'error'),
 (4, 'warning'),
-(5, 'information'),
+(5, 'info'),
 (6, 'debug'),
 (7, 'trace');
 
