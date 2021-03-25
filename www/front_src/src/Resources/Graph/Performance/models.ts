@@ -7,6 +7,9 @@ interface DsData {
   ds_stack: string | null;
   ds_order: string | null;
   ds_legend: string | null;
+  ds_average: string | null;
+  ds_min: string | null;
+  ds_max: string | null;
 }
 
 export interface Metric {
@@ -34,6 +37,9 @@ export interface Line {
   metric: string;
   display: boolean;
   areaColor: string;
+  min: string | null;
+  max: string | null;
+  average: string | null;
   unit: string;
   lineColor: string;
   filled: boolean;

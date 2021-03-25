@@ -202,3 +202,6 @@ export const labelEndDateGreaterThanStartDate =
   'The end date must be greater than the start date';
 export const labelGraphOptions = 'Graph options';
 export const labelDisplayTooltips = 'Display tooltips';
+export const labelMin = 'Min';
+export const labelMax = 'Max';
+export const labelAvg = 'Avg';

@@ -302,6 +302,7 @@ const PerformanceGraph = ({
             toggable={toggableLegend}
             onHighlight={highlightLine}
             onClearHighlight={clearHighlight}
+            base={base as number}
           />
         </div>
       </div>

@@ -16,6 +16,8 @@ import { ResourceContext, useResourceContext } from '../../../Context';
 import { Line } from '../models';
 import memoizeComponent from '../../../memoizedComponent';
 import { useMetricsValueContext } from '../Graph/useMetricsValue';
+import formatMetricValue from '../formatMetricValue/index';
+import { labelAvg, labelMax, labelMin } from '../../../translatedLabels';
 
 import LegendMarker from './Marker';
 
@@ -30,7 +32,6 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
     display: 'grid',
     gridTemplateColumns: 'min-content minmax(50px, 1fr)',
     margin: theme.spacing(0, 1, 1, 1),
-    height: theme.spacing(5.5),
   },
   icon: {
     width: 9,
@@ -62,13 +63,14 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
     justifyContent: 'space-between',
   },
   legendValue: {
-    lineHeight: 1.2,
+    fontWeight: theme.typography.body1.fontWeight,
   },
 }));
 
 interface Props {
   lines: Array<Line>;
   toggable: boolean;
+  base: number;
   onToggle: (metric: string) => void;
   onHighlight: (metric: string) => void;
   onSelect: (metric: string) => void;
@@ -76,6 +78,11 @@ interface Props {
 }
 
 type LegendContentProps = Props & Pick<ResourceContext, 'panelWidth'>;
+
+interface GetMetricValueProps {
+  value: string | null;
+  unit: string;
+}
 
 const LegendContent = ({
   lines,
@@ -85,6 +92,7 @@ const LegendContent = ({
   onHighlight,
   onClearHighlight,
   panelWidth,
+  base,
 }: LegendContentProps): JSX.Element => {
   const classes = useStyles({ panelWidth });
   const theme = useTheme();
@@ -134,6 +142,13 @@ const LegendContent = ({
     );
   };
 
+  const getMetricValue = ({ value, unit }: GetMetricValueProps): string =>
+    formatMetricValue({
+      value: value ? parseInt(value, 10) : null,
+      unit,
+      base,
+    }) || 'N/A';
+
   return (
     <div className={classes.items}>
       {lines.map((line) => {
@@ -151,6 +166,21 @@ const LegendContent = ({
         const formattedValue =
           metric && getFormattedMetricData(metric)?.formattedValue;
 
+        const minMaxAvg = [
+          {
+            label: labelMin,
+            value: line.min,
+          },
+          {
+            label: labelMax,
+            value: line.max,
+          },
+          {
+            label: labelAvg,
+            value: line.average,
+          },
+        ];
+
         return (
           <div className={classes.item} key={name}>
             <LegendMarker disabled={!display} color={markerColor} />
@@ -165,10 +195,32 @@ const LegendContent = ({
                   {`(${line.unit})`}
                 </Typography>
               </div>
-              {formattedValue && (
-                <Typography variant="body1" className={classes.legendValue}>
+              {formattedValue ? (
+                <Typography variant="h6" className={classes.legendValue}>
                   {formattedValue}
                 </Typography>
+              ) : (
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, min-content)',
+                    gridAutoRows: `${theme.spacing(2)}px`,
+                    columnGap: '8px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {minMaxAvg.map(({ label, value }) => (
+                    <div key={label}>
+                      <Typography variant="caption">{label}: </Typography>
+                      <Typography variant="caption" style={{ fontWeight: 600 }}>
+                        {getMetricValue({
+                          value,
+                          unit: line.unit,
+                        })}
+                      </Typography>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>

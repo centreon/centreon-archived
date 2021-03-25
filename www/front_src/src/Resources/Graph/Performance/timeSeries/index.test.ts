@@ -1,7 +1,9 @@
+import { GraphData } from '../models';
+
 import * as timeSeries from '.';
 
 describe('timeSeries', () => {
-  const graphData = {
+  const graphData: GraphData = {
     global: {},
     metrics: [
       {
@@ -15,6 +17,9 @@ describe('timeSeries', () => {
           ds_order: null,
           ds_invert: null,
           ds_legend: 'Round-Trip-Time Average',
+          ds_min: null,
+          ds_max: '1',
+          ds_average: '1',
         },
         metric: 'rta',
         unit: 'ms',
@@ -31,6 +36,9 @@ describe('timeSeries', () => {
           ds_order: null,
           ds_invert: null,
           ds_legend: 'Time',
+          ds_min: null,
+          ds_max: '1',
+          ds_average: '1',
         },
         metric: 'time',
         unit: 'ms',
@@ -47,6 +55,9 @@ describe('timeSeries', () => {
           ds_order: '2',
           ds_invert: null,
           ds_legend: 'Average duration',
+          ds_min: null,
+          ds_max: '1',
+          ds_average: '1',
         },
         metric: 'avgDuration',
         unit: 'ms',
@@ -63,6 +74,9 @@ describe('timeSeries', () => {
           ds_order: '1',
           ds_invert: '1',
           ds_legend: 'Duration',
+          ds_min: null,
+          ds_max: '1',
+          ds_average: '1',
         },
         metric: 'duration',
         unit: 'ms',
@@ -79,6 +93,9 @@ describe('timeSeries', () => {
           ds_order: null,
           ds_invert: null,
           ds_legend: 'Packet Loss',
+          ds_min: null,
+          ds_max: '1',
+          ds_average: '1',
         },
         metric: 'packet_loss',
         unit: '%',
