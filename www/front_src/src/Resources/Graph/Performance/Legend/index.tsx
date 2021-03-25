@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import clsx from 'clsx';
 import { equals, find, includes, propOr, split } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import {
   Typography,
@@ -97,6 +98,7 @@ const LegendContent = ({
   const classes = useStyles({ panelWidth });
   const theme = useTheme();
   const { metricsValue, getFormattedMetricData } = useMetricsValueContext();
+  const { t } = useTranslation();
 
   const getLegendName = ({
     metric,
@@ -210,8 +212,8 @@ const LegendContent = ({
                   }}
                 >
                   {minMaxAvg.map(({ label, value }) => (
-                    <div key={label} aria-label={label}>
-                      <Typography variant="caption">{label}: </Typography>
+                    <div key={label} aria-label={t(label)}>
+                      <Typography variant="caption">{t(label)}: </Typography>
                       <Typography variant="caption" style={{ fontWeight: 600 }}>
                         {getMetricValue({
                           value,
