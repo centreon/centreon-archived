@@ -537,7 +537,7 @@ function insertContact($ret = array())
 
     $stmt = $pearDB->prepare($rq);
     foreach ($bindParams as $token => $bindValues) {
-        foreach ($bindValues as $paramType => $value ) {
+        foreach ($bindValues as $paramType => $value) {
             $stmt->bindValue($token, $value, $paramType);
         }
     }
@@ -598,7 +598,7 @@ function updateContact($contact_id = null)
 
     $stmt = $pearDB->prepare($rq);
     foreach ($bindParams as $token => $bindValues) {
-        foreach ($bindValues as $paramType => $value ) {
+        foreach ($bindValues as $paramType => $value) {
             $stmt->bindValue($token, $value, $paramType);
         }
     }
@@ -650,7 +650,7 @@ function updateContact_MC($contact_id = null)
 
     $stmt = $pearDB->prepare($rq);
     foreach ($bindParams as $token => $bindValues) {
-        foreach ($bindValues as $paramType => $value ) {
+        foreach ($bindValues as $paramType => $value) {
             $stmt->bindValue($token, $value, $paramType);
         }
     }
@@ -901,7 +901,8 @@ function insertLdapContactInDB($tmpContacts = array())
         );
         $arId = $tmpContacts["ar_id"][$select_key];
 
-        if (isset($tmpContacts["contact_name"][$select_key])
+        if (
+            isset($tmpContacts["contact_name"][$select_key])
             && testContactExistence($tmpContacts["contact_name"][$select_key])
         ) {
             $tmpConf["contact_name"] = $tmpContacts["contact_name"][$select_key];
