@@ -6,7 +6,7 @@
     "cypress:ci": "sed 's#@WEB_IMAGE@#'registry.centreon.com/mon-web-21.04:centos7'#g; s#@UID@#'$(id -u)'#g' < docker-compose.yml.in > docker-compose.yml && docker-compose up --force-recreate --abort-on-container-exit --exit-code-from cypress",
     "cypress:local": "npx cypress run --config-file cypress.dev.json",
     "cypress:local:chrome": "npx cypress run --config-file cypress.dev.json -b chrome",
-    "cypress:local:open": "npx cypress open --config-file cypress.dev.json"
+    "cypress:local:ui": "npx cypress open --config-file cypress.dev.json"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
@@ -15,12 +15,12 @@
     "@cypress/webpack-preprocessor": "^5.5.0",
     "@types/cypress": "^1.1.3",
     "@types/cypress-cucumber-preprocessor": "^4.0.0",
-    "@types/node": "^14.14.22",
+    "@types/node": "^14.14.35",
     "babel-loader": "^8.2.2",
-    "cypress": "^6.5.0",
+    "cypress": "^6.8.0",
     "cypress-cucumber-preprocessor": "^4.0.0",
-    "cypress-localstorage-commands": "^1.4.0",
     "eslint-plugin-cypress": "^2.11.2",
+    "path": "^0.12.7",
     "ts-loader": "^8.0.14",
     "typescript": "^4.1.3",
     "webpack": "^4.46.0"

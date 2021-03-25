@@ -2,9 +2,10 @@
   "extends": "../node_modules/@centreon/frontend-core/tsconfig/index",
   "compilerOptions": {
     "baseUrl": "..",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["cypress", "node"],
   },
   "include": [
     "**/*.ts"
-  ]
+  ],
 }
