@@ -41,7 +41,6 @@ const TimeShifts = (): JSX.Element | null => {
   const {
     graphWidth,
     canAdjustTimePeriod,
-    sendingGetGraphDataRequest,
   } = useTimeShiftContext();
 
   const hoverDirection = (direction: TimeShiftDirection | null) => () =>
