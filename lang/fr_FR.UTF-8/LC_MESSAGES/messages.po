@@ -16107,3 +16107,12 @@ msgstr "Afficher les info-bulles"
 
 msgid "Check duration"
 msgstr "Temps d'exécution"
+
+msgid "Min"
+msgstr ""
+
+msgid "Max"
+msgstr "Max"
+
+msgid "Avg"
+msgstr "Moy"

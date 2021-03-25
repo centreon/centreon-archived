@@ -15124,3 +15124,12 @@ msgstr ""
 
 msgid "Check duration"
 msgstr ""
+
+msgid "Min"
+msgstr ""
+
+msgid "Max"
+msgstr ""
+
+msgid "Avg"
+msgstr ""
