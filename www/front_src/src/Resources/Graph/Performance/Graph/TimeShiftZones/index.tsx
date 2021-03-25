@@ -38,10 +38,7 @@ const TimeShifts = (): JSX.Element | null => {
     setDirectionHovered,
   ] = React.useState<TimeShiftDirection | null>(null);
 
-  const {
-    graphWidth,
-    canAdjustTimePeriod,
-  } = useTimeShiftContext();
+  const { graphWidth, canAdjustTimePeriod } = useTimeShiftContext();
 
   const hoverDirection = (direction: TimeShiftDirection | null) => () =>
     setDirectionHovered(direction);
@@ -52,7 +49,7 @@ const TimeShifts = (): JSX.Element | null => {
 
   return (
     <>
-    <TimeShiftIcon
+      <TimeShiftIcon
         xIcon={0}
         Icon={ArrowBackIosIcon}
         directionHovered={directionHovered}
