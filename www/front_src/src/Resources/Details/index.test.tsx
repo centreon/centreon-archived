@@ -39,9 +39,9 @@ import {
   labelLastCheck,
   labelCurrentNotificationNumber,
   labelPerformanceData,
-  label7D,
-  label1D,
-  label31D,
+  label7Days,
+  label1Day,
+  label31Days,
   labelCopy,
   labelCommand,
   labelResourceFlapping,
@@ -494,9 +494,9 @@ describe(Details, () => {
   });
 
   it.each([
-    [label1D, '2020-01-20T06:00:00.000Z', 20, undefined],
-    [label7D, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
-    [label31D, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
+    [label1Day, '2020-01-20T06:00:00.000Z', 20, undefined],
+    [label7Days, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
+    [label31Days, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected`,
     async (period, startIsoString, timelineEventsLimit, periodId) => {
@@ -1067,8 +1067,8 @@ describe(Details, () => {
 
     expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
-    userEvent.click(head(getAllByText(label1D)) as HTMLElement);
-    userEvent.click(last(getAllByText(label7D)) as HTMLElement);
+    userEvent.click(head(getAllByText(label1Day)) as HTMLElement);
+    userEvent.click(last(getAllByText(label7Days)) as HTMLElement);
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(5);
@@ -1172,7 +1172,7 @@ describe(Details, () => {
     expect(getByText('01/20/2020 7:00 AM')).toBeInTheDocument();
     expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
 
-    userEvent.click(getByText(label7D).parentElement as HTMLElement);
+    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
 
     expect(getByText('01/14/2020 7:00 AM')).toBeInTheDocument();
     expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
