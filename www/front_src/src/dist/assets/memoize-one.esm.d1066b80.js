@@ -1,0 +1,1 @@
+function r(r,t){if(r.length!==t.length)return!1;for(var n=0;n<r.length;n++)if(r[n]!==t[n])return!1;return!0}function t(t,n){var e;void 0===n&&(n=r);var i,u=[],f=!1;return function(){for(var r=[],h=0;h<arguments.length;h++)r[h]=arguments[h];return f&&e===this&&n(r,u)||(i=t.apply(this,r),f=!0,e=this,u=r),i}}export{t as m};
