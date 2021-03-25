@@ -35,15 +35,10 @@ const TimeShiftIcon = ({
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const {
-    graphHeight,
-    marginTop,
-    shiftTime,
-    sendingGetGraphDataRequest,
-  } = useTimeShiftContext();
+  const { graphHeight, marginTop, shiftTime, loading } = useTimeShiftContext();
 
   const getIconColor = () =>
-    sendingGetGraphDataRequest || not(equals(directionHovered, direction))
+    loading || not(equals(directionHovered, direction))
       ? 'disabled'
       : 'primary';
 
@@ -52,7 +47,7 @@ const TimeShiftIcon = ({
     x: xIcon,
     height: timeShiftIconSize,
     width: timeShiftIconSize,
-    onClick: () => not(sendingGetGraphDataRequest) && shiftTime?.(direction),
+    onClick: () => not(loading) && shiftTime?.(direction),
     className: classes.icon,
     'aria-label': t(ariaLabel),
   };
@@ -74,7 +69,7 @@ const TimeShiftIcon = ({
       xIcon,
       direction,
       ariaLabel,
-      sendingGetGraphDataRequest,
+      loading,
       directionHovered,
       graphHeight,
     ],

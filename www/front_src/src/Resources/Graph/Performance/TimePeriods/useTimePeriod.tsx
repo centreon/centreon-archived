@@ -32,7 +32,7 @@ interface TimePeriodState {
   periodQueryParameters: string;
   getIntervalDates: () => [string, string];
   customTimePeriod: CustomTimePeriod;
-  displayLoader: boolean;
+  resourceDetailsUpdated: boolean;
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
   adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
 }
@@ -63,7 +63,10 @@ const useTimePeriod = ({
   onTimePeriodChange,
 }: Props): TimePeriodState => {
   const preventQueryParametersUpdate = React.useRef<boolean>(false);
-  const [displayLoader, setDisplayLoader] = React.useState<boolean>(true);
+  const [
+    resourceDetailsUpdated,
+    setResourceDetailsUpdated,
+  ] = React.useState<boolean>(false);
   const defaultTimePeriod = cond([
     [
       (timePeriodId) =>
@@ -176,7 +179,7 @@ const useTimePeriod = ({
       timePeriod,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
-    setDisplayLoader(true);
+    setResourceDetailsUpdated(false);
   };
 
   const changeCustomTimePeriod = ({
@@ -201,11 +204,11 @@ const useTimePeriod = ({
       endDate: newCustomTimePeriod.end,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
-    setDisplayLoader(true);
+    setResourceDetailsUpdated(false);
   };
 
   const adjustTimePeriod = (adjustTimePeriodProps: AdjustTimePeriodProps) => {
-    setDisplayLoader(true);
+    setResourceDetailsUpdated(false);
     setCustomTimePeriod(getNewCustomTimePeriod(adjustTimePeriodProps));
     setSelectedTimePeriod(null);
 
@@ -244,7 +247,7 @@ const useTimePeriod = ({
     const newTimePeriod = getTimeperiodFromNow(selectedTimePeriod);
 
     setCustomTimePeriod(newTimePeriod);
-    setDisplayLoader(false);
+    setResourceDetailsUpdated(true);
   }, [details]);
 
   return {
@@ -255,7 +258,7 @@ const useTimePeriod = ({
     customTimePeriod,
     changeCustomTimePeriod,
     adjustTimePeriod,
-    displayLoader,
+    resourceDetailsUpdated,
   };
 };
 

@@ -177,7 +177,7 @@ interface GraphContentProps {
   format: (parameters) => string;
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   shiftTime?: (direction: TimeShiftDirection) => void;
-  sendingGetGraphDataRequest: boolean;
+  loading: boolean;
   canAdjustTimePeriod: boolean;
 }
 
@@ -218,7 +218,7 @@ const GraphContent = ({
   format,
   applyZoom,
   shiftTime,
-  sendingGetGraphDataRequest,
+  loading,
   canAdjustTimePeriod,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
@@ -555,7 +555,7 @@ const GraphContent = ({
               {tooltipData}
             </TooltipInPortal>
           )}
-          {sendingGetGraphDataRequest && (
+          {loading && (
             <div className={classes.graphLoader}>
               <CircularProgress />
             </div>
@@ -648,7 +648,7 @@ const GraphContent = ({
                 graphHeight,
                 graphWidth,
                 canAdjustTimePeriod,
-                sendingGetGraphDataRequest,
+                loading,
                 marginTop: margin.top,
                 marginLeft: margin.left,
                 shiftTime,
@@ -712,7 +712,7 @@ const memoProps = [
   'tooltipPosition',
   'resource',
   'eventAnnotationsActive',
-  'sendingGetGraphDataRequest',
+  'loading',
   'canAdjustTimePeriod',
 ];
 

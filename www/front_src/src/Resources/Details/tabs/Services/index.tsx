@@ -90,7 +90,7 @@ const ServicesTabContent = ({
     customTimePeriod,
     changeCustomTimePeriod,
     adjustTimePeriod,
-    displayLoader,
+    resourceDetailsUpdated,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
@@ -235,7 +235,7 @@ const ServicesTabContent = ({
                 selectedTimePeriod={selectedTimePeriod}
                 customTimePeriod={customTimePeriod}
                 adjustTimePeriod={adjustTimePeriod}
-                displayLoader={displayLoader}
+                resourceDetailsUpdated={resourceDetailsUpdated}
               />
             </GraphOptionsContext.Provider>
           ) : (
