@@ -134,7 +134,7 @@ const MinimalCustomTimePeriodPickers = ({
         open={displayPopover}
         onClose={closePopover}
         anchorOrigin={{
-          vertical: 'bottom',
+          vertical: 'top',
           horizontal: 'center',
         }}
         transformOrigin={{
