@@ -109,7 +109,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   },
 }));
 
-const translationRatio = 2;
+const shiftRatio = 2;
 
 const PerformanceGraph = ({
   endpoint,
@@ -232,16 +232,15 @@ const PerformanceGraph = ({
   };
 
   const getShiftedDate = ({ property, direction, timePeriod }): Date => {
-    const timestampToTranslate =
-      (timePeriod.end.getTime() - timePeriod.start.getTime()) /
-      translationRatio;
+    const adjustTimePeriodProps =
+      (timePeriod.end.getTime() - timePeriod.start.getTime()) / shiftRatio;
 
     return new Date(
       add(
         prop(property, timePeriod).getTime(),
         equals(direction, TimeShiftDirection.backward)
-          ? negate(timestampToTranslate)
-          : timestampToTranslate,
+          ? negate(adjustTimePeriodProps)
+          : adjustTimePeriodProps,
       ),
     );
   };
