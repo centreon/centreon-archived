@@ -1,0 +1,84 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        <img width="20" height="28" alt="Database"
+             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAcCAYAAABh2p9gAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQRJREFUeNpi/P//PwM1ARMDlcGogZQDlpMnT7pxc3NbA9nhQKxOpL5rQLwJiPeBsI6Ozl+YBOOOHTv+AOllQNwtLS39F2owKYZ/gRq8G4i3ggxEToggWzvc3d2Pk+1lNL4fFAs6ODi8JzdS7mMRVyDVoAMHDsANdAPiOCC+jCQvQKqBQB/BDbwBxK5AHA3E/kB8nKJkA8TMQBwLxaBIKQbi70AvTADSBiSadwFXpCikpKQU8PDwkGTaly9fHFigkaKIJid4584dkiMFFI6jkTJII0WVmpHCAixZQEXWYhDeuXMnyLsVlEQKI45qFBQZ8eRECi4DBaAlDqle/8A48ip6gAADANdQY88Uc0oGAAAAAElFTkSuQmCC"/>
+        <span class="sf-toolbar-status{% if 50 < collector.querycount %} sf-toolbar-status-yellow{% endif %}">{{ collector.querycount }}</span>
+        {% if collector.querycount > 0 %}
+            <span class="sf-toolbar-info-piece-additional-detail">in {{ '%0.2f'|format(collector.time * 1000) }}
+                ms</span>
+        {% endif %}
+    {% endset %}
+    {% set text %}
+        {% spaceless %}
+            <div class="sf-toolbar-info-piece">
+                <b>DB Queries</b>
+                <span>{{ collector.querycount }}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Query time</b>
+                <span>{{ '%0.2f'|format(collector.time * 1000) }} ms</span>
+            </div>
+        {% endspaceless %}
+    {% endset %}
+    {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': profiler_url } %}
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+    <span class="icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAcCAYAAAB/E6/TAAABLUlEQVR42u3TP0vDQBiA8UK/gDiLzi0IhU4OEunk5OQUAhGSOBUCzqWfIKSzX8DRySF0URCcMjWLIJjFD9Cpk/D6HITecEPUuzhIAz8CIdyTP/f2iqI4qaqqDx8l5Ic2uIeP/bquezCokOAFF+oCN3t4gPzSEjc4NEPaCldQbzjELTYW0RJzHDchwwem+ons6ZBpLSJ7nueJC22h0V+FzmwWV0ee59vQNV67CGVZJmEYbkNjfpY6X6I0Qo4/3RMmTdDDspuQVsJvgkP3IdMbIkIjLPBoadG2646iKJI0Ta2wxm6OdnP0/Tk6DYJgHcfxpw21RtscDTDDnaVZ26474GkkSRIrrPEv5sgMTfHe+cA2O6wPH6vOBpYQNALneHb96XTEDI6dzpEZ0VzO0Rf3pP5LMLI4tAAAAABJRU5ErkJggg==" alt=""/></span>
+    <strong>PDO</strong>
+    <span class="count">
+        <span>{{ collector.querycount }}</span>
+        <span>{{ '%0.0f'|format(collector.time * 1000) }} ms</span>
+    </span>
+</span>
+{% endblock %}
+
+{% block panel %}
+    <h2>Queries</h2>
+    {% set count = collector.querycount %}
+    <table class="alt queries-table">
+        <thead>
+        <tr>
+            <th class="nowrap">#<span class="text-muted">▲</span></th>
+            <th class="nowrap">Time<span></span></th>
+            <th style="width: 100%;">Info</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i, query in collector.queries %}
+            <tr class="{{ cycle(['odd', 'even'], i) }}">
+                <td>{{ i }}</td>
+                <td class="nowrap">{{ '%0.2f'|format(query.duration * 1000) }} ms</td>
+                <td>
+                    <pre class="highlight highlight-sql">{{ query.sql }}</pre>
+                    <div class="text-small font-normal">
+                        {% if query.params|length > 0 %}
+                            <strong>Parameters</strong>: {{ query.params|json_encode() }}
+                        {% endif %}
+                    </div>
+                    <div class="text-small font-normal">
+                    {% if query.backtrace|length > 0 %}
+                        <a href="#" class="sf-toggle link-inverse sf-toggle-off" data-toggle-selector="#backtrace-{{ i }}">backtrace</a>
+                        <div id="backtrace-{{ i }}" class="hidden sf-toggle-content sf-toggle-hidden">
+                            <ol>
+                            {% for trace in query.backtrace %}
+                                <li>
+                                    {% if trace.file is defined %}
+                                        <strong>{{ trace.file }}</strong> line {{ trace.line }}<br>
+                                    {% endif %}
+                                    {% if trace.class is defined %}<strong>class:</strong> {{ trace.class }},{% endif %} <strong>function:</strong> {{ trace.function }}
+                                </li>
+                            {% endfor %}
+                            </ol>
+                        </div>
+                    {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
