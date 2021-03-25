@@ -14367,15 +14367,6 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "In downtime"
 #  msgstr ""
 
-msgid "1 D"
-msgstr ""
-
-msgid "7 D"
-msgstr ""
-
-msgid "31 D"
-msgstr ""
-
 msgid "1 day"
 msgstr ""
 

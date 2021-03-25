@@ -48,10 +48,7 @@ interface Props {
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
 }
 
-const timePeriodOptions = map(
-  pick(['id', 'name', 'compactName', 'largeName']),
-  timePeriods,
-);
+const timePeriodOptions = map(pick(['id', 'name', 'largeName']), timePeriods);
 
 const TimePeriodButtonGroup = ({
   selectedTimePeriodId,
@@ -67,7 +64,6 @@ const TimePeriodButtonGroup = ({
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,
     name: t(timePeriod.name),
-    compactName: t(timePeriod.compactName),
     largeName: t(timePeriod.largeName),
   }));
 
@@ -88,7 +84,7 @@ const TimePeriodButtonGroup = ({
               component="span"
             >
               {map(
-                ({ id, name, compactName, largeName }) => (
+                ({ id, name, largeName }) => (
                   <Tooltip key={name} title={largeName} placement="top">
                     <Button
                       onClick={() => onChange(id)}
@@ -100,8 +96,7 @@ const TimePeriodButtonGroup = ({
                     >
                       {cond<number, string>([
                         [lte(theme.breakpoints.values.md), always(largeName)],
-                        [lte(theme.breakpoints.values.sm), always(name)],
-                        [T, always(compactName)],
+                        [T, always(name)],
                       ])(width)}
                     </Button>
                   </Tooltip>
