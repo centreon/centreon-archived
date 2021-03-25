@@ -16109,7 +16109,7 @@ msgid "Check duration"
 msgstr "Temps d'exécution"
 
 msgid "Min"
-msgstr ""
+msgstr "Min"
 
 msgid "Max"
 msgstr "Max"
