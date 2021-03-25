@@ -210,7 +210,7 @@ const LegendContent = ({
                   }}
                 >
                   {minMaxAvg.map(({ label, value }) => (
-                    <div key={label}>
+                    <div key={label} aria-label={label}>
                       <Typography variant="caption">{label}: </Typography>
                       <Typography variant="caption" style={{ fontWeight: 600 }}>
                         {getMetricValue({
