@@ -78,6 +78,7 @@ class MonitoringResourceController extends AbstractController
     private const META_SERVICE_ACKNOWLEDGEMENT_ROUTE =
         'centreon_application_acknowledgement_addmetaserviceacknowledgement';
     private const META_SERVICE_STATUS_GRAPH_ROUTE = 'monitoring.metric.getMetaServiceStatusMetrics';
+    private const META_SERVICE_METRIC_LIST_ROUTE = 'centreon_application_find_meta_service_metrics';
     private const META_SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getMetaServicePerformanceMetrics';
 
     private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id={resource_id}';
@@ -601,6 +602,13 @@ class MonitoringResourceController extends AbstractController
             $resource->getLinks()->getEndpoints()->setStatusGraph(
                 $this->router->generate(
                     static::META_SERVICE_STATUS_GRAPH_ROUTE,
+                    $parameters
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setMetrics(
+                $this->router->generate(
+                    static::META_SERVICE_METRIC_LIST_ROUTE,
                     $parameters
                 )
             );

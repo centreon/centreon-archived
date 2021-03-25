@@ -75,14 +75,14 @@ class MetaServiceMetricService implements MetaServiceMetricServiceInterface
          */
         $metaServiceConfiguration = $this->metaServiceConfigurationService->findWithAcl($metaId);
         if (is_null($metaServiceConfiguration)) {
-            throw MetaServiceMetricException::findMetaServiceException();
+            throw MetaServiceMetricException::findMetaServiceException($metaId);
         }
         $metaServiceMetricSelectionMode = $metaServiceConfiguration->getMetaSelectMode();
         if ($metaServiceMetricSelectionMode === MetaServiceConfiguration::META_SELECT_MODE_LIST) {
             try {
                 return $this->repository->findByMetaIdAndContact($metaId, $this->contact);
             } catch (\Throwable $ex) {
-                throw MetaServiceMetricException::findMetaServiceMetricsException($ex, ['id' => $metaId]);
+                throw MetaServiceMetricException::findMetaServiceMetricsException($ex, $metaId);
             }
         } elseif ($metaServiceMetricSelectionMode === MetaServiceConfiguration::META_SELECT_MODE_SQL_REGEXP) {
             try {
@@ -92,7 +92,7 @@ class MetaServiceMetricService implements MetaServiceMetricServiceInterface
                     $this->contact
                 );
             } catch (\Throwable $ex) {
-                throw MetaServiceMetricException::findMetaServiceMetricsException($ex, ['id' => $metaId]);
+                throw MetaServiceMetricException::findMetaServiceMetricsException($ex, $metaId);
             }
         }
     }
@@ -107,14 +107,14 @@ class MetaServiceMetricService implements MetaServiceMetricServiceInterface
          */
         $metaServiceConfiguration = $this->metaServiceConfigurationService->findWithoutAcl($metaId);
         if (is_null($metaServiceConfiguration)) {
-            throw MetaServiceMetricException::findMetaServiceException();
+            throw MetaServiceMetricException::findMetaServiceException($metaId);
         }
         $metaServiceMetricSelectionMode = $metaServiceConfiguration->getMetaSelectMode();
         if ($metaServiceMetricSelectionMode === MetaServiceConfiguration::META_SELECT_MODE_LIST) {
             try {
                 return $this->repository->findByMetaId($metaId);
             } catch (\Throwable $ex) {
-                throw MetaServiceMetricException::findMetaServiceMetricsException($ex, ['id' => $metaId]);
+                throw MetaServiceMetricException::findMetaServiceMetricsException($ex, $metaId);
             }
         } elseif ($metaServiceMetricSelectionMode === MetaServiceConfiguration::META_SELECT_MODE_SQL_REGEXP) {
             try {
@@ -123,7 +123,7 @@ class MetaServiceMetricService implements MetaServiceMetricServiceInterface
                     $metaServiceConfiguration->getRegexpString()
                 );
             } catch (\Throwable $ex) {
-                throw MetaServiceMetricException::findMetaServiceMetricsException($ex, ['id' => $metaId]);
+                throw MetaServiceMetricException::findMetaServiceMetricsException($ex, $metaId);
             }
         }
     }
