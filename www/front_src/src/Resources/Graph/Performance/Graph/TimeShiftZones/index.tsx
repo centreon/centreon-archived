@@ -45,7 +45,7 @@ const TimeShifts = (): JSX.Element | null => {
   } = useTimeShiftContext();
 
   const hoverDirection = (direction: TimeShiftDirection | null) => () =>
-    not(sendingGetGraphDataRequest) && setDirectionHovered(direction);
+    setDirectionHovered(direction);
 
   if (not(canAdjustTimePeriod)) {
     return null;
@@ -53,22 +53,11 @@ const TimeShifts = (): JSX.Element | null => {
 
   return (
     <>
-      <TimeShiftZone
-        direction={TimeShiftDirection.backward}
-        directionHovered={directionHovered}
-        hoverDirection={hoverDirection}
-      />
-      <TimeShiftZone
-        direction={TimeShiftDirection.forward}
-        directionHovered={directionHovered}
-        hoverDirection={hoverDirection}
-      />
-      <TimeShiftIcon
+    <TimeShiftIcon
         xIcon={0}
         Icon={ArrowBackIosIcon}
         directionHovered={directionHovered}
         direction={TimeShiftDirection.backward}
-        hoverDirection={hoverDirection}
         ariaLabel={labelBackward}
       />
       <TimeShiftIcon
@@ -76,8 +65,17 @@ const TimeShifts = (): JSX.Element | null => {
         Icon={ArrowForwardIosIcon}
         directionHovered={directionHovered}
         direction={TimeShiftDirection.forward}
-        hoverDirection={hoverDirection}
         ariaLabel={labelForward}
+      />
+      <TimeShiftZone
+        direction={TimeShiftDirection.backward}
+        directionHovered={directionHovered}
+        onDirectionHover={hoverDirection}
+      />
+      <TimeShiftZone
+        direction={TimeShiftDirection.forward}
+        directionHovered={directionHovered}
+        onDirectionHover={hoverDirection}
       />
     </>
   );

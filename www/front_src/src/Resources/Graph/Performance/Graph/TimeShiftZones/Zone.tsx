@@ -20,12 +20,12 @@ const useStyles = makeStyles({
 interface Props {
   direction: TimeShiftDirection;
   directionHovered: TimeShiftDirection | null;
-  hoverDirection: (direction: TimeShiftDirection | null) => () => void;
+  onDirectionHover: (direction: TimeShiftDirection | null) => () => void;
 }
 
 const TimeShiftZone = ({
   direction,
-  hoverDirection,
+  onDirectionHover,
   directionHovered,
 }: Props): JSX.Element => {
   const theme = useTheme();
@@ -50,8 +50,8 @@ const TimeShiftZone = ({
         y={marginTop}
         width={timeShiftZoneWidth}
         height={graphHeight}
-        onMouseOver={hoverDirection(direction)}
-        onMouseLeave={hoverDirection(null)}
+        onMouseOver={onDirectionHover(direction)}
+        onMouseLeave={onDirectionHover(null)}
         onClick={() => shiftTime?.(direction)}
         fill={
           equals(directionHovered, direction)
