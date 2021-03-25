@@ -66,6 +66,14 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
   legendValue: {
     fontWeight: theme.typography.body1.fontWeight,
   },
+  minMaxAvgContainer: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, min-content)',
+    gridAutoRows: `${theme.spacing(2)}px`,
+    columnGap: '8px',
+    whiteSpace: 'nowrap',
+  },
+  minMaxAvgValue: { fontWeight: 600 },
 }));
 
 interface Props {
@@ -202,19 +210,14 @@ const LegendContent = ({
                   {formattedValue}
                 </Typography>
               ) : (
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(2, min-content)',
-                    gridAutoRows: `${theme.spacing(2)}px`,
-                    columnGap: '8px',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
+                <div className={classes.minMaxAvgContainer}>
                   {minMaxAvg.map(({ label, value }) => (
                     <div key={label} aria-label={t(label)}>
                       <Typography variant="caption">{t(label)}: </Typography>
-                      <Typography variant="caption" style={{ fontWeight: 600 }}>
+                      <Typography
+                        variant="caption"
+                        className={classes.minMaxAvgValue}
+                      >
                         {getMetricValue({
                           value,
                           unit: line.unit,
