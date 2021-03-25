@@ -16,7 +16,6 @@ interface Props {
   Icon: (props) => JSX.Element;
   direction: TimeShiftDirection;
   directionHovered: TimeShiftDirection | null;
-  hoverDirection: (direction: TimeShiftDirection | null) => () => void;
   ariaLabel: string;
 }
 
@@ -32,7 +31,6 @@ const TimeShiftIcon = ({
   direction,
   directionHovered,
   ariaLabel,
-  hoverDirection,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -54,8 +52,6 @@ const TimeShiftIcon = ({
     x: xIcon,
     height: timeShiftIconSize,
     width: timeShiftIconSize,
-    onMouseEnter: hoverDirection(direction),
-    onMouseLeave: hoverDirection(null),
     onClick: () => not(sendingGetGraphDataRequest) && shiftTime?.(direction),
     className: classes.icon,
     'aria-label': t(ariaLabel),
