@@ -15327,14 +15327,32 @@ msgstr "Plannifier une plage de maintenance"
 msgid "In downtime"
 msgstr "En plage de maintenance"
 
+msgid "24 H"
+msgstr "24 H"
+
+msgid "7 D"
+msgstr "7 J"
+
+msgid "31 D"
+msgstr "31 J"
+
+msgid "24 hours"
+msgstr "24 heures"
+
+msgid "7 days"
+msgstr "7 jours"
+
+msgid "31 days"
+msgstr "31 jours"
+
 msgid "Last 24 hours"
-msgstr "24 dernières heures"
+msgstr "Dernières 24 heures"
 
 msgid "Last 7 days"
-msgstr "7 derniers jours"
+msgstr "Derniers 7 jours"
 
 msgid "Last 31 days"
-msgstr "31 derniers jours"
+msgstr "Derniers 31 jours"
 
 msgid "Set downtime on"
 msgstr "Programmer une plage de maintenance sur"
@@ -16071,6 +16089,9 @@ msgstr "Erreur lors de l'ajout d'une catégorie hôte"
 
 msgid "Error when adding a host group"
 msgstr "Erreur lors de l'ajout d'un groupe d'hôte"
+
+msgid "The end date must be greater than the start date"
+msgstr "La date de fin doit être supérieure à la date de début"
 
 msgid "Check duration"
 msgstr "Temps d'exécution"

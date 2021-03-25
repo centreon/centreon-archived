@@ -233,7 +233,7 @@ function usage() {
               - API_CURRENT_NODE_PASSWORD           <mandatory> string
               - API_CURRENT_NODE_PROTOCOL           <optional> string
               - API_CURRENT_NODE_PORT               <optional> string
-              - API_CURRENT_NODE_CENTREON_FOLDER    <optional> string
+              - API_CURRENT_NODE_BASE_URI           <optional> string
               - PROXY_PORT                          <optional> integer
               - PROXY_HOST                          <optional> string
               - PROXY_USERNAME                      <optional> string
@@ -247,8 +247,8 @@ EOF
 #========= begin of get_api_password()
 function get_api_password() {
   stty -echo
-  echo "$1 : Please enter your password:"
-  read -r API_TARGET_PASSWORD
+  read -r PASSWORD
+  echo $PASSWORD
   stty echo
 }
 #========= end of get_api_password()
@@ -371,7 +371,7 @@ function prepare_remote_payload() {
   # set default variables
   API_CURRENT_NODE_PROTOCOL="http"
   API_CURRENT_NODE_PORT="80"
-  API_CURRENT_NODE_CENTREON_FOLDER="centreon"
+  API_CURRENT_NODE_BASE_URI="centreon"
 
   # if no template are used, ask for information
   if [[ ! $TEMPLATE_FILE ]]; then
@@ -400,7 +400,7 @@ function request_to_remote() {
   fi
 
   # Prepare Remote Payload
-  REMOTE_PAYLOAD='{"isRemote":true,"platformName":"'"${CURRENT_NODE_NAME}"'","centralServerAddress":"'"${TARGET_NODE_ADDRESS}"'","apiUsername":"'"${API_USERNAME}"'","apiCredentials":"'"${API_TARGET_PASSWORD}"'","apiScheme":"'"${PARSED_URL[SCHEME]}"'","apiPort":'"${PARSED_URL[PORT]}"',"apiPath":"'"${ROOT_CENTREON_FOLDER}"'",'"${PEER_VALIDATION}"
+  REMOTE_PAYLOAD='{"isRemote":true,"platformName":"'"${CURRENT_NODE_NAME}"'","centralServerAddress":"'"${PARSED_URL[HOST]}"'","apiUsername":"'"${API_USERNAME}"'","apiCredentials":"'"${API_TARGET_PASSWORD}"'","apiScheme":"'"${PARSED_URL[SCHEME]}"'","apiPort":'"${PARSED_URL[PORT]}"',"apiPath":"'"${ROOT_CENTREON_FOLDER}"'",'"${PEER_VALIDATION}"
   if [[ -n PROXY_PAYLOAD ]]; then
     REMOTE_PAYLOAD="${REMOTE_PAYLOAD}""${PROXY_PAYLOAD}"
   fi
@@ -409,7 +409,7 @@ function request_to_remote() {
   #get response
   IFS=$'\n' REMOTE_API_RESPONSE=($(curl -s -X PATCH ${INSECURE:+--insecure} -i -H "Content-Type: application/json" -H "X-AUTH-TOKEN: ${API_TOKEN}" \
     -d "${REMOTE_PAYLOAD}" \
-    "${API_CURRENT_NODE_PROTOCOL}://${CURRENT_NODE_ADDRESS}:${API_CURRENT_NODE_PORT}/${ROOT_CENTREON_FOLDER}/api/latest/platform" | grep -E "(HTTP/|message)"))
+    "${API_CURRENT_NODE_PROTOCOL}://${CURRENT_NODE_ADDRESS}:${API_CURRENT_NODE_PORT}/${API_CURRENT_NODE_BASE_URI}/api/latest/platform" | grep -E "(HTTP/|message)"))
 
   HTTP_CODE="$(echo ${REMOTE_API_RESPONSE[0]} | cut -d ' ' -f2)"
   RESPONSE_MESSAGE=${REMOTE_API_RESPONSE[1]}
@@ -435,8 +435,8 @@ function set_remote_parameters_manually() {
     echo "A few more information are required to convert your platform into Remote : "
     echo "${CURRENT_NODE_ADDRESS} : Please enter your username:"
     read -r API_CURRENT_NODE_USERNAME
-    get_api_password "$CURRENT_NODE_ADDRESS"
-    API_CURRENT_NODE_PASSWORD=$API_TARGET_PASSWORD
+    echo -n "Please enter the password of $TARGET_NODE_ADDRESS: "
+    API_CURRENT_NODE_PASSWORD=$(get_api_password)
     echo "${CURRENT_NODE_ADDRESS} : Protocol [http]:"
     read -r INPUT_PROTOCOL
     echo "${CURRENT_NODE_ADDRESS} : Port [80]:"
@@ -450,7 +450,7 @@ function set_remote_parameters_manually() {
       API_CURRENT_NODE_PORT=$INPUT_PORT
     fi
     if [[ -n $INPUT_PORT ]]; then
-      API_CURRENT_NODE_CENTREON_FOLDER=$INPUT_CENTREON_FOLDER
+      API_CURRENT_NODE_BASE_URI=$INPUT_CENTREON_FOLDER
     fi
       # Set Proxy informations
     echo "Are you using a proxy ? (y/n)"
@@ -490,7 +490,8 @@ parse_command_options "$@"
 if [[ ! $TEMPLATE_FILE ]];
 then
   # Ask for API TARGET Password
-  get_api_password "$TARGET_NODE_ADDRESS"
+  echo -n "Please enter the password of $TARGET_NODE_ADDRESS: "
+  API_TARGET_PASSWORD=$(get_api_password)
 
   if [[ ! $CURRENT_NODE_ADDRESS ]];
   then
@@ -508,7 +509,7 @@ fi
 if [[ $CURRENT_NODE_TYPE == 'remote' ]]; then
   prepare_remote_payload
   # get token of Remote API
-  get_api_token "$CURRENT_NODE_ADDRESS" "$API_CURRENT_NODE_USERNAME" "$API_CURRENT_NODE_PASSWORD" "$API_CURRENT_NODE_CENTREON_FOLDER"
+  get_api_token "$CURRENT_NODE_ADDRESS" "$API_CURRENT_NODE_USERNAME" "$API_CURRENT_NODE_PASSWORD" "$API_CURRENT_NODE_BASE_URI"
   # send request to update informations and convert remote
   request_to_remote
 else

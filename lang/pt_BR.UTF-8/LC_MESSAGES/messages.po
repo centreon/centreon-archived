@@ -14816,14 +14816,32 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "In downtime"
 #  msgstr ""
 
-#  msgid "Last 24 hours"
-#  msgstr ""
+msgid "24 H"
+msgstr ""
 
-#  msgid "Last 7 days"
-#  msgstr ""
+msgid "7 D"
+msgstr ""
 
-#  msgid "Last 31 days"
-#  msgstr ""
+msgid "31 D"
+msgstr ""
+
+msgid "24 hours"
+msgstr ""
+
+msgid "7 days"
+msgstr ""
+
+msgid "31 days"
+msgstr ""
+
+msgid "Last 24 hours"
+msgstr ""
+
+msgid "Last 7 days"
+msgstr ""
+
+msgid "Last 31 days"
+msgstr ""
 
 #  msgid "Set downtime on"
 #  msgstr ""
@@ -15088,6 +15106,9 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Monitoring server"
 #  msgstr ""
+
+msgid "The end date must be greater than the start date"
+msgstr ""
 
 msgid "Check duration"
 msgstr ""
