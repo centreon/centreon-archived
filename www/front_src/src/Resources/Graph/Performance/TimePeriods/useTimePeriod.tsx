@@ -190,18 +190,21 @@ const useTimePeriod = ({
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
   };
 
-  const adjustTimePeriod = (zoomOrShiftedTimeProps: AdjustTimePeriodProps) => {
-    setCustomTimePeriod(getNewCustomTimePeriod(zoomOrShiftedTimeProps));
+  const adjustTimePeriod = (adjustTimePeriodProps: AdjustTimePeriodProps) => {
+    setCustomTimePeriod(getNewCustomTimePeriod(adjustTimePeriodProps));
     setSelectedTimePeriod(null);
+
+    const { start, end } = adjustTimePeriodProps;
+
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
-      startDate: zoomOrShiftedTimeProps.start,
-      endDate: zoomOrShiftedTimeProps.end,
+      startDate: start,
+      endDate: end,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
     onTimePeriodChange?.({
       selectedCustomTimePeriod: {
-        start: zoomOrShiftedTimeProps.start.toISOString(),
-        end: zoomOrShiftedTimeProps.end.toISOString(),
+        start: start.toISOString(),
+        end: end.toISOString(),
       },
     });
   };
