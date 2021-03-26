@@ -10,6 +10,10 @@ import { labelSomethingWentWrong } from '../translatedLabels';
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { listResources } from './api';
 import { defaultSelectedColumnIds } from './columns';
+import {
+  getStoredOrDefaultColumnIds,
+  storeColumnIds,
+} from './columns/storedColumnIds';
 
 type ListingDispatch<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -34,11 +38,11 @@ const useListing = (): ListingState => {
   const [page, setPage] = React.useState<number>();
   const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
   const [selectedColumnIds, setSelectedColumnIds] = React.useState(
-    defaultSelectedColumnIds,
+    getStoredOrDefaultColumnIds(defaultSelectedColumnIds),
   );
 
   React.useEffect(() => {
-    console.log(selectedColumnIds);
+    storeColumnIds(selectedColumnIds);
   }, [selectedColumnIds]);
 
   const { sendRequest, sending } = useRequest<ResourceListing>({
