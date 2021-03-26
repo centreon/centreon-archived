@@ -101,7 +101,6 @@ function loadXML(url) {
         xmlDoc.async = false;
         xmlDoc.load(url);
       } else if (window.XMLHttpRequest) {
-		// à l'aide de l'objet XMLHTTPRequest
       	xmlDoc = new XMLHttpRequest();
 		xmlDoc.overrideMimeType('text/xml');
 		xmlDoc.open('GET', url, false);
