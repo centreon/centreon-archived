@@ -1155,14 +1155,17 @@ function sanitizeFormContactParameters(array $ret): array
                 ];
                 break;
             case 'contact_passwd':
-                if ($encryptType == 2) {
+                if (!empty($inputValue)) {
+                    if ($encryptType == 2) {
                         $password = $dependencyInjector['utils']->encodePass($inputValue, 'sha1');
-                } else {
+                    } else {
                         $password = $dependencyInjector['utils']->encodePass($inputValue, 'md5');
+                    }
+
+                    $bindParams [':' . $inputName] = [
+                        \PDO::PARAM_STR => $password
+                    ];
                 }
-                $bindParams [':' . $inputName] = [
-                    \PDO::PARAM_STR => $password
-                ];
                 break;
             case 'contact_name':
             case 'contact_alias':
