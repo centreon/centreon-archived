@@ -523,7 +523,6 @@ function insertContact($ret = array())
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
-
     $ret["contact_name"] = $centreon->checkIllegalChar($ret["contact_name"]);
 
     $bindParams = sanitizeFormContactParameters($ret);
@@ -909,7 +908,7 @@ function insertLdapContactInDB($tmpContacts = array())
             $tmpConf["contact_alias"] = $tmpContacts["contact_alias"][$select_key];
             $tmpConf["contact_email"] = $tmpContacts["contact_email"][$select_key];
             $tmpConf["contact_pager"] = $tmpContacts["contact_pager"][$select_key];
-            $tmpConf["contact_oreon"]["contact_oreon"] = "1";
+            $tmpConf["contact_oreon"]["contact_oreon"] = "0";
             $tmpConf["contact_admin"]["contact_admin"] = "0";
             $tmpConf["contact_type_msg"] = "txt";
             $tmpConf["contact_lang"] = "en_US";
@@ -1118,6 +1117,18 @@ function sanitizeFormContactParameters(array $ret): array
                 ];
                 break;
             case 'contact_oreon':
+                if (isset($_POST['contact_select']['select'])) {
+                    $bindParams[':' . $inputName] = [
+                        \PDO::PARAM_STR => '1'
+                    ];
+                } else {
+                    $bindParams[':' . $inputName] = [
+                        \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1']) === false)
+                            ? null
+                            : $inputValue[$inputName]
+                    ];
+                }
+                break;
             case 'contact_activate':
                 $bindParams[':' . $inputName] = [
                     \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1']) === false)
