@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals } from 'ramda';
+import { equals, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
@@ -9,11 +9,6 @@ import { MemoizedListing as Listing } from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
-import {
-  labelRowsPerPage,
-  labelOf,
-  labelNoResultsFound,
-} from '../translatedLabels';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource, SortOrder } from '../models';
@@ -45,6 +40,8 @@ const ResourceListing = (): JSX.Element => {
     sending,
     setCriteria,
     getCriteriaValue,
+    selectedColumnIds,
+    setSelectedColumnIds,
   } = useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
@@ -57,7 +54,7 @@ const ResourceListing = (): JSX.Element => {
     setLimit(Number(event.target.value));
   };
 
-  const changePage = (_, updatedPage): void => {
+  const changePage = (updatedPage): void => {
     setPage(updatedPage + 1);
   };
 
@@ -74,9 +71,6 @@ const ResourceListing = (): JSX.Element => {
     condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
     color: fade(theme.palette.primary.main, 0.08),
   };
-
-  const labelDisplayedRows = ({ from, to, count }): string =>
-    `${from}-${to} ${t(labelOf)} ${count}`;
 
   const columns = getColumns({
     actions: {
@@ -110,10 +104,15 @@ const ResourceListing = (): JSX.Element => {
   return (
     <Listing
       checkable
-      Actions={<Actions onRefresh={initAutorefreshAndLoad} />}
+      actions={<Actions onRefresh={initAutorefreshAndLoad} />}
       loading={loading}
-      columnConfiguration={columns}
-      tableData={listing?.result}
+      columns={columns}
+      onSelectColumns={setSelectedColumnIds}
+      columnConfiguration={{
+        sortable: true,
+        selectedColumnIds,
+      }}
+      rows={listing?.result}
       currentPage={(page || 1) - 1}
       rowColorConditions={[
         ...rowColorConditions(theme),
@@ -121,18 +120,14 @@ const ResourceListing = (): JSX.Element => {
       ]}
       limit={listing?.meta.limit}
       onSort={changeSort}
-      onPaginationLimitChanged={changeLimit}
+      onLimitChange={changeLimit}
       onPaginate={changePage}
-      sortf={sortField}
-      sorto={sortOrder}
-      labelRowsPerPage={t(labelRowsPerPage)}
-      labelDisplayedRows={labelDisplayedRows}
+      sortField={sortField}
+      sortOrder={sortOrder}
       totalRows={listing?.meta.total}
       onSelectRows={setSelectedResources}
       selectedRows={selectedResources}
       onRowClick={selectResource}
-      innerScrollDisabled={false}
-      emptyDataMessage={t(labelNoResultsFound)}
       getId={getId}
       memoProps={[
         listing,

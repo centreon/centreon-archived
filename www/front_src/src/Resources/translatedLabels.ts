@@ -198,3 +198,5 @@ export const labelParent = 'Parent';
 export const labelSelectCriterias = 'Select criterias';
 export const labelEndDateGreaterThanStartDate =
   'The end date must be greater than the start date';
+export const labelAction = 'Action';
+export const labelNotes = 'Notes';

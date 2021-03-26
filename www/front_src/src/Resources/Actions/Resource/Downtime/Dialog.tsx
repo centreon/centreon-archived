@@ -73,13 +73,13 @@ const pickerCommonProps = {
 const datePickerProps = {
   ...pickerCommonProps,
   format: 'L',
-} as Omit<DatePickerProps, 'onChange'>;
+} as Omit<DatePickerProps, 'onChange' | 'value'>;
 
 const timePickerProps = {
   ...pickerCommonProps,
   format: 'LT',
   ampm: false,
-} as Omit<TimePickerProps, 'onChange'>;
+} as Omit<TimePickerProps, 'onChange' | 'value'>;
 
 const DialogDowntime = ({
   resources,

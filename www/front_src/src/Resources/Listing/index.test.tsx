@@ -126,6 +126,8 @@ const ListingTest = (): JSX.Element => {
   );
 };
 
+const mockedSelector = useSelector as jest.Mock;
+
 const renderListing = (): RenderResult => render(<ListingTest />);
 
 window.clearInterval = jest.fn();
@@ -133,7 +135,7 @@ window.setInterval = jest.fn();
 
 describe(Listing, () => {
   beforeEach(() => {
-    useSelector.mockImplementation((callback) => {
+    mockedSelector.mockImplementation((callback) => {
       return callback(appState);
     });
 
@@ -152,7 +154,7 @@ describe(Listing, () => {
   });
 
   afterEach(() => {
-    useSelector.mockClear();
+    mockedSelector.mockClear();
     mockedAxios.get.mockReset();
   });
 

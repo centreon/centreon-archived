@@ -186,7 +186,7 @@ describe(Actions, () => {
       .mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);
-    mockAppStateSelector(useSelector);
+    mockAppStateSelector(useSelector as jest.Mock);
 
     mockedUserContext.mockReturnValue(mockUserContext);
   });

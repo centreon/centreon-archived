@@ -9,6 +9,7 @@ import { labelSomethingWentWrong } from '../translatedLabels';
 
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { listResources } from './api';
+import { defaultSelectedColumnIds } from './columns';
 
 type ListingDispatch<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -23,6 +24,8 @@ export interface ListingState {
   setEnabledAutorefresh: ListingDispatch<boolean>;
   sendRequest: (params) => Promise<ResourceListing>;
   sending: boolean;
+  selectedColumnIds: Array<string>;
+  setSelectedColumnIds: (columnIds: Array<string>) => void;
 }
 
 const useListing = (): ListingState => {
@@ -30,6 +33,13 @@ const useListing = (): ListingState => {
   const [limit, setLimit] = React.useState<number>(30);
   const [page, setPage] = React.useState<number>();
   const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
+  const [selectedColumnIds, setSelectedColumnIds] = React.useState(
+    defaultSelectedColumnIds,
+  );
+
+  React.useEffect(() => {
+    console.log(selectedColumnIds);
+  }, [selectedColumnIds]);
 
   const { sendRequest, sending } = useRequest<ResourceListing>({
     request: listResources,
@@ -51,6 +61,8 @@ const useListing = (): ListingState => {
     setEnabledAutorefresh,
     sendRequest,
     sending,
+    selectedColumnIds,
+    setSelectedColumnIds,
   };
 };
 

@@ -132,9 +132,11 @@ const useFilter = (): FilterState => {
   };
 
   const setCriteriaAndNewFilter = ({ name, value }): void => {
+    const isCustomFilter = isCustom(filter);
+
     setFilter({
       ...getFilterWithUpdatedCriteria({ name, value }),
-      ...newFilter,
+      ...(!isCustomFilter && newFilter),
     });
   };
 

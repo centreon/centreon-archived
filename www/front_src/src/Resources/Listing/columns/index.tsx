@@ -30,6 +30,9 @@ import {
   labelCheck,
   labelSetDowntime,
   labelParent,
+  labelNotes,
+  labelAction,
+  labelGraph,
 } from '../../translatedLabels';
 import useAclQuery from '../../Actions/Resource/aclQuery';
 import truncate from '../../truncate';
@@ -220,6 +223,21 @@ interface ColumnsProps {
   t: (value: string) => string;
 }
 
+export const defaultSelectedColumnIds = [
+  'severity',
+  'status',
+  'resource',
+  'parent_resource',
+  'notes_url',
+  'action_url',
+  'graph',
+  'duration',
+  'tries',
+  'last_check',
+  'information',
+  'state',
+];
+
 export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   {
     id: 'severity',
@@ -258,7 +276,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   },
   {
     id: 'notes_url',
-    label: '',
+    label: t(labelNotes),
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
     Component: NotesUrlColumn,
@@ -266,7 +284,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   },
   {
     id: 'action_url',
-    label: '',
+    label: t(labelAction),
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
     Component: ActionUrlColumn,
@@ -274,7 +292,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   },
   {
     id: 'graph',
-    label: '',
+    label: t(labelGraph),
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
     Component: GraphColumn({ onClick: actions.onDisplayGraph }),
