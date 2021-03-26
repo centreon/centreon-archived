@@ -1083,109 +1083,109 @@ function sanitizeFormContactParameters(array $ret): array
     global $encryptType, $dependencyInjector;
     $bindParams = [];
     foreach ($ret as $inputName => $inputValue) {
-            switch ($inputName) {
-                case 'timeperiod_tp_id':
-                case 'timeperiod_tp_id2':
-                case 'contact_template_id':
+        switch ($inputName) {
+            case 'timeperiod_tp_id':
+            case 'timeperiod_tp_id2':
+            case 'contact_template_id':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                        ? null
+                        : (int) $inputValue
+                ];
+                break;
+            case 'contact_location':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                        ? 0
+                        : (int) $inputValue
+                ];
+                break;
+            case 'contact_register':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                        ? 1
+                        : (int) $inputValue
+                ];
+                break;
+            case 'contact_hostNotifOpts':
+                $bindParams[':contact_host_notification_options'] = [
+                    \PDO::PARAM_STR => filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING)
+                ];
+                break;
+            case 'contact_svNotifOpts':
+                $bindParams[':contact_service_notification_options'] = [
+                    \PDO::PARAM_STR => filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING)
+                ];
+                break;
+            case 'contact_oreon':
+            case 'contact_activate':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1']) === false)
+                        ? null
+                        : $inputValue[$inputName]
+                ];
+                break;
+            case 'reach_api':
+            case 'reach_api_rt':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (in_array($inputValue[$inputName], ['0', '1']) === false)
+                        ? 0
+                        : (int) $inputValue[$inputName]
+                ];
+                break;
+            case 'contact_enable_notifications':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1', '2']) === false)
+                        ? '2'
+                        : $inputValue[$inputName]
+                ];
+                break;
+            case 'contact_admin':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1']) === false)
+                        ? '0'
+                        : $inputValue[$inputName]
+                ];
+                break;
+            case 'contact_type_msg':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => (in_array($inputValue, ['txt', 'html', 'pdf']) === false)
+                        ? 'txt'
+                        : $inputValue
+                ];
+                break;
+            case 'contact_passwd':
+                if ($encryptType == 2) {
+                        $password = $dependencyInjector['utils']->encodePass($inputValue, 'sha1');
+                } else {
+                        $password = $dependencyInjector['utils']->encodePass($inputValue, 'md5');
+                }
+                $bindParams [':' . $inputName] = [
+                    \PDO::PARAM_STR => $password
+                ];
+                break;
+            case 'contact_name':
+            case 'contact_alias':
+            case 'contact_autologin_key':
+            case 'contact_lang':
+            case 'contact_email':
+            case 'contact_pager':
+            case 'contact_comment':
+            case 'contact_auth_type':
+            case 'contact_ldap_dn':
+            case 'contact_address1':
+            case 'contact_address2':
+            case 'contact_address3':
+            case 'contact_address4':
+            case 'contact_address5':
+            case 'contact_address6':
+                if (!empty($inputValue)) {
                     $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
-                            ? null
-                            : (int) $inputValue
+                        \PDO::PARAM_STR => filter_var($inputValue, FILTER_SANITIZE_STRING)
                     ];
-                    break;
-                case 'contact_location':
-                    $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
-                            ? 0
-                            : (int) $inputValue
-                    ];
-                    break;
-                case 'contact_register':
-                    $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
-                            ? 1
-                            : (int) $inputValue
-                    ];
-                    break;
-                case 'contact_hostNotifOpts':
-                    $bindParams[':contact_host_notification_options'] = [
-                        \PDO::PARAM_STR => filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING)
-                    ];
-                    break;
-                case 'contact_svNotifOpts':
-                    $bindParams[':contact_service_notification_options'] = [
-                        \PDO::PARAM_STR => filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING)
-                    ];
-                    break;
-                case 'contact_oreon':
-                case 'contact_activate':
-                    $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1']) === false)
-                            ? null
-                            : $inputValue[$inputName]
-                    ];
-                    break;
-                case 'reach_api':
-                case 'reach_api_rt':
-                    $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_INT => (in_array($inputValue[$inputName], ['0', '1']) === false)
-                            ? 0
-                            : (int) $inputValue[$inputName]
-                    ];
-                    break;
-                case 'contact_enable_notifications':
-                    $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1', '2']) === false)
-                            ? '2'
-                            : $inputValue[$inputName]
-                    ];
-                    break;
-                case 'contact_admin':
-                    $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1']) === false)
-                            ? '0'
-                            : $inputValue[$inputName]
-                    ];
-                    break;
-                case 'contact_type_msg':
-                    $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_STR => (in_array($inputValue, ['txt', 'html', 'pdf']) === false)
-                            ? 'txt'
-                            : $inputValue
-                    ];
-                    break;
-                case 'contact_passwd':
-                    if ($encryptType == 2) {
-                            $password = $dependencyInjector['utils']->encodePass($inputValue, 'sha1');
-                    } else {
-                            $password = $dependencyInjector['utils']->encodePass($inputValue, 'md5');
-                    }
-                    $bindParams [':' . $inputName] = [
-                        \PDO::PARAM_STR => $password
-                    ];
-                    break;
-                case 'contact_name':
-                case 'contact_alias':
-                case 'contact_autologin_key':
-                case 'contact_lang':
-                case 'contact_email':
-                case 'contact_pager':
-                case 'contact_comment':
-                case 'contact_auth_type':
-                case 'contact_ldap_dn':
-                case 'contact_address1':
-                case 'contact_address2':
-                case 'contact_address3':
-                case 'contact_address4':
-                case 'contact_address5':
-                case 'contact_address6':
-                    if (!empty($inputValue)) {
-                        $bindParams[':' . $inputName] = [
-                            \PDO::PARAM_STR => filter_var($inputValue, FILTER_SANITIZE_STRING)
-                        ];
-                    }
-                    break;
-            }
+                }
+                break;
+        }
     }
     return $bindParams;
 }
