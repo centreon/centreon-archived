@@ -1081,10 +1081,8 @@ function getContactIdByName($name)
 function sanitizeFormContactParameters(array $ret): array
 {
     global $encryptType, $dependencyInjector;
-
     $bindParams = [];
     foreach ($ret as $inputName => $inputValue) {
-        if (!empty($inputValue)) {
             switch ($inputName) {
                 case 'timeperiod_tp_id':
                 case 'timeperiod_tp_id2':
@@ -1185,14 +1183,9 @@ function sanitizeFormContactParameters(array $ret): array
                         $bindParams[':' . $inputName] = [
                             \PDO::PARAM_STR => filter_var($inputValue, FILTER_SANITIZE_STRING)
                         ];
-                    } else {
-                        $bindParams[':' . $inputName] = [
-                            \PDO::PARAM_STR => null
-                        ];
                     }
                     break;
             }
-        }
     }
     return $bindParams;
 }
