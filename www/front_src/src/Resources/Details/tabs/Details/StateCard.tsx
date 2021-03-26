@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Card, CardContent, Typography, makeStyles } from '@material-ui/core';
+import { Card, Typography, makeStyles } from '@material-ui/core';
 
 import { labelComment } from '../../../translatedLabels';
 
@@ -56,29 +56,27 @@ const StateCard = ({
   const classes = useStyles();
 
   return (
-    <Card>
-      <CardContent>
-        <div className={classes.container}>
-          <Typography
-            className={classes.contentTitle}
-            variant="subtitle2"
-            color="textSecondary"
-          >
-            {title}
-          </Typography>
-          <div className={classes.content}>{contentLines.map(Line)}</div>
+    <Card style={{ padding: 8 }}>
+      <div className={classes.container}>
+        <Typography
+          className={classes.contentTitle}
+          variant="subtitle2"
+          color="textSecondary"
+        >
+          {title}
+        </Typography>
+        <div className={classes.content}>{contentLines.map(Line)}</div>
 
-          <Typography
-            className={classes.commentTitle}
-            variant="subtitle2"
-            color="textSecondary"
-          >
-            {t(labelComment)}
-          </Typography>
-          <div className={classes.comment}>{Line(commentLine)}</div>
-          <div className={classes.chip}>{chip}</div>
-        </div>
-      </CardContent>
+        <Typography
+          className={classes.commentTitle}
+          variant="subtitle2"
+          color="textSecondary"
+        >
+          {t(labelComment)}
+        </Typography>
+        <div className={classes.comment}>{Line(commentLine)}</div>
+        <div className={classes.chip}>{chip}</div>
+      </div>
     </Card>
   );
 };
