@@ -243,7 +243,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('Next Page'));
+    fireEvent.click(getByLabelText('Next page'));
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
@@ -259,7 +259,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('Previous Page'));
+    fireEvent.click(getByLabelText('Previous page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       getListingEndpoint({ page: 1 }),
@@ -273,7 +273,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('Last Page'));
+    fireEvent.click(getByLabelText('Last page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       getListingEndpoint({ page: 4 }),
@@ -287,7 +287,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('First Page'));
+    fireEvent.click(getByLabelText('First page'));
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(

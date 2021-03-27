@@ -46,12 +46,12 @@ const ResourceListing = (): JSX.Element => {
 
   const { initAutorefreshAndLoad } = useLoadResources();
 
-  const changeSort = ({ order, orderBy }): void => {
-    setCriteria({ name: 'sort', value: [orderBy, order] });
+  const changeSort = ({ sortField, sortOrder }): void => {
+    setCriteria({ name: 'sort', value: [sortField, sortOrder] });
   };
 
-  const changeLimit = (event): void => {
-    setLimit(Number(event.target.value));
+  const changeLimit = (value): void => {
+    setLimit(Number(value));
   };
 
   const changePage = (updatedPage): void => {
