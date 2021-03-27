@@ -276,11 +276,14 @@ function set_centreon_repos(){
 
 	IFS=', ' read -r -a array_repos <<< "$repo"
 	
-	for _repo in "${array_repos[@]}"
-	do
-    	#FIXME - remove the 1rst ','
-		CENTREON_REPO+=",centreon-$_repo*"
-	done
+    CENTREON_REPO=""
+    for _repo in "${array_repos[@]}"
+    do
+        CENTREON_REPO+="centreon-$_repo*"
+        if ! [ "$_repo" == "${array_repos[@]:(-1)}" ]; then
+            CENTREON_REPO+=","
+        fi
+    done
 
 	log "INFO" "Following Centreon repo will be used [ $CENTREON_REPO ]"
 	
