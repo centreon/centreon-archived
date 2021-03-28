@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { isEmpty, isNil, not, or } from 'ramda';
-import { useTooltip } from '@visx/tooltip';
+import { useTooltip } from '@visx/visx';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
