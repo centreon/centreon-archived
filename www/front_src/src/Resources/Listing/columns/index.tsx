@@ -33,6 +33,9 @@ import {
   labelNotes,
   labelAction,
   labelGraph,
+  labelAlias,
+  labelFqdn,
+  labelMonitoringServer,
 } from '../../translatedLabels';
 import useAclQuery from '../../Actions/Resource/aclQuery';
 import truncate from '../../truncate';
@@ -337,5 +340,24 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: StateColumn,
     sortable: false,
+  },
+  {
+    id: 'alias',
+    label: t(labelAlias),
+    type: ColumnType.string,
+    getFormattedString: ({ alias }): string => alias,
+  },
+  {
+    id: 'fqdn',
+    label: t(labelFqdn),
+    type: ColumnType.string,
+    getFormattedString: ({ fqdn }): string => fqdn,
+  },
+  {
+    id: 'monitoring_server',
+    label: t(labelMonitoringServer),
+    type: ColumnType.string,
+    getFormattedString: ({ monitoring_server_name }): string =>
+      monitoring_server_name,
   },
 ];

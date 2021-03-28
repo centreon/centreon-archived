@@ -15,6 +15,7 @@ import { Resource, SortOrder } from '../models';
 
 import { getColumns } from './columns';
 import useLoadResources from './useLoadResources';
+import { defaultSelectedColumnIds } from './columns/index';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
@@ -101,6 +102,10 @@ const ResourceListing = (): JSX.Element => {
 
   const getId = ({ uuid }) => uuid;
 
+  const resetColumns = (): void => {
+    setSelectedColumnIds(defaultSelectedColumnIds);
+  }
+
   return (
     <Listing
       checkable
@@ -112,6 +117,7 @@ const ResourceListing = (): JSX.Element => {
         sortable: true,
         selectedColumnIds,
       }}
+      onResetColumns={resetColumns}
       rows={listing?.result}
       currentPage={(page || 1) - 1}
       rowColorConditions={[
