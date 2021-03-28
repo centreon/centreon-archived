@@ -1,12 +1,15 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { isEmpty, isNil, not, or } from 'ramda';
+import { useTooltip } from '@visx/tooltip';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import formatMetricValue from '../formatMetricValue';
 import { Line, TimeValue } from '../models';
 import { getLineForMetric } from '../timeSeries';
+
+import MetricsTooltip from './MetricsTooltip';
 
 interface MetricsValue {
   x: number;
@@ -26,9 +29,14 @@ interface FormattedMetricData {
 
 interface UseMetricsValue {
   metricsValue: MetricsValue | null;
-  setMetricsValue: React.Dispatch<React.SetStateAction<MetricsValue | null>>;
+  tooltipData;
+  tooltipOpen;
+  tooltipLeft;
+  tooltipTop;
   formatDate: () => string;
   getFormattedMetricData: (metric: string) => FormattedMetricData | null;
+  changeMetricsValue: ({ newMetricsValue, displayTooltipValues }) => void;
+  hideTooltip;
 }
 
 const useMetricsValue = (): UseMetricsValue => {
@@ -36,12 +44,35 @@ const useMetricsValue = (): UseMetricsValue => {
     null,
   );
   const { format } = useLocaleDateTimeFormat();
+  const {
+    tooltipData,
+    tooltipLeft,
+    tooltipTop,
+    tooltipOpen,
+    showTooltip,
+    hideTooltip,
+  } = useTooltip();
 
   const formatDate = () =>
     format({
       date: new Date(metricsValue?.timeValue.timeTick || 0),
       formatString: dateTimeFormat,
     });
+
+  const changeMetricsValue = ({ newMetricsValue, displayTooltipValues }) => {
+    setMetricsValue(newMetricsValue);
+    if (or(not(displayTooltipValues), isNil(newMetricsValue))) {
+      hideTooltip();
+      return;
+    }
+    showTooltip({
+      tooltipLeft: newMetricsValue?.x || 0,
+      tooltipTop: newMetricsValue?.y || 0,
+      tooltipData: isEmpty(newMetricsValue?.metrics) ? undefined : (
+        <MetricsTooltip />
+      ),
+    });
+  };
 
   const getFormattedMetricData = (metric: string) => {
     if (isNil(metricsValue)) {
@@ -70,9 +101,14 @@ const useMetricsValue = (): UseMetricsValue => {
 
   return {
     metricsValue,
-    setMetricsValue,
+    tooltipData,
+    tooltipOpen,
+    tooltipLeft,
+    tooltipTop,
     formatDate,
     getFormattedMetricData,
+    changeMetricsValue,
+    hideTooltip,
   };
 };
 
