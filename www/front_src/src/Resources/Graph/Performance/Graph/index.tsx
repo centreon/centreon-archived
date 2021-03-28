@@ -11,7 +11,6 @@ import {
   lt,
   gte,
   path,
-  or,
 } from 'ramda';
 import {
   Line,
