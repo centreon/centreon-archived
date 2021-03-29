@@ -332,29 +332,33 @@ function set_required_prerequisite(){
 
     8*) 
 		log "INFO" "Setting specific part for v8 ($detected_os_version)"
-      
-		case "$detected_os_release" in
-        	centos-release* | centos-linux-release*)
-        		BASE_PACKAGES=(dnf-plugins-core epel-release)
-        		dnf config-manager --set-enabled powertools
-          		;;
-        
-        	oraclelinux-release*|enterprise-release*)
-          		BASE_PACKAGES=(dnf-plugins-core oracle-epel-release-el8)
-          		dnf config-manager --set-enabled ol8_codeready_builder
-          		;;
-      	esac
 
-		#FIXME check the result
-		dnf -y install ${BASE_PACKAGES[@]}
-		dnf -y update gnutls
-		
-		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el8.noarch.rpm"
+        RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el8.noarch.rpm"
 		PHP_BIN="/bin/php"
 	  	PHP_ETC="/etc/php.d"
 		OS_SPEC_SERVICES="php-fpm httpd"
 		PKG_MGR="dnf"
-		
+
+		case "$detected_os_release" in
+        	centos-release* | centos-linux-release*)
+        		BASE_PACKAGES=(dnf-plugins-core epel-release)
+        		$PKG_MGR config-manager --set-enabled powertools
+          		;;
+        
+        	oraclelinux-release*|enterprise-release*)
+          		BASE_PACKAGES=(dnf-plugins-core oracle-epel-release-el8)
+          		$PKG_MGR config-manager --set-enabled ol8_codeready_builder 
+				 	   
+          		;;
+      	esac
+
+		#FIXME check the result
+        #FIXE install PHP 7.3
+		$PKG_MGR module install php:7.3 -y
+		$PKG_MGR module enable php:7.3 -y
+        $PKG_MGR -y install ${BASE_PACKAGES[@]}
+		$PKG_MGR -y update gnutls
+				
 		set_centreon_repos
 		;;
 	  
