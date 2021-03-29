@@ -82,10 +82,10 @@ class MetaServiceMetricTest extends TestCase
                 $unitName,
                 strlen($unitName),
                 MetaServiceMetric::MAX_METRIC_UNIT_NAME_LENGTH,
-                'MetaServiceMetric::unitName'
+                'MetaServiceMetric::unit'
             )->getMessage()
         );
-        (new MetaServiceMetric('metric_name'))->setUnitName($unitName);
+        (new MetaServiceMetric('metric_name'))->setUnit($unitName);
     }
 
     /**
@@ -96,8 +96,8 @@ class MetaServiceMetricTest extends TestCase
     {
         return (new MetaServiceMetric('rta'))
             ->setId(10)
-            ->setUnitName('ms')
-            ->setCurrentValue(0.5);
+            ->setUnit('ms')
+            ->setValue(0.5);
     }
 
     /**

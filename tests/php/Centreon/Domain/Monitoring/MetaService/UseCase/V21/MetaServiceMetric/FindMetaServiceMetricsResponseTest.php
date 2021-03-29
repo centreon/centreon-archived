@@ -54,7 +54,7 @@ class FindMetaServiceMetricsResponseTest extends TestCase
         $this->assertCount(1, $metaServiceMetrics);
         $this->assertEquals($metaServiceMetric->getId(), $metaServiceMetrics[0]['id']);
         $this->assertEquals($metaServiceMetric->getName(), $metaServiceMetrics[0]['name']);
-        $this->assertEquals($metaServiceMetric->getCurrentValue(), $metaServiceMetrics[0]['current_value']);
-        $this->assertEquals($metaServiceMetric->getUnitName(), $metaServiceMetrics[0]['unit_name']);
+        $this->assertEquals($metaServiceMetric->getValue(), $metaServiceMetrics[0]['value']);
+        $this->assertEquals($metaServiceMetric->getUnit(), $metaServiceMetrics[0]['unit']);
     }
 }
