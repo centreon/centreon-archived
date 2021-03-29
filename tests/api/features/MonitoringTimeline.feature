@@ -11,7 +11,7 @@ Feature:
     Given I am logged in
     And the following CLAPI import data:
     """
-    CMD;ADD;dummy_down;check;cat unknown_file
+    CMD;ADD;dummy_down;check;exit 2
     HOST;ADD;test;Test host;127.0.0.1;generic-host;central;
     HOST;SETPARAM;test;check_command;dummy_down
     """
@@ -35,7 +35,7 @@ Feature:
     Given I am logged in
     And the following CLAPI import data:
     """
-    CMD;ADD;dummy_critical;check;cat unknown_file
+    CMD;ADD;dummy_critical;check;exit 2
     HOST;ADD;test;Test host;127.0.0.1;generic-host;central;
     SERVICE;ADD;test;test_service1;generic-service;
     SERVICE;SETPARAM;test;test_service1;check_command;dummy_critical
