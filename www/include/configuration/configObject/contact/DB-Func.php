@@ -590,7 +590,7 @@ function updateContact($contact_id = null)
     //Build Query with only setted values.
     $rq = "UPDATE contact SET ";
     foreach (array_keys($bindParams) as $token) {
-            $rq .= ltrim($token, ':') . " = " . $token . ", ";
+        $rq .= ltrim($token, ':') . " = " . $token . ", ";
     }
     $rq = rtrim($rq, ', ');
     $rq .= " WHERE contact_id = :contactId";
@@ -642,7 +642,7 @@ function updateContact_MC($contact_id = null)
     $bindParams = sanitizeFormContactParameters($ret);
     $rq = "UPDATE contact SET ";
     foreach (array_keys($bindParams) as $token) {
-            $rq .= ltrim($token, ':') . " = " . $token . ", ";
+        $rq .= ltrim($token, ':') . " = " . $token . ", ";
     }
     $rq = rtrim($rq, ', ');
     $rq .= " WHERE contact_id = :contactId";
@@ -1127,61 +1127,61 @@ function sanitizeFormContactParameters(array $ret): array
                 ];
                 break;
             case 'contact_oreon':
+                 // ldap import, then force contact to be a user
                 if (isset($_POST['contact_select']['select'])) {
                     $bindParams[':' . $inputName] = [
                         \PDO::PARAM_STR => '1'
                     ];
                 } else {
                     $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1']) === false)
-                            ? null
-                            : $inputValue[$inputName]
+                        \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1'])
+                            ? $inputValue[$inputName]
+                            : null
                     ];
                 }
                 break;
             case 'contact_activate':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1']) === false)
-                        ? null
-                        : $inputValue[$inputName]
+                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1'])
+                        ? $inputValue[$inputName]
+                        : null
                 ];
                 break;
             case 'reach_api':
             case 'reach_api_rt':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_INT => (in_array($inputValue[$inputName], ['0', '1']) === false)
-                        ? 0
-                        : (int) $inputValue[$inputName]
+                    \PDO::PARAM_INT => in_array($inputValue[$inputName], ['0', '1'])
+                        ? (int) $inputValue[$inputName]
+                        : 0
                 ];
                 break;
             case 'contact_enable_notifications':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1', '2']) === false)
-                        ? '2'
-                        : $inputValue[$inputName]
+                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1', '2'])
+                        ? $inputValue[$inputName]
+                        : '2'
                 ];
                 break;
             case 'contact_admin':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => (in_array($inputValue[$inputName], ['0', '1']) === false)
-                        ? '0'
-                        : $inputValue[$inputName]
+                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1'])
+                        ? $inputValue[$inputName]
+                        : '0'
                 ];
                 break;
             case 'contact_type_msg':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => (in_array($inputValue, ['txt', 'html', 'pdf']) === false)
-                        ? 'txt'
-                        : $inputValue
+                    \PDO::PARAM_STR => in_array($inputValue, ['txt', 'html', 'pdf'])
+                        ? $inputValue
+                        : 'txt'
                 ];
                 break;
             case 'contact_passwd':
                 if (!empty($inputValue)) {
-                    if ($encryptType == 2) {
-                        $password = $dependencyInjector['utils']->encodePass($inputValue, 'sha1');
-                    } else {
-                        $password = $dependencyInjector['utils']->encodePass($inputValue, 'md5');
-                    }
+                    $password = $dependencyInjector['utils']->encodePass(
+                        $inputValue,
+                        $encryptType == 2 ?  'sha1' : 'md5'
+                    );
 
                     $bindParams [':' . $inputName] = [
                         \PDO::PARAM_STR => $password
