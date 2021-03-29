@@ -56,7 +56,7 @@ const GraphTabContent = ({
     customTimePeriod,
     changeCustomTimePeriod,
     adjustTimePeriod,
-    displayLoader,
+    resourceDetailsUpdated,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['graph', 'selectedTimePeriodId'],
@@ -100,7 +100,7 @@ const GraphTabContent = ({
           selectedTimePeriod={selectedTimePeriod}
           customTimePeriod={customTimePeriod}
           adjustTimePeriod={adjustTimePeriod}
-          displayLoader={displayLoader}
+          resourceDetailsUpdated={resourceDetailsUpdated}
         />
       </div>
     </GraphOptionsContext.Provider>

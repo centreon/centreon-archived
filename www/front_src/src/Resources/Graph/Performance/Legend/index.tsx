@@ -90,14 +90,20 @@ const LegendContent = ({
   const theme = useTheme();
   const { metricsValue, getFormattedMetricData } = useMetricsValueContext();
 
-  const getLegendName = ({ metric, name, display }: Line): JSX.Element => {
-    const metricName = includes('#', name) ? split('#')[1] : name;
+  const getLegendName = ({
+    metric,
+    legend,
+    name,
+    display,
+  }: Line): JSX.Element => {
+    const legendName = legend || name;
+    const metricName = includes('#', legendName) ? split('#')[1] : legendName;
     return (
       <div
         onMouseEnter={(): void => onHighlight(metric)}
         onMouseLeave={(): void => onClearHighlight()}
       >
-        <Tooltip title={name} placement="top">
+        <Tooltip title={legendName} placement="top">
           <Typography
             className={clsx(
               {

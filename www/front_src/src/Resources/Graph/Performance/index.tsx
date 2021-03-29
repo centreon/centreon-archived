@@ -58,7 +58,7 @@ interface Props {
   onTooltipDisplay?: (position?: [number, number]) => void;
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
-  displayLoader?: boolean;
+  resourceDetailsUpdated?: boolean;
 }
 
 interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
@@ -123,7 +123,7 @@ const PerformanceGraph = ({
   onAddComment,
   adjustTimePeriod,
   customTimePeriod,
-  displayLoader = true,
+  resourceDetailsUpdated = true,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     graphHeight,
@@ -287,8 +287,8 @@ const PerformanceGraph = ({
               onAddComment={onAddComment}
               applyZoom={adjustTimePeriod}
               shiftTime={shiftTime}
-              sendingGetGraphDataRequest={
-                sendingGetGraphDataRequest && displayLoader
+              loading={
+                not(resourceDetailsUpdated) && sendingGetGraphDataRequest
               }
               canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
             />

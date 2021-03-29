@@ -7,17 +7,17 @@ import {
 } from '../../../translatedLabels';
 import { GraphOptionId } from '../models';
 
-interface UseGraphOptions {
+interface GraphOptionsProps {
   graphOptions: GraphOptions;
   changeGraphOptions: (graphOptionId: GraphOptionId) => () => void;
 }
 
 export const GraphOptionsContext = React.createContext<
-  UseGraphOptions | undefined
+  GraphOptionsProps | undefined
 >(undefined);
 
-export const useGraphOptionsContext = (): UseGraphOptions =>
-  React.useContext(GraphOptionsContext) as UseGraphOptions;
+export const useGraphOptionsContext = (): GraphOptionsProps =>
+  React.useContext(GraphOptionsContext) as GraphOptionsProps;
 
 export const defaultGraphOptions = {
   [GraphOptionId.displayTooltips]: {
@@ -40,7 +40,7 @@ interface UseGraphOptionsProps {
 const useGraphOptions = ({
   graphTabParameters,
   changeTabGraphOptions,
-}: UseGraphOptionsProps): UseGraphOptions => {
+}: UseGraphOptionsProps): GraphOptionsProps => {
   const [graphOptions, setGraphOptions] = React.useState<GraphOptions>({
     ...defaultGraphOptions,
     ...graphTabParameters?.graphOptions,

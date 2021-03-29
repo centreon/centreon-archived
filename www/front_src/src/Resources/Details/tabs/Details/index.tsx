@@ -6,8 +6,6 @@ import { ParentSize } from '@visx/visx';
 
 import {
   Grid,
-  Card,
-  CardContent,
   Typography,
   styled,
   Tooltip,
@@ -37,6 +35,7 @@ import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
 import { ResourceDetails } from '../../models';
 
+import Card from './Card';
 import ExpandableCard from './ExpandableCard';
 import StateCard from './StateCard';
 import DetailsCard from './DetailsCard';
@@ -76,7 +75,7 @@ interface Props {
 
 const DetailsTab = ({ details }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { toDateTime, toDate, toTime } = useLocaleDateTimeFormat();
+  const { toDateTime } = useLocaleDateTimeFormat();
   const classes = useStyles();
 
   const { showMessage } = useSnackbar();
@@ -136,16 +135,20 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
               chip={<AcknowledgeChip />}
             />
           )}
-          <Grid container spacing={2} alignItems="stretch">
-            {getDetailCardLines({ details, toDate, toTime, t }).map(
-              ({ title, field, xs = 6, getLines }) => {
+          <Grid container spacing={1}>
+            {getDetailCardLines({ details, toDateTime, t }).map(
+              ({ title, field, xs = 6, line, active }) => {
                 const variableXs = (width > 600 ? xs / 2 : xs) as 3 | 6 | 12;
                 const displayCard = !isNil(field) && !isEmpty(field);
 
                 return (
                   displayCard && (
                     <Grid key={title} item xs={variableXs}>
-                      <DetailsCard title={t(title)} lines={getLines()} />
+                      <DetailsCard
+                        title={t(title)}
+                        line={line}
+                        active={active}
+                      />
                     </Grid>
                   )
                 );
@@ -160,25 +163,24 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           )}
           {details.command_line && (
             <Card>
-              <CardContent>
-                <Typography
-                  variant="subtitle2"
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  <Grid container alignItems="center" spacing={1}>
-                    <Grid item>{t(labelCommand)}</Grid>
-                    <Grid item>
-                      <Tooltip onClick={copyCommandLine} title={labelCopy}>
-                        <IconButton size="small">
-                          <IconCopyFile color="primary" fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Grid>
+              <Typography
+                variant="body1"
+                color="textSecondary"
+                gutterBottom
+                component="div"
+              >
+                <Grid container alignItems="center" spacing={1}>
+                  <Grid item>{t(labelCommand)}</Grid>
+                  <Grid item>
+                    <Tooltip onClick={copyCommandLine} title={labelCopy}>
+                      <IconButton size="small">
+                        <IconCopyFile color="primary" fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </Grid>
-                </Typography>
-                <Typography variant="body2">{details.command_line}</Typography>
-              </CardContent>
+                </Grid>
+              </Typography>
+              <Typography variant="body2">{details.command_line}</Typography>
             </Card>
           )}
         </div>

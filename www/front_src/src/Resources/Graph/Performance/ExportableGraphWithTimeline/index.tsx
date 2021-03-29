@@ -61,7 +61,7 @@ interface Props {
   onTooltipDisplay?: (position?: [number, number]) => void;
   tooltipPosition?: [number, number];
   customTimePeriod: CustomTimePeriod;
-  displayLoader: boolean;
+  resourceDetailsUpdated: boolean;
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
 }
 
@@ -75,7 +75,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   tooltipPosition,
   customTimePeriod,
   adjustTimePeriod,
-  displayLoader,
+  resourceDetailsUpdated,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -205,7 +205,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           tooltipPosition={tooltipPosition}
           adjustTimePeriod={adjustTimePeriod}
           customTimePeriod={customTimePeriod}
-          displayLoader={displayLoader}
+          resourceDetailsUpdated={resourceDetailsUpdated}
         />
       </div>
     </Paper>
