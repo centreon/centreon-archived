@@ -3,11 +3,9 @@ import DayjsAdapter from '@date-io/dayjs';
 import dayjs from 'dayjs';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
 
 const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
-  const { locale, timezone } = useUserContext();
-  const { format } = useLocaleDateTimeFormat();
+  const { format, toDateTime } = useLocaleDateTimeFormat();
 
   class Adapter extends DayjsAdapter {
     public format(date, formatString): string {
@@ -15,7 +13,7 @@ const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
     }
 
     public date(value): dayjs.Dayjs {
-      return dayjs(value).locale(locale).tz(timezone);
+      return dayjs(toDateTime(dayjs(value).toDate()));
     }
   }
 
