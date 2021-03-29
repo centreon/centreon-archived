@@ -1109,7 +1109,8 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_hostNotifOpts':
                 $bindParams[':contact_host_notification_options'] = [
                     \PDO::PARAM_STR => (($inputValue = filter_var(
-                        implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING
+                        implode(",", array_keys($inputValue)),
+                        FILTER_SANITIZE_STRING
                     )) === false)
                         ? null
                         : $inputValue
@@ -1118,7 +1119,8 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_svNotifOpts':
                 $bindParams[':contact_service_notification_options'] = [
                     \PDO::PARAM_STR => (($inputValue = filter_var(
-                        implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING
+                        implode(",", array_keys($inputValue)),
+                        FILTER_SANITIZE_STRING
                     )) === false)
                         ? null
                         : $inputValue
