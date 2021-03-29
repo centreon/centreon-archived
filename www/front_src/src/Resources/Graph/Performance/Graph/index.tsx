@@ -10,7 +10,6 @@ import {
   not,
   lt,
   gte,
-  path,
 } from 'ramda';
 import {
   Line,
@@ -46,7 +45,6 @@ import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 import {
   TimeValue,
   Line as LineModel,
-  GraphOptionId,
   AdjustTimePeriodProps,
 } from '../models';
 import {
@@ -72,10 +70,6 @@ import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import { TabBounds, TabContext } from '../../../Details';
 import memoizeComponent from '../../../memoizedComponent';
-import {
-  defaultGraphOptions,
-  useGraphOptionsContext,
-} from '../ExportableGraphWithTimeline/useGraphOptions';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
@@ -177,6 +171,8 @@ interface GraphContentProps {
   shiftTime?: (direction: TimeShiftDirection) => void;
   loading: boolean;
   canAdjustTimePeriod: boolean;
+  displayEventAnnotations: boolean;
+  displayTooltipValues: boolean;
 }
 
 const getScale = ({
@@ -218,6 +214,8 @@ const GraphContent = ({
   shiftTime,
   loading,
   canAdjustTimePeriod,
+  displayEventAnnotations,
+  displayTooltipValues,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles({ onAddComment });
@@ -244,8 +242,6 @@ const GraphContent = ({
   );
 
   const context = React.useContext<TabBounds>(TabContext);
-  const graphOptions =
-    useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
 
   const {
     changeMetricsValue,
@@ -256,15 +252,6 @@ const GraphContent = ({
     tooltipTop,
     tooltipOpen,
   } = useMetricsValueContext();
-
-  const displayTooltipValues = path(
-    [GraphOptionId.displayTooltips, 'value'],
-    graphOptions,
-  );
-  const displayEventAnnotations = path(
-    [GraphOptionId.displayEvents, 'value'],
-    graphOptions,
-  );
 
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;

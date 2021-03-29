@@ -498,7 +498,7 @@ describe(Details, () => {
     [label7Days, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
     [label31Days, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
   ])(
-    `queries performance graphs and timelines with %p period when the Graph tab is selected`,
+    `queries performance graphs and timelines with %p period when the Graph tab is selected and "Display events" option is activated`,
     async (period, startIsoString, timelineEventsLimit, periodId) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
@@ -507,7 +507,7 @@ describe(Details, () => {
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline });
 
-      const { getByText } = renderDetails({
+      const { getByText, getByLabelText, findByText } = renderDetails({
         openTabId: graphTabId,
       });
 
@@ -522,7 +522,13 @@ describe(Details, () => {
           `${retrievedDetails.links.endpoints.performance_graph}?start=${startIsoString}&end=${currentDateIsoString}`,
           expect.anything(),
         );
+      });
 
+      userEvent.click(getByLabelText(labelGraphOptions).firstChild as TargetElement);
+      await findByText(labelDisplayEvents);
+      userEvent.click(getByText(labelDisplayEvents));
+
+      await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           buildListTimelineEventsEndpoint({
             endpoint: retrievedDetails.links.endpoints.timeline,
@@ -1079,13 +1085,11 @@ describe(Details, () => {
     ).toEqual(last7Days.id);
   });
 
-  it('queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected and a custom time period is selected', async () => {
+  it('queries performance graphs with a custom timeperiod when the Graph tab is selected and a custom time period is selected', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline })
-      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline });
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
     const { getByLabelText, container } = renderDetails({
       openTabId: graphTabId,
@@ -1121,38 +1125,13 @@ describe(Details, () => {
         cancelTokenRequestParam,
       );
     });
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        buildListTimelineEventsEndpoint({
-          endpoint: retrievedDetails.links.endpoints.timeline,
-          parameters: {
-            limit: 100,
-            search: {
-              conditions: [
-                {
-                  field: 'date',
-                  values: {
-                    $gt: startISOString,
-                    $lt: endISOString,
-                  },
-                },
-              ],
-            },
-          },
-        }),
-        cancelTokenRequestParam,
-      );
-    });
   });
 
   it('displays the correct date time on pickers when the Graph tab is selected and a time period is selected', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline })
-      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline });
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
     const { getByText } = renderDetails({
       openTabId: graphTabId,
@@ -1189,9 +1168,7 @@ describe(Details, () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline })
-      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline });
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
     const { getByLabelText, getByText, container } = renderDetails({
       openTabId: graphTabId,
@@ -1232,14 +1209,12 @@ describe(Details, () => {
     [labelForward, '2020-01-20T18:00:00.000Z', '2020-01-21T18:00:00.000Z', 20],
     [labelBackward, '2020-01-19T18:00:00.000Z', '2020-01-20T18:00:00.000Z', 20],
   ])(
-    `queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected and the "%p" icon is clicked`,
+    `queries performance graphs with a custom timeperiod when the Graph tab is selected and the "%p" icon is clicked`,
     async (iconLabel, startISOString, endISOString, timelineLimit) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-        .mockResolvedValueOnce({ data: retrievedTimeline })
-        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-        .mockResolvedValueOnce({ data: retrievedTimeline });
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
       const { getByLabelText } = renderDetails({
         openTabId: graphTabId,
@@ -1261,29 +1236,6 @@ describe(Details, () => {
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
-          cancelTokenRequestParam,
-        );
-      });
-
-      await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledWith(
-          buildListTimelineEventsEndpoint({
-            endpoint: retrievedDetails.links.endpoints.timeline,
-            parameters: {
-              limit: timelineLimit,
-              search: {
-                conditions: [
-                  {
-                    field: 'date',
-                    values: {
-                      $gt: startISOString,
-                      $lt: endISOString,
-                    },
-                  },
-                ],
-              },
-            },
-          }),
           cancelTokenRequestParam,
         );
       });

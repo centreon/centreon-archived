@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { path, isNil } from 'ramda';
+import { path, isNil, or, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
@@ -25,9 +25,10 @@ import {
 } from '../../../Details/tabs/Graph/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
-import { AdjustTimePeriodProps } from '../models';
+import { AdjustTimePeriodProps, GraphOptionId } from '../models';
 
 import exportToPng from './exportToPng';
+import { defaultGraphOptions, useGraphOptionsContext } from './useGraphOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
   exportToPngButton: {
@@ -92,6 +93,17 @@ const ExportablePerformanceGraphWithTimeline = ({
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const [exporting, setExporting] = React.useState(false);
+  const graphOptions =
+    useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
+
+    const displayTooltipValues = path<boolean>(
+    [GraphOptionId.displayTooltips, 'value'],
+    graphOptions,
+  );
+  const displayEventAnnotations = path<boolean>(
+    [GraphOptionId.displayEvents, 'value'],
+    graphOptions,
+  );
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], resource);
   const timelineEndpoint = path<string>(
@@ -100,7 +112,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   );
 
   const retrieveTimeline = (): void => {
-    if (isNil(timelineEndpoint)) {
+    if (or(isNil(timelineEndpoint), not(displayEventAnnotations))) {
       setTimeline([]);
       return;
     }
@@ -136,7 +148,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     }
 
     retrieveTimeline();
-  }, [endpoint, selectedTimePeriod, customTimePeriod]);
+  }, [endpoint, selectedTimePeriod, customTimePeriod, displayEventAnnotations]);
 
   const getEndpoint = (): string | undefined => {
     if (isNil(endpoint)) {
@@ -206,6 +218,8 @@ const ExportablePerformanceGraphWithTimeline = ({
           adjustTimePeriod={adjustTimePeriod}
           customTimePeriod={customTimePeriod}
           resourceDetailsUpdated={resourceDetailsUpdated}
+          displayTooltipValues={displayTooltipValues}
+          displayEventAnnotations={displayEventAnnotations}
         />
       </div>
     </Paper>

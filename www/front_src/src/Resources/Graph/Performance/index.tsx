@@ -59,6 +59,8 @@ interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
   resourceDetailsUpdated?: boolean;
+  displayEventAnnotations?: boolean;
+  displayTooltipValues?: boolean;
 }
 
 interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
@@ -124,6 +126,8 @@ const PerformanceGraph = ({
   adjustTimePeriod,
   customTimePeriod,
   resourceDetailsUpdated = true,
+  displayEventAnnotations = false,
+  displayTooltipValues = false,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     graphHeight,
@@ -291,6 +295,8 @@ const PerformanceGraph = ({
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
               }
               canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
+              displayEventAnnotations={displayEventAnnotations}
+              displayTooltipValues={displayTooltipValues}
             />
           )}
         </ParentSize>
