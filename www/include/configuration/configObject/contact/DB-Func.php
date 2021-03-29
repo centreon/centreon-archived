@@ -1220,11 +1220,13 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_address5':
             case 'contact_address6':
                 if (!empty($inputValue)) {
-                    ($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING) === false)
-                        ? throw new \InvalidArgumentException('Bad Parameter')
-                        : $bindParams[':' . $inputName] = [
+                    if($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) {
+                        $bindParams[':' . $inputName] = [
                             \PDO::PARAM_STR => $inputValue
                         ];
+                    } else {
+                        throw new \InvalidArgumentException('Bad Parameter');
+                    }
                 }
                 break;
         }
