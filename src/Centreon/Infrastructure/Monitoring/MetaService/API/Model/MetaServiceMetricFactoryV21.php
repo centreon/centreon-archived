@@ -45,7 +45,7 @@ class MetaServiceMetricFactoryV21
             $newMetaServiceMetric->id = $metaServiceMetric['id'];
             $newMetaServiceMetric->name = $metaServiceMetric['name'];
             $newMetaServiceMetric->unit = $metaServiceMetric['unit'];
-            $newMetaServiceMetric->currentValue = $metaServiceMetric['current_value'];
+            $newMetaServiceMetric->value = $metaServiceMetric['value'];
             $newMetaServiceMetric->resource = $metaServiceMetric['resource'];
 
             $metaServiceMetrics[] = $newMetaServiceMetric;

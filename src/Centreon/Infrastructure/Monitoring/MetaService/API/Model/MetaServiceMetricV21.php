@@ -49,7 +49,7 @@ class MetaServiceMetricV21
     /**
      * @var float
      */
-    public $currentValue;
+    public $value;
 
     /**
      * @var Resource

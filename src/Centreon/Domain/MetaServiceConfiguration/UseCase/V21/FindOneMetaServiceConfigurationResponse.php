@@ -56,7 +56,7 @@ class FindOneMetaServiceConfigurationResponse
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return null|array<int, array<string, mixed>>
      */
     public function getMetaServiceConfiguration(): ?array
     {

@@ -51,7 +51,7 @@ class MetaServiceMetric
     /**
      * @var float Current value of the Metric in RealTime
      */
-    private $currentValue;
+    private $value;
 
     /**
      * @var ResourceEntity Resource on which Metric is attached
@@ -132,18 +132,18 @@ class MetaServiceMetric
     /**
      * @return float
      */
-    public function getCurrentValue(): float
+    public function getValue(): float
     {
-        return $this->currentValue;
+        return $this->value;
     }
 
     /**
-     * @param float|null $currentValue
+     * @param float|null $value
      * @return MetaServiceMetric
      */
-    public function setCurrentValue(?float $currentValue): MetaServiceMetric
+    public function setValue(?float $value): MetaServiceMetric
     {
-        $this->currentValue = $currentValue;
+        $this->value = $value;
         return $this;
     }
 

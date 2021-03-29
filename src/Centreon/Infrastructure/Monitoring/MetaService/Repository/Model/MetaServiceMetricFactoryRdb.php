@@ -44,7 +44,7 @@ class MetaServiceMetricFactoryRdb
         $metaServiceMetric = (new MetaServiceMetric($data['metric_name']))
             ->setId((int) $data['metric_id'])
             ->setUnit($data['unit_name'])
-            ->setCurrentValue((float) $data['current_value']);
+            ->setValue((float) $data['current_value']);
 
         /**
          * Create the Service Resource type
