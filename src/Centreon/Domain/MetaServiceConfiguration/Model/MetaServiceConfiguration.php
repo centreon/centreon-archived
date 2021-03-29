@@ -235,6 +235,11 @@ class MetaServiceConfiguration
      */
     public function setDataSourceType(string $dataSourceType): MetaServiceConfiguration
     {
+        if (!in_array($dataSourceType, self::AVAILABLE_DATA_SOURCE_TYPES)) {
+            throw new InvalidArgumentException(
+                sprintf(_('Data source type provided not supported (%s)'), $dataSourceType)
+            );
+        }
         $this->dataSourceType = $dataSourceType;
         return $this;
     }
