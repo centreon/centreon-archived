@@ -1,14 +1,10 @@
 import * as React from 'react';
 
 import { path, isNil, or, not } from 'ramda';
-import { useTranslation } from 'react-i18next';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
-import {
-  useRequest,
-  ListingModel,
-} from '@centreon/ui';
+import { useRequest, ListingModel } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
@@ -78,7 +74,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   const graphOptions =
     useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
 
-    const displayTooltipValues = path<boolean>(
+  const displayTooltipValues = path<boolean>(
     [GraphOptionId.displayTooltips, 'value'],
     graphOptions,
   );
@@ -138,7 +134,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     }
 
     return `${endpoint}${periodQueryParameters}`;
-  };  
+  };
 
   const addCommentToTimeline = ({ date, comment }): void => {
     setTimeline([
@@ -155,9 +151,7 @@ const ExportablePerformanceGraphWithTimeline = ({
 
   return (
     <Paper className={classes.graphContainer}>
-      <div
-        className={classes.graph}
-      >
+      <div className={classes.graph}>
         <PerformanceGraph
           endpoint={getEndpoint()}
           graphHeight={graphHeight}

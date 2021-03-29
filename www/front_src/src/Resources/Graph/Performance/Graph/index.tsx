@@ -42,11 +42,7 @@ import { grey } from '@material-ui/core/colors';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
-import {
-  TimeValue,
-  Line as LineModel,
-  AdjustTimePeriodProps,
-} from '../models';
+import { TimeValue, Line as LineModel, AdjustTimePeriodProps } from '../models';
 import {
   getTime,
   getMin,

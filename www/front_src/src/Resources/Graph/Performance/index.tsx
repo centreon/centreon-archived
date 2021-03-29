@@ -20,15 +20,24 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
-
-import { useRequest, getData, timeFormat, ContentWithCircularLoading, IconButton } from '@centreon/ui';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
+
+import {
+  useRequest,
+  getData,
+  timeFormat,
+  ContentWithCircularLoading,
+  IconButton,
+} from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
-import { labelExportToPng, labelNoDataForThisPeriod } from '../../translatedLabels';
+import {
+  labelExportToPng,
+  labelNoDataForThisPeriod,
+} from '../../translatedLabels';
 import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
@@ -114,7 +123,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   },
   exportToPngButton: {
     justifySelf: 'end',
-  }
+  },
 }));
 
 const shiftRatio = 2;
@@ -288,26 +297,29 @@ const PerformanceGraph = ({
 
   return (
     <MetricsValueContext.Provider value={metricsValueProps}>
-      <div className={classes.container} ref={performanceGraphRef as React.RefObject<HTMLDivElement>}>
+      <div
+        className={classes.container}
+        ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
+      >
         <div className={classes.graphHeader}>
           <div />
           <Typography variant="body1" color="textPrimary">
             {title}
           </Typography>
           <div className={classes.exportToPngButton}>
-          <ContentWithCircularLoading
-            loading={exporting}
-            loadingIndicatorSize={16}
-            alignCenter={false}
-          >
-            <IconButton
-              disabled={isNil(timeline)}
-              title={t(labelExportToPng)}
-              onClick={convertToPng}
+            <ContentWithCircularLoading
+              loading={exporting}
+              loadingIndicatorSize={16}
+              alignCenter={false}
             >
-              <SaveAsImageIcon style={{ fontSize: 18 }} />
-            </IconButton>
-          </ContentWithCircularLoading>
+              <IconButton
+                disabled={isNil(timeline)}
+                title={t(labelExportToPng)}
+                onClick={convertToPng}
+              >
+                <SaveAsImageIcon style={{ fontSize: 18 }} />
+              </IconButton>
+            </ContentWithCircularLoading>
           </div>
         </div>
 

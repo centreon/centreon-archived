@@ -524,7 +524,9 @@ describe(Details, () => {
         );
       });
 
-      userEvent.click(getByLabelText(labelGraphOptions).firstChild as TargetElement);
+      userEvent.click(
+        getByLabelText(labelGraphOptions).firstChild as TargetElement,
+      );
       await findByText(labelDisplayEvents);
       userEvent.click(getByText(labelDisplayEvents));
 
@@ -1206,11 +1208,11 @@ describe(Details, () => {
   });
 
   it.each([
-    [labelForward, '2020-01-20T18:00:00.000Z', '2020-01-21T18:00:00.000Z', 20],
-    [labelBackward, '2020-01-19T18:00:00.000Z', '2020-01-20T18:00:00.000Z', 20],
+    [labelForward, '2020-01-20T18:00:00.000Z', '2020-01-21T18:00:00.000Z'],
+    [labelBackward, '2020-01-19T18:00:00.000Z', '2020-01-20T18:00:00.000Z'],
   ])(
     `queries performance graphs with a custom timeperiod when the Graph tab is selected and the "%p" icon is clicked`,
-    async (iconLabel, startISOString, endISOString, timelineLimit) => {
+    async (iconLabel, startISOString, endISOString) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
