@@ -8,6 +8,8 @@ import { Status } from '../../../models';
 import CompactStatusChip from '../CompactStatusChip';
 import OutputInformation from '../OutputInformation';
 
+import SelectableResourceName from './SelectableResourceName';
+
 interface Props {
   name: string;
   status: Status;
@@ -47,18 +49,14 @@ const ServiceCard = ({
   return (
     <Paper className={classes.serviceCard}>
       <div className={classes.serviceDetails}>
-        <CompactStatusChip
-          label={t(status.name)}
-          severityCode={status.severity_code}
-        />
+        <div>
+          <CompactStatusChip
+            label={t(status.name)}
+            severityCode={status.severity_code}
+          />
+        </div>
         <div className={classes.description}>
-          <Typography
-            variant="body1"
-            onClick={onSelect}
-            style={{ cursor: 'pointer' }}
-          >
-            {name}
-          </Typography>
+          <SelectableResourceName name={name} onSelect={onSelect} />
           <OutputInformation content={information} />
         </div>
         {subInformation && (

@@ -50,7 +50,6 @@ const MetricsTab = ({ details }: TabProps): JSX.Element => {
           <Metrics
             metrics={entities}
             infiniteScrollTriggerRef={infiniteScrollTriggerRef}
-            calculationType={details?.calculation_type as string}
           />
         );
       }}

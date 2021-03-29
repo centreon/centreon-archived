@@ -17,7 +17,7 @@ type ParentLinks = Pick<ResourceLinks, 'uris'>;
 
 export interface Parent extends NamedEntity {
   icon?: Icon;
-  status: Status;
+  status?: Status;
   links?: ParentLinks;
   type: ResourceType;
 }
@@ -30,7 +30,7 @@ export interface Status {
 export interface Resource extends NamedEntity {
   icon?: Icon;
   parent?: Parent;
-  status: Status;
+  status?: Status;
   links?: ResourceLinks;
   acknowledged?: boolean;
   in_downtime?: boolean;

@@ -22,15 +22,15 @@ const statusDecoder = JsonDecoder.object<Status>(
 );
 
 const commonDecoders = {
-  status: statusDecoder,
+  status: JsonDecoder.optional(statusDecoder),
   id: JsonDecoder.number,
   uuid: JsonDecoder.string,
   name: JsonDecoder.string,
   type: JsonDecoder.oneOf<ResourceType>(
     [
-      JsonDecoder.constant('host'),
-      JsonDecoder.constant('metaservice'),
-      JsonDecoder.constant('service'),
+      JsonDecoder.isExactly('host'),
+      JsonDecoder.isExactly('metaservice'),
+      JsonDecoder.isExactly('service'),
     ],
     'ResourceType',
   ),
@@ -98,12 +98,14 @@ const resourceDecoder = JsonDecoder.object<Resource>(
           externals: JsonDecoder.object<ResourceExternals>(
             {
               action_url: JsonDecoder.optional(JsonDecoder.string),
-              notes: JsonDecoder.object<Notes>(
-                {
-                  label: JsonDecoder.optional(JsonDecoder.string),
-                  url: JsonDecoder.string,
-                },
-                'ResourceLinksExternalNotes',
+              notes: JsonDecoder.optional(
+                JsonDecoder.object<Notes>(
+                  {
+                    label: JsonDecoder.optional(JsonDecoder.string),
+                    url: JsonDecoder.string,
+                  },
+                  'ResourceLinksExternalNotes',
+                ),
               ),
             },
             'ResourceLinksExternals',
@@ -122,9 +124,9 @@ const resourceDecoder = JsonDecoder.object<Resource>(
     passive_checks: JsonDecoder.optional(JsonDecoder.boolean),
     short_type: JsonDecoder.oneOf(
       [
-        JsonDecoder.constant('h'),
-        JsonDecoder.constant('m'),
-        JsonDecoder.constant('s'),
+        JsonDecoder.isExactly('h'),
+        JsonDecoder.isExactly('m'),
+        JsonDecoder.isExactly('s'),
       ],
       'ResourceShortType',
     ),

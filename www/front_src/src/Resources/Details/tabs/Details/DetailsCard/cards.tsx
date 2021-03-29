@@ -20,6 +20,7 @@ import {
   labelFqdn,
   labelAlias,
   labelGroups,
+  labelCalculationType,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 
@@ -116,6 +117,11 @@ const getDetailCardLines = ({
       title: labelCurrentNotificationNumber,
       field: details.notification_number,
       line: <DetailsLine line={details.notification_number.toString()} />,
+    },
+    {
+      title: labelCalculationType,
+      field: details.calculation_type,
+      line: <DetailsLine line={details.calculation_type} />,
     },
     {
       title: labelGroups,

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { equals, last } from 'ramda';
 
-import { Resource } from '../../../models';
+import { Resource, Status } from '../../../models';
 import ServiceCard from '../Details/ServiceCard';
 
 interface Props {
@@ -26,7 +26,7 @@ const ServiceList = ({
           <div key={id}>
             <ServiceCard
               name={name}
-              status={status}
+              status={status as Status}
               information={information}
               subInformation={duration}
               onSelect={() => onSelectService(service)}

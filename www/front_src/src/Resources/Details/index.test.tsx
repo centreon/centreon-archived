@@ -81,6 +81,7 @@ import {
   timelineTabId,
   shortcutsTabId,
   servicesTabId,
+  metricsTabId,
 } from './tabs';
 import { TabId } from './tabs/models';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
@@ -98,6 +99,7 @@ jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
 const resourceServiceUuid = 'h1-s1';
 const resourceServiceId = 1;
 const resourceServiceType = 'service';
+const metaServiceResourceType = 'metaservice';
 
 const resourceHostUuid = 'h1';
 const resourceHostId = 1;
@@ -289,7 +291,10 @@ const retrievedTimeline = {
 const retrievedServices = {
   result: [
     {
+      uuid: 'h1-s3',
       id: 3,
+      type: 'service',
+      short_type: 's',
       name: 'Ping',
       status: {
         severity_code: 5,
@@ -301,10 +306,19 @@ const retrievedServices = {
         endpoints: {
           performance_graph: 'ping-performance',
         },
+        uris: {
+          configuration: 'configuration',
+        },
+        externals: {
+          action: 'action',
+        },
       },
     },
     {
       id: 4,
+      uuid: 'h1-s4',
+      type: 'service',
+      short_type: 's',
       name: 'Disk',
       status: {
         severity_code: 6,
@@ -312,6 +326,14 @@ const retrievedServices = {
       },
       information: 'No output',
       duration: '21m',
+      links: {
+        uris: {
+          configuration: 'configuration',
+        },
+        externals: {
+          action: 'action',
+        },
+      },
     },
   ],
   meta: {
@@ -337,6 +359,14 @@ const setSelectedHostResource = () => {
   context.setSelectedResourceUuid(resourceHostUuid);
   context.setSelectedResourceId(resourceHostId);
   context.setSelectedResourceType(resourceHostType);
+  context.setSelectedResourceParentId(undefined);
+  context.setSelectedResourceParentType(undefined);
+};
+
+const setSelectedMetaServiceResource = () => {
+  context.setSelectedResourceUuid(resourceServiceUuid);
+  context.setSelectedResourceId(resourceServiceId);
+  context.setSelectedResourceType(metaServiceResourceType);
   context.setSelectedResourceParentId(undefined);
   context.setSelectedResourceParentType(undefined);
 };
@@ -1292,4 +1322,52 @@ describe(Details, () => {
       });
     },
   );
+
+  it('display retrieved metrics when the selected Resource is a meta service and the metrics tab is selected', async () => {
+    const service = retrievedServices.result[0];
+
+    const retrievedMetrics = {
+      result: [
+        {
+          id: 0,
+          name: 'pl',
+          unit: '%',
+          value: 3,
+          resource: service,
+        },
+      ],
+      meta: {
+        total: 1,
+        page: 1,
+        limit: 10,
+      },
+    };
+
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          ...retrievedDetails,
+          type: 'metaservice',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: retrievedMetrics,
+      });
+
+    const { getByText } = renderDetails({
+      openTabId: metricsTabId,
+    });
+
+    act(() => {
+      setSelectedMetaServiceResource();
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    expect(getByText('pl')).toBeInTheDocument();
+    expect(getByText('3 (%)')).toBeInTheDocument();
+    expect(getByText(service.name)).toBeInTheDocument();
+  });
 });
