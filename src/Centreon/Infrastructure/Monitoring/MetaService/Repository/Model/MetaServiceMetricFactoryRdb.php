@@ -43,7 +43,7 @@ class MetaServiceMetricFactoryRdb
     {
         $metaServiceMetric = (new MetaServiceMetric($data['metric_name']))
             ->setId((int) $data['metric_id'])
-            ->setUnitName($data['unit_name'])
+            ->setUnit($data['unit_name'])
             ->setCurrentValue((float) $data['current_value']);
 
         /**

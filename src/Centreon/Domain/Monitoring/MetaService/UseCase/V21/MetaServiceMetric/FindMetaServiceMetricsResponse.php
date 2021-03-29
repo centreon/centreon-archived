@@ -45,7 +45,7 @@ class FindMetaServiceMetricsResponse
             $this->metaServiceMetrics[] = [
                 'id' => $metaServiceMetric->getId(),
                 'name' => $metaServiceMetric->getName(),
-                'unit_name' => $metaServiceMetric->getUnitName(),
+                'unit' => $metaServiceMetric->getUnit(),
                 'current_value' => $metaServiceMetric->getCurrentValue(),
                 'resource' => $metaServiceMetric->getResource()
             ];

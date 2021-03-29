@@ -46,7 +46,7 @@ class MetaServiceMetric
     /**
      * @var string Name of the Metric Unit
      */
-    private $unitName;
+    private $unit;
 
     /**
      * @var float Current value of the Metric in RealTime
@@ -110,22 +110,22 @@ class MetaServiceMetric
     /**
      * @return string|null
      */
-    public function getUnitName(): ?string
+    public function getUnit(): ?string
     {
-        return $this->unitName;
+        return $this->unit;
     }
 
     /**
-     * @param string|null $unitName
+     * @param string|null $unit
      * @return MetaServiceMetric
      * @throws \Assert\AssertionFailedException
      */
-    public function setUnitName(?string $unitName): MetaServiceMetric
+    public function setUnit(?string $unit): MetaServiceMetric
     {
-        if (!is_null($unitName)) {
-            Assertion::maxLength($unitName, self::MAX_METRIC_UNIT_NAME_LENGTH, 'MetaServiceMetric::unitName');
+        if (!is_null($unit)) {
+            Assertion::maxLength($unit, self::MAX_METRIC_UNIT_NAME_LENGTH, 'MetaServiceMetric::unit');
         }
-        $this->unitName = $unitName;
+        $this->unit = $unit;
         return $this;
     }
 

@@ -44,7 +44,7 @@ class MetaServiceMetricV21
     /**
      * @var string
      */
-    public $unitName;
+    public $unit;
 
     /**
      * @var float
