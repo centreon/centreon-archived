@@ -99,7 +99,9 @@ const Content = ({ event }: Props): JSX.Element => {
 };
 
 const Author = ({ event, label }: Props & { label: string }): JSX.Element => {
-  const suffix = event.contact ? `${labelBy} ${event.contact.name}` : '';
+  const { t } = useTranslation();
+
+  const suffix = event.contact ? `${t(labelBy)} ${event.contact.name}` : '';
 
   return <Typography variant="h6">{`${label} ${suffix}`}</Typography>;
 };
