@@ -1220,7 +1220,7 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_address5':
             case 'contact_address6':
                 if (!empty($inputValue)) {
-                    if($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) {
+                    if ($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) {
                         $bindParams[':' . $inputName] = [
                             \PDO::PARAM_STR => $inputValue
                         ];
