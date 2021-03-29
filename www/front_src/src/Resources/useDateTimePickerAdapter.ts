@@ -19,7 +19,7 @@ const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
     }
 
     public startOfMonth(date: dayjs.Dayjs) {
-      return date.clone().startOf('week');
+      return date;
     }
   }
 
