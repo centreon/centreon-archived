@@ -590,7 +590,7 @@ function updateContact($contact_id = null)
     //Build Query with only setted values.
     $rq = "UPDATE contact SET ";
     foreach (array_keys($bindParams) as $token) {
-            $rq .= ltrim($token, ':') . " = " . $token .", ";
+            $rq .= ltrim($token, ':') . " = " . $token . ", ";
     }
     $rq = rtrim($rq, ', ');
     $rq .= " WHERE contact_id = :contactId";
@@ -642,7 +642,7 @@ function updateContact_MC($contact_id = null)
     $bindParams = sanitizeFormContactParameters($ret);
     $rq = "UPDATE contact SET ";
     foreach (array_keys($bindParams) as $token) {
-            $rq .= ltrim($token, ':') . " = " . $token .", ";
+            $rq .= ltrim($token, ':') . " = " . $token . ", ";
     }
     $rq = rtrim($rq, ', ');
     $rq .= " WHERE contact_id = :contactId";
@@ -1108,12 +1108,20 @@ function sanitizeFormContactParameters(array $ret): array
                 break;
             case 'contact_hostNotifOpts':
                 $bindParams[':contact_host_notification_options'] = [
-                    \PDO::PARAM_STR => filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING)
+                    \PDO::PARAM_STR => (($inputValue = filter_var(
+                        implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING
+                    )) === false)
+                        ? null
+                        : $inputValue
                 ];
                 break;
             case 'contact_svNotifOpts':
                 $bindParams[':contact_service_notification_options'] = [
-                    \PDO::PARAM_STR => filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING)
+                    \PDO::PARAM_STR => (($inputValue = filter_var(
+                        implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING
+                    )) === false)
+                        ? null
+                        : $inputValue
                 ];
                 break;
             case 'contact_oreon':
@@ -1178,14 +1186,30 @@ function sanitizeFormContactParameters(array $ret): array
                     ];
                 }
                 break;
+            case 'contact_lang':
+                if (!empty($inputValue)) {
+                    $bindParams[':' . $inputName] = [
+                        \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === false)
+                            ? 'browser'
+                            : $inputValue
+                    ];
+                }
+                break;
+            case 'contact_auth_type':
+                if (!empty($inputValue)) {
+                    $bindParams[':' . $inputName] = [
+                        \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === false)
+                            ? 'local'
+                            : $inputValue
+                    ];
+                }
+                break;
             case 'contact_name':
             case 'contact_alias':
             case 'contact_autologin_key':
-            case 'contact_lang':
             case 'contact_email':
             case 'contact_pager':
             case 'contact_comment':
-            case 'contact_auth_type':
             case 'contact_ldap_dn':
             case 'contact_address1':
             case 'contact_address2':
@@ -1194,9 +1218,11 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_address5':
             case 'contact_address6':
                 if (!empty($inputValue)) {
-                    $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_STR => filter_var($inputValue, FILTER_SANITIZE_STRING)
-                    ];
+                    ($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING) === false)
+                        ? throw new \InvalidArgumentException('Bad Parameter')
+                        : $bindParams[':' . $inputName] = [
+                            \PDO::PARAM_STR => $inputValue
+                        ];
                 }
                 break;
         }
