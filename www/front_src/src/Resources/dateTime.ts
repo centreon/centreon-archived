@@ -4,13 +4,13 @@ const parseAndFormat = ({ isoDate, to }): string =>
   moment.parseZone(isoDate).format(to);
 
 const getFormattedDateTime = (isoDate): string =>
-  parseAndFormat({ isoDate, to: 'MM/DD/YYYY HH:mm' });
+  parseAndFormat({ isoDate, to: 'L LT' });
 
 const getFormattedDate = (isoDate): string =>
-  parseAndFormat({ isoDate, to: 'MM/DD/YYYY' });
+  parseAndFormat({ isoDate, to: 'L' });
 
 const getFormattedTime = (isoDate): string =>
-  parseAndFormat({ isoDate, to: 'HH:mm' });
+  parseAndFormat({ isoDate, to: 'LT' });
 
 export {
   parseAndFormat,
