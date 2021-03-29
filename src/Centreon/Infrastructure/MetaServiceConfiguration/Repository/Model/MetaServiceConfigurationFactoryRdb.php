@@ -40,12 +40,11 @@ class MetaServiceConfigurationFactoryRdb
      */
     public static function create(array $data): MetaServiceConfiguration
     {
-        $metaServiceConfiguration = (new MetaServiceConfiguration($data['meta_name'], $data['calculation_type'], (int) $data['data_source_type']))
+        $metaServiceConfiguration = (new MetaServiceConfiguration($data['meta_name'], $data['calculation_type'], (int) $data['meta_select_mode']))
             ->setId((int) $data['meta_id'])
             ->setActivated($data['meta_activate'] === '1')
             ->setOutput($data['meta_display'])
             ->setDataSourceType($data['data_source_type'])
-            ->setMetaSelectMode((int) $data['meta_select_mode'])
             ->setRegexpString($data['regexp_str'])
             ->setMetric($data['metric'])
             ->setWarning($data['warning'])

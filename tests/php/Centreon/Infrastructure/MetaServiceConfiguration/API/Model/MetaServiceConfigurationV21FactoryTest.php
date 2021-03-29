@@ -20,27 +20,49 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Infrastructure\HostConfiguration\API\Model;
+namespace Tests\Centreon\Infrastructure\MetaServiceConfiguration\API\Model;
 
-use Centreon\Domain\HostConfiguration\Model\HostGroup;
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroupsResponse;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostGroup\HostGroupV21Factory;
 use PHPUnit\Framework\TestCase;
-use Tests\Centreon\Domain\HostConfiguration\Model\HostGroupTest;
+use Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfiguration;
+use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindMetaServicesConfigurationsResponse;
+use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindOneMetaServiceConfigurationResponse;
+use Centreon\Infrastructure\MetaServiceConfiguration\API\Model\MetaServiceConfigurationV21Factory;
+use Tests\Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfigurationTest;
 
 /**
- * @package Tests\Centreon\Infrastructure\HostConfiguration\API\Model
+ * @package Tests\Centreon\Infrastructure\MetaServiceConfiguration\API\Model
  */
-class HostGroupV21FactoryTest extends TestCase
+class MetaServiceConfigurationV21FactoryTest extends TestCase
 {
     /**
-     * @var HostGroup
+     * @var MetaServiceConfiguration
      */
-    private $hostGroup;
+    private $metaServiceConfiguration;
 
     protected function setUp(): void
     {
-        $this->hostGroup = HostGroupTest::createEntity();
+        $this->metaServiceConfiguration = MetaServiceConfigurationTest::createEntity();
+    }
+
+    /**
+     * We check the format sent for the API request (v2.1) using the factory
+     */
+    public function testCreateAllFromResponse(): void
+    {
+        $response = new FindMetaServicesConfigurationsResponse();
+        $response->setMetaServicesConfigurations([$this->metaServiceConfiguration]);
+        $metaServiceConfigurationV21 = MetaServiceConfigurationV21Factory::createAllFromResponse($response);
+
+        $metaServiceConfiguration = $response->getMetaServicesConfigurations()[0];
+        $this->assertEquals($metaServiceConfiguration['id'], $metaServiceConfigurationV21[0]->id);
+        $this->assertEquals($metaServiceConfiguration['name'], $metaServiceConfigurationV21[0]->name);
+        $this->assertEquals($metaServiceConfiguration['meta_display'], $metaServiceConfigurationV21[0]->output);
+        $this->assertEquals($metaServiceConfiguration['data_source_type'], $metaServiceConfigurationV21[0]->dataSourceType);
+        $this->assertEquals($metaServiceConfiguration['regexp_str'], $metaServiceConfigurationV21[0]->regexpString);
+        $this->assertEquals($metaServiceConfiguration['warning'], $metaServiceConfigurationV21[0]->warning);
+        $this->assertEquals($metaServiceConfiguration['critical'], $metaServiceConfigurationV21[0]->critical);
+        $this->assertEquals($metaServiceConfiguration['meta_select_mode'], $metaServiceConfigurationV21[0]->metaSelectMode);
+        $this->assertEquals($metaServiceConfiguration['is_activated'], $metaServiceConfigurationV21[0]->isActivated);
     }
 
     /**
@@ -48,21 +70,19 @@ class HostGroupV21FactoryTest extends TestCase
      */
     public function testCreateFromResponse(): void
     {
-        $response = new FindHostGroupsResponse();
-        $response->setHostGroups([$this->hostGroup]);
-        $hostGroupV21 = HostGroupV21Factory::createFromResponse($response);
+        $response = new FindOneMetaServiceConfigurationResponse();
+        $response->setMetaServiceConfiguration($this->metaServiceConfiguration);
+        $metaServiceConfigurationV21 = MetaServiceConfigurationV21Factory::createOneFromResponse($response);
 
-        $oneHostGroups = $response->getHostGroups()[0];
-        $this->assertCount(count($response->getHostGroups()), $response->getHostGroups());
-        $this->assertEquals($oneHostGroups['id'], $hostGroupV21[0]->id);
-        $this->assertEquals($oneHostGroups['name'], $hostGroupV21[0]->name);
-        $this->assertEquals($oneHostGroups['alias'], $hostGroupV21[0]->alias);
-        $this->assertEquals($oneHostGroups['notes_url'], $hostGroupV21[0]->notesUrl);
-        $this->assertEquals($oneHostGroups['action_url'], $hostGroupV21[0]->actionUrl);
-        $this->assertEquals($oneHostGroups['notes'], $hostGroupV21[0]->notes);
-        $this->assertEquals($oneHostGroups['comment'], $hostGroupV21[0]->comment);
-        $this->assertEquals($oneHostGroups['icon'], $hostGroupV21[0]->icon);
-        $this->assertEquals($oneHostGroups['icon_map'], $hostGroupV21[0]->iconMap);
-        $this->assertEquals($oneHostGroups['is_activated'], $hostGroupV21[0]->isActivated);
+        $metaServiceConfiguration = $response->getMetaServiceConfiguration();
+        $this->assertEquals($metaServiceConfiguration['id'], $metaServiceConfigurationV21->id);
+        $this->assertEquals($metaServiceConfiguration['name'], $metaServiceConfigurationV21->name);
+        $this->assertEquals($metaServiceConfiguration['meta_display'], $metaServiceConfigurationV21->output);
+        $this->assertEquals($metaServiceConfiguration['data_source_type'], $metaServiceConfigurationV21->dataSourceType);
+        $this->assertEquals($metaServiceConfiguration['regexp_str'], $metaServiceConfigurationV21->regexpString);
+        $this->assertEquals($metaServiceConfiguration['warning'], $metaServiceConfigurationV21->warning);
+        $this->assertEquals($metaServiceConfiguration['critical'], $metaServiceConfigurationV21->critical);
+        $this->assertEquals($metaServiceConfiguration['meta_select_mode'], $metaServiceConfigurationV21->metaSelectMode);
+        $this->assertEquals($metaServiceConfiguration['is_activated'], $metaServiceConfigurationV21->isActivated);
     }
 }
