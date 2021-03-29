@@ -331,8 +331,8 @@ describe(Listing, () => {
 
     expect(getByText('admin')).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
-    expect(getByText('02/28/2020 9:16 AM')).toBeInTheDocument();
-    expect(getByText('02/28/2020 9:18 AM')).toBeInTheDocument();
+    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
+    expect(getByText('02/28/2020 09:18')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();
   });
 
@@ -374,7 +374,7 @@ describe(Listing, () => {
     );
 
     expect(getByText('admin')).toBeInTheDocument();
-    expect(getByText('02/28/2020 9:16 AM')).toBeInTheDocument();
+    expect(getByText('02/28/2020 09:16')).toBeInTheDocument();
     expect(getByText('Yes')).toBeInTheDocument();
     expect(getByText('No')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();

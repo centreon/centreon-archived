@@ -8,14 +8,14 @@ interface ParseAndFormatProps {
 const parseAndFormat = ({ isoDate, to }: ParseAndFormatProps): string =>
   moment.parseZone(isoDate).format(to);
 
-const getFormattedDateTime = (isoDate): string =>
-  parseAndFormat({ isoDate, to: 'L LT' });
+const getFormattedDateTime = (isoDate: string): string =>
+  parseAndFormat({ isoDate, to: 'MM/DD/YYYY HH:mm' });
 
-const getFormattedDate = (isoDate): string =>
-  parseAndFormat({ isoDate, to: 'L' });
+const getFormattedDate = (isoDate: string): string =>
+  parseAndFormat({ isoDate, to: 'MM/DD/YYYY' });
 
-const getFormattedTime = (isoDate): string =>
-  parseAndFormat({ isoDate, to: 'LT' });
+const getFormattedTime = (isoDate: string): string =>
+  parseAndFormat({ isoDate, to: 'HH:mm' });
 
 export {
   parseAndFormat,
