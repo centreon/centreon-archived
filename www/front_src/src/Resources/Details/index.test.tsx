@@ -555,6 +555,18 @@ describe(Details, () => {
         if (!isNil(periodId)) {
           expect(context.tabParameters.graph).toEqual({
             selectedTimePeriodId: periodId,
+            graphOptions: {
+              displayEvents: {
+                id: 'displayEvents',
+                label: 'Display events',
+                value: true,
+              },
+              displayTooltips: {
+                id: 'displayTooltips',
+                label: 'Display tooltips',
+                value: false,
+              },
+            },
           });
         }
       });
@@ -584,7 +596,7 @@ describe(Details, () => {
     });
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledTimes(3);
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
     });
 
     expect(queryByLabelText(labelComment)).toBeNull();
