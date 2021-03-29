@@ -1,27 +1,49 @@
 import * as React from 'react';
 
-import { Card, CardContent, Typography, Grid } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+
+import { Typography, makeStyles, Tooltip } from '@material-ui/core';
+import IconCheck from '@material-ui/icons/Check';
+
+import { labelActive } from '../../../../translatedLabels';
+import Card from '../Card';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    height: '100%',
+  },
+  title: {
+    display: 'flex',
+    gridGap: theme.spacing(1),
+  },
+  active: {
+    color: theme.palette.success.main,
+  },
+}));
 
 interface Props {
   title: string;
-  lines: Array<{ key: string; line: JSX.Element | null }>;
+  line: JSX.Element;
+  active?: boolean;
 }
 
-const DetailsCard = ({ title, lines }: Props): JSX.Element => {
+const DetailsCard = ({ title, line, active }: Props): JSX.Element => {
+  const classes = useStyles();
+  const { t } = useTranslation();
+
   return (
-    <Card style={{ height: '100%' }}>
-      <CardContent>
-        <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+    <Card className={classes.container}>
+      <div className={classes.title}>
+        <Typography variant="body1" color="textSecondary" gutterBottom>
           {title}
         </Typography>
-        <Grid direction="column" container spacing={1}>
-          {lines.map(({ key, line }) => (
-            <Grid item key={key}>
-              {line}
-            </Grid>
-          ))}
-        </Grid>
-      </CardContent>
+        {active && (
+          <Tooltip title={t(labelActive) as string}>
+            <IconCheck fontSize="small" className={classes.active} />
+          </Tooltip>
+        )}
+      </div>
+      {line}
     </Card>
   );
 };

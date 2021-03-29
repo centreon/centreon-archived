@@ -50,7 +50,7 @@ interface GraphOption {
 
 export interface GraphOptions {
   [GraphOptionId.displayTooltips]: GraphOption;
-  [GraphOptionId.displayTooltips]: GraphOption;
+  [GraphOptionId.displayEvents]: GraphOption;
 }
 
 export interface GraphTabParameters {

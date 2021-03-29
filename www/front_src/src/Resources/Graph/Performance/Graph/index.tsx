@@ -11,7 +11,6 @@ import {
   lt,
   gte,
   path,
-  or,
 } from 'ramda';
 import {
   Line,
@@ -78,7 +77,6 @@ import {
   useGraphOptionsContext,
 } from '../ExportableGraphWithTimeline/useGraphOptions';
 
-import MetricsTooltip from './MetricsTooltip';
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
 import Axes from './Axes';
@@ -177,7 +175,7 @@ interface GraphContentProps {
   format: (parameters) => string;
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   shiftTime?: (direction: TimeShiftDirection) => void;
-  sendingGetGraphDataRequest: boolean;
+  loading: boolean;
   canAdjustTimePeriod: boolean;
 }
 
@@ -218,7 +216,7 @@ const GraphContent = ({
   format,
   applyZoom,
   shiftTime,
-  sendingGetGraphDataRequest,
+  loading,
   canAdjustTimePeriod,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
@@ -236,15 +234,6 @@ const GraphContent = ({
   const { canComment } = useAclQuery();
 
   const theme = useTheme();
-
-  const {
-    tooltipData,
-    tooltipLeft,
-    tooltipTop,
-    tooltipOpen,
-    showTooltip,
-    hideTooltip,
-  } = useTooltip();
   const [isMouseOver, setIsMouseOver] = React.useState(false);
 
   const { containerRef, containerBounds, TooltipInPortal } = useTooltipInPortal(
@@ -258,7 +247,15 @@ const GraphContent = ({
   const graphOptions =
     useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
 
-  const { setMetricsValue, metricsValue } = useMetricsValueContext();
+  const {
+    changeMetricsValue,
+    metricsValue,
+    hideTooltip,
+    tooltipData,
+    tooltipLeft,
+    tooltipTop,
+    tooltipOpen,
+  } = useMetricsValueContext();
 
   const displayTooltipValues = path(
     [GraphOptionId.displayTooltips, 'value'],
@@ -371,13 +368,16 @@ const GraphContent = ({
       return !isNil(timeValue[metric]) && !isNil(line);
     });
 
-    setMetricsValue({
-      x,
-      y,
-      timeValue,
-      metrics: metricsToDisplay,
-      lines,
-      base,
+    changeMetricsValue({
+      newMetricsValue: {
+        x,
+        y,
+        timeValue,
+        metrics: metricsToDisplay,
+        lines,
+        base,
+      },
+      displayTooltipValues,
     });
   };
 
@@ -399,7 +399,7 @@ const GraphContent = ({
           start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
           end: gte(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
         });
-        setMetricsValue(null);
+        changeMetricsValue({ newMetricsValue: null, displayTooltipValues });
         hideTooltip();
         return;
       }
@@ -408,14 +408,7 @@ const GraphContent = ({
 
       onTooltipDisplay?.([x, y]);
     },
-    [
-      showTooltip,
-      containerBounds,
-      lines,
-      zoomBoundaries,
-      timeline,
-      displayTooltipValues,
-    ],
+    [containerBounds, lines, zoomBoundaries, timeline, displayTooltipValues],
   );
 
   React.useEffect(() => {
@@ -429,7 +422,7 @@ const GraphContent = ({
     }
 
     if (isNil(tooltipPosition)) {
-      setMetricsValue(null);
+      changeMetricsValue({ newMetricsValue: null, displayTooltipValues });
       hideTooltip();
       return;
     }
@@ -438,19 +431,6 @@ const GraphContent = ({
 
     updateMetricsValue({ x, y });
   }, [tooltipPosition]);
-
-  React.useEffect(() => {
-    if (or(not(displayTooltipValues), isNil(metricsValue))) {
-      return;
-    }
-    showTooltip({
-      tooltipLeft: metricsValue?.x || 0,
-      tooltipTop: metricsValue?.y || 0,
-      tooltipData: isEmpty(metricsValue?.metrics) ? undefined : (
-        <MetricsTooltip />
-      ),
-    });
-  }, [metricsValue]);
 
   React.useEffect(() => {
     if (not(displayTooltipValues)) {
@@ -464,7 +444,7 @@ const GraphContent = ({
   };
 
   const closeTooltip = (): void => {
-    setMetricsValue(null);
+    changeMetricsValue({ newMetricsValue: null, displayTooltipValues });
     hideTooltip();
     setIsMouseOver(false);
     onTooltipDisplay?.();
@@ -555,7 +535,7 @@ const GraphContent = ({
               {tooltipData}
             </TooltipInPortal>
           )}
-          {sendingGetGraphDataRequest && (
+          {loading && (
             <div className={classes.graphLoader}>
               <CircularProgress />
             </div>
@@ -648,7 +628,7 @@ const GraphContent = ({
                 graphHeight,
                 graphWidth,
                 canAdjustTimePeriod,
-                sendingGetGraphDataRequest,
+                loading,
                 marginTop: margin.top,
                 marginLeft: margin.left,
                 shiftTime,
@@ -712,7 +692,7 @@ const memoProps = [
   'tooltipPosition',
   'resource',
   'eventAnnotationsActive',
-  'sendingGetGraphDataRequest',
+  'loading',
   'canAdjustTimePeriod',
 ];
 

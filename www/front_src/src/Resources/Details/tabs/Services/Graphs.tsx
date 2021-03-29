@@ -35,7 +35,7 @@ interface Props {
   getIntervalDates: () => [string, string];
   selectedTimePeriod: TimePeriod | null;
   customTimePeriod: CustomTimePeriod;
-  displayLoader: boolean;
+  resourceDetailsUpdated: boolean;
   adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
 }
 
@@ -47,7 +47,7 @@ const ServiceGraphs = ({
   selectedTimePeriod,
   customTimePeriod,
   adjustTimePeriod,
-  displayLoader,
+  resourceDetailsUpdated,
 }: Props): JSX.Element => {
   const [tooltipPosition, setTooltipPosition] = React.useState<
     [number, number]
@@ -75,7 +75,7 @@ const ServiceGraphs = ({
               tooltipPosition={tooltipPosition}
               customTimePeriod={customTimePeriod}
               adjustTimePeriod={adjustTimePeriod}
-              displayLoader={displayLoader}
+              resourceDetailsUpdated={resourceDetailsUpdated}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>

@@ -21,7 +21,7 @@ interface TimeShiftContextProps {
   marginLeft: number;
   marginTop: number;
   canAdjustTimePeriod: boolean;
-  sendingGetGraphDataRequest: boolean;
+  loading: boolean;
   shiftTime?: (direction: TimeShiftDirection) => void;
 }
 
