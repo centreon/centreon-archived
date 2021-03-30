@@ -2582,6 +2582,62 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /platform/topology/{poller_id}:
+    delete:
+      tags:
+        - Topology
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+      summary: 'Delete a Platform'
+      description: "Delete a platform from the topology"
+      responses:
+        '204':
+          description: "Platform deleted"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /gorgone/pollers/{poller_id}/responses/{token}:
+    get:
+      tags:
+        - Gorgone
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+        - $ref: '#/components/parameters/GorgoneToken'
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Gorgone.Response'
+                  type: object
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /gorgone/pollers/{poller_id}/commands/{command_name}:
+    post:
+      tags:
+        - Gorgone
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+        - $ref: '#/components/parameters/CommandName'
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    token:
+                      type: string
+                      description: "Token used to retrieve the data linked to the command"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /administration/parameters:
     post:
       tags:
@@ -2865,6 +2921,29 @@ components:
         type: integer
         format: int64
         example: 1
+    PollerId:
+      in: path
+      name: poller_id
+      description: "ID of the poller"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 5
+    GorgoneToken:
+      in: path
+      name: token
+      description: "Gorgone Token"
+      required: true
+      schema:
+        type: string
+    CommandName:
+      in: path
+      name: command_name
+      description: "Gorgone Command"
+      required: true
+      schema:
+        type: string
   responses:
     Unauthorized:
       description: "Unauthorized"
