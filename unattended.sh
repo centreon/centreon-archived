@@ -340,7 +340,13 @@ function set_required_prerequisite(){
 		PKG_MGR="dnf"
 
 		case "$detected_os_release" in
-        	centos-release* | centos-linux-release*)
+        	
+			redhat-release*)
+				BASE_PACKAGES=(dnf-plugins-core epel-release)
+				subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
+				;;
+				
+			centos-release* | centos-linux-release* | )
         		BASE_PACKAGES=(dnf-plugins-core epel-release)
         		$PKG_MGR config-manager --set-enabled powertools
           		;;
