@@ -51,6 +51,7 @@ const GraphTabContent = ({
     getIntervalDates,
     customTimePeriod,
     changeCustomTimePeriod,
+    adjustTimePeriod,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['graph', 'selectedTimePeriodId'],
@@ -78,6 +79,7 @@ const GraphTabContent = ({
         getIntervalDates={getIntervalDates}
         selectedTimePeriod={selectedTimePeriod}
         customTimePeriod={customTimePeriod}
+        adjustTimePeriod={adjustTimePeriod}
       />
     </div>
   );

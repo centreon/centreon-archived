@@ -13,6 +13,9 @@ import {
   head,
   equals,
   pipe,
+  not,
+  add,
+  negate,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -25,12 +28,22 @@ import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import {
+  CustomTimePeriod,
+  CustomTimePeriodProperty,
+} from '../../Details/tabs/Graph/models';
 
 import Graph from './Graph';
 import Legend from './Legend';
 import LoadingSkeleton from './LoadingSkeleton';
-import { GraphData, TimeValue, Line as LineModel } from './models';
+import {
+  GraphData,
+  TimeValue,
+  Line as LineModel,
+  AdjustTimePeriodProps,
+} from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
+import { TimeShiftDirection } from './Graph/TimeShiftZones';
 
 interface Props {
   endpoint?: string;
@@ -43,9 +56,15 @@ interface Props {
   onAddComment?: (commentParameters: CommentParameters) => void;
   tooltipPosition?: [number, number];
   onTooltipDisplay?: (position?: [number, number]) => void;
+  adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
+  customTimePeriod?: CustomTimePeriod;
 }
 
-const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
+interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
+  canAdjustTimePeriod: boolean;
+}
+
+const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   container: {
     display: 'grid',
     flexDirection: 'column',
@@ -68,7 +87,28 @@ const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
     alignItems: 'center',
     width: '100%',
   },
+  graphHeader: {
+    display: 'grid',
+    gridTemplateColumns: 'auto auto',
+    columnGap: `${theme.spacing(3)}px`,
+  },
+  graphTranslation: {
+    display: 'grid',
+    gridTemplateColumns: ({ canAdjustTimePeriod }) =>
+      canAdjustTimePeriod ? 'min-content auto min-content' : 'auto',
+    columnGap: `${theme.spacing(1)}px`,
+    width: '90%',
+    justifyContent: ({ canAdjustTimePeriod }) =>
+      canAdjustTimePeriod ? 'space-between' : 'center',
+    margin: theme.spacing(0, 1),
+  },
+  loadingContainer: {
+    width: theme.spacing(2),
+    height: theme.spacing(2),
+  },
 }));
+
+const shiftRatio = 2;
 
 const PerformanceGraph = ({
   endpoint,
@@ -81,8 +121,13 @@ const PerformanceGraph = ({
   onTooltipDisplay,
   resource,
   onAddComment,
+  adjustTimePeriod,
+  customTimePeriod,
 }: Props): JSX.Element | null => {
-  const classes = useStyles({ graphHeight });
+  const classes = useStyles({
+    graphHeight,
+    canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
+  });
   const { t } = useTranslation();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
@@ -90,7 +135,10 @@ const PerformanceGraph = ({
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
 
-  const { sendRequest: sendGetGraphDataRequest } = useRequest<GraphData>({
+  const {
+    sendRequest: sendGetGraphDataRequest,
+    sending: sendingGetGraphDataRequest,
+  } = useRequest<GraphData>({
     request: getData,
   });
 
@@ -98,8 +146,6 @@ const PerformanceGraph = ({
     if (isNil(endpoint)) {
       return;
     }
-
-    setLineData(undefined);
 
     sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
@@ -183,6 +229,39 @@ const PerformanceGraph = ({
     );
   };
 
+  const getShiftedDate = ({ property, direction, timePeriod }): Date => {
+    const adjustTimePeriodProps =
+      (timePeriod.end.getTime() - timePeriod.start.getTime()) / shiftRatio;
+
+    return new Date(
+      add(
+        prop(property, timePeriod).getTime(),
+        equals(direction, TimeShiftDirection.backward)
+          ? negate(adjustTimePeriodProps)
+          : adjustTimePeriodProps,
+      ),
+    );
+  };
+
+  const shiftTime = (direction: TimeShiftDirection) => {
+    if (isNil(customTimePeriod)) {
+      return;
+    }
+
+    adjustTimePeriod?.({
+      start: getShiftedDate({
+        property: CustomTimePeriodProperty.start,
+        direction,
+        timePeriod: customTimePeriod,
+      }),
+      end: getShiftedDate({
+        property: CustomTimePeriodProperty.end,
+        direction,
+        timePeriod: customTimePeriod,
+      }),
+    });
+  };
+
   return (
     <div className={classes.container}>
       <Typography variant="body1" color="textPrimary" align="center">
@@ -204,6 +283,10 @@ const PerformanceGraph = ({
             resource={resource}
             onAddComment={onAddComment}
             eventAnnotationsActive={eventAnnotationsActive}
+            applyZoom={adjustTimePeriod}
+            shiftTime={shiftTime}
+            sendingGetGraphDataRequest={sendingGetGraphDataRequest}
+            canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
           />
         )}
       </ParentSize>
