@@ -652,6 +652,7 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_HOST,
                 'id' => $hostId,
                 'tab' => $tab,
+                'uuid' => 'h' . $hostId
             ]),
         ]);
     }
@@ -689,6 +690,7 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_SERVICE,
                 'id' => $serviceId,
                 'tab' => $tab,
+                'uuid' => 's' . $serviceId
             ]),
         ]);
     }
