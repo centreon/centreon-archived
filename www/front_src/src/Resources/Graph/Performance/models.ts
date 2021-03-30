@@ -41,3 +41,8 @@ export interface Line {
   invert: string | null;
   stackOrder: number | null;
 }
+
+export interface AdjustTimePeriodProps {
+  start: Date;
+  end: Date;
+}

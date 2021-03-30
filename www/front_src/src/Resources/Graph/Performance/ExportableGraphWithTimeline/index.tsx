@@ -35,6 +35,7 @@ import {
 } from '../../../Details/tabs/Graph/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
+import { AdjustTimePeriodProps } from '../models';
 
 import exportToPng from './exportToPng';
 
@@ -65,6 +66,7 @@ interface Props {
   onTooltipDisplay?: (position?: [number, number]) => void;
   tooltipPosition?: [number, number];
   customTimePeriod: CustomTimePeriod;
+  adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
@@ -76,6 +78,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   onTooltipDisplay,
   tooltipPosition,
   customTimePeriod,
+  adjustTimePeriod,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -139,7 +142,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     }
 
     retrieveTimeline();
-  }, [endpoint, selectedTimePeriod, customTimePeriod.timelineLimit]);
+  }, [endpoint, selectedTimePeriod, customTimePeriod]);
 
   const getEndpoint = (): string | undefined => {
     if (isNil(endpoint)) {
@@ -226,6 +229,8 @@ const ExportablePerformanceGraphWithTimeline = ({
           onAddComment={addCommentToTimeline}
           onTooltipDisplay={onTooltipDisplay}
           tooltipPosition={tooltipPosition}
+          adjustTimePeriod={adjustTimePeriod}
+          customTimePeriod={customTimePeriod}
         />
       </div>
     </Paper>

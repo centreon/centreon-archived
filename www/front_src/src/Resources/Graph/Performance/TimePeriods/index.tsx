@@ -10,6 +10,7 @@ import {
   ButtonGroup,
   Button,
   useTheme,
+  Tooltip,
 } from '@material-ui/core';
 
 import {
@@ -81,23 +82,26 @@ const TimePeriodButtonGroup = ({
               disabled={disabled}
               color="primary"
               className={classes.buttonGroup}
+              component="span"
             >
               {map(
                 ({ id, name, compactName, largeName }) => (
-                  <Button
-                    key={name}
-                    onClick={() => onChange(id)}
-                    variant={
-                      selectedTimePeriodId === id ? 'contained' : 'outlined'
-                    }
-                    className={classes.button}
-                  >
-                    {cond<number, string>([
-                      [lte(theme.breakpoints.values.md), always(largeName)],
-                      [lte(theme.breakpoints.values.sm), always(name)],
-                      [T, always(compactName)],
-                    ])(width)}
-                  </Button>
+                  <Tooltip key={name} title={largeName} placement="top">
+                    <Button
+                      onClick={() => onChange(id)}
+                      variant={
+                        selectedTimePeriodId === id ? 'contained' : 'outlined'
+                      }
+                      className={classes.button}
+                      component="span"
+                    >
+                      {cond<number, string>([
+                        [lte(theme.breakpoints.values.md), always(largeName)],
+                        [lte(theme.breakpoints.values.sm), always(name)],
+                        [T, always(compactName)],
+                      ])(width)}
+                    </Button>
+                  </Tooltip>
                 ),
                 translatedTimePeriodOptions,
               )}

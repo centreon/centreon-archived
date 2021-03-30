@@ -40,7 +40,7 @@ import {
   labelCurrentNotificationNumber,
   labelPerformanceData,
   label7D,
-  label24H,
+  label1D,
   label31D,
   labelCopy,
   labelCommand,
@@ -64,6 +64,8 @@ import {
   labelDisplayEvents,
   labelStartDate,
   labelEndDate,
+  labelForward,
+  labelBackward,
   labelEndDateGreaterThanStartDate,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
@@ -491,7 +493,7 @@ describe(Details, () => {
   });
 
   it.each([
-    [label24H, '2020-01-20T06:00:00.000Z', 20, undefined],
+    [label1D, '2020-01-20T06:00:00.000Z', 20, undefined],
     [label7D, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
     [label31D, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
   ])(
@@ -1054,7 +1056,7 @@ describe(Details, () => {
 
     expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
-    userEvent.click(head(getAllByText(label24H)) as HTMLElement);
+    userEvent.click(head(getAllByText(label1D)) as HTMLElement);
     userEvent.click(last(getAllByText(label7D)) as HTMLElement);
 
     await waitFor(() => {
@@ -1216,4 +1218,66 @@ describe(Details, () => {
 
     expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
   });
+
+  it.each([
+    [labelForward, '2020-01-20T18:00:00.000Z', '2020-01-21T18:00:00.000Z', 20],
+    [labelBackward, '2020-01-19T18:00:00.000Z', '2020-01-20T18:00:00.000Z', 20],
+  ])(
+    `queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected and the "%p" icon is clicked`,
+    async (iconLabel, startISOString, endISOString, timelineLimit) => {
+      mockedAxios.get
+        .mockResolvedValueOnce({ data: retrievedDetails })
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedTimeline })
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedTimeline });
+
+      const { getByLabelText } = renderDetails({
+        openTabId: graphTabId,
+      });
+
+      act(() => {
+        setSelectedServiceResource();
+      });
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
+          cancelTokenRequestParam,
+        );
+      });
+
+      userEvent.click(getByLabelText(iconLabel));
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
+          cancelTokenRequestParam,
+        );
+      });
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          buildListTimelineEventsEndpoint({
+            endpoint: retrievedDetails.links.endpoints.timeline,
+            parameters: {
+              limit: timelineLimit,
+              search: {
+                conditions: [
+                  {
+                    field: 'date',
+                    values: {
+                      $gt: startISOString,
+                      $lt: endISOString,
+                    },
+                  },
+                ],
+              },
+            },
+          }),
+          cancelTokenRequestParam,
+        );
+      });
+    },
+  );
 });

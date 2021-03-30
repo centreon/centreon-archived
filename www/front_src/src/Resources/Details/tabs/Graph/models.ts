@@ -4,15 +4,15 @@ import { find, propEq } from 'ramda';
 import { timeFormat, dateFormat } from '@centreon/ui';
 
 import {
-  label24H,
+  label1D,
   label7D,
   label31D,
   label31Days,
   labelLast31Days,
   label7Days,
   labelLast7Days,
-  label24Hours,
-  labelLast24Hours,
+  label1Day,
+  labelLastDay,
 } from '../../../translatedLabels';
 
 export type TimePeriodId = 'last_24_h' | 'last_7_days' | 'last_31_days';
@@ -50,9 +50,9 @@ export interface ChangeCustomTimePeriodProps {
 }
 
 const last24hPeriod: TimePeriod = {
-  compactName: label24H,
-  name: label24Hours,
-  largeName: labelLast24Hours,
+  compactName: label1D,
+  name: label1Day,
+  largeName: labelLastDay,
   id: 'last_24_h',
   getStart: (): Date => dayjs(Date.now()).subtract(24, 'hour').toDate(),
   dateTimeFormat: timeFormat,
