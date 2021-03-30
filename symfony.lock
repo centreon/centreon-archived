@@ -341,6 +341,9 @@
     "symfony/dotenv": {
         "version": "v4.3.4"
     },
+    "symfony/error-handler": {
+        "version": "v4.4.21"
+    },
     "symfony/event-dispatcher": {
         "version": "v4.3.4"
     },
@@ -433,6 +436,9 @@
             "tests/.gitignore"
         ]
     },
+    "symfony/polyfill-intl-grapheme": {
+        "version": "v1.22.1"
+    },
     "symfony/polyfill-intl-idn": {
         "version": "v1.12.0"
     },
@@ -447,6 +453,9 @@
     },
     "symfony/polyfill-php73": {
         "version": "v1.12.0"
+    },
+    "symfony/polyfill-php80": {
+        "version": "v1.22.1"
     },
     "symfony/property-access": {
         "version": "v4.3.4"
@@ -502,6 +511,9 @@
     "symfony/service-contracts": {
         "version": "v1.1.6"
     },
+    "symfony/string": {
+        "version": "v5.2.6"
+    },
     "symfony/translation": {
         "version": "3.3",
         "recipe": {
@@ -530,6 +542,9 @@
             "config/packages/test/validator.yaml",
             "config/packages/validator.yaml"
         ]
+    },
+    "symfony/var-dumper": {
+        "version": "v4.4.21"
     },
     "symfony/var-exporter": {
         "version": "v4.3.4"
