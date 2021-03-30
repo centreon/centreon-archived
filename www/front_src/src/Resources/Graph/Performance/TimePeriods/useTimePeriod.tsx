@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { always, and, cond, gte, isNil, not, or, pipe, propOr, T } from 'ramda';
+import { always, and, cond, gte, isNil, not, pipe, propOr, T } from 'ramda';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
