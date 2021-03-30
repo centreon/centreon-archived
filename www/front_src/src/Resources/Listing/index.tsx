@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, prop } from 'ramda';
+import { equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
@@ -13,9 +13,8 @@ import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource, SortOrder } from '../models';
 
-import { getColumns } from './columns';
+import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
-import { defaultSelectedColumnIds } from './columns/index';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
@@ -104,7 +103,7 @@ const ResourceListing = (): JSX.Element => {
 
   const resetColumns = (): void => {
     setSelectedColumnIds(defaultSelectedColumnIds);
-  }
+  };
 
   return (
     <Listing
