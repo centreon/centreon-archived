@@ -94,6 +94,7 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: SeverityColumn,
     sortField: 'severity_level',
+    sortable: true,
   },
   {
     id: 'status',
@@ -105,6 +106,7 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     sortField: 'status_severity_code',
     clickable: true,
     width: 'minmax(100px, max-content)',
+    sortable: true,
   },
   {
     id: 'resource',
@@ -113,6 +115,7 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: ResourceColumn,
     sortField: 'name',
+    sortable: true,
   },
   {
     id: 'parent_resource',
@@ -121,6 +124,7 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: ParentResourceColumn,
     sortField: 'parent_name',
+    sortable: true,
   },
   {
     id: 'notes_url',
@@ -152,18 +156,21 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     type: ColumnType.string,
     getFormattedString: ({ duration }): string => duration,
     sortField: 'last_status_change',
+    sortable: true,
   },
   {
     id: 'tries',
     label: t(labelTries),
     type: ColumnType.string,
     getFormattedString: ({ tries }): string => tries,
+    sortable: true,
   },
   {
     id: 'last_check',
     label: t(labelLastCheck),
     type: ColumnType.string,
     getFormattedString: ({ last_check }): string => last_check,
+    sortable: true,
   },
   {
     id: 'information',
@@ -191,16 +198,19 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     label: t(labelAlias),
     type: ColumnType.string,
     getFormattedString: ({ alias }): string => alias,
+    sortable: true,
   },
   {
     id: 'fqdn',
     label: t(labelFqdn),
     type: ColumnType.string,
     getFormattedString: ({ fqdn }): string => fqdn,
+    sortable: true,
   },
   {
-    id: 'monitoring_server',
+    id: 'monitoring_server_name',
     label: t(labelMonitoringServer),
+    sortable: true,
     type: ColumnType.string,
     getFormattedString: ({ monitoring_server_name }): string =>
       monitoring_server_name,

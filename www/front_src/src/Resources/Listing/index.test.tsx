@@ -217,6 +217,7 @@ describe(Listing, () => {
     it.each(
       columns
         .filter(({ sortable }) => sortable !== false)
+        .filter(({ id }) => includes(id, defaultSelectedColumnIds))
         .map(({ id, label, sortField }) => [id, label, sortField]),
     )(
       'executes a listing request with sort_by param and stores the order parameter in the URL when %p column is clicked',
