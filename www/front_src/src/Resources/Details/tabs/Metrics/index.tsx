@@ -7,6 +7,8 @@ import { useRequest } from '@centreon/ui';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
 import LoadingSkeleton from '../Services/LoadingSkeleton';
+import memoizeComponent from '../../../memoizedComponent';
+import { useResourceContext, ResourceContext } from '../../../Context';
 
 import { MetaServiceMetricListing } from './models';
 import { listMetaServiceMetrics } from './api';
@@ -15,7 +17,13 @@ import Metrics from './Metrics';
 
 const limit = 30;
 
-const MetricsTab = ({ details }: TabProps): JSX.Element => {
+type MetricsTabContentProps = TabProps &
+  Pick<ResourceContext, 'selectResource'>;
+
+const MetricsTabContent = ({
+  details,
+  selectResource,
+}: MetricsTabContentProps): JSX.Element => {
   const endpoint = path(['links', 'endpoints', 'metrics'], details);
 
   const { sendRequest, sending } = useRequest<MetaServiceMetricListing>({
@@ -44,16 +52,34 @@ const MetricsTab = ({ details }: TabProps): JSX.Element => {
       loadingSkeleton={<LoadingSkeleton />}
       loading={sending}
       limit={limit}
+      preventReloadWhen={details?.type !== 'metaservice'}
     >
       {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
         return (
           <Metrics
             metrics={entities}
             infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+            selectResource={selectResource}
           />
         );
       }}
     </InfiniteScroll>
+  );
+};
+
+const MemoizedMetricsTabContent = memoizeComponent<MetricsTabContentProps>({
+  memoProps: ['details'],
+  Component: MetricsTabContent,
+});
+
+const MetricsTab = ({ details }: TabProps): JSX.Element => {
+  const { selectResource } = useResourceContext();
+
+  return (
+    <MemoizedMetricsTabContent
+      details={details}
+      selectResource={selectResource}
+    />
   );
 };
 

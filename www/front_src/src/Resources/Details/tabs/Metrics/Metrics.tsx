@@ -8,7 +8,7 @@ import ShowChartOutlinedIcon from '@material-ui/icons/ShowChartOutlined';
 
 import { SeverityCode, StatusChip } from '@centreon/ui';
 
-import { useResourceContext } from '../../../Context';
+import { ResourceContext } from '../../../Context';
 import Card from '../Details/Card';
 import SelectableResourceName from '../Details/SelectableResourceName';
 
@@ -34,15 +34,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props {
+type Props = {
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
   metrics: Array<MetaServiceMetric>;
-}
+} & Pick<ResourceContext, 'selectResource'>;
 
-const Metrics = ({ infiniteScrollTriggerRef, metrics }: Props): JSX.Element => {
+const Metrics = ({
+  infiniteScrollTriggerRef,
+  metrics,
+  selectResource,
+}: Props): JSX.Element => {
   const classes = useStyles();
-
-  const { selectResource } = useResourceContext();
 
   return (
     <>
