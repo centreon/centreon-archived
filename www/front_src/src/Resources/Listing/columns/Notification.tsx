@@ -30,7 +30,7 @@ const NotificationTooltip = ({
 const NotificationColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   return (
     <IconColumn>
-      {row.notifification_enabled ? (
+      {row.notification_enabled ? (
         <NotificationTooltip
           Icon={NotificationsIcon}
           title={labelNotificationEnabled}

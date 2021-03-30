@@ -41,7 +41,7 @@ export interface Resource extends NamedEntity {
   type: 'host' | 'service';
   passive_checks?: boolean;
   active_checks?: boolean;
-  notificatio_enabled?: boolean;
+  notification_enabled?: boolean;
 }
 
 export type ResourceListing = ListingModel<Resource>;
