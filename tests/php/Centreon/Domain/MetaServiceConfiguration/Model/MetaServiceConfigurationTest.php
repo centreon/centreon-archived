@@ -168,7 +168,8 @@ class MetaServiceConfigurationTest extends TestCase
         $calculationType = 'calculationType';
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            sprintf(_('Calculation method provided not supported (%s)'), $calculationType));
+            sprintf(_('Calculation method provided not supported (%s)'), $calculationType)
+        );
         new MetaServiceConfiguration('name', $calculationType, 1);
     }
 
@@ -180,7 +181,8 @@ class MetaServiceConfigurationTest extends TestCase
         $dataSourceType = 'dataSourceType';
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            sprintf(_('Data source type provided not supported (%s)'), $dataSourceType));
+            sprintf(_('Data source type provided not supported (%s)'), $dataSourceType)
+        );
         (new MetaServiceConfiguration('name', 'average', 1))->setDataSourceType($dataSourceType);
     }
 

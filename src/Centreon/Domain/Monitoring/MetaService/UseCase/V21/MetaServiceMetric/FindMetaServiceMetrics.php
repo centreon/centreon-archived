@@ -50,8 +50,10 @@ class FindMetaServiceMetrics
      * @param MetaServiceMetricServiceInterface $metaServiceMetricServiceInterface
      * @param ContactInterface $contact
      */
-    public function __construct(MetaServiceMetricServiceInterface $metaServiceMetricServiceInterface, ContactInterface $contact)
-    {
+    public function __construct(
+        MetaServiceMetricServiceInterface $metaServiceMetricServiceInterface,
+        ContactInterface $contact
+    ) {
         $this->metaServiceMetricServiceInterface = $metaServiceMetricServiceInterface;
         $this->contact = $contact;
     }
@@ -65,10 +67,10 @@ class FindMetaServiceMetrics
     public function execute(int $metaId): FindMetaServiceMetricsResponse
     {
         $response = new FindMetaServiceMetricsResponse();
-        $metaServiceConfiguration = ($this->contact->isAdmin())
+        $metaServiceMetrics = ($this->contact->isAdmin())
             ? $this->metaServiceMetricServiceInterface->findWithoutAcl($metaId)
             : $this->metaServiceMetricServiceInterface->findWithAcl($metaId);
-        $response->setMetaServiceMetrics($metaServiceConfiguration);
+        $response->setMetaServiceMetrics($metaServiceMetrics);
         return $response;
     }
 }

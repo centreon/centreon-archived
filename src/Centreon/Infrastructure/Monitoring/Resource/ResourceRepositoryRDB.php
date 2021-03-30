@@ -96,7 +96,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     /**
      * @param DatabaseConnection $pdo
      */
-    public function __construct(DatabaseConnection $pdo) {
+    public function __construct(DatabaseConnection $pdo)
+    {
         $this->db = $pdo;
     }
 

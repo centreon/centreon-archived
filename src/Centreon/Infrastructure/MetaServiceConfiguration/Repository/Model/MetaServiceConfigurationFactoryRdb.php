@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Infrastructure\MetaServiceConfiguration\Repository\Model;
@@ -40,7 +41,11 @@ class MetaServiceConfigurationFactoryRdb
      */
     public static function create(array $data): MetaServiceConfiguration
     {
-        $metaServiceConfiguration = (new MetaServiceConfiguration($data['meta_name'], $data['calculation_type'], (int) $data['meta_select_mode']))
+        $metaServiceConfiguration = (new MetaServiceConfiguration(
+            $data['meta_name'],
+            $data['calculation_type'],
+            (int) $data['meta_select_mode']
+        ))
             ->setId((int) $data['meta_id'])
             ->setActivated($data['meta_activate'] === '1')
             ->setOutput($data['meta_display'])

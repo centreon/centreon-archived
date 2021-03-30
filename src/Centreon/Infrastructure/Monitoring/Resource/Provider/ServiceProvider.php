@@ -42,10 +42,13 @@ final class ServiceProvider extends Provider
             return false;
         }
 
-        if ($filter->getStatuses() && !ResourceFilter::map(
-            $filter->getStatuses(),
-            ResourceFilter::MAP_STATUS_SERVICE
-        )) {
+        if (
+            $filter->getStatuses() &&
+            !ResourceFilter::map(
+                $filter->getStatuses(),
+                ResourceFilter::MAP_STATUS_SERVICE
+            )
+        ) {
             return false;
         }
 

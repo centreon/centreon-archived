@@ -22,14 +22,13 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\MetaService;
 
-use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Monitoring\MetaService\Model\MetaServiceMetric;
 use Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfiguration;
 use Centreon\Domain\Monitoring\MetaService\Exception\MetaServiceMetricException;
 use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationServiceInterface;
 use Centreon\Domain\Monitoring\MetaService\Interfaces\MetaServiceMetric\MetaServiceMetricServiceInterface;
 use Centreon\Domain\Monitoring\MetaService\Interfaces\MetaServiceMetric\MetaServiceMetricRepositoryInterface;
+
 /**
  * This class is designed to manage Meta Service Metrics.
  *
@@ -52,7 +51,8 @@ class MetaServiceMetricService implements MetaServiceMetricServiceInterface
     private $contact;
 
     /**
-     * @param MetaServiceMetricRespositoryInterface $repository
+     * @param MetaServiceMetricRepositoryInterface $repository
+     * @param MetaServiceConfigurationServiceInterface $metaServiceConfigurationService
      * @param ContactInterface $contact
      */
     public function __construct(
@@ -86,7 +86,7 @@ class MetaServiceMetricService implements MetaServiceMetricServiceInterface
             }
         } elseif ($metaServiceMetricSelectionMode === MetaServiceConfiguration::META_SELECT_MODE_SQL_REGEXP) {
             try {
-                return $this->repository->findByMetaIdAndContactAndSqlRegexp(
+                return $this->repository->findByContactAndSqlRegexp(
                     $metaServiceConfiguration->getMetric(),
                     $metaServiceConfiguration->getRegexpString(),
                     $this->contact
@@ -94,6 +94,8 @@ class MetaServiceMetricService implements MetaServiceMetricServiceInterface
             } catch (\Throwable $ex) {
                 throw MetaServiceMetricException::findMetaServiceMetricsException($ex, $metaId);
             }
+        } else {
+            throw MetaServiceMetricException::unknownMetaMetricSelectionMode($metaId);
         }
     }
 
@@ -118,13 +120,15 @@ class MetaServiceMetricService implements MetaServiceMetricServiceInterface
             }
         } elseif ($metaServiceMetricSelectionMode === MetaServiceConfiguration::META_SELECT_MODE_SQL_REGEXP) {
             try {
-                return $this->repository->findByMetaIdAndSqlRegexp(
+                return $this->repository->findBySqlRegexp(
                     $metaServiceConfiguration->getMetric(),
                     $metaServiceConfiguration->getRegexpString()
                 );
             } catch (\Throwable $ex) {
                 throw MetaServiceMetricException::findMetaServiceMetricsException($ex, $metaId);
             }
+        } else {
+            throw MetaServiceMetricException::unknownMetaMetricSelectionMode($metaId);
         }
     }
 }

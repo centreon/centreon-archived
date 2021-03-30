@@ -25,10 +25,11 @@ namespace Tests\Centreon\Domain\Monitoring\MetaServiceConfiguration\UseCase\V21;
 use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindOneMetaServiceConfigurationResponse;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfigurationTest;
+
 /**
  * @package Tests\Centreon\Domain\MetaServiceConfiguration\UseCase\V21
  */
-class  FindOneMetaServiceConfigurationResponseTest extends TestCase
+class FindOneMetaServiceConfigurationResponseTest extends TestCase
 {
     /**
      * We test the transformation of an entity into an array.
@@ -42,13 +43,28 @@ class  FindOneMetaServiceConfigurationResponseTest extends TestCase
         $this->assertEquals($metaServiceConfiguration->getId(), $metaServiceConfigurationResponse['id']);
         $this->assertEquals($metaServiceConfiguration->getName(), $metaServiceConfigurationResponse['name']);
         $this->assertEquals($metaServiceConfiguration->getOutput(), $metaServiceConfigurationResponse['meta_display']);
-        $this->assertEquals($metaServiceConfiguration->getDataSourceType(), $metaServiceConfigurationResponse['data_source_type']);
-        $this->assertEquals($metaServiceConfiguration->getCalculationType(), $metaServiceConfigurationResponse['calcul_type']);
-        $this->assertEquals($metaServiceConfiguration->getMetaSelectMode(), $metaServiceConfigurationResponse['meta_select_mode']);
+        $this->assertEquals(
+            $metaServiceConfiguration->getDataSourceType(),
+            $metaServiceConfigurationResponse['data_source_type']
+        );
+        $this->assertEquals(
+            $metaServiceConfiguration->getCalculationType(),
+            $metaServiceConfigurationResponse['calcul_type']
+        );
+        $this->assertEquals(
+            $metaServiceConfiguration->getMetaSelectMode(),
+            $metaServiceConfigurationResponse['meta_select_mode']
+        );
         $this->assertEquals($metaServiceConfiguration->getMetric(), $metaServiceConfigurationResponse['metric']);
         $this->assertEquals($metaServiceConfiguration->getWarning(), $metaServiceConfigurationResponse['warning']);
-        $this->assertEquals($metaServiceConfiguration->isActivated(), $metaServiceConfigurationResponse['is_activated']);
+        $this->assertEquals(
+            $metaServiceConfiguration->isActivated(),
+            $metaServiceConfigurationResponse['is_activated']
+        );
         $this->assertEquals($metaServiceConfiguration->getCritical(), $metaServiceConfigurationResponse['critical']);
-        $this->assertEquals($metaServiceConfiguration->getRegexpString(), $metaServiceConfigurationResponse['regexp_str']);
+        $this->assertEquals(
+            $metaServiceConfiguration->getRegexpString(),
+            $metaServiceConfigurationResponse['regexp_str']
+        );
     }
 }

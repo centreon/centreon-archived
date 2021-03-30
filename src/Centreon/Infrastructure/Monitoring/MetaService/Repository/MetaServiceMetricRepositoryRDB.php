@@ -77,15 +77,18 @@ class MetaServiceMetricRepositoryRDB extends AbstractRepositoryDRB implements
     /**
      * @inheritDoc
      */
-    public function findByMetaIdAndContactAndSqlRegexp(string $metricName, string $regexpString, ContactInterface $contact): ?array
-    {
+    public function findByContactAndSqlRegexp(
+        string $metricName,
+        string $regexpString,
+        ContactInterface $contact
+    ): ?array {
         return $this->findMetricsBySqlRegexpRequest($metricName, $regexpString, $contact->getId());
     }
 
     /**
      * @inheritDoc
      */
-    public function findByMetaIdAndSqlRegexp(string $metricName, string $regexpString): ?array
+    public function findBySqlRegexp(string $metricName, string $regexpString): ?array
     {
         return $this->findMetricsBySqlRegexpRequest($metricName, $regexpString, null);
     }
@@ -169,7 +172,7 @@ class MetaServiceMetricRepositoryRDB extends AbstractRepositoryDRB implements
         return $metaServicesMetrics;
     }
 
-    private function findMetricsBySqlRegexpRequest(string $metricName, string $regexpString, ?int $contactId): ?array
+    private function findMetricsBySqlRegexpRequest(string $metricName, string $regexpString, ?int $contactId): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'm.metric_id',
@@ -216,9 +219,7 @@ class MetaServiceMetricRepositoryRDB extends AbstractRepositoryDRB implements
             ? $searchRequest . ' AND idd.service_description LIKE :regexp AND idd.id = m.index_id'
             : ' WHERE idd.service_description LIKE :regexp AND idd.id = m.index_id';
 
-        if (!is_null($metricName)) {
-            $request .= ' AND m.metric_name = :metricName';
-        }
+        $request .= ' AND m.metric_name = :metricName';
 
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
@@ -232,9 +233,7 @@ class MetaServiceMetricRepositoryRDB extends AbstractRepositoryDRB implements
 
         $statement->bindValue(':regexp', $regexpString, \PDO::PARAM_STR);
 
-        if (!is_null($metricName)) {
-            $statement->bindValue(':metricName', $metricName, \PDO::PARAM_STR);
-        }
+        $statement->bindValue(':metricName', $metricName, \PDO::PARAM_STR);
 
         if ($contactId !== null) {
             $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);

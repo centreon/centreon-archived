@@ -25,6 +25,7 @@ namespace Tests\Centreon\Domain\MetaServiceConfiguration\UseCase\V21;
 use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindMetaServicesConfigurationsResponse;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfigurationTest;
+
 /**
  * @package Tests\Centreon\Domain\MetaServiceConfiguration\UseCase\V21
  */
@@ -53,9 +54,18 @@ class FindMetaServicesConfigurationsResponseTest extends TestCase
         $this->assertEquals($metaServiceConfiguration->getId(), $metaServiceConfigurations[0]['id']);
         $this->assertEquals($metaServiceConfiguration->getName(), $metaServiceConfigurations[0]['name']);
         $this->assertEquals($metaServiceConfiguration->getOutput(), $metaServiceConfigurations[0]['meta_display']);
-        $this->assertEquals($metaServiceConfiguration->getDataSourceType(), $metaServiceConfigurations[0]['data_source_type']);
-        $this->assertEquals($metaServiceConfiguration->getCalculationType(), $metaServiceConfigurations[0]['calcul_type']);
-        $this->assertEquals($metaServiceConfiguration->getMetaSelectMode(), $metaServiceConfigurations[0]['meta_select_mode']);
+        $this->assertEquals(
+            $metaServiceConfiguration->getDataSourceType(),
+            $metaServiceConfigurations[0]['data_source_type']
+        );
+        $this->assertEquals(
+            $metaServiceConfiguration->getCalculationType(),
+            $metaServiceConfigurations[0]['calcul_type']
+        );
+        $this->assertEquals(
+            $metaServiceConfiguration->getMetaSelectMode(),
+            $metaServiceConfigurations[0]['meta_select_mode']
+        );
         $this->assertEquals($metaServiceConfiguration->getMetric(), $metaServiceConfigurations[0]['metric']);
         $this->assertEquals($metaServiceConfiguration->getWarning(), $metaServiceConfigurations[0]['warning']);
         $this->assertEquals($metaServiceConfiguration->isActivated(), $metaServiceConfigurations[0]['is_activated']);

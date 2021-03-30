@@ -71,7 +71,10 @@ class FindMetaServicesConfigurationsTest extends TestCase
 
         $contact = new Contact();
         $contact->setAdmin(true);
-        $findMetaServiceConfigurations = new FindMetaServicesConfigurations($this->metaServiceConfigurationService, $contact);
+        $findMetaServiceConfigurations = new FindMetaServicesConfigurations(
+            $this->metaServiceConfigurationService,
+            $contact
+        );
         $response = $findMetaServiceConfigurations->execute();
         $this->assertCount(1, $response->getMetaServicesConfigurations());
     }
@@ -88,7 +91,10 @@ class FindMetaServicesConfigurationsTest extends TestCase
 
         $contact = new Contact();
         $contact->setAdmin(false);
-        $findMetaServiceConfigurations = new FindMetaServicesConfigurations($this->metaServiceConfigurationService, $contact);
+        $findMetaServiceConfigurations = new FindMetaServicesConfigurations(
+            $this->metaServiceConfigurationService,
+            $contact
+        );
         $response = $findMetaServiceConfigurations->execute();
         $this->assertCount(1, $response->getMetaServicesConfigurations());
     }

@@ -799,8 +799,7 @@ class DowntimeController extends AbstractController
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
         } elseif ($resouce->getType() === ResourceEntity::TYPE_META) {
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
-    }
-
+        }
 
         return $hasRights;
     }

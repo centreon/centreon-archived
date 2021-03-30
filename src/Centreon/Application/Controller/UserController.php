@@ -99,7 +99,7 @@ class UserController extends AbstractController
     private function getAuthorizationForRole(string $role): bool
     {
         /**
-         * @var Contact $contact
+         * @var Contact|null $contact
          */
         $contact = $this->getUser();
 

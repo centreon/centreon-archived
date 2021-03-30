@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\MetaService\Interfaces\MetaServiceMetric;
 
+use Centreon\Domain\Monitoring\MetaService\Model\MetaServiceMetric;
 use Centreon\Domain\Monitoring\MetaService\Exception\MetaServiceMetricException;
 
 /**

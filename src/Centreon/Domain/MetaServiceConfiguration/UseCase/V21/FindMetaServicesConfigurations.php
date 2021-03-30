@@ -46,11 +46,13 @@ class FindMetaServicesConfigurations
     /**
      * FindMetaServiceConfiguration constructor.
      *
-     * @param MetaServiceConfigurationInterface $categoryService
+     * @param MetaServiceConfigurationServiceInterface $metaServiceConfigurationService
      * @param ContactInterface $contact
      */
-    public function __construct(MetaServiceConfigurationServiceInterface $metaServiceConfigurationService, ContactInterface $contact)
-    {
+    public function __construct(
+        MetaServiceConfigurationServiceInterface $metaServiceConfigurationService,
+        ContactInterface $contact
+    ) {
         $this->metaServiceConfigurationService = $metaServiceConfigurationService;
         $this->contact = $contact;
     }

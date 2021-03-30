@@ -37,7 +37,7 @@ class FindMetaServiceMetricsResponse
     private $metaServiceMetrics = [];
 
     /**
-     * @param MetaServiceMetric[] $metaServiceConfigurations
+     * @param MetaServiceMetric[] $metaServiceMetrics
      */
     public function setMetaServiceMetrics(array $metaServiceMetrics): void
     {

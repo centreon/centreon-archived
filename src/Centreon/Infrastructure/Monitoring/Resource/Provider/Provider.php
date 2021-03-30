@@ -59,7 +59,8 @@ abstract class Provider extends AbstractRepositoryDRB implements ProviderInterfa
     /**
      * @param DatabaseConnection $databaseConnection
      */
-    public function __construct(DatabaseConnection $databaseConnection) {
+    public function __construct(DatabaseConnection $databaseConnection)
+    {
         $this->db = $databaseConnection;
     }
 

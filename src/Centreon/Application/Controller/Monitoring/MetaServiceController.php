@@ -24,7 +24,6 @@ namespace Centreon\Application\Controller\Monitoring;
 
 use FOS\RestBundle\View\View;
 use Centreon\Application\Controller\AbstractController;
-use Centreon\Domain\Monitoring\MetaService\Model\MetaServiceMetric;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Monitoring\MetaService\UseCase\V21\MetaServiceMetric\FindMetaServiceMetrics;
 use Centreon\Infrastructure\Monitoring\MetaService\API\Model\MetaServiceMetricFactoryV21;

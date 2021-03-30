@@ -71,7 +71,10 @@ class FindOneMetaServiceConfigurationTest extends TestCase
 
         $contact = new Contact();
         $contact->setAdmin(true);
-        $findMetaServiceConfigurations = new FindOneMetaServiceConfiguration($this->metaServiceConfigurationService, $contact);
+        $findMetaServiceConfigurations = new FindOneMetaServiceConfiguration(
+            $this->metaServiceConfigurationService,
+            $contact
+        );
         $response = $findMetaServiceConfigurations->execute($this->metaServiceConfiguration->getId());
         $metaServiceConfigurationResponse = $response->getMetaServiceConfiguration();
         /**
@@ -92,7 +95,10 @@ class FindOneMetaServiceConfigurationTest extends TestCase
 
         $contact = new Contact();
         $contact->setAdmin(false);
-        $findMetaServiceConfigurations = new FindOneMetaServiceConfiguration($this->metaServiceConfigurationService, $contact);
+        $findMetaServiceConfigurations = new FindOneMetaServiceConfiguration(
+            $this->metaServiceConfigurationService,
+            $contact
+        );
         $response = $findMetaServiceConfigurations->execute($this->metaServiceConfiguration->getId());
         $metaServiceConfigurationResponse = $response->getMetaServiceConfiguration();
         /**

@@ -179,7 +179,8 @@ class MetaServiceConfiguration
     /**
      * @return string
      */
-    public function getCalculationType(): string {
+    public function getCalculationType(): string
+    {
         return $this->calculationType;
     }
 
@@ -222,7 +223,7 @@ class MetaServiceConfiguration
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getDataSourceType(): string
     {
@@ -278,7 +279,11 @@ class MetaServiceConfiguration
     public function setRegexpString(?string $regexpString): MetaServiceConfiguration
     {
         if (!is_null($regexpString)) {
-            Assertion::maxLength($regexpString, self::MAX_REGEXP_STRING_LENGTH, 'MetaServiceConfiguration::regexpString');
+            Assertion::maxLength(
+                $regexpString,
+                self::MAX_REGEXP_STRING_LENGTH,
+                'MetaServiceConfiguration::regexpString'
+            );
         }
         $this->regexpString = $regexpString;
         return $this;

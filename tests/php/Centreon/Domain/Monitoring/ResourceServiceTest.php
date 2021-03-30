@@ -58,7 +58,12 @@ class ResourceServiceTest extends TestCase
 
         $metaServiceConfigurationRepository = $this->createMock(MetaServiceConfigurationReadRepositoryInterface::class);
 
-        $resourceService = new ResourceService($resourceRepository, $monitoringRepository, $accessGroup, $metaServiceConfigurationRepository);
+        $resourceService = new ResourceService(
+            $resourceRepository,
+            $monitoringRepository,
+            $accessGroup,
+            $metaServiceConfigurationRepository
+        );
 
         $resourcesFound = $resourceService->findResources(new ResourceFilter());
 

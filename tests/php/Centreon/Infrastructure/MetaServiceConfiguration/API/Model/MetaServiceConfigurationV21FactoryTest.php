@@ -57,11 +57,17 @@ class MetaServiceConfigurationV21FactoryTest extends TestCase
         $this->assertEquals($metaServiceConfiguration['id'], $metaServiceConfigurationV21[0]->id);
         $this->assertEquals($metaServiceConfiguration['name'], $metaServiceConfigurationV21[0]->name);
         $this->assertEquals($metaServiceConfiguration['meta_display'], $metaServiceConfigurationV21[0]->output);
-        $this->assertEquals($metaServiceConfiguration['data_source_type'], $metaServiceConfigurationV21[0]->dataSourceType);
+        $this->assertEquals(
+            $metaServiceConfiguration['data_source_type'],
+            $metaServiceConfigurationV21[0]->dataSourceType
+        );
         $this->assertEquals($metaServiceConfiguration['regexp_str'], $metaServiceConfigurationV21[0]->regexpString);
         $this->assertEquals($metaServiceConfiguration['warning'], $metaServiceConfigurationV21[0]->warning);
         $this->assertEquals($metaServiceConfiguration['critical'], $metaServiceConfigurationV21[0]->critical);
-        $this->assertEquals($metaServiceConfiguration['meta_select_mode'], $metaServiceConfigurationV21[0]->metaSelectMode);
+        $this->assertEquals(
+            $metaServiceConfiguration['meta_select_mode'],
+            $metaServiceConfigurationV21[0]->metaSelectMode
+        );
         $this->assertEquals($metaServiceConfiguration['is_activated'], $metaServiceConfigurationV21[0]->isActivated);
     }
 
@@ -78,11 +84,17 @@ class MetaServiceConfigurationV21FactoryTest extends TestCase
         $this->assertEquals($metaServiceConfiguration['id'], $metaServiceConfigurationV21->id);
         $this->assertEquals($metaServiceConfiguration['name'], $metaServiceConfigurationV21->name);
         $this->assertEquals($metaServiceConfiguration['meta_display'], $metaServiceConfigurationV21->output);
-        $this->assertEquals($metaServiceConfiguration['data_source_type'], $metaServiceConfigurationV21->dataSourceType);
+        $this->assertEquals(
+            $metaServiceConfiguration['data_source_type'],
+            $metaServiceConfigurationV21->dataSourceType
+        );
         $this->assertEquals($metaServiceConfiguration['regexp_str'], $metaServiceConfigurationV21->regexpString);
         $this->assertEquals($metaServiceConfiguration['warning'], $metaServiceConfigurationV21->warning);
         $this->assertEquals($metaServiceConfiguration['critical'], $metaServiceConfigurationV21->critical);
-        $this->assertEquals($metaServiceConfiguration['meta_select_mode'], $metaServiceConfigurationV21->metaSelectMode);
+        $this->assertEquals(
+            $metaServiceConfiguration['meta_select_mode'],
+            $metaServiceConfigurationV21->metaSelectMode
+        );
         $this->assertEquals($metaServiceConfiguration['is_activated'], $metaServiceConfigurationV21->isActivated);
     }
 }

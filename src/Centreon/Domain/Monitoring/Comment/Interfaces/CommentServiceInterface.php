@@ -41,7 +41,7 @@ interface CommentServiceInterface extends ContactFilterInterface
      * Function allowing contact to add a comment to a service
      *
      * @param  Comment $comment Comment to add to the service
-     * @param Service $service Service that will receive the comment
+     * @param Service $metaService Meta service that will receive the comment
      */
     public function addMetaServiceComment(Comment $comment, Service $metaService): void;
 

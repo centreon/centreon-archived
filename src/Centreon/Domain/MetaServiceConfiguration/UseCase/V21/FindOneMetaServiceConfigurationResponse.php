@@ -21,6 +21,7 @@
 declare(strict_types=1);
 
 namespace Centreon\Domain\MetaServiceConfiguration\UseCase\V21;
+
 use Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfiguration;
 
 /**
@@ -31,12 +32,12 @@ use Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfiguration;
 class FindOneMetaServiceConfigurationResponse
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $metaServiceConfiguration;
 
     /**
-     * @param MetaServiceConfiguration $metaServiceConfigurations
+     * @param MetaServiceConfiguration $metaServiceConfiguration
      */
     public function setMetaServiceConfiguration(MetaServiceConfiguration $metaServiceConfiguration): void
     {
@@ -56,7 +57,7 @@ class FindOneMetaServiceConfigurationResponse
     }
 
     /**
-     * @return null|array<int, array<string, mixed>>
+     * @return null|array<string, mixed>
      */
     public function getMetaServiceConfiguration(): ?array
     {

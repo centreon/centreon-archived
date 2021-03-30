@@ -761,7 +761,7 @@ class AcknowledgementController extends AbstractController
      * Check if the resource can be acknowledged
      *
      * @param Contact $contact
-     * @param ResourceEntity $resouce
+     * @param ResourceEntity $resource
      * @return bool
      */
     private function hasAckRightsForResource(Contact $contact, ResourceEntity $resource): bool
@@ -785,7 +785,7 @@ class AcknowledgementController extends AbstractController
      * Check if the resource can be disacknowledged
      *
      * @param Contact $contact
-     * @param ResourceEntity $resouce
+     * @param ResourceEntity $resource
      * @return bool
      */
     private function hasDisackRightsForResource(Contact $contact, ResourceEntity $resource): bool

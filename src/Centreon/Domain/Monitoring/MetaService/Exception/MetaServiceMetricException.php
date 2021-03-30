@@ -50,4 +50,13 @@ class MetaServiceMetricException extends \Exception
     {
         return new self(sprintf(_('Meta service with ID %d not found'), $metaId));
     }
+
+    /**
+     * @param integer $metaId
+     * @return self
+     */
+    public static function unknownMetaMetricSelectionMode(int $metaId): self
+    {
+        return new self(sprintf(_('Unkown meta metrics selection mode provided for %d'), $metaId));
+    }
 }

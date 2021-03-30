@@ -57,8 +57,7 @@ class CommentController extends AbstractController
     public function __construct(
         CommentServiceInterface $commentService,
         MonitoringServiceInterface $monitoringService
-    )
-    {
+    ) {
         $this->commentService = $commentService;
         $this->monitoringService = $monitoringService;
     }
@@ -71,7 +70,7 @@ class CommentController extends AbstractController
      * @param Request $request
      * @param string $jsonValidatorFile
      * @return array $receivedData
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
     {

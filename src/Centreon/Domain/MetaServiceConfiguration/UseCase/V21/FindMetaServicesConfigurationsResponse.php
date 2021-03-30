@@ -21,6 +21,7 @@
 declare(strict_types=1);
 
 namespace Centreon\Domain\MetaServiceConfiguration\UseCase\V21;
+
 use Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfiguration;
 
 /**
@@ -36,7 +37,7 @@ class FindMetaServicesConfigurationsResponse
     private $metaServicesConfigurations = [];
 
     /**
-     * @param MetaServiceConfiguration[] $metaServiceConfigurations
+     * @param MetaServiceConfiguration[] $metaServicesConfigurations
      */
     public function setMetaServicesConfigurations(array $metaServicesConfigurations): void
     {

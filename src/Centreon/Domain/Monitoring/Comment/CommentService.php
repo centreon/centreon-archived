@@ -230,8 +230,19 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
      */
     public function addResourcesComment(array $comments, array $resourceIds): void
     {
+        /**
+         * @var Host[] $hosts
+         */
         $hosts = [];
+
+        /**
+         * @var Service[] $services
+         */
         $services = [];
+
+        /**
+         * @var Service[] $metaServices
+         */
         $metaServices = [];
         /**
          * Retrieving at this point all the host and services entities linked to
@@ -292,7 +303,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
                     foreach ($$resourceIds as $resourceId) {
                         $metaServices[$resourceId['service_id']] = $this->monitoringRepository
                             ->filterByAccessGroups($accessGroups)
-                            ->findOneServiceByDescription('meta_' . $id);
+                            ->findOneServiceByDescription('meta_' . $resourceId['service_id']);
                     }
                 } catch (\Throwable $ex) {
                     throw new CommentException(_('Error when searching for meta services'), 0, $ex);
