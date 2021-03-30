@@ -187,12 +187,12 @@ class CommentController extends AbstractController
         foreach ($receivedData['resources'] as $commentResource) {
             $date = ($commentResource['date'] !== null) ? new \DateTime($commentResource['date']) : $now;
             $comments[$commentResource['id']] = (new Comment($commentResource['id'], $commentResource['comment']))
-                ->setDate($date)
-                ->setParentResourceId($commentResource['parent']['id']);
+                ->setDate($date);
 
             if ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
                 $resourceIds['host'][] = $commentResource['id'];
             } elseif ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
+                $comments[$commentResource['id']]->setParentResourceId($commentResource['parent']['id']);
                 $resourceIds['service'][] = [
                     'host_id' => $commentResource['parent']['id'],
                     'service_id' => $commentResource['id']

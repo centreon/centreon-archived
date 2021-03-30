@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\Monitoring\MetaService\Model\MetaServiceMetricTest;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory
+ * @package Tests\Centreon\Domain\MetaServiceConfiguration\UseCase\V21
  */
 class FindMetaServiceMetricsTest extends TestCase
 {

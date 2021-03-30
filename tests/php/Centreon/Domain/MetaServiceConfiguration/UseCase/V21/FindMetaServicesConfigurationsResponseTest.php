@@ -28,7 +28,7 @@ use Tests\Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfiguratio
 /**
  * @package Tests\Centreon\Domain\MetaServiceConfiguration\UseCase\V21
  */
-class FindMetaServicesConfigurationsTest extends TestCase
+class FindMetaServicesConfigurationsResponseTest extends TestCase
 {
     /**
      * We test the transformation of an empty response into an array.

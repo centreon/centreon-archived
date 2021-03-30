@@ -29,9 +29,9 @@ use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfigurationTest;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory
+ * @package Tests\Centreon\Domain\MetaServiceConfiguration\UseCase\V21
  */
-class FindMetaServicesConfigurationsTest extends TestCase
+class FindOneMetaServiceConfigurationTest extends TestCase
 {
     /**
      * @var MetaServiceConfigurationService&\PHPUnit\Framework\MockObject\MockObject
