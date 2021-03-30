@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { always, and, cond, gte, isNil, not, pipe, propOr, T } from 'ramda';
+import { always, and, cond, gte, isNil, not, or, pipe, propOr, T } from 'ramda';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
@@ -21,8 +21,7 @@ import {
   ResourceDetails,
 } from '../../../Details/models';
 import { AdjustTimePeriodProps } from '../models';
-
-dayjs.extend(duration);
+import { useResourceContext } from '../../../Context';
 
 dayjs.extend(duration);
 
@@ -62,7 +61,6 @@ const useTimePeriod = ({
   details,
   onTimePeriodChange,
 }: Props): TimePeriodState => {
-  const preventQueryParametersUpdate = React.useRef<boolean>(false);
   const [
     resourceDetailsUpdated,
     setResourceDetailsUpdated,
@@ -84,6 +82,8 @@ const useTimePeriod = ({
     selectedTimePeriod,
     setSelectedTimePeriod,
   ] = React.useState<TimePeriod | null>(defaultTimePeriod);
+
+  const { sending } = useResourceContext();
 
   const getTimeperiodFromNow = (
     timePeriod: TimePeriod | null,
@@ -229,12 +229,7 @@ const useTimePeriod = ({
   };
 
   React.useEffect(() => {
-    if (isNil(selectedTimePeriod) || isNil(details)) {
-      return;
-    }
-
-    if (not(preventQueryParametersUpdate.current)) {
-      preventQueryParametersUpdate.current = true;
+    if (isNil(selectedTimePeriod) || isNil(details) || not(sending)) {
       return;
     }
 
@@ -248,7 +243,7 @@ const useTimePeriod = ({
 
     setCustomTimePeriod(newTimePeriod);
     setResourceDetailsUpdated(true);
-  }, [details]);
+  }, [sending]);
 
   return {
     changeSelectedTimePeriod,
