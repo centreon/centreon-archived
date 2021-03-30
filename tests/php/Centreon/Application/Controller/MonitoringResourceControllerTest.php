@@ -265,8 +265,8 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->assertEquals(
             urldecode($resourceController->buildServiceDetailsUri(1, 2)),
-            '/monitoring/resources?details=
-            {"parentType":"host","parentId":1,"type":"service","id":2,"tab":"details","uuid":"s2"}'
+            '/monitoring/resources?details=' .
+            '{"parentType":"host","parentId":1,"type":"service","id":2,"tab":"details","uuid":"s2"}'
         );
     }
 
@@ -284,8 +284,8 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->assertEquals(
             urldecode($resourceController->buildServiceUri(1, 2, 'timeline')),
-            '/monitoring/resources?details=
-            {"parentType":"host","parentId":1,"type":"service","id":2,"tab":"timeline","uuid":"s2"}'
+            '/monitoring/resources?details=' .
+            '{"parentType":"host","parentId":1,"type":"service","id":2,"tab":"timeline","uuid":"s2"}'
         );
     }
 }
