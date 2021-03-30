@@ -15108,8 +15108,17 @@ msgstr ""
 #  msgid "Monitoring server"
 #  msgstr ""
 
-msgid "The end date must be greater than the start date"
-msgstr ""
+#  msgid "The end date must be greater than the start date"
+#  msgstr ""
 
-msgid "Check duration"
-msgstr ""
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Notifications enabled"
+#  msgstr ""
+
+#  msgid "Notifications disabled"
+#  msgstr ""
+
+#  msgid "Checks disabled"
+#  msgstr ""
