@@ -1,4 +1,4 @@
-policy_module(centreon_web, 0.0.8)
+policy_module(centreon-web, 0.0.8)
 
 ########################################
 #

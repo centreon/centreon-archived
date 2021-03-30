@@ -1,4 +1,4 @@
-policy_module(centreon_common, 0.0.10)
+policy_module(centreon-common, 0.0.10)
 
 ########################################
 #
