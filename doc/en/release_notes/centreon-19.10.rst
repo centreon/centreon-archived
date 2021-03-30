@@ -1,4 +1,13 @@
 =====================
+Centreon Web 19.10.22
+=====================
+
+Bug fixes
+---------
+
+- [Lib] Update moment-timezone to manage new timezones
+
+=====================
 Centreon Web 19.10.21
 =====================
 
