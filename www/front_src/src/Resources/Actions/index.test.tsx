@@ -260,7 +260,7 @@ describe(Actions, () => {
 
       await waitFor(() =>
         expect(
-          (last(getAllByText(labelConfirmAction)) as HTMLElement).parentElement,
+          last<HTMLElement>(getAllByText(labelConfirmAction)).parentElement,
         ).toBeDisabled(),
       );
     },
