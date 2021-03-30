@@ -26,6 +26,7 @@ import {
   __,
   propEq,
   find,
+  last,
 } from 'ramda';
 
 import { Column } from '@centreon/ui';
@@ -427,15 +428,10 @@ describe(Listing, () => {
     columnIds,
   );
 
-  it.only.each(additionalIds)(
+  it.each(additionalIds)(
     'displays additional columns when selected from the corresponding menu',
     async (columnId) => {
-      const {
-        getAllByText,
-        getByTitle,
-
-        getByText,
-      } = renderListing();
+      const { getAllByText, getByTitle } = renderListing();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
@@ -446,9 +442,9 @@ describe(Listing, () => {
       const columnLabel = find(propEq('id', columnId), columns)
         ?.label as string;
 
-      fireEvent.click(getByText(columnLabel));
+      fireEvent.click(head(getAllByText(columnLabel)) as HTMLElement);
 
-      expect(getAllByText(columnLabel)).toHaveLength(2);
+      expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
     },
   );
 });
