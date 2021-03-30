@@ -104,10 +104,17 @@ class GeneratePollerContext extends CentreonContext
     {
         // Wait configuration is generated.
         // Aggressive host check parameter generates warnings
+        sleep(5);
+        var_dump("poller generation warnings : ");
+        var_dump(
+            count(
+                $this->getSession()->getPage()->findAll('css', 'div#consoleDetails font[color="green"]')
+            )
+       );
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()
-                        ->findAll('css', 'div#consoleDetails font[color="green"]')) >= 2;
+                        ->findAll('css', 'div#consoleDetails font[color="green"]')) === 4;
             }
         );
     }
