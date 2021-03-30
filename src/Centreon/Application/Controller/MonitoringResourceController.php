@@ -695,7 +695,7 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_SERVICE,
                 'id' => $serviceId,
                 'tab' => $tab,
-                'uuid' => 's'. $serviceId
+                'uuid' => 's' . $serviceId
             ]),
         ]);
     }
