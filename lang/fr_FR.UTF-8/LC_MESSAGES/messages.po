@@ -15327,14 +15327,32 @@ msgstr "Plannifier une plage de maintenance"
 msgid "In downtime"
 msgstr "En plage de maintenance"
 
-msgid "Last 24 hours"
-msgstr "24 dernières heures"
+msgid "1 D"
+msgstr "1 J"
+
+msgid "7 D"
+msgstr "7 J"
+
+msgid "31 D"
+msgstr "31 J"
+
+msgid "1 day"
+msgstr "1 jour"
+
+msgid "7 days"
+msgstr "7 jours"
+
+msgid "31 days"
+msgstr "31 jours"
+
+msgid "Last day"
+msgstr "Dernier jour"
 
 msgid "Last 7 days"
-msgstr "7 derniers jours"
+msgstr "Derniers 7 jours"
 
 msgid "Last 31 days"
-msgstr "31 derniers jours"
+msgstr "Derniers 31 jours"
 
 msgid "Set downtime on"
 msgstr "Programmer une plage de maintenance sur"
@@ -16086,3 +16104,14 @@ msgstr "Le Meta Service lié au service %d non trouvé"
 
 msgid "Host meta for meta %d not found"
 msgstr "L'hôte lié au meta %d non trouvé"
+msgid "Forward"
+msgstr "En avant"
+
+msgid "Backward"
+msgstr "En arrière"
+
+msgid "The end date must be greater than the start date"
+msgstr "La date de fin doit être supérieure à la date de début"
+
+msgid "Check duration"
+msgstr "Temps d'exécution"
