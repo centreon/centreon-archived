@@ -18,31 +18,3 @@
  * For more information : contact@centreon.com
  *
  */
-
-include_once __DIR__ . "/../../class/centreonLog.class.php";
-$centreonLog = new CentreonLog();
-
-//error specific content
-$versionOfTheUpgrade = 'UPGRADE - 20.10.5 : ';
-
-/**
- * Queries needing exception management and rollback if failing
- */
-try {
-    //engine postpone
-    if ($pearDB->isColumnExist('cfg_nagios', 'postpone_notification_to_timeperiod')) {
-        // An update is required
-        $errorMessage = 'Impossible to drop postpone_notification_to_timeperiod from fg_nagios';
-        $pearDB->query('ALTER TABLE `cfg_nagios` DROP COLUMN `postpone_notification_to_timeperiod`');
-    }
-    $errorMessage = "";
-} catch (\Exception $e) {
-    $centreonLog->insertLog(
-        4,
-        $versionOfTheUpgrade . $errorMessage .
-        " - Code : " . (int)$e->getCode() .
-        " - Error : " . $e->getMessage() .
-        " - Trace : " . $e->getTraceAsString()
-    );
-    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
-}
