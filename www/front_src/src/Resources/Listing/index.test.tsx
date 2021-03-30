@@ -7,6 +7,7 @@ import {
   waitFor,
   fireEvent,
   Matcher,
+  act,
 } from '@testing-library/react';
 import axios from 'axios';
 import { partition, where, contains, head, split, pipe, identity } from 'ramda';
@@ -18,6 +19,7 @@ import useDetails from '../Details/useDetails';
 import useFilter from '../Filter/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
+import { unhandledProblemsFilter } from '../Filter/models';
 
 import useListing from './useListing';
 import { getColumns } from './columns';
@@ -47,8 +49,10 @@ const appState = {
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
   return new Array(entityCount).fill(0).map((_, index) => ({
+    uuid: `${index}`,
     id: index,
     name: `E${index}`,
+    severity_level: 1,
     status: {
       name: 'OK',
       severity_code: 5,
@@ -77,7 +81,11 @@ const fillEntities = (): Array<Resource> => {
         reporting: index % 3 === 0 ? 'uri' : null,
       },
       externals: {
-        notes_url: 'https://centreon.com',
+        action_url: null,
+        notes: {
+          label: null,
+          url: 'https://centreon.com',
+        },
       },
     },
     passive_checks: index % 8 === 0,
@@ -174,38 +182,50 @@ describe(Listing, () => {
     });
   });
 
-  it.each(
-    columns
-      .filter(({ sortable }) => sortable !== false)
-      .map(({ id, label, sortField }) => [id, label, sortField]),
-  )(
-    'executes a listing request with sort_by param when %p column is clicked',
-    async (id, label, sortField) => {
-      const { getByLabelText } = renderListing();
-
-      mockedAxios.get.mockResolvedValue({ data: retrievedListing });
-
-      const sortBy = (sortField || id) as string;
-
-      fireEvent.click(getByLabelText(`Column ${label}`));
-
-      await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenLastCalledWith(
-          getListingEndpoint({ sort: { [sortBy]: 'desc' } }),
-          cancelTokenRequestParam,
-        );
+  describe('column sorting', () => {
+    afterEach(async () => {
+      act(() => {
+        context.setFilter(unhandledProblemsFilter);
       });
 
-      fireEvent.click(getByLabelText(`Column ${label}`));
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
+    });
 
-      await waitFor(() =>
-        expect(mockedAxios.get).toHaveBeenLastCalledWith(
-          getListingEndpoint({ sort: { [sortBy]: 'asc' } }),
-          cancelTokenRequestParam,
-        ),
-      );
-    },
-  );
+    it.each(
+      columns
+        .filter(({ sortable }) => sortable !== false)
+        .map(({ id, label, sortField }) => [id, label, sortField]),
+    )(
+      'executes a listing request with sort_by param and stores the order parameter in the URL when %p column is clicked',
+      async (id, label, sortField) => {
+        const { getByLabelText } = renderListing();
+
+        mockedAxios.get.mockResolvedValue({ data: retrievedListing });
+
+        const sortBy = (sortField || id) as string;
+
+        fireEvent.click(getByLabelText(`Column ${label}`));
+
+        await waitFor(() => {
+          expect(mockedAxios.get).toHaveBeenLastCalledWith(
+            getListingEndpoint({ sort: { [sortBy]: 'desc' } }),
+            cancelTokenRequestParam,
+          );
+        });
+
+        fireEvent.click(getByLabelText(`Column ${label}`));
+
+        await waitFor(() =>
+          expect(mockedAxios.get).toHaveBeenLastCalledWith(
+            getListingEndpoint({ sort: { [sortBy]: 'asc' } }),
+            cancelTokenRequestParam,
+          ),
+        );
+      },
+    );
+  });
 
   it('executes a listing request with an updated page param when a change page action is clicked', async () => {
     const { getByLabelText } = renderListing();
@@ -314,7 +334,9 @@ describe(Listing, () => {
 
     const chipLabel = `${entityInDowntime?.name} ${labelInDowntime}`;
 
-    const chip = await findByLabelText(chipLabel);
+    const chip = await findByLabelText(chipLabel, undefined, {
+      timeout: 10000,
+    });
 
     fireEvent.mouseEnter(chip);
     fireEvent.mouseOver(chip);
@@ -357,7 +379,9 @@ describe(Listing, () => {
 
     const chipLabel = `${acknowledgedEntity?.name} ${labelAcknowledged}`;
 
-    const chip = await findByLabelText(chipLabel);
+    const chip = await findByLabelText(chipLabel, undefined, {
+      timeout: 10000,
+    });
 
     fireEvent.mouseEnter(chip);
     fireEvent.mouseOver(chip);

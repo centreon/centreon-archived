@@ -409,12 +409,41 @@ CREATE TABLE `cb_type_field_relation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cb_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cb_log_level` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cfg_centreonbroker_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_centreonbroker` int(11) NOT NULL,
+  `id_log` int(11) NOT NULL,
+  `id_level` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cfg_centreonbroker` (
   `config_id` int(11) NOT NULL AUTO_INCREMENT,
   `config_name` varchar(100) NOT NULL,
   `config_filename` varchar(255) NOT NULL,
   `config_write_timestamp` enum('0','1') DEFAULT '1',
   `config_write_thread_id` enum('0','1') DEFAULT '1',
+  `log_directory` varchar(255),
+  `log_filename` varchar(255),
+  `log_max_size` int(11) NOT NULL DEFAULT 0,
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '100000',
@@ -456,7 +485,6 @@ CREATE TABLE `cfg_nagios` (
   `status_update_interval` int(11) DEFAULT NULL,
   `nagios_user` varchar(255) DEFAULT NULL,
   `nagios_group` varchar(255) DEFAULT NULL,
-  `postpone_notification_to_timeperiod` boolean DEFAULT false,
   `enable_notifications` enum('0','1','2') DEFAULT NULL,
   `execute_service_checks` enum('0','1','2') DEFAULT NULL,
   `accept_passive_service_checks` enum('0','1','2') DEFAULT NULL,
@@ -545,6 +573,7 @@ CREATE TABLE `cfg_nagios` (
   `check_host_freshness` enum('0','1','2') DEFAULT NULL,
   `host_freshness_check_interval` int(11) DEFAULT NULL,
   `date_format` varchar(255) DEFAULT NULL,
+  `instance_heartbeat_interval` smallint DEFAULT 30,
   `illegal_object_name_chars` varchar(255) DEFAULT NULL,
   `illegal_macro_output_chars` varchar(255) DEFAULT NULL,
   `use_regexp_matching` enum('0','1','2') DEFAULT NULL,
@@ -2348,6 +2377,7 @@ CREATE TABLE `platform_topology` (
     `name` varchar(255) NOT NULL,
     `type` varchar(255) NOT NULL,
     `parent_id` int(11),
+    `pending` enum('0', '1') DEFAULT '1',
     `server_id` int(11),
     PRIMARY KEY (`id`),
     CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,

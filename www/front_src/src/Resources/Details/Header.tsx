@@ -20,6 +20,7 @@ import {
   labelLinkCopied,
   labelSomethingWentWrong,
 } from '../translatedLabels';
+import memoizeComponent from '../memoizedComponent';
 
 import { DetailsSectionProps } from '.';
 
@@ -82,10 +83,10 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
 
   return (
     <>
-      {details.severity && (
+      {details.severity_level && (
         <StatusChip
           severityCode={SeverityCode.None}
-          label={details.severity.level?.toString()}
+          label={details.severity_level.toString()}
         />
       )}
       <StatusChip
@@ -125,4 +126,7 @@ const Header = ({ details }: DetailsSectionProps): JSX.Element => {
   );
 };
 
-export default Header;
+export default memoizeComponent<DetailsSectionProps>({
+  memoProps: ['details'],
+  Component: Header,
+});

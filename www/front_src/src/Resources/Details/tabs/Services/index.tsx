@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil, path } from 'ramda';
+import { isNil, path, pathOr } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 import GraphIcon from '@material-ui/icons/BarChart';
@@ -10,7 +10,7 @@ import ListIcon from '@material-ui/icons/List';
 import { useRequest, IconButton, ListingModel } from '@centreon/ui';
 
 import { TabProps, detailsTabId } from '..';
-import { useResourceContext } from '../../../Context';
+import { ResourceContext, useResourceContext } from '../../../Context';
 import {
   labelSwitchToGraph,
   labelSwitchToList,
@@ -18,9 +18,9 @@ import {
 import { listResources } from '../../../Listing/api';
 import { Resource } from '../../../models';
 import InfiniteScroll from '../../InfiniteScroll';
-import useTimePeriod from '../../../Graph/Performance/TimePeriodSelect/useTimePeriod';
-import TimePeriodSelect from '../../../Graph/Performance/TimePeriodSelect';
-import { TimePeriodId } from '../Graph/models';
+import memoizeComponent from '../../../memoizedComponent';
+import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
+import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -46,18 +46,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ServicesTab = ({ details }: TabProps): JSX.Element => {
-  const { t } = useTranslation();
+type ServicesTabContentProps = TabProps &
+  Pick<
+    ResourceContext,
+    | 'setSelectedResourceUuid'
+    | 'setSelectedResourceId'
+    | 'setSelectedResourceType'
+    | 'setSelectedResourceParentId'
+    | 'setSelectedResourceParentType'
+    | 'setOpenDetailsTabId'
+    | 'tabParameters'
+    | 'setServicesTabParameters'
+  >;
 
-  const {
-    setSelectedResourceId,
-    setSelectedResourceType,
-    setSelectedResourceParentId,
-    setSelectedResourceParentType,
-    setOpenDetailsTabId,
-    tabParameters,
-    setServicesTabParameters,
-  } = useResourceContext();
+const ServicesTabContent = ({
+  details,
+  setSelectedResourceUuid,
+  setSelectedResourceId,
+  setSelectedResourceType,
+  setSelectedResourceParentId,
+  setSelectedResourceParentType,
+  setOpenDetailsTabId,
+  tabParameters,
+  setServicesTabParameters,
+}: ServicesTabContentProps): JSX.Element => {
+  const { t } = useTranslation();
 
   const [graphMode, setGraphMode] = React.useState<boolean>(
     tabParameters.services?.graphMode || false,
@@ -70,15 +83,22 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     changeSelectedTimePeriod,
     periodQueryParameters,
     getIntervalDates,
+    customTimePeriod,
+    changeCustomTimePeriod,
+    adjustTimePeriod,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
-      ['services', 'selectedTimePeriodId'],
+      ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
       tabParameters,
     ),
-    onTimePeriodChange: (timePeriodId: TimePeriodId) => {
+    defaultSelectedCustomTimePeriod: path(
+      ['services', 'graphTimePeriod', 'selectedCustomTimePeriod'],
+      tabParameters,
+    ),
+    onTimePeriodChange: (graphTimePeriod) => {
       setServicesTabParameters({
         graphMode,
-        selectedTimePeriodId: timePeriodId,
+        graphTimePeriod,
       });
     },
   });
@@ -112,12 +132,13 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     });
   };
 
-  const selectService = (serviceId): void => {
+  const selectService = (service): void => {
     setOpenDetailsTabId(detailsTabId);
-    setSelectedResourceParentType('host');
-    setSelectedResourceParentId(details?.id);
-    setSelectedResourceId(serviceId);
-    setSelectedResourceType('service');
+    setSelectedResourceUuid(service.uuid);
+    setSelectedResourceId(service.id);
+    setSelectedResourceType(service.type);
+    setSelectedResourceParentType(service?.parent?.type);
+    setSelectedResourceParentId(service?.parent?.id);
   };
 
   const switchMode = (): void => {
@@ -127,8 +148,12 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     setGraphMode(mode);
 
     setServicesTabParameters({
+      graphTimePeriod: pathOr(
+        {},
+        ['services', 'graphTimePeriod'],
+        tabParameters,
+      ),
       graphMode: mode,
-      selectedTimePeriodId: selectedTimePeriod.id,
     });
   };
 
@@ -159,10 +184,12 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
         loadingSkeleton={<LoadingSkeleton />}
         filter={
           graphMode ? (
-            <TimePeriodSelect
-              selectedTimePeriodId={selectedTimePeriod.id}
+            <TimePeriodButtonGroup
+              selectedTimePeriodId={selectedTimePeriod?.id}
               onChange={changeSelectedTimePeriod}
               disabled={loading}
+              customTimePeriod={customTimePeriod}
+              changeCustomTimePeriod={changeCustomTimePeriod}
             />
           ) : undefined
         }
@@ -180,6 +207,8 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
               periodQueryParameters={periodQueryParameters}
               getIntervalDates={getIntervalDates}
               selectedTimePeriod={selectedTimePeriod}
+              customTimePeriod={customTimePeriod}
+              adjustTimePeriod={adjustTimePeriod}
             />
           ) : (
             <ServiceList
@@ -191,6 +220,38 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
         }}
       </InfiniteScroll>
     </>
+  );
+};
+
+const MemoizedServiceTabContent = memoizeComponent<ServicesTabContentProps>({
+  memoProps: ['details', 'tabParameters'],
+  Component: ServicesTabContent,
+});
+
+const ServicesTab = ({ details }: TabProps): JSX.Element => {
+  const {
+    setSelectedResourceUuid,
+    setSelectedResourceId,
+    setSelectedResourceType,
+    setSelectedResourceParentId,
+    setSelectedResourceParentType,
+    setOpenDetailsTabId,
+    tabParameters,
+    setServicesTabParameters,
+  } = useResourceContext();
+
+  return (
+    <MemoizedServiceTabContent
+      details={details}
+      tabParameters={tabParameters}
+      setSelectedResourceUuid={setSelectedResourceUuid}
+      setSelectedResourceId={setSelectedResourceId}
+      setSelectedResourceType={setSelectedResourceType}
+      setSelectedResourceParentId={setSelectedResourceParentId}
+      setSelectedResourceParentType={setSelectedResourceParentType}
+      setOpenDetailsTabId={setOpenDetailsTabId}
+      setServicesTabParameters={setServicesTabParameters}
+    />
   );
 };
 

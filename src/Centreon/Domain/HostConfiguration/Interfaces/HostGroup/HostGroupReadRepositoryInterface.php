@@ -22,15 +22,65 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostGroup;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
+use Centreon\Domain\Repository\RepositoryException;
 
 /**
- * This interface gathers all the reading operations on the repository.
+ * This interface gathers all the reading operations on the host group repository.
  *
  * @package Centreon\Domain\HostConfiguration\Interfaces\HostGroup
  */
 interface HostGroupReadRepositoryInterface
 {
+    /**
+     * Find all host groups.
+     *
+     * @return HostGroup[]
+     * @throws RepositoryException
+     * @throws \Exception
+     */
+    public function findAll(): array;
+
+    /**
+     * Find all host groups by contact.
+     *
+     * @param ContactInterface $contact Contact related to host groups
+     * @return HostGroup[]
+     * @throws RepositoryException
+     * @throws \Exception
+     */
+    public function findAllByContact(ContactInterface $contact): array;
+
+    /**
+     * Find a host group by id.
+     *
+     * @param int $hostGroupId Id of the host group to be found
+     * @return HostGroup|null
+     * @throws RepositoryException
+     * @throws \Exception
+     */
+    public function findById(int $hostGroupId): ?HostGroup;
+
+    /**
+     * Find a host group by id and contact.
+     *
+     * @param int $hostGroupId Id of the host group to be found
+     * @param ContactInterface $contact Contact related to host group
+     * @return HostGroup|null
+     * @throws RepositoryException
+     * @throws \Exception
+     */
+    public function findByIdAndContact(int $hostGroupId, ContactInterface $contact): ?HostGroup;
+
+    /**
+     * Find host groups by name (for admin user).
+     *
+     * @param string[] $groupsName List of names of host groups to be found
+     * @return HostGroup[]
+     */
+    public function findByNames(array $groupsName): array;
+
     /**
      * Find all host groups.
      *

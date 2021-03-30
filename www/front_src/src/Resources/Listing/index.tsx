@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
 
-import { Listing } from '@centreon/ui';
+import { MemoizedListing as Listing } from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
@@ -16,10 +16,10 @@ import {
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
-import { Resource } from '../models';
+import { Resource, SortOrder } from '../models';
 
-import useLoadResources from './useLoadResources';
 import { getColumns } from './columns';
+import useLoadResources from './useLoadResources';
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
@@ -27,32 +27,30 @@ const ResourceListing = (): JSX.Element => {
 
   const {
     listing,
-    sortf,
-    setSortf,
-    sorto,
-    setSorto,
     setLimit,
     page,
     setPage,
     setOpenDetailsTabId,
+    setSelectedResourceUuid,
     setSelectedResourceId,
     setSelectedResourceParentId,
     setSelectedResourceType,
     setSelectedResourceParentType,
-    selectedResourceId,
+    selectedResourceUuid,
     setSelectedResources,
     selectedResources,
     setResourcesToAcknowledge,
     setResourcesToSetDowntime,
     setResourcesToCheck,
     sending,
+    setCriteria,
+    getCriteriaValue,
   } = useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
 
   const changeSort = ({ order, orderBy }): void => {
-    setSortf(orderBy);
-    setSorto(order);
+    setCriteria({ name: 'sort', value: [orderBy, order] });
   };
 
   const changeLimit = (event): void => {
@@ -63,7 +61,8 @@ const ResourceListing = (): JSX.Element => {
     setPage(updatedPage + 1);
   };
 
-  const selectResource = ({ id, type, parent }: Resource): void => {
+  const selectResource = ({ uuid, id, type, parent }: Resource): void => {
+    setSelectedResourceUuid(uuid);
     setSelectedResourceId(id);
     setSelectedResourceParentId(parent?.id);
     setSelectedResourceType(type);
@@ -72,7 +71,7 @@ const ResourceListing = (): JSX.Element => {
 
   const resourceDetailsOpenCondition = {
     name: 'detailsOpen',
-    condition: ({ id }): boolean => equals(id, selectedResourceId),
+    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
     color: fade(theme.palette.primary.main, 0.08),
   };
 
@@ -101,6 +100,13 @@ const ResourceListing = (): JSX.Element => {
 
   const loading = sending;
 
+  const [sortField, sortOrder] = getCriteriaValue('sort') as [
+    string,
+    SortOrder,
+  ];
+
+  const getId = ({ uuid }) => uuid;
+
   return (
     <Listing
       checkable
@@ -117,8 +123,8 @@ const ResourceListing = (): JSX.Element => {
       onSort={changeSort}
       onPaginationLimitChanged={changeLimit}
       onPaginate={changePage}
-      sortf={sortf}
-      sorto={sorto}
+      sortf={sortField}
+      sorto={sortOrder}
       labelRowsPerPage={t(labelRowsPerPage)}
       labelDisplayedRows={labelDisplayedRows}
       totalRows={listing?.meta.total}
@@ -127,6 +133,16 @@ const ResourceListing = (): JSX.Element => {
       onRowClick={selectResource}
       innerScrollDisabled={false}
       emptyDataMessage={t(labelNoResultsFound)}
+      getId={getId}
+      memoProps={[
+        listing,
+        sortField,
+        sortOrder,
+        page,
+        selectedResources,
+        selectedResourceUuid,
+        sending,
+      ]}
     />
   );
 };

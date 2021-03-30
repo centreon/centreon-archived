@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -19,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace App\Security;
+namespace Security;
 
 use Centreon\Domain\Exception\ContactDisabledException;
 use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
@@ -38,7 +39,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 /**
  * Class used to authenticate a request by using a security token.
  *
- * @package App\Security
+ * @package Security
  */
 class TokenAPIAuthenticator extends AbstractGuardAuthenticator
 {

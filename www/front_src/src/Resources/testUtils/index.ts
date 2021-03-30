@@ -1,3 +1,7 @@
+import { findIndex, lensPath, propEq, set } from 'ramda';
+
+import { CriteriaValue } from '../Filter/Criterias/models';
+import { Filter } from '../Filter/models';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 interface EndpointParams {
@@ -10,6 +14,7 @@ interface EndpointParams {
   resourceTypes?: Array<string>;
   hostGroupIds?: Array<number>;
   serviceGroupIds?: Array<number>;
+  monitoringServerIds?: Array<number>;
 }
 
 const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
@@ -33,6 +38,7 @@ const getListingEndpoint = ({
   resourceTypes = defaultResourceTypes,
   hostGroupIds = [],
   serviceGroupIds = [],
+  monitoringServerIds = [],
   search,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
@@ -58,6 +64,7 @@ const getListingEndpoint = ({
     resourceTypes,
     hostGroupIds,
     serviceGroupIds,
+    monitoringServerIds,
   });
 
 const cancelTokenRequestParam = { cancelToken: {} };
@@ -72,6 +79,35 @@ const mockAppStateSelector = (useSelector: jest.Mock): void => {
   useSelector.mockImplementation((callback) => callback(appState));
 };
 
+interface CriteriaValueProps {
+  filter: Filter;
+  name: string;
+}
+
+const getCriteriaValue = ({
+  filter,
+  name,
+}: CriteriaValueProps): CriteriaValue | undefined => {
+  return filter.criterias.find(propEq('name', name))?.value;
+};
+
+interface FilterAndCriteriaToUpdate {
+  filter: Filter;
+  criteriaName: string;
+  criteriaValue: CriteriaValue;
+}
+
+const getFilterWithUpdatedCriteria = ({
+  filter,
+  criteriaName,
+  criteriaValue,
+}: FilterAndCriteriaToUpdate): Filter => {
+  const index = findIndex(propEq('name', criteriaName))(filter.criterias);
+  const lens = lensPath(['criterias', index, 'value']);
+
+  return set(lens, criteriaValue, filter);
+};
+
 export {
   mockAppStateSelector,
   getListingEndpoint,
@@ -80,4 +116,6 @@ export {
   defaultResourceTypes,
   defaultStates,
   searchableFields,
+  getCriteriaValue,
+  getFilterWithUpdatedCriteria,
 };

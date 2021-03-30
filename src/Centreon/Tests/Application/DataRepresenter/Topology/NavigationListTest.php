@@ -158,7 +158,7 @@ class NavigationListTest extends TestCase
         ]);
 
         $this->assertStringEqualsFile(
-            __DIR__ . '/../../../Resource/Fixture/Topology/navigation-list-01.json',
+            __DIR__ . '/../../../Resources/Fixture/Topology/navigation-list-01.json',
             json_encode($dataRepresenter->jsonSerialize())
         );
     }

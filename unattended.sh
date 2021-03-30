@@ -291,9 +291,11 @@ function set_centreon_repos(){
 #========= end of function set_centreon_repos()
 
 
+
 #========= begin of function set_required_prerequisite()
 # check if the target OS is compatible with Red Hat and the version is 7 or 8
 # then set the required environment variables accordingly
+=======
 #
 function set_required_prerequisite(){
 

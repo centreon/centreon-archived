@@ -4,7 +4,7 @@ Centreon\Domain\Monitoring\ResourceExternalLinks:
             type: string
             groups:
                 - 'resource_status_main'
-        notesUrl:
-            type: string
+        notes:
+            type: Centreon\Domain\Monitoring\Notes
             groups:
                 - 'resource_status_main'

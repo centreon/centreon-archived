@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration;
 
+use Centreon\Domain\Macro\Interfaces\MacroInterface;
 use Centreon\Domain\Annotation\EntityDescriptor;
 
-class HostMacro
+class HostMacro implements MacroInterface
 {
     /**
      * @var int|null
@@ -72,9 +73,9 @@ class HostMacro
 
     /**
      * @param int|null $id
-     * @return HostMacro
+     * @return self
      */
-    public function setId(?int $id): HostMacro
+    public function setId(?int $id): self
     {
         $this->id = $id;
         return $this;
@@ -90,9 +91,9 @@ class HostMacro
 
     /**
      * @param string|null $name
-     * @return HostMacro
+     * @return self
      */
-    public function setName(?string $name): HostMacro
+    public function setName(?string $name): self
     {
         if ($name !== null) {
             if (strpos($name, '$_HOST') !== 0) {
@@ -118,9 +119,9 @@ class HostMacro
 
     /**
      * @param string|null $value
-     * @return HostMacro
+     * @return self
      */
-    public function setValue(?string $value): HostMacro
+    public function setValue(?string $value): self
     {
         $this->value = $value;
         return $this;
@@ -136,9 +137,9 @@ class HostMacro
 
     /**
      * @param bool $isPassword
-     * @return HostMacro
+     * @return self
      */
-    public function setPassword(bool $isPassword): HostMacro
+    public function setPassword(bool $isPassword): self
     {
         $this->isPassword = $isPassword;
         return $this;
@@ -154,9 +155,9 @@ class HostMacro
 
     /**
      * @param string|null $description
-     * @return HostMacro
+     * @return self
      */
-    public function setDescription(?string $description): HostMacro
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
         return $this;
@@ -172,9 +173,9 @@ class HostMacro
 
     /**
      * @param int|null $order
-     * @return HostMacro
+     * @return self
      */
-    public function setOrder(?int $order): HostMacro
+    public function setOrder(?int $order): self
     {
         $this->order = $order;
         return $this;
@@ -190,9 +191,9 @@ class HostMacro
 
     /**
      * @param int|null $hostId
-     * @return HostMacro
+     * @return self
      */
-    public function setHostId(?int $hostId): HostMacro
+    public function setHostId(?int $hostId): self
     {
         $this->hostId = $hostId;
         return $this;

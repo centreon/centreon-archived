@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,24 @@ class HostCategoryTest extends TestCase
     /**
      * Too long name test
      */
+    public function testNameTooShortException(): void
+    {
+        $name = str_repeat('.', HostCategory::MIN_NAME_LENGTH - 1);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::minLength(
+                $name,
+                strlen($name),
+                HostCategory::MIN_NAME_LENGTH,
+                'HostCategory::name'
+            )->getMessage()
+        );
+        new HostCategory($name, 'alias');
+    }
+
+    /**
+     * Too long name test
+     */
     public function testNameTooLongException(): void
     {
         $name = str_repeat('.', HostCategory::MAX_NAME_LENGTH + 1);
@@ -48,7 +66,25 @@ class HostCategoryTest extends TestCase
                 'HostCategory::name'
             )->getMessage()
         );
-        (new HostCategory())->setName($name);
+        new HostCategory($name, 'alias');
+    }
+
+    /**
+     * Too short alias test
+     */
+    public function testAliasTooShortException(): void
+    {
+        $alias = str_repeat('.', HostCategory::MIN_ALIAS_LENGTH - 1);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            AssertionException::minLength(
+                $alias,
+                strlen($alias),
+                HostCategory::MIN_ALIAS_LENGTH,
+                'HostCategory::alias'
+            )->getMessage()
+        );
+        new HostCategory('name', $alias);
     }
 
     /**
@@ -66,7 +102,7 @@ class HostCategoryTest extends TestCase
                 'HostCategory::alias'
             )->getMessage()
         );
-        (new HostCategory())->setAlias($alias);
+        new HostCategory('name', $alias);
     }
 
     /**
@@ -84,7 +120,7 @@ class HostCategoryTest extends TestCase
                 'HostCategory::comments'
             )->getMessage()
         );
-        (new HostCategory())->setComments($comments);
+        (new HostCategory('name', 'alias'))->setComments($comments);
     }
 
     /**
@@ -92,9 +128,9 @@ class HostCategoryTest extends TestCase
      */
     public function testIsActivatedProperty(): void
     {
-        $hostCategory = new HostCategory();
+        $hostCategory = new HostCategory('name', 'alias');
         $this->assertTrue($hostCategory->isActivated());
-        $hostCategory->setIsActivated(false);
+        $hostCategory->setActivated(false);
         $this->assertFalse($hostCategory->isActivated());
     }
 
@@ -104,7 +140,7 @@ class HostCategoryTest extends TestCase
     public function testIdProperty(): void
     {
         $newHostId = 1;
-        $hostCategory = new HostCategory();
+        $hostCategory = new HostCategory('name', 'alias');
         $this->assertNull($hostCategory->getId());
         $hostCategory->setId($newHostId);
         $this->assertEquals($newHostId, $hostCategory->getId());
@@ -116,11 +152,11 @@ class HostCategoryTest extends TestCase
      */
     public static function createEntity(): HostCategory
     {
-        return (new HostCategory())
+        return (new HostCategory('name', 'alias'))
             ->setId(10)
             ->setName('Category')
             ->setAlias('Alias category')
-            ->setIsActivated(true)
+            ->setActivated(true)
             ->setComments("blablabla");
     }
 }

@@ -38,17 +38,27 @@ namespace Centreon\Tests\Infrastructure\Provider;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Infrastructure\Provider\AutoloadServiceProvider;
-use Centreon\Tests\Resource\Mock\ServiceProvider;
-use Centreon\Tests\Resource\CheckPoint;
+use Centreon\Tests\Resources\Mock\ServiceProvider;
+use Centreon\Tests\Resources\CheckPoint;
 use Pimple\Container;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 class AutoloadServiceProviderTest extends TestCase
 {
+    /**
+     * @var CheckPoint
+     */
+    protected $checkPoint;
+
+    /**
+     * @var Finder
+     */
+    protected $finder;
+
     public function setUp(): void
     {
-        $this->checkPoint = (new CheckPoint)
+        $this->checkPoint = (new CheckPoint())
             ->add('finder.files')
             ->add('finder.name')
             ->add('finder.depth')
@@ -99,7 +109,7 @@ class AutoloadServiceProviderTest extends TestCase
                     ->will($this->returnCallback(function () {
                         $this->checkPoint->mark('finder.getIterator.getRelativePath1');
 
-                        return 'Centreon\\Tests\\Resource\\Mock';
+                        return 'Centreon\\Tests\\Resources\\Mock';
                     }));
 
                 $fileInfo2 = $this->createMock(SplFileInfo::class);
@@ -107,7 +117,7 @@ class AutoloadServiceProviderTest extends TestCase
                     ->will($this->returnCallback(function () {
                         $this->checkPoint->mark('finder.getIterator.getRelativePath2');
 
-                        return 'Centreon\\Tests\\Resource\\Mock\\NonExistent';
+                        return 'Centreon\\Tests\\Resources\\Mock\\NonExistent';
                     }));
 
                 return new \ArrayIterator([
@@ -136,7 +146,7 @@ class AutoloadServiceProviderTest extends TestCase
             ->will($this->returnCallback(function () {
                 $fileInfo = $this->createMock(SplFileInfo::class);
                 $fileInfo->method('getRelativePath')
-                    ->willReturn('Centreon\\Tests\\Resource\\Mock');
+                    ->willReturn('Centreon\\Tests\\Resources\\Mock');
 
                 return new \ArrayIterator([
                     $fileInfo,

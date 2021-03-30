@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,6 +108,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         // try to avoid exception from the regexp bad syntax in search criteria
         try {
             $list = $this->resourceRepository->findResources($filter);
+            // replace macros in external links
+            foreach ($list as $resource) {
+                $this->replaceMacrosInExternalLinks($resource);
+            }
         } catch (RepositoryException $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
@@ -122,11 +126,6 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function enrichHostWithDetails(ResourceEntity $resource): void
     {
-        $host = $this->monitoringRepository->findOneHost($resource->getId());
-        if ($host !== null) {
-            $resource->setPollerName($host->getPollerName());
-        }
-
         $downtimes = $this->monitoringRepository->findDowntimes(
             $resource->getId(),
             0
@@ -220,6 +219,74 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         }
 
         return $hostId;
+    }
+
+    /**
+     * Replaces macros in the URL for host resource type
+     *
+     * @param ResourceEntity $resource
+     * @param string $url
+     * @return string
+     */
+    private function replaceMacrosInUrlsForHostResource(ResourceEntity $resource, string $url): string
+    {
+        $url = str_replace('$HOSTADDRESS$', $resource->getFqdn(), $url);
+        $url = str_replace('$HOSTNAME$', $resource->getName(), $url);
+        $url = str_replace('$HOSTSTATE$', $resource->getStatus()->getName(), $url);
+        $url = str_replace('$HOSTSTATEID$', $resource->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTALIAS$', $resource->getAlias(), $url);
+
+        return $url;
+    }
+
+    /**
+     * Replaces macros in the URL for service resource type
+     *
+     * @param ResourceEntity $resource
+     * @param string $url
+     * @return string
+     */
+    private function replaceMacrosInUrlsForServiceResource(ResourceEntity $resource, string $url): string
+    {
+        $url = str_replace('$HOSTADDRESS$', $resource->getParent()->getFqdn(), $url);
+        $url = str_replace('$HOSTNAME$', $resource->getParent()->getName(), $url);
+        $url = str_replace('$HOSTSTATE$', $resource->getParent()->getStatus()->getName(), $url);
+        $url = str_replace('$HOSTSTATEID$', $resource->getParent()->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTALIAS$', $resource->getParent()->getAlias(), $url);
+        $url = str_replace('$SERVICEDESC$', $resource->getName(), $url);
+        $url = str_replace('$SERVICESTATE$', $resource->getStatus()->getName(), $url);
+        $url = str_replace('$SERVICESTATEID$', $resource->getStatus()->getCode(), $url);
+
+        return $url;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function replaceMacrosInExternalLinks(ResourceEntity $resource): void
+    {
+        $actionUrl = $resource->getLinks()->getExternals()->getActionUrl();
+        $notesObject = $resource->getLinks()->getExternals()->getNotes();
+        $notesUrl = ($notesObject !== null) ? $notesObject->getUrl() : null;
+        $resourceType = $resource->getType();
+
+        if ($actionUrl !== null) {
+            if ($resourceType === ResourceEntity::TYPE_HOST) {
+                $actionUrl = $this->replaceMacrosInUrlsForHostResource($resource, $actionUrl);
+            } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
+                $actionUrl = $this->replaceMacrosInUrlsForServiceResource($resource, $actionUrl);
+            }
+            $resource->getLinks()->getExternals()->setActionUrl($actionUrl);
+        }
+
+        if ($notesUrl !== null) {
+            if ($resourceType === ResourceEntity::TYPE_HOST) {
+                $notesUrl = $this->replaceMacrosInUrlsForHostResource($resource, $notesUrl);
+            } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
+                $notesUrl = $this->replaceMacrosInUrlsForServiceResource($resource, $notesUrl);
+            }
+            $resource->getLinks()->getExternals()->getNotes()->setUrl($notesUrl);
+        }
     }
 
     /**

@@ -1,11 +1,10 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { isEmpty, pipe, reject, slice } from 'ramda';
 
 import {
   Typography,
-  Card,
-  CardContent,
   Divider,
   CardActions,
   Button,
@@ -17,6 +16,8 @@ import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 import { getStatusColors } from '@centreon/ui';
 
 import { labelMore, labelLess } from '../../../translatedLabels';
+
+import Card from './Card';
 
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
@@ -56,8 +57,8 @@ const ExpandableCard = ({
   const [outputExpanded, setOutputExpanded] = React.useState(false);
 
   const lines = content.split(/\n|\\n/);
-  const threeFirstlines = lines.slice(0, 3);
-  const lastlines = lines.slice(2, lines.length);
+  const threeFirstLines = lines.slice(0, 3);
+  const lastLines = pipe(slice(3, lines.length), reject(isEmpty))(lines);
 
   const toggleOutputExpanded = (): void => {
     setOutputExpanded(!outputExpanded);
@@ -71,19 +72,17 @@ const ExpandableCard = ({
 
   return (
     <Card className={classes.card}>
-      <CardContent>
-        <Typography
-          className={classes.title}
-          variant="subtitle2"
-          color="textSecondary"
-          gutterBottom
-        >
-          {title}
-        </Typography>
-        {threeFirstlines.map(Line)}
-        {outputExpanded && lastlines.map(Line)}
-      </CardContent>
-      {lastlines.length > 0 && (
+      <Typography
+        className={classes.title}
+        variant="subtitle2"
+        color="textSecondary"
+        gutterBottom
+      >
+        {title}
+      </Typography>
+      {threeFirstLines.map(Line)}
+      {outputExpanded && lastLines.map(Line)}
+      {lastLines.length > 0 && (
         <>
           <Divider />
           <CardActions>

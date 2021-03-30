@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
+import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -36,42 +37,44 @@ type Props = Pick<DetailsTableProps, 'endpoint'>;
 
 const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
   const { toDateTime } = useLocaleDateTimeFormat();
 
   const columns = [
     {
       id: 'author',
-      label: labelAuthor,
+      label: t(labelAuthor),
       type: ColumnType.string,
       getContent: ({ author_name }): string => author_name,
       width: 100,
     },
     {
       id: 'entry_time',
-      label: labelEntryTime,
+      label: t(labelEntryTime),
       type: ColumnType.string,
       getContent: ({ entry_time }): string => toDateTime(entry_time),
       width: 150,
     },
     {
       id: 'is_persistent',
-      label: labelPersistent,
+      label: t(labelPersistent),
       type: ColumnType.string,
       getContent: ({ is_persistent_comment }): string =>
-        getYesNoLabel(is_persistent_comment),
+        t(getYesNoLabel(is_persistent_comment)),
       width: 100,
     },
     {
       id: 'is_sticky',
-      label: labelSticky,
+      label: t(labelSticky),
       type: ColumnType.string,
-      getContent: ({ is_sticky }): string => getYesNoLabel(is_sticky),
+      getContent: ({ is_sticky }): string => t(getYesNoLabel(is_sticky)),
       width: 100,
     },
 
     {
       id: 'comment',
-      label: labelComment,
+      label: t(labelComment),
       type: ColumnType.string,
       width: 250,
       getContent: ({ comment }: AcknowledgementDetails): JSX.Element => {

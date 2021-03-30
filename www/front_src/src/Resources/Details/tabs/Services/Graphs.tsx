@@ -4,7 +4,8 @@ import { path, isNil, equals, last, pipe, not } from 'ramda';
 
 import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
-import { TimePeriod } from '../Graph/models';
+import { CustomTimePeriod, TimePeriod } from '../Graph/models';
+import { AdjustTimePeriodProps } from '../../../Graph/Performance/models';
 
 const MemoizedPerformanceGraph = React.memo(
   ExportablePerformanceGraphWithTimeline,
@@ -15,11 +16,14 @@ const MemoizedPerformanceGraph = React.memo(
     const nextPeriodQueryParameters = nextProps.periodQueryParameters;
     const prevTooltipPosition = prevProps.tooltipPosition;
     const nextTooltipPosition = nextProps.tooltipPosition;
+    const prevSelectedTimePeriod = prevProps.selectedTimePeriod;
+    const nextSelectedTimePeriod = nextProps.selectedTimePeriod;
 
     return (
       equals(prevResource?.id, nextResource?.id) &&
       equals(prevPeriodQueryParameters, nextPeriodQueryParameters) &&
-      equals(prevTooltipPosition, nextTooltipPosition)
+      equals(prevTooltipPosition, nextTooltipPosition) &&
+      equals(prevSelectedTimePeriod, nextSelectedTimePeriod)
     );
   },
 );
@@ -29,7 +33,9 @@ interface Props {
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
   periodQueryParameters: string;
   getIntervalDates: () => [string, string];
-  selectedTimePeriod: TimePeriod;
+  selectedTimePeriod: TimePeriod | null;
+  customTimePeriod: CustomTimePeriod;
+  adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
 }
 
 const ServiceGraphs = ({
@@ -38,6 +44,8 @@ const ServiceGraphs = ({
   periodQueryParameters,
   getIntervalDates,
   selectedTimePeriod,
+  customTimePeriod,
+  adjustTimePeriod,
 }: Props): JSX.Element => {
   const [tooltipPosition, setTooltipPosition] = React.useState<
     [number, number]
@@ -59,10 +67,12 @@ const ServiceGraphs = ({
               resource={service}
               graphHeight={120}
               periodQueryParameters={periodQueryParameters}
-              getIntervalDates={getIntervalDates}
               selectedTimePeriod={selectedTimePeriod}
+              getIntervalDates={getIntervalDates}
               onTooltipDisplay={setTooltipPosition}
               tooltipPosition={tooltipPosition}
+              customTimePeriod={customTimePeriod}
+              adjustTimePeriod={adjustTimePeriod}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>

@@ -14,38 +14,15 @@
     <script type="text/javascript">jQuery.noConflict();</script>
     <script type='text/javascript'>
         {literal}
+        loadStep('stepContent');
 
-        jQuery(function() {
-            loadStep();
-        });
-
-        function loadStep() {
+        function loadStep(step = 'stepContent') {
             jQuery.ajax({
                 method: 'GET',
-                url: './steps/step.php?action=stepContent'
-            }).success(function(data){
-                jQuery('#installationContent').html(data);
+                url: `./steps/step.php?action=${step}`,
+                success: (data) => jQuery('#installationContent').html(data),
             });
         }
-
-        function previousStep() {
-            jQuery.ajax({
-                method: 'GET',
-                url: './steps/step.php?action=previousStep'
-            }).success(function(data){
-                jQuery('#installationContent').html(data);
-            });
-        }
-
-        function nextStep() {
-            jQuery.ajax({
-                method: 'GET',
-                url: './steps/step.php?action=nextStep'
-            }).success(function(data){
-                jQuery('#installationContent').html(data);
-            });
-        }
-
         {/literal}
     </script>
 </head>

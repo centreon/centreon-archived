@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
 use CentreonUser\Domain\Entity\Timeperiod;
 use CentreonUser\Domain\Repository\TimeperiodRepository;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group CentreonUser

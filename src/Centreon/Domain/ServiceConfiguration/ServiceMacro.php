@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\ServiceConfiguration;
 
+use Centreon\Domain\Macro\Interfaces\MacroInterface;
 use Centreon\Domain\Annotation\EntityDescriptor;
 
-class ServiceMacro
+class ServiceMacro implements MacroInterface
 {
     /**
      * @var int|null
@@ -72,9 +73,9 @@ class ServiceMacro
 
     /**
      * @param int|null $id
-     * @return ServiceMacro
+     * @return self
      */
-    public function setId(?int $id): ServiceMacro
+    public function setId(?int $id): self
     {
         $this->id = $id;
         return $this;
@@ -90,9 +91,9 @@ class ServiceMacro
 
     /**
      * @param string|null $name
-     * @return ServiceMacro
+     * @return self
      */
-    public function setName(?string $name): ServiceMacro
+    public function setName(?string $name): self
     {
         $patternToBeFound = '$_SERVICE';
         if ($name !== null) {
@@ -119,9 +120,9 @@ class ServiceMacro
 
     /**
      * @param string|null $value
-     * @return ServiceMacro
+     * @return self
      */
-    public function setValue(?string $value): ServiceMacro
+    public function setValue(?string $value): self
     {
         $this->value = $value;
         return $this;
@@ -137,9 +138,9 @@ class ServiceMacro
 
     /**
      * @param bool $isPassword
-     * @return ServiceMacro
+     * @return self
      */
-    public function setPassword(bool $isPassword): ServiceMacro
+    public function setPassword(bool $isPassword): self
     {
         $this->isPassword = $isPassword;
         return $this;
@@ -155,9 +156,9 @@ class ServiceMacro
 
     /**
      * @param string|null $description
-     * @return ServiceMacro
+     * @return self
      */
-    public function setDescription(?string $description): ServiceMacro
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
         return $this;
@@ -173,9 +174,9 @@ class ServiceMacro
 
     /**
      * @param int|null $order
-     * @return ServiceMacro
+     * @return self
      */
-    public function setOrder(?int $order): ServiceMacro
+    public function setOrder(?int $order): self
     {
         $this->order = $order;
         return $this;
@@ -191,9 +192,9 @@ class ServiceMacro
 
     /**
      * @param int|null $serviceId
-     * @return ServiceMacro
+     * @return self
      */
-    public function setServiceId(?int $serviceId): ServiceMacro
+    public function setServiceId(?int $serviceId): self
     {
         $this->serviceId = $serviceId;
         return $this;

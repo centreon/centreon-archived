@@ -56,6 +56,10 @@ services:
         arguments: ["%kernel.cache_dir%/JsonValidatorCache", '%kernel.debug%']
 
     # Contact
+    Centreon\Domain\Contact\Interfaces\ContactInterface:
+        class: Centreon\Domain\Contact\Contact
+        public: true
+
     Centreon\Domain\Contact\Interfaces\ContactServiceInterface:
         class: Centreon\Domain\Contact\ContactService
         public: true
@@ -105,10 +109,10 @@ services:
         class: Centreon\Domain\PlatformTopology\PlatformTopologyService
 
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRepositoryRDB
+        class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRepositoryRDB
 
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRegisterRepositoryAPI
+        class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRegisterRepositoryAPI
 
     # Real time monitoring
     sqlRequestTranslator:
@@ -175,7 +179,19 @@ services:
         class: Centreon\Domain\PlatformInformation\PlatformInformationService
 
     Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformInformation\PlatformInformationRepositoryRDB
+        class: Centreon\Infrastructure\PlatformInformation\Repository\PlatformInformationRepositoryRDB
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
+
+    Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface:
+        class: Centreon\Infrastructure\PlatformInformation\Repository\PlatformInformationRepositoryRDB
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
+
+    Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation:
+        class: Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
 
     # Monitoring resources
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
@@ -211,15 +227,31 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostConfigurationRepositoryRDB
 
-    Centreon\Domain\HostConfiguration\Interfaces\HostCategoryReadRepositoryInterface:
+    Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostCategoryRepositoryRDB
 
     Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface:
         class: Centreon\Domain\HostConfiguration\HostConfigurationService
         public: true
 
+    # Host category
+    Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryServiceInterface:
+        class: Centreon\Domain\HostConfiguration\HostCategoryService
+
+    Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityServiceInterface:
+        class: Centreon\Domain\HostConfiguration\HostSeverityService
+
+    Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface:
+        class: Centreon\Infrastructure\HostConfiguration\Repository\HostSeverityRepositoryRDB
+
+    Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities:
+        class: Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities
+        calls:
+            - method: setMediaPath
+              arguments: ["%media_path%"]
+
     # Host group configuration
-    Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupRepositoryInterface:
+    Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostGroupRepositoryRDB
 
     Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups:

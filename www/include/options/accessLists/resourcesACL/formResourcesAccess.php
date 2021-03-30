@@ -258,7 +258,7 @@ $allHosts[] = $form->createElement(
     'all_hosts',
     '&nbsp;',
     "",
-    array('id' => 'all_hosts', 'onclick' => 'advancedDisplay(this.id)')
+    array('id' => 'all_hosts', 'onClick' => 'toggleTableDeps(this)')
 );
 $form->addGroup($allHosts, 'all_hosts', _("Include all hosts"), '&nbsp;&nbsp;');
 
@@ -267,7 +267,7 @@ $allHostgroups[] = $form->createElement(
     'all_hostgroups',
     '&nbsp;',
     "",
-    array('id' => 'all_hostgroups', 'onclick' => 'advancedDisplay(this.id)')
+    array('id' => 'all_hostgroups', 'onClick' => 'toggleTableDeps(this)')
 );
 $form->addGroup($allHostgroups, 'all_hostgroups', _("Include all hostgroups"), '&nbsp;&nbsp;');
 
@@ -276,7 +276,7 @@ $allServiceGroups[] = $form->createElement(
     'all_servicegroups',
     '&nbsp;',
     "",
-    array('id' => 'all_servicegroups', 'onclick' => 'advancedDisplay(this.id)')
+    array('id' => 'all_servicegroups', 'onClick' => 'toggleTableDeps(this)')
 );
 $form->addGroup($allServiceGroups, 'all_servicegroups', _("Include all servicegroups"), '&nbsp;&nbsp;');
 
@@ -558,26 +558,7 @@ if ($form->validate()) {
 }
 ?>
 <script type='text/javascript'>
-    function hideAdvancedSelect(advId) {
-        advId.parentNode.getElementsByTagName('table')[0].setAttribute('style', 'display: none');
+    function toggleTableDeps(element) {
+        jQuery(element).parents('td.FormRowValue:first').children('table').toggle();
     }
-
-    function showAdvancedSelect(advId) {
-        advId.parentNode.getElementsByTagName('table')[0].setAttribute('style', 'display: visible');
-    }
-
-    function advancedDisplay(checkboxId) {
-        jQuery("#" + checkboxId).each(function (index, e) {
-            if (e.checked) {
-                hideAdvancedSelect(e);
-            } else {
-                showAdvancedSelect(e);
-            }
-        });
-    }
-
-    advancedDisplay('all_hosts');
-    advancedDisplay('all_hostgroups');
-    advancedDisplay('all_servicegroups');
-
 </script>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Symfony\Component\HttpFoundation\Response;
-use Centreon\Domain\Monitoring\ResourceSeverity;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Application\Normalizer\IconUrlNormalizer;
 use JMS\Serializer\Exception\ValidationFailedException;
@@ -66,6 +65,7 @@ class MonitoringResourceController extends AbstractController
         'statuses',
         'hostgroup_ids',
         'servicegroup_ids',
+        'monitoring_server_ids',
     ];
 
     public const FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY = 'only_with_performance_data';
@@ -111,7 +111,6 @@ class MonitoringResourceController extends AbstractController
         ResourceEntity::SERIALIZER_GROUP_PARENT,
         Icon::SERIALIZER_GROUP_MAIN,
         ResourceStatus::SERIALIZER_GROUP_MAIN,
-        ResourceSeverity::SERIALIZER_GROUP_MAIN,
     ];
 
     // Groups for validation
@@ -280,6 +279,17 @@ class MonitoringResourceController extends AbstractController
 
         $this->resource->enrichHostWithDetails($resource);
 
+        try {
+            $host = (new Host())->setId($resource->getId())
+                ->setCheckCommand($resource->getCommandLine());
+            $this->monitoring->hidePasswordInHostCommandLine($host);
+            $resource->setCommandLine($host->getCheckCommand());
+        } catch (\Throwable $ex) {
+            $resource->setCommandLine(
+                sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
+            );
+        }
+
         $context = (new Context())
             ->setGroups(array_merge(
                 static::SERIALIZER_GROUPS_LISTING,
@@ -333,16 +343,13 @@ class MonitoringResourceController extends AbstractController
         try {
             $service = (new Service())
                 ->setId($resource->getId())
-                ->setHost(
-                    (new Host())
-                        ->setId($resource->getParent()->getId())
-                )
+                ->setHost((new Host())->setId($resource->getParent()->getId()))
                 ->setCommandLine($resource->getCommandLine());
-            $this->monitoring->hidePasswordInCommandLine($service);
+            $this->monitoring->hidePasswordInServiceCommandLine($service);
             $resource->setCommandLine($service->getCommandLine());
         } catch (\Throwable $ex) {
             $resource->setCommandLine(
-                sprintf('Unable to hide passwords in command (Reason: %s)', $ex->getMessage())
+                sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
             );
         }
 
@@ -650,6 +657,7 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_HOST,
                 'id' => $hostId,
                 'tab' => $tab,
+                'uuid' => 'h' . $hostId
             ]),
         ]);
     }
@@ -659,9 +667,9 @@ class MonitoringResourceController extends AbstractController
      *
      * @param integer $hostId
      * @param integer $serviceId
-     * @return void
+     * @return string
      */
-    public function buildServiceDetailsUri(int $hostId, int $serviceId)
+    public function buildServiceDetailsUri(int $hostId, int $serviceId): string
     {
         return $this->buildServiceUri($hostId, $serviceId, self::TAB_DETAILS_NAME);
     }
@@ -687,6 +695,7 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_SERVICE,
                 'id' => $serviceId,
                 'tab' => $tab,
+                'uuid' => 's' . $serviceId
             ]),
         ]);
     }

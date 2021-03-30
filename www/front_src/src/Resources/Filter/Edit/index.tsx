@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import MoveIcon from '@material-ui/icons/UnfoldMore';
 
-import { SectionPanel, useRequest } from '@centreon/ui';
+import { MemoizedSectionPanel as SectionPanel, useRequest } from '@centreon/ui';
 
 import { useResourceContext } from '../../Context';
 import { labelEditFilters } from '../../translatedLabels';
@@ -51,13 +51,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditFiltersPanel = (): JSX.Element | null => {
+const EditFiltersPanel = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   const {
-    setEditPanelOpen,
     customFilters,
+    setEditPanelOpen,
     setCustomFilters,
   } = useResourceContext();
 
@@ -148,6 +148,7 @@ const EditFiltersPanel = (): JSX.Element | null => {
       sections={sections}
       header={header}
       onClose={closeEditPanel}
+      memoProps={[customFilters]}
     />
   );
 };

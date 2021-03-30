@@ -1,0 +1,10 @@
+Centreon\Domain\Monitoring\Notes:
+    properties:
+        label:
+            type: string
+            groups:
+                - 'resource_status_main'
+        url:
+            type: string
+            groups:
+                - 'resource_status_main'

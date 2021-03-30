@@ -1406,7 +1406,7 @@ Alias /centreon $INSTALL_DIR_CENTREON/www/
   ProxyPassMatch fcgi://127.0.0.1:9042${INSTALL_DIR_CENTREON}/www/\$1
 </LocationMatch>
 
-<LocationMatch ^/centreon/api/(latest/|beta/|v[0-9]+/|v[0-9]+\.[0-9]+/)(.*)$>
+<LocationMatch ^/centreon/(authentication|api/(latest|beta|v[0-9]+|v[0-9]+\.[0-9]+))/.*$>
   ProxyPassMatch fcgi://127.0.0.1:9042${INSTALL_DIR_CENTREON}/api/index.php/\$1
 </LocationMatch>
 
@@ -1467,6 +1467,10 @@ check_php_fpm_directory() {
             DIR_PHP_FPM_CONF="/etc/php/7.2/fpm/pool.d"
         elif [ -d /etc/opt/rh/rh-php72/php-fpm.d ] ; then
             DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php72/php-fpm.d"
+        elif [ -d /etc/php/7.3/fpm/pool.d ]; then
+            DIR_PHP_FPM_CONF="/etc/php/7.3/fpm/pool.d"
+        elif [ -d /etc/opt/rh/rh-php73/php-fpm.d ] ; then
+            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php73/php-fpm.d"
         elif [ -d /etc/php/7.1/fpm/pool.d ]; then
             DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
         elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
