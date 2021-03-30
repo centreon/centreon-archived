@@ -108,14 +108,14 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
-            'start_day' => '03/28/2021',
+            'start_day' => '03/30/2025',
             'start_time' => '02:30',
-            'end_day' => '03/28/2021',
+            'end_day' => '03/30/2025',
             'end_time' => '03:30',
-            'expected_start' => '2021-03-28 03:00',
-            'expected_end' => '2021-03-28 03:30',
+            'expected_start' => '2025-03-30 03:00',
+            'expected_end' => '2025-03-30 03:30',
             'expected_duration' => '1800', // 30m
-            'faketime' => '2021-03-28 01:56:00'
+            'faketime' => '2025-03-30 01:56:00'
         );
     }
 
@@ -126,14 +126,14 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
-            'start_day' => '03/28/2021',
+            'start_day' => '03/30/2025',
             'start_time' => '01:30',
-            'end_day' => '03/28/2021',
+            'end_day' => '03/30/2025',
             'end_time' => '02:30',
-            'expected_start' => '2021-03-28 01:30',
-            'expected_end' => '2021-03-28 03:00',
+            'expected_start' => '2025-03-30 01:30',
+            'expected_end' => '2025-03-30 03:00',
             'expected_duration' => '1800', // 30m
-            'faketime' => '2021-03-28 01:26:00'
+            'faketime' => '2025-03-30 01:26:00'
         );
     }
 
@@ -144,14 +144,14 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
-            'start_day' => '03/28/2021',
+            'start_day' => '03/30/2025',
             'start_time' => '02:03',
-            'end_day' => '03/28/2021',
+            'end_day' => '03/30/2025',
             'end_time' => '02:33',
             'expected_start' => '',
             'expected_end' => '',
             'expected_duration' => '0',
-            'faketime' => '2021-03-28 01:58:00'
+            'faketime' => '2025-03-30 01:58:00'
         );
     }
 
@@ -162,14 +162,14 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 2AM, we jump to 3AM
         $this->downtimeProperties = array(
-            'start_day' => '03/28/2021',
+            'start_day' => '03/30/2025',
             'start_time' => '00:00',
-            'end_day' => '03/28/2021',
+            'end_day' => '03/30/2025',
             'end_time' => '24:00',
-            'expected_start' => '2021-03-28 00:00',
-            'expected_end' => '2021-03-29 00:00',
+            'expected_start' => '2025-03-30 00:00',
+            'expected_end' => '2025-03-31 00:00',
             'expected_duration' => '82800', // 23h
-            'faketime' => '2021-03-27 23:56:00'
+            'faketime' => '2025-03-29 23:56:00'
         );
     }
 
@@ -189,14 +189,14 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeOfNextDayOfSummerChangingDate()
     {
         $this->downtimeProperties = array(
-            'start_day' => '03/29/2021',
+            'start_day' => '03/31/2025',
             'start_time' => '00:00',
-            'end_day' => '03/29/2021',
+            'end_day' => '03/31/2025',
             'end_time' => '24:00',
-            'expected_start' => '2021-03-29 00:00',
-            'expected_end' => '2021-03-30 00:00',
+            'expected_start' => '2025-03-31 00:00',
+            'expected_end' => '2025-04-01 00:00',
             'expected_duration' => '86400', // 24h
-            'faketime' => '2021-03-28 23:58:00'
+            'faketime' => '2025-03-30 23:58:00'
         );
     }
 
@@ -207,14 +207,14 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
-            'start_day' => '10/31/2021',
+            'start_day' => '10/26/2025',
             'start_time' => '02:03',
-            'end_day' => '10/31/2021',
+            'end_day' => '10/26/2025',
             'end_time' => '03:33',
-            'expected_start' => '2021-10-31 02:03',
-            'expected_end' => '2021-10-31 03:33',
+            'expected_start' => '2025-10-26 02:03',
+            'expected_end' => '2025-10-26 03:33',
             'expected_duration' => '9000', // 2h30
-            'faketime' => '2021-10-31 01:58:00'
+            'faketime' => '2025-10-26 01:58:00'
         );
     }
 
@@ -225,14 +225,14 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
-            'start_day' => '10/31/2021',
+            'start_day' => '10/26/2025',
             'start_time' => '01:00',
-            'end_day' => '10/31/2021',
+            'end_day' => '10/26/2025',
             'end_time' => '02:30',
-            'expected_start' => '2021-10-31 01:00',
-            'expected_end' => '2021-10-31 02:30',
+            'expected_start' => '2025-10-26 01:00',
+            'expected_end' => '2025-10-26 02:30',
             'expected_duration' => '9000', // 2h30
-            'faketime' => '2021-10-31 00:58:00'
+            'faketime' => '2025-10-26 00:58:00'
         );
     }
 
@@ -243,14 +243,14 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
-            'start_day' => '10/31/2021',
+            'start_day' => '10/26/2025',
             'start_time' => '02:03',
-            'end_day' => '10/31/2021',
+            'end_day' => '10/26/2025',
             'end_time' => '02:33',
-            'expected_start' => '2021-10-31 02:03',
-            'expected_end' => '2021-10-31 02:33',
+            'expected_start' => '2025-10-26 02:03',
+            'expected_end' => '2025-10-26 02:33',
             'expected_duration' => '5400', // 1h30
-            'faketime' => '2021-10-31 01:58:00'
+            'faketime' => '2025-10-26 01:58:00'
         );
     }
 
@@ -261,14 +261,14 @@ class DowntimeDSTContext extends CentreonContext
     {
         // on Europe/Paris at 3AM, backward to 2AM
         $this->downtimeProperties = array(
-            'start_day' => '10/31/2021',
+            'start_day' => '10/26/2025',
             'start_time' => '00:00',
-            'end_day' => '10/31/2021',
+            'end_day' => '10/26/2025',
             'end_time' => '24:00',
-            'expected_start' => '2021-10-31 00:00',
-            'expected_end' => '2021-11-01 00:00',
+            'expected_start' => '2025-10-26 00:00',
+            'expected_end' => '2025-10-27 00:00',
             'expected_duration' => '90000', // 25h
-            'faketime' => '2021-10-30 23:58:00'
+            'faketime' => '2025-10-25 23:58:00'
         );
     }
 
@@ -288,14 +288,14 @@ class DowntimeDSTContext extends CentreonContext
     public function aDowntimeOfNextDayOfWinterChangingDate()
     {
         $this->downtimeProperties = array(
-            'start_day' => '11/01/2021',
+            'start_day' => '10/27/2025',
             'start_time' => '00:00',
-            'end_day' => '11/01/2021',
+            'end_day' => '10/27/2025',
             'end_time' => '24:00',
-            'expected_start' => '2021-11-01 00:00',
-            'expected_end' => '2021-11-02 00:00',
+            'expected_start' => '2025-10-27 00:00',
+            'expected_end' => '2025-10-28 00:00',
             'expected_duration' => '86400', // 24h
-            'faketime' => '2021-10-31 23:58:00'
+            'faketime' => '2025-10-26 23:58:00'
         );
     }
 
