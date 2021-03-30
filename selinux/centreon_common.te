@@ -1,4 +1,4 @@
-policy_module(centreon_common, 0.0.6)
+policy_module(centreon-common, 0.0.10)
 
 ########################################
 #
@@ -11,6 +11,7 @@ require {
 	type httpd_t;
 	type setroubleshootd_t;
 	type system_dbusd_t;
+	type kernel_t;
 	type NetworkManager_t;
 	type snmpd_t;
 	type systemd_tmpfiles_t;
@@ -22,6 +23,20 @@ require {
 	type fixed_disk_device_t;
 	type systemd_logind_sessions_t;
 	type systemd_systemctl_exec_t;
+	type systemd_logind_t;
+	type security_t;
+	type system_dbusd_t;
+	type unconfined_t;
+	type faillog_t;
+	type hwdata_t;
+	type lastlog_t;
+	type postfix_master_t;
+	type postfix_pickup_t;
+	type sshd_net_t;
+	type sshd_t;
+	class dbus send_msg;
+	class service service;
+	class passwd passwd;
 }
 
 type centreon_t;
@@ -36,6 +51,9 @@ files_config_file(centreon_etc_t)
 
 type centreon_var_cache_t;
 files_type(centreon_var_cache_t)
+
+type centreon_var_lib_t;
+files_type(centreon_var_lib_t)
 
 type centreon_spool_t;
 files_type(centreon_spool_t)
@@ -59,7 +77,7 @@ allow useradd_t centreon_spool_t:file { create open setattr write };
 #============= httpd_t ==============
 allow httpd_t centreon_log_t:dir { add_name create write };
 allow httpd_t centreon_log_t:file { create open write getattr setattr };
-allow httpd_t centreon_var_cache_t:dir { add_name create read remove_name rename rmdir write };
+allow httpd_t centreon_var_cache_t:dir { add_name create getattr setattr read remove_name rename rmdir write };
 allow httpd_t centreon_var_cache_t:file { append create getattr setattr lock open read rename setattr unlink write };
 allow httpd_t self:capability net_admin;
 allow httpd_t self:netlink_audit_socket create;
@@ -72,6 +90,9 @@ allow httpd_t snmpd_var_lib_t:file write;
 allow httpd_t systemd_logind_sessions_t:fifo_file write;
 allow httpd_t systemd_systemctl_exec_t:file { execute getattr };
 
+#============= unconfined_t ==============
+allow unconfined_t kernel_t:service start;
+
 #============= system_dbusd_t ==============
 allow system_dbusd_t setroubleshootd_t:process { noatsecure rlimitinh siginh };
 
@@ -81,5 +102,29 @@ allow systemd_tmpfiles_t self:capability net_admin;
 #============= NetworkManager_t ==============
 allow NetworkManager_t initrc_t:process { noatsecure rlimitinh siginh };
 
+#============= systemd_logind_t ==============
+allow systemd_logind_t snmpd_t:dbus send_msg;
+
 #============= snmpd_t ==============
-allow snmpd_t fixed_disk_device_t:blk_file read;
+allow snmpd_t fixed_disk_device_t:blk_file { read ioctl };
+allow snmpd_t security_t:security compute_av;
+allow snmpd_t self:capability audit_write;
+allow snmpd_t self:passwd passwd;
+allow snmpd_t self:netlink_audit_socket { read write create nlmsg_relay };
+allow snmpd_t self:netlink_selinux_socket { bind create };
+allow snmpd_t system_dbusd_t:dbus send_msg;
+allow snmpd_t systemd_logind_t:dbus send_msg;
+allow snmpd_t system_dbusd_t:unix_stream_socket connectto;
+allow snmpd_t var_spool_t:dir { add_name write };
+allow snmpd_t var_spool_t:file { create setattr write };
+allow snmpd_t faillog_t:file { open read getattr };
+allow snmpd_t hwdata_t:file { getattr open read };
+allow snmpd_t lastlog_t:file { open read write getattr };
+
+#============= sshd_net_t ==============
+allow sshd_net_t kernel_t:fifo_file write;
+allow sshd_net_t kernel_t:process sigchld;
+allow sshd_t chkpwd_t:process { noatsecure rlimitinh siginh };
+
+#============= postfix_master_t ==============
+allow postfix_master_t postfix_pickup_t:process { noatsecure rlimitinh siginh };
