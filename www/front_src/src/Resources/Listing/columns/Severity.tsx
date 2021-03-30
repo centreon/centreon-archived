@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core';
-
 import { ComponentColumnProps, SeverityCode, StatusChip } from '@centreon/ui';
 
 import { useColumnStyles } from '.';

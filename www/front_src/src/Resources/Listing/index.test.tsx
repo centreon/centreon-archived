@@ -22,11 +22,9 @@ import {
   reject,
   map,
   includes,
-  flip,
   __,
   propEq,
   find,
-  last,
 } from 'ramda';
 
 import { Column } from '@centreon/ui';
