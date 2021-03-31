@@ -19,9 +19,6 @@ module.exports = merge(baseConfig, extractCssConfig, {
       react: path.resolve('./node_modules/react'),
     },
   },
-  optimization: {
-    runtimeChunk: true,
-  },
   plugins: [
     new HtmlWebpackPlugin({
       alwaysWriteToDisk: true,

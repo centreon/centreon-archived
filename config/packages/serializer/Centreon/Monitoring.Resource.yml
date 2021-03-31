@@ -182,3 +182,7 @@ Centreon\Domain\Monitoring\Resource:
             type: string
             groups:
                 - 'resource_details'
+        notificationEnabled:
+            type: bool
+            groups:
+                - 'resource_main'

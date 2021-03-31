@@ -200,3 +200,8 @@ export const labelForward = 'Forward';
 export const labelBackward = 'Backward';
 export const labelEndDateGreaterThanStartDate =
   'The end date must be greater than the start date';
+export const labelAction = 'Action';
+export const labelNotes = 'Notes';
+export const labelChecksDisabled = 'Checks disabled';
+export const labelNotificationDisabled = 'Notifications disabled';
+export const labelNotificationEnabled = 'Notifications enabled';

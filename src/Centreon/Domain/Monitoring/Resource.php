@@ -246,6 +246,13 @@ class Resource
      */
     private $calculationType;
 
+    /*
+     * Indicates if notifications are enabled for the Resource
+     *
+     * @var bool
+     */
+    private $notificationEnabled = false;
+
     /**
      * Resource constructor.
      */
@@ -1013,5 +1020,24 @@ class Resource
     public function getCalculationType(): ?string
     {
         return $this->calculationType;
+    }
+
+    /*
+     * @return boolean
+     */
+    public function isNotificationEnabled(): bool
+    {
+        return $this->notificationEnabled;
+    }
+
+    /**
+     * @param boolean $notificationEnabled
+     * @return self
+     */
+    public function setNotificationEnabled(bool $notificationEnabled): self
+    {
+        $this->notificationEnabled = $notificationEnabled;
+
+        return $this;
     }
 }
