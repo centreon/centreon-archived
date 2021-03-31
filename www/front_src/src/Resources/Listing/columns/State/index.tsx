@@ -74,7 +74,7 @@ const AcknowledgeHoverChip = ({
 
 const StateColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} justify="center">
       {row.in_downtime && (
         <Grid item>
           <DowntimeHoverChip resource={row} />

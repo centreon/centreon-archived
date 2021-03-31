@@ -14664,14 +14664,14 @@ msgstr ""
 #  msgid "Monitoring server"
 #  msgstr ""
 
-msgid "Forward"
-msgstr ""
+#  msgid "The end date must be greater than the start date"
+#  msgstr ""
 
-msgid "Backward"
-msgstr ""
+#  msgid "Forward"
+#  msgstr ""
 
-msgid "The end date must be greater than the start date"
-msgstr ""
+#  msgid "Backward"
+#  msgstr ""
 
 msgid "Graph options"
 msgstr ""
@@ -14681,3 +14681,15 @@ msgstr ""
 
 msgid "Check duration"
 msgstr ""
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Notifications enabled"
+#  msgstr ""
+
+#  msgid "Notifications disabled"
+#  msgstr ""
+
+#  msgid "Checks disabled"
+#  msgstr ""
