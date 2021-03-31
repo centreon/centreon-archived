@@ -16102,5 +16102,5 @@ msgstr "La date de fin doit être supérieure à la date de début"
 msgid "Check duration"
 msgstr "Temps d'exécution"
 
-msgid "Mandatory data to create the entity '{%s}' is missing"
-msgstr "Les données obligatoires pour créer l'entité '{%s}' sont manquantes"
+msgid "Mandatory data to create the entity '%s' is missing"
+msgstr "Les données obligatoires pour créer l'entité '%s' sont manquantes"
