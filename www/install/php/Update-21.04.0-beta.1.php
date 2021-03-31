@@ -86,6 +86,16 @@ try {
         'CREATE TABLE IF NOT EXISTS `cb_log_level`
         (`id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,`name` varchar(255) NOT NULL)'
     );
+
+    $errorMessage = 'Impossible to create the table cfg_centreonbroker_log';
+    $pearDB->query(
+        'CREATE TABLE IF NOT EXISTS `cfg_centreonbroker_log`
+        (`id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        `id_centreonbroker` INT(11)  NOT NULL,
+        `id_log` INT(11)  NOT NULL,
+        `id_level` INT(11)  NOT NULL)'
+    );
+
     $errorMessage = "";
 } catch (\Exception $e) {
     $centreonLog->insertLog(
