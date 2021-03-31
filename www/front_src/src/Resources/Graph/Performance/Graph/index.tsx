@@ -521,10 +521,6 @@ const GraphContent = ({
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
   );
 
-  const zoomBarWidth = Math.abs(
-    (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
-  );
-
   return (
     <AnnotationsContext.Provider value={annotations}>
       <ClickAwayListener onClickAway={hideAddCommentTooltip}>
