@@ -3009,7 +3009,7 @@ components:
         type: array
         items:
           type: string
-          enum: [service, host]
+          enum: [service, host, metaservice]
         example: '["host"]'
     ResourceFilterState:
       in: query
@@ -4227,7 +4227,7 @@ components:
             properties:
               type:
                 type: string
-                enum: [host, service]
+                enum: [host, service, metaservice]
                 description: "Type of resource"
                 example: "service"
               id:
@@ -4301,7 +4301,7 @@ components:
             properties:
               type:
                 type: string
-                enum: [host, service]
+                enum: [host, service, metaservice]
                 description: "Type of resource"
                 example: "service"
               id:
