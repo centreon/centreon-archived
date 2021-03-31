@@ -279,7 +279,6 @@ function set_centreon_repos() {
 #========= begin of function set_required_prerequisite()
 # check if the target OS is compatible with Red Hat and the version is 7 or 8
 # then set the required environment variables accordingly
-=======
 #
 function set_required_prerequisite() {
 
@@ -345,10 +344,15 @@ function set_required_prerequisite() {
 
 		#FIXME check the result
 		#FIXE install PHP 7.3
-		$PKG_MGR module install php:7.3 -y
-		$PKG_MGR module enable php:7.3 -y
-		$PKG_MGR -y install ${BASE_PACKAGES[@]}
-		$PKG_MGR -y update gnutls
+		log "INFO" "Installing PHP 7.3 and enable it"
+		$PKG_MGR module install php:7.3 -y -q
+		$PKG_MGR module enable php:7.3 -y -q
+
+		log "INFO" "Installing packages ${BASE_PACKAGES[@]}"
+		$PKG_MGR -y -q install ${BASE_PACKAGES[@]}
+
+		log "INFO" "Updating package gnutls"
+		$PKG_MGR -y -q update gnutls
 
 		set_centreon_repos
 		;;
