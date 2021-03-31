@@ -388,7 +388,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         $configurationCommand = $this->serviceConfiguration->findCommandLine($monitoringService->getId());
         if (empty($configurationCommand)) {
             // Meta Service case
-            if (preg_match('/meta_[0-9]+/', $monitoringService->getDescription())) {
+            if (preg_match('/^meta_[0-9]+$/', $monitoringService->getDescription())) {
                 // For META SERVICE we can define the configuration command line with the monitoring command line
                 $monitoringService->setCommandLine($monitoringCommand);
                 return;
