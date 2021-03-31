@@ -148,7 +148,8 @@ final class HostProvider extends Provider
             h.output AS `information`,
             h.perfdata AS `performance_data`,
             h.execution_time AS `execution_time`,
-            h.latency AS `latency`
+            h.latency AS `latency`,
+            h.notify AS `notification_enabled`
             FROM `:dbstg`.`hosts` AS h";
 
         // get monitoring server information

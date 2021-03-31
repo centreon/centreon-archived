@@ -150,7 +150,8 @@ final class MetaServiceProvider extends Provider
             s.output AS `information`,
             s.perfdata AS `performance_data`,
             s.execution_time AS `execution_time`,
-            s.latency AS `latency`
+            s.latency AS `latency`,
+            s.notify AS `notification_enabled`
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
             ON sh.host_id = s.host_id
