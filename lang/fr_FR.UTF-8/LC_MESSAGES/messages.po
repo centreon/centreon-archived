@@ -16109,4 +16109,4 @@ msgid "Notifications disabled"
 msgstr "Notifications désactivées"
 
 msgid "Checks disabled"
-msgstr "Contrôles désactivées"
+msgstr "Contrôles désactivés"
