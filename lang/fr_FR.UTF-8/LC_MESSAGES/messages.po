@@ -16101,3 +16101,12 @@ msgstr "La date de fin doit être supérieure à la date de début"
 
 msgid "Check duration"
 msgstr "Temps d'exécution"
+
+msgid "Notifications enabled"
+msgstr "Notifications activées"
+
+msgid "Notifications disabled"
+msgstr "Notifications désactivées"
+
+msgid "Checks disabled"
+msgstr "Contrôles désactivés"

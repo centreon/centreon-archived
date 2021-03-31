@@ -1,22 +1,9 @@
-import React from 'react';
+import { pipe, split, head, propOr, T } from 'ramda';
 
-import { pipe, split, head, propOr, T, pathEq } from 'ramda';
-import { useTranslation } from 'react-i18next';
+import { makeStyles } from '@material-ui/core';
 
-import { Typography, makeStyles } from '@material-ui/core';
-import IconAcknowledge from '@material-ui/icons/Person';
-import IconCheck from '@material-ui/icons/Sync';
+import { ColumnType, Column } from '@centreon/ui';
 
-import {
-  ColumnType,
-  StatusChip,
-  SeverityCode,
-  IconButton,
-  Column,
-  ComponentColumnProps,
-} from '@centreon/ui';
-
-import IconDowntime from '../../icons/Downtime';
 import {
   labelResource,
   labelStatus,
@@ -25,19 +12,28 @@ import {
   labelInformation,
   labelState,
   labelLastCheck,
-  labelAcknowledge,
-  labelSetDowntimeOn,
-  labelCheck,
-  labelSetDowntime,
   labelParent,
+  labelNotes,
+  labelAction,
+  labelGraph,
+  labelAlias,
+  labelFqdn,
+  labelMonitoringServer,
+  labelNotification,
+  labelCheck,
 } from '../../translatedLabels';
-import useAclQuery from '../../Actions/Resource/aclQuery';
 import truncate from '../../truncate';
 
 import StateColumn from './State';
 import GraphColumn from './Graph';
 import NotesUrlColumn from './Url/Notes';
 import ActionUrlColumn from './Url/Action';
+import StatusColumn from './Status';
+import SeverityColumn from './Severity';
+import ResourceColumn from './Resource';
+import ParentResourceColumn from './Parent';
+import NotificationColumn from './Notification';
+import ChecksColumn from './Checks';
 
 const useStyles = makeStyles((theme) => ({
   resourceDetailsCell: {
@@ -61,11 +57,6 @@ const useStyles = makeStyles((theme) => ({
   smallChipLabel: {
     padding: theme.spacing(0.5),
   },
-  statusColumn: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-  },
   actions: {
     display: 'flex',
     flexWrap: 'nowrap',
@@ -75,152 +66,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
-  const classes = useStyles();
-
-  if (!row.severity_level) {
-    return null;
-  }
-
-  return (
-    <StatusChip
-      label={row.severity_level?.toString()}
-      severityCode={SeverityCode.None}
-      classes={{
-        root: classes.extraSmallChipContainer,
-        label: classes.smallChipLabel,
-      }}
-    />
-  );
-};
-
-type StatusColumnProps = {
-  actions;
-} & Pick<ComponentColumnProps, 'row'>;
-
-const StatusColumnOnHover = ({
-  actions,
-  row,
-}: StatusColumnProps): JSX.Element => {
-  const classes = useStyles();
-  const { t } = useTranslation();
-
-  const { canAcknowledge, canDowntime, canCheck } = useAclQuery();
-
-  const isResourceOk = pathEq(
-    ['status', 'severity_code'],
-    SeverityCode.Ok,
-    row,
-  );
-
-  const disableAcknowledge = !canAcknowledge([row]) || isResourceOk;
-  const disableDowntime = !canDowntime([row]);
-  const disableCheck = !canCheck([row]);
-
-  return (
-    <div className={classes.actions}>
-      <IconButton
-        title={t(labelAcknowledge)}
-        disabled={disableAcknowledge}
-        color="primary"
-        onClick={(): void => actions.onAcknowledge(row)}
-        ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
-      >
-        <IconAcknowledge fontSize="small" />
-      </IconButton>
-      <IconButton
-        title={t(labelSetDowntime)}
-        disabled={disableDowntime}
-        onClick={(): void => actions.onDowntime(row)}
-        ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
-      >
-        <IconDowntime fontSize="small" />
-      </IconButton>
-      <IconButton
-        title={t(labelCheck)}
-        disabled={disableCheck}
-        onClick={(): void => actions.onCheck(row)}
-        ariaLabel={`${t(labelCheck)} ${row.name}`}
-      >
-        <IconCheck fontSize="small" />
-      </IconButton>
-    </div>
-  );
-};
-
-const StatusColumn = ({ actions, t }) => {
-  const Status = ({ row, isHovered }: ComponentColumnProps): JSX.Element => {
-    const classes = useStyles();
-
-    const statusName = row.status.name;
-
-    return (
-      <div className={classes.statusColumn}>
-        {isHovered ? (
-          <StatusColumnOnHover actions={actions} row={row} />
-        ) : (
-          <StatusChip
-            style={{ height: 20, width: '100%' }}
-            label={t(statusName)}
-            severityCode={row.status.severity_code}
-          />
-        )}
-      </div>
-    );
-  };
-
-  return Status;
-};
-
-const ResourceColumn = ({ row }: ComponentColumnProps): JSX.Element => {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.resourceDetailsCell}>
-      {row.icon ? (
-        <img src={row.icon.url} alt={row.icon.name} width={16} height={16} />
-      ) : (
-        <StatusChip
-          label={row.short_type}
-          severityCode={SeverityCode.None}
-          classes={{
-            root: classes.extraSmallChipContainer,
-            label: classes.smallChipLabel,
-          }}
-        />
-      )}
-      <div className={classes.resourceNameItem}>
-        <Typography variant="body2">{row.name}</Typography>
-      </div>
-    </div>
-  );
-};
-
-const ParentResourceColumn = ({
-  row,
-}: ComponentColumnProps): JSX.Element | null => {
-  const classes = useStyles();
-
-  if (!row.parent) {
-    return null;
-  }
-
-  return (
-    <div className={classes.resourceDetailsCell}>
-      <StatusChip severityCode={row.parent?.status?.severity_code || 0} />
-      <div className={classes.resourceNameItem}>
-        <Typography variant="body2">{row.parent.name}</Typography>
-      </div>
-    </div>
-  );
-};
-
-interface ColumnsProps {
+export interface ColumnProps {
   actions;
   t: (value: string) => string;
 }
 
-export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
+export const defaultSelectedColumnIds = [
+  'severity',
+  'status',
+  'resource',
+  'parent_resource',
+  'notes_url',
+  'action_url',
+  'graph',
+  'duration',
+  'tries',
+  'last_check',
+  'information',
+  'state',
+];
+
+export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
   {
     id: 'severity',
     label: 'S',
@@ -228,6 +94,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: SeverityColumn,
     sortField: 'severity_level',
+    sortable: true,
   },
   {
     id: 'status',
@@ -239,6 +106,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     sortField: 'status_severity_code',
     clickable: true,
     width: 'minmax(100px, max-content)',
+    sortable: true,
   },
   {
     id: 'resource',
@@ -247,6 +115,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: ResourceColumn,
     sortField: 'name',
+    sortable: true,
   },
   {
     id: 'parent_resource',
@@ -255,10 +124,11 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: ParentResourceColumn,
     sortField: 'parent_name',
+    sortable: true,
   },
   {
     id: 'notes_url',
-    label: '',
+    label: t(labelNotes),
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
     Component: NotesUrlColumn,
@@ -266,7 +136,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   },
   {
     id: 'action_url',
-    label: '',
+    label: t(labelAction),
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
     Component: ActionUrlColumn,
@@ -274,7 +144,7 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   },
   {
     id: 'graph',
-    label: '',
+    label: t(labelGraph),
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
     Component: GraphColumn({ onClick: actions.onDisplayGraph }),
@@ -286,18 +156,21 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     type: ColumnType.string,
     getFormattedString: ({ duration }): string => duration,
     sortField: 'last_status_change',
+    sortable: true,
   },
   {
     id: 'tries',
     label: t(labelTries),
     type: ColumnType.string,
     getFormattedString: ({ tries }): string => tries,
+    sortable: true,
   },
   {
     id: 'last_check',
     label: t(labelLastCheck),
     type: ColumnType.string,
     getFormattedString: ({ last_check }): string => last_check,
+    sortable: true,
   },
   {
     id: 'information',
@@ -320,4 +193,42 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     Component: StateColumn,
     sortable: false,
   },
+  {
+    id: 'alias',
+    label: t(labelAlias),
+    type: ColumnType.string,
+    getFormattedString: ({ alias }): string => alias,
+    sortable: true,
+  },
+  {
+    id: 'fqdn',
+    label: t(labelFqdn),
+    type: ColumnType.string,
+    getFormattedString: ({ fqdn }): string => fqdn,
+    sortable: true,
+  },
+  {
+    id: 'monitoring_server_name',
+    label: t(labelMonitoringServer),
+    sortable: true,
+    type: ColumnType.string,
+    getFormattedString: ({ monitoring_server_name }): string =>
+      monitoring_server_name,
+  },
+  {
+    id: 'notification',
+    label: t(labelNotification),
+    type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
+    Component: NotificationColumn,
+  },
+  {
+    id: 'checks',
+    label: t(labelCheck),
+    type: ColumnType.component,
+    getRenderComponentOnRowUpdateCondition: T,
+    Component: ChecksColumn,
+  },
 ];
+
+export { useStyles as useColumnStyles };

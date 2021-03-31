@@ -10,7 +10,7 @@ import {
   RenderResult,
   act,
 } from '@testing-library/react';
-import userEvent, { TargetElement } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 
 import {
   ThemeProvider,
@@ -1094,7 +1094,7 @@ describe(Details, () => {
     const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
       ?.firstChild;
 
-    userEvent.click(startDateInput as TargetElement);
+    userEvent.click(startDateInput as Element);
 
     fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
@@ -1204,7 +1204,7 @@ describe(Details, () => {
     const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
       ?.firstChild;
 
-    userEvent.click(startDateInput as TargetElement);
+    userEvent.click(startDateInput as Element);
 
     await waitFor(() => {
       expect(getByText(/^21$/)).toBeInTheDocument();

@@ -10,7 +10,24 @@ import {
   act,
 } from '@testing-library/react';
 import axios from 'axios';
-import { partition, where, contains, head, split, pipe, identity } from 'ramda';
+import {
+  partition,
+  where,
+  contains,
+  head,
+  split,
+  pipe,
+  identity,
+  prop,
+  reject,
+  map,
+  includes,
+  __,
+  propEq,
+  find,
+} from 'ramda';
+
+import { Column } from '@centreon/ui';
 
 import { Resource } from '../models';
 import Context, { ResourceContext } from '../Context';
@@ -22,14 +39,14 @@ import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
 
 import useListing from './useListing';
-import { getColumns } from './columns';
+import { getColumns, defaultSelectedColumnIds } from './columns';
 
 import Listing from '.';
 
 const columns = getColumns({
   actions: { onAcknowledge: jest.fn() },
   t: identity,
-});
+}) as Array<Column>;
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -126,6 +143,8 @@ const ListingTest = (): JSX.Element => {
   );
 };
 
+const mockedSelector = useSelector as jest.Mock;
+
 const renderListing = (): RenderResult => render(<ListingTest />);
 
 window.clearInterval = jest.fn();
@@ -133,7 +152,7 @@ window.setInterval = jest.fn();
 
 describe(Listing, () => {
   beforeEach(() => {
-    useSelector.mockImplementation((callback) => {
+    mockedSelector.mockImplementation((callback) => {
       return callback(appState);
     });
 
@@ -152,7 +171,7 @@ describe(Listing, () => {
   });
 
   afterEach(() => {
-    useSelector.mockClear();
+    mockedSelector.mockClear();
     mockedAxios.get.mockReset();
   });
 
@@ -196,6 +215,7 @@ describe(Listing, () => {
     it.each(
       columns
         .filter(({ sortable }) => sortable !== false)
+        .filter(({ id }) => includes(id, defaultSelectedColumnIds))
         .map(({ id, label, sortField }) => [id, label, sortField]),
     )(
       'executes a listing request with sort_by param and stores the order parameter in the URL when %p column is clicked',
@@ -241,7 +261,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('Next Page'));
+    fireEvent.click(getByLabelText('Next page'));
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
@@ -257,7 +277,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('Previous Page'));
+    fireEvent.click(getByLabelText('Previous page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       getListingEndpoint({ page: 1 }),
@@ -271,7 +291,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('Last Page'));
+    fireEvent.click(getByLabelText('Last page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       getListingEndpoint({ page: 4 }),
@@ -285,7 +305,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('First Page'));
+    fireEvent.click(getByLabelText('First page'));
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
@@ -399,4 +419,31 @@ describe(Listing, () => {
     expect(getByText('No')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();
   });
+
+  const columnIds = map(prop('id'), columns);
+
+  const additionalIds = reject(
+    includes(__, defaultSelectedColumnIds),
+    columnIds,
+  );
+
+  it.each(additionalIds)(
+    'displays additional columns when selected from the corresponding menu',
+    async (columnId) => {
+      const { getAllByText, getByTitle } = renderListing();
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
+
+      fireEvent.click(getByTitle('Add columns').firstChild as HTMLElement);
+
+      const columnLabel = find(propEq('id', columnId), columns)
+        ?.label as string;
+
+      fireEvent.click(head(getAllByText(columnLabel)) as HTMLElement);
+
+      expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
+    },
+  );
 });
