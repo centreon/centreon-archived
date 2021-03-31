@@ -305,45 +305,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /configuration/users/current/parameters:
-    get:
-      tags:
-        - User parameters
-      summary: "List user parameters"
-      description: "List configured parameters for the current user"
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: Name of the current user
-                    example: Administrator
-                  alias:
-                    type: string
-                    description: Alias of the current user
-                    example: admin
-                  email:
-                    type: string
-                    description: Email of the current user
-                    example: admin@localhost
-                  timezone:
-                    type: string
-                    description: Timezone for the current user
-                    example: Europe/Paris
-                  locale:
-                    type: string
-                    nullable: true
-                    description: Locale of the current user
-                    example: en_US
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /users/filters/{page_name}:
     get:
       tags:
