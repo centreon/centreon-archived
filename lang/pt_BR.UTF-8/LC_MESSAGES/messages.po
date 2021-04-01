@@ -15119,7 +15119,7 @@ msgstr ""
 msgid "Graph options"
 msgstr ""
 
-msgid "Display tooltips"
+msgid "Display metric values tooltip"
 msgstr ""
 
 msgid "Check duration"
