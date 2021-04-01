@@ -1,24 +1,9 @@
-import { insertResources, setFiltersUser } from './centreonData';
-import { apiLogin } from './model';
-
-const setUserTokenApi = () => {
-  cy.fixture('users/admin.json').then((userAdmin) => {
-    cy.request({
-      method: 'POST',
-      url: apiLogin,
-      body: {
-        security: {
-          credentials: {
-            login: userAdmin.login,
-            password: userAdmin.password,
-          },
-        },
-      },
-    }).then(({ body }) =>
-      window.localStorage.setItem('userTokenApi', body.security.token),
-    );
-  });
-};
+import {
+  setUserTokenApi,
+  insertResources,
+  setFiltersUser,
+  delFiltersUser,
+} from './centreonData';
 
 before(() => {
   cy.log('-----------------Start-----------------');
@@ -35,6 +20,7 @@ before(() => {
   cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {
     cy.fixture('resources/filters.json').then((filters) => {
       setFiltersUser('POST', filters);
+      cy.wait(5000);
 
       cy.visit(`${Cypress.config().baseUrl}`);
 
@@ -50,4 +36,8 @@ before(() => {
 
 beforeEach(() => Cypress.Cookies.preserveOnce('PHPSESSID'));
 
-after(() => cy.log('-----------------End-----------------'));
+after(() => {
+  delFiltersUser();
+  cy.clearLocalStorage();
+  cy.log('-----------------End-----------------');
+});
