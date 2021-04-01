@@ -33,7 +33,7 @@ const useLoadResources = (): LoadResources => {
   const refreshIntervalRef = React.useRef<number>();
 
   const refreshIntervalMs = useSelector(
-    (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
+    (state: { intervals }) => state.intervals.AjaxTimeReloadMonitoring * 1000,
   );
 
   const getSort = (): { [sortField: string]: SortOrder } | undefined => {

@@ -464,14 +464,6 @@ $help["auto_rescheduling_window"] = dgettext(
     "(determined by this variable) will be rescheduled. This option only has an effect if the " .
     "auto_reschedule_checks option is enabled. Default is 180 seconds (3 minutes)."
 );
-$help["use_aggressive_host_checking"] = dgettext(
-    "help",
-    "Monitoring Engine tries to be smart about how and when it checks the status of hosts. By default this " .
-    "option is disabled and will allow Monitoring Engine to make some smarter decisions and check hosts a " .
-    "bit faster. Enabling this option will increase the amount of time required to check hosts, but may " .
-    "improve reliability a bit. Unless you have problems with Monitoring Engine not recognizing that a " .
-    "host recovered, I would suggest not enabling this option."
-);
 $help["enable_flap_detection"] = dgettext(
     "help",
     "This option determines whether or not Monitoring Engine will try and detect hosts and services " .

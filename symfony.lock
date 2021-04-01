@@ -122,9 +122,6 @@
     "jms/metadata": {
         "version": "1.7.0"
     },
-    "jms/parser-lib": {
-        "version": "1.0.0"
-    },
     "jms/serializer": {
         "version": "1.14.1"
     },
@@ -229,9 +226,6 @@
     "php-http/promise": {
         "version": "1.1.0"
     },
-    "phpcollection/phpcollection": {
-        "version": "0.5.0"
-    },
     "phpdocumentor/reflection-common": {
         "version": "2.1.0"
     },
@@ -241,14 +235,17 @@
     "phpdocumentor/type-resolver": {
         "version": "1.1.0"
     },
-    "phpoption/phpoption": {
-        "version": "1.7.4"
-    },
     "phpspec/prophecy": {
         "version": "v1.10.3"
     },
+    "phpstan/phpdoc-parser": {
+        "version": "0.4.14"
+    },
     "phpstan/phpstan": {
         "version": "0.12.28"
+    },
+    "phpstan/phpstan-beberlei-assert": {
+        "version": "0.12.6"
     },
     "phpunit/php-code-coverage": {
         "version": "6.1.4"

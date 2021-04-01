@@ -18,3 +18,25 @@
  * For more information : contact@centreon.com
  *
  */
+declare(strict_types=1);
+
+namespace Centreon\Domain\Common\Exception;
+
+/**
+ * This class is designed to contain all entity factory exceptions.
+ *
+ * @package Centreon\Domain\Common\Exception
+ */
+class FactoryException extends \Exception
+{
+    /**
+     * @param string $className
+     * @return FactoryException
+     */
+    public static function mandatoryDataNotFound(string $className): self
+    {
+        return new self(
+            sprintf(_('Mandatory data to create the entity \'%s\' is missing'), $className)
+        );
+    }
+}

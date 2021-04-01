@@ -229,7 +229,7 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->assertEquals(
             urldecode($resourceController->buildHostDetailsUri(1)),
-            '/monitoring/resources?details={"type":"host","id":1,"tab":"details"}'
+            '/monitoring/resources?details={"type":"host","id":1,"tab":"details","uuid":"h1"}'
         );
     }
 
@@ -247,7 +247,7 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->assertEquals(
             urldecode($resourceController->buildHostUri(1, 'graph')),
-            '/monitoring/resources?details={"type":"host","id":1,"tab":"graph"}'
+            '/monitoring/resources?details={"type":"host","id":1,"tab":"graph","uuid":"h1"}'
         );
     }
 
@@ -265,7 +265,8 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->assertEquals(
             urldecode($resourceController->buildServiceDetailsUri(1, 2)),
-            '/monitoring/resources?details={"parentType":"host","parentId":1,"type":"service","id":2,"tab":"details"}'
+            '/monitoring/resources?details=' .
+            '{"parentType":"host","parentId":1,"type":"service","id":2,"tab":"details","uuid":"s2"}'
         );
     }
 
@@ -283,7 +284,8 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->assertEquals(
             urldecode($resourceController->buildServiceUri(1, 2, 'timeline')),
-            '/monitoring/resources?details={"parentType":"host","parentId":1,"type":"service","id":2,"tab":"timeline"}'
+            '/monitoring/resources?details=' .
+            '{"parentType":"host","parentId":1,"type":"service","id":2,"tab":"timeline","uuid":"s2"}'
         );
     }
 }
