@@ -60,7 +60,7 @@ interface MetaServiceConfigurationReadRepositoryInterface
     public function findAll(): array;
 
     /**
-     * Find all meta services configurations. by contact.
+     * Find all meta services configurations by contact.
      *
      * @param ContactInterface $contact Contact related to meta services configurations.
      * @return MetaServiceConfiguration[]
