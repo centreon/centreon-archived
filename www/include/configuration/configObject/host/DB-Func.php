@@ -1249,7 +1249,7 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
 
     $ret["host_name"] = $host->checkIllegalChar($ret["host_name"], $server_id);
     
-    $bindParams = sanitizeFormContactParameters($ret);
+    $bindParams = sanitizeFormHostParameters($ret);
     $rq = "UPDATE host SET ";
     foreach (array_keys($bindParams) as $token) {
         $rq .= ltrim($token, ':') . " = " . $token . ", ";
