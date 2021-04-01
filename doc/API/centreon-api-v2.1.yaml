@@ -1366,6 +1366,26 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/acknoweledgements:
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Add an acknowledgement on chosen metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Acknowledgement.Service.Add'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/downtimes:
     get:
       tags:
@@ -1728,6 +1748,27 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/downtimes:
+    post:
+      tags:
+        - Downtime
+      summary: "Add a downtime on a metaservice"
+      description: "Add a downtime on a metaservice."
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Service.Add'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/check:
     post:
       tags:
@@ -1811,6 +1852,29 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/check:
+    post:
+      tags:
+        - Check
+      summary: "Check metaservice"
+      description: "Schedule immediate check on chosen metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Service'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/resources/check:
     post:
       tags:
@@ -1864,6 +1928,29 @@ paths:
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Service'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit a result to a single metaservice"
+      description: "Submit a result (check status, output and perfdata) to a single metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
       requestBody:
         required: true
         content:
