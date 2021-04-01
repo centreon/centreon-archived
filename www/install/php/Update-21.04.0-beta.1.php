@@ -96,6 +96,12 @@ try {
         `id_level` INT(11)  NOT NULL)'
     );
 
+    if ($pearDB->isColumnExist('cfg_nagios', 'use_aggressive_host_checking')) {
+        // An update is required
+        $errorMessage = 'Impossible to drop column use_aggressive_host_checking from cfg_nagios';
+        $pearDB->query('ALTER TABLE `cfg_nagios` DROP COLUMN `use_aggressive_host_checking`');
+    }
+
     $errorMessage = "";
 } catch (\Exception $e) {
     $centreonLog->insertLog(

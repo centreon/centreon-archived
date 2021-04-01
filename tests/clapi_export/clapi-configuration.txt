@@ -559,7 +559,6 @@ ENGINECFG;setparam;Centreon Engine Central;max_service_check_spread;5
 ENGINECFG;setparam;Centreon Engine Central;check_result_reaper_frequency;5
 ENGINECFG;setparam;Centreon Engine Central;interval_length;60
 ENGINECFG;setparam;Centreon Engine Central;auto_reschedule_checks;2
-ENGINECFG;setparam;Centreon Engine Central;use_aggressive_host_checking;1
 ENGINECFG;setparam;Centreon Engine Central;enable_flap_detection;0
 ENGINECFG;setparam;Centreon Engine Central;low_service_flap_threshold;25.0
 ENGINECFG;setparam;Centreon Engine Central;high_service_flap_threshold;50.0
