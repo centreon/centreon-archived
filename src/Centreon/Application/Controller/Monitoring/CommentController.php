@@ -343,7 +343,7 @@ class CommentController extends AbstractController
         if (is_null($service)) {
             throw new EntityNotFoundException(
                 sprintf(
-                    _('Meta %d not found'),
+                    _('Meta service %d not found'),
                     $metaId
                 )
             );
