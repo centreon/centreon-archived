@@ -176,6 +176,30 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     /**
      * @inheritDoc
      */
+    public function findDowntimesByMetaService(int $metaId): array
+    {
+        $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $metaId);
+        if (is_null($service)) {
+            throw new EntityNotFoundException(_('Meta service not found'));
+        }
+        if ($this->contact->isAdmin()) {
+            return $this->downtimeRepository->findDowntimesByServiceForAdminUser(
+                $service->getHost()->getId(),
+                $service->getId()
+            );
+        } else {
+            return $this->downtimeRepository
+                ->forAccessGroups($this->accessGroups)
+                ->findDowntimesByServiceForNonAdminUser(
+                    $service->getHost()->getId(),
+                    $service->getId()
+                );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findDowntimesByHost(int $hostId, bool $withServices): array
     {
         if ($this->contact->isAdmin()) {

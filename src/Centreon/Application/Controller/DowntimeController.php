@@ -535,6 +535,42 @@ class DowntimeController extends AbstractController
     }
 
     /**
+     * Entry point to find the last downtimes linked to a service.
+     *
+     * @param RequestParametersInterface $requestParameters
+     * @param int $metaId ID of the metaservice
+     * @param Request $request
+     * @return View
+     * @throws \Exception
+     */
+    public function findDowntimesByMetaService(
+        RequestParametersInterface $requestParameters,
+        int $metaId,
+        Request $request
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        $this->monitoringService->filterByContact($contact);
+
+        $downtimesByHost = $this->downtimeService
+            ->filterByContact($contact)
+            ->findDowntimesByMetaService($metaId);
+
+        $context = (new Context())->setGroups(Downtime::SERIALIZER_GROUPS_SERVICE);
+
+        return $this->view(
+            [
+                'result' => $downtimesByHost,
+                'meta' => $requestParameters->toArray()
+            ]
+        )->setContext($context);
+    }
+
+    /**
      * Entry point to find one host downtime.
      *
      * @param int $downtimeId Downtime id to find

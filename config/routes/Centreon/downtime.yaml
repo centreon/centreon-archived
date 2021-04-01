@@ -50,6 +50,14 @@ monitoring.downtime.findDowntimesByService:
     controller: 'Centreon\Application\Controller\DowntimeController::findDowntimesByService'
     condition: "request.attributes.get('version.is_beta') == true"
 
+monitoring.downtime.findDowntimesByMetaService:
+    methods: GET
+    path: /monitoring/metaservices/{metaId}/downtimes
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\DowntimeController::findDowntimesByMetaService'
+    condition: "request.attributes.get('version') >= 2.1"
+
 monitoring.downtime.findOneDowntime:
     methods: GET
     path: /monitoring/downtimes/{downtimeId}

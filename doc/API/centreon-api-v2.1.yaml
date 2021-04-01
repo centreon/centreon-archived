@@ -1778,6 +1778,51 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
   /monitoring/metaservices/{meta_id}/downtimes:
+    get:
+      tags:
+        - Downtime
+      summary: "List all downtimes of a metaservice"
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/MetaId'
+      description: |
+        List all downtimes of a service.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * entry_time
+          * is_cancelled
+          * comment
+          * deletion_time
+          * duration
+          * end_time
+          * is_fixed
+          * start_time
+          * contact.id
+          * contact.name
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Downtime.Service'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     post:
       tags:
         - Downtime
