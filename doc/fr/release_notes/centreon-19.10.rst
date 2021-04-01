@@ -7,6 +7,11 @@ Bug fixes
 
 - [Lib] Update moment-timezone to manage new timezones
 
+Security fixes
+--------------
+
+- [APIv2] API realtime rights give API configuration rights
+
 =====================
 Centreon Web 19.10.21
 =====================
