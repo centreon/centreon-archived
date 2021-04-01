@@ -279,8 +279,8 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
         }
         return $this->acknowledgementRepository->findAcknowledgementsByService(
             $service->getHost()->getId(),
-            $service->getId())
-        ;
+            $service->getId()
+        );
     }
 
     /**

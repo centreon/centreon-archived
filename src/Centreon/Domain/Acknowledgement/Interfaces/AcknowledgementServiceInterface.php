@@ -159,7 +159,7 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     /**
      * Disacknowledge a metaservice.
      *
-     * @param int $meta ID of the metaservice
+     * @param int $metaId ID of the metaservice
      * @throws EngineException
      * @throws EntityNotFoundException
      * @throws \Exception
