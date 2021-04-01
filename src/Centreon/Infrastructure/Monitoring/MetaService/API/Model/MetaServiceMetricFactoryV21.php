@@ -41,7 +41,7 @@ class MetaServiceMetricFactoryV21
     ): array {
         $metaServiceMetrics = [];
         foreach ($response->getMetaServiceMetrics() as $metaServiceMetric) {
-            $newMetaServiceMetric = new MetaServiceMetricV21();
+            $newMetaServiceMetric = self::createEmptyClass();
             $newMetaServiceMetric->id = $metaServiceMetric['id'];
             $newMetaServiceMetric->name = $metaServiceMetric['name'];
             $newMetaServiceMetric->unit = $metaServiceMetric['unit'];
@@ -51,5 +51,20 @@ class MetaServiceMetricFactoryV21
             $metaServiceMetrics[] = $newMetaServiceMetric;
         }
         return $metaServiceMetrics;
+    }
+
+    /**
+     * @return \stdClass
+     */
+    private static function createEmptyClass(): \stdClass
+    {
+        return new class extends \stdClass
+        {
+            public $id;
+            public $name;
+            public $unit;
+            public $value;
+            public $resource;
+        };
     }
 }

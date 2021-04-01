@@ -38,8 +38,8 @@ class MetaServiceConfigurationV21Factory
      */
     public static function createOneFromResponse(
         FindOneMetaServiceConfigurationResponse $response
-    ): MetaServiceConfigurationV21 {
-        $newMetaServiceConfiguration = new MetaServiceConfigurationV21();
+    ): \stdClass {
+        $newMetaServiceConfiguration = self::createEmptyClass();
         $metaServiceConfiguration = $response->getMetaServiceConfiguration();
         $newMetaServiceConfiguration->id = $metaServiceConfiguration['id'];
         $newMetaServiceConfiguration->name = $metaServiceConfiguration['name'];
@@ -64,7 +64,7 @@ class MetaServiceConfigurationV21Factory
     ): array {
         $metaServicesConfigurations = [];
         foreach ($response->getMetaServicesConfigurations() as $metaServiceConfiguration) {
-            $newMetaServiceConfiguration = new MetaServiceConfigurationV21();
+            $newMetaServiceConfiguration = self::createEmptyClass();
             $newMetaServiceConfiguration->id = $metaServiceConfiguration['id'];
             $newMetaServiceConfiguration->name = $metaServiceConfiguration['name'];
             $newMetaServiceConfiguration->isActivated = $metaServiceConfiguration['is_activated'];
@@ -80,5 +80,23 @@ class MetaServiceConfigurationV21Factory
             $metaServicesConfigurations[] = $newMetaServiceConfiguration;
         }
         return $metaServicesConfigurations;
+    }
+
+    private static function createEmptyClass(): \stdClass
+    {
+        return new class extends \stdClass
+        {
+            public $id;
+            public $name;
+            public $isActivated;
+            public $output;
+            public $calculationType;
+            public $dataSourceType;
+            public $metaSelectMode;
+            public $regexpString;
+            public $metric;
+            public $warning;
+            public $critical;
+        };
     }
 }
