@@ -16103,7 +16103,7 @@ msgid "Graph options"
 msgstr "Options de graph"
 
 msgid "Display tooltips"
-msgstr "Afficher les info-bulles"
+msgstr "Afficher l’info-bulle des valeurs de métriques"
 
 msgid "Check duration"
 msgstr "Temps d'exécution"
