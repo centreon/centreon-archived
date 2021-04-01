@@ -16103,7 +16103,7 @@ msgid "Meta Service linked to service %d not found"
 msgstr "Meta Service lié au service %d non trouvé"
 
 msgid "Host meta for meta %d not found"
-msgstr "L'hôte lié au meta %d non trouvé"
+msgstr "Hôte lié au meta %d non trouvé"
 msgid "Forward"
 msgstr "En avant"
 
