@@ -90,6 +90,16 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     public function findAcknowledgementsByService(int $hostId, int $serviceId): array;
 
     /**
+     * Find all acknowledgements by metaservice id.
+     *
+     * @param int $metaId
+     * @return Acknowledgement[]
+     * @throws RequestParametersTranslatorException
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByMetaService(int $metaId): array;
+
+    /**
      * Adds a host acknowledgement.
      *
      * @param Acknowledgement $acknowledgement Host acknowledgement to add

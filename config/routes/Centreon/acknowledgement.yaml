@@ -65,6 +65,14 @@ centreon_application_acknowledgement_addmetaserviceacknowledgement:
     controller: 'Centreon\Application\Controller\AcknowledgementController::addMetaServiceAcknowledgement'
     condition: "request.attributes.get('version') >= 2.1"
 
+centreon_application_acknowledgement_findacknowledgementsbymetaservice:
+    methods: GET
+    path: /monitoring/metaservices/{metaId}/acknowledgements
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::findAcknowledgementsByMetaService'
+    condition: "request.attributes.get('version') >= 2.1"
+
 centreon_application_acknowledgement_disacknowledgeservice:
     methods: DELETE
     path: /monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements

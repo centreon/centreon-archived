@@ -225,6 +225,34 @@ class AcknowledgementController extends AbstractController
     }
 
     /**
+     * Entry point to find acknowledgements linked to a meta service.
+     *
+     * @param RequestParametersInterface $requestParameters
+     * @param int $metaId
+     * @param Request $request
+     * @return View
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByMetaService(
+        RequestParametersInterface $requestParameters,
+        int $metaId,
+        Request $request
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        $metaServicesAcknowledgements = $this->acknowledgementService
+            ->filterByContact($this->getUser())
+            ->findAcknowledgementsByMetaService($metaId);
+        $context = (new Context())->setGroups(Acknowledgement::SERIALIZER_GROUPS_SERVICE);
+
+        return $this->view(
+            [
+                'result' => $metaServicesAcknowledgements,
+                'meta' => $requestParameters->toArray()
+            ]
+        )->setContext($context);
+    }
+
+    /**
      * Entry point to add multiple host acknowledgements.
      *
      * @param Request $request
