@@ -67,7 +67,7 @@ interface Props {
   end: Date;
   commonPickersProps;
   error: boolean;
-  changeDate: (props) => () => void;
+  onChangeDate: (props) => () => void;
   setStart: React.Dispatch<React.SetStateAction<Date>>;
   setEnd: React.Dispatch<React.SetStateAction<Date>>;
 }
@@ -78,7 +78,7 @@ const MinimalCustomTimePeriodPickers = ({
   end,
   commonPickersProps,
   error,
-  changeDate,
+  onChangeDate,
   setStart,
   setEnd,
 }: Props): JSX.Element => {
@@ -154,7 +154,7 @@ const MinimalCustomTimePeriodPickers = ({
                   date={start}
                   property={CustomTimePeriodProperty.start}
                   maxDate={customTimePeriod.end}
-                  changeDate={changeDate}
+                  changeDate={onChangeDate}
                   setDate={setStart}
                 />
               </div>
@@ -167,7 +167,7 @@ const MinimalCustomTimePeriodPickers = ({
                   date={end}
                   property={CustomTimePeriodProperty.end}
                   minDate={customTimePeriod.start}
-                  changeDate={changeDate}
+                  changeDate={onChangeDate}
                   setDate={setEnd}
                 />
               </div>

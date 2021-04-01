@@ -132,7 +132,7 @@ const CustomTimePeriodPickers = ({
         end={end}
         commonPickersProps={commonPickersProps}
         error={error}
-        changeDate={changeDate}
+        onChangeDate={changeDate}
         setStart={setStart}
         setEnd={setEnd}
       />
