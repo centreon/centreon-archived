@@ -2,8 +2,8 @@
 import DayjsAdapter from '@date-io/dayjs';
 import dayjs from 'dayjs';
 
-import { useLocaleDateTimeFormat } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
+import { useLocaleDateTimeFormat } from '@centreon/ui';
 
 const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
   const { locale, timezone } = useUserContext();
@@ -16,6 +16,10 @@ const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
 
     public date(value): dayjs.Dayjs {
       return dayjs(value).locale(locale).tz(timezone);
+    }
+
+    public startOfMonth(date: dayjs.Dayjs) {
+      return date;
     }
   }
 

@@ -10,7 +10,7 @@ import {
   RenderResult,
   act,
 } from '@testing-library/react';
-import userEvent, { TargetElement } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 
 import {
   ThemeProvider,
@@ -40,7 +40,7 @@ import {
   labelCurrentNotificationNumber,
   labelPerformanceData,
   label7D,
-  label24H,
+  label1D,
   label31D,
   labelCopy,
   labelCommand,
@@ -64,6 +64,8 @@ import {
   labelDisplayEvents,
   labelStartDate,
   labelEndDate,
+  labelForward,
+  labelBackward,
   labelEndDateGreaterThanStartDate,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
@@ -388,7 +390,12 @@ describe(Details, () => {
   it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const { getByText, queryByText, getAllByText } = renderDetails();
+    const {
+      getByText,
+      queryByText,
+      getAllByText,
+      getAllByTitle,
+    } = renderDetails();
 
     act(() => {
       setSelectedServiceResource();
@@ -440,22 +447,18 @@ describe(Details, () => {
     expect(getByText('Europe/Paris')).toBeInTheDocument();
 
     expect(getByText(labelCurrentStateDuration)).toBeInTheDocument();
-    expect(getByText('22m')).toBeInTheDocument();
-    expect(getByText('3/3 (Hard)')).toBeInTheDocument();
+    expect(getByText('22m - 3/3 (Hard)')).toBeInTheDocument();
 
     expect(getByText(labelLastStateChange)).toBeInTheDocument();
-    expect(getByText('04/18/2020')).toBeInTheDocument();
-    expect(getByText('5:00 PM')).toBeInTheDocument();
+    expect(getByText('04/18/2020 5:00 PM')).toBeInTheDocument();
 
     expect(getByText(labelLastCheck)).toBeInTheDocument();
-    expect(getByText('05/18/2020')).toBeInTheDocument();
-    expect(getByText('6:00 PM')).toBeInTheDocument();
+    expect(getByText('05/18/2020 6:00 PM')).toBeInTheDocument();
 
     expect(getByText(labelNextCheck)).toBeInTheDocument();
-    expect(getByText('06/18/2020')).toBeInTheDocument();
-    expect(getByText('7:15 PM')).toBeInTheDocument();
+    expect(getByText('06/18/2020 7:15 PM')).toBeInTheDocument();
 
-    expect(getAllByText(labelActive)).toHaveLength(2);
+    expect(getAllByTitle(labelActive)).toHaveLength(2);
 
     expect(getByText(labelCheckDuration)).toBeInTheDocument();
     expect(getByText('0.070906 s')).toBeInTheDocument();
@@ -470,8 +473,7 @@ describe(Details, () => {
     expect(getByText('3.5%')).toBeInTheDocument();
 
     expect(getByText(labelLastNotification)).toBeInTheDocument();
-    expect(getByText('07/18/2020')).toBeInTheDocument();
-    expect(getByText('7:30 PM')).toBeInTheDocument();
+    expect(getByText('07/18/2020 7:30 PM')).toBeInTheDocument();
 
     expect(getByText(labelCurrentNotificationNumber)).toBeInTheDocument();
     expect(getByText('3')).toBeInTheDocument();
@@ -491,7 +493,7 @@ describe(Details, () => {
   });
 
   it.each([
-    [label24H, '2020-01-20T06:00:00.000Z', 20, undefined],
+    [label1D, '2020-01-20T06:00:00.000Z', 20, undefined],
     [label7D, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
     [label31D, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
   ])(
@@ -1054,7 +1056,7 @@ describe(Details, () => {
 
     expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
-    userEvent.click(head(getAllByText(label24H)) as HTMLElement);
+    userEvent.click(head(getAllByText(label1D)) as HTMLElement);
     userEvent.click(last(getAllByText(label7D)) as HTMLElement);
 
     await waitFor(() => {
@@ -1092,7 +1094,7 @@ describe(Details, () => {
     const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
       ?.firstChild;
 
-    userEvent.click(startDateInput as TargetElement);
+    userEvent.click(startDateInput as Element);
 
     fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
@@ -1202,7 +1204,7 @@ describe(Details, () => {
     const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
       ?.firstChild;
 
-    userEvent.click(startDateInput as TargetElement);
+    userEvent.click(startDateInput as Element);
 
     await waitFor(() => {
       expect(getByText(/^21$/)).toBeInTheDocument();
@@ -1216,4 +1218,66 @@ describe(Details, () => {
 
     expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
   });
+
+  it.each([
+    [labelForward, '2020-01-20T18:00:00.000Z', '2020-01-21T18:00:00.000Z', 20],
+    [labelBackward, '2020-01-19T18:00:00.000Z', '2020-01-20T18:00:00.000Z', 20],
+  ])(
+    `queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected and the "%p" icon is clicked`,
+    async (iconLabel, startISOString, endISOString, timelineLimit) => {
+      mockedAxios.get
+        .mockResolvedValueOnce({ data: retrievedDetails })
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedTimeline })
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedTimeline });
+
+      const { getByLabelText } = renderDetails({
+        openTabId: graphTabId,
+      });
+
+      act(() => {
+        setSelectedServiceResource();
+      });
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
+          cancelTokenRequestParam,
+        );
+      });
+
+      userEvent.click(getByLabelText(iconLabel));
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
+          cancelTokenRequestParam,
+        );
+      });
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          buildListTimelineEventsEndpoint({
+            endpoint: retrievedDetails.links.endpoints.timeline,
+            parameters: {
+              limit: timelineLimit,
+              search: {
+                conditions: [
+                  {
+                    field: 'date',
+                    values: {
+                      $gt: startISOString,
+                      $lt: endISOString,
+                    },
+                  },
+                ],
+              },
+            },
+          }),
+          cancelTokenRequestParam,
+        );
+      });
+    },
+  );
 });
