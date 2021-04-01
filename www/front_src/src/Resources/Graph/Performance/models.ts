@@ -6,6 +6,7 @@ interface DsData {
   ds_invert: string | null;
   ds_stack: string | null;
   ds_order: string | null;
+  ds_legend: string | null;
 }
 
 export interface Metric {
@@ -40,6 +41,12 @@ export interface Line {
   highlight?: boolean;
   invert: string | null;
   stackOrder: number | null;
+  legend: string | null;
+}
+
+export enum GraphOptionId {
+  displayTooltips = 'displayTooltips',
+  displayEvents = 'displayEvents',
 }
 
 export interface AdjustTimePeriodProps {

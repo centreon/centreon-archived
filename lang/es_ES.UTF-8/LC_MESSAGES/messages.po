@@ -14673,6 +14673,15 @@ msgstr ""
 #  msgid "Backward"
 #  msgstr ""
 
+msgid "Graph options"
+msgstr ""
+
+msgid "Display tooltips"
+msgstr ""
+
+msgid "Check duration"
+msgstr ""
+
 #  msgid "Check duration"
 #  msgstr ""
 

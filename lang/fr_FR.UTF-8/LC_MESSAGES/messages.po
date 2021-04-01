@@ -16099,6 +16099,12 @@ msgstr "En arrière"
 msgid "The end date must be greater than the start date"
 msgstr "La date de fin doit être supérieure à la date de début"
 
+msgid "Graph options"
+msgstr "Options de graphe"
+
+msgid "Display metric values tooltip"
+msgstr "Afficher l’info-bulle des valeurs de métriques"
+
 msgid "Check duration"
 msgstr "Temps d'exécution"
 

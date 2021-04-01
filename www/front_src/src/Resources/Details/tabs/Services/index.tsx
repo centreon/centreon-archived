@@ -21,6 +21,10 @@ import InfiniteScroll from '../../InfiniteScroll';
 import memoizeComponent from '../../../memoizedComponent';
 import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
+import { GraphOptions } from '../../models';
+import useGraphOptions, {
+  GraphOptionsContext,
+} from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -86,6 +90,7 @@ const ServicesTabContent = ({
     customTimePeriod,
     changeCustomTimePeriod,
     adjustTimePeriod,
+    resourceDetailsUpdated,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
@@ -95,6 +100,11 @@ const ServicesTabContent = ({
       ['services', 'graphTimePeriod', 'selectedCustomTimePeriod'],
       tabParameters,
     ),
+    defaultGraphOptions: path(
+      ['services', 'graphTimePeriod', 'graphOptions'],
+      tabParameters,
+    ),
+    details,
     onTimePeriodChange: (graphTimePeriod) => {
       setServicesTabParameters({
         graphMode,
@@ -157,6 +167,21 @@ const ServicesTabContent = ({
     });
   };
 
+  const changeTabGraphOptions = (graphOptions: GraphOptions) => {
+    setServicesTabParameters({
+      graphMode: tabParameters.services?.graphMode || false,
+      graphTimePeriod: {
+        ...tabParameters.services?.graphTimePeriod,
+        graphOptions,
+      },
+    });
+  };
+
+  const graphOptions = useGraphOptions({
+    graphTabParameters: tabParameters.services?.graphTimePeriod,
+    changeTabGraphOptions,
+  });
+
   React.useEffect(() => {
     // To make sure that graphs are not displayed until 'entities' are reset
     setCanDisplayGraphs(true);
@@ -201,15 +226,18 @@ const ServicesTabContent = ({
           const displayGraphs = graphMode && canDisplayGraphs;
 
           return displayGraphs ? (
-            <ServiceGraphs
-              services={entities}
-              infiniteScrollTriggerRef={infiniteScrollTriggerRef}
-              periodQueryParameters={periodQueryParameters}
-              getIntervalDates={getIntervalDates}
-              selectedTimePeriod={selectedTimePeriod}
-              customTimePeriod={customTimePeriod}
-              adjustTimePeriod={adjustTimePeriod}
-            />
+            <GraphOptionsContext.Provider value={graphOptions}>
+              <ServiceGraphs
+                services={entities}
+                infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+                periodQueryParameters={periodQueryParameters}
+                getIntervalDates={getIntervalDates}
+                selectedTimePeriod={selectedTimePeriod}
+                customTimePeriod={customTimePeriod}
+                adjustTimePeriod={adjustTimePeriod}
+                resourceDetailsUpdated={resourceDetailsUpdated}
+              />
+            </GraphOptionsContext.Provider>
           ) : (
             <ServiceList
               services={entities}

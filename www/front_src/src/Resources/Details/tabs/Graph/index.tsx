@@ -10,6 +10,10 @@ import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { ResourceContext, useResourceContext } from '../../../Context';
 import memoizeComponent from '../../../memoizedComponent';
+import { GraphOptions } from '../../models';
+import useGraphOptions, {
+  GraphOptionsContext,
+} from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -52,6 +56,7 @@ const GraphTabContent = ({
     customTimePeriod,
     changeCustomTimePeriod,
     adjustTimePeriod,
+    resourceDetailsUpdated,
   } = useTimePeriod({
     defaultSelectedTimePeriodId: path(
       ['graph', 'selectedTimePeriodId'],
@@ -61,7 +66,21 @@ const GraphTabContent = ({
       ['graph', 'selectedCustomTimePeriod'],
       tabParameters,
     ),
+    defaultGraphOptions: path(['graph', 'graphOptions'], tabParameters),
+    details,
     onTimePeriodChange: setGraphTabParameters,
+  });
+
+  const changeTabGraphOptions = (graphOptions: GraphOptions) => {
+    setGraphTabParameters({
+      ...tabParameters.graph,
+      graphOptions,
+    });
+  };
+
+  const graphOptions = useGraphOptions({
+    graphTabParameters: tabParameters.graph,
+    changeTabGraphOptions,
   });
 
   return (
@@ -72,15 +91,18 @@ const GraphTabContent = ({
         customTimePeriod={customTimePeriod}
         changeCustomTimePeriod={changeCustomTimePeriod}
       />
-      <ExportablePerformanceGraphWithTimeline
-        resource={details}
-        graphHeight={280}
-        periodQueryParameters={periodQueryParameters}
-        getIntervalDates={getIntervalDates}
-        selectedTimePeriod={selectedTimePeriod}
-        customTimePeriod={customTimePeriod}
-        adjustTimePeriod={adjustTimePeriod}
-      />
+      <GraphOptionsContext.Provider value={graphOptions}>
+        <ExportablePerformanceGraphWithTimeline
+          resource={details}
+          graphHeight={280}
+          periodQueryParameters={periodQueryParameters}
+          getIntervalDates={getIntervalDates}
+          selectedTimePeriod={selectedTimePeriod}
+          customTimePeriod={customTimePeriod}
+          adjustTimePeriod={adjustTimePeriod}
+          resourceDetailsUpdated={resourceDetailsUpdated}
+        />
+      </GraphOptionsContext.Provider>
     </div>
   );
 };
