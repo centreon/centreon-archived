@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring\MetaService\API\Model;
 
-use Centreon\Infrastructure\Monitoring\MetaService\API\Model\MetaServiceMetricV21;
 use Centreon\Domain\Monitoring\MetaService\UseCase\V21\MetaServiceMetric\FindMetaServiceMetricsResponse;
 
 /**
@@ -34,7 +33,7 @@ class MetaServiceMetricFactoryV21
 {
     /**
      * @param FindMetaServiceMetricsResponse $response
-     * @return MetaServiceMetricV21[]
+     * @return \stdClass[]
      */
     public static function createFromResponse(
         FindMetaServiceMetricsResponse $response

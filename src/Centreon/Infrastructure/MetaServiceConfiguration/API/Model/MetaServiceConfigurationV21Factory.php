@@ -34,7 +34,7 @@ class MetaServiceConfigurationV21Factory
 {
     /**
      * @param FindOneMetaServiceConfigurationResponse $response
-     * @return MetaServiceConfigurationV21
+     * @return \stdClass
      */
     public static function createOneFromResponse(
         FindOneMetaServiceConfigurationResponse $response
@@ -57,7 +57,7 @@ class MetaServiceConfigurationV21Factory
 
     /**
      * @param FindMetaServicesConfigurationsResponse $response
-     * @return MetaServiceConfigurationV21[]
+     * @return \stdClass[]
      */
     public static function createAllFromResponse(
         FindMetaServicesConfigurationsResponse $response
