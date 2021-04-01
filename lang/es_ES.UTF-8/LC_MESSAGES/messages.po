@@ -14367,23 +14367,23 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "In downtime"
 #  msgstr ""
 
-msgid "1 day"
-msgstr ""
+# msgid "1 day"
+# msgstr ""
 
-msgid "7 days"
-msgstr ""
+# msgid "7 days"
+# msgstr ""
 
-msgid "31 days"
-msgstr ""
+# msgid "31 days"
+# msgstr ""
 
-msgid "Last day"
-msgstr ""
+# msgid "Last day"
+# msgstr ""
 
-msgid "Last 7 days"
-msgstr ""
+# msgid "Last 7 days"
+# msgstr ""
 
-msgid "Last 31 days"
-msgstr ""
+# msgid "Last 31 days"
+# msgstr ""
 
 #  msgid "Set downtime on"
 #  msgstr ""
@@ -14655,23 +14655,32 @@ msgstr ""
 #  msgid "Monitoring server"
 #  msgstr ""
 
-msgid "Forward"
-msgstr ""
+#  msgid "The end date must be greater than the start date"
+#  msgstr ""
 
-msgid "Backward"
-msgstr ""
+#  msgid "Forward"
+#  msgstr ""
 
-msgid "The end date must be greater than the start date"
-msgstr ""
+#  msgid "Backward"
+#  msgstr ""
 
-msgid "Graph options"
-msgstr ""
+# msgid "Graph options"
+# msgstr ""
 
-msgid "Display tooltips"
-msgstr ""
+# msgid "Display metric values tooltip"
+# msgstr ""
 
-msgid "Check duration"
-msgstr ""
+# msgid "Compact time period"
+# msgstr ""
 
-msgid "Compact time period"
-msgstr ""
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Notifications enabled"
+#  msgstr ""
+
+#  msgid "Notifications disabled"
+#  msgstr ""
+
+#  msgid "Checks disabled"
+#  msgstr ""

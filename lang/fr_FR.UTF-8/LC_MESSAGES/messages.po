@@ -16091,13 +16091,25 @@ msgid "The end date must be greater than the start date"
 msgstr "La date de fin doit être supérieure à la date de début"
 
 msgid "Graph options"
-msgstr "Options de graph"
+msgstr "Options de graphe"
 
-msgid "Display tooltips"
-msgstr "Afficher les info-bulles"
+msgid "Display metric values tooltip"
+msgstr "Afficher l’info-bulle des valeurs de métriques"
 
 msgid "Check duration"
 msgstr "Temps d'exécution"
 
 msgid "Compact time period"
 msgstr "Période de temps compacte"
+
+msgid "Notifications enabled"
+msgstr "Notifications activées"
+
+msgid "Notifications disabled"
+msgstr "Notifications désactivées"
+
+msgid "Checks disabled"
+msgstr "Contrôles désactivés"
+
+msgid "Mandatory data to create the entity '%s' is missing"
+msgstr "Les données obligatoires pour créer l'entité '%s' sont manquantes"

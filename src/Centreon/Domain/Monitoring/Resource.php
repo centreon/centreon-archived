@@ -228,6 +228,13 @@ class Resource
     private $groups = [];
 
     /**
+     * Groups to which belongs the resource
+     *
+     * @var bool
+     */
+    private $notificationEnabled = false;
+
+    /**
      * Resource constructor.
      */
     public function __construct()
@@ -936,6 +943,25 @@ class Resource
             }
         }
         $this->groups = $groups;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isNotificationEnabled(): bool
+    {
+        return $this->notificationEnabled;
+    }
+
+    /**
+     * @param boolean $notificationEnabled
+     * @return self
+     */
+    public function setNotificationEnabled(bool $notificationEnabled): self
+    {
+        $this->notificationEnabled = $notificationEnabled;
 
         return $this;
     }

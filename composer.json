@@ -28,7 +28,8 @@
         "symfony/stopwatch": "^4.4",
         "symfony/twig-bundle": "^4.4",
         "symfony/web-profiler-bundle": "^4.4",
-        "twig/twig": "^2.0"
+        "twig/twig": "^2.0",
+        "phpstan/phpstan-beberlei-assert": "^0.12"
     },
     "require": {
         "php": ">=7.2.24",
@@ -43,7 +44,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "friendsofsymfony/rest-bundle": "^2.5",
-        "jms/serializer-bundle": "^2.4",
+        "jms/serializer-bundle": "^3.9",
         "sensio/framework-extra-bundle": "^5.3",
         "symfony/console": "4.4.*",
         "symfony/dotenv": "4.4.*",

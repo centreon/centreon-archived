@@ -222,7 +222,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.last_notification, resource.notification_number, '
             . 'resource.tries, resource.last_check, resource.next_check, '
             . 'resource.information, resource.performance_data, '
-            . 'resource.execution_time, resource.latency '
+            . 'resource.execution_time, resource.latency, '
+            . 'resource.notification_enabled '
             . 'FROM (';
 
         $subRequests = [];
@@ -503,7 +504,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             s.output AS `information`,
             s.perfdata AS `performance_data`,
             s.execution_time AS `execution_time`,
-            s.latency AS `latency`
+            s.latency AS `latency`,
+            s.notify AS `notification_enabled`
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
@@ -713,7 +715,8 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             h.output AS `information`,
             h.perfdata AS `performance_data`,
             h.execution_time AS `execution_time`,
-            h.latency AS `latency`
+            h.latency AS `latency`,
+            h.notify AS `notification_enabled`
             FROM `:dbstg`.`hosts` AS h";
 
         // get monitoring server information
