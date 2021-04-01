@@ -33,7 +33,7 @@ centreon_application_check_checkMetaService:
     requirements:
         metaId: '\d+'
     controller: 'Centreon\Application\Controller\CheckController::checkMetaService'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 2.1"
 
 centreon_application_check_checkResources:
     methods: POST

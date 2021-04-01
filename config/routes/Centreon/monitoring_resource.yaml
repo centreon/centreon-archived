@@ -27,4 +27,4 @@ centreon_application_monitoring_resource_details_meta_service:
     controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsMetaService'
     requirements:
         metaId: '\d+'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 2.1"

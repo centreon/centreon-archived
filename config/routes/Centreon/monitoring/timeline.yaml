@@ -14,4 +14,4 @@ centreon_application_monitoring_gettimelinebymetaservices:
     methods: GET
     path: /monitoring/metaservice/{metaId}/timeline
     controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getMetaServiceTimeline'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 2.1"
