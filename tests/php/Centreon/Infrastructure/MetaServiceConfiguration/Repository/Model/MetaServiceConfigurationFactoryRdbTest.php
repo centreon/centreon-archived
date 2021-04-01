@@ -21,6 +21,7 @@
 declare(strict_types=1);
 
 namespace Tests\Centreon\Infrastructure\MetaServiceConfiguration\Repository\Model;
+
 use Centreon\Infrastructure\MetaServiceConfiguration\Repository\Model\MetaServiceConfigurationFactoryRdb;
 
 use PHPUnit\Framework\TestCase;
