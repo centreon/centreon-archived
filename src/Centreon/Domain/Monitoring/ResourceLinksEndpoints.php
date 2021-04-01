@@ -60,6 +60,11 @@ class ResourceLinksEndpoints
     private $downtime;
 
     /**
+     * @var string|null
+     */
+    private $metrics;
+
+    /**
      * @return string|null
      */
     public function getDetails(): ?string
@@ -169,6 +174,25 @@ class ResourceLinksEndpoints
     public function setDowntime(?string $downtime): self
     {
         $this->downtime = $downtime;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMetrics(): ?string
+    {
+        return $this->metrics;
+    }
+
+    /**
+     * @param string|null $metrics
+     * @return self
+     */
+    public function setMetrics(?string $metrics): self
+    {
+        $this->metrics = $metrics;
 
         return $this;
     }

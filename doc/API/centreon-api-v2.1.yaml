@@ -48,6 +48,7 @@ tags:
     description: "Login and logout endpoints to retrieve authentication token"
   - name: Proxy
   - name: Monitoring Server
+  - name: Meta Service
   - name: Host
   - name: Service
   - name: Host Group
@@ -324,6 +325,101 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Configuration.MonitoringServerMain'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/metaservices:
+    get:
+      tags:
+        - Meta Service
+      summary: "List all meta services configurations"
+      description: |
+        List all meta services configurations.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+          * is_activate
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.MetaServices'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/metaservices/{meta_id}:
+    get:
+      tags:
+        - Meta Service
+      summary: "Get a meta service"
+      description: "Get a meta service configuration by its id"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.MetaServices'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/metrics:
+    get:
+      tags:
+        - Meta Service
+      summary: "List all meta service metrics"
+      description: |
+        List all meta services metrics from realtime.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+          * service_description
+          * host_name
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.MetaServiceMetric'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -1309,6 +1405,68 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/acknowledgements:
+    get:
+      tags:
+        - Acknowledgement
+      summary: "List all acknowledgements of a metaservice"
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Acknowledgement.Service'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Add an acknowledgement on chosen metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Acknowledgement.Service.Add'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Acknowledgement
+      summary: "Cancel an acknowledgement on a metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/downtimes:
     get:
       tags:
@@ -1671,6 +1829,72 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/downtimes:
+    get:
+      tags:
+        - Downtime
+      summary: "List all downtimes of a metaservice"
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/MetaId'
+      description: |
+        List all downtimes of a service.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * entry_time
+          * is_cancelled
+          * comment
+          * deletion_time
+          * duration
+          * end_time
+          * is_fixed
+          * start_time
+          * contact.id
+          * contact.name
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Downtime.Service'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Downtime
+      summary: "Add a downtime on a metaservice"
+      description: "Add a downtime on a metaservice."
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Service.Add'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/check:
     post:
       tags:
@@ -1754,6 +1978,29 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/check:
+    post:
+      tags:
+        - Check
+      summary: "Check metaservice"
+      description: "Schedule immediate check on chosen metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Service'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/resources/check:
     post:
       tags:
@@ -1807,6 +2054,29 @@ paths:
       parameters:
         - $ref: '#/components/parameters/HostId'
         - $ref: '#/components/parameters/ServiceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Service'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit a result to a single metaservice"
+      description: "Submit a result (check status, output and perfdata) to a single metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
       requestBody:
         required: true
         content:
@@ -2977,7 +3247,7 @@ components:
         type: array
         items:
           type: string
-          enum: [service, host]
+          enum: [service, host, metaservice]
         example: '["host"]'
     ResourceFilterState:
       in: query
@@ -3057,6 +3327,15 @@ components:
         type: integer
         format: int64
         example: 5
+    MetaId:
+      in: path
+      name: meta_id
+      description: "ID of the meta service"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
     AcknowledgementId:
       in: path
       name: acknowledgement_id
@@ -3752,6 +4031,91 @@ components:
           type: boolean
           description: "Indicates whether the server configuration is activated"
           example: true
+    Configuration.MetaServices:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the meta service"
+          example: 2
+        name:
+          type: string
+          description: "Name of the meta service"
+          example: "TOTAL_FIREWALL_CONNECTIONS"
+        output:
+          type: string
+          description: "Output configured for the meta service"
+          example: "Number of connections: %d"
+        calulation_type:
+          type: string
+          description: |
+            Function to be applied to calculate the meta service status.
+             * average
+             * minimum
+             * maximum
+             * sum
+          example: "average"
+        data_source_type:
+          type: string
+          description: |
+            Data source type of the meta service.
+             * gauge
+             * counter
+             * derive
+             * absolute
+          default: "gauge"
+          example: "gauge"
+        meta_select_mode:
+          type: integer
+          description: |
+            Selection mode for services to be considered for this meta service.
+              * 1 - Service list mod, mark selected services in the options on meta service list.
+              * 2 - SQL matching mod, specify a search string to be used in an SQL query
+          default: 1
+          example: 2
+        regexp_string:
+          type: string
+          description: "Search string to be used in a SQL LIKE query for service selection"
+          example: "%service_name%"
+        metric:
+          type: string
+          description: "Metric name used to measure meta service status"
+          example: "used"
+        warning:
+          type: string
+          description: "Absolute value for warning level"
+          example: "80"
+        critical:
+          type: string
+          description: "Absolute value for critical level"
+          example: "90"
+        is_activated:
+          type: boolean
+          description: "Indicates whether the meta service configuration is activated"
+          example: true
+    Monitoring.MetaServiceMetric:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the meta service metric"
+          example: 2
+        name:
+          type: string
+          description: "Name of the meta service metric"
+          example: "rta"
+        unitName:
+          type: string
+          description: "Name of the meta service metric unit"
+          example: "ms"
+        currentValue:
+          type: number
+          description: "Current value of the metric in the realtime"
+          example: 0.250
+        resource:
+          $ref: '#/components/schemas/Monitoring.ResourceMain'
     Monitoring.Servers:
       type: object
       properties:
@@ -4137,7 +4501,7 @@ components:
             properties:
               type:
                 type: string
-                enum: [host, service]
+                enum: [host, service, metaservice]
                 description: "Type of resource"
                 example: "service"
               id:
@@ -4211,7 +4575,7 @@ components:
             properties:
               type:
                 type: string
-                enum: [host, service]
+                enum: [host, service, metaservice]
                 description: "Type of resource"
                 example: "service"
               id:

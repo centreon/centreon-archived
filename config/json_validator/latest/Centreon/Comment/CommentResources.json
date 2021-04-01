@@ -21,7 +21,8 @@
                         "type": "string",
                         "enum": [
                             "service",
-                            "host"
+                            "host",
+                            "metaservice"
                         ]
                     },
                     "id": {
