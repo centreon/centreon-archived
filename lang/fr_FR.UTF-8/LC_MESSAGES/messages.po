@@ -16102,7 +16102,7 @@ msgstr "La date de fin doit être supérieure à la date de début"
 msgid "Graph options"
 msgstr "Options de graph"
 
-msgid "Display tooltips"
+msgid "Display metric values tooltip"
 msgstr "Afficher l’info-bulle des valeurs de métriques"
 
 msgid "Check duration"
