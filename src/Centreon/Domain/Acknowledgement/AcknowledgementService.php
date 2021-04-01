@@ -372,7 +372,6 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                 break;
             default:
                 throw new ResourceException(sprintf(_('Incorrect Resource type: %s'), $resource->getType()));
-                break;
         }
     }
 
@@ -437,7 +436,6 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                 break;
             default:
                 throw new ResourceException(sprintf(_('Incorrect Resource type: %s'), $resource->getType()));
-                break;
         }
     }
 }

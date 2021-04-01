@@ -286,7 +286,6 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
                 break;
             default:
                 throw new \Exception(_('Incorrect Resource Type'));
-                break;
         }
     }
 }

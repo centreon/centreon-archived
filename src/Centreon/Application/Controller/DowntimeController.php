@@ -751,7 +751,6 @@ class DowntimeController extends AbstractController
                     break;
                 default:
                     throw new \RestBadRequestException(_('Incorrect resource type for downtime'));
-                    break;
             }
         }
 

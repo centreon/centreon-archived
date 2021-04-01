@@ -719,7 +719,6 @@ class AcknowledgementController extends AbstractController
                     break;
                 default:
                     throw new \RestBadRequestException(_('Incorrect resource type for acknowledgement'));
-                    break;
             }
         }
 

@@ -234,7 +234,6 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
                 break;
             default:
                 throw new \InvalidArgumentException(sprintf(_('Incorrect Resource type: %s'), $resource->getType()));
-                break;
         }
     }
 }
