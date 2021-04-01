@@ -62,6 +62,7 @@ class MetaServiceConfigurationV21Factory
     public static function createAllFromResponse(
         FindMetaServicesConfigurationsResponse $response
     ): array {
+        $metaServicesConfigurations = [];
         foreach ($response->getMetaServicesConfigurations() as $metaServiceConfiguration) {
             $newMetaServiceConfiguration = new MetaServiceConfigurationV21();
             $newMetaServiceConfiguration->id = $metaServiceConfiguration['id'];

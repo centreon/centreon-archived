@@ -93,7 +93,7 @@ class MetaServiceMetricRepositoryRDB extends AbstractRepositoryDRB implements
         return $this->findMetricsBySqlRegexpRequest($metricName, $regexpString, null);
     }
 
-    private function findMetricsRequest(int $metaId, ?int $contactId): ?array
+    private function findMetricsRequest(int $metaId, ?int $contactId): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'msr.metric_id',

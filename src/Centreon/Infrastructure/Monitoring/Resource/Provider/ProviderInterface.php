@@ -49,7 +49,6 @@ interface ProviderInterface
      *
      * @param ResourceFilter $filter
      * @param StatementCollector $collector
-     * @param string|null $aclSubQuery
      * @return string
      */
     public function prepareSubQueryWithoutAcl(ResourceFilter $filter, StatementCollector $collector): string;
