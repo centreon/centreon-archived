@@ -5,8 +5,6 @@ import { isEmpty, pipe, reject, slice } from 'ramda';
 
 import {
   Typography,
-  Card,
-  CardContent,
   Divider,
   CardActions,
   Button,
@@ -18,6 +16,8 @@ import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 import { getStatusColors } from '@centreon/ui';
 
 import { labelMore, labelLess } from '../../../translatedLabels';
+
+import Card from './Card';
 
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
@@ -72,18 +72,16 @@ const ExpandableCard = ({
 
   return (
     <Card className={classes.card}>
-      <CardContent>
-        <Typography
-          className={classes.title}
-          variant="subtitle2"
-          color="textSecondary"
-          gutterBottom
-        >
-          {title}
-        </Typography>
-        {threeFirstLines.map(Line)}
-        {outputExpanded && lastLines.map(Line)}
-      </CardContent>
+      <Typography
+        className={classes.title}
+        variant="subtitle2"
+        color="textSecondary"
+        gutterBottom
+      >
+        {title}
+      </Typography>
+      {threeFirstLines.map(Line)}
+      {outputExpanded && lastLines.map(Line)}
       {lastLines.length > 0 && (
         <>
           <Divider />

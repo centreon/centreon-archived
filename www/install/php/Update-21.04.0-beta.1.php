@@ -57,21 +57,21 @@ try {
         // An update is required
         $errorMessage = 'Impossible to alter the table cfg_centreonbroker with log_directory';
         $pearDB->query(
-            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_directory` VARCHAR(255)'
+            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_directory` VARCHAR(255) AFTER `config_write_thread_id`'
         );
     }
     if (!$pearDB->isColumnExist('cfg_centreonbroker', 'log_filename')) {
         // An update is required
         $errorMessage = 'Impossible to alter the table cfg_centreonbroker with log_filename';
         $pearDB->query(
-            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_filename` VARCHAR(255)'
+            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_filename` VARCHAR(255) AFTER `log_directory`'
         );
     }
     if (!$pearDB->isColumnExist('cfg_centreonbroker', 'log_max_size')) {
         // An update is required
         $errorMessage = 'Impossible to alter the table cfg_centreonbroker with log_max_size';
         $pearDB->query(
-            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_max_size` INT(255)'
+            'ALTER TABLE `cfg_centreonbroker` ADD COLUMN `log_max_size` INT(11) NOT NULL DEFAULT 0 AFTER `log_filename`'
         );
     }
 
@@ -87,11 +87,21 @@ try {
         (`id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,`name` varchar(255) NOT NULL)'
     );
 
+    $errorMessage = 'Impossible to create the table cfg_centreonbroker_log';
+    $pearDB->query(
+        'CREATE TABLE IF NOT EXISTS `cfg_centreonbroker_log`
+        (`id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        `id_centreonbroker` INT(11)  NOT NULL,
+        `id_log` INT(11)  NOT NULL,
+        `id_level` INT(11)  NOT NULL)'
+    );
+
     if ($pearDB->isColumnExist('cfg_nagios', 'use_aggressive_host_checking')) {
         // An update is required
-        $errorMessage = 'Impossible to drop use_aggressive_host_checking from cfg_nagios';
+        $errorMessage = 'Impossible to drop column use_aggressive_host_checking from cfg_nagios';
         $pearDB->query('ALTER TABLE `cfg_nagios` DROP COLUMN `use_aggressive_host_checking`');
     }
+
     $errorMessage = "";
 } catch (\Exception $e) {
     $centreonLog->insertLog(
@@ -172,7 +182,7 @@ try {
     $errorMessage = "Unable to set cb_log_level";
     $pearDB->query(
         "INSERT INTO `cb_log_level` (`name`)
-        VALUES ('disabled'), ('critical'), ('error'), ('warning'), ('information'), ('debug'), ('trace')"
+        VALUES ('disabled'), ('critical'), ('error'), ('warning'), ('info'), ('debug'), ('trace')"
     );
     $stmt = $pearDB->query(
         "SELECT config_id FROM cfg_centreonbroker"

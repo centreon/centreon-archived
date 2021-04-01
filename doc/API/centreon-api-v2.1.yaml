@@ -414,6 +414,45 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/users/current/parameters:
+    get:
+      tags:
+      - User parameters
+      summary: "List user parameters"
+      description: "List configured parameters for the current user"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the current user
+                    example: Administrator
+                  alias:
+                    type: string
+                    description: Alias of the current user
+                    example: admin
+                  email:
+                    type: string
+                    description: Email of the current user
+                    example: admin@localhost
+                  timezone:
+                    type: string
+                    description: Timezone for the current user
+                    example: Europe/Paris
+                  locale:
+                    type: string
+                    nullable: true
+                    description: Locale of the current user
+                    example: en_US
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /users/filters/{page_name}:
     get:
       tags:
@@ -1804,6 +1843,27 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/comments:
+    post:
+      tags:
+      - Comment
+      summary: "Add comment to resources"
+      description: "Add at least one comment to a single or to multiple resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment.Resources'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/{host_id}/services/{service_id}/metrics/start/{start}/end/{end}:
     get:
       tags:
@@ -2559,7 +2619,7 @@ paths:
   /platform:
     patch:
       tags:
-        - Platform'
+        - Platform
       summary: "Update a platform information"
       requestBody:
         required: true
@@ -2685,6 +2745,90 @@ paths:
                               type: string
                               description: parent platform id as known in the topology
                               example: "1"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /platform/topology/{poller_id}:
+    delete:
+      tags:
+        - Topology
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+      summary: 'Delete a Platform'
+      description: "Delete a platform from the topology"
+      responses:
+        '204':
+          description: "Platform deleted"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /gorgone/pollers/{poller_id}/responses/{token}:
+    get:
+      tags:
+        - Gorgone
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+        - $ref: '#/components/parameters/GorgoneToken'
+      summary: "Gorgone poller responses token"
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  items:
+                    $ref: '#/components/schemas/Gorgone.Response'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /gorgone/pollers/{poller_id}/commands/{command_name}:
+    post:
+      tags:
+        - Gorgone
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+        - $ref: '#/components/parameters/CommandName'
+      summary: "Gorgone command on specific poller"
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    token:
+                      type: string
+                      description: "Token used to retrieve the data linked to the command"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /administration/parameters:
+    post:
+      tags:
+        - Administration parameters
+      summary: "Administration parameters"
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    monitoring_default_downtime_duration:
+                      type: integer
+                      description: Default downtime duration
+                      example: 3600
+                    monitoring_default_refresh_interval:
+                      type: integer
+                      description: Default monitoring refresh interval
+                      example: 15
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -2948,6 +3092,29 @@ components:
         type: integer
         format: int64
         example: 1
+    PollerId:
+      in: path
+      name: poller_id
+      description: "ID of the poller"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 5
+    GorgoneToken:
+      in: path
+      name: token
+      description: "Gorgone Token"
+      required: true
+      schema:
+        type: string
+    CommandName:
+      in: path
+      name: command_name
+      description: "Gorgone Command"
+      required: true
+      schema:
+        type: string
   responses:
     Unauthorized:
       description: "Unauthorized"
@@ -3085,6 +3252,42 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
+    Comment.Resources:
+      type: object
+      required: [ resources ]
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            required: [ comment,id ]
+            properties:
+              type:
+                type: string
+                enum: [ host, service ]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
+              date:
+                type: string
+                format: date-time
+                nullable: true
+                description: "Date of the comment (ISO8601)"
+              comment:
+                type: string
+                description: "Comment to add to the monitored resource"
+                example: "Resource is not-OK but it is expected"
     Configuration.Host.Category:
       type: object
       properties:
@@ -5036,3 +5239,45 @@ components:
               nullable: true
               example: "centreon"
               description: "proxy password"
+    Gorgone.Response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: "Message returned by Gorgone"
+          example: "Logs found"
+        token:
+          type: string
+          description: "Token used to identify the command"
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              creation_time:
+                type: string
+                format: date-time
+                description: "Creation of dataset in ISO Format"
+                example: "2020-11-24T09:13:04+01:00"
+              event_time:
+                type: string
+                format: date-time
+                description: "Time when event occured in ISO Format"
+                example: "2020-11-24T09:11:00+01:00"
+              id:
+                type: number
+                format: integer
+                description: "Id of the Event"
+                example: 1
+              token:
+                type: string
+                description: "Token used to identify the command"
+              code:
+                type: number
+                format: integer
+                description: "Return code of response"
+                example: 2
+              data:
+                type: string
+                description: "Data on JSON Format"
+                example: "{\"action\":\"getthumbprint\",\"data\":{\"thumbprint\":\"xxxx_xxxxxxxxx\"},\"message\":\"ok\"}"
