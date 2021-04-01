@@ -725,27 +725,33 @@ class DowntimeController extends AbstractController
 
         //validate resources
         $resources = $dtRequest->getResources() ?? [];
+
         foreach ($resources as $resource) {
-            if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-                $errorList->addAll(ResourceService::validateResource(
-                    $entityValidator,
-                    $resource,
-                    ResourceEntity::VALIDATION_GROUP_DOWNTIME_SERVICE
-                ));
-            } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
-                $errorList->addAll(ResourceService::validateResource(
-                    $entityValidator,
-                    $resource,
-                    ResourceEntity::VALIDATION_GROUP_DOWNTIME_HOST
-                ));
-            } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
-                $errorList->addAll(ResourceService::validateResource(
-                    $entityValidator,
-                    $resource,
-                    ResourceEntity::VALIDATION_GROUP_DOWNTIME_META
-                ));
-            } else {
-                throw new \RestBadRequestException(_('Incorrect resource type for downtime'));
+            switch ($resource->getType()) {
+                case ResourceEntity::TYPE_HOST:
+                    $errorList->addAll(ResourceService::validateResource(
+                        $entityValidator,
+                        $resource,
+                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_HOST
+                    ));
+                    break;
+                case ResourceEntity::TYPE_SERVICE:
+                    $errorList->addAll(ResourceService::validateResource(
+                        $entityValidator,
+                        $resource,
+                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_SERVICE
+                    ));
+                    break;
+                case ResourceEntity::TYPE_META:
+                    $errorList->addAll(ResourceService::validateResource(
+                        $entityValidator,
+                        $resource,
+                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_META
+                    ));
+                    break;
+                default:
+                    throw new \RestBadRequestException(_('Incorrect resource type for downtime'));
+                    break;
             }
         }
 

@@ -249,39 +249,44 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      */
     public function addResourceDowntime(ResourceEntity $resource, Downtime $downtime): void
     {
-        if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-            $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
-            if (is_null($host)) {
-                throw new EntityNotFoundException(_('Host not found'));
-            }
-            $service = $this->monitoringRepository->findOneService(
-                (int) $resource->getParent()->getId(),
-                (int) $resource->getId()
-            );
-            if (is_null($service)) {
-                throw new EntityNotFoundException(_('Service not found'));
-            }
-            $service->setHost($host);
-            $this->addServiceDowntime($downtime, $service);
-        } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
-            $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
-            if (is_null($host)) {
-                throw new EntityNotFoundException(_('Host not found'));
-            }
-            $this->addHostDowntime($downtime, $host);
-        } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
-            $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
-            if (is_null($service)) {
-                throw new EntityNotFoundException(_('Service not found'));
-            }
-            $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());
-            if (is_null($host)) {
-                throw new EntityNotFoundException(_('Host not found'));
-            }
-            $service->setHost($host);
-            $this->addServiceDowntime($downtime, $service);
-        } else {
-            throw new \Exception(_('Incorrect Resource Type'));
+        switch ($resource->getType()) {
+            case ResourceEntity::TYPE_HOST:
+                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $this->addHostDowntime($downtime, $host);
+                break;
+            case ResourceEntity::TYPE_SERVICE:
+                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $service = $this->monitoringRepository->findOneService(
+                    (int) $resource->getParent()->getId(),
+                    (int) $resource->getId()
+                );
+                if (is_null($service)) {
+                    throw new EntityNotFoundException(_('Service not found'));
+                }
+                $service->setHost($host);
+                $this->addServiceDowntime($downtime, $service);
+                break;
+            case ResourceEntity::TYPE_META:
+                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
+                if (is_null($service)) {
+                    throw new EntityNotFoundException(_('Service not found'));
+                }
+                $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $service->setHost($host);
+                $this->addServiceDowntime($downtime, $service);
+                break;
+            default:
+                throw new \Exception(_('Incorrect Resource Type'));
+                break;
         }
     }
 }
