@@ -186,7 +186,7 @@ describe(Actions, () => {
       .mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);
-    mockAppStateSelector(useSelector);
+    mockAppStateSelector(useSelector as jest.Mock);
 
     mockedUserContext.mockReturnValue(mockUserContext);
   });
@@ -260,7 +260,8 @@ describe(Actions, () => {
 
       await waitFor(() =>
         expect(
-          (last(getAllByText(labelConfirmAction)) as HTMLElement).parentElement,
+          (last<HTMLElement>(getAllByText(labelConfirmAction)) as HTMLElement)
+            .parentElement,
         ).toBeDisabled(),
       );
     },

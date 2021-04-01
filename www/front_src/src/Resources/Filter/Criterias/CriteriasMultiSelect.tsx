@@ -15,13 +15,8 @@ import {
 } from 'ramda';
 
 import AddIcon from '@material-ui/icons/AddCircle';
-import { ClickAwayListener, Paper, Popper, useTheme } from '@material-ui/core';
 
-import {
-  IconButton,
-  MultiAutocompleteField,
-  useMemoComponent,
-} from '@centreon/ui';
+import { IconPopoverAutocompleteField, useMemoComponent } from '@centreon/ui';
 
 import {
   labelCriterias,
@@ -30,6 +25,7 @@ import {
 } from '../../translatedLabels';
 import { useResourceContext } from '../../Context';
 import { FilterState } from '../useFilter';
+import { allFilter } from '../models';
 
 import {
   CriteriaById,
@@ -49,34 +45,11 @@ const CriteriasMultiSelectContent = ({
   setFilter,
 }: Pick<FilterState, 'filter' | 'setFilter'>): JSX.Element => {
   const { t } = useTranslation();
-  const theme = useTheme();
-
-  const [anchorEl, setAnchorEl] = React.useState();
 
   const options = pipe(
     toCriteriaPairs,
     map(([id, { label }]) => ({ id, name: t(label) })),
   )(selectableCriterias);
-
-  const isOpen = Boolean(anchorEl);
-
-  const close = (reason?): void => {
-    const isClosedByInputClick = reason?.type === 'mousedown';
-
-    if (isClosedByInputClick) {
-      return;
-    }
-    setAnchorEl(undefined);
-  };
-
-  const toggle = (event): void => {
-    if (isOpen) {
-      close();
-      return;
-    }
-
-    setAnchorEl(event.currentTarget);
-  };
 
   const selectedCriterias = filter.criterias
     .filter(({ name }) => !isNil(selectableCriterias[name]))
@@ -116,36 +89,21 @@ const CriteriasMultiSelectContent = ({
     });
   };
 
+  const resetCriteria = (): void => {
+    setFilter(allFilter);
+  };
+
   return (
-    <ClickAwayListener onClickAway={close}>
-      <div>
-        <IconButton
-          title={labelSelectCriterias}
-          ariaLabel={labelSelectCriterias}
-          onClick={toggle}
-        >
-          <AddIcon />
-        </IconButton>
-        <Popper
-          style={{ zIndex: theme.zIndex.tooltip }}
-          open={isOpen}
-          anchorEl={anchorEl}
-          placement="bottom-start"
-        >
-          <Paper>
-            <MultiAutocompleteField
-              onClose={close}
-              label={t(labelCriterias)}
-              options={options}
-              onChange={changeSelectedCriterias}
-              value={selectedCriterias}
-              open={isOpen}
-              limitTags={1}
-            />
-          </Paper>
-        </Popper>
-      </div>
-    </ClickAwayListener>
+    <IconPopoverAutocompleteField
+      title={t(labelSelectCriterias)}
+      label={t(labelCriterias)}
+      options={options}
+      onChange={changeSelectedCriterias}
+      value={selectedCriterias}
+      popperPlacement="bottom-start"
+      icon={<AddIcon />}
+      onReset={resetCriteria}
+    />
   );
 };
 

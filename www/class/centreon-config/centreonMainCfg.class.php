@@ -136,7 +136,6 @@ class CentreonMainCfg
             'max_check_result_reaper_time' => '10',
             'interval_length' => '60',
             'auto_reschedule_checks' => '0',
-            'use_aggressive_host_checking' => '0',
             'enable_flap_detection' => '0',
             'low_service_flap_threshold' => '25.0',
             'high_service_flap_threshold' => '50.0',
@@ -269,7 +268,7 @@ class CentreonMainCfg
             "`host_inter_check_delay_method`, `service_interleave_factor`, `max_concurrent_checks`, " .
             "`max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`, " .
             "`max_check_result_reaper_time`, `interval_length`, `auto_reschedule_checks`, " .
-            "`use_aggressive_host_checking`, `enable_flap_detection`, `low_service_flap_threshold`, " .
+            "`enable_flap_detection`, `low_service_flap_threshold`, " .
             "`high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold`, " .
             "`soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, " .
             "`notification_timeout`, `ocsp_timeout`, `ochp_timeout`, `perfdata_timeout`, `obsess_over_services`, " .
@@ -284,7 +283,7 @@ class CentreonMainCfg
             "`debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, " .
             "`daemon_dumps_core`, `cfg_file`) " .
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = array(
@@ -336,7 +335,6 @@ class CentreonMainCfg
             $baseValues['max_check_result_reaper_time'],
             $baseValues['interval_length'],
             $baseValues['auto_reschedule_checks'],
-            $baseValues['use_aggressive_host_checking'],
             $baseValues['enable_flap_detection'],
             $baseValues['low_service_flap_threshold'],
             $baseValues['high_service_flap_threshold'],
