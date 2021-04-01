@@ -303,7 +303,6 @@ class CommentController extends AbstractController
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
-
     /**
      * Entry point to add a comment on a service
      *
