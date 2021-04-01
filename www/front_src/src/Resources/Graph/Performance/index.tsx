@@ -118,7 +118,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   graphHeader: {
     width: '100%',
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
+    gridTemplateColumns: '0.1fr 1fr 0.1fr',
     justifyItems: 'center',
   },
   exportToPngButton: {
