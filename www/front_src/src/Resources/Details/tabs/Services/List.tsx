@@ -5,9 +5,9 @@ import { equals, last } from 'ramda';
 
 import { Paper, Typography, makeStyles } from '@material-ui/core';
 
-import { StatusChip } from '@centreon/ui';
-
 import { Resource } from '../../../models';
+import CompactStatusChip from '../CompactStatusChip';
+import OutputInformation from '../OutputInformation';
 
 const useStyles = makeStyles((theme) => ({
   serviceCard: {
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   services: Array<Resource>;
-  onSelectService: (id: number) => void;
+  onSelectService: (service: Resource) => void;
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -51,22 +51,22 @@ const ServiceList = ({
           <div key={id}>
             <Paper className={classes.serviceCard}>
               <div className={classes.serviceDetails}>
-                <StatusChip
+                <CompactStatusChip
                   label={t(status.name)}
                   severityCode={status.severity_code}
                 />
                 <div className={classes.description}>
                   <Typography
                     variant="body1"
-                    onClick={(): void => onSelectService(id)}
+                    onClick={(): void => onSelectService(service)}
                     style={{ cursor: 'pointer' }}
                   >
                     {name}
                   </Typography>
-                  <Typography variant="body2">{information}</Typography>
+                  <OutputInformation content={information} />
                 </div>
                 {duration && (
-                  <Typography variant="body2">{duration}</Typography>
+                  <Typography variant="caption">{duration}</Typography>
                 )}
               </div>
             </Paper>

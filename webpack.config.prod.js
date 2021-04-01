@@ -9,4 +9,7 @@ module.exports = merge(baseConfig, {
     maxEntrypointSize: 1500000,
     hints: 'error',
   },
+  optimization: {
+    runtimeChunk: true,
+  },
 });

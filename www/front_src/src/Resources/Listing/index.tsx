@@ -9,16 +9,11 @@ import { MemoizedListing as Listing } from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
-import {
-  labelRowsPerPage,
-  labelOf,
-  labelNoResultsFound,
-} from '../translatedLabels';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource, SortOrder } from '../models';
 
-import { getColumns } from './columns';
+import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
 
 const ResourceListing = (): JSX.Element => {
@@ -31,11 +26,12 @@ const ResourceListing = (): JSX.Element => {
     page,
     setPage,
     setOpenDetailsTabId,
+    setSelectedResourceUuid,
     setSelectedResourceId,
     setSelectedResourceParentId,
     setSelectedResourceType,
     setSelectedResourceParentType,
-    selectedResourceId,
+    selectedResourceUuid,
     setSelectedResources,
     selectedResources,
     setResourcesToAcknowledge,
@@ -44,23 +40,26 @@ const ResourceListing = (): JSX.Element => {
     sending,
     setCriteria,
     getCriteriaValue,
+    selectedColumnIds,
+    setSelectedColumnIds,
   } = useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
 
-  const changeSort = ({ order, orderBy }): void => {
-    setCriteria({ name: 'sort', value: [orderBy, order] });
+  const changeSort = ({ sortField, sortOrder }): void => {
+    setCriteria({ name: 'sort', value: [sortField, sortOrder] });
   };
 
-  const changeLimit = (event): void => {
-    setLimit(Number(event.target.value));
+  const changeLimit = (value): void => {
+    setLimit(Number(value));
   };
 
-  const changePage = (_, updatedPage): void => {
+  const changePage = (updatedPage): void => {
     setPage(updatedPage + 1);
   };
 
-  const selectResource = ({ id, type, parent }: Resource): void => {
+  const selectResource = ({ uuid, id, type, parent }: Resource): void => {
+    setSelectedResourceUuid(uuid);
     setSelectedResourceId(id);
     setSelectedResourceParentId(parent?.id);
     setSelectedResourceType(type);
@@ -69,12 +68,9 @@ const ResourceListing = (): JSX.Element => {
 
   const resourceDetailsOpenCondition = {
     name: 'detailsOpen',
-    condition: ({ id }): boolean => equals(id, selectedResourceId),
+    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
     color: fade(theme.palette.primary.main, 0.08),
   };
-
-  const labelDisplayedRows = ({ from, to, count }): string =>
-    `${from}-${to} ${t(labelOf)} ${count}`;
 
   const columns = getColumns({
     actions: {
@@ -103,13 +99,25 @@ const ResourceListing = (): JSX.Element => {
     SortOrder,
   ];
 
+  const getId = ({ uuid }) => uuid;
+
+  const resetColumns = (): void => {
+    setSelectedColumnIds(defaultSelectedColumnIds);
+  };
+
   return (
     <Listing
       checkable
-      Actions={<Actions onRefresh={initAutorefreshAndLoad} />}
+      actions={<Actions onRefresh={initAutorefreshAndLoad} />}
       loading={loading}
-      columnConfiguration={columns}
-      tableData={listing?.result}
+      columns={columns}
+      onSelectColumns={setSelectedColumnIds}
+      columnConfiguration={{
+        sortable: true,
+        selectedColumnIds,
+      }}
+      onResetColumns={resetColumns}
+      rows={listing?.result}
       currentPage={(page || 1) - 1}
       rowColorConditions={[
         ...rowColorConditions(theme),
@@ -117,25 +125,22 @@ const ResourceListing = (): JSX.Element => {
       ]}
       limit={listing?.meta.limit}
       onSort={changeSort}
-      onPaginationLimitChanged={changeLimit}
+      onLimitChange={changeLimit}
       onPaginate={changePage}
-      sortf={sortField}
-      sorto={sortOrder}
-      labelRowsPerPage={t(labelRowsPerPage)}
-      labelDisplayedRows={labelDisplayedRows}
+      sortField={sortField}
+      sortOrder={sortOrder}
       totalRows={listing?.meta.total}
       onSelectRows={setSelectedResources}
       selectedRows={selectedResources}
       onRowClick={selectResource}
-      innerScrollDisabled={false}
-      emptyDataMessage={t(labelNoResultsFound)}
+      getId={getId}
       memoProps={[
         listing,
         sortField,
         sortOrder,
         page,
         selectedResources,
-        selectedResourceId,
+        selectedResourceUuid,
         sending,
       ]}
     />

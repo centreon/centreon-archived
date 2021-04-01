@@ -33,7 +33,7 @@ const useLoadResources = (): LoadResources => {
   const refreshIntervalRef = React.useRef<number>();
 
   const refreshIntervalMs = useSelector(
-    (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
+    (state: { intervals }) => state.intervals.AjaxTimeReloadMonitoring * 1000,
   );
 
   const getSort = (): { [sortField: string]: SortOrder } | undefined => {
@@ -79,6 +79,7 @@ const useLoadResources = (): LoadResources => {
       statuses: getCriteriaIds('statuses'),
       hostGroupIds: getCriteriaIds('host_groups'),
       serviceGroupIds: getCriteriaIds('service_groups'),
+      monitoringServerIds: getCriteriaIds('monitoring_servers'),
       sort: getSort(),
       limit,
       page,

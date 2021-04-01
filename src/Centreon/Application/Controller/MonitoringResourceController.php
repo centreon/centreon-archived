@@ -35,7 +35,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Symfony\Component\HttpFoundation\Response;
-use Centreon\Domain\Monitoring\ResourceSeverity;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Application\Normalizer\IconUrlNormalizer;
 use JMS\Serializer\Exception\ValidationFailedException;
@@ -66,6 +65,7 @@ class MonitoringResourceController extends AbstractController
         'statuses',
         'hostgroup_ids',
         'servicegroup_ids',
+        'monitoring_server_ids',
     ];
 
     public const FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY = 'only_with_performance_data';
@@ -111,7 +111,6 @@ class MonitoringResourceController extends AbstractController
         ResourceEntity::SERIALIZER_GROUP_PARENT,
         Icon::SERIALIZER_GROUP_MAIN,
         ResourceStatus::SERIALIZER_GROUP_MAIN,
-        ResourceSeverity::SERIALIZER_GROUP_MAIN,
     ];
 
     // Groups for validation
@@ -658,6 +657,7 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_HOST,
                 'id' => $hostId,
                 'tab' => $tab,
+                'uuid' => 'h' . $hostId
             ]),
         ]);
     }
@@ -695,6 +695,7 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_SERVICE,
                 'id' => $serviceId,
                 'tab' => $tab,
+                'uuid' => 's' . $serviceId
             ]),
         ]);
     }

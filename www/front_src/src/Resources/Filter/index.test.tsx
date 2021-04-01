@@ -199,7 +199,7 @@ Storage.prototype.setItem = mockedLocalStorageSetItem;
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
-mockAppStateSelector(useSelector);
+mockAppStateSelector(useSelector as jest.Mock);
 
 describe(Filter, () => {
   beforeEach(() => {
