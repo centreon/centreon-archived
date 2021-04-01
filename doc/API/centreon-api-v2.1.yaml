@@ -414,6 +414,45 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/users/current/parameters:
+    get:
+      tags:
+      - User parameters
+      summary: "List user parameters"
+      description: "List configured parameters for the current user"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the current user
+                    example: Administrator
+                  alias:
+                    type: string
+                    description: Alias of the current user
+                    example: admin
+                  email:
+                    type: string
+                    description: Email of the current user
+                    example: admin@localhost
+                  timezone:
+                    type: string
+                    description: Timezone for the current user
+                    example: Europe/Paris
+                  locale:
+                    type: string
+                    nullable: true
+                    description: Locale of the current user
+                    example: en_US
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /users/filters/{page_name}:
     get:
       tags:
@@ -1795,6 +1834,27 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SubmitResult.Resources'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/comments:
+    post:
+      tags:
+      - Comment
+      summary: "Add comment to resources"
+      description: "Add at least one comment to a single or to multiple resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment.Resources'
       responses:
         '204':
           description: 'Command Sent'
@@ -3192,6 +3252,42 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
+    Comment.Resources:
+      type: object
+      required: [ resources ]
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            required: [ comment,id ]
+            properties:
+              type:
+                type: string
+                enum: [ host, service ]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
+              date:
+                type: string
+                format: date-time
+                nullable: true
+                description: "Date of the comment (ISO8601)"
+              comment:
+                type: string
+                description: "Comment to add to the monitored resource"
+                example: "Resource is not-OK but it is expected"
     Configuration.Host.Category:
       type: object
       properties:

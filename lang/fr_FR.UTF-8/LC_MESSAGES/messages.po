@@ -16110,3 +16110,6 @@ msgstr "Notifications désactivées"
 
 msgid "Checks disabled"
 msgstr "Contrôles désactivés"
+
+msgid "Mandatory data to create the entity '%s' is missing"
+msgstr "Les données obligatoires pour créer l'entité '%s' sont manquantes"
