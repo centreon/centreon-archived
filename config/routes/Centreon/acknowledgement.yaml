@@ -81,6 +81,14 @@ centreon_application_acknowledgement_disacknowledgeservice:
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeService'
 
+centreon_application_acknowledgement_disacknowledgemetaservice:
+    methods: DELETE
+    path: /monitoring/metaservices/{metaId}/acknowledgements
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeMetaService'
+    condition: "request.attributes.get('version') >= 2.1"
+
 centreon_application_acknowledgement_findacknowledgements:
     methods: GET
     path: /monitoring/acknowledgements

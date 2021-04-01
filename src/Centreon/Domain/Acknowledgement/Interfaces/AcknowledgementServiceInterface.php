@@ -157,6 +157,16 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     public function disacknowledgeService(int $hostId, int $serviceId): void;
 
     /**
+     * Disacknowledge a metaservice.
+     *
+     * @param int $meta ID of the metaservice
+     * @throws EngineException
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function disacknowledgeMetaService(int $metaId): void;
+
+    /**
      * Acknowledge resource and its services if needed.
      *
      * @param ResourceEntity $resource Resource to be acknowledged

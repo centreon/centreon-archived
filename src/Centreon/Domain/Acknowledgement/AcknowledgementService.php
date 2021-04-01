@@ -305,6 +305,28 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
+    public function disacknowledgeMetaService(int $metaId): void
+    {
+        $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $metaId);
+        if (is_null($service)) {
+            throw new EntityNotFoundException(_('Meta service not found'));
+        }
+        $acknowledgement = $this->acknowledgementRepository->findLatestServiceAcknowledgement(
+            $service->getHost()->getId(),
+            $service->getId()
+        );
+        if (is_null($acknowledgement)) {
+            throw new AcknowledgementException(_('No acknowledgement found for this meta service'));
+        }
+        if (!is_null($acknowledgement->getDeletionTime())) {
+            throw new AcknowledgementException(_('Acknowledgement already cancelled for this meta service'));
+        }
+        $this->engineService->disacknowledgeService($service);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function disacknowledgeService(int $hostId, int $serviceId): void
     {
         $service = $this->monitoringRepository->findOneService($hostId, $serviceId);

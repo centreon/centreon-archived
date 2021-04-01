@@ -169,7 +169,7 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
 
         $service = $this->monitoringRepository->findOneServiceByDescription($metaServiceDescription);
         if (is_null($service)) {
-            throw new EntityNotFoundException(_('Service not found'));
+            throw new EntityNotFoundException(_('Meta service not found'));
         }
 
         $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());

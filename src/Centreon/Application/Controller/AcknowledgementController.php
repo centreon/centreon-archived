@@ -574,6 +574,30 @@ class AcknowledgementController extends AbstractController
     }
 
     /**
+     * Entry point to remove a metaservice acknowledgement.
+     *
+     * @param int $metaId ID of the metaservice
+     * @return View
+     * @throws \Exception
+     */
+    public function disacknowledgeMetaService(int $metaId): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $contact = $this->getUser();
+
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $this->acknowledgementService
+            ->filterByContact($contact)
+            ->disacknowledgeMetaService($metaId);
+
+        return $this->view();
+    }
+
+    /**
      * Entry point to find one acknowledgement.
      *
      * @param int $acknowledgementId Acknowledgement id to find

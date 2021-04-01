@@ -14514,6 +14514,12 @@ msgstr "Host não encontrado"
 msgid "Service not found"
 msgstr "Serviço não encontrado"
 
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:312
+#:Centreon/Domain/Check/CheckService.php:172
+#:Centreon/Domain/Downtime/DowntimeService.php:183
+msgid "Meta service not found"
+msgstr "Meta serviço não encontrado"
+
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:250
 msgid "No acknowledgement found for this host"
 msgstr "Nenhum reconhecimento encontrado para este host"
@@ -14526,9 +14532,17 @@ msgstr "Reconhecimento já foi cancelado para este host"
 msgid "No acknowledgement found for this service"
 msgstr "Nenhum reconhecimento encontrado para este serviço"
 
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:319
+msgid "No acknowledgement found for this meta service"
+msgstr "Nenhum reconhecimento encontrado para este meta serviço"
+
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:278
 msgid "Acknowledgement already cancelled for this service"
 msgstr "Reconhecimento já foi cancelado para este serviço"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:322
+msgid "Acknowledgement already cancelled for this meta service"
+msgstr "Reconhecimento já foi cancelado para este meta serviço"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:315
 msgid "Incorrect Resource type: %s"
