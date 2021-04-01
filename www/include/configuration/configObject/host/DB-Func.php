@@ -1253,7 +1253,7 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
         $rq .= ltrim($token, ':') . " = " . $token . ", ";
     }
     $rq = rtrim($rq, ', ');
-    $rq .= "WHERE host_id = :hostId";
+    $rq .= " WHERE host_id = :hostId";
     $stmt = $pearDB->prepare($rq);
     foreach ($bindParams as $token => $bindValues) {
         foreach ($bindValues as $paramType => $value) {
@@ -1394,7 +1394,7 @@ function updateHost_MC($host_id = null)
         $rq .= ltrim($token, ':') . " = " . $token . ", ";
     }
     $rq = rtrim($rq, ', ');
-    $rq .= "WHERE host_id = :hostId";
+    $rq .= " WHERE host_id = :hostId";
     $stmt = $pearDB->prepare($rq);
     foreach ($bindParams as $token => $bindValues) {
         foreach ($bindValues as $paramType => $value) {
