@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { string } from 'yargs';
 
 import SyncDisabledIcon from '@material-ui/icons/SyncDisabled';
 import SyncProblemIcon from '@material-ui/icons/SyncProblem';
