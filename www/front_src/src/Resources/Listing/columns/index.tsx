@@ -95,7 +95,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     Component: SeverityColumn,
     sortField: 'severity_level',
     sortable: true,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'status',
@@ -117,7 +116,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     Component: ResourceColumn,
     sortField: 'name',
     sortable: true,
-    width: 'minmax(20px,max-content)',
   },
   {
     id: 'parent_resource',
@@ -127,7 +125,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     Component: ParentResourceColumn,
     sortField: 'parent_name',
     sortable: true,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'notes_url',
@@ -136,7 +133,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: NotesUrlColumn,
     sortable: false,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'action_url',
@@ -145,7 +141,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: ActionUrlColumn,
     sortable: false,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'graph',
@@ -154,7 +149,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: GraphColumn({ onClick: actions.onDisplayGraph }),
     sortable: false,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'duration',
@@ -163,21 +157,18 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     getFormattedString: ({ duration }): string => duration,
     sortField: 'last_status_change',
     sortable: true,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'tries',
     label: t(labelTries),
     type: ColumnType.string,
     getFormattedString: ({ tries }): string => tries,
-    width: 'max-content',
     sortable: true,
   },
   {
     id: 'last_check',
     label: t(labelLastCheck),
     type: ColumnType.string,
-    width: 'max-content',
     getFormattedString: ({ last_check }): string => last_check,
     sortable: true,
   },
@@ -201,7 +192,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     getRenderComponentOnRowUpdateCondition: T,
     Component: StateColumn,
     sortable: false,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'alias',
@@ -209,7 +199,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     type: ColumnType.string,
     getFormattedString: ({ alias }): string => alias,
     sortable: true,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'fqdn',
@@ -217,7 +206,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     type: ColumnType.string,
     getFormattedString: ({ fqdn }): string => fqdn,
     sortable: true,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'monitoring_server_name',
@@ -226,7 +214,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     type: ColumnType.string,
     getFormattedString: ({ monitoring_server_name }): string =>
       monitoring_server_name,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'notification',
@@ -234,7 +221,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
     Component: NotificationColumn,
-    width: 'minmax(auto,max-content)',
   },
   {
     id: 'checks',
@@ -242,7 +228,6 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     type: ColumnType.component,
     getRenderComponentOnRowUpdateCondition: T,
     Component: ChecksColumn,
-    width: 'minmax(auto,max-content)',
   },
 ];
 

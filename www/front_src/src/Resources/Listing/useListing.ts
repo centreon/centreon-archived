@@ -11,6 +11,7 @@ import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { listResources } from './api';
 import { defaultSelectedColumnIds } from './columns';
 import {
+  clearCachedColumnIds,
   getStoredOrDefaultColumnIds,
   storeColumnIds,
 } from './columns/storedColumnIds';
@@ -44,6 +45,12 @@ const useListing = (): ListingState => {
   React.useEffect(() => {
     storeColumnIds(selectedColumnIds);
   }, [selectedColumnIds]);
+
+  React.useEffect(() => {
+    return (): void => {
+      clearCachedColumnIds();
+    };
+  });
 
   const { sendRequest, sending } = useRequest<ResourceListing>({
     request: listResources,
