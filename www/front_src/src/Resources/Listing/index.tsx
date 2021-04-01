@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, T } from 'ramda';
+import { equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
