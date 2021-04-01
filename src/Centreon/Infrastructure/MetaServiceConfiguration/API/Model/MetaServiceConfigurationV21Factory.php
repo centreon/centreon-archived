@@ -82,6 +82,9 @@ class MetaServiceConfigurationV21Factory
         return $metaServicesConfigurations;
     }
 
+    /**
+     * @return \stdClass
+     */
     private static function createEmptyClass(): \stdClass
     {
         return new class extends \stdClass
