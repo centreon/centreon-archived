@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Tests\Centreon\Infrastructure\MetaServiceConfiguration\Repository\Model;
 
 use Centreon\Infrastructure\MetaServiceConfiguration\Repository\Model\MetaServiceConfigurationFactoryRdb;
-
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -56,8 +55,6 @@ class MetaServiceConfigurationFactoryRdbTest extends TestCase
     /**
      * Tests the of the good creation of the MetaServiceConfiguration entity
      * We test all properties.
-     *
-     * @throws HostTemplateFactoryException
      */
     public function testAllPropertiesOnCreate(): void
     {
