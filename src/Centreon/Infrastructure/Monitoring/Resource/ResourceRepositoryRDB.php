@@ -183,7 +183,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.last_notification, resource.notification_number, '
             . 'resource.tries, resource.last_check, resource.next_check, '
             . 'resource.information, resource.performance_data, '
-            . 'resource.execution_time, resource.latency '
+            . 'resource.execution_time, resource.latency, '
             . 'resource.notification_enabled '
             . 'FROM (';
 
