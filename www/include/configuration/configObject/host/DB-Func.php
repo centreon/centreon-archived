@@ -1247,8 +1247,6 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
         $ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
     }
 
-    $ret["host_name"] = $host->checkIllegalChar($ret["host_name"], $server_id);
-    
     $bindParams = sanitizeFormHostParameters($ret);
     $rq = "UPDATE host SET ";
     foreach (array_keys($bindParams) as $token) {
