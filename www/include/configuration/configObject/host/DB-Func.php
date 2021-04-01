@@ -2536,9 +2536,9 @@ function sanitizeFormHostParameters(array $ret): array
                 if (!empty($inputValue)) {
                     $bindParams[':host_notification_options'] = [
                         \PDO::PARAM_STR => (($inputValue = filter_var(
-                                    implode(",", array_keys($inputValue)),
-                                    FILTER_SANITIZE_STRING
-                                )) === false)
+                                implode(",", array_keys($inputValue)),
+                                FILTER_SANITIZE_STRING
+                            )) === false)
                             ? null
                             : $inputValue
                     ];
@@ -2560,9 +2560,9 @@ function sanitizeFormHostParameters(array $ret): array
                 if (!empty($inputValue)) {
                     $bindParams[':host_stalking_options'] = [
                         \PDO::PARAM_STR => (($inputValue = filter_var(
-                                    implode(",", array_keys($inputValue)),
-                                    FILTER_SANITIZE_STRING
-                                )) === false)
+                                implode(",", array_keys($inputValue)),
+                                FILTER_SANITIZE_STRING
+                            )) === false)
                             ? null
                             : $inputValue
                     ];
