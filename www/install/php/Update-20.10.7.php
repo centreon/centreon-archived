@@ -42,6 +42,12 @@ try {
         );
     }
 
+    if ($pearDB->isColumnExist('cfg_nagios', 'use_aggressive_host_checking')) {
+        // An update is required
+        $errorMessage = 'Impossible to drop column use_aggressive_host_checking from cfg_nagios';
+        $pearDB->query('ALTER TABLE `cfg_nagios` DROP COLUMN `use_aggressive_host_checking`');
+    }
+
     $pearDB->beginTransaction();
     $errorMessage = "Unable to update pending state on platform_topology table";
     // find registered platforms in monitoring table
@@ -74,3 +80,6 @@ try {
     );
     throw new \Exception($versionOfTheUpgrade . $errorMessage, $ex->getCode(), $ex);
 }
+
+
+
