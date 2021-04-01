@@ -524,9 +524,7 @@ describe(Details, () => {
         );
       });
 
-      userEvent.click(
-        getByLabelText(labelGraphOptions).firstChild as TargetElement,
-      );
+      userEvent.click(getByLabelText(labelGraphOptions).firstChild as Element);
       await findByText(labelDisplayEvents);
       userEvent.click(getByText(labelDisplayEvents));
 
@@ -563,7 +561,7 @@ describe(Details, () => {
               },
               displayTooltips: {
                 id: 'displayTooltips',
-                label: 'Display tooltips',
+                label: 'Display metric values tooltip',
                 value: false,
               },
             },
