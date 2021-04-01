@@ -7,9 +7,11 @@ import IconGraph from '@material-ui/icons/BarChart';
 
 import { IconButton, ComponentColumnProps } from '@centreon/ui';
 
-import { labelGraph } from '../../../translatedLabels';
-import HoverChip from '../HoverChip';
-import PerformanceGraph from '../../../Graph/Performance';
+import { labelGraph } from '../../translatedLabels';
+import PerformanceGraph from '../../Graph/Performance';
+
+import HoverChip from './HoverChip';
+import IconColumn from './IconColumn';
 
 const useStyles = makeStyles((theme) => ({
   graph: {
@@ -41,27 +43,29 @@ const GraphColumn = ({
     }
 
     return (
-      <HoverChip
-        Chip={(): JSX.Element => (
-          <IconButton
-            title={labelGraph}
-            onClick={(): void => onClick(row)}
-            ariaLabel={labelGraph}
-          >
-            <IconGraph fontSize="small" />
-          </IconButton>
-        )}
-        label={labelGraph}
-      >
-        <Paper className={classes.graph}>
-          <PerformanceGraph
-            endpoint={endpoint}
-            graphHeight={150}
-            resource={row}
-            timeline={[]}
-          />
-        </Paper>
-      </HoverChip>
+      <IconColumn>
+        <HoverChip
+          Chip={(): JSX.Element => (
+            <IconButton
+              title={labelGraph}
+              onClick={(): void => onClick(row)}
+              ariaLabel={labelGraph}
+            >
+              <IconGraph fontSize="small" />
+            </IconButton>
+          )}
+          label={labelGraph}
+        >
+          <Paper className={classes.graph}>
+            <PerformanceGraph
+              endpoint={endpoint}
+              graphHeight={150}
+              resource={row}
+              timeline={[]}
+            />
+          </Paper>
+        </HoverChip>
+      </IconColumn>
     );
   };
 

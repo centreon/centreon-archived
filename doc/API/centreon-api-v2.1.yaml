@@ -2619,7 +2619,7 @@ paths:
   /platform:
     patch:
       tags:
-        - Platform'
+        - Platform
       summary: "Update a platform information"
       requestBody:
         required: true
@@ -2771,14 +2771,16 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PollerId'
         - $ref: '#/components/parameters/GorgoneToken'
+      summary: "Gorgone poller responses token"
       responses:
         '200':
             description: "OK"
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/Gorgone.Response'
                   type: object
+                  items:
+                    $ref: '#/components/schemas/Gorgone.Response'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -2790,6 +2792,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PollerId'
         - $ref: '#/components/parameters/CommandName'
+      summary: "Gorgone command on specific poller"
       responses:
         '200':
             description: "OK"
@@ -2809,6 +2812,7 @@ paths:
     post:
       tags:
         - Administration parameters
+      summary: "Administration parameters"
       responses:
         '200':
             description: "OK"

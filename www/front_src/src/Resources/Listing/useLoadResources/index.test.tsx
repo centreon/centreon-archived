@@ -50,9 +50,11 @@ const appState = {
   },
 };
 
+const mockedSelector = useSelector as jest.Mock;
+
 describe(useLoadResources, () => {
   beforeEach(() => {
-    useSelector.mockImplementation((callback) => {
+    mockedSelector.mockImplementation((callback) => {
       return callback(appState);
     });
 
