@@ -855,37 +855,33 @@ function sanitizeFormContactParameters($ret)
                         : (int) $inputValue;
                 break;
             case 'contact_location':
-                $bindParams[$inputName] =
-                    (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                $bindParams[$inputName] = (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
                         ? 0
                         : (int) $inputValue;
                 break;
             case 'contact_register':
-                $bindParams[$inputName] =
-                    (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                $bindParams[$inputName] = (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
                         ? 1
                         : (int) $inputValue;
                 break;
             case 'contact_hostNotifOpts':
-                $bindParams['contact_host_notification_options'] =
-                    (($inputValue = filter_var(
-                        implode(",", array_keys($inputValue)),
-                        FILTER_SANITIZE_STRING
-                    )) === false)
-                        ? null
-                        : $inputValue;
+                $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
+                if (empty($inputValue)) {
+                    $bindParams['contact_host_notification_options'] = null;
+                } else {
+                    $bindParams['contact_host_notification_options'] = $inputValue;
+                }
                 break;
             case 'contact_svNotifOpts':
-                $bindParams['contact_service_notification_options'] =
-                    (($inputValue = filter_var(
-                        implode(",", array_keys($inputValue)),
-                        FILTER_SANITIZE_STRING
-                    )) === false)
-                        ? null
-                        : $inputValue;
+                $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
+                if (empty($inputValue)) {
+                    $bindParams['contact_service_notification_options'] = null;
+                } else {
+                    $bindParams['contact_service_notification_options'] = $inputValue;
+                }
                 break;
             case 'contact_oreon':
-                 // ldap import, then force contact to be a user
+                // ldap import, then force contact to be a user
                 if (isset($_POST['contact_select']['select'])) {
                     $bindParams[$inputName] = '1';
                 } else {
@@ -937,22 +933,37 @@ function sanitizeFormContactParameters($ret)
                 break;
             case 'contact_lang':
                 if (!empty($inputValue)) {
-                    $bindParams[$inputName] =
-                        (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === false)
-                            ? 'browser'
-                            : $inputValue;
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    if (empty($inputValue)) {
+                        $bindParams[$inputName] = 'browser';
+                    } else {
+                        $bindParams[$inputName] = $inputValue;
+                    }
                 }
                 break;
             case 'contact_auth_type':
                 if (!empty($inputValue)) {
-                    $bindParams[$inputName] =
-                        (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === false)
-                            ? 'local'
-                            : $inputValue;
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    if (empty($inputValue)) {
+                        $bindParams[$inputName] = 'local';
+                    } else {
+                        $bindParams[$inputName] = $inputValue;
+                    }
                 }
                 break;
             case 'contact_name':
             case 'contact_alias':
+                if (!empty($inputValue)) {
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    if (empty($inputValue)) {
+                        throw new \InvalidArgumentException('Bad Parameter');
+                    } else {
+                        $bindParams[$inputName] = $inputValue;
+                    }
+                }  else {
+                    throw new \InvalidArgumentException('Bad Parameter');
+                }
+                break;
             case 'contact_autologin_key':
             case 'contact_email':
             case 'contact_pager':
