@@ -384,10 +384,11 @@ describe(Details, () => {
     mockDate.reset();
     mockedAxios.get.mockReset();
     act(() => {
-      context.clearSelectedResource();
       context.setGraphTabParameters({
         selectedTimePeriodId: lastDayPeriod.id,
+        selectedCustomTimePeriod: undefined,
       });
+      context.clearSelectedResource();
     });
   });
 
@@ -1027,6 +1028,13 @@ describe(Details, () => {
     await waitFor(() => {
       expect(queryByText(labelServices)).toBeNull();
     });
+
+    act(() => {
+      context.setServicesTabParameters({
+        graphMode: false,
+        graphTimePeriod: {},
+      });
+    });
   });
 
   it('displays the linked service graphs when the service tab of a host is clicked and the graph mode is activated', async () => {
@@ -1090,9 +1098,12 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByLabelText, container } = renderDetails({
+    renderDetails({
       openTabId: graphTabId,
     });
+
+    const startISOString = '2020-01-19T06:00:00.000Z';
+    const endISOString = '2020-01-21T06:00:00.000Z';
 
     act(() => {
       setSelectedServiceResource();
@@ -1105,38 +1116,18 @@ describe(Details, () => {
       );
     });
 
-    userEvent.click(getByLabelText(labelCompactTimePeriod));
-
-    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
-      ?.firstChild;
-
-    userEvent.click(startDateInput as Element);
-
-    fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
-    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
-
-    const startISOString = '2020-01-19T05:00:00.000Z';
-    const endISOString = '2020-01-21T06:00:00.000Z';
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
-        cancelTokenRequestParam,
-      );
-    });
-
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         buildListTimelineEventsEndpoint({
           endpoint: retrievedDetails.links.endpoints.timeline,
           parameters: {
-            limit: 100,
+            limit: 20,
             search: {
               conditions: [
                 {
                   field: 'date',
                   values: {
-                    $gt: startISOString,
+                    $gt: '2020-01-20T06:00:00.000Z',
                     $lt: endISOString,
                   },
                 },
@@ -1144,6 +1135,23 @@ describe(Details, () => {
             },
           },
         }),
+        cancelTokenRequestParam,
+      );
+    });
+
+    act(() => {
+      context.setGraphTabParameters({
+        selectedTimePeriodId: undefined,
+        selectedCustomTimePeriod: {
+          start: startISOString,
+          end: endISOString,
+        },
+      });
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
         cancelTokenRequestParam,
       );
     });
