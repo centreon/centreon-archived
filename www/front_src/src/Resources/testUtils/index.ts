@@ -26,6 +26,11 @@ const searchableFields = [
   'h.alias',
   'h.address',
   's.description',
+  'name',
+  'alias',
+  'parent_name',
+  'parent_alias',
+  'fqdn',
   'information',
 ];
 
@@ -56,6 +61,11 @@ const getListingEndpoint = ({
               'h.alias',
               'h.address',
               's.description',
+              'name',
+              'alias',
+              'parent_name',
+              'parent_alias',
+              'fqdn',
               'information',
             ],
           },

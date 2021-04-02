@@ -73,7 +73,7 @@ const TimePeriodButtonGroup = ({
   return (
     <ParentSize>
       {({ width }) => {
-        const isMinimalWidth = lt(width, theme.breakpoints.values.sm);
+        const isCompact = lt(width, theme.breakpoints.values.sm);
         return (
           <Paper className={classes.header}>
             <ButtonGroup
@@ -107,7 +107,7 @@ const TimePeriodButtonGroup = ({
             <CustomTimePeriodPickers
               customTimePeriod={customTimePeriod}
               acceptDate={changeDate}
-              isMinimalWidth={isMinimalWidth}
+              isCompact={isCompact}
             />
             <GraphOptions />
           </Paper>

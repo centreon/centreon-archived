@@ -20,3 +20,11 @@ centreon_application_monitoring_commentservice:
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\Monitoring\CommentController::addServiceComment'
     condition: "request.attributes.get('version') >= 2.0"
+
+centreon_application_monitoring_commentmetaservice:
+    methods: POST
+    path: /monitoring/metaservices/{metaId}/comments
+    controller: 'Centreon\Application\Controller\Monitoring\CommentController::addMetaServiceComment'
+    requirements:
+        metaId: '\d+'
+    condition: "request.attributes.get('version') >= 2.1"

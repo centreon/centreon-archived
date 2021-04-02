@@ -28,6 +28,7 @@ use Psr\Container\ContainerInterface;
 use Centreon\Domain\Monitoring\Resource;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Domain\Monitoring\Comment\CommentService;
 use Centreon\Application\Controller\Monitoring\CommentController;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -45,6 +46,7 @@ class CommentControllerTest extends TestCase
     protected $serviceCommentJson;
     protected $serviceResult;
     protected $commentService;
+    protected $monitoringService;
 
     protected $container;
 
@@ -110,6 +112,7 @@ class CommentControllerTest extends TestCase
         ]);
 
         $this->commentService = $this->createMock(CommentService::class);
+        $this->monitoringService = $this->createMock(MonitoringService::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authorizationChecker->expects($this->once())
@@ -154,7 +157,7 @@ class CommentControllerTest extends TestCase
      */
     public function testaddResourcesCommentBadJsonFormat()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->once())
@@ -170,7 +173,7 @@ class CommentControllerTest extends TestCase
      */
     public function testCommentResourcesBadJsonProperties()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
@@ -189,7 +192,7 @@ class CommentControllerTest extends TestCase
             ->method('filterByContact')
             ->willReturn($this->commentService);
 
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
@@ -205,7 +208,7 @@ class CommentControllerTest extends TestCase
      */
     public function testAddHostCommentBadJsonFormat()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->once())
@@ -220,7 +223,7 @@ class CommentControllerTest extends TestCase
      */
     public function testAddHostCommentBadJsonProperties()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
@@ -238,7 +241,7 @@ class CommentControllerTest extends TestCase
             ->method('filterByContact')
             ->willReturn($this->commentService);
 
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
@@ -255,7 +258,7 @@ class CommentControllerTest extends TestCase
      */
     public function testAddServiceCommentBadJsonFormat()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->once())
@@ -274,7 +277,7 @@ class CommentControllerTest extends TestCase
      */
     public function testAddServiceCommentBadJsonProperties()
     {
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
@@ -296,7 +299,7 @@ class CommentControllerTest extends TestCase
         ->method('filterByContact')
         ->willReturn($this->commentService);
 
-        $commentController = new CommentController($this->commentService);
+        $commentController = new CommentController($this->commentService, $this->monitoringService);
         $commentController->setContainer($this->container);
 
         $this->request->expects($this->any())
