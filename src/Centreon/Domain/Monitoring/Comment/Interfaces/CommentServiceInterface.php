@@ -38,6 +38,14 @@ interface CommentServiceInterface extends ContactFilterInterface
     public function addServiceComment(Comment $comment, Service $service): void;
 
     /**
+     * Function allowing contact to add a comment to a service
+     *
+     * @param  Comment $comment Comment to add to the service
+     * @param Service $metaService Meta service that will receive the comment
+     */
+    public function addMetaServiceComment(Comment $comment, Service $metaService): void;
+
+    /**
      * Function allowing contact to add a comment to a host
      *
      * @param  Comment $comment Comment to add to the host

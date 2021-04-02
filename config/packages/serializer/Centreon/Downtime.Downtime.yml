@@ -33,6 +33,7 @@ Centreon\Domain\Downtime\Downtime:
             type: int
             groups:
                 - 'downtime_service'
+                - 'downtime_meta'
         resourceId:
             type: int
             groups:

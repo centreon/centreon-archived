@@ -15,9 +15,13 @@ import {
   ChangeCustomTimePeriodProps,
   StoredCustomTimePeriod,
 } from '../../../Details/tabs/Graph/models';
+import {
+  GraphOptions,
+  GraphTabParameters,
+  ResourceDetails,
+} from '../../../Details/models';
 import { AdjustTimePeriodProps } from '../models';
-
-dayjs.extend(duration);
+import { useResourceContext } from '../../../Context';
 
 dayjs.extend(duration);
 
@@ -27,22 +31,21 @@ interface TimePeriodState {
   periodQueryParameters: string;
   getIntervalDates: () => [string, string];
   customTimePeriod: CustomTimePeriod;
+  resourceDetailsUpdated: boolean;
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
   adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
-}
-
-interface OnTimePeriodChangeProps {
-  selectedTimePeriodId?: TimePeriodId;
-  selectedCustomTimePeriod?: StoredCustomTimePeriod;
 }
 
 interface Props {
   defaultSelectedTimePeriodId?: TimePeriodId;
   defaultSelectedCustomTimePeriod?: StoredCustomTimePeriod;
+  defaultGraphOptions?: GraphOptions;
+  details?: ResourceDetails;
   onTimePeriodChange?: ({
     selectedTimePeriodId,
     selectedCustomTimePeriod,
-  }: OnTimePeriodChangeProps) => void;
+    graphOptions,
+  }: GraphTabParameters) => void;
 }
 
 interface GraphQueryParametersProps {
@@ -54,8 +57,14 @@ interface GraphQueryParametersProps {
 const useTimePeriod = ({
   defaultSelectedTimePeriodId,
   defaultSelectedCustomTimePeriod,
+  defaultGraphOptions,
+  details,
   onTimePeriodChange,
 }: Props): TimePeriodState => {
+  const [
+    resourceDetailsUpdated,
+    setResourceDetailsUpdated,
+  ] = React.useState<boolean>(false);
   const defaultTimePeriod = cond([
     [
       (timePeriodId) =>
@@ -73,6 +82,8 @@ const useTimePeriod = ({
     selectedTimePeriod,
     setSelectedTimePeriod,
   ] = React.useState<TimePeriod | null>(defaultTimePeriod);
+
+  const { sending } = useResourceContext();
 
   const getTimeperiodFromNow = (
     timePeriod: TimePeriod | null,
@@ -155,7 +166,10 @@ const useTimePeriod = ({
     const timePeriod = getTimePeriodById(timePeriodId);
 
     setSelectedTimePeriod(timePeriod);
-    onTimePeriodChange?.({ selectedTimePeriodId: timePeriod.id });
+    onTimePeriodChange?.({
+      selectedTimePeriodId: timePeriod.id,
+      graphOptions: defaultGraphOptions,
+    });
 
     const newTimePeriod = getTimeperiodFromNow(timePeriod);
 
@@ -165,6 +179,7 @@ const useTimePeriod = ({
       timePeriod,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
+    setResourceDetailsUpdated(false);
   };
 
   const changeCustomTimePeriod = ({
@@ -181,6 +196,7 @@ const useTimePeriod = ({
         start: newCustomTimePeriod.start.toISOString(),
         end: newCustomTimePeriod.end.toISOString(),
       },
+      graphOptions: defaultGraphOptions,
     });
     setSelectedTimePeriod(null);
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
@@ -188,9 +204,11 @@ const useTimePeriod = ({
       endDate: newCustomTimePeriod.end,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
+    setResourceDetailsUpdated(false);
   };
 
   const adjustTimePeriod = (adjustTimePeriodProps: AdjustTimePeriodProps) => {
+    setResourceDetailsUpdated(false);
     setCustomTimePeriod(getNewCustomTimePeriod(adjustTimePeriodProps));
     setSelectedTimePeriod(null);
 
@@ -206,8 +224,26 @@ const useTimePeriod = ({
         start: start.toISOString(),
         end: end.toISOString(),
       },
+      graphOptions: defaultGraphOptions,
     });
   };
+
+  React.useEffect(() => {
+    if (isNil(selectedTimePeriod) || isNil(details) || not(sending)) {
+      return;
+    }
+
+    setPeriodQueryParameters(
+      getGraphQueryParameters({
+        timePeriod: selectedTimePeriod,
+      }),
+    );
+
+    const newTimePeriod = getTimeperiodFromNow(selectedTimePeriod);
+
+    setCustomTimePeriod(newTimePeriod);
+    setResourceDetailsUpdated(true);
+  }, [sending]);
 
   return {
     changeSelectedTimePeriod,
@@ -217,6 +253,7 @@ const useTimePeriod = ({
     customTimePeriod,
     changeCustomTimePeriod,
     adjustTimePeriod,
+    resourceDetailsUpdated,
   };
 };
 

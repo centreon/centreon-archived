@@ -43,6 +43,7 @@ import {
   AdjustTimePeriodProps,
 } from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
+import useMetricsValue, { MetricsValueContext } from './Graph/useMetricsValue';
 import { TimeShiftDirection } from './Graph/TimeShiftZones';
 
 interface Props {
@@ -50,7 +51,6 @@ interface Props {
   xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
-  eventAnnotationsActive?: boolean;
   resource: Resource | ResourceDetails;
   timeline?: Array<TimelineEvent>;
   onAddComment?: (commentParameters: CommentParameters) => void;
@@ -58,6 +58,7 @@ interface Props {
   onTooltipDisplay?: (position?: [number, number]) => void;
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
+  resourceDetailsUpdated?: boolean;
 }
 
 interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
@@ -115,7 +116,6 @@ const PerformanceGraph = ({
   graphHeight,
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
-  eventAnnotationsActive = false,
   timeline,
   tooltipPosition,
   onTooltipDisplay,
@@ -123,6 +123,7 @@ const PerformanceGraph = ({
   onAddComment,
   adjustTimePeriod,
   customTimePeriod,
+  resourceDetailsUpdated = true,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     graphHeight,
@@ -141,6 +142,7 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
+  const metricsValueProps = useMetricsValue();
 
   React.useEffect(() => {
     if (isNil(endpoint)) {
@@ -263,44 +265,47 @@ const PerformanceGraph = ({
   };
 
   return (
-    <div className={classes.container}>
-      <Typography variant="body1" color="textPrimary" align="center">
-        {title}
-      </Typography>
+    <MetricsValueContext.Provider value={metricsValueProps}>
+      <div className={classes.container}>
+        <Typography variant="body1" color="textPrimary" align="center">
+          {title}
+        </Typography>
 
-      <ParentSize>
-        {({ width, height }): JSX.Element => (
-          <Graph
-            width={width}
-            height={height}
-            timeSeries={timeSeries}
-            lines={displayedLines}
-            base={base as number}
-            xAxisTickFormat={xAxisTickFormat}
-            timeline={timeline}
-            onTooltipDisplay={onTooltipDisplay}
-            tooltipPosition={tooltipPosition}
-            resource={resource}
-            onAddComment={onAddComment}
-            eventAnnotationsActive={eventAnnotationsActive}
-            applyZoom={adjustTimePeriod}
-            shiftTime={shiftTime}
-            sendingGetGraphDataRequest={sendingGetGraphDataRequest}
-            canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
+        <ParentSize>
+          {({ width, height }): JSX.Element => (
+            <Graph
+              width={width}
+              height={height}
+              timeSeries={timeSeries}
+              lines={displayedLines}
+              base={base as number}
+              xAxisTickFormat={xAxisTickFormat}
+              timeline={timeline}
+              onTooltipDisplay={onTooltipDisplay}
+              tooltipPosition={tooltipPosition}
+              resource={resource}
+              onAddComment={onAddComment}
+              applyZoom={adjustTimePeriod}
+              shiftTime={shiftTime}
+              loading={
+                not(resourceDetailsUpdated) && sendingGetGraphDataRequest
+              }
+              canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
+            />
+          )}
+        </ParentSize>
+        <div className={classes.legend}>
+          <Legend
+            lines={sortedLines}
+            onToggle={toggleMetricLine}
+            onSelect={selectMetricLine}
+            toggable={toggableLegend}
+            onHighlight={highlightLine}
+            onClearHighlight={clearHighlight}
           />
-        )}
-      </ParentSize>
-      <div className={classes.legend}>
-        <Legend
-          lines={sortedLines}
-          onToggle={toggleMetricLine}
-          onSelect={selectMetricLine}
-          toggable={toggableLegend}
-          onHighlight={highlightLine}
-          onClearHighlight={clearHighlight}
-        />
+        </div>
       </div>
-    </div>
+    </MetricsValueContext.Provider>
   );
 };
 

@@ -1,3 +1,4 @@
+import { GraphOptionId } from '../Graph/Performance/models';
 import {
   Status,
   Acknowledgement,
@@ -40,9 +41,22 @@ export interface ResourceDetails extends NamedEntity {
   alias?: string;
   groups?: Array<NamedEntity>;
 }
+
+interface GraphOption {
+  id: GraphOptionId;
+  label: string;
+  value: boolean;
+}
+
+export interface GraphOptions {
+  [GraphOptionId.displayTooltips]: GraphOption;
+  [GraphOptionId.displayEvents]: GraphOption;
+}
+
 export interface GraphTabParameters {
   selectedTimePeriodId?: TimePeriodId;
-  selectedCustomPeriod?: StoredCustomTimePeriod;
+  selectedCustomTimePeriod?: StoredCustomTimePeriod;
+  graphOptions?: GraphOptions;
 }
 
 export interface ServicesTabParameters {

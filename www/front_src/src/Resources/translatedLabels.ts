@@ -200,8 +200,13 @@ export const labelForward = 'Forward';
 export const labelBackward = 'Backward';
 export const labelEndDateGreaterThanStartDate =
   'The end date must be greater than the start date';
+export const labelGraphOptions = 'Graph options';
+export const labelDisplayTooltips = 'Display metric values tooltip';
 export const labelAction = 'Action';
 export const labelNotes = 'Notes';
-export const labelChecksDisabled = 'Checks disabled';
+export const labelChecksDisabled = 'All checks are disabled';
+export const labelOnlyPassiveChecksEnabled = 'Only passive checks are enabled';
 export const labelNotificationDisabled = 'Notifications disabled';
 export const labelNotificationEnabled = 'Notifications enabled';
+export const labelSelectAtLeastOneColumn =
+  'At least one column must be selected';

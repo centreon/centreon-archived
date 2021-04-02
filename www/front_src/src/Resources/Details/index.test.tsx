@@ -67,6 +67,7 @@ import {
   labelForward,
   labelBackward,
   labelEndDateGreaterThanStartDate,
+  labelGraphOptions,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -560,7 +561,13 @@ describe(Details, () => {
         data: retrievedTimeline,
       });
 
-    const { findAllByLabelText, queryByLabelText, getByText } = renderDetails({
+    const {
+      findAllByLabelText,
+      queryByLabelText,
+      getByLabelText,
+      getByText,
+      findByText,
+    } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -575,6 +582,10 @@ describe(Details, () => {
     expect(queryByLabelText(labelComment)).toBeNull();
     expect(queryByLabelText(labelAcknowledgement)).toBeNull();
     expect(queryByLabelText(labelDowntime)).toBeNull();
+
+    userEvent.click(getByLabelText(labelGraphOptions).firstChild as Element);
+
+    await findByText(labelDisplayEvents);
 
     userEvent.click(getByText(labelDisplayEvents));
 

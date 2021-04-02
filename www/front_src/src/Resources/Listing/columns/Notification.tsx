@@ -1,15 +1,13 @@
 import * as React from 'react';
 
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import { useTranslation } from 'react-i18next';
+
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import { Tooltip } from '@material-ui/core';
 
 import { ComponentColumnProps } from '@centreon/ui';
 
-import {
-  labelNotificationDisabled,
-  labelNotificationEnabled,
-} from '../../translatedLabels';
+import { labelNotificationDisabled } from '../../translatedLabels';
 
 import IconColumn from './IconColumn';
 
@@ -27,22 +25,23 @@ const NotificationTooltip = ({
   return <Tooltip title={title}>{icon}</Tooltip>;
 };
 
-const NotificationColumn = ({ row }: ComponentColumnProps): JSX.Element => {
-  return (
-    <IconColumn>
-      {row.notification_enabled ? (
-        <NotificationTooltip
-          Icon={NotificationsIcon}
-          title={labelNotificationEnabled}
-        />
-      ) : (
+const NotificationColumn = ({
+  row,
+}: ComponentColumnProps): JSX.Element | null => {
+  const { t } = useTranslation();
+
+  if (row.notification_enabled === false) {
+    return (
+      <IconColumn>
         <NotificationTooltip
           Icon={NotificationsOffIcon}
-          title={labelNotificationDisabled}
+          title={t(labelNotificationDisabled)}
         />
-      )}
-    </IconColumn>
-  );
+      </IconColumn>
+    );
+  }
+
+  return null;
 };
 
 export default NotificationColumn;

@@ -3,14 +3,7 @@ import * as React from 'react';
 import { path, isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import {
-  Paper,
-  Theme,
-  makeStyles,
-  FormControlLabel,
-  Switch,
-  Typography,
-} from '@material-ui/core';
+import { Paper, Theme, makeStyles } from '@material-ui/core';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
 
 import {
@@ -21,10 +14,7 @@ import {
 } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
-import {
-  labelDisplayEvents,
-  labelExportToPng,
-} from '../../../translatedLabels';
+import { labelExportToPng } from '../../../translatedLabels';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/decoders';
@@ -38,11 +28,12 @@ import { ResourceDetails } from '../../../Details/models';
 import { AdjustTimePeriodProps } from '../models';
 
 import exportToPng from './exportToPng';
+import GraphOptions from './GraphOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
   exportToPngButton: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     margin: theme.spacing(0, 1, 1, 2),
   },
   graphContainer: {
@@ -55,6 +46,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: '100%',
     width: '100%',
   },
+  rightButtons: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, min-content)',
+    columnGap: `${theme.spacing(1)}px`,
+  },
 }));
 
 interface Props {
@@ -66,6 +62,7 @@ interface Props {
   onTooltipDisplay?: (position?: [number, number]) => void;
   tooltipPosition?: [number, number];
   customTimePeriod: CustomTimePeriod;
+  resourceDetailsUpdated: boolean;
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
 }
 
@@ -79,6 +76,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   tooltipPosition,
   customTimePeriod,
   adjustTimePeriod,
+  resourceDetailsUpdated,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -93,9 +91,6 @@ const ExportablePerformanceGraphWithTimeline = ({
     decoder: listTimelineEventsDecoder,
   });
 
-  const [eventAnnotationsActive, setEventAnnotationsActive] = React.useState(
-    false,
-  );
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const [exporting, setExporting] = React.useState(false);
 
@@ -152,12 +147,6 @@ const ExportablePerformanceGraphWithTimeline = ({
     return `${endpoint}${periodQueryParameters}`;
   };
 
-  const changeEventAnnotationsActive = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ): void => {
-    setEventAnnotationsActive(event.target.checked);
-  };
-
   const convertToPng = (): void => {
     setExporting(true);
     exportToPng({
@@ -184,19 +173,6 @@ const ExportablePerformanceGraphWithTimeline = ({
   return (
     <Paper className={classes.graphContainer}>
       <div className={classes.exportToPngButton}>
-        <FormControlLabel
-          disabled={isNil(timeline)}
-          control={
-            <Switch
-              color="primary"
-              size="small"
-              onChange={changeEventAnnotationsActive}
-            />
-          }
-          label={
-            <Typography variant="body2">{t(labelDisplayEvents)}</Typography>
-          }
-        />
         <ContentWithCircularLoading
           loading={exporting}
           loadingIndicatorSize={16}
@@ -210,6 +186,7 @@ const ExportablePerformanceGraphWithTimeline = ({
             <SaveAsImageIcon style={{ fontSize: 18 }} />
           </IconButton>
         </ContentWithCircularLoading>
+        <GraphOptions />
       </div>
       <div
         className={classes.graph}
@@ -224,13 +201,13 @@ const ExportablePerformanceGraphWithTimeline = ({
           }
           toggableLegend
           resource={resource as Resource}
-          eventAnnotationsActive={eventAnnotationsActive}
           timeline={timeline}
           onAddComment={addCommentToTimeline}
           onTooltipDisplay={onTooltipDisplay}
           tooltipPosition={tooltipPosition}
           adjustTimePeriod={adjustTimePeriod}
           customTimePeriod={customTimePeriod}
+          resourceDetailsUpdated={resourceDetailsUpdated}
         />
       </div>
     </Paper>

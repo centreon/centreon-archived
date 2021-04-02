@@ -1,23 +1,13 @@
 import * as React from 'react';
 
-import { take, takeLast } from 'ramda';
 import clsx from 'clsx';
+import { take, takeLast } from 'ramda';
 
 import { Typography, makeStyles } from '@material-ui/core';
 
-import { useLocaleDateTimeFormat, dateTimeFormat } from '@centreon/ui';
+import LegendMarker, { LegendMarkerVariant } from '../Legend/Marker';
 
-import { getLineForMetric } from '../timeSeries';
-import formatMetricValue from '../formatMetricValue';
-import { Line, TimeValue } from '../models';
-import LegendMarker from '../Legend/Marker';
-
-interface Props {
-  lines: Array<Line>;
-  timeValue: TimeValue;
-  base: number;
-  metrics: Array<string>;
-}
+import { useMetricsValueContext } from './useMetricsValue';
 
 const useStyles = makeStyles((theme) => ({
   tooltip: {
@@ -50,14 +40,13 @@ const truncateInMiddle = (label: string): string => {
   return `${take(maxLength / 2, label)}...${takeLast(maxLength / 2, label)}`;
 };
 
-const MetricsTooltip = ({
-  lines,
-  timeValue,
-  base,
-  metrics,
-}: Props): JSX.Element | null => {
+const MetricsTooltip = (): JSX.Element | null => {
   const classes = useStyles();
-  const { format } = useLocaleDateTimeFormat();
+  const {
+    metricsValue,
+    getFormattedMetricData,
+    formatDate,
+  } = useMetricsValueContext();
 
   return (
     <div className={classes.tooltip}>
@@ -66,32 +55,25 @@ const MetricsTooltip = ({
         align="center"
         className={classes.emphasized}
       >
-        {format({
-          date: new Date(timeValue.timeTick),
-          formatString: dateTimeFormat,
-        })}
+        {formatDate()}
       </Typography>
-      {metrics.map((metric) => {
-        const value = timeValue[metric] as number;
-
-        const { color, name, unit } = getLineForMetric({
-          lines,
-          metric,
-        }) as Line;
-
-        const formattedValue = formatMetricValue({ value, unit, base });
+      {metricsValue?.metrics.map((metric) => {
+        const data = getFormattedMetricData(metric);
 
         return (
           <div className={classes.metric} key={metric}>
-            <LegendMarker color={color} />
+            <LegendMarker
+              color={data?.color || ''}
+              variant={LegendMarkerVariant.dot}
+            />
             <Typography variant="caption" noWrap>
-              {truncateInMiddle(name)}
+              {truncateInMiddle(data?.name || '')}
             </Typography>
             <Typography
               variant="caption"
               className={clsx([classes.value, classes.emphasized])}
             >
-              {formattedValue}
+              {data?.formattedValue}
             </Typography>
           </div>
         );

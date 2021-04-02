@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { prop, difference, min, max, isNil } from 'ramda';
-import { AreaClosed, LinePath, curveBasis, scaleLinear } from '@visx/visx';
+import { AreaClosed, LinePath, curveLinear, scaleLinear } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { fade } from '@material-ui/core';
@@ -146,7 +146,7 @@ const Lines = ({
               opacity: highlight === false ? 0.3 : 1,
               y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
               x: (timeValue): number => xScale(getTime(timeValue)) as number,
-              curve: curveBasis,
+              curve: curveLinear,
               defined: (value): boolean => !isNil(value[metric]),
             };
 

@@ -452,13 +452,6 @@ $form->addElement('text', 'auto_rescheduling_interval', _("Auto-Rescheduling Int
 $form->addElement('text', 'auto_rescheduling_window', _("Auto-Rescheduling Window"), $attrsText3);
 
 /* *****************************************************
- * Aggressive host checking
- */
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'use_aggressive_host_checking', null, _("No"), '0');
-$form->addGroup($nagTab, 'use_aggressive_host_checking', _("Aggressive Host Checks"), '&nbsp;');
-
-/* *****************************************************
  * Flapping management.
  */
 $nagTab = array();
