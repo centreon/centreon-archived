@@ -1109,17 +1109,17 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_hostNotifOpts':
                 $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                 if (empty($inputValue)) {
-                    $bindParams['contact_host_notification_options'] = null;
+                    $bindParams[':contact_host_notification_options'] = null;
                 } else {
-                    $bindParams['contact_host_notification_options'] = $inputValue;
+                    $bindParams[':contact_host_notification_options'] = $inputValue;
                 }
                 break;
             case 'contact_svNotifOpts':
                 $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                 if (empty($inputValue)) {
-                    $bindParams['contact_service_notification_options'] = null;
+                    $bindParams[':contact_service_notification_options'] = null;
                 } else {
-                    $bindParams['contact_service_notification_options'] = $inputValue;
+                    $bindParams[':contact_service_notification_options'] = $inputValue;
                 }
                 break;
             case 'contact_oreon':
@@ -1209,7 +1209,7 @@ function sanitizeFormContactParameters(array $ret): array
                     if (empty($inputValue)) {
                         throw new \InvalidArgumentException('Bad Parameter');
                     } else {
-                        $bindParams[$inputName] = $inputValue;
+                        $bindParams[':' . $inputName] = $inputValue;
                     }
                 }  else {
                     throw new \InvalidArgumentException('Bad Parameter');
@@ -1228,7 +1228,7 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_address6':
                 if (!empty($inputValue)) {
                     if ($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) {
-                        $bindParams[$inputName] = $inputValue;
+                        $bindParams[':' . $inputName] = $inputValue;
                     } else {
                         throw new \InvalidArgumentException('Bad Parameter');
                     }
