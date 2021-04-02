@@ -80,6 +80,3 @@ try {
     );
     throw new \Exception($versionOfTheUpgrade . $errorMessage, $ex->getCode(), $ex);
 }
-
-
-
