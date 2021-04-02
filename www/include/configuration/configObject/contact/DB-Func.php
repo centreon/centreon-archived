@@ -1107,27 +1107,23 @@ function sanitizeFormContactParameters(array $ret): array
                 ];
                 break;
             case 'contact_hostNotifOpts':
-                $bindParams[':contact_host_notification_options'] = [
-                    \PDO::PARAM_STR => (($inputValue = filter_var(
-                        implode(",", array_keys($inputValue)),
-                        FILTER_SANITIZE_STRING
-                    )) === false)
-                        ? null
-                        : $inputValue
-                ];
+                $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
+                if (empty($inputValue)) {
+                    $bindParams['contact_host_notification_options'] = null;
+                } else {
+                    $bindParams['contact_host_notification_options'] = $inputValue;
+                }
                 break;
             case 'contact_svNotifOpts':
-                $bindParams[':contact_service_notification_options'] = [
-                    \PDO::PARAM_STR => (($inputValue = filter_var(
-                        implode(",", array_keys($inputValue)),
-                        FILTER_SANITIZE_STRING
-                    )) === false)
-                        ? null
-                        : $inputValue
-                ];
+                $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
+                if (empty($inputValue)) {
+                    $bindParams['contact_service_notification_options'] = null;
+                } else {
+                    $bindParams['contact_service_notification_options'] = $inputValue;
+                }
                 break;
             case 'contact_oreon':
-                 // ldap import, then force contact to be a user
+                // ldap import, then force contact to be a user
                 if (isset($_POST['contact_select']['select'])) {
                     $bindParams[':' . $inputName] = [
                         \PDO::PARAM_STR => '1'
@@ -1208,6 +1204,17 @@ function sanitizeFormContactParameters(array $ret): array
                 break;
             case 'contact_name':
             case 'contact_alias':
+                if (!empty($inputValue)) {
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    if (empty($inputValue)) {
+                        throw new \InvalidArgumentException('Bad Parameter');
+                    } else {
+                        $bindParams[$inputName] = $inputValue;
+                    }
+                }  else {
+                    throw new \InvalidArgumentException('Bad Parameter');
+                }
+                break;
             case 'contact_autologin_key':
             case 'contact_email':
             case 'contact_pager':
@@ -1221,9 +1228,7 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_address6':
                 if (!empty($inputValue)) {
                     if ($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) {
-                        $bindParams[':' . $inputName] = [
-                            \PDO::PARAM_STR => $inputValue
-                        ];
+                        $bindParams[$inputName] = $inputValue;
                     } else {
                         throw new \InvalidArgumentException('Bad Parameter');
                     }
