@@ -37,3 +37,19 @@ monitoring.metric.getServiceStatusMetrics:
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServiceStatusMetrics'
     condition: "request.attributes.get('version') >= 2.0"
+
+monitoring.metric.getMetaServicePerformanceMetrics:
+    methods: GET
+    path: /monitoring/metaservices/{metaId}/metrics/performance
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\Monitoring\MetricController::getMetaServicePerformanceMetrics'
+    condition: "request.attributes.get('version') >= 2.1"
+
+monitoring.metric.getMetaServiceStatusMetrics:
+    methods: GET
+    path: /monitoring/metaservices/{metaId}/metrics/status
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\Monitoring\MetricController::getMetaServiceStatusMetrics'
+    condition: "request.attributes.get('version') >= 2.1"

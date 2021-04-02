@@ -5,13 +5,18 @@ import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
 
-import { MemoizedListing as Listing } from '@centreon/ui';
+import {
+  MemoizedListing as Listing,
+  Severity,
+  useSnackbar,
+} from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource, SortOrder } from '../models';
+import { labelSelectAtLeastOneColumn } from '../translatedLabels';
 
 import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
@@ -19,6 +24,7 @@ import useLoadResources from './useLoadResources';
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
   const { t } = useTranslation();
+  const { showMessage } = useSnackbar();
 
   const {
     listing,
@@ -105,13 +111,26 @@ const ResourceListing = (): JSX.Element => {
     setSelectedColumnIds(defaultSelectedColumnIds);
   };
 
+  const selectColumns = (updatedColumnIds: Array<string>): void => {
+    if (updatedColumnIds.length === 0) {
+      showMessage({
+        message: t(labelSelectAtLeastOneColumn),
+        severity: Severity.warning,
+      });
+
+      return;
+    }
+
+    setSelectedColumnIds(updatedColumnIds);
+  };
+
   return (
     <Listing
       checkable
       actions={<Actions onRefresh={initAutorefreshAndLoad} />}
       loading={loading}
       columns={columns}
-      onSelectColumns={setSelectedColumnIds}
+      onSelectColumns={selectColumns}
       columnConfiguration={{
         sortable: true,
         selectedColumnIds,

@@ -177,7 +177,7 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     label: t(labelInformation),
     type: ColumnType.string,
     sortable: false,
-    width: '1fr',
+    width: 'minmax(50px, 1fr)',
     getFormattedString: pipe(
       propOr('', 'information'),
       split('\n'),

@@ -16081,6 +16081,20 @@ msgstr "Erreur lors de l'ajout d'une catégorie hôte"
 msgid "Error when adding a host group"
 msgstr "Erreur lors de l'ajout d'un groupe d'hôte"
 
+msgid "Error when searching for the meta services configurations"
+msgstr "Erreur lors de la recherche des configurations des meta services"
+
+msgid "Error when searching for the meta service configuration (%s)"
+msgstr "Erreur lors de la recherche du meta service (%s)"
+
+msgid "Calculation method provided not supported (%s)"
+msgstr "Méthode de calcul fournie non supportée (%s)"
+
+msgid "Meta Service linked to service %d not found"
+msgstr "Meta Service lié au service %d non trouvé"
+
+msgid "Host meta for meta %d not found"
+msgstr "Hôte lié au meta %d non trouvé"
 msgid "Forward"
 msgstr "En avant"
 
@@ -16108,8 +16122,14 @@ msgstr "Notifications activées"
 msgid "Notifications disabled"
 msgstr "Notifications désactivées"
 
-msgid "Checks disabled"
-msgstr "Contrôles désactivés"
+msgid "All checks are disabled"
+msgstr "Tous les contrôles sont désactivés"
+
+msgid "Only passive checks are enabled"
+msgstr "Seulement les contrôles passifs sont activés"
 
 msgid "Mandatory data to create the entity '%s' is missing"
 msgstr "Les données obligatoires pour créer l'entité '%s' sont manquantes"
+
+msgid "At least one column must be selected"
+msgstr "Au moins une colonne doit être sélectionnée"

@@ -29,7 +29,7 @@ use Centreon\Domain\MonitoringServer\UseCase\RealTimeMonitoringServer\FindRealTi
 use Tests\Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServerTest;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory
+ * @package Tests\Centreon\Domain\MonitoringServer\UseCase
  */
 class FindRealTimeMonitoringServersTest extends TestCase
 {
