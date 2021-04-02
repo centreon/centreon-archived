@@ -72,6 +72,7 @@ interface Props {
   resourceDetailsUpdated?: boolean;
   displayEventAnnotations?: boolean;
   displayTooltipValues?: boolean;
+  isInTooltip?: boolean;
 }
 
 interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
@@ -143,6 +144,7 @@ const PerformanceGraph = ({
   resourceDetailsUpdated = true,
   displayEventAnnotations = false,
   displayTooltipValues = false,
+  isInTooltip = false,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     graphHeight,
@@ -307,19 +309,21 @@ const PerformanceGraph = ({
             {title}
           </Typography>
           <div className={classes.exportToPngButton}>
-            <ContentWithCircularLoading
-              loading={exporting}
-              loadingIndicatorSize={16}
-              alignCenter={false}
-            >
-              <IconButton
-                disabled={isNil(timeline)}
-                title={t(labelExportToPng)}
-                onClick={convertToPng}
+            {not(isInTooltip) && (
+              <ContentWithCircularLoading
+                loading={exporting}
+                loadingIndicatorSize={16}
+                alignCenter={false}
               >
-                <SaveAsImageIcon style={{ fontSize: 18 }} />
-              </IconButton>
-            </ContentWithCircularLoading>
+                <IconButton
+                  disabled={isNil(timeline)}
+                  title={t(labelExportToPng)}
+                  onClick={convertToPng}
+                >
+                  <SaveAsImageIcon style={{ fontSize: 18 }} />
+                </IconButton>
+              </ContentWithCircularLoading>
+            )}
           </div>
         </div>
 
