@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     gridGap: theme.spacing(1),
     overflow: 'hidden',
   },
-  resource: {
+  iconValuePair: {
     display: 'flex',
     gridGap: theme.spacing(1),
     flexDirection: 'row',
@@ -64,7 +64,7 @@ const Metrics = ({
             <div className={classes.card}>
               <Typography variant="subtitle1">{name}</Typography>
               <div className={classes.resources}>
-                <div className={classes.resource}>
+                <div className={classes.iconValuePair}>
                   <ShortTypeChip
                     label={resource.parent?.short_type as string}
                   />
@@ -74,7 +74,7 @@ const Metrics = ({
                     onSelect={() => selectResource(resource.parent as Resource)}
                   />
                 </div>
-                <div className={classes.resource}>
+                <div className={classes.iconValuePair}>
                   <ShortTypeChip label={resource.short_type as string} />
                   <SelectableResourceName
                     variant="body2"
@@ -83,7 +83,7 @@ const Metrics = ({
                   />
                 </div>
               </div>
-              <div className={classes.resource}>
+              <div className={classes.iconValuePair}>
                 <ShowChartOutlinedIcon color="primary" />
                 <Typography>{`${value} (${unit})`}</Typography>
               </div>
