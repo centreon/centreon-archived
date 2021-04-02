@@ -1,19 +1,26 @@
 import * as React from 'react';
 
-import { Typography } from '@material-ui/core';
+import { makeStyles, Typography, TypographyVariant } from '@material-ui/core';
+
+const useStyles = makeStyles(() => ({
+  name: { cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis' },
+}));
 
 interface Props {
   name: string;
   onSelect: () => void;
+  variant?: TypographyVariant;
 }
 
-const SelectableResourceName = ({ name, onSelect }: Props): JSX.Element => {
+const SelectableResourceName = ({
+  name,
+  onSelect,
+  variant = 'body1',
+}: Props): JSX.Element => {
+  const classes = useStyles();
+
   return (
-    <Typography
-      variant="body1"
-      onClick={onSelect}
-      style={{ cursor: 'pointer' }}
-    >
+    <Typography className={classes.name} variant={variant} onClick={onSelect}>
       {name}
     </Typography>
   );

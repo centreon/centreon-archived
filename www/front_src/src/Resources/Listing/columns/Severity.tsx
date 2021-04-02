@@ -1,26 +1,15 @@
 import * as React from 'react';
 
-import { ComponentColumnProps, SeverityCode, StatusChip } from '@centreon/ui';
+import { ComponentColumnProps } from '@centreon/ui';
 
-import { useColumnStyles } from '.';
+import ShortTypeChip from '../../ShortTypeChip';
 
 const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
-  const classes = useColumnStyles();
-
   if (!row.severity_level) {
     return null;
   }
 
-  return (
-    <StatusChip
-      label={row.severity_level?.toString()}
-      severityCode={SeverityCode.None}
-      classes={{
-        root: classes.extraSmallChipContainer,
-        label: classes.smallChipLabel,
-      }}
-    />
-  );
+  return <ShortTypeChip label={row.severity_level?.toString()} />;
 };
 
 export default SeverityColumn;

@@ -2,6 +2,8 @@ import { ListingModel } from '@centreon/ui';
 
 export type ResourceType = 'host' | 'service' | 'metaservice';
 
+export type ResourceShortType = 'h' | 's' | 'm';
+
 export interface NamedEntity {
   uuid: string;
   id: number;
@@ -13,15 +15,7 @@ export interface Icon {
   name: string;
 }
 
-type ParentLinks = Pick<ResourceLinks, 'uris'>;
-
-export interface Parent extends NamedEntity {
-  icon?: Icon;
-  status?: Status;
-  links?: ParentLinks;
-  type: ResourceType;
-}
-
+export type Parent = Omit<Resource, 'parent'>;
 export interface Status {
   severity_code: number;
   name: string;
@@ -39,7 +33,7 @@ export interface Resource extends NamedEntity {
   last_check?: string;
   information?: string;
   severity_level?: number;
-  short_type: 'h' | 's' | 'm';
+  short_type: ResourceShortType;
   type: ResourceType;
   passive_checks?: boolean;
   active_checks?: boolean;

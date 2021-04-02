@@ -6,11 +6,11 @@ import { equals, last } from 'ramda';
 import { makeStyles, Typography } from '@material-ui/core';
 import ShowChartOutlinedIcon from '@material-ui/icons/ShowChartOutlined';
 
-import { SeverityCode, StatusChip } from '@centreon/ui';
-
 import { ResourceContext } from '../../../Context';
 import Card from '../Details/Card';
 import SelectableResourceName from '../Details/SelectableResourceName';
+import { Resource } from '../../../models';
+import ShortTypeChip from '../../../ShortTypeChip';
 
 import { MetaServiceMetric } from './models';
 
@@ -23,10 +23,16 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridColumnGap: theme.spacing(2.5),
     alignItems: 'center',
-    gridTemplateColumns: '1fr auto auto',
+    gridTemplateColumns: '1fr auto auto auto',
     width: '100%',
   },
-  service: {
+  resources: {
+    display: 'flex',
+    flexDirection: 'column',
+    gridGap: theme.spacing(1),
+    overflow: 'hidden',
+  },
+  resource: {
     display: 'flex',
     gridGap: theme.spacing(1),
     flexDirection: 'row',
@@ -57,17 +63,27 @@ const Metrics = ({
           <Card key={id}>
             <div className={classes.card}>
               <Typography variant="subtitle1">{name}</Typography>
-              <div className={classes.service}>
-                <StatusChip
-                  label={resource.short_type}
-                  severityCode={SeverityCode.None}
-                />
-                <SelectableResourceName
-                  name={resource.name}
-                  onSelect={() => selectResource(resource)}
-                />
+              <div className={classes.resources}>
+                <div className={classes.resource}>
+                  <ShortTypeChip
+                    label={resource.parent?.short_type as string}
+                  />
+                  <SelectableResourceName
+                    name={resource.parent?.name as string}
+                    variant="body2"
+                    onSelect={() => selectResource(resource.parent as Resource)}
+                  />
+                </div>
+                <div className={classes.resource}>
+                  <ShortTypeChip label={resource.short_type as string} />
+                  <SelectableResourceName
+                    variant="body2"
+                    name={resource.name}
+                    onSelect={() => selectResource(resource)}
+                  />
+                </div>
               </div>
-              <div className={classes.service}>
+              <div className={classes.resource}>
                 <ShowChartOutlinedIcon color="primary" />
                 <Typography>{`${value} (${unit})`}</Typography>
               </div>
