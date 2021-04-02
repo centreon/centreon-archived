@@ -2336,3 +2336,12 @@ function getDuplicateNumberOption()
         return [];
     }
 }
+
+function isNotEmptyAfterStringSanitize($test): bool
+{
+    if (empty(filter_var($test, FILTER_SANITIZE_STRING))) {
+        return false;
+    } else {
+        return true;
+    }
+}

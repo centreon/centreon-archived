@@ -39,9 +39,9 @@ import {
   labelLastCheck,
   labelCurrentNotificationNumber,
   labelPerformanceData,
-  label7D,
-  label1D,
-  label31D,
+  label7Days,
+  label1Day,
+  label31Days,
   labelCopy,
   labelCommand,
   labelResourceFlapping,
@@ -63,7 +63,6 @@ import {
   labelDowntime,
   labelDisplayEvents,
   labelStartDate,
-  labelEndDate,
   labelForward,
   labelBackward,
   labelEndDateGreaterThanStartDate,
@@ -71,6 +70,7 @@ import {
   labelMin,
   labelMax,
   labelAvg,
+  labelCompactTimePeriod,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -501,9 +501,9 @@ describe(Details, () => {
   });
 
   it.each([
-    [label1D, '2020-01-20T06:00:00.000Z', 20, undefined],
-    [label7D, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
-    [label31D, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
+    [label1Day, '2020-01-20T06:00:00.000Z', 20, undefined],
+    [label7Days, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
+    [label31Days, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
   ])(
     `queries performance graphs and timelines with %p period when the Graph tab is selected`,
     async (period, startIsoString, timelineEventsLimit, periodId) => {
@@ -1074,8 +1074,8 @@ describe(Details, () => {
 
     expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
-    userEvent.click(head(getAllByText(label1D)) as HTMLElement);
-    userEvent.click(last(getAllByText(label7D)) as HTMLElement);
+    userEvent.click(head(getAllByText(label1Day)) as HTMLElement);
+    userEvent.click(last(getAllByText(label7Days)) as HTMLElement);
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(5);
@@ -1108,6 +1108,8 @@ describe(Details, () => {
         cancelTokenRequestParam,
       );
     });
+
+    userEvent.click(getByLabelText(labelCompactTimePeriod));
 
     const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
       ?.firstChild;
@@ -1159,7 +1161,7 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByLabelText, getByText } = renderDetails({
+    const { getByText } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -1174,19 +1176,13 @@ describe(Details, () => {
       );
     });
 
-    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
-      ?.firstChild;
+    expect(getByText('01/20/2020 7:00 AM')).toBeInTheDocument();
+    expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
 
-    const endDateInput = getByLabelText(labelEndDate).firstChild?.firstChild
-      ?.firstChild;
+    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
 
-    expect(startDateInput).toHaveValue('01/20/2020 7:00 AM');
-    expect(endDateInput).toHaveValue('01/21/2020 7:00 AM');
-
-    userEvent.click(getByText(label7D).parentElement as HTMLElement);
-
-    expect(startDateInput).toHaveValue('01/14/2020 7:00 AM');
-    expect(endDateInput).toHaveValue('01/21/2020 7:00 AM');
+    expect(getByText('01/14/2020 7:00 AM')).toBeInTheDocument();
+    expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1219,19 +1215,14 @@ describe(Details, () => {
       );
     });
 
+    userEvent.click(getByLabelText(labelCompactTimePeriod));
+
     const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
       ?.firstChild;
 
     userEvent.click(startDateInput as Element);
 
-    await waitFor(() => {
-      expect(getByText(/^21$/)).toBeInTheDocument();
-    });
-
-    userEvent.click(
-      getByText(/^21$/).parentElement?.parentElement as HTMLElement,
-    );
-
+    fireEvent.keyDown(container, { key: 'ArrowRight', code: 37 });
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
 
     expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();

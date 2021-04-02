@@ -15,11 +15,12 @@ const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
     }
 
     public date(value): dayjs.Dayjs {
-      return dayjs(value).locale(locale).tz(timezone);
+      // We wrap the dayjs + timezone instance with dayjs to avoid some infinite state update from Material Picker inputs
+      return dayjs(dayjs(value).locale(locale).tz(timezone));
     }
 
     public startOfMonth(date: dayjs.Dayjs) {
-      return date;
+      return dayjs(date.tz()).startOf('month');
     }
   }
 

@@ -84,14 +84,14 @@ const GraphTabContent = ({
   });
 
   return (
-    <div className={classes.container}>
-      <TimePeriodButtonGroup
-        selectedTimePeriodId={selectedTimePeriod?.id}
-        onChange={changeSelectedTimePeriod}
-        customTimePeriod={customTimePeriod}
-        changeCustomTimePeriod={changeCustomTimePeriod}
-      />
-      <GraphOptionsContext.Provider value={graphOptions}>
+    <GraphOptionsContext.Provider value={graphOptions}>
+      <div className={classes.container}>
+        <TimePeriodButtonGroup
+          selectedTimePeriodId={selectedTimePeriod?.id}
+          onChange={changeSelectedTimePeriod}
+          customTimePeriod={customTimePeriod}
+          changeCustomTimePeriod={changeCustomTimePeriod}
+        />
         <ExportablePerformanceGraphWithTimeline
           resource={details}
           graphHeight={280}
@@ -102,8 +102,8 @@ const GraphTabContent = ({
           adjustTimePeriod={adjustTimePeriod}
           resourceDetailsUpdated={resourceDetailsUpdated}
         />
-      </GraphOptionsContext.Provider>
-    </div>
+      </div>
+    </GraphOptionsContext.Provider>
   );
 };
 
