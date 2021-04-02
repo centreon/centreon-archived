@@ -20,7 +20,7 @@ const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
     }
 
     public startOfMonth(date: dayjs.Dayjs) {
-      return date;
+      return dayjs(date.tz()).startOf('month');
     }
   }
 

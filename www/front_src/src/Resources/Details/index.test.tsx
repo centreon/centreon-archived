@@ -1215,14 +1215,7 @@ describe(Details, () => {
 
     userEvent.click(startDateInput as Element);
 
-    await waitFor(() => {
-      expect(getByText(/^21$/)).toBeInTheDocument();
-    });
-
-    userEvent.click(
-      getByText(/^21$/).parentElement?.parentElement as HTMLElement,
-    );
-
+    fireEvent.keyDown(container, { key: 'ArrowRight', code: 37 });
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
 
     expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
