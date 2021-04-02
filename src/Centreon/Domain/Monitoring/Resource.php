@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use DateTime;
 use CentreonDuration;
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Downtime\Downtime;
@@ -46,14 +45,17 @@ class Resource
     // Groups for validation
     public const VALIDATION_GROUP_ACK_HOST = ['ack_host'];
     public const VALIDATION_GROUP_ACK_SERVICE = ['ack_service'];
+    public const VALIDATION_GROUP_ACK_META = ['ack_meta'];
     public const VALIDATION_GROUP_DISACK_HOST = ['disack_host'];
     public const VALIDATION_GROUP_DISACK_SERVICE = ['disack_service'];
     public const VALIDATION_GROUP_DOWNTIME_HOST = ['downtime_host'];
+    public const VALIDATION_GROUP_DOWNTIME_META = ['downtime_meta'];
     public const VALIDATION_GROUP_DOWNTIME_SERVICE = ['downtime_service'];
 
     // Types
     public const TYPE_SERVICE = 'service';
     public const TYPE_HOST = 'host';
+    public const TYPE_META = 'metaservice';
 
     /**
      * @var int|null
@@ -81,6 +83,16 @@ class Resource
     private $fqdn;
 
     /**
+     * @var int|null
+     */
+    private $hostId;
+
+    /**
+     * @var int|null
+     */
+    private $serviceId;
+
+    /**
      * @var \Centreon\Domain\Monitoring\Icon|null
      */
     private $icon;
@@ -91,7 +103,7 @@ class Resource
     protected $commandLine;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $monitoringServerName;
 
@@ -228,7 +240,14 @@ class Resource
     private $groups = [];
 
     /**
-     * Groups to which belongs the resource
+     * Calculation type of the Resource
+     *
+     * @var string|null
+     */
+    private $calculationType;
+
+    /*
+     * Indicates if notifications are enabled for the Resource
      *
      * @var bool
      */
@@ -381,6 +400,44 @@ class Resource
     }
 
     /**
+     * @return int|null
+     */
+    public function getHostId(): ?int
+    {
+        return $this->hostId;
+    }
+
+    /**
+     * @param int|null $hostId
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setHostId(?int $hostId): self
+    {
+        $this->hostId = $hostId;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getServiceId(): ?int
+    {
+        return $this->serviceId;
+    }
+
+    /**
+     * @param int|null $serviceId
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setServiceId(?int $serviceId): self
+    {
+        $this->serviceId = $serviceId;
+
+        return $this;
+    }
+
+    /**
      * @param string|null $fqdn
      * @return \Centreon\Domain\Monitoring\Resource
      */
@@ -437,10 +494,10 @@ class Resource
     }
 
    /**
-     * @param string $monitoringServerName
+     * @param string|null $monitoringServerName
      * @return self
      */
-    public function setMonitoringServerName(string $monitoringServerName): self
+    public function setMonitoringServerName(?string $monitoringServerName): self
     {
         $this->monitoringServerName = $monitoringServerName;
         return $this;
@@ -699,7 +756,7 @@ class Resource
     /**
      * @return \DateTime|null
      */
-    public function getLastStatusChange(): ?DateTime
+    public function getLastStatusChange(): ?\DateTime
     {
         return $this->lastStatusChange;
     }
@@ -708,7 +765,7 @@ class Resource
      * @param \DateTime|null $lastStatusChange
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setLastStatusChange(?DateTime $lastStatusChange): self
+    public function setLastStatusChange(?\DateTime $lastStatusChange): self
     {
         $this->lastStatusChange = $lastStatusChange;
 
@@ -773,7 +830,7 @@ class Resource
     /**
      * @return \DateTime|null
      */
-    public function getLastCheck(): ?DateTime
+    public function getLastCheck(): ?\DateTime
     {
         return $this->lastCheck;
     }
@@ -782,7 +839,7 @@ class Resource
      * @param \DateTime|null $lastCheck
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setLastCheck(?DateTime $lastCheck): self
+    public function setLastCheck(?\DateTime $lastCheck): self
     {
         $this->lastCheck = $lastCheck;
 
@@ -792,7 +849,7 @@ class Resource
     /**
      * @return \DateTime|null
      */
-    public function getNextCheck(): ?DateTime
+    public function getNextCheck(): ?\DateTime
     {
         return $this->nextCheck;
     }
@@ -801,7 +858,7 @@ class Resource
      * @param \DateTime|null $nextCheck
      * @return \Centreon\Domain\Monitoring\Resource
      */
-    public function setNextCheck(?DateTime $nextCheck): self
+    public function setNextCheck(?\DateTime $nextCheck): self
     {
         $this->nextCheck = $nextCheck;
 
@@ -948,6 +1005,24 @@ class Resource
     }
 
     /**
+     * @param string|null $calculationType
+     * @return self
+     */
+    public function setCalculationType(?string $calculationType): self
+    {
+        $this->calculationType = $calculationType;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCalculationType(): ?string
+    {
+        return $this->calculationType;
+    }
+
+    /*
      * @return boolean
      */
     public function isNotificationEnabled(): bool

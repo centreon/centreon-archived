@@ -210,6 +210,14 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
+    public function findOneServiceByDescription(string $description): ?Service
+    {
+        return $this->monitoringRepository->findOneServiceByDescription($description);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findServiceGroups(bool $withHosts = false, bool $withServices = false): array
     {
         // Find hosts groups only

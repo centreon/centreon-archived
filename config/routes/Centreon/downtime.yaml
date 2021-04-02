@@ -22,6 +22,14 @@ monitoring.downtime.addServiceDowntime:
     controller: 'Centreon\Application\Controller\DowntimeController::addServiceDowntime'
     condition: "request.attributes.get('version.is_beta') == true"
 
+monitoring.downtime.addMetaServiceDowntime:
+    methods: POST
+    path: /monitoring/metaservices/{metaId}/downtimes
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\DowntimeController::addMetaServiceDowntime'
+    condition: "request.attributes.get('version') >= 2.1"
+
 monitoring.downtime.findHostDowntimes:
     methods: GET
     path: /monitoring/hosts/downtimes
@@ -41,6 +49,14 @@ monitoring.downtime.findDowntimesByService:
         hostId: '\d+'
     controller: 'Centreon\Application\Controller\DowntimeController::findDowntimesByService'
     condition: "request.attributes.get('version.is_beta') == true"
+
+monitoring.downtime.findDowntimesByMetaService:
+    methods: GET
+    path: /monitoring/metaservices/{metaId}/downtimes
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\DowntimeController::findDowntimesByMetaService'
+    condition: "request.attributes.get('version') >= 2.1"
 
 monitoring.downtime.findOneDowntime:
     methods: GET
