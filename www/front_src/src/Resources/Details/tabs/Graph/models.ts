@@ -4,9 +4,6 @@ import { find, propEq } from 'ramda';
 import { timeFormat, dateFormat } from '@centreon/ui';
 
 import {
-  label1D,
-  label7D,
-  label31D,
   label31Days,
   labelLast31Days,
   label7Days,
@@ -19,7 +16,6 @@ export type TimePeriodId = 'last_24_h' | 'last_7_days' | 'last_31_days';
 
 export interface TimePeriod {
   id: TimePeriodId;
-  compactName: string;
   name: string;
   largeName: string;
   getStart: () => Date;
@@ -49,8 +45,7 @@ export interface ChangeCustomTimePeriodProps {
   property: CustomTimePeriodProperty;
 }
 
-const last24hPeriod: TimePeriod = {
-  compactName: label1D,
+const lastDayPeriod: TimePeriod = {
   name: label1Day,
   largeName: labelLastDay,
   id: 'last_24_h',
@@ -60,7 +55,6 @@ const last24hPeriod: TimePeriod = {
 };
 
 const last7Days: TimePeriod = {
-  compactName: label7D,
   name: label7Days,
   largeName: labelLast7Days,
   id: 'last_7_days',
@@ -70,7 +64,6 @@ const last7Days: TimePeriod = {
 };
 
 const last31Days: TimePeriod = {
-  compactName: label31D,
   name: label31Days,
   largeName: labelLast31Days,
   id: 'last_31_days',
@@ -79,9 +72,9 @@ const last31Days: TimePeriod = {
   timelineEventsLimit: 500,
 };
 
-const timePeriods: Array<TimePeriod> = [last24hPeriod, last7Days, last31Days];
+const timePeriods: Array<TimePeriod> = [lastDayPeriod, last7Days, last31Days];
 
 const getTimePeriodById = (id: TimePeriodId): TimePeriod =>
   find<TimePeriod>(propEq('id', id))(timePeriods) as TimePeriod;
 
-export { timePeriods, getTimePeriodById, last24hPeriod, last7Days, last31Days };
+export { timePeriods, getTimePeriodById, lastDayPeriod, last7Days, last31Days };

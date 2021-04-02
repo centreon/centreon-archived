@@ -46,9 +46,6 @@ export const labelHost = 'Host';
 export const labelHostGroup = 'Host group';
 export const labelDowntime = 'Downtime';
 export const labelInDowntime = 'In downtime';
-export const label1D = '1 D';
-export const label7D = '7 D';
-export const label31D = '31 D';
 export const label1Day = '1 day';
 export const label7Days = '7 days';
 export const label31Days = '31 days';
@@ -201,6 +198,7 @@ export const labelBackward = 'Backward';
 export const labelEndDateGreaterThanStartDate =
   'The end date must be greater than the start date';
 export const labelGraphOptions = 'Graph options';
+export const labelCompactTimePeriod = 'Compact time period';
 export const labelDisplayTooltips = 'Display metric values tooltip';
 export const labelAction = 'Action';
 export const labelNotes = 'Notes';

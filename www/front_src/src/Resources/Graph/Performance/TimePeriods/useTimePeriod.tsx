@@ -7,7 +7,7 @@ import duration from 'dayjs/plugin/duration';
 import { dateFormat, timeFormat } from '@centreon/ui';
 
 import {
-  last24hPeriod,
+  lastDayPeriod,
   TimePeriod,
   getTimePeriodById,
   TimePeriodId,
@@ -69,7 +69,7 @@ const useTimePeriod = ({
     [
       (timePeriodId) =>
         and(isNil(timePeriodId), isNil(defaultSelectedCustomTimePeriod)),
-      always(last24hPeriod),
+      always(lastDayPeriod),
     ],
     [
       pipe(isNil, not),
