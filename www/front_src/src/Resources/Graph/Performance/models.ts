@@ -44,12 +44,12 @@ export interface Line {
   legend: string | null;
 }
 
-export enum GraphOptionId {
-  displayTooltips = 'displayTooltips',
-  displayEvents = 'displayEvents',
-}
-
 export interface AdjustTimePeriodProps {
   start: Date;
   end: Date;
+}
+
+export enum GraphOptionId {
+  displayTooltips = 'displayTooltips',
+  displayEvents = 'displayEvents',
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { always, cond, lte, map, pick, T } from 'ramda';
+import { always, cond, lt, lte, map, pick, T } from 'ramda';
 import { ParentSize } from '@visx/visx';
 
 import {
@@ -19,6 +19,7 @@ import {
   TimePeriodId,
   timePeriods,
 } from '../../../Details/tabs/Graph/models';
+import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
 
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
@@ -26,9 +27,10 @@ const useStyles = makeStyles((theme) => ({
   header: {
     padding: theme.spacing(1, 0.5),
     display: 'grid',
-    gridTemplateColumns: `repeat(2, auto)`,
+    gridTemplateColumns: `repeat(3, auto)`,
     columnGap: `${theme.spacing(2)}px`,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonGroup: {
     alignSelf: 'center',
@@ -46,10 +48,7 @@ interface Props {
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
 }
 
-const timePeriodOptions = map(
-  pick(['id', 'name', 'compactName', 'largeName']),
-  timePeriods,
-);
+const timePeriodOptions = map(pick(['id', 'name', 'largeName']), timePeriods);
 
 const TimePeriodButtonGroup = ({
   selectedTimePeriodId,
@@ -65,7 +64,6 @@ const TimePeriodButtonGroup = ({
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,
     name: t(timePeriod.name),
-    compactName: t(timePeriod.compactName),
     largeName: t(timePeriod.largeName),
   }));
 
@@ -75,6 +73,7 @@ const TimePeriodButtonGroup = ({
   return (
     <ParentSize>
       {({ width }) => {
+        const isCompact = lt(width, theme.breakpoints.values.sm);
         return (
           <Paper className={classes.header}>
             <ButtonGroup
@@ -85,7 +84,7 @@ const TimePeriodButtonGroup = ({
               component="span"
             >
               {map(
-                ({ id, name, compactName, largeName }) => (
+                ({ id, name, largeName }) => (
                   <Tooltip key={name} title={largeName} placement="top">
                     <Button
                       onClick={() => onChange(id)}
@@ -97,8 +96,7 @@ const TimePeriodButtonGroup = ({
                     >
                       {cond<number, string>([
                         [lte(theme.breakpoints.values.md), always(largeName)],
-                        [lte(theme.breakpoints.values.sm), always(name)],
-                        [T, always(compactName)],
+                        [T, always(name)],
                       ])(width)}
                     </Button>
                   </Tooltip>
@@ -109,7 +107,9 @@ const TimePeriodButtonGroup = ({
             <CustomTimePeriodPickers
               customTimePeriod={customTimePeriod}
               acceptDate={changeDate}
+              isCompact={isCompact}
             />
+            <GraphOptions />
           </Paper>
         );
       }}

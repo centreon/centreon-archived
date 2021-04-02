@@ -15327,15 +15327,6 @@ msgstr "Plannifier une plage de maintenance"
 msgid "In downtime"
 msgstr "En plage de maintenance"
 
-msgid "1 D"
-msgstr "1 J"
-
-msgid "7 D"
-msgstr "7 J"
-
-msgid "31 D"
-msgstr "31 J"
-
 msgid "1 day"
 msgstr "1 jour"
 
@@ -16121,6 +16112,12 @@ msgstr "Afficher l’info-bulle des valeurs de métriques"
 
 msgid "Check duration"
 msgstr "Temps d'exécution"
+
+msgid "Compact time period"
+msgstr "Période de temps compacte"
+
+msgid "Notifications enabled"
+msgstr "Notifications activées"
 
 msgid "Notifications disabled"
 msgstr "Notifications désactivées"

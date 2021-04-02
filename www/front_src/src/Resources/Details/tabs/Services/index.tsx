@@ -202,31 +202,31 @@ const ServicesTabContent = ({
       >
         {switchIcon}
       </IconButton>
-      <InfiniteScroll<Resource>
-        preventReloadWhen={details?.type === 'service'}
-        sendListingRequest={sendListingRequest}
-        details={details}
-        loadingSkeleton={<LoadingSkeleton />}
-        filter={
-          graphMode ? (
-            <TimePeriodButtonGroup
-              selectedTimePeriodId={selectedTimePeriod?.id}
-              onChange={changeSelectedTimePeriod}
-              disabled={loading}
-              customTimePeriod={customTimePeriod}
-              changeCustomTimePeriod={changeCustomTimePeriod}
-            />
-          ) : undefined
-        }
-        reloadDependencies={[graphMode]}
-        loading={sending}
-        limit={limit}
-      >
-        {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
-          const displayGraphs = graphMode && canDisplayGraphs;
+      <GraphOptionsContext.Provider value={graphOptions}>
+        <InfiniteScroll<Resource>
+          preventReloadWhen={details?.type === 'service'}
+          sendListingRequest={sendListingRequest}
+          details={details}
+          loadingSkeleton={<LoadingSkeleton />}
+          filter={
+            graphMode ? (
+              <TimePeriodButtonGroup
+                selectedTimePeriodId={selectedTimePeriod?.id}
+                onChange={changeSelectedTimePeriod}
+                disabled={loading}
+                customTimePeriod={customTimePeriod}
+                changeCustomTimePeriod={changeCustomTimePeriod}
+              />
+            ) : undefined
+          }
+          reloadDependencies={[graphMode]}
+          loading={sending}
+          limit={limit}
+        >
+          {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
+            const displayGraphs = graphMode && canDisplayGraphs;
 
-          return displayGraphs ? (
-            <GraphOptionsContext.Provider value={graphOptions}>
+            return displayGraphs ? (
               <ServiceGraphs
                 services={entities}
                 infiniteScrollTriggerRef={infiniteScrollTriggerRef}
@@ -237,16 +237,16 @@ const ServicesTabContent = ({
                 adjustTimePeriod={adjustTimePeriod}
                 resourceDetailsUpdated={resourceDetailsUpdated}
               />
-            </GraphOptionsContext.Provider>
-          ) : (
-            <ServiceList
-              services={entities}
-              onSelectService={selectService}
-              infiniteScrollTriggerRef={infiniteScrollTriggerRef}
-            />
-          );
-        }}
-      </InfiniteScroll>
+            ) : (
+              <ServiceList
+                services={entities}
+                onSelectService={selectService}
+                infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+              />
+            );
+          }}
+        </InfiniteScroll>
+      </GraphOptionsContext.Provider>
     </>
   );
 };
