@@ -21,10 +21,11 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     display: 'grid',
-    gridColumnGap: theme.spacing(2.5),
+    gridColumnGap: theme.spacing(2),
     alignItems: 'center',
-    gridTemplateColumns: '1fr auto auto auto',
+    gridTemplateColumns: '1fr 1fr auto',
     width: '100%',
+    justifyItems: 'flex-start',
   },
   resources: {
     display: 'flex',
@@ -62,7 +63,6 @@ const Metrics = ({
         return (
           <Card key={id}>
             <div className={classes.card}>
-              <Typography variant="subtitle1">{name}</Typography>
               <div className={classes.resources}>
                 <div className={classes.iconValuePair}>
                   <ShortTypeChip
@@ -83,6 +83,9 @@ const Metrics = ({
                   />
                 </div>
               </div>
+              <Typography align="left" variant="subtitle1">
+                {name}
+              </Typography>
               <div className={classes.iconValuePair}>
                 <ShowChartOutlinedIcon color="primary" />
                 <Typography>{`${value} (${unit})`}</Typography>
