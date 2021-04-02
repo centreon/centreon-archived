@@ -122,6 +122,8 @@ const resourceDecoder = JsonDecoder.object<Resource>(
     information: JsonDecoder.optional(JsonDecoder.string),
     severity_level: JsonDecoder.optional(JsonDecoder.number),
     passive_checks: JsonDecoder.optional(JsonDecoder.boolean),
+    active_checks: JsonDecoder.optional(JsonDecoder.boolean),
+    notification_enabled: JsonDecoder.optional(JsonDecoder.boolean),
     short_type: JsonDecoder.oneOf(
       [
         JsonDecoder.isExactly('h'),
