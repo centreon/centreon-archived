@@ -1109,17 +1109,17 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_hostNotifOpts':
                 $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                 if (empty($inputValue)) {
-                    $bindParams[':contact_host_notification_options'] = null;
+                    $bindParams[':contact_host_notification_options'] = [\PDO::PARAM_STR => null];
                 } else {
-                    $bindParams[':contact_host_notification_options'] = $inputValue;
+                    $bindParams[':contact_host_notification_options'] = [\PDO::PARAM_STR => $inputValue];
                 }
                 break;
             case 'contact_svNotifOpts':
                 $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                 if (empty($inputValue)) {
-                    $bindParams[':contact_service_notification_options'] = null;
+                    $bindParams[':contact_service_notification_options'] = [\PDO::PARAM_STR => null];
                 } else {
-                    $bindParams[':contact_service_notification_options'] = $inputValue;
+                    $bindParams[':contact_service_notification_options'] = [\PDO::PARAM_STR => $inputValue];
                 }
                 break;
             case 'contact_oreon':
@@ -1186,33 +1186,31 @@ function sanitizeFormContactParameters(array $ret): array
                 break;
             case 'contact_lang':
                 if (!empty($inputValue)) {
-                    $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === false)
-                            ? 'browser'
-                            : $inputValue
-                    ];
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    if (empty($inputValue)) {
+                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR => 'browser'];
+                    } else {
+                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
+                    }
                 }
                 break;
             case 'contact_auth_type':
                 if (!empty($inputValue)) {
-                    $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === false)
-                            ? 'local'
-                            : $inputValue
-                    ];
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    if (empty($inputValue)) {
+                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR => 'local'];
+                    } else {
+                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
+                    }
                 }
                 break;
             case 'contact_name':
             case 'contact_alias':
-                if (!empty($inputValue)) {
-                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
-                    if (empty($inputValue)) {
-                        throw new \InvalidArgumentException('Bad Parameter');
-                    } else {
-                        $bindParams[':' . $inputName] = $inputValue;
-                    }
-                }  else {
+                $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                if (empty($inputValue)) {
                     throw new \InvalidArgumentException('Bad Parameter');
+                } else {
+                    $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
                 }
                 break;
             case 'contact_autologin_key':
@@ -1228,9 +1226,7 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_address6':
                 if (!empty($inputValue)) {
                     if ($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) {
-                        $bindParams[':' . $inputName] = $inputValue;
-                    } else {
-                        throw new \InvalidArgumentException('Bad Parameter');
+                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
                     }
                 }
                 break;
