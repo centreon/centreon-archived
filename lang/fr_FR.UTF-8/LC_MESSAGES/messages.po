@@ -16122,14 +16122,17 @@ msgstr "Afficher l’info-bulle des valeurs de métriques"
 msgid "Check duration"
 msgstr "Temps d'exécution"
 
-msgid "Notifications enabled"
-msgstr "Notifications activées"
-
 msgid "Notifications disabled"
 msgstr "Notifications désactivées"
 
-msgid "Checks disabled"
-msgstr "Contrôles désactivés"
+msgid "All checks are disabled"
+msgstr "Tous les contrôles sont désactivés"
+
+msgid "Only passive checks are enabled"
+msgstr "Seulement les contrôles passifs sont activés"
 
 msgid "Mandatory data to create the entity '%s' is missing"
 msgstr "Les données obligatoires pour créer l'entité '%s' sont manquantes"
+
+msgid "At least one column must be selected"
+msgstr "Au moins une colonne doit être sélectionnée"

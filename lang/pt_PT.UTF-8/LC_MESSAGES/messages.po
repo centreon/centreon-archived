@@ -15117,23 +15117,29 @@ msgstr ""
 #  msgid "Backward"
 #  msgstr ""
 
-msgid "Graph options"
-msgstr ""
+#  msgid "Graph options"
+#  msgstr ""
 
-msgid "Display metric values tooltip"
-msgstr ""
-
-msgid "Check duration"
-msgstr ""
+#  msgid "Display metric values tooltip"
+#  msgstr ""
 
 #  msgid "Check duration"
 #  msgstr ""
 
-#  msgid "Notifications enabled"
+#  msgid "Check duration"
 #  msgstr ""
 
 #  msgid "Notifications disabled"
 #  msgstr ""
 
-#  msgid "Checks disabled"
+#  msgid "All checks are disabled"
+#  msgstr ""
+
+#  msgid "Only passive checks are enabled"
+#  msgstr ""
+
+#  msgid "Mandatory data to create the entity '%s' is missing"
+#  msgstr ""
+
+#  msgid "At least one column must be selected"
 #  msgstr ""
