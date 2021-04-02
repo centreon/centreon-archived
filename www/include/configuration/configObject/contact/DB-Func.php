@@ -978,8 +978,6 @@ function sanitizeFormContactParameters($ret)
                 if (!empty($inputValue)) {
                     if ($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) {
                         $bindParams[$inputName] = $inputValue;
-                    } else {
-                        throw new \InvalidArgumentException('Bad Parameter');
                     }
                 }
                 break;
