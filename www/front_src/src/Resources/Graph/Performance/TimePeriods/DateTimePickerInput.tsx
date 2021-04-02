@@ -50,7 +50,7 @@ const DateTimePickerInput = ({
       maxDate={maxDate}
       minDate={minDate}
       size="small"
-      disableToolbar
+      hidTabs={false}
     />
   );
 };
