@@ -75,7 +75,7 @@ import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 
-import { last7Days, last31Days } from './tabs/Graph/models';
+import { last7Days, last31Days, lastDayPeriod } from './tabs/Graph/models';
 import {
   graphTabId,
   timelineTabId,
@@ -385,6 +385,9 @@ describe(Details, () => {
     mockedAxios.get.mockReset();
     act(() => {
       context.clearSelectedResource();
+      context.setGraphTabParameters({
+        selectedTimePeriodId: lastDayPeriod.id,
+      });
     });
   });
 
@@ -1112,7 +1115,7 @@ describe(Details, () => {
     fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
     fireEvent.keyDown(container, { key: 'Enter', code: 13 });
 
-    const startISOString = '2020-01-19T06:00:00.000Z';
+    const startISOString = '2020-01-19T05:00:00.000Z';
     const endISOString = '2020-01-21T06:00:00.000Z';
 
     await waitFor(() => {
@@ -1189,36 +1192,28 @@ describe(Details, () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline })
-      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByLabelText, getByText, container } = renderDetails({
+    const { getByLabelText, getByText } = renderDetails({
       openTabId: graphTabId,
     });
 
     act(() => {
       setSelectedServiceResource();
-    });
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-        cancelTokenRequestParam,
-      );
+      context.setGraphTabParameters({
+        selectedTimePeriodId: undefined,
+        selectedCustomTimePeriod: {
+          start: '2020-01-21T06:00:00.000Z',
+          end: '2020-01-21T06:00:00.000Z',
+        },
+      });
     });
 
     userEvent.click(getByLabelText(labelCompactTimePeriod));
 
-    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
-      ?.firstChild;
-
-    userEvent.click(startDateInput as Element);
-
-    fireEvent.keyDown(container, { key: 'ArrowRight', code: 37 });
-    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
-
-    expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
+    });
   });
 
   it.each([

@@ -1,6 +1,17 @@
 import * as React from 'react';
 
-import { always, and, cond, gte, isNil, not, pipe, propOr, T } from 'ramda';
+import {
+  always,
+  and,
+  cond,
+  equals,
+  gte,
+  isNil,
+  not,
+  pipe,
+  propOr,
+  T,
+} from 'ramda';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
@@ -244,6 +255,35 @@ const useTimePeriod = ({
     setCustomTimePeriod(newTimePeriod);
     setResourceDetailsUpdated(true);
   }, [sending]);
+
+  React.useEffect(() => {
+    const newCustomTimePeriod = getNewCustomTimePeriod({
+      start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
+      end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
+    });
+    if (
+      isNil(defaultSelectedCustomTimePeriod) ||
+      (equals(newCustomTimePeriod.start, customTimePeriod.start) &&
+        equals(newCustomTimePeriod.end, customTimePeriod.end))
+    ) {
+      return;
+    }
+
+    setCustomTimePeriod(newCustomTimePeriod);
+  }, [defaultSelectedCustomTimePeriod]);
+
+  React.useEffect(() => {
+    if (
+      isNil(defaultSelectedTimePeriodId) ||
+      equals(defaultSelectedTimePeriodId, selectedTimePeriod?.id)
+    ) {
+      return;
+    }
+
+    setSelectedTimePeriod(
+      getTimePeriodById(defaultSelectedTimePeriodId as TimePeriodId),
+    );
+  }, [defaultSelectedCustomTimePeriod]);
 
   return {
     changeSelectedTimePeriod,
