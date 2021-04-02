@@ -62,7 +62,6 @@ import {
   labelSwitchToGraph,
   labelDowntime,
   labelDisplayEvents,
-  labelStartDate,
   labelForward,
   labelBackward,
   labelEndDateGreaterThanStartDate,
