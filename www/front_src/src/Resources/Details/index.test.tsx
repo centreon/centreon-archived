@@ -67,6 +67,9 @@ import {
   labelBackward,
   labelEndDateGreaterThanStartDate,
   labelGraphOptions,
+  labelMin,
+  labelMax,
+  labelAvg,
   labelCompactTimePeriod,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
@@ -195,6 +198,10 @@ const retrievedPerformanceGraphData = {
         ds_filled: false,
         ds_color_area: 'transparent',
         ds_transparency: 80,
+        ds_legend: 'Round-Trip-Time Average',
+        ds_average: '1234',
+        ds_min: null,
+        ds_max: '2456',
       },
       metric: 'rta',
       unit: 'ms',
@@ -1282,4 +1289,33 @@ describe(Details, () => {
       });
     },
   );
+
+  it('displays Min, Max and Average values in the legend when the Graph tab is selected', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+      .mockResolvedValueOnce({ data: retrievedTimeline });
+
+    const { getByLabelText, getByText } = renderDetails({
+      openTabId: graphTabId,
+    });
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
+        cancelTokenRequestParam,
+      );
+    });
+
+    expect(getByLabelText(labelMin)).toBeInTheDocument();
+    expect(getByText('N/A')).toBeInTheDocument();
+    expect(getByLabelText(labelMax)).toBeInTheDocument();
+    expect(getByText('2.46k')).toBeInTheDocument();
+    expect(getByLabelText(labelAvg)).toBeInTheDocument();
+    expect(getByText('1.23k')).toBeInTheDocument();
+  });
 });
