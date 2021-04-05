@@ -16,6 +16,7 @@ version=${ENV_CENTREON_VERSION:-"21.04"}       #Default version to be installed
 repo=${ENV_CENTREON_REPO:-"stable"}            #Default repository to used
 operation=${ENV_CENTREON_OPERATION:-"install"} #Default operation to be executed
 runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}     #Default log level to be used
+selinux_mode=${ENV_SELINUX_MODE:-"permissive"} #Default SELinux mode to be used
 
 #Generate random MariaDB root password
 mariadb_root_password=$(
@@ -53,16 +54,13 @@ function usage() {
 	echo
 	echo "Usage :"
 	echo
-	echo " $script_short_name [install|upgrade (default: install)] [-t <central|poller> (default: central)] [-v <20.10> (default: 20.10)] [-r <stable|testing|unstable> (default: stable)] [-l <DEBUG|INFO|WARN|ERROR>"
+	echo " $script_short_name [install|upgrade (default: install)] [-t <central|poller> (default: central)] [-v <21.04> (default: 21.04)] [-r <stable|testing|unstable> (default: stable)] [-l <DEBUG|INFO|WARN|ERROR>"
 	echo
 	echo Example:
+	echo
 	echo " $script_short_name == install the $version of $topology from the repository $repo"
 	echo
-	echo " $script_short_name install poller == install the $version of poller from the repository $repo"
-	echo
-	echo " $script_short_name upgrade -t central -r unstable == upgrade the central to the $version from the unstable repository"
-	echo
-	echo " $script_short_name upgrade --type central -v 20.10 == upgrade the central to the 20.10 from the stable repository"
+	echo " $script_short_name install -r unstable,testing == install the central to the $version from the unstable & testing repository"
 	echo
 	exit 1
 }
@@ -140,9 +138,7 @@ function parse_subcommand_options() {
 			requested_repo=$OPTARG
 			log "INFO" "Requested repository : '$requested_repo'"
 
-			[[ ! ${SUPPORTED_REPOSITORY[$requested_repo]} ]] &&
-				log "ERROR" "Unsupported repository : $requested_repo" &&
-				usage
+			set_centreon_repos $requested_repo
 			;;
 
 		l)
@@ -199,26 +195,6 @@ function error_and_exit() {
 }
 #========= end of function error_and_exit()
 
-#========= begin of function print_step_begin()
-# display the starting message of a step
-#
-function print_step_begin() {
-	log "INFO" "$1..."
-}
-#========= end of function print_step_begin()
-
-#========= begin of function print_step_end()
-# display the result of a step
-#
-function print_step_end() {
-	if [ -z "$1" ]; then
-		log "INFO" "\tOK"
-	else
-		log "ERROR" "\t$1"
-	fi
-}
-#========= end of function print_step_end()
-
 #========= begin of function pause()
 # add pause prompt message ($1) for ($2) seconds
 #
@@ -265,6 +241,11 @@ function set_centreon_repos() {
 
 	CENTREON_REPO=""
 	for _repo in "${array_repos[@]}"; do
+
+		[[ ! ${SUPPORTED_REPOSITORY[$_repo]} ]] &&
+			log "ERROR" "Unsupported repository : $_repo" &&
+			usage
+
 		CENTREON_REPO+="centreon-$_repo*"
 		if ! [ "$_repo" == "${array_repos[@]:(-1)}" ]; then
 			CENTREON_REPO+=","
@@ -380,50 +361,84 @@ function is_systemd_present() {
 }
 #========= end of function is_systemd_present()
 
-#========= begin of function disable_selinux()
-# disable SELinux
+#========= begin of function set_selinux_config()
+# change SELinux config : $1 (permissive | enforcing | disabled)
 #
-function disable_selinux() {
+function set_selinux_config() {
 
-	print_step_begin "SELinux deactivation"
+	log "INFO" "Change SELinux config to mode [ $1 ]"
 
 	if [ -e /etc/selinux/config ]; then
-		sed -i -e 's/^SELINUX=.*$/SELINUX=disabled/' /etc/selinux/config
-	fi
-	command -v selinuxenabled >/dev/null 2>&1
+		log "WARN" "Modifying /etc/selinux/config. You must reboot your machine."
 
-	if [ "x$?" '=' x0 ]; then
-		selinuxenabled
-		if [ "x$?" '=' x0 ]; then
-			setenforce 0
-			if [ "x$?" '!=' x0 ]; then
-				error_and_exit "Could not disable SELinux. You might need to run this script as root."
-			fi
-			print_step_end
-		else
-			log "WARN" "SELinux was already disabled"
-			print_step_end
+		sed -i "s/^SELINUX=.*\$/SELINUX=$1/" /etc/selinux/config
+
+		if [ "x$?" '!=' x0 ]; then
+			error_and_exit "Could not change SELinux mode. You might need to run this script as root."
 		fi
 	else
-		log "WARN" "SELinux was not detected"
-		print_step_end
+		log "WARN" "Cannot read /etc/selinux/config. Do nothing"
 	fi
+
 }
-#========= end of function disable_selinux()
+#========= end of function set_selinux_config()
+
+#========= begin of function set_runtime_selinux_mode ()
+# set runtime SELinux mode : $1 (permissive | enforcing)
+#
+function set_runtime_selinux_mode() {
+
+	log "INFO" "Set runtime SELinux mode to [ $1 ]"
+
+	_current_mode=$(getenforce)
+
+	log "DEBUG" "Current SELinux mode is [ $_current_mode ]"
+
+	shopt -s nocasematch
+
+	if [ $_current_mode == $1 ]; then
+		log "DEBUG" "Current SELinux mode is already set as requested. Nothing to do"
+		return
+	fi
+
+	_request_mode=0 #Default mode is permissive
+	case $1 in
+	permissive)
+		log "DEBUG" "Change runtime mode to [permissive]"
+		_request_mode=0
+		;;
+
+	enforcing)
+		log "DEBUG" "Change runtime mode to [enforcing]"
+		_request_mode=1
+		;;
+	esac
+
+	setenforce $_request_mode
+
+	if [ "x$?" '!=' x0 ]; then
+		error_and_exit "Could not change SELinux mode. You might need to run this script as root."
+	fi
+
+}
+
+#========= end of function set_runtime_selinux_mode()
 
 #========= begin of function secure_mariadb_setup()
 # apply some secure requests
 #
 function secure_mariadb_setup() {
 
-	print_step_begin "Secure MariaDB setup"
+	log "INFO" "Secure MariaDB setup..."
 	log "WARN" "We are applying some requests that will enhance your MariaDB setup security"
 	log "WARN" "Please consult the official documentation https://mariadb.com/kb/en/mysql_secure_installation/ for more details"
 	log "WARN" "Random generated password for user root is [ $mariadb_root_password ]"
 	log "WARN" "You can use mysqladmin in order to set a new password for user root"
 
+	log "INFO" "Restarting MariaDB service first"
 	systemctl restart mariadb
 
+	log "INFO" "Executing SQL requests"
 	mysql -u root <<-EOF
 		UPDATE mysql.global_priv SET priv=json_set(priv, '$.plugin', 'mysql_native_password', '$.authentication_string', PASSWORD('$mariadb_root_password')) WHERE User='root';
 		DELETE FROM mysql.global_priv WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
@@ -435,11 +450,11 @@ function secure_mariadb_setup() {
 
 	if [ "x$?" '!=' x0 ]; then
 		error_and_exit "Could not apply the requests"
+	else
+		echo "Random generated password for MariaDB user root is [ $mariadb_root_password ]" >/etc/centreon/mariadb.tobedeleted
+		log "WARN" "Random generated password for MariaDB user root is saved in /etc/centreon/mariadb.tobedeleted"
 	fi
 
-	systemctl restart mariadb
-
-	print_step_end
 }
 #========= end of function secure_mariadb_setup()
 
@@ -449,7 +464,7 @@ function secure_mariadb_setup() {
 #
 function install_centreon_repo() {
 
-	print_step_begin "Centreon official repositories installation"
+	log "INFO" "Centreon official repositories installation..."
 	$PKG_MGR -q clean all
 
 	rpm -q centreon-release-$CENTREON_MAJOR_VERSION >/dev/null 2>&1
@@ -458,8 +473,9 @@ function install_centreon_repo() {
 		if [ "x$?" '!=' x0 ]; then
 			error_and_exit "Could not install Centreon repository"
 		fi
+	else
+		log "INFO" "Centreon repository seems to be already installed"
 	fi
-	print_step_end
 }
 #========= end of function install_centreon_repo()
 
@@ -468,7 +484,7 @@ function install_centreon_repo() {
 #
 function update_firewall_config() {
 
-	print_step_begin "Firewall configuration"
+	log "INFO" "Update firewall configuration..."
 	command -v firewall-cmd >/dev/null 2>&1
 
 	if [ "x$?" '=' x0 ]; then
@@ -480,15 +496,13 @@ function update_firewall_config() {
 					error_and_exit "Could not configure firewall. You might need to run this script as root."
 				fi
 			done
+			log "INFO" "Reloading firewall rules"
 			firewall-cmd --reload
-			print_step_end
 		else
 			log "WARN" "Firewall was not active"
-			print_step_end
 		fi
 	else
 		log "WARN" "Firewall was not detected"
-		print_step_end
 	fi
 }
 #========= end of function update_firewall_config()
@@ -498,24 +512,24 @@ function update_firewall_config() {
 #
 function enable_new_services() {
 
-	print_step_begin "Services configuration"
+	log "INFO" "Enable and restart services ..."
 	if [ "x$has_systemd" '=' x1 ]; then
 		case $topology in
 
 		central)
+			log "DEBUG" "On central..."
 			systemctl enable mariadb $OS_SPEC_SERVICES snmpd snmptrapd gorgoned centreontrapd cbd centengine centreon
 			systemctl restart mariadb $OS_SPEC_SERVICES snmpd snmptrapd
 			;;
 
 		poller)
+			log "DEBUG" "On poller..."
 			systemctl enable centreon centengine centreontrapd snmptrapd
 			systemctl start centreontrapd snmptrapd
 			;;
 		esac
-		print_step_end
 	else
 		log "WARN" "Systemd not detected, skipping"
-		print_step_end
 	fi
 }
 #========= end of function enable_new_services()
@@ -526,8 +540,7 @@ function enable_new_services() {
 # - install Centreon official repositories
 function setup_before_installation() {
 
-	# FIXME - make it optional for secure mode
-	disable_selinux
+	set_runtime_selinux_mode "disabled"
 
 	install_centreon_repo
 }
@@ -538,7 +551,7 @@ function setup_before_installation() {
 #
 function install_central() {
 
-	print_step_begin "Centreon $topology installation from ${CENTREON_REPO}"
+	log "INFO" "Centreon $topology installation from ${CENTREON_REPO}"
 
 	#FIXME : repo testing enabled for master
 	$PKG_MGR -q clean all --enablerepo="*" && $PKG_MGR -q install -y centreon --enablerepo="$CENTREON_REPO"
@@ -546,13 +559,12 @@ function install_central() {
 	if [ "x$?" '!=' x0 ]; then
 		error_and_exit "Could not install Centreon (package centreon)"
 	fi
-	print_step_end
 
 	#
 	# PHP
 	#
 
-	print_step_begin "PHP configuration"
+	log "INFO" "PHP configuration"
 	timezone=$($PHP_BIN -r '
 		$timezoneName = timezone_name_from_abbr(trim(shell_exec("date \"+%Z\"")));
 		if (preg_match("/Time zone: (\S+)/", shell_exec("timedatectl"), $matches)) {
@@ -564,8 +576,8 @@ function install_central() {
 		echo $timezoneName;
 	' 2>/dev/null)
 	echo "date.timezone = $timezone" >$PHP_ETC/50-centreon.ini
+
 	log "INFO" "PHP date.timezone set to $timezone"
-	print_step_end
 
 	secure_mariadb_setup
 
@@ -576,12 +588,11 @@ function install_central() {
 # install the Centreon Poller
 #
 function install_poller() {
-	print_step_begin "Poller installation from ${CENTREON_REPO}"
+	log "INFO" "Poller installation from ${CENTREON_REPO}"
 	$PKG_MGR -q clean all --enablerepo="*" && $PKG_MGR -q install -y centreon-poller-centreon-engine --enablerepo=$CENTREON_REPO
 	if [ "x$?" '!=' x0 ]; then
 		error_and_exit "Could not install Centreon (package centreon)"
 	fi
-	print_step_end
 }
 #========= end of function install_poller()
 
@@ -597,6 +608,10 @@ function update_after_installation() {
 	update_firewall_config
 
 	enable_new_services
+
+	set_runtime_selinux_mode $selinux_mode
+
+	set_selinux_config $selinux_mode
 
 }
 #========= end of function update_after_installation()
