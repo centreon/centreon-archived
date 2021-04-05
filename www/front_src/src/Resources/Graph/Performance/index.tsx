@@ -20,14 +20,24 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
+import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
 
-import { useRequest, getData, timeFormat } from '@centreon/ui';
+import {
+  useRequest,
+  getData,
+  timeFormat,
+  ContentWithCircularLoading,
+  IconButton,
+} from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
-import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import {
+  labelExportToPng,
+  labelNoDataForThisPeriod,
+} from '../../translatedLabels';
 import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
@@ -45,6 +55,7 @@ import {
 import { getTimeSeries, getLineData } from './timeSeries';
 import useMetricsValue, { MetricsValueContext } from './Graph/useMetricsValue';
 import { TimeShiftDirection } from './Graph/TimeShiftZones';
+import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 
 interface Props {
   endpoint?: string;
@@ -59,6 +70,9 @@ interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
   resourceDetailsUpdated?: boolean;
+  displayEventAnnotations?: boolean;
+  displayTooltipValues?: boolean;
+  isInTooltip?: boolean;
 }
 
 interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
@@ -88,11 +102,6 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     alignItems: 'center',
     width: '100%',
   },
-  graphHeader: {
-    display: 'grid',
-    gridTemplateColumns: 'auto auto',
-    columnGap: `${theme.spacing(3)}px`,
-  },
   graphTranslation: {
     display: 'grid',
     gridTemplateColumns: ({ canAdjustTimePeriod }) =>
@@ -106,6 +115,15 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   loadingContainer: {
     width: theme.spacing(2),
     height: theme.spacing(2),
+  },
+  graphHeader: {
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: '0.1fr 1fr 0.1fr',
+    justifyItems: 'center',
+  },
+  exportToPngButton: {
+    justifySelf: 'end',
   },
 }));
 
@@ -124,6 +142,9 @@ const PerformanceGraph = ({
   adjustTimePeriod,
   customTimePeriod,
   resourceDetailsUpdated = true,
+  displayEventAnnotations = false,
+  displayTooltipValues = false,
+  isInTooltip = false,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     graphHeight,
@@ -135,6 +156,8 @@ const PerformanceGraph = ({
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
+  const [exporting, setExporting] = React.useState<boolean>(false);
+  const performanceGraphRef = React.useRef<HTMLDivElement>();
 
   const {
     sendRequest: sendGetGraphDataRequest,
@@ -264,12 +287,45 @@ const PerformanceGraph = ({
     });
   };
 
+  const convertToPng = (): void => {
+    setExporting(true);
+    exportToPng({
+      element: performanceGraphRef.current as HTMLElement,
+      title: `${resource?.name}-performance`,
+    }).finally(() => {
+      setExporting(false);
+    });
+  };
+
   return (
     <MetricsValueContext.Provider value={metricsValueProps}>
-      <div className={classes.container}>
-        <Typography variant="body1" color="textPrimary" align="center">
-          {title}
-        </Typography>
+      <div
+        className={classes.container}
+        ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
+      >
+        <div className={classes.graphHeader}>
+          <div />
+          <Typography variant="body1" color="textPrimary">
+            {title}
+          </Typography>
+          <div className={classes.exportToPngButton}>
+            {not(isInTooltip) && (
+              <ContentWithCircularLoading
+                loading={exporting}
+                loadingIndicatorSize={16}
+                alignCenter={false}
+              >
+                <IconButton
+                  disabled={isNil(timeline)}
+                  title={t(labelExportToPng)}
+                  onClick={convertToPng}
+                >
+                  <SaveAsImageIcon style={{ fontSize: 18 }} />
+                </IconButton>
+              </ContentWithCircularLoading>
+            )}
+          </div>
+        </div>
 
         <ParentSize>
           {({ width, height }): JSX.Element => (
@@ -291,6 +347,8 @@ const PerformanceGraph = ({
                 not(resourceDetailsUpdated) && sendingGetGraphDataRequest
               }
               canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
+              displayEventAnnotations={displayEventAnnotations}
+              displayTooltipValues={displayTooltipValues}
             />
           )}
         </ParentSize>
