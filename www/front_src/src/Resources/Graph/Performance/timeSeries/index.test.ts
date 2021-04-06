@@ -1,7 +1,9 @@
+import { GraphData } from '../models';
+
 import * as timeSeries from '.';
 
 describe('timeSeries', () => {
-  const graphData = {
+  const graphData: GraphData = {
     global: {},
     metrics: [
       {
@@ -15,6 +17,9 @@ describe('timeSeries', () => {
           ds_order: null,
           ds_invert: null,
           ds_legend: 'Round-Trip-Time Average',
+          ds_min: null,
+          ds_max: '1',
+          ds_average: '1',
         },
         metric: 'rta',
         unit: 'ms',
@@ -31,6 +36,9 @@ describe('timeSeries', () => {
           ds_order: null,
           ds_invert: null,
           ds_legend: 'Time',
+          ds_min: null,
+          ds_max: '1',
+          ds_average: '1',
         },
         metric: 'time',
         unit: 'ms',
@@ -47,6 +55,9 @@ describe('timeSeries', () => {
           ds_order: '2',
           ds_invert: null,
           ds_legend: 'Average duration',
+          ds_min: null,
+          ds_max: '1',
+          ds_average: '1',
         },
         metric: 'avgDuration',
         unit: 'ms',
@@ -63,6 +74,9 @@ describe('timeSeries', () => {
           ds_order: '1',
           ds_invert: '1',
           ds_legend: 'Duration',
+          ds_min: null,
+          ds_max: '1',
+          ds_average: '1',
         },
         metric: 'duration',
         unit: 'ms',
@@ -79,6 +93,9 @@ describe('timeSeries', () => {
           ds_order: null,
           ds_invert: null,
           ds_legend: 'Packet Loss',
+          ds_min: null,
+          ds_max: '1',
+          ds_average: '1',
         },
         metric: 'packet_loss',
         unit: '%',
@@ -142,6 +159,7 @@ describe('timeSeries', () => {
       expect(timeSeries.getLineData(graphData)).toEqual([
         {
           areaColor: 'transparent',
+          average: '1',
           color: 'black',
           display: true,
           filled: false,
@@ -149,7 +167,9 @@ describe('timeSeries', () => {
           invert: null,
           legend: 'Round-Trip-Time Average',
           lineColor: 'black',
+          max: '1',
           metric: 'rta',
+          min: null,
           name: 'Round-Trip-Time Average (ms)',
           stackOrder: null,
           transparency: 80,
@@ -157,6 +177,7 @@ describe('timeSeries', () => {
         },
         {
           areaColor: 'blue',
+          average: '1',
           color: 'blue',
           display: true,
           filled: true,
@@ -164,7 +185,9 @@ describe('timeSeries', () => {
           invert: null,
           legend: 'Time',
           lineColor: 'blue',
+          max: '1',
           metric: 'time',
+          min: null,
           name: 'Time (ms)',
           stackOrder: null,
           transparency: 80,
@@ -172,6 +195,7 @@ describe('timeSeries', () => {
         },
         {
           areaColor: 'red',
+          average: '1',
           color: 'red',
           display: true,
           filled: true,
@@ -179,7 +203,9 @@ describe('timeSeries', () => {
           invert: null,
           legend: 'Average duration',
           lineColor: 'red',
+          max: '1',
           metric: 'avgDuration',
+          min: null,
           name: 'Average duration (ms)',
           stackOrder: 2,
           transparency: 80,
@@ -187,6 +213,7 @@ describe('timeSeries', () => {
         },
         {
           areaColor: 'yellow',
+          average: '1',
           color: 'yellow',
           display: true,
           filled: true,
@@ -194,7 +221,9 @@ describe('timeSeries', () => {
           invert: '1',
           legend: 'Duration',
           lineColor: 'yellow',
+          max: '1',
           metric: 'duration',
+          min: null,
           name: 'Duration (ms)',
           stackOrder: 1,
           transparency: 80,
@@ -202,6 +231,7 @@ describe('timeSeries', () => {
         },
         {
           areaColor: 'yellow',
+          average: '1',
           color: 'yellow',
           display: true,
           filled: true,
@@ -209,7 +239,9 @@ describe('timeSeries', () => {
           invert: null,
           legend: 'Packet Loss',
           lineColor: 'yellow',
+          max: '1',
           metric: 'packet_loss',
+          min: null,
           name: 'Packet Loss (%)',
           stackOrder: null,
           transparency: 80,
@@ -268,6 +300,7 @@ describe('timeSeries', () => {
 
       expect(timeSeries.getLineForMetric({ lines, metric: 'rta' })).toEqual({
         areaColor: 'transparent',
+        average: '1',
         color: 'black',
         display: true,
         filled: false,
@@ -275,7 +308,9 @@ describe('timeSeries', () => {
         invert: null,
         legend: 'Round-Trip-Time Average',
         lineColor: 'black',
+        max: '1',
         metric: 'rta',
+        min: null,
         name: 'Round-Trip-Time Average (ms)',
         stackOrder: null,
         transparency: 80,
@@ -302,6 +337,7 @@ describe('timeSeries', () => {
       expect(timeSeries.getSortedStackedLines(lines)).toEqual([
         {
           areaColor: 'yellow',
+          average: '1',
           color: 'yellow',
           display: true,
           filled: true,
@@ -309,7 +345,9 @@ describe('timeSeries', () => {
           invert: '1',
           legend: 'Duration',
           lineColor: 'yellow',
+          max: '1',
           metric: 'duration',
+          min: null,
           name: 'Duration (ms)',
           stackOrder: 1,
           transparency: 80,
@@ -317,6 +355,7 @@ describe('timeSeries', () => {
         },
         {
           areaColor: 'red',
+          average: '1',
           color: 'red',
           display: true,
           filled: true,
@@ -324,7 +363,9 @@ describe('timeSeries', () => {
           invert: null,
           legend: 'Average duration',
           lineColor: 'red',
+          max: '1',
           metric: 'avgDuration',
+          min: null,
           name: 'Average duration (ms)',
           stackOrder: 2,
           transparency: 80,
@@ -380,6 +421,7 @@ describe('timeSeries', () => {
       expect(timeSeries.getInvertedStackedLines(lines)).toEqual([
         {
           areaColor: 'yellow',
+          average: '1',
           color: 'yellow',
           display: true,
           filled: true,
@@ -387,7 +429,9 @@ describe('timeSeries', () => {
           invert: '1',
           legend: 'Duration',
           lineColor: 'yellow',
+          max: '1',
           metric: 'duration',
+          min: null,
           name: 'Duration (ms)',
           stackOrder: 1,
           transparency: 80,
@@ -404,6 +448,7 @@ describe('timeSeries', () => {
       expect(timeSeries.getNotInvertedStackedLines(lines)).toEqual([
         {
           areaColor: 'red',
+          average: '1',
           color: 'red',
           display: true,
           filled: true,
@@ -411,7 +456,9 @@ describe('timeSeries', () => {
           invert: null,
           legend: 'Average duration',
           lineColor: 'red',
+          max: '1',
           metric: 'avgDuration',
+          min: null,
           name: 'Average duration (ms)',
           stackOrder: 2,
           transparency: 80,

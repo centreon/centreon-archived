@@ -15114,6 +15114,12 @@ msgstr "Erro ao remover tokens de um contato"
 # msgid "Display metric values tooltip"
 # msgstr ""
 
+# msgid "Check duration"
+# msgstr ""
+
+# msgid "Avg"
+# msgstr ""
+
 # msgid "Compact time period"
 # msgstr ""
 

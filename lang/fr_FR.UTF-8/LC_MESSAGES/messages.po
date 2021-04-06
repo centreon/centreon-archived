@@ -16113,6 +16113,9 @@ msgstr "Afficher l’info-bulle des valeurs de métriques"
 msgid "Check duration"
 msgstr "Temps d'exécution"
 
+msgid "Avg"
+msgstr "Moy"
+
 msgid "Compact time period"
 msgstr "Période de temps compacte"
 
