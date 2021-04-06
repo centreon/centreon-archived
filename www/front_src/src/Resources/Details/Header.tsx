@@ -22,7 +22,7 @@ import {
   labelSomethingWentWrong,
 } from '../translatedLabels';
 import memoizeComponent from '../memoizedComponent';
-import { ResourceContext } from '../Context';
+import { Parent } from '../models';
 
 import SelectableResourceName from './tabs/Details/SelectableResourceName';
 
@@ -62,7 +62,7 @@ const LoadingSkeleton = (): JSX.Element => (
 );
 
 type Props = {
-  onSelectParent: (parent) => void;
+  onSelectParent: (parent: Parent) => void;
 } & DetailsSectionProps;
 
 const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
