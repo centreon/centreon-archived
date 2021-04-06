@@ -15,10 +15,10 @@ import AppProvider from '.';
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
-  timezone: 'Europe/Paris',
+  alias: 'Admin alias',
   locale: 'fr_FR.UTF8',
   name: 'Admin',
-  alias: 'Admin alias',
+  timezone: 'Europe/Paris',
 };
 
 const retrievedDefaultParameters = {
@@ -28,13 +28,13 @@ const retrievedDefaultParameters = {
 
 const retrievedActionsAcl = {
   host: {
-    check: true,
     acknowledgement: true,
+    check: true,
     downtime: true,
   },
   service: {
-    check: true,
     acknowledgement: true,
+    check: true,
     downtime: true,
   },
 };

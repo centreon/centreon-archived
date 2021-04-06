@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
 type DateEvents = Array<[string, Array<TimelineEvent>]>;
 
 interface Props {
-  timeline: Array<TimelineEvent>;
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
+  timeline: Array<TimelineEvent>;
 }
 
 const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {

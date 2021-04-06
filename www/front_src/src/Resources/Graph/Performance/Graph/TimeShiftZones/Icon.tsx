@@ -12,11 +12,11 @@ import { TimeShiftDirection, useTimeShiftContext } from '.';
 export const timeShiftIconSize = 20;
 
 interface Props {
-  xIcon: number;
   Icon: (props) => JSX.Element;
+  ariaLabel: string;
   direction: TimeShiftDirection;
   directionHovered: TimeShiftDirection | null;
-  ariaLabel: string;
+  xIcon: number;
 }
 
 const useStyles = makeStyles({
@@ -43,13 +43,13 @@ const TimeShiftIcon = ({
       : 'primary';
 
   const svgProps = {
-    y: graphHeight / 2 - timeShiftIconSize / 2 + marginTop,
-    x: xIcon,
-    height: timeShiftIconSize,
-    width: timeShiftIconSize,
-    onClick: () => not(loading) && shiftTime?.(direction),
-    className: classes.icon,
     'aria-label': t(ariaLabel),
+    className: classes.icon,
+    height: timeShiftIconSize,
+    onClick: () => not(loading) && shiftTime?.(direction),
+    width: timeShiftIconSize,
+    x: xIcon,
+    y: graphHeight / 2 - timeShiftIconSize / 2 + marginTop,
   };
 
   return useMemoComponent({
@@ -57,9 +57,9 @@ const TimeShiftIcon = ({
       <g>
         <svg {...svgProps}>
           <rect
-            width={timeShiftIconSize}
-            height={timeShiftIconSize}
             fill="transparent"
+            height={timeShiftIconSize}
+            width={timeShiftIconSize}
           />
           <Icon color={getIconColor()} />
         </svg>

@@ -14680,6 +14680,11 @@ msgstr "Permitir certificado autofirmado"
 # msgstr ""
 
 #  msgid "Check duration"
+
+#  msgid "Display tooltips"
+#  msgstr ""
+
+#  msgid "Check duration"
 #  msgstr ""
 
 #  msgid "Check duration"
@@ -14692,6 +14697,9 @@ msgstr "Permitir certificado autofirmado"
 #  msgstr ""
 
 #  msgid "Only passive checks are enabled"
+#  msgstr ""
+
+#  msgid "Calculation type"
 #  msgstr ""
 
 #  msgid "Mandatory data to create the entity '%s' is missing"

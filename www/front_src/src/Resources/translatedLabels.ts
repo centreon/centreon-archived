@@ -209,5 +209,8 @@ export const labelChecksDisabled = 'All checks are disabled';
 export const labelOnlyPassiveChecksEnabled = 'Only passive checks are enabled';
 export const labelNotificationDisabled = 'Notifications disabled';
 export const labelNotificationEnabled = 'Notifications enabled';
+export const labelMetrics = 'Metrics';
+export const labelMetaService = 'Meta service';
+export const labelCalculationType = 'Calculation type';
 export const labelSelectAtLeastOneColumn =
   'At least one column must be selected';

@@ -27,7 +27,7 @@ const Clock = (): JSX.Element => {
     const date = format({ date: now, formatString: 'LL' });
     const time = toTime(now);
 
-    setDateTime({ time, date });
+    setDateTime({ date, time });
   };
 
   React.useEffect(() => {

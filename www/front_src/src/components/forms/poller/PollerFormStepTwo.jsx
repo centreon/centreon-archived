@@ -18,8 +18,8 @@ import fieldHoc from '../../form-fields/hoc';
 
 class PollerFormStepTwo extends Component {
   state = {
-    selectedMaster: null,
     selectedAdditionals: [],
+    selectedMaster: null,
   };
 
   /**
@@ -59,8 +59,8 @@ class PollerFormStepTwo extends Component {
     change('linked_remote_slaves', filteredAdditionals);
 
     this.setState({
-      selectedMaster: value,
       selectedAdditionals: filteredAdditionals,
+      selectedMaster: value,
     });
   };
 
@@ -89,8 +89,8 @@ class PollerFormStepTwo extends Component {
                   {t('Attach poller to a master remote server')}
                 </h2>
                 <Field
-                  name="linked_remote_master"
                   component={SelectField}
+                  name="linked_remote_master"
                   options={[
                     {
                       text: '',
@@ -98,9 +98,9 @@ class PollerFormStepTwo extends Component {
                     },
                   ].concat(
                     pollers.map((c) => ({
-                      value: c.id,
                       label: c.name,
                       text: c.name,
+                      value: c.id,
                     })),
                   )}
                   value={selectedMaster}
@@ -115,23 +115,23 @@ class PollerFormStepTwo extends Component {
                 </h2>
                 <div className={styles['form-item']}>
                   <Field
-                    name="linked_remote_slaves"
-                    component={fieldHoc(Select)}
-                    options={availableAdditionals.map((remote) => ({
-                      value: remote.id,
-                      label: remote.name,
-                    }))}
                     isMulti
+                    component={fieldHoc(Select)}
+                    name="linked_remote_slaves"
+                    options={availableAdditionals.map((remote) => ({
+                      label: remote.name,
+                      value: remote.id,
+                    }))}
                     onChange={this.handleChangeAdditionals}
                   />
                 </div>
               </>
             ) : null}
             <Field
-              name="open_broker_flow"
               component={CheckboxField}
-              label={t('Advanced: reverse Centreon Broker communication flow')}
               defaultValue={false}
+              label={t('Advanced: reverse Centreon Broker communication flow')}
+              name="open_broker_flow"
             />
             <div className={styles['form-buttons']}>
               <button className={styles.button} type="submit">
@@ -150,9 +150,9 @@ class PollerFormStepTwo extends Component {
 
 export default withTranslation()(
   connectForm({
-    form: 'PollerFormStepTwo',
-    enableReinitialize: true,
     destroyOnUnmount: false,
+    enableReinitialize: true,
+    form: 'PollerFormStepTwo',
     keepDirtyOnReinitialize: true,
   })(PollerFormStepTwo),
 );

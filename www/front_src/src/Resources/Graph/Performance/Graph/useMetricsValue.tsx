@@ -12,31 +12,31 @@ import { getLineForMetric } from '../timeSeries';
 import MetricsTooltip from './MetricsTooltip';
 
 interface MetricsValue {
+  base: number;
+  lines: Array<Line>;
+  metrics: Array<string>;
+  timeValue: TimeValue;
   x: number;
   y: number;
-  timeValue: TimeValue;
-  metrics: Array<string>;
-  lines: Array<Line>;
-  base: number;
 }
 
 interface FormattedMetricData {
   color: string;
+  formattedValue: string | null;
   name: string;
   unit: string;
-  formattedValue: string | null;
 }
 
 interface UseMetricsValue {
-  metricsValue: MetricsValue | null;
-  tooltipData;
-  tooltipOpen;
-  tooltipLeft;
-  tooltipTop;
+  changeMetricsValue: ({ newMetricsValue, displayTooltipValues }) => void;
   formatDate: () => string;
   getFormattedMetricData: (metric: string) => FormattedMetricData | null;
-  changeMetricsValue: ({ newMetricsValue, displayTooltipValues }) => void;
   hideTooltip;
+  metricsValue: MetricsValue | null;
+  tooltipData;
+  tooltipLeft;
+  tooltipOpen;
+  tooltipTop;
 }
 
 const useMetricsValue = (): UseMetricsValue => {
@@ -66,11 +66,11 @@ const useMetricsValue = (): UseMetricsValue => {
       return;
     }
     showTooltip({
-      tooltipLeft: newMetricsValue?.x || 0,
-      tooltipTop: newMetricsValue?.y || 0,
       tooltipData: isEmpty(newMetricsValue?.metrics) ? undefined : (
         <MetricsTooltip />
       ),
+      tooltipLeft: newMetricsValue?.x || 0,
+      tooltipTop: newMetricsValue?.y || 0,
     });
   };
 
@@ -86,29 +86,29 @@ const useMetricsValue = (): UseMetricsValue => {
     }) as Line;
 
     const formattedValue = formatMetricValue({
-      value,
-      unit,
       base: metricsValue.base,
+      unit,
+      value,
     });
 
     return {
       color,
-      name,
       formattedValue,
+      name,
       unit,
     };
   };
 
   return {
-    metricsValue,
-    tooltipData,
-    tooltipOpen,
-    tooltipLeft,
-    tooltipTop,
+    changeMetricsValue,
     formatDate,
     getFormattedMetricData,
-    changeMetricsValue,
     hideTooltip,
+    metricsValue,
+    tooltipData,
+    tooltipLeft,
+    tooltipOpen,
+    tooltipTop,
   };
 };
 

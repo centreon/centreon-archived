@@ -5,8 +5,8 @@ const baseKey = 'centreon-resource-status-21.04-';
 interface StoredItemParameters<TItem> {
   cachedItem: TItem;
   defaultValue: TItem;
-  onCachedItemUpdate: (updatedItem: TItem) => void;
   key: string;
+  onCachedItemUpdate: (updatedItem: TItem) => void;
 }
 
 const getStoredOrDefault = <TItem>({
@@ -33,8 +33,8 @@ const getStoredOrDefault = <TItem>({
 };
 
 interface StoreParameters<TItem> {
-  value: TItem;
   key: string;
+  value: TItem;
 }
 
 const store = <TItem>({ value, key }: StoreParameters<TItem>): void => {

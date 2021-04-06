@@ -83,6 +83,7 @@ import {
   timelineTabId,
   shortcutsTabId,
   servicesTabId,
+  metricsTabId,
 } from './tabs';
 import { TabId } from './tabs/models';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
@@ -100,72 +101,48 @@ jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
 const resourceServiceUuid = 'h1-s1';
 const resourceServiceId = 1;
 const resourceServiceType = 'service';
+const metaServiceResourceType = 'metaservice';
 
 const resourceHostUuid = 'h1';
 const resourceHostId = 1;
 const resourceHostType = 'host';
 
 const retrievedDetails = {
-  uuid: resourceServiceUuid,
-  id: resourceServiceId,
-  type: resourceServiceType,
-  name: 'Central',
-  severity_level: 10,
-  status: { name: 'Critical', severity_code: 1 },
-  parent: {
-    id: resourceHostId,
-    type: resourceHostType,
-    name: 'Centreon',
-    status: { severity_code: 1 },
-    links: {
-      uris: {
-        configuration: undefined,
-        logs: undefined,
-        reporting: undefined,
-      },
-    },
-  },
-  fqdn: 'central.centreon.com',
-  alias: 'Central-Centreon',
-  monitoring_server_name: 'Poller',
   acknowledged: false,
-  checked: true,
-  execution_time: 0.070906,
-  last_check: '2020-05-18T16:00Z',
-  last_status_change: '2020-04-18T15:00Z',
-  last_update: '2020-03-18T16:30:00Z',
-  information:
-    'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
-  timezone: 'Europe/Paris',
-  active_checks: true,
-  command_line: 'base_host_alive',
-  last_notification: '2020-07-18T17:30:00Z',
-  latency: 0.005,
-  next_check: '2020-06-18T17:15:00Z',
-  notification_number: 3,
-  flapping: false,
-  percent_state_change: 3.5,
-  downtimes: [
-    {
-      start_time: '2020-01-18T17:57:59Z',
-      end_time: '2020-01-18T18:57:59Z',
-      comment: 'First downtime set by Admin',
-    },
-    {
-      start_time: '2020-02-18T17:57:59Z',
-      end_time: '2020-02-18T18:57:59Z',
-      comment: 'Second downtime set by Admin',
-    },
-  ],
   acknowledgement: {
     author_name: 'Admin',
-    entry_time: '2020-03-18T18:57:59Z',
     comment: 'Acknowledged by Admin',
+    entry_time: '2020-03-18T18:57:59Z',
   },
-  performance_data:
-    'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
+  active_checks: true,
+  alias: 'Central-Centreon',
+  checked: true,
+  command_line: 'base_host_alive',
+  downtimes: [
+    {
+      comment: 'First downtime set by Admin',
+      end_time: '2020-01-18T18:57:59Z',
+      start_time: '2020-01-18T17:57:59Z',
+    },
+    {
+      comment: 'Second downtime set by Admin',
+      end_time: '2020-02-18T18:57:59Z',
+      start_time: '2020-02-18T17:57:59Z',
+    },
+  ],
   duration: '22m',
-  tries: '3/3 (Hard)',
+  execution_time: 0.070906,
+  flapping: false,
+  fqdn: 'central.centreon.com',
+  groups: [{ id: 0, name: 'Linux-servers' }],
+  id: resourceServiceId,
+  information:
+    'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
+  last_check: '2020-05-18T16:00Z',
+  last_notification: '2020-07-18T17:30:00Z',
+  last_status_change: '2020-04-18T15:00Z',
+  last_update: '2020-03-18T16:30:00Z',
+  latency: 0.005,
   links: {
     endpoints: {
       performance_graph: 'performance_graph',
@@ -177,154 +154,199 @@ const retrievedDetails = {
       reporting: undefined,
     },
   },
-  groups: [{ id: 0, name: 'Linux-servers' }],
+  monitoring_server_name: 'Poller',
+  name: 'Central',
+  next_check: '2020-06-18T17:15:00Z',
+  notification_number: 3,
+  parent: {
+    id: resourceHostId,
+    links: {
+      uris: {
+        configuration: undefined,
+        logs: undefined,
+        reporting: undefined,
+      },
+    },
+    name: 'Centreon',
+    status: { severity_code: 1 },
+    type: resourceHostType,
+  },
+  percent_state_change: 3.5,
+  performance_data:
+    'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
+  severity_level: 10,
+  status: { name: 'Critical', severity_code: 1 },
+  timezone: 'Europe/Paris',
+  tries: '3/3 (Hard)',
+  type: resourceServiceType,
+  uuid: resourceServiceUuid,
 };
 
 const retrievedPerformanceGraphData = {
   global: {
     title: 'Ping graph',
   },
+  metrics: [
+    {
+      data: [2, 0, 1],
+      ds_data: {
+        ds_average: '1234',
+        ds_color_area: 'transparent',
+        ds_color_line: '#fff',
+        ds_filled: false,
+        ds_legend: 'Round-Trip-Time Average',
+        ds_max: '2456',
+        ds_min: null,
+        ds_transparency: 80,
+      },
+      legend: 'Round-Trip-Time Average (ms)',
+      metric: 'rta',
+      unit: 'ms',
+    },
+  ],
   times: [
     '2020-06-19T07:30:00Z',
     '2020-06-20T06:55:00Z',
     '2020-06-23T06:55:00Z',
   ],
-  metrics: [
-    {
-      data: [2, 0, 1],
-      ds_data: {
-        ds_color_line: '#fff',
-        ds_filled: false,
-        ds_color_area: 'transparent',
-        ds_transparency: 80,
-        ds_legend: 'Round-Trip-Time Average',
-        ds_average: '1234',
-        ds_min: null,
-        ds_max: '2456',
-      },
-      metric: 'rta',
-      unit: 'ms',
-      legend: 'Round-Trip-Time Average (ms)',
-    },
-  ],
 };
 
 const retrievedTimeline = {
+  meta: {
+    limit: 10,
+    page: 1,
+    total: 5,
+  },
   result: [
     {
-      type: 'event',
-      id: 1,
-      date: '2020-06-22T08:40:00Z',
-      tries: 1,
       content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
+      date: '2020-06-22T08:40:00Z',
+      id: 1,
       status: {
-        severity_code: 5,
         name: 'UP',
+        severity_code: 5,
       },
-    },
-    {
+      tries: 1,
       type: 'event',
-      id: 2,
-      date: '2020-06-22T08:35:00Z',
-      tries: 3,
-      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
-      status: {
-        severity_code: 1,
-        name: 'DOWN',
-      },
     },
     {
-      type: 'notification',
-      id: 3,
-      date: '2020-06-21T07:40:00Z',
-      content: 'My little notification',
+      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
+      date: '2020-06-22T08:35:00Z',
+      id: 2,
+      status: {
+        name: 'DOWN',
+        severity_code: 1,
+      },
+      tries: 3,
+      type: 'event',
+    },
+    {
       contact: {
         name: 'admin',
       },
+      content: 'My little notification',
+      date: '2020-06-21T07:40:00Z',
+      id: 3,
+      type: 'notification',
     },
     {
-      type: 'acknowledgement',
-      id: 4,
-      date: '2020-06-20T07:35:00Z',
       contact: {
         name: 'admin',
       },
       content: 'My little ack',
+      date: '2020-06-20T07:35:00Z',
+      id: 4,
+      type: 'acknowledgement',
     },
     {
-      type: 'downtime',
-      id: 5,
-      date: '2020-06-20T07:30:00Z',
-      start_date: '2020-06-20T07:30:00Z',
-      end_date: '2020-06-22T07:33:00Z',
       contact: {
         name: 'admin',
       },
       content: 'My little dt',
+      date: '2020-06-20T07:30:00Z',
+      end_date: '2020-06-22T07:33:00Z',
+      id: 5,
+      start_date: '2020-06-20T07:30:00Z',
+      type: 'downtime',
     },
     {
-      type: 'downtime',
-      id: 6,
-      date: '2020-06-20T06:57:00Z',
-      start_date: '2020-06-19T07:30:00Z',
-      end_date: null,
       contact: {
         name: 'super_admin',
       },
       content: 'My little ongoing dt',
+      date: '2020-06-20T06:57:00Z',
+      end_date: null,
+      id: 6,
+      start_date: '2020-06-19T07:30:00Z',
+      type: 'downtime',
     },
     {
-      type: 'comment',
-      id: 7,
-      date: '2020-06-20T06:55:00Z',
-      start_date: '2020-06-20T07:30:00Z',
-      end_date: '2020-06-22T07:33:00Z',
       contact: {
         name: 'admin',
       },
       content: 'My little comment',
+      date: '2020-06-20T06:55:00Z',
+      end_date: '2020-06-22T07:33:00Z',
+      id: 7,
+      start_date: '2020-06-20T07:30:00Z',
+      type: 'comment',
     },
   ],
-  meta: {
-    page: 1,
-    limit: 10,
-    total: 5,
-  },
 };
 
 const retrievedServices = {
+  meta: {
+    limit: 10,
+    page: 1,
+    total: 2,
+  },
   result: [
     {
-      id: 3,
-      name: 'Ping',
-      status: {
-        severity_code: 5,
-        name: 'Ok',
-      },
-      information: 'OK - 127.0.0.1 rta 0ms lost 0%',
       duration: '22m',
+      id: 3,
+      information: 'OK - 127.0.0.1 rta 0ms lost 0%',
       links: {
         endpoints: {
           performance_graph: 'ping-performance',
         },
+        externals: {
+          action: 'action',
+        },
+        uris: {
+          configuration: 'configuration',
+        },
       },
+      name: 'Ping',
+      short_type: 's',
+      status: {
+        name: 'Ok',
+        severity_code: 5,
+      },
+      type: 'service',
+      uuid: 'h1-s3',
     },
     {
-      id: 4,
-      name: 'Disk',
-      status: {
-        severity_code: 6,
-        name: 'Unknown',
-      },
-      information: 'No output',
       duration: '21m',
+      id: 4,
+      information: 'No output',
+      links: {
+        externals: {
+          action: 'action',
+        },
+        uris: {
+          configuration: 'configuration',
+        },
+      },
+      name: 'Disk',
+      short_type: 's',
+      status: {
+        name: 'Unknown',
+        severity_code: 6,
+      },
+      type: 'service',
+      uuid: 'h1-s4',
     },
   ],
-  meta: {
-    page: 1,
-    limit: 10,
-    total: 2,
-  },
 };
 
 const currentDateIsoString = '2020-01-21T06:00:00.000Z';
@@ -343,6 +365,14 @@ const setSelectedHostResource = () => {
   context.setSelectedResourceUuid(resourceHostUuid);
   context.setSelectedResourceId(resourceHostId);
   context.setSelectedResourceType(resourceHostType);
+  context.setSelectedResourceParentId(undefined);
+  context.setSelectedResourceParentType(undefined);
+};
+
+const setSelectedMetaServiceResource = () => {
+  context.setSelectedResourceUuid(resourceServiceUuid);
+  context.setSelectedResourceId(resourceServiceId);
+  context.setSelectedResourceType(metaServiceResourceType);
   context.setSelectedResourceParentId(undefined);
   context.setSelectedResourceParentType(undefined);
 };
@@ -391,8 +421,8 @@ describe(Details, () => {
     mockedAxios.get.mockReset();
     act(() => {
       context.setGraphTabParameters({
-        selectedTimePeriodId: lastDayPeriod.id,
         selectedCustomTimePeriod: undefined,
+        selectedTimePeriodId: lastDayPeriod.id,
       });
       context.clearSelectedResource();
     });
@@ -562,7 +592,6 @@ describe(Details, () => {
 
         if (!isNil(periodId)) {
           expect(context.tabParameters.graph).toEqual({
-            selectedTimePeriodId: periodId,
             graphOptions: {
               displayEvents: {
                 id: 'displayEvents',
@@ -575,6 +604,7 @@ describe(Details, () => {
                 value: false,
               },
             },
+            selectedTimePeriodId: periodId,
           });
         }
       });
@@ -837,6 +867,7 @@ describe(Details, () => {
             reporting: '/reporting',
           },
         },
+        type: resourceHostType,
       },
     });
 
@@ -870,12 +901,12 @@ describe(Details, () => {
       });
 
     const retrievedServiceDetails = {
-      uuid: 'h3-s2',
       id: 2,
       parentId: 3,
       parentType: 'host',
-      type: 'service',
       tab: 'shortcuts',
+      type: 'service',
+      uuid: 'h3-s2',
     };
 
     setUrlQueryParameters([
@@ -916,10 +947,10 @@ describe(Details, () => {
 
     act(() => {
       context.setServicesTabParameters({
+        graphMode: true,
         graphTimePeriod: {
           selectedTimePeriodId: last31Days.id,
         },
-        graphMode: true,
       });
     });
 
@@ -928,7 +959,6 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
-        uuid: 'h1',
         id: 1,
         tab: 'details',
         tabParameters: {
@@ -943,6 +973,7 @@ describe(Details, () => {
           },
         },
         type: 'host',
+        uuid: 'h1',
       });
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1007,14 +1038,11 @@ describe(Details, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       buildResourcesEndpoint({
+        hostGroupIds: [],
         limit: 30,
+        monitoringServerIds: [],
         page: 1,
         resourceTypes: ['service'],
-        statuses: [],
-        states: [],
-        hostGroupIds: [],
-        serviceGroupIds: [],
-        monitoringServerIds: [],
         search: {
           conditions: [
             {
@@ -1025,6 +1053,9 @@ describe(Details, () => {
             },
           ],
         },
+        serviceGroupIds: [],
+        states: [],
+        statuses: [],
       }),
       expect.anything(),
     );
@@ -1140,11 +1171,11 @@ describe(Details, () => {
 
     act(() => {
       context.setGraphTabParameters({
-        selectedTimePeriodId: undefined,
         selectedCustomTimePeriod: {
-          start: startISOString,
           end: endISOString,
+          start: startISOString,
         },
+        selectedTimePeriodId: undefined,
       });
     });
 
@@ -1206,11 +1237,11 @@ describe(Details, () => {
     act(() => {
       setSelectedServiceResource();
       context.setGraphTabParameters({
-        selectedTimePeriodId: undefined,
         selectedCustomTimePeriod: {
-          start: '2020-01-21T06:00:00.000Z',
           end: '2020-01-21T06:00:00.000Z',
+          start: '2020-01-21T06:00:00.000Z',
         },
+        selectedTimePeriodId: undefined,
       });
     });
 
@@ -1257,6 +1288,54 @@ describe(Details, () => {
       });
     },
   );
+
+  it('display retrieved metrics when the selected Resource is a meta service and the metrics tab is selected', async () => {
+    const service = retrievedServices.result[0];
+
+    const retrievedMetrics = {
+      meta: {
+        limit: 10,
+        page: 1,
+        total: 1,
+      },
+      result: [
+        {
+          id: 0,
+          name: 'pl',
+          resource: service,
+          unit: '%',
+          value: 3,
+        },
+      ],
+    };
+
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          ...retrievedDetails,
+          type: 'metaservice',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: retrievedMetrics,
+      });
+
+    const { getByText } = renderDetails({
+      openTabId: metricsTabId,
+    });
+
+    act(() => {
+      setSelectedMetaServiceResource();
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    expect(getByText('pl')).toBeInTheDocument();
+    expect(getByText('3 (%)')).toBeInTheDocument();
+    expect(getByText(service.name)).toBeInTheDocument();
+  });
 
   it('displays Min, Max and Average values in the legend when the Graph tab is selected', async () => {
     mockedAxios.get

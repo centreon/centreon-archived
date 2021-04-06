@@ -7,10 +7,10 @@ import { Resource } from '../../../../models';
 const submitStatusEndpoint = `${resourcesEndpoint}/submit`;
 
 interface ResourceWithSubmitStatusParams {
-  resource: Resource;
-  statusId: number;
   output: string;
   performanceData: string;
+  resource: Resource;
+  statusId: number;
 }
 
 const submitResourceStatus = (cancelToken: CancelToken) => ({
@@ -26,8 +26,8 @@ const submitResourceStatus = (cancelToken: CancelToken) => ({
         {
           ...pick(['type', 'id', 'parent'], resource),
           output,
-          status: statusId,
           performance_data: performanceData,
+          status: statusId,
         },
       ],
     },

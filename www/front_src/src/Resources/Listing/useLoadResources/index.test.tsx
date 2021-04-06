@@ -60,12 +60,12 @@ describe(useLoadResources, () => {
 
     mockedAxios.get.mockResolvedValue({
       data: {
-        result: [],
         meta: {
-          page: 1,
           limit: 30,
+          page: 1,
           total: 0,
         },
+        result: [],
       },
     });
   });

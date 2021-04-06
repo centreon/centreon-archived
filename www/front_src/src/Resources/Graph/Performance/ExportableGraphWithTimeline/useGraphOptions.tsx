@@ -8,8 +8,8 @@ import {
 import { GraphOptionId } from '../models';
 
 interface GraphOptionsProps {
-  graphOptions: GraphOptions;
   changeGraphOptions: (graphOptionId: GraphOptionId) => () => void;
+  graphOptions: GraphOptions;
 }
 
 export const GraphOptionsContext = React.createContext<
@@ -33,8 +33,8 @@ export const defaultGraphOptions = {
 };
 
 interface UseGraphOptionsProps {
-  graphTabParameters?: GraphTabParameters;
   changeTabGraphOptions: (graphOptions: GraphOptions) => void;
+  graphTabParameters?: GraphTabParameters;
 }
 
 const useGraphOptions = ({
@@ -59,8 +59,8 @@ const useGraphOptions = ({
   };
 
   return {
-    graphOptions,
     changeGraphOptions,
+    graphOptions,
   };
 };
 

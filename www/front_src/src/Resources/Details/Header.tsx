@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { hasPath } from 'ramda';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -26,18 +27,18 @@ import { DetailsSectionProps } from '.';
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    height: 43,
-    padding: theme.spacing(0, 1),
+    alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(2),
     gridTemplateColumns: 'auto minmax(0, 1fr) auto',
-    alignItems: 'center',
+    height: 43,
+    padding: theme.spacing(0, 1),
   },
   parent: {
+    alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(1),
     gridTemplateColumns: 'auto minmax(0, 1fr)',
-    alignItems: 'center',
   },
   truncated: {
     overflow: 'hidden',
@@ -47,12 +48,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LoadingSkeleton = (): JSX.Element => (
-  <Grid container spacing={2} alignItems="center" item style={{ flexGrow: 1 }}>
+  <Grid container item alignItems="center" spacing={2} style={{ flexGrow: 1 }}>
     <Grid item>
-      <Skeleton variant="circle" width={25} height={25} />
+      <Skeleton height={25} variant="circle" width={25} />
     </Grid>
     <Grid item>
-      <Skeleton width={250} height={25} />
+      <Skeleton height={25} width={250} />
     </Grid>
   </Grid>
 );
@@ -85,29 +86,33 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
     <>
       {details.severity_level && (
         <StatusChip
-          severityCode={SeverityCode.None}
           label={details.severity_level.toString()}
+          severityCode={SeverityCode.None}
         />
       )}
       <StatusChip
-        severityCode={details.status.severity_code}
         label={t(details.status.name)}
+        severityCode={details.status.severity_code}
       />
       <div>
         <Typography className={classes.truncated}>{details.name}</Typography>
-        {details.parent && (
+        {hasPath(['parent', 'status'], details) && (
           <div className={classes.parent}>
-            <StatusChip severityCode={details.parent.status?.severity_code} />
-            <Typography variant="caption" className={classes.truncated}>
+            <StatusChip
+              severityCode={
+                details.parent.status?.severity_code || SeverityCode.None
+              }
+            />
+            <Typography className={classes.truncated} variant="caption">
               {details.parent.name}
             </Typography>
           </div>
         )}
       </div>
       <IconButton
+        ariaLabel={t(labelCopyLink)}
         size="small"
         title={t(labelCopyLink)}
-        ariaLabel={t(labelCopyLink)}
         onClick={copyResourceLink}
       >
         <CopyIcon fontSize="small" />
@@ -127,6 +132,6 @@ const Header = ({ details }: DetailsSectionProps): JSX.Element => {
 };
 
 export default memoizeComponent<DetailsSectionProps>({
-  memoProps: ['details'],
   Component: Header,
+  memoProps: ['details'],
 });

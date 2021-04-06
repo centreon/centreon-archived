@@ -15,29 +15,29 @@ import {
 export type TimePeriodId = 'last_24_h' | 'last_7_days' | 'last_31_days';
 
 export interface TimePeriod {
-  id: TimePeriodId;
-  name: string;
-  largeName: string;
-  getStart: () => Date;
   dateTimeFormat: string;
+  getStart: () => Date;
+  id: TimePeriodId;
+  largeName: string;
+  name: string;
   timelineEventsLimit: number;
 }
 
 export interface CustomTimePeriod {
-  start: Date;
   end: Date;
-  xAxisTickFormat?: string;
+  start: Date;
   timelineLimit?: number;
+  xAxisTickFormat?: string;
 }
 
 export interface StoredCustomTimePeriod {
-  start: string;
   end: string;
+  start: string;
 }
 
 export enum CustomTimePeriodProperty {
-  start = 'start',
   end = 'end',
+  start = 'start',
 }
 
 export interface ChangeCustomTimePeriodProps {
@@ -46,29 +46,29 @@ export interface ChangeCustomTimePeriodProps {
 }
 
 const lastDayPeriod: TimePeriod = {
-  name: label1Day,
-  largeName: labelLastDay,
-  id: 'last_24_h',
-  getStart: (): Date => dayjs(Date.now()).subtract(24, 'hour').toDate(),
   dateTimeFormat: timeFormat,
+  getStart: (): Date => dayjs(Date.now()).subtract(24, 'hour').toDate(),
+  id: 'last_24_h',
+  largeName: labelLastDay,
+  name: label1Day,
   timelineEventsLimit: 20,
 };
 
 const last7Days: TimePeriod = {
-  name: label7Days,
-  largeName: labelLast7Days,
-  id: 'last_7_days',
-  getStart: (): Date => dayjs(Date.now()).subtract(7, 'day').toDate(),
   dateTimeFormat: dateFormat,
+  getStart: (): Date => dayjs(Date.now()).subtract(7, 'day').toDate(),
+  id: 'last_7_days',
+  largeName: labelLast7Days,
+  name: label7Days,
   timelineEventsLimit: 100,
 };
 
 const last31Days: TimePeriod = {
-  name: label31Days,
-  largeName: labelLast31Days,
-  id: 'last_31_days',
-  getStart: (): Date => dayjs(Date.now()).subtract(31, 'day').toDate(),
   dateTimeFormat: dateFormat,
+  getStart: (): Date => dayjs(Date.now()).subtract(31, 'day').toDate(),
+  id: 'last_31_days',
+  largeName: labelLast31Days,
+  name: label31Days,
   timelineEventsLimit: 500,
 };
 

@@ -10,8 +10,8 @@ import IconColumn from '../IconColumn';
 
 interface Props {
   endpoint?: string;
-  title?: string;
   icon: JSX.Element;
+  title?: string;
 }
 
 const UrlColumn = ({ endpoint, title, icon }: Props): JSX.Element | null => {
@@ -30,8 +30,8 @@ const UrlColumn = ({ endpoint, title, icon }: Props): JSX.Element | null => {
         }}
       >
         <IconButton
-          title={t(title || labelUrl)}
           ariaLabel={title}
+          title={t(title || labelUrl)}
           onClick={(): null => {
             return null;
           }}

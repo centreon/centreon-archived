@@ -56,8 +56,8 @@ const getHostResourcesUrl = ({
 } = {}): string => {
   return getResourcesUrl({
     resourceTypeCriterias: hostCriterias,
-    statusCriterias,
     stateCriterias,
+    statusCriterias,
   });
 };
 
@@ -67,8 +67,8 @@ const getServiceResourcesUrl = ({
 } = {}): string => {
   return getResourcesUrl({
     resourceTypeCriterias: serviceCriteria,
-    statusCriterias,
     stateCriterias,
+    statusCriterias,
   });
 };
 

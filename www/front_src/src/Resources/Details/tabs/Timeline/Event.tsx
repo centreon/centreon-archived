@@ -62,33 +62,33 @@ const getTypeIds = (): Array<string> => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  event: {
+    alignItems: 'center',
+    display: 'grid',
+    gridAutoFlow: 'columns',
+    gridGap: theme.spacing(2),
+    gridTemplateColumns: 'auto 1fr auto',
+    padding: theme.spacing(1),
+  },
   info: {
     display: 'grid',
     gridAutoFlow: 'row',
     gridGap: theme.spacing(1),
   },
   infoHeader: {
-    display: 'grid',
-    gridGap: theme.spacing(2),
-    gridAutoFlow: 'column',
-    gridTemplateColumns: 'minmax(80px, auto) auto 1fr',
     alignItems: 'start',
+    display: 'grid',
+    gridAutoFlow: 'column',
+    gridGap: theme.spacing(2),
+    gridTemplateColumns: 'minmax(80px, auto) auto 1fr',
   },
   title: {
+    alignItems: 'center',
     display: 'grid',
-    gridAutoFlow: 'column',
     gridAutoColumns: 'auto',
+    gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
     justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  event: {
-    display: 'grid',
-    gridAutoFlow: 'columns',
-    gridTemplateColumns: 'auto 1fr auto',
-    padding: theme.spacing(1),
-    gridGap: theme.spacing(2),
-    alignItems: 'center',
   },
 }));
 
@@ -129,8 +129,8 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
         <div className={classes.infoHeader}>
           <Date event={event} />
           <CompactStatusChip
-            severityCode={event.status?.severity_code as number}
             label={t(event.status?.name as string)}
+            severityCode={event.status?.severity_code as number}
           />
           <Typography
             style={{
@@ -141,7 +141,7 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
             {`${t(labelTries)}: ${event.tries}`}
           </Typography>
         </div>
-        <OutputInformation content={event.content} bold />
+        <OutputInformation bold content={event.content} />
       </div>
     </div>
   );
@@ -161,7 +161,7 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
             <Author event={event} />
           </div>
         </div>
-        <OutputInformation content={event.content} bold />
+        <OutputInformation bold content={event.content} />
       </div>
     </div>
   );
@@ -181,7 +181,7 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
             <Author event={event} />
           </div>
         </div>
-        <OutputInformation content={event.content} bold />
+        <OutputInformation bold content={event.content} />
       </div>
     </div>
   );
@@ -216,7 +216,7 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
             <Author event={event} />
           </div>
         </div>
-        <OutputInformation content={event.content} bold />
+        <OutputInformation bold content={event.content} />
       </div>
     </div>
   );
@@ -236,18 +236,18 @@ const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
             <Author event={event} />
           </div>
         </div>
-        <OutputInformation content={event.content} bold />
+        <OutputInformation bold content={event.content} />
       </div>
     </div>
   );
 };
 
 const TimelineEventByType = {
+  acknowledgement: AcknowledgeTimelineEvent,
+  comment: CommentTimelineEvent,
+  downtime: DowntimeTimelineEvent,
   event: EventTimelineEvent,
   notification: NotificationTimelineEvent,
-  comment: CommentTimelineEvent,
-  acknowledgement: AcknowledgeTimelineEvent,
-  downtime: DowntimeTimelineEvent,
 };
 
 export { TimelineEventByType, types, getTypeIds };

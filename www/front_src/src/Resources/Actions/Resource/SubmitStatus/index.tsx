@@ -34,9 +34,9 @@ import {
 import { submitResourceStatus } from './api';
 
 interface Props {
-  resource: Resource;
   onClose: () => void;
   onSuccess: () => void;
+  resource: Resource;
 }
 
 const SubmitStatusForm = ({
@@ -51,6 +51,22 @@ const SubmitStatusForm = ({
   const [output, setOutput] = React.useState('');
   const [performanceData, setPerformanceData] = React.useState('');
 
+  const serviceStatuses = [
+    {
+      id: 0,
+      name: t(labelOk),
+    },
+    {
+      id: 1,
+      name: t(labelWarning),
+    },
+    {
+      id: 2,
+      name: t(labelCritical),
+    },
+    { id: 3, name: t(labelUnknown) },
+  ];
+
   const statuses = {
     host: [
       {
@@ -60,21 +76,8 @@ const SubmitStatusForm = ({
       { id: 1, name: t(labelDown) },
       { id: 2, name: t(labelUnreachable) },
     ],
-    service: [
-      {
-        id: 0,
-        name: t(labelOk),
-      },
-      {
-        id: 1,
-        name: t(labelWarning),
-      },
-      {
-        id: 2,
-        name: t(labelCritical),
-      },
-      { id: 3, name: t(labelUnknown) },
-    ],
+    metaservice: serviceStatuses,
+    service: serviceStatuses,
   };
 
   const { sendRequest, sending } = useRequest({
@@ -83,10 +86,10 @@ const SubmitStatusForm = ({
 
   const submitStatus = (): void => {
     sendRequest({
-      resource,
-      statusId: selectedStatusId,
       output,
       performanceData,
+      resource,
+      statusId: selectedStatusId,
     }).then(() => {
       showMessage({
         message: t(labelStatusSubmitted),
@@ -110,42 +113,42 @@ const SubmitStatusForm = ({
 
   return (
     <Dialog
+      open
+      confirmDisabled={sending}
       labelCancel={t(labelCancel)}
       labelConfirm={t(labelSubmit)}
       labelTitle={t(labelSubmitStatus)}
-      open
-      onClose={onClose}
-      onCancel={onClose}
-      onConfirm={submitStatus}
-      confirmDisabled={sending}
       submitting={sending}
+      onCancel={onClose}
+      onClose={onClose}
+      onConfirm={submitStatus}
     >
-      <Grid direction="column" container spacing={1} style={{ minWidth: 500 }}>
+      <Grid container direction="column" spacing={1} style={{ minWidth: 500 }}>
         <Grid item>
           <SelectField
-            options={statuses[resource.type]}
+            fullWidth
             label={t(labelStatus)}
+            options={statuses[resource.type]}
             selectedOptionId={selectedStatusId}
             onChange={changeSelectedStatusId}
-            fullWidth
           />
         </Grid>
         <Grid item>
           <TextField
+            fullWidth
+            ariaLabel={t(labelOutput)}
+            label={t(labelOutput)}
             value={output}
             onChange={changeOutput}
-            label={t(labelOutput)}
-            ariaLabel={t(labelOutput)}
-            fullWidth
           />
         </Grid>
         <Grid item>
           <TextField
+            fullWidth
+            ariaLabel={t(labelPerformanceData)}
+            label={t(labelPerformanceData)}
             value={performanceData}
             onChange={changePerformanceData}
-            label={t(labelPerformanceData)}
-            ariaLabel={t(labelPerformanceData)}
-            fullWidth
           />
         </Grid>
       </Grid>

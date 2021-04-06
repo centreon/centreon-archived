@@ -10,20 +10,20 @@ import LegendMarker, { LegendMarkerVariant } from '../Legend/Marker';
 import { useMetricsValueContext } from './useMetricsValue';
 
 const useStyles = makeStyles((theme) => ({
-  tooltip: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
   emphasized: {
     fontWeight: 'bold',
   },
   metric: {
-    display: 'grid',
-    gridTemplateColumns: 'auto 1fr auto',
     alignItems: 'center',
+    display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(0.5),
+    gridTemplateColumns: 'auto 1fr auto',
     justifyContent: 'flex-start',
+  },
+  tooltip: {
+    display: 'flex',
+    flexDirection: 'column',
   },
   value: {
     justifySelf: 'flex-end',
@@ -51,9 +51,9 @@ const MetricsTooltip = (): JSX.Element | null => {
   return (
     <div className={classes.tooltip}>
       <Typography
-        variant="caption"
         align="center"
         className={classes.emphasized}
+        variant="caption"
       >
         {formatDate()}
       </Typography>
@@ -66,12 +66,12 @@ const MetricsTooltip = (): JSX.Element | null => {
               color={data?.color || ''}
               variant={LegendMarkerVariant.dot}
             />
-            <Typography variant="caption" noWrap>
+            <Typography noWrap variant="caption">
               {truncateInMiddle(data?.name || '')}
             </Typography>
             <Typography
-              variant="caption"
               className={clsx([classes.value, classes.emphasized])}
+              variant="caption"
             >
               {data?.formattedValue}
             </Typography>

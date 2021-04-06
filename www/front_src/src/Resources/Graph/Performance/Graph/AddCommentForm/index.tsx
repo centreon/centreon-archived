@@ -26,9 +26,9 @@ import { Resource } from '../../../../models';
 import { ResourceDetails } from '../../../../Details/models';
 
 interface Props {
+  date: Date;
   onClose: () => void;
   onSuccess: (comment) => void;
-  date: Date;
   resource: Resource | ResourceDetails;
 }
 
@@ -58,8 +58,8 @@ const AddCommentForm = ({
     };
 
     sendRequest({
-      resources: [resource],
       parameters,
+      resources: [resource],
     }).then(() => {
       showMessage({
         message: t(labelCommentAdded),
@@ -86,30 +86,30 @@ const AddCommentForm = ({
   return (
     <Dialog
       open
-      onClose={onClose}
-      onCancel={onClose}
-      onConfirm={confirm}
+      confirmDisabled={!canConfirm}
       labelConfirm={t(labelAdd)}
       labelTitle={t(labelAddComment)}
-      confirmDisabled={!canConfirm}
       submitting={sending}
+      onCancel={onClose}
+      onClose={onClose}
+      onConfirm={confirm}
     >
-      <Grid direction="column" container spacing={2}>
+      <Grid container direction="column" spacing={2}>
         <Grid item>
           <Typography variant="h6">{toDateTime(date)}</Typography>
         </Grid>
         <Grid item>
           <TextField
             autoFocus
+            multiline
+            required
+            ariaLabel={t(labelComment)}
             error={getError()}
             label={t(labelComment)}
-            ariaLabel={t(labelComment)}
-            value={comment}
-            required
-            onChange={changeComment}
-            style={{ width: 300 }}
             rows={3}
-            multiline
+            style={{ width: 300 }}
+            value={comment}
+            onChange={changeComment}
           />
         </Grid>
       </Grid>

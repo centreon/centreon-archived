@@ -15137,6 +15137,11 @@ msgstr "Erro ao remover tokens de um contato"
 # msgstr ""
 
 #  msgid "Check duration"
+
+#  msgid "Display metric values tooltip"
+#  msgstr ""
+
+#  msgid "Check duration"
 #  msgstr ""
 
 #  msgid "Notifications disabled"
@@ -15146,6 +15151,9 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgstr ""
 
 #  msgid "Only passive checks are enabled"
+#  msgstr ""
+
+#  msgid "Calculation type"
 #  msgstr ""
 
 #  msgid "Mandatory data to create the entity '%s' is missing"

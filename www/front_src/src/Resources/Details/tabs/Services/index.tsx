@@ -3,13 +3,12 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNil, path, pathOr } from 'ramda';
 
-import { makeStyles } from '@material-ui/core';
 import GraphIcon from '@material-ui/icons/BarChart';
 import ListIcon from '@material-ui/icons/List';
 
 import { useRequest, IconButton, ListingModel } from '@centreon/ui';
 
-import { TabProps, detailsTabId } from '..';
+import { TabProps } from '..';
 import { ResourceContext, useResourceContext } from '../../../Context';
 import {
   labelSwitchToGraph,
@@ -30,48 +29,16 @@ import ServiceGraphs from './Graphs';
 import ServiceList from './List';
 import LoadingSkeleton from './LoadingSkeleton';
 
-const useStyles = makeStyles((theme) => ({
-  services: {
-    display: 'grid',
-    gridGap: theme.spacing(1),
-  },
-  serviceDetails: {
-    display: 'grid',
-    gridAutoFlow: 'columns',
-    gridTemplateColumns: 'auto 1fr auto',
-    gridGap: theme.spacing(2),
-    alignItems: 'center',
-  },
-  serviceCard: {
-    padding: theme.spacing(1),
-  },
-  noResultContainer: {
-    padding: theme.spacing(1),
-  },
-}));
-
 type ServicesTabContentProps = TabProps &
   Pick<
     ResourceContext,
-    | 'setSelectedResourceUuid'
-    | 'setSelectedResourceId'
-    | 'setSelectedResourceType'
-    | 'setSelectedResourceParentId'
-    | 'setSelectedResourceParentType'
-    | 'setOpenDetailsTabId'
-    | 'tabParameters'
-    | 'setServicesTabParameters'
+    'selectResource' | 'tabParameters' | 'setServicesTabParameters'
   >;
 
 const ServicesTabContent = ({
   details,
-  setSelectedResourceUuid,
-  setSelectedResourceId,
-  setSelectedResourceType,
-  setSelectedResourceParentId,
-  setSelectedResourceParentType,
-  setOpenDetailsTabId,
   tabParameters,
+  selectResource,
   setServicesTabParameters,
 }: ServicesTabContentProps): JSX.Element => {
   const { t } = useTranslation();
@@ -92,16 +59,16 @@ const ServicesTabContent = ({
     adjustTimePeriod,
     resourceDetailsUpdated,
   } = useTimePeriod({
-    defaultSelectedTimePeriodId: path(
-      ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
+    defaultGraphOptions: path(
+      ['services', 'graphTimePeriod', 'graphOptions'],
       tabParameters,
     ),
     defaultSelectedCustomTimePeriod: path(
       ['services', 'graphTimePeriod', 'selectedCustomTimePeriod'],
       tabParameters,
     ),
-    defaultGraphOptions: path(
-      ['services', 'graphTimePeriod', 'graphOptions'],
+    defaultSelectedTimePeriodId: path(
+      ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
       tabParameters,
     ),
     details,
@@ -126,9 +93,9 @@ const ServicesTabContent = ({
   }): Promise<ListingModel<Resource>> => {
     return sendRequest({
       limit,
+      onlyWithPerformanceData: graphMode ? true : undefined,
       page: atPage,
       resourceTypes: ['service'],
-      onlyWithPerformanceData: graphMode ? true : undefined,
       search: {
         conditions: [
           {
@@ -142,15 +109,6 @@ const ServicesTabContent = ({
     });
   };
 
-  const selectService = (service): void => {
-    setOpenDetailsTabId(detailsTabId);
-    setSelectedResourceUuid(service.uuid);
-    setSelectedResourceId(service.id);
-    setSelectedResourceType(service.type);
-    setSelectedResourceParentType(service?.parent?.type);
-    setSelectedResourceParentId(service?.parent?.id);
-  };
-
   const switchMode = (): void => {
     setCanDisplayGraphs(false);
     const mode = !graphMode;
@@ -158,12 +116,12 @@ const ServicesTabContent = ({
     setGraphMode(mode);
 
     setServicesTabParameters({
+      graphMode: mode,
       graphTimePeriod: pathOr(
         {},
         ['services', 'graphTimePeriod'],
         tabParameters,
       ),
-      graphMode: mode,
     });
   };
 
@@ -178,8 +136,8 @@ const ServicesTabContent = ({
   };
 
   const graphOptions = useGraphOptions({
-    graphTabParameters: tabParameters.services?.graphTimePeriod,
     changeTabGraphOptions,
+    graphTabParameters: tabParameters.services?.graphTimePeriod,
   });
 
   React.useEffect(() => {
@@ -195,53 +153,53 @@ const ServicesTabContent = ({
   return (
     <>
       <IconButton
-        title={t(labelSwitch)}
         ariaLabel={t(labelSwitch)}
         disabled={loading}
+        title={t(labelSwitch)}
         onClick={switchMode}
       >
         {switchIcon}
       </IconButton>
       <GraphOptionsContext.Provider value={graphOptions}>
         <InfiniteScroll<Resource>
-          preventReloadWhen={details?.type === 'service'}
-          sendListingRequest={sendListingRequest}
           details={details}
-          loadingSkeleton={<LoadingSkeleton />}
           filter={
             graphMode ? (
               <TimePeriodButtonGroup
+                changeCustomTimePeriod={changeCustomTimePeriod}
+                customTimePeriod={customTimePeriod}
+                disabled={loading}
                 selectedTimePeriodId={selectedTimePeriod?.id}
                 onChange={changeSelectedTimePeriod}
-                disabled={loading}
-                customTimePeriod={customTimePeriod}
-                changeCustomTimePeriod={changeCustomTimePeriod}
               />
             ) : undefined
           }
-          reloadDependencies={[graphMode]}
-          loading={sending}
           limit={limit}
+          loading={sending}
+          loadingSkeleton={<LoadingSkeleton />}
+          preventReloadWhen={details?.type !== 'host'}
+          reloadDependencies={[graphMode]}
+          sendListingRequest={sendListingRequest}
         >
           {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
             const displayGraphs = graphMode && canDisplayGraphs;
 
             return displayGraphs ? (
               <ServiceGraphs
-                services={entities}
+                adjustTimePeriod={adjustTimePeriod}
+                customTimePeriod={customTimePeriod}
+                getIntervalDates={getIntervalDates}
                 infiniteScrollTriggerRef={infiniteScrollTriggerRef}
                 periodQueryParameters={periodQueryParameters}
-                getIntervalDates={getIntervalDates}
-                selectedTimePeriod={selectedTimePeriod}
-                customTimePeriod={customTimePeriod}
-                adjustTimePeriod={adjustTimePeriod}
                 resourceDetailsUpdated={resourceDetailsUpdated}
+                selectedTimePeriod={selectedTimePeriod}
+                services={entities}
               />
             ) : (
               <ServiceList
-                services={entities}
-                onSelectService={selectService}
                 infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+                services={entities}
+                onSelectService={selectResource}
               />
             );
           }}
@@ -252,18 +210,13 @@ const ServicesTabContent = ({
 };
 
 const MemoizedServiceTabContent = memoizeComponent<ServicesTabContentProps>({
-  memoProps: ['details', 'tabParameters'],
   Component: ServicesTabContent,
+  memoProps: ['details', 'tabParameters'],
 });
 
 const ServicesTab = ({ details }: TabProps): JSX.Element => {
   const {
-    setSelectedResourceUuid,
-    setSelectedResourceId,
-    setSelectedResourceType,
-    setSelectedResourceParentId,
-    setSelectedResourceParentType,
-    setOpenDetailsTabId,
+    selectResource,
     tabParameters,
     setServicesTabParameters,
   } = useResourceContext();
@@ -271,17 +224,11 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
   return (
     <MemoizedServiceTabContent
       details={details}
-      tabParameters={tabParameters}
-      setSelectedResourceUuid={setSelectedResourceUuid}
-      setSelectedResourceId={setSelectedResourceId}
-      setSelectedResourceType={setSelectedResourceType}
-      setSelectedResourceParentId={setSelectedResourceParentId}
-      setSelectedResourceParentType={setSelectedResourceParentType}
-      setOpenDetailsTabId={setOpenDetailsTabId}
+      selectResource={selectResource}
       setServicesTabParameters={setServicesTabParameters}
+      tabParameters={tabParameters}
     />
   );
 };
 
 export default ServicesTab;
-export { useStyles };
