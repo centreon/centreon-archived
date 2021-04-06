@@ -32,12 +32,12 @@ const useStyles = makeStyles((theme) => ({
 type DateEvents = Array<[string, Array<TimelineEvent>]>;
 
 interface Props {
-  timeline: Array<TimelineEvent>;
-  total: number;
   limit: number;
-  page: number;
   loading: boolean;
   onLoadMore: () => void;
+  page: number;
+  timeline: Array<TimelineEvent>;
+  total: number;
 }
 
 const Events = ({
@@ -65,10 +65,10 @@ const Events = ({
   const dates = eventsByDate.map(head);
 
   const infiniteScrollTriggerRef = useIntersectionObserver({
+    action: onLoadMore,
+    loading,
     maxPage,
     page,
-    loading,
-    action: onLoadMore,
   });
 
   return (

@@ -21,10 +21,10 @@ import useAdapters from '../api/adapters';
 type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
 
 interface Props {
-  onCreate: (filter) => void;
-  onCancel: () => void;
-  open: boolean;
   filter: Filter;
+  onCancel: () => void;
+  onCreate: (filter) => void;
+  open: boolean;
 }
 
 const CreateFilterDialog = ({
@@ -45,17 +45,14 @@ const CreateFilterDialog = ({
     initialValues: {
       name: '',
     },
-    validationSchema: Yup.object().shape({
-      name: Yup.string().required(labelRequired),
-    }),
     onSubmit: (values) => {
       sendRequest(
         omit(
           ['id'],
           toRawFilter({
+            criterias: filter.criterias,
             id: '',
             name: values.name,
-            criterias: filter.criterias,
           }),
         ),
       )
@@ -68,6 +65,9 @@ const CreateFilterDialog = ({
           );
         });
     },
+    validationSchema: Yup.object().shape({
+      name: Yup.string().required(labelRequired),
+    }),
   });
 
   const submitFormOnEnterKey = (event: React.KeyboardEvent): void => {
@@ -82,23 +82,23 @@ const CreateFilterDialog = ({
 
   return (
     <Dialog
-      open={open}
-      labelCancel={t(labelCancel)}
-      labelTitle={t(labelNewFilter)}
-      labelConfirm={t(labelSave)}
-      onConfirm={form.submitForm}
       confirmDisabled={confirmDisabled}
-      onCancel={onCancel}
+      labelCancel={t(labelCancel)}
+      labelConfirm={t(labelSave)}
+      labelTitle={t(labelNewFilter)}
+      open={open}
       submitting={sending}
+      onCancel={onCancel}
+      onConfirm={form.submitForm}
     >
       <TextField
+        autoFocus
+        ariaLabel={t(labelName)}
+        error={form.errors.name}
         label={t(labelName)}
         value={form.values.name}
-        error={form.errors.name}
         onChange={form.handleChange('name') as InputChangeEvent}
         onKeyDown={submitFormOnEnterKey}
-        ariaLabel={t(labelName)}
-        autoFocus
       />
     </Dialog>
   );

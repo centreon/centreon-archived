@@ -23,10 +23,10 @@ const listServices = (cancelToken: CancelToken) => (
 ): Promise<ServiceListing> => {
   return getData<ServiceListing>(cancelToken)(
     buildListServicesEndpoint({
+      hostId,
       parameters: {
         limit: 100,
       },
-      hostId,
     }),
   );
 };

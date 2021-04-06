@@ -16,8 +16,8 @@ const Tooltip = ({ x, y, label, toggled }) => {
     <div
       className={classnames(styles.tooltip, { [styles.hidden]: !toggled })}
       style={{
-        top: y,
         left: x,
+        top: y,
       }}
     >
       {t(label)}
@@ -33,10 +33,10 @@ const Tooltip = ({ x, y, label, toggled }) => {
  * toogled (bool) to detect if the menu is folded or not - toggled false - menu is folded
  */
 const mapStateToProps = ({ tooltip }) => ({
-  x: tooltip.x,
-  y: tooltip.y,
   label: tooltip.label,
   toggled: tooltip.toggled,
+  x: tooltip.x,
+  y: tooltip.y,
 });
 
 export default connect(mapStateToProps, null)(Tooltip);

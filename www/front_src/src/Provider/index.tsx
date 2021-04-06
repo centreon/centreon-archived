@@ -49,10 +49,10 @@ const AppProvider = (): JSX.Element | null => {
     const locale = (retrievedUser.locale || navigator.language)?.slice(0, 2);
 
     i18n.use(initReactI18next).init({
-      nsSeparator: false,
-      keySeparator: false,
       fallbackLng: 'en',
+      keySeparator: false,
       lng: locale,
+      nsSeparator: false,
       resources: pipe(
         toPairs as (t) => Array<[string, ResourceLanguage]>,
         reduce(
@@ -80,8 +80,8 @@ const AppProvider = (): JSX.Element | null => {
         ]) => {
           setUser({
             alias: retrievedUser.alias,
-            name: retrievedUser.name,
             locale: retrievedUser.locale || 'en',
+            name: retrievedUser.name,
             timezone: retrievedUser.timezone,
           });
           setDowntime({
@@ -99,8 +99,8 @@ const AppProvider = (): JSX.Element | null => {
           setActionAcl(retrievedAcl);
 
           initializeI18n({
-            retrievedUser,
             retrievedTranslations,
+            retrievedUser,
           });
 
           setDataLoaded(true);

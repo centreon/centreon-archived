@@ -34,9 +34,9 @@ import {
 import { submitResourceStatus } from './api';
 
 interface Props {
-  resource: Resource;
   onClose: () => void;
   onSuccess: () => void;
+  resource: Resource;
 }
 
 const SubmitStatusForm = ({
@@ -83,10 +83,10 @@ const SubmitStatusForm = ({
 
   const submitStatus = (): void => {
     sendRequest({
-      resource,
-      statusId: selectedStatusId,
       output,
       performanceData,
+      resource,
+      statusId: selectedStatusId,
     }).then(() => {
       showMessage({
         message: t(labelStatusSubmitted),
@@ -110,42 +110,42 @@ const SubmitStatusForm = ({
 
   return (
     <Dialog
+      open
+      confirmDisabled={sending}
       labelCancel={t(labelCancel)}
       labelConfirm={t(labelSubmit)}
       labelTitle={t(labelSubmitStatus)}
-      open
-      onClose={onClose}
-      onCancel={onClose}
-      onConfirm={submitStatus}
-      confirmDisabled={sending}
       submitting={sending}
+      onCancel={onClose}
+      onClose={onClose}
+      onConfirm={submitStatus}
     >
-      <Grid direction="column" container spacing={1} style={{ minWidth: 500 }}>
+      <Grid container direction="column" spacing={1} style={{ minWidth: 500 }}>
         <Grid item>
           <SelectField
-            options={statuses[resource.type]}
+            fullWidth
             label={t(labelStatus)}
+            options={statuses[resource.type]}
             selectedOptionId={selectedStatusId}
             onChange={changeSelectedStatusId}
-            fullWidth
           />
         </Grid>
         <Grid item>
           <TextField
+            fullWidth
+            ariaLabel={t(labelOutput)}
+            label={t(labelOutput)}
             value={output}
             onChange={changeOutput}
-            label={t(labelOutput)}
-            ariaLabel={t(labelOutput)}
-            fullWidth
           />
         </Grid>
         <Grid item>
           <TextField
+            fullWidth
+            ariaLabel={t(labelPerformanceData)}
+            label={t(labelPerformanceData)}
             value={performanceData}
             onChange={changePerformanceData}
-            label={t(labelPerformanceData)}
-            ariaLabel={t(labelPerformanceData)}
-            fullWidth
           />
         </Grid>
       </Grid>

@@ -20,9 +20,9 @@ const LoadableHooks = ({
   ...rest
 }: Props): JSX.Element => {
   const basename = history.createHref({
+    hash: '',
     pathname: '/',
     search: '',
-    hash: '',
   });
 
   return (
@@ -35,7 +35,7 @@ const LoadableHooks = ({
           );
 
           return (
-            <HookComponent key={path} centreonAxios={centreonAxios} {...rest} />
+            <HookComponent centreonAxios={centreonAxios} key={path} {...rest} />
           );
         })}
     </>

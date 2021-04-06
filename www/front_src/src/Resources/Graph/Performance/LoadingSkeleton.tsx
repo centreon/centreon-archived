@@ -6,13 +6,13 @@ import { Skeleton } from '@material-ui/lab';
 const useSkeletonStyles = makeStyles((theme) => ({
   loadingSkeleton: {
     display: 'grid',
-    gridTemplateRows: '1fr 10fr 2fr',
     gridGap: theme.spacing(1),
+    gridTemplateRows: '1fr 10fr 2fr',
     height: '100%',
   },
   loadingSkeletonLine: {
-    transform: 'none',
     paddingBottom: theme.spacing(1),
+    transform: 'none',
   },
 }));
 

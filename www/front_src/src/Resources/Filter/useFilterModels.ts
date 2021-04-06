@@ -24,35 +24,35 @@ import {
 import { Filter, CriteriaValue } from './models';
 
 interface FilterModelsContext {
-  criteriaValueNameById: { [id: string]: string };
   allFilter: Filter;
-  unhandledProblemsFilter: Filter;
-  resourceProblemsFilter: Filter;
+  criteriaValueNameById: { [id: string]: string };
+  isCustom: (filter: Filter) => boolean;
   newFilter: Filter;
+  resourceProblemsFilter: Filter;
   resourceTypes: Array<CriteriaValue>;
+  standardFilterById: { [id: string]: Filter };
   states: Array<CriteriaValue>;
   statuses: Array<CriteriaValue>;
-  standardFilterById: { [id: string]: Filter };
-  isCustom: (filter: Filter) => boolean;
+  unhandledProblemsFilter: Filter;
 }
 
 const useFilterModels = (): FilterModelsContext => {
   const { t } = useTranslation();
 
   const criteriaValueNameById = {
-    acknowledged: t(labelAcknowledged),
-    in_downtime: t(labelInDowntime),
-    unhandled_problems: t(labelUnhandled),
-    host: t(labelHost),
-    service: t(labelService),
+    CRITICAL: t(labelCritical),
+    DOWN: t(labelDown),
     OK: t(labelOk),
+    PENDING: t(labelPending),
+    UNKNOWN: t(labelUnknown),
+    UNREACHABLE: t(labelUnreachable),
     UP: t(labelUp),
     WARNING: t(labelWarning),
-    DOWN: t(labelDown),
-    CRITICAL: t(labelCritical),
-    UNREACHABLE: t(labelUnreachable),
-    UNKNOWN: t(labelUnknown),
-    PENDING: t(labelPending),
+    acknowledged: t(labelAcknowledged),
+    host: t(labelHost),
+    in_downtime: t(labelInDowntime),
+    service: t(labelService),
+    unhandled_problems: t(labelUnhandled),
   };
 
   const unhandledStateId = 'unhandled_problems';
@@ -143,16 +143,16 @@ const useFilterModels = (): FilterModelsContext => {
   ];
 
   const allFilter = {
-    id: 'all',
-    name: t(labelAll),
     criterias: {
+      hostGroups: [],
       resourceTypes: [],
+      search: undefined,
+      serviceGroups: [],
       states: [],
       statuses: [],
-      hostGroups: [],
-      serviceGroups: [],
-      search: undefined,
     },
+    id: 'all',
+    name: t(labelAll),
   };
 
   const newFilter = {
@@ -161,34 +161,34 @@ const useFilterModels = (): FilterModelsContext => {
   } as Filter;
 
   const unhandledProblemsFilter: Filter = {
-    id: 'unhandled_problems',
-    name: t(labelUnhandledProblems),
     criterias: {
-      search: undefined,
+      hostGroups: [],
       resourceTypes: [],
+      search: undefined,
+      serviceGroups: [],
       states: [unhandledState],
       statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
-      hostGroups: [],
-      serviceGroups: [],
     },
+    id: 'unhandled_problems',
+    name: t(labelUnhandledProblems),
   };
 
   const resourceProblemsFilter: Filter = {
-    id: 'resource_problems',
-    name: t(labelResourceProblems),
     criterias: {
+      hostGroups: [],
       resourceTypes: [],
+      search: undefined,
+      serviceGroups: [],
       states: [],
       statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
-      hostGroups: [],
-      serviceGroups: [],
-      search: undefined,
     },
+    id: 'resource_problems',
+    name: t(labelResourceProblems),
   };
 
   const standardFilterById = {
-    resource_problems: resourceProblemsFilter,
     all: allFilter,
+    resource_problems: resourceProblemsFilter,
     unhandled_problems: unhandledProblemsFilter,
   };
 
@@ -197,16 +197,16 @@ const useFilterModels = (): FilterModelsContext => {
   };
 
   return {
-    criteriaValueNameById,
     allFilter,
-    unhandledProblemsFilter,
-    resourceProblemsFilter,
+    criteriaValueNameById,
+    isCustom,
     newFilter,
+    resourceProblemsFilter,
     resourceTypes,
+    standardFilterById,
     states,
     statuses,
-    standardFilterById,
-    isCustom,
+    unhandledProblemsFilter,
   };
 };
 

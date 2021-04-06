@@ -37,28 +37,28 @@ type TimelineListing = ListingModel<TimelineEvent>;
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: '100%',
-    height: '100%',
-    display: 'grid',
-    alignItems: 'center',
-    justifyItems: 'center',
     alignContent: 'flex-start',
+    alignItems: 'center',
+    display: 'grid',
     gridGap: theme.spacing(1),
-  },
-  filterContainer: {
+    height: '100%',
+    justifyItems: 'center',
     width: '100%',
-  },
-  filterAutocomplete: {
-    margin: theme.spacing(2),
-  },
-  noResultContainer: {
-    padding: theme.spacing(1),
   },
   events: {
     display: 'grid',
     gridAutoFlow: 'row',
     gridGap: theme.spacing(1),
     width: '100%',
+  },
+  filterAutocomplete: {
+    margin: theme.spacing(2),
+  },
+  filterContainer: {
+    width: '100%',
+  },
+  noResultContainer: {
+    padding: theme.spacing(1),
   },
 }));
 
@@ -82,8 +82,8 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
-    request: listTimelineEvents,
     decoder: listTimelineEventsDecoder,
+    request: listTimelineEvents,
   });
 
   const getSearch = (): SearchParameter | undefined => {
@@ -111,8 +111,8 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        page: atPage,
         limit,
+        page: atPage,
         search: getSearch(),
       },
     })
@@ -180,12 +180,12 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       <Paper className={classes.filterContainer}>
         <div className={classes.filterAutocomplete}>
           <MultiAutocompleteField
-            label={t(labelEvent)}
-            onChange={changeSelectedTypes}
-            value={selectedTypes}
-            options={translatedTypes}
             fullWidth
+            label={t(labelEvent)}
             limitTags={3}
+            options={translatedTypes}
+            value={selectedTypes}
+            onChange={changeSelectedTypes}
           />
         </div>
       </Paper>
@@ -208,21 +208,21 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
               <>
                 {page > 1 && (
                   <Button
-                    variant="contained"
                     color="primary"
                     size="small"
                     startIcon={<IconRefresh />}
+                    variant="contained"
                     onClick={reload}
                   >
                     {labelRefresh}
                   </Button>
                 )}
                 <Events
+                  limit={limit}
+                  loading={sending}
+                  page={page}
                   timeline={timeline as Array<TimelineEvent>}
                   total={total}
-                  limit={limit}
-                  page={page}
-                  loading={sending}
                   onLoadMore={loadMoreEvents}
                 />
               </>,

@@ -11,12 +11,12 @@ import axiosReducer from './axiosReducer';
 
 export default (history) =>
   combineReducers({
-    router: connectRouter(history),
-    form: formReducer,
-    pollerForm: pollerWizardReducer,
-    navigation: navigationReducer,
-    remoteData: axiosReducer,
-    intervals: refreshReducer,
     externalComponents: externalComponentsReducer,
+    form: formReducer,
+    intervals: refreshReducer,
+    navigation: navigationReducer,
+    pollerForm: pollerWizardReducer,
+    remoteData: axiosReducer,
+    router: connectRouter(history),
     tooltip: tooltipReducer,
   });

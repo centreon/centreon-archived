@@ -15,12 +15,12 @@ const formatTick = ({ unit, base }) => (value): string => {
     return '';
   }
 
-  return formatMetricValue({ value, unit, base }) as string;
+  return formatMetricValue({ base, unit, value }) as string;
 };
 
 interface GraphLinesProps {
-  lines: Array<LineModel>;
   base?: number;
+  lines: Array<LineModel>;
 }
 
 const getGraphLines = ({
@@ -34,16 +34,16 @@ const getGraphLines = ({
   const multipleYAxes = getUnits().length < 3;
 
   const getYAxes = (): Array<JSX.Element> => {
-    const props = { tick: { fontSize: 12, fontFamily } };
+    const props = { tick: { fontFamily, fontSize: 12 } };
 
     if (multipleYAxes) {
       return getUnits().map((unit, index) => {
         return (
           <YAxis
-            yAxisId={unit}
             key={unit}
             orientation={index === 0 ? 'left' : 'right'}
-            tickFormatter={formatTick({ unit, base })}
+            tickFormatter={formatTick({ base, unit })}
+            yAxisId={unit}
             {...props}
           />
         );
@@ -53,7 +53,7 @@ const getGraphLines = ({
     return [
       <YAxis
         key="single-y-axis"
-        tickFormatter={formatTick({ unit: '', base })}
+        tickFormatter={formatTick({ base, unit: '' })}
         {...props}
       />,
     ];
@@ -72,15 +72,15 @@ const getGraphLines = ({
         highlight,
       }) => {
         const props = {
-          dot: false,
           dataKey: metric,
-          unit,
-          stroke: lineColor,
-          yAxisId: multipleYAxes ? unit : undefined,
-          isAnimationActive: false,
+          dot: false,
           fill: transparency ? fade(areaColor, transparency * 0.01) : undefined,
-          strokeWidth: highlight ? 2 : 1,
+          isAnimationActive: false,
           opacity: highlight === false ? 0.3 : 1,
+          stroke: lineColor,
+          strokeWidth: highlight ? 2 : 1,
+          unit,
+          yAxisId: multipleYAxes ? unit : undefined,
         };
 
         if (filled) {

@@ -1,16 +1,16 @@
 interface DsData {
+  ds_color_area: string;
   ds_color_line: string;
   ds_filled: boolean;
-  ds_color_area: string;
   ds_transparency: number;
 }
 
 export interface Metric {
   data: Array<number>;
   ds_data: DsData;
+  legend: string;
   metric: string;
   unit: string;
-  legend: string;
 }
 
 export interface GraphData {
@@ -24,14 +24,14 @@ export interface TimeValue {
 }
 
 export interface Line {
-  name: string;
-  color: string;
-  metric: string;
-  display: boolean;
   areaColor: string;
-  unit: string;
-  lineColor: string;
+  color: string;
+  display: boolean;
   filled: boolean;
-  transparency: number;
   highlight?: boolean;
+  lineColor: string;
+  metric: string;
+  name: string;
+  transparency: number;
+  unit: string;
 }

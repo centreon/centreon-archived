@@ -31,10 +31,10 @@ import CreateFilterDialog from './CreateFilterDialog';
 
 const useStyles = makeStyles((theme) => ({
   save: {
+    alignItems: 'center',
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
-    alignItems: 'center',
   },
 }));
 
@@ -146,14 +146,14 @@ const SaveFilterMenu = (): JSX.Element => {
         <SettingsIcon />
       </IconButton>
       <Menu
-        anchorEl={menuAnchor}
         keepMounted
+        anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
         onClose={closeSaveFilterMenu}
       >
         <MenuItem
-          onClick={openCreateFilterDialog}
           disabled={!canSaveFilterAsNew}
+          onClick={openCreateFilterDialog}
         >
           {t(labelSaveAsNew)}
         </MenuItem>
@@ -163,16 +163,16 @@ const SaveFilterMenu = (): JSX.Element => {
             {sendingUpdateFilterRequest && <CircularProgress size={15} />}
           </div>
         </MenuItem>
-        <MenuItem onClick={openEditPanel} disabled={isEmpty(customFilters)}>
+        <MenuItem disabled={isEmpty(customFilters)} onClick={openEditPanel}>
           {t(labelEditFilters)}
         </MenuItem>
       </Menu>
       {createFilterDialogOpen && (
         <CreateFilterDialog
           open
-          onCreate={confirmCreateFilter}
           filter={updatedFilter}
           onCancel={closeCreateFilterDialog}
+          onCreate={confirmCreateFilter}
         />
       )}
     </>

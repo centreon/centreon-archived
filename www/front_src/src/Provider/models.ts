@@ -1,10 +1,10 @@
 import { KeyValuePair } from 'ramda';
 
 export interface User {
-  locale: string;
-  timezone: string;
   alias: string;
+  locale: string;
   name: string;
+  timezone: string;
 }
 
 export type UserContext = {
@@ -14,16 +14,16 @@ export type UserContext = {
 } & User;
 
 export interface ActionAcl {
-  check: boolean;
   acknowledgement: boolean;
+  check: boolean;
   disacknowledgement: boolean;
   downtime: boolean;
   submit_status: boolean;
 }
 
 export interface Actions {
-  service: ActionAcl;
   host: ActionAcl;
+  service: ActionAcl;
 }
 
 interface Acl {

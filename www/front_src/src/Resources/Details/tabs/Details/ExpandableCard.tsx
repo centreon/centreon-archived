@@ -21,16 +21,16 @@ import { labelMore, labelLess } from '../../../translatedLabels';
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
     getStatusColors({
-      theme,
       severityCode,
+      theme,
     }).backgroundColor;
 
   return {
     card: ({ severityCode }): CreateCSSProperties => ({
       ...(severityCode && {
-        borderWidth: 2,
-        borderStyle: 'solid',
         borderColor: getStatusBackgroundColor(severityCode),
+        borderStyle: 'solid',
+        borderWidth: 2,
       }),
     }),
     title: ({ severityCode }): CreateCSSProperties => ({
@@ -40,9 +40,9 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
 });
 
 interface Props {
-  title: string;
   content: string;
   severityCode?: number;
+  title: string;
 }
 
 const ExpandableCard = ({
@@ -64,7 +64,7 @@ const ExpandableCard = ({
   };
 
   const Line = (line, index): JSX.Element => (
-    <Typography key={`${line}-${index}`} variant="body2" component="p">
+    <Typography component="p" key={`${line}-${index}`} variant="body2">
       {line}
     </Typography>
   );
@@ -73,10 +73,10 @@ const ExpandableCard = ({
     <Card className={classes.card}>
       <CardContent>
         <Typography
-          className={classes.title}
-          variant="subtitle2"
-          color="textSecondary"
           gutterBottom
+          className={classes.title}
+          color="textSecondary"
+          variant="subtitle2"
         >
           {title}
         </Typography>

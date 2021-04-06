@@ -4,23 +4,23 @@ import { UserContext } from './models';
 
 const defaultUser = {
   alias: '',
-  name: '',
   locale: navigator.language,
+  name: '',
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 };
 
 const defaultAcl = {
   actions: {
     host: {
-      check: false,
       acknowledgement: false,
+      check: false,
       disacknowledgement: false,
       downtime: false,
       submit_status: false,
     },
     service: {
-      check: false,
       acknowledgement: false,
+      check: false,
       disacknowledgement: false,
       downtime: false,
       submit_status: false,

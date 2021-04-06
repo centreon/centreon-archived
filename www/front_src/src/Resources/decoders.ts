@@ -4,8 +4,8 @@ import { Status } from './models';
 
 const statusDecoder = JsonDecoder.object<Status>(
   {
-    severity_code: JsonDecoder.number,
     name: JsonDecoder.string,
+    severity_code: JsonDecoder.number,
   },
   'Status',
 );

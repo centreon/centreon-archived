@@ -21,17 +21,17 @@ import { useUserContext } from '../../../Provider/UserContext';
 import { labelServicesDenied, labelHostsDenied } from '../../translatedLabels';
 
 interface AclQuery {
-  canDowntime: (resources) => boolean;
-  getDowntimeDeniedTypeAlert: (resources) => string | undefined;
-  canDowntimeServices: () => boolean;
   canAcknowledge: (resources) => boolean;
-  getAcknowledgementDeniedTypeAlert: (resources) => string | undefined;
   canAcknowledgeServices: () => boolean;
   canCheck: (resources) => boolean;
   canDisacknowledge: (resources) => boolean;
   canDisacknowledgeServices: () => boolean;
-  getDisacknowledgementDeniedTypeAlert: (resources) => string | undefined;
+  canDowntime: (resources) => boolean;
+  canDowntimeServices: () => boolean;
   canSubmitStatus: (resource) => boolean;
+  getAcknowledgementDeniedTypeAlert: (resources) => string | undefined;
+  getDisacknowledgementDeniedTypeAlert: (resources) => string | undefined;
+  getDowntimeDeniedTypeAlert: (resources) => string | undefined;
 }
 
 const useAclQuery = (): AclQuery => {
@@ -44,8 +44,8 @@ const useAclQuery = (): AclQuery => {
     resources,
     action,
   }: {
-    resources: Array<Resource>;
     action: string;
+    resources: Array<Resource>;
   }): boolean => {
     return pipe(
       map(toType),
@@ -54,7 +54,7 @@ const useAclQuery = (): AclQuery => {
   };
 
   const cannot = (action) => (resources): boolean =>
-    !can({ resources, action });
+    !can({ action, resources });
 
   const getDeniedTypeAlert = ({ resources, action }): string | undefined => {
     const isHost = propEq('type', 'host');
@@ -80,37 +80,37 @@ const useAclQuery = (): AclQuery => {
   };
 
   const canDowntime = (resources: Array<Resource>): boolean => {
-    return can({ resources, action: 'downtime' });
+    return can({ action: 'downtime', resources });
   };
 
   const getDowntimeDeniedTypeAlert = (
     resources: Array<Resource>,
   ): string | undefined => {
-    return getDeniedTypeAlert({ resources, action: 'downtime' });
+    return getDeniedTypeAlert({ action: 'downtime', resources });
   };
 
   const canDowntimeServices = (): boolean =>
     pathEq(['actions', 'service', 'downtime'], true)(acl);
 
   const canAcknowledge = (resources: Array<Resource>): boolean => {
-    return can({ resources, action: 'acknowledgement' });
+    return can({ action: 'acknowledgement', resources });
   };
 
   const getAcknowledgementDeniedTypeAlert = (
     resources: Array<Resource>,
   ): string | undefined => {
-    return getDeniedTypeAlert({ resources, action: 'acknowledgement' });
+    return getDeniedTypeAlert({ action: 'acknowledgement', resources });
   };
 
   const canAcknowledgeServices = (): boolean =>
     pathEq(['actions', 'service', 'acknowledgement'], true)(acl);
 
   const canCheck = (resources: Array<Resource>): boolean => {
-    return can({ resources, action: 'check' });
+    return can({ action: 'check', resources });
   };
 
   const canDisacknowledge = (resources: Array<Resource>): boolean => {
-    return can({ resources, action: 'disacknowledgement' });
+    return can({ action: 'disacknowledgement', resources });
   };
 
   const canDisacknowledgeServices = (): boolean =>
@@ -119,25 +119,25 @@ const useAclQuery = (): AclQuery => {
   const getDisacknowledgementDeniedTypeAlert = (
     resources: Array<Resource>,
   ): string | undefined => {
-    return getDeniedTypeAlert({ resources, action: 'disacknowledgement' });
+    return getDeniedTypeAlert({ action: 'disacknowledgement', resources });
   };
 
   const canSubmitStatus = (resources: Array<Resource>): boolean => {
-    return can({ resources, action: 'submit_status' });
+    return can({ action: 'submit_status', resources });
   };
 
   return {
-    canDowntime,
-    getDowntimeDeniedTypeAlert,
-    canDowntimeServices,
     canAcknowledge,
-    getAcknowledgementDeniedTypeAlert,
     canAcknowledgeServices,
     canCheck,
     canDisacknowledge,
     canDisacknowledgeServices,
-    getDisacknowledgementDeniedTypeAlert,
+    canDowntime,
+    canDowntimeServices,
     canSubmitStatus,
+    getAcknowledgementDeniedTypeAlert,
+    getDisacknowledgementDeniedTypeAlert,
+    getDowntimeDeniedTypeAlert,
   };
 };
 

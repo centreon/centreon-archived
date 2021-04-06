@@ -7,38 +7,38 @@ import { Typography, makeStyles, useTheme, fade } from '@material-ui/core';
 import { Line } from './models';
 
 const useStyles = makeStyles((theme) => ({
-  item: {
-    display: 'flex',
-    alignItems: 'center',
-    margin: theme.spacing(0, 1, 1, 0),
-  },
-  icon: {
-    width: 9,
-    height: 9,
-    borderRadius: '50%',
-    marginRight: theme.spacing(1),
-  },
   caption: {
-    marginRight: theme.spacing(1),
     color: fade(theme.palette.common.black, 0.6),
+    marginRight: theme.spacing(1),
   },
   hidden: {
     color: theme.palette.text.disabled,
   },
+  icon: {
+    borderRadius: '50%',
+    height: 9,
+    marginRight: theme.spacing(1),
+    width: 9,
+  },
+  item: {
+    alignItems: 'center',
+    display: 'flex',
+    margin: theme.spacing(0, 1, 1, 0),
+  },
   toggable: {
-    cursor: 'pointer',
     '&:hover': {
       color: theme.palette.common.black,
     },
+    cursor: 'pointer',
   },
 }));
 
 interface Props {
   lines: Array<Line>;
-  toggable: boolean;
-  onItemToggle: (params) => void;
-  onItemHighlight: (metric) => void;
   onClearItemHighlight: () => void;
+  onItemHighlight: (metric) => void;
+  onItemToggle: (params) => void;
+  toggable: boolean;
 }
 
 const Legend = ({

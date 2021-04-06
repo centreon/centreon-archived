@@ -76,34 +76,34 @@ jest.mock('react-redux', () => ({
 jest.mock('../icons/Downtime');
 
 const mockUserContext = {
-  alias: 'admin',
-  name: 'admin',
-  locale: 'en',
-  timezone: 'Europe/Paris',
-
   acl: {
     actions: {
-      service: {
-        downtime: true,
+      host: {
         acknowledgement: true,
-        disacknowledgement: true,
         check: true,
+        disacknowledgement: true,
+        downtime: true,
         submit_status: true,
       },
-      host: {
-        downtime: true,
+      service: {
         acknowledgement: true,
-        disacknowledgement: true,
         check: true,
+        disacknowledgement: true,
+        downtime: true,
         submit_status: true,
       },
     },
   },
-
+  alias: 'admin',
   downtime: {
     default_duration: 7200,
   },
+  locale: 'en',
+
+  name: 'admin',
+
   refresh_interval: 15,
+  timezone: 'Europe/Paris',
 };
 
 jest.mock('../../Provider/UserContext');
@@ -119,18 +119,18 @@ const ActionsWithLoading = (): JSX.Element => {
 let context: ResourceContext;
 
 const host = {
-  type: 'host',
   id: 0,
   passive_checks: true,
+  type: 'host',
 } as Resource;
 
 const service = {
   id: 1,
-  type: 'service',
   parent: {
     id: 1,
   },
   passive_checks: true,
+  type: 'service',
 } as Resource;
 
 const ActionsWithContext = (): JSX.Element => {
@@ -167,12 +167,12 @@ describe(Actions, () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
-          result: [],
           meta: {
-            page: 1,
             limit: 30,
+            page: 1,
             total: 0,
           },
+          result: [],
         },
       })
       .mockResolvedValueOnce({ data: [] });
@@ -288,13 +288,13 @@ describe(Actions, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         acknowledgeEndpoint,
         {
-          resources: map(pick(['type', 'id', 'parent']), selectedResources),
-
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
             is_notify_contacts: true,
             with_services: true,
           },
+
+          resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
         cancelTokenRequestParam,
       ),
@@ -320,11 +320,11 @@ describe(Actions, () => {
       expect(mockedAxios.delete).toHaveBeenCalledWith(disacknowledgeEndpoint, {
         cancelToken: expect.anything(),
         data: {
-          resources: map(pick(['type', 'id', 'parent']), selectedResources),
-
           disacknowledgement: {
             with_services: true,
           },
+
+          resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
       }),
     );
@@ -416,8 +416,8 @@ describe(Actions, () => {
 
     // set previous day as end date using left arrow key
     fireEvent.click(getByLabelText(labelChangeEndDate));
-    fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
-    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
+    fireEvent.keyDown(container, { code: 37, key: 'ArrowLeft' });
+    fireEvent.keyDown(container, { code: 13, key: 'Enter' });
 
     await waitFor(() =>
       expect(
@@ -452,15 +452,15 @@ describe(Actions, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         downtimeEndpoint,
         {
-          resources: map(pick(['type', 'id', 'parent']), selectedResources),
           downtime: {
             comment: labelDowntimeByAdmin,
             duration: 7200,
-            start_time: formatISO(now),
             end_time: formatISO(twoHoursFromNow),
             is_fixed: true,
+            start_time: formatISO(now),
             with_services: true,
           },
+          resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
         cancelTokenRequestParam,
       ),
@@ -538,9 +538,9 @@ describe(Actions, () => {
           resources: [
             {
               ...pick(['type', 'id', 'parent'], service),
-              status: 1,
               output,
               performance_data: performanceData,
+              status: 1,
             },
           ],
         },
@@ -567,18 +567,18 @@ describe(Actions, () => {
       ...mockUserContext,
       acl: {
         actions: {
-          service: {
-            downtime: false,
-            check: false,
+          host: {
             acknowledgement: false,
+            check: false,
             disacknowledgement: false,
+            downtime: false,
             submit_status: false,
           },
-          host: {
-            downtime: false,
-            check: false,
+          service: {
             acknowledgement: false,
+            check: false,
             disacknowledgement: false,
+            downtime: false,
             submit_status: false,
           },
         },

@@ -22,29 +22,29 @@ import { DetailsUrlQueryParameters, ResourceDetails } from './models';
 
 export interface DetailsState {
   clearSelectedResource: () => void;
+  details?: ResourceDetails;
   getSelectedResourceDetailsEndpoint: () => string | undefined;
-  selectedResourceUuid?: string;
-  setSelectedResourceUuid: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
+  loadDetails: () => void;
+  openDetailsTabId: TabId;
   selectedResourceId?: number;
+  selectedResourceParentId?: number;
+  selectedResourceUuid?: string;
+  setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
   setSelectedResourceId: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
-  setSelectedResourceType: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
-  selectedResourceParentId?: number;
   setSelectedResourceParentId: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
   setSelectedResourceParentType: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
-  openDetailsTabId: TabId;
-  setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
-  details?: ResourceDetails;
-  loadDetails: () => void;
+  setSelectedResourceType: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
+  setSelectedResourceUuid: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
 }
 
 const useDetails = (): DetailsState => {
@@ -73,12 +73,12 @@ const useDetails = (): DetailsState => {
   const { t } = useTranslation();
 
   const { sendRequest } = useRequest<ResourceDetails>({
-    request: getData,
     getErrorMessage: ifElse(
       pathEq(['response', 'status'], 404),
       always(t(labelNoResourceFound)),
       pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
     ),
+    request: getData,
   });
 
   React.useEffect(() => {
@@ -115,12 +115,12 @@ const useDetails = (): DetailsState => {
       {
         name: 'details',
         value: {
-          uuid: selectedResourceUuid,
           id: selectedResourceId,
           parentId: selectedResourceParentId,
-          type: selectedResourceType,
           parentType: selectedResourceParentType,
           tab: getTabLabelFromId(openDetailsTabId),
+          type: selectedResourceType,
+          uuid: selectedResourceUuid,
         },
       },
     ]);
@@ -167,19 +167,19 @@ const useDetails = (): DetailsState => {
 
   return {
     clearSelectedResource,
-    selectedResourceUuid,
+    details,
+    getSelectedResourceDetailsEndpoint,
+    loadDetails,
+    openDetailsTabId,
     selectedResourceId,
     selectedResourceParentId,
-    setSelectedResourceUuid,
+    selectedResourceUuid,
+    setOpenDetailsTabId,
     setSelectedResourceId,
-    setSelectedResourceType,
     setSelectedResourceParentId,
     setSelectedResourceParentType,
-    openDetailsTabId,
-    setOpenDetailsTabId,
-    getSelectedResourceDetailsEndpoint,
-    details,
-    loadDetails,
+    setSelectedResourceType,
+    setSelectedResourceUuid,
   };
 };
 

@@ -92,66 +92,40 @@ const resourceHostId = 1;
 const resourceHostType = 'host';
 
 const retrievedDetails = {
-  uuid: resourceServiceUuid,
-  id: resourceServiceId,
-  type: resourceServiceType,
-  name: 'Central',
-  severity_level: 10,
-  status: { name: 'Critical', severity_code: 1 },
-  parent: {
-    id: resourceHostId,
-    type: resourceHostType,
-    name: 'Centreon',
-    status: { severity_code: 1 },
-    links: {
-      uris: {
-        configuration: undefined,
-        logs: undefined,
-        reporting: undefined,
-      },
-    },
-  },
-  fqdn: 'central.centreon.com',
-  alias: 'Central-Centreon',
-  poller_name: 'Poller',
   acknowledged: false,
-  checked: true,
-  execution_time: 0.070906,
-  last_check: '2020-05-18T18:00',
-  last_status_change: '2020-04-18T17:00',
-  last_update: '2020-03-18T19:30',
-  information:
-    'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
-  timezone: 'Europe/Paris',
-  active_checks: true,
-  command_line: 'base_host_alive',
-  last_notification: '2020-07-18T19:30',
-  latency: 0.005,
-  next_check: '2020-06-18T19:15',
-  notification_number: 3,
-  flapping: false,
-  percent_state_change: 3.5,
-  downtimes: [
-    {
-      start_time: '2020-01-18T18:57:59',
-      end_time: '2020-01-18T19:57:59',
-      comment: 'First downtime set by Admin',
-    },
-    {
-      start_time: '2020-02-18T18:57:59',
-      end_time: '2020-02-18T19:57:59',
-      comment: 'Second downtime set by Admin',
-    },
-  ],
   acknowledgement: {
     author_name: 'Admin',
-    entry_time: '2020-03-18T19:57:59',
     comment: 'Acknowledged by Admin',
+    entry_time: '2020-03-18T19:57:59',
   },
-  performance_data:
-    'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
+  active_checks: true,
+  alias: 'Central-Centreon',
+  checked: true,
+  command_line: 'base_host_alive',
+  downtimes: [
+    {
+      comment: 'First downtime set by Admin',
+      end_time: '2020-01-18T19:57:59',
+      start_time: '2020-01-18T18:57:59',
+    },
+    {
+      comment: 'Second downtime set by Admin',
+      end_time: '2020-02-18T19:57:59',
+      start_time: '2020-02-18T18:57:59',
+    },
+  ],
   duration: '22m',
-  tries: '3/3 (Hard)',
+  execution_time: 0.070906,
+  flapping: false,
+  fqdn: 'central.centreon.com',
+  id: resourceServiceId,
+  information:
+    'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
+  last_check: '2020-05-18T18:00',
+  last_notification: '2020-07-18T19:30',
+  last_status_change: '2020-04-18T17:00',
+  last_update: '2020-03-18T19:30',
+  latency: 0.005,
   links: {
     endpoints: {
       performance_graph: 'performance_graph',
@@ -163,125 +137,151 @@ const retrievedDetails = {
       reporting: undefined,
     },
   },
+  name: 'Central',
+  next_check: '2020-06-18T19:15',
+  notification_number: 3,
+  parent: {
+    id: resourceHostId,
+    links: {
+      uris: {
+        configuration: undefined,
+        logs: undefined,
+        reporting: undefined,
+      },
+    },
+    name: 'Centreon',
+    status: { severity_code: 1 },
+    type: resourceHostType,
+  },
+  percent_state_change: 3.5,
+  performance_data:
+    'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
+  poller_name: 'Poller',
+  severity_level: 10,
+  status: { name: 'Critical', severity_code: 1 },
+  timezone: 'Europe/Paris',
+  tries: '3/3 (Hard)',
+  type: resourceServiceType,
+  uuid: resourceServiceUuid,
 };
 
 const performanceGraphData = {
   global: {},
-  times: [],
   metrics: [],
+  times: [],
 };
 
 const retrievedTimeline = {
+  meta: {
+    limit: 10,
+    page: 1,
+    total: 5,
+  },
   result: [
     {
-      type: 'event',
-      id: 1,
-      date: '2020-06-22T10:40:00',
-      tries: 1,
       content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
+      date: '2020-06-22T10:40:00',
+      id: 1,
       status: {
-        severity_code: 5,
         name: 'UP',
+        severity_code: 5,
       },
-    },
-    {
+      tries: 1,
       type: 'event',
-      id: 2,
-      date: '2020-06-22T10:35:00',
-      tries: 3,
-      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
-      status: {
-        severity_code: 1,
-        name: 'DOWN',
-      },
     },
     {
-      type: 'notification',
-      id: 3,
-      date: '2020-06-21T09:40:00',
-      content: 'My little notification',
+      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
+      date: '2020-06-22T10:35:00',
+      id: 2,
+      status: {
+        name: 'DOWN',
+        severity_code: 1,
+      },
+      tries: 3,
+      type: 'event',
+    },
+    {
       contact: {
         name: 'admin',
       },
+      content: 'My little notification',
+      date: '2020-06-21T09:40:00',
+      id: 3,
+      type: 'notification',
     },
     {
-      type: 'acknowledgement',
-      id: 4,
-      date: '2020-06-20T09:35:00Z',
       contact: {
         name: 'admin',
       },
       content: 'My little ack',
+      date: '2020-06-20T09:35:00Z',
+      id: 4,
+      type: 'acknowledgement',
     },
     {
-      type: 'downtime',
-      id: 5,
-      date: '2020-06-20T09:30:00',
-      start_date: '2020-06-20T09:30:00',
-      end_date: '2020-06-22T09:33:00',
       contact: {
         name: 'admin',
       },
       content: 'My little dt',
+      date: '2020-06-20T09:30:00',
+      end_date: '2020-06-22T09:33:00',
+      id: 5,
+      start_date: '2020-06-20T09:30:00',
+      type: 'downtime',
     },
     {
-      type: 'downtime',
-      id: 6,
-      date: '2020-06-20T08:57:00',
-      start_date: '2020-06-19T09:30:00',
-      end_date: null,
       contact: {
         name: 'super_admin',
       },
       content: 'My little ongoing dt',
+      date: '2020-06-20T08:57:00',
+      end_date: null,
+      id: 6,
+      start_date: '2020-06-19T09:30:00',
+      type: 'downtime',
     },
     {
-      type: 'comment',
-      id: 7,
-      date: '2020-06-20T08:55:00',
-      start_date: '2020-06-20T09:30:00',
-      end_date: '2020-06-22T09:33:00',
       contact: {
         name: 'admin',
       },
       content: 'My little comment',
+      date: '2020-06-20T08:55:00',
+      end_date: '2020-06-22T09:33:00',
+      id: 7,
+      start_date: '2020-06-20T09:30:00',
+      type: 'comment',
     },
   ],
-  meta: {
-    page: 1,
-    limit: 10,
-    total: 5,
-  },
 };
 
 const retrievedServices = {
-  result: [
-    {
-      id: 3,
-      display_name: 'Ping',
-      status: {
-        severity_code: 5,
-        name: 'Ok',
-      },
-      output: 'OK - 127.0.0.1 rta 0ms lost 0%',
-      duration: '22m',
-    },
-    {
-      id: 4,
-      display_name: 'Disk',
-      status: {
-        severity_code: 6,
-        name: 'Unknown',
-      },
-      output: 'No output',
-      duration: '21m',
-    },
-  ],
   meta: {
-    page: 1,
     limit: 10,
+    page: 1,
     total: 2,
   },
+  result: [
+    {
+      display_name: 'Ping',
+      duration: '22m',
+      id: 3,
+      output: 'OK - 127.0.0.1 rta 0ms lost 0%',
+      status: {
+        name: 'Ok',
+        severity_code: 5,
+      },
+    },
+    {
+      display_name: 'Disk',
+      duration: '21m',
+      id: 4,
+      output: 'No output',
+      status: {
+        name: 'Unknown',
+        severity_code: 6,
+      },
+    },
+  ],
 };
 
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
@@ -725,12 +725,12 @@ describe(Details, () => {
       });
 
     const retrievedServiceDetails = {
-      uuid: 'h3-s2',
       id: 2,
       parentId: 3,
       parentType: 'host',
-      type: 'service',
       tab: 'shortcuts',
+      type: 'service',
+      uuid: 'h3-s2',
     };
 
     setUrlQueryParameters([
@@ -771,10 +771,10 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
-        uuid: 'h1',
         id: 1,
-        type: 'host',
         tab: 'details',
+        type: 'host',
+        uuid: 'h1',
       });
 
       expect(mockedAxios.get).toHaveBeenCalledWith(

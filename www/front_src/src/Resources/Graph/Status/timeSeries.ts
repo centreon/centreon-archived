@@ -5,23 +5,23 @@ import { SeverityCode } from '@centreon/ui';
 import { GraphData, Interval } from './models';
 
 interface StatusSeverity {
-  status: string;
   severityCode: SeverityCode;
+  status: string;
 }
 
 const statusWithSeverities: Array<StatusSeverity> = [
-  { status: 'critical', severityCode: SeverityCode.High },
+  { severityCode: SeverityCode.High, status: 'critical' },
   {
-    status: 'warning',
     severityCode: SeverityCode.Medium,
+    status: 'warning',
   },
   {
-    status: 'ok',
     severityCode: SeverityCode.Ok,
+    status: 'ok',
   },
   {
-    status: 'unknown',
     severityCode: SeverityCode.Low,
+    status: 'unknown',
   },
 ];
 
@@ -31,10 +31,10 @@ interface IntervalWithSeverity {
 }
 
 interface SeverityTimeFraction {
-  time: number;
-  severityCode: SeverityCode;
   fraction: number;
   offset: number;
+  severityCode: SeverityCode;
+  time: number;
   value: 1;
 }
 const toStartTime = ({ interval }: IntervalWithSeverity): number =>

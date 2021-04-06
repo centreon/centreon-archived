@@ -7,11 +7,11 @@ import { Service } from '../models';
 
 const entityDecoder = JsonDecoder.object<Service>(
   {
+    duration: JsonDecoder.optional(JsonDecoder.string),
     id: JsonDecoder.number,
     name: JsonDecoder.string,
-    status: statusDecoder,
     output: JsonDecoder.string,
-    duration: JsonDecoder.optional(JsonDecoder.string),
+    status: statusDecoder,
   },
   'Service',
   {

@@ -33,14 +33,14 @@ const Resources = (): JSX.Element => {
       }}
     >
       <WithPanel
-        panel={<EditFiltersPanel />}
         open={filterContext.editPanelOpen}
+        panel={<EditFiltersPanel />}
       >
         <ListingPage
-          panelOpen={!isNil(selectedResourceId)}
           filters={<Filter />}
           listing={<Listing />}
           panel={<Details />}
+          panelOpen={!isNil(selectedResourceId)}
         />
       </WithPanel>
     </Context.Provider>

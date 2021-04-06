@@ -52,8 +52,6 @@ const getRawFilter = ({
   search = 'my search',
   name = 'MyFilter',
 }): RawFilter => ({
-  id: rawFilterId,
-  name,
   criterias: [
     {
       name: 'resource_types',
@@ -87,6 +85,7 @@ const getRawFilter = ({
     },
     {
       name: 'host_groups',
+      object_type: 'host_groups',
       type: 'multi_select',
       value: [
         {
@@ -94,10 +93,10 @@ const getRawFilter = ({
           name: 'Linux-servers',
         },
       ],
-      object_type: 'host_groups',
     },
     {
       name: 'service_groups',
+      object_type: 'service_groups',
       type: 'multi_select',
       value: [
         {
@@ -105,7 +104,6 @@ const getRawFilter = ({
           name: 'Web-services',
         },
       ],
-      object_type: 'service_groups',
     },
     {
       name: 'search',
@@ -113,15 +111,17 @@ const getRawFilter = ({
       value: search,
     },
   ],
+  id: rawFilterId,
+  name,
 });
 
 const retrievedCustomFilters = {
-  result: [getRawFilter({})],
   meta: {
-    page: 1,
     limit: 30,
+    page: 1,
     total: 1,
   },
+  result: [getRawFilter({})],
 };
 
 const getCustomFilter = (): Filter =>

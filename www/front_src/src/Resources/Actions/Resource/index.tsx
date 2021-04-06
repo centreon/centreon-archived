@@ -93,8 +93,8 @@ const ResourceActions = (): JSX.Element => {
     }
 
     checkResources({
-      resources: resourcesToCheck,
       cancelToken: token,
+      resources: resourcesToCheck,
     })
       .then(() => {
         confirmAction();
@@ -197,8 +197,8 @@ const ResourceActions = (): JSX.Element => {
           {t(labelMoreActions)}
         </ActionButton>
         <Menu
-          anchorEl={moreActionsMenuAnchor}
           keepMounted
+          anchorEl={moreActionsMenuAnchor}
           open={Boolean(moreActionsMenuAnchor)}
           onClose={closeMoreActionsMenu}
         >

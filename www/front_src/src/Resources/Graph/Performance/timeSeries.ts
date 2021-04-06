@@ -3,8 +3,8 @@ import { map, pipe, reduce, filter, addIndex, isNil, path } from 'ramda';
 import { Metric, TimeValue, GraphData, Line } from './models';
 
 interface TimeTickWithMetrics {
-  timeTick: number;
   metrics: Array<Metric>;
+  timeTick: number;
 }
 
 const toTimeTickWithMetrics = ({
@@ -13,8 +13,8 @@ const toTimeTickWithMetrics = ({
 }): Array<TimeTickWithMetrics> => {
   return map(
     (timeTick) => ({
-      timeTick,
       metrics,
+      timeTick,
     }),
     times,
   );
@@ -64,16 +64,16 @@ const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
 };
 
 const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
+  areaColor: ds_data.ds_color_area,
+  color: ds_data.ds_color_line,
+  display: true,
+  filled: ds_data.ds_filled,
+  highlight: undefined,
+  lineColor: ds_data.ds_color_line,
   metric,
   name: legend,
-  color: ds_data.ds_color_line,
-  areaColor: ds_data.ds_color_area,
   transparency: ds_data.ds_transparency,
-  lineColor: ds_data.ds_color_line,
-  filled: ds_data.ds_filled,
   unit,
-  display: true,
-  highlight: undefined,
 });
 
 const getLineData = (graphData: GraphData): Array<Line> => {

@@ -100,11 +100,11 @@ const filtersParams = [
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
         data: {
-          result: [linuxServersHostGroup],
           meta: {
             limit: 10,
             total: 1,
           },
+          result: [linuxServersHostGroup],
         },
       });
     },
@@ -119,11 +119,11 @@ const filtersParams = [
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
         data: {
-          result: [webAccessServiceGroup],
           meta: {
             limit: 10,
             total: 1,
           },
+          result: [webAccessServiceGroup],
         },
       });
     },
@@ -175,12 +175,12 @@ describe(Filter, () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
-          result: [],
           meta: {
-            page: 1,
             limit: 30,
+            page: 1,
             total: 0,
           },
+          result: [],
         },
       })
       .mockResolvedValueOnce({ data: {} });
@@ -290,17 +290,17 @@ describe(Filter, () => {
     [
       labelResourceProblems,
       {
-        statuses: defaultStatuses,
-        states: [],
         resourceTypes: [],
+        states: [],
+        statuses: defaultStatuses,
       },
     ],
     [
       labelAll,
       {
-        statuses: [],
-        states: [],
         resourceTypes: [],
+        states: [],
+        statuses: [],
       },
     ],
   ])(
@@ -380,16 +380,16 @@ describe(Filter, () => {
 
   describe('Filter storage', () => {
     const savedFilter = {
-      id: '',
-      name: '',
       criterias: {
+        hostGroups: [linuxServersHostGroup],
         resourceTypes: [{ id: 'host', name: labelHost }],
+        search: 'searching...',
+        serviceGroups: [webAccessServiceGroup],
         states: [{ id: 'acknowledged', name: labelAcknowledged }],
         statuses: [{ id: 'OK', name: labelOk }],
-        hostGroups: [linuxServersHostGroup],
-        serviceGroups: [webAccessServiceGroup],
-        search: 'searching...',
       },
+      id: '',
+      name: '',
     };
 
     it('populates filter with values from localStorage if available', async () => {
@@ -425,16 +425,16 @@ describe(Filter, () => {
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
       const allFilter = {
-        id: 'all',
-        name: labelAll,
         criterias: {
+          hostGroups: [],
           resourceTypes: [],
+          search: undefined,
+          serviceGroups: [],
           states: [],
           statuses: [],
-          hostGroups: [],
-          serviceGroups: [],
-          search: undefined,
         },
+        id: 'all',
+        name: labelAll,
       };
 
       expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
@@ -450,9 +450,16 @@ describe(Filter, () => {
         expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
           filterStorageKey,
           JSON.stringify({
+            criterias: {
+              hostGroups: allFilter.criterias.hostGroups,
+              resourceTypes: allFilter.criterias.resourceTypes,
+              search: 'searching...',
+              serviceGroups: allFilter.criterias.serviceGroups,
+              states: allFilter.criterias.states,
+              statuses: allFilter.criterias.statuses,
+            },
             id: '',
             name: labelNewFilter,
-            criterias: { ...allFilter.criterias, search: 'searching...' },
           }),
         ),
       );
@@ -517,16 +524,16 @@ describe(Filter, () => {
   describe('Filter URL query parameters', () => {
     it('sets the filter according to the filter URL query parameter when given', async () => {
       const filter = {
-        name: labelAll,
-        id: 'all',
         criterias: {
+          hostGroups: [linuxServersHostGroup],
           resourceTypes: [{ id: 'service', name: labelService }],
+          search: 'Search me',
+          serviceGroups: [webAccessServiceGroup],
           states: [{ id: 'acknowledged', name: labelAcknowledged }],
           statuses: [{ id: 'OK', name: labelOk }],
-          hostGroups: [linuxServersHostGroup],
-          serviceGroups: [webAccessServiceGroup],
-          search: 'Search me',
         },
+        id: 'all',
+        name: labelAll,
       };
 
       setUrlQueryParameters([
@@ -568,16 +575,16 @@ describe(Filter, () => {
 
     it('resets the filter criterias which are not set in the filter URL query parameter when given', async () => {
       const savedFilter = {
-        id: '',
-        name: '',
         criterias: {
+          hostGroups: [linuxServersHostGroup],
           resourceTypes: [{ id: 'host', name: labelHost }],
+          search: 'searching...',
+          serviceGroups: [webAccessServiceGroup],
           states: [{ id: 'acknowledged', name: labelAcknowledged }],
           statuses: [{ id: 'OK', name: labelOk }],
-          hostGroups: [linuxServersHostGroup],
-          serviceGroups: [webAccessServiceGroup],
-          search: 'searching...',
         },
+        id: '',
+        name: '',
       };
 
       mockedLocalStorageGetItem.mockReturnValue(JSON.stringify(savedFilter));

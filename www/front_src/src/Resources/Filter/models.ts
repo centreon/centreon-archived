@@ -4,18 +4,18 @@ export interface CriteriaValue {
 }
 
 export interface Criterias {
+  hostGroups: Array<CriteriaValue>;
   resourceTypes: Array<CriteriaValue>;
+  search?: string;
+  serviceGroups: Array<CriteriaValue>;
   states: Array<CriteriaValue>;
   statuses: Array<CriteriaValue>;
-  hostGroups: Array<CriteriaValue>;
-  serviceGroups: Array<CriteriaValue>;
-  search?: string;
 }
 
 export interface Filter {
+  criterias: Criterias;
   id: string | number;
   name: string;
-  criterias: Criterias;
 }
 
 export interface RawCriteria {
@@ -26,7 +26,7 @@ export interface RawCriteria {
 }
 
 export interface RawFilter {
+  criterias: Array<RawCriteria>;
   id: number | string;
   name: string;
-  criterias: Array<RawCriteria>;
 }

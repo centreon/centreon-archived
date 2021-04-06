@@ -16,20 +16,20 @@ type SortOrder = 'asc' | 'desc';
 type ListingDispatch<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export interface ListingState {
-  listing?: ResourceListing;
-  setListing: ListingDispatch<ResourceListing | undefined>;
-  sorto: SortOrder;
-  sortf: string;
-  setSortf: ListingDispatch<string>;
-  setSorto: ListingDispatch<SortOrder>;
-  limit: number;
-  setLimit: ListingDispatch<number>;
-  page?: number;
-  setPage: ListingDispatch<number | undefined>;
   enabledAutorefresh: boolean;
-  setEnabledAutorefresh: ListingDispatch<boolean>;
+  limit: number;
+  listing?: ResourceListing;
+  page?: number;
   sendRequest: (params) => Promise<ResourceListing>;
   sending: boolean;
+  setEnabledAutorefresh: ListingDispatch<boolean>;
+  setLimit: ListingDispatch<number>;
+  setListing: ListingDispatch<ResourceListing | undefined>;
+  setPage: ListingDispatch<number | undefined>;
+  setSortf: ListingDispatch<string>;
+  setSorto: ListingDispatch<SortOrder>;
+  sortf: string;
+  sorto: SortOrder;
 }
 
 const useListing = (): ListingState => {
@@ -41,29 +41,29 @@ const useListing = (): ListingState => {
   const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
 
   const { sendRequest, sending } = useRequest<ResourceListing>({
-    request: listResources,
     getErrorMessage: ifElse(
       pathEq(['response', 'status'], 404),
       always(ApiNotFoundMessage),
       pathOr(labelSomethingWentWrong, ['response', 'data', 'message']),
     ),
+    request: listResources,
   });
 
   return {
-    listing,
-    setListing,
-    sorto,
-    setSorto,
-    sortf,
-    setSortf,
-    limit,
-    setLimit,
-    page,
-    setPage,
     enabledAutorefresh,
-    setEnabledAutorefresh,
+    limit,
+    listing,
+    page,
     sendRequest,
     sending,
+    setEnabledAutorefresh,
+    setLimit,
+    setListing,
+    setPage,
+    setSortf,
+    setSorto,
+    sortf,
+    sorto,
   };
 };
 

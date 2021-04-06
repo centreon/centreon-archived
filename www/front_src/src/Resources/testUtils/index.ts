@@ -1,15 +1,15 @@
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 interface EndpointParams {
-  sort?;
-  page?: number;
+  hostGroupIds?: Array<number>;
   limit?: number;
+  page?: number;
+  resourceTypes?: Array<string>;
   search?: string;
+  serviceGroupIds?: Array<number>;
+  sort?;
   states?: Array<string>;
   statuses?: Array<string>;
-  resourceTypes?: Array<string>;
-  hostGroupIds?: Array<number>;
-  serviceGroupIds?: Array<number>;
 }
 
 const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
@@ -36,15 +36,13 @@ const getListingEndpoint = ({
   search,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
-    page,
+    hostGroupIds,
     limit,
-    sort,
-    statuses,
-    states,
+    page,
+    resourceTypes,
     search: search
       ? {
           regex: {
-            value: search,
             fields: [
               'h.name',
               'h.alias',
@@ -52,12 +50,14 @@ const getListingEndpoint = ({
               's.description',
               'information',
             ],
+            value: search,
           },
         }
       : undefined,
-    resourceTypes,
-    hostGroupIds,
     serviceGroupIds,
+    sort,
+    states,
+    statuses,
   });
 
 const cancelTokenRequestParam = { cancelToken: {} };

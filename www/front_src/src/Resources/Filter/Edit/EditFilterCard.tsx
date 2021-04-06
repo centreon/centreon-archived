@@ -45,10 +45,10 @@ import useAdapters from '../api/adapters';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {
+    alignItems: 'center',
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
-    alignItems: 'center',
     gridTemplateColumns: 'auto 1fr',
   },
   filterNameInput: {},
@@ -100,13 +100,12 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     initialValues: {
       name,
     },
-    validationSchema,
     onSubmit: (values) => {
       const updatedFilter = { ...filter, name: values.name };
 
       sendUpdateFilterRequest({
-        rawFilter: omit(['id'], toRawFilter(updatedFilter)),
         id: updatedFilter.id,
+        rawFilter: omit(['id'], toRawFilter(updatedFilter)),
       }).then(() => {
         showMessage({
           message: t(labelFilterUpdated),
@@ -122,6 +121,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
         setCustomFilters(update(index, updatedFilter, customFilters));
       });
     },
+    validationSchema,
   });
 
   const askDelete = (): void => {
@@ -175,33 +175,33 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   return (
     <div className={classes.filterCard}>
       <ContentWithCircularLoading
+        alignCenter={false}
         loading={sendingRequest}
         loadingIndicatorSize={24}
-        alignCenter={false}
       >
         <IconButton title={t(labelDelete)} onClick={askDelete}>
           <DeleteIcon fontSize="small" />
         </IconButton>
       </ContentWithCircularLoading>
       <TextField
-        className={classes.filterNameInput}
+        transparent
         ariaLabel={`${t(labelFilter)}-${id}-${t(labelName)}`}
-        value={form.values.name}
+        className={classes.filterNameInput}
         error={form.errors.name}
+        value={form.values.name}
+        onBlur={rename}
         onChange={form.handleChange('name') as (event) => void}
         onKeyDown={renameOnEnterKey}
-        onBlur={rename}
-        transparent
       />
 
       {deleting && (
         <ConfirmDialog
-          labelConfirm={t(labelDelete)}
+          open
           labelCancel={t(labelCancel)}
-          onConfirm={confirmDelete}
+          labelConfirm={t(labelDelete)}
           labelTitle={t(labelAskDelete)}
           onCancel={cancelDelete}
-          open
+          onConfirm={confirmDelete}
         />
       )}
     </div>

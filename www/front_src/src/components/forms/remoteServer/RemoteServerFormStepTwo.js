@@ -34,17 +34,17 @@ class RemoteServerFormStepTwo extends Component {
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             {pollers ? (
               <Field
-                name="linked_pollers"
+                isMulti
+                multi
                 component={fieldHoc(Select)}
                 label={`${t('Select linked Remote Server')}:`}
+                name="linked_pollers"
                 options={pollers.items.map((c) => ({
-                  value: c.id,
                   label: c.text,
+                  value: c.id,
                 }))}
                 value={value}
                 onChange={this.handleChange}
-                multi
-                isMulti
               />
             ) : null}
             <div className={styles['form-buttons']}>
@@ -64,9 +64,9 @@ class RemoteServerFormStepTwo extends Component {
 
 export default withTranslation()(
   connectForm({
-    form: 'RemoteServerFormStepTwo',
-    enableReinitialize: true,
     destroyOnUnmount: false,
+    enableReinitialize: true,
+    form: 'RemoteServerFormStepTwo',
     keepDirtyOnReinitialize: true,
   })(RemoteServerFormStepTwo),
 );

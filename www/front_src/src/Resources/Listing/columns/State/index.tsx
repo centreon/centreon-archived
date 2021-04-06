@@ -16,9 +16,9 @@ import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
 import DowntimeDetailsTable from './DetailsTable/Downtime';
 
 interface StateChipProps {
-  endpoint: string;
   Chip: () => JSX.Element;
   DetailsTable: React.SFC<{ endpoint: string }>;
+  endpoint: string;
   label: string;
 }
 
@@ -44,10 +44,10 @@ const DowntimeHoverChip = ({
 
   return (
     <StateHoverChip
+      Chip={DowntimeChip}
+      DetailsTable={DowntimeDetailsTable}
       endpoint={downtimeEndpoint as string}
       label={`${resource.name} ${labelInDowntime}`}
-      DetailsTable={DowntimeDetailsTable}
-      Chip={DowntimeChip}
     />
   );
 };
@@ -64,10 +64,10 @@ const AcknowledgeHoverChip = ({
 
   return (
     <StateHoverChip
+      Chip={AcknowledgeChip}
+      DetailsTable={AcknowledgementDetailsTable}
       endpoint={acknowledgementEndpoint as string}
       label={`${resource.name} ${labelAcknowledged}`}
-      DetailsTable={AcknowledgementDetailsTable}
-      Chip={AcknowledgeChip}
     />
   );
 };

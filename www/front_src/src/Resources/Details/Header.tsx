@@ -31,12 +31,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LoadingSkeleton = (): JSX.Element => (
-  <Grid container spacing={2} alignItems="center" item style={{ flexGrow: 1 }}>
+  <Grid container item alignItems="center" spacing={2} style={{ flexGrow: 1 }}>
     <Grid item>
-      <Skeleton variant="circle" width={25} height={25} />
+      <Skeleton height={25} variant="circle" width={25} />
     </Grid>
     <Grid item>
-      <Skeleton width={250} height={25} />
+      <Skeleton height={25} width={250} />
     </Grid>
   </Grid>
 );
@@ -69,15 +69,15 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
       <Grid item>
         {details.severity_level && (
           <StatusChip
-            severityCode={SeverityCode.None}
             label={details.severity_level.toString()}
+            severityCode={SeverityCode.None}
           />
         )}
       </Grid>
       <Grid item>
         <StatusChip
-          severityCode={details.status.severity_code}
           label={t(details.status.name)}
+          severityCode={details.status.severity_code}
         />
       </Grid>
       <Grid item style={{ flexGrow: 1 }}>
@@ -86,7 +86,7 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
             <Typography>{details.name}</Typography>
           </Grid>
           {details.parent && (
-            <Grid item container spacing={1}>
+            <Grid container item spacing={1}>
               <Grid item>
                 <StatusChip
                   severityCode={details.parent.status?.severity_code}
@@ -101,9 +101,9 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
       </Grid>
       <Grid item>
         <IconButton
+          ariaLabel={t(labelCopyLink)}
           size="small"
           title={t(labelCopyLink)}
-          ariaLabel={t(labelCopyLink)}
           onClick={copyResourceLink}
         >
           <CopyIcon fontSize="small" />
@@ -120,9 +120,9 @@ const Header = ({ details }: DetailsSectionProps): JSX.Element => {
     <Grid
       container
       item
-      spacing={2}
       alignItems="center"
       className={classes.header}
+      spacing={2}
     >
       <HeaderContent details={details} />
     </Grid>

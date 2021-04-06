@@ -68,8 +68,8 @@ const Details = (): JSX.Element | null => {
     const foundColorCondition = rowColorConditions(theme).find(
       ({ condition }) =>
         condition({
-          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
           acknowledged: !isNil(acknowledgement),
+          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
         }),
     );
 
@@ -82,20 +82,20 @@ const Details = (): JSX.Element | null => {
 
   return (
     <Panel
-      onClose={clearSelectedResource}
       header={<Header details={details} />}
       headerBackgroundColor={getHeaderBackgroundColor()}
+      selectedTab={<TabById details={details} id={openDetailsTabId} />}
+      selectedTabId={getTabIndex(openDetailsTabId)}
       tabs={getVisibleTabs().map(({ id, title }) => (
         <Tab
-          style={{ minWidth: 'unset' }}
+          disabled={isNil(details)}
           key={id}
           label={t(title)}
-          disabled={isNil(details)}
+          style={{ minWidth: 'unset' }}
           onClick={changeSelectedTabId(id)}
         />
       ))}
-      selectedTabId={getTabIndex(openDetailsTabId)}
-      selectedTab={<TabById id={openDetailsTabId} details={details} />}
+      onClose={clearSelectedResource}
     />
   );
 };

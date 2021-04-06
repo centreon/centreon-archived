@@ -73,9 +73,9 @@ const ResourceListing = (): JSX.Element => {
   };
 
   const resourceDetailsOpenCondition = {
-    name: 'detailsOpen',
-    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
     color: fade(theme.palette.primary.main, 0.08),
+    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
+    name: 'detailsOpen',
   };
 
   const labelDisplayedRows = ({ from, to, count }): string =>
@@ -86,9 +86,6 @@ const ResourceListing = (): JSX.Element => {
       onAcknowledge: (resource): void => {
         setResourcesToAcknowledge([resource]);
       },
-      onDowntime: (resource): void => {
-        setResourcesToSetDowntime([resource]);
-      },
       onCheck: (resource): void => {
         setResourcesToCheck([resource]);
       },
@@ -96,6 +93,9 @@ const ResourceListing = (): JSX.Element => {
         setOpenDetailsTabId(graphTabId);
 
         selectResource(resource);
+      },
+      onDowntime: (resource): void => {
+        setResourcesToSetDowntime([resource]);
       },
     },
     t,
@@ -109,29 +109,29 @@ const ResourceListing = (): JSX.Element => {
     <Listing
       checkable
       Actions={<Actions onRefresh={initAutorefreshAndLoad} />}
-      loading={loading}
       columnConfiguration={columns}
-      tableData={listing?.result}
       currentPage={(page || 1) - 1}
+      emptyDataMessage={t(labelNoResultsFound)}
+      getId={getId}
+      innerScrollDisabled={false}
+      labelDisplayedRows={labelDisplayedRows}
+      labelRowsPerPage={t(labelRowsPerPage)}
+      limit={listing?.meta.limit}
+      loading={loading}
       rowColorConditions={[
         ...rowColorConditions(theme),
         resourceDetailsOpenCondition,
       ]}
-      limit={listing?.meta.limit}
-      onSort={changeSort}
-      onPaginationLimitChanged={changeLimit}
-      onPaginate={changePage}
+      selectedRows={selectedResources}
       sortf={sortf}
       sorto={sorto}
-      labelRowsPerPage={t(labelRowsPerPage)}
-      labelDisplayedRows={labelDisplayedRows}
+      tableData={listing?.result}
       totalRows={listing?.meta.total}
-      onSelectRows={setSelectedResources}
-      selectedRows={selectedResources}
+      onPaginate={changePage}
+      onPaginationLimitChanged={changeLimit}
       onRowClick={selectResource}
-      innerScrollDisabled={false}
-      emptyDataMessage={t(labelNoResultsFound)}
-      getId={getId}
+      onSelectRows={setSelectedResources}
+      onSort={changeSort}
     />
   );
 };

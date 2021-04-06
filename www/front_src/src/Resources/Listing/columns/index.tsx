@@ -38,23 +38,23 @@ import GraphColumn from './Graph';
 import UrlColumn from './Url';
 
 const useStyles = makeStyles((theme) => ({
+  extraSmallChipContainer: {
+    height: 19,
+  },
   resourceDetailsCell: {
-    padding: theme.spacing(0, 0.5),
+    alignItems: 'center',
     display: 'flex',
     flexWrap: 'nowrap',
-    alignItems: 'center',
+    padding: theme.spacing(0, 0.5),
   },
   resourceNameItem: {
     marginLeft: theme.spacing(1),
     whiteSpace: 'nowrap',
   },
-  extraSmallChipContainer: {
-    height: 19,
-  },
   smallChipContainer: {
+    fontSize: 10,
     height: theme.spacing(2.5),
     width: theme.spacing(2.5),
-    fontSize: 10,
   },
   smallChipLabel: {
     padding: theme.spacing(0.5),
@@ -70,12 +70,12 @@ const SeverityColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
 
   return (
     <StatusChip
+      classes={{
+        label: classes.smallChipLabel,
+        root: classes.extraSmallChipContainer,
+      }}
       label={row.severity_level?.toString()}
       severityCode={SeverityCode.None}
-      classes={{
-        root: classes.extraSmallChipContainer,
-        label: classes.smallChipLabel,
-      }}
     />
   );
 };
@@ -98,46 +98,46 @@ const StatusColumnOnHover = ({
   const disableCheck = !canCheck([row]);
 
   return (
-    <Grid container spacing={1} alignItems="center">
+    <Grid container alignItems="center" spacing={1}>
       <Grid item>
         <IconButton
-          title={t(labelAcknowledge)}
-          disabled={disableAcknowledge}
-          color="primary"
-          onClick={(): void => actions.onAcknowledge(row)}
           ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
+          color="primary"
+          disabled={disableAcknowledge}
+          title={t(labelAcknowledge)}
+          onClick={(): void => actions.onAcknowledge(row)}
         >
           <IconAcknowledge fontSize="small" />
         </IconButton>
       </Grid>
       <Grid item>
         <IconButton
-          title={t(labelSetDowntime)}
-          disabled={disableDowntime}
-          onClick={(): void => actions.onDowntime(row)}
           ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
+          disabled={disableDowntime}
+          title={t(labelSetDowntime)}
+          onClick={(): void => actions.onDowntime(row)}
         >
           <IconDowntime fontSize="small" />
         </IconButton>
       </Grid>
       <Grid item>
         <IconButton
-          title={t(labelCheck)}
-          disabled={disableCheck}
-          onClick={(): void => actions.onCheck(row)}
           ariaLabel={`${t(labelCheck)} ${row.name}`}
+          disabled={disableCheck}
+          title={t(labelCheck)}
+          onClick={(): void => actions.onCheck(row)}
         >
           <IconCheck fontSize="small" />
         </IconButton>
       </Grid>
       <Grid item>
         <StatusChip
+          classes={{
+            label: classes.smallChipLabel,
+            root: classes.smallChipContainer,
+          }}
           label={row.status.name[0]}
           severityCode={row.status.severity_code}
-          classes={{
-            root: classes.smallChipContainer,
-            label: classes.smallChipLabel,
-          }}
         />
       </Grid>
     </Grid>
@@ -152,9 +152,9 @@ const StatusColumn = ({ actions, t }) => ({
     <StatusColumnOnHover actions={actions} row={row} />
   ) : (
     <StatusChip
-      style={{ width: 100, height: 20, margin: 2 }}
       label={t(row.status.name)}
       severityCode={row.status.severity_code}
+      style={{ height: 20, margin: 2, width: 100 }}
     />
   );
 };
@@ -165,15 +165,15 @@ const ResourceColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   return (
     <div className={classes.resourceDetailsCell}>
       {row.icon ? (
-        <img src={row.icon.url} alt={row.icon.name} width={16} height={16} />
+        <img alt={row.icon.name} height={16} src={row.icon.url} width={16} />
       ) : (
         <StatusChip
+          classes={{
+            label: classes.smallChipLabel,
+            root: classes.extraSmallChipContainer,
+          }}
           label={row.short_type}
           severityCode={SeverityCode.None}
-          classes={{
-            root: classes.extraSmallChipContainer,
-            label: classes.smallChipLabel,
-          }}
         />
       )}
       <div className={classes.resourceNameItem}>
@@ -209,101 +209,101 @@ interface ColumnsProps {
 
 export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
   {
+    Component: SeverityColumn,
+    getRenderComponentOnRowUpdateCondition: T,
     id: 'severity',
     label: 'S',
-    type: ColumnType.component,
-    getRenderComponentOnRowUpdateCondition: T,
-    Component: SeverityColumn,
     sortField: 'severity_level',
+    type: ColumnType.component,
     width: 50,
   },
   {
+    Component: StatusColumn({ actions, t }),
+    clickable: true,
+    getRenderComponentOnRowUpdateCondition: T,
+    hasHoverableComponent: true,
     id: 'status',
     label: t(labelStatus),
-    type: ColumnType.component,
-    Component: StatusColumn({ actions, t }),
-    hasHoverableComponent: true,
-    getRenderComponentOnRowUpdateCondition: T,
     sortField: 'status_severity_code',
-    clickable: true,
+    type: ColumnType.component,
     width: 145,
   },
   {
+    Component: ResourceColumn,
+    getRenderComponentOnRowUpdateCondition: T,
     id: 'resource',
     label: t(labelResource),
-    type: ColumnType.component,
-    getRenderComponentOnRowUpdateCondition: T,
-    Component: ResourceColumn,
     sortField: 'name',
+    type: ColumnType.component,
     width: 200,
   },
   {
+    Component: ParentResourceColumn,
+    getRenderComponentOnRowUpdateCondition: T,
     id: 'parent_resource',
     label: '',
-    type: ColumnType.component,
-    getRenderComponentOnRowUpdateCondition: T,
-    Component: ParentResourceColumn,
     sortable: false,
+    type: ColumnType.component,
     width: 200,
   },
   {
+    Component: UrlColumn,
+    getRenderComponentOnRowUpdateCondition: T,
     id: 'url',
     label: '',
-    type: ColumnType.component,
-    getRenderComponentOnRowUpdateCondition: T,
-    Component: UrlColumn,
     sortable: false,
+    type: ColumnType.component,
     width: 50,
   },
   {
+    Component: GraphColumn({ onClick: actions.onDisplayGraph }),
+    getRenderComponentOnRowUpdateCondition: T,
     id: 'graph',
     label: '',
-    type: ColumnType.component,
-    getRenderComponentOnRowUpdateCondition: T,
-    Component: GraphColumn({ onClick: actions.onDisplayGraph }),
     sortable: false,
+    type: ColumnType.component,
     width: 50,
   },
   {
+    getFormattedString: ({ duration }): string => duration,
     id: 'duration',
     label: t(labelDuration),
-    type: ColumnType.string,
-    getFormattedString: ({ duration }): string => duration,
     sortField: 'last_status_change',
+    type: ColumnType.string,
     width: 125,
   },
   {
+    getFormattedString: ({ tries }): string => tries,
     id: 'tries',
     label: t(labelTries),
     type: ColumnType.string,
-    getFormattedString: ({ tries }): string => tries,
     width: 125,
   },
   {
+    getFormattedString: ({ last_check }): string => last_check,
     id: 'last_check',
     label: t(labelLastCheck),
     type: ColumnType.string,
-    getFormattedString: ({ last_check }): string => last_check,
     width: 125,
   },
   {
-    id: 'information',
-    label: t(labelInformation),
-    type: ColumnType.string,
     getFormattedString: pipe(
       propOr('', 'information'),
       split('\n'),
       head,
       truncate,
     ) as (row) => string,
+    id: 'information',
+    label: t(labelInformation),
+    type: ColumnType.string,
   },
   {
+    Component: StateColumn,
+    getRenderComponentOnRowUpdateCondition: T,
     id: 'state',
     label: t(labelState),
-    type: ColumnType.component,
-    getRenderComponentOnRowUpdateCondition: T,
-    Component: StateColumn,
     sortable: false,
+    type: ColumnType.component,
     width: 80,
   },
 ];

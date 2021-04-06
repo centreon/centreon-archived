@@ -5,8 +5,8 @@ import useFilterModels from '../useFilterModels';
 
 interface Adapters {
   toFilter: (rawFilter: RawFilter) => Filter;
-  toRawFilter: (filter: Filter) => RawFilter;
   toFilterWithTranslatedCriterias: (filter: Filter) => Filter;
+  toRawFilter: (filter: Filter) => RawFilter;
 }
 
 const useAdapters = (): Adapters => {
@@ -30,59 +30,59 @@ const useAdapters = (): Adapters => {
       pipe(findCriteriaByName, toStandardMultiSelectCriteriaValue)(rawName);
 
     return {
-      id: filterId,
-      name,
       criterias: {
-        resourceTypes: getStandardMultiSelectCriteriaValue('resource_types'),
-        states: getStandardMultiSelectCriteriaValue('states'),
-        statuses: getStandardMultiSelectCriteriaValue('statuses'),
         hostGroups: findCriteriaByName('host_groups')
           .value as Array<CriteriaValue>,
+        resourceTypes: getStandardMultiSelectCriteriaValue('resource_types'),
+        search: findCriteriaByName('search').value as string | undefined,
         serviceGroups: findCriteriaByName('service_groups')
           .value as Array<CriteriaValue>,
-        search: findCriteriaByName('search').value as string | undefined,
+        states: getStandardMultiSelectCriteriaValue('states'),
+        statuses: getStandardMultiSelectCriteriaValue('statuses'),
       },
+      id: filterId,
+      name,
     };
   };
 
   const toRawFilter = ({ id, name, criterias }: Filter): RawFilter => {
     return {
-      id,
-      name,
       criterias: [
         {
           name: 'resource_types',
-          value: criterias.resourceTypes,
           type: 'multi_select',
+          value: criterias.resourceTypes,
         },
         {
           name: 'states',
-          value: criterias.states,
           type: 'multi_select',
+          value: criterias.states,
         },
         {
           name: 'statuses',
-          value: criterias.statuses,
           type: 'multi_select',
+          value: criterias.statuses,
         },
         {
           name: 'host_groups',
-          value: criterias.hostGroups,
-          type: 'multi_select',
           object_type: 'host_groups',
+          type: 'multi_select',
+          value: criterias.hostGroups,
         },
         {
           name: 'service_groups',
-          value: criterias.serviceGroups,
-          type: 'multi_select',
           object_type: 'service_groups',
+          type: 'multi_select',
+          value: criterias.serviceGroups,
         },
         {
           name: 'search',
-          value: criterias.search || '',
           type: 'text',
+          value: criterias.search || '',
         },
       ],
+      id,
+      name,
     };
   };
 
@@ -90,7 +90,7 @@ const useAdapters = (): Adapters => {
     return pipe(toRawFilter, toFilter)(filter);
   };
 
-  return { toFilter, toRawFilter, toFilterWithTranslatedCriterias };
+  return { toFilter, toFilterWithTranslatedCriterias, toRawFilter };
 };
 
 export default useAdapters;

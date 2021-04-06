@@ -28,8 +28,8 @@ interface DetailsTableColumn extends Column {
 }
 
 export interface DetailsTableProps {
-  endpoint: string;
   columns: Array<DetailsTableColumn>;
+  endpoint: string;
 }
 
 const DetailsTable = <TDetails extends { id: number }>({
@@ -68,7 +68,7 @@ const DetailsTable = <TDetails extends { id: number }>({
           {loading && (
             <TableRow>
               <TableCell colSpan={columns.length}>
-                <Skeleton height={20} animation="wave" />
+                <Skeleton animation="wave" height={20} />
               </TableCell>
             </TableRow>
           )}

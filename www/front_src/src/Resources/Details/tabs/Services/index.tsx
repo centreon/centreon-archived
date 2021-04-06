@@ -17,20 +17,6 @@ import { listServicesDecoder } from './api/decoders';
 import { Service } from './models';
 
 const useStyles = makeStyles((theme) => ({
-  services: {
-    display: 'grid',
-    gridAutoFlow: 'row',
-    gridGap: theme.spacing(1),
-    width: '100%',
-  },
-  service: {
-    display: 'grid',
-    gridAutoFlow: 'columns',
-    gridTemplateColumns: 'auto 1fr auto',
-    padding: theme.spacing(1),
-    gridGap: theme.spacing(2),
-    alignItems: 'center',
-  },
   description: {
     display: 'grid',
     gridAutoFlow: 'row',
@@ -39,6 +25,20 @@ const useStyles = makeStyles((theme) => ({
   noResultContainer: {
     padding: theme.spacing(1),
   },
+  service: {
+    alignItems: 'center',
+    display: 'grid',
+    gridAutoFlow: 'columns',
+    gridGap: theme.spacing(2),
+    gridTemplateColumns: 'auto 1fr auto',
+    padding: theme.spacing(1),
+  },
+  services: {
+    display: 'grid',
+    gridAutoFlow: 'row',
+    gridGap: theme.spacing(1),
+    width: '100%',
+  },
 }));
 
 const LoadingSkeleton = (): JSX.Element => {
@@ -46,9 +46,9 @@ const LoadingSkeleton = (): JSX.Element => {
 
   const serviceLoadingSkeleton = (
     <div className={classes.service}>
-      <Skeleton variant="circle" width={25} height={25} />
+      <Skeleton height={25} variant="circle" width={25} />
       <Skeleton height={25} />
-      <Skeleton width={50} height={25} />
+      <Skeleton height={25} width={50} />
     </div>
   );
 
@@ -78,8 +78,8 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
   const [services, setServices] = React.useState<Array<Service>>();
 
   const { sendRequest } = useRequest({
-    request: listServices,
     decoder: listServicesDecoder,
+    request: listServices,
   });
 
   React.useEffect(() => {
@@ -126,16 +126,16 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
           const { id, name, status, output, duration } = service;
 
           return (
-            <Paper key={id} className={classes.service}>
+            <Paper className={classes.service} key={id}>
               <StatusChip
                 label={t(status.name)}
                 severityCode={status.severity_code}
               />
               <div className={classes.description}>
                 <Typography
+                  style={{ cursor: 'pointer' }}
                   variant="body1"
                   onClick={selectService(service)}
-                  style={{ cursor: 'pointer' }}
                 >
                   {name}
                 </Typography>

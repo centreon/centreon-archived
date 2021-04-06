@@ -26,9 +26,9 @@ class UserMenu extends Component {
   refreshTimeout = null;
 
   state = {
-    toggled: false,
     copied: false,
     data: null,
+    toggled: false,
   };
 
   componentDidMount() {
@@ -145,8 +145,8 @@ class UserMenu extends Component {
                     </span>
                     {allowEditProfile && (
                       <Link
-                        to={`/main.php?p=${EDIT_PROFILE_TOPOLOGY_PAGE}&o=c`}
                         className={styles['submenu-user-edit']}
+                        to={`/main.php?p=${EDIT_PROFILE_TOPOLOGY_PAGE}&o=c`}
                         onClick={this.toggle}
                       >
                         {t('Edit profile')}
@@ -169,8 +169,8 @@ class UserMenu extends Component {
                       />
                     </button>
                     <textarea
-                      id="autologin-input"
                       className={styles['hidden-input']}
+                      id="autologin-input"
                       ref={(node) => (this.autologinNode = node)}
                       value={autolink}
                     />

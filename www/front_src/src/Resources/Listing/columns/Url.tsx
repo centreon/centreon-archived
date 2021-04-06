@@ -24,8 +24,8 @@ const UrlColumn = ({ row }: ComponentColumnProps): JSX.Element | null => {
       }}
     >
       <IconButton
-        title={title || endpoint}
         ariaLabel={title || endpoint}
+        title={title || endpoint}
         onClick={(): null => {
           return null;
         }}
