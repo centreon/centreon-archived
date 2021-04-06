@@ -5,39 +5,39 @@ export type ResourceType = 'host' | 'service' | 'metaservice';
 export type ResourceShortType = 'h' | 's' | 'm';
 
 export interface NamedEntity {
-  uuid: string;
   id: number;
   name: string;
+  uuid: string;
 }
 
 export interface Icon {
-  url: string;
   name: string;
+  url: string;
 }
 
 export type Parent = Omit<Resource, 'parent'>;
 export interface Status {
-  severity_code: number;
   name: string;
+  severity_code: number;
 }
 
 export interface Resource extends NamedEntity {
-  icon?: Icon;
-  parent?: Parent;
-  status?: Status;
-  links?: ResourceLinks;
   acknowledged?: boolean;
-  in_downtime?: boolean;
+  active_checks?: boolean;
   duration?: string;
-  tries?: string;
-  last_check?: string;
+  icon?: Icon;
+  in_downtime?: boolean;
   information?: string;
+  last_check?: string;
+  links?: ResourceLinks;
+  notification_enabled?: boolean;
+  parent?: Parent;
+  passive_checks?: boolean;
   severity_level?: number;
   short_type: ResourceShortType;
+  status?: Status;
+  tries?: string;
   type: ResourceType;
-  passive_checks?: boolean;
-  active_checks?: boolean;
-  notification_enabled?: boolean;
 }
 
 export type ResourceListing = ListingModel<Resource>;
@@ -45,9 +45,9 @@ export type ResourceListing = ListingModel<Resource>;
 export interface Downtime {
   author_name: string;
   comment: string;
+  end_time: string;
   entry_time: string;
   start_time: string;
-  end_time: string;
 }
 
 export interface Acknowledgement {
@@ -59,13 +59,13 @@ export interface Acknowledgement {
 }
 
 export interface ResourceEndpoints {
+  acknowledgement?: string;
   details?: string;
+  downtime?: string;
+  metrics?: string;
   performance_graph?: string;
   status_graph?: string;
   timeline?: string;
-  acknowledgement?: string;
-  downtime?: string;
-  metrics?: string;
 }
 
 export interface ResourceUris {
@@ -86,8 +86,8 @@ export interface ResourceExternals {
 
 export interface ResourceLinks {
   endpoints: ResourceEndpoints;
-  uris: ResourceUris;
   externals: ResourceExternals;
+  uris: ResourceUris;
 }
 
 export type TranslationType = (label: string) => string;

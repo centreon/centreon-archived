@@ -42,14 +42,14 @@ import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
 
 const useStyles = makeStyles((theme) => ({
-  loadingSkeleton: {
-    display: 'grid',
-    gridTemplateRows: '67px',
-    gridRowGap: theme.spacing(2),
-  },
   details: {
     display: 'grid',
     gridRowGap: theme.spacing(2),
+  },
+  loadingSkeleton: {
+    display: 'grid',
+    gridRowGap: theme.spacing(2),
+    gridTemplateRows: '67px',
   },
 }));
 
@@ -105,49 +105,49 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       {({ width }): JSX.Element => (
         <div className={classes.details}>
           <ExpandableCard
-            title={t(labelStatusInformation)}
             content={details.information}
             severityCode={details.status.severity_code}
+            title={t(labelStatusInformation)}
           />
           {details.downtimes?.map(({ start_time, end_time, comment }) => (
             <StateCard
-              key={`downtime-${start_time}-${end_time}`}
-              title={t(labelDowntimeDuration)}
+              chip={<DowntimeChip />}
+              commentLine={comment}
               contentLines={[
                 ...[
                   { prefix: t(labelFrom), time: start_time },
                   { prefix: t(labelTo), time: end_time },
                 ].map(({ prefix, time }) => `${prefix} ${toDateTime(time)}`),
               ]}
-              commentLine={comment}
-              chip={<DowntimeChip />}
+              key={`downtime-${start_time}-${end_time}`}
+              title={t(labelDowntimeDuration)}
             />
           ))}
           {details.acknowledgement && (
             <StateCard
-              title={t(labelAcknowledgedBy)}
+              chip={<AcknowledgeChip />}
+              commentLine={details.acknowledgement.comment}
               contentLines={[
                 `${details.acknowledgement.author_name} ${t(
                   labelAt,
                 )} ${toDateTime(details.acknowledgement.entry_time)}`,
               ]}
-              commentLine={details.acknowledgement.comment}
-              chip={<AcknowledgeChip />}
+              title={t(labelAcknowledgedBy)}
             />
           )}
           <Grid container spacing={1}>
-            {getDetailCardLines({ details, toDateTime, t }).map(
+            {getDetailCardLines({ details, t, toDateTime }).map(
               ({ title, field, xs = 6, line, active }) => {
                 const variableXs = (width > 600 ? xs / 2 : xs) as 3 | 6 | 12;
                 const displayCard = !isNil(field) && !isEmpty(field);
 
                 return (
                   displayCard && (
-                    <Grid key={title} item xs={variableXs}>
+                    <Grid item key={title} xs={variableXs}>
                       <DetailsCard
-                        title={t(title)}
-                        line={line}
                         active={active}
+                        line={line}
+                        title={t(title)}
                       />
                     </Grid>
                   )
@@ -157,22 +157,22 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           </Grid>
           {details.performance_data && (
             <ExpandableCard
-              title={t(labelPerformanceData)}
               content={details.performance_data}
+              title={t(labelPerformanceData)}
             />
           )}
           {details.command_line && (
             <Card>
               <Typography
-                variant="body1"
-                color="textSecondary"
                 gutterBottom
+                color="textSecondary"
                 component="div"
+                variant="body1"
               >
                 <Grid container alignItems="center" spacing={1}>
                   <Grid item>{t(labelCommand)}</Grid>
                   <Grid item>
-                    <Tooltip onClick={copyCommandLine} title={labelCopy}>
+                    <Tooltip title={labelCopy} onClick={copyCommandLine}>
                       <IconButton size="small">
                         <IconCopyFile color="primary" fontSize="small" />
                       </IconButton>

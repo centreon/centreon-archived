@@ -14,7 +14,7 @@ const ResourceColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   return (
     <div className={classes.resourceDetailsCell}>
       {row.icon ? (
-        <img src={row.icon.url} alt={row.icon.name} width={16} height={16} />
+        <img alt={row.icon.name} height={16} src={row.icon.url} width={16} />
       ) : (
         <ShortTypeChip label={row.short_type} />
       )}

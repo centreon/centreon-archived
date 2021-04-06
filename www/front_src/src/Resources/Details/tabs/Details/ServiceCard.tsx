@@ -11,28 +11,28 @@ import OutputInformation from '../OutputInformation';
 import SelectableResourceName from './SelectableResourceName';
 
 interface Props {
-  name: string;
-  status: Status;
   information?: string;
-  subInformation?: string;
+  name: string;
   onSelect: () => void;
+  status: Status;
+  subInformation?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
-  serviceCard: {
-    padding: theme.spacing(1),
-  },
-  serviceDetails: {
-    display: 'grid',
-    gridAutoFlow: 'columns',
-    gridTemplateColumns: 'auto 1fr auto',
-    gridGap: theme.spacing(2),
-    alignItems: 'center',
-  },
   description: {
     display: 'grid',
     gridAutoFlow: 'row',
     gridGap: theme.spacing(1),
+  },
+  serviceCard: {
+    padding: theme.spacing(1),
+  },
+  serviceDetails: {
+    alignItems: 'center',
+    display: 'grid',
+    gridAutoFlow: 'columns',
+    gridGap: theme.spacing(2),
+    gridTemplateColumns: 'auto 1fr auto',
   },
 }));
 

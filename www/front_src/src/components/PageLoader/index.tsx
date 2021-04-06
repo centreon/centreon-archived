@@ -6,8 +6,8 @@ import { PageSkeleton } from '@centreon/ui';
 
 const useStyles = makeStyles(() => ({
   skeletonContainer: {
-    width: '100%',
     height: '100vh',
+    width: '100%',
   },
 }));
 

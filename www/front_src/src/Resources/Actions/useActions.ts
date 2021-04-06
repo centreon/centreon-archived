@@ -7,16 +7,16 @@ type SetResourcesDispatch = React.Dispatch<
 >;
 
 export interface ActionsState {
-  selectedResources: Array<Resource>;
-  setSelectedResources: SetResourcesDispatch;
   resourcesToAcknowledge: Array<Resource>;
-  setResourcesToAcknowledge: SetResourcesDispatch;
-  resourcesToSetDowntime: Array<Resource>;
-  setResourcesToSetDowntime: SetResourcesDispatch;
   resourcesToCheck: Array<Resource>;
-  setResourcesToCheck: SetResourcesDispatch;
   resourcesToDisacknowledge: Array<Resource>;
+  resourcesToSetDowntime: Array<Resource>;
+  selectedResources: Array<Resource>;
+  setResourcesToAcknowledge: SetResourcesDispatch;
+  setResourcesToCheck: SetResourcesDispatch;
   setResourcesToDisacknowledge: SetResourcesDispatch;
+  setResourcesToSetDowntime: SetResourcesDispatch;
+  setSelectedResources: SetResourcesDispatch;
 }
 
 const useActions = (): ActionsState => {
@@ -38,16 +38,16 @@ const useActions = (): ActionsState => {
   ] = React.useState<Array<Resource>>([]);
 
   return {
-    selectedResources,
-    setSelectedResources,
     resourcesToAcknowledge,
-    setResourcesToAcknowledge,
-    resourcesToSetDowntime,
-    setResourcesToSetDowntime,
     resourcesToCheck,
-    setResourcesToCheck,
     resourcesToDisacknowledge,
+    resourcesToSetDowntime,
+    selectedResources,
+    setResourcesToAcknowledge,
+    setResourcesToCheck,
     setResourcesToDisacknowledge,
+    setResourcesToSetDowntime,
+    setSelectedResources,
   };
 };
 

@@ -14,15 +14,15 @@ const useStyles = makeStyles<Theme, Pick<Props, 'bold'>>(() => ({
 }));
 
 interface Props {
-  content?: string;
   bold?: boolean;
+  content?: string;
 }
 
 const OutputInformation = ({ content, bold = false }: Props): JSX.Element => {
   const classes = useStyles({ bold });
 
   return (
-    <Typography variant="body2" className={classes.information}>
+    <Typography className={classes.information} variant="body2">
       {parse(DOMPurify.sanitize(truncate(content)))}
     </Typography>
   );

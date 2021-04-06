@@ -99,7 +99,7 @@
       function (_export) {
         return {
           execute() {
-            _export({ default: globalExport, __useDefault: true });
+            _export({ __useDefault: true, default: globalExport });
           },
         };
       },

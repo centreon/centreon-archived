@@ -73,18 +73,15 @@ const ResourceListing = (): JSX.Element => {
   };
 
   const resourceDetailsOpenCondition = {
-    name: 'detailsOpen',
-    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
     color: fade(theme.palette.primary.main, 0.08),
+    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
+    name: 'detailsOpen',
   };
 
   const columns = getColumns({
     actions: {
       onAcknowledge: (resource): void => {
         setResourcesToAcknowledge([resource]);
-      },
-      onDowntime: (resource): void => {
-        setResourcesToSetDowntime([resource]);
       },
       onCheck: (resource): void => {
         setResourcesToCheck([resource]);
@@ -93,6 +90,9 @@ const ResourceListing = (): JSX.Element => {
         setOpenDetailsTabId(graphTabId);
 
         selectResource(resource);
+      },
+      onDowntime: (resource): void => {
+        setResourcesToSetDowntime([resource]);
       },
     },
     t,
@@ -128,31 +128,15 @@ const ResourceListing = (): JSX.Element => {
     <Listing
       checkable
       actions={<Actions onRefresh={initAutorefreshAndLoad} />}
-      loading={loading}
-      columns={columns}
-      onSelectColumns={selectColumns}
       columnConfiguration={{
-        sortable: true,
         selectedColumnIds,
+        sortable: true,
       }}
-      onResetColumns={resetColumns}
-      rows={listing?.result}
+      columns={columns}
       currentPage={(page || 1) - 1}
-      rowColorConditions={[
-        ...rowColorConditions(theme),
-        resourceDetailsOpenCondition,
-      ]}
-      limit={listing?.meta.limit}
-      onSort={changeSort}
-      onLimitChange={changeLimit}
-      onPaginate={changePage}
-      sortField={sortField}
-      sortOrder={sortOrder}
-      totalRows={listing?.meta.total}
-      onSelectRows={setSelectedResources}
-      selectedRows={selectedResources}
-      onRowClick={selectResource}
       getId={getId}
+      limit={listing?.meta.limit}
+      loading={loading}
       memoProps={[
         listing,
         sortField,
@@ -162,6 +146,22 @@ const ResourceListing = (): JSX.Element => {
         selectedResourceUuid,
         sending,
       ]}
+      rowColorConditions={[
+        ...rowColorConditions(theme),
+        resourceDetailsOpenCondition,
+      ]}
+      rows={listing?.result}
+      selectedRows={selectedResources}
+      sortField={sortField}
+      sortOrder={sortOrder}
+      totalRows={listing?.meta.total}
+      onLimitChange={changeLimit}
+      onPaginate={changePage}
+      onResetColumns={resetColumns}
+      onRowClick={selectResource}
+      onSelectColumns={selectColumns}
+      onSelectRows={setSelectedResources}
+      onSort={changeSort}
     />
   );
 };

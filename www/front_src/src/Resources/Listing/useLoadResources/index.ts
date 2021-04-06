@@ -53,7 +53,6 @@ const useLoadResources = (): LoadResources => {
     const search = searchCriteria
       ? {
           regex: {
-            value: searchCriteria,
             fields: [
               'h.name',
               'h.alias',
@@ -66,6 +65,7 @@ const useLoadResources = (): LoadResources => {
               'fqdn',
               'information',
             ],
+            value: searchCriteria,
           },
         }
       : undefined;
@@ -79,16 +79,16 @@ const useLoadResources = (): LoadResources => {
     };
 
     sendRequest({
+      hostGroupIds: getCriteriaIds('host_groups'),
+      limit,
+      monitoringServerIds: getCriteriaIds('monitoring_servers'),
+      page,
       resourceTypes: getCriteriaIds('resource_types'),
+      search,
+      serviceGroupIds: getCriteriaIds('service_groups'),
+      sort: getSort(),
       states: getCriteriaIds('states'),
       statuses: getCriteriaIds('statuses'),
-      hostGroupIds: getCriteriaIds('host_groups'),
-      serviceGroupIds: getCriteriaIds('service_groups'),
-      monitoringServerIds: getCriteriaIds('monitoring_servers'),
-      sort: getSort(),
-      limit,
-      page,
-      search,
     }).then(setListing);
 
     if (isNil(details)) {

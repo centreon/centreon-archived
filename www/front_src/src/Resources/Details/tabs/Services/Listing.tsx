@@ -14,9 +14,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 interface Props {
   list: JSX.Element;
-  switchButtonLabel: string;
-  switchButtonIcon: JSX.Element;
   onSwitchButtonClick: () => void;
+  switchButtonIcon: JSX.Element;
+  switchButtonLabel: string;
 }
 
 const Listing = ({
@@ -31,8 +31,8 @@ const Listing = ({
   return (
     <>
       <IconButton
-        title={t(switchButtonLabel)}
         ariaLabel={t(switchButtonLabel)}
+        title={t(switchButtonLabel)}
         onClick={onSwitchButtonClick}
       >
         {switchButtonIcon}

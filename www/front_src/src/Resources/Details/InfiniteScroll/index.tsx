@@ -16,38 +16,38 @@ import memoizeComponent from '../../memoizedComponent';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: '100%',
-    height: '100%',
-    display: 'grid',
-    alignItems: 'center',
-    justifyItems: 'center',
     alignContent: 'flex-start',
+    alignItems: 'center',
+    display: 'grid',
     gridGap: theme.spacing(1),
-  },
-  filter: {
+    height: '100%',
+    justifyItems: 'center',
     width: '100%',
   },
   entities: {
     display: 'grid',
     gridAutoFlow: 'row',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
     gridGap: theme.spacing(1),
+    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+    width: '100%',
+  },
+  filter: {
     width: '100%',
   },
 }));
 
 interface Props<TEntity> {
-  limit: number;
-  filter?: JSX.Element;
+  children: (props) => JSX.Element;
   details?: ResourceDetails;
-  reloadDependencies?: Array<unknown>;
-  loadingSkeleton: JSX.Element;
+  filter?: JSX.Element;
+  limit: number;
   loading: boolean;
+  loadingSkeleton: JSX.Element;
   preventReloadWhen?: boolean;
+  reloadDependencies?: Array<unknown>;
   sendListingRequest: (parameters: {
     atPage?: number;
   }) => Promise<ListingModel<TEntity>>;
-  children: (props) => JSX.Element;
 }
 
 type InfiniteScrollContentProps<TEntity> = Props<TEntity> &
@@ -144,10 +144,10 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   };
 
   const infiniteScrollTriggerRef = useIntersectionObserver({
+    action: loadMoreEvents,
+    loading,
     maxPage,
     page,
-    loading,
-    action: loadMoreEvents,
   });
 
   return (
@@ -155,10 +155,10 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       <div className={classes.filter}>{filter}</div>
       {page > 1 && (
         <Button
-          variant="contained"
           color="primary"
           size="small"
           startIcon={<IconRefresh />}
+          variant="contained"
           onClick={reload}
         >
           {t(labelRefresh)}
@@ -168,7 +168,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
         {cond([
           [always(isNil(entities)), always(loadingSkeleton)],
           [isEmpty, always(<NoResultsMessage />)],
-          [T, always(<>{children({ infiniteScrollTriggerRef, entities })}</>)],
+          [T, always(<>{children({ entities, infiniteScrollTriggerRef })}</>)],
         ])(entities)}
       </div>
       {loadingMoreEvents && <CircularProgress />}
@@ -177,6 +177,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
 };
 
 const MemoizedInfiniteScrollContent = memoizeComponent({
+  Component: InfiniteScrollContent,
   memoProps: [
     'selectedResourceId',
     'limit',
@@ -186,7 +187,6 @@ const MemoizedInfiniteScrollContent = memoizeComponent({
     'preventReloadWhen',
     'filter',
   ],
-  Component: InfiniteScrollContent,
 }) as typeof InfiniteScrollContent;
 
 const InfiniteScroll = <TEntity extends { id: number }>(

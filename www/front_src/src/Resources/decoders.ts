@@ -16,33 +16,16 @@ import {
 
 const statusDecoder = JsonDecoder.object<Status>(
   {
-    severity_code: JsonDecoder.number,
     name: JsonDecoder.string,
+    severity_code: JsonDecoder.number,
   },
   'Status',
 );
 
 const commonDecoders = {
-  status: JsonDecoder.optional(statusDecoder),
-  id: JsonDecoder.number,
-  uuid: JsonDecoder.string,
-  name: JsonDecoder.string,
-  type: JsonDecoder.oneOf<ResourceType>(
-    [
-      JsonDecoder.isExactly('host'),
-      JsonDecoder.isExactly('metaservice'),
-      JsonDecoder.isExactly('service'),
-    ],
-    'ResourceType',
-  ),
-  short_type: JsonDecoder.oneOf<ResourceShortType>(
-    [
-      JsonDecoder.isExactly('h'),
-      JsonDecoder.isExactly('m'),
-      JsonDecoder.isExactly('s'),
-    ],
-    'ResourceShortType',
-  ),
+  acknowledged: JsonDecoder.optional(JsonDecoder.boolean),
+  active_checks: JsonDecoder.optional(JsonDecoder.boolean),
+  duration: JsonDecoder.optional(JsonDecoder.string),
   icon: JsonDecoder.optional(
     JsonDecoder.object<Icon>(
       {
@@ -52,29 +35,25 @@ const commonDecoders = {
       'ResourceIcon',
     ),
   ),
+  id: JsonDecoder.number,
+  in_downtime: JsonDecoder.optional(JsonDecoder.boolean),
+  information: JsonDecoder.optional(JsonDecoder.string),
 
+  last_check: JsonDecoder.optional(JsonDecoder.string),
   links: JsonDecoder.optional(
     JsonDecoder.object<ResourceLinks>(
       {
         endpoints: JsonDecoder.object<ResourceEndpoints>(
           {
+            acknowledgement: JsonDecoder.optional(JsonDecoder.string),
             details: JsonDecoder.optional(JsonDecoder.string),
+            downtime: JsonDecoder.optional(JsonDecoder.string),
+            metrics: JsonDecoder.optional(JsonDecoder.string),
             performance_graph: JsonDecoder.optional(JsonDecoder.string),
             status_graph: JsonDecoder.optional(JsonDecoder.string),
             timeline: JsonDecoder.optional(JsonDecoder.string),
-            acknowledgement: JsonDecoder.optional(JsonDecoder.string),
-            downtime: JsonDecoder.optional(JsonDecoder.string),
-            metrics: JsonDecoder.optional(JsonDecoder.string),
           },
           'ResourceLinksEndpoints',
-        ),
-        uris: JsonDecoder.object<ResourceUris>(
-          {
-            configuration: JsonDecoder.optional(JsonDecoder.string),
-            logs: JsonDecoder.optional(JsonDecoder.string),
-            reporting: JsonDecoder.optional(JsonDecoder.string),
-          },
-          'ResourceLinksUris',
         ),
         externals: JsonDecoder.object<ResourceExternals>(
           {
@@ -91,20 +70,41 @@ const commonDecoders = {
           },
           'ResourceLinksExternals',
         ),
+        uris: JsonDecoder.object<ResourceUris>(
+          {
+            configuration: JsonDecoder.optional(JsonDecoder.string),
+            logs: JsonDecoder.optional(JsonDecoder.string),
+            reporting: JsonDecoder.optional(JsonDecoder.string),
+          },
+          'ResourceLinksUris',
+        ),
       },
       'ResourceLinks',
     ),
   ),
-  acknowledged: JsonDecoder.optional(JsonDecoder.boolean),
-  in_downtime: JsonDecoder.optional(JsonDecoder.boolean),
-  duration: JsonDecoder.optional(JsonDecoder.string),
-  tries: JsonDecoder.optional(JsonDecoder.string),
-  last_check: JsonDecoder.optional(JsonDecoder.string),
-  information: JsonDecoder.optional(JsonDecoder.string),
-  severity_level: JsonDecoder.optional(JsonDecoder.number),
-  passive_checks: JsonDecoder.optional(JsonDecoder.boolean),
-  active_checks: JsonDecoder.optional(JsonDecoder.boolean),
+  name: JsonDecoder.string,
   notification_enabled: JsonDecoder.optional(JsonDecoder.boolean),
+  passive_checks: JsonDecoder.optional(JsonDecoder.boolean),
+  severity_level: JsonDecoder.optional(JsonDecoder.number),
+  short_type: JsonDecoder.oneOf<ResourceShortType>(
+    [
+      JsonDecoder.isExactly('h'),
+      JsonDecoder.isExactly('m'),
+      JsonDecoder.isExactly('s'),
+    ],
+    'ResourceShortType',
+  ),
+  status: JsonDecoder.optional(statusDecoder),
+  tries: JsonDecoder.optional(JsonDecoder.string),
+  type: JsonDecoder.oneOf<ResourceType>(
+    [
+      JsonDecoder.isExactly('host'),
+      JsonDecoder.isExactly('metaservice'),
+      JsonDecoder.isExactly('service'),
+    ],
+    'ResourceType',
+  ),
+  uuid: JsonDecoder.string,
 };
 
 const resourceDecoder = JsonDecoder.object<Resource>(

@@ -20,11 +20,11 @@ const useStyles = makeStyles((theme) => {
       gridGap: theme.spacing(1),
     },
     loadingSkeleton: {
-      padding: theme.spacing(2),
-      height: 120,
       display: 'flex',
       flexDirection: 'column',
+      height: 120,
       justifyContent: 'space-between',
+      padding: theme.spacing(2),
     },
   };
 });
@@ -54,9 +54,9 @@ const ShortcutsTab = ({ details }: TabProps): JSX.Element => {
   const hasParentUris = parentUris && hasDefinedValues(parentUris);
 
   const resourceTitleByType = {
-    service: 'Service',
-    metaservice: 'Meta service',
     host: 'Host',
+    metaservice: 'Meta service',
+    service: 'Service',
   };
 
   if (isNil(details)) {

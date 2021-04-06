@@ -83,9 +83,9 @@ const CriteriasMultiSelectContent = ({
 
     setFilter({
       ...filter,
+      criterias: [...criteriasWithoutRemoved, ...criteriasToAdd],
       id: '',
       name: labelNewFilter,
-      criterias: [...criteriasWithoutRemoved, ...criteriasToAdd],
     });
   };
 
@@ -95,12 +95,12 @@ const CriteriasMultiSelectContent = ({
 
   return (
     <IconPopoverMultiSelectField
-      title={t(labelSelectCriterias)}
-      options={options}
-      onChange={changeSelectedCriterias}
-      value={selectedCriterias}
-      popperPlacement="bottom-start"
       icon={<AddIcon />}
+      options={options}
+      popperPlacement="bottom-start"
+      title={t(labelSelectCriterias)}
+      value={selectedCriterias}
+      onChange={changeSelectedCriterias}
       onReset={resetCriteria}
     />
   );

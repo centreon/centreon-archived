@@ -15,10 +15,10 @@ const CommentAnnotations = (props: Props): JSX.Element => {
 
   return (
     <EventAnnotations
-      type="comment"
       Icon={IconComment}
-      color={theme.palette.primary.main}
       ariaLabel={t(labelComment)}
+      color={theme.palette.primary.main}
+      type="comment"
       {...props}
     />
   );

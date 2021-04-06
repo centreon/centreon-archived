@@ -19,12 +19,12 @@ import { labelGraphOptions } from '../../../translatedLabels';
 import { useGraphOptionsContext } from './useGraphOptions';
 
 const useStyles = makeStyles((theme) => ({
+  optionLabel: {
+    justifyContent: 'space-between',
+    margin: 0,
+  },
   popoverContent: {
     margin: theme.spacing(1, 2),
-  },
-  optionLabel: {
-    margin: 0,
-    justifyContent: 'space-between',
   },
 }));
 
@@ -49,37 +49,37 @@ const GraphOptions = (): JSX.Element => {
   return (
     <>
       <IconButton
-        title={t(labelGraphOptions)}
         ariaLabel={t(labelGraphOptions)}
-        onClick={openGraphOptions}
         size="small"
+        title={t(labelGraphOptions)}
+        onClick={openGraphOptions}
       >
         <SettingsIcon style={{ fontSize: 18 }} />
       </IconButton>
       <Popover
-        open={not(isNil(anchorEl))}
         anchorEl={anchorEl}
-        onClose={closeGraphOptions}
         anchorOrigin={{
-          vertical: 'bottom',
           horizontal: 'center',
+          vertical: 'bottom',
         }}
+        open={not(isNil(anchorEl))}
+        onClose={closeGraphOptions}
       >
         <FormGroup className={classes.popoverContent}>
           {graphOptionsConfiguration.map(({ label, value, id }) => (
             <FormControlLabel
-              key={label}
+              className={classes.optionLabel}
               control={
                 <Switch
-                  size="small"
                   checked={value}
-                  onChange={changeGraphOptions(id)}
                   color="primary"
+                  size="small"
+                  onChange={changeGraphOptions(id)}
                 />
               }
+              key={label}
               label={t(label)}
               labelPlacement="start"
-              className={classes.optionLabel}
             />
           ))}
         </FormGroup>

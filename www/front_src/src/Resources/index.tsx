@@ -25,12 +25,12 @@ const ResourcesPage = ({
   editPanelOpen,
   selectedResourceId,
 }: Props): JSX.Element => (
-  <WithPanel panel={<EditFiltersPanel />} open={editPanelOpen}>
+  <WithPanel open={editPanelOpen} panel={<EditFiltersPanel />}>
     <ListingPage
-      panelOpen={!isNil(selectedResourceId)}
       filters={<Filter />}
       listing={<Listing />}
       panel={<Details />}
+      panelOpen={!isNil(selectedResourceId)}
     />
   </WithPanel>
 );
@@ -38,8 +38,8 @@ const ResourcesPage = ({
 const memoProps = ['editPanelOpen', 'selectedResourceId'];
 
 const MemoizedResourcesPage = memoizeComponent<Props>({
-  memoProps,
   Component: ResourcesPage,
+  memoProps,
 });
 
 const Resources = (): JSX.Element => {

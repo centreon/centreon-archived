@@ -23,9 +23,9 @@ const ApiNotFoundMessage = (): JSX.Element => {
       </p>
       <p style={{ margin: 0 }}>
         <Link
+          color="inherit"
           href="https://docs.centreon.com/21.04/en/upgrade/upgrade-from-19-10.html#configure-apache-api-access"
           target="_blank"
-          color="inherit"
         >
           {`( ${t(labelApiNotFoundDocumentation)} )`}
         </Link>

@@ -20,12 +20,12 @@ import {
 import StackedLines from './StackedLines';
 
 interface Props {
-  lines: Array<Line>;
-  timeSeries: Array<TimeValue>;
-  leftScale: ScaleLinear<number, number>;
-  rightScale: ScaleLinear<number, number>;
-  xScale: ScaleTime<number, number>;
   graphHeight: number;
+  leftScale: ScaleLinear<number, number>;
+  lines: Array<Line>;
+  rightScale: ScaleLinear<number, number>;
+  timeSeries: Array<TimeValue>;
+  xScale: ScaleTime<number, number>;
 }
 
 interface YScales {
@@ -57,8 +57,8 @@ const getStackedYScale = ({
 };
 
 interface FillColor {
-  transparency: number;
   areaColor: string;
+  transparency: number;
 }
 
 export const getFillColor = ({
@@ -102,14 +102,14 @@ const Lines = ({
       <StackedLines
         lines={regularStackedLines}
         timeSeries={regularStackedTimeSeries}
-        yScale={stackedYScale}
         xScale={xScale}
+        yScale={stackedYScale}
       />
       <StackedLines
         lines={invertedStackedLines}
         timeSeries={invertedStackedTimeSeries}
-        yScale={stackedYScale}
         xScale={xScale}
+        yScale={stackedYScale}
       />
       <>
         {regularLines.map(
@@ -130,8 +130,8 @@ const Lines = ({
               return invert
                 ? scaleLinear<number>({
                     domain: scale.domain().reverse(),
-                    range: scale.range().reverse(),
                     nice: true,
+                    range: scale.range().reverse(),
                   })
                 : scale;
             };
@@ -139,25 +139,25 @@ const Lines = ({
             const yScale = getYScale();
 
             const props = {
+              curve: curveLinear,
               data: timeSeries,
-              unit,
+              defined: (value): boolean => !isNil(value[metric]),
+              opacity: highlight === false ? 0.3 : 1,
               stroke: lineColor,
               strokeWidth: highlight ? 2 : 1,
-              opacity: highlight === false ? 0.3 : 1,
-              y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
+              unit,
               x: (timeValue): number => xScale(getTime(timeValue)) as number,
-              curve: curveLinear,
-              defined: (value): boolean => !isNil(value[metric]),
+              y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
             };
 
             if (filled) {
               return (
                 <AreaClosed<TimeValue>
-                  yScale={yScale}
-                  y0={Math.min(yScale(0), graphHeight)}
-                  key={metric}
+                  fill={getFillColor({ areaColor, transparency })}
                   fillRule="nonzero"
-                  fill={getFillColor({ transparency, areaColor })}
+                  key={metric}
+                  y0={Math.min(yScale(0), graphHeight)}
+                  yScale={yScale}
                   {...props}
                 />
               );

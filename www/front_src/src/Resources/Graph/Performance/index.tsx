@@ -58,21 +58,21 @@ import { TimeShiftDirection } from './Graph/TimeShiftZones';
 import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 
 interface Props {
-  endpoint?: string;
-  xAxisTickFormat?: string;
-  graphHeight: number;
-  toggableLegend?: boolean;
-  resource: Resource | ResourceDetails;
-  timeline?: Array<TimelineEvent>;
-  onAddComment?: (commentParameters: CommentParameters) => void;
-  tooltipPosition?: [number, number];
-  onTooltipDisplay?: (position?: [number, number]) => void;
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
-  resourceDetailsUpdated?: boolean;
   displayEventAnnotations?: boolean;
   displayTooltipValues?: boolean;
+  endpoint?: string;
+  graphHeight: number;
   isInTooltip?: boolean;
+  onAddComment?: (commentParameters: CommentParameters) => void;
+  onTooltipDisplay?: (position?: [number, number]) => void;
+  resource: Resource | ResourceDetails;
+  resourceDetailsUpdated?: boolean;
+  timeline?: Array<TimelineEvent>;
+  toggableLegend?: boolean;
+  tooltipPosition?: [number, number];
+  xAxisTickFormat?: string;
 }
 
 interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
@@ -83,47 +83,47 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   container: {
     display: 'grid',
     flexDirection: 'column',
-    gridTemplateRows: ({ graphHeight }): string => `auto ${graphHeight}px auto`,
     gridGap: theme.spacing(1),
+    gridTemplateRows: ({ graphHeight }): string => `auto ${graphHeight}px auto`,
     height: '100%',
     justifyItems: 'center',
     width: 'auto',
   },
-  noDataContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-  },
-  legend: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  graphTranslation: {
-    display: 'grid',
-    gridTemplateColumns: ({ canAdjustTimePeriod }) =>
-      canAdjustTimePeriod ? 'min-content auto min-content' : 'auto',
-    columnGap: `${theme.spacing(1)}px`,
-    width: '90%',
-    justifyContent: ({ canAdjustTimePeriod }) =>
-      canAdjustTimePeriod ? 'space-between' : 'center',
-    margin: theme.spacing(0, 1),
-  },
-  loadingContainer: {
-    width: theme.spacing(2),
-    height: theme.spacing(2),
+  exportToPngButton: {
+    justifySelf: 'end',
   },
   graphHeader: {
-    width: '100%',
     display: 'grid',
     gridTemplateColumns: '0.1fr 1fr 0.1fr',
     justifyItems: 'center',
+    width: '100%',
   },
-  exportToPngButton: {
-    justifySelf: 'end',
+  graphTranslation: {
+    columnGap: `${theme.spacing(1)}px`,
+    display: 'grid',
+    gridTemplateColumns: ({ canAdjustTimePeriod }) =>
+      canAdjustTimePeriod ? 'min-content auto min-content' : 'auto',
+    justifyContent: ({ canAdjustTimePeriod }) =>
+      canAdjustTimePeriod ? 'space-between' : 'center',
+    margin: theme.spacing(0, 1),
+    width: '90%',
+  },
+  legend: {
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  loadingContainer: {
+    height: theme.spacing(2),
+    width: theme.spacing(2),
+  },
+  noDataContainer: {
+    alignItems: 'center',
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'center',
   },
 }));
 
@@ -147,8 +147,8 @@ const PerformanceGraph = ({
   isInTooltip = false,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
-    graphHeight,
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
+    graphHeight,
   });
   const { t } = useTranslation();
 
@@ -274,14 +274,14 @@ const PerformanceGraph = ({
     }
 
     adjustTimePeriod?.({
-      start: getShiftedDate({
-        property: CustomTimePeriodProperty.start,
+      end: getShiftedDate({
         direction,
+        property: CustomTimePeriodProperty.end,
         timePeriod: customTimePeriod,
       }),
-      end: getShiftedDate({
-        property: CustomTimePeriodProperty.end,
+      start: getShiftedDate({
         direction,
+        property: CustomTimePeriodProperty.start,
         timePeriod: customTimePeriod,
       }),
     });
@@ -305,15 +305,15 @@ const PerformanceGraph = ({
       >
         <div className={classes.graphHeader}>
           <div />
-          <Typography variant="body1" color="textPrimary">
+          <Typography color="textPrimary" variant="body1">
             {title}
           </Typography>
           <div className={classes.exportToPngButton}>
             {not(isInTooltip) && (
               <ContentWithCircularLoading
+                alignCenter={false}
                 loading={exporting}
                 loadingIndicatorSize={16}
-                alignCenter={false}
               >
                 <IconButton
                   disabled={isNil(timeline)}
@@ -330,37 +330,37 @@ const PerformanceGraph = ({
         <ParentSize>
           {({ width, height }): JSX.Element => (
             <Graph
-              width={width}
-              height={height}
-              timeSeries={timeSeries}
-              lines={displayedLines}
-              base={base as number}
-              xAxisTickFormat={xAxisTickFormat}
-              timeline={timeline}
-              onTooltipDisplay={onTooltipDisplay}
-              tooltipPosition={tooltipPosition}
-              resource={resource}
-              onAddComment={onAddComment}
               applyZoom={adjustTimePeriod}
-              shiftTime={shiftTime}
-              loading={
-                not(resourceDetailsUpdated) && sendingGetGraphDataRequest
-              }
+              base={base as number}
               canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
               displayEventAnnotations={displayEventAnnotations}
               displayTooltipValues={displayTooltipValues}
+              height={height}
+              lines={displayedLines}
+              loading={
+                not(resourceDetailsUpdated) && sendingGetGraphDataRequest
+              }
+              resource={resource}
+              shiftTime={shiftTime}
+              timeSeries={timeSeries}
+              timeline={timeline}
+              tooltipPosition={tooltipPosition}
+              width={width}
+              xAxisTickFormat={xAxisTickFormat}
+              onAddComment={onAddComment}
+              onTooltipDisplay={onTooltipDisplay}
             />
           )}
         </ParentSize>
         <div className={classes.legend}>
           <Legend
-            lines={sortedLines}
-            onToggle={toggleMetricLine}
-            onSelect={selectMetricLine}
-            toggable={toggableLegend}
-            onHighlight={highlightLine}
-            onClearHighlight={clearHighlight}
             base={base as number}
+            lines={sortedLines}
+            toggable={toggableLegend}
+            onClearHighlight={clearHighlight}
+            onHighlight={highlightLine}
+            onSelect={selectMetricLine}
+            onToggle={toggleMetricLine}
           />
         </div>
       </div>

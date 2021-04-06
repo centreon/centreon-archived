@@ -41,22 +41,22 @@ const createFilter = (cancelToken: CancelToken) => (
   filter: FilterWithoutId,
 ): Promise<Filter> => {
   return postData<FilterWithoutId, Filter>(cancelToken)({
-    endpoint: filterEndpoint,
     data: filter,
+    endpoint: filterEndpoint,
   });
 };
 
 interface UpdateFilterProps {
-  id: number;
   filter: FilterWithoutId;
+  id: number;
 }
 
 const updateFilter = (cancelToken: CancelToken) => (
   parameters: UpdateFilterProps,
 ): Promise<Filter> => {
   return putData<FilterWithoutId, Filter>(cancelToken)({
-    endpoint: `${filterEndpoint}/${parameters.id}`,
     data: parameters.filter,
+    endpoint: `${filterEndpoint}/${parameters.id}`,
   });
 };
 
@@ -69,8 +69,8 @@ const patchFilter = (cancelToken: CancelToken) => (
   parameters: PatchFilterProps,
 ): Promise<Filter> => {
   return patchData<PatchFilterProps, Filter>(cancelToken)({
-    endpoint: `${filterEndpoint}/${parameters.id}`,
     data: { order: parameters.order },
+    endpoint: `${filterEndpoint}/${parameters.id}`,
   });
 };
 

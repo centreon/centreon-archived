@@ -14,23 +14,23 @@ const useStyles = makeStyles<
   Theme,
   { color?: string; variant: LegendMarkerVariant }
 >((theme) => ({
-  icon: {
-    width: 9,
-    height: ({ variant }) =>
-      equals(LegendMarkerVariant.dot, variant) ? 9 : '100%',
-    borderRadius: ({ variant }) =>
-      equals(LegendMarkerVariant.dot, variant) ? '50%' : 0,
-    marginRight: theme.spacing(1),
-    backgroundColor: ({ color }) => color,
-  },
   disabled: {
     color: theme.palette.text.disabled,
+  },
+  icon: {
+    backgroundColor: ({ color }) => color,
+    borderRadius: ({ variant }) =>
+      equals(LegendMarkerVariant.dot, variant) ? '50%' : 0,
+    height: ({ variant }) =>
+      equals(LegendMarkerVariant.dot, variant) ? 9 : '100%',
+    marginRight: theme.spacing(1),
+    width: 9,
   },
 }));
 
 interface Props {
-  disabled?: boolean;
   color: string;
+  disabled?: boolean;
   variant?: LegendMarkerVariant;
 }
 

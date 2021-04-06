@@ -23,8 +23,8 @@ import {
 import { Metric, TimeValue, GraphData, Line } from '../models';
 
 interface TimeTickWithMetrics {
-  timeTick: string;
   metrics: Array<Metric>;
+  timeTick: string;
 }
 
 const toTimeTickWithMetrics = ({
@@ -33,8 +33,8 @@ const toTimeTickWithMetrics = ({
 }): Array<TimeTickWithMetrics> =>
   map(
     (timeTick) => ({
-      timeTick,
       metrics,
+      timeTick,
     }),
     times,
   );
@@ -84,24 +84,24 @@ const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
 };
 
 const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
-  metric,
-  name: legend,
-  color: ds_data.ds_color_line,
   areaColor: ds_data.ds_color_area,
-  transparency: ds_data.ds_transparency,
-  lineColor: ds_data.ds_color_line,
+  average: ds_data.ds_average,
+  color: ds_data.ds_color_line,
+  display: true,
   filled: ds_data.ds_filled,
+  highlight: undefined,
   invert: ds_data.ds_invert,
   legend: ds_data.ds_legend,
-  min: ds_data.ds_min,
+  lineColor: ds_data.ds_color_line,
   max: ds_data.ds_max,
-  average: ds_data.ds_average,
-  unit,
-  display: true,
-  highlight: undefined,
+  metric,
+  min: ds_data.ds_min,
+  name: legend,
   stackOrder: equals(ds_data.ds_stack, '1')
     ? parseInt(ds_data.ds_order || '0', 10)
     : null,
+  transparency: ds_data.ds_transparency,
+  unit,
 });
 
 const getLineData = (graphData: GraphData): Array<Line> =>
@@ -178,7 +178,7 @@ const getMetricValuesForLines = ({
 }: LinesTimeSeries): Array<number> =>
   pipe(
     getUnits,
-    map((unit) => getMetricValuesForUnit({ unit, lines, timeSeries })),
+    map((unit) => getMetricValuesForUnit({ lines, timeSeries, unit })),
     flatten,
   )(lines);
 

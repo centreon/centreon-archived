@@ -24,13 +24,13 @@ const MainRouter = ({
   <React.Suspense fallback={<PageSkeleton />}>
     <Switch>
       <Route
-        key={`path-${key}`}
-        path="/main.php"
         exact
         component={LegacyRoute}
+        key={`path-${key}`}
+        path="/main.php"
       />
-      <Route path="/" exact render={() => <Redirect to="/main.php" />} />
-      <Route path="/" component={ReactRouter} />
+      <Route exact path="/" render={() => <Redirect to="/main.php" />} />
+      <Route component={ReactRouter} path="/" />
     </Switch>
   </React.Suspense>
 );

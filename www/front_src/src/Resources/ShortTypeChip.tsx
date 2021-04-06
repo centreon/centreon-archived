@@ -22,12 +22,12 @@ const ShortTypeChip = ({ label }: Props): JSX.Element => {
 
   return (
     <StatusChip
+      classes={{
+        label: classes.smallChipLabel,
+        root: classes.extraSmallChipContainer,
+      }}
       label={label}
       severityCode={SeverityCode.None}
-      classes={{
-        root: classes.extraSmallChipContainer,
-        label: classes.smallChipLabel,
-      }}
     />
   );
 };

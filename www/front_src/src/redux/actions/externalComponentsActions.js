@@ -34,11 +34,11 @@ const fetchExternalComponentsBegin = () => ({
 });
 
 const fetchExternalComponentsSuccess = (data) => ({
-  type: FETCH_EXTERNAL_COMPONENTS_SUCCESS,
   data,
+  type: FETCH_EXTERNAL_COMPONENTS_SUCCESS,
 });
 
 const fetchExternalComponentsFailure = (error) => ({
-  type: FETCH_EXTERNAL_COMPONENTS_FAILURE,
   error,
+  type: FETCH_EXTERNAL_COMPONENTS_FAILURE,
 });

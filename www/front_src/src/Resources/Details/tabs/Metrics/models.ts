@@ -5,9 +5,9 @@ import { Resource } from '../../../models';
 export interface MetaServiceMetric {
   id: number;
   name: string;
+  resource: Resource;
   unit: string;
   value: number;
-  resource: Resource;
 }
 
 export type MetaServiceMetricListing = ListingModel<MetaServiceMetric>;

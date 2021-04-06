@@ -8,18 +8,18 @@ import { CustomTimePeriodProperty } from '../../../Details/tabs/Graph/models';
 
 const DateTimeTextField = React.forwardRef(
   (props, ref: React.ForwardedRef<HTMLDivElement>): JSX.Element => (
-    <TextField {...props} size="small" ref={ref} />
+    <TextField {...props} ref={ref} size="small" />
   ),
 );
 
 interface Props {
+  changeDate: (props) => () => void;
   commonPickersProps;
   date: Date;
-  minDate?: Date;
   maxDate?: Date;
+  minDate?: Date;
   property: CustomTimePeriodProperty;
   setDate: React.Dispatch<React.SetStateAction<Date>>;
-  changeDate: (props) => () => void;
 }
 
 const DateTimePickerInput = ({
@@ -39,17 +39,17 @@ const DateTimePickerInput = ({
     <DateTimePicker
       {...commonPickersProps}
       {...inputProp}
-      variant="inline"
       inputVariant="filled"
-      value={date}
-      onChange={(value) => setDate(new Date(value?.toDate() || 0))}
-      onClose={changeDate({
-        property,
-        date,
-      })}
       maxDate={maxDate}
       minDate={minDate}
       size="small"
+      value={date}
+      variant="inline"
+      onChange={(value) => setDate(new Date(value?.toDate() || 0))}
+      onClose={changeDate({
+        date,
+        property,
+      })}
     />
   );
 };

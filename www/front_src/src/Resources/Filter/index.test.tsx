@@ -111,11 +111,11 @@ const filtersParams: Array<FilterParameter> = [
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
         data: {
-          result: [linuxServersHostGroup],
           meta: {
             limit: 10,
             total: 1,
           },
+          result: [linuxServersHostGroup],
         },
       });
     },
@@ -130,11 +130,11 @@ const filtersParams: Array<FilterParameter> = [
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
         data: {
-          result: [webAccessServiceGroup],
           meta: {
             limit: 10,
             total: 1,
           },
+          result: [webAccessServiceGroup],
         },
       });
     },
@@ -142,8 +142,6 @@ const filtersParams: Array<FilterParameter> = [
 ];
 
 const filter = {
-  name: 'My filter',
-  id: 0,
   criterias: [
     {
       name: 'resource_types',
@@ -159,6 +157,8 @@ const filter = {
     { name: 'search', value: 'Search me' },
     { name: 'sort', value: [defaultSortField, defaultSortOrder] },
   ],
+  id: 0,
+  name: 'My filter',
 };
 
 const FilterWithLoading = (): JSX.Element => {
@@ -206,12 +206,12 @@ describe(Filter, () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
-          result: [],
           meta: {
-            page: 1,
             limit: 30,
+            page: 1,
             total: 0,
           },
+          result: [],
         },
       })
       .mockResolvedValueOnce({ data: {} });
@@ -321,17 +321,17 @@ describe(Filter, () => {
     [
       labelResourceProblems,
       {
-        statuses: defaultStatuses,
-        states: [],
         resourceTypes: [],
+        states: [],
+        statuses: defaultStatuses,
       },
     ],
     [
       labelAll,
       {
-        statuses: [],
-        states: [],
         resourceTypes: [],
+        states: [],
+        statuses: [],
       },
     ],
   ])(
@@ -458,9 +458,9 @@ describe(Filter, () => {
           filterKey,
           JSON.stringify(
             getFilterWithUpdatedCriteria({
-              filter: { ...allFilter, id: '', name: labelNewFilter },
               criteriaName: 'search',
               criteriaValue: 'searching...',
+              filter: { ...allFilter, id: '', name: labelNewFilter },
             }),
           ),
         ),

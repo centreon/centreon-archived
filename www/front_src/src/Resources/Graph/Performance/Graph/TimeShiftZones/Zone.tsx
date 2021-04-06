@@ -42,23 +42,23 @@ const TimeShiftZone = ({
   return useMemoComponent({
     Component: (
       <Bar
+        className={classes.translationZone}
+        fill={
+          equals(directionHovered, direction)
+            ? fade(theme.palette.common.white, 0.5)
+            : 'transparent'
+        }
+        height={graphHeight}
+        width={timeShiftZoneWidth}
         x={
           (equals(direction, TimeShiftDirection.backward)
             ? negate(timeShiftZoneWidth)
             : graphWidth) + marginLeft
         }
         y={marginTop}
-        width={timeShiftZoneWidth}
-        height={graphHeight}
-        onMouseOver={onDirectionHover(direction)}
-        onMouseLeave={onDirectionHover(null)}
         onClick={() => shiftTime?.(direction)}
-        fill={
-          equals(directionHovered, direction)
-            ? fade(theme.palette.common.white, 0.5)
-            : 'transparent'
-        }
-        className={classes.translationZone}
+        onMouseLeave={onDirectionHover(null)}
+        onMouseOver={onDirectionHover(direction)}
       />
     ),
     memoProps: [

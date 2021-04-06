@@ -26,20 +26,20 @@ import { useResourceContext } from '../../../Context';
 dayjs.extend(duration);
 
 interface TimePeriodState {
-  changeSelectedTimePeriod: (timePeriod: TimePeriodId) => void;
-  selectedTimePeriod: TimePeriod | null;
-  periodQueryParameters: string;
-  getIntervalDates: () => [string, string];
-  customTimePeriod: CustomTimePeriod;
-  resourceDetailsUpdated: boolean;
-  changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
   adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
+  changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
+  changeSelectedTimePeriod: (timePeriod: TimePeriodId) => void;
+  customTimePeriod: CustomTimePeriod;
+  getIntervalDates: () => [string, string];
+  periodQueryParameters: string;
+  resourceDetailsUpdated: boolean;
+  selectedTimePeriod: TimePeriod | null;
 }
 
 interface Props {
-  defaultSelectedTimePeriodId?: TimePeriodId;
-  defaultSelectedCustomTimePeriod?: StoredCustomTimePeriod;
   defaultGraphOptions?: GraphOptions;
+  defaultSelectedCustomTimePeriod?: StoredCustomTimePeriod;
+  defaultSelectedTimePeriodId?: TimePeriodId;
   details?: ResourceDetails;
   onTimePeriodChange?: ({
     selectedTimePeriodId,
@@ -49,9 +49,9 @@ interface Props {
 }
 
 interface GraphQueryParametersProps {
-  timePeriod?: TimePeriod | null;
-  startDate?: Date;
   endDate?: Date;
+  startDate?: Date;
+  timePeriod?: TimePeriod | null;
 }
 
 const useTimePeriod = ({
@@ -89,8 +89,8 @@ const useTimePeriod = ({
     timePeriod: TimePeriod | null,
   ): CustomTimePeriod => {
     return {
-      start: new Date(timePeriod?.getStart() || 0),
       end: new Date(Date.now()),
+      start: new Date(timePeriod?.getStart() || 0),
     };
   };
 
@@ -108,10 +108,10 @@ const useTimePeriod = ({
     ])(customTimePeriodInDay);
 
     return {
-      start,
       end,
-      xAxisTickFormat,
+      start,
       timelineLimit,
+      xAxisTickFormat,
     };
   };
 
@@ -121,8 +121,8 @@ const useTimePeriod = ({
   ] = React.useState<CustomTimePeriod>(
     defaultSelectedCustomTimePeriod
       ? getNewCustomTimePeriod({
-          start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
           end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
+          start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
         })
       : getTimeperiodFromNow(defaultTimePeriod),
   );
@@ -158,7 +158,7 @@ const useTimePeriod = ({
     getGraphQueryParameters(
       selectedTimePeriod
         ? { timePeriod: selectedTimePeriod }
-        : { startDate: customTimePeriod.start, endDate: customTimePeriod.end },
+        : { endDate: customTimePeriod.end, startDate: customTimePeriod.start },
     ),
   );
 
@@ -167,8 +167,8 @@ const useTimePeriod = ({
 
     setSelectedTimePeriod(timePeriod);
     onTimePeriodChange?.({
-      selectedTimePeriodId: timePeriod.id,
       graphOptions: defaultGraphOptions,
+      selectedTimePeriodId: timePeriod.id,
     });
 
     const newTimePeriod = getTimeperiodFromNow(timePeriod);
@@ -192,16 +192,16 @@ const useTimePeriod = ({
     });
     setCustomTimePeriod(newCustomTimePeriod);
     onTimePeriodChange?.({
-      selectedCustomTimePeriod: {
-        start: newCustomTimePeriod.start.toISOString(),
-        end: newCustomTimePeriod.end.toISOString(),
-      },
       graphOptions: defaultGraphOptions,
+      selectedCustomTimePeriod: {
+        end: newCustomTimePeriod.end.toISOString(),
+        start: newCustomTimePeriod.start.toISOString(),
+      },
     });
     setSelectedTimePeriod(null);
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
-      startDate: newCustomTimePeriod.start,
       endDate: newCustomTimePeriod.end,
+      startDate: newCustomTimePeriod.start,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
     setResourceDetailsUpdated(false);
@@ -215,16 +215,16 @@ const useTimePeriod = ({
     const { start, end } = adjustTimePeriodProps;
 
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
-      startDate: start,
       endDate: end,
+      startDate: start,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
     onTimePeriodChange?.({
-      selectedCustomTimePeriod: {
-        start: start.toISOString(),
-        end: end.toISOString(),
-      },
       graphOptions: defaultGraphOptions,
+      selectedCustomTimePeriod: {
+        end: end.toISOString(),
+        start: start.toISOString(),
+      },
     });
   };
 
@@ -246,14 +246,14 @@ const useTimePeriod = ({
   }, [sending]);
 
   return {
-    changeSelectedTimePeriod,
-    selectedTimePeriod,
-    periodQueryParameters,
-    getIntervalDates: (): [string, string] => getDates(selectedTimePeriod),
-    customTimePeriod,
-    changeCustomTimePeriod,
     adjustTimePeriod,
+    changeCustomTimePeriod,
+    changeSelectedTimePeriod,
+    customTimePeriod,
+    getIntervalDates: (): [string, string] => getDates(selectedTimePeriod),
+    periodQueryParameters,
     resourceDetailsUpdated,
+    selectedTimePeriod,
   };
 };
 
