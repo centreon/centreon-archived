@@ -5,14 +5,14 @@ import { Skeleton } from '@material-ui/lab';
 
 interface Props {
   graphHeight: number;
-  displayTitle: boolean;
+  displayTitleSkeleton: boolean;
 }
 
 const useSkeletonStyles = makeStyles((theme) => ({
   loadingSkeleton: {
     display: 'grid',
-    gridTemplateRows: ({ graphHeight, displayTitle }: Props): string =>
-      `${displayTitle ? '1fr' : ''} ${graphHeight}px 2fr`,
+    gridTemplateRows: ({ graphHeight, displayTitleSkeleton }: Props): string =>
+      `${displayTitleSkeleton ? '1fr' : ''} ${graphHeight}px 2fr`,
     gridGap: theme.spacing(1),
     height: '100%',
   },
@@ -22,14 +22,17 @@ const useSkeletonStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoadingSkeleton = ({ graphHeight, displayTitle }: Props): JSX.Element => {
-  const classes = useSkeletonStyles({ graphHeight, displayTitle });
+const LoadingSkeleton = ({
+  graphHeight,
+  displayTitleSkeleton,
+}: Props): JSX.Element => {
+  const classes = useSkeletonStyles({ graphHeight, displayTitleSkeleton });
 
   const skeletonLine = <Skeleton className={classes.loadingSkeletonLine} />;
 
   return (
     <div className={classes.loadingSkeleton}>
-      {displayTitle && skeletonLine}
+      {displayTitleSkeleton && skeletonLine}
       {skeletonLine}
       {skeletonLine}
     </div>
