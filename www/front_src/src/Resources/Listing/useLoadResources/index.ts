@@ -34,7 +34,11 @@ const useLoadResources = (): LoadResources => {
 
   const refreshIntervalRef = React.useRef<number>();
 
-  const refreshIntervalMs = useSelector(
+  interface Intervals {
+    AjaxTimeReloadMonitoring: number;
+  }
+
+  const refreshIntervalMs = useSelector<{ intervals: Intervals }, number>(
     (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
   );
 
