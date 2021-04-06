@@ -77,7 +77,6 @@ try {
         WHERE id IN ($registeredPlatforms)"
     );
     $pearDB->commit();
-    $errorMessage = '';
 } catch (\Exception $e) {
     $pearDB->rollBack();
     (new CentreonLog())->insertLog(
