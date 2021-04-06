@@ -28,7 +28,7 @@ import {
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   criterias: {
     marginLeft: 36,
   },
@@ -41,6 +41,11 @@ const useStyles = makeStyles(() => ({
   },
   filterSelect: {
     width: 200,
+  },
+  saveFilter: {
+    alignItems: 'center',
+    display: 'flex',
+    marginRight: theme.spacing(1),
   },
   searchField: {
     width: 375,
@@ -126,43 +131,45 @@ const Filter = (): JSX.Element => {
       expandableFilters={<Criterias />}
       expanded={filterExpanded}
       filters={
-        <Grid container alignItems="center" spacing={1}>
-          <Grid item>
+        <>
+          <div className={classes.saveFilter}>
             <SaveFilter />
-          </Grid>
-          <Grid item>
-            {customFiltersLoading ? (
-              <FilterLoadingSkeleton />
-            ) : (
-              <SelectFilter
-                ariaLabel={t(labelStateFilter)}
-                className={classes.filterSelect}
-                options={options.map(pick(['id', 'name', 'type']))}
-                selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
-                onChange={changeFilter}
+          </div>
+          <Grid container alignItems="center" spacing={1}>
+            <Grid item>
+              {customFiltersLoading ? (
+                <FilterLoadingSkeleton />
+              ) : (
+                <SelectFilter
+                  ariaLabel={t(labelStateFilter)}
+                  className={classes.filterSelect}
+                  options={options.map(pick(['id', 'name', 'type']))}
+                  selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
+                  onChange={changeFilter}
+                />
+              )}
+            </Grid>
+            <Grid item>
+              <SearchField
+                EndAdornment={SearchHelpTooltip}
+                placeholder={t(labelSearch)}
+                value={nextSearch || ''}
+                onChange={prepareSearch}
+                onKeyDown={requestSearchOnEnterKey}
               />
-            )}
+            </Grid>
+            <Grid item>
+              <Button
+                color="primary"
+                size="small"
+                variant="contained"
+                onClick={requestSearch}
+              >
+                {t(labelSearch)}
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item>
-            <SearchField
-              EndAdornment={SearchHelpTooltip}
-              placeholder={t(labelSearch)}
-              value={nextSearch || ''}
-              onChange={prepareSearch}
-              onKeyDown={requestSearchOnEnterKey}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              color="primary"
-              size="small"
-              variant="contained"
-              onClick={requestSearch}
-            >
-              {t(labelSearch)}
-            </Button>
-          </Grid>
-        </Grid>
+        </>
       }
       memoProps={memoProps}
       onExpand={toggleFilterExpanded}
