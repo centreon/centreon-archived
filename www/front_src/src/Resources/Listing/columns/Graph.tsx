@@ -16,7 +16,7 @@ import IconColumn from './IconColumn';
 const useStyles = makeStyles((theme) => ({
   graph: {
     display: 'block',
-    height: 200,
+    maxHeight: 270,
     width: 575,
     padding: theme.spacing(2),
     overflow: 'auto',
@@ -62,6 +62,7 @@ const GraphColumn = ({
               graphHeight={150}
               resource={row}
               timeline={[]}
+              displayTitle={false}
             />
           </Paper>
         </HoverChip>

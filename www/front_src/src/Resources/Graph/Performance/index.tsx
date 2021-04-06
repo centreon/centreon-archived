@@ -59,9 +59,10 @@ interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
   resourceDetailsUpdated?: boolean;
+  displayTitle?: boolean;
 }
 
-interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
+interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
   canAdjustTimePeriod: boolean;
 }
 
@@ -69,7 +70,8 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   container: {
     display: 'grid',
     flexDirection: 'column',
-    gridTemplateRows: ({ graphHeight }): string => `auto ${graphHeight}px auto`,
+    gridTemplateRows: ({ graphHeight, displayTitle }): string =>
+      `${displayTitle ? 'auto' : ''} ${graphHeight}px auto`,
     gridGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
@@ -124,10 +126,12 @@ const PerformanceGraph = ({
   adjustTimePeriod,
   customTimePeriod,
   resourceDetailsUpdated = true,
+  displayTitle = true,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     graphHeight,
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
+    displayTitle,
   });
   const { t } = useTranslation();
 
@@ -151,14 +155,26 @@ const PerformanceGraph = ({
 
     sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
-      setLineData(getLineData(graphData));
-      setTitle(graphData.global.title);
       setBase(graphData.global.base);
+      setTitle(graphData.global.title);
+      const newLineData = getLineData(graphData);
+      if (lineData) {
+        setLineData(
+          newLineData.map((line) => ({
+            ...line,
+            display: find(propEq('name', line.name), lineData)?.display ?? true,
+          })),
+        );
+        return;
+      }
+      setLineData(newLineData);
     });
   }, [endpoint]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
-    return <LoadingSkeleton graphHeight={graphHeight} />;
+    return (
+      <LoadingSkeleton graphHeight={graphHeight} displayTitle={displayTitle} />
+    );
   }
 
   if (isEmpty(timeSeries) || isEmpty(lineData)) {
@@ -267,9 +283,11 @@ const PerformanceGraph = ({
   return (
     <MetricsValueContext.Provider value={metricsValueProps}>
       <div className={classes.container}>
-        <Typography variant="body1" color="textPrimary" align="center">
-          {title}
-        </Typography>
+        {displayTitle && (
+          <Typography variant="body1" color="textPrimary" align="center">
+            {title}
+          </Typography>
+        )}
 
         <ParentSize>
           {({ width, height }): JSX.Element => (
