@@ -65,14 +65,13 @@ try {
     );
     $pearDB->commit();
     $errorMessage = '';
-} catch (\Throwable $ex) {
-    $pearDB->rollBack();
-    (new CentreonLog())->insertLog(
+} catch (\Exception $e) {
+    $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
-        " - Code : " . $ex->getCode() .
-        " - Error : " . $ex->getMessage() .
-        " - Trace : " . $ex->getTraceAsString()
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
     );
-    throw new \Exception($versionOfTheUpgrade . $errorMessage, $ex->getCode(), $ex);
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }
