@@ -592,7 +592,7 @@ describe(Actions, () => {
       },
     });
 
-    const { getByText } = renderActions();
+    const { getByText, getByTitle } = renderActions();
 
     const selectedResources = [host, service];
 
@@ -606,7 +606,7 @@ describe(Actions, () => {
       expect(getByText(labelSetDowntime).parentElement).toBeDisabled();
     });
 
-    fireEvent.click(getByText(labelMoreActions));
+    fireEvent.click(getByTitle(labelMoreActions));
 
     expect(getByText(labelDisacknowledge)).toHaveAttribute(
       'aria-disabled',
