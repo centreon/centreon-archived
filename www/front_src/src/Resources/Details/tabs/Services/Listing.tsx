@@ -2,10 +2,16 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { makeStyles } from '@material-ui/core';
+
 import { IconButton } from '@centreon/ui';
 
-import { useStyles } from '.';
-
+const useStyles = makeStyles((theme) => ({
+  list: {
+    display: 'grid',
+    gridGap: theme.spacing(1),
+  },
+}));
 interface Props {
   list: JSX.Element;
   switchButtonLabel: string;
@@ -31,7 +37,7 @@ const Listing = ({
       >
         {switchButtonIcon}
       </IconButton>
-      <div className={classes.services}>{list}</div>
+      <div className={classes.list}>{list}</div>
     </>
   );
 };

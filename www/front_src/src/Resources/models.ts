@@ -1,5 +1,9 @@
 import { ListingModel } from '@centreon/ui';
 
+export type ResourceType = 'host' | 'service' | 'metaservice';
+
+export type ResourceShortType = 'h' | 's' | 'm';
+
 export interface NamedEntity {
   uuid: string;
   id: number;
@@ -11,15 +15,7 @@ export interface Icon {
   name: string;
 }
 
-type ParentLinks = Pick<ResourceLinks, 'uris'>;
-
-export interface Parent extends NamedEntity {
-  icon: Icon | null;
-  status: Status;
-  links: ParentLinks;
-  type?: string;
-}
-
+export type Parent = Omit<Resource, 'parent'>;
 export interface Status {
   severity_code: number;
   name: string;
@@ -28,17 +24,17 @@ export interface Status {
 export interface Resource extends NamedEntity {
   icon?: Icon;
   parent?: Parent;
-  status: Status;
-  links: ResourceLinks;
-  acknowledged: boolean;
-  in_downtime: boolean;
-  duration: string;
-  tries: string;
-  last_check: string;
-  information: string;
-  severity_level: number;
-  short_type: 'h' | 's';
-  type: 'host' | 'service';
+  status?: Status;
+  links?: ResourceLinks;
+  acknowledged?: boolean;
+  in_downtime?: boolean;
+  duration?: string;
+  tries?: string;
+  last_check?: string;
+  information?: string;
+  severity_level?: number;
+  short_type: ResourceShortType;
+  type: ResourceType;
   passive_checks?: boolean;
   active_checks?: boolean;
   notification_enabled?: boolean;
@@ -63,28 +59,29 @@ export interface Acknowledgement {
 }
 
 export interface ResourceEndpoints {
-  details: string | null;
-  performance_graph: string | null;
-  status_graph: string | null;
-  timeline: string | null;
-  acknowledgement: string | null;
-  downtime: string | null;
+  details?: string;
+  performance_graph?: string;
+  status_graph?: string;
+  timeline?: string;
+  acknowledgement?: string;
+  downtime?: string;
+  metrics?: string;
 }
 
 export interface ResourceUris {
-  configuration: string | null;
-  logs: string | null;
-  reporting: string | null;
+  configuration?: string;
+  logs?: string;
+  reporting?: string;
 }
 
-interface Notes {
-  label: string | null;
+export interface Notes {
+  label?: string;
   url: string;
 }
 
 export interface ResourceExternals {
-  action_url: string | null;
-  notes: Notes | null;
+  action_url?: string;
+  notes?: Notes;
 }
 
 export interface ResourceLinks {

@@ -36,10 +36,11 @@ export interface ResourceDetails extends NamedEntity {
   notification_number: number;
   performance_data?: string;
   command_line?: string;
-  type: 'service' | 'host';
+  type: 'service' | 'host' | 'metaservice';
   fqdn?: string;
   alias?: string;
   groups?: Array<NamedEntity>;
+  calculation_type?: string;
 }
 
 interface GraphOption {

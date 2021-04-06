@@ -7,7 +7,7 @@ import { makeStyles, Paper } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import hasDefinedValues from '../../../hasDefinedValues';
-import { labelHost, labelService } from '../../../translatedLabels';
+import { labelHost } from '../../../translatedLabels';
 import { TabProps } from '..';
 import { ResourceUris } from '../../../models';
 
@@ -51,19 +51,24 @@ const ShortcutsTab = ({ details }: TabProps): JSX.Element => {
   ) as ResourceUris;
   const parentUris = path<ResourceUris>(['parent', 'links', 'uris'], details);
 
-  const isService = parentUris && hasDefinedValues(parentUris);
+  const hasParentUris = parentUris && hasDefinedValues(parentUris);
+
+  const resourceTitleByType = {
+    service: 'Service',
+    metaservice: 'Meta service',
+    host: 'Host',
+  };
 
   if (isNil(details)) {
     return <LoadingSkeleton />;
   }
 
+  const resourceTitle = t(resourceTitleByType[details.type]);
+
   return (
     <div className={classes.container}>
-      <ShortcutsSection
-        title={t(isService ? labelService : labelHost)}
-        uris={resourceUris}
-      />
-      {isService && (
+      <ShortcutsSection title={resourceTitle} uris={resourceUris} />
+      {hasParentUris && (
         <ShortcutsSection
           title={t(labelHost)}
           uris={parentUris as ResourceUris}

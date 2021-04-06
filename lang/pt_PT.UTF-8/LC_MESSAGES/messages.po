@@ -15143,3 +15143,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "At least one column must be selected"
 #  msgstr ""
+
+#  msgid "Calculation type"
+#  msgstr ""

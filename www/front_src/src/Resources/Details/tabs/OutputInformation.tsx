@@ -14,7 +14,7 @@ const useStyles = makeStyles<Theme, Pick<Props, 'bold'>>(() => ({
 }));
 
 interface Props {
-  content: string;
+  content?: string;
   bold?: boolean;
 }
 

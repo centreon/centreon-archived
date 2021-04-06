@@ -44,7 +44,7 @@ import getDetailCardLines from './DetailsCard/cards';
 const useStyles = makeStyles((theme) => ({
   loadingSkeleton: {
     display: 'grid',
-    gridTemplateRows: '120px 75px 75px',
+    gridTemplateRows: '67px',
     gridRowGap: theme.spacing(2),
   },
   details: {

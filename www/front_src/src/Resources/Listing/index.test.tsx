@@ -88,19 +88,18 @@ const fillEntities = (): Array<Resource> => {
         acknowledgement: `/monitoring/acknowledgement/${index}`,
         details: 'endpoint',
         downtime: `/monitoring/downtime/${index}`,
-        performance_graph: index % 6 === 0 ? 'endpoint' : null,
-        status_graph: index % 3 === 0 ? 'endpoint' : null,
+        performance_graph: index % 6 === 0 ? 'endpoint' : undefined,
+        status_graph: index % 3 === 0 ? 'endpoint' : undefined,
         timeline: 'endpoint',
+        metrics: 'endpoint',
       },
       uris: {
-        configuration: index % 7 === 0 ? 'uri' : null,
-        logs: index % 4 === 0 ? 'uri' : null,
-        reporting: index % 3 === 0 ? 'uri' : null,
+        configuration: index % 7 === 0 ? 'uri' : undefined,
+        logs: index % 4 === 0 ? 'uri' : undefined,
+        reporting: index % 3 === 0 ? 'uri' : undefined,
       },
       externals: {
-        action_url: null,
         notes: {
-          label: null,
           url: 'https://centreon.com',
         },
       },
@@ -190,14 +189,17 @@ describe(Listing, () => {
     resourcesWithMultipleLines.forEach(({ information }) => {
       expect(
         getByText(
-          pipe<string, Array<string>, Matcher>(split('\n'), head)(information),
+          pipe<string, Array<string>, Matcher>(
+            split('\n'),
+            head,
+          )(information as string),
         ),
       ).toBeInTheDocument();
-      expect(queryByText(information)).not.toBeInTheDocument();
+      expect(queryByText(information as string)).not.toBeInTheDocument();
     });
 
     resourcesWithSingleLines.forEach(({ information }) => {
-      expect(getByText(information)).toBeInTheDocument();
+      expect(getByText(information as string)).toBeInTheDocument();
     });
   });
 
@@ -363,7 +365,7 @@ describe(Listing, () => {
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
-        entityInDowntime?.links.endpoints.downtime,
+        entityInDowntime?.links?.endpoints.downtime,
         cancelTokenRequestParam,
       ),
     );
@@ -408,7 +410,7 @@ describe(Listing, () => {
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
-        acknowledgedEntity?.links.endpoints.acknowledgement,
+        acknowledgedEntity?.links?.endpoints.acknowledgement,
         cancelTokenRequestParam,
       ),
     );

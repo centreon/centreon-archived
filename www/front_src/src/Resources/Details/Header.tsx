@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { hasPath } from 'ramda';
 
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -95,9 +96,13 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
       />
       <div>
         <Typography className={classes.truncated}>{details.name}</Typography>
-        {details.parent && (
+        {hasPath(['parent', 'status'], details) && (
           <div className={classes.parent}>
-            <StatusChip severityCode={details.parent.status?.severity_code} />
+            <StatusChip
+              severityCode={
+                details.parent.status?.severity_code || SeverityCode.None
+              }
+            />
             <Typography variant="caption" className={classes.truncated}>
               {details.parent.name}
             </Typography>

@@ -51,6 +51,22 @@ const SubmitStatusForm = ({
   const [output, setOutput] = React.useState('');
   const [performanceData, setPerformanceData] = React.useState('');
 
+  const serviceStatuses = [
+    {
+      id: 0,
+      name: t(labelOk),
+    },
+    {
+      id: 1,
+      name: t(labelWarning),
+    },
+    {
+      id: 2,
+      name: t(labelCritical),
+    },
+    { id: 3, name: t(labelUnknown) },
+  ];
+
   const statuses = {
     host: [
       {
@@ -60,21 +76,8 @@ const SubmitStatusForm = ({
       { id: 1, name: t(labelDown) },
       { id: 2, name: t(labelUnreachable) },
     ],
-    service: [
-      {
-        id: 0,
-        name: t(labelOk),
-      },
-      {
-        id: 1,
-        name: t(labelWarning),
-      },
-      {
-        id: 2,
-        name: t(labelCritical),
-      },
-      { id: 3, name: t(labelUnknown) },
-    ],
+    service: serviceStatuses,
+    metaservice: serviceStatuses,
   };
 
   const { sendRequest, sending } = useRequest({

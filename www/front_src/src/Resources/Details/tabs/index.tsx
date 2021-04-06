@@ -10,6 +10,7 @@ import {
   labelTimeline,
   labelShortcuts,
   labelServices,
+  labelMetrics,
 } from '../../translatedLabels';
 import { ResourceDetails } from '../models';
 import hasDefinedValues from '../../hasDefinedValues';
@@ -20,12 +21,14 @@ import { Tab, TabId } from './models';
 import TimelineTab from './Timeline';
 import ShortcutsTab from './Shortcuts';
 import ServicesTab from './Services';
+import MetricsTab from './Metrics';
 
 const detailsTabId = 0;
 const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
-const shortcutsTabId = 4;
+const metricsTabId = 4;
+const shortcutsTabId = 5;
 
 export interface TabProps {
   details?: ResourceDetails;
@@ -65,6 +68,18 @@ const tabs: Array<Tab> = [
     },
   },
   {
+    id: metricsTabId,
+    Component: MetricsTab,
+    title: labelMetrics,
+    getIsActive: (details: ResourceDetails): boolean => {
+      if (isNil(details)) {
+        return false;
+      }
+
+      return details.type === 'metaservice';
+    },
+  },
+  {
     id: shortcutsTabId,
     Component: ShortcutsTab,
     title: labelShortcuts,
@@ -74,7 +89,7 @@ const tabs: Array<Tab> = [
       }
 
       const { links, parent } = details;
-      const parentUris = parent?.links.uris;
+      const parentUris = parent?.links?.uris;
 
       return any(hasDefinedValues, [parentUris, links.uris]);
     },
@@ -109,6 +124,7 @@ const tabIdByLabel = {
   services: servicesTabId,
   timeline: timelineTabId,
   shortcuts: shortcutsTabId,
+  metrics: metricsTabId,
   graph: graphTabId,
 };
 
@@ -132,6 +148,7 @@ export {
   graphTabId,
   shortcutsTabId,
   servicesTabId,
+  metricsTabId,
   tabs,
   TabById,
   getTabIdFromLabel,

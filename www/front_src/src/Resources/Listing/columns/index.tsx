@@ -46,24 +46,6 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     whiteSpace: 'nowrap',
   },
-  extraSmallChipContainer: {
-    height: 19,
-  },
-  smallChipContainer: {
-    height: theme.spacing(2.5),
-    width: theme.spacing(2.5),
-    fontSize: 10,
-  },
-  smallChipLabel: {
-    padding: theme.spacing(0.5),
-  },
-  actions: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    gridGap: theme.spacing(0.75),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 }));
 
 export interface ColumnProps {

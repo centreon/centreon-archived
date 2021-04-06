@@ -13,6 +13,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { Tab, useTheme, fade } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 
 import { MemoizedPanel as Panel } from '@centreon/ui';
 
@@ -119,7 +120,7 @@ const Details = (): JSX.Element | null => {
           <Tab
             style={{ minWidth: 'unset' }}
             key={id}
-            label={t(title)}
+            label={isNil(details) ? <Skeleton width={60} /> : t(title)}
             disabled={isNil(details)}
             onClick={changeSelectedTabId(id)}
           />

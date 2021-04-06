@@ -3,13 +3,12 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNil, path, pathOr } from 'ramda';
 
-import { makeStyles } from '@material-ui/core';
 import GraphIcon from '@material-ui/icons/BarChart';
 import ListIcon from '@material-ui/icons/List';
 
 import { useRequest, IconButton, ListingModel } from '@centreon/ui';
 
-import { TabProps, detailsTabId } from '..';
+import { TabProps } from '..';
 import { ResourceContext, useResourceContext } from '../../../Context';
 import {
   labelSwitchToGraph,
@@ -30,48 +29,16 @@ import ServiceGraphs from './Graphs';
 import ServiceList from './List';
 import LoadingSkeleton from './LoadingSkeleton';
 
-const useStyles = makeStyles((theme) => ({
-  services: {
-    display: 'grid',
-    gridGap: theme.spacing(1),
-  },
-  serviceDetails: {
-    display: 'grid',
-    gridAutoFlow: 'columns',
-    gridTemplateColumns: 'auto 1fr auto',
-    gridGap: theme.spacing(2),
-    alignItems: 'center',
-  },
-  serviceCard: {
-    padding: theme.spacing(1),
-  },
-  noResultContainer: {
-    padding: theme.spacing(1),
-  },
-}));
-
 type ServicesTabContentProps = TabProps &
   Pick<
     ResourceContext,
-    | 'setSelectedResourceUuid'
-    | 'setSelectedResourceId'
-    | 'setSelectedResourceType'
-    | 'setSelectedResourceParentId'
-    | 'setSelectedResourceParentType'
-    | 'setOpenDetailsTabId'
-    | 'tabParameters'
-    | 'setServicesTabParameters'
+    'selectResource' | 'tabParameters' | 'setServicesTabParameters'
   >;
 
 const ServicesTabContent = ({
   details,
-  setSelectedResourceUuid,
-  setSelectedResourceId,
-  setSelectedResourceType,
-  setSelectedResourceParentId,
-  setSelectedResourceParentType,
-  setOpenDetailsTabId,
   tabParameters,
+  selectResource,
   setServicesTabParameters,
 }: ServicesTabContentProps): JSX.Element => {
   const { t } = useTranslation();
@@ -142,15 +109,6 @@ const ServicesTabContent = ({
     });
   };
 
-  const selectService = (service): void => {
-    setOpenDetailsTabId(detailsTabId);
-    setSelectedResourceUuid(service.uuid);
-    setSelectedResourceId(service.id);
-    setSelectedResourceType(service.type);
-    setSelectedResourceParentType(service?.parent?.type);
-    setSelectedResourceParentId(service?.parent?.id);
-  };
-
   const switchMode = (): void => {
     setCanDisplayGraphs(false);
     const mode = !graphMode;
@@ -204,7 +162,7 @@ const ServicesTabContent = ({
       </IconButton>
       <GraphOptionsContext.Provider value={graphOptions}>
         <InfiniteScroll<Resource>
-          preventReloadWhen={details?.type === 'service'}
+          preventReloadWhen={details?.type !== 'host'}
           sendListingRequest={sendListingRequest}
           details={details}
           loadingSkeleton={<LoadingSkeleton />}
@@ -240,7 +198,7 @@ const ServicesTabContent = ({
             ) : (
               <ServiceList
                 services={entities}
-                onSelectService={selectService}
+                onSelectService={selectResource}
                 infiniteScrollTriggerRef={infiniteScrollTriggerRef}
               />
             );
@@ -258,12 +216,7 @@ const MemoizedServiceTabContent = memoizeComponent<ServicesTabContentProps>({
 
 const ServicesTab = ({ details }: TabProps): JSX.Element => {
   const {
-    setSelectedResourceUuid,
-    setSelectedResourceId,
-    setSelectedResourceType,
-    setSelectedResourceParentId,
-    setSelectedResourceParentType,
-    setOpenDetailsTabId,
+    selectResource,
     tabParameters,
     setServicesTabParameters,
   } = useResourceContext();
@@ -272,16 +225,10 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     <MemoizedServiceTabContent
       details={details}
       tabParameters={tabParameters}
-      setSelectedResourceUuid={setSelectedResourceUuid}
-      setSelectedResourceId={setSelectedResourceId}
-      setSelectedResourceType={setSelectedResourceType}
-      setSelectedResourceParentId={setSelectedResourceParentId}
-      setSelectedResourceParentType={setSelectedResourceParentType}
-      setOpenDetailsTabId={setOpenDetailsTabId}
+      selectResource={selectResource}
       setServicesTabParameters={setServicesTabParameters}
     />
   );
 };
 
 export default ServicesTab;
-export { useStyles };
