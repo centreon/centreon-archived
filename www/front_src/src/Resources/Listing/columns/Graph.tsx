@@ -62,6 +62,7 @@ const GraphColumn = ({
               graphHeight={150}
               resource={row}
               timeline={[]}
+              isInTooltip
             />
           </Paper>
         </HoverChip>

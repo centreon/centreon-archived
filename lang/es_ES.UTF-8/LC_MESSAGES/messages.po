@@ -14670,6 +14670,12 @@ msgstr "Permitir certificado autofirmado"
 # msgid "Display metric values tooltip"
 # msgstr ""
 
+# msgid "Check duration"
+# msgstr ""
+
+# msgid "Avg"
+# msgstr ""
+
 # msgid "Compact time period"
 # msgstr ""
 

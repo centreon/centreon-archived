@@ -198,6 +198,9 @@ export const labelBackward = 'Backward';
 export const labelEndDateGreaterThanStartDate =
   'The end date must be greater than the start date';
 export const labelGraphOptions = 'Graph options';
+export const labelMin = 'Min';
+export const labelMax = 'Max';
+export const labelAvg = 'Avg';
 export const labelCompactTimePeriod = 'Compact time period';
 export const labelDisplayTooltips = 'Display metric values tooltip';
 export const labelAction = 'Action';
