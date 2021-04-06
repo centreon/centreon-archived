@@ -24,6 +24,9 @@ mariadb_root_password=$(
 	echo
 )
 
+# File where the generated password will be temporaly saved
+mariadb_root_password_file=/etc/centreon/mariadb.tobedeleted
+
 ##FIXME - to be set dynmically & and support other versions
 CENTREON_MAJOR_VERSION=$version
 CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-2"
@@ -451,8 +454,8 @@ function secure_mariadb_setup() {
 	if [ "x$?" '!=' x0 ]; then
 		error_and_exit "Could not apply the requests"
 	else
-		echo "Random generated password for MariaDB user root is [ $mariadb_root_password ]" >/etc/centreon/mariadb.tobedeleted
-		log "WARN" "Random generated password for MariaDB user root is saved in /etc/centreon/mariadb.tobedeleted"
+		echo "Random generated password for MariaDB user root is [ $mariadb_root_password ]" >$mariadb_root_password_file
+		log "WARN" "Random generated password for MariaDB user root is saved in [$mariadb_root_password_file]"
 	fi
 
 }
@@ -688,5 +691,14 @@ upgrade)
 	error_and_exit "Upgrade operation is not supported yet" ##FIXME
 	;;
 esac
+
+## Major change - remind it again (in case of log level is ERROR)
+if [ -e $mariadb_root_password_file ]; then
+	echo
+	echo "****** IMPORTANT ******"
+	echo "You will need the MariaDB user root password in order to continue the Centreon installation process."
+	echo "It was randomly generated (see logs in the section above) and saved in [$mariadb_root_password_file]"
+	echo "Please save it securely and then delete this file"
+fi
 
 exit 0
