@@ -23,6 +23,7 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 20.10.6 : ';
+$errorMessage = '';
 
 try {
     //engine postpone
