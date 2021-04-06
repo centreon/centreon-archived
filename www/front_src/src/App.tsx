@@ -13,7 +13,6 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-import { pipe } from 'ramda';
 
 import { withStyles, createStyles } from '@material-ui/core';
 
@@ -197,8 +196,6 @@ const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
   };
 };
 
-export default pipe(
-  hot,
-  connect(null, mapDispatchToProps),
-  withStyles(styles),
-)(App);
+const connector = connect(null, mapDispatchToProps)(withStyles(styles)(App));
+
+export default hot(connector);
