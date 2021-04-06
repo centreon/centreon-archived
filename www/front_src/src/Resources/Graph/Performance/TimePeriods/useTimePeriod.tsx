@@ -258,8 +258,8 @@ const useTimePeriod = ({
 
   React.useEffect(() => {
     const newCustomTimePeriod = getNewCustomTimePeriod({
-      start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
       end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
+      start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
     });
 
     if (
@@ -272,8 +272,8 @@ const useTimePeriod = ({
 
     setCustomTimePeriod(newCustomTimePeriod);
     const queryParams = getGraphQueryParameters({
-      startDate: newCustomTimePeriod.start,
       endDate: newCustomTimePeriod.end,
+      startDate: newCustomTimePeriod.start,
     });
     setPeriodQueryParameters(queryParams);
   }, [defaultSelectedCustomTimePeriod]);
