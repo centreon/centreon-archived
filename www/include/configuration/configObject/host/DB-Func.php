@@ -2510,7 +2510,7 @@ function sanitizeFormHostParameters(array $ret): array
             case 'geo_coords':
                 if (!empty($inputValue)) {
                     $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === false)
+                        \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === '')
                             ? null
                             : $inputValue
                     ];
@@ -2538,7 +2538,7 @@ function sanitizeFormHostParameters(array $ret): array
                         \PDO::PARAM_STR => (($inputValue = filter_var(
                             implode(",", array_keys($inputValue)),
                             FILTER_SANITIZE_STRING
-                        )) === false)
+                        )) === '')
                         ? null
                         : $inputValue
                     ];
@@ -2562,7 +2562,7 @@ function sanitizeFormHostParameters(array $ret): array
                         \PDO::PARAM_STR => (($inputValue = filter_var(
                             implode(",", array_keys($inputValue)),
                             FILTER_SANITIZE_STRING
-                        )) === false)
+                        )) === '')
                         ? null
                         : $inputValue
                     ];
