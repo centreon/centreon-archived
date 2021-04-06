@@ -84,7 +84,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     display: 'grid',
     flexDirection: 'column',
     gridTemplateRows: ({ graphHeight, isInTooltip }): string =>
-      `${isInTooltip ? 'auto' : ''} ${graphHeight}px auto`,
+      `${not(isInTooltip) ? 'auto' : ''} ${graphHeight}px auto`,
     gridGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
@@ -196,7 +196,7 @@ const PerformanceGraph = ({
     return (
       <LoadingSkeleton
         graphHeight={graphHeight}
-        displayTitleSkeleton={isInTooltip}
+        displayTitleSkeleton={not(isInTooltip)}
       />
     );
   }

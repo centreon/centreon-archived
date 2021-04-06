@@ -16,7 +16,7 @@ import IconColumn from './IconColumn';
 const useStyles = makeStyles((theme) => ({
   graph: {
     display: 'block',
-    maxHeight: 270,
+    maxHeight: 280,
     width: 575,
     padding: theme.spacing(2),
     overflow: 'auto',
