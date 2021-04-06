@@ -24,9 +24,6 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 20.10.6 : ';
 
-/**
- * Queries needing exception management and rollback if failing
- */
 try {
     //engine postpone
     if ($pearDB->isColumnExist('cfg_nagios', 'postpone_notification_to_timeperiod')) {
@@ -43,7 +40,22 @@ try {
             "ALTER TABLE `platform_topology` ADD COLUMN `pending` enum('0','1') DEFAULT ('1') AFTER `parent_id`"
         );
     }
+    $errorMessage = '';
+} catch (\Exception $e) {
+    (new CentreonLog())->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
 
+/**
+ * Queries needing exception management and rollback if failing
+ */
+try {
     $pearDB->beginTransaction();
     $errorMessage = "Unable to update pending state on platform_topology table";
     // find registered platforms
@@ -66,7 +78,8 @@ try {
     $pearDB->commit();
     $errorMessage = '';
 } catch (\Exception $e) {
-    $centreonLog->insertLog(
+    $pearDB->rollBack();
+    (new CentreonLog())->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
         " - Code : " . (int)$e->getCode() .
