@@ -16,12 +16,12 @@ export enum TimeShiftDirection {
 }
 
 interface TimeShiftContextProps {
+  canAdjustTimePeriod: boolean;
   graphHeight: number;
   graphWidth: number;
+  loading: boolean;
   marginLeft: number;
   marginTop: number;
-  canAdjustTimePeriod: boolean;
-  loading: boolean;
   shiftTime?: (direction: TimeShiftDirection) => void;
 }
 
@@ -50,18 +50,18 @@ const TimeShifts = (): JSX.Element | null => {
   return (
     <>
       <TimeShiftIcon
-        xIcon={0}
         Icon={ArrowBackIosIcon}
-        directionHovered={directionHovered}
-        direction={TimeShiftDirection.backward}
         ariaLabel={labelBackward}
+        direction={TimeShiftDirection.backward}
+        directionHovered={directionHovered}
+        xIcon={0}
       />
       <TimeShiftIcon
-        xIcon={graphWidth + timeShiftZoneWidth + timeShiftIconSize}
         Icon={ArrowForwardIosIcon}
-        directionHovered={directionHovered}
-        direction={TimeShiftDirection.forward}
         ariaLabel={labelForward}
+        direction={TimeShiftDirection.forward}
+        directionHovered={directionHovered}
+        xIcon={graphWidth + timeShiftZoneWidth + timeShiftIconSize}
       />
       <TimeShiftZone
         direction={TimeShiftDirection.backward}

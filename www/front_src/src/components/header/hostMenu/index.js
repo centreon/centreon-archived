@@ -48,14 +48,14 @@ const statusSchema = yup.object().shape({
     total: numberFormat,
     unhandled: numberFormat,
   }),
+  ok: numberFormat,
+  pending: numberFormat,
+  refreshTime: numberFormat,
+  total: numberFormat,
   unreachable: yup.object().shape({
     total: numberFormat,
     unhandled: numberFormat,
   }),
-  ok: numberFormat,
-  pending: numberFormat,
-  total: numberFormat,
-  refreshTime: numberFormat,
 });
 
 class HostMenu extends Component {
@@ -66,9 +66,9 @@ class HostMenu extends Component {
   refreshInterval = null;
 
   state = {
-    toggled: false,
     data: null,
     intervalApplied: false,
+    toggled: false,
   };
 
   componentDidMount() {
@@ -144,10 +144,10 @@ class HostMenu extends Component {
         className={`${styles.wrapper} wrap-right-hosts`}
         ref={(host) => (this.host = host)}
       >
-        <SubmenuHeader submenuType="top" active={toggled}>
+        <SubmenuHeader active={toggled} submenuType="top">
           <IconHeader
-            iconType="hosts"
             iconName={t('Hosts')}
+            iconType="hosts"
             onClick={this.toggle}
           >
             {data.pending > 0 && <span className={styles['custom-icon']} />}
@@ -155,37 +155,37 @@ class HostMenu extends Component {
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to={getHostResourcesUrl({
-              statusCriterias: downCriterias,
               stateCriterias: unhandledStateCriterias,
+              statusCriterias: downCriterias,
             })}
           >
             <IconNumber
-              iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
               iconColor="red"
               iconNumber={
                 <span id="count-host-down">
                   {numeral(data.down.unhandled).format('0a')}
                 </span>
               }
+              iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
             />
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to={getHostResourcesUrl({
-              statusCriterias: unreachableCriterias,
               stateCriterias: unhandledStateCriterias,
+              statusCriterias: unreachableCriterias,
             })}
           >
             <IconNumber
-              iconType={`${
-                data.unreachable.unhandled > 0 ? 'colored' : 'bordered'
-              }`}
               iconColor="gray-dark"
               iconNumber={
                 <span id="count-host-unreachable">
                   {numeral(data.unreachable.unhandled).format('0a')}
                 </span>
               }
+              iconType={`${
+                data.unreachable.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
             />
           </Link>
           <Link
@@ -195,11 +195,11 @@ class HostMenu extends Component {
             })}
           >
             <IconNumber
-              iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
               iconColor="green"
               iconNumber={
                 <span id="count-host-up">{numeral(data.ok).format('0a')}</span>
               }
+              iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
             />
           </Link>
           <IconToggleSubmenu
@@ -215,71 +215,71 @@ class HostMenu extends Component {
           >
             <SubmenuItems>
               <Link
-                to={getHostResourcesUrl()}
                 className={styles.link}
+                to={getHostResourcesUrl()}
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle={t('All')}
                   submenuCount={numeral(data.total).format()}
+                  submenuTitle={t('All')}
                 />
               </Link>
               <Link
-                to={getHostResourcesUrl({
-                  statusCriterias: downCriterias,
-                  stateCriterias: unhandledStateCriterias,
-                })}
                 className={styles.link}
+                to={getHostResourcesUrl({
+                  stateCriterias: unhandledStateCriterias,
+                  statusCriterias: downCriterias,
+                })}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={t('Down')}
                   submenuCount={`${numeral(data.down.unhandled).format(
                     '0a',
                   )}/${numeral(data.down.total).format('0a')}`}
+                  submenuTitle={t('Down')}
                 />
               </Link>
               <Link
-                to={getHostResourcesUrl({
-                  statusCriterias: unreachableCriterias,
-                  stateCriterias: unhandledStateCriterias,
-                })}
                 className={styles.link}
+                to={getHostResourcesUrl({
+                  stateCriterias: unhandledStateCriterias,
+                  statusCriterias: unreachableCriterias,
+                })}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle={t('Unreachable')}
                   submenuCount={`${numeral(data.unreachable.unhandled).format(
                     '0a',
                   )}/${numeral(data.unreachable.total).format('0a')}`}
+                  submenuTitle={t('Unreachable')}
                 />
               </Link>
               <Link
+                className={styles.link}
                 to={getHostResourcesUrl({
                   statusCriterias: upCriterias,
                 })}
-                className={styles.link}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle={t('Up')}
                   submenuCount={numeral(data.ok).format()}
+                  submenuTitle={t('Up')}
                 />
               </Link>
               <Link
+                className={styles.link}
                 to={getHostResourcesUrl({
                   statusCriterias: pendingCriterias,
                 })}
-                className={styles.link}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle={t('Pending')}
                   submenuCount={numeral(data.pending).format()}
+                  submenuTitle={t('Pending')}
                 />
               </Link>
             </SubmenuItems>

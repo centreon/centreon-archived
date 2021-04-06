@@ -59,16 +59,16 @@ const ServicesTabContent = ({
     adjustTimePeriod,
     resourceDetailsUpdated,
   } = useTimePeriod({
-    defaultSelectedTimePeriodId: path(
-      ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
+    defaultGraphOptions: path(
+      ['services', 'graphTimePeriod', 'graphOptions'],
       tabParameters,
     ),
     defaultSelectedCustomTimePeriod: path(
       ['services', 'graphTimePeriod', 'selectedCustomTimePeriod'],
       tabParameters,
     ),
-    defaultGraphOptions: path(
-      ['services', 'graphTimePeriod', 'graphOptions'],
+    defaultSelectedTimePeriodId: path(
+      ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
       tabParameters,
     ),
     details,
@@ -93,9 +93,9 @@ const ServicesTabContent = ({
   }): Promise<ListingModel<Resource>> => {
     return sendRequest({
       limit,
+      onlyWithPerformanceData: graphMode ? true : undefined,
       page: atPage,
       resourceTypes: ['service'],
-      onlyWithPerformanceData: graphMode ? true : undefined,
       search: {
         conditions: [
           {
@@ -116,12 +116,12 @@ const ServicesTabContent = ({
     setGraphMode(mode);
 
     setServicesTabParameters({
+      graphMode: mode,
       graphTimePeriod: pathOr(
         {},
         ['services', 'graphTimePeriod'],
         tabParameters,
       ),
-      graphMode: mode,
     });
   };
 
@@ -136,8 +136,8 @@ const ServicesTabContent = ({
   };
 
   const graphOptions = useGraphOptions({
-    graphTabParameters: tabParameters.services?.graphTimePeriod,
     changeTabGraphOptions,
+    graphTabParameters: tabParameters.services?.graphTimePeriod,
   });
 
   React.useEffect(() => {
@@ -153,53 +153,53 @@ const ServicesTabContent = ({
   return (
     <>
       <IconButton
-        title={t(labelSwitch)}
         ariaLabel={t(labelSwitch)}
         disabled={loading}
+        title={t(labelSwitch)}
         onClick={switchMode}
       >
         {switchIcon}
       </IconButton>
       <GraphOptionsContext.Provider value={graphOptions}>
         <InfiniteScroll<Resource>
-          preventReloadWhen={details?.type !== 'host'}
-          sendListingRequest={sendListingRequest}
           details={details}
-          loadingSkeleton={<LoadingSkeleton />}
           filter={
             graphMode ? (
               <TimePeriodButtonGroup
+                changeCustomTimePeriod={changeCustomTimePeriod}
+                customTimePeriod={customTimePeriod}
+                disabled={loading}
                 selectedTimePeriodId={selectedTimePeriod?.id}
                 onChange={changeSelectedTimePeriod}
-                disabled={loading}
-                customTimePeriod={customTimePeriod}
-                changeCustomTimePeriod={changeCustomTimePeriod}
               />
             ) : undefined
           }
-          reloadDependencies={[graphMode]}
-          loading={sending}
           limit={limit}
+          loading={sending}
+          loadingSkeleton={<LoadingSkeleton />}
+          preventReloadWhen={details?.type !== 'host'}
+          reloadDependencies={[graphMode]}
+          sendListingRequest={sendListingRequest}
         >
           {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
             const displayGraphs = graphMode && canDisplayGraphs;
 
             return displayGraphs ? (
               <ServiceGraphs
-                services={entities}
+                adjustTimePeriod={adjustTimePeriod}
+                customTimePeriod={customTimePeriod}
+                getIntervalDates={getIntervalDates}
                 infiniteScrollTriggerRef={infiniteScrollTriggerRef}
                 periodQueryParameters={periodQueryParameters}
-                getIntervalDates={getIntervalDates}
-                selectedTimePeriod={selectedTimePeriod}
-                customTimePeriod={customTimePeriod}
-                adjustTimePeriod={adjustTimePeriod}
                 resourceDetailsUpdated={resourceDetailsUpdated}
+                selectedTimePeriod={selectedTimePeriod}
+                services={entities}
               />
             ) : (
               <ServiceList
+                infiniteScrollTriggerRef={infiniteScrollTriggerRef}
                 services={entities}
                 onSelectService={selectResource}
-                infiniteScrollTriggerRef={infiniteScrollTriggerRef}
               />
             );
           }}
@@ -210,8 +210,8 @@ const ServicesTabContent = ({
 };
 
 const MemoizedServiceTabContent = memoizeComponent<ServicesTabContentProps>({
-  memoProps: ['details', 'tabParameters'],
   Component: ServicesTabContent,
+  memoProps: ['details', 'tabParameters'],
 });
 
 const ServicesTab = ({ details }: TabProps): JSX.Element => {
@@ -224,9 +224,9 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
   return (
     <MemoizedServiceTabContent
       details={details}
-      tabParameters={tabParameters}
       selectResource={selectResource}
       setServicesTabParameters={setServicesTabParameters}
+      tabParameters={tabParameters}
     />
   );
 };

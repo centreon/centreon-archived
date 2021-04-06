@@ -18,8 +18,8 @@ import { criteriaValueNameById, selectableCriterias } from './models';
 
 interface Props {
   name: string;
-  value: Array<SelectEntry>;
   parentWidth: number;
+  value: Array<SelectEntry>;
 }
 
 const CriteriaContent = ({
@@ -55,9 +55,9 @@ const CriteriaContent = ({
   ];
 
   const commonProps = {
-    limitTags,
-    label: t(label),
     className: classes.field,
+    label: t(label),
+    limitTags,
     openText: `${t(labelOpen)} ${t(label)}`,
     value,
   };
@@ -65,14 +65,14 @@ const CriteriaContent = ({
   if (isNil(options)) {
     const getEndpoint = ({ search, page }) =>
       buildAutocompleteEndpoint({
-        search,
-        page,
         limit: 10,
+        page,
+        search,
       });
     return (
       <MultiConnectedAutocompleteField
-        getEndpoint={getEndpoint}
         field="name"
+        getEndpoint={getEndpoint}
         onChange={(_, updatedValue) => {
           changeCriteria(updatedValue);
         }}
@@ -102,10 +102,10 @@ const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
   return useMemoComponent({
     Component: (
       <CriteriaContent
-        setCriteriaAndNewFilter={setCriteriaAndNewFilter}
-        value={value}
         name={name}
         parentWidth={parentWidth}
+        setCriteriaAndNewFilter={setCriteriaAndNewFilter}
+        value={value}
       />
     ),
     memoProps: [

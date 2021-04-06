@@ -1,23 +1,23 @@
 interface DsData {
+  ds_average: string | null;
+  ds_color_area: string;
   ds_color_line: string;
   ds_filled: boolean;
-  ds_color_area: string;
-  ds_transparency: number;
   ds_invert: string | null;
-  ds_stack: string | null;
-  ds_order: string | null;
   ds_legend: string | null;
-  ds_average: string | null;
-  ds_min: string | null;
   ds_max: string | null;
+  ds_min: string | null;
+  ds_order: string | null;
+  ds_stack: string | null;
+  ds_transparency: number;
 }
 
 export interface Metric {
   data: Array<number>;
   ds_data: DsData;
+  legend: string;
   metric: string;
   unit: string;
-  legend: string;
 }
 
 export interface GraphData {
@@ -27,35 +27,35 @@ export interface GraphData {
 }
 
 export interface TimeValue {
-  timeTick: string;
   [field: string]: string | number;
+  timeTick: string;
 }
 
 export interface Line {
-  name: string;
-  color: string;
-  metric: string;
-  display: boolean;
   areaColor: string;
-  min: string | null;
-  max: string | null;
   average: string | null;
-  unit: string;
-  lineColor: string;
+  color: string;
+  display: boolean;
   filled: boolean;
-  transparency: number;
   highlight?: boolean;
   invert: string | null;
-  stackOrder: number | null;
   legend: string | null;
+  lineColor: string;
+  max: string | null;
+  metric: string;
+  min: string | null;
+  name: string;
+  stackOrder: number | null;
+  transparency: number;
+  unit: string;
 }
 
 export interface AdjustTimePeriodProps {
-  start: Date;
   end: Date;
+  start: Date;
 }
 
 export enum GraphOptionId {
-  displayTooltips = 'displayTooltips',
   displayEvents = 'displayEvents',
+  displayTooltips = 'displayTooltips',
 }

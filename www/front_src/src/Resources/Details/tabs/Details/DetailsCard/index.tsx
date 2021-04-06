@@ -9,6 +9,9 @@ import { labelActive } from '../../../../translatedLabels';
 import Card from '../Card';
 
 const useStyles = makeStyles((theme) => ({
+  active: {
+    color: theme.palette.success.main,
+  },
   container: {
     height: '100%',
   },
@@ -16,15 +19,12 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     gridGap: theme.spacing(1),
   },
-  active: {
-    color: theme.palette.success.main,
-  },
 }));
 
 interface Props {
-  title: string;
-  line: JSX.Element;
   active?: boolean;
+  line: JSX.Element;
+  title: string;
 }
 
 const DetailsCard = ({ title, line, active }: Props): JSX.Element => {
@@ -34,12 +34,12 @@ const DetailsCard = ({ title, line, active }: Props): JSX.Element => {
   return (
     <Card className={classes.container}>
       <div className={classes.title}>
-        <Typography variant="body1" color="textSecondary" gutterBottom>
+        <Typography gutterBottom color="textSecondary" variant="body1">
           {title}
         </Typography>
         {active && (
           <Tooltip title={t(labelActive) as string}>
-            <IconCheck fontSize="small" className={classes.active} />
+            <IconCheck className={classes.active} fontSize="small" />
           </Tooltip>
         )}
       </div>

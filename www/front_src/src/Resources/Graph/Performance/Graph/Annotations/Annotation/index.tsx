@@ -21,14 +21,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface Props {
-  xIcon: number;
-  header: string;
   event: TimelineEvent;
-  marker: JSX.Element;
+  header: string;
   icon: JSX.Element;
+  marker: JSX.Element;
   setAnnotationHovered: React.Dispatch<
     React.SetStateAction<TimelineEvent | undefined>
   >;
+  xIcon: number;
 }
 
 const Annotation = ({
@@ -58,14 +58,14 @@ const Annotation = ({
         }
       >
         <svg
-          y={yMargin}
-          x={xIcon}
           height={iconSize}
           width={iconSize}
+          x={xIcon}
+          y={yMargin}
           onMouseEnter={() => setAnnotationHovered(() => event)}
           onMouseLeave={() => setAnnotationHovered(() => undefined)}
         >
-          <rect width={iconSize} height={iconSize} fill="transparent" />
+          <rect fill="transparent" height={iconSize} width={iconSize} />
           {icon}
         </svg>
       </Tooltip>

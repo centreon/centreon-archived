@@ -8,9 +8,9 @@ const getStoredOrDefaultColumnIds = (
   defaultValue: Array<string>,
 ): Array<string> => {
   return getStoredOrDefault<Array<string>>({
+    cachedItem: cachedColumnIds,
     defaultValue,
     key: columnIdsKey,
-    cachedItem: cachedColumnIds,
     onCachedItemUpdate: (updatedItem) => {
       cachedColumnIds = updatedItem;
     },
@@ -18,7 +18,7 @@ const getStoredOrDefaultColumnIds = (
 };
 
 const storeColumnIds = (columnIds: Array<string>): void => {
-  store<Array<string>>({ value: columnIds, key: columnIdsKey });
+  store<Array<string>>({ key: columnIdsKey, value: columnIds });
 };
 
 const clearCachedColumnIds = (): void => {

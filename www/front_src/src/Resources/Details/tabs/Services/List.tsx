@@ -6,9 +6,9 @@ import { Resource, Status } from '../../../models';
 import ServiceCard from '../Details/ServiceCard';
 
 interface Props {
-  services: Array<Resource>;
-  onSelectService: (service: Resource) => void;
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
+  onSelectService: (service: Resource) => void;
+  services: Array<Resource>;
 }
 
 const ServiceList = ({
@@ -25,9 +25,9 @@ const ServiceList = ({
         return (
           <div key={id}>
             <ServiceCard
+              information={information}
               name={name}
               status={status as Status}
-              information={information}
               subInformation={duration}
               onSelect={() => onSelectService(service)}
             />

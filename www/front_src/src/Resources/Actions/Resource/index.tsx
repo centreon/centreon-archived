@@ -119,8 +119,8 @@ const ResourceActionsContent = ({
     }
 
     checkResources({
-      resources: resourcesToCheck,
       cancelToken: token,
+      resources: resourcesToCheck,
     })
       .then(() => {
         confirmAction();
@@ -243,8 +243,8 @@ const ResourceActionsContent = ({
           {t(labelMoreActions)}
         </ActionButton>
         <Menu
-          anchorEl={moreActionsMenuAnchor}
           keepMounted
+          anchorEl={moreActionsMenuAnchor}
           open={Boolean(moreActionsMenuAnchor)}
           onClose={closeMoreActionsMenu}
         >
@@ -295,10 +295,10 @@ const ResourceActionsContent = ({
       )}
       {resourceToComment && (
         <AddCommentForm
+          date={new Date()}
           resource={resourceToComment as Resource}
           onClose={cancelComment}
           onSuccess={confirmAction}
-          date={new Date()}
         />
       )}
     </Grid>
@@ -314,8 +314,8 @@ const memoProps = [
 ];
 
 const MemoizedResourceActionsContent = memoizeComponent<Props>({
-  memoProps,
   Component: ResourceActionsContent,
+  memoProps,
 });
 
 const functionProps = [

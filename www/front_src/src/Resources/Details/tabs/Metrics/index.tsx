@@ -27,8 +27,8 @@ const MetricsTabContent = ({
   const endpoint = path(['links', 'endpoints', 'metrics'], details);
 
   const { sendRequest, sending } = useRequest<MetaServiceMetricListing>({
-    request: listMetaServiceMetrics,
     decoder: metaServiceMetricListingDecoder,
+    request: listMetaServiceMetrics,
   });
 
   const sendListingRequest = ({
@@ -39,8 +39,8 @@ const MetricsTabContent = ({
     return sendRequest({
       endpoint,
       parameters: {
-        page: atPage,
         limit,
+        page: atPage,
       },
     });
   };
@@ -48,17 +48,17 @@ const MetricsTabContent = ({
   return (
     <InfiniteScroll
       details={details}
-      sendListingRequest={sendListingRequest}
-      loadingSkeleton={<LoadingSkeleton />}
-      loading={sending}
       limit={limit}
+      loading={sending}
+      loadingSkeleton={<LoadingSkeleton />}
       preventReloadWhen={details?.type !== 'metaservice'}
+      sendListingRequest={sendListingRequest}
     >
       {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
         return (
           <Metrics
-            metrics={entities}
             infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+            metrics={entities}
             selectResource={selectResource}
           />
         );
@@ -68,8 +68,8 @@ const MetricsTabContent = ({
 };
 
 const MemoizedMetricsTabContent = memoizeComponent<MetricsTabContentProps>({
-  memoProps: ['details'],
   Component: MetricsTabContent,
+  memoProps: ['details'],
 });
 
 const MetricsTab = ({ details }: TabProps): JSX.Element => {

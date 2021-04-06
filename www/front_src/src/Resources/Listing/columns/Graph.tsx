@@ -17,9 +17,9 @@ const useStyles = makeStyles((theme) => ({
   graph: {
     display: 'block',
     height: 200,
-    width: 575,
-    padding: theme.spacing(2),
     overflow: 'auto',
+    padding: theme.spacing(2),
+    width: 575,
   },
 }));
 
@@ -47,9 +47,9 @@ const GraphColumn = ({
         <HoverChip
           Chip={(): JSX.Element => (
             <IconButton
+              ariaLabel={labelGraph}
               title={labelGraph}
               onClick={(): void => onClick(row)}
-              ariaLabel={labelGraph}
             >
               <IconGraph fontSize="small" />
             </IconButton>
@@ -58,11 +58,11 @@ const GraphColumn = ({
         >
           <Paper className={classes.graph}>
             <PerformanceGraph
+              isInTooltip
               endpoint={endpoint}
               graphHeight={150}
               resource={row}
               timeline={[]}
-              isInTooltip
             />
           </Paper>
         </HoverChip>

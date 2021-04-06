@@ -29,21 +29,21 @@ import {
 import SelectFilter from './Fields/SelectFilter';
 
 const useStyles = makeStyles(() => ({
-  filterSelect: {
-    width: 200,
-  },
   criterias: {
     marginLeft: 36,
-  },
-  searchField: {
-    width: 375,
   },
   field: {
     minWidth: 155,
   },
   filterLineLabel: {
-    width: 60,
     textAlign: 'center',
+    width: 60,
+  },
+  filterSelect: {
+    width: 200,
+  },
+  searchField: {
+    width: 375,
   },
 }));
 
@@ -122,11 +122,11 @@ const Filter = (): JSX.Element => {
 
   return (
     <Filters
-      expanded={filterExpanded}
-      onExpand={toggleFilterExpanded}
       expandLabel={labelShowCriteriasFilters}
+      expandableFilters={<Criterias />}
+      expanded={filterExpanded}
       filters={
-        <Grid container spacing={1} alignItems="center">
+        <Grid container alignItems="center" spacing={1}>
           <Grid item>
             <SaveFilter />
           </Grid>
@@ -135,28 +135,28 @@ const Filter = (): JSX.Element => {
               <FilterLoadingSkeleton />
             ) : (
               <SelectFilter
+                ariaLabel={t(labelStateFilter)}
+                className={classes.filterSelect}
                 options={options.map(pick(['id', 'name', 'type']))}
                 selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
                 onChange={changeFilter}
-                ariaLabel={t(labelStateFilter)}
-                className={classes.filterSelect}
               />
             )}
           </Grid>
           <Grid item>
             <SearchField
               EndAdornment={SearchHelpTooltip}
+              placeholder={t(labelSearch)}
               value={nextSearch || ''}
               onChange={prepareSearch}
-              placeholder={t(labelSearch)}
               onKeyDown={requestSearchOnEnterKey}
             />
           </Grid>
           <Grid item>
             <Button
-              variant="contained"
               color="primary"
               size="small"
+              variant="contained"
               onClick={requestSearch}
             >
               {t(labelSearch)}
@@ -164,8 +164,8 @@ const Filter = (): JSX.Element => {
           </Grid>
         </Grid>
       }
-      expandableFilters={<Criterias />}
       memoProps={memoProps}
+      onExpand={toggleFilterExpanded}
     />
   );
 };

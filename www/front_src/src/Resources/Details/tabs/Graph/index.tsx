@@ -18,23 +18,23 @@ import useGraphOptions, {
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     display: 'grid',
-    gridTemplateRows: 'auto 1fr',
     gridRowGap: theme.spacing(2),
+    gridTemplateRows: 'auto 1fr',
   },
   exportToPngButton: {
     display: 'flex',
     justifyContent: 'space-between',
     margin: theme.spacing(0, 1, 1, 2),
   },
+  graph: {
+    height: '100%',
+    margin: 'auto',
+    width: '100%',
+  },
   graphContainer: {
     display: 'grid',
-    padding: theme.spacing(2, 1, 1),
     gridTemplateRows: '1fr',
-  },
-  graph: {
-    margin: 'auto',
-    height: '100%',
-    width: '100%',
+    padding: theme.spacing(2, 1, 1),
   },
 }));
 
@@ -58,15 +58,15 @@ const GraphTabContent = ({
     adjustTimePeriod,
     resourceDetailsUpdated,
   } = useTimePeriod({
-    defaultSelectedTimePeriodId: path(
-      ['graph', 'selectedTimePeriodId'],
-      tabParameters,
-    ),
+    defaultGraphOptions: path(['graph', 'graphOptions'], tabParameters),
     defaultSelectedCustomTimePeriod: path(
       ['graph', 'selectedCustomTimePeriod'],
       tabParameters,
     ),
-    defaultGraphOptions: path(['graph', 'graphOptions'], tabParameters),
+    defaultSelectedTimePeriodId: path(
+      ['graph', 'selectedTimePeriodId'],
+      tabParameters,
+    ),
     details,
     onTimePeriodChange: setGraphTabParameters,
   });
@@ -79,28 +79,28 @@ const GraphTabContent = ({
   };
 
   const graphOptions = useGraphOptions({
-    graphTabParameters: tabParameters.graph,
     changeTabGraphOptions,
+    graphTabParameters: tabParameters.graph,
   });
 
   return (
     <GraphOptionsContext.Provider value={graphOptions}>
       <div className={classes.container}>
         <TimePeriodButtonGroup
+          changeCustomTimePeriod={changeCustomTimePeriod}
+          customTimePeriod={customTimePeriod}
           selectedTimePeriodId={selectedTimePeriod?.id}
           onChange={changeSelectedTimePeriod}
-          customTimePeriod={customTimePeriod}
-          changeCustomTimePeriod={changeCustomTimePeriod}
         />
         <ExportablePerformanceGraphWithTimeline
-          resource={details}
+          adjustTimePeriod={adjustTimePeriod}
+          customTimePeriod={customTimePeriod}
+          getIntervalDates={getIntervalDates}
           graphHeight={280}
           periodQueryParameters={periodQueryParameters}
-          getIntervalDates={getIntervalDates}
-          selectedTimePeriod={selectedTimePeriod}
-          customTimePeriod={customTimePeriod}
-          adjustTimePeriod={adjustTimePeriod}
+          resource={details}
           resourceDetailsUpdated={resourceDetailsUpdated}
+          selectedTimePeriod={selectedTimePeriod}
         />
       </div>
     </GraphOptionsContext.Provider>
@@ -108,8 +108,8 @@ const GraphTabContent = ({
 };
 
 const MemoizedGraphTabContent = memoizeComponent<GraphTabContentProps>({
-  memoProps: ['details', 'tabParameters'],
   Component: GraphTabContent,
+  memoProps: ['details', 'tabParameters'],
 });
 
 const GraphTab = ({ details }: TabProps): JSX.Element => {
@@ -118,8 +118,8 @@ const GraphTab = ({ details }: TabProps): JSX.Element => {
   return (
     <MemoizedGraphTabContent
       details={details}
-      tabParameters={tabParameters}
       setGraphTabParameters={setGraphTabParameters}
+      tabParameters={tabParameters}
     />
   );
 };

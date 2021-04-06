@@ -35,7 +35,7 @@ const CriteriasContent = ({
     <ParentSize>
       {({ width }): JSX.Element => {
         return (
-          <Grid container spacing={1} alignItems="center">
+          <Grid container alignItems="center" spacing={1}>
             <Grid item>
               <CriteriasMultiSelect />
             </Grid>
@@ -44,14 +44,14 @@ const CriteriasContent = ({
                 <Grid item key={name}>
                   <Criteria
                     name={name}
-                    value={value as Array<SelectEntry>}
                     parentWidth={width}
+                    value={value as Array<SelectEntry>}
                   />
                 </Grid>
               );
             })}
             <Grid item>
-              <Button color="primary" onClick={clearAllFilters} size="small">
+              <Button color="primary" size="small" onClick={clearAllFilters}>
                 {t(labelClear)}
               </Button>
             </Grid>

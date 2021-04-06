@@ -6,8 +6,8 @@ import { StatusChip, StatusChipProps } from '@centreon/ui';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: 18,
     fontSize: theme.typography.body2.fontSize,
+    height: 18,
   },
 }));
 

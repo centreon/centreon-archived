@@ -6,21 +6,21 @@ describe('reactRoutesSelector', () => {
       navigation: {
         items: [
           {
-            page: '1',
-            label: 'Home',
-            is_react: false,
-            url: './include/home/home.php',
-            options: null,
             children: [
               {
                 groups: [],
-                page: '103',
-                label: 'Custom Views',
                 is_react: true,
-                url: '/home/customViews',
+                label: 'Custom Views',
                 options: null,
+                page: '103',
+                url: '/home/customViews',
               },
             ],
+            is_react: false,
+            label: 'Home',
+            options: null,
+            page: '1',
+            url: './include/home/home.php',
           },
         ],
       },

@@ -30,13 +30,13 @@ export interface DetailsSectionProps {
 }
 
 export interface TabBounds {
-  top: number;
   bottom: number;
+  top: number;
 }
 
 const Context = React.createContext<TabBounds>({
-  top: 0,
   bottom: 0,
+  top: 0,
 });
 
 const Details = (): JSX.Element | null => {
@@ -92,8 +92,8 @@ const Details = (): JSX.Element | null => {
     const foundColorCondition = rowColorConditions(theme).find(
       ({ condition }) =>
         condition({
-          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
           acknowledged: !isNil(acknowledgement),
+          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
         }),
     );
 
@@ -108,28 +108,28 @@ const Details = (): JSX.Element | null => {
     <Context.Provider
       value={pick(
         ['top', 'bottom'],
-        panelRef.current?.getBoundingClientRect() || { top: 0, bottom: 0 },
+        panelRef.current?.getBoundingClientRect() || { bottom: 0, top: 0 },
       )}
     >
       <Panel
-        ref={panelRef as React.RefObject<HTMLDivElement>}
-        onClose={clearSelectedResource}
         header={<Header details={details} />}
         headerBackgroundColor={getHeaderBackgroundColor()}
+        memoProps={[openDetailsTabId, details, panelWidth]}
+        ref={panelRef as React.RefObject<HTMLDivElement>}
+        selectedTab={<TabById details={details} id={openDetailsTabId} />}
+        selectedTabId={getTabIndex(openDetailsTabId)}
         tabs={getVisibleTabs().map(({ id, title }) => (
           <Tab
-            style={{ minWidth: 'unset' }}
+            disabled={isNil(details)}
             key={id}
             label={isNil(details) ? <Skeleton width={60} /> : t(title)}
-            disabled={isNil(details)}
+            style={{ minWidth: 'unset' }}
             onClick={changeSelectedTabId(id)}
           />
         ))}
-        selectedTabId={getTabIndex(openDetailsTabId)}
-        selectedTab={<TabById id={openDetailsTabId} details={details} />}
         width={panelWidth}
+        onClose={clearSelectedResource}
         onResize={setPanelWidth}
-        memoProps={[openDetailsTabId, details, panelWidth]}
       />
     </Context.Provider>
   );

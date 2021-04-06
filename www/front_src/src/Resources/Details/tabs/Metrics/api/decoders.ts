@@ -9,9 +9,9 @@ const metaServiceMetricDecoder = JsonDecoder.object<MetaServiceMetric>(
   {
     id: JsonDecoder.number,
     name: JsonDecoder.string,
+    resource: resourceDecoder,
     unit: JsonDecoder.string,
     value: JsonDecoder.number,
-    resource: resourceDecoder,
   },
   'MetaServiceMetric',
 );

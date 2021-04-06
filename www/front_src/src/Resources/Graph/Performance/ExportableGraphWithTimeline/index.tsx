@@ -22,29 +22,29 @@ import { AdjustTimePeriodProps, GraphOptionId } from '../models';
 import { defaultGraphOptions, useGraphOptionsContext } from './useGraphOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
+  graph: {
+    height: '100%',
+    margin: 'auto',
+    width: '100%',
+  },
   graphContainer: {
     display: 'grid',
-    padding: theme.spacing(2, 1, 1),
     gridTemplateRows: '1fr',
-  },
-  graph: {
-    margin: 'auto',
-    height: '100%',
-    width: '100%',
+    padding: theme.spacing(2, 1, 1),
   },
 }));
 
 interface Props {
-  resource?: Resource | ResourceDetails;
-  selectedTimePeriod: TimePeriod | null;
+  adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
+  customTimePeriod: CustomTimePeriod;
   getIntervalDates: () => [string, string];
-  periodQueryParameters: string;
   graphHeight: number;
   onTooltipDisplay?: (position?: [number, number]) => void;
-  tooltipPosition?: [number, number];
-  customTimePeriod: CustomTimePeriod;
+  periodQueryParameters: string;
+  resource?: Resource | ResourceDetails;
   resourceDetailsUpdated: boolean;
-  adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
+  selectedTimePeriod: TimePeriod | null;
+  tooltipPosition?: [number, number];
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
@@ -66,8 +66,8 @@ const ExportablePerformanceGraphWithTimeline = ({
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
   >({
-    request: listTimelineEvents,
     decoder: listTimelineEventsDecoder,
+    request: listTimelineEvents,
   });
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
@@ -140,11 +140,11 @@ const ExportablePerformanceGraphWithTimeline = ({
     setTimeline([
       ...(timeline as Array<TimelineEvent>),
       {
+        contact: { name: alias },
+        content: comment,
+        date,
         id: Math.random(),
         type: 'comment',
-        date,
-        content: comment,
-        contact: { name: alias },
       },
     ]);
   };
@@ -153,23 +153,23 @@ const ExportablePerformanceGraphWithTimeline = ({
     <Paper className={classes.graphContainer}>
       <div className={classes.graph}>
         <PerformanceGraph
+          toggableLegend
+          adjustTimePeriod={adjustTimePeriod}
+          customTimePeriod={customTimePeriod}
+          displayEventAnnotations={displayEventAnnotations}
+          displayTooltipValues={displayTooltipValues}
           endpoint={getEndpoint()}
           graphHeight={graphHeight}
+          resource={resource as Resource}
+          resourceDetailsUpdated={resourceDetailsUpdated}
+          timeline={timeline}
+          tooltipPosition={tooltipPosition}
           xAxisTickFormat={
             selectedTimePeriod?.dateTimeFormat ||
             customTimePeriod.xAxisTickFormat
           }
-          toggableLegend
-          resource={resource as Resource}
-          timeline={timeline}
           onAddComment={addCommentToTimeline}
           onTooltipDisplay={onTooltipDisplay}
-          tooltipPosition={tooltipPosition}
-          adjustTimePeriod={adjustTimePeriod}
-          customTimePeriod={customTimePeriod}
-          resourceDetailsUpdated={resourceDetailsUpdated}
-          displayTooltipValues={displayTooltipValues}
-          displayEventAnnotations={displayEventAnnotations}
         />
       </div>
     </Paper>

@@ -15,29 +15,29 @@ import ShortTypeChip from '../../../ShortTypeChip';
 import { MetaServiceMetric } from './models';
 
 const useStyles = makeStyles((theme) => ({
+  card: {
+    alignItems: 'center',
+    display: 'grid',
+    gridColumnGap: theme.spacing(2),
+    gridTemplateColumns: '1fr 1fr auto',
+    justifyItems: 'flex-start',
+    width: '100%',
+  },
   container: {
     display: 'grid',
     gridGap: theme.spacing(1),
   },
-  card: {
-    display: 'grid',
-    gridColumnGap: theme.spacing(2),
+  iconValuePair: {
     alignItems: 'center',
-    gridTemplateColumns: '1fr 1fr auto',
-    width: '100%',
-    justifyItems: 'flex-start',
+    display: 'flex',
+    flexDirection: 'row',
+    gridGap: theme.spacing(1),
   },
   resources: {
     display: 'flex',
     flexDirection: 'column',
     gridGap: theme.spacing(1),
     overflow: 'hidden',
-  },
-  iconValuePair: {
-    display: 'flex',
-    gridGap: theme.spacing(1),
-    flexDirection: 'row',
-    alignItems: 'center',
   },
 }));
 
@@ -77,8 +77,8 @@ const Metrics = ({
                 <div className={classes.iconValuePair}>
                   <ShortTypeChip label={resource.short_type as string} />
                   <SelectableResourceName
-                    variant="body2"
                     name={resource.name}
+                    variant="body2"
                     onSelect={() => selectResource(resource)}
                   />
                 </div>

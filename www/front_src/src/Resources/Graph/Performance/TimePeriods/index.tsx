@@ -24,28 +24,28 @@ import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
 const useStyles = makeStyles((theme) => ({
-  header: {
-    padding: theme.spacing(1, 0.5),
-    display: 'grid',
-    gridTemplateColumns: `repeat(3, auto)`,
-    columnGap: `${theme.spacing(2)}px`,
-    justifyContent: 'center',
-    alignItems: 'center',
+  button: {
+    fontSize: theme.typography.body2.fontSize,
   },
   buttonGroup: {
     alignSelf: 'center',
   },
-  button: {
-    fontSize: theme.typography.body2.fontSize,
+  header: {
+    alignItems: 'center',
+    columnGap: `${theme.spacing(2)}px`,
+    display: 'grid',
+    gridTemplateColumns: `repeat(3, auto)`,
+    justifyContent: 'center',
+    padding: theme.spacing(1, 0.5),
   },
 }));
 
 interface Props {
-  selectedTimePeriodId?: string;
-  onChange: (timePeriod: TimePeriodId) => void;
-  disabled?: boolean;
-  customTimePeriod: CustomTimePeriod;
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
+  customTimePeriod: CustomTimePeriod;
+  disabled?: boolean;
+  onChange: (timePeriod: TimePeriodId) => void;
+  selectedTimePeriodId?: string;
 }
 
 const timePeriodOptions = map(pick(['id', 'name', 'largeName']), timePeriods);
@@ -63,8 +63,8 @@ const TimePeriodButtonGroup = ({
 
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,
-    name: t(timePeriod.name),
     largeName: t(timePeriod.largeName),
+    name: t(timePeriod.name),
   }));
 
   const changeDate = ({ property, date }) =>
@@ -77,22 +77,22 @@ const TimePeriodButtonGroup = ({
         return (
           <Paper className={classes.header}>
             <ButtonGroup
-              size="small"
-              disabled={disabled}
-              color="primary"
               className={classes.buttonGroup}
+              color="primary"
               component="span"
+              disabled={disabled}
+              size="small"
             >
               {map(
                 ({ id, name, largeName }) => (
-                  <Tooltip key={name} title={largeName} placement="top">
+                  <Tooltip key={name} placement="top" title={largeName}>
                     <Button
-                      onClick={() => onChange(id)}
+                      className={classes.button}
+                      component="span"
                       variant={
                         selectedTimePeriodId === id ? 'contained' : 'outlined'
                       }
-                      className={classes.button}
-                      component="span"
+                      onClick={() => onChange(id)}
                     >
                       {cond<number, string>([
                         [lte(theme.breakpoints.values.md), always(largeName)],
@@ -105,8 +105,8 @@ const TimePeriodButtonGroup = ({
               )}
             </ButtonGroup>
             <CustomTimePeriodPickers
-              customTimePeriod={customTimePeriod}
               acceptDate={changeDate}
+              customTimePeriod={customTimePeriod}
               isCompact={isCompact}
             />
             <GraphOptions />

@@ -10,14 +10,14 @@ interface Props {
 const useSkeletonStyles = makeStyles((theme) => ({
   loadingSkeleton: {
     display: 'grid',
+    gridGap: theme.spacing(1),
     gridTemplateRows: ({ graphHeight }: Props): string =>
       `1fr ${graphHeight}px 2fr`,
-    gridGap: theme.spacing(1),
     height: '100%',
   },
   loadingSkeletonLine: {
-    transform: 'none',
     paddingBottom: theme.spacing(1),
+    transform: 'none',
   },
 }));
 

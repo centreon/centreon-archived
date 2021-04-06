@@ -66,58 +66,58 @@ const appState = {
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
   return new Array(entityCount).fill(0).map((_, index) => ({
-    uuid: `${index}`,
-    id: index,
-    name: `E${index}`,
-    severity_level: 1,
-    status: {
-      name: 'OK',
-      severity_code: 5,
-    },
     acknowledged: index % 2 === 0,
-    in_downtime: index % 3 === 0,
     duration: '1m',
-    last_check: '1m',
-    tries: '1',
-    short_type: index % 4 === 0 ? 's' : 'h',
+    id: index,
+    in_downtime: index % 3 === 0,
     information:
       index % 5 === 0 ? `Entity ${index}` : `Entity ${index}\n Line ${index}`,
-    type: index % 4 === 0 ? 'service' : 'host',
+    last_check: '1m',
     links: {
       endpoints: {
         acknowledgement: `/monitoring/acknowledgement/${index}`,
         details: 'endpoint',
         downtime: `/monitoring/downtime/${index}`,
+        metrics: 'endpoint',
         performance_graph: index % 6 === 0 ? 'endpoint' : undefined,
         status_graph: index % 3 === 0 ? 'endpoint' : undefined,
         timeline: 'endpoint',
-        metrics: 'endpoint',
-      },
-      uris: {
-        configuration: index % 7 === 0 ? 'uri' : undefined,
-        logs: index % 4 === 0 ? 'uri' : undefined,
-        reporting: index % 3 === 0 ? 'uri' : undefined,
       },
       externals: {
         notes: {
           url: 'https://centreon.com',
         },
       },
+      uris: {
+        configuration: index % 7 === 0 ? 'uri' : undefined,
+        logs: index % 4 === 0 ? 'uri' : undefined,
+        reporting: index % 3 === 0 ? 'uri' : undefined,
+      },
     },
+    name: `E${index}`,
     passive_checks: index % 8 === 0,
+    severity_level: 1,
+    short_type: index % 4 === 0 ? 's' : 'h',
+    status: {
+      name: 'OK',
+      severity_code: 5,
+    },
+    tries: '1',
+    type: index % 4 === 0 ? 'service' : 'host',
+    uuid: `${index}`,
   }));
 };
 
 const entities = fillEntities();
 const retrievedListing = {
-  result: entities,
   meta: {
-    page: 1,
     limit: 10,
+    page: 1,
     search: {},
     sort_by: {},
     total: entities.length,
   },
+  result: entities,
 };
 
 let context: ResourceContext;
@@ -158,12 +158,12 @@ describe(Listing, () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
-          result: [],
           meta: {
-            page: 1,
             limit: 30,
+            page: 1,
             total: 0,
           },
+          result: [],
         },
       })
       .mockResolvedValueOnce({ data: retrievedListing });
@@ -343,12 +343,12 @@ describe(Listing, () => {
       data: {
         result: [
           {
-            id: 0,
             author_name: 'admin',
-            start_time: '2020-02-28T08:16:16Z',
-            end_time: '2020-02-28T08:18:16Z',
-            is_fixed: true,
             comment: 'Set by admin',
+            end_time: '2020-02-28T08:18:16Z',
+            id: 0,
+            is_fixed: true,
+            start_time: '2020-02-28T08:16:16Z',
           },
         ],
       },
@@ -388,12 +388,12 @@ describe(Listing, () => {
       data: {
         result: [
           {
-            id: 0,
             author_name: 'admin',
+            comment: 'Set by admin',
             entry_time: '2020-02-28T08:16:00Z',
+            id: 0,
             is_persistent_comment: true,
             is_sticky: false,
-            comment: 'Set by admin',
           },
         ],
       },

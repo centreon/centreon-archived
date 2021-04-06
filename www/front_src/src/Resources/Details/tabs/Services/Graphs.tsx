@@ -29,14 +29,14 @@ const MemoizedPerformanceGraph = React.memo(
 );
 
 interface Props {
-  services: Array<Resource>;
+  adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
+  customTimePeriod: CustomTimePeriod;
+  getIntervalDates: () => [string, string];
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
   periodQueryParameters: string;
-  getIntervalDates: () => [string, string];
-  selectedTimePeriod: TimePeriod | null;
-  customTimePeriod: CustomTimePeriod;
   resourceDetailsUpdated: boolean;
-  adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
+  selectedTimePeriod: TimePeriod | null;
+  services: Array<Resource>;
 }
 
 const ServiceGraphs = ({
@@ -66,16 +66,16 @@ const ServiceGraphs = ({
         return (
           <div key={id}>
             <MemoizedPerformanceGraph
-              resource={service}
+              adjustTimePeriod={adjustTimePeriod}
+              customTimePeriod={customTimePeriod}
+              getIntervalDates={getIntervalDates}
               graphHeight={120}
               periodQueryParameters={periodQueryParameters}
-              selectedTimePeriod={selectedTimePeriod}
-              getIntervalDates={getIntervalDates}
-              onTooltipDisplay={setTooltipPosition}
-              tooltipPosition={tooltipPosition}
-              customTimePeriod={customTimePeriod}
-              adjustTimePeriod={adjustTimePeriod}
+              resource={service}
               resourceDetailsUpdated={resourceDetailsUpdated}
+              selectedTimePeriod={selectedTimePeriod}
+              tooltipPosition={tooltipPosition}
+              onTooltipDisplay={setTooltipPosition}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>

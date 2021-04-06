@@ -26,17 +26,17 @@ import {
 import { ColumnProps } from '.';
 
 const useStyles = makeStyles((theme) => ({
-  statusColumn: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-  },
   actions: {
+    alignItems: 'center',
     display: 'flex',
     flexWrap: 'nowrap',
     gridGap: theme.spacing(0.75),
-    alignItems: 'center',
     justifyContent: 'center',
+  },
+  statusColumn: {
+    alignItems: 'center',
+    display: 'flex',
+    width: '100%',
   },
 }));
 
@@ -66,27 +66,27 @@ const StatusColumnOnHover = ({
   return (
     <div className={classes.actions}>
       <IconButton
-        title={t(labelAcknowledge)}
-        disabled={disableAcknowledge}
-        color="primary"
-        onClick={(): void => actions.onAcknowledge(row)}
         ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
+        color="primary"
+        disabled={disableAcknowledge}
+        title={t(labelAcknowledge)}
+        onClick={(): void => actions.onAcknowledge(row)}
       >
         <IconAcknowledge fontSize="small" />
       </IconButton>
       <IconButton
-        title={t(labelSetDowntime)}
-        disabled={disableDowntime}
-        onClick={(): void => actions.onDowntime(row)}
         ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
+        disabled={disableDowntime}
+        title={t(labelSetDowntime)}
+        onClick={(): void => actions.onDowntime(row)}
       >
         <IconDowntime fontSize="small" />
       </IconButton>
       <IconButton
-        title={t(labelCheck)}
-        disabled={disableCheck}
-        onClick={(): void => actions.onCheck(row)}
         ariaLabel={`${t(labelCheck)} ${row.name}`}
+        disabled={disableCheck}
+        title={t(labelCheck)}
+        onClick={(): void => actions.onCheck(row)}
       >
         <IconCheck fontSize="small" />
       </IconButton>
@@ -109,9 +109,9 @@ const StatusColumn = ({
           <StatusColumnOnHover actions={actions} row={row} />
         ) : (
           <StatusChip
-            style={{ height: 20, width: '100%' }}
             label={t(statusName)}
             severityCode={row.status.severity_code}
+            style={{ height: 20, width: '100%' }}
           />
         )}
       </div>

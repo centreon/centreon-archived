@@ -7,41 +7,41 @@ import { Card, Typography, makeStyles } from '@material-ui/core';
 import { labelComment } from '../../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 2fr auto',
-    gridTemplateAreas: ` 
-      'content-title content chip'
-      'comment-title comment chip'
-      `,
-    gridGap: theme.spacing(2),
-  },
-  contentTitle: {
-    gridArea: 'content-title',
-  },
-  content: {
-    gridArea: 'content',
-  },
   chip: {
     gridArea: 'chip',
-  },
-  commentTitle: {
-    gridArea: 'comment-title',
   },
   comment: {
     gridArea: 'comment',
   },
+  commentTitle: {
+    gridArea: 'comment-title',
+  },
+  container: {
+    display: 'grid',
+    gridGap: theme.spacing(2),
+    gridTemplateAreas: ` 
+      'content-title content chip'
+      'comment-title comment chip'
+      `,
+    gridTemplateColumns: '1fr 2fr auto',
+  },
+  content: {
+    gridArea: 'content',
+  },
+  contentTitle: {
+    gridArea: 'content-title',
+  },
 }));
 
 interface Props {
-  title: string;
-  contentLines: Array<string>;
   chip: JSX.Element;
   commentLine: string;
+  contentLines: Array<string>;
+  title: string;
 }
 
 const Line = (line): JSX.Element => (
-  <Typography key={line} variant="body2" component="p">
+  <Typography component="p" key={line} variant="body2">
     {line}
   </Typography>
 );
@@ -60,8 +60,8 @@ const StateCard = ({
       <div className={classes.container}>
         <Typography
           className={classes.contentTitle}
-          variant="subtitle2"
           color="textSecondary"
+          variant="subtitle2"
         >
           {title}
         </Typography>
@@ -69,8 +69,8 @@ const StateCard = ({
 
         <Typography
           className={classes.commentTitle}
-          variant="subtitle2"
           color="textSecondary"
+          variant="subtitle2"
         >
           {t(labelComment)}
         </Typography>
