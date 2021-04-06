@@ -25,6 +25,8 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
     gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
     width: '100%',
     justifyContent: 'center',
+    maxHeight: theme.spacing(12),
+    overflowY: 'auto',
   },
   item: {
     display: 'grid',
