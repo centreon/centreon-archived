@@ -58,7 +58,7 @@ const GraphColumn = ({
         >
           <Paper className={classes.graph}>
             <PerformanceGraph
-              isInTooltip
+              displayTitle={false}
               endpoint={endpoint}
               graphHeight={150}
               resource={row}

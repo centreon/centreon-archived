@@ -61,10 +61,10 @@ interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
   displayEventAnnotations?: boolean;
+  displayTitle?: boolean;
   displayTooltipValues?: boolean;
   endpoint?: string;
   graphHeight: number;
-  isInTooltip?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   onTooltipDisplay?: (position?: [number, number]) => void;
   resource: Resource | ResourceDetails;
@@ -75,7 +75,7 @@ interface Props {
   xAxisTickFormat?: string;
 }
 
-interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'isInTooltip'> {
+interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
   canAdjustTimePeriod: boolean;
 }
 
@@ -84,8 +84,8 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     display: 'grid',
     flexDirection: 'column',
     gridGap: theme.spacing(1),
-    gridTemplateRows: ({ graphHeight, isInTooltip }): string =>
-      `${not(isInTooltip) ? 'auto' : ''} ${graphHeight}px auto`,
+    gridTemplateRows: ({ graphHeight, displayTitle }): string =>
+      `${displayTitle ? 'auto' : ''} ${graphHeight}px auto`,
     height: '100%',
     justifyItems: 'center',
     width: 'auto',
@@ -145,12 +145,12 @@ const PerformanceGraph = ({
   resourceDetailsUpdated = true,
   displayEventAnnotations = false,
   displayTooltipValues = false,
-  isInTooltip = false,
+  displayTitle = true,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
+    displayTitle,
     graphHeight,
-    isInTooltip,
   });
   const { t } = useTranslation();
 
@@ -195,7 +195,7 @@ const PerformanceGraph = ({
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return (
       <LoadingSkeleton
-        displayTitleSkeleton={not(isInTooltip)}
+        displayTitleSkeleton={displayTitle}
         graphHeight={graphHeight}
       />
     );
@@ -320,7 +320,7 @@ const PerformanceGraph = ({
         className={classes.container}
         ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
       >
-        {not(isInTooltip) && (
+        {displayTitle && (
           <div className={classes.graphHeader}>
             <div />
             <Typography color="textPrimary" variant="body1">
