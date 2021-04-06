@@ -53,41 +53,41 @@ const appState = {
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
   return new Array(entityCount).fill(0).map((_, index) => ({
+    acknowledged: index % 2 === 0,
+    acknowledgement_endpoint: `/monitoring/acknowledgement/${index}`,
+    configuration_uri: index % 7 === 0 ? 'uri' : undefined,
+    details_endpoint: 'endpoint',
+    downtime_endpoint: `/monitoring/downtime/${index}`,
+    duration: '1m',
     id: index,
+    in_downtime: index % 3 === 0,
+    information:
+      index % 5 === 0 ? `Entity ${index}` : `Entity ${index}\n Line ${index}`,
+    last_check: '1m',
     name: `E${index}`,
+    performance_graph_endpoint: index % 6 === 0 ? 'endpoint' : undefined,
+    short_type: index % 4 === 0 ? 's' : 'h',
     status: {
       code: 0,
       name: 'OK',
       severity_code: 5,
     },
-    acknowledged: index % 2 === 0,
-    acknowledgement_endpoint: `/monitoring/acknowledgement/${index}`,
-    in_downtime: index % 3 === 0,
-    downtime_endpoint: `/monitoring/downtime/${index}`,
-    duration: '1m',
-    last_check: '1m',
-    tries: '1',
-    short_type: index % 4 === 0 ? 's' : 'h',
-    information:
-      index % 5 === 0 ? `Entity ${index}` : `Entity ${index}\n Line ${index}`,
-    type: index % 4 === 0 ? 'service' : 'host',
-    performance_graph_endpoint: index % 6 === 0 ? 'endpoint' : undefined,
-    details_endpoint: 'endpoint',
     timeline_endpoint: 'endpoint',
-    configuration_uri: index % 7 === 0 ? 'uri' : undefined,
+    tries: '1',
+    type: index % 4 === 0 ? 'service' : 'host',
   }));
 };
 
 const entities = fillEntities();
 const retrievedListing = {
-  result: entities,
   meta: {
-    page: 1,
     limit: 10,
+    page: 1,
     search: {},
     sort_by: {},
     total: entities.length,
   },
+  result: entities,
 };
 
 let context: ResourceContext;
@@ -126,12 +126,12 @@ describe(Listing, () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
-          result: [],
           meta: {
-            page: 1,
             limit: 30,
+            page: 1,
             total: 0,
           },
+          result: [],
         },
       })
       .mockResolvedValueOnce({ data: retrievedListing });
@@ -296,10 +296,10 @@ describe(Listing, () => {
         result: [
           {
             author_name: 'admin',
-            start_time: '2020-02-28T09:16:16',
+            comment: 'Set by admin',
             end_time: '2020-02-28T09:18:16',
             is_fixed: true,
-            comment: 'Set by admin',
+            start_time: '2020-02-28T09:16:16',
           },
         ],
       },
@@ -340,10 +340,10 @@ describe(Listing, () => {
         result: [
           {
             author_name: 'admin',
+            comment: 'Set by admin',
             entry_time: '2020-02-28T09:16:16',
             is_persistent_comment: true,
             is_sticky: false,
-            comment: 'Set by admin',
           },
         ],
       },

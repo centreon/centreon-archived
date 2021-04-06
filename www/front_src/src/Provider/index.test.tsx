@@ -10,20 +10,20 @@ import { UserContext } from './models';
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
-  username: 'admin',
-  timezone: 'Europe/Paris',
   locale: 'en-EN',
+  timezone: 'Europe/Paris',
+  username: 'admin',
 };
 
 const retrievedActionsAcl = {
   host: {
-    check: true,
     acknowledgement: true,
+    check: true,
     downtime: true,
   },
   service: {
-    check: true,
     acknowledgement: true,
+    check: true,
     downtime: true,
   },
 };

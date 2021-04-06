@@ -21,18 +21,18 @@ import { getFormattedDateTime } from '../../../../dateTime';
 const useStyles = makeStyles({
   comment: {
     display: 'block',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
     overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 });
 
 interface AcknowledgementDetails {
   author_name: string;
+  comment: string;
   entry_time: string;
   is_persistent_comment: string;
   is_sticky: string;
-  comment: string;
 }
 
 type Props = Pick<DetailsTableProps, 'endpoint'>;
@@ -42,40 +42,36 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
 
   const columns = [
     {
+      getContent: ({ author_name }): string => author_name,
       id: 'author',
       label: labelAuthor,
       type: ColumnType.string,
-      getContent: ({ author_name }): string => author_name,
       width: 100,
     },
     {
+      getContent: ({ entry_time }): string => getFormattedDateTime(entry_time),
       id: 'entry_time',
       label: labelEntryTime,
       type: ColumnType.string,
-      getContent: ({ entry_time }): string => getFormattedDateTime(entry_time),
       width: 150,
     },
     {
+      getContent: ({ is_persistent_comment }): string =>
+        getYesNoLabel(is_persistent_comment),
       id: 'is_persistent',
       label: labelPersistent,
       type: ColumnType.string,
-      getContent: ({ is_persistent_comment }): string =>
-        getYesNoLabel(is_persistent_comment),
       width: 100,
     },
     {
+      getContent: ({ is_sticky }): string => getYesNoLabel(is_sticky),
       id: 'is_sticky',
       label: labelSticky,
       type: ColumnType.string,
-      getContent: ({ is_sticky }): string => getYesNoLabel(is_sticky),
       width: 100,
     },
 
     {
-      id: 'comment',
-      label: labelComment,
-      type: ColumnType.string,
-      width: 250,
       getContent: ({ comment }: AcknowledgementDetails): JSX.Element => {
         return (
           <span className={classes.comment}>
@@ -83,6 +79,10 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
           </span>
         );
       },
+      id: 'comment',
+      label: labelComment,
+      type: ColumnType.string,
+      width: 250,
     },
   ];
 

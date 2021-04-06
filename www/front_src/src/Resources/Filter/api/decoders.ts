@@ -6,8 +6,6 @@ import { CriteriaValue, RawCriteria, RawFilter } from '../models';
 
 const entityDecoder = JsonDecoder.object<RawFilter>(
   {
-    id: JsonDecoder.number,
-    name: JsonDecoder.string,
     criterias: JsonDecoder.array<RawCriteria>(
       JsonDecoder.object<RawCriteria>(
         {
@@ -41,6 +39,8 @@ const entityDecoder = JsonDecoder.object<RawFilter>(
       ),
       'FilterCriterias',
     ),
+    id: JsonDecoder.number,
+    name: JsonDecoder.string,
   },
   'CustomFilter',
 );

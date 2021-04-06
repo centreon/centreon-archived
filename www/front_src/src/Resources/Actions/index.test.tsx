@@ -57,24 +57,24 @@ jest.mock('react-redux', () => ({
 jest.mock('../icons/Downtime');
 
 const mockUserContext = {
-  username: 'admin',
-  locale: 'en',
-  timezone: 'Europe/Paris',
-
   acl: {
     actions: {
-      service: {
-        downtime: true,
-        acknowledgement: true,
-        check: true,
-      },
       host: {
-        downtime: true,
         acknowledgement: true,
         check: true,
+        downtime: true,
+      },
+      service: {
+        acknowledgement: true,
+        check: true,
+        downtime: true,
       },
     },
   },
+  locale: 'en',
+  timezone: 'Europe/Paris',
+
+  username: 'admin',
 };
 
 jest.mock('../../Provider/UserContext');
@@ -121,12 +121,12 @@ describe(Actions, () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
-          result: [],
           meta: {
-            page: 1,
             limit: 30,
+            page: 1,
             total: 0,
           },
+          result: [],
         },
       })
       .mockResolvedValueOnce({ data: [] });
@@ -222,8 +222,8 @@ describe(Actions, () => {
 
     const selectedResources = [
       {
-        type: 'host',
         id: 0,
+        type: 'host',
       } as Resource,
     ];
 
@@ -247,13 +247,13 @@ describe(Actions, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         acknowledgeEndpoint,
         {
-          resources: selectedResources,
-
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
             is_notify_contacts: true,
             with_services: true,
           },
+
+          resources: selectedResources,
         },
         cancelTokenRequestParam,
       ),
@@ -265,8 +265,8 @@ describe(Actions, () => {
 
     const selectedResources = [
       {
-        type: 'service',
         id: 0,
+        type: 'service',
       } as Resource,
     ];
 
@@ -335,8 +335,8 @@ describe(Actions, () => {
 
     // set previous day as end date using left arrow key
     fireEvent.click(getByLabelText(labelChangeEndDate));
-    fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
-    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
+    fireEvent.keyDown(container, { code: 37, key: 'ArrowLeft' });
+    fireEvent.keyDown(container, { code: 13, key: 'Enter' });
 
     await waitFor(() =>
       expect(
@@ -376,15 +376,15 @@ describe(Actions, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         downtimeEndpoint,
         {
-          resources: selectedResources,
           downtime: {
             comment: labelDowntimeByAdmin,
             duration: 3600,
-            start_time: formatISO(now),
             end_time: formatISO(twoHoursFromNow),
             is_fixed: true,
+            start_time: formatISO(now),
             with_services: true,
           },
+          resources: selectedResources,
         },
         cancelTokenRequestParam,
       ),
@@ -401,10 +401,10 @@ describe(Actions, () => {
 
     const service = {
       id: 1,
-      type: 'service',
       parent: {
         id: 1,
       },
+      type: 'service',
     } as Resource;
 
     const selectedResources = [host, service];
@@ -435,15 +435,15 @@ describe(Actions, () => {
       ...mockUserContext,
       acl: {
         actions: {
-          service: {
-            downtime: false,
-            check: false,
-            acknowledgement: false,
-          },
           host: {
-            downtime: false,
-            check: false,
             acknowledgement: false,
+            check: false,
+            downtime: false,
+          },
+          service: {
+            acknowledgement: false,
+            check: false,
+            downtime: false,
           },
         },
       },

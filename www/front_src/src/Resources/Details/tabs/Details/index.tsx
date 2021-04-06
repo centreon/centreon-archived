@@ -41,14 +41,14 @@ import { ResourceDetails } from '../../models';
 import { copy } from './clipboard';
 
 const useStyles = makeStyles((theme) => ({
-  loadingSkeleton: {
-    display: 'grid',
-    gridTemplateRows: '120px 75px 75px',
-    gridRowGap: theme.spacing(2),
-  },
   details: {
     display: 'grid',
     gridRowGap: theme.spacing(2),
+  },
+  loadingSkeleton: {
+    display: 'grid',
+    gridRowGap: theme.spacing(2),
+    gridTemplateRows: '120px 75px 75px',
   },
 }));
 
@@ -100,14 +100,14 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   return (
     <div className={classes.details}>
       <ExpandableCard
-        title={labelStatusInformation}
         content={details.output}
         severityCode={details.status.severity_code}
+        title={labelStatusInformation}
       />
       {details.downtimes?.map(({ start_time, end_time, comment }) => (
         <StateCard
-          key={`downtime-${start_time}-${end_time}`}
-          title={labelDowntimeDuration}
+          chip={<DowntimeChip />}
+          commentLine={comment}
           contentLines={[
             ...[
               { prefix: labelFrom, time: start_time },
@@ -116,13 +116,14 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
               ({ prefix, time }) => `${prefix} ${getFormattedDateTime(time)}`,
             ),
           ]}
-          commentLine={comment}
-          chip={<DowntimeChip />}
+          key={`downtime-${start_time}-${end_time}`}
+          title={labelDowntimeDuration}
         />
       ))}
       {details.acknowledgement && (
         <StateCard
-          title={labelAcknowledgedBy}
+          chip={<AcknowledgeChip />}
+          commentLine={details.acknowledgement.comment}
           contentLines={[
             `${
               details.acknowledgement.author_name
@@ -130,34 +131,33 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
               details.acknowledgement.entry_time,
             )}`,
           ]}
-          commentLine={details.acknowledgement.comment}
-          chip={<AcknowledgeChip />}
+          title={labelAcknowledgedBy}
         />
       )}
-      <Grid container spacing={2} alignItems="stretch">
+      <Grid container alignItems="stretch" spacing={2}>
         {getDetailCardLines(details).map(
           ({ title, field, getLines }) =>
             !isNil(field) && (
-              <Grid key={title} item xs={6}>
-                <DetailsCard title={title} lines={getLines()} />
+              <Grid item key={title} xs={6}>
+                <DetailsCard lines={getLines()} title={title} />
               </Grid>
             ),
         )}
       </Grid>
       {details.performance_data && (
         <ExpandableCard
-          title={labelPerformanceData}
           content={details.performance_data}
+          title={labelPerformanceData}
         />
       )}
       {details.command_line && (
         <Card>
           <CardContent>
-            <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+            <Typography gutterBottom color="textSecondary" variant="subtitle2">
               <Grid container alignItems="center" spacing={1}>
                 <Grid item>{labelCommand}</Grid>
                 <Grid item>
-                  <Tooltip onClick={copyCommandLine} title={labelCopy}>
+                  <Tooltip title={labelCopy} onClick={copyCommandLine}>
                     <IconButton size="small">
                       <IconCopyFile color="primary" fontSize="small" />
                     </IconButton>

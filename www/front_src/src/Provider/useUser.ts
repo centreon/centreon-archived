@@ -4,14 +4,14 @@ import { defaultUser } from './UserContext';
 import { User } from './models';
 
 interface UserState {
-  user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
+  user: User;
 }
 
 const useUser = (): UserState => {
   const [user, setUser] = React.useState<User>(defaultUser);
 
-  return { user, setUser };
+  return { setUser, user };
 };
 
 export default useUser;

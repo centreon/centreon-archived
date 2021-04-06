@@ -1,24 +1,24 @@
 import { ListingModel } from '@centreon/ui';
 
 export interface Icon {
-  url: string;
   name: string;
+  url: string;
 }
 
 export interface Parent {
-  id: number;
-  name: string;
-  icon: Icon | null;
-  status: Status;
   configuration_uri?: string;
+  icon: Icon | null;
+  id: number;
   logs_uri?: string;
+  name: string;
   reporting_uri?: string;
+  status: Status;
 }
 
 export interface Status {
-  severity_code: number;
   code: number;
   name: string;
+  severity_code: number;
 }
 
 export interface Severity {
@@ -26,28 +26,28 @@ export interface Severity {
 }
 
 export interface Resource {
-  id: number;
-  name: string;
-  icon?: Icon;
-  parent?: Parent;
-  status: Status;
-  downtime_endpoint?: string;
   acknowledged: boolean;
   acknowledgement_endpoint?: string;
-  in_downtime: boolean;
+  configuration_uri?: string;
+  details_endpoint: string;
+  downtime_endpoint?: string;
   duration: string;
-  tries: string;
-  last_check: string;
+  icon?: Icon;
+  id: number;
+  in_downtime: boolean;
   information: string;
+  last_check: string;
+  logs_uri?: string;
+  name: string;
+  parent?: Parent;
+  performance_graph_endpoint?: string;
+  reporting_uri?: string;
   severity?: Severity;
   short_type: 'h' | 's';
-  performance_graph_endpoint?: string;
-  type: 'host' | 'service';
-  details_endpoint: string;
+  status: Status;
   timeline_endpoint: string;
-  configuration_uri?: string;
-  logs_uri?: string;
-  reporting_uri?: string;
+  tries: string;
+  type: 'host' | 'service';
 }
 
 export type ResourceListing = ListingModel<Resource>;
@@ -55,9 +55,9 @@ export type ResourceListing = ListingModel<Resource>;
 export interface Downtime {
   author_name: string;
   comment: string;
+  end_time: string;
   entry_time: string;
   start_time: string;
-  end_time: string;
 }
 
 export interface Acknowledgement {
@@ -82,5 +82,5 @@ export interface ResourceUris {
 
 export interface ResourceLinks {
   endpoints: ResourceEndpoints;
-  uris: { resource: ResourceUris; parent: ResourceUris };
+  uris: { parent: ResourceUris; resource: ResourceUris };
 }

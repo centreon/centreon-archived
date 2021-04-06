@@ -39,9 +39,12 @@ const EditFilterPanelTest = (): JSX.Element => {
 };
 
 const retrievedCustomFilters = {
+  meta: {
+    limit: 30,
+    page: 1,
+    total: 1,
+  },
   result: [0, 1].map((index) => ({
-    id: index,
-    name: `My filter ${index}`,
     criterias: [
       {
         name: 'resource_types',
@@ -60,15 +63,15 @@ const retrievedCustomFilters = {
       },
       {
         name: 'service_groups',
+        object_type: 'service_groups',
         type: 'multi_select',
         value: [],
-        object_type: 'service_groups',
       },
       {
         name: 'host_groups',
+        object_type: 'host_groups',
         type: 'multi_select',
         value: [],
-        object_type: 'host_groups',
       },
       {
         name: 'search',
@@ -76,12 +79,9 @@ const retrievedCustomFilters = {
         value: '',
       },
     ],
+    id: index,
+    name: `My filter ${index}`,
   })),
-  meta: {
-    page: 1,
-    limit: 30,
-    total: 1,
-  },
 };
 
 const renderEditFilterPanel = (): RenderResult =>
@@ -193,9 +193,9 @@ describe(EditFilterPanel, () => {
     );
 
     await makeDnd({
+      direction: DND_DIRECTION_DOWN,
       getByText,
       getDragEl: () => firstFilterDraggable,
-      direction: DND_DIRECTION_DOWN,
       positions: 1,
     });
 

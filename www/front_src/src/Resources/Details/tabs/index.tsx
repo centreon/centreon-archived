@@ -25,43 +25,43 @@ const shortcutsTabId = 3;
 export type TabId = 0 | 1 | 2 | 3;
 
 interface Tab {
-  id: TabId;
   Component: (props) => JSX.Element;
-  title: string;
   getIsVisible: (endpoints) => boolean;
+  id: TabId;
+  title: string;
 }
 
 const tabs: Array<Tab> = [
   {
-    id: detailsTabId,
     Component: DetailsTab,
+    getIsVisible: (): boolean => true,
+    id: detailsTabId,
     title: labelDetails,
-    getIsVisible: (): boolean => true,
   },
   {
-    id: timelineTabId,
     Component: TimelineTab,
-    title: labelTimeline,
     getIsVisible: (): boolean => true,
+    id: timelineTabId,
+    title: labelTimeline,
   },
   {
-    id: graphTabId,
     Component: GraphTab,
-    title: labelGraph,
     getIsVisible: ({ endpoints }: ResourceLinks): boolean => {
       const { performanceGraph } = endpoints;
       return !isNil(performanceGraph);
     },
+    id: graphTabId,
+    title: labelGraph,
   },
   {
-    id: shortcutsTabId,
     Component: ShortcutsTab,
-    title: labelShortcuts,
     getIsVisible: (links: ResourceLinks): boolean => {
       const { parent, resource } = links.uris;
 
       return any(hasDefinedValues, [parent, resource]);
     },
+    id: shortcutsTabId,
+    title: labelShortcuts,
   },
 ];
 

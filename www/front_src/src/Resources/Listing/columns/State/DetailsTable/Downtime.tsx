@@ -23,18 +23,18 @@ import { getFormattedDateTime } from '../../../../dateTime';
 const useStyles = makeStyles({
   comment: {
     display: 'block',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
     overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 });
 
 interface DowntimeDetails {
   author_name: string;
+  comment: string;
+  end_time: string;
   is_fixed: boolean;
   start_time: string;
-  end_time: string;
-  comment: string;
 }
 
 type Props = Pick<DetailsTableProps, 'endpoint'>;
@@ -44,39 +44,35 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
 
   const columns = [
     {
+      getContent: ({ author_name }): string => author_name,
       id: 'author',
       label: labelAuthor,
       type: ColumnType.string,
-      getContent: ({ author_name }): string => author_name,
       width: 100,
     },
     {
+      getContent: ({ is_fixed }): string => (is_fixed ? labelYes : labelNo),
       id: 'is_fixed',
       label: labelFixed,
       type: ColumnType.string,
-      getContent: ({ is_fixed }): string => (is_fixed ? labelYes : labelNo),
       width: 100,
     },
     {
+      getContent: ({ start_time }): string => getFormattedDateTime(start_time),
       id: 'start_time',
       label: labelStartTime,
       type: ColumnType.string,
-      getContent: ({ start_time }): string => getFormattedDateTime(start_time),
       width: 150,
     },
     {
+      getContent: ({ end_time }): string => getFormattedDateTime(end_time),
       id: 'end_time',
       label: labelEndTime,
       type: ColumnType.string,
-      getContent: ({ end_time }): string => getFormattedDateTime(end_time),
       width: 150,
     },
 
     {
-      id: 'comment',
-      label: labelComment,
-      type: ColumnType.string,
-      width: 250,
       getContent: ({ comment }: DowntimeDetails): JSX.Element => {
         return (
           <span className={classes.comment}>
@@ -84,6 +80,10 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
           </span>
         );
       },
+      id: 'comment',
+      label: labelComment,
+      type: ColumnType.string,
+      width: 250,
     },
   ];
 

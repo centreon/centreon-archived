@@ -18,26 +18,26 @@ import PerformanceGraph from '../../../Graph/Performance';
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     display: 'grid',
-    gridTemplateRows: 'auto 1fr',
     gridRowGap: theme.spacing(2),
+    gridTemplateRows: 'auto 1fr',
+  },
+  graph: {
+    height: '100%',
+    margin: 'auto',
+  },
+  graphContainer: {
+    display: 'grid',
+    gridTemplateRows: '1fr',
+    padding: theme.spacing(2, 1, 1),
   },
   header: {
     padding: theme.spacing(2),
   },
-  periodSelect: {
-    width: 250,
-  },
-  graphContainer: {
-    display: 'grid',
-    padding: theme.spacing(2, 1, 1),
-    gridTemplateRows: '1fr',
-  },
-  graph: {
-    margin: 'auto',
-    height: '100%',
-  },
   performance: {
     width: '100%',
+  },
+  periodSelect: {
+    width: 250,
   },
   status: {
     marginTop: theme.spacing(2),
@@ -98,10 +98,10 @@ const GraphTab = ({ links }: Props): JSX.Element => {
       <Paper className={classes.graphContainer}>
         <div className={`${classes.graph} ${classes.performance}`}>
           <PerformanceGraph
+            toggableLegend
             endpoint={`${performanceGraphEndpoint}${periodQueryParams}`}
             graphHeight={280}
             xAxisTickFormat={selectedTimePeriod.timeFormat}
-            toggableLegend
           />
         </div>
       </Paper>

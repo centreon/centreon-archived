@@ -24,11 +24,11 @@ const renderOptions = (options, rest) =>
     <RadioField
       key={i}
       {...rest}
-      value={getValue(item)}
-      label={I18n.t(getLabel(item))}
-      info={getInfo(item)}
       checked={getValue(item) === rest.input.value}
       className={styles['radio-group-field__radio']}
+      info={getInfo(item)}
+      label={I18n.t(getLabel(item))}
+      value={getValue(item)}
     />
   ));
 

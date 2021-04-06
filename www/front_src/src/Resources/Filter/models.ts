@@ -25,18 +25,18 @@ export interface CriteriaValue {
 }
 
 export interface Criterias {
+  hostGroups: Array<CriteriaValue>;
   resourceTypes: Array<CriteriaValue>;
+  search?: string;
+  serviceGroups: Array<CriteriaValue>;
   states: Array<CriteriaValue>;
   statuses: Array<CriteriaValue>;
-  hostGroups: Array<CriteriaValue>;
-  serviceGroups: Array<CriteriaValue>;
-  search?: string;
 }
 
 export interface Filter {
+  criterias: Criterias;
   id: string | number;
   name: string;
-  criterias: Criterias;
 }
 
 export interface RawCriteria {
@@ -47,25 +47,25 @@ export interface RawCriteria {
 }
 
 export interface RawFilter {
+  criterias: Array<RawCriteria>;
   id: number;
   name: string;
-  criterias: Array<RawCriteria>;
 }
 
 const criteriaValueNameById = {
-  acknowledged: labelAcknowledged,
-  in_downtime: labelInDowntime,
-  unhandled_problems: labelUnhandled,
-  host: labelHost,
-  service: labelService,
+  CRITICAL: labelCritical,
+  DOWN: labelDown,
   OK: labelOk,
+  PENDING: labelPending,
+  UNKNOWN: labelUnknown,
+  UNREACHABLE: labelUnreachable,
   UP: labelUp,
   WARNING: labelWarning,
-  DOWN: labelDown,
-  CRITICAL: labelCritical,
-  UNREACHABLE: labelUnreachable,
-  UNKNOWN: labelUnknown,
-  PENDING: labelPending,
+  acknowledged: labelAcknowledged,
+  host: labelHost,
+  in_downtime: labelInDowntime,
+  service: labelService,
+  unhandled_problems: labelUnhandled,
 };
 
 const unhandledStateId = 'unhandled_problems';
@@ -156,16 +156,16 @@ const statuses = [
 ];
 
 const allFilter = {
-  id: 'all',
-  name: labelAll,
   criterias: {
+    hostGroups: [],
     resourceTypes: [],
+    search: undefined,
+    serviceGroups: [],
     states: [],
     statuses: [],
-    hostGroups: [],
-    serviceGroups: [],
-    search: undefined,
   },
+  id: 'all',
+  name: labelAll,
 };
 
 const newFilter = {
@@ -174,34 +174,34 @@ const newFilter = {
 };
 
 const unhandledProblemsFilter: Filter = {
-  id: 'unhandled_problems',
-  name: labelUnhandledProblems,
   criterias: {
-    search: undefined,
+    hostGroups: [],
     resourceTypes: [],
+    search: undefined,
+    serviceGroups: [],
     states: [unhandledState],
     statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
-    hostGroups: [],
-    serviceGroups: [],
   },
+  id: 'unhandled_problems',
+  name: labelUnhandledProblems,
 };
 
 const resourceProblemsFilter: Filter = {
-  id: 'resource_problems',
-  name: labelResourceProblems,
   criterias: {
+    hostGroups: [],
     resourceTypes: [],
+    search: undefined,
+    serviceGroups: [],
     states: [],
     statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
-    hostGroups: [],
-    serviceGroups: [],
-    search: undefined,
   },
+  id: 'resource_problems',
+  name: labelResourceProblems,
 };
 
 const standardFilterById = {
-  resource_problems: resourceProblemsFilter,
   all: allFilter,
+  resource_problems: resourceProblemsFilter,
   unhandled_problems: unhandledProblemsFilter,
 };
 

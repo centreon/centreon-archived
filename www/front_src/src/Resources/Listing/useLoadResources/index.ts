@@ -40,7 +40,6 @@ const useLoadResources = (): LoadResources => {
     const search = currentSearch
       ? {
           regex: {
-            value: currentSearch,
             fields: [
               'h.name',
               'h.alias',
@@ -48,20 +47,21 @@ const useLoadResources = (): LoadResources => {
               's.description',
               'information',
             ],
+            value: currentSearch,
           },
         }
       : undefined;
 
     sendRequest({
-      states: states.map(({ id }) => id),
-      statuses: statuses.map(({ id }) => id),
-      resourceTypes: resourceTypes.map(({ id }) => id),
       hostGroupIds: hostGroups?.map(({ id }) => id),
-      serviceGroupIds: serviceGroups?.map(({ id }) => id),
-      sort,
       limit,
       page,
+      resourceTypes: resourceTypes.map(({ id }) => id),
       search,
+      serviceGroupIds: serviceGroups?.map(({ id }) => id),
+      sort,
+      states: states.map(({ id }) => id),
+      statuses: statuses.map(({ id }) => id),
     }).then(setListing);
   };
 

@@ -26,9 +26,9 @@ import { ResourceDetails } from '../../../models';
 type Lines = Array<{ key: string; line: JSX.Element | null }>;
 
 interface DetailCardLines {
-  title: string;
   field?: string | number | boolean;
   getLines: () => Lines;
+  title: string;
 }
 
 const DetailsLine = ({ line }: { line?: string }): JSX.Element => {
@@ -51,7 +51,7 @@ const ActiveLine = (): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Grid container spacing={1} alignItems="center">
+    <Grid container alignItems="center" spacing={1}>
       <Grid item>
         <IconCheck className={classes.activeIcon} />
       </Grid>
@@ -66,7 +66,6 @@ const getDetailCardLines = (
   details: ResourceDetails,
 ): Array<DetailCardLines> => {
   const getDateTimeLines = ({ label, field }): DetailCardLines => ({
-    title: label,
     field,
     getLines: (): Lines => [
       {
@@ -78,12 +77,13 @@ const getDetailCardLines = (
         line: <DetailsLine key="tries" line={getFormattedTime(field)} />,
       },
     ],
+    title: label,
   });
 
   const getCheckLines = ({ label, field }): DetailCardLines => ({
-    ...getDateTimeLines({ label, field }),
+    ...getDateTimeLines({ field, label }),
     getLines: (): Lines => [
-      ...getDateTimeLines({ label, field }).getLines(),
+      ...getDateTimeLines({ field, label }).getLines(),
       {
         key: `${label}_active`,
         line: details.active_checks ? <ActiveLine /> : null,
@@ -93,7 +93,6 @@ const getDetailCardLines = (
 
   return [
     {
-      title: labelPoller,
       field: details.poller_name,
       getLines: (): Lines => [
         {
@@ -101,9 +100,9 @@ const getDetailCardLines = (
           line: <DetailsLine line={details.poller_name} />,
         },
       ],
+      title: labelPoller,
     },
     {
-      title: labelTimezone,
       field: details.timezone,
       getLines: (): Lines => [
         {
@@ -111,9 +110,9 @@ const getDetailCardLines = (
           line: <DetailsLine line={details.timezone} />,
         },
       ],
+      title: labelTimezone,
     },
     {
-      title: labelCurrentStateDuration,
       field: details.duration,
       getLines: (): Lines => [
         { key: 'duration', line: <DetailsLine line={details.duration} /> },
@@ -122,15 +121,15 @@ const getDetailCardLines = (
           line: <DetailsLine key="tries" line={details.tries} />,
         },
       ],
+      title: labelCurrentStateDuration,
     },
     getDateTimeLines({
-      label: labelLastStateChange,
       field: details.last_state_change,
+      label: labelLastStateChange,
     }),
-    getCheckLines({ label: labelLastCheck, field: details.last_check }),
-    getCheckLines({ label: labelNextCheck, field: details.next_check }),
+    getCheckLines({ field: details.last_check, label: labelLastCheck }),
+    getCheckLines({ field: details.next_check, label: labelNextCheck }),
     {
-      title: labelCheckDuration,
       field: details.execution_time,
       getLines: (): Lines => [
         {
@@ -138,9 +137,9 @@ const getDetailCardLines = (
           line: <DetailsLine line={`${details.execution_time} s`} />,
         },
       ],
+      title: labelCheckDuration,
     },
     {
-      title: labelLatency,
       field: details.latency,
       getLines: (): Lines => [
         {
@@ -148,9 +147,9 @@ const getDetailCardLines = (
           line: <DetailsLine line={`${details.latency} s`} />,
         },
       ],
+      title: labelLatency,
     },
     {
-      title: labelResourceFlapping,
       field: details.flapping,
       getLines: (): Lines => [
         {
@@ -158,9 +157,9 @@ const getDetailCardLines = (
           line: <DetailsLine line={details.flapping ? labelYes : labelNo} />,
         },
       ],
+      title: labelResourceFlapping,
     },
     {
-      title: labelPercentStateChange,
       field: details.percent_state_change,
       getLines: (): Lines => [
         {
@@ -168,13 +167,13 @@ const getDetailCardLines = (
           line: <DetailsLine line={`${details.percent_state_change}%`} />,
         },
       ],
+      title: labelPercentStateChange,
     },
     getDateTimeLines({
-      label: labelLastNotification,
       field: details.last_notification,
+      label: labelLastNotification,
     }),
     {
-      title: labelCurrentNotificationNumber,
       field: details.notification_number,
       getLines: (): Lines => [
         {
@@ -182,6 +181,7 @@ const getDetailCardLines = (
           line: <DetailsLine line={details.notification_number.toString()} />,
         },
       ],
+      title: labelCurrentNotificationNumber,
     },
   ];
 };

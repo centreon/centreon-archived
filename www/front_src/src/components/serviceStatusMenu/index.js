@@ -38,18 +38,18 @@ const statusSchema = yup.object().shape({
     total: numberFormat,
     unhandled: numberFormat,
   }),
-  warning: yup.object().shape({
-    total: numberFormat,
-    unhandled: numberFormat,
-  }),
+  ok: numberFormat,
+  pending: numberFormat,
+  refreshTime: numberFormat,
+  total: numberFormat,
   unknown: yup.object().shape({
     total: numberFormat,
     unhandled: numberFormat,
   }),
-  ok: numberFormat,
-  pending: numberFormat,
-  total: numberFormat,
-  refreshTime: numberFormat,
+  warning: yup.object().shape({
+    total: numberFormat,
+    unhandled: numberFormat,
+  }),
 });
 
 class ServiceStatusMenu extends Component {
@@ -60,9 +60,9 @@ class ServiceStatusMenu extends Component {
   refreshInterval = null;
 
   state = {
-    toggled: false,
     data: null,
     intervalApplied: false,
+    toggled: false,
   };
 
   componentDidMount() {
@@ -137,10 +137,10 @@ class ServiceStatusMenu extends Component {
         className={`${styles.wrapper} wrap-right-services`}
         ref={(service) => (this.service = service)}
       >
-        <SubmenuHeader submenuType="top" active={toggled}>
+        <SubmenuHeader active={toggled} submenuType="top">
           <IconHeader
-            iconType="services"
             iconName={I18n.t('Services')}
+            iconType="services"
             onClick={this.toggle}
           >
             {data.pending > 0 && <span className={styles['custom-icon']} />}
@@ -150,15 +150,15 @@ class ServiceStatusMenu extends Component {
             to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
           >
             <IconNumber
-              iconType={`${
-                data.critical.unhandled > 0 ? 'colored' : 'bordered'
-              }`}
               iconColor="red"
               iconNumber={
                 <span id="count-svc-critical">
                   {numeral(data.critical.unhandled).format('0a')}
                 </span>
               }
+              iconType={`${
+                data.critical.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
             />
           </Link>
           <Link
@@ -166,15 +166,15 @@ class ServiceStatusMenu extends Component {
             to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
           >
             <IconNumber
-              iconType={`${
-                data.warning.unhandled > 0 ? 'colored' : 'bordered'
-              }`}
               iconColor="orange"
               iconNumber={
                 <span id="count-svc-warning">
                   {numeral(data.warning.unhandled).format('0a')}
                 </span>
               }
+              iconType={`${
+                data.warning.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
             />
           </Link>
           <Link
@@ -182,15 +182,15 @@ class ServiceStatusMenu extends Component {
             to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
           >
             <IconNumber
-              iconType={`${
-                data.unknown.unhandled > 0 ? 'colored' : 'bordered'
-              }`}
               iconColor="gray-light"
               iconNumber={
                 <span id="count-svc-unknown">
                   {numeral(data.unknown.unhandled).format('0a')}
                 </span>
               }
+              iconType={`${
+                data.unknown.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
             />
           </Link>
           <Link
@@ -198,11 +198,11 @@ class ServiceStatusMenu extends Component {
             to="/main.php?p=20201&o=svc&statusFilter=ok&search="
           >
             <IconNumber
-              iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
               iconColor="green"
               iconNumber={
                 <span id="count-svc-ok">{numeral(data.ok).format('0a')}</span>
               }
+              iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
             />
           </Link>
           <IconToggleSubmenu
@@ -218,74 +218,74 @@ class ServiceStatusMenu extends Component {
           >
             <SubmenuItems>
               <Link
-                to="/main.php?p=20201&o=svc&statusFilter=&search="
                 className={styles.link}
+                to="/main.php?p=20201&o=svc&statusFilter=&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle={I18n.t('All')}
                   submenuCount={numeral(data.total).format()}
+                  submenuTitle={I18n.t('All')}
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
                 className={styles.link}
+                to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={I18n.t('Critical')}
                   submenuCount={`${numeral(
                     data.critical.unhandled,
                   ).format()}/${numeral(data.critical.total).format()}`}
+                  submenuTitle={I18n.t('Critical')}
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
                 className={styles.link}
+                to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="orange"
-                  submenuTitle={I18n.t('Warning')}
                   submenuCount={`${numeral(
                     data.warning.unhandled,
                   ).format()}/${numeral(data.warning.total).format()}`}
+                  submenuTitle={I18n.t('Warning')}
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
                 className={styles.link}
+                to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle={I18n.t('Unknown')}
                   submenuCount={`${numeral(
                     data.unknown.unhandled,
                   ).format()}/${numeral(data.unknown.total).format()}`}
+                  submenuTitle={I18n.t('Unknown')}
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc&statusFilter=ok&search="
                 className={styles.link}
+                to="/main.php?p=20201&o=svc&statusFilter=ok&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle={I18n.t('Ok')}
                   submenuCount={numeral(data.ok).format()}
+                  submenuTitle={I18n.t('Ok')}
                 />
               </Link>
               <Link
-                to="/main.php?p=20201&o=svc&statusFilter=pending&search="
                 className={styles.link}
+                to="/main.php?p=20201&o=svc&statusFilter=pending&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle={I18n.t('Pending')}
                   submenuCount={numeral(data.pending).format()}
+                  submenuTitle={I18n.t('Pending')}
                 />
               </Link>
             </SubmenuItems>

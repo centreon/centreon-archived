@@ -12,30 +12,30 @@ import {
 export type TimePeriodId = 'last_24_h' | 'last_7_days' | 'last_31_days';
 
 export interface TimePeriod {
+  getStart: () => Date;
   id: TimePeriodId;
   name: string;
-  getStart: () => Date;
   timeFormat: string;
 }
 
 const last24hPeriod: TimePeriod = {
-  name: labelLast24h,
-  id: 'last_24_h',
   getStart: (): Date => subHours(Date.now(), 24),
+  id: 'last_24_h',
+  name: labelLast24h,
   timeFormat,
 };
 
 const last7Days: TimePeriod = {
-  name: labelLast7Days,
-  id: 'last_7_days',
   getStart: (): Date => subDays(Date.now(), 7),
+  id: 'last_7_days',
+  name: labelLast7Days,
   timeFormat: dateTimeFormat,
 };
 
 const last31Days: TimePeriod = {
-  name: labelLast31Days,
-  id: 'last_31_days',
   getStart: (): Date => subDays(Date.now(), 31),
+  id: 'last_31_days',
+  name: labelLast31Days,
   timeFormat: dateFormat,
 };
 

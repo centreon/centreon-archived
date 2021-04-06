@@ -29,27 +29,27 @@ class PollerFormStepOne extends Component {
           </div>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             <Field
-              name="server_name"
               component={InputField}
-              type="text"
-              placeholder=""
               label={`${I18n.t('Server Name')}:`}
+              name="server_name"
+              placeholder=""
+              type="text"
             />
             <Field
-              name="server_ip"
               component={InputField}
-              type="text"
-              placeholder=""
               label={`${I18n.t('Server IP address')}:`}
+              name="server_ip"
+              placeholder=""
+              type="text"
             />
             <Field
-              name="centreon_central_ip"
               component={InputField}
-              type="text"
-              placeholder=""
               label={`${I18n.t(
                 'Centreon Central IP address, as seen by this server',
               )}:`}
+              name="centreon_central_ip"
+              placeholder=""
+              type="text"
             />
             <div className={styles['form-buttons']}>
               <button className={styles.button} type="submit">
@@ -67,18 +67,18 @@ class PollerFormStepOne extends Component {
 }
 
 const validate = (server) => ({
-  server_name: I18n.t(serverNameValidator(server.server_name)),
-  server_ip: I18n.t(serverIpAddressValidator(server.server_ip)),
   centreon_central_ip: I18n.t(
     centralIpAddressValidator(server.centreon_central_ip),
   ),
+  server_ip: I18n.t(serverIpAddressValidator(server.server_ip)),
+  server_name: I18n.t(serverNameValidator(server.server_name)),
 });
 
 export default connectForm({
+  destroyOnUnmount: false,
+  enableReinitialize: true,
   form: 'PollerFormStepOne',
+  keepDirtyOnReinitialize: true,
   validate,
   warn: () => {},
-  enableReinitialize: true,
-  destroyOnUnmount: false,
-  keepDirtyOnReinitialize: true,
 })(PollerFormStepOne);

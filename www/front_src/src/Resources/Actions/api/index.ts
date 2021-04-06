@@ -11,14 +11,14 @@ import { Resource } from '../../models';
 
 interface AcknowledgeParams {
   acknowledgeAttachedResources?: boolean;
-  notify: boolean;
   comment: string;
+  notify: boolean;
 }
 
 interface ResourcesWithAcknowledgeParams {
-  resources: Array<Resource>;
-  params: AcknowledgeParams;
   cancelToken: CancelToken;
+  params: AcknowledgeParams;
+  resources: Array<Resource>;
 }
 
 const acknowledgeResources = (cancelToken: CancelToken) => ({
@@ -28,12 +28,12 @@ const acknowledgeResources = (cancelToken: CancelToken) => ({
   return axios.post(
     acknowledgeEndpoint,
     {
-      resources: map(pick(['type', 'id', 'parent']), resources),
       acknowledgement: {
-        with_services: params.acknowledgeAttachedResources,
-        is_notify_contacts: params.notify,
         comment: params.comment,
+        is_notify_contacts: params.notify,
+        with_services: params.acknowledgeAttachedResources,
       },
+      resources: map(pick(['type', 'id', 'parent']), resources),
     },
     { cancelToken },
   );
@@ -41,17 +41,17 @@ const acknowledgeResources = (cancelToken: CancelToken) => ({
 
 interface DowntimeParams {
   comment: string;
+  downtimeAttachedResources?: boolean;
   duration: number;
-  startTime: Date;
   endTime: Date;
   fixed: boolean;
-  downtimeAttachedResources?: boolean;
+  startTime: Date;
 }
 
 interface ResourcesWithDowntimeParams {
-  resources: Array<Resource>;
-  params: DowntimeParams;
   cancelToken: CancelToken;
+  params: DowntimeParams;
+  resources: Array<Resource>;
 }
 
 const setDowntimeOnResources = (cancelToken: CancelToken) => ({
@@ -61,23 +61,23 @@ const setDowntimeOnResources = (cancelToken: CancelToken) => ({
   return axios.post(
     downtimeEndpoint,
     {
-      resources: map(pick(['type', 'id', 'parent']), resources),
       downtime: {
-        with_services: params.downtimeAttachedResources,
+        comment: params.comment,
+        duration: params.duration,
+        end_time: formatISO(params.endTime),
         is_fixed: params.fixed,
         start_time: formatISO(params.startTime),
-        end_time: formatISO(params.endTime),
-        duration: params.duration,
-        comment: params.comment,
+        with_services: params.downtimeAttachedResources,
       },
+      resources: map(pick(['type', 'id', 'parent']), resources),
     },
     { cancelToken },
   );
 };
 
 interface ResourcesWithRequestParams {
-  resources: Array<Resource>;
   cancelToken: CancelToken;
+  resources: Array<Resource>;
 }
 
 const checkResources = ({

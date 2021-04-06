@@ -23,7 +23,7 @@ import useAclQuery from './aclQuery';
 import { checkResources } from '../api';
 
 const ActionButton = (props: ButtonProps): JSX.Element => (
-  <Button variant="contained" color="primary" size="small" {...props} />
+  <Button color="primary" size="small" variant="contained" {...props} />
 );
 
 const ResourceActions = (): JSX.Element => {
@@ -63,8 +63,8 @@ const ResourceActions = (): JSX.Element => {
     }
 
     checkResources({
-      resources: resourcesToCheck,
       cancelToken: token,
+      resources: resourcesToCheck,
     })
       .then(() => {
         confirmAction();

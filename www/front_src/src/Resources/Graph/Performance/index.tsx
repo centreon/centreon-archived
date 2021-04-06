@@ -37,36 +37,36 @@ const fontFamily = 'Roboto, sans-serif';
 
 interface Props {
   endpoint: string;
-  xAxisTickFormat?: string;
   graphHeight: number;
   toggableLegend?: boolean;
+  xAxisTickFormat?: string;
 }
 
 const useStyles = makeStyles<Theme, Pick<Props, 'graphHeight'>>((theme) => ({
   container: {
     display: 'grid',
     flexDirection: 'column',
-    gridTemplateRows: ({ graphHeight }): string => `auto ${graphHeight}px auto`,
     gridGap: theme.spacing(1),
+    gridTemplateRows: ({ graphHeight }): string => `auto ${graphHeight}px auto`,
     height: '100%',
     justifyItems: 'center',
   },
-  noDataContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-  },
   graph: {
-    width: '100%',
     height: '100%',
+    width: '100%',
   },
   legend: {
+    alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    alignItems: 'center',
     width: '100%',
+  },
+  noDataContainer: {
+    alignItems: 'center',
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'center',
   },
 }));
 
@@ -123,7 +123,7 @@ const PerformanceGraph = ({
       path(['name']),
     )(lineData) as string;
 
-    return [formatMetricValue({ value, unit, base }), legendName];
+    return [formatMetricValue({ base, unit, value }), legendName];
   };
 
   const formatXAxisTick = (tick): string =>
@@ -160,7 +160,7 @@ const PerformanceGraph = ({
 
   return (
     <div className={classes.container}>
-      <Typography variant="body1" color="textPrimary">
+      <Typography color="textPrimary" variant="body1">
         {title}
       </Typography>
       <ResponsiveContainer className={classes.graph}>
@@ -168,29 +168,29 @@ const PerformanceGraph = ({
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="timeTick"
-            tickFormatter={formatXAxisTick}
             tick={{ fontSize: 13 }}
+            tickFormatter={formatXAxisTick}
           />
 
-          {getGraphLines({ lines: displayedLines, base })}
+          {getGraphLines({ base, lines: displayedLines })}
 
           <Tooltip
-            labelFormatter={formatTooltipTime}
-            formatter={formatTooltipValue}
-            contentStyle={{ fontFamily }}
-            wrapperStyle={{ opacity: 0.7 }}
-            isAnimationActive={false}
             filterNull
+            contentStyle={{ fontFamily }}
+            formatter={formatTooltipValue}
+            isAnimationActive={false}
+            labelFormatter={formatTooltipTime}
+            wrapperStyle={{ opacity: 0.7 }}
           />
         </ComposedChart>
       </ResponsiveContainer>
       <div className={classes.legend}>
         <Legend
           lines={sortedLines}
-          onItemToggle={toggleMetricDisplay}
           toggable={toggableLegend}
-          onItemHighlight={highlightLine}
           onClearItemHighlight={clearHighlight}
+          onItemHighlight={highlightLine}
+          onItemToggle={toggleMetricDisplay}
         />
       </div>
     </div>

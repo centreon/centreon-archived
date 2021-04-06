@@ -17,9 +17,9 @@ const MainRouter = ({
   },
 }) => (
   <Switch>
-    <Route key={`path-${key}`} path="/main.php" exact component={LegacyRoute} />
-    <Route path="/" exact render={() => <Redirect to="/main.php" />} />
-    <Route path="/" component={ReactRouter} />
+    <Route exact component={LegacyRoute} key={`path-${key}`} path="/main.php" />
+    <Route exact path="/" render={() => <Redirect to="/main.php" />} />
+    <Route component={ReactRouter} path="/" />
   </Switch>
 );
 

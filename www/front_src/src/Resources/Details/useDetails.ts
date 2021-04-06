@@ -4,12 +4,12 @@ import { ResourceLinks } from '../models';
 import { TabId, detailsTabId } from './tabs';
 
 export interface DetailsState {
+  openDetailsTabId: TabId;
   selectedDetailsLinks?: ResourceLinks;
+  setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
   setSelectedDetailsLinks: React.Dispatch<
     React.SetStateAction<ResourceLinks | undefined>
   >;
-  openDetailsTabId: TabId;
-  setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
 }
 
 const useDetails = (): DetailsState => {
@@ -23,10 +23,10 @@ const useDetails = (): DetailsState => {
   );
 
   return {
-    selectedDetailsLinks,
-    setSelectedDetailsLinks,
     openDetailsTabId,
+    selectedDetailsLinks,
     setOpenDetailsTabId,
+    setSelectedDetailsLinks,
   };
 };
 

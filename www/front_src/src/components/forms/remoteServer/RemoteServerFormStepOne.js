@@ -26,8 +26,8 @@ import {
 
 class RemoteServerFormStepOne extends Component {
   state = {
-    inputTypeManual: true,
     initialized: false,
+    inputTypeManual: true,
   };
 
   onManualInputChanged(inputTypeManual) {
@@ -52,8 +52,8 @@ class RemoteServerFormStepOne extends Component {
       // this.initializeFromRest(true);//set to true of false if abandon the upper case condition
     }
     this.setState({
-      initialized: true,
       centreon_folder: '/centreon/',
+      initialized: true,
     });
   };
 
@@ -70,92 +70,92 @@ class RemoteServerFormStepOne extends Component {
           </div>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             <Field
+              checked={inputTypeManual}
+              component={RadioField}
+              label={I18n.t('Create new Remote Server')}
               name="inputTypeManual"
               onChange={() => {
                 this.onManualInputChanged(true);
               }}
-              checked={inputTypeManual}
-              component={RadioField}
-              label={I18n.t('Create new Remote Server')}
             />
             {inputTypeManual ? (
               <div>
                 <Field
-                  name="server_name"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${I18n.t('Server Name')}:`}
+                  name="server_name"
+                  placeholder=""
+                  type="text"
                 />
                 <Field
-                  name="server_ip"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${I18n.t('Server IP address')}:`}
+                  name="server_ip"
+                  placeholder=""
+                  type="text"
                 />
                 <Field
-                  name="db_user"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${I18n.t('Database username')}:`}
-                />
-                <Field
-                  name="db_password"
-                  component={InputField}
-                  type="password"
+                  name="db_user"
                   placeholder=""
-                  label={`${I18n.t('Database password')}:`}
-                />
-                <Field
-                  name="centreon_central_ip"
-                  component={InputField}
                   type="text"
+                />
+                <Field
+                  component={InputField}
+                  label={`${I18n.t('Database password')}:`}
+                  name="db_password"
                   placeholder=""
+                  type="password"
+                />
+                <Field
+                  component={InputField}
                   label={`${I18n.t(
                     'Centreon Central IP address, as seen by this server',
                   )}:`}
-                />
-                <Field
-                  name="centreon_folder"
-                  component={InputField}
+                  name="centreon_central_ip"
+                  placeholder=""
                   type="text"
-                  placeholder="/centreon/"
-                  label={`${I18n.t('Centreon Web Folder on Remote')}:`}
                 />
                 <Field
-                  name="no_check_certificate"
+                  component={InputField}
+                  label={`${I18n.t('Centreon Web Folder on Remote')}:`}
+                  name="centreon_folder"
+                  placeholder="/centreon/"
+                  type="text"
+                />
+                <Field
                   component={CheckboxField}
                   label={I18n.t('Do not check SSL certificate validation')}
+                  name="no_check_certificate"
                 />
                 <Field
-                  name="no_proxy"
                   component={CheckboxField}
                   label={I18n.t(
                     'Do not use configured proxy to connect to this server',
                   )}
+                  name="no_proxy"
                 />
               </div>
             ) : null}
 
             <Field
+              checked={!inputTypeManual}
+              component={RadioField}
+              label={`${I18n.t('Select a Remote Server')}:`}
               name="inputTypeManual"
               onClick={() => {
                 this.onManualInputChanged(false);
               }}
-              checked={!inputTypeManual}
-              component={RadioField}
-              label={`${I18n.t('Select a Remote Server')}:`}
             />
             {!inputTypeManual ? (
               <div>
                 {waitList ? (
                   <Field
-                    name="server_ip"
+                    required
                     component={SelectField}
                     label={`${I18n.t('Select Pending Remote Links')}:`}
-                    required
+                    name="server_ip"
                     options={[
                       {
                         disabled: true,
@@ -164,58 +164,58 @@ class RemoteServerFormStepOne extends Component {
                         value: '',
                       },
                     ].concat(
-                      waitList.map((c) => ({ value: c.id, text: c.ip })),
+                      waitList.map((c) => ({ text: c.ip, value: c.id })),
                     )}
                   />
                 ) : null}
                 <Field
-                  name="server_name"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${I18n.t('Server Name')}:`}
+                  name="server_name"
+                  placeholder=""
+                  type="text"
                 />
                 <Field
-                  name="db_user"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${I18n.t('Database username')}:`}
-                />
-                <Field
-                  name="db_password"
-                  component={InputField}
-                  type="password"
+                  name="db_user"
                   placeholder=""
-                  label={`${I18n.t('Database password')}:`}
-                />
-                <Field
-                  name="centreon_central_ip"
-                  component={InputField}
                   type="text"
+                />
+                <Field
+                  component={InputField}
+                  label={`${I18n.t('Database password')}:`}
+                  name="db_password"
                   placeholder=""
+                  type="password"
+                />
+                <Field
+                  component={InputField}
                   label={`${I18n.t(
                     'Centreon Central IP address, as seen by this server',
                   )}:`}
-                />
-                <Field
-                  name="centreon_folder"
-                  component={InputField}
+                  name="centreon_central_ip"
+                  placeholder=""
                   type="text"
-                  placeholder="/centreon/"
-                  label={`${I18n.t('Centreon Web Folder on Remote')}:`}
                 />
                 <Field
-                  name="no_check_certificate"
+                  component={InputField}
+                  label={`${I18n.t('Centreon Web Folder on Remote')}:`}
+                  name="centreon_folder"
+                  placeholder="/centreon/"
+                  type="text"
+                />
+                <Field
                   component={CheckboxField}
                   label={I18n.t('Do not check SSL certificate validation')}
+                  name="no_check_certificate"
                 />
                 <Field
-                  name="no_proxy"
                   component={CheckboxField}
                   label={I18n.t(
                     'Do not use configured proxy to connect to this server',
                   )}
+                  name="no_proxy"
                 />
               </div>
             ) : null}
@@ -243,19 +243,19 @@ const validate = ({
   db_password,
   centreon_folder,
 }) => ({
-  server_name: I18n.t(serverNameValidator(server_name)),
-  server_ip: I18n.t(serverIpAddressValidator(server_ip)),
   centreon_central_ip: I18n.t(centralIpAddressValidator(centreon_central_ip)),
-  db_user: I18n.t(databaseUserValidator(db_user)),
-  db_password: I18n.t(databasePasswordValidator(db_password)),
   centreon_folder: I18n.t(centreonPathValidator(centreon_folder)),
+  db_password: I18n.t(databasePasswordValidator(db_password)),
+  db_user: I18n.t(databaseUserValidator(db_user)),
+  server_ip: I18n.t(serverIpAddressValidator(server_ip)),
+  server_name: I18n.t(serverNameValidator(server_name)),
 });
 
 export default connectForm({
+  destroyOnUnmount: false,
+  enableReinitialize: true,
   form: 'RemoteServerFormStepOne',
+  keepDirtyOnReinitialize: true,
   validate,
   warn: () => {},
-  enableReinitialize: true,
-  destroyOnUnmount: false,
-  keepDirtyOnReinitialize: true,
 })(RemoteServerFormStepOne);

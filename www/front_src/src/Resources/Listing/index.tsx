@@ -68,15 +68,15 @@ const ResourceListing = (): JSX.Element => {
     reporting_uri,
   }: Resource): void => {
     const uris = {
-      resource: {
-        configuration: configuration_uri,
-        logs: logs_uri,
-        reporting: reporting_uri,
-      },
       parent: {
         configuration: parent?.configuration_uri,
         logs: parent?.logs_uri,
         reporting: parent?.reporting_uri,
+      },
+      resource: {
+        configuration: configuration_uri,
+        logs: logs_uri,
+        reporting: reporting_uri,
       },
     };
 
@@ -101,13 +101,13 @@ const ResourceListing = (): JSX.Element => {
   };
 
   const resourceDetailsOpenCondition = {
-    name: 'detailsOpen',
+    color: fade(theme.palette.primary.main, 0.08),
     condition: ({ details_endpoint }): boolean =>
       equals(
         details_endpoint,
         path(['endpoints', 'details'], selectedDetailsLinks),
       ),
-    color: fade(theme.palette.primary.main, 0.08),
+    name: 'detailsOpen',
   };
 
   const labelDisplayedRows = ({ from, to, count }): string =>
@@ -117,9 +117,6 @@ const ResourceListing = (): JSX.Element => {
     onAcknowledge: (resource) => {
       setResourcesToAcknowledge([resource]);
     },
-    onDowntime: (resource) => {
-      setResourcesToSetDowntime([resource]);
-    },
     onCheck: (resource) => {
       setResourcesToCheck([resource]);
     },
@@ -127,6 +124,9 @@ const ResourceListing = (): JSX.Element => {
       setOpenDetailsTabId(graphTabId);
 
       selectResource(resource);
+    },
+    onDowntime: (resource) => {
+      setResourcesToSetDowntime([resource]);
     },
   });
 
@@ -136,28 +136,28 @@ const ResourceListing = (): JSX.Element => {
     <Listing
       checkable
       Actions={<Actions onRefresh={initAutorefreshAndLoad} />}
-      loading={loading}
       columnConfiguration={columns}
-      tableData={listing?.result}
       currentPage={(page || 1) - 1}
+      emptyDataMessage={labelNoResultsFound}
+      innerScrollDisabled={false}
+      labelDisplayedRows={labelDisplayedRows}
+      labelRowsPerPage={labelRowsPerPage}
+      limit={listing?.meta.limit}
+      loading={loading}
       rowColorConditions={[
         ...rowColorConditions(theme),
         resourceDetailsOpenCondition,
       ]}
-      limit={listing?.meta.limit}
-      onSort={changeSort}
-      onPaginationLimitChanged={changeLimit}
-      onPaginate={changePage}
+      selectedRows={selectedResources}
       sortf={sortf}
       sorto={sorto}
-      labelRowsPerPage={labelRowsPerPage}
-      labelDisplayedRows={labelDisplayedRows}
+      tableData={listing?.result}
       totalRows={listing?.meta.total}
-      onSelectRows={setSelectedResources}
-      selectedRows={selectedResources}
+      onPaginate={changePage}
+      onPaginationLimitChanged={changeLimit}
       onRowClick={selectResource}
-      innerScrollDisabled={false}
-      emptyDataMessage={labelNoResultsFound}
+      onSelectRows={setSelectedResources}
+      onSort={changeSort}
     />
   );
 };

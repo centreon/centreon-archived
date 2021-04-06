@@ -56,14 +56,14 @@ const StatusGraph = ({
                 key={`start-${time}`}
                 offset={offset}
                 stopColor={
-                  getStatusColors({ theme, severityCode }).backgroundColor
+                  getStatusColors({ severityCode, theme }).backgroundColor
                 }
               />,
               <stop
                 key={`end-${time}`}
                 offset={offset + fraction}
                 stopColor={
-                  getStatusColors({ theme, severityCode }).backgroundColor
+                  getStatusColors({ severityCode, theme }).backgroundColor
                 }
               />,
             ])}
@@ -71,7 +71,7 @@ const StatusGraph = ({
         </defs>
 
         <XAxis dataKey="time" tickFormatter={formatToxAxisTickFormat} />
-        <Area dataKey="value" stroke="transparent" fill="url(#splitColor)" />
+        <Area dataKey="value" fill="url(#splitColor)" stroke="transparent" />
       </AreaChart>
     </ResponsiveContainer>
   );

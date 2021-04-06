@@ -18,19 +18,17 @@ const getWithNameDecoder = (
 
 const entityDecoder = JsonDecoder.object<TimelineEvent>(
   {
-    id: JsonDecoder.number,
-    type: JsonDecoder.string,
+    contact: getWithNameDecoder('Contact'),
     content: JsonDecoder.string,
     date: JsonDecoder.string,
-    startDate: JsonDecoder.optional(JsonDecoder.string),
     endDate: JsonDecoder.optional(JsonDecoder.string),
-    tries: JsonDecoder.optional(JsonDecoder.number),
-    contact: getWithNameDecoder('Contact'),
+    id: JsonDecoder.number,
+    startDate: JsonDecoder.optional(JsonDecoder.string),
     status: JsonDecoder.optional(
       JsonDecoder.object<Status>(
         {
-          severityCode: JsonDecoder.number,
           name: JsonDecoder.string,
+          severityCode: JsonDecoder.number,
         },
         'Status',
         {
@@ -38,11 +36,13 @@ const entityDecoder = JsonDecoder.object<TimelineEvent>(
         },
       ),
     ),
+    tries: JsonDecoder.optional(JsonDecoder.number),
+    type: JsonDecoder.string,
   },
   'TimelineEvent',
   {
-    startDate: 'start_date',
     endDate: 'end_date',
+    startDate: 'start_date',
   },
 );
 

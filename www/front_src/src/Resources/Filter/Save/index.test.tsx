@@ -47,10 +47,13 @@ const renderSaveMenu = (): RenderResult => render(<SaveMenuTest />);
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedCustomFilters = {
+  meta: {
+    limit: 30,
+    page: 1,
+    total: 1,
+  },
   result: [
     {
-      id: 0,
-      name: 'MyFilter',
       criterias: [
         {
           name: 'resource_types',
@@ -84,6 +87,7 @@ const retrievedCustomFilters = {
         },
         {
           name: 'host_groups',
+          object_type: 'host_group',
           type: 'multi_select',
           value: [
             {
@@ -91,10 +95,10 @@ const retrievedCustomFilters = {
               name: 'Linux-servers',
             },
           ],
-          object_type: 'host_group',
         },
         {
           name: 'service_groups',
+          object_type: 'service_group',
           type: 'multi_select',
           value: [
             {
@@ -102,7 +106,6 @@ const retrievedCustomFilters = {
               name: 'Web-services',
             },
           ],
-          object_type: 'service_group',
         },
         {
           name: 'search',
@@ -110,13 +113,10 @@ const retrievedCustomFilters = {
           value: 'my search',
         },
       ],
+      id: 0,
+      name: 'MyFilter',
     },
   ],
-  meta: {
-    page: 1,
-    limit: 30,
-    total: 1,
-  },
 };
 
 const [createdFilter] = retrievedCustomFilters.result;

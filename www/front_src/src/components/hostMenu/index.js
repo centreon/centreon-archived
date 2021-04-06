@@ -38,14 +38,14 @@ const statusSchema = yup.object().shape({
     total: numberFormat,
     unhandled: numberFormat,
   }),
+  ok: numberFormat,
+  pending: numberFormat,
+  refreshTime: numberFormat,
+  total: numberFormat,
   unreachable: yup.object().shape({
     total: numberFormat,
     unhandled: numberFormat,
   }),
-  ok: numberFormat,
-  pending: numberFormat,
-  total: numberFormat,
-  refreshTime: numberFormat,
 });
 
 class HostMenu extends Component {
@@ -56,9 +56,9 @@ class HostMenu extends Component {
   refreshInterval = null;
 
   state = {
-    toggled: false,
     data: null,
     intervalApplied: false,
+    toggled: false,
   };
 
   componentDidMount() {
@@ -133,10 +133,10 @@ class HostMenu extends Component {
         className={`${styles.wrapper} wrap-right-hosts`}
         ref={(host) => (this.host = host)}
       >
-        <SubmenuHeader submenuType="top" active={toggled}>
+        <SubmenuHeader active={toggled} submenuType="top">
           <IconHeader
-            iconType="hosts"
             iconName={I18n.t('Hosts')}
+            iconType="hosts"
             onClick={this.toggle}
           >
             {data.pending > 0 && <span className={styles['custom-icon']} />}
@@ -146,13 +146,13 @@ class HostMenu extends Component {
             to="/main.php?p=20202&o=h_down&search="
           >
             <IconNumber
-              iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
               iconColor="red"
               iconNumber={
                 <span id="count-host-down">
                   {numeral(data.down.unhandled).format('0a')}
                 </span>
               }
+              iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
             />
           </Link>
           <Link
@@ -160,15 +160,15 @@ class HostMenu extends Component {
             to="/main.php?p=20202&o=h_unreachable&search="
           >
             <IconNumber
-              iconType={`${
-                data.unreachable.unhandled > 0 ? 'colored' : 'bordered'
-              }`}
               iconColor="gray-dark"
               iconNumber={
                 <span id="count-host-unreachable">
                   {numeral(data.unreachable.unhandled).format('0a')}
                 </span>
               }
+              iconType={`${
+                data.unreachable.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
             />
           </Link>
           <Link
@@ -176,11 +176,11 @@ class HostMenu extends Component {
             to="/main.php?p=20202&o=h_up&search="
           >
             <IconNumber
-              iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
               iconColor="green"
               iconNumber={
                 <span id="count-host-up">{numeral(data.ok).format('0a')}</span>
               }
+              iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
             />
           </Link>
           <IconToggleSubmenu
@@ -196,61 +196,61 @@ class HostMenu extends Component {
           >
             <SubmenuItems>
               <Link
-                to="/main.php?p=20202&o=h&search="
                 className={styles.link}
+                to="/main.php?p=20202&o=h&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle={I18n.t('All')}
                   submenuCount={numeral(data.total).format()}
+                  submenuTitle={I18n.t('All')}
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_down&search="
                 className={styles.link}
+                to="/main.php?p=20202&o=h_down&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={I18n.t('Down')}
                   submenuCount={`${numeral(data.down.unhandled).format(
                     '0a',
                   )}/${numeral(data.down.total).format('0a')}`}
+                  submenuTitle={I18n.t('Down')}
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_unreachable&search="
                 className={styles.link}
+                to="/main.php?p=20202&o=h_unreachable&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle={I18n.t('Unreachable')}
                   submenuCount={`${numeral(data.unreachable.unhandled).format(
                     '0a',
                   )}/${numeral(data.unreachable.total).format('0a')}`}
+                  submenuTitle={I18n.t('Unreachable')}
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_up&search="
                 className={styles.link}
+                to="/main.php?p=20202&o=h_up&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle={I18n.t('Up')}
                   submenuCount={numeral(data.ok).format()}
+                  submenuTitle={I18n.t('Up')}
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_pending&search="
                 className={styles.link}
+                to="/main.php?p=20202&o=h_pending&search="
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle={I18n.t('Pending')}
                   submenuCount={numeral(data.pending).format()}
+                  submenuTitle={I18n.t('Pending')}
                 />
               </Link>
             </SubmenuItems>

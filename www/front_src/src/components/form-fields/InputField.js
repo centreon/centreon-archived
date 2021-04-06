@@ -36,11 +36,11 @@ const InputField = ({
         </span>
       </label>
       <input
-        type={type}
-        placeholder={placeholder}
         className={classnames(styles['form-control'], {
           [styles['is-invalid']]: !!error,
         })}
+        placeholder={placeholder}
+        type={type}
         {...prepareInputProps(rest)}
       />
       {error ? <div className={styles['invalid-feedback']}>{error}</div> : null}

@@ -1,8 +1,8 @@
 import * as actions from '../actions/tooltipActions';
 
 const initialState = {
-  toggled: false,
   label: '',
+  toggled: false,
   x: 0,
   y: 0,
 };

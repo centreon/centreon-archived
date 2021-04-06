@@ -58,26 +58,26 @@ const getTypeIds = (): Array<string> => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  event: {
+    alignItems: 'center',
+    display: 'grid',
+    gridAutoFlow: 'columns',
+    gridGap: theme.spacing(2),
+    gridTemplateColumns: 'auto 1fr auto',
+    padding: theme.spacing(1),
+  },
   info: {
     display: 'grid',
     gridAutoFlow: 'row',
     gridGap: theme.spacing(0.5),
   },
   title: {
+    alignItems: 'center',
     display: 'grid',
-    gridAutoFlow: 'column',
     gridAutoColumns: 'auto',
+    gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
     justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  event: {
-    display: 'grid',
-    gridAutoFlow: 'columns',
-    gridTemplateColumns: 'auto 1fr auto',
-    padding: theme.spacing(1),
-    gridGap: theme.spacing(2),
-    alignItems: 'center',
   },
 }));
 
@@ -112,8 +112,8 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
         <div className={classes.title}>
           <Typography variant="h6">{labelEvent}</Typography>
           <StatusChip
-            severityCode={event.status?.severityCode as number}
             label={event.status?.name}
+            severityCode={event.status?.severityCode as number}
           />
         </div>
         <Content event={event} />
@@ -197,11 +197,11 @@ const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const TimelineEventByType = {
+  acknowledgement: AcknowledgeTimelineEvent,
+  comment: CommentTimelineEvent,
+  downtime: DowntimeTimelineEvent,
   event: EventTimelineEvent,
   notification: NotificationTimelineEvent,
-  comment: CommentTimelineEvent,
-  acknowledgement: AcknowledgeTimelineEvent,
-  downtime: DowntimeTimelineEvent,
 };
 
 export { TimelineEventByType, types, getTypeIds };

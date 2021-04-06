@@ -17,10 +17,10 @@ import { Resource } from '../../../models';
 import { setDowntimeOnResources } from '../../api';
 
 interface DateParams {
-  dateStart: Date;
-  timeStart: Date;
   dateEnd: Date;
+  dateStart: Date;
   timeEnd: Date;
+  timeStart: Date;
 }
 
 const formatDateInterval = (values: DateParams): [Date, Date] => {
@@ -40,20 +40,20 @@ const formatDateInterval = (values: DateParams): [Date, Date] => {
 };
 
 const validationSchema = Yup.object().shape({
-  dateStart: Yup.string().required(labelRequired).nullable(),
-  timeStart: Yup.string().required(labelRequired).nullable(),
+  comment: Yup.string().required(labelRequired),
   dateEnd: Yup.string().required(labelRequired).nullable(),
-  timeEnd: Yup.string().required(labelRequired).nullable(),
-  fixed: Yup.boolean(),
+  dateStart: Yup.string().required(labelRequired).nullable(),
   duration: Yup.object().when('fixed', (fixed, schema) => {
     return !fixed
       ? schema.shape({
-          value: Yup.string().required(labelRequired),
           unit: Yup.string().required(labelRequired),
+          value: Yup.string().required(labelRequired),
         })
       : schema;
   }),
-  comment: Yup.string().required(labelRequired),
+  fixed: Yup.boolean(),
+  timeEnd: Yup.string().required(labelRequired).nullable(),
+  timeStart: Yup.string().required(labelRequired).nullable(),
 });
 
 const validate = (values: DateParams): FormikErrors<DateParams> => {
@@ -76,9 +76,9 @@ const validate = (values: DateParams): FormikErrors<DateParams> => {
 };
 
 interface Props {
-  resources: Array<Resource>;
   onClose;
   onSuccess;
+  resources: Array<Resource>;
 }
 
 const DowntimeForm = ({
@@ -106,17 +106,17 @@ const DowntimeForm = ({
 
   const form = useFormik({
     initialValues: {
-      dateStart: currentDate,
-      timeStart: currentDate,
-      dateEnd: twoHoursLaterDate,
-      timeEnd: twoHoursLaterDate,
-      fixed: true,
-      duration: {
-        value: 3600,
-        unit: 'seconds',
-      },
       comment: '',
+      dateEnd: twoHoursLaterDate,
+      dateStart: currentDate,
       downtimeAttachedResources: true,
+      duration: {
+        unit: 'seconds',
+        value: 3600,
+      },
+      fixed: true,
+      timeEnd: twoHoursLaterDate,
+      timeStart: currentDate,
     },
     onSubmit: (values, { setSubmitting }) => {
       setSubmitting(true);
@@ -124,23 +124,23 @@ const DowntimeForm = ({
       const [startTime, endTime] = formatDateInterval(values);
 
       const unitMultipliers = {
-        seconds: 1,
-        minutes: 60,
         hours: 3600,
+        minutes: 60,
+        seconds: 1,
       };
       const durationDivider = unitMultipliers?.[values.duration.unit] || 1;
       const duration = values.duration.value * durationDivider;
 
       sendSetDowntimeOnResources({
+        params: { ...values, duration, endTime, startTime },
         resources,
-        params: { ...values, startTime, endTime, duration },
       }).then(() => {
         showSuccess(labelDowntimeCommandSent);
         onSuccess();
       });
     },
-    validationSchema,
     validate,
+    validationSchema,
   });
 
   React.useEffect(() => {
@@ -149,18 +149,18 @@ const DowntimeForm = ({
 
   return (
     <DialogDowntime
-      locale={locale}
-      timezone={timezone}
-      resources={resources}
-      onConfirm={form.submitForm}
-      onCancel={onClose}
       canConfirm={form.isValid}
       errors={form.errors}
-      values={form.values}
       handleChange={form.handleChange}
+      loading={form.values.comment === ''}
+      locale={locale}
+      resources={resources}
       setFieldValue={form.setFieldValue}
       submitting={sendingSetDowntingOnResources}
-      loading={form.values.comment === ''}
+      timezone={timezone}
+      values={form.values}
+      onCancel={onClose}
+      onConfirm={form.submitForm}
     />
   );
 };

@@ -19,10 +19,10 @@ import { Filter } from '../models';
 type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
 
 interface Props {
-  onCreate: (filter) => void;
-  onCancel: () => void;
-  open: boolean;
   filter: Filter;
+  onCancel: () => void;
+  onCreate: (filter) => void;
+  open: boolean;
 }
 
 const CreateFilterDialog = ({
@@ -39,13 +39,10 @@ const CreateFilterDialog = ({
     initialValues: {
       name: '',
     },
-    validationSchema: Yup.object().shape({
-      name: Yup.string().required(labelRequired),
-    }),
     onSubmit: (values) => {
       sendRequest({
-        name: values.name,
         criterias: filter.criterias,
+        name: values.name,
       })
         .then(onCreate)
         .catch((requestError) => {
@@ -55,6 +52,9 @@ const CreateFilterDialog = ({
           );
         });
     },
+    validationSchema: Yup.object().shape({
+      name: Yup.string().required(labelRequired),
+    }),
   });
 
   const submitFormOnEnterKey = (event: React.KeyboardEvent): void => {
@@ -69,23 +69,23 @@ const CreateFilterDialog = ({
 
   return (
     <Dialog
-      open={open}
-      labelCancel={labelCancel}
-      labelTitle={labelNewFilter}
-      labelConfirm={labelSave}
-      onConfirm={form.submitForm}
       confirmDisabled={confirmDisabled}
-      onCancel={onCancel}
+      labelCancel={labelCancel}
+      labelConfirm={labelSave}
+      labelTitle={labelNewFilter}
+      open={open}
       submitting={sending}
+      onCancel={onCancel}
+      onConfirm={form.submitForm}
     >
       <TextField
+        autoFocus
+        ariaLabel={labelName}
+        error={form.errors.name}
         label={labelName}
         value={form.values.name}
-        error={form.errors.name}
         onChange={form.handleChange('name') as InputChangeEvent}
         onKeyDown={submitFormOnEnterKey}
-        ariaLabel={labelName}
-        autoFocus
       />
     </Dialog>
   );

@@ -1,6 +1,6 @@
 export interface Status {
-  severityCode: number;
   name: string;
+  severityCode: number;
 }
 
 export interface WithName {
@@ -8,15 +8,15 @@ export interface WithName {
 }
 
 export interface TimelineEvent {
-  type: string;
-  id: number;
-  date: string;
-  startDate?: string;
-  endDate?: string;
+  contact?: WithName;
   content: string;
+  date: string;
+  endDate?: string;
+  id: number;
+  startDate?: string;
   status?: Status;
   tries?: number;
-  contact?: WithName;
+  type: string;
 }
 
 export interface Type {

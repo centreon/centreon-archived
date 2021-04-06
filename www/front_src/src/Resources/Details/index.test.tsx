@@ -77,128 +77,128 @@ const performanceGraphEndpoint = '/performance';
 const timelineEndpoint = '/timeline';
 
 const retrievedDetails = {
-  display_name: 'Central',
-  severity: { level: 1 },
-  status: { name: 'Critical', severity_code: 1 },
-  parent: { name: 'Centreon', status: { severity_code: 1 } },
-  poller_name: 'Poller',
   acknowledged: false,
+  acknowledgement: {
+    author_name: 'Admin',
+    comment: 'Acknowledged by Admin',
+    entry_time: '2020-03-18T19:57:59',
+  },
+  active_checks: true,
   checked: true,
+  command_line: 'base_host_alive',
+  criticality: 10,
+  display_name: 'Central',
+  downtimes: [
+    {
+      comment: 'First downtime set by Admin',
+      end_time: '2020-01-18T19:57:59',
+      start_time: '2020-01-18T18:57:59',
+    },
+    {
+      comment: 'Second downtime set by Admin',
+      end_time: '2020-02-18T19:57:59',
+      start_time: '2020-02-18T18:57:59',
+    },
+  ],
+  duration: '22m',
   execution_time: 0.070906,
+  flapping: false,
   last_check: '2020-05-18T18:00',
+  last_notification: '2020-07-18T19:30',
   last_state_change: '2020-04-18T17:00',
   last_update: '2020-03-18T19:30',
-  output:
-    'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
-  timezone: 'Europe/Paris',
-  criticality: 10,
-  active_checks: true,
-  command_line: 'base_host_alive',
-  last_notification: '2020-07-18T19:30',
   latency: 0.005,
   next_check: '2020-06-18T19:15',
   notification_number: 3,
-  flapping: false,
+  output:
+    'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
+  parent: { name: 'Centreon', status: { severity_code: 1 } },
   percent_state_change: 3.5,
-  downtimes: [
-    {
-      start_time: '2020-01-18T18:57:59',
-      end_time: '2020-01-18T19:57:59',
-      comment: 'First downtime set by Admin',
-    },
-    {
-      start_time: '2020-02-18T18:57:59',
-      end_time: '2020-02-18T19:57:59',
-      comment: 'Second downtime set by Admin',
-    },
-  ],
-  acknowledgement: {
-    author_name: 'Admin',
-    entry_time: '2020-03-18T19:57:59',
-    comment: 'Acknowledged by Admin',
-  },
   performance_data:
     'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
-  duration: '22m',
+  poller_name: 'Poller',
+  severity: { level: 1 },
+  status: { name: 'Critical', severity_code: 1 },
+  timezone: 'Europe/Paris',
   tries: '3/3 (Hard)',
 };
 
 const performanceGraphData = {
   global: {},
-  times: [],
   metrics: [],
+  times: [],
 };
 
 const retrievedTimeline = {
+  meta: {
+    limit: 10,
+    page: 1,
+    total: 5,
+  },
   result: [
     {
-      type: 'event',
-      id: 1,
-      date: '2020-06-22T10:40:00',
-      tries: 1,
       content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
+      date: '2020-06-22T10:40:00',
+      id: 1,
       status: {
-        severity_code: 5,
         name: 'UP',
+        severity_code: 5,
       },
-    },
-    {
+      tries: 1,
       type: 'event',
-      id: 2,
-      date: '2020-06-22T10:35:00',
-      tries: 3,
-      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
-      status: {
-        severity_code: 1,
-        name: 'DOWN',
-      },
     },
     {
-      type: 'notification',
-      id: 3,
-      date: '2020-06-21T09:40:00',
-      content: 'My little notification',
+      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
+      date: '2020-06-22T10:35:00',
+      id: 2,
+      status: {
+        name: 'DOWN',
+        severity_code: 1,
+      },
+      tries: 3,
+      type: 'event',
+    },
+    {
       contact: {
         name: 'admin',
       },
+      content: 'My little notification',
+      date: '2020-06-21T09:40:00',
+      id: 3,
+      type: 'notification',
     },
     {
-      type: 'acknowledgement',
-      id: 4,
-      date: '2020-06-20T09:35:00Z',
       contact: {
         name: 'admin',
       },
       content: 'My little ack',
+      date: '2020-06-20T09:35:00Z',
+      id: 4,
+      type: 'acknowledgement',
     },
     {
-      type: 'downtime',
-      id: 5,
-      date: '2020-06-20T09:30:00',
-      start_date: '2020-06-20T09:30:00',
-      end_date: '2020-06-22T09:33:00',
       contact: {
         name: 'admin',
       },
       content: 'My little dt',
+      date: '2020-06-20T09:30:00',
+      end_date: '2020-06-22T09:33:00',
+      id: 5,
+      start_date: '2020-06-20T09:30:00',
+      type: 'downtime',
     },
     {
-      type: 'comment',
-      id: 6,
-      date: '2020-06-20T08:55:00',
-      start_date: '2020-06-20T09:30:00',
-      end_date: '2020-06-22T09:33:00',
       contact: {
         name: 'admin',
       },
       content: 'My little comment',
+      date: '2020-06-20T08:55:00',
+      end_date: '2020-06-22T09:33:00',
+      id: 6,
+      start_date: '2020-06-20T09:30:00',
+      type: 'comment',
     },
   ],
-  meta: {
-    page: 1,
-    limit: 10,
-    total: 5,
-  },
 };
 
 const currentDateIsoString = '2020-06-20T20:00:00.000Z';
@@ -207,7 +207,7 @@ let context: ResourceContext;
 
 interface Props {
   defaultTabId: TabId;
-  uris: { resource: ResourceUris; parent: ResourceUris };
+  uris: { parent: ResourceUris; resource: ResourceUris };
 }
 
 const DetailsTest = ({ defaultTabId, uris }: Props): JSX.Element => {
@@ -240,12 +240,12 @@ const DetailsTest = ({ defaultTabId, uris }: Props): JSX.Element => {
 };
 
 const defaultUris = {
-  resource: {
+  parent: {
     configuration: undefined,
     logs: undefined,
     reporting: undefined,
   },
-  parent: {
+  resource: {
     configuration: undefined,
     logs: undefined,
     reporting: undefined,
@@ -254,7 +254,7 @@ const defaultUris = {
 
 interface RenderDetailsProps {
   defaultTabId?: TabId;
-  uris?: { resource: ResourceUris; parent: ResourceUris };
+  uris?: { parent: ResourceUris; resource: ResourceUris };
 }
 
 const renderDetails = (
@@ -540,15 +540,15 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
     const uris = {
-      resource: {
-        configuration: '/configuration',
-        logs: '/logs',
-        reporting: '/reporting',
-      },
       parent: {
         configuration: '/host/configuration',
         logs: '/host/logs',
         reporting: '/host/reporting',
+      },
+      resource: {
+        configuration: '/configuration',
+        logs: '/logs',
+        reporting: '/reporting',
       },
     };
 
@@ -592,15 +592,15 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
     const uris = {
-      resource: {
-        configuration: '/configuration',
-        logs: '/logs',
-        reporting: '/reporting',
-      },
       parent: {
         configuration: undefined,
         logs: undefined,
         reporting: undefined,
+      },
+      resource: {
+        configuration: '/configuration',
+        logs: '/logs',
+        reporting: '/reporting',
       },
     };
 

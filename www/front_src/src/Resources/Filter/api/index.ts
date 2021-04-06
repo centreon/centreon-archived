@@ -37,8 +37,8 @@ const createFilter = (cancelToken: CancelToken) => (
   parameters: Filter,
 ): Promise<Filter> => {
   return postData<RawFilterWithoutId, RawFilter>(cancelToken)({
-    endpoint: filterEndpoint,
     data: toRawFilter(parameters),
+    endpoint: filterEndpoint,
   }).then(toFilter);
 };
 
@@ -46,8 +46,8 @@ const updateFilter = (cancelToken: CancelToken) => (
   parameters: Filter,
 ): Promise<Filter> => {
   return putData<RawFilterWithoutId, RawFilter>(cancelToken)({
-    endpoint: `${filterEndpoint}/${parameters.id}`,
     data: toRawFilter(parameters),
+    endpoint: `${filterEndpoint}/${parameters.id}`,
   }).then(toFilter);
 };
 
@@ -59,8 +59,8 @@ const patchFilter = (cancelToken: CancelToken) => (
   parameters: PatchFilterProps & { id: number },
 ): Promise<Filter> => {
   return patchData<PatchFilterProps, Filter>(cancelToken)({
-    endpoint: `${filterEndpoint}/${parameters.id}`,
     data: { order: parameters.order },
+    endpoint: `${filterEndpoint}/${parameters.id}`,
   });
 };
 
