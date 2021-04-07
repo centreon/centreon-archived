@@ -52,16 +52,20 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
 {
 
     /**
-     * Check ACL rights on extension/manager page if user is not admin
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param \CentreonUser $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     *
+     * @return boolean If the user has access to the action
      */
-    private function checkAcl(): void
+    public function authorize($action, $user, $isInternal = false)
     {
-        global $centreon;
-
-        if (!$centreon->user->admin && $centreon->user->access->page('50709') === 0) {
-            echo _("You are not allowed to reach this page");
-            exit;
+        if (!$user->admin && $user->access->page('50709') === 0) {
+            return false;
         }
+        return true;
     }
 
     /**
@@ -170,8 +174,6 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      */
     public function getList()
     {
-        $this->checkAcl();
-
         // extract post payload
         $request = $this->query();
 
@@ -275,8 +277,6 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      */
     public function getDetails()
     {
-        $this->checkAcl();
-
         // extract post payload
         $request = $this->query();
 
@@ -365,8 +365,6 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      */
     public function postInstall()
     {
-        $this->checkAcl();
-
         // extract post payload
         $request = $this->query();
 
@@ -460,8 +458,6 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      */
     public function postUpdate()
     {
-        $this->checkAcl();
-
         // extract post payload
         $request = $this->query();
 
@@ -555,8 +551,6 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      */
     public function deleteRemove()
     {
-        $this->checkAcl();
-
         // extract post payload
         $request = $this->query();
 
