@@ -239,8 +239,7 @@ class MetaServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implem
                 WHEN ms.calcul_type = 'MIN' THEN 'minimum'
                 WHEN ms.calcul_type = 'MAX' THEN 'maximum'
             END AS `calculation_type`
-        FROM `:db`.meta_service ms
-        WHERE meta_id = :id";
+        FROM `:db`.meta_service ms";
 
         if ($contactId !== null) {
                 $request .= " INNER JOIN `:db`.acl_resources_meta_relations armr
@@ -256,9 +255,13 @@ class MetaServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implem
                     LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
                         ON ag.acl_group_id = agcgr.acl_group_id
                     LEFT JOIN `:db`.contactgroup_contact_relation cgcr
-                        ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id
-                    WHERE ms.meta_id = :id
-                        AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)";
+                        ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id";
+        }
+
+        $request .= ' WHERE ms.meta_id = :id';
+
+        if ($contactId !== null) {
+            $request .= " AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)";
         }
 
         $statement = $this->db->prepare($this->translateDbName($request));

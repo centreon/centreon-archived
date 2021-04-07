@@ -300,7 +300,7 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
 
             if (!empty($resourceIds['metaservice'])) {
                 try {
-                    foreach ($$resourceIds as $resourceId) {
+                    foreach ($resourceIds['metaservice'] as $resourceId) {
                         $metaServices[$resourceId['service_id']] = $this->monitoringRepository
                             ->filterByAccessGroups($accessGroups)
                             ->findOneServiceByDescription('meta_' . $resourceId['service_id']);
