@@ -22,6 +22,9 @@ import {
   labelSomethingWentWrong,
 } from '../translatedLabels';
 import memoizeComponent from '../memoizedComponent';
+import { Parent } from '../models';
+
+import SelectableResourceName from './tabs/Details/SelectableResourceName';
 
 import { DetailsSectionProps } from '.';
 
@@ -58,7 +61,11 @@ const LoadingSkeleton = (): JSX.Element => (
   </Grid>
 );
 
-const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
+type Props = {
+  onSelectParent: (parent: Parent) => void;
+} & DetailsSectionProps;
+
+const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { showMessage } = useSnackbar();
   const classes = useStyles();
@@ -103,9 +110,11 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
                 details.parent.status?.severity_code || SeverityCode.None
               }
             />
-            <Typography className={classes.truncated} variant="caption">
-              {details.parent.name}
-            </Typography>
+            <SelectableResourceName
+              name={details.parent.name}
+              variant="caption"
+              onSelect={() => onSelectParent(details.parent)}
+            />
           </div>
         )}
       </div>
@@ -121,17 +130,17 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
   );
 };
 
-const Header = ({ details }: DetailsSectionProps): JSX.Element => {
+const Header = ({ details, onSelectParent }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
     <div className={classes.header}>
-      <HeaderContent details={details} />
+      <HeaderContent details={details} onSelectParent={onSelectParent} />
     </div>
   );
 };
 
-export default memoizeComponent<DetailsSectionProps>({
+export default memoizeComponent<Props>({
   Component: Header,
   memoProps: ['details'],
 });

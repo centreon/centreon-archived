@@ -3,7 +3,12 @@ import * as React from 'react';
 import { makeStyles, Typography, TypographyVariant } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
-  name: { cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis' },
+  name: {
+    cursor: 'pointer',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
 }));
 
 interface Props {
