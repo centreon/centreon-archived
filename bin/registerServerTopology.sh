@@ -435,9 +435,9 @@ function set_remote_parameters_manually() {
     echo "A few more information are required to convert your platform into Remote : "
     echo "${CURRENT_NODE_ADDRESS} : Please enter your username:"
     read -r API_CURRENT_NODE_USERNAME
-    echo -n "Please enter the password of $TARGET_NODE_ADDRESS: "
+    echo -n "Please enter the password of $CURRENT_NODE_ADDRESS: "
     API_CURRENT_NODE_PASSWORD=$(get_api_password)
-    echo "${CURRENT_NODE_ADDRESS} : Protocol [http]:"
+    echo -e "\n${CURRENT_NODE_ADDRESS} : Protocol [http]:"
     read -r INPUT_PROTOCOL
     echo "${CURRENT_NODE_ADDRESS} : Port [80]:"
     read -r INPUT_PORT
