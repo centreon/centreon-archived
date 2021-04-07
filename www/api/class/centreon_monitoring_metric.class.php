@@ -107,6 +107,10 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
                 throw new \InvalidArgumentException('Pagination parameters must be integers');
             }
 
+            if ($page < 1) {
+                throw new \InvalidArgumentException('Page number must be greater than zero');
+            }
+
             $offset = ($page - 1) * $limit;
             $query .= 'LIMIT :offset, :limit';
             $queryValues[':offset'] = [$offset, \PDO::PARAM_INT];
