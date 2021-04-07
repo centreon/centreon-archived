@@ -115,6 +115,7 @@ class SubmitResultController extends AbstractController
             if (
                 ($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
                 || ($resource['type'] === ResourceEntity::TYPE_SERVICE && $hasServiceRights)
+                || ($resource['type'] === ResourceEntity::TYPE_META && $hasServiceRights)
             ) {
                 continue;
             }
