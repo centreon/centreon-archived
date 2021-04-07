@@ -3951,14 +3951,6 @@ components:
           type: integer
           description: "SSH port of the server"
           example: 22
-        gorgone_communication_type:
-          type: integer
-          description: "Communication type used by Gorgone to communicate with the server"
-          example: 1
-        gorgone_port:
-          type: integer
-          description: "Port used by Gorgone to communicate with the server"
-          example: 5556
         last_restart:
           type: string
           format: date-time
