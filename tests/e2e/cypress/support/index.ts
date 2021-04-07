@@ -3,6 +3,7 @@ import {
   insertResources,
   setFiltersUser,
   delFiltersUser,
+  checkServiceApi,
 } from './centreonData';
 
 before(() => {
@@ -16,13 +17,14 @@ before(() => {
   );
 
   setUserTokenApi();
+  // checkServiceApi();
 
   cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {
     cy.fixture('resources/filters.json').then((filters) => {
       setFiltersUser('POST', filters);
-      cy.wait(5000);
 
-      cy.visit(`${Cypress.config().baseUrl}`);
+      // failOnStatusCode it's FALSE to ignore the first 404 on Centreon redirection
+      cy.visit(`${Cypress.config().baseUrl}`, { failOnStatusCode: false });
 
       cy.fixture('users/admin.json').then((userAdmin) => {
         cy.get('input[placeholder="Login"]').type(userAdmin.login);
@@ -34,10 +36,13 @@ before(() => {
   });
 });
 
-beforeEach(() => Cypress.Cookies.preserveOnce('PHPSESSID'));
+beforeEach(() =>
+  Cypress.Cookies.defaults({
+    preserve: 'PHPSESSID',
+  }),
+);
 
 after(() => {
-  delFiltersUser();
-  cy.clearLocalStorage();
+  // delFiltersUser();
   cy.log('-----------------End-----------------');
 });

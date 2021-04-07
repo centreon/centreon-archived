@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { apiLogin, apiFilterResources } from './model';
+import { apiLogin, apiFilterResources, apiMonitoring } from './model';
 
 interface Criterias {
   name: string;
@@ -21,7 +21,7 @@ const insertResources = (): Cypress.Chainable =>
     `docker exec centreon-dev centreon -u admin -p centreon -i ${clapiFixturesPath}/resources.txt`,
   );
 
-const setUserTokenApi = (): Cypress.Chainable<boolean> => {
+const setUserTokenApi = (): Cypress.Chainable => {
   return cy.fixture('users/admin.json').then((userAdmin) => {
     return cy
       .request({
@@ -36,10 +36,9 @@ const setUserTokenApi = (): Cypress.Chainable<boolean> => {
           },
         },
       })
-      .then(({ body }) => {
-        window.localStorage.setItem('userTokenApi', body.security.token);
-        return true;
-      });
+      .then(({ body }) =>
+        window.localStorage.setItem('userTokenApi', body.security.token),
+      );
   });
 };
 
@@ -73,4 +72,27 @@ const delFiltersUser = (): Cypress.Chainable => {
     .then((response) => expect(response.status).to.eq(204));
 };
 
-export { setUserTokenApi, insertResources, setFiltersUser, delFiltersUser };
+const checkServiceApi = (
+  hostId: number,
+  serviceId: number,
+): Cypress.Chainable => {
+  return cy
+    .request({
+      method: 'POST',
+      url: `${apiMonitoring}/hosts/${hostId}/services/${serviceId}/check`,
+      headers: {
+        'X-Auth-Token': window.localStorage.getItem('userTokenApi'),
+      },
+    })
+    .then(({ body }) =>
+      window.localStorage.setItem('userTokenApi', body.security.token),
+    );
+};
+
+export {
+  setUserTokenApi,
+  insertResources,
+  setFiltersUser,
+  delFiltersUser,
+  checkServiceApi,
+};

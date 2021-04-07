@@ -1,7 +1,8 @@
-const apiLogin = `${Cypress.config().baseUrl}/centreon/api/v2/login`;
+const apiBase = `${Cypress.config().baseUrl}/centreon/api`;
 
-const apiFilterResources = `${
-  Cypress.config().baseUrl
-}/centreon/api/beta/users/filters/events-view`;
+const apiLogin = `${apiBase}/v2/login`;
+const apiFilterResources = `${apiBase}/beta/users/filters/events-view`;
 
-export { apiFilterResources, apiLogin };
+const apiMonitoring = `${apiBase}/v2/monitoring`;
+
+export { apiFilterResources, apiLogin, apiMonitoring };

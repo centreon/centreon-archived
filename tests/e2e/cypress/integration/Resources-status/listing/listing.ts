@@ -50,7 +50,7 @@ Given('There are available resources', () => {
 Then('the unhandled problems are displayed', () => {
   cy.get<Array<Resource>>('@resources').then((resources) => {
     resources.forEach(({ name }) => {
-      cy.contains(name, { timeout: 10000 }).should('exist');
+      cy.contains(name).should('exist');
       cy.contains('CRITICAL').should('exist');
     });
   });

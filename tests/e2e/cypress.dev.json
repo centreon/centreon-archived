@@ -11,5 +11,11 @@
   "reporterOptions": {
     "mochaFile": "cypress/results/dev/reports/junit-report.xml"
   },
-  "baseUrl": "http://0.0.0.0:4000"
+  "baseUrl": "http://0.0.0.0:4000",
+  "retries": {
+    "runMode": 2,
+    "openMode": 2
+  },
+  "defaultCommandTimeout": 6000,
+  "execTimeout": 60000
 }
