@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { hasPath } from 'ramda';
+import { hasPath, isNil, not } from 'ramda';
 
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { Grid, Typography, makeStyles, Theme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import CopyIcon from '@material-ui/icons/FileCopy';
 
@@ -28,15 +28,24 @@ import SelectableResourceName from './tabs/Details/SelectableResourceName';
 
 import { DetailsSectionProps } from '.';
 
-const useStyles = makeStyles((theme) => ({
-  header: {
+interface MakeStylesProps {
+  displaySeverity: boolean;
+}
+
+const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
+  header: ({ displaySeverity }) => ({
     alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(2),
-    gridTemplateColumns: 'auto minmax(0, 1fr) auto',
+    gridTemplateColumns: `${
+      displaySeverity ? 'auto' : ''
+    } auto minmax(0, 1fr) auto`,
     height: 43,
     padding: theme.spacing(0, 1),
-  },
+  }),
+}));
+
+const useStylesHeaderContent = makeStyles((theme) => ({
   parent: {
     alignItems: 'center',
     display: 'grid',
@@ -68,7 +77,7 @@ type Props = {
 const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { showMessage } = useSnackbar();
-  const classes = useStyles();
+  const classes = useStylesHeaderContent();
 
   const copyResourceLink = (): void => {
     try {
@@ -91,9 +100,9 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
 
   return (
     <>
-      {details.severity_level && (
+      {details?.severity_level && (
         <StatusChip
-          label={details.severity_level.toString()}
+          label={details?.severity_level.toString()}
           severityCode={SeverityCode.None}
         />
       )}
@@ -131,7 +140,9 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
 };
 
 const Header = ({ details, onSelectParent }: Props): JSX.Element => {
-  const classes = useStyles();
+  const classes = useStyles({
+    displaySeverity: not(isNil(details?.severity_level)),
+  });
 
   return (
     <div className={classes.header}>
