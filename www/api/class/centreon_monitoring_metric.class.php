@@ -101,8 +101,8 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (
-                filter_var(($limit = $this->arguments['page_limit'] ?? false), FILTER_VALIDATE_INT) === false
-                || filter_var(($page = $this->arguments['page'] ?? false), FILTER_VALIDATE_INT) === false
+                filter_var(($limit = $this->arguments['page_limit']), FILTER_VALIDATE_INT) === false
+                || filter_var(($page = $this->arguments['page']), FILTER_VALIDATE_INT) === false
             ) {
                 throw new \InvalidArgumentException('Pagination parameters must be integers');
             }
