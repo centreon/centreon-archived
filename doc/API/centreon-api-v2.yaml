@@ -3185,7 +3185,7 @@ components:
               value: search value 1
         order:
           type: integer
-          description: Monitoring.Serversfilter order
+          description: filter order
           example: 1
     Monitoring.Servers:
       type: object
