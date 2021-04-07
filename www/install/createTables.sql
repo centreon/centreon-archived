@@ -1695,7 +1695,7 @@ CREATE TABLE `ns_host_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ods_view_details` (
   `dv_id` int(11) NOT NULL AUTO_INCREMENT,
-  `index_id` int(11) DEFAULT NULL,
+  `index_id` BIGINT UNSIGNED DEFAULT NULL,
   `metric_id` int(11) DEFAULT NULL,
   `rnd_color` varchar(7) DEFAULT NULL,
   `contact_id` int(11) DEFAULT NULL,
@@ -2126,7 +2126,7 @@ CREATE TABLE `view_img_dir_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `virtual_metrics` (
   `vmetric_id` int(11) NOT NULL AUTO_INCREMENT,
-  `index_id` int(11) DEFAULT NULL,
+  `index_id` BIGINT UNSIGNED DEFAULT NULL,
   `vmetric_name` varchar(255) DEFAULT NULL,
   `def_type` enum('0','1') DEFAULT '0',
   `rpn_function` varchar(255) DEFAULT NULL,
