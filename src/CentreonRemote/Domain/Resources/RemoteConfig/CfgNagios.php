@@ -76,7 +76,6 @@ class CfgNagios
             'auto_reschedule_checks'                      => '0',
             'auto_rescheduling_interval'                  => '30',
             'auto_rescheduling_window'                    => '180',
-            'use_aggressive_host_checking'                => '0',
             'enable_flap_detection'                       => '0',
             'low_service_flap_threshold'                  => '20.0',
             'high_service_flap_threshold'                 => '30.0',
