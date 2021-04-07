@@ -1,6 +1,17 @@
 import * as React from 'react';
 
-import { always, and, cond, gte, isNil, not, pipe, propOr, T } from 'ramda';
+import {
+  always,
+  and,
+  cond,
+  equals,
+  gte,
+  isNil,
+  not,
+  pipe,
+  propOr,
+  T,
+} from 'ramda';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
@@ -244,6 +255,47 @@ const useTimePeriod = ({
     setCustomTimePeriod(newTimePeriod);
     setResourceDetailsUpdated(true);
   }, [sending]);
+
+  React.useEffect(() => {
+    const newCustomTimePeriod = getNewCustomTimePeriod({
+      end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
+      start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
+    });
+
+    if (
+      isNil(defaultSelectedCustomTimePeriod) ||
+      (equals(newCustomTimePeriod.start, customTimePeriod.start) &&
+        equals(newCustomTimePeriod.end, customTimePeriod.end))
+    ) {
+      return;
+    }
+
+    setCustomTimePeriod(newCustomTimePeriod);
+    const queryParams = getGraphQueryParameters({
+      endDate: newCustomTimePeriod.end,
+      startDate: newCustomTimePeriod.start,
+    });
+    setPeriodQueryParameters(queryParams);
+  }, [defaultSelectedCustomTimePeriod]);
+
+  React.useEffect(() => {
+    if (
+      isNil(defaultSelectedTimePeriodId) ||
+      equals(defaultSelectedTimePeriodId, selectedTimePeriod?.id)
+    ) {
+      return;
+    }
+
+    const newTimePeriod = getTimePeriodById(
+      defaultSelectedTimePeriodId as TimePeriodId,
+    );
+
+    setSelectedTimePeriod(newTimePeriod);
+    const queryParamsForSelectedPeriodId = getGraphQueryParameters({
+      timePeriod: newTimePeriod,
+    });
+    setPeriodQueryParameters(queryParamsForSelectedPeriodId);
+  }, [defaultSelectedTimePeriodId]);
 
   return {
     adjustTimePeriod,

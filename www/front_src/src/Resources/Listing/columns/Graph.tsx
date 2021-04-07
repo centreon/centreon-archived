@@ -16,7 +16,7 @@ import IconColumn from './IconColumn';
 const useStyles = makeStyles((theme) => ({
   graph: {
     display: 'block',
-    height: 200,
+    maxHeight: 280,
     overflow: 'auto',
     padding: theme.spacing(2),
     width: 575,
@@ -58,7 +58,7 @@ const GraphColumn = ({
         >
           <Paper className={classes.graph}>
             <PerformanceGraph
-              isInTooltip
+              displayTitle={false}
               endpoint={endpoint}
               graphHeight={150}
               resource={row}

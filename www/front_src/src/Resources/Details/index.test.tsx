@@ -62,7 +62,6 @@ import {
   labelSwitchToGraph,
   labelDowntime,
   labelDisplayEvents,
-  labelStartDate,
   labelForward,
   labelBackward,
   labelEndDateGreaterThanStartDate,
@@ -78,7 +77,7 @@ import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 
-import { last7Days, last31Days } from './tabs/Graph/models';
+import { last7Days, last31Days, lastDayPeriod } from './tabs/Graph/models';
 import {
   graphTabId,
   timelineTabId,
@@ -421,6 +420,10 @@ describe(Details, () => {
     mockDate.reset();
     mockedAxios.get.mockReset();
     act(() => {
+      context.setGraphTabParameters({
+        selectedCustomTimePeriod: undefined,
+        selectedTimePeriodId: lastDayPeriod.id,
+      });
       context.clearSelectedResource();
     });
   });
@@ -1080,6 +1083,13 @@ describe(Details, () => {
     await waitFor(() => {
       expect(queryByText(labelServices)).toBeNull();
     });
+
+    act(() => {
+      context.setServicesTabParameters({
+        graphMode: false,
+        graphTimePeriod: {},
+      });
+    });
   });
 
   it('displays the linked service graphs when the service tab of a host is clicked and the graph mode is activated', async () => {
@@ -1141,9 +1151,12 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
-    const { getByLabelText, container } = renderDetails({
+    renderDetails({
       openTabId: graphTabId,
     });
+
+    const startISOString = '2020-01-19T06:00:00.000Z';
+    const endISOString = '2020-01-21T06:00:00.000Z';
 
     act(() => {
       setSelectedServiceResource();
@@ -1156,18 +1169,15 @@ describe(Details, () => {
       );
     });
 
-    userEvent.click(getByLabelText(labelCompactTimePeriod));
-
-    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
-      ?.firstChild;
-
-    userEvent.click(startDateInput as Element);
-
-    fireEvent.keyDown(container, { code: 37, key: 'ArrowLeft' });
-    fireEvent.keyDown(container, { code: 13, key: 'Enter' });
-
-    const startISOString = '2020-01-19T06:00:00.000Z';
-    const endISOString = '2020-01-21T06:00:00.000Z';
+    act(() => {
+      context.setGraphTabParameters({
+        selectedCustomTimePeriod: {
+          end: endISOString,
+          start: startISOString,
+        },
+        selectedTimePeriodId: undefined,
+      });
+    });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1220,32 +1230,26 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
-    const { getByLabelText, getByText, container } = renderDetails({
+    const { getByLabelText, getByText } = renderDetails({
       openTabId: graphTabId,
     });
 
     act(() => {
       setSelectedServiceResource();
-    });
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-        cancelTokenRequestParam,
-      );
+      context.setGraphTabParameters({
+        selectedCustomTimePeriod: {
+          end: '2020-01-21T06:00:00.000Z',
+          start: '2020-01-21T06:00:00.000Z',
+        },
+        selectedTimePeriodId: undefined,
+      });
     });
 
     userEvent.click(getByLabelText(labelCompactTimePeriod));
 
-    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
-      ?.firstChild;
-
-    userEvent.click(startDateInput as Element);
-
-    fireEvent.keyDown(container, { code: 37, key: 'ArrowRight' });
-    fireEvent.keyDown(container, { code: 13, key: 'Enter' });
-
-    expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
+    });
   });
 
   it.each([

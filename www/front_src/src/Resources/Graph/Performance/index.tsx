@@ -61,10 +61,10 @@ interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
   displayEventAnnotations?: boolean;
+  displayTitle?: boolean;
   displayTooltipValues?: boolean;
   endpoint?: string;
   graphHeight: number;
-  isInTooltip?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   onTooltipDisplay?: (position?: [number, number]) => void;
   resource: Resource | ResourceDetails;
@@ -75,7 +75,7 @@ interface Props {
   xAxisTickFormat?: string;
 }
 
-interface MakeStylesProps extends Pick<Props, 'graphHeight'> {
+interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
   canAdjustTimePeriod: boolean;
 }
 
@@ -84,7 +84,8 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     display: 'grid',
     flexDirection: 'column',
     gridGap: theme.spacing(1),
-    gridTemplateRows: ({ graphHeight }): string => `auto ${graphHeight}px auto`,
+    gridTemplateRows: ({ graphHeight, displayTitle }): string =>
+      `${displayTitle ? 'auto' : ''} ${graphHeight}px auto`,
     height: '100%',
     justifyItems: 'center',
     width: 'auto',
@@ -144,10 +145,11 @@ const PerformanceGraph = ({
   resourceDetailsUpdated = true,
   displayEventAnnotations = false,
   displayTooltipValues = false,
-  isInTooltip = false,
+  displayTitle = true,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
+    displayTitle,
     graphHeight,
   });
   const { t } = useTranslation();
@@ -174,14 +176,29 @@ const PerformanceGraph = ({
 
     sendGetGraphDataRequest(endpoint).then((graphData) => {
       setTimeSeries(getTimeSeries(graphData));
-      setLineData(getLineData(graphData));
-      setTitle(graphData.global.title);
       setBase(graphData.global.base);
+      setTitle(graphData.global.title);
+      const newLineData = getLineData(graphData);
+      if (lineData) {
+        setLineData(
+          newLineData.map((line) => ({
+            ...line,
+            display: find(propEq('name', line.name), lineData)?.display ?? true,
+          })),
+        );
+        return;
+      }
+      setLineData(newLineData);
     });
   }, [endpoint]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
-    return <LoadingSkeleton graphHeight={graphHeight} />;
+    return (
+      <LoadingSkeleton
+        displayTitleSkeleton={displayTitle}
+        graphHeight={graphHeight}
+      />
+    );
   }
 
   if (isEmpty(timeSeries) || isEmpty(lineData)) {
@@ -303,13 +320,13 @@ const PerformanceGraph = ({
         className={classes.container}
         ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
       >
-        <div className={classes.graphHeader}>
-          <div />
-          <Typography color="textPrimary" variant="body1">
-            {title}
-          </Typography>
-          <div className={classes.exportToPngButton}>
-            {not(isInTooltip) && (
+        {displayTitle && (
+          <div className={classes.graphHeader}>
+            <div />
+            <Typography color="textPrimary" variant="body1">
+              {title}
+            </Typography>
+            <div className={classes.exportToPngButton}>
               <ContentWithCircularLoading
                 alignCenter={false}
                 loading={exporting}
@@ -323,9 +340,9 @@ const PerformanceGraph = ({
                   <SaveAsImageIcon style={{ fontSize: 18 }} />
                 </IconButton>
               </ContentWithCircularLoading>
-            )}
+            </div>
           </div>
-        </div>
+        )}
 
         <ParentSize>
           {({ width, height }): JSX.Element => (

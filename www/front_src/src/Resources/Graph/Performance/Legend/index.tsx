@@ -50,6 +50,8 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
     justifyContent: 'center',
+    maxHeight: theme.spacing(15),
+    overflowY: 'auto',
     width: '100%',
   },
   legendData: {

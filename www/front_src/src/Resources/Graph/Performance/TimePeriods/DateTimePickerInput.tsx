@@ -39,6 +39,7 @@ const DateTimePickerInput = ({
     <DateTimePicker
       {...commonPickersProps}
       {...inputProp}
+      hideTabs
       inputVariant="filled"
       maxDate={maxDate}
       minDate={minDate}
