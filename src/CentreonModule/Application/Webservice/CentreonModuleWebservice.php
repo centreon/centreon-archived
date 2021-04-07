@@ -52,6 +52,19 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
 {
 
     /**
+     * Check ACL rights on extension/manager page if user is not admin
+     */
+    private function checkAcl(): void
+    {
+        global $centreon;
+
+        if (!$centreon->user->admin && $centreon->user->access->page('50709') === 0) {
+            echo _("You are not allowed to reach this page");
+            exit;
+        }
+    }
+
+    /**
      * @OA\Get(
      *   path="/internal.php?object=centreon_module&action=list",
      *   description="Get list of modules and widgets",
@@ -157,6 +170,8 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      */
     public function getList()
     {
+        $this->checkAcl();
+
         // extract post payload
         $request = $this->query();
 
@@ -260,6 +275,8 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      */
     public function getDetails()
     {
+        $this->checkAcl();
+
         // extract post payload
         $request = $this->query();
 
@@ -348,6 +365,8 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      */
     public function postInstall()
     {
+        $this->checkAcl();
+
         // extract post payload
         $request = $this->query();
 
@@ -441,6 +460,8 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      */
     public function postUpdate()
     {
+        $this->checkAcl();
+
         // extract post payload
         $request = $this->query();
 
@@ -534,6 +555,8 @@ class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
      */
     public function deleteRemove()
     {
+        $this->checkAcl();
+
         // extract post payload
         $request = $this->query();
 
