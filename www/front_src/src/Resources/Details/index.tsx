@@ -52,6 +52,7 @@ const Details = (): JSX.Element | null => {
     setOpenDetailsTabId,
     clearSelectedResource,
     setPanelWidth,
+    selectResource,
   } = useResourceContext();
 
   React.useEffect(() => {
@@ -112,7 +113,7 @@ const Details = (): JSX.Element | null => {
       )}
     >
       <Panel
-        header={<Header details={details} />}
+        header={<Header details={details} onSelectParent={selectResource} />}
         headerBackgroundColor={getHeaderBackgroundColor()}
         memoProps={[openDetailsTabId, details, panelWidth]}
         ref={panelRef as React.RefObject<HTMLDivElement>}
