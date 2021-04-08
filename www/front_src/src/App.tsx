@@ -22,7 +22,7 @@ import { history } from './store';
 import NavigationComponent from './components/navigation';
 import Tooltip from './components/tooltip';
 import Footer from './components/footer';
-import axios from './axios';
+import axios from './axios/index';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import footerStyles from './components/footer/footer.scss';
 import PageLoader from './components/PageLoader';
@@ -121,8 +121,10 @@ class App extends Component<Props, State> {
   // keep alive (redirect to login page if session is expired)
   private keepAlive = (): void => {
     this.keepAliveTimeout = setTimeout(() => {
+
+
       axios('internal.php?object=centreon_keepalive&action=keepAlive')
-        .get()
+        .get('')
         .then(() => this.keepAlive())
         .catch((error) => {
           if (error.response && error.response.status === 401) {
