@@ -299,8 +299,7 @@ function prepare_register_payload() {
 
 EOD
 
-  echo 'Do you want to register this server with those information? (y/n) '
-  read -r IS_VALID
+  read -p 'Do you want to register this server with those information? (y/n): ' IS_VALID
 
   if [[ $IS_VALID != 'y' ]];
   then
@@ -435,7 +434,7 @@ function set_remote_parameters_manually() {
     # ask information to connect to Remote API
     echo "A few more information are required to convert your platform into Remote : "
     read -p "${CURRENT_NODE_ADDRESS} : Please enter your username: " API_CURRENT_NODE_USERNAME
-    read -p -s "Please enter the password of $CURRENT_NODE_ADDRESS: " API_CURRENT_NODE_PASSWORD; echo ""
+    read -sp "Please enter the password of $CURRENT_NODE_ADDRESS: " API_CURRENT_NODE_PASSWORD; echo ""
     read -p "${CURRENT_NODE_ADDRESS} : Protocol [http]: " INPUT_PROTOCOL
     read -p "${CURRENT_NODE_ADDRESS} : Port [80]: " INPUT_PORT
     read -p "${CURRENT_NODE_ADDRESS} : centreon root folder [centreon]: " INPUT_CENTREON_FOLDER
@@ -449,27 +448,19 @@ function set_remote_parameters_manually() {
       API_CURRENT_NODE_BASE_URI=$INPUT_CENTREON_FOLDER
     fi
       # Set Proxy informations
-    echo "Are you using a proxy ? (y/n)"
-    read -r PROXY_USAGE
+    read -p "Are you using a proxy ? (y/n): " PROXY_USAGE
     if [[ $PROXY_USAGE == 'y' || $PROXY_USAGE == true ]]; then
       PROXY_PORT="3128"
-      echo 'enter your proxy Host: '
-      read -r PROXY_HOST
-      echo 'enter your proxy Port [3128]: '
-      read -r INPUT_PROXY_PORT
+      read -p "Enter your proxy Host: " PROXY_HOST
+      read -p "Enter your proxy Port [3128]: " INPUT_PROXY_PORT
       if [[ -n $INPUT_PROXY_PORT ]]; then
         PROXY_PORT=$INPUT_PROXY_PORT
       fi
 
-      echo 'Are you using a username/password ? (y/n)'
-      read -r PROXY_CREDENTIALS
+      read -p 'Are you using a username/password ? (y/n): ' PROXY_CREDENTIALS
       if [[ $PROXY_CREDENTIALS == 'y' ]]; then
-        echo 'enter your username: '
-        read -r PROXY_USERNAME
-        stty -echo
-        echo 'enter your password: '
-        read -r PROXY_PASSWORD
-        stty echo
+        read -p "Enter your username: " PROXY_USERNAME
+        read -sp 'Enter your password: ' PROXY_PASSWORD; echo ""
       fi
     fi
 }
@@ -486,7 +477,7 @@ parse_command_options "$@"
 if [[ ! $TEMPLATE_FILE ]];
 then
   # Ask for API TARGET Password
-  read -p -s "Please enter the password of $TARGET_NODE_ADDRESS: " API_TARGET_PASSWORD; echo ""
+  read -sp "Please enter the password of $TARGET_NODE_ADDRESS: " API_TARGET_PASSWORD; echo ""
 
   if [[ ! $CURRENT_NODE_ADDRESS ]];
   then
