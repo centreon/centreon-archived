@@ -249,17 +249,6 @@ EOF
 }
 #========= end of function usage()
 
-
-#========= begin of get_api_password()
-function get_api_password() {
-  stty -echo
-  read -r PASSWORD
-  echo $PASSWORD
-  stty echo
-}
-#========= end of get_api_password()
-
-
 #========= begin of get_current_node_ip()
 function get_current_node_ip() {
   CURRENT_NODE_ADDRESS=$(hostname -I | xargs)
@@ -445,12 +434,11 @@ function request_to_remote() {
 function set_remote_parameters_manually() {
     # ask information to connect to Remote API
     echo "A few more information are required to convert your platform into Remote : "
-    read -p "${CURRENT_NODE_ADDRESS} : Please enter your username:" API_CURRENT_NODE_USERNAME
-    echo -ne "Please enter the password of $CURRENT_NODE_ADDRESS: \n"
-    API_CURRENT_NODE_PASSWORD=$(get_api_password)
-    read -p "${CURRENT_NODE_ADDRESS} : Protocol [http]:" INPUT_PROTOCOL
-    read -p "${CURRENT_NODE_ADDRESS} : Port [80]:" INPUT_PORT
-    read -p "${CURRENT_NODE_ADDRESS} : centreon root folder [centreon]:" INPUT_CENTREON_FOLDER
+    read -p "${CURRENT_NODE_ADDRESS} : Please enter your username: " API_CURRENT_NODE_USERNAME
+    read -p -s "Please enter the password of $CURRENT_NODE_ADDRESS: " API_CURRENT_NODE_PASSWORD; echo ""
+    read -p "${CURRENT_NODE_ADDRESS} : Protocol [http]: " INPUT_PROTOCOL
+    read -p "${CURRENT_NODE_ADDRESS} : Port [80]: " INPUT_PORT
+    read -p "${CURRENT_NODE_ADDRESS} : centreon root folder [centreon]: " INPUT_CENTREON_FOLDER
     if [[ -n $INPUT_PROTOCOL ]]; then
       API_CURRENT_NODE_PROTOCOL=$INPUT_PROTOCOL
     fi
@@ -465,9 +453,9 @@ function set_remote_parameters_manually() {
     read -r PROXY_USAGE
     if [[ $PROXY_USAGE == 'y' || $PROXY_USAGE == true ]]; then
       PROXY_PORT="3128"
-      echo 'enter your proxy Host:'
+      echo 'enter your proxy Host: '
       read -r PROXY_HOST
-      echo 'enter your proxy Port [3128]:'
+      echo 'enter your proxy Port [3128]: '
       read -r INPUT_PROXY_PORT
       if [[ -n $INPUT_PROXY_PORT ]]; then
         PROXY_PORT=$INPUT_PROXY_PORT
@@ -476,10 +464,10 @@ function set_remote_parameters_manually() {
       echo 'Are you using a username/password ? (y/n)'
       read -r PROXY_CREDENTIALS
       if [[ $PROXY_CREDENTIALS == 'y' ]]; then
-        echo 'enter your username:'
+        echo 'enter your username: '
         read -r PROXY_USERNAME
         stty -echo
-        echo 'enter your password:'
+        echo 'enter your password: '
         read -r PROXY_PASSWORD
         stty echo
       fi
@@ -498,8 +486,7 @@ parse_command_options "$@"
 if [[ ! $TEMPLATE_FILE ]];
 then
   # Ask for API TARGET Password
-  echo -n "Please enter the password of $TARGET_NODE_ADDRESS: "
-  API_TARGET_PASSWORD=$(get_api_password)
+  read -p -s "Please enter the password of $TARGET_NODE_ADDRESS: " API_TARGET_PASSWORD; echo ""
 
   if [[ ! $CURRENT_NODE_ADDRESS ]];
   then
