@@ -15,6 +15,7 @@ RESPONSE_MESSAGE=""
 
 declare -A SUPPORTED_LOG_LEVEL=([INFO]=0 [ERROR]=1)
 declare -A PARSED_URL=([SCHEME]="http" [HOST]="" [PORT]="80")
+declare -A NODE_TYPE=([remote]=1 [poller]=1 [map]=1 [mbi]=1)
 runtime_log_level="INFO"
 
 ###########################################################
@@ -30,6 +31,11 @@ function parse_command_options() {
   while (($# > 0)); do
     case $1 in
         -t|--type)
+          if [[ -z ${NODE_TYPE[$2]} ]];then
+            log "ERROR" "Invalid Type '$2'"
+            usage
+            exit 1
+          fi
           set_variable "CURRENT_NODE_TYPE" "$2"
           shift 2
           ;;
@@ -119,7 +125,7 @@ function get_api_token() {
   fi
   if [[ ! $API_TOKEN ]];
   then
-    log "ERROR" "${API_RESPONSE}"
+    log "ERROR" "$1: ${API_RESPONSE}"
     exit 1
   fi
 }
@@ -204,14 +210,14 @@ function usage() {
   If you register a Remote Server, this script will automatically convert your CURRENT NODE in Remote Server.
   After executing the script, please use the wizard on your Central to complete your installation.
 
-  Global Options:
+  Global Options: (Be aware that all options are case sensitive)
     -u [--user] <mandatory>              username of your centreon-web account on the TARGET NODE.
     -h [--host] <mandatory>              URL of the TARGET NODE
     -t [--type] <mandatory>              the server type you want to register (CURRENT NODE):
-              - Poller
-              - Remote
-              - MAP
-              - MBI
+              - poller
+              - remote
+              - map
+              - mbi
     -n [--name] <mandatory>              name of the CURRENT NODE that will be displayed on the TARGET NODE
 
     --help <optional>           get information about the parameters available
@@ -242,17 +248,6 @@ function usage() {
 EOF
 }
 #========= end of function usage()
-
-
-#========= begin of get_api_password()
-function get_api_password() {
-  stty -echo
-  read -r PASSWORD
-  echo $PASSWORD
-  stty echo
-}
-#========= end of get_api_password()
-
 
 #========= begin of get_current_node_ip()
 function get_current_node_ip() {
@@ -304,8 +299,7 @@ function prepare_register_payload() {
 
 EOD
 
-  echo 'Do you want to register this server with those information? (y/n) '
-  read -r IS_VALID
+  read -p 'Do you want to register this server with those information? (y/n): ' IS_VALID
 
   if [[ $IS_VALID != 'y' ]];
   then
@@ -332,7 +326,7 @@ function register_server() {
     log "INFO" "The CURRENT NODE ${CURRENT_NODE_TYPE}: '${CURRENT_NODE_NAME}@${CURRENT_NODE_ADDRESS}' linked to TARGET NODE: ${TARGET_NODE_ADDRESS} has been added"
   elif [[  -n $RESPONSE_MESSAGE ]];
   then
-    log "ERROR" "${RESPONSE_MESSAGE}"
+    log "ERROR" "${TARGET_NODE_ADDRESS}: ${RESPONSE_MESSAGE}"
     exit 1
   else
     log "ERROR" "An error occurred while contacting the API using: '${TARGET_NODE_ADDRESS}/${ROOT_CENTREON_FOLDER}/api/latest/platform/topology' "
@@ -358,6 +352,12 @@ function set_variable_from_template() {
     exit 1
   else
     parse_fqdn "$TARGET_NODE_ADDRESS"
+  fi
+
+  if [[ -z ${NODE_TYPE[$CURRENT_NODE_TYPE]} ]];then
+    log "ERROR" "Invalid Type '$CURRENT_NODE_TYPE'"
+    usage
+    exit 1
   fi
 
   PAYLOAD='{"name":"'"${CURRENT_NODE_NAME}"'","hostname":"'"${HOSTNAME}"'","type":"'"${CURRENT_NODE_TYPE}"'","address":"'"${CURRENT_NODE_ADDRESS}"'","parent_address":"'"${PARSED_URL[HOST]}"'"}'
@@ -419,7 +419,7 @@ function request_to_remote() {
     log "INFO" "The CURRENT NODE ${CURRENT_NODE_TYPE}: '${CURRENT_NODE_NAME}@${CURRENT_NODE_ADDRESS}' has been converted and registered successfully."
   elif [[ $RESPONSE_MESSAGE != "" ]];
   then
-    log "ERROR" "${RESPONSE_MESSAGE}"
+    log "ERROR" "${CURRENT_NODE_ADDRESS}: ${RESPONSE_MESSAGE}"
     exit 1
   else
     log "ERROR" "An error occurred while contacting the API using: '${CURRENT_NODE_ADDRESS}/${ROOT_CENTREON_FOLDER}/api/latest/platform' "
@@ -433,16 +433,11 @@ function request_to_remote() {
 function set_remote_parameters_manually() {
     # ask information to connect to Remote API
     echo "A few more information are required to convert your platform into Remote : "
-    echo "${CURRENT_NODE_ADDRESS} : Please enter your username:"
-    read -r API_CURRENT_NODE_USERNAME
-    echo -n "Please enter the password of $CURRENT_NODE_ADDRESS: "
-    API_CURRENT_NODE_PASSWORD=$(get_api_password)
-    echo -e "\n${CURRENT_NODE_ADDRESS} : Protocol [http]:"
-    read -r INPUT_PROTOCOL
-    echo "${CURRENT_NODE_ADDRESS} : Port [80]:"
-    read -r INPUT_PORT
-    echo "${CURRENT_NODE_ADDRESS} : centreon root folder [centreon]:"
-    read -r INPUT_CENTREON_FOLDER
+    read -p "${CURRENT_NODE_ADDRESS} : Please enter your username: " API_CURRENT_NODE_USERNAME
+    read -sp "Please enter the password of $CURRENT_NODE_ADDRESS: " API_CURRENT_NODE_PASSWORD; echo ""
+    read -p "${CURRENT_NODE_ADDRESS} : Protocol [http]: " INPUT_PROTOCOL
+    read -p "${CURRENT_NODE_ADDRESS} : Port [80]: " INPUT_PORT
+    read -p "${CURRENT_NODE_ADDRESS} : centreon root folder [centreon]: " INPUT_CENTREON_FOLDER
     if [[ -n $INPUT_PROTOCOL ]]; then
       API_CURRENT_NODE_PROTOCOL=$INPUT_PROTOCOL
     fi
@@ -453,27 +448,19 @@ function set_remote_parameters_manually() {
       API_CURRENT_NODE_BASE_URI=$INPUT_CENTREON_FOLDER
     fi
       # Set Proxy informations
-    echo "Are you using a proxy ? (y/n)"
-    read -r PROXY_USAGE
+    read -p "Are you using a proxy ? (y/n): " PROXY_USAGE
     if [[ $PROXY_USAGE == 'y' || $PROXY_USAGE == true ]]; then
       PROXY_PORT="3128"
-      echo 'enter your proxy Host:'
-      read -r PROXY_HOST
-      echo 'enter your proxy Port [3128]:'
-      read -r INPUT_PROXY_PORT
+      read -p "Enter your proxy Host: " PROXY_HOST
+      read -p "Enter your proxy Port [3128]: " INPUT_PROXY_PORT
       if [[ -n $INPUT_PROXY_PORT ]]; then
         PROXY_PORT=$INPUT_PROXY_PORT
       fi
 
-      echo 'Are you using a username/password ? (y/n)'
-      read -r PROXY_CREDENTIALS
+      read -p 'Are you using a username/password ? (y/n): ' PROXY_CREDENTIALS
       if [[ $PROXY_CREDENTIALS == 'y' ]]; then
-        echo 'enter your username:'
-        read -r PROXY_USERNAME
-        stty -echo
-        echo 'enter your password:'
-        read -r PROXY_PASSWORD
-        stty echo
+        read -p "Enter your username: " PROXY_USERNAME
+        read -sp 'Enter your password: ' PROXY_PASSWORD; echo ""
       fi
     fi
 }
@@ -490,8 +477,7 @@ parse_command_options "$@"
 if [[ ! $TEMPLATE_FILE ]];
 then
   # Ask for API TARGET Password
-  echo -n "Please enter the password of $TARGET_NODE_ADDRESS: "
-  API_TARGET_PASSWORD=$(get_api_password)
+  read -sp "Please enter the password of $TARGET_NODE_ADDRESS: " API_TARGET_PASSWORD; echo ""
 
   if [[ ! $CURRENT_NODE_ADDRESS ]];
   then
