@@ -211,6 +211,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             if ($childrenPlatform->getServerId() !== null) {
                 $this->monitoringServerService->deleteServer($childrenPlatform->getServerId());
             }
+            $this->platformTopologyRepository->deletePlatform($childrenPlatform->getId());
         }
 
         /**
