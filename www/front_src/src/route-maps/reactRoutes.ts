@@ -28,14 +28,14 @@ const reactRoutes = [
     path: routeMap.remoteServerStep3,
   },
   {
-    comp: React.lazy(() =>
-      import('../route-components/serverConfigurationWizard'),
+    comp: React.lazy(
+      () => import('../route-components/serverConfigurationWizard'),
     ),
     path: routeMap.serverConfigurationWizard,
   },
   {
-    comp: React.lazy(() =>
-      import('../route-components/administration/extensions/manager'),
+    comp: React.lazy(
+      () => import('../route-components/administration/extensions/manager'),
     ),
     path: routeMap.extensionsManagerPage,
   },
