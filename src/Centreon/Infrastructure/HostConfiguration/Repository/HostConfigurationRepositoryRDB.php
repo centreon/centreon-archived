@@ -689,7 +689,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 ')
                 );
                 $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
-                $statement->bindValue(':severity_id', 55555, \PDO::PARAM_INT);
+                $statement->bindValue(':severity_id', $severity->getId(), \PDO::PARAM_INT);
                 $statement->execute();
             } catch (\Throwable $ex) {
                 throw HostSeverityException::notFoundException(['id' => $severity->getId()], $ex);
