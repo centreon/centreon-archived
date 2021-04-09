@@ -83,7 +83,9 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
         if (!$this->isOptionsLoaded) {
             $this->loadConfiguration();
         }
-        return $this->gorgoneParameters[self::GORGONE_API_PORT] ?? null;
+        return isset($this->gorgoneParameters[self::GORGONE_API_PORT])
+            ? (int) $this->gorgoneParameters[self::GORGONE_API_PORT]
+            : null;
     }
 
     /**
