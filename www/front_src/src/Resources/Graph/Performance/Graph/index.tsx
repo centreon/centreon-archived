@@ -674,9 +674,10 @@ const memoProps = [
   'timeline',
   'tooltipPosition',
   'resource',
-  'eventAnnotationsActive',
   'loading',
   'canAdjustTimePeriod',
+  'displayTooltipValues',
+  'displayEventAnnotations',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
