@@ -837,21 +837,22 @@ class CentreonConfigCentreonBroker
      */
     public function updateCentreonBrokerInfos($id, $values)
     {
-
         // exclude multiple parameters load with broker js hook
         $condition = '';
-        foreach ($values['output'] as $key => $output) {
-            if (array_key_exists('lua_parameter__value_#index#', $output)) {
-                $condition .= ' AND config_key NOT LIKE "lua_parameter_%"';
-                unset($values['output'][$key]['lua_parameter__value_#index#']);
-                unset($values['output'][$key]['lua_parameter__name_#index#']);
-                unset($values['output'][$key]['lua_parameter__type_#index#']);
+        if ($values['output'] !== null) {
+            foreach ($values['output'] as $key => $output) {
+                if (array_key_exists('lua_parameter__value_#index#', $output)) {
+                    $condition .= ' AND config_key NOT LIKE "lua_parameter_%"';
+                    unset($values['output'][$key]['lua_parameter__value_#index#']);
+                    unset($values['output'][$key]['lua_parameter__name_#index#']);
+                    unset($values['output'][$key]['lua_parameter__type_#index#']);
+                }
             }
-        }
 
-        // Clean the informations for this id
-        $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = ' . (int)$id . $condition;
-        $this->db->query($query);
+            // Clean the informations for this id
+            $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = ' . (int)$id . $condition;
+            $this->db->query($query);
+        }
 
         $groups_infos = array();
         $groups_infos_multiple = array();
