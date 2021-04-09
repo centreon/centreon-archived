@@ -10,6 +10,6 @@ Feature: Centreon broker
         Given a configured passive service
         And a daemon broker configuration
         When I update broker configuration file name
-        And I export configuration
+        And I export configuration and restart centreon-broker
         Then the new configuration is applied
         And the monitoring is still working
