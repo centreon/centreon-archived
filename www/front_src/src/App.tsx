@@ -121,8 +121,6 @@ class App extends Component<Props, State> {
   // keep alive (redirect to login page if session is expired)
   private keepAlive = (): void => {
     this.keepAliveTimeout = setTimeout(() => {
-
-
       axios('internal.php?object=centreon_keepalive&action=keepAlive')
         .get('')
         .then(() => this.keepAlive())
