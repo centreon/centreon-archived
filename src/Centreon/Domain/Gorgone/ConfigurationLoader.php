@@ -72,7 +72,7 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
         if (!$this->isOptionsLoaded) {
             $this->loadConfiguration();
         }
-        return (string) $this->gorgoneParameters[self::GORGONE_API_ADDRESS] ?? null;
+        return $this->gorgoneParameters[self::GORGONE_API_ADDRESS] ?? null;
     }
 
     /**
@@ -83,7 +83,9 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
         if (!$this->isOptionsLoaded) {
             $this->loadConfiguration();
         }
-        return (int) $this->gorgoneParameters[self::GORGONE_API_PORT] ?? null;
+        return isset($this->gorgoneParameters[self::GORGONE_API_PORT])
+            ? (int) $this->gorgoneParameters[self::GORGONE_API_PORT]
+            : null;
     }
 
     /**
@@ -94,7 +96,7 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
         if (!$this->isOptionsLoaded) {
             $this->loadConfiguration();
         }
-        return (string) $this->gorgoneParameters[self::GORGONE_API_USERNAME] ?? null;
+        return $this->gorgoneParameters[self::GORGONE_API_USERNAME] ?? null;
     }
 
     /**
@@ -105,7 +107,7 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
         if (!$this->isOptionsLoaded) {
             $this->loadConfiguration();
         }
-        return (string) $this->gorgoneParameters[self::GORGONE_API_PASSWORD] ?? null;
+        return $this->gorgoneParameters[self::GORGONE_API_PASSWORD] ?? null;
     }
 
     /**
@@ -116,7 +118,7 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
         if (!$this->isOptionsLoaded) {
             $this->loadConfiguration();
         }
-        return (bool) $this->gorgoneParameters[self::GORGONE_API_SSL] ?? false;
+        return (bool) ($this->gorgoneParameters[self::GORGONE_API_SSL] ?? false);
     }
 
     /**
@@ -127,7 +129,7 @@ class ConfigurationLoader implements ConfigurationLoaderApiInterface
         if (!$this->isOptionsLoaded) {
             $this->loadConfiguration();
         }
-        return (bool) $this->gorgoneParameters[self::GORGONE_API_CERTIFICATE_SELF_SIGNED] ?? false;
+        return (bool) ($this->gorgoneParameters[self::GORGONE_API_CERTIFICATE_SELF_SIGNED] ?? false);
     }
 
     /**

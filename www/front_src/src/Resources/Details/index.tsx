@@ -12,10 +12,10 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Tab, useTheme, fade } from '@material-ui/core';
+import { useTheme, fade } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { MemoizedPanel as Panel } from '@centreon/ui';
+import { MemoizedPanel as Panel, Tab } from '@centreon/ui';
 
 import { useResourceContext } from '../Context';
 import { rowColorConditions } from '../colors';
@@ -124,7 +124,6 @@ const Details = (): JSX.Element | null => {
             disabled={isNil(details)}
             key={id}
             label={isNil(details) ? <Skeleton width={60} /> : t(title)}
-            style={{ minWidth: 'unset' }}
             onClick={changeSelectedTabId(id)}
           />
         ))}
