@@ -677,6 +677,8 @@ const memoProps = [
   'eventAnnotationsActive',
   'loading',
   'canAdjustTimePeriod',
+  'displayTooltipValues',
+  'displayEventAnnotations',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
