@@ -92,7 +92,7 @@ type LegendContentProps = Props & Pick<ResourceContext, 'panelWidth'>;
 
 interface GetMetricValueProps {
   unit: string;
-  value: string | null;
+  value: number | null;
 }
 
 const LegendContent = ({
@@ -158,7 +158,7 @@ const LegendContent = ({
     formatMetricValue({
       base,
       unit,
-      value: value ? parseInt(value, 10) : null,
+      value,
     }) || 'N/A';
 
   return (
@@ -181,15 +181,15 @@ const LegendContent = ({
         const minMaxAvg = [
           {
             label: labelMin,
-            value: line.min,
+            value: line.minimum_value,
           },
           {
             label: labelMax,
-            value: line.max,
+            value: line.maximum_value,
           },
           {
             label: labelAvg,
-            value: line.average,
+            value: line.average_value,
           },
         ];
 
