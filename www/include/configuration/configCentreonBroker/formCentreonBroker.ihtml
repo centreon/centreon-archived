@@ -97,6 +97,22 @@
 
 <script type="text/javascript">
 
+    var infos = new Infos();
+    var uniqueType = new Array();
+    {/literal}
+        {foreach from=$tabs item=tab}
+            infos.setPos("{$tab.id}", {$tab.nb});
+        {/foreach}
+        {foreach from=$tabs item=tab}
+            {foreach from=$tab.blocks item=block}
+                {if $block.unique == 1}
+                    uniqueType["{$block.id}"] = true;
+                {else}
+                    uniqueType["{$block.id}"] = false;
+                {/if}
+            {/foreach}
+        {/foreach}
+    {literal}
 
     jQuery('#Form').centreonValidate();
 
@@ -123,24 +139,6 @@ function Infos() {
     };
 
 }
-
-var infos = new Infos();
-{/literal}
-{foreach from=$tabs item=tab}
-infos.setPos("{$tab.id}", {$tab.nb});
-{/foreach}
-{literal}
-
-var uniqueType = new Array();{/literal}
-{foreach from=$tabs item=tab}
-{foreach from=$tab.blocks item=block}
-{if $block.unique == 1}
-uniqueType["{$block.id}"] = true;
-{else}
-uniqueType["{$block.id}"] = false;
-{/if}
-{/foreach}
-{/foreach}{literal}
 
     function addInfo(type) {
         var prev_id = infos.getPos(type);
@@ -180,8 +178,6 @@ uniqueType["{$block.id}"] = false;
         });
     }
 
-
-
     function deleteRow(type, id) {
         var row_name = type + '_' + id;
         var parent = document.getElementById(type);
@@ -205,14 +201,6 @@ uniqueType["{$block.id}"] = false;
             jQuery('add_' + tagName).show();
         }
 
-    }
-
-    function loadedConfiguration() {
-        jQuery('table.ListTable').each(function(el) {
-            if (el.id != undefined && el.id != '') {
-                checkTypeValidity("block_" + el.id);
-            }
-        });
     }
 
     function changeTab(tab) {
