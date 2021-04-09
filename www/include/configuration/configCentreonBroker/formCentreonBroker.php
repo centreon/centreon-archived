@@ -37,8 +37,18 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!$centreon->user->admin && isset($_GET['id'])
-    && count($allowedBrokerConf) && !isset($allowedBrokerConf[$_GET['id']])) {
+$id = filter_var(
+    $_REQUEST['id'],
+    FILTER_VALIDATE_INT,
+    ['options' => ['default' => 0]]
+);
+
+if (
+    !$centreon->user->admin
+    && $id !== 0
+    && count($allowedBrokerConf)
+    && !isset($allowedBrokerConf[$id])
+) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
     $msg->setTextStyle("bold");
@@ -155,22 +165,25 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
         "activate_watchdog" => '1'
     ));
     $tpl->assign('config_id', 0);
-} else {
-    if (isset($_GET['id']) && $_GET['id'] != 0) {
-        $id = $_GET['id'];
-        $tpl->assign('config_id', $id);
-        $form->setDefaults(getCentreonBrokerInformation($id));
-        /*
-         * Get informations for modify
-         */
-        textdomain("help");
-        $nbTabs = count($tabs);
-        for ($i = 0; $i < $nbTabs; $i++) {
-            $tabs[$i]['forms'] = $cbObj->getForms($id, $tabs[$i]['id'], $p, $tpl);
-            $tabs[$i]['helps'] = $cbObj->getHelps($id, $tabs[$i]['id']);
-            $tabs[$i]['nb'] = count($tabs[$i]['forms']);
-        }
-        textdomain("messages");
+} elseif ($id !== 0) {
+    $tpl->assign('config_id', $id);
+    $defaultBrokerInformation = getCentreonBrokerInformation($id);
+    if (!isset($defaultBrokerInformation['log_core'])) {
+        $defaultBrokerInformation = array_merge(
+            $defaultBrokerInformation,
+            $defaultLog
+        );
+    }
+    $form->setDefaults($defaultBrokerInformation);
+    /*
+     * Get informations for modify
+     */
+    textdomain("help");
+    $nbTabs = count($tabs);
+    for ($i = 0; $i < $nbTabs; $i++) {
+        $tabs[$i]['forms'] = $cbObj->getForms($id, $tabs[$i]['id'], $p, $tpl);
+        $tabs[$i]['helps'] = $cbObj->getHelps($id, $tabs[$i]['id']);
+        $tabs[$i]['nb'] = count($tabs[$i]['forms']);
     }
 }
 $form->addElement('hidden', 'id');
