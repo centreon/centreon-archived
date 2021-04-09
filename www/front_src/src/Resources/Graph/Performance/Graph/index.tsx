@@ -674,7 +674,6 @@ const memoProps = [
   'timeline',
   'tooltipPosition',
   'resource',
-  'eventAnnotationsActive',
   'loading',
   'canAdjustTimePeriod',
   'displayTooltipValues',
