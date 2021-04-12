@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -145,12 +146,14 @@ $tags = $cbObj->getTags();
 
 $tabs = array();
 foreach ($tags as $tagId => $tag) {
-    $tabs[] = array('id' => $tag,
-                    'name' => _("Centreon-Broker " . ucfirst($tag)),
-                    'link' => _("Add"),
-                    'nb' => 0,
-                    'blocks' => $cbObj->getListConfigBlock($tagId),
-                    'forms' => array());
+    $tabs[] = array(
+        'id' => $tag,
+        'name' => _("Centreon-Broker " . ucfirst($tag)),
+        'link' => _("Add"),
+        'nb' => 0,
+        'blocks' => $cbObj->getListConfigBlock($tagId),
+        'forms' => array()
+    );
 }
 
 /**
@@ -168,15 +171,9 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     ));
     $tpl->assign('config_id', 0);
 } elseif ($id !== 0) {
+    $id = $_GET['id'];
     $tpl->assign('config_id', $id);
-    $defaultBrokerInformation = getCentreonBrokerInformation($id);
-    if (!isset($defaultBrokerInformation['log_core'])) {
-        $defaultBrokerInformation = array_merge(
-            $defaultBrokerInformation,
-            $defaultLog
-        );
-    }
-    $form->setDefaults($defaultBrokerInformation);
+    $form->setDefaults(getCentreonBrokerInformation($id));
     /*
      * Get informations for modify
      */
@@ -187,6 +184,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
         $tabs[$i]['helps'] = $cbObj->getHelps($id, $tabs[$i]['id']);
         $tabs[$i]['nb'] = count($tabs[$i]['forms']);
     }
+    textdomain("messages");
 }
 $form->addElement('hidden', 'id');
 $redirect = $form->addElement('hidden', 'o');
