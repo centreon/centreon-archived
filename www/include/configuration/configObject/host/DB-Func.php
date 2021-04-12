@@ -893,150 +893,22 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
 
     $ret["host_name"] = $host->checkIllegalChar($ret["host_name"], $server_id);
 
-    $rq = "INSERT INTO host " .
-        "(host_template_model_htm_id, command_command_id, command_command_id_arg1, timeperiod_tp_id,"
-        . " timeperiod_tp_id2, command_command_id2, command_command_id_arg2, host_name, host_alias,"
-        . " host_address, host_max_check_attempts, host_check_interval, host_retry_check_interval,"
-        . " host_active_checks_enabled, host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host,"
-        . " host_check_freshness, host_freshness_threshold, host_event_handler_enabled, host_low_flap_threshold,"
-        . " host_high_flap_threshold, host_flap_detection_enabled, host_retain_status_information,"
-        . " host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay,"
-        . " host_recovery_notification_delay, host_notification_options, host_notifications_enabled,"
-        . " contact_additive_inheritance, cg_additive_inheritance, host_stalking_options, host_snmp_community,"
-        . " host_snmp_version, host_location, host_comment, geo_coords, host_register, host_activate,"
-        . " host_acknowledgement_timeout) "
-        . "VALUES ( ";
-    isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != null ?
-        $rq .= "'" . $ret["host_template_model_htm_id"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["command_command_id"]) && $ret["command_command_id"] != null
-        ? $rq .= "'" . $ret["command_command_id"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != null
-        ? $rq .= "'" . $ret["command_command_id_arg1"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != null
-        ? $rq .= "'" . $ret["timeperiod_tp_id"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != null
-        ? $rq .= "'" . $ret["timeperiod_tp_id2"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["command_command_id2"]) && $ret["command_command_id2"] != null
-        ? $rq .= "'" . $ret["command_command_id2"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null
-        ? $rq .= "'" . $ret["command_command_id_arg2"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_name"]) && $ret["host_name"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_name"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_alias"]) && $ret["host_alias"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_alias"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_address"]) && $ret["host_address"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_address"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != null
-        ? $rq .= "'" . $ret["host_max_check_attempts"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_check_interval"]) && $ret["host_check_interval"] != null
-        ? $rq .= "'" . $ret["host_check_interval"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"] != null
-        ? $rq .= "'" . $ret["host_retry_check_interval"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_active_checks_enabled"]["host_active_checks_enabled"])
-    && $ret["host_active_checks_enabled"]["host_active_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_active_checks_enabled"]["host_active_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_passive_checks_enabled"]["host_passive_checks_enabled"])
-    && $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_checks_enabled"]["host_checks_enabled"])
-    && $ret["host_checks_enabled"]["host_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_checks_enabled"]["host_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_obsess_over_host"]["host_obsess_over_host"])
-    && $ret["host_obsess_over_host"]["host_obsess_over_host"] != 2
-        ? $rq .= "'" . $ret["host_obsess_over_host"]["host_obsess_over_host"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_check_freshness"]["host_check_freshness"])
-    && $ret["host_check_freshness"]["host_check_freshness"] != 2
-        ? $rq .= "'" . $ret["host_check_freshness"]["host_check_freshness"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_freshness_threshold"]) && $ret["host_freshness_threshold"] != null
-        ? $rq .= "'" . $ret["host_freshness_threshold"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_event_handler_enabled"]["host_event_handler_enabled"])
-    && $ret["host_event_handler_enabled"]["host_event_handler_enabled"] != 2
-        ? $rq .= "'" . $ret["host_event_handler_enabled"]["host_event_handler_enabled"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_low_flap_threshold"]) && $ret["host_low_flap_threshold"] != null
-        ? $rq .= "'" . $ret["host_low_flap_threshold"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_high_flap_threshold"]) && $ret["host_high_flap_threshold"] != null
-        ? $rq .= "'" . $ret["host_high_flap_threshold"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_flap_detection_enabled"]["host_flap_detection_enabled"])
-    && $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] != 2
-        ? $rq .= "'" . $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_retain_status_information"]["host_retain_status_information"])
-    && $ret["host_retain_status_information"]["host_retain_status_information"] != 2
-        ? $rq .= "'" . $ret["host_retain_status_information"]["host_retain_status_information"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"])
-    && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2
-        ? $rq .= "'" . $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != null
-        ? $rq .= "'" . $ret["host_notification_interval"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != null
-        ? $rq .= "'" . $ret["host_first_notification_delay"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_recovery_notification_delay"]) && $ret["host_recovery_notification_delay"] != null
-        ? $rq .= "'" . $ret["host_recovery_notification_delay"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != null
-        ? $rq .= "'" . implode(",", array_keys($ret["host_notifOpts"])) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_notifications_enabled"]["host_notifications_enabled"])
-    && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2
-        ? $rq .= "'" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
-    $rq .= (isset($ret["cg_additive_inheritance"]) ? 1 : 0) . ', ';
-    isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != null
-        ? $rq .= "'" . implode(",", array_keys($ret["host_stalOpts"])) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_snmp_community"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_snmp_version"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_location"]) && $ret["host_location"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_location"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_comment"]) && $ret["host_comment"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_comment"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["geo_coords"]) && $ret["geo_coords"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["geo_coords"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_register"]) && $ret["host_register"] != null
-        ? $rq .= "'" . $ret["host_register"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != null
-        ? $rq .= "'" . $ret["host_activate"]["host_activate"] . "',"
-        : $rq .= "NULL,";
-    isset($ret["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"] != null
-        ? $rq .= "'" . $ret["host_acknowledgement_timeout"] . "'"
-        : $rq .= "NULL";
-    $rq .= ")";
-    $dbResult = $pearDB->query($rq);
+    $bindParams = sanitizeFormHostParameters($ret);
+    $params = [];
+    foreach (array_keys($bindParams) as $token) {
+        $params[] = ltrim($token, ':');
+    }
+
+    $rq = "INSERT INTO `host` ( " . implode(', ', $params) . ")
+           VALUES (" . implode(", ", array_keys($bindParams)) . " )";
+    $stmt = $pearDB->prepare($rq);
+    foreach ($bindParams as $token => $bindValues) {
+        foreach ($bindValues as $paramType => $value) {
+            $stmt->bindValue($token, $value, $paramType);
+        }
+    }
+
+    $stmt->execute();
     $dbResult = $pearDB->query("SELECT MAX(host_id) FROM host");
     $host_id = $dbResult->fetch();
 
@@ -1374,170 +1246,22 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
         $ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
         $ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
     }
-
-    $rq = "UPDATE host SET host_template_model_htm_id = ";
-    isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != null
-        ? $rq .= "'" . $ret["host_template_model_htm_id"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "command_command_id = ";
-    isset($ret["command_command_id"]) && $ret["command_command_id"] != null
-        ? $rq .= "'" . $ret["command_command_id"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "command_command_id_arg1 = ";
-    isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != null
-        ? $rq .= "'" . $ret["command_command_id_arg1"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "timeperiod_tp_id = ";
-    isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != null
-        ? $rq .= "'" . $ret["timeperiod_tp_id"] . "', "
-        : $rq .= "NULL, ";
-    /* $rq .= "timeperiod_tp_id2 = ";
-      isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL
-    ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, "; */
-    $rq .= "command_command_id2 = ";
-    isset($ret["command_command_id2"]) && $ret["command_command_id2"] != null
-        ? $rq .= "'" . $ret["command_command_id2"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "command_command_id_arg2 = ";
-    isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null
-        ? $rq .= "'" . $ret["command_command_id_arg2"] . "', "
-        : $rq .= "NULL, ";
-    // If we are doing a MC, we don't have to set name and alias field
-    if (!$from_MC) {
-        $rq .= "host_name = ";
-        $ret["host_name"] = $host->checkIllegalChar($ret["host_name"], $server_id);
-        isset($ret["host_name"]) && $ret["host_name"] != null
-            ? $rq .= "'" . CentreonDB::escape($ret["host_name"]) . "', "
-            : $rq .= "NULL, ";
-        $rq .= "host_alias = ";
-        isset($ret["host_alias"]) && $ret["host_alias"] != null
-            ? $rq .= "'" . CentreonDB::escape($ret["host_alias"]) . "', "
-            : $rq .= "NULL, ";
+    $ret["host_name"] = $host->checkIllegalChar($ret["host_name"], $server_id);
+    $bindParams = sanitizeFormHostParameters($ret);
+    $rq = "UPDATE host SET ";
+    foreach (array_keys($bindParams) as $token) {
+        $rq .= ltrim($token, ':') . " = " . $token . ", ";
     }
-    $rq .= "host_address = ";
-    isset($ret["host_address"]) && $ret["host_address"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_address"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_max_check_attempts = ";
-    isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != null
-        ? $rq .= "'" . $ret["host_max_check_attempts"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_check_interval = ";
-    isset($ret["host_check_interval"]) && $ret["host_check_interval"] != null
-        ? $rq .= "'" . $ret["host_check_interval"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_acknowledgement_timeout = ";
-    isset($ret["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"] != null
-        ? $rq .= "'" . $ret["host_acknowledgement_timeout"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_retry_check_interval = ";
-    isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"] != null
-        ? $rq .= "'" . $ret["host_retry_check_interval"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_active_checks_enabled = ";
-    isset($ret["host_active_checks_enabled"]["host_active_checks_enabled"])
-    && $ret["host_active_checks_enabled"]["host_active_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_active_checks_enabled"]["host_active_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_passive_checks_enabled = ";
-    isset($ret["host_passive_checks_enabled"]["host_passive_checks_enabled"])
-    && $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_checks_enabled = ";
-    isset($ret["host_checks_enabled"]["host_checks_enabled"])
-    && $ret["host_checks_enabled"]["host_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_checks_enabled"]["host_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_obsess_over_host = ";
-    isset($ret["host_obsess_over_host"]["host_obsess_over_host"])
-    && $ret["host_obsess_over_host"]["host_obsess_over_host"] != 2
-        ? $rq .= "'" . $ret["host_obsess_over_host"]["host_obsess_over_host"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_check_freshness = ";
-    isset($ret["host_check_freshness"]["host_check_freshness"])
-    && $ret["host_check_freshness"]["host_check_freshness"] != 2
-        ? $rq .= "'" . $ret["host_check_freshness"]["host_check_freshness"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_freshness_threshold = ";
-    isset($ret["host_freshness_threshold"]) && $ret["host_freshness_threshold"] != null
-        ? $rq .= "'" . $ret["host_freshness_threshold"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_event_handler_enabled = ";
-    isset($ret["host_event_handler_enabled"]["host_event_handler_enabled"])
-    && $ret["host_event_handler_enabled"]["host_event_handler_enabled"] != 2
-        ? $rq .= "'" . $ret["host_event_handler_enabled"]["host_event_handler_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_low_flap_threshold = ";
-    isset($ret["host_low_flap_threshold"]) && $ret["host_low_flap_threshold"] != null
-        ? $rq .= "'" . $ret["host_low_flap_threshold"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_high_flap_threshold = ";
-    isset($ret["host_high_flap_threshold"]) && $ret["host_high_flap_threshold"] != null
-        ? $rq .= "'" . $ret["host_high_flap_threshold"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_flap_detection_enabled = ";
-    isset($ret["host_flap_detection_enabled"]["host_flap_detection_enabled"])
-    && $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] != 2
-        ? $rq .= "'" . $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_retain_status_information = ";
-    isset($ret["host_retain_status_information"]["host_retain_status_information"])
-    && $ret["host_retain_status_information"]["host_retain_status_information"] != 2
-        ? $rq .= "'" . $ret["host_retain_status_information"]["host_retain_status_information"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_retain_nonstatus_information = ";
-    isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"])
-    && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2
-        ? $rq .= "'" . $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_notifications_enabled = ";
-    isset($ret["host_notifications_enabled"]["host_notifications_enabled"])
-    && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2
-        ? $rq .= "'" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_recovery_notification_delay = ";
-    isset($ret['host_recovery_notification_delay']) && $ret['host_recovery_notification_delay'] != null
-        ? $rq .= $ret['host_recovery_notification_delay'] . ', '
-        : $rq .= 'NULL, ';
-    $rq .= "contact_additive_inheritance = ";
-    $rq .= (isset($ret['contact_additive_inheritance']) ? 1 : 0) . ', ';
-    $rq .= "cg_additive_inheritance = ";
-    $rq .= (isset($ret['cg_additive_inheritance']) ? 1 : 0) . ', ';
-    $rq .= "host_stalking_options = ";
-    isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != null
-        ? $rq .= "'" . implode(",", array_keys($ret["host_stalOpts"])) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_snmp_community = ";
-    isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_snmp_community"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_snmp_version = ";
-    isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_snmp_version"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_location = ";
-    isset($ret["host_location"]) && $ret["host_location"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_location"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_comment = ";
-    isset($ret["host_comment"]) && $ret["host_comment"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_comment"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "geo_coords = ";
-    isset($ret["geo_coords"]) && $ret["geo_coords"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["geo_coords"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_register = ";
-    isset($ret["host_register"]) && $ret["host_register"] != null
-        ? $rq .= "'" . $ret["host_register"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_activate = ";
-    isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != null
-        ? $rq .= "'" . $ret["host_activate"]["host_activate"] . "' "
-        : $rq .= "NULL ";
-    $rq .= "WHERE host_id = '" . $host_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $rq = rtrim($rq, ', ');
+    $rq .= " WHERE host_id = :hostId";
+    $stmt = $pearDB->prepare($rq);
+    foreach ($bindParams as $token => $bindValues) {
+        foreach ($bindValues as $paramType => $value) {
+            $stmt->bindValue($token, $value, $paramType);
+        }
+    }
+    $stmt->bindValue(':hostId', $host_id, \PDO::PARAM_INT);
+    $stmt->execute();
 
     /*
      *  Update multiple templates
@@ -1664,138 +1388,21 @@ function updateHost_MC($host_id = null)
         $dbResult->closeCursor();
     }
 
+    $bindParams = sanitizeFormHostParameters($ret);
     $rq = "UPDATE host SET ";
-    if (isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != null) {
-        $rq .= "host_template_model_htm_id = '" . $ret["host_template_model_htm_id"] . "', ";
+    foreach (array_keys($bindParams) as $token) {
+        $rq .= ltrim($token, ':') . " = " . $token . ", ";
     }
-    if (isset($ret["command_command_id"]) && $ret["command_command_id"] != null) {
-        $rq .= "command_command_id = '" . $ret["command_command_id"] . "', ";
+    $rq = rtrim($rq, ', ');
+    $rq .= " WHERE host_id = :hostId";
+    $stmt = $pearDB->prepare($rq);
+    foreach ($bindParams as $token => $bindValues) {
+        foreach ($bindValues as $paramType => $value) {
+            $stmt->bindValue($token, $value, $paramType);
+        }
     }
-    if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != null) {
-        $rq .= "command_command_id_arg1 = '" . $ret["command_command_id_arg1"] . "', ";
-    }
-    if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != null) {
-        $rq .= "timeperiod_tp_id = '" . $ret["timeperiod_tp_id"] . "', ";
-    }
-    if (isset($ret["command_command_id2"]) && $ret["command_command_id2"] != null) {
-        $rq .= "command_command_id2 = '" . $ret["command_command_id2"] . "', ";
-    }
-    if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null) {
-        $rq .= "command_command_id_arg2 = '" . $ret["command_command_id_arg2"] . "', ";
-    }
-    if (isset($ret["host_address"]) && $ret["host_address"] != null) {
-        $rq .= "host_address = '" . CentreonDB::escape($ret["host_address"]) . "', ";
-    }
-    if (isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != null) {
-        $rq .= "host_max_check_attempts = '" . $ret["host_max_check_attempts"] . "', ";
-    }
-    if (isset($ret["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"] != null) {
-        $rq .= "host_acknowledgement_timeout = '" . $ret["host_acknowledgement_timeout"] . "', ";
-    }
-    if (isset($ret["host_check_interval"]) && $ret["host_check_interval"] != null) {
-        $rq .= "host_check_interval = '" . $ret["host_check_interval"] . "', ";
-    }
-    if (isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"] != null) {
-        $rq .= "host_retry_check_interval = '" . $ret["host_retry_check_interval"] . "', ";
-    }
-    if (isset($ret["host_active_checks_enabled"]["host_active_checks_enabled"])) {
-        $rq .= "host_active_checks_enabled = '"
-            . $ret["host_active_checks_enabled"]["host_active_checks_enabled"] . "', ";
-    }
-    if (isset($ret["host_passive_checks_enabled"]["host_passive_checks_enabled"])) {
-        $rq .= "host_passive_checks_enabled = '"
-            . $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] . "', ";
-    }
-    if (isset($ret["host_checks_enabled"]["host_checks_enabled"])) {
-        $rq .= "host_checks_enabled = '" . $ret["host_checks_enabled"]["host_checks_enabled"] . "', ";
-    }
-    if (isset($ret["host_obsess_over_host"]["host_obsess_over_host"])) {
-        $rq .= "host_obsess_over_host = '" . $ret["host_obsess_over_host"]["host_obsess_over_host"] . "', ";
-    }
-    if (isset($ret["host_check_freshness"]["host_check_freshness"])) {
-        $rq .= "host_check_freshness = '" . $ret["host_check_freshness"]["host_check_freshness"] . "', ";
-    }
-    if (isset($ret["host_freshness_threshold"]) && $ret["host_freshness_threshold"] != null) {
-        $rq .= "host_freshness_threshold = '" . $ret["host_freshness_threshold"] . "', ";
-    }
-    if (isset($ret["host_event_handler_enabled"]["host_event_handler_enabled"])) {
-        $rq .= "host_event_handler_enabled = '"
-            . $ret["host_event_handler_enabled"]["host_event_handler_enabled"] . "', ";
-    }
-    if (isset($ret["host_low_flap_threshold"]) && $ret["host_low_flap_threshold"] != null) {
-        $rq .= "host_low_flap_threshold = '" . $ret["host_low_flap_threshold"] . "', ";
-    }
-    if (isset($ret["host_high_flap_threshold"]) && $ret["host_high_flap_threshold"] != null) {
-        $rq .= "host_high_flap_threshold = '" . $ret["host_high_flap_threshold"] . "', ";
-    }
-    if (isset($ret["host_flap_detection_enabled"]["host_flap_detection_enabled"])) {
-        $rq .= "host_flap_detection_enabled = '"
-            . $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] . "', ";
-    }
-    if (isset($ret["host_retain_status_information"]["host_retain_status_information"])) {
-        $rq .= "host_retain_status_information = '"
-            . $ret["host_retain_status_information"]["host_retain_status_information"] . "', ";
-    }
-    if (isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"])) {
-        $rq .= "host_retain_nonstatus_information = '"
-            . $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] . "', ";
-    }
-    if (isset($ret["host_notifications_enabled"]["host_notifications_enabled"])) {
-        $rq .= "host_notifications_enabled = '"
-            . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', ";
-    }
-    if (isset($ret["host_recovery_notification_delay "]) && $ret["host_recovery_notification_delay "] != null) {
-        $rq .= "host_recovery_notification_delay  = " . $ret["host_recovery_notification_delay "] . ", ";
-    }
-    if (
-        isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"])
-        && in_array(
-            $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"],
-            array('0', '1')
-        )
-    ) {
-        $rq .= "contact_additive_inheritance = '"
-            . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
-    }
-    if (
-        isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"])
-        && in_array(
-            $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"],
-            array('0', '1')
-        )
-    ) {
-        $rq .= "cg_additive_inheritance = '" . $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"] . "', ";
-    }
-    if (isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != null) {
-        $rq .= "host_stalking_options = '" . implode(",", array_keys($ret["host_stalOpts"])) . "', ";
-    }
-    if (isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != null) {
-        $rq .= "host_snmp_community = '" . CentreonDB::escape($ret["host_snmp_community"]) . "', ";
-    }
-    if (isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != null) {
-        $rq .= "host_snmp_version = '" . CentreonDB::escape($ret["host_snmp_version"]) . "', ";
-    }
-    if (isset($ret["host_location"]) && $ret["host_location"] != null) {
-        $rq .= "host_location = '" . CentreonDB::escape($ret["host_location"]) . "', ";
-    }
-    if (isset($ret["host_comment"]) && $ret["host_comment"] != null) {
-        $rq .= "host_comment = '" . CentreonDB::escape($ret["host_comment"]) . "', ";
-    }
-    if (isset($ret["geo_coords"]) && $ret["geo_coords"] != null) {
-        $rq .= "geo_coords = '" . CentreonDB::escape($ret["geo_coords"]) . "', ";
-    }
-    if (isset($ret["host_register"]) && $ret["host_register"] != null) {
-        $rq .= "host_register = '" . $ret["host_register"] . "', ";
-    }
-    if (isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != null) {
-        $rq .= "host_activate = '" . $ret["host_activate"]["host_activate"] . "', ";
-    }
-    if (strcmp("UPDATE host SET ", $rq)) {
-        # Delete last ',' in request
-        $rq[strlen($rq) - 2] = " ";
-        $rq .= "WHERE host_id = '" . $host_id . "'";
-        $dbResult = $pearDB->query($rq);
-    }
+    $stmt->bindValue(':hostId', $host_id, \PDO::PARAM_INT);
+    $stmt->execute();
 
     /*
      *  update multiple templates
@@ -2857,4 +2464,125 @@ function applytpl($hosts)
     foreach ($hosts as $key => $value) {
         $hostObj->deployServices($key);
     }
+}
+
+/**
+ * Sanitize all the host parameters from the host form and return a ready to bind array.
+ *
+ * @param array $ret
+ * @return array
+ */
+function sanitizeFormHostParameters(array $ret): array
+{
+    $bindParams = [];
+    foreach ($ret as $inputName => $inputValue) {
+        switch ($inputName) {
+            case 'host_template_model_htm_id':
+            case 'command_command_id':
+            case 'timeperiod_tp_id':
+            case 'timeperiod_tp_id2':
+            case 'command_command_id2':
+            case 'host_max_check_attempts':
+            case 'host_check_interval':
+            case 'host_retry_check_interval':
+            case 'host_freshness_threshold':
+            case 'host_low_flap_threshold':
+            case 'host_high_flap_threshold':
+            case 'host_notification_interval':
+            case 'host_first_notification_delay':
+            case 'host_recovery_notification_delay':
+            case 'host_location':
+            case 'host_acknowledgement_timeout':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                        ? null
+                        : (int) $inputValue
+                ];
+                break;
+            case 'command_command_id_arg1':
+            case 'command_command_id_arg2':
+            case 'host_name':
+            case 'host_alias':
+            case 'host_address':
+            case 'host_snmp_community':
+            case 'host_snmp_version':
+            case 'host_comment':
+            case 'geo_coords':
+                if (!empty($inputValue)) {
+                    $bindParams[':' . $inputName] = [
+                        \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === '')
+                            ? null
+                            : $inputValue
+                    ];
+                }
+                break;
+            case 'host_active_checks_enabled':
+            case 'host_passive_checks_enabled':
+            case 'host_checks_enabled':
+            case 'host_obsess_over_host':
+            case 'host_check_freshness':
+            case 'host_event_handler_enabled':
+            case 'host_flap_detection_enabled':
+            case 'host_retain_status_information':
+            case 'host_retain_nonstatus_information':
+            case 'host_notifications_enabled':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1', '2'])
+                        ? $inputValue[$inputName]
+                        : '2'
+                ];
+                break;
+            case 'host_notifOpts':
+                if (!empty($inputValue)) {
+                    $bindParams[':host_notification_options'] = [
+                        \PDO::PARAM_STR => (($inputValue = filter_var(
+                            implode(",", array_keys($inputValue)),
+                            FILTER_SANITIZE_STRING
+                        )) === '')
+                        ? null
+                        : $inputValue
+                    ];
+                }
+                break;
+            case 'contact_additive_inheritance':
+            case 'cg_additive_inheritance':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
+                ];
+                break;
+            case 'mc_contact_additive_inheritance':
+            case 'mc_cg_additive_inheritance':
+                $bindParams[':' . ltrim($inputName, 'mc_')] = [
+                    \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
+                ];
+                break;
+            case 'host_stalOpts':
+                if (!empty($inputValue)) {
+                    $bindParams[':host_stalking_options'] = [
+                        \PDO::PARAM_STR => (($inputValue = filter_var(
+                            implode(",", array_keys($inputValue)),
+                            FILTER_SANITIZE_STRING
+                        )) === '')
+                        ? null
+                        : $inputValue
+                    ];
+                }
+                break;
+            case 'host_register':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1', '2', '3'])
+                        ? $inputValue[$inputName]
+                        : null
+                ];
+                break;
+            case 'host_activate':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1', '2'])
+                        ? $inputValue[$inputName]
+                        : null
+                ];
+                break;
+        }
+    }
+    return $bindParams;
 }
