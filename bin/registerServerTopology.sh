@@ -181,7 +181,6 @@ function parse_fqdn() {
     user=$userpass
   fi
   url="$(echo ${1/${userpass}"@"/})"
-
   # extract the Scheme
   SCHEME="$(echo $url | grep :// | cut -d: -f1)"
   if [ -n "$SCHEME" ]; then
@@ -192,9 +191,15 @@ function parse_fqdn() {
   PARSED_URL[HOST]="$(echo ${url/${PARSED_URL[SCHEME]}"://"/} | cut -d: -f1)"
 
   # extract the port
-  PORT="$(echo ${url/PARSED_URL[HOST]/} | grep : | cut -d: -f3)"
-  if [ -n "$PORT" ]; then
-    PARSED_URL[PORT]=$PORT
+  PORT="$(echo ${url/${PARSED_URL[SCHEME]}"://"/} | cut -d: -f2)"
+
+  if [ "${PARSED_URL[HOST]}" != "$PORT" ]; then
+    PARSED_URL[PORT]=$PORT;
+    if [ "$PORT" == "443" ]; then
+      PARSED_URL[SCHEME]="https";
+    fi
+  elif [ "${PARSED_URL[SCHEME]}" == "https" ]; then
+    PARSED_URL[PORT]="443";
   fi
 }
 #========= end of function parse_fqdn()
@@ -316,20 +321,20 @@ function register_server() {
   # We set IFS to \n to correctly parse and extract HTTP Code and message
   IFS=$'\n' API_RESPONSE=($(curl -s -X POST ${INSECURE:+--insecure} -i -H "Content-Type: application/json" -H "X-AUTH-TOKEN: ${API_TOKEN}" \
     -d "${PAYLOAD}" \
-    "${TARGET_NODE_ADDRESS}/${ROOT_CENTREON_FOLDER}/api/latest/platform/topology" | grep -E "(HTTP/|message)"))
+    "${PARSED_URL[SCHEME]}://${PARSED_URL[HOST]}:${PARSED_URL[PORT]}/${ROOT_CENTREON_FOLDER}/api/latest/platform/topology" | grep -E "(HTTP/|message)"))
 
   HTTP_CODE="$(echo ${API_RESPONSE[0]} | cut -d ' ' -f2)"
   RESPONSE_MESSAGE=${API_RESPONSE[1]}
 
   if [[ $HTTP_CODE == "201" ]];
   then
-    log "INFO" "The CURRENT NODE ${CURRENT_NODE_TYPE}: '${CURRENT_NODE_NAME}@${CURRENT_NODE_ADDRESS}' linked to TARGET NODE: ${TARGET_NODE_ADDRESS} has been added"
+    log "INFO" "The CURRENT NODE ${CURRENT_NODE_TYPE}: '${CURRENT_NODE_NAME}@${CURRENT_NODE_ADDRESS}' linked to TARGET NODE: ${PARSED_URL[SCHEME]}://${PARSED_URL[HOST]}:${PARSED_URL[PORT]} has been added"
   elif [[  -n $RESPONSE_MESSAGE ]];
   then
-    log "ERROR" "${TARGET_NODE_ADDRESS}: ${RESPONSE_MESSAGE}"
+    log "ERROR" "${PARSED_URL[SCHEME]}://${PARSED_URL[HOST]}:${PARSED_URL[PORT]}: ${RESPONSE_MESSAGE}"
     exit 1
   else
-    log "ERROR" "An error occurred while contacting the API using: '${TARGET_NODE_ADDRESS}/${ROOT_CENTREON_FOLDER}/api/latest/platform/topology' "
+    log "ERROR" "An error occurred while contacting the API using: '${PARSED_URL[SCHEME]}://${PARSED_URL[HOST]}:${PARSED_URL[PORT]}/${ROOT_CENTREON_FOLDER}/api/latest/platform/topology' "
     exit 1
   fi
 }
@@ -500,7 +505,7 @@ if [[ $CURRENT_NODE_TYPE == 'remote' ]]; then
   request_to_remote
 else
   # Get the API TARGET Token
-  get_api_token "$TARGET_NODE_ADDRESS" "$API_USERNAME" "$API_TARGET_PASSWORD" "$ROOT_CENTREON_FOLDER"
+  get_api_token "${PARSED_URL[SCHEME]}://${PARSED_URL[HOST]}:${PARSED_URL[PORT]}" "$API_USERNAME" "$API_TARGET_PASSWORD" "$ROOT_CENTREON_FOLDER"
   # Send cURL to POST Register
   register_server
 fi
