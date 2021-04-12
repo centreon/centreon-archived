@@ -530,7 +530,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             LEFT JOIN `:db`.contact AS `ct` ON ct.contact_alias = c.author
             WHERE c.host_id = :host_id
             AND (c.service_id = " . ($serviceId !== null ? ':service_id)' : '0 OR c.service_id IS NULL)') . "
-            AND source = 1
+            AND source = 1 AND c.deletion_time IS NULL
         ");
 
         $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);
