@@ -200,8 +200,9 @@ function parse_fqdn() {
   if [ "$PORT" == "443" ]; then
     PARSED_URL[SCHEME]="https";
   fi
+
   if [ "$SCHEME" == "https" ]; then
-      PARSED_URL[PORT]="443";
+    PARSED_URL[PORT]="443";
   fi
 }
 #========= end of function parse_fqdn()
