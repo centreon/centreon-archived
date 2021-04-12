@@ -117,7 +117,9 @@ const LegendContent = ({
     display,
   }: Line): JSX.Element => {
     const legendName = legend || name;
-    const metricName = includes('#', legendName) ? split('#')[1] : legendName;
+    const metricName = includes('#', legendName)
+      ? split('#')(legendName)[1]
+      : legendName;
     return (
       <div
         onMouseEnter={(): void => onHighlight(metric)}
@@ -204,7 +206,7 @@ const LegendContent = ({
                   component="p"
                   variant="caption"
                 >
-                  {`(${line.unit})`}
+                  {line.unit && `(${line.unit})`}
                 </Typography>
               </div>
               {formattedValue ? (
