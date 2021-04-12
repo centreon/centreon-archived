@@ -116,28 +116,6 @@ $command = $form->addElement('text', 'command_file', _('Command file'), $attrsTe
 
 $form->addElement('text', 'pool_size', _('Pool size'), $attrsText);
 
-//logger
-$form->addElement('text', 'log_directory', _('Log directory'), $attrsText);
-$form->addRule('log_directory', _("Mandatory directory"), 'required');
-$form->addElement('text', 'log_filename', _('Log filename'), $attrsText);
-$form->addElement('text', 'log_max_size', _('Maximum files size (in bytes)'), $attrsText2);
-
-$logs = $cbObj->getLogsOption();
-$logsLevel = $cbObj->getLogsLevel();
-$smartyLogs = [];
-$defaultLog = [];
-
-foreach ($logs as $log) {
-    array_push($smartyLogs, 'log_' . $log);
-    $flippedLevel = array_flip($logsLevel);
-    if ($log === 'core') {
-        $defaultLog['log_' . $log] = $flippedLevel['info'];
-    } else {
-        $defaultLog['log_' . $log] = $flippedLevel['error'];
-    }
-    $form->addElement('select', 'log_' . $log, _($log), $logsLevel);
-}
-
 $timestamp = array();
 $timestamp[] = $form->createElement('radio', 'write_timestamp', null, _("Yes"), 1);
 $timestamp[] = $form->createElement('radio', 'write_timestamp', null, _("No"), 0);
@@ -147,7 +125,7 @@ $thread_id = array();
 $thread_id[] = $form->createElement('radio', 'write_thread_id', null, _("Yes"), 1);
 $thread_id[] = $form->createElement('radio', 'write_thread_id', null, _("No"), 0);
 $form->addGroup($thread_id, 'write_thread_id', _("Write thread id"), '&nbsp;');
-
+    
 $status = array();
 $status[] = $form->createElement('radio', 'activate', null, _("Enabled"), 1);
 $status[] = $form->createElement('radio', 'activate', null, _("Disabled"), 0);
@@ -167,34 +145,27 @@ $tags = $cbObj->getTags();
 
 $tabs = array();
 foreach ($tags as $tagId => $tag) {
-    $tabs[] = array(
-        'id' => $tag,
-        'name' => _("Centreon-Broker " . ucfirst($tag)),
-        'link' => _("Add"),
-        'nb' => 0,
-        'blocks' => $cbObj->getListConfigBlock($tagId),
-        'forms' => array()
-    );
+    $tabs[] = array('id' => $tag,
+                    'name' => _("Centreon-Broker " . ucfirst($tag)),
+                    'link' => _("Add"),
+                    'nb' => 0,
+                    'blocks' => $cbObj->getListConfigBlock($tagId),
+                    'forms' => array());
 }
 
 /**
  * Default values
  */
 if (isset($_GET["o"]) && $_GET["o"] == 'a') {
-    $result = array_merge(
-        array(
-            "name" => '',
-            "cache_directory" => '/var/lib/centreon-broker/',
-            "log_directory" => '/var/log/centreon-broker/',
-            "write_timestamp" => '1',
-            "write_thread_id" => '1',
-            "stats_activate" => '1',
-            "activate" => '1',
-            "activate_watchdog" => '1'
-        ),
-        $defaultLog
-    );
-    $form->setDefaults($result);
+    $form->setDefaults(array(
+        "name" => '',
+        "cache_directory" => '/var/lib/centreon-broker/',
+        "write_timestamp" => '1',
+        "write_thread_id" => '1',
+        "stats_activate" => '1',
+        "activate" => '1',
+        "activate_watchdog" => '1'
+    ));
     $tpl->assign('config_id', 0);
 } elseif ($id !== 0) {
     $tpl->assign('config_id', $id);
@@ -216,7 +187,6 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
         $tabs[$i]['helps'] = $cbObj->getHelps($id, $tabs[$i]['id']);
         $tabs[$i]['nb'] = count($tabs[$i]['forms']);
     }
-    textdomain("messages");
 }
 $form->addElement('hidden', 'id');
 $redirect = $form->addElement('hidden', 'o');
@@ -284,6 +254,5 @@ if ($valid) {
     $tpl->assign('p', $p);
     $tpl->assign('sort1', _("General"));
     $tpl->assign('tabs', $tabs);
-    $tpl->assign('smartyLogs', $smartyLogs);
     $tpl->display("formCentreonBroker.ihtml");
 }
