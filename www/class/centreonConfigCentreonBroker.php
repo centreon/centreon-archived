@@ -728,7 +728,6 @@ class CentreonConfigCentreonBroker
      */
     public function updateCentreonBrokerInfos($id, $values)
     {
-
         // exclude multiple parameters load with broker js hook
         $condition = '';
         if ($values['output'] !== null) {
