@@ -254,6 +254,13 @@ class Resource
     private $notificationEnabled = false;
 
     /**
+     * Indicates the register type in DB for the resource
+     *
+     * @var int|null
+     */
+    private $register;
+
+    /**
      * Resource constructor.
      */
     public function __construct()
@@ -1037,6 +1044,25 @@ class Resource
     public function setNotificationEnabled(bool $notificationEnabled): self
     {
         $this->notificationEnabled = $notificationEnabled;
+
+        return $this;
+    }
+
+    /**
+     * @return integer|null
+     */
+    public function getRegister(): ?int
+    {
+        return $this->register;
+    }
+
+    /**
+     * @param integer|null $register
+     * @return self
+     */
+    public function setRegister(?int $register): self
+    {
+        $this->register = $register;
 
         return $this;
     }

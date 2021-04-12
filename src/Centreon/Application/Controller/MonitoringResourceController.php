@@ -83,6 +83,8 @@ class MonitoringResourceController extends AbstractController
 
     private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id={resource_id}';
     private const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id={resource_id}';
+    // Anomaly detection configuration uri
+    private const AD_SERVICE_CONFIGURATION_URI = '/main.php?p=60220&o=c&service_id={resource_id}';
     private const HOST_LOGS_URI = '/main.php?p=20301&h={resource_id}';
     private const SERVICE_LOGS_URI = '/main.php?p=20301&svc={parent_resource_id}_{resource_id}';
     private const META_SERVICE_LOGS_URI = '/main.php?p=20301&svc={host_id}_{service_id}';
@@ -708,13 +710,21 @@ class MonitoringResourceController extends AbstractController
      */
     private function provideServiceInternalUris(ResourceEntity $resource, Contact $contact): void
     {
-        if (
-            $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
-            || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
-        ) {
-            $resource->getLinks()->getUris()->setConfiguration(
-                $this->generateResourceUri($resource, static::SERVICE_CONFIGURATION_URI)
-            );
+        if ($resource->getRegister() === 3) {
+            if ($contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_ANOMALY_DETECTION)) {
+                $resource->getLinks()->getUris()->setConfiguration(
+                    $this->generateResourceUri($resource, static::AD_SERVICE_CONFIGURATION_URI)
+                );
+            }
+        } else {
+            if (
+                $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
+                || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
+            ) {
+                $resource->getLinks()->getUris()->setConfiguration(
+                    $this->generateResourceUri($resource, static::SERVICE_CONFIGURATION_URI)
+                );
+            }
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {

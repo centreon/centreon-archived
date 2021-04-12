@@ -163,12 +163,17 @@ final class ServiceProvider extends Provider
             s.perfdata AS `performance_data`,
             s.execution_time AS `execution_time`,
             s.latency AS `latency`,
-            s.notify AS `notification_enabled`
+            s.notify AS `notification_enabled`,
+            s_configuration.service_register AS `register`
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
                 AND sh.name NOT LIKE '_Module_%'
                 AND sh.enabled = 1";
+
+        // JOIN the configuration table to get the service_register entry
+        $sql .= ' LEFT JOIN `:db`.`service` AS s_configuration
+            ON s_configuration.service_id = s.service_id';
 
         // get monitoring server information
         $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id";
