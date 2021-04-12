@@ -501,7 +501,7 @@ if [[ $CURRENT_NODE_TYPE == 'remote' ]]; then
 else
   # Get the API TARGET Token
   get_api_token "$TARGET_NODE_ADDRESS" "$API_USERNAME" "$API_TARGET_PASSWORD" "$ROOT_CENTREON_FOLDER"
-  # # Send cURL to POST Register
+  # Send cURL to POST Register
   register_server
 fi
 
