@@ -12,6 +12,7 @@ TEMPLATE_FILE=""
 API_TOKEN=""
 REMOTE_API_TOKEN=""
 RESPONSE_MESSAGE=""
+EMPTY_SCHEME=""
 
 declare -A SUPPORTED_LOG_LEVEL=([INFO]=0 [ERROR]=1)
 declare -A PARSED_URL=([SCHEME]="http" [HOST]="" [PORT]="80")
@@ -181,7 +182,6 @@ function parse_fqdn() {
     user=$userpass
   fi
   url="$(echo ${1/${userpass}"@"/})"
-
   # extract the Scheme
   SCHEME="$(echo $url | grep :// | cut -d: -f1)"
   if [ -n "$SCHEME" ]; then
@@ -193,15 +193,13 @@ function parse_fqdn() {
 
   # extract the port
   PORT="$(echo ${url/${PARSED_URL[SCHEME]}"://"/} | cut -d: -f2)"
-  if [ -n "$PORT" ]; then
+
+  if [ "${PARSED_URL[HOST]}" != "$PORT" ]; then
     PARSED_URL[PORT]=$PORT;
-  fi
-
-  if [ "$PORT" == "443" ]; then
-    PARSED_URL[SCHEME]="https";
-  fi
-
-  if [ "$SCHEME" == "https" ]; then
+    if [ "$PORT" == "443" ]; then
+      PARSED_URL[SCHEME]="https";
+    fi
+  elif [ "${PARSED_URL[SCHEME]}" == "https" ]; then
     PARSED_URL[PORT]="443";
   fi
 }
