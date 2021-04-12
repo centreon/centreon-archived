@@ -648,6 +648,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         /**
          * If the server is already registered in platform_topology Update else insert
          */
+        $insertedPlatform = [];
         if (!empty($server['id'])) {
             $statement = $this->pearDB->prepare(
                 "UPDATE `platform_topology` SET
