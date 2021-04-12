@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -730,18 +731,20 @@ class CentreonConfigCentreonBroker
 
         // exclude multiple parameters load with broker js hook
         $condition = '';
-        foreach ($values['output'] as $key => $output) {
-            if (array_key_exists('lua_parameter__value_#index#', $output)) {
-                $condition .= ' AND config_key NOT LIKE "lua_parameter_%"';
-                unset($values['output'][$key]['lua_parameter__value_#index#']);
-                unset($values['output'][$key]['lua_parameter__name_#index#']);
-                unset($values['output'][$key]['lua_parameter__type_#index#']);
+        if ($values['output'] !== null) {
+            foreach ($values['output'] as $key => $output) {
+                if (array_key_exists('lua_parameter__value_#index#', $output)) {
+                    $condition .= ' AND config_key NOT LIKE "lua_parameter_%"';
+                    unset($values['output'][$key]['lua_parameter__value_#index#']);
+                    unset($values['output'][$key]['lua_parameter__name_#index#']);
+                    unset($values['output'][$key]['lua_parameter__type_#index#']);
+                }
             }
-        }
 
-        // Clean the informations for this id
-        $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = ' . (int)$id . $condition;
-        $this->db->query($query);
+            // Clean the informations for this id
+            $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = ' . (int)$id . $condition;
+            $this->db->query($query);
+        }
 
         $groups_infos = array();
         $groups_infos_multiple = array();

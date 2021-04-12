@@ -9,7 +9,7 @@
 		<li class="b" id='c{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}'><a href="#" onclick="javascript:montre('{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');changeTab('tab{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');">{$tab.id|capitalize}</a></li>
 		{/foreach}
 	</ul>
-    <div id="validFormTop">
+	<div id="validFormTop">
 	{if $o == "a" || $o == "c"}
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
@@ -17,52 +17,52 @@
 	{/if}
 	</div>
 	</div>
-    <div id='tab1' class='tab'>
-        <table class="formTable table">
-            <tr class="list_lvl_1">
-                <td class="ListColLvl1_name" colspan="2">
-                    <h4>{$centreonbroker_main_options}</h4>
-                </td>
-            </tr>
-            <tr class="list_one"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-            <tr class="list_one"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField">{$form.cache_directory.label}</td><td class="FormRowValue">{$form.cache_directory.html}</td></tr>
+	<div id='tab1' class='tab'>
+		<table class="formTable table">
+			<tr class="list_lvl_1">
+				<td class="ListColLvl1_name" colspan="2">
+					<h4>{$centreonbroker_main_options}</h4>
+				</td>
+			</tr>
+			<tr class="list_one"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.cache_directory.label}</td><td class="FormRowValue">{$form.cache_directory.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField">{$form.activate_watchdog.label}</td><td class="FormRowValue">{$form.activate_watchdog.html}</td></tr>
 			<tr class="list_lvl_2">
 				<td class="ListColLvl1_name" colspan="2">
 					<h4>{$centreonbroker_watchdog_log}</h4>
 				</td>
 			</tr>
-            <tr class="list_two"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
-            <tr class="list_lvl_1">
-                <td class="ListColLvl1_name" colspan="2">
-                    <h4>{$centreonbroker_log_options}</h4>
-                </td>
-            </tr>
-            <tr class="list_one"><td class="FormRowField">{$form.write_timestamp.label}</td><td class="FormRowValue">{$form.write_timestamp.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField">{$form.write_thread_id.label}</td><td class="FormRowValue">{$form.write_thread_id.html}</td></tr>
-            <tr class="list_lvl_1">
-                <td class="ListColLvl1_name" colspan="2">
-                    <h4>{$centreonbroker_advanced_options}</h4>
-                </td>
-            </tr>
-            <tr class="list_one"><td class="FormRowField">{$form.stats_activate.label}</td><td class="FormRowValue">{$form.stats_activate.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField">{$form.event_queue_max_size.label}</td><td class="FormRowValue">{$form.event_queue_max_size.html}</td></tr>
-            <tr class="list_one"><td class="FormRowField">{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField">{$form.pool_size.label}</td><td class="FormRowValue">{$form.pool_size.html}</td></tr>
-            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
-        </table>
-    </div>
+			<tr class="list_two"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
+			<tr class="list_lvl_1">
+				<td class="ListColLvl1_name" colspan="2">
+					<h4>{$centreonbroker_log_options}</h4>
+				</td>
+			</tr>
+			<tr class="list_one"><td class="FormRowField">{$form.write_timestamp.label}</td><td class="FormRowValue">{$form.write_timestamp.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.write_thread_id.label}</td><td class="FormRowValue">{$form.write_thread_id.html}</td></tr>
+			<tr class="list_lvl_1">
+				<td class="ListColLvl1_name" colspan="2">
+					<h4>{$centreonbroker_advanced_options}</h4>
+				</td>
+			</tr>
+			<tr class="list_one"><td class="FormRowField">{$form.stats_activate.label}</td><td class="FormRowValue">{$form.stats_activate.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.event_queue_max_size.label}</td><td class="FormRowValue">{$form.event_queue_max_size.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.pool_size.label}</td><td class="FormRowValue">{$form.pool_size.html}</td></tr>
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		</table>
+	</div>
 	{foreach from=$tabs item=tab name=tabForeach2}
 	<div id='tab{math equation="x + y" x=$smarty.foreach.tabForeach2.index y=2}' class='tab'>
 		<table class="formTable table" id="{$tab.id}">
 			<tbody id="{$tab.id}_0">
 				<tr class="list_lvl_1">
-                  <td class="ListColLvl1_name" colspan="2">
-                    <h4>{$tab.name}</h4>
-                  </td>
-                </tr>
+				  <td class="ListColLvl1_name" colspan="2">
+					<h4>{$tab.name}</h4>
+				  </td>
+				</tr>
 				<tr class="list_one"><td class="FormRowValue" colspan="2"><select id="block_{$tab.id}"
 				onchange='checkTypeValidity("block_{$tab.id}")'>{foreach from=$tab.blocks item=block}
 				<option value="{$block.id}">{$block.name}</option>
@@ -97,157 +97,144 @@
 
 <script type="text/javascript">
 
+	var infos = new Infos();
+	var uniqueType = new Array();
+	{/literal}
+		{foreach from=$tabs item=tab}
+			infos.setPos("{$tab.id}", {$tab.nb});
+		{/foreach}
+		{foreach from=$tabs item=tab}
+			{foreach from=$tab.blocks item=block}
+				{if $block.unique == 1}
+					uniqueType["{$block.id}"] = true;
+				{else}
+					uniqueType["{$block.id}"] = false;
+				{/if}
+			{/foreach}
+		{/foreach}
+	{literal}
 
-    jQuery('#Form').centreonValidate();
-
-
-function mk_paginationFF(){};
-function set_header_title(){};
-
-function Infos() {
-    this.tags = new Array();
-
-    this.getPos = function(type){
-        if (this.tags[type] == undefined) {
-                this.tags[type] = 0;
-        }
-        return this.tags[type];
-    };
-
-    this.setPos = function(type, value){
-        this.tags[type] = value;
-    };
-
-    this.incrementPos = function(type){
-        this.tags[type]++;
-    };
-
-}
-
-var infos = new Infos();
-{/literal}
-{foreach from=$tabs item=tab}
-infos.setPos("{$tab.id}", {$tab.nb});
-{/foreach}
-{literal}
-
-var uniqueType = new Array();{/literal}
-{foreach from=$tabs item=tab}
-{foreach from=$tab.blocks item=block}
-{if $block.unique == 1}
-uniqueType["{$block.id}"] = true;
-{else}
-uniqueType["{$block.id}"] = false;
-{/if}
-{/foreach}
-{/foreach}{literal}
-
-    function addInfo(type) {
-        var prev_id = infos.getPos(type);
-        var id = prev_id + 1;
-        var id_name = type + '_' + id;
-        var blockId = jQuery('#block_' + type).val();
-        var params;
-
-        var tbody = jQuery('<tbody>');
-        tbody.attr('id', id_name);
-        tbody.attr('class', 'collapse-wrapper');
-        jQuery('#' + type).append(tbody);
-        params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
-        var url = './api/internal.php?object=centreon_configuration_broker&resultFormat=html&action=block' +
-		    '&page=' + {/literal}{$p}{literal} + '&position=' + id +
-            '&blockId=' + blockId + '&tag=' + type;
-
-        jQuery.ajax({
-            type: "GET",
-            dataType: "html",
-            url: url,
-            success: function (data) {
-                infos.incrementPos(type);
-                checkTypeValidity('block_' + type);
-
-                jQuery('#' + id_name).html('<tr>' + data + '</tr>');
-                jQuery('#' + id_name).find("script").each(function(i) {
-                    eval($(this).text());
-                });
-
-                clonifyTableFields('parentGroup', 'displaynamegroup');
-                addCollapse(id_name);
-                openNewElem(id_name);
-
-                jQuery('#' + id_name).centreonValidate();
-            }
-        });
-    }
+	jQuery('#Form').centreonValidate();
 
 
+	function mk_paginationFF(){};
+	function set_header_title(){};
 
-    function deleteRow(type, id) {
-        var row_name = type + '_' + id;
-        var parent = document.getElementById(type);
-        var delEl = document.getElementById(row_name);
-        //  jQuery("#"+row_name).find('input').qtip('destroy');
-        parent.removeChild(delEl);
-        checkTypeValidity("block_" + type);
-    }
+	function Infos() {
+		this.tags = new Array();
 
-    function checkTypeValidity(selectType) {
-        var typeId = jQuery('#' + selectType).val();
-        var tagName = selectType.replace('block_', '');
-        if (typeId in uniqueType && uniqueType[typeId] == true) {
-            var blockNameArray = jQuery('input[value="' + typeId + '"]');
-            if (blockNameArray.length > 0) {
-                jQuery('add_' + tagName).hide();
-            } else {
-                jQuery('add_' + tagName).show();
-            }
-        } else {
-            jQuery('add_' + tagName).show();
-        }
+		this.getPos = function(type){
+			if (this.tags[type] == undefined) {
+					this.tags[type] = 0;
+			}
+			return this.tags[type];
+		};
 
-    }
+		this.setPos = function(type, value){
+			this.tags[type] = value;
+		};
 
-    function loadedConfiguration() {
-        jQuery('table.ListTable').each(function(el) {
-            if (el.id != undefined && el.id != '') {
-                checkTypeValidity("block_" + el.id);
-            }
-        });
-    }
+		this.incrementPos = function(type){
+			this.tags[type]++;
+		};
 
-    function changeTab(tab) {
-        jQuery('#Form').centreonValidate('validate');
-        purgeHideInput(tab);
-        initCollapsebyTab(tab);
-        if(tab == "tab4"){
-            clonifyTableFields('parentGroup','displaynamegroup');
-        }
-        jQuery(function() {
-            jQuery.each(jQuery('[data-ontab-fn]'), function () {
-                window[jQuery(this).attr('data-ontab-fn')].onLoad(this, jQuery(this).attr('data-ontab-arg'))();
-            });
-        });
-        initCollapsebyTab(tab);
-    }
+	}
 
-    function purgeHideInput(tab) {
-        jQuery('.tab').each(function(idx, el){
-            if (el.id != tab) {
-                jQuery(el).find(':input').each(function(idx, input){
-                    jQuery(input).qtip('destroy');
-                });
-            }
-        });
-    }
+	function addInfo(type) {
+		var prev_id = infos.getPos(type);
+		var id = prev_id + 1;
+		var id_name = type + '_' + id;
+		var blockId = jQuery('#block_' + type).val();
+		var params;
 
-    function formValidate() {
-        jQuery('#Form').centreonValidate('validate');
-        if (jQuery('#Form').centreonValidate('hasError')) {
-            var activeTab = jQuery('.tab').filter(function(index) { return jQuery(this).css('display') === 'block'; })[0];
-            purgeHideInput(activeTab.id);
-            return false;
-        }
-        return true;
-    }
+		var tbody = jQuery('<tbody>');
+		tbody.attr('id', id_name);
+		tbody.attr('class', 'collapse-wrapper');
+		jQuery('#' + type).append(tbody);
+		params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
+		var url = './api/internal.php?object=centreon_configuration_broker&resultFormat=html&action=block' +
+			'&page=' + {/literal}{$p}{literal} + '&position=' + id +
+			'&blockId=' + blockId + '&tag=' + type;
+
+		jQuery.ajax({
+			type: "GET",
+			dataType: "html",
+			url: url,
+			success: function (data) {
+				infos.incrementPos(type);
+				checkTypeValidity('block_' + type);
+
+				jQuery('#' + id_name).html('<tr>' + data + '</tr>');
+				jQuery('#' + id_name).find("script").each(function(i) {
+					eval($(this).text());
+				});
+
+				clonifyTableFields('parentGroup', 'displaynamegroup');
+				addCollapse(id_name);
+				openNewElem(id_name);
+
+				jQuery('#' + id_name).centreonValidate();
+			}
+		});
+	}
+
+	function deleteRow(type, id) {
+		var row_name = type + '_' + id;
+		var parent = document.getElementById(type);
+		var delEl = document.getElementById(row_name);
+		//  jQuery("#"+row_name).find('input').qtip('destroy');
+		parent.removeChild(delEl);
+		checkTypeValidity("block_" + type);
+	}
+
+	function checkTypeValidity(selectType) {
+		var typeId = jQuery('#' + selectType).val();
+		var tagName = selectType.replace('block_', '');
+		if (typeId in uniqueType && uniqueType[typeId] == true) {
+			var blockNameArray = jQuery('input[value="' + typeId + '"]');
+			if (blockNameArray.length > 0) {
+				jQuery('add_' + tagName).hide();
+			} else {
+				jQuery('add_' + tagName).show();
+			}
+		} else {
+			jQuery('add_' + tagName).show();
+		}
+	}
+
+	function changeTab(tab) {
+		jQuery('#Form').centreonValidate('validate');
+		purgeHideInput(tab);
+		initCollapsebyTab(tab);
+		if(tab == "tab4"){
+			clonifyTableFields('parentGroup','displaynamegroup');
+		}
+		jQuery(function() {
+			jQuery.each(jQuery('[data-ontab-fn]'), function () {
+				window[jQuery(this).attr('data-ontab-fn')].onLoad(this, jQuery(this).attr('data-ontab-arg'))();
+			});
+		});
+		initCollapsebyTab(tab);
+	}
+
+	function purgeHideInput(tab) {
+		jQuery('.tab').each(function(idx, el){
+			if (el.id != tab) {
+				jQuery(el).find(':input').each(function(idx, input){
+					jQuery(input).qtip('destroy');
+				});
+			}
+		});
+	}
+
+	function formValidate() {
+		jQuery('#Form').centreonValidate('validate');
+		if (jQuery('#Form').centreonValidate('hasError')) {
+			var activeTab = jQuery('.tab').filter(function(index) { return jQuery(this).css('display') === 'block'; })[0];
+			purgeHideInput(activeTab.id);
+			return false;
+		}
+		return true;
+	}
 </script>
 {/literal}
