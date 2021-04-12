@@ -1073,9 +1073,12 @@ if ($o !== HOST_MASSIVE_CHANGE) {
     $form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
     $form->registerRule('existTemplate', 'callback', 'hasHostTemplateNeverUsed');
     $form->registerRule('exist', 'callback', 'hasHostNameNeverUsed');
+    $form->registerRule('sanitize', 'callback', 'isNotEmptyAfterStringSanitize');
     $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
     $form->addRule('host_name', _("Host name is already in use"), 'exist');
+    $form->addRule('host_name', _("Unauthorized value"), 'sanitize');
     $form->addRule('host_address', _("Compulsory Address"), 'required');
+    $form->addRule('host_address', _("Unauthorized value"), 'sanitize');
     $form->registerRule('cg_group_exists', 'callback', 'testCg');
     $form->addRule(
         'host_cgs',
