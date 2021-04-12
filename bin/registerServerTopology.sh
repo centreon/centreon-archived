@@ -495,13 +495,13 @@ fi
 if [[ $CURRENT_NODE_TYPE == 'remote' ]]; then
   prepare_remote_payload
   # get token of Remote API
-  get_api_token "$CURRENT_NODE_ADDRESS" "$API_CURRENT_NODE_USERNAME" "$API_CURRENT_NODE_PASSWORD" "$API_CURRENT_NODE_BASE_URI"
-  # send request to update informations and convert remote
+  get_api_token "$API_CURRENT_NODE_PROTOCOL:\\\\$CURRENT_NODE_ADDRESS:$API_CURRENT_NODE_PORT" "$API_CURRENT_NODE_USERNAME" "$API_CURRENT_NODE_PASSWORD" "$API_CURRENT_NODE_BASE_URI"
+  # # send request to update informations and convert remote
   request_to_remote
 else
   # Get the API TARGET Token
   get_api_token "$TARGET_NODE_ADDRESS" "$API_USERNAME" "$API_TARGET_PASSWORD" "$ROOT_CENTREON_FOLDER"
-  # Send cURL to POST Register
+  # # Send cURL to POST Register
   register_server
 fi
 
