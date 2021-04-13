@@ -565,9 +565,10 @@ function setup_before_installation() {
 # - php command
 # - request body
 function install_wizard_post() {
-  curl -s "http://localhost/centreon/install/steps/process/${2}" \
-    -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
-    -H "Cookie: ${1}" --data-raw "${3}"
+	echo -n "wizard install step ${2} response -> "
+	curl -s "http://localhost/centreon/install/steps/process/${2}" \
+		-H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+		-H "Cookie: ${1}" --data-raw "${3}"
 }
 #========= end of function install_wizard_post()
 
@@ -579,7 +580,7 @@ function play_install_wizard() {
 	log "WARN" "Random generated password for Centreon admin is saved in [$centreon_admin_password_file]"
 
 	sessionID=$(curl -s -v "http://localhost/centreon/install/install.php" 2>&1 | grep Set-Cookie | awk '{print $3}')
-	curl -s "http://localhost/centreon/install/steps/step.php?action=stepContent" -H "Cookie: ${sessionID}"
+	curl -s "http://localhost/centreon/install/steps/step.php?action=stepContent" -H "Cookie: ${sessionID}" > /dev/null
 	install_wizard_post ${sessionID} "process_step3.php" 'install_dir_engine=%2Fusr%2Fshare%2Fcentreon-engine&centreon_engine_stats_binary=%2Fusr%2Fsbin%2Fcentenginestats&monitoring_var_lib=%2Fvar%2Flib%2Fcentreon-engine&centreon_engine_connectors=%2Fusr%2Flib64%2Fcentreon-connector&centreon_engine_lib=%2Fusr%2Flib64%2Fcentreon-engine&centreonplugins=%2Fusr%2Flib%2Fcentreon%2Fplugins%2F'
 	install_wizard_post ${sessionID} "process_step4.php" 'centreonbroker_etc=%2Fetc%2Fcentreon-broker&centreonbroker_cbmod=%2Fusr%2Flib64%2Fnagios%2Fcbmod.so&centreonbroker_log=%2Fvar%2Flog%2Fcentreon-broker&centreonbroker_varlib=%2Fvar%2Flib%2Fcentreon-broker&centreonbroker_lib=%2Fusr%2Fshare%2Fcentreon%2Flib%2Fcentreon-broker'
 	install_wizard_post ${sessionID} "process_step5.php" "admin_password=${centreon_admin_password}&confirm_password=${centreon_admin_password}&firstname=John&lastname=Doe&email=jd%40cie.tld"
