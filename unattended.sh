@@ -17,6 +17,7 @@ repo=${ENV_CENTREON_REPO:-"stable"}            #Default repository to used
 operation=${ENV_CENTREON_OPERATION:-"install"} #Default operation to be executed
 runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}     #Default log level to be used
 selinux_mode=${ENV_SELINUX_MODE:-"permissive"} #Default SELinux mode to be used
+skip_wizard=${ENV_CENTREON_WIZARD:-"false"}    #Default the install wizard is not skiped
 
 #Generate random MariaDB root password
 mariadb_root_password=$(
@@ -24,8 +25,17 @@ mariadb_root_password=$(
 	echo
 )
 
+#Generate random Centreon admin password
+centreon_admin_password=$(
+	date +%s | sha256sum | base64 | head -c 32
+	echo
+)
+
 # File where the generated password will be temporaly saved
 mariadb_root_password_file=/etc/centreon/mariadb.tobedeleted
+
+# File where the centreon admin password will be temporaly saved
+centreon_admin_password_file=/etc/centreon/centreon.tobedeleted
 
 ##FIXME - to be set dynmically & and support other versions
 CENTREON_MAJOR_VERSION=$version
@@ -549,6 +559,42 @@ function setup_before_installation() {
 }
 #========= end of function setup_before_installation()
 
+#========= begin of function install_wizard_post()
+# execute a post request of the install wizard
+# - session coocky
+# - php command
+# - request body
+function install_wizard_post() {
+  curl "http://localhost/centreon/install/steps/process/${2}" \
+    -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+    -H "Cookie: ${1}" \
+    --data-raw "${3}"
+}
+#========= end of function install_wizard_post()
+
+#========= begin of function play_install_wizard()
+function play_install_wizard() {
+	echo "Random generated password for Centreon admin is [ $centreon_admin_password ]" >$centreon_admin_password_file
+	log "WARN" "Random generated password for Centreon admin is saved in [$centreon_admin_password_file]"
+
+	sessionID=$(curl -s -v "http://localhost/centreon/install/install.php" 2>&1 | grep Set-Cookie | awk '{print $3}')
+	curl "http://localhost/centreon/install/steps/step.php?action=stepContent" -H "Cookie: ${sessionID}"
+	post ${sessionID} "process_step3.php" 'install_dir_engine=%2Fusr%2Fshare%2Fcentreon-engine&centreon_engine_stats_binary=%2Fusr%2Fsbin%2Fcentenginestats&monitoring_var_lib=%2Fvar%2Flib%2Fcentreon-engine&centreon_engine_connectors=%2Fusr%2Flib64%2Fcentreon-connector&centreon_engine_lib=%2Fusr%2Flib64%2Fcentreon-engine&centreonplugins=%2Fusr%2Flib%2Fcentreon%2Fplugins%2F'
+	post ${sessionID} "process_step4.php" 'centreonbroker_etc=%2Fetc%2Fcentreon-broker&centreonbroker_cbmod=%2Fusr%2Flib64%2Fnagios%2Fcbmod.so&centreonbroker_log=%2Fvar%2Flog%2Fcentreon-broker&centreonbroker_varlib=%2Fvar%2Flib%2Fcentreon-broker&centreonbroker_lib=%2Fusr%2Fshare%2Fcentreon%2Flib%2Fcentreon-broker'
+	post ${sessionID} "process_step5.php" "admin_password=${centreon_admin_password}&confirm_password=${centreon_admin_password}&firstname=John&lastname=Doe&email=jd%40cie.tld"
+	post ${sessionID} "process_step6.php" "address=&port=&root_user=root&root_password=${mariadb_root_password}&db_configuration=centreon&db_storage=centreon_storage&db_user=centreon&db_password=c&db_password_confirm=c"
+	post ${sessionID} "configFileSetup.php"
+	post ${sessionID} "installConfigurationDb.php"
+	post ${sessionID} "installStorageDb.php"
+	post ${sessionID} "createDbUser.php"
+	post ${sessionID} "insertBaseConf.php"
+	post ${sessionID} "partitionTables.php"
+	post ${sessionID} "generationCache.php"
+	post ${sessionID} "process_step8.php" 'modules%5B%5D=centreon-license-manager&modules%5B%5D=centreon-pp-manager&modules%5B%5D=centreon-autodiscovery-server&widgets%5B%5D=engine-status&widgets%5B%5D=global-health&widgets%5B%5D=graph-monitoring&widgets%5B%5D=grid-map&widgets%5B%5D=host-monitoring&widgets%5B%5D=hostgroup-monitoring&widgets%5B%5D=httploader&widgets%5B%5D=live-top10-cpu-usage&widgets%5B%5D=live-top10-memory-usage&widgets%5B%5D=service-monitoring&widgets%5B%5D=servicegroup-monitoring&widgets%5B%5D=tactical-overview'
+	post ${sessionID} "process_step9.php" 'send_statistics=1'
+}
+#========= end of function play_install_wizard()
+
 #========= begin of function install_central()
 # install the Centreon Central
 #
@@ -584,6 +630,9 @@ function install_central() {
 
 	secure_mariadb_setup
 
+	if [ "x$skip_wizard" '=' "true" ]; then
+		play_install_wizard
+	fi
 }
 #========= end of function install_central()
 
