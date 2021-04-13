@@ -578,20 +578,20 @@ function play_install_wizard() {
 	log "WARN" "Random generated password for Centreon admin is saved in [$centreon_admin_password_file]"
 
 	sessionID=$(curl -s -v "http://localhost/centreon/install/install.php" 2>&1 | grep Set-Cookie | awk '{print $3}')
-	curl "http://localhost/centreon/install/steps/step.php?action=stepContent" -H "Cookie: ${sessionID}"
-	post ${sessionID} "process_step3.php" 'install_dir_engine=%2Fusr%2Fshare%2Fcentreon-engine&centreon_engine_stats_binary=%2Fusr%2Fsbin%2Fcentenginestats&monitoring_var_lib=%2Fvar%2Flib%2Fcentreon-engine&centreon_engine_connectors=%2Fusr%2Flib64%2Fcentreon-connector&centreon_engine_lib=%2Fusr%2Flib64%2Fcentreon-engine&centreonplugins=%2Fusr%2Flib%2Fcentreon%2Fplugins%2F'
-	post ${sessionID} "process_step4.php" 'centreonbroker_etc=%2Fetc%2Fcentreon-broker&centreonbroker_cbmod=%2Fusr%2Flib64%2Fnagios%2Fcbmod.so&centreonbroker_log=%2Fvar%2Flog%2Fcentreon-broker&centreonbroker_varlib=%2Fvar%2Flib%2Fcentreon-broker&centreonbroker_lib=%2Fusr%2Fshare%2Fcentreon%2Flib%2Fcentreon-broker'
-	post ${sessionID} "process_step5.php" "admin_password=${centreon_admin_password}&confirm_password=${centreon_admin_password}&firstname=John&lastname=Doe&email=jd%40cie.tld"
-	post ${sessionID} "process_step6.php" "address=&port=&root_user=root&root_password=${mariadb_root_password}&db_configuration=centreon&db_storage=centreon_storage&db_user=centreon&db_password=c&db_password_confirm=c"
-	post ${sessionID} "configFileSetup.php"
-	post ${sessionID} "installConfigurationDb.php"
-	post ${sessionID} "installStorageDb.php"
-	post ${sessionID} "createDbUser.php"
-	post ${sessionID} "insertBaseConf.php"
-	post ${sessionID} "partitionTables.php"
-	post ${sessionID} "generationCache.php"
-	post ${sessionID} "process_step8.php" 'modules%5B%5D=centreon-license-manager&modules%5B%5D=centreon-pp-manager&modules%5B%5D=centreon-autodiscovery-server&widgets%5B%5D=engine-status&widgets%5B%5D=global-health&widgets%5B%5D=graph-monitoring&widgets%5B%5D=grid-map&widgets%5B%5D=host-monitoring&widgets%5B%5D=hostgroup-monitoring&widgets%5B%5D=httploader&widgets%5B%5D=live-top10-cpu-usage&widgets%5B%5D=live-top10-memory-usage&widgets%5B%5D=service-monitoring&widgets%5B%5D=servicegroup-monitoring&widgets%5B%5D=tactical-overview'
-	post ${sessionID} "process_step9.php" 'send_statistics=1'
+	curl -s "http://localhost/centreon/install/steps/step.php?action=stepContent" -H "Cookie: ${sessionID}"
+	install_wizard_post ${sessionID} "process_step3.php" 'install_dir_engine=%2Fusr%2Fshare%2Fcentreon-engine&centreon_engine_stats_binary=%2Fusr%2Fsbin%2Fcentenginestats&monitoring_var_lib=%2Fvar%2Flib%2Fcentreon-engine&centreon_engine_connectors=%2Fusr%2Flib64%2Fcentreon-connector&centreon_engine_lib=%2Fusr%2Flib64%2Fcentreon-engine&centreonplugins=%2Fusr%2Flib%2Fcentreon%2Fplugins%2F'
+	install_wizard_post ${sessionID} "process_step4.php" 'centreonbroker_etc=%2Fetc%2Fcentreon-broker&centreonbroker_cbmod=%2Fusr%2Flib64%2Fnagios%2Fcbmod.so&centreonbroker_log=%2Fvar%2Flog%2Fcentreon-broker&centreonbroker_varlib=%2Fvar%2Flib%2Fcentreon-broker&centreonbroker_lib=%2Fusr%2Fshare%2Fcentreon%2Flib%2Fcentreon-broker'
+	install_wizard_post ${sessionID} "process_step5.php" "admin_password=${centreon_admin_password}&confirm_password=${centreon_admin_password}&firstname=John&lastname=Doe&email=jd%40cie.tld"
+	install_wizard_post ${sessionID} "process_step6.php" "address=&port=&root_user=root&root_password=${mariadb_root_password}&db_configuration=centreon&db_storage=centreon_storage&db_user=centreon&db_password=c&db_password_confirm=c"
+	install_wizard_post ${sessionID} "configFileSetup.php"
+	install_wizard_post ${sessionID} "installConfigurationDb.php"
+	install_wizard_post ${sessionID} "installStorageDb.php"
+	install_wizard_post ${sessionID} "createDbUser.php"
+	install_wizard_post ${sessionID} "insertBaseConf.php"
+	install_wizard_post ${sessionID} "partitionTables.php"
+	install_wizard_post ${sessionID} "generationCache.php"
+	install_wizard_post ${sessionID} "process_step8.php" 'modules%5B%5D=centreon-license-manager&modules%5B%5D=centreon-pp-manager&modules%5B%5D=centreon-autodiscovery-server&widgets%5B%5D=engine-status&widgets%5B%5D=global-health&widgets%5B%5D=graph-monitoring&widgets%5B%5D=grid-map&widgets%5B%5D=host-monitoring&widgets%5B%5D=hostgroup-monitoring&widgets%5B%5D=httploader&widgets%5B%5D=live-top10-cpu-usage&widgets%5B%5D=live-top10-memory-usage&widgets%5B%5D=service-monitoring&widgets%5B%5D=servicegroup-monitoring&widgets%5B%5D=tactical-overview'
+	install_wizard_post ${sessionID} "process_step9.php" 'send_statistics=1'
 }
 #========= end of function play_install_wizard()
 
