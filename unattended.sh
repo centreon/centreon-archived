@@ -565,15 +565,15 @@ function setup_before_installation() {
 # - php command
 # - request body
 function install_wizard_post() {
-  curl "http://localhost/centreon/install/steps/process/${2}" \
+  curl -s "http://localhost/centreon/install/steps/process/${2}" \
     -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
-    -H "Cookie: ${1}" \
-    --data-raw "${3}"
+    -H "Cookie: ${1}" --data-raw "${3}"
 }
 #========= end of function install_wizard_post()
 
 #========= begin of function play_install_wizard()
 function play_install_wizard() {
+	log "INFO" "Skipping install wizard"
 	echo "Random generated password for Centreon admin is [ $centreon_admin_password ]" >$centreon_admin_password_file
 	log "WARN" "Random generated password for Centreon admin is saved in [$centreon_admin_password_file]"
 
@@ -630,7 +630,7 @@ function install_central() {
 
 	secure_mariadb_setup
 
-	if [ "x$skip_wizard" '!=' "false" ]; then
+	if [ "x$skip_wizard" '!=' "xfalse" ]; then
 		play_install_wizard
 	fi
 }
