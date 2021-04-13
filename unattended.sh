@@ -629,10 +629,6 @@ function install_central() {
 	log "INFO" "PHP date.timezone set to $timezone"
 
 	secure_mariadb_setup
-
-	if [ "x$skip_wizard" '!=' "xfalse" ]; then
-		play_install_wizard
-	fi
 }
 #========= end of function install_central()
 
@@ -730,6 +726,13 @@ install)
 	esac
 
 	update_after_installation
+
+	if [ "x$topology" '=' "xcentral" ]; then
+		if [ "x$skip_wizard" '!=' "xfalse" ]; then
+			play_install_wizard
+		fi
+	fi
+
 
 	log "INFO" "Centreon $topology successfully installed !"
 	log "INFO" "Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon"
