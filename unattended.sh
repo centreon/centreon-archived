@@ -17,7 +17,7 @@ repo=${ENV_CENTREON_REPO:-"stable"}            #Default repository to used
 operation=${ENV_CENTREON_OPERATION:-"install"} #Default operation to be executed
 runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}     #Default log level to be used
 selinux_mode=${ENV_SELINUX_MODE:-"permissive"} #Default SELinux mode to be used
-skip_wizard=${ENV_CENTREON_WIZARD:-"false"}    #Default the install wizard is not skiped
+skip_wizard=${ENV_SKIP_WIZARD:-"false"}        #Default the install wizard is not skiped
 
 #Generate random MariaDB root password
 mariadb_root_password=$(
@@ -630,7 +630,7 @@ function install_central() {
 
 	secure_mariadb_setup
 
-	if [ "x$skip_wizard" '=' "true" ]; then
+	if [ "x$skip_wizard" '!=' "false" ]; then
 		play_install_wizard
 	fi
 }
