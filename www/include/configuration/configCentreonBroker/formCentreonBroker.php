@@ -37,8 +37,12 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!$centreon->user->admin && isset($_GET['id'])
-    && count($allowedBrokerConf) && !isset($allowedBrokerConf[$_GET['id']])) {
+if (
+    !$centreon->user->admin
+    && isset($_GET['id'])
+    && count($allowedBrokerConf)
+    && !isset($allowedBrokerConf[$_GET['id']])
+) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
     $msg->setTextStyle("bold");
