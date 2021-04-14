@@ -44,6 +44,7 @@ $id = filter_var(
     ['options' => ['default' => 0]]
 );
 
+
 if (
     !$centreon->user->admin
     && $id !== 0
@@ -171,7 +172,6 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     ));
     $tpl->assign('config_id', 0);
 } elseif ($id !== 0) {
-    $id = $_GET['id'];
     $tpl->assign('config_id', $id);
     $form->setDefaults(getCentreonBrokerInformation($id));
     /*
@@ -186,6 +186,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     }
     textdomain("messages");
 }
+
 $form->addElement('hidden', 'id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);

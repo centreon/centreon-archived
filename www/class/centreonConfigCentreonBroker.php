@@ -728,9 +728,10 @@ class CentreonConfigCentreonBroker
      */
     public function updateCentreonBrokerInfos($id, $values)
     {
+
         // exclude multiple parameters load with broker js hook
         $condition = '';
-        if ($values['output'] !== null) {
+        if (is_array($values['output'])) {
             foreach ($values['output'] as $key => $output) {
                 if (array_key_exists('lua_parameter__value_#index#', $output)) {
                     $condition .= ' AND config_key NOT LIKE "lua_parameter_%"';
