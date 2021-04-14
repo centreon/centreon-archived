@@ -93,54 +93,49 @@
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/centreon/brokerConfig.js"></script>
-
-
 <script type="text/javascript">
-
-
     jQuery('#Form').centreonValidate();
 
+	function mk_paginationFF(){};
+	function set_header_title(){};
 
-function mk_paginationFF(){};
-function set_header_title(){};
+	function Infos() {
+		this.tags = new Array();
 
-function Infos() {
-    this.tags = new Array();
+		this.getPos = function(type){
+			if (this.tags[type] == undefined) {
+					this.tags[type] = 0;
+			}
+			return this.tags[type];
+		};
 
-    this.getPos = function(type){
-        if (this.tags[type] == undefined) {
-                this.tags[type] = 0;
-        }
-        return this.tags[type];
-    };
+		this.setPos = function(type, value){
+			this.tags[type] = value;
+		};
 
-    this.setPos = function(type, value){
-        this.tags[type] = value;
-    };
+		this.incrementPos = function(type){
+			this.tags[type]++;
+		};
 
-    this.incrementPos = function(type){
-        this.tags[type]++;
-    };
+	}
 
-}
+	var infos = new Infos();
+	{/literal}
+	{foreach from=$tabs item=tab}
+		infos.setPos("{$tab.id}", {$tab.nb});
+	{/foreach}
+	{literal}
 
-var infos = new Infos();
-{/literal}
-{foreach from=$tabs item=tab}
-infos.setPos("{$tab.id}", {$tab.nb});
-{/foreach}
-{literal}
-
-var uniqueType = new Array();{/literal}
-{foreach from=$tabs item=tab}
-{foreach from=$tab.blocks item=block}
-{if $block.unique == 1}
-uniqueType["{$block.id}"] = true;
-{else}
-uniqueType["{$block.id}"] = false;
-{/if}
-{/foreach}
-{/foreach}{literal}
+	var uniqueType = new Array();{/literal}
+	{foreach from=$tabs item=tab}
+		{foreach from=$tab.blocks item=block}
+			{if $block.unique == 1}
+				uniqueType["{$block.id}"] = true;
+			{else}
+				uniqueType["{$block.id}"] = false;
+			{/if}
+		{/foreach}
+	{/foreach}{literal}
 
     function addInfo(type) {
         var prev_id = infos.getPos(type);
@@ -180,13 +175,10 @@ uniqueType["{$block.id}"] = false;
         });
     }
 
-
-
     function deleteRow(type, id) {
         var row_name = type + '_' + id;
         var parent = document.getElementById(type);
         var delEl = document.getElementById(row_name);
-        //  jQuery("#"+row_name).find('input').qtip('destroy');
         parent.removeChild(delEl);
         checkTypeValidity("block_" + type);
     }

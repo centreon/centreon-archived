@@ -38,11 +38,18 @@ if (!isset($centreon)) {
     exit();
 }
 
+$id = filter_var(
+    $_REQUEST['id'],
+    FILTER_VALIDATE_INT,
+    ['options' => ['default' => 0]]
+);
+
+
 if (
     !$centreon->user->admin
-    && isset($_GET['id'])
+    && $id !== 0
     && count($allowedBrokerConf)
-    && !isset($allowedBrokerConf[$_GET['id']])
+    && !isset($allowedBrokerConf[$id])
 ) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
@@ -140,12 +147,14 @@ $tags = $cbObj->getTags();
 
 $tabs = array();
 foreach ($tags as $tagId => $tag) {
-    $tabs[] = array('id' => $tag,
-                    'name' => _("Centreon-Broker " . ucfirst($tag)),
-                    'link' => _("Add"),
-                    'nb' => 0,
-                    'blocks' => $cbObj->getListConfigBlock($tagId),
-                    'forms' => array());
+    $tabs[] = array(
+        'id' => $tag,
+        'name' => _("Centreon-Broker " . ucfirst($tag)),
+        'link' => _("Add"),
+        'nb' => 0,
+        'blocks' => $cbObj->getListConfigBlock($tagId),
+        'forms' => array()
+    );
 }
 
 /**
@@ -162,24 +171,22 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
         "activate_watchdog" => '1'
     ));
     $tpl->assign('config_id', 0);
-} else {
-    if (isset($_GET['id']) && $_GET['id'] != 0) {
-        $id = $_GET['id'];
-        $tpl->assign('config_id', $id);
-        $form->setDefaults(getCentreonBrokerInformation($id));
-        /*
-         * Get informations for modify
-         */
-        textdomain("help");
-        $nbTabs = count($tabs);
-        for ($i = 0; $i < $nbTabs; $i++) {
-            $tabs[$i]['forms'] = $cbObj->getForms($id, $tabs[$i]['id'], $p, $tpl);
-            $tabs[$i]['helps'] = $cbObj->getHelps($id, $tabs[$i]['id']);
-            $tabs[$i]['nb'] = count($tabs[$i]['forms']);
-        }
-        textdomain("messages");
+} elseif ($id !== 0) {
+    $tpl->assign('config_id', $id);
+    $form->setDefaults(getCentreonBrokerInformation($id));
+    /*
+     * Get informations for modify
+     */
+    textdomain("help");
+    $nbTabs = count($tabs);
+    for ($i = 0; $i < $nbTabs; $i++) {
+        $tabs[$i]['forms'] = $cbObj->getForms($id, $tabs[$i]['id'], $p, $tpl);
+        $tabs[$i]['helps'] = $cbObj->getHelps($id, $tabs[$i]['id']);
+        $tabs[$i]['nb'] = count($tabs[$i]['forms']);
     }
+    textdomain("messages");
 }
+
 $form->addElement('hidden', 'id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
