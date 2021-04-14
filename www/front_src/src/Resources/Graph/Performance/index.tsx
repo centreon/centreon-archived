@@ -344,6 +344,7 @@ const PerformanceGraph = ({
                 loadingIndicatorSize={16}
               >
                 <IconButton
+                  disableTouchRipple
                   disabled={isNil(timeline)}
                   title={t(labelExportToPng)}
                   onClick={convertToPng}
