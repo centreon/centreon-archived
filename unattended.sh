@@ -21,6 +21,8 @@ selinux_mode=${ENV_SELINUX_MODE:-"permissive"} #Default SELinux mode to be used
 wizard_autoplay=${ENV_WIZARD_AUTOPLAY:-"true"} #Default the install wizard is run auto
 central_ip=${ENV_CENTRAL_IP:-$default_ip}      #Default central ip is the first of hostname -I
 
+function genpasswd() { date +%s%N | sha256sum | base64 | head -c 32; }
+
 #Generate random MariaDB root password
 mariadb_root_password=$(
 	date +%s%N | sha256sum | base64 | head -c 32
