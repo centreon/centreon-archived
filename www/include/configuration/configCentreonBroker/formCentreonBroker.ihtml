@@ -12,7 +12,7 @@
         </ul>
         <div id="validFormTop">
             {if $o == "a" || $o == "c"}
-              <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+                <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
             {else if $o == "w"}
                 <p class="oreonbutton">{$form.change.html}</p>
             {/if}
@@ -56,28 +56,28 @@
         </table>
     </div>
     {foreach from=$tabs item=tab name=tabForeach2}
-    <div id='tab{math equation="x + y" x=$smarty.foreach.tabForeach2.index y=2}' class='tab'>
-        <table class="formTable table" id="{$tab.id}">
-            <tbody id="{$tab.id}_0">
-            <tr class="list_lvl_1">
-                <td class="ListColLvl1_name" colspan="2">
-                    <h4>{$tab.name}</h4>
-                </td>
-            </tr>
-            <tr class="list_one"><td class="FormRowValue" colspan="2"><select id="block_{$tab.id}"
-                                                                              onchange='checkTypeValidity("block_{$tab.id}")'>{foreach from=$tab.blocks item=block}
-                <option value="{$block.id}">{$block.name}</option>
-                {/foreach}</select>&nbsp;<a id="add_{$tab.id}" onClick="addInfo('{$tab.id}')" class='btc bt_success'>{$tab.link}</a></td></tr>
-            </tbody>
-            {foreach from=$tab.forms item=formBlock name=formForeach}
-                {assign var="posAbs" value=$smarty.foreach.formForeach.index}
-                {assign var="posBlock" value=$posAbs+1}
-                <tbody class="collapse-wrapper" id="{$tab.id}_{$posBlock}">
-                    {include file='blockConfig.ihtml' tagBlock=$tab.id posBlock=$posBlock formBlock=$formBlock helps=$tab.helps[$posAbs]}
+        <div id='tab{math equation="x + y" x=$smarty.foreach.tabForeach2.index y=2}' class='tab'>
+            <table class="formTable table" id="{$tab.id}">
+                <tbody id="{$tab.id}_0">
+                <tr class="list_lvl_1">
+                    <td class="ListColLvl1_name" colspan="2">
+                        <h4>{$tab.name}</h4>
+                    </td>
+                </tr>
+                <tr class="list_one"><td class="FormRowValue" colspan="2"><select id="block_{$tab.id}"
+                                                                                  onchange='checkTypeValidity("block_{$tab.id}")'>{foreach from=$tab.blocks item=block}
+                    <option value="{$block.id}">{$block.name}</option>
+                    {/foreach}</select>&nbsp;<a id="add_{$tab.id}" onClick="addInfo('{$tab.id}')" class='btc bt_success'>{$tab.link}</a></td></tr>
                 </tbody>
-            {/foreach}
-        </table>
-    </div>
+                {foreach from=$tab.forms item=formBlock name=formForeach}
+                    {assign var="posAbs" value=$smarty.foreach.formForeach.index}
+                    {assign var="posBlock" value=$posAbs+1}
+                    <tbody class="collapse-wrapper" id="{$tab.id}_{$posBlock}">
+                        {include file='blockConfig.ihtml' tagBlock=$tab.id posBlock=$posBlock formBlock=$formBlock helps=$tab.helps[$posAbs]}
+                    </tbody>
+                {/foreach}
+            </table>
+        </div>
     {/foreach}
     <div id="validForm">
         {if $o == "a" || $o == "c"}
