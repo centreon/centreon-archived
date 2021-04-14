@@ -747,8 +747,10 @@ install)
 
 
 	log "INFO" "Centreon $topology successfully installed !"
-	log "INFO" "Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon"
-	log "INFO" "Follow the steps described in Centreon documentation: $CENTREON_DOC_URL"
+	log "INFO" "Log in to Centreon web interface via the URL: http://$central_ip/centreon"
+	if [ "x$topology" '!=' "xcentral" ] || [ "x$wizard_autoplay" '!=' "xtrue" ]; then
+		log "INFO" "Follow the steps described in Centreon documentation: $CENTREON_DOC_URL"
+	fi
 	;;
 
 upgrade)
