@@ -568,14 +568,14 @@ function install_wizard_post() {
 	echo -n "wizard install step ${2} response -> "
 	curl -s "http://localhost/centreon/install/steps/process/${2}" \
 		-H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
-		-H "Cookie: ${1}" --data-raw "${3}"
+		-H "Cookie: ${1}" --data "${3}"
 }
 #========= end of function install_wizard_post()
 
 #========= begin of function play_install_wizard()
 function play_install_wizard() {
 	log "INFO" "Skipping install wizard"
-	log "WARN" "Random generated password for Centreon admin is [ $mariadb_root_password ]"
+	log "WARN" "Random generated password for Centreon admin is [ $centreon_admin_password ]"
 	echo "Random generated password for Centreon admin is [ $centreon_admin_password ]" >$centreon_admin_password_file
 	log "WARN" "Random generated password for Centreon admin is saved in [$centreon_admin_password_file]"
 
