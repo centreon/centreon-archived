@@ -797,8 +797,10 @@ class CentreonConfigCentreonBroker
                                 foreach ($value as $fieldname2 => $value2) {
                                     if (is_array($value2)) {
                                         $explodedFieldname2 = explode('__', $fieldname2);
-                                        if (isset($fieldtype[$explodedFieldname2[1]]) &&
-                                            $fieldtype[$explodedFieldname2[1]] == 'radio') {
+                                        if (
+                                            isset($fieldtype[$explodedFieldname2[1]])
+                                            && $fieldtype[$explodedFieldname2[1]] == 'radio'
+                                        ) {
                                             $value2 = $value2[$explodedFieldname2[1]];
                                         }
                                     }
@@ -1364,20 +1366,22 @@ class CentreonConfigCentreonBroker
         if ($info['grp_level'] != 0) {
             $error = false;
             try {
-                $res = $this->db->query(sprintf(
-                    "SELECT config_key, config_value, config_group_id, grp_level, parent_grp_id
-               FROM cfg_centreonbroker_info
-               WHERE config_id = %d
-                   AND config_group = '%s'
-           AND subgrp_id = %d
-           AND grp_level = %d
-           AND config_group_id = %d",
-                    $configId,
-                    $configGroup,
-                    $info['parent_grp_id'],
-                    $info['grp_level'] - 1,
-                    $info['config_group_id']
-                ));
+                $res = $this->db->query(
+                    sprintf(
+                        "SELECT config_key, config_value, config_group_id, grp_level, parent_grp_id
+                        FROM cfg_centreonbroker_info
+                        WHERE config_id = %d
+                        AND config_group = '%s'
+                        AND subgrp_id = %d
+                        AND grp_level = %d
+                        AND config_group_id = %d",
+                        $configId,
+                        $configGroup,
+                        $info['parent_grp_id'],
+                        $info['grp_level'] - 1,
+                        $info['config_group_id']
+                    )
+                );
             } catch (\PDOException $e) {
                 $error = true;
             }
@@ -1386,9 +1390,9 @@ class CentreonConfigCentreonBroker
             }
             $row = $res->fetchRow();
             $elemStr = $this->getConfigFieldName(
-                    $configId,
-                    $configGroup,
-                    $row
+                $configId,
+                $configGroup,
+                $row
                 ) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
         }
         return $elemStr;
