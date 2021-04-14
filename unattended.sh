@@ -23,23 +23,23 @@ central_ip=${ENV_CENTRAL_IP:-$default_ip}      #Default central ip is the first 
 
 function genpasswd() { date +%s%N | sha256sum | base64 | head -c 32; }
 
-#Generate random MariaDB root password
-mariadb_root_password=$(
-	date +%s%N | sha256sum | base64 | head -c 32
-	echo
-)
+# Set MariaDB password from ENV or random password if not defined
+mariadb_root_password=${ENV_MARIADB_ROOT_PASSWD:-"$(genpasswd)"}
 
-#Generate random Centreon admin password
-centreon_admin_password=$(
-	date +%s%N | sha256sum | base64 | head -c 32
-	echo
-)
+# Set from ENV or random Centreon admin password
+centreon_admin_password=${ENV_CENTREON_ADMIN_PASSWD:-"$(genpasswd)"}
 
-#Generate random MariaDB centreon password
-mariadb_centreon_password=$(
-	date +%s%N | sha256sum | base64 | head -c 32
-	echo
-)
+# Set from ENV or random MariaDB centreon password
+mariadb_centreon_password=${ENV_MARIADB_CENTREON_PASSWD:-"$(genpasswd)"}
+
+# Set from ENV or Administrator first name
+centreon_admin_firstname=${ENV_CENTREON_ADMIN_FIRSTNAME:-"Jonh"}
+
+# Set from ENV or Administrator last name
+centreon_admin_lastname=${ENV_CENTREON_ADMIN_LASTNAME:-"Don"}
+
+# Set from ENV or Administrator e-mail
+centreon_admin_email=${ENV_CENTREON_ADMIN_EMAIL:-"admin@admin.tld"}
 
 # File where the generated passwords will be temporaly saved
 passwords_file=/etc/centreon/generated.tobesecured
