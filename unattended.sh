@@ -8,6 +8,7 @@ declare -A SUPPORTED_VERSION=([21.04]=1)
 declare -A SUPPORTED_REPOSITORY=([testing]=1 [unstable]=1 [stable]=1)
 default_timeout_in_sec=5
 script_short_name="$(basename $0)"
+default_hostname=$(hostname -I | awk '{print $1}')
 ###
 
 #Define default values
@@ -18,6 +19,7 @@ operation=${ENV_CENTREON_OPERATION:-"install"} #Default operation to be executed
 runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}     #Default log level to be used
 selinux_mode=${ENV_SELINUX_MODE:-"permissive"} #Default SELinux mode to be used
 wizard_autoplay=${ENV_WIZARD_AUTOPLAY:-"true"} #Default the install wizard is run auto
+central_ip=${ENV_CENTRAL_IP:-$default_hostname}
 
 #Generate random MariaDB root password
 mariadb_root_password=$(
@@ -569,7 +571,7 @@ function setup_before_installation() {
 # - request body
 function install_wizard_post() {
 	echo -n "wizard install step ${2} response -> "
-	curl -s "http://localhost/centreon/install/steps/process/${2}" \
+	curl -s "http://${central_ip}/centreon/install/steps/process/${2}" \
 		-H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
 		-H "Cookie: ${1}" --data "${3}"
 }
@@ -579,8 +581,8 @@ function install_wizard_post() {
 function play_install_wizard() {
 	log "INFO" "Playing install wizard"
 
-	sessionID=$(curl -s -v "http://localhost/centreon/install/install.php" 2>&1 | grep Set-Cookie | awk '{print $3}')
-	curl -s "http://localhost/centreon/install/steps/step.php?action=stepContent" -H "Cookie: ${sessionID}" > /dev/null
+	sessionID=$(curl -s -v "http://${central_ip}/centreon/install/install.php" 2>&1 | grep Set-Cookie | awk '{print $3}')
+	curl -s "http://${central_ip}/centreon/install/steps/step.php?action=stepContent" -H "Cookie: ${sessionID}" > /dev/null
 	install_wizard_post ${sessionID} "process_step3.php" 'install_dir_engine=%2Fusr%2Fshare%2Fcentreon-engine&centreon_engine_stats_binary=%2Fusr%2Fsbin%2Fcentenginestats&monitoring_var_lib=%2Fvar%2Flib%2Fcentreon-engine&centreon_engine_connectors=%2Fusr%2Flib64%2Fcentreon-connector&centreon_engine_lib=%2Fusr%2Flib64%2Fcentreon-engine&centreonplugins=%2Fusr%2Flib%2Fcentreon%2Fplugins%2F'
 	install_wizard_post ${sessionID} "process_step4.php" 'centreonbroker_etc=%2Fetc%2Fcentreon-broker&centreonbroker_cbmod=%2Fusr%2Flib64%2Fnagios%2Fcbmod.so&centreonbroker_log=%2Fvar%2Flog%2Fcentreon-broker&centreonbroker_varlib=%2Fvar%2Flib%2Fcentreon-broker&centreonbroker_lib=%2Fusr%2Fshare%2Fcentreon%2Flib%2Fcentreon-broker'
 	install_wizard_post ${sessionID} "process_step5.php" "admin_password=${centreon_admin_password}&confirm_password=${centreon_admin_password}&firstname=John&lastname=Doe&email=jd%40cie.tld"
@@ -757,7 +759,7 @@ if [ -e $mariadb_root_password_file ]; then
 	echo
 	echo "****** IMPORTANT ******"
 	echo "You will need the MariaDB user root password in order to continue the Centreon installation process."
-	echo "It was randomly generated (see logs in the section above) and saved in [$mariadb_root_password_file]"
+	echo "It was randomly generated (see logs in the section above) and saved in [$passwords_file]"
 	echo "Please save it securely and then delete this file"
 fi
 
