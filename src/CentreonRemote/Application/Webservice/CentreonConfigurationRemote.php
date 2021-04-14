@@ -693,7 +693,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             foreach ($topologyInformation['children_pollers'] as $poller) {
                 $statement->bindValue(
                     ':parentId',
-                    (int)$insertedPlatform['last_id'] ?? (int)$server['id'],
+                    isset($insertedPlatform['last_id']) ? (int)$insertedPlatform['last_id'] : (int)$server['id'],
                     \PDO::PARAM_INT
                 );
                 $statement->bindValue(':pollerId', (int)$poller->getId(), \PDO::PARAM_INT);
