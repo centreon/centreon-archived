@@ -31,11 +31,14 @@ centreon_admin_password=$(
 	echo
 )
 
-# File where the generated password will be temporaly saved
-mariadb_root_password_file=/etc/centreon/mariadb.tobedeleted
+#Generate random MariaDB centreon password
+mariadb_centreon_password=$(
+	date +%s | sha256sum | base64 | head -c 32
+	echo
+)
 
-# File where the centreon admin password will be temporaly saved
-centreon_admin_password_file=/etc/centreon/centreon.tobedeleted
+# File where the generated passwords will be temporaly saved
+passwords_file=/etc/centreon/generated.tobedeleted
 
 ##FIXME - to be set dynmically & and support other versions
 CENTREON_MAJOR_VERSION=$version
@@ -464,8 +467,8 @@ function secure_mariadb_setup() {
 	if [ "x$?" '!=' x0 ]; then
 		error_and_exit "Could not apply the requests"
 	else
-		echo "Random generated password for MariaDB user root is [ $mariadb_root_password ]" >$mariadb_root_password_file
-		log "WARN" "Random generated password for MariaDB user root is saved in [$mariadb_root_password_file]"
+		echo "Random generated password for MariaDB user root is [ $mariadb_root_password ]" >> $passwords_file
+		log "WARN" "Random generated password for MariaDB user root is saved in [$passwords_file]"
 	fi
 
 }
@@ -581,7 +584,7 @@ function play_install_wizard() {
 	install_wizard_post ${sessionID} "process_step3.php" 'install_dir_engine=%2Fusr%2Fshare%2Fcentreon-engine&centreon_engine_stats_binary=%2Fusr%2Fsbin%2Fcentenginestats&monitoring_var_lib=%2Fvar%2Flib%2Fcentreon-engine&centreon_engine_connectors=%2Fusr%2Flib64%2Fcentreon-connector&centreon_engine_lib=%2Fusr%2Flib64%2Fcentreon-engine&centreonplugins=%2Fusr%2Flib%2Fcentreon%2Fplugins%2F'
 	install_wizard_post ${sessionID} "process_step4.php" 'centreonbroker_etc=%2Fetc%2Fcentreon-broker&centreonbroker_cbmod=%2Fusr%2Flib64%2Fnagios%2Fcbmod.so&centreonbroker_log=%2Fvar%2Flog%2Fcentreon-broker&centreonbroker_varlib=%2Fvar%2Flib%2Fcentreon-broker&centreonbroker_lib=%2Fusr%2Fshare%2Fcentreon%2Flib%2Fcentreon-broker'
 	install_wizard_post ${sessionID} "process_step5.php" "admin_password=${centreon_admin_password}&confirm_password=${centreon_admin_password}&firstname=John&lastname=Doe&email=jd%40cie.tld"
-	install_wizard_post ${sessionID} "process_step6.php" "address=&port=&root_user=root&root_password=${mariadb_root_password}&db_configuration=centreon&db_storage=centreon_storage&db_user=centreon&db_password=c&db_password_confirm=c"
+	install_wizard_post ${sessionID} "process_step6.php" "address=&port=&root_user=root&root_password=${mariadb_root_password}&db_configuration=centreon&db_storage=centreon_storage&db_user=centreon&db_password=${mariadb_centreon_password}&db_password_confirm=${mariadb_centreon_password}"
 	install_wizard_post ${sessionID} "configFileSetup.php"
 	install_wizard_post ${sessionID} "installConfigurationDb.php"
 	install_wizard_post ${sessionID} "installStorageDb.php"
@@ -593,8 +596,10 @@ function play_install_wizard() {
 	install_wizard_post ${sessionID} "process_step9.php" 'send_statistics=1'
 
 	log "WARN" "Random generated password for Centreon admin is [ $centreon_admin_password ]"
-	echo "Random generated password for Centreon admin is [ $centreon_admin_password ]" >$centreon_admin_password_file
-	log "WARN" "Random generated password for Centreon admin is saved in [$centreon_admin_password_file]"
+	echo "Random generated password for Centreon admin is [ $centreon_admin_password ]" >> $passwords_file
+	log "WARN" "Random generated password for Centreon admin is [ $mariadb_centreon_password ]"
+	echo "Random generated password for MariaDB user centreon is [ $mariadb_centreon_password ]" >> $passwords_file
+	log "WARN" "Random generated passwords are saved in [$passwords_file]"
 }
 #========= end of function play_install_wizard()
 
