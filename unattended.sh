@@ -21,19 +21,19 @@ wizard_autoplay=${ENV_WIZARD_AUTOPLAY:-"true"} #Default the install wizard is ru
 
 #Generate random MariaDB root password
 mariadb_root_password=$(
-	date +%s | sha256sum | base64 | head -c 32
+	date +%s%N | sha256sum | base64 | head -c 32
 	echo
 )
 
 #Generate random Centreon admin password
 centreon_admin_password=$(
-	date +%s | sha256sum | base64 | head -c 32
+	date +%s%N | sha256sum | base64 | head -c 32
 	echo
 )
 
 #Generate random MariaDB centreon password
 mariadb_centreon_password=$(
-	date +%s | sha256sum | base64 | head -c 32
+	date +%s%N | sha256sum | base64 | head -c 32
 	echo
 )
 
@@ -597,7 +597,7 @@ function play_install_wizard() {
 
 	log "WARN" "Random generated password for Centreon admin is [ $centreon_admin_password ]"
 	echo "Random generated password for Centreon admin is [ $centreon_admin_password ]" >> $passwords_file
-	log "WARN" "Random generated password for Centreon admin is [ $mariadb_centreon_password ]"
+	log "WARN" "Random generated password for MariaDB centreon user is [ $mariadb_centreon_password ]"
 	echo "Random generated password for MariaDB user centreon is [ $mariadb_centreon_password ]" >> $passwords_file
 	log "WARN" "Random generated passwords are saved in [$passwords_file]"
 }
