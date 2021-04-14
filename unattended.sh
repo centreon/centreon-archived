@@ -410,7 +410,7 @@ function set_runtime_selinux_mode() {
 
 	log "INFO" "Set runtime SELinux mode to [ $1 ]"
 
-	_current_mode=$(getenforce)
+	_current_mode=$(getenforce | tr '[:upper:]' '[:lower:]')
 
 	log "DEBUG" "Current SELinux mode is [ $_current_mode ]"
 
