@@ -574,10 +574,7 @@ function install_wizard_post() {
 
 #========= begin of function play_install_wizard()
 function play_install_wizard() {
-	log "INFO" "Skipping install wizard"
-	log "WARN" "Random generated password for Centreon admin is [ $centreon_admin_password ]"
-	echo "Random generated password for Centreon admin is [ $centreon_admin_password ]" >$centreon_admin_password_file
-	log "WARN" "Random generated password for Centreon admin is saved in [$centreon_admin_password_file]"
+	log "INFO" "Playing install wizard"
 
 	sessionID=$(curl -s -v "http://localhost/centreon/install/install.php" 2>&1 | grep Set-Cookie | awk '{print $3}')
 	curl -s "http://localhost/centreon/install/steps/step.php?action=stepContent" -H "Cookie: ${sessionID}" > /dev/null
@@ -594,6 +591,10 @@ function play_install_wizard() {
 	install_wizard_post ${sessionID} "generationCache.php"
 	install_wizard_post ${sessionID} "process_step8.php" 'modules%5B%5D=centreon-license-manager&modules%5B%5D=centreon-pp-manager&modules%5B%5D=centreon-autodiscovery-server&widgets%5B%5D=engine-status&widgets%5B%5D=global-health&widgets%5B%5D=graph-monitoring&widgets%5B%5D=grid-map&widgets%5B%5D=host-monitoring&widgets%5B%5D=hostgroup-monitoring&widgets%5B%5D=httploader&widgets%5B%5D=live-top10-cpu-usage&widgets%5B%5D=live-top10-memory-usage&widgets%5B%5D=service-monitoring&widgets%5B%5D=servicegroup-monitoring&widgets%5B%5D=tactical-overview'
 	install_wizard_post ${sessionID} "process_step9.php" 'send_statistics=1'
+
+	log "WARN" "Random generated password for Centreon admin is [ $centreon_admin_password ]"
+	echo "Random generated password for Centreon admin is [ $centreon_admin_password ]" >$centreon_admin_password_file
+	log "WARN" "Random generated password for Centreon admin is saved in [$centreon_admin_password_file]"
 }
 #========= end of function play_install_wizard()
 
