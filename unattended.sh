@@ -8,7 +8,7 @@ declare -A SUPPORTED_VERSION=([21.04]=1)
 declare -A SUPPORTED_REPOSITORY=([testing]=1 [unstable]=1 [stable]=1)
 default_timeout_in_sec=5
 script_short_name="$(basename $0)"
-default_hostname=$(hostname -I | awk '{print $1}')
+default_ip=$(hostname -I | awk '{print $1}')
 ###
 
 #Define default values
@@ -19,7 +19,7 @@ operation=${ENV_CENTREON_OPERATION:-"install"} #Default operation to be executed
 runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}     #Default log level to be used
 selinux_mode=${ENV_SELINUX_MODE:-"permissive"} #Default SELinux mode to be used
 wizard_autoplay=${ENV_WIZARD_AUTOPLAY:-"true"} #Default the install wizard is run auto
-central_ip=${ENV_CENTRAL_IP:-$default_hostname}
+central_ip=${ENV_CENTRAL_IP:-$default_ip}      #Default central ip is the first of hostname -I
 
 #Generate random MariaDB root password
 mariadb_root_password=$(
@@ -40,7 +40,7 @@ mariadb_centreon_password=$(
 )
 
 # File where the generated passwords will be temporaly saved
-passwords_file=/etc/centreon/generated.tobedeleted
+passwords_file=/etc/centreon/generated.tobesecured
 
 ##FIXME - to be set dynmically & and support other versions
 CENTREON_MAJOR_VERSION=$version
