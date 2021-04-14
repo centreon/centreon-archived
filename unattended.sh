@@ -516,6 +516,12 @@ function update_firewall_config() {
 					error_and_exit "Could not configure firewall. You might need to run this script as root."
 				fi
 			done
+			for port in "5556/tcp" "5669/tcp"; do
+				firewall-cmd --zone=public --add-port=$port --permanent >/dev/null 2>&1
+				if [ "x$?" '!=' x0 ]; then
+					error_and_exit "Could not configure firewall. You might need to run this script as root."
+				fi
+			done
 			log "INFO" "Reloading firewall rules"
 			firewall-cmd --reload
 		else
@@ -747,8 +753,10 @@ install)
 
 
 	log "INFO" "Centreon $topology successfully installed !"
-	log "INFO" "Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon"
-	log "INFO" "Follow the steps described in Centreon documentation: $CENTREON_DOC_URL"
+	log "INFO" "Log in to Centreon web interface via the URL: http://$central_ip/centreon"
+	if [ "x$topology" '!=' "xcentral" ] || [ "x$wizard_autoplay" '!=' "xtrue" ]; then
+		log "INFO" "Follow the steps described in Centreon documentation: $CENTREON_DOC_URL"
+	fi
 	;;
 
 upgrade)
