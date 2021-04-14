@@ -713,7 +713,7 @@ log "INFO" " topology   : \t$topology"
 log "INFO" " version    : \t$version"
 log "INFO" " repository : \t$repo"
 
-log "WARN" "It will start in '$default_timeout_in_sec' seconds. If you don't want to way, press any key to continue or Ctrl-C to exit"
+log "WARN" "It will start in '$default_timeout_in_sec' seconds. If you don't want to wait, press any key to continue or Ctrl-C to exit"
 pause "" $default_timeout_in_sec
 
 ##
