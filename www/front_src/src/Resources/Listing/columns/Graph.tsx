@@ -58,6 +58,7 @@ const GraphColumn = ({
         >
           <Paper className={classes.graph}>
             <PerformanceGraph
+              limitLegendRows
               displayTitle={false}
               endpoint={endpoint}
               graphHeight={150}

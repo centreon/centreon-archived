@@ -67,6 +67,7 @@ interface Props {
   displayTooltipValues?: boolean;
   endpoint?: string;
   graphHeight: number;
+  limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   onTooltipDisplay?: (position?: [number, number]) => void;
   resource: Resource | ResourceDetails;
@@ -148,6 +149,7 @@ const PerformanceGraph = ({
   displayEventAnnotations = false,
   displayTooltipValues = false,
   displayTitle = true,
+  limitLegendRows,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -384,6 +386,7 @@ const PerformanceGraph = ({
         <div className={classes.legend}>
           <Legend
             base={base as number}
+            limitLegendRows={limitLegendRows}
             lines={sortedLines}
             toggable={toggableLegend}
             onClearHighlight={clearHighlight}

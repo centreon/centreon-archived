@@ -66,6 +66,7 @@ const ServiceGraphs = ({
         return (
           <div key={id}>
             <MemoizedPerformanceGraph
+              limitLegendRows
               adjustTimePeriod={adjustTimePeriod}
               customTimePeriod={customTimePeriod}
               getIntervalDates={getIntervalDates}
