@@ -31,7 +31,7 @@ function genpasswd() {
 
 	echo "Random password generated for user [$1] is [$_pwd]" >>$tmp_passwords_file
 
-	if [ "x$?" '!=' x0 ]; then
+	if [ $? -ne 0 ]; then
 		echo "ERROR : Cannot save the random password to [$tmp_passwords_file]"
 		exit 1
 	fi
@@ -408,7 +408,7 @@ function set_selinux_config() {
 
 		sed -i "s/^SELINUX=.*\$/SELINUX=$1/" /etc/selinux/config
 
-		if [ "x$?" '!=' x0 ]; then
+		if [ $? -ne 0 ]; then
 			error_and_exit "Could not change SELinux mode. You might need to run this script as root."
 		fi
 	else
@@ -484,7 +484,7 @@ function secure_mariadb_setup() {
 		FLUSH PRIVILEGES;
 	EOF
 
-	if [ "x$?" '!=' x0 ]; then
+	if [ $? -ne 0 ]; then
 		error_and_exit "Could not apply the requests"
 	else
 		log "INFO" "Successfully applied the SQL requests for enhancing your MariaDB"
@@ -503,9 +503,9 @@ function install_centreon_repo() {
 	$PKG_MGR -q clean all
 
 	rpm -q centreon-release-$CENTREON_MAJOR_VERSION >/dev/null 2>&1
-	if [ "x$?" '!=' x0 ]; then
+	if [ $? -ne 0 ]; then
 		$PKG_MGR -q install -y $RELEASE_RPM_URL ##FIXME - add key for secure mode
-		if [ "x$?" '!=' x0 ]; then
+		if [ $? -ne 0 ]; then
 			error_and_exit "Could not install Centreon repository"
 		fi
 	else
@@ -522,18 +522,18 @@ function update_firewall_config() {
 	log "INFO" "Update firewall configuration..."
 	command -v firewall-cmd >/dev/null 2>&1
 
-	if [ "x$?" '=' x0 ]; then
+	if [ $? -eq 0 ]; then
 		firewall-cmd --state >/dev/null 2>&1
-		if [ "x$?" '=' x0 ]; then
+		if [ $? -eq 0 ]; then
 			for svc in http snmp snmptrap; do
 				firewall-cmd --zone=public --add-service=$svc --permanent >/dev/null 2>&1
-				if [ "x$?" '!=' x0 ]; then
+				if [ $? -ne 0 ]; then
 					error_and_exit "Could not configure firewall. You might need to run this script as root."
 				fi
 			done
 			for port in "5556/tcp" "5669/tcp"; do
 				firewall-cmd --zone=public --add-port=$port --permanent >/dev/null 2>&1
-				if [ "x$?" '!=' x0 ]; then
+				if [ $? -ne 0 ]; then
 					error_and_exit "Could not configure firewall. You might need to run this script as root."
 				fi
 			done
@@ -632,7 +632,7 @@ function install_central() {
 	#FIXME : repo testing enabled for master
 	$PKG_MGR -q clean all --enablerepo="*" && $PKG_MGR -q install -y centreon --enablerepo="$CENTREON_REPO"
 
-	if [ "x$?" '!=' x0 ]; then
+	if [ $? -ne 0 ]; then
 		error_and_exit "Could not install Centreon (package centreon)"
 	fi
 
@@ -665,7 +665,7 @@ function install_central() {
 function install_poller() {
 	log "INFO" "Poller installation from ${CENTREON_REPO}"
 	$PKG_MGR -q clean all --enablerepo="*" && $PKG_MGR -q install -y centreon-poller-centreon-engine --enablerepo=$CENTREON_REPO
-	if [ "x$?" '!=' x0 ]; then
+	if [ $? -ne 0 ]; then
 		error_and_exit "Could not install Centreon (package centreon)"
 	fi
 }
