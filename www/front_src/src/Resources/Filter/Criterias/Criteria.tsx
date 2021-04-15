@@ -50,15 +50,19 @@ const CriteriaContent = ({
     }));
   };
 
-  const { label, options, buildAutocompleteEndpoint } = selectableCriterias[
-    name
-  ];
+  const {
+    label,
+    options,
+    buildAutocompleteEndpoint,
+    autocompleteSearch,
+  } = selectableCriterias[name];
 
   const commonProps = {
     className: classes.field,
     label: t(label),
     limitTags,
     openText: `${t(labelOpen)} ${t(label)}`,
+    search: autocompleteSearch,
   };
 
   if (isNil(options)) {
@@ -68,6 +72,7 @@ const CriteriaContent = ({
         page,
         search,
       });
+
     return (
       <MultiConnectedAutocompleteField
         {...commonProps}
