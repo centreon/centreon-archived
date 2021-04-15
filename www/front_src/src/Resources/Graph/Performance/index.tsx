@@ -16,6 +16,7 @@ import {
   not,
   add,
   negate,
+  or,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -42,6 +43,7 @@ import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
+import { useResourceContext } from '../../Context';
 
 import Graph from './Graph';
 import Legend from './Legend';
@@ -161,6 +163,8 @@ const PerformanceGraph = ({
   const [exporting, setExporting] = React.useState<boolean>(false);
   const performanceGraphRef = React.useRef<HTMLDivElement>();
 
+  const { selectedResourceId } = useResourceContext();
+
   const {
     sendRequest: sendGetGraphDataRequest,
     sending: sendingGetGraphDataRequest,
@@ -191,6 +195,13 @@ const PerformanceGraph = ({
       setLineData(newLineData);
     });
   }, [endpoint]);
+
+  React.useEffect(() => {
+    if (or(isNil(selectedResourceId), isNil(lineData))) {
+      return;
+    }
+    setLineData(undefined);
+  }, [selectedResourceId]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return (
