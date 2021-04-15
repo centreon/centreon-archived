@@ -12,6 +12,10 @@ default_ip=$(hostname -I | awk '{print $1}')
 ###
 
 #Define default values
+
+passwords_file=/etc/centreon/generated.tobesecured                                        #File where the generated passwords will be temporaly saved
+tmp_passwords_file=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1) #Random tmp file as the /etc/centreon does not exist yet
+
 topology=${ENV_CENTREON_TOPOLOGY:-"central"}   #Default topology to be installed
 version=${ENV_CENTREON_VERSION:-"21.04"}       #Default version to be installed
 repo=${ENV_CENTREON_REPO:-"stable"}            #Default repository to used
@@ -21,16 +25,30 @@ selinux_mode=${ENV_SELINUX_MODE:-"permissive"} #Default SELinux mode to be used
 wizard_autoplay=${ENV_WIZARD_AUTOPLAY:-"true"} #Default the install wizard is run auto
 central_ip=${ENV_CENTRAL_IP:-$default_ip}      #Default central ip is the first of hostname -I
 
-function genpasswd() { date +%s%N | sha256sum | base64 | head -c 32; }
+function genpasswd() {
+	local _pwd
+	_pwd=$(date +%s%N | sha256sum | base64 | head -c 32)
+
+	echo "Random password generated for user [$1] is [$_pwd]" >>$tmp_passwords_file
+
+	if [ "x$?" '!=' x0 ]; then
+		echo "ERROR : Cannot save the random password to [$tmp_passwords_file]"
+		exit 1
+	fi
+
+	#return the generated password
+	echo $_pwd
+
+}
 
 # Set MariaDB password from ENV or random password if not defined
-mariadb_root_password=${ENV_MARIADB_ROOT_PASSWD:-"$(genpasswd)"}
-
-# Set from ENV or random Centreon admin password
-centreon_admin_password=${ENV_CENTREON_ADMIN_PASSWD:-"$(genpasswd)"}
+mariadb_root_password=${ENV_MARIADB_ROOT_PASSWD:-"$(genpasswd "MariaDB user : root")"}
 
 # Set from ENV or random MariaDB centreon password
-mariadb_centreon_password=${ENV_MARIADB_CENTREON_PASSWD:-"$(genpasswd)"}
+mariadb_centreon_password=${ENV_MARIADB_CENTREON_PASSWD:-"$(genpasswd "MariaDB user : centreon")"}
+
+# Set from ENV or random Centreon admin password
+centreon_admin_password=${ENV_CENTREON_ADMIN_PASSWD:-"$(genpasswd "Centreon user : admin")"}
 
 # Set from ENV or Administrator first name
 centreon_admin_firstname=${ENV_CENTREON_ADMIN_FIRSTNAME:-"Jonh"}
@@ -40,9 +58,6 @@ centreon_admin_lastname=${ENV_CENTREON_ADMIN_LASTNAME:-"Don"}
 
 # Set from ENV or Administrator e-mail
 centreon_admin_email=${ENV_CENTREON_ADMIN_EMAIL:-"admin@admin.tld"}
-
-# File where the generated passwords will be temporaly saved
-passwords_file=/etc/centreon/generated.tobesecured
 
 ##FIXME - to be set dynmically & and support other versions
 CENTREON_MAJOR_VERSION=$version
@@ -188,19 +203,19 @@ function parse_subcommand_options() {
 
 	## check the configuration parameters
 	if [ -z "${requested_topology}" ]; then
-		log "WARN" "No topology provided : default value '$topology' will be used"
+		log "WARN" "No topology provided : default value [$topology] will be used"
 	else
 		topology=$requested_topology
 	fi
 
 	if [ -z "${requested_version}" ]; then
-		log "WARN" "No version provided : default value '$version' will be used"
+		log "WARN" "No version provided : default value [$version] will be used"
 	else
 		version=$requested_version
 	fi
 
 	if [ -z "${requested_repo}" ]; then
-		log "WARN" "No repository provided : default value '$repo' will be used"
+		log "WARN" "No repository provided : default value [$repo] will be used"
 	else
 		repo=$requested_repo
 	fi
@@ -272,7 +287,7 @@ function set_centreon_repos() {
 		fi
 	done
 
-	log "INFO" "Following Centreon repo will be used [ $CENTREON_REPO ]"
+	log "INFO" "Following Centreon repo will be used [$CENTREON_REPO]"
 
 }
 #========= end of function set_centreon_repos()
@@ -344,7 +359,7 @@ function set_required_prerequisite() {
 		esac
 
 		#FIXME check the result
-		#FIXE install PHP 7.3
+		#FIXE handle the case where PHP 7.2 is already installed then switch to 7.3
 		log "INFO" "Installing PHP 7.3 and enable it"
 		$PKG_MGR module install php:7.3 -y -q
 		$PKG_MGR module enable php:7.3 -y -q
@@ -386,7 +401,7 @@ function is_systemd_present() {
 #
 function set_selinux_config() {
 
-	log "INFO" "Change SELinux config to mode [ $1 ]"
+	log "INFO" "Change SELinux config to mode [$1]"
 
 	if [ -e /etc/selinux/config ]; then
 		log "WARN" "Modifying /etc/selinux/config. You must reboot your machine."
@@ -408,11 +423,11 @@ function set_selinux_config() {
 #
 function set_runtime_selinux_mode() {
 
-	log "INFO" "Set runtime SELinux mode to [ $1 ]"
+	log "INFO" "Set runtime SELinux mode to [$1]"
 
 	_current_mode=$(getenforce | tr '[:upper:]' '[:lower:]')
 
-	log "DEBUG" "Current SELinux mode is [ $_current_mode ]"
+	log "DEBUG" "Current SELinux mode is [$_current_mode]"
 
 	shopt -s nocasematch
 
@@ -452,7 +467,6 @@ function secure_mariadb_setup() {
 	log "INFO" "Secure MariaDB setup..."
 	log "WARN" "We are applying some requests that will enhance your MariaDB setup security"
 	log "WARN" "Please consult the official documentation https://mariadb.com/kb/en/mysql_secure_installation/ for more details"
-	log "WARN" "Random generated password for user root is [ $mariadb_root_password ]"
 	log "WARN" "You can use mysqladmin in order to set a new password for user root"
 
 	log "INFO" "Restarting MariaDB service first"
@@ -471,8 +485,7 @@ function secure_mariadb_setup() {
 	if [ "x$?" '!=' x0 ]; then
 		error_and_exit "Could not apply the requests"
 	else
-		echo "Random generated password for MariaDB user root is [ $mariadb_root_password ]" >> $passwords_file
-		log "WARN" "Random generated password for MariaDB user root is saved in [$passwords_file]"
+		log "INFO" "Successfully applied the SQL requests for enhancing your MariaDB"
 	fi
 
 }
@@ -578,10 +591,9 @@ function setup_before_installation() {
 # - php command
 # - request body
 function install_wizard_post() {
-	echo -n "wizard install step ${2} response -> "
-	curl -s "http://${central_ip}/centreon/install/steps/process/${2}" \
+	log "INFO" " wizard install step ${2} response ->  $(curl -s -o /dev/null -w "%{http_code}" "http://${central_ip}/centreon/install/steps/process/${2}" \
 		-H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
-		-H "Cookie: ${1}" --data "${3}"
+		-H "Cookie: ${1}" --data "${3}")"
 }
 #========= end of function install_wizard_post()
 
@@ -590,7 +602,7 @@ function play_install_wizard() {
 	log "INFO" "Playing install wizard"
 
 	sessionID=$(curl -s -v "http://${central_ip}/centreon/install/install.php" 2>&1 | grep Set-Cookie | awk '{print $3}')
-	curl -s "http://${central_ip}/centreon/install/steps/step.php?action=stepContent" -H "Cookie: ${sessionID}" > /dev/null
+	curl -s "http://${central_ip}/centreon/install/steps/step.php?action=stepContent" -H "Cookie: ${sessionID}" >/dev/null
 	install_wizard_post ${sessionID} "process_step3.php" 'install_dir_engine=%2Fusr%2Fshare%2Fcentreon-engine&centreon_engine_stats_binary=%2Fusr%2Fsbin%2Fcentenginestats&monitoring_var_lib=%2Fvar%2Flib%2Fcentreon-engine&centreon_engine_connectors=%2Fusr%2Flib64%2Fcentreon-connector&centreon_engine_lib=%2Fusr%2Flib64%2Fcentreon-engine&centreonplugins=%2Fusr%2Flib%2Fcentreon%2Fplugins%2F'
 	install_wizard_post ${sessionID} "process_step4.php" 'centreonbroker_etc=%2Fetc%2Fcentreon-broker&centreonbroker_cbmod=%2Fusr%2Flib64%2Fnagios%2Fcbmod.so&centreonbroker_log=%2Fvar%2Flog%2Fcentreon-broker&centreonbroker_varlib=%2Fvar%2Flib%2Fcentreon-broker&centreonbroker_lib=%2Fusr%2Fshare%2Fcentreon%2Flib%2Fcentreon-broker'
 	install_wizard_post ${sessionID} "process_step5.php" "admin_password=${centreon_admin_password}&confirm_password=${centreon_admin_password}&firstname=${centreon_admin_firstname}&lastname=${centreon_admin_lastname}&email=${centreon_admin_email}"
@@ -605,11 +617,6 @@ function play_install_wizard() {
 	install_wizard_post ${sessionID} "process_step8.php" 'modules%5B%5D=centreon-license-manager&modules%5B%5D=centreon-pp-manager&modules%5B%5D=centreon-autodiscovery-server&widgets%5B%5D=engine-status&widgets%5B%5D=global-health&widgets%5B%5D=graph-monitoring&widgets%5B%5D=grid-map&widgets%5B%5D=host-monitoring&widgets%5B%5D=hostgroup-monitoring&widgets%5B%5D=httploader&widgets%5B%5D=live-top10-cpu-usage&widgets%5B%5D=live-top10-memory-usage&widgets%5B%5D=service-monitoring&widgets%5B%5D=servicegroup-monitoring&widgets%5B%5D=tactical-overview'
 	install_wizard_post ${sessionID} "process_step9.php" 'send_statistics=1'
 
-	log "WARN" "Random generated password for Centreon admin is [ $centreon_admin_password ]"
-	echo "Random generated password for Centreon admin is [ $centreon_admin_password ]" >> $passwords_file
-	log "WARN" "Random generated password for MariaDB centreon user is [ $mariadb_centreon_password ]"
-	echo "Random generated password for MariaDB user centreon is [ $mariadb_centreon_password ]" >> $passwords_file
-	log "WARN" "Random generated passwords are saved in [$passwords_file]"
 }
 #========= end of function play_install_wizard()
 
@@ -618,7 +625,7 @@ function play_install_wizard() {
 #
 function install_central() {
 
-	log "INFO" "Centreon $topology installation from ${CENTREON_REPO}"
+	log "INFO" "Centreon [$topology] installation from [${CENTREON_REPO}]"
 
 	#FIXME : repo testing enabled for master
 	$PKG_MGR -q clean all --enablerepo="*" && $PKG_MGR -q install -y centreon --enablerepo="$CENTREON_REPO"
@@ -644,7 +651,7 @@ function install_central() {
 	' 2>/dev/null)
 	echo "date.timezone = $timezone" >$PHP_ETC/50-centreon.ini
 
-	log "INFO" "PHP date.timezone set to $timezone"
+	log "INFO" "PHP date.timezone set to [$timezone]"
 
 	secure_mariadb_setup
 }
@@ -699,7 +706,7 @@ install)
 	;;
 
 *)
-	log "WARN" "No provided operation : default value '$operation' will be used"
+	log "WARN" "No provided operation : default value [$operation] will be used"
 	#usage
 	operation="install"
 	parse_subcommand_options "$@"
@@ -709,11 +716,11 @@ esac
 
 ## Display all configured parameters
 log "INFO" "Start to execute operation [$operation] with following configuration parameters:"
-log "INFO" " topology   : \t$topology"
-log "INFO" " version    : \t$version"
-log "INFO" " repository : \t$repo"
+log "INFO" " topology   : \t[$topology]"
+log "INFO" " version    : \t[$version]"
+log "INFO" " repository : \t[$repo]"
 
-log "WARN" "It will start in '$default_timeout_in_sec' seconds. If you don't want to wait, press any key to continue or Ctrl-C to exit"
+log "WARN" "It will start in [$default_timeout_in_sec] seconds. If you don't want to wait, press any key to continue or Ctrl-C to exit"
 pause "" $default_timeout_in_sec
 
 ##
@@ -751,10 +758,11 @@ install)
 		fi
 	fi
 
+	log "INFO" "Centreon [$topology] successfully installed !"
 
-	log "INFO" "Centreon $topology successfully installed !"
-	log "INFO" "Log in to Centreon web interface via the URL: http://$central_ip/centreon"
-	if [ "x$topology" '!=' "xcentral" ] || [ "x$wizard_autoplay" '!=' "xtrue" ]; then
+	if [ "x$topology" '=' "xcentral" ] && [ "x$wizard_autoplay" '=' "xtrue" ]; then
+		log "INFO" "Log in to Centreon web interface via the URL: http://$central_ip/centreon"
+	else
 		log "INFO" "Follow the steps described in Centreon documentation: $CENTREON_DOC_URL"
 	fi
 	;;
@@ -765,12 +773,17 @@ upgrade)
 esac
 
 ## Major change - remind it again (in case of log level is ERROR)
-if [ -e $mariadb_root_password_file ]; then
+if [ -e $tmp_passwords_file ] && [ "x$topology" '=' "xcentral" ]; then
+	# Move the tmp file to the dest file
+	mv $tmp_passwords_file $passwords_file
 	echo
 	echo "****** IMPORTANT ******"
-	echo "You will need the MariaDB user root password in order to continue the Centreon installation process."
-	echo "It was randomly generated (see logs in the section above) and saved in [$passwords_file]"
-	echo "Please save it securely and then delete this file"
+	echo "As you will need passwords for users such as MariaDB [root,centreon] and Centreon [admin], random passwords are generated"
+	echo "Passwords are currently saved in [$passwords_file]"
+	cat $passwords_file
+	echo
+	echo "Please save them securely and then delete this file!"
+	echo
 fi
 
 exit 0
