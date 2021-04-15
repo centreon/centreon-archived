@@ -13,8 +13,8 @@ default_ip=$(hostname -I | awk '{print $1}')
 
 #Define default values
 
-passwords_file=/etc/centreon/generated.tobesecured                                        #File where the generated passwords will be temporaly saved
-tmp_passwords_file=/tmp/$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1) #Random tmp file as the /etc/centreon does not exist yet
+passwords_file=/etc/centreon/generated.tobesecured         #File where the generated passwords will be temporaly saved
+tmp_passwords_file=$(mktemp /tmp/generated.XXXXXXXXXXXXXX) #Random tmp file as the /etc/centreon does not exist yet
 
 topology=${ENV_CENTREON_TOPOLOGY:-"central"}   #Default topology to be installed
 version=${ENV_CENTREON_VERSION:-"21.04"}       #Default version to be installed
