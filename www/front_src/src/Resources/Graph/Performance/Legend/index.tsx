@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import clsx from 'clsx';
-import { concat, equals, find, includes, propOr, split } from 'ramda';
+import { equals, find, includes, propOr, split } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -50,7 +50,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
     gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
     justifyContent: 'center',
     marginLeft: theme.spacing(0.5),
-    maxHeight: limitLegendRows ? theme.spacing(16) : '25vh',
+    maxHeight: limitLegendRows ? theme.spacing(16) : 'unset',
     overflowY: 'auto',
     width: '100%',
   }),
@@ -167,7 +167,7 @@ const LegendContent = ({
 
   return (
     <div className={classes.items}>
-      {concat(lines, lines).map((line) => {
+      {lines.map((line) => {
         const { color, name, display } = line;
 
         const markerColor = display
