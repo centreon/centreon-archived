@@ -451,8 +451,10 @@ function set_runtime_selinux_mode() {
 
 	setenforce $_request_mode
 
-	if [ "x$?" '!=' x0 ]; then
+	if [ $? -eq 2 ]; then
 		error_and_exit "Could not change SELinux mode. You might need to run this script as root."
+	elif [ $? -eq 1 ]; then
+		log "WARN" "Current SELinux mode is disabled. Nothing to do"
 	fi
 
 }
