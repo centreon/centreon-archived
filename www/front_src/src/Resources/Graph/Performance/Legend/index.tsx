@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import clsx from 'clsx';
-import { equals, find, includes, propOr, split } from 'ramda';
+import { concat, equals, find, includes, propOr, split } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -167,7 +167,7 @@ const LegendContent = ({
 
   return (
     <div className={classes.items}>
-      {lines.map((line) => {
+      {concat(lines, lines).map((line) => {
         const { color, name, display } = line;
 
         const markerColor = display

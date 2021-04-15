@@ -113,10 +113,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     width: '90%',
   },
   legend: {
-    alignItems: 'center',
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    height: '100%',
     width: '100%',
   },
   loadingContainer: {
