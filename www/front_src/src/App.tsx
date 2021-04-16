@@ -122,7 +122,7 @@ class App extends Component<Props, State> {
   private keepAlive = (): void => {
     this.keepAliveTimeout = setTimeout(() => {
       axios('internal.php?object=centreon_keepalive&action=keepAlive')
-        .get('')
+        .get()
         .then(() => this.keepAlive())
         .catch((error) => {
           if (error.response && error.response.status === 401) {
