@@ -373,7 +373,14 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         );
 
         if (!empty($builtCommand)) {
-            $monitoringHost->setCheckCommand($builtCommand);
+            // Hide as much as possible passwords from Centreon Plugins options which may be used in non-password macros
+            $monitoringHost->setCheckCommand(
+                preg_replace(
+                    '/(--[0-9a-z-]*pass(phrase|word)=|--snmp-community=)[^ ]+/',
+                    '$1' . $replacementValue,
+                    $builtCommand
+                )
+            );
         }
     }
 
@@ -428,7 +435,14 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         );
 
         if (!empty($builtCommand)) {
-            $monitoringService->setCommandLine($builtCommand);
+            // Hide as much as possible passwords from Centreon Plugins options which may be used in non-password macros
+            $monitoringService->setCommandLine(
+                preg_replace(
+                    '/(--[0-9a-z-]*pass(phrase|word)=|--snmp-community=)[^ ]+/',
+                    '$1' . $replacementValue,
+                    $builtCommand
+                )
+            );
         }
     }
 }
