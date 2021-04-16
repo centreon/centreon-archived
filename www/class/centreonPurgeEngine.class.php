@@ -245,7 +245,7 @@ class CentreonPurgeEngine
     private function purgeIndexData()
     {
         $request = "UPDATE index_data SET to_delete = '1' WHERE ";
-        $request .= "NOT EXISTS(SELECT 1 FROM " . db . ".service  WHERE service.service_id = index_data.service_id)";
+        $request .= "NOT EXISTS(SELECT 1 FROM " . db . ".service WHERE service.service_id = index_data.service_id)";
 
         try {
             $DBRESULT = $this->dbCentstorage->query($request);
