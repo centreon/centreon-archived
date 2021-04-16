@@ -22,7 +22,7 @@ import { history } from './store';
 import NavigationComponent from './components/navigation';
 import Tooltip from './components/tooltip';
 import Footer from './components/footer';
-import axios from './axios/index';
+import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import footerStyles from './components/footer/footer.scss';
 import PageLoader from './components/PageLoader';
