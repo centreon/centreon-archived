@@ -345,7 +345,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
-    public function hidePasswordInHostCommandLine(Host $monitoringHost, string $replacementValue = '***'): void
+    public function hidePasswordInHostCommandLine(Host $monitoringHost, string $replacementValue = '$pw'): void
     {
         $monitoringCommand = $monitoringHost->getCheckCommand();
         if (empty($monitoringCommand)) {
@@ -387,7 +387,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
-    public function hidePasswordInServiceCommandLine(Service $monitoringService, string $replacementValue = '***'): void
+    public function hidePasswordInServiceCommandLine(Service $monitoringService, string $replacementValue = '$pw'): void
     {
         $monitoringCommand = $monitoringService->getCommandLine();
         if (empty($monitoringCommand)) {
