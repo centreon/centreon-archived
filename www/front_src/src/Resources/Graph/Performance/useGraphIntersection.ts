@@ -21,7 +21,7 @@ export const useIntersection = (): UseIntersection => {
     observer.current = new window.IntersectionObserver(
       ([newEntry]) => setEntry(newEntry),
       {
-        rootMargin: '150px 0px 150px 0px',
+        threshold: 0,
       },
     );
 
@@ -35,7 +35,7 @@ export const useIntersection = (): UseIntersection => {
   }, [element]);
 
   return {
-    isDisplaying: Boolean(entry?.isIntersecting),
+    isDisplaying: entry?.isIntersecting ?? true,
     setElement,
   };
 };

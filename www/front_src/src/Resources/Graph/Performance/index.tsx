@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
+import { Skeleton } from '@material-ui/lab';
 
 import {
   useRequest,
@@ -163,6 +164,7 @@ const PerformanceGraph = ({
   const [base, setBase] = React.useState<number>();
   const [exporting, setExporting] = React.useState<boolean>(false);
   const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
+  const performanceGraphHeightRef = React.useRef<number>(0);
 
   const { selectedResourceId } = useResourceContext();
 
@@ -172,7 +174,7 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
-  const metricsValueProps = useMetricsValue();
+  const metricsValueProps = useMetricsValue(isDisplaying);
   const { toDateTime } = useLocaleDateTimeFormat();
 
   React.useEffect(() => {
@@ -205,16 +207,28 @@ const PerformanceGraph = ({
     setLineData(undefined);
   }, [selectedResourceId]);
 
-  if (
-    isNil(lineData) ||
-    isNil(timeline) ||
-    isNil(endpoint) ||
-    not(isDisplaying)
-  ) {
+  React.useEffect(() => {
+    if (isDisplaying && performanceGraphRef.current && lineData) {
+      performanceGraphHeightRef.current =
+        performanceGraphRef.current.clientHeight;
+    }
+  }, [isDisplaying, lineData]);
+
+  if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return (
       <LoadingSkeleton
         displayTitleSkeleton={displayTitle}
         graphHeight={graphHeight}
+      />
+    );
+  }
+
+  if (lineData && not(isDisplaying)) {
+    return (
+      <Skeleton
+        height={performanceGraphHeightRef.current}
+        variant="rect"
+        width="100%"
       />
     );
   }

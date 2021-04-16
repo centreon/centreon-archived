@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { isNil, not } from 'ramda';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
@@ -29,7 +29,7 @@ interface UseMetricsValue {
   metricsValue: MetricsValue | null;
 }
 
-const useMetricsValue = (): UseMetricsValue => {
+const useMetricsValue = (isInViewPort?: boolean): UseMetricsValue => {
   const [metricsValue, setMetricsValue] = React.useState<MetricsValue | null>(
     null,
   );
@@ -42,6 +42,9 @@ const useMetricsValue = (): UseMetricsValue => {
     });
 
   const changeMetricsValue = ({ newMetricsValue }) => {
+    if (not(isInViewPort)) {
+      return;
+    }
     setMetricsValue(newMetricsValue);
   };
 
