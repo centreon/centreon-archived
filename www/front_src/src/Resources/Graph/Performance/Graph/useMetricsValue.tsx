@@ -1,15 +1,12 @@
 import * as React from 'react';
 
-import { isEmpty, isNil, not, or } from 'ramda';
-import { useTooltip } from '@visx/visx';
+import { isNil } from 'ramda';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import formatMetricValue from '../formatMetricValue';
 import { Line, TimeValue } from '../models';
 import { getLineForMetric } from '../timeSeries';
-
-import MetricsTooltip from './MetricsTooltip';
 
 interface MetricsValue {
   base: number;
@@ -31,12 +28,7 @@ interface UseMetricsValue {
   changeMetricsValue: ({ newMetricsValue, displayTooltipValues }) => void;
   formatDate: () => string;
   getFormattedMetricData: (metric: string) => FormattedMetricData | null;
-  hideTooltip;
   metricsValue: MetricsValue | null;
-  tooltipData;
-  tooltipLeft;
-  tooltipOpen;
-  tooltipTop;
 }
 
 const useMetricsValue = (): UseMetricsValue => {
@@ -44,14 +36,6 @@ const useMetricsValue = (): UseMetricsValue => {
     null,
   );
   const { format } = useLocaleDateTimeFormat();
-  const {
-    tooltipData,
-    tooltipLeft,
-    tooltipTop,
-    tooltipOpen,
-    showTooltip,
-    hideTooltip,
-  } = useTooltip();
 
   const formatDate = () =>
     format({
@@ -59,19 +43,8 @@ const useMetricsValue = (): UseMetricsValue => {
       formatString: dateTimeFormat,
     });
 
-  const changeMetricsValue = ({ newMetricsValue, displayTooltipValues }) => {
+  const changeMetricsValue = ({ newMetricsValue }) => {
     setMetricsValue(newMetricsValue);
-    if (or(not(displayTooltipValues), isNil(newMetricsValue))) {
-      hideTooltip();
-      return;
-    }
-    showTooltip({
-      tooltipData: isEmpty(newMetricsValue?.metrics) ? undefined : (
-        <MetricsTooltip />
-      ),
-      tooltipLeft: newMetricsValue?.x || 0,
-      tooltipTop: newMetricsValue?.y || 0,
-    });
   };
 
   const getFormattedMetricData = (metric: string) => {
@@ -103,12 +76,7 @@ const useMetricsValue = (): UseMetricsValue => {
     changeMetricsValue,
     formatDate,
     getFormattedMetricData,
-    hideTooltip,
     metricsValue,
-    tooltipData,
-    tooltipLeft,
-    tooltipOpen,
-    tooltipTop,
   };
 };
 

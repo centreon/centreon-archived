@@ -20,7 +20,6 @@ import {
   GridRows,
   GridColumns,
   useTooltip,
-  useTooltipInPortal,
   localPoint,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
@@ -64,7 +63,6 @@ import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
-import { TabBounds, TabContext } from '../../../Details';
 import memoizeComponent from '../../../memoizedComponent';
 
 import AddCommentForm from './AddCommentForm';
@@ -230,24 +228,7 @@ const GraphContent = ({
   const theme = useTheme();
   const [isMouseOver, setIsMouseOver] = React.useState(false);
 
-  const { containerRef, containerBounds, TooltipInPortal } = useTooltipInPortal(
-    {
-      detectBounds: true,
-      scroll: true,
-    },
-  );
-
-  const context = React.useContext<TabBounds>(TabContext);
-
-  const {
-    changeMetricsValue,
-    metricsValue,
-    hideTooltip,
-    tooltipData,
-    tooltipLeft,
-    tooltipTop,
-    tooltipOpen,
-  } = useMetricsValueContext();
+  const { changeMetricsValue, metricsValue } = useMetricsValueContext();
 
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
@@ -364,49 +345,38 @@ const GraphContent = ({
     });
   };
 
-  const displayTooltip = React.useCallback(
-    (event) => {
-      setIsMouseOver(true);
-      const { x, y } = localPoint(event) || { x: 0, y: 0 };
+  const displayTooltip = (event) => {
+    setIsMouseOver(true);
+    const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
-      const mouseX = x - margin.left;
+    const mouseX = x - margin.left;
 
-      annotations.changeAnnotationHovered({
-        mouseX,
-        timeline,
-        xScale,
+    annotations.changeAnnotationHovered({
+      mouseX,
+      timeline,
+      xScale,
+    });
+
+    if (zoomPivotPosition) {
+      setZoomBoundaries({
+        end: gte(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
+        start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
       });
+      changeMetricsValue({ displayTooltipValues, newMetricsValue: null });
+      return;
+    }
 
-      if (zoomPivotPosition) {
-        setZoomBoundaries({
-          end: gte(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
-          start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
-        });
-        changeMetricsValue({ displayTooltipValues, newMetricsValue: null });
-        hideTooltip();
-        return;
-      }
-
-      updateMetricsValue({ x, y });
-
-      onTooltipDisplay?.([x, y]);
-    },
-    [containerBounds, lines, zoomBoundaries, timeline, displayTooltipValues],
-  );
+    updateMetricsValue({ x, y });
+    onTooltipDisplay?.([x, y]);
+  };
 
   React.useEffect(() => {
-    const { top, bottom } = context;
-
-    const isWithinBounds =
-      containerBounds.top > top && containerBounds.bottom < bottom;
-
-    if (isMouseOver || !isWithinBounds) {
+    if (isMouseOver) {
       return;
     }
 
     if (isNil(tooltipPosition)) {
       changeMetricsValue({ displayTooltipValues, newMetricsValue: null });
-      hideTooltip();
       return;
     }
 
@@ -415,12 +385,6 @@ const GraphContent = ({
     updateMetricsValue({ x, y });
   }, [tooltipPosition]);
 
-  React.useEffect(() => {
-    if (not(displayTooltipValues)) {
-      hideTooltip();
-    }
-  }, [displayTooltipValues]);
-
   const closeZoomPreview = () => {
     setZoomBoundaries(null);
     setZoomPivotPosition(null);
@@ -428,7 +392,6 @@ const GraphContent = ({
 
   const closeTooltip = (): void => {
     changeMetricsValue({ displayTooltipValues, newMetricsValue: null });
-    hideTooltip();
     setIsMouseOver(false);
     onTooltipDisplay?.();
     annotations.setAnnotationHovered(undefined);
@@ -497,8 +460,8 @@ const GraphContent = ({
 
   const containsMetrics = metricsValue && not(isEmpty(metricsValue?.metrics));
 
-  const tooltipLineX = (metricsValue?.x || tooltipLeft || 0) - margin.left;
-  const tooltipLineY = (metricsValue?.y || tooltipTop || 0) - margin.top;
+  const mousePositionX = (metricsValue?.x || 0) - margin.left;
+  const mousePositionY = (metricsValue?.y || 0) - margin.top;
 
   const zoomBarWidth = Math.abs(
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
@@ -508,27 +471,12 @@ const GraphContent = ({
     <AnnotationsContext.Provider value={annotations}>
       <ClickAwayListener onClickAway={hideAddCommentTooltip}>
         <div className={classes.container}>
-          {tooltipOpen && tooltipData && (
-            <TooltipInPortal
-              className={classes.tooltip}
-              key={Math.random()}
-              left={tooltipLeft}
-              top={tooltipTop}
-            >
-              {tooltipData}
-            </TooltipInPortal>
-          )}
           {loading && (
             <div className={classes.graphLoader}>
               <CircularProgress />
             </div>
           )}
-          <svg
-            height={height}
-            ref={containerRef}
-            width="100%"
-            onMouseUp={closeZoomPreview}
-          >
+          <svg height={height} width="100%" onMouseUp={closeZoomPreview}>
             <Group left={margin.left} top={margin.top}>
               <MemoizedGridRows
                 height={graphHeight}
@@ -587,21 +535,21 @@ const GraphContent = ({
                 onMouseMove={displayTooltip}
                 onMouseUp={displayAddCommentTooltip}
               />
-              {(containsMetrics || tooltipData) && (
+              {containsMetrics && (
                 <>
                   <Line
-                    from={{ x: tooltipLineX, y: 0 }}
+                    from={{ x: mousePositionX, y: 0 }}
                     pointerEvents="none"
                     stroke={grey[400]}
                     strokeWidth={1}
-                    to={{ x: tooltipLineX, y: graphHeight }}
+                    to={{ x: mousePositionX, y: graphHeight }}
                   />
                   <Line
-                    from={{ x: 0, y: tooltipLineY }}
+                    from={{ x: 0, y: mousePositionY }}
                     pointerEvents="none"
                     stroke={grey[400]}
                     strokeWidth={1}
-                    to={{ x: graphWidth, y: tooltipLineY }}
+                    to={{ x: graphWidth, y: mousePositionY }}
                   />
                 </>
               )}

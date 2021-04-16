@@ -17,6 +17,7 @@ import {
   add,
   negate,
   or,
+  pathOr,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -29,6 +30,7 @@ import {
   timeFormat,
   ContentWithCircularLoading,
   IconButton,
+  useLocaleDateTimeFormat,
 } from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -86,9 +88,11 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   container: {
     display: 'grid',
     flexDirection: 'column',
-    gridGap: theme.spacing(1),
+    gridGap: theme.spacing(0.5),
     gridTemplateRows: ({ graphHeight, displayTitle }): string =>
-      `${displayTitle ? 'auto' : ''} ${graphHeight}px auto`,
+      `${displayTitle ? 'auto' : ''} ${theme.spacing(
+        2,
+      )}px ${graphHeight}px auto`,
     height: '100%',
     justifyItems: 'center',
     width: 'auto',
@@ -171,6 +175,7 @@ const PerformanceGraph = ({
     request: getData,
   });
   const metricsValueProps = useMetricsValue();
+  const { toDateTime } = useLocaleDateTimeFormat();
 
   React.useEffect(() => {
     if (isNil(endpoint)) {
@@ -324,6 +329,14 @@ const PerformanceGraph = ({
     });
   };
 
+  const timeTick = pathOr(
+    '',
+    ['metricsValue', 'timeValue', 'timeTick'],
+    metricsValueProps,
+  );
+
+  const metrics = pathOr([], ['metricsValue', 'metrics'], metricsValueProps);
+
   return (
     <MetricsValueContext.Provider value={metricsValueProps}>
       <div
@@ -354,6 +367,12 @@ const PerformanceGraph = ({
             </div>
           </div>
         )}
+
+        <div>
+          {timeTick && not(isEmpty(metrics)) && (
+            <Typography variant="caption">{toDateTime(timeTick)}</Typography>
+          )}
+        </div>
 
         <ParentSize>
           {({ width, height }): JSX.Element => (
