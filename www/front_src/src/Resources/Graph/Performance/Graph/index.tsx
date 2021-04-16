@@ -608,6 +608,7 @@ const memoProps = [
   'displayTooltipValues',
   'displayEventAnnotations',
   'containsMetrics',
+  'isDisplaying',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
@@ -625,6 +626,7 @@ const Graph = (
     | 'hideAddCommentTooltip'
     | 'format'
     | 'changeMetricsValue'
+    | 'isDisplaying'
   >,
 ): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();

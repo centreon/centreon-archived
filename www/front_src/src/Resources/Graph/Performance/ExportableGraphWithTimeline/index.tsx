@@ -18,6 +18,7 @@ import {
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { AdjustTimePeriodProps, GraphOptionId } from '../models';
+import { useIntersection } from '../useGraphIntersection';
 
 import { defaultGraphOptions, useGraphOptionsContext } from './useGraphOptions';
 
@@ -71,6 +72,9 @@ const ExportablePerformanceGraphWithTimeline = ({
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const graphOptions =
     useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
+  const graphContainerRef = React.useRef<HTMLElement | null>(null);
+
+  const { setElement, isDisplaying } = useIntersection();
 
   const displayEventAnnotations = path<boolean>(
     [GraphOptionId.displayEvents, 'value'],
@@ -122,6 +126,10 @@ const ExportablePerformanceGraphWithTimeline = ({
     retrieveTimeline();
   }, [endpoint, selectedTimePeriod, customTimePeriod, displayEventAnnotations]);
 
+  React.useEffect(() => {
+    setElement(graphContainerRef.current);
+  }, []);
+
   const getEndpoint = (): string | undefined => {
     if (isNil(endpoint)) {
       return undefined;
@@ -145,7 +153,10 @@ const ExportablePerformanceGraphWithTimeline = ({
 
   return (
     <Paper className={classes.graphContainer}>
-      <div className={classes.graph}>
+      <div
+        className={classes.graph}
+        ref={graphContainerRef as React.MutableRefObject<HTMLDivElement>}
+      >
         <PerformanceGraph
           toggableLegend
           adjustTimePeriod={adjustTimePeriod}
@@ -153,6 +164,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           displayEventAnnotations={displayEventAnnotations}
           endpoint={getEndpoint()}
           graphHeight={graphHeight}
+          isDisplaying={isDisplaying}
           limitLegendRows={limitLegendRows}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}

@@ -70,6 +70,7 @@ interface Props {
   displayTitle?: boolean;
   endpoint?: string;
   graphHeight: number;
+  isDisplaying?: boolean;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
@@ -147,6 +148,7 @@ const PerformanceGraph = ({
   displayEventAnnotations = false,
   displayTitle = true,
   limitLegendRows,
+  isDisplaying = true,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -160,7 +162,7 @@ const PerformanceGraph = ({
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
   const [exporting, setExporting] = React.useState<boolean>(false);
-  const performanceGraphRef = React.useRef<HTMLDivElement>();
+  const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
 
   const { selectedResourceId } = useResourceContext();
 
@@ -203,7 +205,12 @@ const PerformanceGraph = ({
     setLineData(undefined);
   }, [selectedResourceId]);
 
-  if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
+  if (
+    isNil(lineData) ||
+    isNil(timeline) ||
+    isNil(endpoint) ||
+    not(isDisplaying)
+  ) {
     return (
       <LoadingSkeleton
         displayTitleSkeleton={displayTitle}
@@ -341,7 +348,9 @@ const PerformanceGraph = ({
     <MetricsValueContext.Provider value={metricsValueProps}>
       <div
         className={classes.container}
-        ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
+        ref={
+          performanceGraphRef as React.MutableRefObject<HTMLDivElement | null>
+        }
       >
         {displayTitle && (
           <div className={classes.graphHeader}>
