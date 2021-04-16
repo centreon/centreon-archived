@@ -39,6 +39,7 @@ interface Props {
   customTimePeriod: CustomTimePeriod;
   getIntervalDates: () => [string, string];
   graphHeight: number;
+  limitLegendRows?: boolean;
   onTooltipDisplay?: (position?: [number, number]) => void;
   periodQueryParameters: string;
   resource?: Resource | ResourceDetails;
@@ -58,6 +59,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   customTimePeriod,
   adjustTimePeriod,
   resourceDetailsUpdated,
+  limitLegendRows,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -160,6 +162,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           displayTooltipValues={displayTooltipValues}
           endpoint={getEndpoint()}
           graphHeight={graphHeight}
+          limitLegendRows={limitLegendRows}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
           timeline={timeline}

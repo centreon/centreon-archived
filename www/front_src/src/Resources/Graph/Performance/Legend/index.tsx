@@ -22,7 +22,12 @@ import { labelAvg, labelMax, labelMin } from '../../../translatedLabels';
 
 import LegendMarker from './Marker';
 
-const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
+interface MakeStylesProps {
+  limitLegendRows: boolean;
+  panelWidth: number;
+}
+
+const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   caption: ({ panelWidth }) => ({
     color: fade(theme.palette.common.black, 0.6),
     lineHeight: 1.2,
@@ -35,25 +40,20 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
   hidden: {
     color: theme.palette.text.disabled,
   },
-  icon: {
-    borderRadius: '50%',
-    height: 9,
-    marginRight: theme.spacing(1),
-    width: 9,
-  },
   item: {
     display: 'grid',
     gridTemplateColumns: 'min-content minmax(50px, 1fr)',
-    margin: theme.spacing(0, 1, 1, 1),
+    marginBottom: theme.spacing(1),
   },
-  items: {
+  items: ({ limitLegendRows }) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
     justifyContent: 'center',
-    maxHeight: theme.spacing(16),
+    marginLeft: theme.spacing(0.5),
+    maxHeight: limitLegendRows ? theme.spacing(16) : 'unset',
     overflowY: 'auto',
     width: '100%',
-  },
+  }),
   legendData: {
     display: 'flex',
     flexDirection: 'column',
@@ -63,7 +63,7 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
     fontWeight: theme.typography.body1.fontWeight,
   },
   minMaxAvgContainer: {
-    columnGap: '8px',
+    columnGap: theme.spacing(0.5),
     display: 'grid',
     gridAutoRows: `${theme.spacing(2)}px`,
     gridTemplateColumns: 'repeat(2, min-content)',
@@ -80,6 +80,7 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
 
 interface Props {
   base: number;
+  limitLegendRows?: boolean;
   lines: Array<Line>;
   onClearHighlight: () => void;
   onHighlight: (metric: string) => void;
@@ -104,8 +105,9 @@ const LegendContent = ({
   onClearHighlight,
   panelWidth,
   base,
+  limitLegendRows = false,
 }: LegendContentProps): JSX.Element => {
-  const classes = useStyles({ panelWidth });
+  const classes = useStyles({ limitLegendRows, panelWidth });
   const theme = useTheme();
   const { metricsValue, getFormattedMetricData } = useMetricsValueContext();
   const { t } = useTranslation();
