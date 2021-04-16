@@ -18,6 +18,7 @@ import {
   negate,
   or,
   pathOr,
+  propOr,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -55,6 +56,7 @@ import {
   TimeValue,
   Line as LineModel,
   AdjustTimePeriodProps,
+  Metric,
 } from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
 import useMetricsValue, { MetricsValueContext } from './Graph/useMetricsValue';
@@ -66,17 +68,14 @@ interface Props {
   customTimePeriod?: CustomTimePeriod;
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
-  displayTooltipValues?: boolean;
   endpoint?: string;
   graphHeight: number;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  onTooltipDisplay?: (position?: [number, number]) => void;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
   timeline?: Array<TimelineEvent>;
   toggableLegend?: boolean;
-  tooltipPosition?: [number, number];
   xAxisTickFormat?: string;
 }
 
@@ -140,15 +139,12 @@ const PerformanceGraph = ({
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
   timeline,
-  tooltipPosition,
-  onTooltipDisplay,
   resource,
   onAddComment,
   adjustTimePeriod,
   customTimePeriod,
   resourceDetailsUpdated = true,
   displayEventAnnotations = false,
-  displayTooltipValues = false,
   displayTitle = true,
   limitLegendRows,
 }: Props): JSX.Element | null => {
@@ -335,7 +331,11 @@ const PerformanceGraph = ({
     metricsValueProps,
   );
 
-  const metrics = pathOr([], ['metricsValue', 'metrics'], metricsValueProps);
+  const metricsValue = prop('metricsValue', metricsValueProps);
+
+  const metrics = propOr([] as Array<Metric>, 'metrics', metricsValue);
+
+  const containsMetrics = not(isNil(metrics)) && not(isEmpty(metrics));
 
   return (
     <MetricsValueContext.Provider value={metricsValueProps}>
@@ -369,7 +369,7 @@ const PerformanceGraph = ({
         )}
 
         <div>
-          {timeTick && not(isEmpty(metrics)) && (
+          {timeTick && containsMetrics && (
             <Typography variant="caption">{toDateTime(timeTick)}</Typography>
           )}
         </div>
@@ -380,8 +380,8 @@ const PerformanceGraph = ({
               applyZoom={adjustTimePeriod}
               base={base as number}
               canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
+              containsMetrics={containsMetrics}
               displayEventAnnotations={displayEventAnnotations}
-              displayTooltipValues={displayTooltipValues}
               height={height}
               lines={displayedLines}
               loading={
@@ -391,11 +391,9 @@ const PerformanceGraph = ({
               shiftTime={shiftTime}
               timeSeries={timeSeries}
               timeline={timeline}
-              tooltipPosition={tooltipPosition}
               width={width}
               xAxisTickFormat={xAxisTickFormat}
               onAddComment={onAddComment}
-              onTooltipDisplay={onTooltipDisplay}
             />
           )}
         </ParentSize>

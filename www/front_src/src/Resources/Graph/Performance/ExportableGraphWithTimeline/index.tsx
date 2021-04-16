@@ -40,12 +40,10 @@ interface Props {
   getIntervalDates: () => [string, string];
   graphHeight: number;
   limitLegendRows?: boolean;
-  onTooltipDisplay?: (position?: [number, number]) => void;
   periodQueryParameters: string;
   resource?: Resource | ResourceDetails;
   resourceDetailsUpdated: boolean;
   selectedTimePeriod: TimePeriod | null;
-  tooltipPosition?: [number, number];
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
@@ -54,8 +52,6 @@ const ExportablePerformanceGraphWithTimeline = ({
   getIntervalDates,
   periodQueryParameters,
   graphHeight,
-  onTooltipDisplay,
-  tooltipPosition,
   customTimePeriod,
   adjustTimePeriod,
   resourceDetailsUpdated,
@@ -76,10 +72,6 @@ const ExportablePerformanceGraphWithTimeline = ({
   const graphOptions =
     useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
 
-  const displayTooltipValues = path<boolean>(
-    [GraphOptionId.displayTooltips, 'value'],
-    graphOptions,
-  );
   const displayEventAnnotations = path<boolean>(
     [GraphOptionId.displayEvents, 'value'],
     graphOptions,
@@ -159,20 +151,17 @@ const ExportablePerformanceGraphWithTimeline = ({
           adjustTimePeriod={adjustTimePeriod}
           customTimePeriod={customTimePeriod}
           displayEventAnnotations={displayEventAnnotations}
-          displayTooltipValues={displayTooltipValues}
           endpoint={getEndpoint()}
           graphHeight={graphHeight}
           limitLegendRows={limitLegendRows}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
           timeline={timeline}
-          tooltipPosition={tooltipPosition}
           xAxisTickFormat={
             selectedTimePeriod?.dateTimeFormat ||
             customTimePeriod.xAxisTickFormat
           }
           onAddComment={addCommentToTimeline}
-          onTooltipDisplay={onTooltipDisplay}
         />
       </div>
     </Paper>

@@ -13,8 +13,6 @@ interface MetricsValue {
   lines: Array<Line>;
   metrics: Array<string>;
   timeValue: TimeValue;
-  x: number;
-  y: number;
 }
 
 interface FormattedMetricData {
@@ -25,7 +23,7 @@ interface FormattedMetricData {
 }
 
 interface UseMetricsValue {
-  changeMetricsValue: ({ newMetricsValue, displayTooltipValues }) => void;
+  changeMetricsValue: ({ newMetricsValue }) => void;
   formatDate: () => string;
   getFormattedMetricData: (metric: string) => FormattedMetricData | null;
   metricsValue: MetricsValue | null;

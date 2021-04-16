@@ -64,6 +64,7 @@ import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import memoizeComponent from '../../../memoizedComponent';
+import { useMousePositionContext } from '../ExportableGraphWithTimeline/useMousePosition';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
@@ -95,11 +96,9 @@ interface Props {
   height: number;
   lines: Array<LineModel>;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  onTooltipDisplay?: (tooltipPosition?: [number, number]) => void;
   resource: Resource | ResourceDetails;
   timeSeries: Array<TimeValue>;
   timeline?: Array<TimelineEvent>;
-  tooltipPosition?: [number, number];
   width: number;
   xAxisTickFormat: string;
 }
@@ -150,21 +149,20 @@ interface GraphContentProps {
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   base: number;
   canAdjustTimePeriod: boolean;
+  changeMetricsValue: (props) => void;
+  containsMetrics: boolean;
   displayEventAnnotations: boolean;
-  displayTooltipValues: boolean;
   format: (parameters) => string;
   height: number;
   hideAddCommentTooltip: () => void;
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  onTooltipDisplay?: (position?: [number, number]) => void;
   resource: Resource | ResourceDetails;
   shiftTime?: (direction: TimeShiftDirection) => void;
   showAddCommentTooltip: (args) => void;
   timeSeries: Array<TimeValue>;
   timeline?: Array<TimelineEvent>;
-  tooltipPosition?: [number, number];
   width: number;
   xAxisTickFormat: string;
 }
@@ -194,12 +192,10 @@ const GraphContent = ({
   lines,
   xAxisTickFormat,
   timeline,
-  tooltipPosition,
   resource,
   addCommentTooltipLeft,
   addCommentTooltipTop,
   addCommentTooltipOpen,
-  onTooltipDisplay,
   onAddComment,
   hideAddCommentTooltip,
   showAddCommentTooltip,
@@ -209,7 +205,8 @@ const GraphContent = ({
   loading,
   canAdjustTimePeriod,
   displayEventAnnotations,
-  displayTooltipValues,
+  containsMetrics,
+  changeMetricsValue,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles({ onAddComment });
@@ -228,12 +225,12 @@ const GraphContent = ({
   const theme = useTheme();
   const [isMouseOver, setIsMouseOver] = React.useState(false);
 
-  const { changeMetricsValue, metricsValue } = useMetricsValueContext();
-
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
 
   const annotations = useAnnotations(graphWidth);
+
+  const { mousePosition, setMousePosition } = useMousePositionContext();
 
   const hideAddCommentTooltipOnEspcapePress = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
@@ -321,7 +318,7 @@ const GraphContent = ({
     return timeSeries[index];
   };
 
-  const updateMetricsValue = ({ x, y }): void => {
+  const updateMetricsValue = ({ x }): void => {
     const timeValue = getTimeValue(x);
 
     const metrics = getMetrics(timeValue);
@@ -333,14 +330,11 @@ const GraphContent = ({
     });
 
     changeMetricsValue({
-      displayTooltipValues,
       newMetricsValue: {
         base,
         lines,
         metrics: metricsToDisplay,
         timeValue,
-        x,
-        y,
       },
     });
   };
@@ -362,12 +356,12 @@ const GraphContent = ({
         end: gte(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
         start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
       });
-      changeMetricsValue({ displayTooltipValues, newMetricsValue: null });
+      changeMetricsValue({ newMetricsValue: null });
       return;
     }
 
-    updateMetricsValue({ x, y });
-    onTooltipDisplay?.([x, y]);
+    updateMetricsValue({ x });
+    setMousePosition([x, y]);
   };
 
   React.useEffect(() => {
@@ -375,15 +369,15 @@ const GraphContent = ({
       return;
     }
 
-    if (isNil(tooltipPosition)) {
-      changeMetricsValue({ displayTooltipValues, newMetricsValue: null });
+    if (isNil(mousePosition)) {
+      changeMetricsValue({ newMetricsValue: null });
       return;
     }
 
-    const [x, y] = tooltipPosition;
+    const [x] = mousePosition;
 
-    updateMetricsValue({ x, y });
-  }, [tooltipPosition]);
+    updateMetricsValue({ x });
+  }, [mousePosition]);
 
   const closeZoomPreview = () => {
     setZoomBoundaries(null);
@@ -391,9 +385,9 @@ const GraphContent = ({
   };
 
   const closeTooltip = (): void => {
-    changeMetricsValue({ displayTooltipValues, newMetricsValue: null });
+    changeMetricsValue({ newMetricsValue: null });
     setIsMouseOver(false);
-    onTooltipDisplay?.();
+    setMousePosition(null);
     annotations.setAnnotationHovered(undefined);
 
     if (not(isNil(zoomPivotPosition))) {
@@ -458,10 +452,8 @@ const GraphContent = ({
     hideAddCommentTooltip();
   };
 
-  const containsMetrics = metricsValue && not(isEmpty(metricsValue?.metrics));
-
-  const mousePositionX = (metricsValue?.x || 0) - margin.left;
-  const mousePositionY = (metricsValue?.y || 0) - margin.top;
+  const mousePositionX = (mousePosition?.[0] || 0) - margin.left;
+  const mousePositionY = (mousePosition?.[1] || 0) - margin.top;
 
   const zoomBarWidth = Math.abs(
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
@@ -620,12 +612,12 @@ const memoProps = [
   'lines',
   'xAxisTickFormat',
   'timeline',
-  'tooltipPosition',
   'resource',
   'loading',
   'canAdjustTimePeriod',
   'displayTooltipValues',
   'displayEventAnnotations',
+  'containsMetrics',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
@@ -642,6 +634,7 @@ const Graph = (
     | 'showAddCommentTooltip'
     | 'hideAddCommentTooltip'
     | 'format'
+    | 'changeMetricsValue'
   >,
 ): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
@@ -652,6 +645,7 @@ const Graph = (
     showTooltip: showAddCommentTooltip,
     hideTooltip: hideAddCommentTooltip,
   } = useTooltip();
+  const { changeMetricsValue } = useMetricsValueContext();
 
   return (
     <MemoizedGraphContent
@@ -659,6 +653,7 @@ const Graph = (
       addCommentTooltipLeft={addCommentTooltipLeft}
       addCommentTooltipOpen={addCommentTooltipOpen}
       addCommentTooltipTop={addCommentTooltipTop}
+      changeMetricsValue={changeMetricsValue}
       format={format}
       hideAddCommentTooltip={hideAddCommentTooltip}
       showAddCommentTooltip={showAddCommentTooltip}
