@@ -71,7 +71,7 @@ interface Props {
   displayTitle?: boolean;
   endpoint?: string;
   graphHeight: number;
-  isDisplaying?: boolean;
+  isInViewport?: boolean;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
@@ -149,7 +149,7 @@ const PerformanceGraph = ({
   displayEventAnnotations = false,
   displayTitle = true,
   limitLegendRows,
-  isDisplaying = true,
+  isInViewport = true,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -174,7 +174,7 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
-  const metricsValueProps = useMetricsValue(isDisplaying);
+  const metricsValueProps = useMetricsValue(isInViewport);
   const { toDateTime } = useLocaleDateTimeFormat();
 
   React.useEffect(() => {
@@ -208,11 +208,11 @@ const PerformanceGraph = ({
   }, [selectedResourceId]);
 
   React.useEffect(() => {
-    if (isDisplaying && performanceGraphRef.current && lineData) {
+    if (isInViewport && performanceGraphRef.current && lineData) {
       performanceGraphHeightRef.current =
         performanceGraphRef.current.clientHeight;
     }
-  }, [isDisplaying, lineData]);
+  }, [isInViewport, lineData]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return (
@@ -223,7 +223,7 @@ const PerformanceGraph = ({
     );
   }
 
-  if (lineData && not(isDisplaying)) {
+  if (lineData && not(isInViewport)) {
     return (
       <Skeleton
         height={performanceGraphHeightRef.current}

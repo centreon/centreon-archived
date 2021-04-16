@@ -74,7 +74,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
   const graphContainerRef = React.useRef<HTMLElement | null>(null);
 
-  const { setElement, isDisplaying } = useIntersection();
+  const { setElement, isInViewport } = useIntersection();
 
   const displayEventAnnotations = path<boolean>(
     [GraphOptionId.displayEvents, 'value'],
@@ -164,7 +164,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           displayEventAnnotations={displayEventAnnotations}
           endpoint={getEndpoint()}
           graphHeight={graphHeight}
-          isDisplaying={isDisplaying}
+          isInViewport={isInViewport}
           limitLegendRows={limitLegendRows}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 interface UseIntersection {
-  isDisplaying: boolean;
+  isInViewport: boolean;
   setElement: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
 }
 
@@ -35,7 +35,7 @@ export const useIntersection = (): UseIntersection => {
   }, [element]);
 
   return {
-    isDisplaying: entry?.isIntersecting ?? true,
+    isInViewport: entry?.isIntersecting ?? true,
     setElement,
   };
 };
