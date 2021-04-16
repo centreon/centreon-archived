@@ -387,12 +387,13 @@ $help["max_host_check_spread"] = dgettext(
 );
 $help["max_service_check_spread"] = dgettext(
     "help",
-    "This option determines the maximum number of minutes from when Monitoring Engine starts that all " .
-    "services (that are scheduled to be regularly checked) are checked. This option will automatically " .
-    "adjust the service inter-check delay method (if necessary) to ensure that the initial checks of all " .
-    "services occur within the timeframe you specify. In general, this option will not have an effect on service " .
-    "check scheduling if scheduling information is being retained using the use_retained_scheduling_info option. " .
-    "Default value is 30 (minutes)."
+    "This option determines the maximum number of minutes from when Monitoring Engine starts until all services "
+    . "(that are scheduled to be regularly checked) are checked. This option will automatically adjust the service "
+    . "inter-check delay method (if necessary) to ensure that the initial checks of all services occur within the "
+    . "timeframe you specify. In general, this option will not have an effect on service check scheduling if "
+    . "scheduling information is being retained using the use_retained_scheduling_info option. Default value in "
+    . "centengine is 5 (minutes) but it should be raised to 30 if the poller monitors more than 5000 services to "
+    . "avoid load issues."
 );
 $help["service_interleave_factor"] = dgettext(
     "help",
