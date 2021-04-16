@@ -598,11 +598,6 @@ describe(Details, () => {
                 label: 'Display events',
                 value: true,
               },
-              displayTooltips: {
-                id: 'displayTooltips',
-                label: 'Display metric values tooltip',
-                value: false,
-              },
             },
             selectedTimePeriodId: periodId,
           });
