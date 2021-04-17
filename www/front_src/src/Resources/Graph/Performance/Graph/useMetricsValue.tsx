@@ -22,14 +22,14 @@ interface FormattedMetricData {
   unit: string;
 }
 
-interface UseMetricsValue {
+interface MetricsValueState {
   changeMetricsValue: ({ newMetricsValue }) => void;
   formatDate: () => string;
   getFormattedMetricData: (metric: string) => FormattedMetricData | null;
   metricsValue: MetricsValue | null;
 }
 
-const useMetricsValue = (isInViewPort?: boolean): UseMetricsValue => {
+const useMetricsValue = (isInViewPort?: boolean): MetricsValueState => {
   const [metricsValue, setMetricsValue] = React.useState<MetricsValue | null>(
     null,
   );
@@ -82,10 +82,10 @@ const useMetricsValue = (isInViewPort?: boolean): UseMetricsValue => {
 };
 
 export const MetricsValueContext = React.createContext<
-  UseMetricsValue | undefined
+  MetricsValueState | undefined
 >(undefined);
 
-export const useMetricsValueContext = (): UseMetricsValue =>
-  React.useContext(MetricsValueContext) as UseMetricsValue;
+export const useMetricsValueContext = (): MetricsValueState =>
+  React.useContext(MetricsValueContext) as MetricsValueState;
 
 export default useMetricsValue;
