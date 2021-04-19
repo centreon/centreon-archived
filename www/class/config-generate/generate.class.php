@@ -94,7 +94,7 @@ class Generate
         $hostInstance = Host::getInstance($this->dependencyInjector);
         $services = $serviceInstance->getGeneratedServices();
 
-        $bulkLimit = 1;
+        $bulkLimit = 2000;
 
         $valuesQueries = [];
         $bindParams = [];
