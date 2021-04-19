@@ -57,7 +57,6 @@ if [ "$wizard_autoplay" == "true" ]; then
     centreon_admin_email=${ENV_CENTREON_ADMIN_EMAIL:-"admin@admin.tld"}
 fi
 
-##FIXME - to be set dynmically & and support other versions
 CENTREON_MAJOR_VERSION=$version
 CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-2"
 
