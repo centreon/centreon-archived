@@ -784,7 +784,7 @@ upgrade)
 esac
 
 ## Major change - remind it again (in case of log level is ERROR)
-if [ -e $tmp_passwords_file ] && [ "x$topology" '=' "xcentral" ]; then
+if [ -e $tmp_passwords_file ] && [ "$topology" == "central" ]; then
 	# Move the tmp file to the dest file
 	mv $tmp_passwords_file $passwords_file
 	echo
