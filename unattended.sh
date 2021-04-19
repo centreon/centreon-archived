@@ -385,7 +385,7 @@ function set_required_prerequisite() {
 function is_systemd_present() {
 	# systemd check.
 	running_process=$(ps --no-headers -o comm 1)
-	if [ "$running_process" = "systemd" ]; then
+	if [ "$running_process" == "systemd" ]; then
 		has_systemd=1
 		log "INFO" "Systemd is running"
 	else
