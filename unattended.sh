@@ -44,20 +44,18 @@ function genpasswd() {
 # Set MariaDB password from ENV or random password if not defined
 mariadb_root_password=${ENV_MARIADB_ROOT_PASSWD:-"$(genpasswd "MariaDB user : root")"}
 
-# Set from ENV or random MariaDB centreon password
-mariadb_centreon_password=${ENV_MARIADB_CENTREON_PASSWD:-"$(genpasswd "MariaDB user : centreon")"}
-
-# Set from ENV or random Centreon admin password
-centreon_admin_password=${ENV_CENTREON_ADMIN_PASSWD:-"$(genpasswd "Centreon user : admin")"}
-
-# Set from ENV or Administrator first name
-centreon_admin_firstname=${ENV_CENTREON_ADMIN_FIRSTNAME:-"John"}
-
-# Set from ENV or Administrator last name
-centreon_admin_lastname=${ENV_CENTREON_ADMIN_LASTNAME:-"Doe"}
-
-# Set from ENV or Administrator e-mail
-centreon_admin_email=${ENV_CENTREON_ADMIN_EMAIL:-"admin@admin.tld"}
+if [ "$wizard_autoplay" == "true" ]; then
+    # Set from ENV or random MariaDB centreon password
+    mariadb_centreon_password=${ENV_MARIADB_CENTREON_PASSWD:-"$(genpasswd "MariaDB user : centreon")"}
+    # Set from ENV or random Centreon admin password
+    centreon_admin_password=${ENV_CENTREON_ADMIN_PASSWD:-"$(genpasswd "Centreon user : admin")"}
+    # Set from ENV or Administrator first name
+    centreon_admin_firstname=${ENV_CENTREON_ADMIN_FIRSTNAME:-"John"}
+    # Set from ENV or Administrator last name
+    centreon_admin_lastname=${ENV_CENTREON_ADMIN_LASTNAME:-"Doe"}
+    # Set from ENV or Administrator e-mail
+    centreon_admin_email=${ENV_CENTREON_ADMIN_EMAIL:-"admin@admin.tld"}
+fi
 
 ##FIXME - to be set dynmically & and support other versions
 CENTREON_MAJOR_VERSION=$version
