@@ -69,6 +69,7 @@ detected_os_version=
 
 # Variables will be defined later according to the target system OS
 BASE_PACKAGES=
+CENTREON_SELINUX_PACKAGES=
 RELEASE_RPM_URL=
 PHP_BIN=
 PHP_ETC=
@@ -629,7 +630,7 @@ function install_central() {
 
 	log "INFO" "Centreon [$topology] installation from [${CENTREON_REPO}]"
 
-	#FIXME : repo testing enabled for master
+	# install core Centreon packages from enabled repo
 	$PKG_MGR -q clean all --enablerepo="*" && $PKG_MGR -q install -y centreon --enablerepo="$CENTREON_REPO"
 
 	if [ $? -ne 0 ]; then
@@ -688,6 +689,14 @@ function update_after_installation() {
 
 	set_selinux_config $selinux_mode
 
+	# install Centreon SELinux packages by default
+	$PKG_MGR -q install -y ${CENTREON_SELINUX_PACKAGES[@]} --enablerepo="$CENTREON_REPO"
+	if [ $? -ne 0 ]; then
+		log "ERROR" "Could not install Centreon SELinux packages"
+	else
+		log "INFO" "Centreon SELinux rules are installed. Please consult the documentation https://docs.centreon.com/$CENTREON_MAJOR_VERSION/en/administration/secure-platform.html for more details."
+	fi
+
 }
 #========= end of function update_after_installation()
 
@@ -742,13 +751,15 @@ install)
 	setup_before_installation
 	case $topology in
 	central)
+		CENTREON_SELINUX_PACKAGES=(centreon-common-selinux centreon-web-selinux centreon-broker-selinux centreon-engine-selinux centreon-gorgoned-selinux centreon-plugins-selinux)
 		install_central
-		CENTREON_DOC_URL="https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/web-and-post-installation.html"
+		CENTREON_DOC_URL="https://docs.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/web-and-post-installation.html"
 		;;
 
 	poller)
+		CENTREON_SELINUX_PACKAGES=(centreon-common-selinux centreon-broker-selinux centreon-engine-selinux centreon-gorgoned-selinux centreon-plugins-selinux)
 		install_poller
-		CENTREON_DOC_URL=" https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/monitoring/monitoring-servers/add-a-poller-to-configuration.html"
+		CENTREON_DOC_URL="https://docs.centreon.com/$CENTREON_MAJOR_VERSION/en/monitoring/monitoring-servers/add-a-poller-to-configuration.html"
 		;;
 	esac
 
