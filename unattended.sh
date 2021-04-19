@@ -430,7 +430,7 @@ function set_runtime_selinux_mode() {
 
 	shopt -s nocasematch
 
-	if [ $_current_mode == $1 ]; then
+	if [ "$_current_mode" == "$1" ]; then
 		log "DEBUG" "Current SELinux mode is already set as requested. Nothing to do"
 		return
 	fi
