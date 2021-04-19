@@ -17,12 +17,12 @@ dayjs.extend(utcPlugin);
 dayjs.extend(timezonePlugin);
 
 document.createRange = () => ({
-  setStart: () => {},
-  setEnd: () => {},
   commonAncestorContainer: {
     nodeName: 'BODY',
     ownerDocument: document,
   },
+  setEnd: () => {},
+  setStart: () => {},
 });
 
 class IntersectionObserver {
@@ -36,21 +36,21 @@ class IntersectionObserver {
 }
 
 Object.defineProperty(window, 'IntersectionObserver', {
-  writable: true,
   configurable: true,
   value: IntersectionObserver,
+  writable: true,
 });
 
 Object.defineProperty(global, 'IntersectionObserver', {
-  writable: true,
   configurable: true,
   value: IntersectionObserver,
+  writable: true,
 });
 
 i18n.use(initReactI18next).init({
-  nsSeparator: false,
-  keySeparator: false,
   fallbackLng: 'en',
+  keySeparator: false,
   lng: 'en',
+  nsSeparator: false,
   resources: {},
 });

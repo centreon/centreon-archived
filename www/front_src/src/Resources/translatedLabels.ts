@@ -202,7 +202,6 @@ export const labelMin = 'Min';
 export const labelMax = 'Max';
 export const labelAvg = 'Avg';
 export const labelCompactTimePeriod = 'Compact time period';
-export const labelDisplayTooltips = 'Display metric values tooltip';
 export const labelAction = 'Action';
 export const labelNotes = 'Notes';
 export const labelChecksDisabled = 'All checks are disabled';
