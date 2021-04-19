@@ -89,22 +89,34 @@ class Generate
         $services = $service_instance->getGeneratedServices();
 
         try {
-            $query = "INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES " .
-                "(:host_id, :service_id, :host_name, :service_description) ON DUPLICATE KEY UPDATE " .
-                "host_name=VALUES(host_name), service_description=VALUES(service_description)";
-            $stmt = $this->backend_instance->db_cs->prepare($query);
-            $this->backend_instance->db_cs->beginTransaction();
+            $bulkLimit = 2000;
+            $bulkCount = 0;
+            $bulkValues = [];
+            $query = "INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES ";
             foreach ($services as $host_id => &$values) {
                 foreach ($values as $service_id) {
-                    $stmt->bindValue(':host_name', $host_instance->getString($host_id, 'host_name'), PDO::PARAM_STR);
-                    $stmt->bindValue(
-                        ':service_description',
-                        $service_instance->getString($service_id, 'service_description'),
-                        PDO::PARAM_STR
-                    );
-                    $stmt->bindParam(':host_id', $host_id, PDO::PARAM_INT);
-                    $stmt->bindParam(':service_id', $service_id, PDO::PARAM_INT);
-                    $stmt->execute();
+                    $bulkValues[] = '(' . 
+                        $this->backend_instance->db_cs->quote($host_id, PDO::PARAM_INT) . ',' . 
+                        $this->backend_instance->db_cs->quote($service_id, PDO::PARAM_INT) . ',' .
+                        $this->backend_instance->db_cs->quote(
+                            $host_instance->getString($host_id, 'host_name'),
+                            PDO::PARAM_STR
+                        ) . ',' . 
+                        $this->backend_instance->db_cs->quote(
+                            $service_instance->getString($service_id, 'service_description'),
+                            PDO::PARAM_STR
+                        ) . ')';
+                    $bulkCount++;
+                    if ($bulkCount == $bulkLimit) {
+                        $this->backend_instance->db_cs->exec(
+                            $query .
+                            implode(',', $bulkValues) .
+                            " ON DUPLICATE KEY UPDATE 
+                            host_name=VALUES(host_name), service_description=VALUES(service_description)"
+                        );
+                        $bulkCount = 0;
+                        $bulkValues = [];
+                    }
                 }
             }
 
@@ -113,17 +125,35 @@ class Generate
                 $meta_services = MetaService::getInstance($this->dependencyInjector)->getMetaServices();
                 $host_id = MetaHost::getInstance($this->dependencyInjector)->getHostIdByHostName('_Module_Meta');
                 foreach ($meta_services as $meta_id => $meta_service) {
-                    $stmt->bindValue(':host_name', '_Module_Meta', PDO::PARAM_STR);
-                    $stmt->bindValue(':service_description', 'meta_' . $meta_id, PDO::PARAM_STR);
-                    $stmt->bindParam(':host_id', $host_id, PDO::PARAM_INT);
-                    $stmt->bindParam(':service_id', $meta_service['service_id'], PDO::PARAM_INT);
-                    $stmt->execute();
+                    $bulkValues[] = '(' . 
+                        $this->backend_instance->db_cs->quote($host_id, PDO::PARAM_INT) . ',' . 
+                        $this->backend_instance->db_cs->quote($meta_service['service_id'], PDO::PARAM_INT) . ',' .
+                        $this->backend_instance->db_cs->quote('_Module_Meta', PDO::PARAM_STR) . ',' . 
+                        $this->backend_instance->db_cs->quote('meta_' . $meta_id, PDO::PARAM_STR) . ')';
+                    $bulkCount++;
+                    if ($bulkCount == $bulkLimit) {
+                        $this->backend_instance->db_cs->exec(
+                            $query .
+                            implode(',', $bulkValues) .
+                            " ON DUPLICATE KEY UPDATE 
+                            host_name=VALUES(host_name), service_description=VALUES(service_description)"
+                        );
+                        $bulkCount = 0;
+                        $bulkValues = [];
+                    }
                 }
             }
 
-            $this->backend_instance->db_cs->commit();
+            if ($bulkCount > 0) {
+                $this->backend_instance->db_cs->exec(
+                    $query .
+                    implode(',', $bulkValues) .
+                    " ON DUPLICATE KEY UPDATE 
+                    host_name=VALUES(host_name), service_description=VALUES(service_description)"
+                );
+            }
+
         } catch (Exception $e) {
-            $this->backend_instance->db_cs->rollback();
             throw new Exception('Exception received : ' . $e->getMessage() . "\n");
             throw new Exception($e->getFile() . "\n");
         }
