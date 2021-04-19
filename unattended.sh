@@ -763,7 +763,7 @@ install)
 
 	update_after_installation
 
-	if [ "x$topology" '=' "xcentral" ]; then
+	if [ "$topology" == "central" ]; then
 		if [ "$wizard_autoplay" == "true" ]; then
 			play_install_wizard
 		fi
