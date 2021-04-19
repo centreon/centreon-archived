@@ -685,11 +685,7 @@ function update_after_installation() {
 
 	enable_new_services
 
-	set_runtime_selinux_mode $selinux_mode
-
-	set_selinux_config $selinux_mode
-
-	# install Centreon SELinux packages by default
+	# install Centreon SELinux packages first (as getenforce is still at 0)
 	$PKG_MGR -q install -y ${CENTREON_SELINUX_PACKAGES[@]} --enablerepo="$CENTREON_REPO"
 	if [ $? -ne 0 ]; then
 		log "ERROR" "Could not install Centreon SELinux packages"
@@ -697,6 +693,10 @@ function update_after_installation() {
 		log "INFO" "Centreon SELinux rules are installed. Please consult the documentation https://docs.centreon.com/$CENTREON_MAJOR_VERSION/en/administration/secure-platform.html for more details."
 	fi
 
+	#then change the SELinux mode
+	set_runtime_selinux_mode $selinux_mode
+
+	set_selinux_config $selinux_mode
 }
 #========= end of function update_after_installation()
 
