@@ -771,7 +771,7 @@ install)
 
 	log "INFO" "Centreon [$topology] successfully installed !"
 
-	if [ "x$topology" '=' "xcentral" ] && [ "x$wizard_autoplay" '=' "xtrue" ]; then
+	if [ "$topology" == "central" ] && [ "$wizard_autoplay" == "true" ]; then
 		log "INFO" "Log in to Centreon web interface via the URL: http://$central_ip/centreon"
 	else
 		log "INFO" "Follow the steps described in Centreon documentation: $CENTREON_DOC_URL"
