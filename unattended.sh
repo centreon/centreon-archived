@@ -789,7 +789,11 @@ if [ -e $tmp_passwords_file ] && [ "x$topology" '=' "xcentral" ]; then
 	mv $tmp_passwords_file $passwords_file
 	echo
 	echo "****** IMPORTANT ******"
-	echo "As you will need passwords for users such as MariaDB [root,centreon] and Centreon [admin], random passwords are generated"
+        if [ "$wizard_autoplay" == "true" ]; then
+	        echo "As you will need passwords for users such as MariaDB [root,centreon] and Centreon [admin], random passwords are generated"
+	else
+	        echo "As you will need password for user MariaDB [root], random password are generated"
+	fi
 	echo "Passwords are currently saved in [$passwords_file]"
 	cat $passwords_file
 	echo
