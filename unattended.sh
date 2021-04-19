@@ -777,7 +777,7 @@ install)
 	;;
 
 upgrade)
-	error_and_exit "Upgrade operation is not supported yet" ##FIXME
+	error_and_exit "Upgrade operation is not supported yet" ##TODO
 	;;
 esac
 
