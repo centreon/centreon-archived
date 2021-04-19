@@ -16,14 +16,14 @@ default_ip=$(hostname -I | awk '{print $1}')
 passwords_file=/etc/centreon/generated.tobesecured         #File where the generated passwords will be temporaly saved
 tmp_passwords_file=$(mktemp /tmp/generated.XXXXXXXXXXXXXX) #Random tmp file as the /etc/centreon does not exist yet
 
-topology=${ENV_CENTREON_TOPOLOGY:-"central"}   #Default topology to be installed
-version=${ENV_CENTREON_VERSION:-"21.04"}       #Default version to be installed
-repo=${ENV_CENTREON_REPO:-"stable"}            #Default repository to used
-operation=${ENV_CENTREON_OPERATION:-"install"} #Default operation to be executed
-runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}     #Default log level to be used
-selinux_mode=${ENV_SELINUX_MODE:-"permissive"} #Default SELinux mode to be used
-wizard_autoplay=${ENV_WIZARD_AUTOPLAY:-"true"} #Default the install wizard is run auto
-central_ip=${ENV_CENTRAL_IP:-$default_ip}      #Default central ip is the first of hostname -I
+topology=${ENV_CENTREON_TOPOLOGY:-"central"}    #Default topology to be installed
+version=${ENV_CENTREON_VERSION:-"21.04"}        #Default version to be installed
+repo=${ENV_CENTREON_REPO:-"stable"}             #Default repository to used
+operation=${ENV_CENTREON_OPERATION:-"install"}  #Default operation to be executed
+runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}      #Default log level to be used
+selinux_mode=${ENV_SELINUX_MODE:-"permissive"}  #Default SELinux mode to be used
+wizard_autoplay=${ENV_WIZARD_AUTOPLAY:-"false"} #Default the install wizard is run auto
+central_ip=${ENV_CENTRAL_IP:-$default_ip}       #Default central ip is the first of hostname -I
 
 function genpasswd() {
 	local _pwd
