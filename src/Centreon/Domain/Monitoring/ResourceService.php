@@ -242,7 +242,9 @@ class ResourceService extends AbstractCentreonService implements ResourceService
             ? $this->metaServiceConfigurationRepository->findById($resource->getId())
             : $this->metaServiceConfigurationRepository->findByIdAndContact($resource->getId(), $this->contact);
 
-        $resource->setCalculationType($metaConfiguration->getCalculationType());
+        if (!is_null($metaConfiguration)) {
+            $resource->setCalculationType($metaConfiguration->getCalculationType());
+        }
     }
 
     /**
