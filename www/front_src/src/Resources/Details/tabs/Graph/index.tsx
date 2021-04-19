@@ -14,6 +14,9 @@ import { GraphOptions } from '../../models';
 import useGraphOptions, {
   GraphOptionsContext,
 } from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
+import useMousePosition, {
+  MousePositionContext,
+} from '../../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -71,6 +74,8 @@ const GraphTabContent = ({
     onTimePeriodChange: setGraphTabParameters,
   });
 
+  const mousePositionProps = useMousePosition();
+
   const changeTabGraphOptions = (graphOptions: GraphOptions) => {
     setGraphTabParameters({
       ...tabParameters.graph,
@@ -92,16 +97,18 @@ const GraphTabContent = ({
           selectedTimePeriodId={selectedTimePeriod?.id}
           onChange={changeSelectedTimePeriod}
         />
-        <ExportablePerformanceGraphWithTimeline
-          adjustTimePeriod={adjustTimePeriod}
-          customTimePeriod={customTimePeriod}
-          getIntervalDates={getIntervalDates}
-          graphHeight={280}
-          periodQueryParameters={periodQueryParameters}
-          resource={details}
-          resourceDetailsUpdated={resourceDetailsUpdated}
-          selectedTimePeriod={selectedTimePeriod}
-        />
+        <MousePositionContext.Provider value={mousePositionProps}>
+          <ExportablePerformanceGraphWithTimeline
+            adjustTimePeriod={adjustTimePeriod}
+            customTimePeriod={customTimePeriod}
+            getIntervalDates={getIntervalDates}
+            graphHeight={280}
+            periodQueryParameters={periodQueryParameters}
+            resource={details}
+            resourceDetailsUpdated={resourceDetailsUpdated}
+            selectedTimePeriod={selectedTimePeriod}
+          />
+        </MousePositionContext.Provider>
       </div>
     </GraphOptionsContext.Provider>
   );

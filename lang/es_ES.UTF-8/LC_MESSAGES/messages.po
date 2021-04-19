@@ -14667,9 +14667,6 @@ msgstr "Permitir certificado autofirmado"
 # msgid "Graph options"
 # msgstr ""
 
-# msgid "Display metric values tooltip"
-# msgstr ""
-
 # msgid "Check duration"
 # msgstr ""
 
