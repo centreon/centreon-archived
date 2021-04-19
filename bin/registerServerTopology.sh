@@ -295,9 +295,9 @@ EOF
 
 #========= begin of get_current_node_ip()
 function get_current_node_ip() {
-  IP_LIST=$(hostname -I | xargs)
+  PARSED_CURRENT_NODE_URL[HOST]=$(hostname -I | xargs)
 
-  ips=($IP_LIST)
+  ips=(${PARSED_CURRENT_NODE_URL[HOST]})
   count_available_ips=${#ips[@]}
 
   if [[ $count_available_ips -gt 1 ]];
