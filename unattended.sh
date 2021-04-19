@@ -352,7 +352,6 @@ function set_required_prerequisite() {
 		oraclelinux-release* | enterprise-release*)
 			BASE_PACKAGES=(dnf-plugins-core oracle-epel-release-el8)
 			$PKG_MGR config-manager --set-enabled ol8_codeready_builder
-
 			;;
 		esac
 
