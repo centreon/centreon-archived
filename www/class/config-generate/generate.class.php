@@ -100,8 +100,7 @@ class Generate
         $bindParams = [];
         $bulkCount = 0;
 
-        $bulkInsert = function() use (&$valuesQueries, &$bindParams, &$bulkCount)
-        {
+        $bulkInsert = function () use (&$valuesQueries, &$bindParams, &$bulkCount) {
             $stmt = $this->backend_instance->db_cs->prepare(
                 'INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES '
                 . implode(',', $valuesQueries)
