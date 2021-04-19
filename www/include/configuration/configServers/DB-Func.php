@@ -1446,18 +1446,18 @@ function ipCanBeUpdated(array $options): bool
             return true;
         }
         return false;
-    } else {
-        /**
-         * If nothing was found in nagios server check if it exists in platform topology
-         * e.g: a Central is 127.0.0.1 in NS but is displayed with its true IP in platform_topology
-         */
-        $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `address` = :address");
-        $statement->bindValue(':address', $serverIp, \PDO::PARAM_STR);
-        $statement->execute();
-        $platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC);
-        if ($platformInTopology) {
-            return false;
-        }
-        return true;
     }
+
+    /**
+     * If nothing was found in nagios server check if it exists in platform topology
+     * e.g: a Central is 127.0.0.1 in NS but is displayed with its true IP in platform_topology
+     */
+    $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `address` = :address");
+    $statement->bindValue(':address', $serverIp, \PDO::PARAM_STR);
+    $statement->execute();
+    $platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC);
+    if ($platformInTopology && (int)$platformInTopology['server_id'] !== $serverId) {
+        return false;
+    }
+    return true;
 }
