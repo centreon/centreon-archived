@@ -1,6 +1,8 @@
 {
   "extends": "./node_modules/@centreon/frontend-core/tsconfig/index",
   "compilerOptions": {
+    "types": ["vite/client"],
+
     "baseUrl": "./",
     "typeRoots": [
       "./types",
