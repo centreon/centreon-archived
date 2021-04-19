@@ -355,8 +355,6 @@ function set_required_prerequisite() {
 			;;
 		esac
 
-		#FIXME check the result
-		#FIXE handle the case where PHP 7.2 is already installed then switch to 7.3
 		log "INFO" "Installing PHP 7.3 and enable it"
 		$PKG_MGR module install php:7.3 -y -q
 		$PKG_MGR module enable php:7.3 -y -q
