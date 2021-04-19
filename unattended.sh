@@ -553,7 +553,7 @@ function update_firewall_config() {
 function enable_new_services() {
 
 	log "INFO" "Enable and restart services ..."
-	if [ "x$has_systemd" '=' x1 ]; then
+	if [ $has_systemd -eq 1 ]; then
 		case $topology in
 
 		central)
