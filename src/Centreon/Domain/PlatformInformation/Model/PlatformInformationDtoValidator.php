@@ -44,11 +44,10 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
      */
     public function validateOrFail(array $dto): void
     {
-        $request = (object) $dto;
         $validator = new Validator();
         $file = 'file://' . $this->jsonSchemaPath;
         $validator->validate(
-            $request,
+            $dto,
             (object) ['$ref' => $file],
             Constraint::CHECK_MODE_VALIDATE_SCHEMA
         );
