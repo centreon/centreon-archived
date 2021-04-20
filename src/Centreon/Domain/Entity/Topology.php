@@ -154,13 +154,7 @@ class Topology
     public function getTopologyName(): ?string
     {
         // get translated menu entry
-        $topologyName = _($this->topology_name);
-
-        if ($this->getIsDeprecated() === true) {
-            $topologyName .= ' (' . _('deprecated') . ')';
-        }
-
-        return $topologyName;
+        return _($this->topology_name);
     }
 
     /**
