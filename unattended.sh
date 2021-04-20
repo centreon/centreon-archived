@@ -45,16 +45,16 @@ function genpasswd() {
 mariadb_root_password=${ENV_MARIADB_ROOT_PASSWD:-"$(genpasswd "MariaDB user : root")"}
 
 if [ "$wizard_autoplay" == "true" ]; then
-    # Set from ENV or random MariaDB centreon password
-    mariadb_centreon_password=${ENV_MARIADB_CENTREON_PASSWD:-"$(genpasswd "MariaDB user : centreon")"}
-    # Set from ENV or random Centreon admin password
-    centreon_admin_password=${ENV_CENTREON_ADMIN_PASSWD:-"$(genpasswd "Centreon user : admin")"}
-    # Set from ENV or Administrator first name
-    centreon_admin_firstname=${ENV_CENTREON_ADMIN_FIRSTNAME:-"John"}
-    # Set from ENV or Administrator last name
-    centreon_admin_lastname=${ENV_CENTREON_ADMIN_LASTNAME:-"Doe"}
-    # Set from ENV or Administrator e-mail
-    centreon_admin_email=${ENV_CENTREON_ADMIN_EMAIL:-"admin@admin.tld"}
+	# Set from ENV or random MariaDB centreon password
+	mariadb_centreon_password=${ENV_MARIADB_CENTREON_PASSWD:-"$(genpasswd "MariaDB user : centreon")"}
+	# Set from ENV or random Centreon admin password
+	centreon_admin_password=${ENV_CENTREON_ADMIN_PASSWD:-"$(genpasswd "Centreon user : admin")"}
+	# Set from ENV or Administrator first name
+	centreon_admin_firstname=${ENV_CENTREON_ADMIN_FIRSTNAME:-"John"}
+	# Set from ENV or Administrator last name
+	centreon_admin_lastname=${ENV_CENTREON_ADMIN_LASTNAME:-"Doe"}
+	# Set from ENV or Administrator e-mail
+	centreon_admin_email=${ENV_CENTREON_ADMIN_EMAIL:-"admin@admin.tld"}
 fi
 
 CENTREON_MAJOR_VERSION=$version
@@ -759,19 +759,14 @@ install)
 
 	update_after_installation
 
-	if [ "$topology" == "central" ]; then
-		if [ "$wizard_autoplay" == "true" ]; then
-			play_install_wizard
-		fi
-	fi
-
-	log "INFO" "Centreon [$topology] successfully installed !"
-
 	if [ "$topology" == "central" ] && [ "$wizard_autoplay" == "true" ]; then
+		play_install_wizard
 		log "INFO" "Log in to Centreon web interface via the URL: http://$central_ip/centreon"
 	else
 		log "INFO" "Follow the steps described in Centreon documentation: $CENTREON_DOC_URL"
 	fi
+
+	log "INFO" "Centreon [$topology] successfully installed !"
 	;;
 
 upgrade)
@@ -785,10 +780,10 @@ if [ -e $tmp_passwords_file ] && [ "$topology" == "central" ]; then
 	mv $tmp_passwords_file $passwords_file
 	echo
 	echo "****** IMPORTANT ******"
-        if [ "$wizard_autoplay" == "true" ]; then
-	        echo "As you will need passwords for users such as MariaDB [root,centreon] and Centreon [admin], random passwords are generated"
+	if [ "$wizard_autoplay" == "true" ]; then
+		echo "As you will need passwords for users such as MariaDB [root,centreon] and Centreon [admin], random passwords are generated"
 	else
-	        echo "As you will need password for user MariaDB [root], random password are generated"
+		echo "As you will need password for user MariaDB [root], random password are generated"
 	fi
 	echo "Passwords are currently saved in [$passwords_file]"
 	cat $passwords_file
