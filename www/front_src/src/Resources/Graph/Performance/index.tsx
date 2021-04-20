@@ -20,7 +20,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
-import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
+import SaveAsImageIcon from '@material-ui/icons/esm/SaveAlt';
 
 import {
   useRequest,

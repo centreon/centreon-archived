@@ -4,33 +4,15 @@
 /* eslint-disable no-multi-assign */
 /* eslint-disable func-names */
 
+import React from 'react';
+
+import ReactDOM from 'react-dom';
+
 import AppProvider from './Provider';
 
-// make an IIFE function to allow "await" usage
-// generate an "external" bundle to embed all needed libraries by external pages and hooks
-(async function () {
-  window.React = await import(/* webpackChunkName: "external" */ 'react');
-  window.ReactDOM = window.ReactDom = await import(
-    /* webpackChunkName: "external" */ 'react-dom'
-  );
-  window.PropTypes = window.PropTypes = await import(
-    /* webpackChunkName: "external" */ 'prop-types'
-  );
-  window.ReactRouterDOM = window.ReactRouterDom = await import(
-    /* webpackChunkName: "external" */ 'react-router-dom'
-  );
-  window.ReactRedux = await import(
-    /* webpackChunkName: "external" */ 'react-redux'
-  );
-  window.ReduxForm = await import(
-    /* webpackChunkName: "external" */ 'redux-form'
-  );
-  window.ReactI18Next = await import(
-    /* webpackChunkName: "external" */ 'react-i18next'
-  );
-  window.CentreonUiContext = await import(
-    /* webpackChunkName: "external" */ '@centreon/ui-context'
-  );
-
-  window.ReactDOM.render(<AppProvider />, document.getElementById('root'));
-})();
+ReactDOM.render(
+  <React.StrictMode>
+    <AppProvider />
+  </React.StrictMode>,
+  document.getElementById('root'),
+);

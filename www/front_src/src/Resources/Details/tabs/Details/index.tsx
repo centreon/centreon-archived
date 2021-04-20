@@ -13,7 +13,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import IconCopyFile from '@material-ui/icons/FileCopy';
+import IconCopyFile from '@material-ui/icons/esm/FileCopy';
 
 import { useSnackbar, Severity, useLocaleDateTimeFormat } from '@centreon/ui';
 import copyToClipBoard from '@centreon/ui/src/utils/copy';

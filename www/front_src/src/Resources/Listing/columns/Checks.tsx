@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import SyncDisabledIcon from '@material-ui/icons/SyncDisabled';
-import SyncProblemIcon from '@material-ui/icons/SyncProblem';
+import SyncDisabledIcon from '@material-ui/icons/esm/SyncDisabled';
+import SyncProblemIcon from '@material-ui/icons/esm/SyncProblem';
 import { Tooltip } from '@material-ui/core';
 
 import { ComponentColumnProps } from '@centreon/ui';

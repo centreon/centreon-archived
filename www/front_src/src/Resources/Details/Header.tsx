@@ -5,7 +5,7 @@ import { hasPath, isNil, not } from 'ramda';
 
 import { Grid, Typography, makeStyles, Theme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import CopyIcon from '@material-ui/icons/FileCopy';
+import CopyIcon from '@material-ui/icons/esm/FileCopy';
 
 import {
   StatusChip,
