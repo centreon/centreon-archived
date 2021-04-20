@@ -499,7 +499,7 @@ function install_centreon_repo() {
 
 	rpm -q centreon-release-$CENTREON_MAJOR_VERSION >/dev/null 2>&1
 	if [ $? -ne 0 ]; then
-		$PKG_MGR -q install -y $RELEASE_RPM_URL ##FIXME - add key for secure mode
+		$PKG_MGR -q install -y $RELEASE_RPM_URL
 		if [ $? -ne 0 ]; then
 			error_and_exit "Could not install Centreon repository"
 		fi
