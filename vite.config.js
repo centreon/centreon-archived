@@ -23,12 +23,28 @@ export default defineConfig({
     target: 'es2018',
   },
 
+  define: {
+    global: 'window', // fix for packages that support both node and browser
+  },
+
   logLevel: 'info',
 
   plugins: [reactRefresh()],
 
-  root: './www/front_src/src',
+  resolve: {
+    alias: [
+      {
+        find: /^@material-ui\/core\/(.+)/,
+        replacement: '@material-ui/core/es/$1',
+      },
+      {
+        find: /^@material-ui\/core$/,
+        replacement: '@material-ui/core/es',
+      },
+    ],
+  },
 
+  root: './www/front_src/src',
   server: {
     cors: true,
     hmr: true,

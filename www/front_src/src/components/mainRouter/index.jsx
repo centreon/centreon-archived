@@ -9,8 +9,7 @@ import { Switch, Route, withRouter } from 'react-router-dom';
 import { PageSkeleton } from '@centreon/ui';
 
 import LegacyRoute from '../../route-components/legacyRoute';
-
-const ReactRouter = React.lazy(() => import('../ReactRouter'));
+import ReactRouter from '../ReactRouter';
 
 // main router to handle switch between legacy routes and react pages
 // legacy route has a key to make it fully uncontrolled

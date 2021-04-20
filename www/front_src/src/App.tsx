@@ -26,8 +26,7 @@ import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import footerStyles from './components/footer/footer.scss';
 import PageLoader from './components/PageLoader';
-
-const MainRouter = React.lazy(() => import('./components/mainRouter'));
+import MainRouter from './components/mainRouter';
 
 const styles = createStyles({
   content: {

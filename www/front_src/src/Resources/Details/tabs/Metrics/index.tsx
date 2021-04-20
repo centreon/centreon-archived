@@ -45,6 +45,7 @@ const MetricsTabContent = ({
     });
   };
 
+  
   return (
     <InfiniteScroll
       details={details}

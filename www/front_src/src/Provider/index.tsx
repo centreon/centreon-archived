@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import 'dayjs/locale/en';
 import 'dayjs/locale/pt';
@@ -26,6 +26,7 @@ import {
 
 import createStore from '../store';
 import PageLoader from '../components/PageLoader';
+import App from '../App';
 
 import {
   parametersEndpoint,
@@ -38,8 +39,6 @@ import { DefaultParameters } from './models';
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
 dayjs.extend(timezonePlugin);
-
-const App = React.lazy(() => import('../App'));
 
 const store = createStore();
 

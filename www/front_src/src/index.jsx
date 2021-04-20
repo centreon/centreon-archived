@@ -10,9 +10,4 @@ import ReactDOM from 'react-dom';
 
 import AppProvider from './Provider';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <AppProvider />
-  </React.StrictMode>,
-  document.getElementById('root'),
-);
+ReactDOM.render(<AppProvider />, document.getElementById('root'));
