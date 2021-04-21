@@ -13,7 +13,7 @@ export default defineConfig({
     emptyOutDir: true,
     manifest: true,
     minify: 'esbuild',
-    outDir: './www/static',
+    outDir: '../../www/static',
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'www/front_src/src/index.jsx'),
@@ -21,10 +21,6 @@ export default defineConfig({
     },
 
     target: 'es2018',
-  },
-
-  define: {
-    global: 'window', // fix for packages that support both node and browser
   },
 
   logLevel: 'info',
