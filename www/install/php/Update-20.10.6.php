@@ -38,7 +38,7 @@ try {
         //Create the new column
         $errorMessage = "Unable to add pending column to platform_topology table";
         $pearDB->query(
-            "ALTER TABLE `platform_topology` ADD COLUMN `pending` enum('0','1') DEFAULT ('1') AFTER `parent_id`"
+            "ALTER TABLE `platform_topology` ADD COLUMN `pending` enum('0','1') DEFAULT '1' AFTER `parent_id`"
         );
     }
     $errorMessage = '';
