@@ -13,7 +13,7 @@ export default defineConfig({
     emptyOutDir: true,
     manifest: true,
     minify: 'esbuild',
-    outDir: '../../www/static',
+    outDir: '../../static',
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'www/front_src/src/index.jsx'),
