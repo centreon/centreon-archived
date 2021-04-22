@@ -14,13 +14,14 @@ export default defineConfig({
     manifest: true,
     minify: 'esbuild',
     outDir: '../../static',
+    polyfillDynamicImport: true,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'www/front_src/src/index.jsx'),
       },
     },
 
-    target: 'es2018',
+    target: 'es2015',
   },
 
   logLevel: 'info',

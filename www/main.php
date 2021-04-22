@@ -104,5 +104,5 @@ if ($isMobile) {
     $treeMenu = $menu->getMenu();
     require_once 'main.get.php';
 } else {
-    include_once('./index.vue.php');
+    include_once('./index.html');
 }

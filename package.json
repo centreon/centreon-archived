@@ -78,7 +78,7 @@
     "thread-loader": "^3.0.1",
     "ts-loader": "^8.0.18",
     "typescript": "4.2.3",
-    "url-loader": "^4.1.1",
+    "url-loader": "^4.1.1",    
     "vite": "^2.1.5",
     "webpack": "^5.28.0",
     "webpack-bundle-analyzer": "^4.4.0",

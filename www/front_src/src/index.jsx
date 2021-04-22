@@ -6,6 +6,9 @@
 
 import React from 'react';
 
+// eslint-disable-next-line import/no-unresolved
+import 'vite/dynamic-import-polyfill';
+
 import ReactDOM from 'react-dom';
 
 import AppProvider from './Provider';
