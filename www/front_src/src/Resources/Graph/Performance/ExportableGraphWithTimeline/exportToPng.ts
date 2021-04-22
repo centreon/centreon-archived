@@ -9,9 +9,13 @@ interface Props {
 const exportToPng = async ({ element, title }: Props): Promise<void> => {
   const dateTime = new Date().toISOString().substring(0, 19);
 
-  return dom2image.toBlob(element).then((blob) => {
-    return saveAs(blob, `${title}-${dateTime}.png`);
-  });
+  return dom2image
+    .toBlob(element, {
+      bgcolor: '#FFFFFF',
+    })
+    .then((blob) => {
+      return saveAs(blob, `${title}-${dateTime}.png`);
+    });
 };
 
 export default exportToPng;
