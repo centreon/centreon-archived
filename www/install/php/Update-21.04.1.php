@@ -50,7 +50,10 @@ try {
         $decodedCriterias = json_decode($filter['criterias'], true);
         foreach ($decodedCriterias as $criteriaKey => $criteria) {
             if ($criteria['name'] === 'sort') {
-                $decodedCriterias[$criteriaKey]['value'] = ['status_severity_code', $criteria['value']['status_severity_code']];
+                $decodedCriterias[$criteriaKey]['value'] = [
+                    'status_severity_code',
+                    $criteria['value']['status_severity_code']
+                ];
             }
         }
 
