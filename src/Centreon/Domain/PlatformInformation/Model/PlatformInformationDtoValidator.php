@@ -44,7 +44,7 @@ class PlatformInformationDtoValidator implements DtoValidatorInterface
      */
     public function validateOrFail(array $dto): void
     {
-        $request = (object) $dto;
+        $request = Validator::arrayToObjectRecursive($dto);
         $validator = new Validator();
         $file = 'file://' . $this->jsonSchemaPath;
         $validator->validate(
