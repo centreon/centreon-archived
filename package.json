@@ -25,7 +25,7 @@
     "@babel/preset-env": "^7.13.12",
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.13.0",
-    "@centreon/frontend-core": "github:centreon/frontend-core",
+    "@centreon/frontend-core": "git@github.com:centreon/frontend-core.git#DEVOPS-235-setup-typescript-node-eslint",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.11.10",
@@ -89,7 +89,7 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
-    "@centreon/ui": "github:centreon/centreon-ui",
+    "@centreon/ui": "git@github.com:centreon/centreon-ui.git#DEVOPS-214-setup-vite-poc",
     "@centreon/ui-context": "github:centreon/ui-context",
     "@date-io/dayjs": "1.3.13",
     "@material-ui/core": "4.11.3",
