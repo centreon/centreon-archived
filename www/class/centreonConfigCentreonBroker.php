@@ -83,6 +83,18 @@ class CentreonConfigCentreonBroker
      *
      * @var type
      */
+    private $logsCache = null;
+
+    /**
+     *
+     * @var type
+     */
+    private $logsLevelCache = null;
+
+    /**
+     *
+     * @var type
+     */
     private $typesCache = null;
 
     /**
@@ -200,6 +212,52 @@ class CentreonConfigCentreonBroker
             $this->tagsCache[$row['cb_tag_id']] = $row['tagname'];
         }
         return $this->tagsCache;
+    }
+
+    /**
+     * Return the list of logs option
+     *
+     * @return array
+     */
+    public function getLogsOption()
+    {
+        if (!is_null($this->logsCache)) {
+            return $this->logsCache;
+        }
+        $query = "SELECT log.`id`, log.`name` FROM `cb_log` log";
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
+            return array();
+        }
+        $this->logsCache = array();
+        while ($row = $res->fetchRow()) {
+            $this->logsCache[$row['id']] = $row['name'];
+        }
+        return $this->logsCache;
+    }
+
+    /**
+     * Return the list of logs level
+     *
+     * @return array
+     */
+    public function getLogsLevel()
+    {
+        if (!is_null($this->logsLevelCache)) {
+            return $this->logsLevelCache;
+        }
+        $query = "SELECT `id`, `name` FROM `cb_log_level`";
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
+            return array();
+        }
+        $this->logsLevelCache = array();
+        while ($row = $res->fetchRow()) {
+            $this->logsLevelCache[$row['id']] = $row['name'];
+        }
+        return $this->logsLevelCache;
     }
 
     /**
@@ -623,12 +681,11 @@ class CentreonConfigCentreonBroker
         // Insert the Centreon Broker configuration
         $query = "INSERT INTO cfg_centreonbroker "
             . "(config_name, config_filename, ns_nagios_server, config_activate, daemon, config_write_timestamp, "
-            . "config_write_thread_id, stats_activate, cache_directory, "
-            . "event_queue_max_size, command_file, pool_size) "
+            . "config_write_thread_id, stats_activate, cache_directory, event_queue_max_size, command_file, "
+            . "pool_size, log_directory, log_filename, log_max_size) "
             . "VALUES (:config_name, :config_filename, :ns_nagios_server, :config_activate, :daemon, "
             . ":config_write_timestamp, :config_write_thread_id, :stats_activate, :cache_directory, "
-            . ":event_queue_max_size, :command_file, :pool_size)";
-
+            . ":event_queue_max_size, :command_file, :pool_size, :log_directory, :log_filename, :log_max_size)";
         try {
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
@@ -640,6 +697,9 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':config_write_thread_id', $values['write_thread_id']['write_thread_id'], \PDO::PARAM_STR);
             $stmt->bindValue(':stats_activate', $values['stats_activate']['stats_activate'], \PDO::PARAM_STR);
             $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_directory', $values['log_directory'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_filename', $values['log_filename'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
@@ -661,6 +721,7 @@ class CentreonConfigCentreonBroker
         if (!empty($iId)) {
             $objMain->insertBrokerDefaultDirectives($iId, 'wizard');
         }
+
         /*
          * Get the ID
          */
@@ -672,6 +733,27 @@ class CentreonConfigCentreonBroker
         }
         $row = $res->fetch();
         $id = $row['config_id'];
+
+        /*
+         * Log
+         */
+        $logs = $this->getLogsOption();
+        $queryLog = "INSERT INTO cfg_centreonbroker_log (id_centreonbroker, id_log, id_level) VALUES ";
+        foreach (array_keys($logs) as $logId) {
+            $queryLog .= '(:id_centreonbroker, :log_' . $logId . ', :level_' . $logId . '), ';
+        }
+        $queryLog = rtrim($queryLog, ', ');
+        try {
+            $stmt = $this->db->prepare($queryLog);
+            $stmt->bindValue(':id_centreonbroker', (int) $id, \PDO::PARAM_INT);
+            foreach ($logs as $logId => $logName) {
+                $stmt->bindValue(':log_' . $logId, (int) $logId, \PDO::PARAM_INT);
+                $stmt->bindValue(':level_' . $logId, (int) $values['log_' . $logName], \PDO::PARAM_INT);
+            }
+            $stmt->execute();
+        } catch (\PDOException $e) {
+            return false;
+        }
         $this->updateCentreonBrokerInfos($id, $values);
     }
 
@@ -690,6 +772,7 @@ class CentreonConfigCentreonBroker
             . "config_write_timestamp = :config_write_timestamp, config_write_thread_id = :config_write_thread_id, "
             . "stats_activate = :stats_activate, cache_directory = :cache_directory, "
             . "event_queue_max_size = :event_queue_max_size, command_file = :command_file , "
+            . "log_directory = :log_directory, log_filename = :log_filename , log_max_size = :log_max_size , "
             . "pool_size = :pool_size WHERE config_id = " . $id;
         try {
             $stmt = $this->db->prepare($query);
@@ -702,6 +785,9 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':config_write_thread_id', $values['write_thread_id']['write_thread_id'], \PDO::PARAM_STR);
             $stmt->bindValue(':stats_activate', $values['stats_activate']['stats_activate'], \PDO::PARAM_STR);
             $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_directory', $values['log_directory'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_filename', $values['log_filename'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
@@ -711,6 +797,30 @@ class CentreonConfigCentreonBroker
             empty($values['pool_size'])
                 ? $stmt->bindValue(':pool_size', null, \PDO::PARAM_NULL)
                 : $stmt->bindValue(':pool_size', (int)$values['pool_size'], \PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (\PDOException $e) {
+            return false;
+        }
+
+        /*
+         * Log
+         */
+        $logs = $this->getLogsOption();
+        $query = "DELETE FROM cfg_centreonbroker_log WHERE id_centreonbroker = " . $id;
+        $this->db->query($query);
+
+        $queryLog = "INSERT INTO cfg_centreonbroker_log (id_centreonbroker, id_log, id_level) VALUES ";
+        foreach (array_keys($logs) as $logId) {
+            $queryLog .= '(:id_centreonbroker, :log_' . $logId . ', :level_' . $logId . '), ';
+        }
+        $queryLog = rtrim($queryLog, ', ');
+        try {
+            $stmt = $this->db->prepare($queryLog);
+            $stmt->bindValue(':id_centreonbroker', (int) $id, \PDO::PARAM_INT);
+            foreach ($logs as $logId => $logName) {
+                $stmt->bindValue(':log_' . $logId, (int) $logId, \PDO::PARAM_INT);
+                $stmt->bindValue(':level_' . $logId, (int) $values['log_' . $logName], \PDO::PARAM_INT);
+            }
             $stmt->execute();
         } catch (\PDOException $e) {
             return false;
@@ -727,21 +837,22 @@ class CentreonConfigCentreonBroker
      */
     public function updateCentreonBrokerInfos($id, $values)
     {
-
         // exclude multiple parameters load with broker js hook
         $condition = '';
-        foreach ($values['output'] as $key => $output) {
-            if (array_key_exists('lua_parameter__value_#index#', $output)) {
-                $condition .= ' AND config_key NOT LIKE "lua_parameter_%"';
-                unset($values['output'][$key]['lua_parameter__value_#index#']);
-                unset($values['output'][$key]['lua_parameter__name_#index#']);
-                unset($values['output'][$key]['lua_parameter__type_#index#']);
+        if ($values['output'] !== null) {
+            foreach ($values['output'] as $key => $output) {
+                if (array_key_exists('lua_parameter__value_#index#', $output)) {
+                    $condition .= ' AND config_key NOT LIKE "lua_parameter_%"';
+                    unset($values['output'][$key]['lua_parameter__value_#index#']);
+                    unset($values['output'][$key]['lua_parameter__name_#index#']);
+                    unset($values['output'][$key]['lua_parameter__type_#index#']);
+                }
             }
-        }
 
-        // Clean the informations for this id
-        $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = ' . (int)$id . $condition;
-        $this->db->query($query);
+            // Clean the informations for this id
+            $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = ' . (int)$id . $condition;
+            $this->db->query($query);
+        }
 
         $groups_infos = array();
         $groups_infos_multiple = array();

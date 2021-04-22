@@ -77,36 +77,36 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockUserContext = {
-  alias: 'admin',
-  name: 'admin',
-  locale: 'en',
-  timezone: 'Europe/Paris',
-
   acl: {
     actions: {
-      service: {
-        downtime: true,
-        acknowledgement: true,
-        disacknowledgement: true,
-        check: true,
-        submit_status: true,
-        comment: true,
-      },
       host: {
-        downtime: true,
         acknowledgement: true,
-        disacknowledgement: true,
         check: true,
-        submit_status: true,
         comment: true,
+        disacknowledgement: true,
+        downtime: true,
+        submit_status: true,
+      },
+      service: {
+        acknowledgement: true,
+        check: true,
+        comment: true,
+        disacknowledgement: true,
+        downtime: true,
+        submit_status: true,
       },
     },
   },
-
+  alias: 'admin',
   downtime: {
     default_duration: 7200,
   },
+  locale: 'en',
+
+  name: 'admin',
+
   refresh_interval: 15,
+  timezone: 'Europe/Paris',
 };
 
 jest.mock('@centreon/ui-context', () => ({
@@ -127,18 +127,18 @@ const ActionsWithLoading = (): JSX.Element => {
 let context: ResourceContext;
 
 const host = {
-  type: 'host',
   id: 0,
   passive_checks: true,
+  type: 'host',
 } as Resource;
 
 const service = {
   id: 1,
-  type: 'service',
   parent: {
     id: 1,
   },
   passive_checks: true,
+  type: 'service',
 } as Resource;
 
 const ActionsWithContext = (): JSX.Element => {
@@ -175,18 +175,18 @@ describe(Actions, () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
-          result: [],
           meta: {
-            page: 1,
             limit: 30,
+            page: 1,
             total: 0,
           },
+          result: [],
         },
       })
       .mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);
-    mockAppStateSelector(useSelector);
+    mockAppStateSelector(useSelector as jest.Mock);
 
     mockedUserContext.mockReturnValue(mockUserContext);
   });
@@ -260,7 +260,8 @@ describe(Actions, () => {
 
       await waitFor(() =>
         expect(
-          (last(getAllByText(labelConfirmAction)) as HTMLElement).parentElement,
+          (last<HTMLElement>(getAllByText(labelConfirmAction)) as HTMLElement)
+            .parentElement,
         ).toBeDisabled(),
       );
     },
@@ -296,13 +297,13 @@ describe(Actions, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         acknowledgeEndpoint,
         {
-          resources: map(pick(['type', 'id', 'parent']), selectedResources),
-
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
             is_notify_contacts: true,
             with_services: true,
           },
+
+          resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
         expect.anything(),
       ),
@@ -328,11 +329,11 @@ describe(Actions, () => {
       expect(mockedAxios.delete).toHaveBeenCalledWith(disacknowledgeEndpoint, {
         cancelToken: expect.anything(),
         data: {
-          resources: map(pick(['type', 'id', 'parent']), selectedResources),
-
           disacknowledgement: {
             with_services: true,
           },
+
+          resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
       }),
     );
@@ -424,8 +425,8 @@ describe(Actions, () => {
 
     // set previous day as end date using left arrow key
     fireEvent.click(getByLabelText(labelChangeEndDate));
-    fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
-    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
+    fireEvent.keyDown(container, { code: 37, key: 'ArrowLeft' });
+    fireEvent.keyDown(container, { code: 13, key: 'Enter' });
 
     await waitFor(() =>
       expect(
@@ -456,15 +457,15 @@ describe(Actions, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         downtimeEndpoint,
         {
-          resources: map(pick(['type', 'id', 'parent']), selectedResources),
           downtime: {
             comment: labelDowntimeByAdmin,
             duration: 7200,
-            start_time: '2020-01-01T00:00:00Z',
             end_time: '2020-01-01T02:00:00Z',
             is_fixed: true,
+            start_time: '2020-01-01T00:00:00Z',
             with_services: true,
           },
+          resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
         expect.anything(),
       ),
@@ -542,9 +543,9 @@ describe(Actions, () => {
           resources: [
             {
               ...pick(['type', 'id', 'parent'], service),
-              status: 1,
               output,
               performance_data: performanceData,
+              status: 1,
             },
           ],
         },
@@ -571,27 +572,27 @@ describe(Actions, () => {
       ...mockUserContext,
       acl: {
         actions: {
-          service: {
-            downtime: false,
-            check: false,
-            acknowledgement: false,
-            disacknowledgement: false,
-            submit_status: false,
-            comment: false,
-          },
           host: {
-            downtime: false,
-            check: false,
             acknowledgement: false,
-            disacknowledgement: false,
-            submit_status: false,
+            check: false,
             comment: false,
+            disacknowledgement: false,
+            downtime: false,
+            submit_status: false,
+          },
+          service: {
+            acknowledgement: false,
+            check: false,
+            comment: false,
+            disacknowledgement: false,
+            downtime: false,
+            submit_status: false,
           },
         },
       },
     });
 
-    const { getByText } = renderActions();
+    const { getByText, getByTitle } = renderActions();
 
     const selectedResources = [host, service];
 
@@ -605,7 +606,7 @@ describe(Actions, () => {
       expect(getByText(labelSetDowntime).parentElement).toBeDisabled();
     });
 
-    fireEvent.click(getByText(labelMoreActions));
+    fireEvent.click(getByTitle(labelMoreActions));
 
     expect(getByText(labelDisacknowledge)).toHaveAttribute(
       'aria-disabled',

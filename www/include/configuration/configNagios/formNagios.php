@@ -221,10 +221,6 @@ $form->addElement('text', 'nagios_group', _("Monitoring system Group"), $attrsTe
 /* *****************************************************
  * Enable / Disable functionalities
  */
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'postpone_notification_to_timeperiod', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'postpone_notification_to_timeperiod', null, _("No"), '0');
-$form->addGroup($nagTab, 'postpone_notification_to_timeperiod', _("Postpone Notification Option"), '&nbsp;');
 
 $nagTab = array();
 $nagTab[] = $form->createElement('radio', 'enable_notifications', null, _("Yes"), '1');
@@ -454,13 +450,6 @@ $form->addGroup($nagTab, 'auto_reschedule_checks', _("Auto-Rescheduling Option")
 
 $form->addElement('text', 'auto_rescheduling_interval', _("Auto-Rescheduling Interval"), $attrsText3);
 $form->addElement('text', 'auto_rescheduling_window', _("Auto-Rescheduling Window"), $attrsText3);
-
-/* *****************************************************
- * Aggressive host checking
- */
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'use_aggressive_host_checking', null, _("No"), '0');
-$form->addGroup($nagTab, 'use_aggressive_host_checking', _("Aggressive Host Checks"), '&nbsp;');
 
 /* *****************************************************
  * Flapping management.

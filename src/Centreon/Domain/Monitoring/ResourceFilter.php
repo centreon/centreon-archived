@@ -31,6 +31,7 @@ class ResourceFilter
 {
     public const TYPE_SERVICE = 'service';
     public const TYPE_HOST = 'host';
+    public const TYPE_META = 'metaservice';
 
     /**
      * Non-ok status in hard state , not acknowledged & not in downtime
@@ -109,12 +110,22 @@ class ResourceFilter
     /**
      * @var int[]
      */
+    private $monitoringServerIds = [];
+
+    /**
+     * @var int[]
+     */
     private $hostIds = [];
 
     /**
      * @var int[]
      */
     private $serviceIds = [];
+
+    /**
+     * @var int[]
+     */
+    private $metaServiceIds = [];
 
     /**
      * @var boolean
@@ -249,6 +260,25 @@ class ResourceFilter
     /**
      * @return int[]
      */
+    public function getMonitoringServerIds(): array
+    {
+        return $this->monitoringServerIds;
+    }
+
+    /**
+     * @param int[] $monitoringServerIds
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setMonitoringServerIds(array $monitoringServerIds): self
+    {
+        $this->monitoringServerIds = $monitoringServerIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
     public function getServicegroupIds(): array
     {
         return $this->servicegroupIds;
@@ -311,6 +341,31 @@ class ResourceFilter
         }
 
         $this->serviceIds = $serviceIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getMetaServiceIds(): array
+    {
+        return $this->metaServiceIds;
+    }
+
+    /**
+     * @param int[] $metaServiceIds
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setMetaServiceIds(array $metaServiceIds): self
+    {
+        foreach ($metaServiceIds as $metaServiceId) {
+            if (!is_int($metaServiceId)) {
+                throw new \InvalidArgumentException('Meta Service ids must be an array of integers');
+            }
+        }
+
+        $this->metaServiceIds = $metaServiceIds;
 
         return $this;
     }

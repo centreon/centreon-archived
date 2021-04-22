@@ -210,6 +210,14 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
+    public function findOneServiceByDescription(string $description): ?Service
+    {
+        return $this->monitoringRepository->findOneServiceByDescription($description);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findServiceGroups(bool $withHosts = false, bool $withServices = false): array
     {
         // Find hosts groups only
@@ -387,12 +395,8 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
 
         $configurationCommand = $this->serviceConfiguration->findCommandLine($monitoringService->getId());
         if (empty($configurationCommand)) {
-            // If there is no command line defined in the configuration, it's useless to continue.
-            $service = $this->serviceConfiguration->findService($monitoringService->getId());
-            if (
-                $service !== null
-                && $service->getServiceType() === \Centreon\Domain\ServiceConfiguration\Service::TYPE_META_SERVICE
-            ) {
+            // Meta Service case
+            if (preg_match('/^meta_[0-9]+$/', $monitoringService->getDescription())) {
                 // For META SERVICE we can define the configuration command line with the monitoring command line
                 $monitoringService->setCommandLine($monitoringCommand);
                 return;

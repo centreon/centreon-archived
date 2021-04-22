@@ -25,14 +25,14 @@ describe(HostMenu, () => {
           total: 3,
           unhandled: 3,
         },
+        ok: 1,
+        pending: 0,
+        refreshTime: 15,
+        total: 5,
         unreachable: {
           total: 2,
           unhandled: 2,
         },
-        ok: 1,
-        pending: 0,
-        total: 5,
-        refreshTime: 15,
       },
     });
 

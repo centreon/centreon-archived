@@ -79,7 +79,7 @@ class CentreonMonitoringPoller extends CentreonConfigurationObjects
                 $acl->getPollerString('ID', $this->pearDBMonitoring) . ') ';
         }
 
-        $queryPoller .= ' ORDER BY name';
+        $queryPoller .= ' ORDER BY name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (

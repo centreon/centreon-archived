@@ -2,9 +2,9 @@ import numeral from 'numeral';
 import { isNil } from 'ramda';
 
 interface FormatMetricValueProps {
-  value: number | null;
-  unit: string;
   base?: number;
+  unit: string;
+  value: number | null;
 }
 
 const formatMetricValue = ({
@@ -24,6 +24,8 @@ const formatMetricValue = ({
     'B/sec',
     'o',
     'octets',
+    'b/s',
+    'b',
   ];
 
   const base1024 = base2Units.includes(unit) || Number(base) === 1024;

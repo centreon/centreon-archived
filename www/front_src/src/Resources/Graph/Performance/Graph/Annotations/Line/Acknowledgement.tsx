@@ -6,7 +6,6 @@ import { useTheme } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 
 import { Props } from '..';
-import { iconSize } from '../Annotation';
 import { labelAcknowledgement } from '../../../../../translatedLabels';
 import EventAnnotations from '../EventAnnotations';
 
@@ -16,22 +15,12 @@ const AcknowledgementAnnotations = (props: Props): JSX.Element => {
 
   const color = theme.palette.action.acknowledged;
 
-  const icon = (
-    <IconAcknowledge
-      aria-label={t(labelAcknowledgement)}
-      height={iconSize}
-      width={iconSize}
-      style={{
-        color,
-      }}
-    />
-  );
-
   return (
     <EventAnnotations
-      type="acknowledgement"
-      icon={icon}
+      Icon={IconAcknowledge}
+      ariaLabel={t(labelAcknowledgement)}
       color={color}
+      type="acknowledgement"
       {...props}
     />
   );

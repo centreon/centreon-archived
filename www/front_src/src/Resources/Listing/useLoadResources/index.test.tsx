@@ -50,20 +50,22 @@ const appState = {
   },
 };
 
+const mockedSelector = useSelector as jest.Mock;
+
 describe(useLoadResources, () => {
   beforeEach(() => {
-    useSelector.mockImplementation((callback) => {
+    mockedSelector.mockImplementation((callback) => {
       return callback(appState);
     });
 
     mockedAxios.get.mockResolvedValue({
       data: {
-        result: [],
         meta: {
-          page: 1,
           limit: 30,
+          page: 1,
           total: 0,
         },
+        result: [],
       },
     });
   });

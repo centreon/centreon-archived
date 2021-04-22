@@ -1041,10 +1041,8 @@ if ($form->validate() && $from_list_menu == false) {
         }
         updateServiceInDB($serviceObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        foreach ($select as $value) {
-            if ($value) {
-                updateServiceInDB($value, true);
-            }
+        foreach (array_keys($select) as $svcTemplateIdToUpdate) {
+            updateServiceInDB($svcTemplateIdToUpdate, true);
         }
     }
     $action = $form->getSubmitValue("action");

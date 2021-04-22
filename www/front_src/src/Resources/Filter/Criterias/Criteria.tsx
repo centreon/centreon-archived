@@ -18,8 +18,8 @@ import { criteriaValueNameById, selectableCriterias } from './models';
 
 interface Props {
   name: string;
-  value: Array<SelectEntry>;
   parentWidth: number;
+  value: Array<SelectEntry>;
 }
 
 const CriteriaContent = ({
@@ -50,44 +50,53 @@ const CriteriaContent = ({
     }));
   };
 
-  const { label, options, buildAutocompleteEndpoint } = selectableCriterias[
-    name
-  ];
+  const {
+    label,
+    options,
+    buildAutocompleteEndpoint,
+    autocompleteSearch,
+  } = selectableCriterias[name];
 
   const commonProps = {
-    limitTags,
-    label: t(label),
     className: classes.field,
+    label: t(label),
+    limitTags,
     openText: `${t(labelOpen)} ${t(label)}`,
-    value,
+    search: autocompleteSearch,
   };
 
   if (isNil(options)) {
     const getEndpoint = ({ search, page }) =>
       buildAutocompleteEndpoint({
-        search,
-        page,
         limit: 10,
+        page,
+        search,
       });
+
     return (
       <MultiConnectedAutocompleteField
-        getEndpoint={getEndpoint}
+        {...commonProps}
         field="name"
+        getEndpoint={getEndpoint}
+        value={value}
         onChange={(_, updatedValue) => {
           changeCriteria(updatedValue);
         }}
-        {...commonProps}
       />
     );
   }
 
+  const translatedValues = getTranslated(value);
+  const translatedOptions = getTranslated(options);
+
   return (
     <MultiAutocompleteField
-      options={getTranslated(options)}
+      {...commonProps}
+      options={translatedOptions}
+      value={translatedValues}
       onChange={(_, updatedValue) => {
         changeCriteria(getUntranslated(updatedValue));
       }}
-      {...commonProps}
     />
   );
 };
@@ -102,10 +111,10 @@ const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
   return useMemoComponent({
     Component: (
       <CriteriaContent
-        setCriteriaAndNewFilter={setCriteriaAndNewFilter}
-        value={value}
         name={name}
         parentWidth={parentWidth}
+        setCriteriaAndNewFilter={setCriteriaAndNewFilter}
+        value={value}
       />
     ),
     memoProps: [

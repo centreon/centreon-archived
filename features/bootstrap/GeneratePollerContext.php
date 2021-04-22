@@ -102,11 +102,11 @@ class GeneratePollerContext extends CentreonContext
      */
     public function pollerConfigurationIsGenerated()
     {
-        /* Wait configuration is generated. */
+        // Wait configuration is generated.
         $this->spin(
             function ($context) {
                 return count($context->getSession()->getPage()
-                        ->findAll('css', 'div#consoleDetails font[color="green"]')) == 6;
+                        ->findAll('css', 'div#consoleDetails font[color="green"]')) === 6;
             }
         );
     }

@@ -23,8 +23,8 @@ import {
 import { Metric, TimeValue, GraphData, Line } from '../models';
 
 interface TimeTickWithMetrics {
-  timeTick: string;
   metrics: Array<Metric>;
+  timeTick: string;
 }
 
 const toTimeTickWithMetrics = ({
@@ -33,8 +33,8 @@ const toTimeTickWithMetrics = ({
 }): Array<TimeTickWithMetrics> =>
   map(
     (timeTick) => ({
-      timeTick,
       metrics,
+      timeTick,
     }),
     times,
   );
@@ -83,21 +83,33 @@ const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
   )(graphData);
 };
 
-const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
+const toLine = ({
+  ds_data,
+  legend,
   metric,
-  name: legend,
-  color: ds_data.ds_color_line,
-  areaColor: ds_data.ds_color_area,
-  transparency: ds_data.ds_transparency,
-  lineColor: ds_data.ds_color_line,
-  filled: ds_data.ds_filled,
-  invert: ds_data.ds_invert,
   unit,
+  average_value,
+  minimum_value,
+  maximum_value,
+}: Metric): Line => ({
+  areaColor: ds_data.ds_color_area,
+  average_value,
+  color: ds_data.ds_color_line,
   display: true,
+  filled: ds_data.ds_filled,
   highlight: undefined,
+  invert: ds_data.ds_invert,
+  legend: ds_data.ds_legend,
+  lineColor: ds_data.ds_color_line,
+  maximum_value,
+  metric,
+  minimum_value,
+  name: legend,
   stackOrder: equals(ds_data.ds_stack, '1')
     ? parseInt(ds_data.ds_order || '0', 10)
     : null,
+  transparency: ds_data.ds_transparency,
+  unit,
 });
 
 const getLineData = (graphData: GraphData): Array<Line> =>
@@ -174,7 +186,7 @@ const getMetricValuesForLines = ({
 }: LinesTimeSeries): Array<number> =>
   pipe(
     getUnits,
-    map((unit) => getMetricValuesForUnit({ unit, lines, timeSeries })),
+    map((unit) => getMetricValuesForUnit({ lines, timeSeries, unit })),
     flatten,
   )(lines);
 

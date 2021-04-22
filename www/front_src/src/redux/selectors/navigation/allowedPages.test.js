@@ -6,43 +6,43 @@ describe('allowedPagesSelector', () => {
       navigation: {
         items: [
           {
-            page: '1',
-            label: 'Home',
-            is_react: false,
-            url: './include/home/home.php',
-            options: null,
             children: [
               {
                 groups: [
                   {
-                    label: 'Main Menu',
                     children: [
                       {
-                        page: '10301',
-                        label: 'Custom view page 1',
                         is_react: false,
+                        label: 'Custom view page 1',
+                        options: null,
+                        page: '10301',
                         show: true,
                         url: 'page1.php',
-                        options: null,
                       },
                       {
-                        page: '10302',
-                        label: 'Custom view page 2',
                         is_react: true,
+                        label: 'Custom view page 2',
+                        options: null,
+                        page: '10302',
                         show: false,
                         url: '/home/customViews/2',
-                        options: null,
                       },
                     ],
+                    label: 'Main Menu',
                   },
                 ],
-                page: '103',
-                label: 'Custom Views',
                 is_react: true,
-                url: '/home/customViews',
+                label: 'Custom Views',
                 options: null,
+                page: '103',
+                url: '/home/customViews',
               },
             ],
+            is_react: false,
+            label: 'Home',
+            options: null,
+            page: '1',
+            url: './include/home/home.php',
           },
         ],
       },

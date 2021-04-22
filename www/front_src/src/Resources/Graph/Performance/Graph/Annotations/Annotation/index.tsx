@@ -21,11 +21,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface Props {
-  icon: JSX.Element;
-  xIcon: number;
-  header: string;
   event: TimelineEvent;
+  header: string;
+  icon: JSX.Element;
   marker: JSX.Element;
+  setAnnotationHovered: React.Dispatch<
+    React.SetStateAction<TimelineEvent | undefined>
+  >;
+  xIcon: number;
 }
 
 const Annotation = ({
@@ -34,6 +37,7 @@ const Annotation = ({
   event,
   xIcon,
   marker,
+  setAnnotationHovered,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -53,8 +57,15 @@ const Annotation = ({
           </Paper>
         }
       >
-        <svg y={yMargin} x={xIcon} height={iconSize} width={iconSize}>
-          <rect width={iconSize} height={iconSize} fill="transparent" />
+        <svg
+          height={iconSize}
+          width={iconSize}
+          x={xIcon}
+          y={yMargin}
+          onMouseEnter={() => setAnnotationHovered(() => event)}
+          onMouseLeave={() => setAnnotationHovered(() => undefined)}
+        >
+          <rect fill="transparent" height={iconSize} width={iconSize} />
           {icon}
         </svg>
       </Tooltip>

@@ -163,6 +163,39 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
     /**
      * @inheritDoc
      */
+    public function addMetaServiceComment(Comment $comment, Service $metaService): void
+    {
+        // We validate the comment entity sent
+        $errors = $this->validator->validate(
+            $comment,
+            null,
+            self::VALIDATION_GROUPS_SERVICE_ADD_COMMENT
+        );
+
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $hostComment = $this->monitoringService
+            ->filterByContact($this->contact)
+            ->findOneHost($metaService->getHost()->getId());
+
+        if (is_null($hostComment)) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Meta host %d not found'),
+                    $metaService->getHost()->getId()
+                )
+            );
+        }
+        $metaService->setHost($hostComment);
+
+        $this->engineService->addServiceComment($comment, $metaService);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function addHostComment(Comment $comment, Host $host): void
     {
         // We validate the comment entity sent
@@ -197,8 +230,20 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
      */
     public function addResourcesComment(array $comments, array $resourceIds): void
     {
+        /**
+         * @var Host[] $hosts
+         */
         $hosts = [];
+
+        /**
+         * @var Service[] $services
+         */
         $services = [];
+
+        /**
+         * @var Service[] $metaServices
+         */
+        $metaServices = [];
         /**
          * Retrieving at this point all the host and services entities linked to
          * the resource ids provided
@@ -215,6 +260,17 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
             if (!empty($resourceIds['service'])) {
                 try {
                     $services = $this->monitoringRepository->findServicesByIdsForAdminUser($resourceIds['service']);
+                } catch (\Throwable $ex) {
+                    throw new CommentException(_('Error when searching for services'), 0, $ex);
+                }
+            }
+
+            if (!empty($resourceIds['metaservice'])) {
+                try {
+                    foreach ($resourceIds['metaservice'] as $resourceId) {
+                        $metaServices[$resourceId['service_id']] = $this->monitoringRepository
+                            ->findOneServiceByDescription('meta_' . $resourceId['service_id']);
+                    }
                 } catch (\Throwable $ex) {
                     throw new CommentException(_('Error when searching for services'), 0, $ex);
                 }
@@ -241,6 +297,18 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
                     throw new CommentException(_('Error when searching for services'), 0, $ex);
                 }
             }
+
+            if (!empty($resourceIds['metaservice'])) {
+                try {
+                    foreach ($resourceIds['metaservice'] as $resourceId) {
+                        $metaServices[$resourceId['service_id']] = $this->monitoringRepository
+                            ->filterByAccessGroups($accessGroups)
+                            ->findOneServiceByDescription('meta_' . $resourceId['service_id']);
+                    }
+                } catch (\Throwable $ex) {
+                    throw new CommentException(_('Error when searching for meta services'), 0, $ex);
+                }
+            }
         }
 
         foreach ($hosts as $host) {
@@ -249,6 +317,10 @@ class CommentService extends AbstractCentreonService implements CommentServiceIn
 
         foreach ($services as $service) {
             $this->addServiceComment($comments[$service->getId()], $service);
+        }
+
+        foreach ($metaServices as $metaId => $metaService) {
+            $this->addMetaServiceComment($comments[$metaId], $metaService);
         }
     }
 }

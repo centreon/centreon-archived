@@ -2299,9 +2299,10 @@ function getSelectOption()
 {
     $stringToArray = function (string $value): array {
         if (strpos($value, ',') !== false) {
-            return explode(',', $value);
+            $value = explode(',', rtrim($value, ','));
+            return array_flip($value);
         }
-        return [$value];
+        return [$value => '1'];
     };
     if (isset($_GET["select"])) {
         return is_array($_GET["select"])
@@ -2334,5 +2335,14 @@ function getDuplicateNumberOption()
             : [];
     } else {
         return [];
+    }
+}
+
+function isNotEmptyAfterStringSanitize($test): bool
+{
+    if (empty(filter_var($test, FILTER_SANITIZE_STRING))) {
+        return false;
+    } else {
+        return true;
     }
 }

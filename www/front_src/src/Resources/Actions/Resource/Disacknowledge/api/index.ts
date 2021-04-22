@@ -7,8 +7,8 @@ import { Resource } from '../../../../models';
 const disacknowledgeEndpoint = `${resourcesEndpoint}/acknowledgements`;
 
 interface ResourcesWithDisacknowledgeParams {
-  resources: Array<Resource>;
   disacknowledgeAttachedResources: boolean;
+  resources: Array<Resource>;
 }
 
 const disacknowledgeResources = (cancelToken: CancelToken) => ({
@@ -18,10 +18,10 @@ const disacknowledgeResources = (cancelToken: CancelToken) => ({
   return axios.delete(disacknowledgeEndpoint, {
     cancelToken,
     data: {
-      resources: map(pick(['type', 'id', 'parent']), resources),
       disacknowledgement: {
         with_services: disacknowledgeAttachedResources,
       },
+      resources: map(pick(['type', 'id', 'parent']), resources),
     },
   });
 };

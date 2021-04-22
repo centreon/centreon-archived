@@ -255,7 +255,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`nagios_id` , `nagios_name` , `use_timezone`, `nagios_server_id`, `log_file` , `cfg_dir` , "
         . "`temp_file` , "
         . "`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , "
-        . "`postpone_notification_to_timeperiod`, `enable_notifications` , `execute_service_checks` , "
+        . "`enable_notifications` , `execute_service_checks` , "
         . "`accept_passive_service_checks` , `execute_host_checks` , "
         . "`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , "
         . "`check_external_commands` , `command_check_interval` , `command_file` , `downtime_file` , `comment_file` , "
@@ -272,7 +272,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . " `max_concurrent_checks` , `max_service_check_spread` , "
         . "`max_host_check_spread` , `check_result_reaper_frequency` , `max_check_result_reaper_time`, "
         . "`auto_reschedule_checks` , `auto_rescheduling_interval` , "
-        . "`auto_rescheduling_window` , `use_aggressive_host_checking` , "
+        . "`auto_rescheduling_window` , "
         . "`enable_predictive_host_dependency_checks`, `enable_flap_detection` , `low_service_flap_threshold` , "
         . "`high_service_flap_threshold` , `low_host_flap_threshold` , `high_host_flap_threshold` ,"
         . " `soft_state_dependencies` ,`enable_predictive_service_dependency_checks` , "
@@ -359,15 +359,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" . htmlentities($ret["nagios_group"], ENT_QUOTES, "UTF-8") . "', ";
     } else {
         $rq .= "NULL, ";
-    }
-
-    if (
-        isset($ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"])
-        && $ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"] === '1'
-    ) {
-        $rq .= "1, ";
-    } else {
-        $rq .= "0, ";
     }
 
     if (
@@ -698,15 +689,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" . htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "NULL, ";
-    }
-
-    if (
-        isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
-        && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 0
-    ) {
-        $rq .= "'" . $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] . "',  ";
-    } else {
-        $rq .= "'0', ";
     }
 
     if (
@@ -1317,15 +1299,6 @@ function updateNagios($nagios_id = null)
     }
 
     if (
-        isset($ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"])
-        && $ret["postpone_notification_to_timeperiod"]["postpone_notification_to_timeperiod"] === '1'
-    ) {
-        $rq .= "postpone_notification_to_timeperiod = 1, ";
-    } else {
-        $rq .= "postpone_notification_to_timeperiod = 0, ";
-    }
-
-    if (
         isset($ret["enable_notifications"]["enable_notifications"])
         && $ret["enable_notifications"]["enable_notifications"] != 2
     ) {
@@ -1691,17 +1664,6 @@ function updateNagios($nagios_id = null)
             . "',  ";
     } else {
         $rq .= "auto_rescheduling_window = NULL, ";
-    }
-
-    if (
-        isset($ret["use_aggressive_host_checking"]["use_aggressive_host_checking"])
-        && $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"] != 2
-    ) {
-        $rq .= "use_aggressive_host_checking = '"
-            . $ret["use_aggressive_host_checking"]["use_aggressive_host_checking"]
-            . "',  ";
-    } else {
-        $rq .= "use_aggressive_host_checking = '2', ";
     }
 
     if (
