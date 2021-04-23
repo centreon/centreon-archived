@@ -55,8 +55,6 @@ if (isset($options['list'])) {
     $files = listImages();
     if (empty($files['svgImages']) && empty($files['invalidFiles'])) {
         echo PHP_EOL . "Nothing to do, everything is fine." . PHP_EOL;
-    } else {
-        echo "You can execute the script using the --sanitize options to apply the modifications." . PHP_EOL;
     }
     exit(0);
 }
@@ -229,21 +227,16 @@ function listImages(): array
         "svgImages" => []
     ];
 
-    if (!empty($invalidFiles)) {
+    if (!empty($invalidFiles) || !empty($svgImages)) {
         echo PHP_EOL;
-        echo "The following images have an invalid MIME type or a mismatch between MIME type and file extension and "
-        . "can be replaced by a generic image:" . PHP_EOL . PHP_EOL;
+        echo "The following images should be sanitized to prevent any injections by running the script with --sanitize."
+        . PHP_EOL . PHP_EOL;
     }
 
     foreach ($invalidFiles as $invalidFile) {
         $files['invalidFiles'] = [$invalidFile];
         $pattern = str_replace('/', '\/', __DIR__ . '/../www/img/media/');
         echo preg_replace('/' . $pattern . '/', '', $invalidFile) . PHP_EOL;
-    }
-
-    if (!empty($svgImages)) {
-        echo PHP_EOL;
-        echo "The following SVGs can be sanitized to prevent any injections:" . PHP_EOL . PHP_EOL;
     }
 
     foreach ($svgImages as $svgImage) {
