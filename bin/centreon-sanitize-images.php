@@ -56,7 +56,7 @@ if (isset($options['list'])) {
     if (empty($files['svgImages']) && empty($files['invalidFiles'])) {
         echo PHP_EOL . "Nothing to do, everything is fine." . PHP_EOL;
     } else {
-        echo PHP_EOL . "You can execute the script using the --sanitize options to apply the modifications." . PHP_EOL;
+        echo "You can execute the script using the --sanitize options to apply the modifications." . PHP_EOL;
     }
     exit(0);
 }

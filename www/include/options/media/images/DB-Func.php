@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -30,9 +31,6 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
- * SVN : $URL$
- * SVN : $Id$
  *
  */
 
@@ -229,8 +227,8 @@ function moveImg($img_id, $dir_alias)
         $dir_alias = $img_info["dir_alias"];
     }
     if ($dir_alias != $img_info["dir_alias"]) {
-        $oldpath = $mediadir.$img_info["dir_alias"]."/".$img_info["img_path"];
-        $newpath = $mediadir.$dir_alias."/".$img_info["img_path"];
+        $oldpath = $mediadir.$img_info["dir_alias"] . "/" . $img_info["img_path"];
+        $newpath = $mediadir.$dir_alias . "/" . $img_info["img_path"];
 
         if (!file_exists($newpath)) {
             /**
