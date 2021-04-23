@@ -37,11 +37,6 @@
 require_once $centreon_path . "/bootstrap.php";
 
 /**
- * Path to the configuration dir
- */
-global $path;
-
-/**
  * Getting Centreon Version
  */
 $result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
@@ -117,8 +112,8 @@ if ($file_install_access) {
 /*
  * Smarty template Init
  */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path . '/include/core/login/template/', $tpl);
+$tpl = new \Smarty();
+$tpl = initSmartyTpl(__DIR__ . '/template/', $tpl);
 
 // Initializing variables
 $tpl->assign('loginMessages', $loginMessages);

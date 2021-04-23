@@ -109,7 +109,7 @@ $subS = $form->addElement(
  *  Smarty template
  */
 
-$tpl = new \Smarty();
+$tpl = new \SmartyBC();
 $tpl->setTemplateDir($path);
 $tpl->setCompileDir(_CENTREON_PATH_ . '/GPL_LIB/SmartyCache/compile');
 $tpl->setConfigDir(_CENTREON_PATH_ . '/GPL_LIB/SmartyCache/config');

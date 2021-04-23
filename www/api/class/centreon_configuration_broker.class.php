@@ -86,8 +86,8 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
          */
         $libDir = __DIR__ . "/../../../GPL_LIB";
         $smartyDir = __DIR__ . '/../../../vendor/smarty/smarty/';
-        require_once $smartyDir . 'libs/Smarty.class.php';
-        $tpl = new \Smarty();
+        require_once $smartyDir . 'libs/SmartyBC.class.php';
+        $tpl = new \SmartyBC();
         $tpl->setTemplateDir(_CENTREON_PATH_ . '/www/include/configuration/configCentreonBroker/');
         $tpl->setCompileDir($libDir . '/SmartyCache/compile');
         $tpl->setConfigDir($libDir . '/SmartyCache/config');

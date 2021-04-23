@@ -62,7 +62,7 @@ require_once "$classdir/centreonLang.class.php";
 require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreon.class.php";
 require_once "$classdir/centreonFeature.class.php";
-require_once SMARTY_DIR . "Smarty.class.php";
+require_once SMARTY_DIR . "SmartyBC.class.php";
 
 /*
  * Create DB Connection

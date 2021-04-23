@@ -23,9 +23,9 @@ function getTemplate($dir)
 {
     $libDir = __DIR__ . '/../../../GPL_LIB';
     $smartyDir = __DIR__ . '/../../../vendor/smarty/smarty/';
-    require_once $smartyDir . 'libs/Smarty.class.php';
+    require_once $smartyDir . 'libs/SmartyBC.class.php';
 
-    $template = new \Smarty();
+    $template = new \SmartyBC();
     $template->setTemplateDir($dir);
     $template->setCompileDir($libDir . '/SmartyCache/compile');
     $template->setConfigDir($libDir . '/SmartyCache/config');

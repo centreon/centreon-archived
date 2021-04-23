@@ -219,7 +219,7 @@ class CentreonHomeCustomview extends CentreonWebService
          * Smarty template Init
          */
         $libDir = __DIR__ . "/../../../GPL_LIB";
-        $tpl = new \Smarty();
+        $tpl = new \SmartyBC();
         $tpl->setTemplateDir(_CENTREON_PATH_ . '/www/include/home/customViews/');
         $tpl->setCompileDir($libDir . '/SmartyCache/compile');
         $tpl->setConfigDir($libDir . '/SmartyCache/config');
