@@ -237,7 +237,7 @@ function listImages(): array
 
     foreach ($invalidFiles as $invalidFile) {
         $files['invalidFiles'] = [$invalidFile];
-        $pattern = str_replace('/','\/', __DIR__ . '/../www/img/media/');
+        $pattern = str_replace('/', '\/', __DIR__ . '/../www/img/media/');
         echo preg_replace('/' . $pattern . '/', '', $invalidFile) . PHP_EOL;
     }
 
