@@ -232,7 +232,7 @@ function listImages(): array
     if (!empty($invalidFiles)) {
         echo PHP_EOL;
         echo "The following images have an invalid MIME type or a mismatch between MIME type and file extension and "
-        . "will be replaced by a generic image:" . PHP_EOL . PHP_EOL;
+        . "can be replaced by a generic image:" . PHP_EOL . PHP_EOL;
     }
 
     foreach ($invalidFiles as $invalidFile) {
@@ -243,7 +243,7 @@ function listImages(): array
 
     if (!empty($svgImages)) {
         echo PHP_EOL;
-        echo "The following SVGs will be sanitized to prevent any injections:" . PHP_EOL . PHP_EOL;
+        echo "The following SVGs can be sanitized to prevent any injections:" . PHP_EOL . PHP_EOL;
     }
 
     foreach ($svgImages as $svgImage) {
