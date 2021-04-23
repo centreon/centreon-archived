@@ -118,7 +118,7 @@ function scanDirRecursively(string $root, array &$files): array
     $dirs = scandir($root);
     if (is_array($dirs)) {
         foreach ($dirs as $dir) {
-            if (in_array($dir,['.', '..', '.keep', '.htaccess'])) {
+            if (in_array($dir, ['.', '..', '.keep', '.htaccess'])) {
                 continue;
             }
             $path = $root . '/' . $dir;
