@@ -65,15 +65,21 @@ if (isset($options['list'])) {
 // --sanitize option
 if (isset($options['sanitize'])) {
     $files = listImages();
-    if (!empty($files['svgImages'])) {
-        foreach($files['svgImages'] as $svgImage) {
-            sanitizeSvg($svgImage);
+    if (empty($files['svgImages']) && empty($files['invalidFiles'])) {
+        echo PHP_EOL . "Nothing to do, everything is fine." . PHP_EOL;
+    }else {
+        if (!empty($files['svgImages'])) {
+            foreach($files['svgImages'] as $svgImage) {
+                sanitizeSvg($svgImage);
+            }
         }
-    }
-    if (!empty($files['invalidFiles'])) {
-        foreach ($files['invalidFiles'] as $invalidImg) {
-            convertCorruptedImage($invalidImg);
+        if (!empty($files['invalidFiles'])) {
+            foreach ($files['invalidFiles'] as $invalidImg) {
+                convertCorruptedImage($invalidImg);
+            }
         }
+        echo "Sanitize done." . PHP_EOL;
+        exit(0);
     }
 }
 
@@ -89,7 +95,7 @@ function usage(): void
 {
     echo <<<'EOD'
 
-This script will sanitize all your svg files and replace the corrupted images by a generic image.
+This script will sanitize all your svg files and replace your corrupted images by a generic image.
 
 Global Options:
     --list : Will list all your svg files and/or your corrupted images
