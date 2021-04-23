@@ -227,8 +227,8 @@ function moveImg($img_id, $dir_alias)
         $dir_alias = $img_info["dir_alias"];
     }
     if ($dir_alias != $img_info["dir_alias"]) {
-        $oldpath = $mediadir.$img_info["dir_alias"] . "/" . $img_info["img_path"];
-        $newpath = $mediadir.$dir_alias . "/" . $img_info["img_path"];
+        $oldpath = $mediadir . $img_info["dir_alias"] . "/" . $img_info["img_path"];
+        $newpath = $mediadir . $dir_alias . "/" . $img_info["img_path"];
 
         if (!file_exists($newpath)) {
             /**
