@@ -48,7 +48,7 @@ if (empty($options)) {
 
 if (isset($options['help']) || isset($options['h'])) {
     usage();
-    exit(1);
+    exit(0);
 }
 
 // --list option
