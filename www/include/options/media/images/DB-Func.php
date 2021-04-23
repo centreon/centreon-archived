@@ -579,13 +579,12 @@ function isValidMIMETypeFromArchive(
         ) {
             return false;
         }
-        if($mimeType === "image/svg+xml") {
+        if ($mimeType === "image/svg+xml") {
             $sanitizer = new Sanitizer();
             $uploadedSVG = file_get_contents($dir . '/' . $file);
             $cleanSVG = $sanitizer->sanitize($uploadedSVG);
             file_put_contents($dir . '/' . $file, $cleanSVG);
         }
-
     }
     return true;
 }

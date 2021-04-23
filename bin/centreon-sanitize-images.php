@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -31,10 +32,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
+
 require(__DIR__ . '/../vendor/autoload.php');
 use enshrined\svgSanitize\Sanitizer;
 
@@ -57,7 +56,7 @@ if (isset($options['list'])) {
     if (empty($files['svgImages']) && empty($files['invalidFiles'])) {
         echo PHP_EOL . "Nothing to do, everything is fine." . PHP_EOL;
     } else {
-        echo PHP_EOL . "You can execute the script with the --sanitize options to apply the modifications." . PHP_EOL;
+        echo PHP_EOL . "You can execute the script using the --sanitize options to apply the modifications." . PHP_EOL;
     }
     exit(0);
 }
@@ -67,9 +66,9 @@ if (isset($options['sanitize'])) {
     $files = listImages();
     if (empty($files['svgImages']) && empty($files['invalidFiles'])) {
         echo PHP_EOL . "Nothing to do, everything is fine." . PHP_EOL;
-    }else {
+    } else {
         if (!empty($files['svgImages'])) {
-            foreach($files['svgImages'] as $svgImage) {
+            foreach ($files['svgImages'] as $svgImage) {
                 sanitizeSvg($svgImage);
             }
         }
@@ -117,9 +116,9 @@ function scanDirRecursively(string $root, array &$files): array
 {
     // starts the scan
     $dirs = scandir($root);
-    if(is_array($dirs)) {
+    if (is_array($dirs)) {
         foreach ($dirs as $dir) {
-            if (in_array($dir,['.','..','.keep','.htaccess'])) {
+            if (in_array($dir,['.', '..', '.keep', '.htaccess'])) {
                 continue;
             }
             $path = $root . '/' . $dir;
@@ -182,7 +181,7 @@ function getInvalidImages(array $files): array
 function getSvgImages(array $files): array
 {
     $svgFiles = [];
-    foreach($files as $file) {
+    foreach ($files as $file) {
         $fileExploded = explode(".", $file);
         $fileExtension = end($fileExploded);
         $mimeType = mime_content_type($file);
@@ -233,7 +232,7 @@ function listImages(): array
     if (!empty($invalidFiles)) {
         echo PHP_EOL;
         echo "The following images have an invalid MIME type or a mismatch between MIME type and file extension and "
-        . "will be replace by a generic image:" . PHP_EOL . PHP_EOL;
+        . "will be replaced by a generic image:" . PHP_EOL . PHP_EOL;
     }
 
     foreach ($invalidFiles as $invalidFile) {
@@ -249,7 +248,7 @@ function listImages(): array
 
     foreach ($svgImages as $svgImage) {
         $files['svgImages'] = [$svgImage];
-        $pattern = str_replace('/','\/', __DIR__ . '/../www/img/media/');
+        $pattern = str_replace('/', '\/', __DIR__ . '/../www/img/media/');
         echo preg_replace('/' . $pattern . '/', '', $svgImage) . PHP_EOL;
     }
     echo PHP_EOL;
@@ -269,8 +268,8 @@ function convertCorruptedImage(string $invalidImg): void
         $invalidImgExtension = end($invalidImgPathExploded);
 
         // Get size
-        $invalidImgSize =getimagesize($invalidImg);
-        if($invalidImgSize === false) {
+        $invalidImgSize = getimagesize($invalidImg);
+        if ($invalidImgSize === false) {
             $width = 100;
             $height = 100;
         } else {
@@ -289,7 +288,7 @@ function convertCorruptedImage(string $invalidImg): void
                 imageline($newImg, 0, 0, $width, $height, $lineColor);
             }
             // Save image as correct MIME Type
-            switch(true) {
+            switch (true) {
                 case $invalidImgExtension === "jpeg":
                 case $invalidImgExtension === "jpg":
                     unlink($invalidImg);
@@ -298,11 +297,13 @@ function convertCorruptedImage(string $invalidImg): void
                 case $invalidImgExtension === "gif":
                     unlink($invalidImg);
                     imagegif($newImg, $invalidImg);
+                    break;
                 //svg will be recreated as PNG as we don't have possibility to recreate a svg.
                 case $invalidImgExtension === "png":
                 case $invalidImgExtension === "svg":
                     unlink($invalidImg);
                     imagepng($newImg, $invalidImg);
+                    break;
                 default:
                     break;
             }
