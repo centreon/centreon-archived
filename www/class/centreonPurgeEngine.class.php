@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -199,8 +199,8 @@ class CentreonPurgeEngine
         $dropPartitions = [];
         foreach ($this->tablesToPurge[$table]['partitions'] as $partName => $partTimestamp) {
             if ($partTimestamp < $this->tablesToPurge[$table]['retention']) {
-                $dropPartitions[] = 'DROP PARTITION `' . $partName . '`';
-                echo "[" . date(DATE_RFC822) . "] Partition delete " . $partName . "\n";
+                $dropPartitions[] = '`' . $partName . '`';
+                echo "[" . date(DATE_RFC822) . "] Partition will be delete " . $partName . "\n";
             }
         }
 
@@ -208,7 +208,7 @@ class CentreonPurgeEngine
             return 0;
         }
 
-        $request = 'ALTER TABLE `' . $table . '` ' . implode(', ', $dropPartitions);
+        $request = 'ALTER TABLE `' . $table . '` DROP PARTITION ' . implode(', ', $dropPartitions);
         try {
             $DBRESULT = $this->dbCentstorage->query($request);
         } catch (\PDOException $e) {
