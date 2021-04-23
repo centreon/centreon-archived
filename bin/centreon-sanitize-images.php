@@ -79,8 +79,8 @@ if (isset($options['sanitize'])) {
  * Scan directory recursively.
  *
  * @param string $root
- * @param array $files
- * @return array
+ * @param array<string> $files
+ * @return array<string>
  */
 function scanDirRecursively(string $root, array &$files): array
 {
@@ -109,8 +109,8 @@ function scanDirRecursively(string $root, array &$files): array
 /**
  * Check MIME Type of file
  *
- * @param array $file
- * @return boolean
+ * @param array<string> $files
+ * @return array<string>
  */
 function getInvalidImages(array $files): array
 {
@@ -143,8 +143,8 @@ function getInvalidImages(array $files): array
 /**
  * Get all the svg images.
  *
- * @param array $files
- * @return array
+ * @param array<string> $files
+ * @return array<string>
  */
 function getSvgImages(array $files): array
 {
@@ -164,7 +164,6 @@ function getSvgImages(array $files): array
  * Sanitize a SVG file.
  *
  * @param string $file
- * @return void
  */
 function sanitizeSvg(string $file): void
 {
@@ -181,7 +180,7 @@ function sanitizeSvg(string $file): void
 /**
  * List all the invalid and/or svg images
  *
- * @return array
+ * @return array<string,array>
  */
 function listImages(): array
 {
@@ -224,10 +223,9 @@ function listImages(): array
 /**
  * Convert a corrupted image into a red cross on white background.
  *
- * @param string $image
- * @return void
+ * @param string $invalidImg
  */
-function convertCorruptedImage(string $invalidImg)
+function convertCorruptedImage(string $invalidImg): void
 {
     // Get image extension
     $invalidImgPathExploded = explode('.', $invalidImg);
