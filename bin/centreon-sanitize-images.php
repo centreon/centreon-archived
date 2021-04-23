@@ -66,37 +66,7 @@ if (isset($options['sanitize'])) {
     }
     if (!empty($files['invalidFiles'])) {
         foreach ($files['invalidFiles'] as $invalidImg) {
-            // Get image name and extension
-            $invalidImgPathExploded = explode('/', $invalidImg);
-            $invalidImgName = end($invalidImgPathExploded);
-
-            // Get only extension
-            $invalidImgNameExploded = explode('.', $invalidImgName);
-            $invalidImgExtension = end($invalidImgNameExploded);
-
-            // Get size
-            $invalidImgSize =getimagesize($invalidImg);
-            if($invalidImgSize === false) {
-                $width = 100;
-                $height = 100;
-            } else {
-                $width = $invalidImgSize[0];
-                $height = $invalidImgSize[1];
-            }
-            $newImg = imagecreatetruecolor($width, $height);
-            imagecolorallocate($newImg, 255, 255, 255);
-            $lineColor = imagecolorallocate($newImg, 255, 0, 0);
-            imageline($newImg, 0, 0, $width, $height, $lineColor);
-            imageline($newImg, $width, 0, $height, 0, $lineColor);
-            switch(true) {
-                case $invalidImgExtension === "jpeg":
-                case $invalidImgExtension === "jpg":
-                    unlink($invalidImg);
-                    imagejpeg($newImg, $invalidImg);
-                    break;
-                default:
-                    break;
-            }
+            convertCorruptedImage($invalidImg);
         }
     }
 }
@@ -249,4 +219,53 @@ function listImages(): array
     }
 
     return $files;
+}
+
+/**
+ * Convert a corrupted image into a red cross on white background.
+ *
+ * @param string $image
+ * @return void
+ */
+function convertCorruptedImage(string $invalidImg)
+{
+    // Get image extension
+    $invalidImgPathExploded = explode('.', $invalidImg);
+    $invalidImgExtension = end($invalidImgPathExploded);
+
+    // Get size
+    $invalidImgSize =getimagesize($invalidImg);
+    if($invalidImgSize === false) {
+        $width = 100;
+        $height = 100;
+    } else {
+        $width = $invalidImgSize[0];
+        $height = $invalidImgSize[1];
+    }
+
+    // Create the image
+    $newImg = imagecreate($width, $height);
+    imagecolorallocate($newImg, 255, 255, 255);
+    $lineColor = imagecolorallocate($newImg, 255, 0, 0);
+    imageline($newImg, $width, 0, 0, $height, $lineColor);
+    imageline($newImg, 0, 0, $width, $height, $lineColor);
+
+    // Save image as correct MIME Type
+    switch(true) {
+        case $invalidImgExtension === "jpeg":
+        case $invalidImgExtension === "jpg":
+            unlink($invalidImg);
+            imagejpeg($newImg, $invalidImg);
+            break;
+        case $invalidImgExtension === "gif":
+            unlink($invalidImg);
+            imagegif($newImg, $invalidImg);
+        //svg will be recreated as PNG as we don't have possibility to recreate a svg.
+        case $invalidImgExtension === "png":
+        case $invalidImgExtension === "svg":
+            unlink($invalidImg);
+            imagepng($newImg, $invalidImg);
+        default:
+            break;
+    }
 }
