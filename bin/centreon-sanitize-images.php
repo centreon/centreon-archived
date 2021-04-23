@@ -39,9 +39,15 @@ require(__DIR__ . '/../vendor/autoload.php');
 use enshrined\svgSanitize\Sanitizer;
 
 // Get Script options
-$options = getopt('', ['list', 'sanitize']);
+$options = getopt('h', ['help::','list', 'sanitize']);
+
 if (empty($options)) {
     echo "Missing parameters --list or --sanitize";
+    exit(1);
+}
+
+if (isset($options['help']) || isset($options['h'])) {
+    usage();
     exit(1);
 }
 
@@ -76,6 +82,25 @@ if (isset($options['sanitize'])) {
 ###############################
 
 /**
+ * Display usage message.
+ *
+ */
+function usage(): void
+{
+    echo <<<'EOD'
+
+This script will sanitize all your svg files and replace the corrupted images by a generic image.
+
+Global Options:
+    --list : Will list all your svg files and/or your corrupted images
+    --sanitize : Will list all your svg files and/or your corrupted images and sanitize/replace them.
+    -h,--help: display this message.
+
+
+EOD;
+}
+
+/**
  * Scan directory recursively.
  *
  * @param string $root
@@ -86,20 +111,22 @@ function scanDirRecursively(string $root, array &$files): array
 {
     // starts the scan
     $dirs = scandir($root);
-    foreach ($dirs as $dir) {
-        if (in_array($dir,['.','..','.keep','.htaccess'])) {
-            continue;
-        }
-        $path = $root . '/' . $dir;
-        if (is_file($path)) {
-            $fileExploded = explode(".", $dir);
-            if (end($fileExploded) === "html") {
+    if(is_array($dirs)) {
+        foreach ($dirs as $dir) {
+            if (in_array($dir,['.','..','.keep','.htaccess'])) {
                 continue;
             }
-            $files[] = $path;
-        }
-        if (is_dir($path)) {
-            scanDirRecursively($path, $files);
+            $path = $root . '/' . $dir;
+            if (is_file($path)) {
+                $fileExploded = explode(".", $dir);
+                if (end($fileExploded) === "html") {
+                    continue;
+                }
+                $files[] = $path;
+            }
+            if (is_dir($path)) {
+                scanDirRecursively($path, $files);
+            }
         }
     }
 
@@ -170,6 +197,9 @@ function sanitizeSvg(string $file): void
     try {
         $sanitizer = new Sanitizer();
         $svg = file_get_contents($file);
+        if ($svg === false) {
+            throw new \Exception('Unable to get content of file: ' . $file);
+        }
         $cleanSvg = $sanitizer->sanitize($svg);
         file_put_contents($file, $cleanSvg);
     } catch (\Exception $ex) {
@@ -194,29 +224,29 @@ function listImages(): array
         "svgImages" => []
     ];
 
-    if(!empty($invalidFiles)) {
+    if (!empty($invalidFiles)) {
         echo PHP_EOL;
         echo "The following images have an invalid MIME type or a mismatch between MIME type and file extension and "
         . "will be replace by a generic image:" . PHP_EOL . PHP_EOL;
     }
 
-    foreach($invalidFiles as $invalidFile) {
+    foreach ($invalidFiles as $invalidFile) {
         $files['invalidFiles'] = [$invalidFile];
         $pattern = str_replace('/','\/', __DIR__ . '/../www/img/media/');
         echo preg_replace('/' . $pattern . '/', '', $invalidFile) . PHP_EOL;
     }
 
-    if(!empty($svgImages)) {
+    if (!empty($svgImages)) {
         echo PHP_EOL;
-        echo "The following SVG will be sanitized to prevent any injections:" . PHP_EOL . PHP_EOL;
+        echo "The following SVGs will be sanitized to prevent any injections:" . PHP_EOL . PHP_EOL;
     }
 
-    foreach($svgImages as $svgImage) {
+    foreach ($svgImages as $svgImage) {
         $files['svgImages'] = [$svgImage];
         $pattern = str_replace('/','\/', __DIR__ . '/../www/img/media/');
         echo preg_replace('/' . $pattern . '/', '', $svgImage) . PHP_EOL;
     }
-
+    echo PHP_EOL;
     return $files;
 }
 
@@ -227,43 +257,53 @@ function listImages(): array
  */
 function convertCorruptedImage(string $invalidImg): void
 {
-    // Get image extension
-    $invalidImgPathExploded = explode('.', $invalidImg);
-    $invalidImgExtension = end($invalidImgPathExploded);
+    try {
+        // Get image extension
+        $invalidImgPathExploded = explode('.', $invalidImg);
+        $invalidImgExtension = end($invalidImgPathExploded);
 
-    // Get size
-    $invalidImgSize =getimagesize($invalidImg);
-    if($invalidImgSize === false) {
-        $width = 100;
-        $height = 100;
-    } else {
-        $width = $invalidImgSize[0];
-        $height = $invalidImgSize[1];
-    }
+        // Get size
+        $invalidImgSize =getimagesize($invalidImg);
+        if($invalidImgSize === false) {
+            $width = 100;
+            $height = 100;
+        } else {
+            $width = $invalidImgSize[0];
+            $height = $invalidImgSize[1];
+        }
 
-    // Create the image
-    $newImg = imagecreate($width, $height);
-    imagecolorallocate($newImg, 255, 255, 255);
-    $lineColor = imagecolorallocate($newImg, 255, 0, 0);
-    imageline($newImg, $width, 0, 0, $height, $lineColor);
-    imageline($newImg, 0, 0, $width, $height, $lineColor);
+        // Create the image
+        $newImg = imagecreate($width, $height);
+        if ($newImg !== false) {
+            imagecolorallocate($newImg, 255, 255, 255);
+            $lineColor = imagecolorallocate($newImg, 255, 0, 0);
 
-    // Save image as correct MIME Type
-    switch(true) {
-        case $invalidImgExtension === "jpeg":
-        case $invalidImgExtension === "jpg":
-            unlink($invalidImg);
-            imagejpeg($newImg, $invalidImg);
-            break;
-        case $invalidImgExtension === "gif":
-            unlink($invalidImg);
-            imagegif($newImg, $invalidImg);
-        //svg will be recreated as PNG as we don't have possibility to recreate a svg.
-        case $invalidImgExtension === "png":
-        case $invalidImgExtension === "svg":
-            unlink($invalidImg);
-            imagepng($newImg, $invalidImg);
-        default:
-            break;
+            if ($lineColor !== false) {
+                imageline($newImg, $width, 0, 0, $height, $lineColor);
+                imageline($newImg, 0, 0, $width, $height, $lineColor);
+            }
+            // Save image as correct MIME Type
+            switch(true) {
+                case $invalidImgExtension === "jpeg":
+                case $invalidImgExtension === "jpg":
+                    unlink($invalidImg);
+                    imagejpeg($newImg, $invalidImg);
+                    break;
+                case $invalidImgExtension === "gif":
+                    unlink($invalidImg);
+                    imagegif($newImg, $invalidImg);
+                //svg will be recreated as PNG as we don't have possibility to recreate a svg.
+                case $invalidImgExtension === "png":
+                case $invalidImgExtension === "svg":
+                    unlink($invalidImg);
+                    imagepng($newImg, $invalidImg);
+                default:
+                    break;
+            }
+        } else {
+            throw new Exception('Unable to create a generic image for file: ' . $invalidImg);
+        }
+    } catch (\Exception $ex) {
+        echo 'ERROR - ' . $ex->getMessage();
     }
 }
