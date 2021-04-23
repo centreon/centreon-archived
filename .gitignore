@@ -1,6 +1,3 @@
-#generic development files
-www/index.html
-
 #api html documentation
 doc/API/centreon-api-v2.html
 

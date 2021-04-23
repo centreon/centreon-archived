@@ -10,21 +10,24 @@
     <title>Centreon - IT & Network Monitoring</title>
 
     <script type="module">
-        import RefreshRuntime from 'http://localhost:3000/@react-refresh'
+        import RefreshRuntime from 'http://localhost:9090/centreon/@react-refresh'
         RefreshRuntime.injectIntoGlobalHook(window)
-        window.$RefreshReg$ = () => {}
+        window.$RefreshReg$ = () => { }
         window.$RefreshSig$ = () => (type) => type
         window.__vite_plugin_react_preamble_installed__ = true
-      </script>
-      
+    </script>
 
-    <script type="module" src="http://localhost:3000/@vite/client"></script>
-    <script type="module" src="http://localhost:3000/index.jsx"></script>
-    </head>
+    9090
+    <script type="module" src="http://localhost:9090/centreon/@vite/client"></script>
+    <script type="module" src="http://localhost:9090/centreon/index.jsx"></script>
+</head>
 
-<body style="margin:0;padding:0;width:100%;height:100%;"><noscript>You need to enable JavaScript to run this
+<body style="margin:0;padding:0;width:100%;height:100%;">
+
+    <noscript>You need to enable JavaScript to run this
         app.</noscript>
+
     <div id="root"></div>
 </body>
 
-</html>{}
+</html>

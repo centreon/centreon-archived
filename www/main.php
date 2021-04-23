@@ -104,5 +104,5 @@ if ($isMobile) {
     $treeMenu = $menu->getMenu();
     require_once 'main.get.php';
 } else {
-    include_once('./front_src/src/index.html');
+    include_once('./index.html');
 }
