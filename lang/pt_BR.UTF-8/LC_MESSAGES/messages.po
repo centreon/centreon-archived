@@ -15100,3 +15100,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Check duration"
 #  msgstr ""
+
+# msgid "Acknowledgement"
+# msgstr ""

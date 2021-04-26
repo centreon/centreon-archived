@@ -15276,6 +15276,9 @@ msgstr "Erreur lors de la suppression des tokens pour un contact"
 msgid "Acknowledged by"
 msgstr "Acquitté par"
 
+msgid "Acknowledgement"
+msgstr "Acquittement"
+
 msgid "Acknowledge services attached to host"
 msgstr "Acquitter les services attachés à l'hôte"
 
@@ -15328,7 +15331,7 @@ msgid "Host group"
 msgstr "Groupe d'hôtes"
 
 msgid "Downtime"
-msgstr "Plannifier une plage de maintenance"
+msgstr "Plage de maintenance"
 
 msgid "In downtime"
 msgstr "En plage de maintenance"

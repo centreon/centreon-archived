@@ -14655,5 +14655,8 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Monitoring server"
 #  msgstr ""
 
-msgid "Check duration"
-msgstr ""
+# msgid "Check duration"
+# msgstr ""
+
+# msgid "Acknowledgement"
+# msgstr ""
