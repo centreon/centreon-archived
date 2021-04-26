@@ -201,7 +201,7 @@ class Broker extends AbstractObjectJSON
             $object['log']['filename'] = filter_var($row['log_filename'], FILTER_SANITIZE_STRING);
             $object['log']['max_size'] = filter_var($row['log_max_size'], FILTER_VALIDATE_INT);
             $this->getLogsValues();
-            $logs = $this->cacheLogValue[$poller_id];
+            $logs = $this->cacheLogValue[$object['broker_id']];
             $object['log']['loggers'] = $logs;
 
             // Flow parameters
