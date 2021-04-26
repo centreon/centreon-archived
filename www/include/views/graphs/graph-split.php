@@ -62,8 +62,9 @@ $metrics = array();
 
 /* Get list metrics */
 $query = 'SELECT m.metric_id, m.metric_name, i.host_name, i.service_description
-    FROM metrics m, index_data i
-    WHERE i.id = m.index_id AND i.service_id = :serviceId
+    FROM metrics m
+    INNER JOIN index_data i
+    ON i.id = m.index_id AND i.service_id = :serviceId
     AND i.host_id = :hostId';
 
 $stmt = $pearDBO->prepare($query);
