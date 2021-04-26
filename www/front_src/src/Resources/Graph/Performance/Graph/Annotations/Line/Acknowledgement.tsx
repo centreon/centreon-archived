@@ -17,10 +17,10 @@ const AcknowledgementAnnotations = (props: Props): JSX.Element => {
 
   return (
     <EventAnnotations
-      type="acknowledgement"
       Icon={IconAcknowledge}
       ariaLabel={t(labelAcknowledgement)}
       color={color}
+      type="acknowledgement"
       {...props}
     />
   );

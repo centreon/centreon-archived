@@ -6,6 +6,9 @@ import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { CustomTimePeriod, TimePeriod } from '../Graph/models';
 import { AdjustTimePeriodProps } from '../../../Graph/Performance/models';
+import useMousePosition, {
+  MousePositionContext,
+} from '../../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
 
 const MemoizedPerformanceGraph = React.memo(
   ExportablePerformanceGraphWithTimeline,
@@ -14,28 +17,26 @@ const MemoizedPerformanceGraph = React.memo(
     const nextResource = nextProps.resource;
     const prevPeriodQueryParameters = prevProps.periodQueryParameters;
     const nextPeriodQueryParameters = nextProps.periodQueryParameters;
-    const prevTooltipPosition = prevProps.tooltipPosition;
-    const nextTooltipPosition = nextProps.tooltipPosition;
     const prevSelectedTimePeriod = prevProps.selectedTimePeriod;
     const nextSelectedTimePeriod = nextProps.selectedTimePeriod;
 
     return (
       equals(prevResource?.id, nextResource?.id) &&
       equals(prevPeriodQueryParameters, nextPeriodQueryParameters) &&
-      equals(prevTooltipPosition, nextTooltipPosition) &&
       equals(prevSelectedTimePeriod, nextSelectedTimePeriod)
     );
   },
 );
 
 interface Props {
-  services: Array<Resource>;
+  adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
+  customTimePeriod: CustomTimePeriod;
+  getIntervalDates: () => [string, string];
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
   periodQueryParameters: string;
-  getIntervalDates: () => [string, string];
+  resourceDetailsUpdated: boolean;
   selectedTimePeriod: TimePeriod | null;
-  customTimePeriod: CustomTimePeriod;
-  adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
+  services: Array<Resource>;
 }
 
 const ServiceGraphs = ({
@@ -46,10 +47,9 @@ const ServiceGraphs = ({
   selectedTimePeriod,
   customTimePeriod,
   adjustTimePeriod,
+  resourceDetailsUpdated,
 }: Props): JSX.Element => {
-  const [tooltipPosition, setTooltipPosition] = React.useState<
-    [number, number]
-  >();
+  const mousePositionProps = useMousePosition();
 
   const servicesWithGraph = services.filter(
     pipe(path(['links', 'endpoints', 'performance_graph']), isNil, not),
@@ -57,27 +57,29 @@ const ServiceGraphs = ({
 
   return (
     <>
-      {servicesWithGraph.map((service) => {
-        const { id } = service;
-        const isLastService = equals(last(servicesWithGraph), service);
+      <MousePositionContext.Provider value={mousePositionProps}>
+        {servicesWithGraph.map((service) => {
+          const { id } = service;
+          const isLastService = equals(last(servicesWithGraph), service);
 
-        return (
-          <div key={id}>
-            <MemoizedPerformanceGraph
-              resource={service}
-              graphHeight={120}
-              periodQueryParameters={periodQueryParameters}
-              selectedTimePeriod={selectedTimePeriod}
-              getIntervalDates={getIntervalDates}
-              onTooltipDisplay={setTooltipPosition}
-              tooltipPosition={tooltipPosition}
-              customTimePeriod={customTimePeriod}
-              adjustTimePeriod={adjustTimePeriod}
-            />
-            {isLastService && <div ref={infiniteScrollTriggerRef} />}
-          </div>
-        );
-      })}
+          return (
+            <div key={id}>
+              <MemoizedPerformanceGraph
+                limitLegendRows
+                adjustTimePeriod={adjustTimePeriod}
+                customTimePeriod={customTimePeriod}
+                getIntervalDates={getIntervalDates}
+                graphHeight={120}
+                periodQueryParameters={periodQueryParameters}
+                resource={service}
+                resourceDetailsUpdated={resourceDetailsUpdated}
+                selectedTimePeriod={selectedTimePeriod}
+              />
+              {isLastService && <div ref={infiniteScrollTriggerRef} />}
+            </div>
+          );
+        })}
+      </MousePositionContext.Provider>
     </>
   );
 };

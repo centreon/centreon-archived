@@ -1,22 +1,27 @@
 import * as React from 'react';
 
 import { Skeleton } from '@material-ui/lab';
+import { makeStyles } from '@material-ui/core';
 
-import { useStyles } from '.';
+const useStyles = makeStyles((theme) => ({
+  skeleton: {
+    height: 62,
+    transform: 'none',
+    width: '100%',
+  },
+  skeletons: {
+    display: 'grid',
+    gridGap: theme.spacing(1),
+  },
+}));
 
 const LoadingSkeleton = (): JSX.Element => {
   const classes = useStyles();
 
-  const serviceLoadingSkeleton = (
-    <div className={classes.serviceDetails}>
-      <Skeleton variant="circle" width={25} height={25} />
-      <Skeleton height={25} />
-      <Skeleton width={50} height={25} />
-    </div>
-  );
+  const serviceLoadingSkeleton = <Skeleton className={classes.skeleton} />;
 
   return (
-    <div className={classes.services}>
+    <div className={classes.skeletons}>
       {serviceLoadingSkeleton}
       {serviceLoadingSkeleton}
       {serviceLoadingSkeleton}

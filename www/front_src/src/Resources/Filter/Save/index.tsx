@@ -31,10 +31,10 @@ import CreateFilterDialog from './CreateFilterDialog';
 
 const useStyles = makeStyles((theme) => ({
   save: {
+    alignItems: 'center',
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
-    alignItems: 'center',
   },
 }));
 
@@ -112,8 +112,8 @@ const SaveFilterMenuContent = ({
 
   const updateFilter = (): void => {
     sendUpdateFilterRequest({
-      id: updatedFilter.id,
       filter: omit(['id'], updatedFilter),
+      id: updatedFilter.id,
     }).then((savedFilter) => {
       closeSaveFilterMenu();
       showMessage({
@@ -146,14 +146,14 @@ const SaveFilterMenuContent = ({
         <SettingsIcon />
       </IconButton>
       <Menu
-        anchorEl={menuAnchor}
         keepMounted
+        anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
         onClose={closeSaveFilterMenu}
       >
         <MenuItem
-          onClick={openCreateFilterDialog}
           disabled={!canSaveFilterAsNew}
+          onClick={openCreateFilterDialog}
         >
           {t(labelSaveAsNew)}
         </MenuItem>
@@ -163,16 +163,16 @@ const SaveFilterMenuContent = ({
             {sendingUpdateFilterRequest && <CircularProgress size={15} />}
           </div>
         </MenuItem>
-        <MenuItem onClick={openEditPanel} disabled={isEmpty(customFilters)}>
+        <MenuItem disabled={isEmpty(customFilters)} onClick={openEditPanel}>
           {t(labelEditFilters)}
         </MenuItem>
       </Menu>
       {createFilterDialogOpen && (
         <CreateFilterDialog
           open
-          onCreate={confirmCreateFilter}
           filter={updatedFilter}
           onCancel={closeCreateFilterDialog}
+          onCreate={confirmCreateFilter}
         />
       )}
     </>
@@ -182,8 +182,8 @@ const SaveFilterMenuContent = ({
 const memoProps = ['filter', 'updatedFilter', 'customFilters', 'filters'];
 
 const MemoizedSaveFilterMenuContent = memoizeComponent<Props>({
-  memoProps,
   Component: SaveFilterMenuContent,
+  memoProps,
 });
 
 const SaveFilterMenu = (): JSX.Element => {
@@ -199,13 +199,13 @@ const SaveFilterMenu = (): JSX.Element => {
 
   return (
     <MemoizedSaveFilterMenuContent
+      customFilters={customFilters}
       filter={filter}
-      updatedFilter={updatedFilter}
-      setFilter={setFilter}
+      filters={filters}
       loadCustomFilters={loadCustomFilters}
       setEditPanelOpen={setEditPanelOpen}
-      customFilters={customFilters}
-      filters={filters}
+      setFilter={setFilter}
+      updatedFilter={updatedFilter}
     />
   );
 };

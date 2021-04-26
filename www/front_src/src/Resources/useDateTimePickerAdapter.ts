@@ -15,11 +15,27 @@ const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
     }
 
     public date(value): dayjs.Dayjs {
-      return dayjs(value).locale(locale).tz(timezone);
+      return dayjs(value).locale(locale);
     }
 
     public startOfMonth(date: dayjs.Dayjs) {
-      return date;
+      return dayjs(date.tz()).startOf('month');
+    }
+
+    public isEqual = (value, comparing) => {
+      if (value === null && comparing === null) {
+        return true;
+      }
+
+      return dayjs(value).isSame(dayjs(comparing), 'minute');
+    };
+
+    public getHours(date) {
+      return date.locale(locale).tz(timezone).hour();
+    }
+
+    public setHours(date: dayjs.Dayjs, count: number) {
+      return date.locale(locale).tz(timezone).set('hour', count);
     }
   }
 

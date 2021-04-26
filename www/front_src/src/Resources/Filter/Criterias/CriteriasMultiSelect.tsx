@@ -16,13 +16,13 @@ import {
 
 import AddIcon from '@material-ui/icons/AddCircle';
 
-import { IconPopoverAutocompleteField, useMemoComponent } from '@centreon/ui';
-
 import {
-  labelCriterias,
-  labelNewFilter,
-  labelSelectCriterias,
-} from '../../translatedLabels';
+  IconPopoverMultiSelectField,
+  SelectEntry,
+  useMemoComponent,
+} from '@centreon/ui';
+
+import { labelNewFilter, labelSelectCriterias } from '../../translatedLabels';
 import { useResourceContext } from '../../Context';
 import { FilterState } from '../useFilter';
 import { allFilter } from '../models';
@@ -58,7 +58,7 @@ const CriteriasMultiSelectContent = ({
       name: t(selectableCriterias[name].label),
     }));
 
-  const changeSelectedCriterias = (_, updatedCriterias) => {
+  const changeSelectedCriterias = (updatedCriterias: Array<SelectEntry>) => {
     const { criterias } = filter;
     const updatedNames = map(prop('id'), updatedCriterias) as Array<string>;
 
@@ -83,9 +83,9 @@ const CriteriasMultiSelectContent = ({
 
     setFilter({
       ...filter,
+      criterias: [...criteriasWithoutRemoved, ...criteriasToAdd],
       id: '',
       name: labelNewFilter,
-      criterias: [...criteriasWithoutRemoved, ...criteriasToAdd],
     });
   };
 
@@ -94,14 +94,13 @@ const CriteriasMultiSelectContent = ({
   };
 
   return (
-    <IconPopoverAutocompleteField
-      title={t(labelSelectCriterias)}
-      label={t(labelCriterias)}
-      options={options}
-      onChange={changeSelectedCriterias}
-      value={selectedCriterias}
-      popperPlacement="bottom-start"
+    <IconPopoverMultiSelectField
       icon={<AddIcon />}
+      options={options}
+      popperPlacement="bottom-start"
+      title={t(labelSelectCriterias)}
+      value={selectedCriterias}
+      onChange={changeSelectedCriterias}
       onReset={resetCriteria}
     />
   );

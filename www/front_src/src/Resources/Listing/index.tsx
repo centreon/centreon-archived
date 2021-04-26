@@ -5,13 +5,18 @@ import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
 
-import { MemoizedListing as Listing } from '@centreon/ui';
+import {
+  MemoizedListing as Listing,
+  Severity,
+  useSnackbar,
+} from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource, SortOrder } from '../models';
+import { labelSelectAtLeastOneColumn } from '../translatedLabels';
 
 import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
@@ -19,6 +24,7 @@ import useLoadResources from './useLoadResources';
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
   const { t } = useTranslation();
+  const { showMessage } = useSnackbar();
 
   const {
     listing,
@@ -67,18 +73,15 @@ const ResourceListing = (): JSX.Element => {
   };
 
   const resourceDetailsOpenCondition = {
-    name: 'detailsOpen',
-    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
     color: fade(theme.palette.primary.main, 0.08),
+    condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
+    name: 'detailsOpen',
   };
 
   const columns = getColumns({
     actions: {
       onAcknowledge: (resource): void => {
         setResourcesToAcknowledge([resource]);
-      },
-      onDowntime: (resource): void => {
-        setResourcesToSetDowntime([resource]);
       },
       onCheck: (resource): void => {
         setResourcesToCheck([resource]);
@@ -87,6 +90,9 @@ const ResourceListing = (): JSX.Element => {
         setOpenDetailsTabId(graphTabId);
 
         selectResource(resource);
+      },
+      onDowntime: (resource): void => {
+        setResourcesToSetDowntime([resource]);
       },
     },
     t,
@@ -105,35 +111,32 @@ const ResourceListing = (): JSX.Element => {
     setSelectedColumnIds(defaultSelectedColumnIds);
   };
 
+  const selectColumns = (updatedColumnIds: Array<string>): void => {
+    if (updatedColumnIds.length === 0) {
+      showMessage({
+        message: t(labelSelectAtLeastOneColumn),
+        severity: Severity.warning,
+      });
+
+      return;
+    }
+
+    setSelectedColumnIds(updatedColumnIds);
+  };
+
   return (
     <Listing
       checkable
       actions={<Actions onRefresh={initAutorefreshAndLoad} />}
-      loading={loading}
-      columns={columns}
-      onSelectColumns={setSelectedColumnIds}
       columnConfiguration={{
-        sortable: true,
         selectedColumnIds,
+        sortable: true,
       }}
-      onResetColumns={resetColumns}
-      rows={listing?.result}
+      columns={columns}
       currentPage={(page || 1) - 1}
-      rowColorConditions={[
-        ...rowColorConditions(theme),
-        resourceDetailsOpenCondition,
-      ]}
-      limit={listing?.meta.limit}
-      onSort={changeSort}
-      onLimitChange={changeLimit}
-      onPaginate={changePage}
-      sortField={sortField}
-      sortOrder={sortOrder}
-      totalRows={listing?.meta.total}
-      onSelectRows={setSelectedResources}
-      selectedRows={selectedResources}
-      onRowClick={selectResource}
       getId={getId}
+      limit={listing?.meta.limit}
+      loading={loading}
       memoProps={[
         listing,
         sortField,
@@ -143,6 +146,22 @@ const ResourceListing = (): JSX.Element => {
         selectedResourceUuid,
         sending,
       ]}
+      rowColorConditions={[
+        ...rowColorConditions(theme),
+        resourceDetailsOpenCondition,
+      ]}
+      rows={listing?.result}
+      selectedRows={selectedResources}
+      sortField={sortField}
+      sortOrder={sortOrder}
+      totalRows={listing?.meta.total}
+      onLimitChange={changeLimit}
+      onPaginate={changePage}
+      onResetColumns={resetColumns}
+      onRowClick={selectResource}
+      onSelectColumns={selectColumns}
+      onSelectRows={setSelectedResources}
+      onSort={changeSort}
     />
   );
 };

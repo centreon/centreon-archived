@@ -24,11 +24,11 @@ const useStyles = makeStyles((theme) => {
       padding: theme.spacing(1),
     },
     shortcutRow: {
-      gridAutoFlow: 'column',
-      gridTemplateColumns: 'auto auto',
       alignItems: 'center',
-      justifyContent: 'flex-start',
+      gridAutoFlow: 'column',
       gridGap: theme.spacing(2),
+      gridTemplateColumns: 'auto auto',
+      justifyContent: 'flex-start',
     },
   };
 });
@@ -44,18 +44,18 @@ const Shortcuts = ({ uris }: Props): JSX.Element => {
   const shortcuts = [
     {
       Icon: SettingsIcon,
-      uri: prop('configuration', uris),
       name: labelConfigure,
+      uri: prop('configuration', uris),
     },
     {
       Icon: LogsIcon,
-      uri: prop('logs', uris),
       name: labelViewLogs,
+      uri: prop('logs', uris),
     },
     {
       Icon: ReportIcon,
-      uri: prop('reporting', uris),
       name: labelViewReport,
+      uri: prop('reporting', uris),
     },
   ];
 
@@ -66,11 +66,11 @@ const Shortcuts = ({ uris }: Props): JSX.Element => {
       {availableShortcuts.map(({ Icon, uri, name }) => {
         return (
           <div
-            key={name}
             className={clsx([classes.gridWithSpacing, classes.shortcutRow])}
+            key={name}
           >
             <Icon color="primary" />
-            <Link variant="body1" href={uri as string} color="inherit">
+            <Link color="inherit" href={uri as string} variant="body1">
               {t(name)}
             </Link>
           </div>

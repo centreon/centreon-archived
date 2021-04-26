@@ -36,8 +36,8 @@ const ServerConfigurationWizardForm = ({ error, handleSubmit, onSubmit }) => {
         </div>
         <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
           <Field
-            name="server_type"
             component={RadioGroupFields}
+            name="server_type"
             options={configurationTypes}
           />
           <div className={styles['form-buttons']}>

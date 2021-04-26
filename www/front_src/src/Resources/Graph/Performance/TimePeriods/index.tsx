@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { always, cond, lte, map, pick, T } from 'ramda';
+import { always, cond, lt, lte, map, pick, T } from 'ramda';
 import { ParentSize } from '@visx/visx';
 
 import {
@@ -19,37 +19,36 @@ import {
   TimePeriodId,
   timePeriods,
 } from '../../../Details/tabs/Graph/models';
+import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
 
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
 const useStyles = makeStyles((theme) => ({
-  header: {
-    padding: theme.spacing(1, 0.5),
-    display: 'grid',
-    gridTemplateColumns: `repeat(2, auto)`,
-    columnGap: `${theme.spacing(2)}px`,
-    justifyContent: 'center',
+  button: {
+    fontSize: theme.typography.body2.fontSize,
   },
   buttonGroup: {
     alignSelf: 'center',
   },
-  button: {
-    fontSize: theme.typography.body2.fontSize,
+  header: {
+    alignItems: 'center',
+    columnGap: `${theme.spacing(2)}px`,
+    display: 'grid',
+    gridTemplateColumns: `repeat(3, auto)`,
+    justifyContent: 'center',
+    padding: theme.spacing(1, 0.5),
   },
 }));
 
 interface Props {
-  selectedTimePeriodId?: string;
-  onChange: (timePeriod: TimePeriodId) => void;
-  disabled?: boolean;
-  customTimePeriod: CustomTimePeriod;
   changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
+  customTimePeriod: CustomTimePeriod;
+  disabled?: boolean;
+  onChange: (timePeriod: TimePeriodId) => void;
+  selectedTimePeriodId?: string;
 }
 
-const timePeriodOptions = map(
-  pick(['id', 'name', 'compactName', 'largeName']),
-  timePeriods,
-);
+const timePeriodOptions = map(pick(['id', 'name', 'largeName']), timePeriods);
 
 const TimePeriodButtonGroup = ({
   selectedTimePeriodId,
@@ -64,9 +63,8 @@ const TimePeriodButtonGroup = ({
 
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,
-    name: t(timePeriod.name),
-    compactName: t(timePeriod.compactName),
     largeName: t(timePeriod.largeName),
+    name: t(timePeriod.name),
   }));
 
   const changeDate = ({ property, date }) =>
@@ -75,30 +73,30 @@ const TimePeriodButtonGroup = ({
   return (
     <ParentSize>
       {({ width }) => {
+        const isCompact = lt(width, theme.breakpoints.values.sm);
         return (
           <Paper className={classes.header}>
             <ButtonGroup
-              size="small"
-              disabled={disabled}
-              color="primary"
               className={classes.buttonGroup}
+              color="primary"
               component="span"
+              disabled={disabled}
+              size="small"
             >
               {map(
-                ({ id, name, compactName, largeName }) => (
-                  <Tooltip key={name} title={largeName} placement="top">
+                ({ id, name, largeName }) => (
+                  <Tooltip key={name} placement="top" title={largeName}>
                     <Button
-                      onClick={() => onChange(id)}
+                      className={classes.button}
+                      component="span"
                       variant={
                         selectedTimePeriodId === id ? 'contained' : 'outlined'
                       }
-                      className={classes.button}
-                      component="span"
+                      onClick={() => onChange(id)}
                     >
                       {cond<number, string>([
                         [lte(theme.breakpoints.values.md), always(largeName)],
-                        [lte(theme.breakpoints.values.sm), always(name)],
-                        [T, always(compactName)],
+                        [T, always(name)],
                       ])(width)}
                     </Button>
                   </Tooltip>
@@ -107,9 +105,11 @@ const TimePeriodButtonGroup = ({
               )}
             </ButtonGroup>
             <CustomTimePeriodPickers
-              customTimePeriod={customTimePeriod}
               acceptDate={changeDate}
+              customTimePeriod={customTimePeriod}
+              isCompact={isCompact}
             />
+            <GraphOptions />
           </Paper>
         );
       }}

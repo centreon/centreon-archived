@@ -28,22 +28,27 @@ import {
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
 
-const useStyles = makeStyles(() => ({
-  filterSelect: {
-    width: 200,
-  },
+const useStyles = makeStyles((theme) => ({
   criterias: {
     marginLeft: 36,
-  },
-  searchField: {
-    width: 375,
   },
   field: {
     minWidth: 155,
   },
   filterLineLabel: {
-    width: 60,
     textAlign: 'center',
+    width: 60,
+  },
+  filterSelect: {
+    width: 200,
+  },
+  saveFilter: {
+    alignItems: 'center',
+    display: 'flex',
+    marginRight: theme.spacing(1),
+  },
+  searchField: {
+    width: 375,
   },
 }));
 
@@ -122,50 +127,52 @@ const Filter = (): JSX.Element => {
 
   return (
     <Filters
-      expanded={filterExpanded}
-      onExpand={toggleFilterExpanded}
       expandLabel={labelShowCriteriasFilters}
-      filters={
-        <Grid container spacing={1} alignItems="center">
-          <Grid item>
-            <SaveFilter />
-          </Grid>
-          <Grid item>
-            {customFiltersLoading ? (
-              <FilterLoadingSkeleton />
-            ) : (
-              <SelectFilter
-                options={options.map(pick(['id', 'name', 'type']))}
-                selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
-                onChange={changeFilter}
-                ariaLabel={t(labelStateFilter)}
-                className={classes.filterSelect}
-              />
-            )}
-          </Grid>
-          <Grid item>
-            <SearchField
-              EndAdornment={SearchHelpTooltip}
-              value={nextSearch || ''}
-              onChange={prepareSearch}
-              placeholder={t(labelSearch)}
-              onKeyDown={requestSearchOnEnterKey}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={requestSearch}
-            >
-              {t(labelSearch)}
-            </Button>
-          </Grid>
-        </Grid>
-      }
       expandableFilters={<Criterias />}
+      expanded={filterExpanded}
+      filters={
+        <>
+          <div className={classes.saveFilter}>
+            <SaveFilter />
+          </div>
+          <Grid container alignItems="center" spacing={1}>
+            <Grid item>
+              {customFiltersLoading ? (
+                <FilterLoadingSkeleton />
+              ) : (
+                <SelectFilter
+                  ariaLabel={t(labelStateFilter)}
+                  className={classes.filterSelect}
+                  options={options.map(pick(['id', 'name', 'type']))}
+                  selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
+                  onChange={changeFilter}
+                />
+              )}
+            </Grid>
+            <Grid item>
+              <SearchField
+                EndAdornment={SearchHelpTooltip}
+                placeholder={t(labelSearch)}
+                value={nextSearch || ''}
+                onChange={prepareSearch}
+                onKeyDown={requestSearchOnEnterKey}
+              />
+            </Grid>
+            <Grid item>
+              <Button
+                color="primary"
+                size="small"
+                variant="contained"
+                onClick={requestSearch}
+              >
+                {t(labelSearch)}
+              </Button>
+            </Grid>
+          </Grid>
+        </>
+      }
       memoProps={memoProps}
+      onExpand={toggleFilterExpanded}
     />
   );
 };

@@ -39,9 +39,9 @@ import {
   labelLastCheck,
   labelCurrentNotificationNumber,
   labelPerformanceData,
-  label7D,
-  label1D,
-  label31D,
+  label7Days,
+  label1Day,
+  label31Days,
   labelCopy,
   labelCommand,
   labelResourceFlapping,
@@ -62,11 +62,14 @@ import {
   labelSwitchToGraph,
   labelDowntime,
   labelDisplayEvents,
-  labelStartDate,
-  labelEndDate,
   labelForward,
   labelBackward,
   labelEndDateGreaterThanStartDate,
+  labelGraphOptions,
+  labelMin,
+  labelMax,
+  labelAvg,
+  labelCompactTimePeriod,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -74,12 +77,13 @@ import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 
-import { last7Days, last31Days } from './tabs/Graph/models';
+import { last7Days, last31Days, lastDayPeriod } from './tabs/Graph/models';
 import {
   graphTabId,
   timelineTabId,
   shortcutsTabId,
   servicesTabId,
+  metricsTabId,
 } from './tabs';
 import { TabId } from './tabs/models';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
@@ -97,72 +101,48 @@ jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
 const resourceServiceUuid = 'h1-s1';
 const resourceServiceId = 1;
 const resourceServiceType = 'service';
+const metaServiceResourceType = 'metaservice';
 
 const resourceHostUuid = 'h1';
 const resourceHostId = 1;
 const resourceHostType = 'host';
 
 const retrievedDetails = {
-  uuid: resourceServiceUuid,
-  id: resourceServiceId,
-  type: resourceServiceType,
-  name: 'Central',
-  severity_level: 10,
-  status: { name: 'Critical', severity_code: 1 },
-  parent: {
-    id: resourceHostId,
-    type: resourceHostType,
-    name: 'Centreon',
-    status: { severity_code: 1 },
-    links: {
-      uris: {
-        configuration: undefined,
-        logs: undefined,
-        reporting: undefined,
-      },
-    },
-  },
-  fqdn: 'central.centreon.com',
-  alias: 'Central-Centreon',
-  monitoring_server_name: 'Poller',
   acknowledged: false,
-  checked: true,
-  execution_time: 0.070906,
-  last_check: '2020-05-18T16:00Z',
-  last_status_change: '2020-04-18T15:00Z',
-  last_update: '2020-03-18T16:30:00Z',
-  information:
-    'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
-  timezone: 'Europe/Paris',
-  active_checks: true,
-  command_line: 'base_host_alive',
-  last_notification: '2020-07-18T17:30:00Z',
-  latency: 0.005,
-  next_check: '2020-06-18T17:15:00Z',
-  notification_number: 3,
-  flapping: false,
-  percent_state_change: 3.5,
-  downtimes: [
-    {
-      start_time: '2020-01-18T17:57:59Z',
-      end_time: '2020-01-18T18:57:59Z',
-      comment: 'First downtime set by Admin',
-    },
-    {
-      start_time: '2020-02-18T17:57:59Z',
-      end_time: '2020-02-18T18:57:59Z',
-      comment: 'Second downtime set by Admin',
-    },
-  ],
   acknowledgement: {
     author_name: 'Admin',
-    entry_time: '2020-03-18T18:57:59Z',
     comment: 'Acknowledged by Admin',
+    entry_time: '2020-03-18T18:57:59Z',
   },
-  performance_data:
-    'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
+  active_checks: true,
+  alias: 'Central-Centreon',
+  checked: true,
+  command_line: 'base_host_alive',
+  downtimes: [
+    {
+      comment: 'First downtime set by Admin',
+      end_time: '2020-01-18T18:57:59Z',
+      start_time: '2020-01-18T17:57:59Z',
+    },
+    {
+      comment: 'Second downtime set by Admin',
+      end_time: '2020-02-18T18:57:59Z',
+      start_time: '2020-02-18T17:57:59Z',
+    },
+  ],
   duration: '22m',
-  tries: '3/3 (Hard)',
+  execution_time: 0.070906,
+  flapping: false,
+  fqdn: 'central.centreon.com',
+  groups: [{ id: 0, name: 'Linux-servers' }],
+  id: resourceServiceId,
+  information:
+    'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
+  last_check: '2020-05-18T16:00Z',
+  last_notification: '2020-07-18T17:30:00Z',
+  last_status_change: '2020-04-18T15:00Z',
+  last_update: '2020-03-18T16:30:00Z',
+  latency: 0.005,
   links: {
     endpoints: {
       performance_graph: 'performance_graph',
@@ -174,150 +154,199 @@ const retrievedDetails = {
       reporting: undefined,
     },
   },
-  groups: [{ id: 0, name: 'Linux-servers' }],
+  monitoring_server_name: 'Poller',
+  name: 'Central',
+  next_check: '2020-06-18T17:15:00Z',
+  notification_number: 3,
+  parent: {
+    id: resourceHostId,
+    links: {
+      uris: {
+        configuration: undefined,
+        logs: undefined,
+        reporting: undefined,
+      },
+    },
+    name: 'Centreon',
+    status: { severity_code: 1 },
+    type: resourceHostType,
+  },
+  percent_state_change: 3.5,
+  performance_data:
+    'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
+  severity_level: 10,
+  status: { name: 'Critical', severity_code: 1 },
+  timezone: 'Europe/Paris',
+  tries: '3/3 (Hard)',
+  type: resourceServiceType,
+  uuid: resourceServiceUuid,
 };
 
 const retrievedPerformanceGraphData = {
   global: {
     title: 'Ping graph',
   },
+  metrics: [
+    {
+      average_value: 1234,
+      data: [2, 0, 1],
+      ds_data: {
+        ds_color_area: 'transparent',
+        ds_color_line: '#fff',
+        ds_filled: false,
+        ds_legend: 'Round-Trip-Time Average',
+        ds_transparency: 80,
+      },
+      legend: 'Round-Trip-Time Average (ms)',
+      maximum_value: 2456,
+      metric: 'rta',
+      minimum_value: null,
+      unit: 'ms',
+    },
+  ],
   times: [
     '2020-06-19T07:30:00Z',
     '2020-06-20T06:55:00Z',
     '2020-06-23T06:55:00Z',
   ],
-  metrics: [
-    {
-      data: [2, 0, 1],
-      ds_data: {
-        ds_color_line: '#fff',
-        ds_filled: false,
-        ds_color_area: 'transparent',
-        ds_transparency: 80,
-      },
-      metric: 'rta',
-      unit: 'ms',
-      legend: 'Round-Trip-Time Average (ms)',
-    },
-  ],
 };
 
 const retrievedTimeline = {
+  meta: {
+    limit: 10,
+    page: 1,
+    total: 5,
+  },
   result: [
     {
-      type: 'event',
-      id: 1,
-      date: '2020-06-22T08:40:00Z',
-      tries: 1,
       content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
+      date: '2020-06-22T08:40:00Z',
+      id: 1,
       status: {
-        severity_code: 5,
         name: 'UP',
+        severity_code: 5,
       },
-    },
-    {
+      tries: 1,
       type: 'event',
-      id: 2,
-      date: '2020-06-22T08:35:00Z',
-      tries: 3,
-      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
-      status: {
-        severity_code: 1,
-        name: 'DOWN',
-      },
     },
     {
-      type: 'notification',
-      id: 3,
-      date: '2020-06-21T07:40:00Z',
-      content: 'My little notification',
+      content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
+      date: '2020-06-22T08:35:00Z',
+      id: 2,
+      status: {
+        name: 'DOWN',
+        severity_code: 1,
+      },
+      tries: 3,
+      type: 'event',
+    },
+    {
       contact: {
         name: 'admin',
       },
+      content: 'My little notification',
+      date: '2020-06-21T07:40:00Z',
+      id: 3,
+      type: 'notification',
     },
     {
-      type: 'acknowledgement',
-      id: 4,
-      date: '2020-06-20T07:35:00Z',
       contact: {
         name: 'admin',
       },
       content: 'My little ack',
+      date: '2020-06-20T07:35:00Z',
+      id: 4,
+      type: 'acknowledgement',
     },
     {
-      type: 'downtime',
-      id: 5,
-      date: '2020-06-20T07:30:00Z',
-      start_date: '2020-06-20T07:30:00Z',
-      end_date: '2020-06-22T07:33:00Z',
       contact: {
         name: 'admin',
       },
       content: 'My little dt',
+      date: '2020-06-20T07:30:00Z',
+      end_date: '2020-06-22T07:33:00Z',
+      id: 5,
+      start_date: '2020-06-20T07:30:00Z',
+      type: 'downtime',
     },
     {
-      type: 'downtime',
-      id: 6,
-      date: '2020-06-20T06:57:00Z',
-      start_date: '2020-06-19T07:30:00Z',
-      end_date: null,
       contact: {
         name: 'super_admin',
       },
       content: 'My little ongoing dt',
+      date: '2020-06-20T06:57:00Z',
+      end_date: null,
+      id: 6,
+      start_date: '2020-06-19T07:30:00Z',
+      type: 'downtime',
     },
     {
-      type: 'comment',
-      id: 7,
-      date: '2020-06-20T06:55:00Z',
-      start_date: '2020-06-20T07:30:00Z',
-      end_date: '2020-06-22T07:33:00Z',
       contact: {
         name: 'admin',
       },
       content: 'My little comment',
+      date: '2020-06-20T06:55:00Z',
+      end_date: '2020-06-22T07:33:00Z',
+      id: 7,
+      start_date: '2020-06-20T07:30:00Z',
+      type: 'comment',
     },
   ],
-  meta: {
-    page: 1,
-    limit: 10,
-    total: 5,
-  },
 };
 
 const retrievedServices = {
+  meta: {
+    limit: 10,
+    page: 1,
+    total: 2,
+  },
   result: [
     {
-      id: 3,
-      name: 'Ping',
-      status: {
-        severity_code: 5,
-        name: 'Ok',
-      },
-      information: 'OK - 127.0.0.1 rta 0ms lost 0%',
       duration: '22m',
+      id: 3,
+      information: 'OK - 127.0.0.1 rta 0ms lost 0%',
       links: {
         endpoints: {
           performance_graph: 'ping-performance',
         },
+        externals: {
+          action: 'action',
+        },
+        uris: {
+          configuration: 'configuration',
+        },
       },
+      name: 'Ping',
+      short_type: 's',
+      status: {
+        name: 'Ok',
+        severity_code: 5,
+      },
+      type: 'service',
+      uuid: 'h1-s3',
     },
     {
-      id: 4,
-      name: 'Disk',
-      status: {
-        severity_code: 6,
-        name: 'Unknown',
-      },
-      information: 'No output',
       duration: '21m',
+      id: 4,
+      information: 'No output',
+      links: {
+        externals: {
+          action: 'action',
+        },
+        uris: {
+          configuration: 'configuration',
+        },
+      },
+      name: 'Disk',
+      short_type: 's',
+      status: {
+        name: 'Unknown',
+        severity_code: 6,
+      },
+      type: 'service',
+      uuid: 'h1-s4',
     },
   ],
-  meta: {
-    page: 1,
-    limit: 10,
-    total: 2,
-  },
 };
 
 const currentDateIsoString = '2020-01-21T06:00:00.000Z';
@@ -336,6 +365,14 @@ const setSelectedHostResource = () => {
   context.setSelectedResourceUuid(resourceHostUuid);
   context.setSelectedResourceId(resourceHostId);
   context.setSelectedResourceType(resourceHostType);
+  context.setSelectedResourceParentId(undefined);
+  context.setSelectedResourceParentType(undefined);
+};
+
+const setSelectedMetaServiceResource = () => {
+  context.setSelectedResourceUuid(resourceServiceUuid);
+  context.setSelectedResourceId(resourceServiceId);
+  context.setSelectedResourceType(metaServiceResourceType);
   context.setSelectedResourceParentId(undefined);
   context.setSelectedResourceParentType(undefined);
 };
@@ -383,6 +420,10 @@ describe(Details, () => {
     mockDate.reset();
     mockedAxios.get.mockReset();
     act(() => {
+      context.setGraphTabParameters({
+        selectedCustomTimePeriod: undefined,
+        selectedTimePeriodId: lastDayPeriod.id,
+      });
       context.clearSelectedResource();
     });
   });
@@ -493,11 +534,11 @@ describe(Details, () => {
   });
 
   it.each([
-    [label1D, '2020-01-20T06:00:00.000Z', 20, undefined],
-    [label7D, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
-    [label31D, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
+    [label1Day, '2020-01-20T06:00:00.000Z', 20, undefined],
+    [label7Days, '2020-01-14T06:00:00.000Z', 100, last7Days.id],
+    [label31Days, '2019-12-21T06:00:00.000Z', 500, last31Days.id],
   ])(
-    `queries performance graphs and timelines with %p period when the Graph tab is selected`,
+    `queries performance graphs and timelines with %p period when the Graph tab is selected and "Display events" option is activated`,
     async (period, startIsoString, timelineEventsLimit, periodId) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
@@ -506,7 +547,7 @@ describe(Details, () => {
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline });
 
-      const { getByText } = renderDetails({
+      const { getByText, getByLabelText, findByText } = renderDetails({
         openTabId: graphTabId,
       });
 
@@ -521,7 +562,13 @@ describe(Details, () => {
           `${retrievedDetails.links.endpoints.performance_graph}?start=${startIsoString}&end=${currentDateIsoString}`,
           expect.anything(),
         );
+      });
 
+      userEvent.click(getByLabelText(labelGraphOptions).firstChild as Element);
+      await findByText(labelDisplayEvents);
+      userEvent.click(getByText(labelDisplayEvents));
+
+      await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           buildListTimelineEventsEndpoint({
             endpoint: retrievedDetails.links.endpoints.timeline,
@@ -545,6 +592,13 @@ describe(Details, () => {
 
         if (!isNil(periodId)) {
           expect(context.tabParameters.graph).toEqual({
+            graphOptions: {
+              displayEvents: {
+                id: 'displayEvents',
+                label: 'Display events',
+                value: true,
+              },
+            },
             selectedTimePeriodId: periodId,
           });
         }
@@ -560,7 +614,13 @@ describe(Details, () => {
         data: retrievedTimeline,
       });
 
-    const { findAllByLabelText, queryByLabelText, getByText } = renderDetails({
+    const {
+      findAllByLabelText,
+      queryByLabelText,
+      getByLabelText,
+      getByText,
+      findByText,
+    } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -569,12 +629,16 @@ describe(Details, () => {
     });
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledTimes(3);
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
     });
 
     expect(queryByLabelText(labelComment)).toBeNull();
     expect(queryByLabelText(labelAcknowledgement)).toBeNull();
     expect(queryByLabelText(labelDowntime)).toBeNull();
+
+    userEvent.click(getByLabelText(labelGraphOptions).firstChild as Element);
+
+    await findByText(labelDisplayEvents);
 
     userEvent.click(getByText(labelDisplayEvents));
 
@@ -798,6 +862,7 @@ describe(Details, () => {
             reporting: '/reporting',
           },
         },
+        type: resourceHostType,
       },
     });
 
@@ -831,12 +896,12 @@ describe(Details, () => {
       });
 
     const retrievedServiceDetails = {
-      uuid: 'h3-s2',
       id: 2,
       parentId: 3,
       parentType: 'host',
-      type: 'service',
       tab: 'shortcuts',
+      type: 'service',
+      uuid: 'h3-s2',
     };
 
     setUrlQueryParameters([
@@ -877,10 +942,10 @@ describe(Details, () => {
 
     act(() => {
       context.setServicesTabParameters({
+        graphMode: true,
         graphTimePeriod: {
           selectedTimePeriodId: last31Days.id,
         },
-        graphMode: true,
       });
     });
 
@@ -889,7 +954,6 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
-        uuid: 'h1',
         id: 1,
         tab: 'details',
         tabParameters: {
@@ -904,6 +968,7 @@ describe(Details, () => {
           },
         },
         type: 'host',
+        uuid: 'h1',
       });
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -968,14 +1033,11 @@ describe(Details, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       buildResourcesEndpoint({
+        hostGroupIds: [],
         limit: 30,
+        monitoringServerIds: [],
         page: 1,
         resourceTypes: ['service'],
-        statuses: [],
-        states: [],
-        hostGroupIds: [],
-        serviceGroupIds: [],
-        monitoringServerIds: [],
         search: {
           conditions: [
             {
@@ -986,6 +1048,9 @@ describe(Details, () => {
             },
           ],
         },
+        serviceGroupIds: [],
+        states: [],
+        statuses: [],
       }),
       expect.anything(),
     );
@@ -1012,6 +1077,13 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(queryByText(labelServices)).toBeNull();
+    });
+
+    act(() => {
+      context.setServicesTabParameters({
+        graphMode: false,
+        graphTimePeriod: {},
+      });
     });
   });
 
@@ -1056,8 +1128,8 @@ describe(Details, () => {
 
     expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
-    userEvent.click(head(getAllByText(label1D)) as HTMLElement);
-    userEvent.click(last(getAllByText(label7D)) as HTMLElement);
+    userEvent.click(head(getAllByText(label1Day)) as HTMLElement);
+    userEvent.click(last(getAllByText(label7Days)) as HTMLElement);
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(5);
@@ -1068,17 +1140,18 @@ describe(Details, () => {
     ).toEqual(last7Days.id);
   });
 
-  it('queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected and a custom time period is selected', async () => {
+  it('queries performance graphs with a custom timeperiod when the Graph tab is selected and a custom time period is selected', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline })
-      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline });
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
-    const { getByLabelText, container } = renderDetails({
+    renderDetails({
       openTabId: graphTabId,
     });
+
+    const startISOString = '2020-01-19T06:00:00.000Z';
+    const endISOString = '2020-01-21T06:00:00.000Z';
 
     act(() => {
       setSelectedServiceResource();
@@ -1091,43 +1164,19 @@ describe(Details, () => {
       );
     });
 
-    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
-      ?.firstChild;
-
-    userEvent.click(startDateInput as Element);
-
-    fireEvent.keyDown(container, { key: 'ArrowLeft', code: 37 });
-    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
-
-    const startISOString = '2020-01-19T06:00:00.000Z';
-    const endISOString = '2020-01-21T06:00:00.000Z';
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
-        cancelTokenRequestParam,
-      );
+    act(() => {
+      context.setGraphTabParameters({
+        selectedCustomTimePeriod: {
+          end: endISOString,
+          start: startISOString,
+        },
+        selectedTimePeriodId: undefined,
+      });
     });
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        buildListTimelineEventsEndpoint({
-          endpoint: retrievedDetails.links.endpoints.timeline,
-          parameters: {
-            limit: 100,
-            search: {
-              conditions: [
-                {
-                  field: 'date',
-                  values: {
-                    $gt: startISOString,
-                    $lt: endISOString,
-                  },
-                },
-              ],
-            },
-          },
-        }),
+        `${retrievedDetails.links.endpoints.performance_graph}?start=${startISOString}&end=${endISOString}`,
         cancelTokenRequestParam,
       );
     });
@@ -1137,11 +1186,9 @@ describe(Details, () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline })
-      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline });
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
-    const { getByLabelText, getByText } = renderDetails({
+    const { getByText } = renderDetails({
       openTabId: graphTabId,
     });
 
@@ -1156,19 +1203,13 @@ describe(Details, () => {
       );
     });
 
-    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
-      ?.firstChild;
+    expect(getByText('01/20/2020 7:00 AM')).toBeInTheDocument();
+    expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
 
-    const endDateInput = getByLabelText(labelEndDate).firstChild?.firstChild
-      ?.firstChild;
+    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
 
-    expect(startDateInput).toHaveValue('01/20/2020 7:00 AM');
-    expect(endDateInput).toHaveValue('01/21/2020 7:00 AM');
-
-    userEvent.click(getByText(label7D).parentElement as HTMLElement);
-
-    expect(startDateInput).toHaveValue('01/14/2020 7:00 AM');
-    expect(endDateInput).toHaveValue('01/21/2020 7:00 AM');
+    expect(getByText('01/14/2020 7:00 AM')).toBeInTheDocument();
+    expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1182,55 +1223,40 @@ describe(Details, () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline })
-      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-      .mockResolvedValueOnce({ data: retrievedTimeline });
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
-    const { getByLabelText, getByText, container } = renderDetails({
+    const { getByLabelText, getByText } = renderDetails({
       openTabId: graphTabId,
     });
 
     act(() => {
       setSelectedServiceResource();
+      context.setGraphTabParameters({
+        selectedCustomTimePeriod: {
+          end: '2020-01-21T06:00:00.000Z',
+          start: '2020-01-21T06:00:00.000Z',
+        },
+        selectedTimePeriodId: undefined,
+      });
     });
+
+    userEvent.click(getByLabelText(labelCompactTimePeriod));
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
-        cancelTokenRequestParam,
-      );
+      expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
     });
-
-    const startDateInput = getByLabelText(labelStartDate).firstChild?.firstChild
-      ?.firstChild;
-
-    userEvent.click(startDateInput as Element);
-
-    await waitFor(() => {
-      expect(getByText(/^21$/)).toBeInTheDocument();
-    });
-
-    userEvent.click(
-      getByText(/^21$/).parentElement?.parentElement as HTMLElement,
-    );
-
-    fireEvent.keyDown(container, { key: 'Enter', code: 13 });
-
-    expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
   });
 
   it.each([
-    [labelForward, '2020-01-20T18:00:00.000Z', '2020-01-21T18:00:00.000Z', 20],
-    [labelBackward, '2020-01-19T18:00:00.000Z', '2020-01-20T18:00:00.000Z', 20],
+    [labelForward, '2020-01-20T18:00:00.000Z', '2020-01-21T18:00:00.000Z'],
+    [labelBackward, '2020-01-19T18:00:00.000Z', '2020-01-20T18:00:00.000Z'],
   ])(
-    `queries performance graphs and timeline with a custom timeperiod when the Graph tab is selected and the "%p" icon is clicked`,
-    async (iconLabel, startISOString, endISOString, timelineLimit) => {
+    `queries performance graphs with a custom timeperiod when the Graph tab is selected and the "%p" icon is clicked`,
+    async (iconLabel, startISOString, endISOString) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-        .mockResolvedValueOnce({ data: retrievedTimeline })
-        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
-        .mockResolvedValueOnce({ data: retrievedTimeline });
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
 
       const { getByLabelText } = renderDetails({
         openTabId: graphTabId,
@@ -1255,29 +1281,83 @@ describe(Details, () => {
           cancelTokenRequestParam,
         );
       });
-
-      await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledWith(
-          buildListTimelineEventsEndpoint({
-            endpoint: retrievedDetails.links.endpoints.timeline,
-            parameters: {
-              limit: timelineLimit,
-              search: {
-                conditions: [
-                  {
-                    field: 'date',
-                    values: {
-                      $gt: startISOString,
-                      $lt: endISOString,
-                    },
-                  },
-                ],
-              },
-            },
-          }),
-          cancelTokenRequestParam,
-        );
-      });
     },
   );
+
+  it('display retrieved metrics when the selected Resource is a meta service and the metrics tab is selected', async () => {
+    const service = retrievedServices.result[0];
+
+    const retrievedMetrics = {
+      meta: {
+        limit: 10,
+        page: 1,
+        total: 1,
+      },
+      result: [
+        {
+          id: 0,
+          name: 'pl',
+          resource: service,
+          unit: '%',
+          value: 3,
+        },
+      ],
+    };
+
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: {
+          ...retrievedDetails,
+          type: 'metaservice',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: retrievedMetrics,
+      });
+
+    const { getByText } = renderDetails({
+      openTabId: metricsTabId,
+    });
+
+    act(() => {
+      setSelectedMetaServiceResource();
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    expect(getByText('pl')).toBeInTheDocument();
+    expect(getByText('3 (%)')).toBeInTheDocument();
+    expect(getByText(service.name)).toBeInTheDocument();
+  });
+
+  it('displays Min, Max and Average values in the legend when the Graph tab is selected', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+      .mockResolvedValueOnce({ data: retrievedTimeline });
+
+    const { getByLabelText, getByText } = renderDetails({
+      openTabId: graphTabId,
+    });
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-20T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
+        cancelTokenRequestParam,
+      );
+    });
+
+    expect(getByLabelText(labelMin)).toBeInTheDocument();
+    expect(getByText('N/A')).toBeInTheDocument();
+    expect(getByLabelText(labelMax)).toBeInTheDocument();
+    expect(getByText('2.46k')).toBeInTheDocument();
+    expect(getByLabelText(labelAvg)).toBeInTheDocument();
+    expect(getByText('1.23k')).toBeInTheDocument();
+  });
 });

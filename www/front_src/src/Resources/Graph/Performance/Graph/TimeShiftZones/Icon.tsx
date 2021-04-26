@@ -12,11 +12,11 @@ import { TimeShiftDirection, useTimeShiftContext } from '.';
 export const timeShiftIconSize = 20;
 
 interface Props {
-  xIcon: number;
   Icon: (props) => JSX.Element;
+  ariaLabel: string;
   direction: TimeShiftDirection;
   directionHovered: TimeShiftDirection | null;
-  ariaLabel: string;
+  xIcon: number;
 }
 
 const useStyles = makeStyles({
@@ -35,26 +35,19 @@ const TimeShiftIcon = ({
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const {
-    graphHeight,
-    marginTop,
-    shiftTime,
-    sendingGetGraphDataRequest,
-  } = useTimeShiftContext();
+  const { graphHeight, marginTop, shiftTime, loading } = useTimeShiftContext();
 
-  const getIconColor = () =>
-    sendingGetGraphDataRequest || not(equals(directionHovered, direction))
-      ? 'disabled'
-      : 'primary';
+  const displayTimeShiftIcon =
+    not(loading) && equals(directionHovered, direction);
 
   const svgProps = {
-    y: graphHeight / 2 - timeShiftIconSize / 2 + marginTop,
-    x: xIcon,
-    height: timeShiftIconSize,
-    width: timeShiftIconSize,
-    onClick: () => not(sendingGetGraphDataRequest) && shiftTime?.(direction),
-    className: classes.icon,
     'aria-label': t(ariaLabel),
+    className: classes.icon,
+    height: timeShiftIconSize,
+    onClick: () => not(loading) && shiftTime?.(direction),
+    width: timeShiftIconSize,
+    x: xIcon,
+    y: graphHeight / 2 - timeShiftIconSize / 2 + marginTop,
   };
 
   return useMemoComponent({
@@ -62,11 +55,11 @@ const TimeShiftIcon = ({
       <g>
         <svg {...svgProps}>
           <rect
-            width={timeShiftIconSize}
-            height={timeShiftIconSize}
             fill="transparent"
+            height={timeShiftIconSize}
+            width={timeShiftIconSize}
           />
-          <Icon color={getIconColor()} />
+          {displayTimeShiftIcon && <Icon color="primary" />}
         </svg>
       </g>
     ),
@@ -74,7 +67,7 @@ const TimeShiftIcon = ({
       xIcon,
       direction,
       ariaLabel,
-      sendingGetGraphDataRequest,
+      loading,
       directionHovered,
       graphHeight,
     ],

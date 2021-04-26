@@ -98,6 +98,25 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
         }
 
         $query .= ' ORDER BY `metric_name` COLLATE utf8_general_ci ';
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (
+                filter_var(($limit = $this->arguments['page_limit']), FILTER_VALIDATE_INT) === false
+                || filter_var(($page = $this->arguments['page']), FILTER_VALIDATE_INT) === false
+            ) {
+                throw new \InvalidArgumentException('Pagination parameters must be integers');
+            }
+
+            if ($page < 1) {
+                throw new \InvalidArgumentException('Page number must be greater than zero');
+            }
+
+            $offset = ($page - 1) * $limit;
+            $query .= 'LIMIT :offset, :limit';
+            $queryValues[':offset'] = [$offset, \PDO::PARAM_INT];
+            $queryValues[':limit'] = [$limit, \PDO::PARAM_INT];
+        }
+
         $stmt = $this->pearDBMonitoring->prepare($query);
         foreach ($queryValues as $name => $parameters) {
             list($value, $type) = $parameters;

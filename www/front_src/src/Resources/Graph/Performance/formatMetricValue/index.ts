@@ -2,9 +2,9 @@ import numeral from 'numeral';
 import { isNil } from 'ramda';
 
 interface FormatMetricValueProps {
-  value: number | null;
-  unit: string;
   base?: number;
+  unit: string;
+  value: number | null;
 }
 
 const formatMetricValue = ({

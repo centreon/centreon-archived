@@ -10,6 +10,7 @@ import {
   labelTimeline,
   labelShortcuts,
   labelServices,
+  labelMetrics,
 } from '../../translatedLabels';
 import { ResourceDetails } from '../models';
 import hasDefinedValues from '../../hasDefinedValues';
@@ -20,12 +21,14 @@ import { Tab, TabId } from './models';
 import TimelineTab from './Timeline';
 import ShortcutsTab from './Shortcuts';
 import ServicesTab from './Services';
+import MetricsTab from './Metrics';
 
 const detailsTabId = 0;
 const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
-const shortcutsTabId = 4;
+const metricsTabId = 4;
+const shortcutsTabId = 5;
 
 export interface TabProps {
   details?: ResourceDetails;
@@ -33,29 +36,27 @@ export interface TabProps {
 
 const tabs: Array<Tab> = [
   {
-    id: detailsTabId,
     Component: DetailsTab,
-    title: labelDetails,
     getIsActive: (): boolean => true,
+    id: detailsTabId,
+    title: labelDetails,
   },
   {
-    id: servicesTabId,
     Component: ServicesTab,
-    title: labelServices,
     getIsActive: (details: ResourceDetails): boolean => {
       return details.type === 'host';
     },
+    id: servicesTabId,
+    title: labelServices,
   },
   {
-    id: timelineTabId,
     Component: TimelineTab,
-    title: labelTimeline,
     getIsActive: (): boolean => true,
+    id: timelineTabId,
+    title: labelTimeline,
   },
   {
-    id: graphTabId,
     Component: GraphTab,
-    title: labelGraph,
     getIsActive: (details: ResourceDetails): boolean => {
       if (isNil(details)) {
         return false;
@@ -63,21 +64,35 @@ const tabs: Array<Tab> = [
 
       return !isNil(path(['links', 'endpoints', 'performance_graph'], details));
     },
+    id: graphTabId,
+    title: labelGraph,
   },
   {
-    id: shortcutsTabId,
+    Component: MetricsTab,
+    getIsActive: (details: ResourceDetails): boolean => {
+      if (isNil(details)) {
+        return false;
+      }
+
+      return details.type === 'metaservice';
+    },
+    id: metricsTabId,
+    title: labelMetrics,
+  },
+  {
     Component: ShortcutsTab,
-    title: labelShortcuts,
     getIsActive: (details: ResourceDetails): boolean => {
       if (isNil(details)) {
         return false;
       }
 
       const { links, parent } = details;
-      const parentUris = parent?.links.uris;
+      const parentUris = parent?.links?.uris;
 
       return any(hasDefinedValues, [parentUris, links.uris]);
     },
+    id: shortcutsTabId,
+    title: labelShortcuts,
   },
 ];
 
@@ -106,10 +121,11 @@ const TabById = ({ id, details }: TabByIdProps): JSX.Element | null => {
 
 const tabIdByLabel = {
   details: detailsTabId,
-  services: servicesTabId,
-  timeline: timelineTabId,
-  shortcuts: shortcutsTabId,
   graph: graphTabId,
+  metrics: metricsTabId,
+  services: servicesTabId,
+  shortcuts: shortcutsTabId,
+  timeline: timelineTabId,
 };
 
 const getTabIdFromLabel = (label: string): TabId => {
@@ -132,6 +148,7 @@ export {
   graphTabId,
   shortcutsTabId,
   servicesTabId,
+  metricsTabId,
   tabs,
   TabById,
   getTabIdFromLabel,

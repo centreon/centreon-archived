@@ -8,18 +8,18 @@ import { Breadcrumb as BreadcrumbModel } from './models';
 
 const useStyles = makeStyles(() => ({
   link: {
-    fontSize: 'small',
-    color: 'inherit',
-    textDecoration: 'none',
     '&:hover': {
       textDecoration: 'underline',
     },
+    color: 'inherit',
+    fontSize: 'small',
+    textDecoration: 'none',
   },
 }));
 
 interface Props {
-  last: boolean;
   breadcrumb: BreadcrumbModel;
+  last: boolean;
 }
 
 const Breadcrumb = ({ last, breadcrumb }: Props): JSX.Element => {

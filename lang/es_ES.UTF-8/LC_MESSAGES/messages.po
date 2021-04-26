@@ -14367,32 +14367,23 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "In downtime"
 #  msgstr ""
 
-msgid "1 D"
-msgstr ""
+# msgid "1 day"
+# msgstr ""
 
-msgid "7 D"
-msgstr ""
+# msgid "7 days"
+# msgstr ""
 
-msgid "31 D"
-msgstr ""
+# msgid "31 days"
+# msgstr ""
 
-msgid "1 day"
-msgstr ""
+# msgid "Last day"
+# msgstr ""
 
-msgid "7 days"
-msgstr ""
+# msgid "Last 7 days"
+# msgstr ""
 
-msgid "31 days"
-msgstr ""
-
-msgid "Last day"
-msgstr ""
-
-msgid "Last 7 days"
-msgstr ""
-
-msgid "Last 31 days"
-msgstr ""
+# msgid "Last 31 days"
+# msgstr ""
 
 #  msgid "Set downtime on"
 #  msgstr ""
@@ -14673,14 +14664,43 @@ msgstr ""
 #  msgid "Backward"
 #  msgstr ""
 
+# msgid "Graph options"
+# msgstr ""
+
+# msgid "Check duration"
+# msgstr ""
+
+# msgid "Avg"
+# msgstr ""
+
+# msgid "Compact time period"
+# msgstr ""
+
+#  msgid "Check duration"
+
+#  msgid "Display tooltips"
+#  msgstr ""
+
 #  msgid "Check duration"
 #  msgstr ""
 
-#  msgid "Notifications enabled"
+#  msgid "Check duration"
 #  msgstr ""
 
 #  msgid "Notifications disabled"
 #  msgstr ""
 
-#  msgid "Checks disabled"
+#  msgid "All checks are disabled"
+#  msgstr ""
+
+#  msgid "Only passive checks are enabled"
+#  msgstr ""
+
+#  msgid "Calculation type"
+#  msgstr ""
+
+#  msgid "Mandatory data to create the entity '%s' is missing"
+#  msgstr ""
+
+#  msgid "At least one column must be selected"
 #  msgstr ""

@@ -23,9 +23,9 @@ const validationSchema = Yup.object().shape({
 });
 
 interface Props {
-  resources: Array<Resource>;
   onClose;
   onSuccess;
+  resources: Array<Resource>;
 }
 
 const AcknowledgeForm = ({
@@ -50,14 +50,14 @@ const AcknowledgeForm = ({
 
   const form = useFormik({
     initialValues: {
+      acknowledgeAttachedResources: false,
       comment: undefined,
       notify: false,
-      acknowledgeAttachedResources: false,
     },
     onSubmit: (values) => {
       sendAcknowledgeResources({
-        resources,
         params: values,
+        resources,
       }).then(() => {
         showSuccess(t(labelAcknowledgeCommandSent));
         onSuccess();
@@ -72,14 +72,14 @@ const AcknowledgeForm = ({
 
   return (
     <DialogAcknowledge
-      resources={resources}
-      onConfirm={form.submitForm}
-      onCancel={onClose}
       canConfirm={form.isValid}
       errors={form.errors}
-      values={form.values}
       handleChange={form.handleChange}
+      resources={resources}
       submitting={sendingAcknowledgeResources}
+      values={form.values}
+      onCancel={onClose}
+      onConfirm={form.submitForm}
     />
   );
 };

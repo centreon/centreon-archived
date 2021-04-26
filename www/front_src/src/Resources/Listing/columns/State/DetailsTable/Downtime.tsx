@@ -21,9 +21,9 @@ import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
 const useStyles = makeStyles({
   comment: {
     display: 'block',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
     overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 });
 
@@ -43,39 +43,35 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
 
   const columns = [
     {
+      getContent: ({ author_name }): string => author_name,
       id: 'author',
       label: t(labelAuthor),
       type: ColumnType.string,
-      getContent: ({ author_name }): string => author_name,
       width: 100,
     },
     {
+      getContent: ({ is_fixed }): string => t(getYesNoLabel(is_fixed)),
       id: 'is_fixed',
       label: t(labelFixed),
       type: ColumnType.string,
-      getContent: ({ is_fixed }): string => t(getYesNoLabel(is_fixed)),
       width: 100,
     },
     {
+      getContent: ({ start_time }): string => toDateTime(start_time),
       id: 'start_time',
       label: t(labelStartTime),
       type: ColumnType.string,
-      getContent: ({ start_time }): string => toDateTime(start_time),
       width: 150,
     },
     {
+      getContent: ({ end_time }): string => toDateTime(end_time),
       id: 'end_time',
       label: t(labelEndTime),
       type: ColumnType.string,
-      getContent: ({ end_time }): string => toDateTime(end_time),
       width: 150,
     },
 
     {
-      id: 'comment',
-      label: t(labelComment),
-      type: ColumnType.string,
-      width: 250,
       getContent: ({ comment }: DowntimeDetails): JSX.Element => {
         return (
           <span className={classes.comment}>
@@ -83,6 +79,10 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
           </span>
         );
       },
+      id: 'comment',
+      label: t(labelComment),
+      type: ColumnType.string,
+      width: 250,
     },
   ];
 

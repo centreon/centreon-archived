@@ -47,15 +47,15 @@ const CheckboxField = ({
         {...prepareInputProps(rest)}
         aria-checked={checked}
         checked={value}
+        className={styles['custom-control-input']}
         defaultChecked={value === trueValue}
+        focusin={onBlur && callbackWithValue(trueValue, falseValue, onBlur)}
+        type="checkbox"
         onChange={
           onChange && callbackWithValue(trueValue, falseValue, onChange)
         }
-        focusin={onBlur && callbackWithValue(trueValue, falseValue, onBlur)}
-        className={styles['custom-control-input']}
-        type="checkbox"
       />
-      <label htmlFor={rest.id} className={styles['custom-control-label']}>
+      <label className={styles['custom-control-label']} htmlFor={rest.id}>
         {label}
         {info}
       </label>
@@ -74,18 +74,18 @@ const CheckboxField = ({
 
 CheckboxField.displayName = 'CheckboxField';
 CheckboxField.propTypes = {
+  className: PropTypes.string,
+  error: PropTypes.element,
+  falseValue: PropTypes.any,
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
-  className: PropTypes.string,
-  value: PropTypes.bool,
   trueValue: PropTypes.any,
-  falseValue: PropTypes.any,
-  error: PropTypes.element,
+  value: PropTypes.bool,
 };
 CheckboxField.defaultProps = {
   className: styles.field,
-  trueValue: true,
   falseValue: false,
+  trueValue: true,
 };
 
 export { CheckboxField };

@@ -6,21 +6,21 @@ describe('breadcrumbSelector', () => {
       navigation: {
         items: [
           {
-            page: '1',
-            label: 'Home',
-            is_react: false,
-            url: './include/home/home.php',
-            options: null,
             children: [
               {
                 groups: [],
-                page: '103',
-                label: 'Custom Views',
                 is_react: true,
-                url: '/home/customViews',
+                label: 'Custom Views',
                 options: null,
+                page: '103',
+                url: '/home/customViews',
               },
             ],
+            is_react: false,
+            label: 'Home',
+            options: null,
+            page: '1',
+            url: './include/home/home.php',
           },
         ],
       },
@@ -28,11 +28,11 @@ describe('breadcrumbSelector', () => {
     const breadcrumbs = breadcrumbSelector(state);
 
     expect(breadcrumbs).toEqual({
-      '/main.php?p=1': [{ label: 'Home', link: '/main.php?p=1' }],
       '/home/customViews': [
         { label: 'Home', link: '/main.php?p=1' },
         { label: 'Custom Views', link: '/home/customViews' },
       ],
+      '/main.php?p=1': [{ label: 'Home', link: '/main.php?p=1' }],
     });
   });
 
@@ -41,55 +41,55 @@ describe('breadcrumbSelector', () => {
       navigation: {
         items: [
           {
-            page: '2',
-            label: 'Configuration',
-            is_react: false,
-            url: './include/home/home.php',
-            options: null,
             children: [
               {
-                page: '201',
-                label: 'Hosts',
-                is_react: false,
-                url: null,
-                options: null,
                 groups: [
                   {
-                    label: 'hosts',
                     children: [
                       {
-                        page: '20101',
-                        label: 'Hosts',
                         is_react: true,
-                        url: '/configuration/hosts',
+                        label: 'Hosts',
                         options: null,
+                        page: '20101',
+                        url: '/configuration/hosts',
                       },
                     ],
+                    label: 'hosts',
                   },
                 ],
+                is_react: false,
+                label: 'Hosts',
+                options: null,
+                page: '201',
+                url: null,
               },
               {
-                page: '202',
-                label: 'Services',
-                is_react: false,
-                url: null,
-                options: null,
                 groups: [
                   {
-                    label: 'services',
                     children: [
                       {
-                        page: '20102',
-                        label: 'Services',
                         is_react: true,
-                        url: '/configuration/services',
+                        label: 'Services',
                         options: null,
+                        page: '20102',
+                        url: '/configuration/services',
                       },
                     ],
+                    label: 'services',
                   },
                 ],
+                is_react: false,
+                label: 'Services',
+                options: null,
+                page: '202',
+                url: null,
               },
             ],
+            is_react: false,
+            label: 'Configuration',
+            options: null,
+            page: '2',
+            url: './include/home/home.php',
           },
         ],
       },
@@ -97,7 +97,6 @@ describe('breadcrumbSelector', () => {
     const breadcrumbs = breadcrumbSelector(state);
 
     expect(breadcrumbs).toEqual({
-      '/main.php?p=2': [{ label: 'Configuration', link: '/main.php?p=2' }],
       '/configuration/hosts': [
         { label: 'Configuration', link: '/main.php?p=2' },
         { label: 'Hosts', link: '/configuration/hosts' },
@@ -108,6 +107,7 @@ describe('breadcrumbSelector', () => {
         { label: 'Services', link: '/configuration/services' },
         { label: 'Services', link: '/configuration/services' },
       ],
+      '/main.php?p=2': [{ label: 'Configuration', link: '/main.php?p=2' }],
     });
   });
 });

@@ -53,11 +53,12 @@ class BrokerContext extends CentreonContext
     }
 
     /**
-     * @When I export configuration
+     * @When I export configuration and restart centreon-broker
      */
     public function IExportConfiguration()
     {
         $this->restartAllPollers();
+        $this->container->execute('service cbd restart', 'web');
     }
 
     /**

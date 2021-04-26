@@ -58,6 +58,14 @@ class UserController extends AbstractController
                 'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_SUBMIT_RESULT),
                 'comment' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_ADD_COMMENT),
             ],
+            'metaservice' => [
+                'check' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_CHECK),
+                'acknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT),
+                'disacknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT),
+                'downtime' => $this->getAuthorizationForRole(Contact::ROLE_ADD_SERVICE_DOWNTIME),
+                'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_SUBMIT_RESULT),
+                'comment' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_ADD_COMMENT),
+            ],
         ];
 
         return $this->view($actions);
@@ -91,7 +99,7 @@ class UserController extends AbstractController
     private function getAuthorizationForRole(string $role): bool
     {
         /**
-         * @var Contact $contact
+         * @var Contact|null $contact
          */
         $contact = $this->getUser();
 

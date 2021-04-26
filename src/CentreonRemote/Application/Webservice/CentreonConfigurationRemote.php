@@ -648,6 +648,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         /**
          * If the server is already registered in platform_topology Update else insert
          */
+        $insertedPlatform = [];
         if (!empty($server['id'])) {
             $statement = $this->pearDB->prepare(
                 "UPDATE `platform_topology` SET
@@ -692,7 +693,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             foreach ($topologyInformation['children_pollers'] as $poller) {
                 $statement->bindValue(
                     ':parentId',
-                    (int)$insertedPlatform['last_id'] ?? (int)$server['id'],
+                    isset($insertedPlatform['last_id']) ? (int)$insertedPlatform['last_id'] : (int)$server['id'],
                     \PDO::PARAM_INT
                 );
                 $statement->bindValue(':pollerId', (int)$poller->getId(), \PDO::PARAM_INT);

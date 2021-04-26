@@ -387,12 +387,13 @@ $help["max_host_check_spread"] = dgettext(
 );
 $help["max_service_check_spread"] = dgettext(
     "help",
-    "This option determines the maximum number of minutes from when Monitoring Engine starts that all " .
-    "services (that are scheduled to be regularly checked) are checked. This option will automatically " .
-    "adjust the service inter-check delay method (if necessary) to ensure that the initial checks of all " .
-    "services occur within the timeframe you specify. In general, this option will not have an effect on service " .
-    "check scheduling if scheduling information is being retained using the use_retained_scheduling_info option. " .
-    "Default value is 30 (minutes)."
+    "This option determines the maximum number of minutes from when Monitoring Engine starts until all services "
+    . "(that are scheduled to be regularly checked) are checked. This option will automatically adjust the service "
+    . "inter-check delay method (if necessary) to ensure that the initial checks of all services occur within the "
+    . "timeframe you specify. In general, this option will not have an effect on service check scheduling if "
+    . "scheduling information is being retained using the use_retained_scheduling_info option. Default value in "
+    . "centengine is 5 (minutes) but it should be raised to 30 if the poller monitors more than 5000 services to "
+    . "avoid load issues."
 );
 $help["service_interleave_factor"] = dgettext(
     "help",
@@ -463,14 +464,6 @@ $help["auto_rescheduling_window"] = dgettext(
     "rescheduling checks. Only host and service checks that occur in the next X seconds " .
     "(determined by this variable) will be rescheduled. This option only has an effect if the " .
     "auto_reschedule_checks option is enabled. Default is 180 seconds (3 minutes)."
-);
-$help["use_aggressive_host_checking"] = dgettext(
-    "help",
-    "Monitoring Engine tries to be smart about how and when it checks the status of hosts. By default this " .
-    "option is disabled and will allow Monitoring Engine to make some smarter decisions and check hosts a " .
-    "bit faster. Enabling this option will increase the amount of time required to check hosts, but may " .
-    "improve reliability a bit. Unless you have problems with Monitoring Engine not recognizing that a " .
-    "host recovered, I would suggest not enabling this option."
 );
 $help["enable_flap_detection"] = dgettext(
     "help",

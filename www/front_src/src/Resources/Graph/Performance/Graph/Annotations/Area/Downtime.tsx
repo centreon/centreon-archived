@@ -17,10 +17,10 @@ const DowntimeAnnotations = (props: Props): JSX.Element => {
 
   return (
     <EventAnnotations
-      type="downtime"
       Icon={IconDowntime}
       ariaLabel={t(labelDowntime)}
       color={color}
+      type="downtime"
       {...props}
     />
   );
