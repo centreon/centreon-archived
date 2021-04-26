@@ -99,6 +99,6 @@ $periods = [
 
 $tpl->assign('periods', $periods);
 $tpl->assign('svc_id', $chartId);
-$tpl->assign('srv_name', $svcName);
+$tpl->assign('srv_name', $serviceName);
 
 $tpl->display('graph-periods.html');
