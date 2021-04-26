@@ -5,6 +5,7 @@ const path = require('path');
 
 const baseConfig = require('@centreon/frontend-core/webpack/base');
 const extractCssConfig = require('@centreon/frontend-core/webpack/patch/extractCss');
+const webpack = require('webpack');
 
 module.exports = merge(baseConfig, extractCssConfig, {
   entry: [
@@ -27,6 +28,8 @@ module.exports = merge(baseConfig, extractCssConfig, {
       filename: '../index.html',
     }),
     new HtmlWebpackHarddiskPlugin(),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /fr|en|es|pt/)
+
   ],
   module: {
     rules: [
