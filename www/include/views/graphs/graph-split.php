@@ -49,7 +49,7 @@ $path = "./include/views/graphs/";
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$chartId = filter_var($_REQUEST['chartId'] ?? null, FILTER_SANITIZE_STRING);
+$chartId = filter_var($_GET['chartId'] ?? null, FILTER_SANITIZE_STRING);
 
 if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
     $hostId = (int)$matches[1];
@@ -78,8 +78,8 @@ while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
     );
 }
 
-$period_start = filter_var($_REQUEST['start'] ?? 'undefined', FILTER_VALIDATE_INT);
-$period_end = filter_var($_REQUEST['start'] ?? 'undefined', FILTER_VALIDATE_INT);
+$period_start = filter_var($_GET['start'] ?? 'undefined', FILTER_VALIDATE_INT);
+$period_end = filter_var($_GET['start'] ?? 'undefined', FILTER_VALIDATE_INT);
 
 /*
  * Form begin
