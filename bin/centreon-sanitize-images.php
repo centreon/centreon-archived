@@ -71,8 +71,8 @@ if (!empty($files['invalidImages'])) {
     }
     echo PHP_EOL;
 }
-$proceed = askQuestion('Would you like to proceed to sanitize ? [y/N]: ');
 
+$proceed = askQuestion('Would you like to proceed to sanitize ? [y/N]: ');
 if (strtolower($proceed) === 'y') {
     foreach ($files['svgImages'] as $svgImage) {
         try {
