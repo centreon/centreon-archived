@@ -81,10 +81,14 @@ while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 
 if (isset($_GET['start'])) {
     $period_start = filter_var($_GET['start'], FILTER_VALIDATE_INT);
+} else {
+    $period_start = 'undefined';
 }
 
 if (isset($_GET['end'])) {
     $period_end = filter_var($_GET['end'], FILTER_VALIDATE_INT);
+} else {
+    $period_end = 'undefined';
 }
 
 if ($period_start === false) {
