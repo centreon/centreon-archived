@@ -55,7 +55,7 @@ $tpl = initSmartyTpl($path, $tpl);
 
 $chartId = '';
 if (isset($_GET['chartId'])) {
-  $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_STRING);
+    $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_STRING);
 }
 
 if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
