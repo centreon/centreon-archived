@@ -15331,7 +15331,7 @@ msgid "Host group"
 msgstr "Groupe d'hôtes"
 
 msgid "Downtime"
-msgstr "Planifier une plage de maintenance"
+msgstr "Plage de maintenance"
 
 msgid "In downtime"
 msgstr "En plage de maintenance"
