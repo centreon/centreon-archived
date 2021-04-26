@@ -52,29 +52,25 @@ $path = "./include/views/graphs/";
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-function getGetPostValue($str)
-{
-    $value = null;
-    if (isset($_GET[$str]) && $_GET[$str]) {
-        $value = $_GET[$str];
-    }
-    if (isset($_POST[$str]) && $_POST[$str]) {
-        $value = $_POST[$str];
-    }
-    return urldecode($value);
+if (isset($_GET['chartId'])) {
+    $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_STRING);
 }
 
-$svc_id = getGetPostValue('chartId');
-list($hostId, $svcId) = explode('_', $svc_id);
+if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
+    $hostId = (int)$matches[1];
+    $serviceId = (int)$matches[2];
+} else {
+    throw new \InvalidArgumentException('chartId must be a combination of integers');
+}
 
 /* Get host and service name */
-$svcName = '';
-$query = 'SELECT h.name, s.description FROM hosts h, services s WHERE h.host_id = ' . CentreonDB::escape($hostId) .
-    ' AND s.service_id = ' . CentreonDB::escape($svcId) . ' AND h.host_id = s.host_id';
+$serviceName = '';
+$query = 'SELECT h.name, s.description FROM hosts h, services s WHERE h.host_id = ' . $hostId .
+    ' AND s.service_id = ' . $serviceId . ' AND h.host_id = s.host_id';
 $res = $pearDBO->query($query);
 if (false === PEAR::isError($res)) {
     $row = $res->fetchRow();
-    $svcName = $row['name'] . ' - ' . $row['description'];
+    $serviceName = $row['name'] . ' - ' . $row['description'];
 }
 
 $periods = array(
@@ -97,7 +93,7 @@ $periods = array(
 );
 
 $tpl->assign('periods', $periods);
-$tpl->assign('svc_id', $svc_id);
-$tpl->assign('srv_name', $svcName);
+$tpl->assign('svc_id', $chartId);
+$tpl->assign('srv_name', $serviceName);
 
 $tpl->display("graph-periods.html");
