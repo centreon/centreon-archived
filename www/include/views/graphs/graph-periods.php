@@ -1,4 +1,5 @@
 <?php
+
 /*
 * Copyright 2005-2021 Centreon
 * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -53,7 +54,6 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $chartId = filter_var($_GET['chartId'] ?? null, FILTER_SANITIZE_STRING);
-}
 
 if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
     $hostId = (int)$matches[1];
