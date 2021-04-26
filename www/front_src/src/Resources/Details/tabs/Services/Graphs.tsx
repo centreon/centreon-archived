@@ -63,7 +63,7 @@ const ServiceGraphs = ({
           const isLastService = equals(last(servicesWithGraph), service);
 
           return (
-            <div key={id}>
+            <React.Fragment key={id}>
               <MemoizedPerformanceGraph
                 limitLegendRows
                 adjustTimePeriod={adjustTimePeriod}
@@ -76,7 +76,7 @@ const ServiceGraphs = ({
                 selectedTimePeriod={selectedTimePeriod}
               />
               {isLastService && <div ref={infiniteScrollTriggerRef} />}
-            </div>
+            </React.Fragment>
           );
         })}
       </MousePositionContext.Provider>
