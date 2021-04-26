@@ -1,7 +1,8 @@
 <?php
+
 /*
-* Copyright 2005-2015 Centreon
-* Centreon is developped by : Julien Mathis and Romain Le Merlus under
+* Copyright 2005-2021 Centreon
+* Centreon is developed by : Julien Mathis and Romain Le Merlus under
 * GPL Licence 2.0.
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -55,45 +56,45 @@ require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-function getGetPostValue($str)
-{
-    $value = null;
-    if (isset($_GET[$str]) && $_GET[$str]) {
-        $value = $_GET[$str];
-    }
-    if (isset($_POST[$str]) && $_POST[$str]) {
-        $value = $_POST[$str];
-    }
-    return urldecode($value);
+$chartId = '';
+if (isset($_GET['chartId'])) {
+    $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_STRING);
 }
 
-$svc_id = getGetPostValue('chartId');
+if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
+    $hostId = (int)$matches[1];
+    $serviceId = (int)$matches[2];
+} else {
+    throw new \InvalidArgumentException('chartId must be a combination of integers');
+}
 
 $metrics = array();
-if (isset($svc_id) && $svc_id) {
-    list($hostId, $svcId) = explode('_', $svc_id);
-    /* Get list metrics */
-    $query = 'SELECT m.metric_id, m.metric_name, i.host_name, i.service_description
-        FROM metrics m, index_data i
-        WHERE i.id = m.index_id AND i.service_id = ' . CentreonDB::escape($svcId) .
-        ' AND i.host_id = ' . CentreonDB::escape($hostId);
-    $res = $pearDBO->query($query);
-    while ($row = $res->fetchRow()) {
-        $metrics[] = array(
-            'id' => $svc_id . '_' .$row['metric_id'],
-            'title' => $row['host_name'] . ' - ' . $row['service_description'] . ' : ' . $row['metric_name']
-        );
-    }
+/* Get list metrics */
+$query = 'SELECT m.metric_id, m.metric_name, i.host_name, i.service_description
+    FROM metrics m, index_data i
+    WHERE i.id = m.index_id AND i.service_id = ' . $serviceId . ' AND i.host_id = ' . $hostId;
+$res = $pearDBO->query($query);
+while ($row = $res->fetchRow()) {
+    $metrics[] = array(
+        'id' => $chartId . '_' .$row['metric_id'],
+        'title' => $row['host_name'] . ' - ' . $row['service_description'] . ' : ' . $row['metric_name']
+    );
 }
 
-/* Get Period if is in url */
-$period_start = 'undefined';
-$period_end = 'undefined';
-if (isset($_REQUEST['start']) && is_numeric($_REQUEST['start'])) {
-    $period_start = $_REQUEST['start'];
+if (isset($_GET['start'])) {
+    $period_start = filter_var($_GET['start'], FILTER_VALIDATE_INT);
 }
-if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
-    $period_end = $_REQUEST['end'];
+
+if (isset($_GET['end'])) {
+    $period_end = filter_var($_GET['end'], FILTER_VALIDATE_INT);
+}
+
+if ($period_start === false) {
+    $period_start = 'undefined';
+}
+
+if ($period_end === false) {
+    $period_end = 'undefined';
 }
 
 /*
