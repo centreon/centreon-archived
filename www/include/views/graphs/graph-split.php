@@ -78,8 +78,21 @@ while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
     );
 }
 
-$period_start = filter_var($_GET['start'] ?? 'undefined', FILTER_VALIDATE_INT);
-$period_end = filter_var($_GET['start'] ?? 'undefined', FILTER_VALIDATE_INT);
+if (isset($_GET['start'])) {
+    $period_start = filter_var($_GET['start'], FILTER_VALIDATE_INT);
+}
+
+if (isset($_GET['end'])) {
+    $period_end = filter_var($_GET['end'], FILTER_VALIDATE_INT);
+}
+
+if ($period_start === false) {
+    $period_start = 'undefined';
+}
+
+if ($period_end === false) {
+    $period_end = 'undefined';
+}
 
 /*
  * Form begin
@@ -88,27 +101,6 @@ $form = new HTML_QuickFormCustom('FormPeriod', 'get', '?p=' . $p);
 
 $periods = [
     '' => '',
-    "3h" => _("Last 3 Hours"),
-    "6h" => _("Last 6 Hours"),
-    "12h" => _("Last 12 Hours"),
-    "1d" => _("Last 24 Hours"),
-    "2d" => _("Last 2 Days"),
-    "3d" => _("Last 3 Days"),
-    "4d" => _("Last 4 Days"),
-    "5d" => _("Last 5 Days"),
-    "7d" => _("Last 7 Days"),
-    "14d" => _("Last 14 Days"),
-    "28d" => _("Last 28 Days"),
-    "30d" => _("Last 30 Days"),
-    "31d" => _("Last 31 Days"),
-    "2M" => _("Last 2 Months"),
-    "4M" => _("Last 4 Months"),
-    "6M" => _("Last 6 Months"),
-    "1y" => _("Last Year")
-];
-
-$periods = array(
-    "" => "",
     '3h' => _('Last 3 Hours'),
     '6h' => _('Last 6 Hours'),
     '12h' => _('Last 12 Hours'),
@@ -126,7 +118,7 @@ $periods = array(
     '4M' => _('Last 4 Months'),
     '6M' => _('Last 6 Months'),
     '1y' => _('Last Year')
-);
+];
 $sel = $form->addElement(
     'select',
     'period',
@@ -199,7 +191,8 @@ $form->addElement(
     ]
 );
 
-if ($period_start != 'undefined' &&
+if (
+    $period_start != 'undefined' &&
     $period_end != 'undefined'
 ) {
     $startDay = date('Y-m-d', $period_start);
