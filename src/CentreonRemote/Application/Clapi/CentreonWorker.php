@@ -162,7 +162,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
          * create import task on remote
          */
         $serializedParams = filter_var($task->getParams(), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-        if(empty($serializedParams)) {
+        if (empty($serializedParams)) {
             throw new \Exception('Invalid Parameters');
         }
         $paramArray = unserialize($serializedParams);
