@@ -1,4 +1,23 @@
 =====================
+Centreon Web 19.10.23
+=====================
+
+Bug fixes
+---------
+
+- [Administration] Cannot list Pollers in Centreon Engine statistics
+
+Security fixes
+--------------
+
+- [Administration] User can install or delete modules with no ACL rights
+- [Configuration] Cross-site Scripting (XSS) Stored/Persistent in Dependency/Notification form
+- [Configuration] SQL injection in user additional information
+- [Configuration] Stored XSS in host Alias for host form
+- [Core] Predictable anti-CSRF token
+- [Lib] Update centreon vulnerable packages
+
+=====================
 Centreon Web 19.10.22
 =====================
 
