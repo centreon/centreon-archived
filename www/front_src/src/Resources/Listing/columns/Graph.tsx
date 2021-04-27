@@ -21,9 +21,8 @@ import IconColumn from './IconColumn';
 const useStyles = makeStyles((theme) => ({
   graph: {
     display: 'block',
-    maxHeight: 288,
     overflow: 'auto',
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     width: 575,
   },
 }));
