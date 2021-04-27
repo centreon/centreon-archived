@@ -44,7 +44,7 @@ use Symfony\Component\Finder\Finder;
 ###############################
 
 /**
- * Undocumented function
+ * Get the result of asked question.
  *
  * @param string $question
  * @param boolean $hidden
