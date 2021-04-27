@@ -697,7 +697,7 @@ function update_after_installation() {
 #####################################################
 ################ MAIN SCRIPT EXECUTION ##############
 
-if [[ $EUID -ne 0 ]]; then
+if [ $EUID -ne 0 ]; then
 	error_and_exit "This script must be run as root"
 fi
 
