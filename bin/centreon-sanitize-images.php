@@ -134,10 +134,11 @@ function usage(): void
 }
 
 /**
- * Check MIME Type of file
+ * Get the images where MIME Type is incorrect or image extension don't match the MIME Type.
  *
  * @param array<string> $files
  * @return array<string>
+ * @throws \Exception
  */
 function getInvalidImages(array $files): array
 {
@@ -152,6 +153,9 @@ function getInvalidImages(array $files): array
     foreach ($files as $file) {
         $fileExploded = explode(".", $file);
         $fileExtension = end($fileExploded);
+        if (!array_key_exists($fileExtension, $mimeTypeFileExtensionConcordance)) {
+            throw new \Exception(sprintf('Invalid image extension: %s', $fileExtension));
+        }
         $mimeType = mime_content_type($file);
         /**
          * If MIME type is invalid or extension doesn't match MIME type
@@ -191,6 +195,7 @@ function getSvgImages(array $files): array
  * Sanitize a SVG file.
  *
  * @param string $file
+ * @throws \Exception
  */
 function sanitizeSvg(string $file): void
 {
@@ -213,14 +218,11 @@ function sanitizeSvg(string $file): void
 function listImages(): array
 {
     $finder = new Finder();
-    $images = iterator_to_array(
-        $finder->in(__DIR__ . '/../www/img/media')->name(['*.jpg', '*.jpeg', '*.svg', '*.gif', '*.png'])
-    );
+    $images = $finder->in(__DIR__ . '/../www/img/media')->name(['*.jpg', '*.jpeg', '*.svg', '*.gif', '*.png']);
     $imagesPath = [];
     foreach ($images as $image) {
         $imagesPath[] = $image->getPathName();
     }
-
     $invalidImages = getInvalidImages($imagesPath);
     $svgImages = getSvgImages($imagesPath);
 
@@ -237,7 +239,7 @@ function listImages(): array
     foreach ($svgImages as $svgImage) {
         $images['svgImages'][] = $svgImage;
     }
-    echo PHP_EOL;
+
     return $images;
 }
 

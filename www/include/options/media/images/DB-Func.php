@@ -438,8 +438,11 @@ function isCorrectMIMEType(array $file): bool
         "png" => "image/png"
     ];
     $fileExtension = end(explode(".", $file["name"]));
-    $mimeType = mime_content_type($file['tmp_name']);
+    if (!array_key_exists($fileExtension, $mimeTypeFileExtensionConcordance)) {
+        throw new \Exception(sprintf('Invalid image extension: %s', $fileExtension));
+    }
 
+    $mimeType = mime_content_type($file['tmp_name']);
     if (
         !preg_match('/(^image\/(jpg|jpeg|svg\+xml|gif|png)$)|(^application(\/zip)|(\/x-gzip)$)/', $mimeType)
         || (preg_match('/^image\//', $mimeType) && $mimeType !== $mimeTypeFileExtensionConcordance[$fileExtension])
@@ -570,6 +573,10 @@ function isValidMIMETypeFromArchive(
 
     foreach ($files as $file) {
         $fileExtension = end(explode(".", $file));
+        if (!array_key_exists($fileExtension, $mimeTypeFileExtensionConcordance)) {
+            throw new \Exception(sprintf('Invalid image extension: %s', $fileExtension));
+        }
+
         $mimeType = mime_content_type($dir . '/' . $file);
         if (
             !preg_match('/(^image\/(jpg|jpeg|svg\+xml|gif|png)$)/', $mimeType)
