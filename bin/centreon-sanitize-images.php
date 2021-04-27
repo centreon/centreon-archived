@@ -38,64 +38,6 @@ require(__DIR__ . '/../vendor/autoload.php');
 use enshrined\svgSanitize\Sanitizer;
 use Symfony\Component\Finder\Finder;
 
-// Get Script options
-$options = getopt('h::', ['help::']);
-
-if (isset($options['help']) || isset($options['h'])) {
-    usage();
-    exit(0);
-}
-
-$files = listImages();
-
-if (empty($files['svgImages']) && empty($files['invalidImages'])) {
-    echo PHP_EOL . "Nothing to do, everything is fine." . PHP_EOL;
-    exit(0);
-}
-
-if (!empty($files['svgImages'])) {
-    echo "The following SVGs can be sanitized to prevent any injections:"  . PHP_EOL;
-    foreach ($files['svgImages'] as $svgImage) {
-        $pattern = str_replace('/', '\/', __DIR__ . '/../www/img/media/');
-        echo preg_replace('/' . $pattern . '/', '', $svgImage) . PHP_EOL;
-    }
-    echo PHP_EOL;
-}
-
-if (!empty($files['invalidImages'])) {
-    echo "The following images have an invalid MIME type or a mismatch between MIME type and " .
-    "file extension and can be replaced by a generic image:" . PHP_EOL;
-    foreach ($files['invalidImages'] as $invalidImg) {
-        $pattern = str_replace('/', '\/', __DIR__ . '/../www/img/media/');
-        echo preg_replace('/' . $pattern . '/', '', $invalidImg) . PHP_EOL;
-    }
-    echo PHP_EOL;
-}
-
-$proceed = askQuestion('Would you like to proceed to sanitize ? [y/N]: ');
-if (strtolower($proceed) === 'y') {
-    foreach ($files['svgImages'] as $svgImage) {
-        try {
-            sanitizeSvg($svgImage);
-        } catch (\Exception $ex) {
-            echo "ERROR - " . $ex->getMessage();
-            exit(1);
-        }
-    }
-
-    foreach ($files['invalidImages'] as $invalidImg) {
-        try {
-            convertCorruptedImageOrFail($invalidImg);
-        } catch (\Exception $ex) {
-            echo "ERROR - " . $ex->getMessage();
-            exit(1);
-        }
-    }
-
-    echo "Sanitize done." . PHP_EOL;
-} else {
-    exit(0);
-}
 
 ###############################
 #        COMMON FUNCTION      #
@@ -108,30 +50,26 @@ if (strtolower($proceed) === 'y') {
  * @param boolean $hidden
  * @return string
  */
-function askQuestion(string $question, $hidden = false): string
-{
+$askQuestion = function (string $question, bool $hidden = false): string {
     if ($hidden) {
         system("stty -echo");
     }
     printf("%s", $question);
     $handle = fopen("php://stdin", "r");
-    $response = trim(fgets($handle));
-    fclose($handle);
+    $response = '';
+    if ($handle) {
+        $fGets = fgets($handle);
+        if ($fGets) {
+            $response = trim($fGets);
+        }
+        fclose($handle);
+    }
     if ($hidden) {
         system("stty echo");
     }
     printf("\n");
     return $response;
-}
-
-/**
- * Display usage message.
- *
- */
-function usage(): void
-{
-    echo "This script will sanitize all your svg files and replace your corrupted images by a generic image. \n";
-}
+};
 
 /**
  * Get the images where MIME Type is incorrect or image extension don't match the MIME Type.
@@ -140,8 +78,7 @@ function usage(): void
  * @return array<string>
  * @throws \Exception
  */
-function getInvalidImages(array $files): array
-{
+$getInvalidImages = function (array $files): array {
     $mimeTypeFileExtensionConcordance = [
         "svg" => "image/svg+xml",
         "jpg" => "image/jpeg",
@@ -157,19 +94,24 @@ function getInvalidImages(array $files): array
             throw new \Exception(sprintf('Invalid image extension: %s', $fileExtension));
         }
         $mimeType = mime_content_type($file);
-        /**
-         * If MIME type is invalid or extension doesn't match MIME type
-         */
-        if (
-            !preg_match('/(^image\/(jpg|jpeg|svg\+xml|gif|png)$)/', $mimeType)
-            || (preg_match('/^image\//', $mimeType) && $mimeType !== $mimeTypeFileExtensionConcordance[$fileExtension])
-        ) {
-            $invalidImages[] = $file;
+        if ($mimeType) {
+            /**
+             * If MIME type is invalid or extension doesn't match MIME type
+             */
+            if (
+                !preg_match('/(^image\/(jpg|jpeg|svg\+xml|gif|png)$)/', $mimeType)
+                || (
+                    preg_match('/^image\//', $mimeType)
+                    && $mimeType !== $mimeTypeFileExtensionConcordance[$fileExtension]
+                )
+            ) {
+                $invalidImages[] = $file;
+            }
         }
     }
 
     return $invalidImages;
-}
+};
 
 /**
  * Get all the svg images.
@@ -177,19 +119,18 @@ function getInvalidImages(array $files): array
  * @param array<string> $files
  * @return array<string>
  */
-function getSvgImages(array $files): array
-{
+$getSvgImages = function (array $files): array {
     $svgFiles = [];
     foreach ($files as $file) {
         $fileExploded = explode(".", $file);
         $fileExtension = end($fileExploded);
         $mimeType = mime_content_type($file);
-        if (preg_match('/(^image\/svg\+xml$)/', $mimeType) && $fileExtension === "svg") {
+        if (($mimeType && preg_match('/(^image\/svg\+xml$)/', $mimeType)) && $fileExtension === "svg") {
             $svgFiles[] = $file;
         }
     }
     return $svgFiles;
-}
+};
 
 /**
  * Sanitize a SVG file.
@@ -197,8 +138,7 @@ function getSvgImages(array $files): array
  * @param string $file
  * @throws \Exception
  */
-function sanitizeSvg(string $file): void
-{
+$sanitizeSvg = function (string $file): void {
     $sanitizer = new Sanitizer();
     $svg = file_get_contents($file);
     if ($svg === false) {
@@ -208,23 +148,22 @@ function sanitizeSvg(string $file): void
     if (file_put_contents($file, $cleanSvg) === false) {
         throw new \Exception('Unable to replace content of file: ' . $file);
     };
-}
+};
 
 /**
  * List all the invalid and/or svg images
  *
  * @return array<string,array>
  */
-function listImages(): array
-{
+$listImages = function () use ($getInvalidImages, $getSvgImages): array {
     $finder = new Finder();
     $images = $finder->in(__DIR__ . '/../www/img/media')->name(['*.jpg', '*.jpeg', '*.svg', '*.gif', '*.png']);
     $imagesPath = [];
     foreach ($images as $image) {
         $imagesPath[] = $image->getPathName();
     }
-    $invalidImages = getInvalidImages($imagesPath);
-    $svgImages = getSvgImages($imagesPath);
+    $invalidImages = $getInvalidImages($imagesPath);
+    $svgImages = $getSvgImages($imagesPath);
 
     $images = [
         "invalidImages" => [],
@@ -241,7 +180,7 @@ function listImages(): array
     }
 
     return $images;
-}
+};
 
 /**
  * Convert a corrupted image into a red cross on white background.
@@ -249,8 +188,7 @@ function listImages(): array
  * @param string $invalidImg
  * @throws \Exception
  */
-function convertCorruptedImageOrFail(string $invalidImg): void
-{
+$convertCorruptedImageOrFail = function (string $invalidImg): void {
     // Get image extension
     $invalidImgPathExploded = explode('.', $invalidImg);
     $invalidImgExtension = end($invalidImgPathExploded);
@@ -315,4 +253,63 @@ function convertCorruptedImageOrFail(string $invalidImg): void
         default:
             break;
     }
+};
+
+
+// Get Script options
+$options = getopt('h::', ['help::']);
+if (($options && array_key_exists('help', $options)) || ($options && array_key_exists('h', $options))) {
+    echo "This script will sanitize all your svg files and replace your corrupted images by a generic image. \n";
+    exit(0);
+}
+
+$files = $listImages();
+
+if (empty($files['svgImages']) && empty($files['invalidImages'])) {
+    echo PHP_EOL . "Nothing to do, everything is fine." . PHP_EOL;
+    exit(0);
+}
+
+if (!empty($files['svgImages'])) {
+    echo "The following SVGs can be sanitized to prevent any injections:"  . PHP_EOL;
+    foreach ($files['svgImages'] as $svgImage) {
+        $pattern = str_replace('/', '\/', __DIR__ . '/../www/img/media/');
+        echo preg_replace('/' . $pattern . '/', '', $svgImage) . PHP_EOL;
+    }
+    echo PHP_EOL;
+}
+
+if (!empty($files['invalidImages'])) {
+    echo "The following images have an invalid MIME type or a mismatch between MIME type and " .
+    "file extension and can be replaced by a generic image:" . PHP_EOL;
+    foreach ($files['invalidImages'] as $invalidImg) {
+        $pattern = str_replace('/', '\/', __DIR__ . '/../www/img/media/');
+        echo preg_replace('/' . $pattern . '/', '', $invalidImg) . PHP_EOL;
+    }
+    echo PHP_EOL;
+}
+
+$proceed = $askQuestion('Would you like to proceed to sanitize ? [y/N]: ');
+if (strtolower($proceed) === 'y') {
+    foreach ($files['svgImages'] as $svgImage) {
+        try {
+            $sanitizeSvg($svgImage);
+        } catch (\Exception $ex) {
+            echo "ERROR - " . $ex->getMessage();
+            exit(1);
+        }
+    }
+
+    foreach ($files['invalidImages'] as $invalidImg) {
+        try {
+            $convertCorruptedImageOrFail($invalidImg);
+        } catch (\Exception $ex) {
+            echo "ERROR - " . $ex->getMessage();
+            exit(1);
+        }
+    }
+
+    echo "Sanitize done." . PHP_EOL;
+} else {
+    exit(0);
 }
