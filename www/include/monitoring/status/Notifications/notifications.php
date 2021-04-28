@@ -50,6 +50,8 @@ $obj = new CentreonXMLBGRequest($sid, 1, 1, 0, 1);
 if (!isset($_SESSION['centreon'])) {
     exit;
 }
+$centreon = $_SESSION['centreon'];
+
 if (!isset($obj->session_id) || !CentreonSession::checkSession($sid, $obj->DB)) {
     exit;
 }
