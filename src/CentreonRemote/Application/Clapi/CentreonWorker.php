@@ -75,11 +75,11 @@ class CentreonWorker implements CentreonClapiServiceInterface
             if (empty($serializedParams)) {
                 throw new \Exception('Invalid Parameters');
             }
-            $paramArray = unserialize($serializedParams);
-            if (!array_key_exists('params', $paramArray)) {
+            $taskParams = unserialize($serializedParams);
+            if (!array_key_exists('params', $taskParams)) {
                 throw new \Exception('Missing parameters: params');
             }
-            $params = $paramArray['params'];
+            $params = $taskParams['params'];
             $commitment = new ExportCommitment($params['server'], $params['pollers']);
 
             try {
@@ -165,11 +165,11 @@ class CentreonWorker implements CentreonClapiServiceInterface
         if (empty($serializedParams)) {
             throw new \Exception('Invalid Parameters');
         }
-        $paramArray = unserialize($serializedParams);
-        if (!array_key_exists('params', $paramArray)) {
+        $taskParams = unserialize($serializedParams);
+        if (!array_key_exists('params', $taskParams)) {
             throw new \Exception('Missing parameters: params');
         }
-        $params = $paramArray['params'];
+        $params = $taskParams['params'];
         $centreonPath = trim($params['centreon_path'], '/');
         $centreonPath = $centreonPath ? $centreonPath : '/centreon';
         $url = $params['http_method'] ? $params['http_method'] . "://" : "";
