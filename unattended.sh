@@ -4,7 +4,7 @@
 OPTIONS=":t:v:r:l:"
 declare -A SUPPORTED_LOG_LEVEL=([DEBUG]=0 [INFO]=1 [WARN]=2 [ERROR]=3)
 declare -A SUPPORTED_TOPOLOGY=([central]=1 [poller]=1)
-declare -A SUPPORTED_VERSION=([21.04]=1)
+declare -A SUPPORTED_VERSION=([21.10]=1)
 declare -A SUPPORTED_REPOSITORY=([testing]=1 [unstable]=1 [stable]=1)
 default_timeout_in_sec=5
 script_short_name="$(basename $0)"
@@ -17,7 +17,7 @@ passwords_file=/etc/centreon/generated.tobesecured         #File where the gener
 tmp_passwords_file=$(mktemp /tmp/generated.XXXXXXXXXXXXXX) #Random tmp file as the /etc/centreon does not exist yet
 
 topology=${ENV_CENTREON_TOPOLOGY:-"central"}    #Default topology to be installed
-version=${ENV_CENTREON_VERSION:-"21.04"}        #Default version to be installed
+version=${ENV_CENTREON_VERSION:-"21.10"}        #Default version to be installed
 repo=${ENV_CENTREON_REPO:-"stable"}             #Default repository to used
 operation=${ENV_CENTREON_OPERATION:-"install"}  #Default operation to be executed
 runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}      #Default log level to be used
@@ -87,7 +87,7 @@ function usage() {
 	echo
 	echo "Usage :"
 	echo
-	echo " $script_short_name [install|upgrade (default: install)] [-t <central|poller> (default: central)] [-v <21.04> (default: 21.04)] [-r <stable|testing|unstable> (default: stable)] [-l <DEBUG|INFO|WARN|ERROR>"
+	echo " $script_short_name [install|upgrade (default: install)] [-t <central|poller> (default: central)] [-v <21.10> (default: 21.10)] [-r <stable|testing|unstable> (default: stable)] [-l <DEBUG|INFO|WARN|ERROR>"
 	echo
 	echo Example:
 	echo
@@ -696,6 +696,10 @@ function update_after_installation() {
 
 #####################################################
 ################ MAIN SCRIPT EXECUTION ##############
+
+if [ $EUID -ne 0 ]; then
+	error_and_exit "This script must be run as root"
+fi
 
 ## Process the provided arguments in line
 case "$1" in
