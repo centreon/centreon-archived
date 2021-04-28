@@ -86,6 +86,9 @@
     "dragonmantank/cron-expression": {
         "version": "3.0.1"
     },
+    "enshrined/svg-sanitize": {
+        "version": "0.14.0"
+    },
     "fabpot/goutte": {
         "version": "v3.3.0"
     },
