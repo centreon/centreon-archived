@@ -12,7 +12,7 @@ import Hook from '../Hook';
 import { setRefreshIntervals } from '../../redux/actions/refreshActions';
 import axios from '../../axios';
 
-import styles from './header.scss';
+import styles from './header.module.scss';
 import PollerMenu from './pollerMenu';
 import UserMenu from './userMenu';
 import HostMenu from './hostMenu';

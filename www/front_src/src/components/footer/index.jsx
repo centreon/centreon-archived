@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 
 import classnames from 'classnames';
 
-import styles from './footer.scss';
+import styles from './footer.module.scss';
 
 class Footer extends Component {
   render() {

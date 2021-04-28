@@ -44,7 +44,6 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     padding: theme.spacing(0, 1),
   }),
 }));
-
 const useStylesHeaderContent = makeStyles((theme) => ({
   parent: {
     alignItems: 'center',
@@ -127,6 +126,8 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
           </div>
         )}
       </div>
+
+
       <IconButton
         ariaLabel={t(labelCopyLink)}
         size="small"

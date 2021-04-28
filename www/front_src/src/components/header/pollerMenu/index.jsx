@@ -22,7 +22,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import axios from '../../../axios';
-import styles from '../header.scss';
+import styles from '../header.module.scss';
 import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../MenuLoader';
 

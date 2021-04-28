@@ -29,7 +29,7 @@ import {
   SubmenuItems,
 } from '@centreon/ui';
 
-import styles from '../header.scss';
+import styles from '../header.module.scss';
 import axios from '../../../axios';
 import {
   getServiceResourcesUrl,

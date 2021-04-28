@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
-import styles from '../header.scss';
+import styles from '../header.module.scss';
 import Clock from '../clock';
 import axios from '../../../axios';
 import MenuLoader from '../../MenuLoader';

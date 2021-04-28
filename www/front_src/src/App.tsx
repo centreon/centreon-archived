@@ -24,7 +24,7 @@ import Tooltip from './components/tooltip';
 import Footer from './components/footer';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
-import footerStyles from './components/footer/footer.scss';
+import footerStyles from './components/footer/footer.module.scss';
 import PageLoader from './components/PageLoader';
 import MainRouter from './components/mainRouter';
 
