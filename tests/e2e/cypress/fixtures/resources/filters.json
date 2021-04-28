@@ -48,7 +48,7 @@
     },
     {
       "name": "search",
-      "value": "s.description:test*",
+      "value": "s.description:.*test.*",
       "type": "text",
       "object_type": null
     },

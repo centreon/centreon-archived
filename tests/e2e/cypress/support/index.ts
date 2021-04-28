@@ -1,4 +1,4 @@
-import { setUserTokenApi, insertResources } from './centreonData';
+import { insertResources } from './centreonData';
 
 before(() => {
   cy.exec('docker cp cypress/fixtures/clapi/ centreon-dev:/tmp/');
@@ -8,8 +8,6 @@ before(() => {
   cy.exec(
     'docker exec centreon-dev centreon -u admin -p centreon -a APPLYCFG -v 1',
   );
-
-  setUserTokenApi();
 
   cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {
     // failOnStatusCode it's FALSE to ignore the first 404 on Centreon redirection

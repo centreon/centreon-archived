@@ -12,7 +12,11 @@ import {
   searchValue,
   containerStateFilter,
 } from '../common';
-import { setFiltersUser, delFiltersUser } from '../../../support/centreonData';
+import {
+  setUserTokenApi,
+  setFiltersUser,
+  delFiltersUser,
+} from '../../../support/centreonData';
 
 interface Status {
   severity_code: number;
@@ -37,6 +41,8 @@ const resourcesMatching = (): Cypress.Chainable => {
 };
 
 Before(() => {
+  setUserTokenApi();
+
   cy.fixture('resources/filters.json').then((filters) => {
     setFiltersUser('POST', filters);
   });
