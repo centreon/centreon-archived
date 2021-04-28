@@ -17,7 +17,7 @@ export default defineConfig({
     polyfillDynamicImport: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'www/front_src/src/index.jsx'),
+        main: resolve(__dirname, 'www/index.jsx'),
       },
     },
 
@@ -41,7 +41,7 @@ export default defineConfig({
     ],
   },
 
-  root: './www/front_src/src',
+  root: './www',
   server: {
     cors: true,
     hmr: true,
