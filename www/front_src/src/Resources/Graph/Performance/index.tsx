@@ -91,7 +91,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     flexDirection: 'column',
     gridGap: theme.spacing(0.5),
     gridTemplateRows: ({ graphHeight, displayTitle }): string =>
-      `${displayTitle ? 'auto' : ''} ${theme.spacing(
+      `${displayTitle ? 'min-content' : ''} ${theme.spacing(
         2,
       )}px ${graphHeight}px auto`,
     height: '100%',
