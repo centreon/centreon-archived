@@ -1,4 +1,10 @@
-import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
+import {
+  Before,
+  After,
+  Given,
+  When,
+  Then,
+} from 'cypress-cucumber-preprocessor/steps';
 
 import {
   inputSearch,
@@ -6,6 +12,7 @@ import {
   searchValue,
   containerStateFilter,
 } from '../common';
+import { setFiltersUser, delFiltersUser } from '../../../support/centreonData';
 
 interface Status {
   severity_code: number;
@@ -20,8 +27,6 @@ interface Resource {
   in_downtime: boolean;
 }
 
-const fixtureClapiPath = 'cypress/fixtures/clapi';
-
 const resourcesMatching = (): Cypress.Chainable => {
   return cy.get<Array<Resource>>('@resources').then((resources) => {
     resources.forEach(({ name }) => {
@@ -31,18 +36,9 @@ const resourcesMatching = (): Cypress.Chainable => {
   });
 };
 
-// Background
-Given('There are available resources', () => {
-  cy.readFile(`${fixtureClapiPath}/resources.txt`).then((data) => {
-    const linesResources = data.split('\n').filter((d) => d.includes('ADD'));
-
-    const resources = linesResources.map((line: string) => {
-      const [name, description] = line
-        .split(';')
-        .filter((_, index: number) => index === 2 || index === 3);
-      return { name, description };
-    });
-    cy.wrap(resources).as('resources');
+Before(() => {
+  cy.fixture('resources/filters.json').then((filters) => {
+    setFiltersUser('POST', filters);
   });
 });
 
@@ -89,3 +85,5 @@ Then(
   'only Resources matching I selected filter should be displayed in the result',
   () => resourcesMatching(),
 );
+
+After(() => delFiltersUser());

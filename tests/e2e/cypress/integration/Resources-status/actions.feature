@@ -4,9 +4,7 @@ Feature: Actions on Resources
   So that my IT infrastructure stays sane
 
   Background:
-    Given a valid centreon user account
-    And I can access this page
-    And there are available resources
+    Given There are available resources
 
   Scenario: I can acknowledge a problematic Resource
     When I select the acknowledge action on a problematic Resource

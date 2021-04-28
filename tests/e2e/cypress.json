@@ -16,5 +16,6 @@
     "runMode": 1
   },
   "defaultCommandTimeout": 6000,
+  "requestTimeout": 10000,
   "execTimeout": 60000
 }
