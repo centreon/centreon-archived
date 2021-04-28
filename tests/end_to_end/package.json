@@ -1,6 +1,6 @@
 {
   "name": "centreon-cypress",
-  "version": "21.04.0",
+  "version": "21.10.0",
   "description": "centreon web package",
   "scripts": {
     "cypress:open": "cypress open",
