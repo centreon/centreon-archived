@@ -208,6 +208,17 @@ try {
           stash name: 'phpstan.xml', includes: 'phpstan.xml'
         }
       }
+    },
+    'sonar': {
+      node {
+        // Run sonarQube analysis
+        checkoutCentreonBuild(buildBranch)
+        unstash 'git-sources'
+        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+        withSonarQubeEnv('SonarQubeDev') {
+          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+        }
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests stage failure.');
@@ -226,14 +237,6 @@ try {
       if (hasFrontendChanges) {
         unstash 'ut-fe.xml'
         unstash 'codestyle-fe.xml'
-      }
-
-      // Run sonarQube analysis
-      checkoutCentreonBuild(buildBranch)
-      unstash 'git-sources'
-      sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-      withSonarQubeEnv('SonarQubeDev') {
-        sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
       }
 
       if (env.CHANGE_ID) { // pull request to comment with coding style issues
