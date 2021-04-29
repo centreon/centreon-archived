@@ -228,6 +228,8 @@ try {
 
   stage('Quality gate') {
     node {
+      discoverGitReferenceBuild()
+
       if (hasBackendChanges) {
         unstash 'ut-be.xml'
         unstash 'coverage-be.xml'
@@ -260,26 +262,30 @@ try {
         ])
       }
 
-      discoverGitReferenceBuild()
-      recordIssues(
-        enabledForFailure: true,
-        qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-        tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
-        trendChartType: 'NONE'
-      )
-      recordIssues(
-        enabledForFailure: true,
-        qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-        tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
-        trendChartType: 'NONE'
-      )
-      recordIssues(
-        enabledForFailure: true,
-        failOnError: true,
-        qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-        tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
-        trendChartType: 'NONE'
-      )
+      if (hasBackendChanges) {
+        recordIssues(
+          enabledForFailure: true,
+          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+          tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
+          trendChartType: 'NONE'
+        )
+        recordIssues(
+          enabledForFailure: true,
+          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+          tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
+          trendChartType: 'NONE'
+        )
+      }
+
+      if (hasFrontendChanges) {
+        recordIssues(
+          enabledForFailure: true,
+          failOnError: true,
+          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+          tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
+          trendChartType: 'NONE'
+        )
+      }
     }
 
     timeout(time: 10, unit: 'MINUTES') {
