@@ -24,6 +24,7 @@ if (env.CHANGE_BRANCH) {
 
 def backendFiles = [
 //  'Jenkinsfile',
+//  'sonar-project.properties',
   '**/*.php',
   'www/**/*.js',
   '**/*.sh',
@@ -33,7 +34,6 @@ def backendFiles = [
   'behat.yml',
   'ruleset.xml',
   'phpstan.neon',
-  'sonar-project.properties',
   'bin/*',
   'config/*',
   'cron/*',
@@ -45,6 +45,7 @@ def backendFiles = [
 ]
 def frontendFiles = [
 //  'Jenkinsfile',
+//  'sonar-project.properties',
   'www/front_src/*',
   'packag*.json',
   'webpack*',
