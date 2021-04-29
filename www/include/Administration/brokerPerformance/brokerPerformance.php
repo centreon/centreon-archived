@@ -318,7 +318,8 @@ try {
         if (
             !file_exists($statsfile)
             || !is_readable($statsfile)
-            || (substr(realpath($statsfile), 0, strlen(_CENTREON_VARLIB_)) !== _CENTREON_VARLIB_ )
+            || ((substr(realpath($statsfile), 0, strlen(_CENTREON_VARLIB_)) !== _CENTREON_VARLIB_ )
+            && (substr(realpath($statsfile), 0, strlen(_CENTREON_CACHEDIR_)) !== _CENTREON_CACHEDIR_ ))
         ) {
             $perf_err[$row['config_name']] = _('Cannot open statistics file');
         } else {
