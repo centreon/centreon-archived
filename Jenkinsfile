@@ -228,6 +228,7 @@ try {
         unstash 'codestyle-fe.xml'
       }
 
+      // Run sonarQube analysis
       checkoutCentreonBuild(buildBranch)
       unstash 'git-sources'
       sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
