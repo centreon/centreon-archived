@@ -277,14 +277,15 @@ try {
       )
     }
 
-    sleep(10)
+    // wait a few seconds as workaround : https://jira.sonarsource.com/browse/SONARJNKNS-320
+    sleep(5)
     def qualityGate = waitForQualityGate()
-    if (qualityGate.status != 'OK') {
+    if (qualityGate.status != 'SUCCESS') {
       currentBuild.result = 'FAIL'
     }
 
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Quality gate failure: ${qualityGate.status}.');
+      error("Quality gate failure: ${qualityGate.status}.");
     }
   }
 
