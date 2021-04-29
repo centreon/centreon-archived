@@ -23,7 +23,7 @@ if (env.CHANGE_BRANCH) {
 }
 
 def backendFiles = [
-  'Jenkinsfile',
+//  'Jenkinsfile',
   '**/*.php',
   'www/**/*.js',
   '**/*.sh',
@@ -44,7 +44,7 @@ def backendFiles = [
   'tests/*'
 ]
 def frontendFiles = [
-  'Jenkinsfile',
+//  'Jenkinsfile',
   'www/front_src/*',
   'packag*.json',
   'webpack*',
