@@ -231,7 +231,7 @@ try {
       checkoutCentreonBuild(buildBranch)
       unstash 'git-sources'
       sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-      withSonarQubeEnv('SonarQube') {
+      withSonarQubeEnv('SonarQubeDev') {
         sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
       }
 
@@ -277,11 +277,11 @@ try {
       )
     }
 
-    // wait a few seconds as workaround : https://jira.sonarsource.com/browse/SONARJNKNS-320
-    sleep(30)
-    def qualityGate = waitForQualityGate()
-    if (qualityGate.status != 'SUCCESS') {
-      currentBuild.result = 'FAIL'
+    timeout(time: 10, unit: 'MINUTES') {
+      def qualityGate = waitForQualityGate()
+      if (qualityGate.status != 'OK') {
+        currentBuild.result = 'FAIL'
+      }
     }
 
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
