@@ -109,13 +109,6 @@ const DialogDowntime = ({
 
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
 
-  const shouldDisableDate = (date) => {
-    if (date < values.dateEnd) {
-      return true;
-    }
-    return false;
-  };
-
   return (
     <Dialog
       confirmDisabled={!canConfirm}
@@ -175,7 +168,6 @@ const DialogDowntime = ({
                   aria-label={t(labelEndDate)}
                   error={errors?.dateEnd !== undefined}
                   helperText={errors?.dateEnd}
-                  shouldDisableDate={shouldDisableDate}
                   value={values.dateEnd}
                   onChange={changeDate('dateEnd')}
                   {...datePickerProps}
