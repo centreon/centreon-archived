@@ -278,7 +278,7 @@ try {
     }
 
     // wait a few seconds as workaround : https://jira.sonarsource.com/browse/SONARJNKNS-320
-    sleep(5)
+    sleep(30)
     def qualityGate = waitForQualityGate()
     if (qualityGate.status != 'SUCCESS') {
       currentBuild.result = 'FAIL'
