@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import reactRefresh from '@vitejs/plugin-react-refresh';
+import svgr from 'vite-plugin-svgr';
 
 const { resolve } = require('path');
 
@@ -26,7 +27,7 @@ export default defineConfig({
 
   logLevel: 'info',
 
-  plugins: [reactRefresh()],
+  plugins: [svgr(), reactRefresh()],
 
   resolve: {
     alias: [
@@ -46,6 +47,13 @@ export default defineConfig({
     cors: true,
     hmr: true,
     port: 9090,
+    proxy: {
+      '^/centreon/@fs/.*': {
+        changeOrigin: true,
+        rewrite: (path) => path,
+        target: 'http://localhost:9090',
+      },
+    },
     strictPort: true,
   },
 });
