@@ -4,7 +4,7 @@
 OPTIONS=":t:v:r:l:"
 declare -A SUPPORTED_LOG_LEVEL=([DEBUG]=0 [INFO]=1 [WARN]=2 [ERROR]=3)
 declare -A SUPPORTED_TOPOLOGY=([central]=1 [poller]=1)
-declare -A SUPPORTED_VERSION=([21.10]=1)
+declare -A SUPPORTED_VERSION=([21.04]=1 [21.10]=2)
 declare -A SUPPORTED_REPOSITORY=([testing]=1 [unstable]=1 [stable]=1)
 default_timeout_in_sec=5
 script_short_name="$(basename $0)"
@@ -24,6 +24,7 @@ runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}      #Default log level to be used
 selinux_mode=${ENV_SELINUX_MODE:-"permissive"}  #Default SELinux mode to be used
 wizard_autoplay=${ENV_WIZARD_AUTOPLAY:-"false"} #Default the install wizard is not run auto
 central_ip=${ENV_CENTRAL_IP:-$default_ip}       #Default central ip is the first of hostname -I
+ultime_dbg_mode=${ENV_DEBUG_MODE:-"false"}      #Default log/debugs directives not enabled
 
 function genpasswd() {
 	local _pwd
@@ -694,6 +695,58 @@ function update_after_installation() {
 }
 #========= end of function update_after_installation()
 
+#========= begin of function enable_debug_mode()
+function enable_debug_mode() {
+	log "INFO" "Enabling advenced logging and debug options"
+
+	if [ "$wizard_autoplay" == "true" ]; then
+		mysql -u root centreon <<-EOF
+			DELETE FROM options WHERE options.key IN ('debug_path','debug_auth','debug_nagios_import','debug_rrdtool','debug_ldap_import','debug_sql','debug_gorgone','debug_centreontrapd');
+			INSERT INTO options VALUES ('debug_path','/var/log/centreon/');
+			INSERT INTO options VALUES ('debug_auth','1');
+			INSERT INTO options VALUES ('debug_nagios_import','1');
+			INSERT INTO options VALUES ('debug_rrdtool','1');
+			INSERT INTO options VALUES ('debug_ldap_import','1');
+			INSERT INTO options VALUES ('debug_sql','1');
+			INSERT INTO options VALUES ('debug_gorgone','1');
+			INSERT INTO options VALUES ('debug_centreontrapd','1');
+EOF
+	fi
+
+	mkdir -p /var/log/mysql
+	chown mysql:mysql /var/log/mysql
+	printf "\n[mariadb]\nlog_output=FILE\ngeneral_log\ngeneral_log_file=/var/log/mysql/mariadb.log\nlog_error\nlog_error=/var/log/mysql/mariadb.err\n" >> /etc/my.cnf.d/custom_log.cnf
+	printf "\nslow_query_log = 1\nslow-query_log_file = /var/log/mysql/slow.log\nlong_query_time = 2" >> /etc/my.cnf.d/centreon.cnf
+	systemctl restart mysqld
+
+	# broker & engine core dumps
+	sed -i "s/#DumpCore=yes/DumpCore=yes/g" /etc/systemd/system.conf
+	sed -i "s/#DefaultLimitCORE=/DefaultLimitCORE=infinity/g" /etc/systemd/system.conf
+	printf "\nkernel.core_pattern = |/usr/lib/systemd/systemd-coredump %%p %%u %%g %%s %%t %%e \nfs.suid_dumpable=2\n" >> /etc/sysctl.conf
+	sed -i "s/User=centreon-broker/User=centreon-broker\nLimitCORE=infinity/g" /usr/lib/systemd/system/cbd.service
+	sed -i "s/User=centreon-engine/User=centreon-engine\nLimitCORE=infinity/g" /usr/lib/systemd/system/centengine.service
+	sysctl -p -q
+	systemctl daemon-reexec
+
+	echo '{
+		"console": false,
+		"log_path": "/var/log/centreon-broker",
+		"loggers": [
+			{ "name": "core", "level": "debug" },
+			{ "name": "sql", "level": "debug" },
+			{ "name": "bbdo", "level": "debug" },
+			{ "name": "tcp", "level": "debug" },
+			{ "name": "tls", "level": "debug" },
+			{ "name": "lua", "level": "debug" },
+			{ "name": "perfdata", "level": "debug" }
+			{ "name": "bam", "level": "debug" }
+		]
+	}' > /etc/centreon-broker/log-config.json
+
+	systemctl restart centreon
+}
+#========= end of function enable_debug_mode()
+
 #####################################################
 ################ MAIN SCRIPT EXECUTION ##############
 
@@ -725,9 +778,13 @@ esac
 
 ## Display all configured parameters
 log "INFO" "Start to execute operation [$operation] with following configuration parameters:"
-log "INFO" " topology   : \t[$topology]"
-log "INFO" " version    : \t[$version]"
-log "INFO" " repository : \t[$repo]"
+log "INFO" " topology        : \t[$topology]"
+log "INFO" " version         : \t[$version]"
+log "INFO" " repository      : \t[$repo]"
+log "INFO" " selinux mode    : \t[$selinux_mode]"
+log "INFO" " wizard autoplay : \t[$wizard_autoplay]"
+log "INFO" " central ip      : \t[$central_ip]"
+log "INFO" " debug mode      : \t[$ultime_dbg_mode]"
 
 log "WARN" "It will start in [$default_timeout_in_sec] seconds. If you don't want to wait, press any key to continue or Ctrl-C to exit"
 pause "" $default_timeout_in_sec
@@ -768,6 +825,10 @@ install)
 		log "INFO" "Log in to Centreon web interface via the URL: http://$central_ip/centreon"
 	else
 		log "INFO" "Follow the steps described in Centreon documentation: $CENTREON_DOC_URL"
+	fi
+
+	if [ "$ultime_dbg_mode" == "true" ]; then
+		enable_debug_mode
 	fi
 
 	log "INFO" "Centreon [$topology] successfully installed !"
