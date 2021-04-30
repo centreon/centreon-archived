@@ -303,7 +303,7 @@ function sanitizeFormComponentTemplatesParameters(array $ret): array
     foreach ($ret as $inputName => $inputValue) {
         switch ($inputName) {
             case 'name':
-            case 'ds_name' :
+            case 'ds_name':
             case 'ds_color_line':
             case 'ds_color_area':
             case 'ds_color_area_warn':
@@ -355,7 +355,7 @@ function sanitizeFormComponentTemplatesParameters(array $ret): array
                         ? $inputValue
                         : '0'
                 ];
-            break;
+                break;
             case 'host_id':
             case 'service_id':
             case 'ds_tickness':

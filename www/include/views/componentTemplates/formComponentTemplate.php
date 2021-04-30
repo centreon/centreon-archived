@@ -297,9 +297,7 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 if ($o === 'w') {
-    /*
-	 * Just watch
-	 */
+    // Just watch
     $form->addElement(
         'button',
         'change',
@@ -309,9 +307,7 @@ if ($o === 'w') {
     $form->setDefaults($compo);
     $form->freeze();
 } elseif ($o === 'c') {
-    /*
-	 * Modify
-	 */
+    // Modify
     $subC = $form->addElement(
         'submit',
         'submitC',
@@ -329,9 +325,7 @@ if ($o === 'w') {
     );
     $form->setDefaults($compo);
 } elseif ($o === 'a') {
-    /*
-	 * Add
-	 */
+    // add
     $subA = $form->addElement(
         'submit',
         'submitA',
@@ -428,9 +422,7 @@ $action = $form->getSubmitValue('action');
 if ($valid) {
     require_once('listComponentTemplates.php');
 } else {
-    /*
-	 * Apply a template definition
-	 */
+    // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -443,9 +435,15 @@ $vdef = 0; /* don't list VDEF in metrics list */
 
 include_once('./include/views/graphs/common/makeJS_formMetricsList.php');
 if ($o === 'c' || $o === 'w') {
-    $host_service_id = filter_var($_POST['host_id'] ?? $compo['host_id'] . '-' . $compo['service_id'], FILTER_SANITIZE_STRING);
+    $host_service_id = filter_var(
+        $_POST['host_id'] ?? $compo['host_id'] . '-' . $compo['service_id'],
+        FILTER_SANITIZE_STRING
+    );
 } elseif ($o === 'a') {
-    $host_service_id = filter_var($_POST['host_id'] ?? null, FILTER_SANITIZE_STRING);
+    $host_service_id = filter_var(
+        $_POST['host_id'] ?? null,
+        FILTER_SANITIZE_STRING
+    );
 }
 ?>
 
