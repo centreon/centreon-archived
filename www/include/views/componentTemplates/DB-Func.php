@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 function NameHsrTestExistence($name = null)
 {
     global $pearDB, $form;
-    $formValues = null;
+    $formValues = [];
     $bindParams = [];
     if (isset($form)) {
         $formValues = $form->getSubmitValues();
@@ -59,7 +59,7 @@ function NameHsrTestExistence($name = null)
         ? ' AND host_id IS NULL  AND service_id IS NULL'
         : ' AND host_id = :host_id AND service_id = :service_id';
 
-    if (!is_null($formValues)) {
+    if (!empty($formValues)) {
         $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
     }
 
@@ -67,10 +67,8 @@ function NameHsrTestExistence($name = null)
 
     $stmt->bindValue(':name', $name, \PDO::PARAM_STR);
 
-    foreach ($bindParams as $token => $bindValues) {
-        foreach ($bindValues as $paramType => $value) {
+    foreach ($bindParams as $token => list($paramType, $value)) {
             $stmt->bindValue($token, $value, $paramType);
-        }
     }
     $stmt->execute();
     $compo = $stmt->fetch();
@@ -213,10 +211,8 @@ function insertComponentTemplate()
 
     $query .= 'VALUES (NULL, ' . implode(', ', array_keys($bindParams)) . ')';
     $stmt = $pearDB->prepare($query);
-    foreach ($bindParams as $token => $bindValues) {
-        foreach ($bindValues as $paramType => $value) {
+    foreach ($bindParams as $token => list($paramType, $value)) {
             $stmt->bindValue($token, $value, $paramType);
-        }
     }
     $stmt->execute();
     defaultOreonGraph();
@@ -279,10 +275,8 @@ function updateComponentTemplate($compoId = null)
     $query .= ' WHERE compo_id = :compo_id';
 
     $stmt = $pearDB->prepare($query);
-    foreach ($bindParams as $token => $bindValues) {
-        foreach ($bindValues as $paramType => $value) {
+    foreach ($bindParams as $token => list($paramType, $value)) {
             $stmt->bindValue($token, $value, $paramType);
-        }
     }
     $stmt->bindValue(':compo_id', $compoId, \PDO::PARAM_INT);
     $stmt->execute();
@@ -323,8 +317,8 @@ function sanitizeFormComponentTemplatesParameters(array $ret): array
             case 'ds_color_line_mode':
                 $bindParams[':' . $inputName] = [
                     \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1'])
-                        ? '0'
-                        : $inputValue[$inputName]
+                        ? $inputValue[$inputName]
+                        : '0'
                 ];
                 break;
             case 'ds_max':
@@ -370,7 +364,7 @@ function sanitizeFormComponentTemplatesParameters(array $ret): array
                 $bindParams[':' . $inputName] = [
                     \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
                         ? null
-                        : $inputValue
+                        : (int) $inputValue
                 ];
                 defaultOreonGraph();
                 break;
