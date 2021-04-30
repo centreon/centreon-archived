@@ -553,9 +553,11 @@ ENGINECFG;setparam;Centreon Engine Central;log_external_commands;1
 ENGINECFG;setparam;Centreon Engine Central;log_passive_checks;2
 ENGINECFG;setparam;Centreon Engine Central;sleep_time;0.2
 ENGINECFG;setparam;Centreon Engine Central;service_inter_check_delay_method;s
+ENGINECFG;setparam;Centreon Engine Central;host_inter_check_delay_method;s
 ENGINECFG;setparam;Centreon Engine Central;service_interleave_factor;s
 ENGINECFG;setparam;Centreon Engine Central;max_concurrent_checks;400
 ENGINECFG;setparam;Centreon Engine Central;max_service_check_spread;5
+ENGINECFG;setparam;Centreon Engine Central;max_host_check_spread;15
 ENGINECFG;setparam;Centreon Engine Central;check_result_reaper_frequency;5
 ENGINECFG;setparam;Centreon Engine Central;interval_length;60
 ENGINECFG;setparam;Centreon Engine Central;auto_reschedule_checks;2
