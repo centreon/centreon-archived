@@ -47,13 +47,6 @@ export default defineConfig({
     cors: true,
     hmr: true,
     port: 9090,
-    proxy: {
-      '^/centreon/@fs/.*': {
-        changeOrigin: true,
-        rewrite: (path) => path,
-        target: 'http://localhost:9090',
-      },
-    },
     strictPort: true,
   },
 });
