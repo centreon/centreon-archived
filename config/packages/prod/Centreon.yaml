@@ -302,3 +302,16 @@ services:
     # Menu
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
+
+    # Log configuration
+    monolog.error.formater:
+        class: Monolog\Formatter\LineFormatter
+        arguments: [ "%%level_name%%: %%message%% %%context%%\n" ]
+
+    monolog.debug.formater:
+        class: Monolog\Formatter\LineFormatter
+        arguments: [ "[%%datetime%%] %%level_name%%: %%message%% %%context%%\n", null, false, true ]
+
+    monolog.debug.handler:
+        class: Centreon\Domain\Log\DebugFileHandler
+        arguments: [ '@monolog.debug.formater', '/var/log/centreon/centreon-web.log', '%env(bool:APP_DEBUG)%', 664, !php/const Monolog\Logger::DEBUG ]
