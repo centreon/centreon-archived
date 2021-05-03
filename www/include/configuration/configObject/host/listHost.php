@@ -340,14 +340,17 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
          */
         $elemArr[$i] = array("MenuClass" => "list_".$style,
                         "RowMenu_select" => $selectedElements->toHtml(),
-                        "RowMenu_name" => CentreonUtils::escapeSecure($host["host_name"]),
+                        "RowMenu_name" => CentreonUtils::escapeSecure($host["host_name"], CentreonUtils::ESCAPE_ALL),
                         "RowMenu_id" => $host["host_id"],
                         "RowMenu_icone" =>  $host_icone,
                         "RowMenu_link" => "?p=".$p."&o=c&host_id=".$host['host_id'],
-                        "RowMenu_desc" => CentreonUtils::escapeSecure($host["host_alias"]),
-                        "RowMenu_address" => CentreonUtils::escapeSecure($host["host_address"]),
+                        "RowMenu_desc" => CentreonUtils::escapeSecure($host["host_alias"], CentreonUtils::ESCAPE_ALL),
+                        "RowMenu_address" => CentreonUtils::escapeSecure(
+                                $host["host_address"],
+                                CentreonUtils::ESCAPE_ALL
+                        ),
                         "RowMenu_poller" =>  isset($tab_relation[$host["host_id"]]) ? $tab_relation[$host["host_id"]] : "",
-                        "RowMenu_parent" => CentreonUtils::escapeSecure($tplStr),
+                        "RowMenu_parent" => CentreonUtils::escapeSecure($tplStr, CentreonUtils::ESCAPE_ALL_EXCEPT_LINK),
                         "RowMenu_status" => $host["host_activate"] ? _("Enabled") : _("Disabled"),
                         "RowMenu_badge"  =>  $host["host_activate"] ? "service_ok" : "service_critical",
                         "RowMenu_options" => $moptions);
