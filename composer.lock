@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9fb69533283673f8ae0ba2aac2df6da",
+    "content-hash": "7f5756852cfe6a3afe2ab60974b21d59",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6271,16 +6271,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-mysql-tmpfs",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "0bd36c7f7d946f4f6d27ebef854e441060ee0f38"
+                "reference": "858975fed3ba7e0ec8c689898533e3365ddcea1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/0bd36c7f7d946f4f6d27ebef854e441060ee0f38",
-                "reference": "0bd36c7f7d946f4f6d27ebef854e441060ee0f38",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/858975fed3ba7e0ec8c689898533e3365ddcea1b",
+                "reference": "858975fed3ba7e0ec8c689898533e3365ddcea1b",
                 "shasum": ""
             },
             "require": {
@@ -6299,6 +6299,7 @@
                 "behat/mink": "Browser controller/emulator abstraction for PHP",
                 "behat/mink-selenium2-driver": "Mink driver using Selenium"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6327,9 +6328,9 @@
             ],
             "support": {
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
-                "source": "https://github.com/centreon/centreon-test-lib/tree/mysql-tmpfs"
+                "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
-            "time": "2021-05-01T19:19:33+00:00"
+            "time": "2021-05-03T07:57:45+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
