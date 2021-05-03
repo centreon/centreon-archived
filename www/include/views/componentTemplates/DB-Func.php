@@ -72,9 +72,9 @@ function NameHsrTestExistence($name = null)
     }
     $stmt->execute();
     $compo = $stmt->fetch();
-    if ($stmt->rowCount() >= 1 && $compo['compo_id'] == $formValues['compo_id']) {
+    if ($stmt->rowCount() >= 1 && $compo['compo_id'] === $formValues['compo_id']) {
         return true;
-    } elseif ($stmt->rowCount() >= 1 && $compo['compo_id'] != $formValues['compo_id']) {
+    } elseif ($stmt->rowCount() >= 1 && $compo['compo_id'] !== $formValues['compo_id']) {
         return false;
     } else {
         return true;
