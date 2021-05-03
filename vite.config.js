@@ -14,7 +14,7 @@ export default defineConfig({
     emptyOutDir: true,
     manifest: true,
     minify: 'esbuild',
-    outDir: '../../static',
+    outDir: './static',
     polyfillDynamicImport: true,
     rollupOptions: {
       input: {
@@ -22,7 +22,7 @@ export default defineConfig({
       },
     },
 
-    target: 'es2015',
+    target: 'es2018',
   },
 
   logLevel: 'info',
