@@ -43,7 +43,7 @@ interface Props {
 
 const useStyles = makeStyles({
   serviceGraph: {
-    display: 'grid',
+    display: 'contents',
   },
 });
 
