@@ -250,7 +250,16 @@ function checkMetaHost()
     $query = "SELECT host_id FROM host WHERE host_register = '2'  AND host_name = '_Module_Meta' ";
     $res = $pearDB->query($query);
     if (!$res->rowCount()) {
+        # Add virtual _Module_Meta host
         $query = "INSERT INTO host (host_name, host_register) VALUES ('_Module_Meta', '2') ";
+        $pearDB->query($query);
+        # Link _Module_Meta to default localhost poller
+        $query = "INSERT INTO ns_host_relation(`nagios_server_id`, `host_host_id`)
+        VALUES(
+            (SELECT id FROM nagios_server WHERE localhost = '1'),
+            (SELECT host_id FROM host WHERE host_name = '_Module_Meta')
+        )
+        ON DUPLICATE KEY UPDATE nagios_server_id = (SELECT id FROM nagios_server WHERE localhost = '1')";
         $pearDB->query($query);
     }
 }
