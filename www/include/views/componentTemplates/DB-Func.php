@@ -55,9 +55,15 @@ function NameHsrTestExistence($name = null)
         }
     }
 
-    $query .= (empty($formValues['host_id']) && empty($formValues['service_id']))
-        ? ' AND host_id IS NULL  AND service_id IS NULL'
-        : ' AND host_id = :host_id AND service_id = :service_id';
+
+    if (
+        (array_key_exists('host_id', $formValues) && !empty($formValues['host_id'])) &&
+        (array_key_exists('service_id', $formValues) && !empty($formValues['service_id']))
+    ) {
+        $query .= ' AND host_id = :host_id AND service_id = :service_id';
+    } else {
+        $query .= ' AND host_id IS NULL  AND service_id IS NULL';
+    }
 
     if (!empty($formValues)) {
         $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
