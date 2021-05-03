@@ -37,6 +37,57 @@ if (!isset($centreon)) {
     exit();
 }
 
+
+function DsHsrTestExistence($name = null)
+{
+    global $pearDB, $form;
+    $formValues = array();
+    if (isset($form)) {
+        $formValues = $form->getSubmitValues();
+    }
+
+    $query = 'SELECT compo_id FROM giv_components_template WHERE ds_name = :ds_name';
+
+    if (!empty($formValues['host_id'])) {
+        if (preg_match('/([0-9]+)-([0-9]+)/', $formValues['host_id'], $matches)) {
+            $formValues['host_id'] = (int) $matches[1];
+            $formValues['service_id'] = (int) $matches[2];
+        } else {
+            throw new \InvalidArgumentException('chartId must be a combination of integers');
+        }
+    }
+
+    if (
+        (array_key_exists('host_id', $formValues) && !empty($formValues['host_id'])) &&
+        (array_key_exists('service_id', $formValues) && !empty($formValues['service_id']))
+    ) {
+        $query .= ' AND host_id = :host_id AND service_id = :service_id';
+    } else {
+        $query .= ' AND host_id IS NULL  AND service_id IS NULL';
+    }
+
+    if (!empty($formValues)) {
+        $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
+    }
+
+    $stmt = $pearDB->prepare($query);
+
+    $stmt->bindValue(':ds_name', $name, \PDO::PARAM_STR);
+
+    foreach ($bindParams as $token => list($paramType, $value)) {
+        $stmt->bindValue($token, $value, $paramType);
+    }
+
+    $compo = $stmt->fetch();
+    if ($stmt->rowCount() >= 1 && $compo['compo_id'] === $formValues['compo_id']) {
+        return true;
+    } elseif ($stmt->rowCount() >= 1 && $compo['compo_id'] !== $formValues['compo_id']) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 function NameHsrTestExistence($name = null)
 {
     global $pearDB, $form;
@@ -54,7 +105,6 @@ function NameHsrTestExistence($name = null)
             throw new \InvalidArgumentException('chartId must be a combination of integers');
         }
     }
-
 
     if (
         (array_key_exists('host_id', $formValues) && !empty($formValues['host_id'])) &&
@@ -74,7 +124,7 @@ function NameHsrTestExistence($name = null)
     $stmt->bindValue(':name', $name, \PDO::PARAM_STR);
 
     foreach ($bindParams as $token => list($paramType, $value)) {
-            $stmt->bindValue($token, $value, $paramType);
+        $stmt->bindValue($token, $value, $paramType);
     }
     $stmt->execute();
     $compo = $stmt->fetch();
