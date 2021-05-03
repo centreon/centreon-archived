@@ -49,7 +49,8 @@ $DBRESULT->free();
 
 $compo = array();
 if (($o == "c" || $o == "w") && $compo_id) {
-    $res = $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$compo_id."' LIMIT 1");
+    $query = 'SELECT * FROM giv_components_template WHERE compo_id = ' . (int) $compo_id . ' LIMIT 1';
+    $res = $pearDB->query($query);
     /*
 	 * Set base value
 	 */
@@ -352,10 +353,18 @@ if ($valid) {
 $vdef = 0; /* don't list VDEF in metrics list */
 
 include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
-if ($o == "c" || $o == "w") {
-    isset($_POST["host_id"]) && $_POST["host_id"] != null ? $host_service_id=$_POST["host_id"]: $host_service_id=$compo["host_id"];
-} elseif ($o == "a") {
-    isset($_POST["host_id"]) && $_POST["host_id"] != null ? $host_service_id=$_POST["host_id"]: $host_service_id=0;
+$host_service_id = '';
+if ($o === 'c' || $o === 'w') {
+    if (isset($_POST['host_id'])) {
+        $host_service_id = filter_var($_POST['host_id'], FILTER_SANITIZE_STRING);
+    } else {
+        $host_service_id = $compo['host_id'] . '-' . $compo['service_id'];
+    }
+} elseif ($o === 'a') {
+    $host_service_id = filter_var(
+        $_POST['host_id'],
+        FILTER_SANITIZE_STRING
+    );
 }
 ?>
 

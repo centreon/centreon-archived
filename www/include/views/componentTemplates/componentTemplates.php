@@ -37,17 +37,34 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["compo_id"]) ? $cG = $_GET["compo_id"] : $cG = null;
-isset($_POST["compo_id"]) ? $cP = $_POST["compo_id"] : $cP = null;
-$cG ? $compo_id = $cG : $compo_id = $cP;
+$duplicationNumbers = array();
+$selectedCurveTemplates = array();
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+/*
+ * id of the curve template
+ */
+$compo_id = false;
+if (isset($_GET['compo_id'])) {
+    $compo_id = filter_var($_GET['compo_id'], FILTER_VALIDATE_INT);
+} elseif (isset($_POST['compo_id'])) {
+    $compo_id = filter_var($_POST['compo_id'], FILTER_VALIDATE_INT);
+}
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+if (!empty($_POST['select'])) {
+    foreach ($_POST['select'] as $curveIdSelected => $dupFactor) {
+        if (filter_var($dupFactor, FILTER_VALIDATE_INT) !== false) {
+            $selectedCurveTemplates[$curveIdSelected] = (int) $dupFactor;
+        }
+    }
+}
+
+if (!empty($_POST['dupNbr'])) {
+    foreach ($_POST['dupNbr'] as $curveId => $dupFactor) {
+        if (filter_var($dupFactor, FILTER_VALIDATE_INT) !== false) {
+            $duplicationNumbers[$curveId] = (int) $dupFactor;
+        }
+    }
+}
 
 /*
  * Pear library
@@ -63,7 +80,7 @@ $path = "./include/views/componentTemplates/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . 'DB-Func.php';
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
@@ -76,20 +93,15 @@ switch ($o) {
     case "c":
         require_once $path."formComponentTemplate.php" ;
         break; //Modify a Component Template
-    case "s":
-        enableComponentTemplateInDB($lca_id);
-        require_once $path."listComponentTemplates.php";
-        break; //Activate a Component Template
-    case "u":
-        disableComponentTemplateInDB($lca_id);
-        require_once $path."listComponentTemplates.php";
-        break; //Desactivate a Component Template
     case "m":
-        multipleComponentTemplateInDB(isset($select) ? $select : array(), $dupNbr);
+        multipleComponentTemplateInDB(
+            isset($selectedCurveTemplates) ? $selectedCurveTemplates : array(),
+            $duplicationNumbers
+        );
         require_once $path."listComponentTemplates.php";
         break; //Duplicate n Component Templates
     case "d":
-        deleteComponentTemplateInDB(isset($select) ? $select : array());
+        deleteComponentTemplateInDB(isset($selectedCurveTemplates) ? $selectedCurveTemplates : array());
         require_once $path."listComponentTemplates.php";
         break; //Delete n Component Templates
     default:
