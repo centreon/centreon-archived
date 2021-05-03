@@ -68,7 +68,6 @@ detected_os_version=
 # Variables will be defined later according to the target system OS
 BASE_PACKAGES=
 CENTREON_SELINUX_PACKAGES=
-RELEASE_RPM_URL=
 PHP_BIN=
 PHP_ETC=
 OS_SPEC_SERVICES=
@@ -314,8 +313,7 @@ function set_required_prerequisite() {
 			BASE_PACKAGES=(oraclelinux-release-el7)
 			;;
 		esac
-		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el7.centos.noarch.rpm"
-		log "INFO" "Install Centreon from ${RELEASE_RPM_URL}"
+		EL_MAJOR_VERSION="el7"
 		PHP_BIN="/opt/rh/rh-php73/root/bin/php"
 		PHP_ETC="/etc/opt/rh/rh-php73/php.d/"
 		OS_SPEC_SERVICES="rh-php73-php-fpm httpd24-httpd"
@@ -332,7 +330,7 @@ function set_required_prerequisite() {
 	8*)
 		log "INFO" "Setting specific part for v8 ($detected_os_version)"
 
-		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el8.noarch.rpm"
+		EL_MAJOR_VERSION="el8"
 		PHP_BIN="/bin/php"
 		PHP_ETC="/etc/php.d"
 		OS_SPEC_SERVICES="php-fpm httpd"
@@ -497,16 +495,9 @@ function install_centreon_repo() {
 
 	log "INFO" "Centreon official repositories installation..."
 	$PKG_MGR -q clean all
-
-	rpm -q centreon-release-$CENTREON_MAJOR_VERSION >/dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		$PKG_MGR -q install -y $RELEASE_RPM_URL
-		if [ $? -ne 0 ]; then
-			error_and_exit "Could not install Centreon repository"
-		fi
-	else
-		log "INFO" "Centreon repository seems to be already installed"
-	fi
+	yum install -y yum-utils
+	yum-config-manager --add-repo \
+		"https://download.centreon.com/static/centreon-${CENTREON_MAJOR_VERSION}-${EL_MAJOR_VERSION}.repo"
 }
 #========= end of function install_centreon_repo()
 
