@@ -87,7 +87,8 @@ switch ($o) {
         break; //Modify a Component Template
     case 'm':
         multipleComponentTemplateInDB(
-            isset($selectedCurveTemplates) ? $selectedCurveTemplates : [], $duplicationNumbers
+            isset($selectedCurveTemplates) ? $selectedCurveTemplates : [],
+            $duplicationNumbers
         );
         require_once $path . 'listComponentTemplates.php';
         break; //Duplicate n Component Templates
