@@ -40,6 +40,7 @@ import ExpandableCard from './ExpandableCard';
 import StateCard from './StateCard';
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
+import CommandCard from './CommandCard';
 
 const useStyles = makeStyles((theme) => ({
   details: {
@@ -180,7 +181,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
                   </Grid>
                 </Grid>
               </Typography>
-              <Typography variant="body2">{details.command_line}</Typography>
+              <CommandCard commandLine={details.command_line} />
             </Card>
           )}
         </div>
