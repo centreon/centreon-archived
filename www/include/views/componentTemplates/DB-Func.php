@@ -39,26 +39,42 @@ if (!isset($centreon)) {
 
 function NameHsrTestExistence($name = null)
 {
-    global $pearDB, $pearDBO, $form;
-    $gsvs = null;
+    global $pearDB, $form;
+
+    $formValues = array();
+    $bindParams = array();
+
     if (isset($form)) {
-        $gsvs = $form->getSubmitValues();
+        $formValues = $form->getSubmitValues();
     }
-    $sql = "SELECT compo_id FROM giv_components_template WHERE ";
-    $sql .= "name = '".$gsvs["name"]."' ";
-    if ($gsvs["host_id"] != null) {
-                list($host_id, $service_id) = explode('-', $gsvs["host_id"]);
-                $sql .= "AND host_id = '" . $host_id . "' AND service_id = '" . $service_id . "'";
+    $query = "SELECT compo_id FROM `giv_components_template` WHERE `name` = '" . CentreonUtils::escapeSecure($name) . "'";
+
+    if (!empty($formValues['host_id'])) {
+        if (preg_match('/([0-9]+)-([0-9]+)/', $formValues['host_id'], $matches)) {
+            $formValues['host_id'] = (int) $matches[1];
+            $formValues['service_id'] = (int) $matches[2];
+        } else {
+            throw new \InvalidArgumentException('host_id must be a combination of integers');
+        }
+    }
+
+    if (!empty($formValues)) {
+        $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
+    }
+
+    if (!empty($bindParams['host_id']) && !empty($bindParams['service_id'])) {
+        $query .= " AND host_id = ? AND service_id = ?";
+        $result = $pearDB->query($query, array($bindParams['host_id'], $bindParams['service_id']));
     } else {
-        $sql .= "AND host_id IS NULL  AND service_id IS NULL";
+        $query .= " AND host_id IS NULL AND service_id IS NULL";
+        $result = $pearDB->query($query);
     }
-    $DBRESULT = $pearDB->query($sql);
-    $compo = $DBRESULT->fetchRow();
-    #Modif case
-    if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] == $gsvs["compo_id"]) {
+
+    $compo = $result->fetchRow();
+
+    if ($result->numRows() >= 1 && $compo['compo_id'] === $formValues['compo_id']) {
         return true;
-    #Duplicate entry
-    } elseif ($DBRESULT->numRows() >= 1 && $compo["compo_id"] != $gsvs["compo_id"]) {
+    } elseif ($result->numRows() >= 1 && $compo['compo_id'] !== $formValues['compo_id']) {
         return false;
     } else {
         return true;
@@ -67,26 +83,39 @@ function NameHsrTestExistence($name = null)
 
 function DsHsrTestExistence($name = null)
 {
-    global $pearDB, $pearDBO, $form;
-    $gsvs = null;
+    global $pearDB, $form;
+    $formValues = array();
     if (isset($form)) {
-        $gsvs = $form->getSubmitValues();
+        $formValues = $form->getSubmitValues();
     }
-    $sql = "SELECT compo_id FROM giv_components_template WHERE ";
-    $sql .= "ds_name = '".$gsvs["ds_name"]."' ";
-    if ($gsvs["host_id"] != null) {
-                list($host_id, $service_id) = explode('-', $gsvs["host_id"]);
-                $sql .= "AND host_id = '" . $host_id . "' AND service_id = '" . $service_id . "'";
+    $query = "SELECT compo_id FROM giv_components_template WHERE name = '" . CentreonUtils::escapeSecure($name) . "'";
+
+    if (!empty($formValues['host_id'])) {
+        if (preg_match('/([0-9]+)-([0-9]+)/', $formValues['host_id'], $matches)) {
+            $formValues['host_id'] = (int) $matches[1];
+            $formValues['service_id'] = (int) $matches[2];
+        } else {
+            throw new \InvalidArgumentException('host_id must be a combination of integers');
+        }
+    }
+
+    if (!empty($formValues)) {
+        $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
+    }
+
+    if (!empty($bindParams['host_id']) && !empty($bindParams['service_id'])) {
+        $query .= " AND host_id = ? AND service_id = ?";
+        $result = $pearDB->query($query, array($bindParams['host_id'], $bindParams['service_id']));
     } else {
-        $sql .= "AND host_id IS NULL  AND service_id IS NULL";
+        $query .= " AND host_id IS NULL AND service_id IS NULL";
+        $result = $pearDB->query($query);
     }
-    $DBRESULT = $pearDB->query($sql);
-    $compo = $DBRESULT->fetchRow();
-    #Modif case
-    if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] == $gsvs["compo_id"]) {
+
+    $compo = $result->fetchRow();
+
+    if ($result->numRows() >= 1 && $compo['compo_id'] === $formValues['compo_id']) {
         return true;
-    } #Duplicate entry
-    elseif ($DBRESULT->numRows() >= 1 && $compo["compo_id"] != $gsvs["compo_id"]) {
+    } elseif ($result->numRows() >= 1 && $compo['compo_id'] !== $formValues['compo_id']) {
         return false;
     } else {
         return true;
@@ -131,8 +160,9 @@ function multipleComponentTemplateInDB($compos = array(), $nbrDup = array())
 {
     global $pearDB;
     foreach ($compos as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$key."' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
+        $query = 'SELECT * FROM giv_components_template WHERE compo_id = ' . (int) $key . ' LIMIT 1';
+        $result = $pearDB->query($query);
+        $row = $result->fetchRow();
         $row["compo_id"] = '';
         $row["default_tpl1"] = '0';
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
@@ -149,157 +179,185 @@ function multipleComponentTemplateInDB($compos = array(), $nbrDup = array())
     }
 }
 
-function updateComponentTemplateInDB($compo_id = null)
+function updateComponentTemplateInDB($compoId = null)
 {
-    if (!$compo_id) {
+    if (!$compoId) {
         return;
     }
-    updateComponentTemplate($compo_id);
+    updateComponentTemplate($compoId);
 }
 
 function insertComponentTemplateInDB()
 {
-    $compo_id = insertComponentTemplate();
-    return ($compo_id);
+    $compoId = insertComponentTemplate();
+    return ($compoId);
 }
 
 function insertComponentTemplate()
 {
-    global $form, $pearDB, $pearDBO;
-    $ret = array();
-    $ret = $form->getSubmitValues();
-    if (isset($ret["default_tpl1"]) && $ret["default_tpl1"]) {
-        noDefaultOreonGraph();
+    global $form, $pearDB;
+    $formValues = array();
+    $formValues = $form->getSubmitValues();
+
+    if (
+        (isset($formValues['ds_filled']) && $formValues['ds_filled'] === '1') &&
+        (!isset($formValues['ds_color_area']) || empty($formValues['ds_color_area']))
+    ) {
+        $formValues['ds_color_area'] = $formValues['ds_color_line'];
     }
 
-    if ((isset($ret["ds_filled"]) && $ret["ds_filled"] == 1) && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"]))) {
-        $ret["ds_color_area"] = $ret["ds_color_line"];
-    }
+    list($formValues['host_id'], $formValues['service_id']) = parseHostIdPostParameter($formValues['host_id']);
 
-    $rq = "INSERT INTO `giv_components_template` ( `compo_id` , `host_id`, `service_id`, `name` , `ds_order` , `ds_hidecurve` , `ds_name` , " .
-            " `ds_color_line` , `ds_color_line_mode`, `ds_color_area` , `ds_color_area_warn` , `ds_color_area_crit` , `ds_filled` , `ds_max` , `ds_min` , `ds_minmax_int`, `ds_average` , `ds_last` , `ds_total`, `ds_tickness` , `ds_transparency`, `ds_invert`," .
-            " `ds_legend` , `ds_jumpline` , `ds_stack`, `default_tpl1`, `comment` ) ";
-    $rq .= "VALUES ( NULL, ";
-    if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
-        list($host_id, $service_id) = explode('-', $ret["host_id"]);
-        $rq .= "'" . $host_id . "', '" . $service_id . "', ";
-    } else {
-        $rq .= "NULL, NULL, ";
+    $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
+
+    // Build Query Dynamically
+    $query = 'INSERT INTO `giv_components_template` (`compo_id`, ';
+    $query .= implode(', ', array_keys($bindParams));
+    $query .= ') VALUES (NULL, ';
+    for($i = 0; $i < count($bindParams); $i++) {
+        $query .= '?, ';
     }
-    isset($ret["name"]) && $ret["name"] != null ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_order"]) && $ret["ds_order"] != null ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_hidecurve"]) && $ret["ds_hidecurve"] != null ? $rq .= "'".htmlentities($ret["ds_hidecurve"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_name"]) && $ret["ds_name"] != null ? $rq .= "'".$ret["ds_name"]."', ": $rq .= "NULL, ";
-    isset($ret["ds_color_line"]) && $ret["ds_color_line"] != null ? $rq .= "'".htmlentities($ret["ds_color_line"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    $rq .= ((isset($ret["ds_color_line_mode"]["ds_color_line_mode"]) && $ret["ds_color_line_mode"]["ds_color_line_mode"])
-            ? "'".htmlentities($ret["ds_color_line_mode"]["ds_color_line_mode"], ENT_QUOTES, "UTF-8")."', ": "'0', ");
-    isset($ret["ds_color_area"]) && $ret["ds_color_area"] != null ? $rq .= "'".htmlentities($ret["ds_color_area"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_color_area_warn"]) && $ret["ds_color_area_warn"] != null ? $rq .= "'".htmlentities($ret["ds_color_area_warn"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_color_area_crit"]) && $ret["ds_color_area_crit"] != null ? $rq .= "'".htmlentities($ret["ds_color_area_crit"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_filled"]) && $ret["ds_filled"] != null ? $rq .= "'".htmlentities($ret["ds_filled"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_max"]) && $ret["ds_max"] != null ? $rq .= "'".htmlentities($ret["ds_max"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_min"]) && $ret["ds_min"] != null ? $rq .= "'".htmlentities($ret["ds_min"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_minmax_int"]) && $ret["ds_minmax_int"] != null ? $rq .= "'".htmlentities($ret["ds_minmax_int"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_average"]) && $ret["ds_average"] != null ? $rq .= "'".htmlentities($ret["ds_average"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_last"]) && $ret["ds_last"] != null ? $rq .= "'".htmlentities($ret["ds_last"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_total"]) && $ret["ds_total"] != null ? $rq .= "'".htmlentities($ret["ds_total"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_tickness"]) && $ret["ds_tickness"] != null ? $rq .= "'".htmlentities($ret["ds_tickness"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_transparency"]) && $ret["ds_transparency"] != null ? $rq .= "'".htmlentities($ret["ds_transparency"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_invert"]) && $ret["ds_invert"] != null ? $rq .= "'".$ret["ds_invert"]."', ": $rq .= "NULL, ";
-    isset($ret["ds_legend"]) && $ret["ds_legend"] != null ? $rq .= "'".htmlentities($ret["ds_legend"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_jumpline"]) && $ret["ds_jumpline"] != null ? $rq .= "'".htmlentities($ret["ds_jumpline"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["ds_stack"]) && $ret["ds_stack"] != null ? $rq .= "'".htmlentities($ret["ds_stack"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["default_tpl1"]) && $ret["default_tpl1"] != null ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
-    $rq .= ");";
-    $DBRESULT = $pearDB->query($rq);
+    $query = rtrim($query, ', ');
+    $query .= ')';
+
+
+    $pearDB->query($query, $bindParams);
     defaultOreonGraph();
     $DBRESULT = $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
     $compo_id = $DBRESULT->fetchRow();
     return ($compo_id["MAX(compo_id)"]);
 }
 
-function updateComponentTemplate($compo_id = null)
+function updateComponentTemplate($compoId = null)
 {
-    if (!$compo_id) {
+    if (!$compoId) {
         return;
     }
-    global $form, $pearDB, $pearDBO;
-    $ret = array();
-    $ret = $form->getSubmitValues();
-    $hs_id = array();
-    if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
-        list($host_id, $service_id) = explode('-', $ret["host_id"]);
-        $host_id = "'" . $host_id . "'";
-        $service_id = "'" . $service_id . "'";
-    } else {
-        $host_id = 'NULL';
-        $service_id = 'NULL';
-    }
-    if (isset($ret["default_tpl1"]) && $ret["default_tpl1"]) {
-        noDefaultOreonGraph();
+    global $form, $pearDB;
+    $formValues = array();
+    $formValues = $form->getSubmitValues();
+
+    if (
+        (isset($formValues['ds_filled']) && $formValues['ds_filled'] === '1') &&
+        (!isset($formValues['ds_color_area']) || empty($formValues['ds_color_area']))
+    ) {
+        $formValues['ds_color_area'] = $formValues['ds_color_line'];
     }
 
-    if (isset($ret["ds_filled"]) && $ret["ds_filled"] == 1 && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"]))) {
-        $ret["ds_color_area"] = $ret["ds_color_line"];
-    }
+    list($formValues['host_id'], $formValues['service_id']) = parseHostIdPostParameter($formValues['host_id']);
 
-    $rq = "UPDATE giv_components_template ";
-    $rq .= "SET `host_id` = " . $host_id . ", ";
-    $rq .= "`service_id` = " . $service_id . ", ";
-    $rq .= "`name` = ";
-    isset($ret["name"]) && $ret["name"] != null ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    $rq .= "`ds_order` = ";
-    isset($ret["ds_order"]) && $ret["ds_order"] != null ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    $rq .= "`ds_hidecurve` = ";
-    isset($ret["ds_hidecurve"]) && $ret["ds_hidecurve"] != null ? $rq .= "'".htmlentities($ret["ds_hidecurve"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    $rq .=  "ds_name = ";
-    isset($ret["ds_name"]) && $ret["ds_name"] != null ? $rq .= "'".htmlentities($ret["ds_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    $rq .= "ds_color_line = ";
-    isset($ret["ds_color_line"]) && $ret["ds_color_line"] != null ? $rq .= "'".$ret["ds_color_line"]."', ": $rq .= "NULL, ";
-    if ($compo_id == 1) {
-        $ret["ds_color_line_mode"]["ds_color_line_mode"] = '1';
+    $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
+
+    // Building the query dynamically
+    $query = 'UPDATE `giv_components_template` SET ';
+    foreach(array_keys($bindParams) as $parameter) {
+        $query .= $parameter . " = ?, ";
     }
-    $rq .= "ds_color_line_mode = " .
-        ((isset($ret["ds_color_line_mode"]["ds_color_line_mode"]) && $ret["ds_color_line_mode"]["ds_color_line_mode"])
-         ? "'" . $ret["ds_color_line_mode"]["ds_color_line_mode"] . "', " : "'0', ");
-    $rq .= "ds_color_area = ";
-    isset($ret["ds_color_area"]) && $ret["ds_color_area"] != null ? $rq .= "'".$ret["ds_color_area"]."', ": $rq .= "NULL, ";
-    $rq .= "ds_color_area_warn = ";
-    isset($ret["ds_color_area_warn"]) && $ret["ds_color_area_warn"] != null ? $rq .= "'".$ret["ds_color_area_warn"]."', ": $rq .= "NULL, ";
-    $rq .= "ds_color_area_crit = ";
-    isset($ret["ds_color_area_crit"]) && $ret["ds_color_area_crit"] != null ? $rq .= "'".$ret["ds_color_area_crit"]."', ": $rq .= "NULL, ";
-    $rq .= "ds_filled = ";
-    isset($ret["ds_filled"]) && $ret["ds_filled"] != null ? $rq .= "'".$ret["ds_filled"]."', ": $rq .= "NULL, ";
-    $rq .= "ds_max = ";
-    isset($ret["ds_max"]) && $ret["ds_max"] != null ? $rq .= "'".$ret["ds_max"]."', ": $rq .= "NULL, ";
-    $rq .= "ds_min = ";
-    isset($ret["ds_min"]) && $ret["ds_min"] != null ? $rq .= "'".$ret["ds_min"]."', ": $rq .= "NULL, ";
-    $rq .= "ds_minmax_int = ";
-    isset($ret["ds_minmax_int"]) && $ret["ds_minmax_int"] != null ? $rq .= "'".$ret["ds_minmax_int"]."', ": $rq .= "NULL, ";
-    $rq .= "ds_average = ";
-    isset($ret["ds_average"]) && $ret["ds_average"] != null ? $rq .= "'".$ret["ds_average"]."', ": $rq .= "NULL, ";
-    $rq .= "ds_last = ";
-    isset($ret["ds_last"]) && $ret["ds_last"] != null ? $rq .= "'".$ret["ds_last"]."', ": $rq .= "NULL, ";
-    $rq .= "ds_total = ";
-    isset($ret["ds_total"]["ds_total"]) && $ret["ds_total"] != null ? $rq .= "'".$ret["ds_total"]."', ": $rq .= "NULL, ";
-    $rq .=  "ds_tickness = ";
-    isset($ret["ds_tickness"]) && $ret["ds_tickness"] != null ? $rq .= "'".$ret["ds_tickness"]."', ": $rq .= "NULL, ";
-    $rq .=  "ds_transparency = ";
-    isset($ret["ds_transparency"]) && $ret["ds_transparency"] != null ? $rq .= "'".$ret["ds_transparency"]."', ": $rq .= "NULL, ";
-    $rq .=  "ds_invert = ";
-    isset($ret["ds_invert"]) && $ret["ds_invert"] != null ? $rq .= "'".$ret["ds_invert"]."', ": $rq .= "NULL, ";
-    $rq .=  "ds_legend = ";
-    isset($ret["ds_legend"]) && $ret["ds_legend"] != null ? $rq .= "'".htmlentities($ret["ds_legend"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    $rq .=  "ds_jumpline = ";
-    isset($ret["ds_jumpline"]) && $ret["ds_jumpline"] != null ? $rq .= "'".htmlentities($ret["ds_jumpline"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    $rq .= "`ds_stack` = ";
-    isset($ret["ds_stack"]) && $ret["ds_stack"] != null ? $rq .= "'".$ret["ds_stack"]."', ": $rq .= "NULL, ";
-    $rq .= "default_tpl1 = ";
-    isset($ret["default_tpl1"]) && $ret["default_tpl1"] != null ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-    $rq .= "comment = ";
-    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
-    $rq .= "WHERE compo_id = '".$compo_id."'";
-    $DBRESULT = $pearDB->query($rq);
+    $query = rtrim($query, ', ');
+    $query .= ' WHERE compo_id = ' . (int) $compoId;
+
+    $pearDB->query($query, $bindParams);
+
     defaultOreonGraph();
+}
+
+/**
+ * Sanitize all the component templates parameters from the component template form
+ * and return a ready to bind array.
+ *
+ * @param array $ret
+ * @return array $bindParams
+ */
+function sanitizeFormComponentTemplatesParameters($ret = array())
+{
+    $bindParams = array();
+    foreach ($ret as $inputName => $inputValue) {
+        switch ($inputName) {
+            case 'name':
+            case 'ds_name':
+            case 'ds_color_line':
+            case 'ds_color_area':
+            case 'ds_color_area_warn':
+            case 'ds_color_area_crit':
+            case 'ds_legend':
+            case 'comment':
+            case 'ds_transparency':
+                if (!empty($inputValue)) {
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    if (empty($inputValue)) {
+                        $bindParams[$inputName] = null;
+                    } else {
+                        $bindParams[$inputName] = $inputValue;
+                    }
+                }
+                break;
+            case 'ds_color_line_mode':
+                $bindParams[$inputName] = in_array($inputValue[$inputName], array('0', '1'))
+                    ? $inputValue[$inputName]
+                    : '0';
+                break;
+            case 'ds_max':
+            case 'ds_min':
+            case 'ds_minmax_int':
+                $bindParams[$inputName] = in_array($inputValue, array('0', '1'))
+                    ? $inputValue
+                    : null;
+                break;
+            case 'ds_average':
+            case 'ds_last':
+            case 'ds_total':
+            case 'ds_stack':
+            case 'ds_invert':
+            case 'ds_filled':
+            case 'ds_hidecurve':
+                $bindParams[$inputName] = in_array($inputValue, array('0', '1'))
+                    ? $inputValue
+                    : '0';
+                break;
+            case 'ds_jumpline':
+                $bindParams[$inputName] = in_array($inputValue, array('0', '1', '2', '3'))
+                    ? $inputValue
+                    : '0';
+                break;
+            case 'host_id':
+            case 'service_id':
+            case 'ds_tickness':
+            case 'ds_order':
+                $bindParams[$inputName] = (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                    ? null
+                    : (int) $inputValue;
+                break;
+            case 'default_tpl1':
+                $bindParams[$inputName] = (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                    ? null
+                    : (int) $inputValue;
+                defaultOreonGraph();
+                break;
+        }
+    }
+    return $bindParams;
+}
+
+/**
+ * Parses the host_id parameter from the form and checks the hostId-serviceId format
+ * and returns the hostId et serviceId when defined.
+ *
+ * @param string|null $hostIdParameter
+ * @return array
+ */
+function parseHostIdPostParameter($hostIdParameter = null)
+{
+    if (!empty($hostIdParameter)) {
+        if (preg_match('/([0-9]+)-([0-9]+)/', $hostIdParameter, $matches)) {
+            $hostId = (int) $matches[1];
+            $serviceId = (int) $matches[2];
+        } else {
+            throw new \InvalidArgumentException('host_id must be a combination of integers');
+        }
+    } else {
+        $hostId = null;
+        $serviceId = null;
+    }
+
+    return array($hostId, $serviceId);
 }
