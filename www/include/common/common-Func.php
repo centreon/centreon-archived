@@ -183,6 +183,7 @@ function initSmartyTpl($path = null, &$tpl = null, $subDir = null)
     $tpl->loadPlugin('smarty_function_eval');
     $tpl->setForceCompile(true);
     $tpl->setAutoLiteral(false);
+    $tpl->allow_ambiguous_resources = true;
 
     return $tpl;
 }
