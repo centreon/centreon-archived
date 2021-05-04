@@ -95,6 +95,7 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
         $tpl->addPluginsDir($libDir . '/smarty-plugins');
         $tpl->loadPlugin('smarty_function_eval');
         $tpl->setForceCompile(true);
+        $tpl->setAutoLiteral(false);
 
         /*
          * Apply a template definition

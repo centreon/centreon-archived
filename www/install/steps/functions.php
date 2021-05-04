@@ -33,6 +33,7 @@ function getTemplate($dir)
     $template->addPluginsDir($libDir . '/smarty-plugins');
     $template->loadPlugin('smarty_function_eval');
     $template->setForceCompile(true);
+    $tpl->setAutoLiteral(false);
 
     return $template;
 }

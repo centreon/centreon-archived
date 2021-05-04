@@ -227,6 +227,7 @@ class CentreonHomeCustomview extends CentreonWebService
         $tpl->addPluginsDir($libDir . '/smarty-plugins');
         $tpl->loadPlugin('smarty_function_eval');
         $tpl->setForceCompile(true);
+        $tpl->setAutoLiteral(false);
 
         $form = new HTML_QuickFormCustom('Form', 'post', "?p=103");
         $form->addElement('header', 'title', $title);
