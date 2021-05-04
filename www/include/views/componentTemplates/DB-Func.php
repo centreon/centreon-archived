@@ -206,17 +206,7 @@ function insertComponentTemplate()
         $formValues['ds_color_area'] = $formValues['ds_color_line'];
     }
 
-    if (!empty($formValues['host_id'])) {
-        if (preg_match('/([0-9]+)-([0-9]+)/', $formValues['host_id'], $matches)) {
-            $formValues['host_id'] = (int) $matches[1];
-            $formValues['service_id'] = (int) $matches[2];
-        } else {
-            throw new \InvalidArgumentException('chartId must be a combination of integers');
-        }
-    } else {
-        $formValues['host_id'] = null;
-        $formValues['service_id'] = null;
-    }
+    list($formValues['host_id'], $formValues['service_id']) = parseHostIdPostParameter($formValues['host_id']);
 
     $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
 
