@@ -497,7 +497,7 @@ function install_centreon_repo() {
 	$PKG_MGR -q clean all
 	yum install -y yum-utils
 	yum-config-manager --add-repo \
-		"https://download.centreon.com/static/centreon-${CENTREON_MAJOR_VERSION}-${EL_MAJOR_VERSION}.repo"
+		"https://raw.githubusercontent.com/centreon/centreon/master/varinstall/yum-repos/centreon-${CENTREON_MAJOR_VERSION}-${EL_MAJOR_VERSION}.repo"
 }
 #========= end of function install_centreon_repo()
 
