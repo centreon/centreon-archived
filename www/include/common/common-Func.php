@@ -175,17 +175,6 @@ function initSmartyTpl($path = null, &$tpl = null, $subDir = null)
 {
     $tpl = new \SmartyBC();
 
-    /*
-    $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/cache";
-    $tpl->plugins_dir[] = __DIR__ . "/../../../GPL_LIB/smarty-plugins";
-    $tpl->caching = 0;
-    $tpl->compile_check = true;
-    $tpl->force_compile = true;
-    */
-
     $tpl->setTemplateDir($path . $subDir);
     $tpl->setCompileDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/compile');
     $tpl->setConfigDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/config');
@@ -193,6 +182,7 @@ function initSmartyTpl($path = null, &$tpl = null, $subDir = null)
     $tpl->addPluginsDir(__DIR__ . '/../../../GPL_LIB/smarty-plugins');
     $tpl->loadPlugin('smarty_function_eval');
     $tpl->setForceCompile(true);
+    $tpl->setAutoLiteral(false);
 
     return $tpl;
 }
