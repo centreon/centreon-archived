@@ -10,11 +10,14 @@
   "reporterOptions": {
     "mochaFile": "cypress/results/dev/reports/junit-report.xml"
   },
-  "baseUrl": "http://0.0.0.0:4000",
   "retries": {
     "runMode": 1
   },
   "defaultCommandTimeout": 6000,
   "requestTimeout": 10000,
-  "execTimeout": 60000
+  "execTimeout": 60000,
+  "baseUrl": "http://0.0.0.0:4000",
+  "env": {
+    "dockerName": "centreon-dev"
+  }
 }

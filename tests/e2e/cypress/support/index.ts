@@ -1,12 +1,19 @@
+import { clapiFixturesPath } from './model';
 import { insertResources } from './centreonData';
 
 before(() => {
-  cy.exec('docker cp cypress/fixtures/clapi/ centreon-dev:/tmp/');
+  cy.exec(
+    `docker cp cypress/fixtures/clapi/resources.txt ${Cypress.env(
+      'dockerName',
+    )}:${clapiFixturesPath}/resources.txt`,
+  );
 
   insertResources();
 
   cy.exec(
-    'docker exec centreon-dev centreon -u admin -p centreon -a APPLYCFG -v 1',
+    `docker exec ${Cypress.env(
+      'dockerName',
+    )} centreon -u admin -p centreon -a APPLYCFG -v 1`,
   );
 
   cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {

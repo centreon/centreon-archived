@@ -1,6 +1,9 @@
-import * as path from 'path';
-
-import { apiLogin, apiFilterResources, apiMonitoring } from './model';
+import {
+  apiLogin,
+  apiFilterResources,
+  apiMonitoring,
+  clapiFixturesPath,
+} from './model';
 
 interface Criterias {
   name: string;
@@ -14,11 +17,11 @@ interface Filters {
   criterias: Array<Criterias>;
 }
 
-const clapiFixturesPath = path.resolve('/tmp/clapi/');
-
 const insertResources = (): Cypress.Chainable =>
   cy.exec(
-    `docker exec centreon-dev centreon -u admin -p centreon -i ${clapiFixturesPath}/resources.txt`,
+    `docker exec ${Cypress.env(
+      'dockerName',
+    )} centreon -u admin -p centreon -i ${clapiFixturesPath}/resources.txt`,
   );
 
 const setUserTokenApi = (): Cypress.Chainable => {

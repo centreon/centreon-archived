@@ -2,10 +2,12 @@ version: "3.2"
 services:
   centreon-web:
     image: "@WEB_IMAGE@"
+    container_name: e2e_centreon-web
     ports:
       - 80
   cypress:
-    image: cypress/included:6.3.0
+    image: cypress/included:7.2.0
+    container_name: e2e_cypress
     user: "@UID@"
     volumes:
       - .:/e2e
