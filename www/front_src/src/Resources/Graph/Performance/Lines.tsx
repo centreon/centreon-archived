@@ -16,6 +16,7 @@ import {
   getMax,
   getNotInvertedStackedLines,
   getInvertedStackedLines,
+  getYScale,
 } from './timeSeries';
 import StackedLines from './StackedLines';
 
@@ -77,8 +78,6 @@ const Lines = ({
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
-  const hasMoreThanTwoUnits = !isNil(thirdUnit);
-
   const stackedLines = getSortedStackedLines(lines);
 
   const regularStackedLines = getNotInvertedStackedLines(lines);
@@ -123,20 +122,14 @@ const Lines = ({
             highlight,
             invert,
           }) => {
-            const getYScale = (): ScaleLinear<number, number> => {
-              const isLeftScale = hasMoreThanTwoUnits || unit !== secondUnit;
-              const scale = isLeftScale ? leftScale : rightScale;
-
-              return invert
-                ? scaleLinear<number>({
-                    domain: scale.domain().reverse(),
-                    nice: true,
-                    range: scale.range().reverse(),
-                  })
-                : scale;
-            };
-
-            const yScale = getYScale();
+            const yScale = getYScale({
+              hasMoreThanTwoUnits: !isNil(thirdUnit),
+              invert,
+              leftScale,
+              rightScale,
+              secondUnit,
+              unit,
+            });
 
             const props = {
               curve: curveLinear,
