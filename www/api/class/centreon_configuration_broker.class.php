@@ -51,12 +51,12 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
             throw new \Exception('Missing argument');
         }
 
-        $page = (int)$this->arguments['page'];
-        $position = (int)$this->arguments['position'];
-        $blockId = (string)$this->arguments['blockId'];
+        $page = filter_var((int)$this->arguments['page'], FILTER_VALIDATE_INT);
+        $position = filter_var((int)$this->arguments['position'], FILTER_VALIDATE_INT);
+        $blockId = filter_var((string)$this->arguments['blockId'], FILTER_SANITIZE_STRING);
         $tag = filter_var((string)$this->arguments['tag'], FILTER_SANITIZE_STRING);
-        if (empty($tag)) {
-            throw new \InvalidArgumentException('Invalid Tag');
+        if (empty($tag) || empty($blockId) || $page === false || $position === false) {
+            throw new \InvalidArgumentException('Invalid Parameters');
         }
 
         $cbObj = new CentreonConfigCentreonBroker($this->pearDB);
