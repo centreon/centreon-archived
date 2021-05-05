@@ -79,7 +79,7 @@ $centreon = $oreon;
 $hostgroupId = null;
 if (!empty($_POST['hostgroup']) || !empty($_GET['hostgroup'])) {
     $hostgroupId = filter_var(
-        $_GET["hostgroup"] ?? $_POST['hostgroup'] ?? null,
+        $_GET["hostgroup"] ?? $_POST['hostgroup'],
         FILTER_VALIDATE_INT
     );
 }
@@ -107,12 +107,12 @@ $dates = getPeriodToReport();
 $startDate = null;
 $endDate = null;
 
-if (!empty($_POST['start'])) {
-    $startDate = filter_var($_POST['start'], FILTER_VALIDATE_INT);
+if (!empty($_GET['start'])) {
+    $startDate = filter_var($_GET['start'], FILTER_VALIDATE_INT);
 }
 
-if (!empty($_POST['end'])) {
-    $endDate = filter_var($_POST['end'], FILTER_VALIDATE_INT);
+if (!empty($_GET['end'])) {
+    $endDate = filter_var($_GET['end'], FILTER_VALIDATE_INT);
 }
 
 if ($startDate === false || $endDate === false) {
