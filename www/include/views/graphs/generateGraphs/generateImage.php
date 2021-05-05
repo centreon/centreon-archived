@@ -72,8 +72,7 @@ if (!empty($userName) && !empty($token)) {
 
     $statement->execute();
 
-    if ($statement->rowCount()) {
-        $row = $statement->fetch();
+    if ($row = $statement->fetch()) {
         $res = $pearDB->prepare('SELECT session_id FROM session WHERE session_id = :sessionId');
         $res->bindValue(':sessionId', $mySessionId, \PDO::PARAM_STR);
         $res->execute();
