@@ -63,15 +63,20 @@ $searchTraps = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-if ($_POST['status'] !== null || $_GET['status'] !== null) {
+$searchStatus = null;
+if (
+    (array_key_exists('status', $_POST) && !empty($_POST['status']))
+    || (array_key_exists('status', $_GET) && !empty($_GET['status']))) {
     $searchStatus = filter_var(
         $_POST['status'] ?? $_GET['status'],
         FILTER_VALIDATE_INT
     );
 }
 
-
-if ($_POST['vendor'] !== null || $_GET['vendor'] !== null) {
+$searchVendor = null;
+if (
+    (array_key_exists('vendor', $_POST) && !empty($_POST['vendor']))
+    || (array_key_exists('vendor', $_GET) && !empty($_GET['vendor']))) {
     $searchVendor = filter_var(
         $_POST['vendor'] ?? $_GET['vendor'],
         FILTER_VALIDATE_INT
