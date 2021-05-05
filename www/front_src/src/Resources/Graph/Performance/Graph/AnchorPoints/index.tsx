@@ -40,13 +40,16 @@ const AnchorPoints = ({
             unit,
           });
 
-          const metricValue = prop(metric, timeValue) as number;
+          const metricValue = prop(metric, timeValue) as
+            | number
+            | null
+            | undefined;
 
           if (or(isEmpty(metricValue), isNil(metricValue))) {
             return null;
           }
 
-          const yAnchorPoint = yScale(metricValue);
+          const yAnchorPoint = yScale(metricValue as number);
 
           return (
             <AnchorPoint
