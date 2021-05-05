@@ -55,7 +55,7 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
         $position = (int)$this->arguments['position'];
         $blockId = (string)$this->arguments['blockId'];
         $tag = filter_var((string)$this->arguments['tag'], FILTER_SANITIZE_STRING);
-        if(empty($tag)) {
+        if (empty($tag)) {
             throw new \InvalidArgumentException('Invalid Tag');
         }
 
