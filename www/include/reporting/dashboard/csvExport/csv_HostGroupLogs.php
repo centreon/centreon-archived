@@ -76,11 +76,10 @@ $centreon = $oreon;
 
 // Getting hostgroup id
 $hostgroupId = null;
-if (!empty($_POST['hostgroup']) || !empty($_GET['hostgroup'])) {
-    $hostgroupId = filter_var(
-        $_GET["hostgroup"] ?? $_POST['hostgroup'],
-        FILTER_VALIDATE_INT
-    );
+if (!empty($_GET['hostgroup'])) {
+    $hostgroupId = filter_var($_GET['hostgroup'], FILTER_VALIDATE_INT);
+} elseif (!empty($_POST['hostgroup'])) {
+    $hostgroupId = filter_var($_POST['hostgroup'], FILTER_VALIDATE_INT);
 }
 // Throw exception is hostgroupId not correctly formated
 if ($hostgroupId === false) {
