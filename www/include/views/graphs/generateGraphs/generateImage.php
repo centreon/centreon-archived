@@ -156,8 +156,7 @@ $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
 
 $statement->execute();
 
-if ($statement->rowCount()) {
-    $row = $statement->fetch();
+if ($row = $statement->fetch()) {
     $index = $row['id'];
 } else {
     die('Resource not found');
