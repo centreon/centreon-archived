@@ -64,9 +64,7 @@ $searchTraps = filter_var(
 );
 
 $searchStatus = null;
-if (
-    (array_key_exists('status', $_POST) && !empty($_POST['status']))
-    || (array_key_exists('status', $_GET) && !empty($_GET['status']))) {
+if (!empty($_POST['status']) || !empty($_GET['status'])) {
     $searchStatus = filter_var(
         $_POST['status'] ?? $_GET['status'],
         FILTER_VALIDATE_INT
@@ -74,9 +72,7 @@ if (
 }
 
 $searchVendor = null;
-if (
-    (array_key_exists('vendor', $_POST) && !empty($_POST['vendor']))
-    || (array_key_exists('vendor', $_GET) && !empty($_GET['vendor']))) {
+if (!empty($_POST['vendor']) || !empty($_GET['vendor'])) {
     $searchVendor = filter_var(
         $_POST['vendor'] ?? $_GET['vendor'],
         FILTER_VALIDATE_INT
@@ -84,7 +80,7 @@ if (
 }
 
 if ($searchStatus === false || $searchVendor === false) {
-    throw new \Exception('Bad Parameters');
+    throw new \InvalidArgumentException('Bad Parameters');
 }
 
 if (isset($_POST['Search'])) {
