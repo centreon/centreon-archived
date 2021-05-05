@@ -103,8 +103,6 @@ $index = filter_var(
     FILTER_VALIDATE_INT
 );
 
-error_log('Index : ' . $index);
-
 // Checking hostName and service
 if (!empty($_GET['hostname'])) {
     $hostName = filter_var($_GET['hostname'], FILTER_SANITIZE_STRING);
