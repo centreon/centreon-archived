@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -63,8 +63,8 @@ if (!isset($_SESSION["centreon"])) {
 $sid = session_id();
 if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
-    $query = "SELECT user_id FROM session WHERE user_id = '".$pearDB->escape($oreon->user->user_id)."'";
-    $res = $pearDB->query($query);
+    $query = "SELECT user_id FROM session WHERE user_id = '?'";
+    $res = $pearDB->query($query, array($oreon->user->user_id));
     if (!$res->numRows()) {
         get_error('bad session id');
     }
@@ -74,11 +74,18 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
 
 $centreon = $oreon;
 
-/*
- * getting hostgroup id
- */
-isset($_GET["hostgroup"]) ? $id = htmlentities($_GET["hostgroup"], ENT_QUOTES, "UTF-8") : $id = "NULL";
-isset($_POST["hostgroup"]) ? $id = htmlentities($_POST["hostgroup"], ENT_QUOTES, "UTF-8") : $id;
+// Getting hostgroup id
+$hostgroupId = null;
+if (!empty($_POST['hostgroup']) || !empty($_GET['hostgroup'])) {
+    $hostgroupId = filter_var(
+        $_GET["hostgroup"] ?? $_POST['hostgroup'],
+        FILTER_VALIDATE_INT
+    );
+}
+// Throw exception is hostgroupId not correctly formated
+if ($hostgroupId === false) {
+    throw new \InvalidArgumentException('Bad parameters');
+}
 
 // finding the user's allowed hostgroups
 $allowedHostgroups = $centreon->user->access->getHostGroupAclConf(null, 'broker');
@@ -96,9 +103,23 @@ if (!$centreon->user->admin
  * Getting time interval to report
  */
 $dates = getPeriodToReport();
-$start_date = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
-$end_date = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$hostgroup_name = getHostgroupNameFromId($id);
+$startDate = null;
+$endDate = null;
+
+// GET start and end values
+if (!empty($_GET['start'])) {
+    $startDate = filter_var($_GET['start'], FILTER_VALIDATE_INT);
+}
+
+if (!empty($_GET['end'])) {
+    $endDate = filter_var($_GET['end'], FILTER_VALIDATE_INT);
+}
+
+// Throw exception is start or end are invalid
+if ($startDate === false || $endDate === false) {
+    throw new \InvalidArgumentException('Bad parameters');
+}
+$hostgroupName = getHostgroupNameFromId($id);
 
 /*
  * file type setting
@@ -106,11 +127,11 @@ $hostgroup_name = getHostgroupNameFromId($id);
 header("Cache-Control: public");
 header("Pragma: public");
 header("Content-Type: application/octet-stream");
-header("Content-disposition: filename=".$hostgroup_name.".csv");
+header("Content-disposition: filename=" . $hostgroupName . ".csv");
 
 
 echo _("Hostgroup").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
-echo $hostgroup_name."; ".date(_("d/m/Y H:i:s"), $start_date)."; "
+echo $hostgroupName."; ".date(_("d/m/Y H:i:s"), $start_date)."; "
     . date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date)."s\n";
 echo "\n";
 
@@ -167,11 +188,12 @@ $rq = "SELECT `date_start`, `date_end`, sum(`UPnbEvent`) as UPnbEvent, sum(`DOWN
     . "avg( `UPTimeScheduled` ) as UPTimeScheduled, "
     . "avg( `DOWNTimeScheduled` ) as DOWNTimeScheduled, "
     . "avg( `UNREACHABLETimeScheduled` ) as UNREACHABLETimeScheduled "
-    . "FROM `log_archive_host` WHERE `host_id` IN (".$str.") "
-    . "AND `date_start` >= '".$start_date."' "
-    . "AND `date_end` <= '".$end_date."' "
+    . "FROM `log_archive_host` WHERE `host_id` IN (" . $str . ") "
+    . "AND `date_start` >= '?' "
+    . "AND `date_end` <= '?' "
     . "GROUP BY `date_end`, `date_start` ORDER BY `date_start` desc";
-$DBRESULT = $pearDBO->query($rq);
+
+$DBRESULT = $pearDBO->query($rq, array($startDate, $endDate));
 
 echo _("Day").";"._("Duration").";".
     _("Up Mean Time").";"._("Up Alert").";".
