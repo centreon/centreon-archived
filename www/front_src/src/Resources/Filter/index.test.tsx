@@ -28,7 +28,6 @@ import {
   labelAll,
   labelUnhandledProblems,
   labelShowCriteriasFilters,
-  labelOpen,
   labelClear,
   labelSearchHelp,
   labelSearchOnFields,
@@ -371,10 +370,10 @@ describe(Filter, () => {
       selectEndpointMockAction,
     ) => {
       const {
-        getByTitle,
         getByLabelText,
         getByPlaceholderText,
         findByText,
+        getByText,
       } = renderFilter();
 
       await waitFor(() => {
@@ -391,7 +390,7 @@ describe(Filter, () => {
         target: { value: searchValue },
       });
 
-      const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
+      const filterToChange = getByText(filterName);
       fireEvent.click(filterToChange);
 
       const selectedOption = await findByText(optionToSelect);

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Button, makeStyles, Grid } from '@material-ui/core';
+import { Button, makeStyles, Grid, Typography } from '@material-ui/core';
 
 import { MemoizedFilters as Filters, SearchField } from '@centreon/ui';
 
@@ -13,6 +13,7 @@ import {
   labelShowCriteriasFilters,
   labelNewFilter,
   labelMyFilters,
+  labelFilter,
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
 
@@ -28,27 +29,9 @@ import {
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
 
-const useStyles = makeStyles((theme) => ({
-  criterias: {
-    marginLeft: 36,
-  },
-  field: {
-    minWidth: 155,
-  },
-  filterLineLabel: {
-    textAlign: 'center',
-    width: 60,
-  },
+const useStyles = makeStyles(() => ({
   filterSelect: {
     width: 200,
-  },
-  saveFilter: {
-    alignItems: 'center',
-    display: 'flex',
-    marginRight: theme.spacing(1),
-  },
-  searchField: {
-    width: 375,
   },
 }));
 
@@ -128,49 +111,48 @@ const Filter = (): JSX.Element => {
   return (
     <Filters
       expandLabel={labelShowCriteriasFilters}
-      expandableFilters={<Criterias />}
-      expanded={filterExpanded}
-      filters={
-        <>
-          <div className={classes.saveFilter}>
+      expandableFilters={
+        <Grid container item alignItems="center" spacing={1}>
+          <Grid item>
             <SaveFilter />
-          </div>
-          <Grid container alignItems="center" spacing={1}>
-            <Grid item>
-              {customFiltersLoading ? (
-                <FilterLoadingSkeleton />
-              ) : (
-                <SelectFilter
-                  ariaLabel={t(labelStateFilter)}
-                  className={classes.filterSelect}
-                  options={options.map(pick(['id', 'name', 'type']))}
-                  selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
-                  onChange={changeFilter}
-                />
-              )}
-            </Grid>
-            <Grid item>
-              <SearchField
-                EndAdornment={SearchHelpTooltip}
-                placeholder={t(labelSearch)}
-                value={nextSearch || ''}
-                onChange={prepareSearch}
-                onKeyDown={requestSearchOnEnterKey}
-              />
-            </Grid>
-            <Grid item>
-              <Button
-                color="primary"
-                size="small"
-                variant="contained"
-                onClick={requestSearch}
-              >
-                {t(labelSearch)}
-              </Button>
-            </Grid>
           </Grid>
-        </>
+          <Grid item>
+            {customFiltersLoading ? (
+              <FilterLoadingSkeleton />
+            ) : (
+              <SelectFilter
+                ariaLabel={t(labelStateFilter)}
+                className={classes.filterSelect}
+                options={options.map(pick(['id', 'name', 'type']))}
+                selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
+                onChange={changeFilter}
+              />
+            )}
+          </Grid>
+          <Grid item>
+            <SearchField
+              EndAdornment={SearchHelpTooltip}
+              placeholder={t(labelSearch)}
+              value={nextSearch || ''}
+              onChange={prepareSearch}
+              onKeyDown={requestSearchOnEnterKey}
+            />
+          </Grid>
+          <Grid item>
+            <Button
+              color="primary"
+              size="small"
+              variant="contained"
+              onClick={requestSearch}
+            >
+              {t(labelSearch)}
+            </Button>
+          </Grid>
+          <Criterias />
+        </Grid>
       }
+      expanded={filterExpanded}
+      filters={<Typography variant="body1">{t(labelFilter)}</Typography>}
       memoProps={memoProps}
       onExpand={toggleFilterExpanded}
     />
@@ -178,4 +160,3 @@ const Filter = (): JSX.Element => {
 };
 
 export default Filter;
-export { useStyles };

@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { ParentSize } from '@visx/visx';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Grid } from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
+import { Grid } from '@material-ui/core';
 
-import { SelectEntry, useMemoComponent } from '@centreon/ui';
+import { IconButton, SelectEntry, useMemoComponent } from '@centreon/ui';
 
 import { ResourceContext, useResourceContext } from '../../Context';
 import { labelClear } from '../../translatedLabels';
@@ -32,33 +32,27 @@ const CriteriasContent = ({
   };
 
   return (
-    <ParentSize>
-      {({ width }): JSX.Element => {
+    <>
+      {criterias.map(({ name, value }) => {
         return (
-          <Grid container alignItems="center" spacing={1}>
-            <Grid item>
-              <CriteriasMultiSelect />
-            </Grid>
-            {criterias.map(({ name, value }) => {
-              return (
-                <Grid item key={name}>
-                  <Criteria
-                    name={name}
-                    parentWidth={width}
-                    value={value as Array<SelectEntry>}
-                  />
-                </Grid>
-              );
-            })}
-            <Grid item>
-              <Button color="primary" size="small" onClick={clearAllFilters}>
-                {t(labelClear)}
-              </Button>
-            </Grid>
+          <Grid item key={name}>
+            <Criteria name={name} value={value as Array<SelectEntry>} />
           </Grid>
         );
-      }}
-    </ParentSize>
+      })}
+      <Grid item>
+        <CriteriasMultiSelect />
+      </Grid>
+      <Grid item>
+        <IconButton
+          size="small"
+          title={t(labelClear)}
+          onClick={clearAllFilters}
+        >
+          <ClearIcon color="action" fontSize="small" />
+        </IconButton>
+      </Grid>
+    </>
   );
 };
 
