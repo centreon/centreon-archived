@@ -124,8 +124,7 @@ if (!empty($hostName) && !empty($serviceDescription)) {
     $statement->bindValue(':hostName', $hostName, \PDO::PARAM_STR);
     $statement->bindValue(':serviceDescription', $serviceDescription, \PDO::PARAM_STR);
     $statement->execute();
-    if ($statement->rowCount()) {
-        $res = $statement->fetch();
+    if ($res = $statement->fetch()) {
         $index = $res["id"];
     } else {
         die('Resource not found');
