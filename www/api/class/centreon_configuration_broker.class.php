@@ -54,7 +54,10 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
         $page = (int)$this->arguments['page'];
         $position = (int)$this->arguments['position'];
         $blockId = (string)$this->arguments['blockId'];
-        $tag = (string)$this->arguments['tag'];
+        $tag = filter_var((string)$this->arguments['tag'], FILTER_SANITIZE_STRING);
+        if(empty($tag)) {
+            throw new \InvalidArgumentException('Invalid Tag');
+        }
 
         $cbObj = new CentreonConfigCentreonBroker($this->pearDB);
 

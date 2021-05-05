@@ -78,12 +78,7 @@ if ($serverString != "''" && !empty($serverString)) {
         $allowedBrokerConf[$row['config_id']] = true;
     }
 }
-
 switch ($o) {
-    case "j":
-        require_once($path."blockConfig.php");
-        break;
-
     case "a":
         require_once($path."formCentreonBroker.php");
         break; // Add CentreonBroker
