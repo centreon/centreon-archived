@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, filter, find, head, isNil, pipe } from 'ramda';
+import { isNil } from 'ramda';
 
 import { makeStyles, Typography } from '@material-ui/core';
 
