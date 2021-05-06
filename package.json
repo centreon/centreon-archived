@@ -3,13 +3,12 @@
   "version": "21.04.0",
   "description": "centreon web package",
   "scripts": {
-    "build": "vite build",
-    "start": "vite serve",
+    "build": "vite build && node ./vite-html-generator.js",
+    "dev": "APP_ENV=development node ./vite-html-generator.js && vite serve",
     "eslint": "eslint ./www/front_src --ext .js,.jsx,.ts,.tsx",
     "eslint:fix": "npm run eslint -- --fix",
     "test": "jest",
-    "test:watch": "npm test -- --watch",
-    "dev": "APP_ENV=development vite"
+    "test:watch": "npm test -- --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",

@@ -1,4 +1,20 @@
+const fs = require('fs');
+const path = require('path');
 
+const devScript = `
+<script type="module" src="http://localhost:9090/centreon/@vite/client"></script>
+<script type="module" src="http://localhost:9090/centreon/index.jsx"></script>`;
+
+const prodScript = `
+<!-- if production -->
+<link rel="stylesheet" href="/centreon/static/assets/main.ed3145b1.css" />
+<script type="module" src="/centreon/static/assets/main.3d211f74.js"></script>
+`;
+
+const loadScript =
+  process.env.APP_ENV == 'development' ? devScript : prodScript;
+
+const baseHtml = `
 
 <!doctype html>
 <html lang="en" style="margin:0;padding:0;width:100%;height:100%;">
@@ -19,9 +35,7 @@
         window.__vite_plugin_react_preamble_installed__ = true
     </script>
 
-    
-<script type="module" src="http://localhost:9090/centreon/@vite/client"></script>
-<script type="module" src="http://localhost:9090/centreon/index.jsx"></script>
+    ${loadScript}
 
 </head>
 
@@ -35,3 +49,6 @@
 
 </html>
 
+`;
+
+fs.writeFileSync(path.join(__dirname, 'www/index.html'), baseHtml);
