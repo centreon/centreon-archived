@@ -24,13 +24,6 @@ const CriteriasContent = ({
   setNextSearch,
   criterias,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
-
-  const clearAllFilters = (): void => {
-    setFilter(allFilter);
-    setNextSearch('');
-  };
-
   return (
     <>
       {criterias.map(({ name, value }) => {
@@ -42,15 +35,6 @@ const CriteriasContent = ({
       })}
       <Grid item>
         <CriteriasMultiSelect />
-      </Grid>
-      <Grid item>
-        <IconButton
-          size="small"
-          title={t(labelClear)}
-          onClick={clearAllFilters}
-        >
-          <ClearIcon color="action" fontSize="small" />
-        </IconButton>
       </Grid>
     </>
   );

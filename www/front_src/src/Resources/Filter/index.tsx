@@ -4,8 +4,14 @@ import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Button, makeStyles, Grid, Typography } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 
-import { MemoizedFilters as Filters, SearchField } from '@centreon/ui';
+import {
+  MemoizedFilters as Filters,
+  SearchField,
+  IconButton,
+  TextField,
+} from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -130,7 +136,7 @@ const Filter = (): JSX.Element => {
             )}
           </Grid>
           <Grid item>
-            <SearchField
+            <TextField
               EndAdornment={SearchHelpTooltip}
               placeholder={t(labelSearch)}
               value={nextSearch || ''}
@@ -139,14 +145,9 @@ const Filter = (): JSX.Element => {
             />
           </Grid>
           <Grid item>
-            <Button
-              color="primary"
-              size="small"
-              variant="contained"
-              onClick={requestSearch}
-            >
-              {t(labelSearch)}
-            </Button>
+            <IconButton title={t(labelSearch)} onClick={requestSearch}>
+              <SearchIcon />
+            </IconButton>
           </Grid>
           <Criterias />
         </Grid>
