@@ -430,12 +430,10 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      */
     private function logException(\Throwable $exception): void
     {
-        if (null !== $this->logger) {
-            if (!$exception instanceof HttpExceptionInterface || $exception->getCode() >= 500) {
-                $this->logger->critical($exception->getMessage(), ['context' => $exception]);
-            } else {
-                $this->logger->error($exception->getMessage(), ['context' => $exception]);
-            }
+        if (!$exception instanceof HttpExceptionInterface || $exception->getCode() >= 500) {
+            $this->logger->critical($exception->getMessage(), ['context' => $exception]);
+        } else {
+            $this->logger->error($exception->getMessage(), ['context' => $exception]);
         }
     }
 
