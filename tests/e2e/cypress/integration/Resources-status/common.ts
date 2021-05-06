@@ -3,7 +3,7 @@ const btnToogleCriterias = '[aria-label="Show criterias filters"]';
 const inputSearch = 'input[placeholder="Search"]';
 const refreshButton = '[aria-label="Refresh"]';
 const serviceName = 'service_test';
-const serviceNameDowntime = 'service_to_dt';
+const serviceNameDowntime = 'service_test_dt';
 const searchValue = `s.description:${serviceName}`;
 const apiMonitoringResources = /.+api\/beta\/monitoring\/resources.?page.+/;
 

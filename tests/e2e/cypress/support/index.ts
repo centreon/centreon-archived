@@ -1,24 +1,28 @@
-import { clapiFixturesPath } from './model';
-import { insertResources } from './centreonData';
+import {
+  initDataResources,
+  postActionClapiApi,
+  setUserTokenApiV1,
+  setUserTokenApiV2,
+  submitResultApiClapi,
+} from './centreonData';
 
 before(() => {
-  cy.exec(
-    `docker cp cypress/fixtures/clapi/resources.txt ${Cypress.env(
-      'dockerName',
-    )}:${clapiFixturesPath}/resources.txt`,
-  );
+  setUserTokenApiV1();
+  setUserTokenApiV2();
 
-  insertResources();
-
-  cy.exec(
-    `docker exec ${Cypress.env(
-      'dockerName',
-    )} centreon -u admin -p centreon -a APPLYCFG -v 1`,
-  );
+  initDataResources().then(() => {
+    cy.fixture('resources/clapi/applycfg-poller-1.json').then((raw) => {
+      postActionClapiApi(raw).then(() => {
+        // Necessary to wait checks on the engine
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(5000);
+        submitResultApiClapi();
+      });
+    });
+  });
 
   cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {
-    // failOnStatusCode it's FALSE to ignore the first 404 on Centreon redirection
-    cy.visit(`${Cypress.config().baseUrl}`, { failOnStatusCode: false });
+    cy.visit(`${Cypress.config().baseUrl}`);
 
     cy.fixture('users/admin.json').then((userAdmin) => {
       cy.get('input[placeholder="Login"]').type(userAdmin.login);

@@ -1,10 +1,8 @@
 import { Given } from 'cypress-cucumber-preprocessor/steps';
 
-const fixtureClapiPath = 'cypress/fixtures/clapi';
-
 // Background
 Given('There are available resources', () => {
-  cy.readFile(`${fixtureClapiPath}/resources.txt`).then((data) => {
+  cy.readFile('cypress/fixtures/resources.txt').then((data) => {
     const linesResources = data.split('\n').filter((d) => d.includes('ADD'));
 
     const resources = linesResources.map((line: string) => {

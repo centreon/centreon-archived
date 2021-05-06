@@ -13,9 +13,9 @@ import {
   containerStateFilter,
 } from '../common';
 import {
-  setUserTokenApi,
   setFiltersUser,
   delFiltersUser,
+  setUserTokenApiV2,
 } from '../../../support/centreonData';
 
 interface Status {
@@ -41,11 +41,11 @@ const resourcesMatching = (): Cypress.Chainable => {
 };
 
 Before(() => {
-  setUserTokenApi();
+  setUserTokenApiV2();
 
-  cy.fixture('resources/filters.json').then((filters) => {
-    setFiltersUser('POST', filters);
-  });
+  cy.fixture('resources/filters.json').then((filters) =>
+    setFiltersUser(filters),
+  );
 });
 
 // Scenario: I first access to the page

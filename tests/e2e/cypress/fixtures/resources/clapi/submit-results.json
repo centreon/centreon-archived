@@ -1,0 +1,20 @@
+{
+  "results": [
+      {
+        "updatetime": "1528884076",
+        "host": "test_host",
+        "service": "service_test",
+        "status": "2",
+        "output": "Test result status 3",
+        "perfdata": ""
+      },
+      {
+        "updatetime": "1528884076",
+        "host": "test_host",
+        "service": "service_test_dt",
+        "status": "2",
+        "output": "Test result status 3",
+        "perfdata": ""
+      }
+  ]
+}
