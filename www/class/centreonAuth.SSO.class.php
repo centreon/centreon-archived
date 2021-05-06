@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -83,9 +83,13 @@ class CentreonAuthSSO extends CentreonAuth
             && !empty($this->ssoOptions['openid_connect_client_id'])
             && !empty($this->ssoOptions['openid_connect_client_secret'])
         ) {
+            # Get configured values
             $clientId = $this->ssoOptions['openid_connect_client_id'];
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
             $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
+            $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
+
+            # Build endpoint urls
             $baseUrl = rtrim($this->ssoOptions['openid_connect_base_url'], "/");
             $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
             $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
@@ -96,19 +100,19 @@ class CentreonAuthSSO extends CentreonAuth
             if (!empty($this->ssoOptions['openid_connect_end_session_endpoint'])) {
                 $endSessionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
             }
-
-            $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
-
             $redirect = urlencode($redirectNoEncode);
             $authUrl = $authEndpoint . "?client_id=" . $clientId . "&response_type=code&redirect_uri=" . $redirect;
             if (!empty($this->ssoOptions['openid_connect_scope'])) {
                 $authUrl .= "&scope=" . $this->ssoOptions['openid_connect_scope'];
             }
 
+            # Authnetication is OpenId only or mixed mode?
             $inputForce = filter_var(
                 $_POST['force'] ?? $_GET['force'] ?? null,
                 FILTER_SANITIZE_NUMBER_INT
             );
+
+            # Access to IdP authentication page
             if (
                 (isset($inputForce) && $inputForce == 1)
                 || (isset($this->ssoOptions['openid_connect_mode'])
@@ -117,12 +121,14 @@ class CentreonAuthSSO extends CentreonAuth
                 header('Location: ' . $authUrl);
             }
 
+            # Reception of the IDP code
             $inputCode = filter_var(
                 $_POST['code'] ?? $_GET['code'] ?? null,
                 FILTER_SANITIZE_STRING
             );
 
             if (!empty($inputCode)) {
+                # Retrieving the connection token
                 $tokenInfo = $this->getOpenIdConnectToken(
                     $tokenEndpoint,
                     $redirectNoEncode,
@@ -132,10 +138,12 @@ class CentreonAuthSSO extends CentreonAuth
                     $verifyPeer
                 );
 
+                # Checking the token expiration
                 if (
                     (!empty($tokenInfo['expires_in']) && (int) $tokenInfo['expires_in'] < 0)
                     || (!empty($tokenInfo['active']) && (int) $tokenInfo['active'] !== 1)
                 ) {
+                    # If previsous session is expired, refresh request
                     $result = $this->refreshToken(
                         $tokenEndpoint,
                         $clientId,
@@ -161,6 +169,7 @@ class CentreonAuthSSO extends CentreonAuth
                     }
                 }
 
+                # Retrieving user information
                 if (!empty($tokenInfo['access_token'])) {
                     $user = $this->getOpenIdConnectIntrospectionToken(
                         $introspectionEndpoint,
