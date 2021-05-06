@@ -171,16 +171,22 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
 
-                if (!isset($user["preferred_username"]) && isset($userInfoEndpoint)) {
+                # Login retrieval
+                $loginClaimValue = !empty($this->ssoOptions['openid_connect_login_claim'])
+                    ? $this->ssoOptions['openid_connect_login_claim']
+                    : 'preferred_username';
+
+                # If no login, retrieve additional information
+                if (!isset($user[$loginClaimValue]) && isset($userInfoEndpoint)) {
                     $user = $this->getOpenIdConnectUserInfo(
                         $userInfoEndpoint,
                         $tokenInfo['access_token'],
                         $verifyPeer
                     );
-                }
 
-                if (!isset($user['error']) && isset($user["preferred_username"])) {
-                    $this->ssoUsername = $user["preferred_username"];
+                # User authentication
+                if (!isset($user['error']) && isset($user[$loginClaimValue])) {
+                    $this->ssoUsername = $user[$loginClaimValue];
                     if ($this->checkSsoClient()) {
                         $this->ssoMandatory = 1;
                         $username = $this->ssoUsername;
