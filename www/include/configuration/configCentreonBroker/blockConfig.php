@@ -45,9 +45,14 @@ if (!isset($_GET['tag']) || !isset($_GET['pos']) || !isset($_GET['blockId'])) {
  * Cast the block id in int
  */
 try {
-    $id = (string)$_GET['blockId'];
-    $tag = (string)$_GET['tag'];
-    $pos = (int)$_GET['pos'];
+    $id = filter_var((string)$_GET['blockId'], FILTER_SANITIZE_STRING);
+    $tag = filter_var((string)$_GET['tag'], FILTER_SANITIZE_STRING);
+    $pos = filter_var((int)$_GET['pos'], FILTER_VALIDATE_INT);
+
+    if (empty($id) || empty($tag) || $pos === false) {
+        throw new \InvalidArgumentException('Invalid Parameters');
+    }
+
 } catch (Exception $e) {
     exit();
 }
