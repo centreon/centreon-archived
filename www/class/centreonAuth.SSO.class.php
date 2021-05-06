@@ -53,6 +53,7 @@ class CentreonAuthSSO extends CentreonAuth
         $generalOptions = array()
     ) {
         $this->ssoOptions = $generalOptions;
+        $this->CentreonLog = $CentreonLog;
 
         if (
             isset($this->ssoOptions['sso_enable'])
@@ -83,6 +84,9 @@ class CentreonAuthSSO extends CentreonAuth
             && !empty($this->ssoOptions['openid_connect_client_id'])
             && !empty($this->ssoOptions['openid_connect_client_secret'])
         ) {
+            $this->source = "OpenId";
+            $debug = 0;
+
             # Get configured values
             $clientId = $this->ssoOptions['openid_connect_client_id'];
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
@@ -135,7 +139,8 @@ class CentreonAuthSSO extends CentreonAuth
                     $clientId,
                     $clientSecret,
                     $inputCode,
-                    $verifyPeer
+                    $verifyPeer,
+                    $debug
                 );
 
                 # Checking the token expiration
@@ -150,18 +155,25 @@ class CentreonAuthSSO extends CentreonAuth
                         $clientSecret,
                         $tokenInfo['refresh_token'],
                         $verifyPeer,
+                        $debug,
                         !empty($this->ssoOptions['openid_connect_scope']) ? $this->ssoOptions['openid_connect_scope'] : null
                     );
                     if (empty($result['error']) && !empty($result)) {
                         $tokenInfo = $result;
                     } else {
+                        $this->CentreonLog->insertLog(
+                            1,
+                            "[" . $this->source . "] [Error] Refresh Token Info: " . json_encode($result)
+                        );
+        
                         if (!empty($endSessionEndpoint)) {
                             $result = $this->logout(
                                 $endSessionEndpoint,
                                 $clientId,
                                 $clientSecret,
                                 $tokenInfo['refresh_token'],
-                                $verifyPeer
+                                $verifyPeer,
+                                $debug
                             );
                         }
                         $tokenInfo = null;
@@ -176,7 +188,8 @@ class CentreonAuthSSO extends CentreonAuth
                         $clientId,
                         $clientSecret,
                         $tokenInfo['access_token'],
-                        $verifyPeer
+                        $verifyPeer,
+                        $debug
                     );
                 }
 
@@ -190,8 +203,10 @@ class CentreonAuthSSO extends CentreonAuth
                     $user = $this->getOpenIdConnectUserInfo(
                         $userInfoEndpoint,
                         $tokenInfo['access_token'],
-                        $verifyPeer
+                        $verifyPeer,
+                        $debug
                     );
+                }
 
                 # User authentication
                 if (!isset($user['error']) && isset($user[$loginClaimValue])) {
@@ -200,6 +215,16 @@ class CentreonAuthSSO extends CentreonAuth
                         $this->ssoMandatory = 1;
                         $username = $this->ssoUsername;
                     }
+                } elseif(isset($user['error'])) {
+                    $this->CentreonLog->insertLog(
+                        1,
+                        "[" . $this->source . "] [Error] Can't authenticate user: " . $user['error']
+                    );
+                } elseif (!isset($user[$loginClaimValue])) {
+                    $this->CentreonLog->insertLog(
+                        1,
+                        "[" . $this->source . "] [Error] Unable to get login from claim: " . $loginClaimValue
+                    );
                 }
             }
         }
@@ -307,6 +332,7 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $clientSecret OpenId Connect Client Secret
      * @param string $code         OpenId Connect Authorization Code
      * @param bool   $verifyPeer   Disable SSL verify peer
+     * @param bool   $debug        Print debug in login logs
      *
      * @return array|null
     */
@@ -316,7 +342,8 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $code,
-        bool $verifyPeer
+        bool $verifyPeer,
+        bool $debug
     ): ?array
     {
         $data = [
@@ -337,7 +364,63 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         $result = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$http_code) {
+            $http_code = 404;
+        }
         curl_close($ch);
+
+        /* Manage HTTP status code */
+        $exceptionClass = null;
+        $logMessage = 'Unknown HTTP error';
+        switch ($http_code) {
+            case 200:
+            case 201:
+                break;
+            case 400:
+                $exceptionClass = 'RestBadRequestException';
+                break;
+            case 401:
+                $exceptionClass = 'RestUnauthorizedException';
+                break;
+            case 403:
+                $exceptionClass = 'RestForbiddenException';
+                break;
+            case 404:
+                $exceptionClass = 'RestNotFoundException';
+                $logMessage = 'Page not found';
+                break;
+            case 405:
+                $exceptionClass = 'RestMethodNotAllowedException';
+                break;
+            case 409:
+                $exceptionClass = 'RestConflictException';
+                break;
+            case 500:
+            default:
+                $exceptionClass = 'RestInternalServerErrorException';
+                break;
+        }
+
+        if (!is_null($exceptionClass)) {
+            if (is_array($result)) {
+                $message = json_encode($result);
+            } elseif (isset($result)) {
+                $message = $result;
+            } else {
+                $message = $logMessage;
+            }
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Error] Unable to get Token Access Information. Exception: "
+                    . "$exceptionClass, url: $url, message: $message"
+            );
+        } elseif ($debug) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Token Access Information: $result"
+            );
+        }
 
         return json_decode($result, true) ?? null;
     }
@@ -350,6 +433,7 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $clientSecret OpenId Connect Client Secret
      * @param string $token        OpenId Connect Token Access
      * @param bool   $verifyPeer   Disable SSL verify peer
+     * @param bool   $debug        Print debug in login logs
      *
      * @return array|null
      */
@@ -358,7 +442,8 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $token,
-        bool $verifyPeer
+        bool $verifyPeer,
+        bool $debug
     ): ?array
     {
         $data = [
@@ -378,7 +463,63 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         $result = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$http_code) {
+            $http_code = 404;
+        }
         curl_close($ch);
+
+        /* Manage HTTP status code */
+        $exceptionClass = null;
+        $logMessage = 'Unknown HTTP error';
+        switch ($http_code) {
+            case 200:
+            case 201:
+                break;
+            case 400:
+                $exceptionClass = 'RestBadRequestException';
+                break;
+            case 401:
+                $exceptionClass = 'RestUnauthorizedException';
+                break;
+            case 403:
+                $exceptionClass = 'RestForbiddenException';
+                break;
+            case 404:
+                $exceptionClass = 'RestNotFoundException';
+                $logMessage = 'Page not found';
+                break;
+            case 405:
+                $exceptionClass = 'RestMethodNotAllowedException';
+                break;
+            case 409:
+                $exceptionClass = 'RestConflictException';
+                break;
+            case 500:
+            default:
+                $exceptionClass = 'RestInternalServerErrorException';
+                break;
+        }
+
+        if (!is_null($exceptionClass)) {
+            if (is_array($result)) {
+                $message = json_encode($result);
+            } elseif (isset($result)) {
+                $message = $result;
+            } else {
+                $message = $logMessage;
+            }
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Error] Unable to get Token Introspection Information. Exception: "
+                    . "$exceptionClass, url: $url, message: $message"
+            );
+        } elseif ($debug) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Token Introspection Information: $result"
+            );
+        }
 
         return json_decode($result, true) ?? null;
     }
@@ -389,10 +530,11 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $url        OpenId Connect Introspection Token Endpoint
      * @param string $token      OpenId Connect Token Access
      * @param bool   $verifyPeer Disable SSL verify peer
+     * @param bool   $debug      Print debug in login logs
      *
      * @return array|null
      */
-    public function getOpenIdConnectUserInfo(string $url, string $token, bool $verifyPeer): ?array
+    public function getOpenIdConnectUserInfo(string $url, string $token, bool $verifyPeer, bool $debug): ?array
     {
         $ch = curl_init($url);
         $authentication = "Authorization: Bearer " . trim($token);
@@ -405,7 +547,63 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         $result = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$http_code) {
+            $http_code = 404;
+        }
         curl_close($ch);
+
+        /* Manage HTTP status code */
+        $exceptionClass = null;
+        $logMessage = 'Unknown HTTP error';
+        switch ($http_code) {
+            case 200:
+            case 201:
+                break;
+            case 400:
+                $exceptionClass = 'RestBadRequestException';
+                break;
+            case 401:
+                $exceptionClass = 'RestUnauthorizedException';
+                break;
+            case 403:
+                $exceptionClass = 'RestForbiddenException';
+                break;
+            case 404:
+                $exceptionClass = 'RestNotFoundException';
+                $logMessage = 'Page not found';
+                break;
+            case 405:
+                $exceptionClass = 'RestMethodNotAllowedException';
+                break;
+            case 409:
+                $exceptionClass = 'RestConflictException';
+                break;
+            case 500:
+            default:
+                $exceptionClass = 'RestInternalServerErrorException';
+                break;
+        }
+
+        if (!is_null($exceptionClass)) {
+            if (is_array($result)) {
+                $message = json_encode($result);
+            } elseif (isset($result)) {
+                $message = $result;
+            } else {
+                $message = $logMessage;
+            }
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Error] Unable to get User Additional Information. Exception: "
+                    . "$exceptionClass, url: $url, message: $message"
+            );
+        } elseif ($debug) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] User Information: $result"
+            );
+        }
 
         return json_decode($result, true) ?? null;
     }
@@ -418,6 +616,7 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string      $clientSecret OpenId Connect Client Secret
      * @param string      $refreshToken OpenId Connect Refresh Token Access
      * @param bool        $verifyPeer   Disable SSL verify peer
+     * @param bool        $debug        Print debug in login logs
      * @param string|null $scope        The scope
      *
      * @return array|null
@@ -427,7 +626,8 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $refreshToken,
-        bool $verifyPeer,
+        bool   $verifyPeer,
+        bool   $debug,
         string $scope = null
     ): ?array
     {
@@ -449,7 +649,63 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         $result = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$http_code) {
+            $http_code = 404;
+        }
         curl_close($ch);
+
+        /* Manage HTTP status code */
+        $exceptionClass = null;
+        $logMessage = 'Unknown HTTP error';
+        switch ($http_code) {
+            case 200:
+            case 201:
+                break;
+            case 400:
+                $exceptionClass = 'RestBadRequestException';
+                break;
+            case 401:
+                $exceptionClass = 'RestUnauthorizedException';
+                break;
+            case 403:
+                $exceptionClass = 'RestForbiddenException';
+                break;
+            case 404:
+                $exceptionClass = 'RestNotFoundException';
+                $logMessage = 'Page not found';
+                break;
+            case 405:
+                $exceptionClass = 'RestMethodNotAllowedException';
+                break;
+            case 409:
+                $exceptionClass = 'RestConflictException';
+                break;
+            case 500:
+            default:
+                $exceptionClass = 'RestInternalServerErrorException';
+                break;
+        }
+
+        if (!is_null($exceptionClass)) {
+            if (is_array($result)) {
+                $message = json_encode($result);
+            } elseif (isset($result)) {
+                $message = $result;
+            } else {
+                $message = $logMessage;
+            }
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Error] Unable to refresh token. Exception: "
+                    . "$exceptionClass, url: $url, message: $message"
+            );
+        } elseif ($debug) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Refresh Token Information: $result"
+            );
+        }
 
         return json_decode($result, true) ?? null;
     }
@@ -462,6 +718,7 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $clientSecret OpenId Connect Client Secret
      * @param string $refreshToken OpenId Connect Refresh Token Access
      * @param bool   $verifyPeer   Disable SSL verify peer
+     * @param bool        $debug        Print debug in login logs
      *
      * @return array|null
      */
@@ -470,7 +727,8 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $refreshToken,
-        bool $verifyPeer
+        bool $verifyPeer,
+        bool $debug
     ): ?array
     {
         $data = [
@@ -489,7 +747,63 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         $result = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$http_code) {
+            $http_code = 404;
+        }
         curl_close($ch);
+
+        /* Manage HTTP status code */
+        $exceptionClass = null;
+        $logMessage = 'Unknown HTTP error';
+        switch ($http_code) {
+            case 200:
+            case 201:
+                break;
+            case 400:
+                $exceptionClass = 'RestBadRequestException';
+                break;
+            case 401:
+                $exceptionClass = 'RestUnauthorizedException';
+                break;
+            case 403:
+                $exceptionClass = 'RestForbiddenException';
+                break;
+            case 404:
+                $exceptionClass = 'RestNotFoundException';
+                $logMessage = 'Page not found';
+                break;
+            case 405:
+                $exceptionClass = 'RestMethodNotAllowedException';
+                break;
+            case 409:
+                $exceptionClass = 'RestConflictException';
+                break;
+            case 500:
+            default:
+                $exceptionClass = 'RestInternalServerErrorException';
+                break;
+        }
+
+        if (!is_null($exceptionClass)) {
+            if (is_array($result)) {
+                $message = json_encode($result);
+            } elseif (isset($result)) {
+                $message = $result;
+            } else {
+                $message = $logMessage;
+            }
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Error] Unable to logout the user. Exception: "
+                    . "$exceptionClass, url: $url, message: $message"
+            );
+        } elseif ($debug) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Logout user Information: $result"
+            );
+        }
 
         return json_decode($result, true) ?? null;
     }
