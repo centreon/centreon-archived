@@ -171,13 +171,11 @@ function Infos() {
         var id = prev_id + 1;
         var id_name = type + '_' + id;
         var blockId = jQuery('#block_' + type).val();
-        var params;
 
         var tbody = jQuery('<tbody>');
         tbody.attr('id', id_name);
         tbody.attr('class', 'collapse-wrapper');
         jQuery('#' + type).append(tbody);
-        params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
         var url = './api/internal.php?object=centreon_configuration_broker&resultFormat=html&action=block' +
 		    '&page=' + {/literal}{$p}{literal} + '&position=' + id +
             '&blockId=' + blockId + '&tag=' + type;
