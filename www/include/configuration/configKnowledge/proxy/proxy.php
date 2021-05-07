@@ -65,25 +65,34 @@ require_once $modules_path . 'functions.php';
  */
 $pearDB = new CentreonDB();
 
-$conf = getWikiConfig($pearDB);
-$WikiURL = $conf['kb_wiki_url'];
+$wikiConf = getWikiConfig($pearDB);
+$wikiURL = $wikiConf['kb_wiki_url'];
 
 /*
  * Check if user want host or service procedures
  */
-if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
-    $proxy = new procedures_Proxy($pearDB, $conf['kb_db_prefix'], $_GET["host_name"], $_GET["service_description"]);
-} elseif (isset($_GET["host_name"])) {
-    $proxy = new procedures_Proxy($pearDB, $conf['kb_db_prefix'], $_GET["host_name"], null);
+if (isset($_GET["host_name"])) {
+    $hostName = filter_var($_GET['host_name'], FILTER_SANITIZE_STRING);
+}
+if (isset($_GET['service_description'])) {
+    $serviceDescription = filter_var($_GET['service_description'], FILTER_SANITIZE_STRING);
 }
 
-if ($proxy->url != "") {
+if (!empty($hostName) && !empty($serviceDescription)) {
+    $proxy = new procedures_Proxy($pearDB, $wikiConf['kb_db_prefix'], $hostName, $serviceDescription);
+} elseif (!empty($hostName)) {
+    $proxy = new procedures_Proxy($pearDB, $wikiConf['kb_db_prefix'], $hostName, null);
+}
+
+if (!empty($proxy->url)) {
     header("Location: " . $proxy->url);
 } else {
-    if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
-        header("Location: $WikiURL/?title=Service_:_" . $_GET["host_name"] . "_/_" . $_GET["service_description"]);
+    if (!empty($hostName) && !empty($serviceDescription)) {
+        header("Location: $wikiURL/?title=Service_:_" . $hostName . "_/_" . $serviceDescription);
+    } elseif (!empty($hostName)) {
+        header("Location: $wikiURL/?title=Host_:_" . $hostName);
     } else {
-        header("Location: $WikiURL/?title=Host_:_" . $_GET["host_name"]);
+        header("Location: " . $wikiURL);
     }
 }
 exit();

@@ -57,10 +57,10 @@ class procedures_Proxy
 
     private function getHostId($hostName)
     {
-        $result = $this->DB->query("SELECT host_id FROM host WHERE host_name LIKE '" . $hostName . "' ");
-        $row = $result->fetchRow();
+        $statement = $this->DB->prepare("SELECT host_id FROM host WHERE host_name LIKE ?");
+        $result = $this->db->execute($statement, array($hostName));
         $hostId = 0;
-        if ($row["host_id"]) {
+        if ($row = $result->fetchRow()) {
             $hostId = $row["host_id"];
         }
         return $hostId;
@@ -71,13 +71,13 @@ class procedures_Proxy
         /*
          * Get Services attached to hosts
          */
-        $query = "SELECT s.service_id " .
+        $statement = $this->DB->prepare("SELECT s.service_id " .
             "FROM host h, service s, host_service_relation hsr " .
             "WHERE hsr.host_host_id = h.host_id " .
             "AND hsr.service_service_id = service_id " .
-            "AND h.host_name LIKE '" . $hostName . "' " .
-            "AND s.service_description LIKE '" . $serviceDescription . "' ";
-        $result = $this->DB->query($query);
+            "AND h.host_name LIKE ? " .
+            "AND s.service_description LIKE ? ");
+        $result = $this->DB->execute($statement, array($hostName, $serviceDescription));
         while ($row = $result->fetchRow()) {
             return $row["service_id"];
         }
@@ -85,14 +85,14 @@ class procedures_Proxy
         /*
          * Get Services attached to hostgroups
          */
-        $query = "SELECT s.service_id " .
+        $statement = $this->DB->prepare("SELECT s.service_id " .
             "FROM hostgroup_relation hgr, host h, service s, host_service_relation hsr " .
             "WHERE hgr.host_host_id = h.host_id " .
             "AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id " .
-            "AND h.host_name LIKE '" . $hostName . "' " .
+            "AND h.host_name LIKE ? " .
             "AND service_id = hsr.service_service_id " .
-            "AND service_description LIKZ '" . $serviceDescription . "' ";
-        $result = $this->DB->query($query);
+            "AND service_description LIKE ? ");
+        $result = $this->DB->execute($statement, array($hostName, $serviceDescription));
         while ($row = $result->fetchRow()) {
             return $row["service_id"];
         }
