@@ -47,6 +47,7 @@ class Contact implements UserInterface, ContactInterface
     public const ROLE_HOST_SUBMIT_RESULT = 'ROLE_HOST_SUBMIT_RESULT';
     public const ROLE_HOST_ADD_COMMENT = 'ROLE_HOST_ADD_COMMENT';
     public const ROLE_SERVICE_ADD_COMMENT = 'ROLE_SERVICE_ADD_COMMENT';
+    public const ROLE_DISPLAY_COMMAND = 'ROLE_DISPLAY_COMMAND';
 
     // user pages access
     public const ROLE_CONFIGURATION_HOSTS_WRITE = 'ROLE_CONFIGURATION_HOSTS_HOSTS_RW';
