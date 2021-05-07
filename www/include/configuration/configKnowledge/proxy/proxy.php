@@ -63,32 +63,41 @@ require_once $modules_path . 'functions.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
 try {
-    $conf = getWikiConfig($pearDB);
+    $wikiConf = getWikiConfig($pearDB);
 } catch (\Exception $e) {
     echo $e->getMessage();
     exit();
 }
 
-$WikiURL = $conf['kb_wiki_url'];
+$wikiURL = $wikiConf['kb_wiki_url'];
 $proxy = new ProceduresProxy($pearDB);
 
 /*
  * Check if user want host or service procedures
  */
 $url = null;
-if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
-    $url = $proxy->getServiceUrl($_GET["host_name"], $_GET["service_description"]);
-} elseif (isset($_GET["host_name"])) {
-    $url = $proxy->getHostUrl($_GET["host_name"]);
+
+if (isset($_GET["host_name"])) {
+    $hostName = filter_var($_GET['host_name'], FILTER_SANITIZE_STRING);
+}
+if (isset($_GET["service_description"])) {
+    $serviceDescription = filter_var($_GET['service_description'], FILTER_SANITIZE_STRING);
+}
+
+if (!empty($hostName) && !empty($serviceDescription)) {
+    $url = $proxy->getServiceUrl($hostName, $serviceDescription);
+} elseif (!empty($hostName)) {
+    $url = $proxy->getHostUrl($hostName);
 }
 
 if (!empty($url)) {
     header("Location: " . $url);
+} elseif (!empty($hostName) && !empty($serviceDescription)) {
+    header("Location: $wikiURL/?title=Service_:_" . $hostName . "_/_" . $serviceDescription);
+} elseif (!empty($hostname)) {
+    header("Location: $wikiURL/?title=Host_:_" . $hostName);
 } else {
-    if (isset($_GET["host_name"]) && isset($_GET["service_description"])) {
-        header("Location: $WikiURL/?title=Service_:_" . $_GET["host_name"] . "_/_" . $_GET["service_description"]);
-    } else {
-        header("Location: $WikiURL/?title=Host_:_" . $_GET["host_name"]);
-    }
+    header("Location: " . $wikiURL);
 }
+
 exit();
