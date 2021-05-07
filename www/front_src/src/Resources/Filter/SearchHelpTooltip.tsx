@@ -132,7 +132,7 @@ const SearchHelpTooltip = (): JSX.Element => {
         size="small"
         onClick={toggleTooltip}
       >
-        <IconHelp />
+        <IconHelp fontSize="small" />
       </IconButton>
     </Tooltip>
   );

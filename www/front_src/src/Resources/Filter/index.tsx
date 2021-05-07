@@ -27,6 +27,7 @@ import SearchHelpTooltip from './SearchHelpTooltip';
 import SaveFilter from './Save';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
 import Criterias from './Criterias';
+import FilterSummary from './Summary';
 import {
   standardFilterById,
   unhandledProblemsFilter,
@@ -119,6 +120,12 @@ const Filter = (): JSX.Element => {
       expandLabel={labelShowCriteriasFilters}
       expandableFilters={
         <Grid container item alignItems="center" spacing={1}>
+          <Criterias />
+        </Grid>
+      }
+      expanded={filterExpanded}
+      filters={
+        <Grid container item alignItems="center" spacing={1} wrap="nowrap">
           <Grid item>
             <SaveFilter />
           </Grid>
@@ -128,32 +135,41 @@ const Filter = (): JSX.Element => {
             ) : (
               <SelectFilter
                 ariaLabel={t(labelStateFilter)}
-                className={classes.filterSelect}
                 options={options.map(pick(['id', 'name', 'type']))}
                 selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
                 onChange={changeFilter}
               />
             )}
           </Grid>
-          <Grid item>
-            <TextField
-              EndAdornment={SearchHelpTooltip}
-              placeholder={t(labelSearch)}
-              value={nextSearch || ''}
-              onChange={prepareSearch}
-              onKeyDown={requestSearchOnEnterKey}
-            />
-          </Grid>
-          <Grid item>
-            <IconButton title={t(labelSearch)} onClick={requestSearch}>
-              <SearchIcon />
-            </IconButton>
-          </Grid>
-          <Criterias />
+          {filterExpanded ? (
+            <>
+              <Grid item>
+                <SearchField
+                  EndAdornment={SearchHelpTooltip}
+                  placeholder={t(labelSearch)}
+                  value={nextSearch || ''}
+                  onChange={prepareSearch}
+                  onKeyDown={requestSearchOnEnterKey}
+                />
+              </Grid>
+              <Grid item>
+                <Button
+                  color="primary"
+                  size="small"
+                  variant="text"
+                  onClick={requestSearch}
+                >
+                  {t(labelSearch)}
+                </Button>
+              </Grid>
+            </>
+          ) : (
+            <Grid item>
+              <FilterSummary />
+            </Grid>
+          )}
         </Grid>
       }
-      expanded={filterExpanded}
-      filters={<Typography variant="body1">{t(labelFilter)}</Typography>}
       memoProps={memoProps}
       onExpand={toggleFilterExpanded}
     />
