@@ -69,9 +69,8 @@ class ProceduresProxy
         $statement = $this->DB->prepare("SELECT host_id FROM host WHERE host_name LIKE :hostName");
         $statement->bindValue(':hostName', $hostName, \PDO::PARAM_STR);
         $statement->execute();
-        $row = $statement->fetch();
         $hostId = 0;
-        if ($row["host_id"]) {
+        if ($row = $statement->fetch()) {
             $hostId = $row["host_id"];
         }
         return $hostId;
