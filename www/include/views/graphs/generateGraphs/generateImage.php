@@ -95,7 +95,7 @@ if (!empty($token) && !empty($userName)) {
 
 $index = 0;
 if (!empty($_GET['index'])) {
-    filter_var($_GET['index'], FILTER_VALIDATE_INT);
+    $index = filter_var($_GET['index'], FILTER_VALIDATE_INT);
 }
 $pearDBO = new CentreonDB("centstorage");
 
