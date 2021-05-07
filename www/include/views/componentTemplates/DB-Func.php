@@ -53,31 +53,32 @@ function DsHsrTestExistence($name = null)
             $formValues['host_id'] = (int) $matches[1];
             $formValues['service_id'] = (int) $matches[2];
         } else {
-            throw new \InvalidArgumentException('chartId must be a combination of integers');
+            throw new \InvalidArgumentException('host_id must be a combination of integers');
         }
     }
 
-    if (
-        (array_key_exists('host_id', $formValues) && !empty($formValues['host_id'])) &&
-        (array_key_exists('service_id', $formValues) && !empty($formValues['service_id']))
-    ) {
-        $query .= ' AND host_id = :host_id AND service_id = :service_id';
+    if (!empty($formValues['host_id']) && !empty($formValues['service_id'])) {
+        $query .= ' AND host_id = :hostId AND service_id = :serviceId';
+        $hostId = (filter_var($formValues['host_id'], FILTER_VALIDATE_INT) === false)
+            ? null
+            : (int) $formValues['host_id'];
+        $serviceId = (filter_var($formValues['service_id'], FILTER_VALIDATE_INT) === false)
+            ? null
+            : (int) $formValues['service_id'];
     } else {
-        $query .= ' AND host_id IS NULL  AND service_id IS NULL';
-    }
-
-    if (!empty($formValues)) {
-        $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
+        $query .= ' AND host_id IS NULL AND service_id IS NULL';
     }
 
     $stmt = $pearDB->prepare($query);
 
     $stmt->bindValue(':ds_name', $name, \PDO::PARAM_STR);
 
-    foreach ($bindParams as $token => list($paramType, $value)) {
-        $stmt->bindValue($token, $value, $paramType);
+    if (!empty($hostId) && !empty($serviceId)) {
+        $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $stmt->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
     }
 
+    $stmt->execute();
     $compo = $stmt->fetch();
     if ($stmt->rowCount() >= 1 && $compo['compo_id'] === $formValues['compo_id']) {
         return true;
@@ -93,6 +94,7 @@ function NameHsrTestExistence($name = null)
     global $pearDB, $form;
     $formValues = [];
     $bindParams = [];
+
     if (isset($form)) {
         $formValues = $form->getSubmitValues();
     }
@@ -106,26 +108,27 @@ function NameHsrTestExistence($name = null)
         }
     }
 
-    if (
-        (array_key_exists('host_id', $formValues) && !empty($formValues['host_id'])) &&
-        (array_key_exists('service_id', $formValues) && !empty($formValues['service_id']))
-    ) {
-        $query .= ' AND host_id = :host_id AND service_id = :service_id';
+    if (!empty($formValues['host_id']) && !empty($formValues['service_id'])) {
+        $query .= ' AND host_id = :hostId AND service_id = :serviceId';
+        $hostId = (filter_var($formValues['host_id'], FILTER_VALIDATE_INT) === false)
+            ? null
+            : (int) $formValues['host_id'];
+        $serviceId = (filter_var($formValues['service_id'], FILTER_VALIDATE_INT) === false)
+            ? null
+            : (int) $formValues['service_id'];
     } else {
         $query .= ' AND host_id IS NULL  AND service_id IS NULL';
-    }
-
-    if (!empty($formValues)) {
-        $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
     }
 
     $stmt = $pearDB->prepare($query);
 
     $stmt->bindValue(':name', $name, \PDO::PARAM_STR);
 
-    foreach ($bindParams as $token => list($paramType, $value)) {
-        $stmt->bindValue($token, $value, $paramType);
+    if (!empty($hostId) && !empty($serviceId)) {
+        $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $stmt->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
     }
+
     $stmt->execute();
     $compo = $stmt->fetch();
     if ($stmt->rowCount() >= 1 && $compo['compo_id'] === $formValues['compo_id']) {
@@ -243,17 +246,7 @@ function insertComponentTemplate()
         $formValues['ds_color_area'] = $formValues['ds_color_line'];
     }
 
-    if (!empty($formValues['host_id'])) {
-        if (preg_match('/([0-9]+)-([0-9]+)/', $formValues['host_id'], $matches)) {
-            $formValues['host_id'] = (int) $matches[1];
-            $formValues['service_id'] = (int) $matches[2];
-        } else {
-            throw new \InvalidArgumentException('chartId must be a combination of integers');
-        }
-    } else {
-        $formValues['host_id'] = null;
-        $formValues['service_id'] = null;
-    }
+    list($formValues['host_id'], $formValues['service_id']) = parseHostIdPostParameter($formValues['host_id']);
 
     $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
 
@@ -268,7 +261,7 @@ function insertComponentTemplate()
     $query .= 'VALUES (NULL, ' . implode(', ', array_keys($bindParams)) . ')';
     $stmt = $pearDB->prepare($query);
     foreach ($bindParams as $token => list($paramType, $value)) {
-            $stmt->bindValue($token, $value, $paramType);
+        $stmt->bindValue($token, $value, $paramType);
     }
     $stmt->execute();
     defaultOreonGraph();
@@ -311,8 +304,8 @@ function updateComponentTemplate($compoId = null)
     $formValues = $form->getSubmitValues();
 
     if (
-        (isset($formValues['ds_filled']) && $formValues['ds_filled'] === '1') &&
-        (!isset($formValues['ds_color_area']) || empty($formValues['ds_color_area']))
+        (array_key_exists('ds_filled', $formValues) && $formValues['ds_filled'] === '1') &&
+        (!array_key_exists('ds_color_area', $formValues) || empty($formValues['ds_color_area']))
     ) {
         $formValues['ds_color_area'] = $formValues['ds_color_line'];
     }
@@ -364,15 +357,15 @@ function sanitizeFormComponentTemplatesParameters(array $ret): array
                 if (!empty($inputValue)) {
                     $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
                     if (empty($inputValue)) {
-                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR => null];
+                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR, null];
                     } else {
-                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
+                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR, $inputValue];
                     }
                 }
                 break;
             case 'ds_color_line_mode':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1'])
+                    \PDO::PARAM_STR, in_array($inputValue[$inputName], ['0', '1'])
                         ? $inputValue[$inputName]
                         : '0'
                 ];
@@ -381,7 +374,7 @@ function sanitizeFormComponentTemplatesParameters(array $ret): array
             case 'ds_min':
             case 'ds_minmax_int':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1'])
+                    \PDO::PARAM_STR, in_array($inputValue, ['0', '1'])
                         ? $inputValue
                         : null
                 ];
@@ -394,14 +387,14 @@ function sanitizeFormComponentTemplatesParameters(array $ret): array
             case 'ds_filled':
             case 'ds_hidecurve':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1'])
+                    \PDO::PARAM_STR, in_array($inputValue, ['0', '1'])
                         ? $inputValue
                         : '0'
                 ];
                 break;
             case 'ds_jumpline':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1', '2', '3'])
+                    \PDO::PARAM_STR, in_array($inputValue, ['0', '1', '2', '3'])
                         ? $inputValue
                         : '0'
                 ];
@@ -411,14 +404,14 @@ function sanitizeFormComponentTemplatesParameters(array $ret): array
             case 'ds_tickness':
             case 'ds_order':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                    \PDO::PARAM_INT, (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
                         ? null
                         : (int) $inputValue
                 ];
                 break;
             case 'default_tpl1':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                    \PDO::PARAM_INT, (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
                         ? null
                         : (int) $inputValue
                 ];

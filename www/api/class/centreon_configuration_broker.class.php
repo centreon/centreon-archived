@@ -89,17 +89,16 @@ class CentreonConfigurationBroker extends CentreonConfigurationObjects
          */
         $libDir = __DIR__ . "/../../../GPL_LIB";
         $smartyDir = __DIR__ . '/../../../vendor/smarty/smarty/';
-        require_once $smartyDir . 'libs/Smarty.class.php';
-        $tpl = new \Smarty();
-        $tpl->compile_dir = $libDir . '/SmartyCache/compile';
-        $tpl->config_dir = $libDir . '/SmartyCache/config';
-        $tpl->cache_dir = $libDir . '/SmartyCache/cache';
-        $tpl->template_dir = _CENTREON_PATH_ . '/www/include/configuration/configCentreonBroker/';
-        $tpl->plugins_dir[] = $libDir . '/smarty-plugins';
-
-        $tpl->caching = 0;
-        $tpl->compile_check = true;
-        $tpl->force_compile = true;
+        require_once $smartyDir . 'libs/SmartyBC.class.php';
+        $tpl = new \SmartyBC();
+        $tpl->setTemplateDir(_CENTREON_PATH_ . '/www/include/configuration/configCentreonBroker/');
+        $tpl->setCompileDir($libDir . '/SmartyCache/compile');
+        $tpl->setConfigDir($libDir . '/SmartyCache/config');
+        $tpl->setCacheDir($libDir . '/SmartyCache/cache');
+        $tpl->addPluginsDir($libDir . '/smarty-plugins');
+        $tpl->loadPlugin('smarty_function_eval');
+        $tpl->setForceCompile(true);
+        $tpl->setAutoLiteral(false);
 
         /*
          * Apply a template definition
