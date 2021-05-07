@@ -4,7 +4,7 @@
 OPTIONS=":t:v:r:l:"
 declare -A SUPPORTED_LOG_LEVEL=([DEBUG]=0 [INFO]=1 [WARN]=2 [ERROR]=3)
 declare -A SUPPORTED_TOPOLOGY=([central]=1 [poller]=1)
-declare -A SUPPORTED_VERSION=([21.10]=1)
+declare -A SUPPORTED_VERSION=([21.04]=1 [21.10]=1)
 declare -A SUPPORTED_REPOSITORY=([testing]=1 [unstable]=1 [stable]=1)
 default_timeout_in_sec=5
 script_short_name="$(basename $0)"
@@ -24,6 +24,7 @@ runtime_log_level=${ENV_LOG_LEVEL:-"INFO"}      #Default log level to be used
 selinux_mode=${ENV_SELINUX_MODE:-"permissive"}  #Default SELinux mode to be used
 wizard_autoplay=${ENV_WIZARD_AUTOPLAY:-"false"} #Default the install wizard is not run auto
 central_ip=${ENV_CENTRAL_IP:-$default_ip}       #Default central ip is the first of hostname -I
+ultime_dbg_mode=${ENV_DEBUG_MODE:-"false"}      #Default log/debugs directives not enabled
 
 function genpasswd() {
 	local _pwd
@@ -67,7 +68,6 @@ detected_os_version=
 # Variables will be defined later according to the target system OS
 BASE_PACKAGES=
 CENTREON_SELINUX_PACKAGES=
-RELEASE_RPM_URL=
 PHP_BIN=
 PHP_ETC=
 OS_SPEC_SERVICES=
@@ -313,8 +313,7 @@ function set_required_prerequisite() {
 			BASE_PACKAGES=(oraclelinux-release-el7)
 			;;
 		esac
-		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el7.centos.noarch.rpm"
-		log "INFO" "Install Centreon from ${RELEASE_RPM_URL}"
+		EL_MAJOR_VERSION="el7"
 		PHP_BIN="/opt/rh/rh-php73/root/bin/php"
 		PHP_ETC="/etc/opt/rh/rh-php73/php.d/"
 		OS_SPEC_SERVICES="rh-php73-php-fpm httpd24-httpd"
@@ -331,7 +330,7 @@ function set_required_prerequisite() {
 	8*)
 		log "INFO" "Setting specific part for v8 ($detected_os_version)"
 
-		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el8.noarch.rpm"
+		EL_MAJOR_VERSION="el8"
 		PHP_BIN="/bin/php"
 		PHP_ETC="/etc/php.d"
 		OS_SPEC_SERVICES="php-fpm httpd"
@@ -496,16 +495,9 @@ function install_centreon_repo() {
 
 	log "INFO" "Centreon official repositories installation..."
 	$PKG_MGR -q clean all
-
-	rpm -q centreon-release-$CENTREON_MAJOR_VERSION >/dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		$PKG_MGR -q install -y $RELEASE_RPM_URL
-		if [ $? -ne 0 ]; then
-			error_and_exit "Could not install Centreon repository"
-		fi
-	else
-		log "INFO" "Centreon repository seems to be already installed"
-	fi
+	yum install -y yum-utils
+	yum-config-manager --add-repo \
+		"https://raw.githubusercontent.com/centreon/centreon/master/varinstall/yum-repos/centreon-${CENTREON_MAJOR_VERSION}-${EL_MAJOR_VERSION}.repo"
 }
 #========= end of function install_centreon_repo()
 
@@ -694,6 +686,58 @@ function update_after_installation() {
 }
 #========= end of function update_after_installation()
 
+#========= begin of function enable_debug_mode()
+function enable_debug_mode() {
+	log "INFO" "Enabling advenced logging and debug options"
+
+	if [ "$wizard_autoplay" == "true" ]; then
+		mysql -u root centreon <<-EOF
+			DELETE FROM options WHERE options.key IN ('debug_path','debug_auth','debug_nagios_import','debug_rrdtool','debug_ldap_import','debug_sql','debug_gorgone','debug_centreontrapd');
+			INSERT INTO options VALUES ('debug_path','/var/log/centreon/');
+			INSERT INTO options VALUES ('debug_auth','1');
+			INSERT INTO options VALUES ('debug_nagios_import','1');
+			INSERT INTO options VALUES ('debug_rrdtool','1');
+			INSERT INTO options VALUES ('debug_ldap_import','1');
+			INSERT INTO options VALUES ('debug_sql','1');
+			INSERT INTO options VALUES ('debug_gorgone','1');
+			INSERT INTO options VALUES ('debug_centreontrapd','1');
+EOF
+	fi
+
+	mkdir -p /var/log/mysql
+	chown mysql:mysql /var/log/mysql
+	printf "\n[mariadb]\nlog_output=FILE\ngeneral_log\ngeneral_log_file=/var/log/mysql/mariadb.log\nlog_error\nlog_error=/var/log/mysql/mariadb.err\n" >> /etc/my.cnf.d/custom_log.cnf
+	printf "\nslow_query_log = 1\nslow-query_log_file = /var/log/mysql/slow.log\nlong_query_time = 2" >> /etc/my.cnf.d/centreon.cnf
+	systemctl restart mysqld
+
+	# broker & engine core dumps
+	sed -i "s/#DumpCore=yes/DumpCore=yes/g" /etc/systemd/system.conf
+	sed -i "s/#DefaultLimitCORE=/DefaultLimitCORE=infinity/g" /etc/systemd/system.conf
+	printf "\nkernel.core_pattern = |/usr/lib/systemd/systemd-coredump %%p %%u %%g %%s %%t %%e \nfs.suid_dumpable=2\n" >> /etc/sysctl.conf
+	sed -i "s/User=centreon-broker/User=centreon-broker\nLimitCORE=infinity/g" /usr/lib/systemd/system/cbd.service
+	sed -i "s/User=centreon-engine/User=centreon-engine\nLimitCORE=infinity/g" /usr/lib/systemd/system/centengine.service
+	sysctl -p -q
+	systemctl daemon-reexec
+
+	echo '{
+		"console": false,
+		"log_path": "/var/log/centreon-broker",
+		"loggers": [
+			{ "name": "core", "level": "debug" },
+			{ "name": "sql", "level": "debug" },
+			{ "name": "bbdo", "level": "debug" },
+			{ "name": "tcp", "level": "debug" },
+			{ "name": "tls", "level": "debug" },
+			{ "name": "lua", "level": "debug" },
+			{ "name": "perfdata", "level": "debug" }
+			{ "name": "bam", "level": "debug" }
+		]
+	}' > /etc/centreon-broker/log-config.json
+
+	systemctl restart centreon
+}
+#========= end of function enable_debug_mode()
+
 #####################################################
 ################ MAIN SCRIPT EXECUTION ##############
 
@@ -725,9 +769,13 @@ esac
 
 ## Display all configured parameters
 log "INFO" "Start to execute operation [$operation] with following configuration parameters:"
-log "INFO" " topology   : \t[$topology]"
-log "INFO" " version    : \t[$version]"
-log "INFO" " repository : \t[$repo]"
+log "INFO" " topology        : \t[$topology]"
+log "INFO" " version         : \t[$version]"
+log "INFO" " repository      : \t[$repo]"
+log "INFO" " selinux mode    : \t[$selinux_mode]"
+log "INFO" " wizard autoplay : \t[$wizard_autoplay]"
+log "INFO" " central ip      : \t[$central_ip]"
+log "INFO" " debug mode      : \t[$ultime_dbg_mode]"
 
 log "WARN" "It will start in [$default_timeout_in_sec] seconds. If you don't want to wait, press any key to continue or Ctrl-C to exit"
 pause "" $default_timeout_in_sec
@@ -768,6 +816,10 @@ install)
 		log "INFO" "Log in to Centreon web interface via the URL: http://$central_ip/centreon"
 	else
 		log "INFO" "Follow the steps described in Centreon documentation: $CENTREON_DOC_URL"
+	fi
+
+	if [ "$ultime_dbg_mode" == "true" ]; then
+		enable_debug_mode
 	fi
 
 	log "INFO" "Centreon [$topology] successfully installed !"

@@ -1,0 +1,63 @@
+[centreon-stable-noarch]
+name=Centreon open source software repository.
+baseurl=https://yum.centreon.com/standard/21.10/el7/stable/noarch/
+enabled=1
+gpgcheck=1
+gpgkey=https://download.centreon.com/static/gpg
+module_hotfixes=1
+
+[centreon-stable]
+name=Centreon open source software repository.
+baseurl=https://yum.centreon.com/standard/21.10/el7/stable/$basearch/
+enabled=1
+gpgcheck=1
+gpgkey=https://download.centreon.com/static/gpg
+module_hotfixes=1
+
+[centreon-testing-noarch]
+name=Centreon open source software repository. (UNSUPPORTED)
+baseurl=https://yum.centreon.com/standard/21.10/el7/testing/noarch/
+enabled=0
+gpgcheck=1
+gpgkey=https://download.centreon.com/static/gpg
+module_hotfixes=1
+
+[centreon-testing]
+name=Centreon open source software repository. (UNSUPPORTED)
+baseurl=https://yum.centreon.com/standard/21.10/el7/testing/$basearch/
+enabled=0
+gpgcheck=1
+gpgkey=https://download.centreon.com/static/gpg
+module_hotfixes=1
+
+[centreon-unstable-noarch]
+name=Centreon open source software repository. (UNSUPPORTED)
+baseurl=https://yum.centreon.com/standard/21.10/el7/unstable/noarch/
+enabled=0
+gpgcheck=1
+gpgkey=https://download.centreon.com/static/gpg
+module_hotfixes=1
+
+[centreon-unstable]
+name=Centreon open source software repository. (UNSUPPORTED)
+baseurl=https://yum.centreon.com/standard/21.10/el7/unstable/$basearch/
+enabled=0
+gpgcheck=1
+gpgkey=https://download.centreon.com/static/gpg
+module_hotfixes=1
+
+[centreon-canary-noarch]
+name=Centreon open source software repository. (UNSUPPORTED)
+baseurl=https://yum.centreon.com/standard/21.10/el7/canary/noarch/
+enabled=0
+gpgcheck=1
+gpgkey=https://download.centreon.com/static/gpg
+module_hotfixes=1
+
+[centreon-canary]
+name=Centreon open source software repository. (UNSUPPORTED)
+baseurl=https://yum.centreon.com/standard/21.10/el7/canary/$basearch/
+enabled=0
+gpgcheck=1
+gpgkey=https://download.centreon.com/static/gpg
+module_hotfixes=1
