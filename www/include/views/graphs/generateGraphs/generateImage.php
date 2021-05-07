@@ -52,14 +52,12 @@ session_write_close();
 $mySessionId = session_id();
 
 //checks for tokens
-$token = null;
 if (!empty($_GET['token'])) {
     $token = filter_var($_GET['token'], FILTER_SANITIZE_STRING);
 } elseif (!empty($_GET['akey'])) {
     $token = filter_var($_GET['akey'], FILTER_SANITIZE_STRING);
 }
 
-$userName = null;
 if (!empty($_GET['username'])) {
     $userName = filter_var($_GET['username'], FILTER_SANITIZE_STRING);
 }
@@ -101,9 +99,6 @@ if (!empty($_GET['index'])) {
 }
 $pearDBO = new CentreonDB("centstorage");
 
-$hostName = null;
-$serviceDescription = null;
-
 if (!empty($_GET['hostname'])) {
     $hostName = filter_var($_GET['hostname'], FILTER_SANITIZE_STRING);
 }
@@ -129,7 +124,6 @@ if (!empty($hostName) && !empty($serviceDescription)) {
     }
 }
 
-$chartId = null;
 if (!empty($_GET['chartId'])) {
     $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_STRING);
 }
