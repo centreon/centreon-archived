@@ -534,7 +534,12 @@ class CentreonAuthSSO extends CentreonAuth
      *
      * @return array|null
      */
-    public function getOpenIdConnectUserInfo(string $url, string $token, bool $verifyPeer, bool $debug): ?array
+    public function getOpenIdConnectUserInfo(
+        string $url,
+        string $token,
+        bool $verifyPeer,
+        bool $debug
+    ): ?array
     {
         $ch = curl_init($url);
         $authentication = "Authorization: Bearer " . trim($token);
