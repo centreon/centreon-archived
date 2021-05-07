@@ -66,7 +66,7 @@ class ProceduresProxy
      */
     private function getHostId($hostName)
     {
-        $statement = $this->DB->prepare("SELECT host_id FROM host WHERE host_name LIKE ':hostName'");
+        $statement = $this->DB->prepare("SELECT host_id FROM host WHERE host_name LIKE :hostName");
         $statement->bindValue(':hostName', $hostName, \PDO::PARAM_STR);
         $statement->execute();
         $row = $statement->fetch();
