@@ -50,19 +50,31 @@ session_start();
 session_write_close();
 
 $mySessionId = session_id();
-/**
- * Checks for token
- */
-if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username'])) {
-    $token = isset($_GET['token']) ? $_GET['token'] : $_GET['akey'];
-    $DBRESULT = $pearDB->prepare("SELECT * FROM `contact`
-                                WHERE `contact_alias` = ?
-                                AND `contact_activate` = '1'
-                                AND `contact_autologin_key` = ? LIMIT 1");
-    $DBRESULT = $pearDB->execute($DBRESULT, array($_GET["username"], $token));
-    if ($DBRESULT->numRows()) {
-        $row = $DBRESULT->fetchRow();
-        $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
+
+//checks for tokens
+if (!empty($_GET['token'])) {
+    $token = filter_var($_GET['token'], FILTER_SANITIZE_STRING);
+} elseif (!empty($_GET['akey'])) {
+    $token = filter_var($_GET['akey'], FILTER_SANITIZE_STRING);
+}
+
+if (!empty($_GET['username'])) {
+    $userName = filter_var($_GET['username'], FILTER_SANITIZE_STRING);
+}
+
+if (!empty($token) && !empty($userName)) {
+    $statement = $pearDB->prepare(
+        "SELECT * FROM `contact`
+        WHERE `contact_alias` = ?
+        AND `contact_activate` = '1'
+        AND `contact_autologin_key` = ? LIMIT 1"
+    );
+    $statement = $pearDB->execute($statement, array($userName, $token));
+    if ($statement->numRows()) {
+        $row = $statement->fetchRow();
+        $res = $pearDB->query(
+            "SELECT session_id FROM session WHERE session_id = '" . $mySessionId . "'"
+        );
         if (!$res->numRows()) {
             // security fix - regenerate the sid to prevent session fixation
             session_regenerate_id(true);
@@ -81,41 +93,65 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
     }
 }
 
-$index = isset($_GET['index']) ? $_GET['index'] : 0;
+$index = 0;
+if (!empty($_GET['index'])) {
+    $index = filter_var($_GET['index'], FILTER_VALIDATE_INT);
+}
 $pearDBO = new CentreonDB("centstorage");
-if (isset($_GET["hostname"]) && isset($_GET["service"])) {
-    $DBRESULT = $pearDBO->prepare("SELECT `id`
-                                 FROM index_data
-                                 WHERE host_name = ?
-                                 AND service_description = ?
-                                 LIMIT 1");
-    $DBRESULT = $pearDBO->execute($DBRESULT, array($_GET["hostname"], $_GET["service"]));
-    if ($DBRESULT->numRows()) {
-        $res = $DBRESULT->fetchRow();
+
+if (!empty($_GET['hostname'])) {
+    $hostName = filter_var($_GET['hostname'], FILTER_SANITIZE_STRING);
+}
+
+if (!empty($_GET['service'])) {
+    $serviceDescription = filter_var($_GET['service'], FILTER_SANITIZE_STRING);
+}
+
+if (!empty($hostName) && !empty($serviceDescription)) {
+    $statement = $pearDBO->prepare(
+        "SELECT `id`
+        FROM index_data
+        WHERE host_name = ?
+        AND service_description = ?
+        LIMIT 1"
+    );
+    $statement = $pearDBO->execute($statement, array($hostName, $serviceDescription));
+    if ($statement->numRows()) {
+        $res = $statement->fetchRow();
         $index = $res["id"];
     } else {
         die('Resource not found');
     }
 }
-if (isset($_GET['chartId'])) {
-    list($hostId, $serviceId) = explode('_', $_GET['chartId']);
-    if (false === isset($hostId) || false === isset($serviceId)) {
+
+if (!empty($_GET['chartId'])) {
+    $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_STRING);
+}
+
+if (!empty($chartId)) {
+    if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
+        $hostId = (int) $matches[1];
+        $serviceId = (int) $matches[2];
+    } else {
         die('Resource not found');
+        throw new \InvalidArgumentException('chartId must be a combination of integers');
     }
-    $res = $pearDBO->prepare('SELECT id FROM index_data WHERE host_id = ? AND service_id = ?');
-    $res = $pearDBO->execute($res, array($hostId, $serviceId)); 
-    if ($res->numRows()) {
-        $row = $res->fetchRow();
-        $index = $row['id'];     
+    $statement = $pearDBO->prepare(
+        'SELECT id FROM index_data WHERE host_id = ? AND service_id = ?'
+    );
+    $statement = $pearDBO->execute($statement, array($hostId, $serviceId)); 
+    if ($statement->numRows()) {
+        $row = $statement->fetchRow();
+        $index = $row['id'];
     } else {
         die('Resource not found');
     }
 }
 
-$sql = "SELECT c.contact_id, c.contact_admin 
+$sql = "SELECT c.contact_id, c.contact_admin
         FROM session s, contact c
-        WHERE s.session_id = '".$mySessionId."'
-        AND s.user_id = c.contact_id 
+        WHERE s.session_id = '" . $mySessionId . "'
+        AND s.user_id = c.contact_id
         LIMIT 1";
 $res = $pearDB->query($sql);
 if (!$res->numRows()) {
