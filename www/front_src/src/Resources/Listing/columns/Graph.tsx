@@ -14,6 +14,7 @@ import useMousePosition, {
 } from '../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
 import { ResourceDetails } from '../../Details/models';
 import { Resource } from '../../models';
+import useTimePeriod from '../../Graph/Performance/TimePeriods/useTimePeriod';
 
 import HoverChip from './HoverChip';
 import IconColumn from './IconColumn';
@@ -33,6 +34,7 @@ interface GraphProps {
 }
 
 const Graph = ({ row, endpoint }: GraphProps): JSX.Element => {
+  const { periodQueryParameters } = useTimePeriod({});
   const mousePositionProps = useMousePosition();
 
   return (
@@ -40,7 +42,7 @@ const Graph = ({ row, endpoint }: GraphProps): JSX.Element => {
       <PerformanceGraph
         limitLegendRows
         displayTitle={false}
-        endpoint={endpoint}
+        endpoint={`${endpoint}${periodQueryParameters}`}
         graphHeight={150}
         resource={row}
         timeline={[]}

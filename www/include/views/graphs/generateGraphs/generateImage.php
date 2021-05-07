@@ -50,21 +50,30 @@ session_start();
 session_write_close();
 
 $mySessionId = session_id();
-/**
- * Checks for token
- */
-if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username'])) {
-    $token = $_GET['token'] ?? $_GET['akey'];
-    $dbResult = $pearDB->prepare(
-        "SELECT contact_id FROM `contact`
-        WHERE `contact_alias` = ?
+
+// checks for token
+if (!empty($_GET['username'])) {
+    $userName = filter_var($_GET['username'] ?? null, FILTER_SANITIZE_STRING);
+}
+
+$token = filter_var(
+    $_GET['token'] ?? $_GET['akey'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (!empty($userName) && !empty($token)) {
+    $query = "SELECT contact_id FROM `contact`
+        WHERE `contact_alias` = :contact_alias
         AND `contact_activate` = '1'
-        AND `contact_autologin_key` = ? LIMIT 1"
-    );
-    $pearDB->execute($dbResult, array($_GET["username"], $token));
-    if ($dbResult->rowCount()) {
-        $row = $dbResult->fetch();
-        $res = $pearDB->prepare("SELECT session_id FROM session WHERE session_id = :sessionId");
+        AND `contact_autologin_key` = :token LIMIT 1";
+    $statement = $pearDB->prepare($query);
+    $statement->bindValue(':contact_alias', $userName, \PDO::PARAM_STR);
+    $statement->bindValue(':token', $token, \PDO::PARAM_STR);
+
+    $statement->execute();
+
+    if ($row = $statement->fetch()) {
+        $res = $pearDB->prepare('SELECT session_id FROM session WHERE session_id = :sessionId');
         $res->bindValue(':sessionId', $mySessionId, \PDO::PARAM_STR);
         $res->execute();
         if (!$res->rowCount()) {
@@ -73,51 +82,82 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
             session_regenerate_id(true);
             $mySessionId = session_id();
 
-            $dbResult = $pearDB->prepare(
-                "INSERT INTO `session` (`session_id`, `user_id`, `current_page`, `last_reload`, `ip_address`)
-                VALUES (?, ?, NULL, ?, ?)"
-            );
-            $pearDB->execute(
-                $dbResult,
-                array($mySessionId, $row["contact_id"], time(), $_SERVER["REMOTE_ADDR"])
-            );
+            $query = 'INSERT INTO `session` (`session_id`, `user_id`, `current_page`, `last_reload`, `ip_address`)
+                VALUES (:sessionId, :contactId, NULL, :lastReload, :ipAddress)';
+
+            $statement = $pearDB->prepare($query);
+            $statement->bindValue(':contactId', $row['contact_id'], \PDO::PARAM_INT);
+            $statement->bindValue(':sessionId', $mySessionId, \PDO::PARAM_STR);
+            $statement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
+            $statement->bindValue(':ipAddress', $_SERVER['REMOTE_ADDR'], \PDO::PARAM_STR);
+            $statement->execute();
         }
     } else {
         die('Invalid token');
     }
 }
 
-$index = $_GET['index'] ?? 0;
+$index = filter_var(
+    $_GET['index'] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
+// Checking hostName and service
+if (!empty($_GET['hostname'])) {
+    $hostName = filter_var($_GET['hostname'], FILTER_SANITIZE_STRING);
+}
+
+if (!empty($_GET['service'])) {
+    $serviceDescription = filter_var($_GET['service'], FILTER_SANITIZE_STRING);
+}
+
 $pearDBO = new CentreonDB("centstorage");
-if (isset($_GET["hostname"]) && isset($_GET["service"])) {
-    $dbResult = $pearDBO->prepare(
+if (!empty($hostName) && !empty($serviceDescription)) {
+    $statement = $pearDBO->prepare(
         "SELECT `id`
         FROM index_data
-        WHERE host_name = ?
-        AND service_description = ?
+        WHERE host_name = :hostName
+        AND service_description = :serviceDescription
         LIMIT 1"
     );
-    $pearDBO->execute($dbResult, array($_GET["hostname"], $_GET["service"]));
-    if ($dbResult->rowCount()) {
-        $res = $dbResult->fetch();
+
+    $statement->bindValue(':hostName', $hostName, \PDO::PARAM_STR);
+    $statement->bindValue(':serviceDescription', $serviceDescription, \PDO::PARAM_STR);
+    $statement->execute();
+    if ($res = $statement->fetch()) {
         $index = $res["id"];
     } else {
         die('Resource not found');
     }
 }
-if (isset($_GET['chartId'])) {
-    list($hostId, $serviceId) = explode('_', $_GET['chartId']);
-    if (!isset($hostId) || !isset($serviceId)) {
-        die('Resource not found');
-    }
-    $res = $pearDBO->prepare('SELECT id FROM index_data WHERE host_id = ? AND service_id = ?');
-    $pearDBO->execute($res, array($hostId, $serviceId));
-    if ($res->rowCount()) {
-        $row = $res->fetch();
-        $index = $row['id'];
+
+$chartId = null;
+
+if (!empty($_GET['chartId'])) {
+    $chartId = filter_var($_GET['chartId'], FILTER_SANITIZE_STRING);
+}
+
+if (!empty($chartId)) {
+    if (preg_match('/([0-9]+)_([0-9]+)/', $chartId, $matches)) {
+        $hostId = (int) $matches[1];
+        $serviceId = (int) $matches[2];
     } else {
-        die('Resource not found');
+        throw new \InvalidArgumentException('chartId must be a combination of integers');
     }
+}
+
+$statement = $pearDBO->prepare(
+    'SELECT id FROM index_data WHERE host_id = :hostId AND service_id = :serviceId'
+);
+$statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+$statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+
+$statement->execute();
+
+if ($row = $statement->fetch()) {
+    $index = $row['id'];
+} else {
+    die('Resource not found');
 }
 
 $res = $pearDB->prepare(
@@ -129,6 +169,7 @@ $res = $pearDB->prepare(
 );
 $res->bindValue(':sessionId', $mySessionId, \PDO::PARAM_STR);
 $res->execute();
+
 if (!$res->rowCount()) {
     die('Unknown user');
 }

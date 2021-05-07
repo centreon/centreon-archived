@@ -108,15 +108,15 @@ $subS = $form->addElement(
  *  Smarty template
  */
 
-$tpl = new Smarty();
-$tpl->template_dir = $path;
-$tpl->compile_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/compile";
-$tpl->config_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/config";
-$tpl->cache_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/cache";
-$tpl->plugins_dir[] = _CENTREON_PATH_ . "/GPL_LIB/smarty-plugins";
-$tpl->caching = 0;
-$tpl->compile_check = true;
-$tpl->force_compile = true;
+$tpl = new \SmartyBC();
+$tpl->setTemplateDir($path);
+$tpl->setCompileDir(_CENTREON_PATH_ . '/GPL_LIB/SmartyCache/compile');
+$tpl->setConfigDir(_CENTREON_PATH_ . '/GPL_LIB/SmartyCache/config');
+$tpl->setCacheDir(_CENTREON_PATH_ . '/GPL_LIB/SmartyCache/cache');
+$tpl->addPluginsDir(_CENTREON_PATH_ . '/GPL_LIB/smarty-plugins');
+$tpl->loadPlugin('smarty_function_eval');
+$tpl->setForceCompile(true);
+$tpl->setAutoLiteral(false);
 
 $tpl->assign('nb_arg', $nb_arg);
 $dummyTab = array();
