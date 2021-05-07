@@ -87,7 +87,7 @@ if (!empty($token) && !empty($userName)) {
             );
             $DBRESULT = $pearDB->execute(
                 $DBRESULT,
-                array(($mySessionId, $row["contact_id"], time(), $_SERVER["REMOTE_ADDR"])
+                array($mySessionId, $row["contact_id"], time(), $_SERVER["REMOTE_ADDR"])
             );
         }
     } else {
