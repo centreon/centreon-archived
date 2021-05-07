@@ -66,12 +66,11 @@ class ProceduresProxy
      */
     private function getHostId($hostName)
     {
-        $result = $this->DB->query(
-            "SELECT host_id FROM host WHERE host_name LIKE '" . $hostName . "' "
-        );
-        $row = $result->fetch();
+        $statement = $this->DB->prepare("SELECT host_id FROM host WHERE host_name LIKE :hostName");
+        $statement->bindValue(':hostName', $hostName, \PDO::PARAM_STR);
+        $statement->execute();
         $hostId = 0;
-        if ($row["host_id"]) {
+        if ($row = $statement->fetch()) {
             $hostId = $row["host_id"];
         }
         return $hostId;
@@ -89,35 +88,39 @@ class ProceduresProxy
         /*
          * Get Services attached to hosts
          */
-        $result = $this->DB->query(
-            "SELECT s.service_id " .
-            "FROM host h, service s, host_service_relation hsr " .
+        $statement = $this->DB->prepare(
+            "SELECT s.service_id FROM host h, service s, host_service_relation hsr " .
             "WHERE hsr.host_host_id = h.host_id " .
             "AND hsr.service_service_id = service_id " .
-            "AND h.host_name LIKE '" . $hostName . "' " .
-            "AND s.service_description LIKE '" . $serviceDescription . "' "
+            "AND h.host_name LIKE :hostName " .
+            "AND s.service_description LIKE :serviceDescription "
         );
-        if ($row = $result->fetch()) {
+        $statement->bindValue(':hostName', $hostName, \PDO::PARAM_STR);
+        $statement->bindValue(':serviceDescription', $serviceDescription, \PDO::PARAM_STR);
+        $statement->execute();
+        if ($row = $statement->fetch()) {
             return (int) $row["service_id"];
         }
-        $result->closeCursor();
+        $statement->closeCursor();
 
         /*
          * Get Services attached to hostgroups
          */
-        $result = $this->DB->query(
-            "SELECT s.service_id " .
-            "FROM hostgroup_relation hgr, host h, service s, host_service_relation hsr " .
+        $statement = $this->DB->prepare(
+            "SELECT s.service_id FROM hostgroup_relation hgr, host h, service s, host_service_relation hsr " .
             "WHERE hgr.host_host_id = h.host_id " .
             "AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id " .
-            "AND h.host_name LIKE '" . $hostName . "' " .
+            "AND h.host_name LIKE :hostName " .
             "AND service_id = hsr.service_service_id " .
-            "AND service_description LIKE '" . $serviceDescription . "' "
+            "AND service_description LIKE :serviceDescription "
         );
-        if ($row = $result->fetch()) {
+        $statement->bindValue(':hostName', $hostName, \PDO::PARAM_STR);
+        $statement->bindValue(':serviceDescription', $serviceDescription, \PDO::PARAM_STR);
+        $statement->execute();
+        if ($row = $statement->fetch()) {
             return (int) $row["service_id"];
         }
-        $result->closeCursor();
+        $statement->closeCursor();
 
         return null;
     }
