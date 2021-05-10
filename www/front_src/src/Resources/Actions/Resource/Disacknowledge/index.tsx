@@ -32,10 +32,8 @@ const DisacknowledgeForm = ({
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
   const { showMessage } = useSnackbar();
-  const [
-    disacknowledgeAttachedResources,
-    setDisacknowledgeAttachedResources,
-  ] = React.useState(true);
+  const [disacknowledgeAttachedResources, setDisacknowledgeAttachedResources] =
+    React.useState(true);
 
   const {
     sendRequest: sendDisacknowledgeResources,
@@ -44,10 +42,8 @@ const DisacknowledgeForm = ({
     request: disacknowledgeResources,
   });
 
-  const {
-    getDisacknowledgementDeniedTypeAlert,
-    canDisacknowledgeServices,
-  } = useAclQuery();
+  const { getDisacknowledgementDeniedTypeAlert, canDisacknowledgeServices } =
+    useAclQuery();
 
   const deniedTypeAlert = getDisacknowledgementDeniedTypeAlert(resources);
 

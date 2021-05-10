@@ -9,9 +9,8 @@ interface GraphOptionsState {
   graphOptions: GraphOptions;
 }
 
-export const GraphOptionsContext = React.createContext<
-  GraphOptionsState | undefined
->(undefined);
+export const GraphOptionsContext =
+  React.createContext<GraphOptionsState | undefined>(undefined);
 
 export const useGraphOptionsContext = (): GraphOptionsState =>
   React.useContext(GraphOptionsContext) as GraphOptionsState;
