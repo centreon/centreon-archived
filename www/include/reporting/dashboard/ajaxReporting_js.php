@@ -44,7 +44,8 @@ if ($type == "Service") {
 $arg .= "&color[UP]=#" . $colors["up"] . "&color[UNDETERMINED]=#" . $colors["undetermined"] .
         "&color[DOWN]=#" . $colors["down"] . "&color[UNREACHABLE]=#" . $colors["unreachable"] .
         "&color[OK]=#" . $colors["ok"] . "&color[WARNING]=#" . $colors["warning"] .
-        "&color[CRITICAL]=#" . $colors["critical"] . "&color[UNKNOWN]=#" . $colors["unknown"];
+        "&color[CRITICAL]=#" . $colors["critical"] . "&color[UNKNOWN]=#" . $colors["unknown"] .
+        "&startDate=" . $startDate . "&endDate=" . $endDate;
 $arg = str_replace("#", "%23", $arg);
 $url = "./include/reporting/dashboard/xmlInformations/GetXml" . $type . ".php?" . $arg;
 
