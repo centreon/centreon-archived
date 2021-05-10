@@ -21,6 +21,8 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import { IconHeader } from '@centreon/ui';
+
 import axios from '../../../axios';
 import styles from '../header.module.scss';
 import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
@@ -54,16 +56,7 @@ const getPollerStatusIcon = (t) => (issues) => {
           styles[databaseClass],
         )}
       >
-        <span
-          className={classnames(styles.iconmoon, styles['icon-database'])}
-          title={
-            databaseClass === 'green'
-              ? t('OK: all database poller updates are active')
-              : t(
-                  'Some database poller updates are not active; check your configuration',
-                )
-          }
-        />
+        <IconHeader iconType="database" />
       </span>
       <span
         className={classnames(
@@ -72,16 +65,7 @@ const getPollerStatusIcon = (t) => (issues) => {
           styles[latencyClass],
         )}
       >
-        <span
-          className={classnames(styles.iconmoon, styles['icon-clock'])}
-          title={
-            latencyClass === 'green'
-              ? t('OK: no latency detected on your platform')
-              : t(
-                  'Latency detected, check configuration for better optimization',
-                )
-          }
-        />
+        <IconHeader iconType="clock" />
       </span>
     </>
   );
@@ -186,9 +170,7 @@ class PollerMenu extends Component {
             className={classnames(styles['wrap-left-icon'], styles.pollers)}
             onClick={this.toggle}
           >
-            <span
-              className={classnames(styles.iconmoon, styles['icon-poller'])}
-            />
+            <IconHeader iconName="Pollers" iconType="poller" />
             <span className={styles['wrap-left-icon__name']}>
               {t('Pollers')}
             </span>
