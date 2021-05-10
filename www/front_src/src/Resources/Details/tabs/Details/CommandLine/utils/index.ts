@@ -1,8 +1,21 @@
-import { filter, equals, isNil, find, pipe, head } from 'ramda';
+import {
+  filter,
+  equals,
+  isNil,
+  find,
+  pipe,
+  head,
+  startsWith,
+  not,
+} from 'ramda';
 import commandParser from 'string-argv';
 
 const isShortArgument = (argument: string): boolean => {
-  return argument.startsWith('-') && argument.length === 2 && argument !== '--';
+  return (
+    startsWith('-', argument) &&
+    equals(argument.length, 2) &&
+    not(equals('--', argument))
+  );
 };
 
 interface CommandWithArguments {
