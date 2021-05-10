@@ -84,15 +84,17 @@
     "webpack-cli": "^4.5.0",
     "webpack-merge": "^5.7.3"
   },
+  "peerDependencies": {
+    "@material-ui/core": "4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "@material-ui/styles": "^4.11.3"
+  },
   "dependencies": {
     "@centreon/ui": "git@github.com:centreon/centreon-ui.git#DEVOPS-214-setup-vite-poc",
     "@centreon/ui-context": "github:centreon/ui-context",
     "@date-io/dayjs": "1.3.13",
-    "@material-ui/core": "4.11.3",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.3.10",
-    "@material-ui/styles": "^4.11.3",
     "@visx/visx": "1.7.2",
     "axios": "^0.21.1",
     "classnames": "^2.2.6",

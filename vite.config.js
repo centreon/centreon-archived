@@ -29,18 +29,7 @@ export default defineConfig({
 
   plugins: [svgr(), reactRefresh()],
 
-  resolve: {
-    alias: [
-      {
-        find: /^@material-ui\/core\/(.+)/,
-        replacement: '@material-ui/core/es/$1',
-      },
-      {
-        find: /^@material-ui\/core$/,
-        replacement: '@material-ui/core/es',
-      },
-    ],
-  },
+  resolve: {},
 
   root: './www',
   server: {

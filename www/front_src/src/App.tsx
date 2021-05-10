@@ -27,7 +27,6 @@ import { fetchExternalComponents } from './redux/actions/externalComponentsActio
 import footerStyles from './components/footer/footer.module.scss';
 import PageLoader from './components/PageLoader';
 import MainRouter from './components/mainRouter';
-
 import './App.scss';
 
 const styles = createStyles({
