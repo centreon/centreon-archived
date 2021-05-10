@@ -345,29 +345,6 @@ try {
     }
   }
 
-  stage('E2E tests') {
-    def parallelSteps = [:]
-    for (x in e2eFeatureFiles) {
-      def feature = x
-      parallelSteps[feature] = {
-        node {
-          sh 'setup_centreon_build.sh'
-          unstash 'tar-sources'
-          unstash 'cypress-node-modules'
-          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
-          junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
-          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-            currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4|png'
-        }
-      }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('E2E tests stage failure.');
-    }
-  }
-
   stage('API integration tests') {
     if (hasBackendChanges) {
       def parallelSteps = [:]
@@ -393,6 +370,29 @@ try {
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('API integration tests stage failure.');
       }
+    }
+  }
+
+  stage('E2E tests') {
+    def parallelSteps = [:]
+    for (x in e2eFeatureFiles) {
+      def feature = x
+      parallelSteps[feature] = {
+        node {
+          sh 'setup_centreon_build.sh'
+          unstash 'tar-sources'
+          unstash 'cypress-node-modules'
+          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
+          junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
+          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+            currentBuild.result = 'FAILURE'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4|png'
+        }
+      }
+    }
+    parallel parallelSteps
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('E2E tests stage failure.');
     }
   }
 
