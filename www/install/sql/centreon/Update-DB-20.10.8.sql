@@ -5,3 +5,6 @@ VALUES(
     (SELECT host_id FROM host WHERE host_name = '_Module_Meta')
 )
 ON DUPLICATE KEY UPDATE nagios_server_id = (SELECT id FROM nagios_server WHERE localhost = '1');
+
+-- Delete obsolete topologies
+DELETE FROM `topology` WHERE `topology_page` IN (6090901, 6090902);
