@@ -393,7 +393,7 @@ const PerformanceGraph = ({
 
         <div>
           {timeTick && containsMetrics && (
-            <Typography variant="caption">{toDateTime(timeTick)}</Typography>
+            <Typography variant="body1">{toDateTime(timeTick)}</Typography>
           )}
         </div>
 
