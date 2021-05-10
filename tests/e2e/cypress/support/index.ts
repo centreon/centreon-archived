@@ -1,9 +1,10 @@
 import {
   initDataResources,
-  postActionClapiApi,
   setUserTokenApiV1,
   setUserTokenApiV2,
   submitResultApiClapi,
+  removeDataResources,
+  applyCfgApi,
 } from './centreonData';
 
 before(() => {
@@ -11,13 +12,11 @@ before(() => {
   setUserTokenApiV2();
 
   initDataResources().then(() => {
-    cy.fixture('resources/clapi/applycfg-poller-1.json').then((raw) => {
-      postActionClapiApi(raw).then(() => {
-        // Necessary to wait checks on the engine
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(5000);
-        submitResultApiClapi();
-      });
+    applyCfgApi().then(() => {
+      // Necessary to wait checks on the engine
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(5000);
+      submitResultApiClapi();
     });
   });
 
@@ -36,3 +35,5 @@ before(() => {
     preserve: 'PHPSESSID',
   });
 });
+
+after(() => setUserTokenApiV1().then(() => removeDataResources()));

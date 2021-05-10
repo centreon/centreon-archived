@@ -11,21 +11,25 @@ interface Filters {
   criterias: Array<Criterias>;
 }
 
-const postActionClapiApi = (bodyContent: string): Cypress.Chainable => {
-  return cy
-    .request({
-      method: 'POST',
-      url: `${apiActionV1}?action=action&object=centreon_clapi`,
-      body: bodyContent,
-      headers: {
-        'Content-Type': 'application/json',
-        'centreon-auth-token': window.localStorage.getItem('userTokenApiV1'),
-      },
-    })
-    .then(({ body }) => {
-      expect(body).to.have.property('result');
-      return body;
-    });
+interface ActionClapi {
+  action: string;
+  object?: string;
+  values: string;
+}
+
+const actionClapiApi = (
+  bodyContent: ActionClapi,
+  method?: string,
+): Cypress.Chainable => {
+  return cy.request({
+    method: method || 'POST',
+    url: `${apiActionV1}?action=action&object=centreon_clapi`,
+    body: bodyContent,
+    headers: {
+      'Content-Type': 'application/json',
+      'centreon-auth-token': window.localStorage.getItem('userTokenApiV1'),
+    },
+  });
 };
 
 const setUserTokenApiV1 = (): Cypress.Chainable => {
@@ -103,7 +107,6 @@ const submitResultApiClapi = (): Cypress.Chainable => {
   return cy
     .fixture('resources/clapi/submit-results.json')
     .then((submitResults) => {
-      cy.log(submitResults);
       return cy.request({
         method: 'POST',
         url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
@@ -118,48 +121,65 @@ const submitResultApiClapi = (): Cypress.Chainable => {
 
 const initDataResources = (): Cypress.Chainable => {
   cy.fixture('resources/clapi/host1/01-add.json').then((raw) =>
-    postActionClapiApi(raw),
+    actionClapiApi(raw),
   );
 
   cy.fixture('resources/clapi/service1/01-add.json').then((raw) =>
-    postActionClapiApi(raw),
+    actionClapiApi(raw),
   );
 
   cy.fixture('resources/clapi/service1/02-set-max-check.json').then((raw) =>
-    postActionClapiApi(raw),
+    actionClapiApi(raw),
   );
 
   cy.fixture(
     'resources/clapi/service1/03-disable-active-check.json',
-  ).then((raw) => postActionClapiApi(raw));
+  ).then((raw) => actionClapiApi(raw));
 
   cy.fixture(
     'resources/clapi/service1/04-enable-passive-check.json',
-  ).then((raw) => postActionClapiApi(raw));
+  ).then((raw) => actionClapiApi(raw));
 
   cy.fixture('resources/clapi/service2/01-add.json').then((raw) =>
-    postActionClapiApi(raw),
+    actionClapiApi(raw),
   );
 
   cy.fixture('resources/clapi/service2/02-set-max-check.json').then((raw) =>
-    postActionClapiApi(raw),
+    actionClapiApi(raw),
   );
 
   cy.fixture(
     'resources/clapi/service2/03-disable-active-check.json',
-  ).then((raw) => postActionClapiApi(raw));
+  ).then((raw) => actionClapiApi(raw));
 
   return cy
     .fixture('resources/clapi/service2/04-enable-passive-check.json')
-    .then((raw) => postActionClapiApi(raw));
+    .then((raw) => actionClapiApi(raw));
+};
+
+const removeDataResources = (): Cypress.Chainable => {
+  return actionClapiApi({
+    action: 'DEL',
+    object: 'HOST',
+    values: 'test_host',
+  });
+};
+
+const applyCfgApi = (): Cypress.Chainable => {
+  return actionClapiApi({
+    action: 'APPLYCFG',
+    values: '1',
+  });
 };
 
 export {
   setUserTokenApiV1,
   setUserTokenApiV2,
-  postActionClapiApi,
+  actionClapiApi,
   setFiltersUser,
   delFiltersUser,
   submitResultApiClapi,
   initDataResources,
+  removeDataResources,
+  applyCfgApi,
 };

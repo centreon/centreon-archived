@@ -52,3 +52,8 @@ This command allows to open a Cypress UI to manipulate and execute the tests man
 This command allows to execute the tests automatically with several possible parameters.
 
 Here the documentation: https://docs.cypress.io/guides/guides/command-line.html#Commands
+
+## Troubleshooting
+
+Example command :
+> DEBUG=cypress:* npx cypress run --config-file cypress.dev.json --browser chrome --spec ./cypress/integration/Resources-status/02-actions.feature 1> ./cypress/results/stdout.txt 2> .cypress/results/logs.txt

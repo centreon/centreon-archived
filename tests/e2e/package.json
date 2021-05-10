@@ -5,6 +5,7 @@
   "scripts": {
     "cypress:ci": "sed 's#@WEB_IMAGE@#'registry.centreon.com/mon-web-21.04:centos7'#g; s#@UID@#'$(id -u)'#g' < docker-compose.yml.in > docker-compose.yml && docker-compose up --force-recreate --abort-on-container-exit --exit-code-from cypress",
     "cypress:local": "npx cypress run --config-file cypress.dev.json",
+    "cypress:local:debug": "DEBUG=cypress:* npx cypress run --config-file cypress.dev.json 2> ./cypress/results/logs.txt",
     "cypress:local:chrome": "npx cypress run --config-file cypress.dev.json -b chrome",
     "cypress:local:ui": "npx cypress open --config-file cypress.dev.json"
   },
