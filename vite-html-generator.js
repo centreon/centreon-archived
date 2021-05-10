@@ -12,7 +12,7 @@ const prodScript = `
 `;
 
 const loadScript =
-  process.env.APP_ENV == 'development' ? devScript : prodScript;
+  process.env.APP_ENV === 'development' ? devScript : prodScript;
 
 const baseHtml = `
 

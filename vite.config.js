@@ -47,6 +47,11 @@ export default defineConfig({
     cors: true,
     hmr: true,
     port: 9090,
+    proxy: {
+      '^/centreon/(api|authentification)': {
+        target: 'http://172.17.0.1:4000',
+      },
+    },
     strictPort: true,
   },
 });
