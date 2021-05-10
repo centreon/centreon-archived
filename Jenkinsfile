@@ -165,10 +165,9 @@ stage('Source') {
     ).split()
 
     // get tests E2E feature files
-    featureFiles = sh(
-      script: 'find centreon-web/features -type f -name "*.feature" -printf "%P\n" | sort',
-      returnStdout:
-      true
+    e2eFeatureFiles = sh(
+      script: 'find centreon-web/tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
+      returnStdout: true
     ).split()
 
     // get feature files
