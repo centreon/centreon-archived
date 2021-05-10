@@ -10,6 +10,14 @@ interface CommandWithArguments {
   command: string;
 }
 
+const getCommandsWithArguments = (
+  commandLine: string,
+): Array<CommandWithArguments> => {
+  const pipedCommands = commandLine.split('|');
+
+  return pipedCommands.map(getCommandWithArguments);
+};
+
 const getCommandWithArguments = (commandLine: string): CommandWithArguments => {
   const commandWithArguments = commandParser(commandLine);
 
@@ -55,4 +63,4 @@ const getCommandWithArguments = (commandLine: string): CommandWithArguments => {
   };
 };
 
-export { getCommandWithArguments };
+export { getCommandsWithArguments };
