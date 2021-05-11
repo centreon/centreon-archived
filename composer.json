@@ -66,7 +66,8 @@
         "dragonmantank/cron-expression": "3.0.1",
         "beberlei/assert": "v3.3.0",
         "enshrined/svg-sanitize": "^0.14.0",
-        "symfony/monolog-bundle": "^3.7"
+        "symfony/monolog-bundle": "^3.7",
+        "smarty-gettext/smarty-gettext": "^1.6"
     },
     "autoload": {
         "psr-4": {
@@ -78,7 +79,6 @@
         },
         "classmap": ["www/class/"],
         "files" : [
-            "GPL_LIB/smarty-plugins/block.t.php",
             "GPL_LIB/smarty-plugins/function.eval.php",
             "www/api/exceptions.php",
             "www/api/class/webService.class.php",
