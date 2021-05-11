@@ -439,7 +439,7 @@ function isCorrectMIMEType(array $file): bool
     ];
     $fileExtension = end(explode(".", $file["name"]));
     if (!array_key_exists($fileExtension, $mimeTypeFileExtensionConcordance)) {
-        throw new \Exception(sprintf('Invalid image extension: %s', $fileExtension));
+        return false;
     }
 
     $mimeType = mime_content_type($file['tmp_name']);
@@ -574,7 +574,7 @@ function isValidMIMETypeFromArchive(
     foreach ($files as $file) {
         $fileExtension = end(explode(".", $file));
         if (!array_key_exists($fileExtension, $mimeTypeFileExtensionConcordance)) {
-            throw new \Exception(sprintf('Invalid image extension: %s', $fileExtension));
+            return false;
         }
 
         $mimeType = mime_content_type($dir . '/' . $file);
