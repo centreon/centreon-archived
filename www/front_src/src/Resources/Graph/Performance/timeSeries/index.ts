@@ -125,8 +125,10 @@ const getTime = (timeValue: TimeValue): number =>
 const getMetrics = (timeValue: TimeValue): Array<string> =>
   pipe(keys, reject(equals('timeTick')))(timeValue);
 
-const getValueForMetric = (timeValue: TimeValue) => (metric: string): number =>
-  prop(metric, timeValue) as number;
+const getValueForMetric =
+  (timeValue: TimeValue) =>
+  (metric: string): number =>
+    prop(metric, timeValue) as number;
 
 const getUnits = (lines: Array<Line>): Array<string> =>
   pipe(map(prop('unit')), uniq)(lines);

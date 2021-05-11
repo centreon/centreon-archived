@@ -81,19 +81,13 @@ const ResourceActionsContent = ({
   const classes = useStyles();
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
-  const [
-    moreActionsMenuAnchor,
-    setMoreActionsMenuAnchor,
-  ] = React.useState<Element | null>(null);
+  const [moreActionsMenuAnchor, setMoreActionsMenuAnchor] =
+    React.useState<Element | null>(null);
 
-  const [
-    resourceToSubmitStatus,
-    setResourceToSubmitStatus,
-  ] = React.useState<Resource | null>();
-  const [
-    resourceToComment,
-    setResourceToComment,
-  ] = React.useState<Resource | null>();
+  const [resourceToSubmitStatus, setResourceToSubmitStatus] =
+    React.useState<Resource | null>();
+  const [resourceToComment, setResourceToComment] =
+    React.useState<Resource | null>();
 
   const showError = (message): void =>
     showMessage({ message, severity: Severity.error });
