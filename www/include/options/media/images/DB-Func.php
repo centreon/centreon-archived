@@ -435,7 +435,9 @@ function isCorrectMIMEType(array $file): bool
         "jpg" => "image/jpeg",
         "jpeg" => "image/jpeg",
         "gif" => "image/gif",
-        "png" => "image/png"
+        "png" => "image/png",
+        "zip" => "application/zip",
+        "gzip" => "application/x-gzip"
     ];
     $fileExtension = end(explode(".", $file["name"]));
     if (!array_key_exists($fileExtension, $mimeTypeFileExtensionConcordance)) {
@@ -568,7 +570,9 @@ function isValidMIMETypeFromArchive(
         "jpg" => "image/jpeg",
         "jpeg" => "image/jpeg",
         "gif" => "image/gif",
-        "png" => "image/png"
+        "png" => "image/png",
+        "zip" => "application/zip",
+        "gzip" => "application/x-gzip"
     ];
 
     foreach ($files as $file) {
