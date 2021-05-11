@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "60823d6b7ea46af0ee1ac628455dde0d",
+    "content-hash": "04d4c29dfbbe377e9ca6015cf74c7546",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1870,6 +1870,65 @@
                 "source": "https://github.com/sensiolabs/SensioFrameworkExtraBundle/tree/v5.6.1"
             },
             "time": "2020-08-25T19:10:18+00:00"
+        },
+        {
+            "name": "smarty-gettext/smarty-gettext",
+            "version": "1.6.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/smarty-gettext/smarty-gettext.git",
+                "reference": "22e5b91b642cd643f9acdd8d04ab0e05647b98a7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/smarty-gettext/smarty-gettext/zipball/22e5b91b642cd643f9acdd8d04ab0e05647b98a7",
+                "reference": "22e5b91b642cd643f9acdd8d04ab0e05647b98a7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gettext": "*",
+                "ext-pcre": "*",
+                "php": "~5.3|~7.0|~8.0"
+            },
+            "require-dev": {
+                "azatoth/php-pgettext": "~1.0",
+                "phpunit/phpunit": ">=4.8.36",
+                "smarty/smarty": "3.1.*"
+            },
+            "suggest": {
+                "azatoth/php-pgettext": "Support msgctxt for {t} via context parameter"
+            },
+            "bin": [
+                "tsmarty2c.php"
+            ],
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "block.t.php",
+                    "function.locale.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1"
+            ],
+            "authors": [
+                {
+                    "name": "Sagi Bashari",
+                    "email": "sagi@boom.org.il"
+                },
+                {
+                    "name": "Elan Ruusamäe",
+                    "email": "glen@delfi.ee"
+                }
+            ],
+            "description": "Gettext plugin enabling internationalization in Smarty Package files",
+            "homepage": "https://github.com/smarty-gettext/smarty-gettext",
+            "support": {
+                "issues": "https://github.com/smarty-gettext/smarty-gettext/issues",
+                "source": "https://github.com/smarty-gettext/smarty-gettext/tree/1.6.2"
+            },
+            "time": "2021-02-23T22:00:29+00:00"
         },
         {
             "name": "smarty/smarty",
