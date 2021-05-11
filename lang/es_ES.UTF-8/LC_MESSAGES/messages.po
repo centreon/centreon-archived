@@ -14704,3 +14704,6 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "At least one column must be selected"
 #  msgstr ""
+
+#  msgid "The duration must be lesser than a year"
+#  msgstr ""

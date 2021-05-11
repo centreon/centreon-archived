@@ -47,6 +47,8 @@ import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
 import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
+const maxEndDate = new Date('2100-01-01');
+
 interface Props {
   canConfirm: boolean;
   errors?;
@@ -136,6 +138,7 @@ const DialogDowntime = ({
                   error={errors?.dateStart !== undefined}
                   helperText={errors?.dateStart}
                   inputMode="text"
+                  maxDate={maxEndDate}
                   value={values.dateStart}
                   onChange={changeDate('dateStart')}
                   {...datePickerProps}
