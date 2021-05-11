@@ -8,6 +8,16 @@ const { resolve } = require('path');
 
 const generateHtmlFile = () => {
   const devScript = `
+
+  <script type="module">
+  import RefreshRuntime from 'http://localhost:9090/centreon/@react-refresh'
+  RefreshRuntime.injectIntoGlobalHook(window)
+  window.$RefreshReg$ = () => { }
+  window.$RefreshSig$ = () => (type) => type
+  window.__vite_plugin_react_preamble_installed__ = true
+</script>
+
+
   <script type="module" src="http://localhost:9090/centreon/@vite/client"></script>
   <script type="module" src="http://localhost:9090/centreon/index.jsx"></script>`;
 
@@ -33,14 +43,7 @@ const generateHtmlFile = () => {
       <base href="/centreon/">
       <title>Centreon - IT & Network Monitoring</title>
   
-      <script type="module">
-          import RefreshRuntime from 'http://localhost:9090/centreon/@react-refresh'
-          RefreshRuntime.injectIntoGlobalHook(window)
-          window.$RefreshReg$ = () => { }
-          window.$RefreshSig$ = () => (type) => type
-          window.__vite_plugin_react_preamble_installed__ = true
-      </script>
-  
+     
       ${loadScript}
   
   </head>

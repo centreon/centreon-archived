@@ -3,8 +3,8 @@
   "version": "21.04.0",
   "description": "centreon web package",
   "scripts": {
-    "build": "vite build && node ./vite-html-generator.js",
-    "dev": "APP_ENV=development node ./vite-html-generator.js && vite serve",
+    "build": "vite build",
+    "dev": "APP_ENV=development vite serve",
     "eslint": "eslint ./www/front_src --ext .js,.jsx,.ts,.tsx",
     "eslint:fix": "npm run eslint -- --fix",
     "test": "jest",
