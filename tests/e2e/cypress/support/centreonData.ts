@@ -1,14 +1,14 @@
 import { apiActionV1, apiLoginV2, apiFilterResourcesBeta } from './model';
 
-interface Criterias {
+interface Criteria {
   name: string;
   value: Array<{ id: string; name: string }>;
   type: string;
   object_type: string | null;
 }
-interface Filters {
+interface Filter {
   name: string;
-  criterias: Array<Criterias>;
+  criterias: Array<Criteria>;
 }
 
 interface ActionClapi {
@@ -73,7 +73,7 @@ const setUserTokenApiV2 = (): Cypress.Chainable => {
   });
 };
 
-const setFiltersUser = (body: Filters): Cypress.Chainable => {
+const setUserFilter = (body: Filter): Cypress.Chainable => {
   return cy
     .request({
       method: 'POST',
@@ -89,7 +89,7 @@ const setFiltersUser = (body: Filters): Cypress.Chainable => {
     });
 };
 
-const delFiltersUser = (): Cypress.Chainable => {
+const deleteUserFilter = (): Cypress.Chainable => {
   return cy
     .request({
       method: 'DELETE',
@@ -176,8 +176,8 @@ export {
   setUserTokenApiV1,
   setUserTokenApiV2,
   actionClapiApi,
-  setFiltersUser,
-  delFiltersUser,
+  setUserFilter,
+  deleteUserFilter,
   submitResultApiClapi,
   initDataResources,
   removeDataResources,

@@ -13,8 +13,8 @@ import {
   containerStateFilter,
 } from '../common';
 import {
-  setFiltersUser,
-  delFiltersUser,
+  setUserFilter,
+  deleteUserFilter,
   setUserTokenApiV2,
 } from '../../../support/centreonData';
 
@@ -44,7 +44,7 @@ Before(() => {
   setUserTokenApiV2();
 
   cy.fixture('resources/filters.json').then((filters) =>
-    setFiltersUser(filters),
+    setUserFilter(filters),
   );
 });
 
@@ -74,7 +74,7 @@ When('I put in some criterias', () => {
     );
 });
 Then(
-  'only Resources matching I selected criterias should be displayed in the result',
+  'only the Resources matching the selected criterias are displayed in the result',
   () => resourcesMatching,
 );
 
@@ -88,8 +88,8 @@ When('I select the custom filter', () => cy.contains('E2E').click());
 
 // REFACTO to a step reusing
 Then(
-  'only Resources matching I selected filter should be displayed in the result',
+  'only Resources matching the selected filter are displayed in the result',
   () => resourcesMatching(),
 );
 
-After(() => delFiltersUser());
+After(() => deleteUserFilter());

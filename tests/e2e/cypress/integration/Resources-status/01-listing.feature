@@ -11,9 +11,9 @@ Feature: Filter a list of Resources
 
   Scenario: I can filter Resources
     When I put in some criterias 
-    Then only Resources matching I selected criterias should be displayed in the result
+     Then only the Resources matching the selected criterias are displayed in the result
 
   Scenario: I can select filters
     Given a saved custom filter
     When I select the custom filter
-    Then only Resources matching I selected filter should be displayed in the result
+    Then only Resources matching the selected filter are displayed in the result
