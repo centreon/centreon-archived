@@ -379,7 +379,7 @@ try {
       def feature = x
       parallelSteps[feature] = {
         node {
-          sh 'setup_centreon_build.sh'
+          checkoutCentreonBuild(buildBranch)
           unstash 'tar-sources'
           unstash 'cypress-node-modules'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
