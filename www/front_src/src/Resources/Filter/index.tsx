@@ -141,7 +141,7 @@ const Filter = (): JSX.Element => {
                 <Button
                   color="primary"
                   size="small"
-                  variant="text"
+                  variant="contained"
                   onClick={requestSearch}
                 >
                   {t(labelSearch)}

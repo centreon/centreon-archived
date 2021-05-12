@@ -17,6 +17,7 @@ import { SelectEntry, useMemoComponent } from '@centreon/ui';
 import { ResourceContext, useResourceContext } from '../Context';
 import {
   labelHostGroup,
+  labelMonitoringServer,
   labelResource,
   labelServiceGroup,
   labelState,
@@ -55,6 +56,7 @@ const FilterSummary = ({ filter }: Props): JSX.Element => {
   const statuses = getCriteriaValue('statuses');
   const hostGroups = getCriteriaValue('host_groups');
   const serviceGroups = getCriteriaValue('service_groups');
+  const monitoringServers = getCriteriaValue('monitoring_servers');
 
   const criterias = [
     { label: labelResource, value: resourceTypes },
@@ -62,6 +64,7 @@ const FilterSummary = ({ filter }: Props): JSX.Element => {
     { label: labelStatus, value: statuses },
     { label: labelHostGroup, value: hostGroups },
     { label: labelServiceGroup, value: serviceGroups },
+    { label: labelMonitoringServer, value: monitoringServers },
   ]
     .filter(({ value }) => {
       return !isNil(value) && !isEmpty(value);

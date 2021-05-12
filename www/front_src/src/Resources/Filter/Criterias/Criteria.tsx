@@ -65,7 +65,6 @@ const CriteriaContent = ({
         {...commonProps}
         field="name"
         getEndpoint={getEndpoint}
-        placeholder="..."
         value={value}
         onChange={(_, updatedValue) => {
           changeCriteria(updatedValue);
@@ -81,7 +80,6 @@ const CriteriaContent = ({
     <PopoverMultiAutocompleteField
       {...commonProps}
       options={translatedOptions}
-      placeholder="..."
       value={translatedValues}
       onChange={(_, updatedValue) => {
         changeCriteria(getUntranslated(updatedValue));
