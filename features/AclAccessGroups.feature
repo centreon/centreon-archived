@@ -14,7 +14,7 @@ Feature: AclAccessGroups
     Scenario: Creating ACL access group with linked contact group
         When I add a new access group with linked contact group
         And the access group is saved with its properties
-        Then the Contact group has the access list group displayed in Relations informations
+        Then the contact group has the access group displayed in Relations informations
 
     Scenario: Modify ACL access group properties
         Given one existing ACL access group
