@@ -22,7 +22,12 @@ import { labelAvg, labelMax, labelMin } from '../../../translatedLabels';
 
 import LegendMarker from './Marker';
 
-const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
+interface MakeStylesProps {
+  limitLegendRows: boolean;
+  panelWidth: number;
+}
+
+const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   caption: ({ panelWidth }) => ({
     color: fade(theme.palette.common.black, 0.6),
     lineHeight: 1.2,
@@ -35,25 +40,20 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
   hidden: {
     color: theme.palette.text.disabled,
   },
-  icon: {
-    borderRadius: '50%',
-    height: 9,
-    marginRight: theme.spacing(1),
-    width: 9,
-  },
   item: {
     display: 'grid',
     gridTemplateColumns: 'min-content minmax(50px, 1fr)',
-    margin: theme.spacing(0, 1, 1, 1),
+    marginBottom: theme.spacing(1),
   },
-  items: {
+  items: ({ limitLegendRows }) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
     justifyContent: 'center',
-    maxHeight: theme.spacing(15),
+    marginLeft: theme.spacing(0.5),
+    maxHeight: limitLegendRows ? theme.spacing(16) : 'unset',
     overflowY: 'auto',
     width: '100%',
-  },
+  }),
   legendData: {
     display: 'flex',
     flexDirection: 'column',
@@ -63,7 +63,7 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
     fontWeight: theme.typography.body1.fontWeight,
   },
   minMaxAvgContainer: {
-    columnGap: '8px',
+    columnGap: theme.spacing(0.5),
     display: 'grid',
     gridAutoRows: `${theme.spacing(2)}px`,
     gridTemplateColumns: 'repeat(2, min-content)',
@@ -80,6 +80,7 @@ const useStyles = makeStyles<Theme, { panelWidth: number }>((theme) => ({
 
 interface Props {
   base: number;
+  limitLegendRows?: boolean;
   lines: Array<Line>;
   onClearHighlight: () => void;
   onHighlight: (metric: string) => void;
@@ -92,7 +93,7 @@ type LegendContentProps = Props & Pick<ResourceContext, 'panelWidth'>;
 
 interface GetMetricValueProps {
   unit: string;
-  value: string | null;
+  value: number | null;
 }
 
 const LegendContent = ({
@@ -104,8 +105,9 @@ const LegendContent = ({
   onClearHighlight,
   panelWidth,
   base,
+  limitLegendRows = false,
 }: LegendContentProps): JSX.Element => {
-  const classes = useStyles({ panelWidth });
+  const classes = useStyles({ limitLegendRows, panelWidth });
   const theme = useTheme();
   const { metricsValue, getFormattedMetricData } = useMetricsValueContext();
   const { t } = useTranslation();
@@ -117,7 +119,9 @@ const LegendContent = ({
     display,
   }: Line): JSX.Element => {
     const legendName = legend || name;
-    const metricName = includes('#', legendName) ? split('#')[1] : legendName;
+    const metricName = includes('#', legendName)
+      ? split('#')(legendName)[1]
+      : legendName;
     return (
       <div
         onMouseEnter={(): void => onHighlight(metric)}
@@ -158,7 +162,7 @@ const LegendContent = ({
     formatMetricValue({
       base,
       unit,
-      value: value ? parseInt(value, 10) : null,
+      value,
     }) || 'N/A';
 
   return (
@@ -181,15 +185,15 @@ const LegendContent = ({
         const minMaxAvg = [
           {
             label: labelMin,
-            value: line.min,
+            value: line.minimum_value,
           },
           {
             label: labelMax,
-            value: line.max,
+            value: line.maximum_value,
           },
           {
             label: labelAvg,
-            value: line.average,
+            value: line.average_value,
           },
         ];
 
@@ -204,7 +208,7 @@ const LegendContent = ({
                   component="p"
                   variant="caption"
                 >
-                  {`(${line.unit})`}
+                  {line.unit && `(${line.unit})`}
                 </Typography>
               </div>
               {formattedValue ? (

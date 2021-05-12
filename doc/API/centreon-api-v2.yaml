@@ -1966,14 +1966,26 @@ paths:
                               type: string
                               description: label to display in legend
                               example: 'Last:1.00'
+                        last_value:
+                          type: number
+                          nullable: true
+                          description: last value
+                          example: 5.0
                         minimum_value:
                           type: number
+                          nullable: true
                           description: minimum value
-                          example: 1.0
+                          example: 0.0
                         maximum_value:
                           type: number
+                          nullable: true
                           description: maximum value
-                          example: 1.0
+                          example: 10.0
+                        average_value:
+                          type: number
+                          nullable: true
+                          description: average value
+                          example: 5.64
                   times:
                     type: array
                     items:

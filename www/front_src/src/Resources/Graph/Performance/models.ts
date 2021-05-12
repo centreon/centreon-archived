@@ -1,22 +1,22 @@
 interface DsData {
-  ds_average: string | null;
   ds_color_area: string;
   ds_color_line: string;
   ds_filled: boolean;
   ds_invert: string | null;
   ds_legend: string | null;
-  ds_max: string | null;
-  ds_min: string | null;
   ds_order: string | null;
   ds_stack: string | null;
   ds_transparency: number;
 }
 
 export interface Metric {
+  average_value: number | null;
   data: Array<number>;
   ds_data: DsData;
   legend: string;
+  maximum_value: number | null;
   metric: string;
+  minimum_value: number | null;
   unit: string;
 }
 
@@ -33,7 +33,7 @@ export interface TimeValue {
 
 export interface Line {
   areaColor: string;
-  average: string | null;
+  average_value: number | null;
   color: string;
   display: boolean;
   filled: boolean;
@@ -41,9 +41,9 @@ export interface Line {
   invert: string | null;
   legend: string | null;
   lineColor: string;
-  max: string | null;
+  maximum_value: number | null;
   metric: string;
-  min: string | null;
+  minimum_value: number | null;
   name: string;
   stackOrder: number | null;
   transparency: number;

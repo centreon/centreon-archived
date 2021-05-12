@@ -50,16 +50,19 @@ const CriteriaContent = ({
     }));
   };
 
-  const { label, options, buildAutocompleteEndpoint } = selectableCriterias[
-    name
-  ];
+  const {
+    label,
+    options,
+    buildAutocompleteEndpoint,
+    autocompleteSearch,
+  } = selectableCriterias[name];
 
   const commonProps = {
     className: classes.field,
     label: t(label),
     limitTags,
     openText: `${t(labelOpen)} ${t(label)}`,
-    value,
+    search: autocompleteSearch,
   };
 
   if (isNil(options)) {
@@ -69,25 +72,31 @@ const CriteriaContent = ({
         page,
         search,
       });
+
     return (
       <MultiConnectedAutocompleteField
+        {...commonProps}
         field="name"
         getEndpoint={getEndpoint}
+        value={value}
         onChange={(_, updatedValue) => {
           changeCriteria(updatedValue);
         }}
-        {...commonProps}
       />
     );
   }
 
+  const translatedValues = getTranslated(value);
+  const translatedOptions = getTranslated(options);
+
   return (
     <MultiAutocompleteField
-      options={getTranslated(options)}
+      {...commonProps}
+      options={translatedOptions}
+      value={translatedValues}
       onChange={(_, updatedValue) => {
         changeCriteria(getUntranslated(updatedValue));
       }}
-      {...commonProps}
     />
   );
 };

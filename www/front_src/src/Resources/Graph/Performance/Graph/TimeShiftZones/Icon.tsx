@@ -37,10 +37,8 @@ const TimeShiftIcon = ({
 
   const { graphHeight, marginTop, shiftTime, loading } = useTimeShiftContext();
 
-  const getIconColor = () =>
-    loading || not(equals(directionHovered, direction))
-      ? 'disabled'
-      : 'primary';
+  const displayTimeShiftIcon =
+    not(loading) && equals(directionHovered, direction);
 
   const svgProps = {
     'aria-label': t(ariaLabel),
@@ -61,7 +59,7 @@ const TimeShiftIcon = ({
             height={timeShiftIconSize}
             width={timeShiftIconSize}
           />
-          <Icon color={getIconColor()} />
+          {displayTimeShiftIcon && <Icon color="primary" />}
         </svg>
       </g>
     ),

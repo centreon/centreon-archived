@@ -153,6 +153,7 @@ const selectableStatuses = [
 ];
 
 export interface CriteriaDisplayProps {
+  autocompleteSearch?: Record<string, unknown>;
   buildAutocompleteEndpoint?;
   label: string;
   options?: Array<SelectEntry>;
@@ -170,6 +171,7 @@ const selectableCriterias: CriteriaById = {
     sortId: 3,
   },
   monitoring_servers: {
+    autocompleteSearch: { conditions: [{ field: 'running', value: true }] },
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
     label: labelMonitoringServer,
     sortId: 5,

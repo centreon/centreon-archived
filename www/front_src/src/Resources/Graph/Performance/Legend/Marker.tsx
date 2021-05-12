@@ -23,7 +23,7 @@ const useStyles = makeStyles<
       equals(LegendMarkerVariant.dot, variant) ? '50%' : 0,
     height: ({ variant }) =>
       equals(LegendMarkerVariant.dot, variant) ? 9 : '100%',
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(0.5),
     width: 9,
   },
 }));

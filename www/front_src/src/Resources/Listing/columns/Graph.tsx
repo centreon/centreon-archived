@@ -9,6 +9,11 @@ import { IconButton, ComponentColumnProps } from '@centreon/ui';
 
 import { labelGraph } from '../../translatedLabels';
 import PerformanceGraph from '../../Graph/Performance';
+import useMousePosition, {
+  MousePositionContext,
+} from '../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
+import { ResourceDetails } from '../../Details/models';
+import { Resource } from '../../models';
 
 import HoverChip from './HoverChip';
 import IconColumn from './IconColumn';
@@ -16,12 +21,34 @@ import IconColumn from './IconColumn';
 const useStyles = makeStyles((theme) => ({
   graph: {
     display: 'block',
-    maxHeight: 280,
+    maxHeight: 288,
     overflow: 'auto',
     padding: theme.spacing(2),
     width: 575,
   },
 }));
+
+interface GraphProps {
+  endpoint?: string;
+  row: Resource | ResourceDetails;
+}
+
+const Graph = ({ row, endpoint }: GraphProps): JSX.Element => {
+  const mousePositionProps = useMousePosition();
+
+  return (
+    <MousePositionContext.Provider value={mousePositionProps}>
+      <PerformanceGraph
+        limitLegendRows
+        displayTitle={false}
+        endpoint={endpoint}
+        graphHeight={150}
+        resource={row}
+        timeline={[]}
+      />
+    </MousePositionContext.Provider>
+  );
+};
 
 const GraphColumn = ({
   onClick,
@@ -57,13 +84,7 @@ const GraphColumn = ({
           label={labelGraph}
         >
           <Paper className={classes.graph}>
-            <PerformanceGraph
-              displayTitle={false}
-              endpoint={endpoint}
-              graphHeight={150}
-              resource={row}
-              timeline={[]}
-            />
+            <Graph endpoint={endpoint} row={row} />
           </Paper>
         </HoverChip>
       </IconColumn>

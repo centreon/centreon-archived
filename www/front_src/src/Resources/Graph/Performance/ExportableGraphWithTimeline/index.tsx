@@ -18,6 +18,7 @@ import {
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { AdjustTimePeriodProps, GraphOptionId } from '../models';
+import { useIntersection } from '../useGraphIntersection';
 
 import { defaultGraphOptions, useGraphOptionsContext } from './useGraphOptions';
 
@@ -39,12 +40,11 @@ interface Props {
   customTimePeriod: CustomTimePeriod;
   getIntervalDates: () => [string, string];
   graphHeight: number;
-  onTooltipDisplay?: (position?: [number, number]) => void;
+  limitLegendRows?: boolean;
   periodQueryParameters: string;
   resource?: Resource | ResourceDetails;
   resourceDetailsUpdated: boolean;
   selectedTimePeriod: TimePeriod | null;
-  tooltipPosition?: [number, number];
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
@@ -53,11 +53,10 @@ const ExportablePerformanceGraphWithTimeline = ({
   getIntervalDates,
   periodQueryParameters,
   graphHeight,
-  onTooltipDisplay,
-  tooltipPosition,
   customTimePeriod,
   adjustTimePeriod,
   resourceDetailsUpdated,
+  limitLegendRows,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -73,11 +72,10 @@ const ExportablePerformanceGraphWithTimeline = ({
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const graphOptions =
     useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
+  const graphContainerRef = React.useRef<HTMLElement | null>(null);
 
-  const displayTooltipValues = path<boolean>(
-    [GraphOptionId.displayTooltips, 'value'],
-    graphOptions,
-  );
+  const { setElement, isInViewport } = useIntersection();
+
   const displayEventAnnotations = path<boolean>(
     [GraphOptionId.displayEvents, 'value'],
     graphOptions,
@@ -128,6 +126,10 @@ const ExportablePerformanceGraphWithTimeline = ({
     retrieveTimeline();
   }, [endpoint, selectedTimePeriod, customTimePeriod, displayEventAnnotations]);
 
+  React.useEffect(() => {
+    setElement(graphContainerRef.current);
+  }, []);
+
   const getEndpoint = (): string | undefined => {
     if (isNil(endpoint)) {
       return undefined;
@@ -151,25 +153,27 @@ const ExportablePerformanceGraphWithTimeline = ({
 
   return (
     <Paper className={classes.graphContainer}>
-      <div className={classes.graph}>
+      <div
+        className={classes.graph}
+        ref={graphContainerRef as React.MutableRefObject<HTMLDivElement>}
+      >
         <PerformanceGraph
           toggableLegend
           adjustTimePeriod={adjustTimePeriod}
           customTimePeriod={customTimePeriod}
           displayEventAnnotations={displayEventAnnotations}
-          displayTooltipValues={displayTooltipValues}
           endpoint={getEndpoint()}
           graphHeight={graphHeight}
+          isInViewport={isInViewport}
+          limitLegendRows={limitLegendRows}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
           timeline={timeline}
-          tooltipPosition={tooltipPosition}
           xAxisTickFormat={
             selectedTimePeriod?.dateTimeFormat ||
             customTimePeriod.xAxisTickFormat
           }
           onAddComment={addCommentToTimeline}
-          onTooltipDisplay={onTooltipDisplay}
         />
       </div>
     </Paper>

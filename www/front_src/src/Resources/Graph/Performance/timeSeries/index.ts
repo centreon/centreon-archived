@@ -83,9 +83,17 @@ const getTimeSeries = (graphData: GraphData): Array<TimeValue> => {
   )(graphData);
 };
 
-const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
+const toLine = ({
+  ds_data,
+  legend,
+  metric,
+  unit,
+  average_value,
+  minimum_value,
+  maximum_value,
+}: Metric): Line => ({
   areaColor: ds_data.ds_color_area,
-  average: ds_data.ds_average,
+  average_value,
   color: ds_data.ds_color_line,
   display: true,
   filled: ds_data.ds_filled,
@@ -93,9 +101,9 @@ const toLine = ({ ds_data, legend, metric, unit }: Metric): Line => ({
   invert: ds_data.ds_invert,
   legend: ds_data.ds_legend,
   lineColor: ds_data.ds_color_line,
-  max: ds_data.ds_max,
+  maximum_value,
   metric,
-  min: ds_data.ds_min,
+  minimum_value,
   name: legend,
   stackOrder: equals(ds_data.ds_stack, '1')
     ? parseInt(ds_data.ds_order || '0', 10)
