@@ -386,7 +386,7 @@ try {
           junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4|png'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
         }
       }
     }
