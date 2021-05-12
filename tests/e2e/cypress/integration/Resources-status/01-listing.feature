@@ -7,7 +7,8 @@ Feature: Filter a list of Resources
     Given There are available resources
 
   Scenario: I first access to the page
-    Then the unhandled problems are displayed
+    When I filter on unhandled problems
+    Then Only non-ok resources are displayed
 
   Scenario: I can filter Resources
     When I put in some criterias 

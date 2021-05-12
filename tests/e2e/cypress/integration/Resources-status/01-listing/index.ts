@@ -49,7 +49,8 @@ Before(() => {
 });
 
 // Scenario: I first access to the page
-Then('the unhandled problems are displayed', () => {
+When('I filter on unhandled problems', () => cy.contains('Unhandled problems'));
+Then('Only non-ok resources are displayed', () => {
   cy.get<Array<Resource>>('@resources').then((resources) => {
     resources.forEach(({ name }) => {
       cy.contains(name).should('exist');
