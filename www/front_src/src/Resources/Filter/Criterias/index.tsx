@@ -32,19 +32,12 @@ const CriteriasContent = ({ criterias }: Props): JSX.Element => {
 };
 
 const Criterias = (): JSX.Element => {
-  const { setFilter, setNextSearch, getMultiSelectCriterias } =
-    useResourceContext();
+  const { getMultiSelectCriterias } = useResourceContext();
 
   const criterias = getMultiSelectCriterias();
 
   return useMemoComponent({
-    Component: (
-      <CriteriasContent
-        criterias={criterias}
-        setFilter={setFilter}
-        setNextSearch={setNextSearch}
-      />
-    ),
+    Component: <CriteriasContent criterias={criterias} />,
     memoProps: [criterias],
   });
 };
