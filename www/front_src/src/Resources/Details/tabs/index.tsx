@@ -21,7 +21,7 @@ import { Tab, TabId } from './models';
 import TimelineTab from './Timeline';
 import ShortcutsTab from './Shortcuts';
 import ServicesTab from './Services';
-import MetricsTab from './Metrics';
+// import MetricsTab from './Metrics';
 
 const detailsTabId = 0;
 const servicesTabId = 1;
@@ -67,18 +67,18 @@ const tabs: Array<Tab> = [
     id: graphTabId,
     title: labelGraph,
   },
-  {
-    Component: MetricsTab,
-    getIsActive: (details: ResourceDetails): boolean => {
-      if (isNil(details)) {
-        return false;
-      }
+  // {
+  //   Component: MetricsTab,
+  //   getIsActive: (details: ResourceDetails): boolean => {
+  //     if (isNil(details)) {
+  //       return false;
+  //     }
 
-      return details.type === 'metaservice';
-    },
-    id: metricsTabId,
-    title: labelMetrics,
-  },
+  //     return details.type === 'metaservice';
+  //   },
+  //   id: metricsTabId,
+  //   title: labelMetrics,
+  // },
   {
     Component: ShortcutsTab,
     getIsActive: (details: ResourceDetails): boolean => {
