@@ -318,6 +318,9 @@
             "config/packages/security_checker.yaml"
         ]
     },
+    "smarty-gettext/smarty-gettext": {
+        "version": "1.6.2"
+    },
     "smarty/smarty": {
         "version": "v3.1.39"
     },

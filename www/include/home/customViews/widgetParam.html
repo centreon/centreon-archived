@@ -9,8 +9,8 @@
 	</tr>
 		{foreach item=elem from=$params}
 		{cycle values='list_one,list_two' assign=rowStyle}
-		{assign var=paramName value=param_`$elem.parameter_id`}
-		{assign var=paramNameTrigger value=param_trigger_`$elem.parameter_id`}
+		{assign var=paramName value="param_`$elem.parameter_id`"}
+		{assign var=paramNameTrigger value="param_trigger_`$elem.parameter_id`"}
 		{if $elem.header_title}
 	<tr class="list_lvl_1" class="FormHeader">
 		<td colspan="2">
