@@ -7,7 +7,7 @@
 *.sh            @centreon/centreon-ci
 *.md            @centreon/centreon-ci
 
-*.po            @centreon/centreon-php @centreon/centreon-frontend
+*.po            @ghost
 
 /src/                  @centreon/centreon-php
 /config/               @centreon/centreon-php
