@@ -3,15 +3,9 @@ import * as React from 'react';
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Button, makeStyles, Grid, Typography } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+import { Button, Grid } from '@material-ui/core';
 
-import {
-  MemoizedFilters as Filters,
-  SearchField,
-  IconButton,
-  TextField,
-} from '@centreon/ui';
+import { MemoizedFilters as Filters, SearchField } from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -19,7 +13,6 @@ import {
   labelShowCriteriasFilters,
   labelNewFilter,
   labelMyFilters,
-  labelFilter,
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
 
@@ -36,15 +29,7 @@ import {
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
 
-const useStyles = makeStyles(() => ({
-  filterSelect: {
-    width: 200,
-  },
-}));
-
 const Filter = (): JSX.Element => {
-  const classes = useStyles();
-
   const { t } = useTranslation();
 
   const {
