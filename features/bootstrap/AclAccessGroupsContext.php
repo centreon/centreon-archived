@@ -141,7 +141,6 @@ class AclAccessGroupsContext extends CentreonContext
             'Timeout',
             5
         );
-        
     }
 
     /**
