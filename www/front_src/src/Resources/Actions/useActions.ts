@@ -32,10 +32,8 @@ const useActions = (): ActionsState => {
   const [resourcesToCheck, setResourcesToCheck] = React.useState<
     Array<Resource>
   >([]);
-  const [
-    resourcesToDisacknowledge,
-    setResourcesToDisacknowledge,
-  ] = React.useState<Array<Resource>>([]);
+  const [resourcesToDisacknowledge, setResourcesToDisacknowledge] =
+    React.useState<Array<Resource>>([]);
 
   return {
     resourcesToAcknowledge,

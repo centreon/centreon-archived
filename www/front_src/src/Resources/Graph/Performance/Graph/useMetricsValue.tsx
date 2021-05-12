@@ -30,9 +30,8 @@ interface MetricsValueState {
 }
 
 const useMetricsValue = (isInViewPort?: boolean): MetricsValueState => {
-  const [metricsValue, setMetricsValue] = React.useState<MetricsValue | null>(
-    null,
-  );
+  const [metricsValue, setMetricsValue] =
+    React.useState<MetricsValue | null>(null);
   const { format } = useLocaleDateTimeFormat();
 
   const formatDate = () =>
@@ -81,9 +80,8 @@ const useMetricsValue = (isInViewPort?: boolean): MetricsValueState => {
   };
 };
 
-export const MetricsValueContext = React.createContext<
-  MetricsValueState | undefined
->(undefined);
+export const MetricsValueContext =
+  React.createContext<MetricsValueState | undefined>(undefined);
 
 export const useMetricsValueContext = (): MetricsValueState =>
   React.useContext(MetricsValueContext) as MetricsValueState;

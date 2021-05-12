@@ -41,11 +41,8 @@ const CriteriasContent = ({
 };
 
 const Criterias = (): JSX.Element => {
-  const {
-    setFilter,
-    setNextSearch,
-    getMultiSelectCriterias,
-  } = useResourceContext();
+  const { setFilter, setNextSearch, getMultiSelectCriterias } =
+    useResourceContext();
 
   const criterias = getMultiSelectCriterias();
 

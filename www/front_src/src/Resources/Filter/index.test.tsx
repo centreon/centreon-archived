@@ -371,12 +371,8 @@ describe(Filter, () => {
       endpointParamChanged,
       selectEndpointMockAction,
     ) => {
-      const {
-        getByLabelText,
-        getByPlaceholderText,
-        findByText,
-        getByText,
-      } = renderFilter();
+      const { getByLabelText, getByPlaceholderText, findByText, getByText } =
+        renderFilter();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
@@ -440,11 +436,8 @@ describe(Filter, () => {
 
       const renderResult = renderFilter();
 
-      const {
-        getByText,
-        queryByLabelText,
-        findByPlaceholderText,
-      } = renderResult;
+      const { getByText, queryByLabelText, findByPlaceholderText } =
+        renderResult;
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
@@ -525,11 +518,8 @@ describe(Filter, () => {
     });
 
     it('leaves search help tooltip visible when the search input is filled', async () => {
-      const {
-        getByLabelText,
-        getByText,
-        getByPlaceholderText,
-      } = renderFilter();
+      const { getByLabelText, getByText, getByPlaceholderText } =
+        renderFilter();
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
@@ -582,11 +572,8 @@ describe(Filter, () => {
           },
         });
 
-      const {
-        getByText,
-        getByDisplayValue,
-        getAllByPlaceholderText,
-      } = renderFilter();
+      const { getByText, getByDisplayValue, getAllByPlaceholderText } =
+        renderFilter();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledTimes(2);

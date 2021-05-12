@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2012 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,37 +34,22 @@
  *
  */
 
-if (!isset($centreon)) {
-    exit();
+/**
+ * Smarty eval function
+ *
+ * @param array $params
+ * @param \Smarty $smarty
+ */
+function smarty_function_eval($params, &$smarty)
+{
+    if (!isset($params['var'])) {
+        $smarty->trigger_error("eval: missing 'var' parameter");
+        return;
+    }
+
+    if ($params['var'] == '') {
+        return;
+    }
+
+    return $smarty->fetch("eval:" . $params['var']);
 }
-
-/*
- * Path to the configuration dir
- */
-$path = "./include/configuration/configCentreonBroker/";
-
-/*
- * PHP functions
- */
-require_once "./include/common/common-Func.php";
-
-require_once "./class/centreonWizard.php";
-
-/*
- * Smarty template Init
- */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-
-$wizardId = uniqid();
-
-/*
- * Initialize the Wizard
- */
-$wizard = new Centreon_Wizard('broker', $wizardId);
-
-$_SESSION['wizard']['broker'][$wizardId] = serialize($wizard);
-
-$tpl->assign('wizardId', $wizardId);
-
-$tpl->display("wizard.ihtml");

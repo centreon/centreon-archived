@@ -13,26 +13,28 @@ interface ResourceWithSubmitStatusParams {
   statusId: number;
 }
 
-const submitResourceStatus = (cancelToken: CancelToken) => ({
-  resource,
-  statusId,
-  output,
-  performanceData,
-}: ResourceWithSubmitStatusParams): Promise<Array<AxiosResponse>> => {
-  return axios.post(
-    submitStatusEndpoint,
-    {
-      resources: [
-        {
-          ...pick(['type', 'id', 'parent'], resource),
-          output,
-          performance_data: performanceData,
-          status: statusId,
-        },
-      ],
-    },
-    { cancelToken },
-  );
-};
+const submitResourceStatus =
+  (cancelToken: CancelToken) =>
+  ({
+    resource,
+    statusId,
+    output,
+    performanceData,
+  }: ResourceWithSubmitStatusParams): Promise<Array<AxiosResponse>> => {
+    return axios.post(
+      submitStatusEndpoint,
+      {
+        resources: [
+          {
+            ...pick(['type', 'id', 'parent'], resource),
+            output,
+            performance_data: performanceData,
+            status: statusId,
+          },
+        ],
+      },
+      { cancelToken },
+    );
+  };
 
 export { submitResourceStatus, submitStatusEndpoint };

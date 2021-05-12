@@ -55,11 +55,8 @@ const EditFiltersPanel = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const {
-    customFilters,
-    setEditPanelOpen,
-    setCustomFilters,
-  } = useResourceContext();
+  const { customFilters, setEditPanelOpen, setCustomFilters } =
+    useResourceContext();
 
   const { sendRequest, sending } = useRequest({
     request: patchFilter,

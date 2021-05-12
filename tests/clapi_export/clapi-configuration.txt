@@ -45,9 +45,7 @@ ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Service Templat
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Export configuration;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Pollers;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Engine configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;Wizard;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;WizardAjax;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Resources;
