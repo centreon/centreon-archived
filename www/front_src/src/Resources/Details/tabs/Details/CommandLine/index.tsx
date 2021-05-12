@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
   },
   command: {
-    fontWeight: 'bold',
+    fontWeight: theme.typography.fontWeightBold,
   },
   pipe: {
     marginRight: theme.spacing(1),
