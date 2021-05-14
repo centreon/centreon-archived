@@ -11,6 +11,7 @@ import {
   fade,
   Theme,
   Tooltip,
+  Box,
 } from '@material-ui/core';
 
 import { ResourceContext, useResourceContext } from '../../../Context';
@@ -29,7 +30,6 @@ interface MakeStylesProps {
 
 const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   caption: ({ panelWidth }) => ({
-    color: fade(theme.palette.common.black, 0.6),
     lineHeight: 1.2,
     marginRight: theme.spacing(1),
     maxWidth: 0.85 * panelWidth,
@@ -37,8 +37,8 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   }),
-  hidden: {
-    color: theme.palette.text.disabled,
+  highlight: {
+    color: theme.typography.body1.color,
   },
   item: {
     display: 'grid',
@@ -70,10 +70,10 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
     whiteSpace: 'nowrap',
   },
   minMaxAvgValue: { fontWeight: 600 },
+  normal: {
+    color: fade(theme.palette.common.black, 0.6),
+  },
   toggable: {
-    '&:hover': {
-      color: theme.palette.common.black,
-    },
     cursor: 'pointer',
   },
 }));
@@ -112,44 +112,18 @@ const LegendContent = ({
   const { metricsValue, getFormattedMetricData } = useMetricsValueContext();
   const { t } = useTranslation();
 
-  const getLegendName = ({
-    metric,
-    legend,
-    name,
-    display,
-  }: Line): JSX.Element => {
+  const getLegendName = ({ legend, name }: Line): JSX.Element => {
     const legendName = legend || name;
     const metricName = includes('#', legendName)
       ? split('#')(legendName)[1]
       : legendName;
     return (
-      <div
-        onMouseEnter={(): void => onHighlight(metric)}
-        onMouseLeave={(): void => onClearHighlight()}
-      >
+      <div>
         <Tooltip placement="top" title={legendName}>
           <Typography
-            className={clsx(
-              {
-                [classes.hidden]: !display,
-                [classes.toggable]: toggable,
-              },
-              classes.caption,
-            )}
+            className={clsx(classes.caption)}
             component="p"
             variant="caption"
-            onClick={(event: React.MouseEvent): void => {
-              if (!toggable) {
-                return;
-              }
-
-              if (event.ctrlKey || event.metaKey) {
-                onToggle(metric);
-                return;
-              }
-
-              onSelect(metric);
-            }}
           >
             {metricName}
           </Typography>
@@ -168,7 +142,7 @@ const LegendContent = ({
   return (
     <div className={classes.items}>
       {lines.map((line) => {
-        const { color, name, display } = line;
+        const { color, name, display, metric: metricLine, highlight } = line;
 
         const markerColor = display
           ? color
@@ -197,8 +171,31 @@ const LegendContent = ({
           },
         ];
 
+        const selectMetricLine = (event: React.MouseEvent): void => {
+          if (!toggable) {
+            return;
+          }
+
+          if (event.ctrlKey || event.metaKey) {
+            onToggle(metricLine);
+            return;
+          }
+
+          onSelect(metricLine);
+        };
+
         return (
-          <div className={classes.item} key={name}>
+          <Box
+            className={clsx(
+              classes.item,
+              highlight ? classes.highlight : classes.normal,
+              toggable && classes.toggable,
+            )}
+            key={name}
+            onClick={selectMetricLine}
+            onMouseEnter={(): void => onHighlight(metricLine)}
+            onMouseLeave={(): void => onClearHighlight()}
+          >
             <LegendMarker color={markerColor} disabled={!display} />
             <div className={classes.legendData}>
               <div>
@@ -234,7 +231,7 @@ const LegendContent = ({
                 </div>
               )}
             </div>
-          </div>
+          </Box>
         );
       })}
     </div>

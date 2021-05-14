@@ -50,12 +50,8 @@ const CriteriaContent = ({
     }));
   };
 
-  const {
-    label,
-    options,
-    buildAutocompleteEndpoint,
-    autocompleteSearch,
-  } = selectableCriterias[name];
+  const { label, options, buildAutocompleteEndpoint, autocompleteSearch } =
+    selectableCriterias[name];
 
   const commonProps = {
     className: classes.field,
@@ -78,6 +74,7 @@ const CriteriaContent = ({
         {...commonProps}
         field="name"
         getEndpoint={getEndpoint}
+        placeholder="..."
         value={value}
         onChange={(_, updatedValue) => {
           changeCriteria(updatedValue);
@@ -93,6 +90,7 @@ const CriteriaContent = ({
     <MultiAutocompleteField
       {...commonProps}
       options={translatedOptions}
+      placeholder="..."
       value={translatedValues}
       onChange={(_, updatedValue) => {
         changeCriteria(getUntranslated(updatedValue));
@@ -102,11 +100,8 @@ const CriteriaContent = ({
 };
 
 const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
-  const {
-    setCriteriaAndNewFilter,
-    getMultiSelectCriterias,
-    nextSearch,
-  } = useResourceContext();
+  const { setCriteriaAndNewFilter, getMultiSelectCriterias, nextSearch } =
+    useResourceContext();
 
   return useMemoComponent({
     Component: (

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -40,189 +41,210 @@ if (!isset($centreon)) {
 /*
  * Load 2 general options
  */
-$l_general_opt = array();
-$DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` RLIKE '^color_(warn|crit)'");
-while ($opt = $DBRESULT->fetchRow()) {
-    $l_general_opt[$opt['key']] = $opt['value'];
+$l_general_opt = [];
+
+$stmt = $pearDB->query("SELECT * FROM options WHERE `key` RLIKE '^color_(warn|crit)'");
+while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+    $l_general_opt[$row['key']] = $row['value'];
 }
-$DBRESULT->closeCursor();
 
-$compo = array();
-if (($o == "c" || $o == "w") && $compo_id) {
-    $res = $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '" . $compo_id . "' LIMIT 1");
-    /*
-	 * Set base value
-	 */
-    $tab = $res->fetchRow();
-    $compo = array_map("myDecode", $tab);
-    unset($compo['host_id']);
-    unset($compo['service_id']);
-    $res->closeCursor();
+$stmt->closeCursor();
 
-    $hs_data = array();
-    $query = "SELECT id FROM index_data WHERE host_id = '" . $compo["host_id"] .
-        "' AND service_id = '" . $compo["service_id"] . "' LIMIT 1";
-    $res = $pearDBO->query($query);
-    $tab = $res->fetchRow();
-    if (is_array($tab)) {
-        $hs_data = array_map("myDecode", $tab);
-        $compo["index_id"] = $hs_data["id"];
-        $res->closeCursor();
-    } else {
-        $compo["index_id"] = 0;
-    }
+$compo = [];
+if (
+    ($o === 'c' || $o === 'w') &&
+    $compo_id
+) {
+    $stmt = $pearDB->prepare('SELECT * FROM giv_components_template WHERE compo_id = :compo_id LIMIT 1');
+    $stmt->bindValue(':compo_id', $compo_id, \PDO::PARAM_INT);
+    $stmt->execute();
+
+    $compo = $stmt->fetchRow();
 }
 
 /*
  * Graphs comes from DB -> Store in $graphs Array
  */
-$graphs = array();
-$res = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-while ($graph = $res->fetchRow()) {
-    $graphs[$graph["graph_id"]] = $graph["name"];
+$graphs = [];
+$stmt = $pearDB->query('SELECT graph_id, name FROM giv_graphs_template ORDER BY name');
+while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+    $graphs[$row['graph_id']] = $row['name'];
 }
-$res->closeCursor();
+$stmt->closeCursor();
 
 /*
  * List of known data sources
  */
-$datasources = array();
-$query = "SELECT `metric_name`, `unit_name` FROM `metrics` GROUP BY `metric_name` ORDER BY `metric_name`";
-$DBRESULT = $pearDBO->query($query);
-while ($row = $DBRESULT->fetchRow()) {
-    $datasources[$row["metric_name"]] = $row["metric_name"];
-    if (isset($row["unit_name"]) && $row["unit_name"] != "") {
-        $datasources[$row["metric_name"]] .= " (" . $row["unit_name"] . ")";
+$dataSources = [];
+$stmt = $pearDBO->query(
+    'SELECT `metric_name`, `unit_name` FROM `metrics` GROUP BY `metric_name` ORDER BY `metric_name`'
+);
+while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+    $dataSources[$row['metric_name']] = $row['metric_name'];
+    if (isset($row['unit_name']) && $row['unit_name'] !== '') {
+        $dataSources[$row['metric_name']] .= ' (' . $row['unit_name'] . ')';
     }
 }
 unset($row);
-$DBRESULT->closeCursor();
+$stmt->closeCursor();
 
 /*
  * Define Styles
  */
-$attrsText = array("size" => "40");
-$attrsText2 = array("size" => "10");
-$attrsTextarea = array("rows" => "4", "cols" => "60");
+$attrsText = [
+    'size' => 40
+];
+$attrsText2 = [
+    'size' => 10
+];
+$attrsTextarea = [
+    'rows' => 4,
+    'cols' => 60
+];
 $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br />' .
     '<br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 $availableRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
 
-if ($o !== "a") {
+if ($o !== 'a') {
     $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_objects' .
         '&action=defaultValues&target=graphCurve&field=host_id&id=' . $compo_id;
 }
-$attrServices = array(
+$attrServices = [
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $availableRoute,
     'defaultDatasetRoute' => $defaultRoute,
     'linkedObject' => 'centreonService',
     'multiple' => false
-);
+];
 
 /*
  * Form begin
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
-    $form->addElement('header', 'ftitle', _("Add a Data Source Template"));
-} elseif ($o == "c") {
-    $form->addElement('header', 'ftitle', _("Modify a Data Source Template"));
-} elseif ($o == "w") {
-    $form->addElement('header', 'ftitle', _("View a Data Source Template"));
+if ($o === 'a') {
+    $form->addElement('header', 'ftitle', _('Add a Data Source Template'));
+} elseif ($o === 'c') {
+    $form->addElement('header', 'ftitle', _('Modify a Data Source Template'));
+} elseif ($o === 'w') {
+    $form->addElement('header', 'ftitle', _('View a Data Source Template'));
 }
 
 /*
  *  Basic information
  */
-$form->addElement('header', 'information', _("General Information"));
-$form->addElement('header', 'options', _("Display Optional Modifier"));
-$form->addElement('header', 'color', _("Colors"));
-$form->addElement('header', 'legend', _("Legend"));
-$form->addElement('text', 'name', _("Template Name"), $attrsText);
-$form->addElement('checkbox', 'ds_stack', _("Stack"));
+$form->addElement('header', 'information', _('General Information'));
+$form->addElement('header', 'options', _('Display Optional Modifier'));
+$form->addElement('header', 'color', _('Colors'));
+$form->addElement('header', 'legend', _('Legend'));
+$form->addElement('text', 'name', _('Template Name'), $attrsText);
+$form->addElement('checkbox', 'ds_stack', _('Stack'));
 
 for ($cpt = 1; $cpt <= 100; $cpt++) {
     $orders[$cpt] = $cpt;
 }
-$form->addElement('select', 'ds_order', _("Order"), $orders);
+$form->addElement('select', 'ds_order', _('Order'), $orders);
 
-$form->addElement('static', 'hsr_text', _("Choose a service if you want a specific curve for it."));
-$form->addElement('select2', 'host_id', _("Linked Host Services"), array(), $attrServices);
+$form->addElement('static', 'hsr_text', _('Choose a service if you want a specific curve for it.'));
+$form->addElement('select2', 'host_id', _('Linked Host Services'), [], $attrServices);
 
-$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
-$form->addElement('select', 'datasources', null, $datasources);
+$form->addElement('text', 'ds_name', _('Data Source Name'), $attrsText);
+$form->addElement('select', 'datasources', null, $dataSources);
 
-$l_dsColorList = array(
-    "ds_color_line" => array("label" => _("Line color"), "color" => "#0000FF"),
-    "ds_color_area" => array("label" => _("Area color"), "color" => "#FFFFFF"),
-    "ds_color_area_warn" => array("label" => _("Warning Area color"), "color" => $l_general_opt["color_warning"]),
-    "ds_color_area_crit" => array("label" => _("Critical Area color"), "color" => $l_general_opt["color_critical"])
-);
+$l_dsColorList = [
+    'ds_color_line' => [
+        'label' => _('Line color'),
+        'color' => '#0000FF'
+    ],
+    'ds_color_area' => [
+        'label' => _('Area color'),
+        'color' => '#FFFFFF'
+    ],
+    'ds_color_area_warn' => [
+        'label' => _('Warning Area color'),
+        'color' => $l_general_opt['color_warning']
+    ],
+    'ds_color_area_crit' => [
+        'label' => _('Critical Area color'),
+        'color' => $l_general_opt['color_critical']
+    ],
+];
 
 foreach ($l_dsColorList as $l_dsColor => $l_dCData) {
     if (isset($compo[$l_dsColor]) && !empty($compo[$l_dsColor])) {
         $l_hxColor = $compo[$l_dsColor];
     } else {
-        $l_hxColor = $l_dCData["color"];
+        $l_hxColor = $l_dCData['color'];
     }
-    $attColText = array(
-        "value" => $l_hxColor,
-        "size" => "7",
-        "maxlength" => "7",
-        "style" => "text-align: center; font-size: 11px; font-family: 'Courier New';"
-    );
-    $attColText = array("value" => $l_hxColor, "size" => "7", "maxlength" => "7", "style" => "text-align: center;");
+    $attColText = [
+        'value' => $l_hxColor,
+        'size' => 7,
+        'maxlength' => 7,
+        'style' => 'text-align: center;'
+    ];
     $form->addElement('text', $l_dsColor, $l_dCData["label"], $attColText);
 
-    $attColAreaR = array(
-        "style" => "width:50px; height:15px; background-color: " . $l_hxColor .
-            "; border-width:0px; padding-bottom:2px;"
-    );
-    $attColAreaW = array(
-        "style" => "width:50px; height:15px; background-color: " . $l_hxColor .
-            "; border-width:0px; padding-bottom:2px;"
-    );
-    $form->addElement('button', $l_dsColor . '_color', "", $attColAreaW);
-    $form->addElement('button', $l_dsColor . '_read', "", $attColAreaR);
+    $attColAreaR = [
+        'style' => 'width:50px; height:15px; background-color: ' . $l_hxColor .
+            '; border-width:0px; padding-bottom:2px;'
+    ];
+    $attColAreaW = [
+        'style' => 'width:50px; height:15px; background-color: ' . $l_hxColor .
+            '; border-width:0px; padding-bottom:2px;'
+    ];
+    $form->addElement('button', $l_dsColor . '_color', '', $attColAreaW);
+    $form->addElement('button', $l_dsColor . '_read', '', $attColAreaR);
 }
 
-$attTransext = array("size" => "2", "maxlength" => "3", "style" => "text-align: center;");
-$form->addElement('text', 'ds_transparency', _("Transparency"), $attTransext);
+$attTransext = [
+    'size' => 2,
+    'maxlength' => 3,
+    'style' => 'text-align: center;'
+];
+$form->addElement('text', 'ds_transparency', _('Transparency'), $attTransext);
 
-$form->addElement('checkbox', 'ds_filled', _("Filling"));
-$form->addElement('checkbox', 'ds_max', _("Print Max value"));
-$form->addElement('checkbox', 'ds_min', _("Print Min value"));
+$form->addElement('checkbox', 'ds_filled', _('Filling'));
+$form->addElement('checkbox', 'ds_max', _('Print Max value'));
+$form->addElement('checkbox', 'ds_min', _('Print Min value'));
 $form->addElement('checkbox', 'ds_minmax_int', _('Round the min and max'));
-$form->addElement('checkbox', 'ds_average', _("Print Average"));
-$form->addElement('checkbox', 'ds_last', _("Print Last Value"));
-$form->addElement('checkbox', 'ds_total', _("Print Total Value"));
-$form->addElement('checkbox', 'ds_invert', _("Invert"));
-$form->addElement('checkbox', 'default_tpl1', _("Default Centreon Graph Template"));
-$form->addElement('select', 'ds_tickness', _("Thickness"), array("1" => "1", "2" => "2", "3" => "3"));
-$form->addElement('text', 'ds_legend', _("Legend Name"), $attrsText);
-$form->addElement('checkbox', 'ds_hidecurve', _("Display Only The Legend"));
+$form->addElement('checkbox', 'ds_average', _('Print Average'));
+$form->addElement('checkbox', 'ds_last', _('Print Last Value'));
+$form->addElement('checkbox', 'ds_total', _('Print Total Value'));
+$form->addElement('checkbox', 'ds_invert', _('Invert'));
+$form->addElement('checkbox', 'default_tpl1', _('Default Centreon Graph Template'));
+$form->addElement(
+    'select',
+    'ds_tickness',
+    _('Thickness'),
+    [
+        '1' => 1,
+        '2' => 2,
+        '3' => 3
+    ]
+);
+$form->addElement('text', 'ds_legend', _('Legend Name'), $attrsText);
+$form->addElement('checkbox', 'ds_hidecurve', _('Display Only The Legend'));
 $form->addElement(
     'select',
     'ds_jumpline',
-    _("Empty Line After This Legend"),
-    array("0" => "0", "1" => "1", "2" => "2", "3" => "3")
+    _('Empty Line After This Legend'),
+    [
+        '0' => 0,
+        '1' => 1,
+        '2' => 2,
+        '3' => 3
+    ]
 );
-$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
+$form->addElement('textarea', 'comment', _('Comments'), $attrsTextarea);
 
 /*
  * Components linked with
  */
-$form->addElement('header', 'graphs', _("Graph Choice"));
+$form->addElement('header', 'graphs', _('Graph Choice'));
 
 $form->addElement('hidden', 'compo_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
-
-function testFilled()
-{
-}
 
 function color_line_enabled($values)
 {
@@ -242,28 +264,31 @@ $form->registerRule('existName', 'callback', 'NameHsrTestExistence');
 $form->registerRule('existDs', 'callback', 'DsHsrTestExistence');
 
 $form->applyFilter('__ALL__', 'myTrim');
-$form->addRule('name', _("Compulsory Name"), 'required');
-$form->addRule('ds_name', _("Required Field"), 'required');
-$form->addRule('name', _("Name already in use for this Host/Service"), 'existName');
-$form->addRule('ds_name', _("Data Source already in use for this Host/Service"), 'existDs');
-$color_mode[] = $form->createElement('radio', 'ds_color_line_mode', null, _("Random"), '1');
-$color_mode[] = $form->createElement('radio', 'ds_color_line_mode', null, _("Manual"), '0');
-$form->addGroup($color_mode, 'ds_color_line_mode', _("Color line mode"));
+$form->addRule('name', _('Compulsory Name'), 'required');
+$form->addRule('ds_name', _('Required Field'), 'required');
+$form->addRule('name', _('Name already in use for this Host/Service'), 'existName');
+$form->addRule('ds_name', _('Data Source already in use for this Host/Service'), 'existDs');
+$color_mode[] = $form->createElement('radio', 'ds_color_line_mode', null, _('Random'), '1');
+$color_mode[] = $form->createElement('radio', 'ds_color_line_mode', null, _('Manual'), '0');
+$form->addGroup($color_mode, 'ds_color_line_mode', _('Color line mode'));
 $form->registerRule('color_line_enabled', 'callback', 'color_line_enabled');
 $form->addRule(
-    array('ds_color_line_mode', 'ds_color_line'),
-    _("Required Field"),
+    [
+        'ds_color_line_mode',
+        'ds_color_line'
+    ],
+    _('Required Field'),
     'color_line_enabled'
 );
 
 $form->registerRule('checkColorFormat', 'callback', 'checkColorFormat');
 
-$form->addRule('ds_color_line', _("Bad Format: start color by #"), 'checkColorFormat');
-$form->addRule('ds_color_area', _("Bad Format: start color by #"), 'checkColorFormat');
-$form->addRule('ds_color_area_warn', _("Bad Format: start color by #"), 'checkColorFormat');
-$form->addRule('ds_color_area_crit', _("Bad Format: start color by #"), 'checkColorFormat');
+$form->addRule('ds_color_line', _('Bad Format: start color by #'), 'checkColorFormat');
+$form->addRule('ds_color_area', _('Bad Format: start color by #'), 'checkColorFormat');
+$form->addRule('ds_color_area_warn', _('Bad Format: start color by #'), 'checkColorFormat');
+$form->addRule('ds_color_area_crit', _('Bad Format: start color by #'), 'checkColorFormat');
 
-$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _('Required fields'));
 
 /*
  * Smarty template Init
@@ -271,51 +296,65 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-if ($o == "w") {
-    /*
-	 * Just watch
-	 */
+if ($o === 'w') {
+    // Just watch
     $form->addElement(
-        "button",
-        "change",
-        _("Modify"),
-        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&compo_id=" . $compo_id . "'")
+        'button',
+        'change',
+        _('Modify'),
+        ['onClick' => "javascript:window.location.href='?p=" . $p . "&o=c&compo_id=" . $compo_id . "'"]
     );
     $form->setDefaults($compo);
     $form->freeze();
-} elseif ($o == "c") {
-    /*
-	 * Modify
-	 */
-    $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-    $res = $form->addElement('reset', 'reset', _("Reset"), array(
-        "onClick" => "javascript:resetLists(" . $compo["host_id"] . "," . $compo["index_id"] . ")",
-        "class" => "btc bt_default"
-    ));
-    $form->setDefaults($compo);
-} elseif ($o == "a") {
-    /*
-	 * Add
-	 */
-    $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
+} elseif ($o === 'c') {
+    // Modify
+    $subC = $form->addElement(
+        'submit',
+        'submitC',
+        _('Save'),
+        ['class' => 'btc bt_success']
+    );
     $res = $form->addElement(
         'reset',
         'reset',
-        _("Reset"),
-        array("onClick" => "javascript:resetLists(0,0)", "class" => "btc bt_default")
+        _('Reset'),
+        [
+            'onClick' => 'javascript:resetLists(' . $compo["host_id"] . ',' . $compo["index_id"] . ')',
+            'class' => 'btc bt_default'
+        ]
     );
-    $form->setDefaults(array(
-        "ds_color_area" => "#FFFFFF",
-        "ds_color_area_warn" => "#F8C706",
-        "ds_color_area_crit" => "#F91E05",
-        "ds_color_line" => "#0000FF",
-        "ds_color_line_mode" => '0',
-        "ds_transparency" => "80",
-        "ds_average" => true,
-        "ds_last" => true
-    ));
+    $form->setDefaults($compo);
+} elseif ($o === 'a') {
+    // add
+    $subA = $form->addElement(
+        'submit',
+        'submitA',
+        _('Save'),
+        ['class' => 'btc bt_success']
+    );
+    $res = $form->addElement(
+        'reset',
+        'reset',
+        _('Reset'),
+        [
+            'onClick' => 'javascript:resetLists(0,0)',
+            'class' => 'btc bt_default'
+        ]
+    );
+    $form->setDefaults(
+        [
+            'ds_color_area' => '#FFFFFF',
+            'ds_color_area_warn' => '#F8C706',
+            'ds_color_area_crit' => '#F91E05',
+            'ds_color_line' => '#0000FF',
+            'ds_color_line_mode' => 0,
+            'ds_transparency' => 80,
+            'ds_average' => true,
+            'ds_last' => true
+        ]
+    );
 }
-if ($o == "c" || $o == "a") {
+if ($o === 'c' || $o === 'a') {
     ?>
     <script type='text/javascript'>
         function insertValueQuery() {
@@ -343,62 +382,68 @@ if ($o == "c" || $o == "a") {
     </script>
     <?php
 }
-$tpl->assign('msg', array("changeL" => "main.php?p=" . $p . "&o=c&compo_id=" . $compo_id, "changeT" => _("Modify")));
+$tpl->assign(
+    'msg',
+    [
+        'changeL' => 'main.php?p=' . $p . '&o=c&compo_id=' . $compo_id,
+        'changeT' => _('Modify')
+    ]
+);
 
-$tpl->assign("sort1", _("Properties"));
-$tpl->assign("sort2", _("Graphs"));
+$tpl->assign('sort1', _('Properties'));
+$tpl->assign('sort2', _('Graphs'));
 // prepare help texts
-$helptext = "";
-include_once("help.php");
+$helptext = '';
+include_once('help.php');
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . '\n';
 }
-$tpl->assign("helptext", $helptext);
+$tpl->assign('helptext', $helptext);
 
 $valid = false;
 if ($form->validate()) {
     $compoObj = $form->getElement('compo_id');
-    if ($form->getSubmitValue("submitA")) {
+    if ($form->getSubmitValue('submitA')) {
         $compoObj->setValue(insertComponentTemplateInDB());
-    } elseif ($form->getSubmitValue("submitC")) {
+    } elseif ($form->getSubmitValue('submitC')) {
         updateComponentTemplateInDB($compoObj->getValue());
     }
-    $o = "w";
+    $o = 'w';
     $form->addElement(
-        "button",
-        "change",
-        _("Modify"),
-        array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&compo_id=" . $compoObj->getValue() . "'")
+        'button',
+        'change',
+        _('Modify'),
+        ['onClick' => "javascript:window.location.href='?p=" . $p . "&o=c&compo_id=" . $compoObj->getValue() . "'"]
     );
     $form->freeze();
     $valid = true;
 }
-$action = $form->getSubmitValue("action");
+$action = $form->getSubmitValue('action');
 if ($valid) {
-    require_once("listComponentTemplates.php");
+    require_once('listComponentTemplates.php');
 } else {
-    /*
-	 * Apply a template definition
-	 */
+    // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
     $form->accept($renderer);
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('o', $o);
-    $tpl->display("formComponentTemplate.ihtml");
+    $tpl->display('formComponentTemplate.ihtml');
 }
 $vdef = 0; /* don't list VDEF in metrics list */
 
-include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
-if ($o == "c" || $o == "w") {
-    isset($_POST["host_id"]) && $_POST["host_id"] != null
-        ? $host_service_id = $_POST["host_id"]
-        : $host_service_id = $compo["host_id"];
-} elseif ($o == "a") {
-    isset($_POST["host_id"]) && $_POST["host_id"] != null
-        ? $host_service_id = $_POST["host_id"]
-        : $host_service_id = 0;
+include_once('./include/views/graphs/common/makeJS_formMetricsList.php');
+if ($o === 'c' || $o === 'w') {
+    $host_service_id = filter_var(
+        $_POST['host_id'] ?? $compo['host_id'] . '-' . $compo['service_id'],
+        FILTER_SANITIZE_STRING
+    );
+} elseif ($o === 'a') {
+    $host_service_id = filter_var(
+        $_POST['host_id'] ?? null,
+        FILTER_SANITIZE_STRING
+    );
 }
 ?>
 

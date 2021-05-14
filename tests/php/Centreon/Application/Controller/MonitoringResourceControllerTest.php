@@ -66,7 +66,7 @@ class MonitoringResourceControllerTest extends TestCase
 
     protected function setUp(): void
     {
-        $kernel = new \App\Kernel('prod', false);
+        $kernel = new \App\Kernel('test', false);
         $kernel->boot();
 
         $timezone = new \DateTimeZone('Europe/Paris');

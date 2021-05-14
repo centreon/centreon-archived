@@ -15322,7 +15322,7 @@ msgid "Host group"
 msgstr "Groupe d'hôtes"
 
 msgid "Downtime"
-msgstr "Plannifier une plage de maintenance"
+msgstr "Plage de maintenance"
 
 msgid "In downtime"
 msgstr "En plage de maintenance"
@@ -16137,3 +16137,6 @@ msgstr "Type de calcul"
 
 msgid "At least one column must be selected"
 msgstr "Au moins une colonne doit être sélectionnée"
+
+msgid "The duration must be lesser than a year"
+msgstr "La durée doit être inférieure à une année"

@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import { useFormik, FormikErrors } from 'formik';
-import * as Yup from 'yup';
+import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -13,75 +12,15 @@ import {
 import { useUserContext } from '@centreon/ui-context';
 
 import {
-  labelRequired,
   labelDowntimeCommandSent,
   labelDowntimeBy,
-  labelEndDateMustBeGreater,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import { setDowntimeOnResources } from '../../api';
 
 import DialogDowntime from './Dialog';
-
-interface DateParams {
-  dateEnd: Date;
-  dateStart: Date;
-  timeEnd: Date;
-  timeStart: Date;
-}
-
-const formatDateInterval = (values: DateParams): [Date, Date] => {
-  const timeStart = new Date(values.timeStart);
-  const dateTimeStart = new Date(values.dateStart);
-  dateTimeStart.setHours(timeStart.getHours());
-  dateTimeStart.setMinutes(timeStart.getMinutes());
-  dateTimeStart.setSeconds(0);
-
-  const timeEnd = new Date(values.timeEnd);
-  const dateTimeEnd = new Date(values.dateEnd);
-  dateTimeEnd.setHours(timeEnd.getHours());
-  dateTimeEnd.setMinutes(timeEnd.getMinutes());
-  dateTimeEnd.setSeconds(0);
-
-  return [dateTimeStart, dateTimeEnd];
-};
-
-const getValidationSchema = (t): unknown =>
-  Yup.object().shape({
-    comment: Yup.string().required(t(labelRequired)),
-    dateEnd: Yup.string().required(t(labelRequired)).nullable(),
-    dateStart: Yup.string().required(t(labelRequired)).nullable(),
-    duration: Yup.object().when('fixed', (fixed, schema) => {
-      return !fixed
-        ? schema.shape({
-            unit: Yup.string().required(t(labelRequired)),
-            value: Yup.string().required(t(labelRequired)),
-          })
-        : schema;
-    }),
-    fixed: Yup.boolean(),
-    timeEnd: Yup.string().required(t(labelRequired)).nullable(),
-    timeStart: Yup.string().required(t(labelRequired)).nullable(),
-  });
-
-const validate = (values: DateParams, t): FormikErrors<DateParams> => {
-  const errors: FormikErrors<DateParams> = {};
-
-  if (
-    values.dateStart &&
-    values.timeStart &&
-    values.dateEnd &&
-    values.timeEnd
-  ) {
-    const [start, end] = formatDateInterval(values);
-
-    if (start >= end) {
-      errors.dateEnd = t(labelEndDateMustBeGreater);
-    }
-  }
-
-  return errors;
-};
+import { getValidationSchema, validate } from './validation';
+import { formatDateInterval } from './utils';
 
 interface Props {
   onClose;
@@ -155,7 +94,7 @@ const DowntimeForm = ({
         onSuccess();
       });
     },
-    validate: (values) => validate(values, t),
+    validate: (values) => validate({ t, values }),
     validationSchema: getValidationSchema(t),
   });
 

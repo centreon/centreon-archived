@@ -31,13 +31,8 @@ const TimeShiftZone = ({
   const theme = useTheme();
   const classes = useStyles();
 
-  const {
-    graphHeight,
-    graphWidth,
-    marginLeft,
-    marginTop,
-    shiftTime,
-  } = useTimeShiftContext();
+  const { graphHeight, graphWidth, marginLeft, marginTop, shiftTime } =
+    useTimeShiftContext();
 
   return useMemoComponent({
     Component: (

@@ -43,13 +43,15 @@ const YAxes = ({
   rightScale,
   graphHeight,
 }: Props): JSX.Element => {
-  const formatTick = ({ unit }) => (value): string => {
-    if (isNil(value)) {
-      return '';
-    }
+  const formatTick =
+    ({ unit }) =>
+    (value): string => {
+      if (isNil(value)) {
+        return '';
+      }
 
-    return formatMetricValue({ base, unit, value }) as string;
-  };
+      return formatMetricValue({ base, unit, value }) as string;
+    };
 
   const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
 

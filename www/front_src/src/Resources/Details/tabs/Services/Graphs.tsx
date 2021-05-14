@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { path, isNil, equals, last, pipe, not } from 'ramda';
 
+import { makeStyles } from '@material-ui/styles';
+
 import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { CustomTimePeriod, TimePeriod } from '../Graph/models';
@@ -39,6 +41,12 @@ interface Props {
   services: Array<Resource>;
 }
 
+const useStyles = makeStyles({
+  serviceGraph: {
+    display: 'contents',
+  },
+});
+
 const ServiceGraphs = ({
   services,
   infiniteScrollTriggerRef,
@@ -49,6 +57,7 @@ const ServiceGraphs = ({
   adjustTimePeriod,
   resourceDetailsUpdated,
 }: Props): JSX.Element => {
+  const classes = useStyles();
   const mousePositionProps = useMousePosition();
 
   const servicesWithGraph = services.filter(
@@ -63,7 +72,7 @@ const ServiceGraphs = ({
           const isLastService = equals(last(servicesWithGraph), service);
 
           return (
-            <div key={id}>
+            <div className={classes.serviceGraph} key={id}>
               <MemoizedPerformanceGraph
                 limitLegendRows
                 adjustTimePeriod={adjustTimePeriod}
