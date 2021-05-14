@@ -431,12 +431,8 @@ describe(Details, () => {
   it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const {
-      getByText,
-      queryByText,
-      getAllByText,
-      getAllByTitle,
-    } = renderDetails();
+    const { getByText, queryByText, getAllByText, getAllByTitle } =
+      renderDetails();
 
     act(() => {
       setSelectedServiceResource();
@@ -598,11 +594,6 @@ describe(Details, () => {
                 label: 'Display events',
                 value: true,
               },
-              displayTooltips: {
-                id: 'displayTooltips',
-                label: 'Display metric values tooltip',
-                value: false,
-              },
             },
             selectedTimePeriodId: periodId,
           });
@@ -683,14 +674,10 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const {
-      getByText,
-      getAllByText,
-      getAllByLabelText,
-      baseElement,
-    } = renderDetails({
-      openTabId: timelineTabId,
-    });
+    const { getByText, getAllByText, getAllByLabelText, baseElement } =
+      renderDetails({
+        openTabId: timelineTabId,
+      });
 
     act(() => {
       setSelectedServiceResource();

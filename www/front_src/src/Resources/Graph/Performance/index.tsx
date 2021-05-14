@@ -17,11 +17,14 @@ import {
   add,
   negate,
   or,
+  pathOr,
+  propOr,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
+import { Skeleton } from '@material-ui/lab';
 
 import {
   useRequest,
@@ -29,6 +32,7 @@ import {
   timeFormat,
   ContentWithCircularLoading,
   IconButton,
+  useLocaleDateTimeFormat,
 } from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -53,6 +57,7 @@ import {
   TimeValue,
   Line as LineModel,
   AdjustTimePeriodProps,
+  Metric,
 } from './models';
 import { getTimeSeries, getLineData } from './timeSeries';
 import useMetricsValue, { MetricsValueContext } from './Graph/useMetricsValue';
@@ -64,17 +69,15 @@ interface Props {
   customTimePeriod?: CustomTimePeriod;
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
-  displayTooltipValues?: boolean;
   endpoint?: string;
   graphHeight: number;
+  isInViewport?: boolean;
   limitLegendRows?: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  onTooltipDisplay?: (position?: [number, number]) => void;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
   timeline?: Array<TimelineEvent>;
   toggableLegend?: boolean;
-  tooltipPosition?: [number, number];
   xAxisTickFormat?: string;
 }
 
@@ -86,9 +89,11 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   container: {
     display: 'grid',
     flexDirection: 'column',
-    gridGap: theme.spacing(1),
+    gridGap: theme.spacing(0.5),
     gridTemplateRows: ({ graphHeight, displayTitle }): string =>
-      `${displayTitle ? 'auto' : ''} ${graphHeight}px auto`,
+      `${displayTitle ? 'min-content' : ''} ${theme.spacing(
+        2,
+      )}px ${graphHeight}px auto`,
     height: '100%',
     justifyItems: 'center',
     width: 'auto',
@@ -136,17 +141,15 @@ const PerformanceGraph = ({
   xAxisTickFormat = timeFormat,
   toggableLegend = false,
   timeline,
-  tooltipPosition,
-  onTooltipDisplay,
   resource,
   onAddComment,
   adjustTimePeriod,
   customTimePeriod,
   resourceDetailsUpdated = true,
   displayEventAnnotations = false,
-  displayTooltipValues = false,
   displayTitle = true,
   limitLegendRows,
+  isInViewport = true,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -160,7 +163,8 @@ const PerformanceGraph = ({
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
   const [exporting, setExporting] = React.useState<boolean>(false);
-  const performanceGraphRef = React.useRef<HTMLDivElement>();
+  const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
+  const performanceGraphHeightRef = React.useRef<number>(0);
 
   const { selectedResourceId } = useResourceContext();
 
@@ -170,7 +174,8 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
-  const metricsValueProps = useMetricsValue();
+  const metricsValueProps = useMetricsValue(isInViewport);
+  const { toDateTime } = useLocaleDateTimeFormat();
 
   React.useEffect(() => {
     if (isNil(endpoint)) {
@@ -202,11 +207,28 @@ const PerformanceGraph = ({
     setLineData(undefined);
   }, [selectedResourceId]);
 
+  React.useEffect(() => {
+    if (isInViewport && performanceGraphRef.current && lineData) {
+      performanceGraphHeightRef.current =
+        performanceGraphRef.current.clientHeight;
+    }
+  }, [isInViewport, lineData]);
+
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return (
       <LoadingSkeleton
         displayTitleSkeleton={displayTitle}
         graphHeight={graphHeight}
+      />
+    );
+  }
+
+  if (lineData && not(isInViewport)) {
+    return (
+      <Skeleton
+        height={performanceGraphHeightRef.current}
+        variant="rect"
+        width="100%"
       />
     );
   }
@@ -324,11 +346,25 @@ const PerformanceGraph = ({
     });
   };
 
+  const timeTick = pathOr(
+    '',
+    ['metricsValue', 'timeValue', 'timeTick'],
+    metricsValueProps,
+  );
+
+  const metricsValue = prop('metricsValue', metricsValueProps);
+
+  const metrics = propOr([] as Array<Metric>, 'metrics', metricsValue);
+
+  const containsMetrics = not(isNil(metrics)) && not(isEmpty(metrics));
+
   return (
     <MetricsValueContext.Provider value={metricsValueProps}>
       <div
         className={classes.container}
-        ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
+        ref={
+          performanceGraphRef as React.MutableRefObject<HTMLDivElement | null>
+        }
       >
         {displayTitle && (
           <div className={classes.graphHeader}>
@@ -355,14 +391,20 @@ const PerformanceGraph = ({
           </div>
         )}
 
+        <div>
+          {timeTick && containsMetrics && (
+            <Typography variant="body1">{toDateTime(timeTick)}</Typography>
+          )}
+        </div>
+
         <ParentSize>
           {({ width, height }): JSX.Element => (
             <Graph
               applyZoom={adjustTimePeriod}
               base={base as number}
               canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
+              containsMetrics={containsMetrics}
               displayEventAnnotations={displayEventAnnotations}
-              displayTooltipValues={displayTooltipValues}
               height={height}
               lines={displayedLines}
               loading={
@@ -372,11 +414,9 @@ const PerformanceGraph = ({
               shiftTime={shiftTime}
               timeSeries={timeSeries}
               timeline={timeline}
-              tooltipPosition={tooltipPosition}
               width={width}
               xAxisTickFormat={xAxisTickFormat}
               onAddComment={onAddComment}
-              onTooltipDisplay={onTooltipDisplay}
             />
           )}
         </ParentSize>

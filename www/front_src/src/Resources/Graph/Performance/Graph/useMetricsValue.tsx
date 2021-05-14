@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import { isEmpty, isNil, not, or } from 'ramda';
-import { useTooltip } from '@visx/visx';
+import { isNil, not } from 'ramda';
 
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
@@ -9,15 +8,11 @@ import formatMetricValue from '../formatMetricValue';
 import { Line, TimeValue } from '../models';
 import { getLineForMetric } from '../timeSeries';
 
-import MetricsTooltip from './MetricsTooltip';
-
 interface MetricsValue {
   base: number;
   lines: Array<Line>;
   metrics: Array<string>;
   timeValue: TimeValue;
-  x: number;
-  y: number;
 }
 
 interface FormattedMetricData {
@@ -27,31 +22,17 @@ interface FormattedMetricData {
   unit: string;
 }
 
-interface UseMetricsValue {
-  changeMetricsValue: ({ newMetricsValue, displayTooltipValues }) => void;
+interface MetricsValueState {
+  changeMetricsValue: ({ newMetricsValue }) => void;
   formatDate: () => string;
   getFormattedMetricData: (metric: string) => FormattedMetricData | null;
-  hideTooltip;
   metricsValue: MetricsValue | null;
-  tooltipData;
-  tooltipLeft;
-  tooltipOpen;
-  tooltipTop;
 }
 
-const useMetricsValue = (): UseMetricsValue => {
-  const [metricsValue, setMetricsValue] = React.useState<MetricsValue | null>(
-    null,
-  );
+const useMetricsValue = (isInViewPort?: boolean): MetricsValueState => {
+  const [metricsValue, setMetricsValue] =
+    React.useState<MetricsValue | null>(null);
   const { format } = useLocaleDateTimeFormat();
-  const {
-    tooltipData,
-    tooltipLeft,
-    tooltipTop,
-    tooltipOpen,
-    showTooltip,
-    hideTooltip,
-  } = useTooltip();
 
   const formatDate = () =>
     format({
@@ -59,19 +40,11 @@ const useMetricsValue = (): UseMetricsValue => {
       formatString: dateTimeFormat,
     });
 
-  const changeMetricsValue = ({ newMetricsValue, displayTooltipValues }) => {
-    setMetricsValue(newMetricsValue);
-    if (or(not(displayTooltipValues), isNil(newMetricsValue))) {
-      hideTooltip();
+  const changeMetricsValue = ({ newMetricsValue }) => {
+    if (not(isInViewPort)) {
       return;
     }
-    showTooltip({
-      tooltipData: isEmpty(newMetricsValue?.metrics) ? undefined : (
-        <MetricsTooltip />
-      ),
-      tooltipLeft: newMetricsValue?.x || 0,
-      tooltipTop: newMetricsValue?.y || 0,
-    });
+    setMetricsValue(newMetricsValue);
   };
 
   const getFormattedMetricData = (metric: string) => {
@@ -103,20 +76,14 @@ const useMetricsValue = (): UseMetricsValue => {
     changeMetricsValue,
     formatDate,
     getFormattedMetricData,
-    hideTooltip,
     metricsValue,
-    tooltipData,
-    tooltipLeft,
-    tooltipOpen,
-    tooltipTop,
   };
 };
 
-export const MetricsValueContext = React.createContext<
-  UseMetricsValue | undefined
->(undefined);
+export const MetricsValueContext =
+  React.createContext<MetricsValueState | undefined>(undefined);
 
-export const useMetricsValueContext = (): UseMetricsValue =>
-  React.useContext(MetricsValueContext) as UseMetricsValue;
+export const useMetricsValueContext = (): MetricsValueState =>
+  React.useContext(MetricsValueContext) as MetricsValueState;
 
 export default useMetricsValue;

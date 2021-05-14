@@ -9,24 +9,6 @@ const extractCssConfig = require('@centreon/frontend-core/webpack/patch/extractC
 
 module.exports = merge(baseConfig, extractCssConfig, {
   entry: ['@babel/polyfill', './www/front_src/src/index.js'],
-  output: {
-    path: path.resolve(`${__dirname}/www/static`),
-    publicPath: './static/',
-    library: ['name'],
-  },
-  resolve: {
-    alias: {
-      react: path.resolve('./node_modules/react'),
-    },
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      alwaysWriteToDisk: true,
-      template: './www/front_src/public/index.html',
-      filename: path.resolve(`${__dirname}`, 'www', 'index.html'),
-    }),
-    new HtmlWebpackHarddiskPlugin(),
-  ],
   module: {
     rules: [
       { parser: { system: false } },
@@ -59,5 +41,24 @@ module.exports = merge(baseConfig, extractCssConfig, {
         ],
       },
     ],
+  },
+  output: {
+    crossOriginLoading: 'anonymous',
+    library: ['name'],
+    path: path.resolve(`${__dirname}/www/static`),
+    publicPath: './static/',
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      alwaysWriteToDisk: true,
+      filename: path.resolve(`${__dirname}`, 'www', 'index.html'),
+      template: './www/front_src/public/index.html',
+    }),
+    new HtmlWebpackHarddiskPlugin(),
+  ],
+  resolve: {
+    alias: {
+      react: path.resolve('./node_modules/react'),
+    },
   },
 });

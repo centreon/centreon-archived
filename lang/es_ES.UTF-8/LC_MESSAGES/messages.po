@@ -14667,9 +14667,6 @@ msgstr "Permitir certificado autofirmado"
 # msgid "Graph options"
 # msgstr ""
 
-# msgid "Display metric values tooltip"
-# msgstr ""
-
 # msgid "Check duration"
 # msgstr ""
 
@@ -14706,4 +14703,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgstr ""
 
 #  msgid "At least one column must be selected"
+#  msgstr ""
+
+#  msgid "The duration must be lesser than a year"
 #  msgstr ""

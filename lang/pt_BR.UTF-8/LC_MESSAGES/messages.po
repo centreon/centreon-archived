@@ -15124,9 +15124,6 @@ msgstr "Erro ao remover tokens de um contato"
 # msgid "Graph options"
 # msgstr ""
 
-# msgid "Display metric values tooltip"
-# msgstr ""
-
 # msgid "Check duration"
 # msgstr ""
 
@@ -15137,9 +15134,6 @@ msgstr "Erro ao remover tokens de um contato"
 # msgstr ""
 
 #  msgid "Check duration"
-
-#  msgid "Display metric values tooltip"
-#  msgstr ""
 
 #  msgid "Check duration"
 #  msgstr ""
@@ -15160,4 +15154,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgstr ""
 
 #  msgid "At least one column must be selected"
+#  msgstr ""
+
+#  msgid "The duration must be lesser than a year"
 #  msgstr ""

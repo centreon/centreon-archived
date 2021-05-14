@@ -1,22 +1,21 @@
-import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
+import dom2image from 'dom-to-image';
 
 interface Props {
   element: HTMLElement;
   title: string;
 }
 
-const exportToPng = ({ element, title }: Props): Promise<void> => {
-  return html2canvas(element).then((canvas) => {
-    const canvasUrl = canvas.toDataURL('image/png;base64');
+const exportToPng = async ({ element, title }: Props): Promise<void> => {
+  const dateTime = new Date().toISOString().substring(0, 19);
 
-    const downloadLink = document.createElement('a');
-    const dateTime = new Date().toISOString().substring(0, 19);
-    downloadLink.download = `${title}-${dateTime}.png`;
-    downloadLink.href = canvasUrl;
-
-    downloadLink.click();
-    downloadLink.remove();
-  });
+  return dom2image
+    .toBlob(element, {
+      bgcolor: '#FFFFFF',
+    })
+    .then((blob) => {
+      return saveAs(blob, `${title}-${dateTime}.png`);
+    });
 };
 
 export default exportToPng;

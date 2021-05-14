@@ -22,23 +22,25 @@ interface ResourcesWithAcknowledgeParams {
   resources: Array<Resource>;
 }
 
-const acknowledgeResources = (cancelToken: CancelToken) => ({
-  resources,
-  params,
-}: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
-  return axios.post(
-    acknowledgeEndpoint,
-    {
-      acknowledgement: {
-        comment: params.comment,
-        is_notify_contacts: params.notify,
-        with_services: params.acknowledgeAttachedResources,
+const acknowledgeResources =
+  (cancelToken: CancelToken) =>
+  ({
+    resources,
+    params,
+  }: ResourcesWithAcknowledgeParams): Promise<Array<AxiosResponse>> => {
+    return axios.post(
+      acknowledgeEndpoint,
+      {
+        acknowledgement: {
+          comment: params.comment,
+          is_notify_contacts: params.notify,
+          with_services: params.acknowledgeAttachedResources,
+        },
+        resources: map(pick(['type', 'id', 'parent']), resources),
       },
-      resources: map(pick(['type', 'id', 'parent']), resources),
-    },
-    { cancelToken },
-  );
-};
+      { cancelToken },
+    );
+  };
 
 interface DowntimeParams {
   comment: string;
@@ -54,26 +56,28 @@ interface ResourcesWithDowntimeParams {
   resources: Array<Resource>;
 }
 
-const setDowntimeOnResources = (cancelToken: CancelToken) => ({
-  resources,
-  params,
-}: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
-  return axios.post(
-    downtimeEndpoint,
-    {
-      downtime: {
-        comment: params.comment,
-        duration: params.duration,
-        end_time: params.endTime,
-        is_fixed: params.fixed,
-        start_time: params.startTime,
-        with_services: params.downtimeAttachedResources,
+const setDowntimeOnResources =
+  (cancelToken: CancelToken) =>
+  ({
+    resources,
+    params,
+  }: ResourcesWithDowntimeParams): Promise<AxiosResponse> => {
+    return axios.post(
+      downtimeEndpoint,
+      {
+        downtime: {
+          comment: params.comment,
+          duration: params.duration,
+          end_time: params.endTime,
+          is_fixed: params.fixed,
+          start_time: params.startTime,
+          with_services: params.downtimeAttachedResources,
+        },
+        resources: map(pick(['type', 'id', 'parent']), resources),
       },
-      resources: map(pick(['type', 'id', 'parent']), resources),
-    },
-    { cancelToken },
-  );
-};
+      { cancelToken },
+    );
+  };
 
 interface ResourcesWithRequestParams {
   cancelToken: CancelToken;
@@ -103,22 +107,24 @@ interface ResourcesWithCommentParams {
   resources: Array<Resource>;
 }
 
-const commentResources = (cancelToken: CancelToken) => ({
-  resources,
-  parameters,
-}: ResourcesWithCommentParams): Promise<AxiosResponse> => {
-  return axios.post(
-    commentEndpoint,
-    {
-      resources: resources.map((resource) => ({
-        ...pick(['id', 'type', 'parent'], resource),
-        comment: parameters.comment,
-        date: parameters.date,
-      })),
-    },
-    { cancelToken },
-  );
-};
+const commentResources =
+  (cancelToken: CancelToken) =>
+  ({
+    resources,
+    parameters,
+  }: ResourcesWithCommentParams): Promise<AxiosResponse> => {
+    return axios.post(
+      commentEndpoint,
+      {
+        resources: resources.map((resource) => ({
+          ...pick(['id', 'type', 'parent'], resource),
+          comment: parameters.comment,
+          date: parameters.date,
+        })),
+      },
+      { cancelToken },
+    );
+  };
 
 export {
   acknowledgeResources,

@@ -1,16 +1,6 @@
 import * as React from 'react';
 
-import {
-  equals,
-  isNil,
-  isEmpty,
-  identity,
-  min,
-  max,
-  not,
-  lt,
-  gte,
-} from 'ramda';
+import { equals, isNil, identity, min, max, not, lt, gte } from 'ramda';
 import {
   Line,
   Bar,
@@ -20,7 +10,6 @@ import {
   GridRows,
   GridColumns,
   useTooltip,
-  useTooltipInPortal,
   localPoint,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
@@ -64,8 +53,8 @@ import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
-import { TabBounds, TabContext } from '../../../Details';
 import memoizeComponent from '../../../memoizedComponent';
+import { useMousePositionContext } from '../ExportableGraphWithTimeline/useMousePosition';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
@@ -77,6 +66,7 @@ import TimeShiftZones, {
   TimeShiftDirection,
 } from './TimeShiftZones';
 import { useMetricsValueContext } from './useMetricsValue';
+import AnchorPoints from './AnchorPoints';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -97,11 +87,9 @@ interface Props {
   height: number;
   lines: Array<LineModel>;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  onTooltipDisplay?: (tooltipPosition?: [number, number]) => void;
   resource: Resource | ResourceDetails;
   timeSeries: Array<TimeValue>;
   timeline?: Array<TimelineEvent>;
-  tooltipPosition?: [number, number];
   width: number;
   xAxisTickFormat: string;
 }
@@ -152,21 +140,20 @@ interface GraphContentProps {
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   base: number;
   canAdjustTimePeriod: boolean;
+  changeMetricsValue: (props) => void;
+  containsMetrics: boolean;
   displayEventAnnotations: boolean;
-  displayTooltipValues: boolean;
   format: (parameters) => string;
   height: number;
   hideAddCommentTooltip: () => void;
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
-  onTooltipDisplay?: (position?: [number, number]) => void;
   resource: Resource | ResourceDetails;
   shiftTime?: (direction: TimeShiftDirection) => void;
   showAddCommentTooltip: (args) => void;
   timeSeries: Array<TimeValue>;
   timeline?: Array<TimelineEvent>;
-  tooltipPosition?: [number, number];
   width: number;
   xAxisTickFormat: string;
 }
@@ -188,6 +175,8 @@ const getScale = ({
   });
 };
 
+const bisectDate = bisector(identity).center;
+
 const GraphContent = ({
   width,
   height,
@@ -196,12 +185,10 @@ const GraphContent = ({
   lines,
   xAxisTickFormat,
   timeline,
-  tooltipPosition,
   resource,
   addCommentTooltipLeft,
   addCommentTooltipTop,
   addCommentTooltipOpen,
-  onTooltipDisplay,
   onAddComment,
   hideAddCommentTooltip,
   showAddCommentTooltip,
@@ -211,48 +198,29 @@ const GraphContent = ({
   loading,
   canAdjustTimePeriod,
   displayEventAnnotations,
-  displayTooltipValues,
+  containsMetrics,
+  changeMetricsValue,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles({ onAddComment });
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
-  const [zoomPivotPosition, setZoomPivotPosition] = React.useState<
-    number | null
-  >(null);
-  const [
-    zoomBoundaries,
-    setZoomBoundaries,
-  ] = React.useState<ZoomBoundaries | null>(null);
+  const [zoomPivotPosition, setZoomPivotPosition] =
+    React.useState<number | null>(null);
+  const [zoomBoundaries, setZoomBoundaries] =
+    React.useState<ZoomBoundaries | null>(null);
   const { canComment } = useAclQuery();
 
   const theme = useTheme();
   const [isMouseOver, setIsMouseOver] = React.useState(false);
 
-  const { containerRef, containerBounds, TooltipInPortal } = useTooltipInPortal(
-    {
-      detectBounds: true,
-      scroll: true,
-    },
-  );
-
-  const context = React.useContext<TabBounds>(TabContext);
-
-  const {
-    changeMetricsValue,
-    metricsValue,
-    hideTooltip,
-    tooltipData,
-    tooltipLeft,
-    tooltipTop,
-    tooltipOpen,
-  } = useMetricsValueContext();
-
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
 
   const annotations = useAnnotations(graphWidth);
+
+  const { mousePosition, setMousePosition } = useMousePositionContext();
 
   const hideAddCommentTooltipOnEspcapePress = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
@@ -331,16 +299,14 @@ const GraphContent = ({
     return getScale({ height: graphHeight, stackedValues, values });
   }, [timeSeries, lines, secondUnit, graphHeight]);
 
-  const bisectDate = bisector(identity).left;
-
   const getTimeValue = (x: number): TimeValue => {
     const date = xScale.invert(x - margin.left);
-    const index = bisectDate(getDates(timeSeries), date, 1);
+    const index = bisectDate(getDates(timeSeries), date);
 
     return timeSeries[index];
   };
 
-  const updateMetricsValue = ({ x, y }): void => {
+  const updateMetricsValue = ({ x }): void => {
     const timeValue = getTimeValue(x);
 
     const metrics = getMetrics(timeValue);
@@ -352,74 +318,54 @@ const GraphContent = ({
     });
 
     changeMetricsValue({
-      displayTooltipValues,
       newMetricsValue: {
         base,
         lines,
         metrics: metricsToDisplay,
         timeValue,
-        x,
-        y,
       },
     });
   };
 
-  const displayTooltip = React.useCallback(
-    (event) => {
-      setIsMouseOver(true);
-      const { x, y } = localPoint(event) || { x: 0, y: 0 };
+  const displayTooltip = (event) => {
+    setIsMouseOver(true);
+    const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
-      const mouseX = x - margin.left;
+    const mouseX = x - margin.left;
 
-      annotations.changeAnnotationHovered({
-        mouseX,
-        timeline,
-        xScale,
+    annotations.changeAnnotationHovered({
+      mouseX,
+      timeline,
+      xScale,
+    });
+
+    if (zoomPivotPosition) {
+      setZoomBoundaries({
+        end: gte(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
+        start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
       });
-
-      if (zoomPivotPosition) {
-        setZoomBoundaries({
-          end: gte(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
-          start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
-        });
-        changeMetricsValue({ displayTooltipValues, newMetricsValue: null });
-        hideTooltip();
-        return;
-      }
-
-      updateMetricsValue({ x, y });
-
-      onTooltipDisplay?.([x, y]);
-    },
-    [containerBounds, lines, zoomBoundaries, timeline, displayTooltipValues],
-  );
-
-  React.useEffect(() => {
-    const { top, bottom } = context;
-
-    const isWithinBounds =
-      containerBounds.top > top && containerBounds.bottom < bottom;
-
-    if (isMouseOver || !isWithinBounds) {
+      changeMetricsValue({ newMetricsValue: null });
       return;
     }
 
-    if (isNil(tooltipPosition)) {
-      changeMetricsValue({ displayTooltipValues, newMetricsValue: null });
-      hideTooltip();
+    updateMetricsValue({ x });
+    setMousePosition([x, y]);
+  };
+
+  React.useEffect(() => {
+    if (isMouseOver) {
       return;
     }
 
-    const [x, y] = tooltipPosition;
-
-    updateMetricsValue({ x, y });
-  }, [tooltipPosition]);
-
-  React.useEffect(() => {
-    if (not(displayTooltipValues)) {
-      hideTooltip();
+    if (isNil(mousePosition)) {
+      changeMetricsValue({ newMetricsValue: null });
+      return;
     }
-  }, [displayTooltipValues]);
+
+    const [x] = mousePosition;
+
+    updateMetricsValue({ x });
+  }, [mousePosition]);
 
   const closeZoomPreview = () => {
     setZoomBoundaries(null);
@@ -427,10 +373,9 @@ const GraphContent = ({
   };
 
   const closeTooltip = (): void => {
-    changeMetricsValue({ displayTooltipValues, newMetricsValue: null });
-    hideTooltip();
+    changeMetricsValue({ newMetricsValue: null });
     setIsMouseOver(false);
-    onTooltipDisplay?.();
+    setMousePosition(null);
     annotations.setAnnotationHovered(undefined);
 
     if (not(isNil(zoomPivotPosition))) {
@@ -495,40 +440,25 @@ const GraphContent = ({
     hideAddCommentTooltip();
   };
 
-  const containsMetrics = metricsValue && not(isEmpty(metricsValue?.metrics));
-
-  const tooltipLineX = (metricsValue?.x || tooltipLeft || 0) - margin.left;
-  const tooltipLineY = (metricsValue?.y || tooltipTop || 0) - margin.top;
+  const mousePositionX = (mousePosition?.[0] || 0) - margin.left;
+  const mousePositionY = (mousePosition?.[1] || 0) - margin.top;
 
   const zoomBarWidth = Math.abs(
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
   );
 
+  const timeValue = getTimeValue(mousePosition?.[0] || 0);
+
   return (
     <AnnotationsContext.Provider value={annotations}>
       <ClickAwayListener onClickAway={hideAddCommentTooltip}>
         <div className={classes.container}>
-          {tooltipOpen && tooltipData && (
-            <TooltipInPortal
-              className={classes.tooltip}
-              key={Math.random()}
-              left={tooltipLeft}
-              top={tooltipTop}
-            >
-              {tooltipData}
-            </TooltipInPortal>
-          )}
           {loading && (
             <div className={classes.graphLoader}>
               <CircularProgress />
             </div>
           )}
-          <svg
-            height={height}
-            ref={containerRef}
-            width="100%"
-            onMouseUp={closeZoomPreview}
-          >
+          <svg height={height} width="100%" onMouseUp={closeZoomPreview}>
             <Group left={margin.left} top={margin.top}>
               <MemoizedGridRows
                 height={graphHeight}
@@ -575,6 +505,31 @@ const GraphContent = ({
                 x={zoomBoundaries?.start || 0}
                 y={0}
               />
+              {containsMetrics && (
+                <>
+                  <AnchorPoints
+                    leftScale={leftScale}
+                    lines={lines}
+                    rightScale={rightScale}
+                    timeValue={timeValue}
+                    xScale={xScale}
+                  />
+                  <Line
+                    from={{ x: mousePositionX, y: 0 }}
+                    pointerEvents="none"
+                    stroke={grey[400]}
+                    strokeWidth={1}
+                    to={{ x: mousePositionX, y: graphHeight }}
+                  />
+                  <Line
+                    from={{ x: 0, y: mousePositionY }}
+                    pointerEvents="none"
+                    stroke={grey[400]}
+                    strokeWidth={1}
+                    to={{ x: graphWidth, y: mousePositionY }}
+                  />
+                </>
+              )}
               <MemoizedBar
                 className={classes.overlay}
                 fill="transparent"
@@ -587,24 +542,6 @@ const GraphContent = ({
                 onMouseMove={displayTooltip}
                 onMouseUp={displayAddCommentTooltip}
               />
-              {(containsMetrics || tooltipData) && (
-                <>
-                  <Line
-                    from={{ x: tooltipLineX, y: 0 }}
-                    pointerEvents="none"
-                    stroke={grey[400]}
-                    strokeWidth={1}
-                    to={{ x: tooltipLineX, y: graphHeight }}
-                  />
-                  <Line
-                    from={{ x: 0, y: tooltipLineY }}
-                    pointerEvents="none"
-                    stroke={grey[400]}
-                    strokeWidth={1}
-                    to={{ x: graphWidth, y: tooltipLineY }}
-                  />
-                </>
-              )}
             </Group>
             <TimeShiftContext.Provider
               value={{
@@ -672,12 +609,13 @@ const memoProps = [
   'lines',
   'xAxisTickFormat',
   'timeline',
-  'tooltipPosition',
   'resource',
   'loading',
   'canAdjustTimePeriod',
   'displayTooltipValues',
   'displayEventAnnotations',
+  'containsMetrics',
+  'isInViewport',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
@@ -694,6 +632,8 @@ const Graph = (
     | 'showAddCommentTooltip'
     | 'hideAddCommentTooltip'
     | 'format'
+    | 'changeMetricsValue'
+    | 'isInViewport'
   >,
 ): JSX.Element => {
   const { format } = useLocaleDateTimeFormat();
@@ -704,6 +644,7 @@ const Graph = (
     showTooltip: showAddCommentTooltip,
     hideTooltip: hideAddCommentTooltip,
   } = useTooltip();
+  const { changeMetricsValue } = useMetricsValueContext();
 
   return (
     <MemoizedGraphContent
@@ -711,6 +652,7 @@ const Graph = (
       addCommentTooltipLeft={addCommentTooltipLeft}
       addCommentTooltipOpen={addCommentTooltipOpen}
       addCommentTooltipTop={addCommentTooltipTop}
+      changeMetricsValue={changeMetricsValue}
       format={format}
       hideAddCommentTooltip={hideAddCommentTooltip}
       showAddCommentTooltip={showAddCommentTooltip}

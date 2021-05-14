@@ -55,8 +55,10 @@ const useAclQuery = (): AclQuery => {
     )(resources);
   };
 
-  const cannot = (action) => (resources): boolean =>
-    !can({ action, resources });
+  const cannot =
+    (action) =>
+    (resources): boolean =>
+      !can({ action, resources });
 
   const getDeniedTypeAlert = ({ resources, action }): string | undefined => {
     const isHost = propEq('type', 'host');

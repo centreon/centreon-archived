@@ -25,8 +25,6 @@ export const labelDuration = 'Duration';
 export const labelSeconds = 'Seconds';
 export const labelMinutes = 'Minutes';
 export const labelHours = 'Hours';
-export const labelEndDateMustBeGreater =
-  'End date must be greater than start date';
 export const labelEndTime = 'End time';
 export const labelEntryTime = 'Entry time';
 export const labelFilter = 'Filter';
@@ -202,7 +200,6 @@ export const labelMin = 'Min';
 export const labelMax = 'Max';
 export const labelAvg = 'Avg';
 export const labelCompactTimePeriod = 'Compact time period';
-export const labelDisplayTooltips = 'Display metric values tooltip';
 export const labelAction = 'Action';
 export const labelNotes = 'Notes';
 export const labelChecksDisabled = 'All checks are disabled';
@@ -214,3 +211,4 @@ export const labelMetaService = 'Meta service';
 export const labelCalculationType = 'Calculation type';
 export const labelSelectAtLeastOneColumn =
   'At least one column must be selected';
+export const labelMaxDuration1Year = 'The duration must be lesser than a year';
