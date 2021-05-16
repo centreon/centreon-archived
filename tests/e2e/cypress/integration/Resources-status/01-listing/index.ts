@@ -48,7 +48,6 @@ Before(() => {
   );
 });
 
-// Scenario: I first access to the page
 When('I filter on unhandled problems', () => cy.contains('Unhandled problems'));
 Then('Only non-ok resources are displayed', () => {
   cy.get<Array<Resource>>('@resources').then((resources) => {
@@ -59,7 +58,6 @@ Then('Only non-ok resources are displayed', () => {
   });
 });
 
-// Scenario: I can filter Resources
 When('I put in some criterias', () => {
   cy.get(btnToogleCriterias).click();
   cy.get(inputSearch).type(searchValue);
@@ -79,7 +77,6 @@ Then(
   () => resourcesMatching,
 );
 
-// Scenario: I can select filters
 Given('a saved custom filter', () => {
   cy.get(containerStateFilter)
     .click()
@@ -87,7 +84,6 @@ Given('a saved custom filter', () => {
 });
 When('I select the custom filter', () => cy.contains('E2E').click());
 
-// REFACTO to a step reusing
 Then(
   'only Resources matching the selected filter are displayed in the result',
   () => resourcesMatching(),

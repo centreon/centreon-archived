@@ -26,7 +26,6 @@ Before(() => {
   }).as('getResources');
 });
 
-// Scenario: I can acknowledge a problematic Resource
 When('I select the acknowledge action on a problematic Resource', () => {
   cy.contains(serviceName)
     .parents('div[role="row"]:first')
@@ -52,7 +51,6 @@ Then('The problematic Resource is displayed as acknowledged', () => {
     .should('have.css', 'background-color', bgCssColors.ackowledge);
 });
 
-// Scenario: I can set a downtime on a problematic Resource
 When('I select the downtime action on a problematic Resource', () => {
   cy.contains(serviceNameDowntime)
     .parents('div[role="row"]:first')
