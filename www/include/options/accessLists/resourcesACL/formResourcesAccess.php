@@ -94,7 +94,9 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Groups relations
      */
-    $statement = $pearDB->prepare("SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = :aclId");
+    $statement = $pearDB->prepare(
+        "SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = :aclId"
+    );
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
     while ($group = $statement->fetch()) {
@@ -134,7 +136,9 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Meta Services relations
      */
-    $statement = $pearDB->prepare("SELECT DISTINCT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = :aclId");
+    $statement = $pearDB->prepare(
+        "SELECT DISTINCT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = :aclId"
+    );
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
     while ($ms = $statement->fetch()) {
