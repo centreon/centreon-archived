@@ -6,7 +6,6 @@ import memoizeComponent from '../../memoizedComponent';
 
 interface Props {
   ariaLabel: string;
-  className: string;
   onChange: (event) => void;
   options: Array<SelectEntry>;
   selectedOptionId: string | number;
@@ -17,11 +16,9 @@ const SelectFilter = ({
   selectedOptionId,
   onChange,
   ariaLabel,
-  className,
 }: Props): JSX.Element => (
   <SelectField
     aria-label={ariaLabel}
-    className={className}
     options={options}
     selectedOptionId={selectedOptionId}
     onChange={onChange}

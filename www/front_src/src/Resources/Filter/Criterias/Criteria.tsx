@@ -4,33 +4,27 @@ import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
 
 import {
-  MultiAutocompleteField,
-  MultiConnectedAutocompleteField,
+  PopoverMultiAutocompleteField,
+  PopoverMultiConnectedAutocompleteField,
   SelectEntry,
   useMemoComponent,
 } from '@centreon/ui';
 
-import { useStyles } from '..';
 import { ResourceContext, useResourceContext } from '../../Context';
-import { labelOpen } from '../../translatedLabels';
 
 import { criteriaValueNameById, selectableCriterias } from './models';
 
 interface Props {
   name: string;
-  parentWidth: number;
   value: Array<SelectEntry>;
 }
 
 const CriteriaContent = ({
   name,
   value,
-  parentWidth,
   setCriteriaAndNewFilter,
 }: Props & Pick<ResourceContext, 'setCriteriaAndNewFilter'>): JSX.Element => {
   const { t } = useTranslation();
-  const classes = useStyles();
-  const limitTags = parentWidth < 1000 ? 1 : 2;
 
   const getTranslated = (values: Array<SelectEntry>): Array<SelectEntry> => {
     return values.map((entry) => ({
@@ -54,10 +48,7 @@ const CriteriaContent = ({
     selectableCriterias[name];
 
   const commonProps = {
-    className: classes.field,
     label: t(label),
-    limitTags,
-    openText: `${t(labelOpen)} ${t(label)}`,
     search: autocompleteSearch,
   };
 
@@ -70,11 +61,10 @@ const CriteriaContent = ({
       });
 
     return (
-      <MultiConnectedAutocompleteField
+      <PopoverMultiConnectedAutocompleteField
         {...commonProps}
         field="name"
         getEndpoint={getEndpoint}
-        placeholder="..."
         value={value}
         onChange={(_, updatedValue) => {
           changeCriteria(updatedValue);
@@ -87,10 +77,9 @@ const CriteriaContent = ({
   const translatedOptions = getTranslated(options);
 
   return (
-    <MultiAutocompleteField
+    <PopoverMultiAutocompleteField
       {...commonProps}
       options={translatedOptions}
-      placeholder="..."
       value={translatedValues}
       onChange={(_, updatedValue) => {
         changeCriteria(getUntranslated(updatedValue));
@@ -99,7 +88,7 @@ const CriteriaContent = ({
   );
 };
 
-const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
+const Criteria = ({ value, name }: Props): JSX.Element => {
   const { setCriteriaAndNewFilter, getMultiSelectCriterias, nextSearch } =
     useResourceContext();
 
@@ -107,18 +96,11 @@ const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
     Component: (
       <CriteriaContent
         name={name}
-        parentWidth={parentWidth}
         setCriteriaAndNewFilter={setCriteriaAndNewFilter}
         value={value}
       />
     ),
-    memoProps: [
-      value,
-      name,
-      parentWidth,
-      getMultiSelectCriterias(),
-      nextSearch,
-    ],
+    memoProps: [value, name, getMultiSelectCriterias(), nextSearch],
   });
 };
 
