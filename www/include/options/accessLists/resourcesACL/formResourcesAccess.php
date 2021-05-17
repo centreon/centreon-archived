@@ -40,116 +40,113 @@ if (!isset($centreon)) {
 /*
  * Database retrieve information for LCA
  */
-if ($o == "c" || $o == "w") {
+if ($o === 'c' || $o === 'w') {
     /*
      * Set base value
      */
-    $DBRESULT = $pearDB->query("SELECT * FROM acl_resources WHERE acl_res_id = '" . $acl_id . "' LIMIT 1");
-    $acl = array_map("myDecode", $DBRESULT->fetchRow());
+    $statement = $pearDB->prepare("SELECT * FROM acl_resources WHERE acl_res_id = :aclId LIMIT 1");
+    $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
+    $statement->execute();
+    $acl = array_map("myDecode", $statement->fetch());
 
     /*
      * Set Poller relations
      */
-    $query = "SELECT poller_id FROM acl_resources_poller_relations WHERE acl_res_id = '" . $acl_id . "'";
-    $DBRESULT = $pearDB->query($query);
-    for ($i = 0; $pollers_list = $DBRESULT->fetchRow(); $i++) {
-        $acl["acl_pollers"][$i] = $pollers_list["poller_id"];
+    $statement = $pearDB->prepare("SELECT poller_id FROM acl_resources_poller_relations WHERE acl_res_id = :aclId");
+    $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($poller = $statement->fetch()) {
+        $acl["acl_pollers"][] = $poller["poller_id"];
     }
-    $DBRESULT->closeCursor();
 
     /*
      * Set Hosts relations
      */
-    $hostnotexludes = array();
-    $query = "SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = '" . $acl_id . "'";
-    $DBRESULT = $pearDB->query($query);
-    for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++) {
-        $acl["acl_hosts"][$i] = $hosts_list["host_host_id"];
-        $hostnotexludes[$hosts_list["host_host_id"]] = 1;
+    $statement = $pearDB->prepare("SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = :aclId");
+    $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($host = $statement->fetch()) {
+        $acl["acl_hosts"][] = $host["host_host_id"];
     }
-    $DBRESULT->closeCursor();
 
     /*
      * Set Hosts exludes relations
      */
-    $query = "SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = '" . $acl_id . "'";
-    $DBRESULT = $pearDB->query($query);
-    for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++) {
-        $acl["acl_hostexclude"][$i] = $hosts_list["host_host_id"];
+    $statement = $pearDB->prepare("SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = :aclId");
+    $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($host = $statement->fetch()) {
+        $acl["acl_hostexclude"][] = $host["host_host_id"];
     }
-    $DBRESULT->closeCursor();
 
     /*
      * Set Hosts Groups relations
      */
-    $DBRESULT = $pearDB->query("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = '" . $acl_id . "'");
-    for ($i = 0; $hg_list = $DBRESULT->fetchRow(); $i++) {
-        $acl["acl_hostgroup"][$i] = $hg_list["hg_hg_id"];
+    $statement = $pearDB->prepare("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = :aclId");
+    $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($hostgroup = $statement->fetch()) {
+        $acl["acl_hostgroup"][] = $hostgroup["hg_hg_id"];
     }
-    $DBRESULT->closeCursor();
 
     /*
      * Set Groups relations
      */
-    $query = "SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '" . $acl_id . "'";
-    $DBRESULT = $pearDB->query($query);
-    for ($i = 0; $groups = $DBRESULT->fetchRow(); $i++) {
-        $acl["acl_groups"][$i] = $groups["acl_group_id"];
+    $statement = $pearDB->prepare(
+        "SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = :aclId"
+    );
+    $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($group = $statement->fetch()) {
+        $acl["acl_groups"][] = $group["acl_group_id"];
     }
-    $DBRESULT->closeCursor();
 
     /*
      * Set Service Categories relations
      */
-    $query = "SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = '" . $acl_id . "'";
-    $DBRESULT = $pearDB->query($query);
-    if ($DBRESULT->rowCount()) {
-        for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++) {
-            $acl["acl_sc"][$i] = $sc["sc_id"];
-        }
+    $statement = $pearDB->prepare("SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = :aclId");
+    $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($sc = $statement->fetch()) {
+        $acl["acl_sc"][] = $sc["sc_id"];
     }
-    $DBRESULT->closeCursor();
 
     /*
      * Set Host Categories
      */
-    $query = "SELECT DISTINCT hc_id FROM acl_resources_hc_relations WHERE acl_res_id = '" . $acl_id . "'";
-    $DBRESULT = $pearDB->query($query);
-    if ($DBRESULT->rowCount()) {
-        for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
-            $acl["acl_hc"][$i] = $hc["hc_id"];
-        }
+    $statement = $pearDB->prepare("SELECT DISTINCT hc_id FROM acl_resources_hc_relations WHERE acl_res_id = :aclId");
+    $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($hc = $statement->fetch()) {
+        $acl["acl_hc"][] = $hc["hc_id"];
     }
-    $DBRESULT->closeCursor();
 
     /*
      * Set Service Groups relations
      */
-    $query = "SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = '" . $acl_id . "'";
-    $DBRESULT = $pearDB->query($query);
-    if ($DBRESULT->rowCount()) {
-        for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
-            $acl["acl_sg"][$i] = $sg["sg_id"];
-        }
+    $statement = $pearDB->prepare("SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = :aclId");
+    $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($sg = $statement->fetch()) {
+        $acl["acl_sg"][] = $sg["sg_id"];
     }
-    $DBRESULT->closeCursor();
 
     /*
      * Set Meta Services relations
      */
-    $query = "SELECT DISTINCT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = '" . $acl_id . "'";
-    $DBRESULT = $pearDB->query($query);
-    if ($DBRESULT->rowCount()) {
-        for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
-            $acl["acl_meta"][$i] = $ms["meta_id"];
-        }
+    $statement = $pearDB->prepare(
+        "SELECT DISTINCT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = :aclId"
+    );
+    $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($ms = $statement->fetch()) {
+        $acl["acl_meta"][] = $ms["meta_id"];
     }
-    $DBRESULT->closeCursor();
 }
 
 $groups = array();
 $DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
-while ($group = $DBRESULT->fetchRow()) {
+while ($group = $DBRESULT->fetch()) {
     $groups[$group["acl_group_id"]] = CentreonUtils::escapeSecure(
         $group["acl_group_name"],
         CentreonUtils::ESCAPE_ALL
@@ -159,14 +156,14 @@ $DBRESULT->closeCursor();
 
 $pollers = array();
 $DBRESULT = $pearDB->query("SELECT id, name FROM nagios_server ORDER BY name");
-while ($poller = $DBRESULT->fetchRow()) {
+while ($poller = $DBRESULT->fetch()) {
     $pollers[$poller["id"]] = $poller["name"];
 }
 $DBRESULT->closeCursor();
 
 $hosts = array();
 $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-while ($host = $DBRESULT->fetchRow()) {
+while ($host = $DBRESULT->fetch()) {
     $hosts[$host["host_id"]] = $host["host_name"];
 }
 $DBRESULT->closeCursor();
@@ -484,7 +481,7 @@ $form->setRequiredNote(_("Required field"));
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 $formDefaults = $acl ?? [];
 $formDefaults['all_hosts[all_hosts]'] = $formDefaults['all_hosts'] ?? '0';
@@ -496,7 +493,7 @@ if ($o == "w") {
      * Just watch a LCA information
      */
     $form->addElement("button", "change", _("Modify"), array(
-        "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&acl_id=" . $acl_id . "'",
+        "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&acl_id=" . $aclId . "'",
         "class" => "btc bt_success"
     ));
     $form->setDefaults($formDefaults);
@@ -515,7 +512,7 @@ if ($o == "w") {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Delete"), array("class" => "btc bt_danger"));
 }
-$tpl->assign('msg', array("changeL" => "main.php?p=" . $p . "&o=c&lca_id=" . $acl_id, "changeT" => _("Modify")));
+$tpl->assign('msg', array("changeL" => "main.php?p=" . $p . "&o=c&lca_id=" . $aclId, "changeT" => _("Modify")));
 
 // prepare help texts
 $helptext = "";
@@ -559,6 +556,14 @@ if ($form->validate()) {
 ?>
 <script type='text/javascript'>
     function toggleTableDeps(element) {
-        jQuery(element).parents('td.FormRowValue:first').children('table').toggle();
+        jQuery(element).parents('td.FormRowValue:first').children('table').toggle(
+            !jQuery(element).is(':checked')
+        );
     }
+
+    jQuery(() => {
+        toggleTableDeps(jQuery('#all_hosts'));
+        toggleTableDeps(jQuery('#all_hostgroups'));
+        toggleTableDeps(jQuery('#all_servicegroups'));
+    });
 </script>
