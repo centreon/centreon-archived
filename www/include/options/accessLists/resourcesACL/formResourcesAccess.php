@@ -62,13 +62,11 @@ if ($o === 'c' || $o === 'w') {
     /*
      * Set Hosts relations
      */
-    $hostnotexludes = [];
     $statement = $pearDB->prepare("SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = :aclId");
     $statement->bindValue(':aclId', $aclId, \PDO::PARAM_INT);
     $statement->execute();
     while ($host = $statement->fetch()) {
         $acl["acl_hosts"][] = $host["host_host_id"];
-        $hostnotexludes[$host["host_host_id"]] = 1;
     }
 
     /*
