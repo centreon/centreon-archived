@@ -82,50 +82,88 @@ class Generate
         $this->backend_instance = Backend::getInstance($this->dependencyInjector);
     }
 
+    /**
+     * Insert services in index_data
+     *
+     * @param integer $localhost
+     * @return void
+     */
     private function generateIndexData($localhost = 0)
     {
-        $service_instance = Service::getInstance($this->dependencyInjector);
-        $host_instance = Host::getInstance($this->dependencyInjector);
-        $services = $service_instance->getGeneratedServices();
+        $serviceInstance = Service::getInstance($this->dependencyInjector);
+        $hostInstance = Host::getInstance($this->dependencyInjector);
+        $services = $serviceInstance->getGeneratedServices();
 
-        try {
-            $query = "INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES " .
-                "(:host_id, :service_id, :host_name, :service_description) ON DUPLICATE KEY UPDATE " .
-                "host_name=VALUES(host_name), service_description=VALUES(service_description)";
-            $stmt = $this->backend_instance->db_cs->prepare($query);
-            $this->backend_instance->db_cs->beginTransaction();
-            foreach ($services as $host_id => &$values) {
-                foreach ($values as $service_id) {
-                    $stmt->bindValue(':host_name', $host_instance->getString($host_id, 'host_name'), PDO::PARAM_STR);
-                    $stmt->bindValue(
-                        ':service_description',
-                        $service_instance->getString($service_id, 'service_description'),
-                        PDO::PARAM_STR
-                    );
-                    $stmt->bindParam(':host_id', $host_id, PDO::PARAM_INT);
-                    $stmt->bindParam(':service_id', $service_id, PDO::PARAM_INT);
-                    $stmt->execute();
-                }
+        $bulkLimit = 2000;
+
+        $valuesQueries = [];
+        $bindParams = [];
+        $bulkCount = 0;
+
+        $bulkInsert = function () use (&$valuesQueries, &$bindParams, &$bulkCount) {
+            $stmt = $this->backend_instance->db_cs->prepare(
+                'INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES '
+                . implode(',', $valuesQueries)
+                . ' ON DUPLICATE KEY UPDATE '
+                . ' host_name=VALUES(host_name), service_description=VALUES(service_description) '
+            );
+
+            foreach ($bindParams as $bindKey => list($bindValue, $bindType)) {
+                $stmt->bindValue($bindKey, $bindValue, $bindType);
             }
 
-            # Meta services
-            if ($localhost == 1) {
-                $meta_services = MetaService::getInstance($this->dependencyInjector)->getMetaServices();
-                $host_id = MetaHost::getInstance($this->dependencyInjector)->getHostIdByHostName('_Module_Meta');
-                foreach ($meta_services as $meta_id => $meta_service) {
-                    $stmt->bindValue(':host_name', '_Module_Meta', PDO::PARAM_STR);
-                    $stmt->bindValue(':service_description', 'meta_' . $meta_id, PDO::PARAM_STR);
-                    $stmt->bindParam(':host_id', $host_id, PDO::PARAM_INT);
-                    $stmt->bindParam(':service_id', $meta_service['service_id'], PDO::PARAM_INT);
-                    $stmt->execute();
+            $stmt->execute();
+
+            $valuesQueries = [];
+            $bindParams = [];
+            $bulkCount = 0;
+        };
+
+        foreach ($services as $hostId => &$values) {
+            $hostName = $hostInstance->getString($hostId, 'host_name');
+            foreach ($values as $serviceId) {
+                $serviceDescription = $serviceInstance->getString($serviceId, 'service_description');
+                $bindParams[":host_id_{$hostId}"] = [$hostId, \PDO::PARAM_INT];
+                $bindParams[":service_id_{$serviceId}"] = [$serviceId, \PDO::PARAM_INT];
+                $bindParams[":host_name_{$hostId}"] = [$hostName, \PDO::PARAM_STR];
+                $bindParams[":service_description_{$serviceId}"] = [$serviceDescription, \PDO::PARAM_STR];
+                $valuesQueries[] = "(
+                    :host_id_{$hostId},
+                    :service_id_{$serviceId},
+                    :host_name_{$hostId},
+                    :service_description_{$serviceId}
+                )";
+                $bulkCount++;
+                if ($bulkCount === $bulkLimit) {
+                    $bulkInsert();
                 }
             }
+        }
 
-            $this->backend_instance->db_cs->commit();
-        } catch (Exception $e) {
-            $this->backend_instance->db_cs->rollback();
-            throw new Exception('Exception received : ' . $e->getMessage() . "\n");
-            throw new Exception($e->getFile() . "\n");
+        # Meta services
+        if ($localhost == 1) {
+            $metaServices = MetaService::getInstance($this->dependencyInjector)->getMetaServices();
+            $hostId = MetaHost::getInstance($this->dependencyInjector)->getHostIdByHostName('_Module_Meta');
+            foreach ($metaServices as $metaId => $metaService) {
+                $bindParams[":host_id_{$hostId}"] = [$hostId, \PDO::PARAM_INT];
+                $bindParams[":meta_service_id_{$metaId}"] = [$metaService['service_id'], \PDO::PARAM_INT];
+                $bindParams[":host_name_{$hostId}"] = ['_Module_Meta', \PDO::PARAM_STR];
+                $bindParams[":meta_service_description_{$metaId}"] = ['meta_' . $metaId, \PDO::PARAM_STR];
+                $valuesQueries[] = "(
+                    :host_id_{$hostId},
+                    :meta_service_id_{$metaId},
+                    :host_name_{$hostId},
+                    :meta_service_description_{$metaId}
+                )";
+                $bulkCount++;
+                if ($bulkCount === $bulkLimit) {
+                    $bulkInsert();
+                }
+            }
+        }
+
+        if ($bulkCount > 0) {
+            $bulkInsert();
         }
     }
 
