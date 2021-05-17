@@ -51,7 +51,7 @@ if (($o === "c") && $aclActionId) {
     $statement->bindValue(':aclActionId', $aclActionId);
     $statement->execute();
     $action_infos = array();
-    $action_infos = array_map("myDecode", $statement->fetchRow());
+    $action_infos = array_map("myDecode", $statement->fetch());
 
     // 2. Get "Groups" id linked with the selected Rule in order to initialize the form
     $statement = $pearDB->prepare(
@@ -61,7 +61,7 @@ if (($o === "c") && $aclActionId) {
     $statement->bindValue(':aclActionId', $aclActionId);
     $statement->execute();
     $selected = array();
-    for ($i = 0; $contacts = $statement->fetchRow(); $i++) {
+    for ($i = 0; $contacts = $statement->fetch(); $i++) {
         $selected[] = $contacts["acl_group_id"];
     }
     $action_infos["acl_groups"] = $selected;
@@ -72,7 +72,7 @@ if (($o === "c") && $aclActionId) {
     $statement->bindValue(':aclActionId', $aclActionId);
     $statement->execute();
     $selected_actions = array();
-    for ($i = 0; $act = $statement->fetchRow(); $i++) {
+    for ($i = 0; $act = $statement->fetch(); $i++) {
         $selected_actions[$act["acl_action_name"]] = 1;
     }
 
