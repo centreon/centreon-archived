@@ -33,8 +33,11 @@
  *
  */
 
-if (!$centreon->user->admin && isset($nagios_id)
-    && count($allowedMainConf) && !isset($allowedMainConf[$nagios_id])
+if (
+    !$centreon->user->admin
+    && isset($nagiosId)
+    && count($allowedMainConf)
+    && !isset($allowedMainConf[$nagiosId])
 ) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
@@ -54,11 +57,12 @@ $nagios_d = array();
 
 $defaultEventBrokerOptions['event_broker_options'][-1] = 1;
 
-if (($o == "c" || $o == "w") && $nagios_id) {
-    $dbResult = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '" . $nagios_id . "' LIMIT 1");
+if (($o === 'c' || $o === 'w') && $nagiosId) {
+    $statement = $pearDB->prepare("SELECT * FROM cfg_nagios WHERE nagios_id = :nagiosId LIMIT 1");
+    $statement->bindValue(':nagiosId', $nagiosId, \PDO::PARAM_INT);
+    $statement->execute();
     // Set base value
-    $nagios = array_map("myDecode", $dbResult->fetch());
-    $dbResult->closeCursor();
+    $nagios = array_map("myDecode", $statement->fetch());
 
     $tmp = explode(',', $nagios["debug_level_opt"]);
     foreach ($tmp as $key => $value) {
@@ -76,7 +80,7 @@ if (($o == "c" || $o == "w") && $nagios_id) {
 $mainCfg = new CentreonConfigEngine($pearDB);
 $cdata = CentreonData::getInstance();
 if ($o != "a") {
-    $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
+    $dirArray = $mainCfg->getBrokerDirectives(isset($nagiosId) ? $nagiosId : null);
 } else {
     $dirArray[0]['in_broker_#index#'] = "/usr/lib64/centreon-engine/externalcmd.so";
     $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.json";
@@ -146,22 +150,6 @@ $result = $oreon->user->access->getPollerAclConf(
 foreach ($result as $ns) {
     $nagios_server[$ns["id"]] = $ns["name"];
 }
-
-/*
- * Get all broker module for this nagios config
- */
-$nBk = 0;
-$aBk = array();
-$dbResult = $pearDB->query(
-    "SELECT bk_mod_id, broker_module FROM cfg_nagios_broker_module WHERE cfg_nagios_id = '"
-    . $nagios_id . "'"
-);
-while ($lineBk = $dbResult->fetch()) {
-    $aBk[$nBk] = $lineBk;
-    $nBk++;
-}
-$dbResult->closeCursor();
-unset($lineBk);
 
 $attrsText = array("size" => "30");
 $attrsText2 = array("size" => "50");
@@ -894,7 +882,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 if ($o == "w") {
     // Just watch a nagios information
@@ -903,7 +891,7 @@ if ($o == "w") {
             "button",
             "change",
             _("Modify"),
-            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&nagios_id=" . $nagios_id . "'")
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&nagios_id=" . $nagiosId . "'")
         );
     }
     $form->setDefaults($nagios);
@@ -972,7 +960,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
-    require_once($path . "listNagios.php");
+    require_once(__DIR__ . '/listNagios.php');
 } else {
     /*
      * Apply a template definition
