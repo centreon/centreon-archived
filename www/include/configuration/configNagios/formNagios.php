@@ -872,7 +872,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 if ($o == "w") {
     // Just watch a nagios information
@@ -950,7 +950,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
-    require_once($path . "listNagios.php");
+    require_once(__DIR__ . '/listNagios.php');
 } else {
     /*
      * Apply a template definition
