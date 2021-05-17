@@ -245,15 +245,7 @@ class CentreonPurgeEngine
     private function purgeIndexData()
     {
         $request = "UPDATE index_data SET to_delete = '1' WHERE ";
-
-        // Delete index_data entries for service by hostgroup
-        $request .= "ISNULL((SELECT 1 FROM " . db . ".hostgroup_relation hr, " . db . ".host_service_relation hsr ";
-        $request .= "WHERE hr.host_host_id = index_data.host_id AND hr.hostgroup_hg_id = hsr.hostgroup_hg_id ";
-        $request .= "AND hsr.service_service_id = index_data.service_id LIMIT 1)) ";
-
-        // Delete index_data entries for service by host
-        $request .= "AND ISNULL((SELECT 1 FROM " . db . ".host_service_relation hsr " .
-            "WHERE hsr.host_host_id = index_data.host_id AND hsr.service_service_id = index_data.service_id LIMIT 1)) ";
+        $request .= "NOT EXISTS(SELECT 1 FROM " . db . ".service WHERE service.service_id = index_data.service_id)";
 
         try {
             $DBRESULT = $this->dbCentstorage->query($request);
