@@ -54,7 +54,7 @@ $nagios_d = array();
 
 $defaultEventBrokerOptions['event_broker_options'][-1] = 1;
 
-if (($o == "c" || $o == "w") && $nagiosId) {
+if (($o === 'c' || $o === 'w') && $nagiosId) {
     $statement = $pearDB->prepare("SELECT * FROM cfg_nagios WHERE nagios_id = :nagiosId LIMIT 1");
     $statement->bindValue(':nagiosId', $nagiosId, \PDO::PARAM_INT);
     $statement->execute();
