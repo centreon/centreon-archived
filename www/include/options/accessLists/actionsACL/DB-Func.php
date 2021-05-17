@@ -65,18 +65,18 @@ function testActionExistence($name = null)
 }
 
 /**
- * @param null $acl_action_id
+ * @param null $aclActionId
  * @param array $actions
  */
-function enableActionInDB($acl_action_id = null, $actions = array())
+function enableActionInDB($aclActionId = null, $actions = array())
 {
-    if (!$acl_action_id) {
+    if (!$aclActionId) {
         return;
     }
     global $pearDB, $centreon;
 
-    if ($acl_action_id) {
-        $actions = array($acl_action_id => "1");
+    if ($aclActionId) {
+        $actions = array($aclActionId => "1");
     }
 
     foreach ($actions as $key => $value) {
@@ -89,18 +89,18 @@ function enableActionInDB($acl_action_id = null, $actions = array())
 }
 
 /**
- * @param null $acl_action_id
+ * @param null $aclActionId
  * @param array $actions
  */
-function disableActionInDB($acl_action_id = null, $actions = array())
+function disableActionInDB($aclActionId = null, $actions = array())
 {
-    if (!$acl_action_id) {
+    if (!$aclActionId) {
         return;
     }
     global $pearDB, $centreon;
 
-    if ($acl_action_id) {
-        $actions = array($acl_action_id => "1");
+    if ($aclActionId) {
+        $actions = array($aclActionId => "1");
     }
 
     foreach ($actions as $key => $value) {
@@ -209,15 +209,15 @@ function insertActionInDB($ret = array())
 {
     global $form, $centreon;
 
-    $acl_action_id = insertAction($ret);
-    updateGroupActions($acl_action_id, $ret);
-    updateRulesActions($acl_action_id, $ret);
+    $aclActionId = insertAction($ret);
+    updateGroupActions($aclActionId, $ret);
+    updateRulesActions($aclActionId, $ret);
 
     $ret = $form->getSubmitValues();
     $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("action access", $acl_action_id, $ret['acl_action_name'], "a", $fields);
+    $centreon->CentreonLogAction->insertLog("action access", $aclActionId, $ret['acl_action_name'], "a", $fields);
 
-    return $acl_action_id;
+    return $aclActionId;
 }
 
 /**
@@ -247,30 +247,30 @@ function insertAction($ret)
 /**
  *
  * Summary function
- * @param $acl_action_id
+ * @param $aclActionId
  */
-function updateActionInDB($acl_action_id = null)
+function updateActionInDB($aclActionId = null)
 {
     global $form, $centreon;
 
-    if (!$acl_action_id) {
+    if (!$aclActionId) {
         return;
     }
-    updateAction($acl_action_id);
-    updateGroupActions($acl_action_id);
+    updateAction($aclActionId);
+    updateGroupActions($aclActionId);
     $ret = $form->getSubmitValues();
     $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("action access", $acl_action_id, $ret['acl_action_name'], "c", $fields);
+    $centreon->CentreonLogAction->insertLog("action access", $aclActionId, $ret['acl_action_name'], "c", $fields);
 }
 
 /**
  *
  * Update all Actions
- * @param $acl_action_id
+ * @param $aclActionId
  */
-function updateAction($acl_action_id = null)
+function updateAction($aclActionId = null)
 {
-    if (!$acl_action_id) {
+    if (!$aclActionId) {
         return;
     }
     global $form, $pearDB;
@@ -281,31 +281,31 @@ function updateAction($acl_action_id = null)
         "acl_action_description = '" . htmlentities($ret["acl_action_description"], ENT_QUOTES, "UTF-8") . "', " .
         "acl_action_activate = '" .
         htmlentities($ret["acl_action_activate"]["acl_action_activate"], ENT_QUOTES, "UTF-8") . "' " .
-        "WHERE acl_action_id = '" . $acl_action_id . "'";
+        "WHERE acl_action_id = '" . $aclActionId . "'";
     $pearDB->query($rq);
 }
 
 /**
  *
  * Update group action information in DB
- * @param $acl_action_id
+ * @param $aclActionId
  * @param $ret
  */
-function updateGroupActions($acl_action_id, $ret = array())
+function updateGroupActions($aclActionId, $ret = array())
 {
-    if (!$acl_action_id) {
+    if (!$aclActionId) {
         return;
     }
     global $form, $pearDB;
 
-    $rq = "DELETE FROM acl_group_actions_relations WHERE acl_action_id = '" . $acl_action_id . "'";
+    $rq = "DELETE FROM acl_group_actions_relations WHERE acl_action_id = '" . $aclActionId . "'";
     $dbResult = $pearDB->query($rq);
     if (isset($_POST["acl_groups"])) {
         foreach ($_POST["acl_groups"] as $id) {
             $rq = "INSERT INTO acl_group_actions_relations ";
             $rq .= "(acl_group_id, acl_action_id) ";
             $rq .= "VALUES ";
-            $rq .= "('" . $id . "', '" . $acl_action_id . "')";
+            $rq .= "('" . $id . "', '" . $aclActionId . "')";
             $dbResult = $pearDB->query($rq);
         }
     }
@@ -314,18 +314,18 @@ function updateGroupActions($acl_action_id, $ret = array())
 /**
  *
  * update all Rules in DB
- * @param $acl_action_id
+ * @param $aclActionId
  * @param $ret
  */
-function updateRulesActions($acl_action_id, $ret = array())
+function updateRulesActions($aclActionId, $ret = array())
 {
     global $form, $pearDB;
 
-    if (!$acl_action_id) {
+    if (!$aclActionId) {
         return;
     }
 
-    $rq = "DELETE FROM acl_actions_rules WHERE acl_action_rule_id = '" . $acl_action_id . "'";
+    $rq = "DELETE FROM acl_actions_rules WHERE acl_action_rule_id = '" . $aclActionId . "'";
     $dbResult = $pearDB->query($rq);
 
     $actions = array();
@@ -336,7 +336,7 @@ function updateRulesActions($acl_action_id, $ret = array())
             $rq = "INSERT INTO acl_actions_rules ";
             $rq .= "(acl_action_rule_id, acl_action_name) ";
             $rq .= "VALUES ";
-            $rq .= "('" . $acl_action_id . "', '" . $action . "')";
+            $rq .= "('" . $aclActionId . "', '" . $action . "')";
             $dbResult = $pearDB->query($rq);
         }
     }
