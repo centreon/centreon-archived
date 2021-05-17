@@ -48,7 +48,7 @@ if (($o === "c") && $aclActionId) {
     $statement = $pearDB->prepare(
         "SELECT * FROM acl_actions WHERE acl_action_id = :aclActionId LIMIT 1"
     );
-    $statement->bindValue(':aclActionId', $aclActionId);
+    $statement->bindValue(':aclActionId', $aclActionId, \PDO::PARAM_INT);
     $statement->execute();
     $action_infos = array();
     $action_infos = array_map("myDecode", $statement->fetch());
@@ -58,10 +58,10 @@ if (($o === "c") && $aclActionId) {
         "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations " .
         "WHERE acl_action_id = :aclActionId"
     );
-    $statement->bindValue(':aclActionId', $aclActionId);
+    $statement->bindValue(':aclActionId', $aclActionId, \PDO::PARAM_INT);
     $statement->execute();
     $selected = array();
-    for ($i = 0; $contacts = $statement->fetch(); $i++) {
+    while ($contacts = $statement->fetch()) {
         $selected[] = $contacts["acl_group_id"];
     }
     $action_infos["acl_groups"] = $selected;
@@ -69,10 +69,10 @@ if (($o === "c") && $aclActionId) {
         "SELECT acl_action_name FROM `acl_actions_rules` " .
         "WHERE `acl_action_rule_id` = :aclActionId"
     );
-    $statement->bindValue(':aclActionId', $aclActionId);
+    $statement->bindValue(':aclActionId', $aclActionId, \PDO::PARAM_INT);
     $statement->execute();
     $selected_actions = array();
-    for ($i = 0; $act = $statement->fetch(); $i++) {
+    while ($act = $statement->fetch()) {
         $selected_actions[$act["acl_action_name"]] = 1;
     }
 
