@@ -33,8 +33,11 @@
  *
  */
 
-if (!$centreon->user->admin && isset($nagiosId)
-    && count($allowedMainConf) && !isset($allowedMainConf[$nagiosId])
+if (
+    !$centreon->user->admin
+    && isset($nagiosId)
+    && count($allowedMainConf)
+    && !isset($allowedMainConf[$nagiosId])
 ) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");

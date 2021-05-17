@@ -53,9 +53,6 @@ $dupNbr = filter_var_array(
     FILTER_VALIDATE_INT
 );
 
-/* Path to the configuration dir */
-$path = "./include/configuration/configNagios/";
-
 /* PHP functions */
 require_once __DIR__ . '/DB-Func.php';
 require_once "./include/common/common-Func.php";
