@@ -56,23 +56,28 @@ if (isset($_POST['searchTM']) || isset($_GET['searchTM'])) {
     $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
-$SearchTool = '';
+$searchTool = '';
 if ($search) {
-    $SearchTool .= " WHERE (alias LIKE '%" . $search . "%') OR (name LIKE '%" . $search . "%')";
+    $searchTool .= " WHERE (alias LIKE ':search') OR (name LIKE ':search')";
 }
 
 // List of elements - Depends on different criteria
-$dbResult = $pearDB->query(
-    "SELECT SQL_CALC_FOUND_ROWS * FROM traps_vendor " . $SearchTool .
+$statement = $pearDB->prepare(
+    "SELECT SQL_CALC_FOUND_ROWS * FROM traps_vendor " . $searchTool .
     "ORDER BY name, alias LIMIT " . $num * $limit . ", " . $limit
 );
+
+if (!empty($searchTool)) {
+    $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
+}
+$statement->execute();
 
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 include "./include/common/checkPagination.php";
 
 // Smarty template Init
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 // Access level
 $lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
@@ -96,7 +101,7 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $mnftr = $dbResult->fetch(); $i++) {
+for ($i = 0; $mnftr = $statement->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $mnftr['id'] . "]");
     $moptions = "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .

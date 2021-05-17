@@ -37,23 +37,23 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["id"]) ? $mnftrG = $_GET["id"] : $mnftrG = null;
-isset($_POST["id"]) ? $mnftrP = $_POST["id"] : $mnftrP = null;
-$mnftrG ? $id = $mnftrG : $id = $mnftrP;
+$id = filter_var(
+    $_GET['id'] ?? $_POST['id'],
+    FILTER_VALIDATE_INT
+) ?: null;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+$select = filter_var_array(
+    $_GET["select"] ?? $_POST["select"] ?? [],
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
-#Path to the configuration dir
-$path = "./include/configuration/configObject/traps-manufacturer/";
-
+$dupNbr = filter_var_array(
+    $_GET["dupNbr"] ?? $_POST["dupNbr"] ?? [],
+    FILTER_VALIDATE_INT
+);
+    
 #PHP functions
-require_once $path . "DB-Func.php";
+require_once __DIR__ . "/DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -63,23 +63,23 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 
 switch ($o) {
     case "a":
-        require_once($path . "formMnftr.php");
+        require_once(__DIR__ . "/formMnftr.php");
         break; #Add a Trap
     case "w":
-        require_once($path . "formMnftr.php");
+        require_once(__DIR__ . "/formMnftr.php");
         break; #Watch a Trap
     case "c":
-        require_once($path . "formMnftr.php");
+        require_once(__DIR__ . "/formMnftr.php");
         break; #Modify a Trap
     case "m":
         multipleMnftrInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path . "listMnftr.php");
+        require_once(__DIR__ . "/listMnftr.php");
         break; #Duplicate n Traps
     case "d":
         deleteMnftrInDB(isset($select) ? $select : array());
-        require_once($path . "listMnftr.php");
+        require_once(__DIR__ . "/listMnftr.php");
         break; #Delete n Traps
     default:
-        require_once($path . "listMnftr.php");
+        require_once(__DIR__ . "/listMnftr.php");
         break;
 }

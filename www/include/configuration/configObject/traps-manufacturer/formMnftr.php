@@ -45,10 +45,12 @@ function myDecodeMnftr($arg)
 
 $mnftr = array();
 if (($o == "c" || $o == "w") && $id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM traps_vendor WHERE id = '" . $id . "' LIMIT 1");
+    $statement = $pearDB->prepare("SELECT * FROM traps_vendor WHERE id = :id LIMIT 1");
     # Set base value
-    $mnftr = array_map("myDecodeMnftr", $DBRESULT->fetchRow());
-    $DBRESULT->closeCursor();
+    $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+    $statement->execute();
+    $mnftr = array_map("myDecodeMnftr", $statement->fetchRow());
+    $statement->closeCursor();
 }
 
 ##########################################################
@@ -105,7 +107,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
 
 # Smarty template Init
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 $tpl->assign(
     "helpattr",
     'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", ' .
@@ -157,7 +159,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
-    require_once($path . "listMnftr.php");
+    require_once(__DIR__ . "/listMnftr.php");
 } else {
     ##Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
