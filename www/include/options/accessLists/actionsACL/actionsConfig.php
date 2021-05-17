@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
  * This program is free software; you can redistribute it and/or modify it under 
@@ -37,27 +38,25 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["acl_action_id"]) ? $cG = $_GET["acl_action_id"] : $cG = null;
-isset($_POST["acl_action_id"]) ? $cP = $_POST["acl_action_id"] : $cP = null;
-$cG ? $acl_action_id = $cG : $acl_action_id = $cP;
+$aclActionId = filter_var(
+    $_GET['acl_action_id'] ?? $_POST['acl_action_id'],
+    FILTER_VALIDATE_INT
+) ?: null;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+$select = filter_var_array(
+    $_GET["select"] ?? $_POST["select"] ?? [],
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
-/*
- * Path to the configuration dir
- */
-$path = "./include/options/accessLists/actionsACL/";
+$dupNbr = filter_var_array(
+    $_GET["dupNbr"] ?? $_POST["dupNbr"] ?? [],
+    FILTER_VALIDATE_INT
+);
 
 /*
  * PHP functions 
  */
-require_once $path . "DB-Func.php";
+require_once __DIR__ .  "/DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 if (isset($_POST["o1"]) && isset($_POST["o2"])) {
@@ -71,39 +70,39 @@ if (isset($_POST["o1"]) && isset($_POST["o2"])) {
 
 switch ($o) {
     case "a":
-        require_once($path . "formActionsAccess.php");
+        require_once(__DIR__ .  "/formActionsAccess.php");
         break; #Add an Actions Access
     case "w":
-        require_once($path . "formActionsAccess.php");
+        require_once(__DIR__ .  "/formActionsAccess.php");
         break; #Watch an Actions Access
     case "c":
-        require_once($path . "formActionsAccess.php");
+        require_once(__DIR__ .  "/formActionsAccess.php");
         break; #Modify an Actions Access
     case "s":
-        enableActionInDB($acl_action_id);
-        require_once($path . "listsActionsAccess.php");
+        enableActionInDB($aclActionId);
+        require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Activate an Actions Access
     case "ms":
         enableActionInDB(null, isset($select) ? $select : array());
-        require_once($path . "listsActionsAccess.php");
+        require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Activate an Actions Access
     case "u":
-        disableActionInDB($acl_action_id);
-        require_once($path . "listsActionsAccess.php");
+        disableActionInDB($aclActionId);
+        require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Desactivate an an Actions Access
     case "mu":
         disableActionInDB(null, isset($select) ? $select : array());
-        require_once($path . "listsActionsAccess.php");
+        require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Desactivate n Actions Access
     case "m":
         multipleActionInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path . "listsActionsAccess.php");
+        require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Duplicate n Actions Access
     case "d":
         deleteActionInDB(isset($select) ? $select : array());
-        require_once($path . "listsActionsAccess.php");
+        require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Delete n Actions Access
     default:
-        require_once($path . "listsActionsAccess.php");
+        require_once(__DIR__ .  "/listsActionsAccess.php");
         break;
 }
