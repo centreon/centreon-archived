@@ -1,24 +1,25 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under 
  * the terms of the GNU General Public License as published by the Free Software 
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with 
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
+ *
  * Linking this program statically or dynamically with other modules is making a 
  * combined work based on this program. Thus, the terms and conditions of the GNU 
  * General Public License cover the whole combination.
- * 
+ *
  * As a special exception, the copyright holders of this program give Centreon 
  * permission to link this program with independent modules to produce an executable, 
  * regardless of the license terms of these independent modules, and to copy and 
@@ -28,9 +29,9 @@
  * derived from this program. If you modify this program, you may extend this 
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  */
 
 #
@@ -44,11 +45,13 @@ function myDecodeMnftr($arg)
 }
 
 $mnftr = array();
-if (($o == "c" || $o == "w") && $id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM traps_vendor WHERE id = '" . $id . "' LIMIT 1");
+if (($o === "c" || $o === "w") && $id) {
+    $statement = $pearDB->prepare("SELECT * FROM traps_vendor WHERE id = :id LIMIT 1");
     # Set base value
-    $mnftr = array_map("myDecodeMnftr", $DBRESULT->fetchRow());
-    $DBRESULT->closeCursor();
+    $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+    $statement->execute();
+    $mnftr = array_map("myDecodeMnftr", $statement->fetchRow());
+    $statement->closeCursor();
 }
 
 ##########################################################
@@ -105,7 +108,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
 
 # Smarty template Init
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 $tpl->assign(
     "helpattr",
     'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", ' .
@@ -157,7 +160,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
-    require_once($path . "listMnftr.php");
+    require_once(__DIR__ . "/listMnftr.php");
 } else {
     ##Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
