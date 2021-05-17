@@ -79,7 +79,7 @@ include("./include/common/checkPagination.php");
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 /*
  * start header menu
