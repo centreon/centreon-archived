@@ -33,7 +33,7 @@ const ChecksIcon = ({
   active_checks,
   passive_checks,
 }: Props): JSX.Element | null => {
-  if (passive_checks === false && active_checks === false) {
+  if (equals(passive_checks, false) && equals(active_checks, false)) {
     return <Icon Component={SyncDisabledIcon} title={labelChecksDisabled} />;
   }
 
