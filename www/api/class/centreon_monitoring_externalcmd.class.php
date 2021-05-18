@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -160,7 +161,8 @@ class CentreonMonitoringExternalcmd extends CentreonConfigurationObjects
                     }
 
                     if (isset($pollers[$command['poller_id']])) {
-                        fwrite($fh,
+                        fwrite(
+                            $fh,
                             "EXTERNALCMD:" . $command["poller_id"] . ":[" .
                             $command['timestamp'] . "] " . $command['command'] . "\n"
                         );
