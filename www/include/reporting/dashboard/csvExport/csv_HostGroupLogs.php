@@ -130,8 +130,8 @@ header("Content-disposition: filename=" . $hostgroupName . ".csv");
 
 
 echo _("Hostgroup").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
-echo $hostgroupName."; ".date(_("d/m/Y H:i:s"), $start_date)."; "
-    . date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date)."s\n";
+echo $hostgroupName."; ".date(_("d/m/Y H:i:s"), $startDate)."; "
+    . date(_("d/m/Y H:i:s"), $endDate)."; ".($endDate - $startDate)."s\n";
 echo "\n";
 
 echo _("Status").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
@@ -140,7 +140,7 @@ echo _("Status").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
  */
 $reportingTimePeriod = getreportingTimePeriod();
 $hostgroupStats = array();
-$hostgroupStats = getLogInDbForHostGroup($hostgroupId, $start_date, $end_date, $reportingTimePeriod);
+$hostgroupStats = getLogInDbForHostGroup($hostgroupId, $startDate, $endDate, $reportingTimePeriod);
 echo _("DOWN").";".$hostgroupStats["average"]["DOWN_TP"]
     . ";".$hostgroupStats["average"]["DOWN_MP"]."%;".$hostgroupStats["average"]["DOWN_A"].";\n";
 echo _("UP").";".$hostgroupStats["average"]["UP_TP"].";".$hostgroupStats["average"]["UP_MP"]
