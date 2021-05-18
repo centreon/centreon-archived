@@ -59,7 +59,7 @@ if (isset($_POST['searchTM']) || isset($_GET['searchTM'])) {
 
 $searchTool = '';
 if ($search) {
-    $searchTool .= " WHERE (alias LIKE ':search') OR (name LIKE ':search')";
+    $searchTool .= " WHERE (alias LIKE :search) OR (name LIKE :search) ";
 }
 
 // List of elements - Depends on different criteria
