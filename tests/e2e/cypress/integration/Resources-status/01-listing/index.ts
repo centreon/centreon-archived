@@ -7,10 +7,10 @@ import {
 } from 'cypress-cucumber-preprocessor/steps';
 
 import {
-  inputSearch,
-  btnToogleCriterias,
+  searchInput,
+  toggleCriteriasButton,
   searchValue,
-  containerStateFilter,
+  stateFilterContainer,
 } from '../common';
 import {
   setUserFilter,
@@ -59,8 +59,8 @@ Then('Only non-ok resources are displayed', () => {
 });
 
 When('I put in some criterias', () => {
-  cy.get(btnToogleCriterias).click();
-  cy.get(inputSearch).type(searchValue);
+  cy.get(toggleCriteriasButton).click();
+  cy.get(searchInput).type(searchValue);
   cy.contains('Search').should('exist').click();
 
   cy.get('[aria-label="Resource"]')
@@ -78,7 +78,7 @@ Then(
 );
 
 Given('a saved custom filter', () => {
-  cy.get(containerStateFilter)
+  cy.get(stateFilterContainer)
     .click()
     .then(() => cy.contains('E2E').should('exist'));
 });

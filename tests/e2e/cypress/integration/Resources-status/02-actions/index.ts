@@ -1,11 +1,11 @@
 import { When, Then, Before } from 'cypress-cucumber-preprocessor/steps';
 
 import {
-  containerStateFilter,
+  stateFilterContainer,
   refreshButton,
   serviceName,
   serviceNameDowntime,
-  apiMonitoringResources,
+  resourceMonitoringApi,
   bgCssColors,
   actions,
 } from '../common';
@@ -18,10 +18,10 @@ const refreshListing = (timeout = 5000) => {
 };
 
 Before(() => {
-  cy.get(containerStateFilter).click().get('[data-value="all"]').click();
+  cy.get(stateFilterContainer).click().get('[data-value="all"]').click();
 
   cy.intercept({
-    url: apiMonitoringResources,
+    url: resourceMonitoringApi,
     method: 'GET',
   }).as('getResources');
 });
