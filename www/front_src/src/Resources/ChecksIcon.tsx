@@ -37,7 +37,7 @@ const ChecksIcon = ({
     return <Icon Component={SyncDisabledIcon} title={labelChecksDisabled} />;
   }
 
-  if (active_checks === false) {
+  if (equals(active_checks, false)) {
     return (
       <Icon Component={SyncProblemIcon} title={labelOnlyPassiveChecksEnabled} />
     );
