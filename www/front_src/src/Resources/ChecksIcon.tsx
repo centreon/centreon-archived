@@ -21,7 +21,7 @@ const Icon = ({ Component, title }: IconProps): JSX.Element => {
   const { t } = useTranslation();
 
   return (
-    <Tooltip title={t(title) as string}>
+    <Tooltip title={t(title)}>
       <Component color="primary" fontSize="small" />
     </Tooltip>
   );
