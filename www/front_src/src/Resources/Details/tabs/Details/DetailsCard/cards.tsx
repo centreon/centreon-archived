@@ -1,7 +1,11 @@
 import * as React from 'react';
 
-import { Grid, Chip } from '@material-ui/core';
+import { pick } from 'ramda';
 
+import { Grid, Chip, Tooltip } from '@material-ui/core';
+import FlappingIcon from '@material-ui/icons/SwapCalls';
+
+import ChecksIcon from '../../../../ChecksIcon';
 import {
   labelCurrentStateDuration,
   labelMonitoringServer,
@@ -12,15 +16,15 @@ import {
   labelCheckDuration,
   labelLatency,
   labelResourceFlapping,
-  labelYes,
   labelPercentStateChange,
   labelLastNotification,
   labelCurrentNotificationNumber,
-  labelNo,
   labelFqdn,
   labelAlias,
   labelGroups,
   labelCalculationType,
+  labelCheck,
+  labelFlapping,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 
@@ -44,6 +48,12 @@ const getDetailCardLines = ({
   toDateTime,
   t,
 }: DetailCardLineProps): Array<DetailCardLine> => {
+  const checksDisabled =
+    details.active_checks === false && details.passive_checks === false;
+  const activeChecksDisabled = details.active_checks === false;
+
+  const displayChecksIcon = checksDisabled || activeChecksDisabled;
+
   return [
     {
       field: details.fqdn,
@@ -77,13 +87,19 @@ const getDetailCardLines = ({
       title: labelLastStateChange,
     },
     {
-      active: details.active_checks,
       field: details.last_check,
       line: <DetailsLine line={toDateTime(details.last_check)} />,
       title: labelLastCheck,
     },
     {
-      active: details.active_checks,
+      field: displayChecksIcon ? true : undefined,
+      line: (
+        <ChecksIcon {...pick(['active_checks', 'passive_checks'], details)} />
+      ),
+
+      title: labelCheck,
+    },
+    {
       field: details.next_check,
       line: <DetailsLine line={toDateTime(details.next_check)} />,
       title: labelNextCheck,
@@ -99,9 +115,13 @@ const getDetailCardLines = ({
       title: labelLatency,
     },
     {
-      field: details.flapping,
-      line: <DetailsLine line={t(details.flapping ? labelYes : labelNo)} />,
-      title: labelResourceFlapping,
+      field: details.flapping ? undefined : true,
+      line: (
+        <Tooltip title={t(labelResourceFlapping)}>
+          <FlappingIcon color="primary" />
+        </Tooltip>
+      ),
+      title: labelFlapping,
     },
     {
       field: details.percent_state_change,
