@@ -25,7 +25,6 @@ export interface ResourceDetails extends NamedEntity {
   groups?: Array<NamedEntity>;
   information: string;
   last_check: string;
-  passive_checks?: boolean;
   last_notification: string;
   last_status_change: string;
   latency: number;
@@ -34,6 +33,7 @@ export interface ResourceDetails extends NamedEntity {
   next_check: string;
   notification_number: number;
   parent: Parent;
+  passive_checks?: boolean;
   percent_state_change: number;
   performance_data?: string;
   severity_level: number;

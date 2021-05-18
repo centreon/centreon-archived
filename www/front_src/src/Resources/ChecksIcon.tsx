@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { equals } from 'ramda';
 
 import SyncDisabledIcon from '@material-ui/icons/SyncDisabled';
 import SyncProblemIcon from '@material-ui/icons/SyncProblem';
@@ -19,9 +20,10 @@ interface IconProps {
 
 const Icon = ({ Component, title }: IconProps): JSX.Element => {
   const { t } = useTranslation();
+  const translatedTitle = t(title);
 
   return (
-    <Tooltip title={t(title)}>
+    <Tooltip title={translatedTitle}>
       <Component color="primary" fontSize="small" />
     </Tooltip>
   );

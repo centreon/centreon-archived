@@ -31,7 +31,6 @@ import {
   labelCurrentStateDuration,
   labelLastStateChange,
   labelNextCheck,
-  labelActive,
   labelCheckDuration,
   labelLatency,
   labelPercentStateChange,
@@ -44,8 +43,6 @@ import {
   label31Days,
   labelCopy,
   labelCommand,
-  labelResourceFlapping,
-  labelNo,
   labelComment,
   labelConfigure,
   labelViewLogs,
@@ -434,8 +431,7 @@ describe(Details, () => {
   it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const { getByText, queryByText, getAllByText, getAllByTitle } =
-      renderDetails();
+    const { getByText, queryByText, getAllByText } = renderDetails();
 
     act(() => {
       setSelectedServiceResource();
