@@ -166,7 +166,7 @@ echo "\n\n";
  * getting all hosts from hostgroup
  */
 $str = "";
-$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '?'";
+$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = ?";
 $DBRESULT = $pearDB->query($request, array($hostgroupId));
 while ($hg = $DBRESULT->fetchRow()) {
     if ($str != "") {
