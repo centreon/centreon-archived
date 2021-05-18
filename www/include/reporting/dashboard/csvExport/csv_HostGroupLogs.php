@@ -90,8 +90,8 @@ if ($hostgroupId === false) {
 $allowedHostgroups = $centreon->user->access->getHostGroupAclConf(null, 'broker');
 //checking if the user has ACL rights for this resource
 if (!$centreon->user->admin
-    && $id !== null
-    && !array_key_exists($id, $allowedHostgroups)
+    && $hostgroupId !== null
+    && !array_key_exists($hostgroupId, $allowedHostgroups)
 ) {
     echo '<div align="center" style="color:red">' .
         '<b>You are not allowed to access this host group</b></div>';
@@ -118,7 +118,7 @@ if (!empty($_GET['end'])) {
 if ($startDate === false || $endDate === false) {
     throw new \InvalidArgumentException('Bad parameters');
 }
-$hostgroupName = getHostgroupNameFromId($id);
+$hostgroupName = getHostgroupNameFromId($hostgroupId);
 
 /*
  * file type setting
@@ -130,8 +130,8 @@ header("Content-disposition: filename=" . $hostgroupName . ".csv");
 
 
 echo _("Hostgroup").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
-echo $hostgroupName."; ".date(_("d/m/Y H:i:s"), $start_date)."; "
-    . date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date)."s\n";
+echo $hostgroupName."; ".date(_("d/m/Y H:i:s"), $startDate)."; "
+    . date(_("d/m/Y H:i:s"), $endDate)."; ".($endDate - $startDate)."s\n";
 echo "\n";
 
 echo _("Status").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
@@ -140,7 +140,7 @@ echo _("Status").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
  */
 $reportingTimePeriod = getreportingTimePeriod();
 $hostgroupStats = array();
-$hostgroupStats = getLogInDbForHostGroup($id, $start_date, $end_date, $reportingTimePeriod);
+$hostgroupStats = getLogInDbForHostGroup($hostgroupId, $startDate, $endDate, $reportingTimePeriod);
 echo _("DOWN").";".$hostgroupStats["average"]["DOWN_TP"]
     . ";".$hostgroupStats["average"]["DOWN_MP"]."%;".$hostgroupStats["average"]["DOWN_A"].";\n";
 echo _("UP").";".$hostgroupStats["average"]["UP_TP"].";".$hostgroupStats["average"]["UP_MP"]
@@ -166,8 +166,8 @@ echo "\n\n";
  * getting all hosts from hostgroup
  */
 $str = "";
-$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" .$id."'";
-$DBRESULT = $pearDB->query($request);
+$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = ?";
+$DBRESULT = $pearDB->query($request, array($hostgroupId));
 while ($hg = $DBRESULT->fetchRow()) {
     if ($str != "") {
         $str .= ", ";
