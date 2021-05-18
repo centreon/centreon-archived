@@ -32,7 +32,7 @@ When('I select the acknowledge action on a problematic Resource', () => {
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.get(`[title="${actions.ackowledge}"]`)
+  cy.get(`[title="${actions.acknowledge}"]`)
     .children('button')
     .first()
     .should('be.enabled')
@@ -48,7 +48,7 @@ Then('The problematic Resource is displayed as acknowledged', () => {
   cy.wait('@getResources');
   cy.contains(serviceName)
     .parents('div[role="cell"]:first')
-    .should('have.css', 'background-color', bgCssColors.ackowledge);
+    .should('have.css', 'background-color', bgCssColors.acknowledge);
 });
 
 When('I select the downtime action on a problematic Resource', () => {

@@ -8,11 +8,11 @@ const searchValue = `s.description:${serviceName}`;
 const apiMonitoringResources = /.+api\/beta\/monitoring\/resources.?page.+/;
 
 const bgCssColors = {
-  ackowledge: 'rgb(247, 244, 229)',
+  acknowledge: 'rgb(247, 244, 229)',
   inDowntime: 'rgb(249, 231, 255)',
 };
 const actions = {
-  ackowledge: 'Acknowledge',
+  acknowledge: 'Acknowledge',
   setDowntime: 'Set downtime',
 };
 
