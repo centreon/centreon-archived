@@ -120,6 +120,7 @@ class CentreonAuthSSO extends CentreonAuth
             if (!empty($this->ssoOptions['openid_connect_scope'])) {
                 $authUrl .= "&scope=" . urlencode($this->ssoOptions['openid_connect_scope']);
             }
+            $authUrl .= "&state=" . uniqid();
 
             # Authnetication is OpenId only or mixed mode?
             $inputForce = filter_var(
