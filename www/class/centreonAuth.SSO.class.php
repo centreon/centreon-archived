@@ -107,7 +107,7 @@ class CentreonAuthSSO extends CentreonAuth
             $redirect = urlencode($redirectNoEncode);
             $authUrl = $authEndpoint . "?client_id=" . $clientId . "&response_type=code&redirect_uri=" . $redirect;
             if (!empty($this->ssoOptions['openid_connect_scope'])) {
-                $authUrl .= "&scope=" . $this->ssoOptions['openid_connect_scope'];
+                $authUrl .= "&scope=" . urlencode($this->ssoOptions['openid_connect_scope']);
             }
 
             # Authnetication is OpenId only or mixed mode?
@@ -199,7 +199,7 @@ class CentreonAuthSSO extends CentreonAuth
                     : 'preferred_username';
 
                 # If no login, retrieve additional information
-                if (!isset($user[$loginClaimValue]) && isset($userInfoEndpoint)) {
+                if (!isset($user[$loginClaimValue]) && isset($userInfoEndpoint) && isset($tokenInfo['access_token'])) {
                     $user = $this->getOpenIdConnectUserInfo(
                         $userInfoEndpoint,
                         $tokenInfo['access_token'],
