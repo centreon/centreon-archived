@@ -226,6 +226,19 @@ class CentreonAuthSSO extends CentreonAuth
                         "[" . $this->source . "] [Error] Unable to get login from claim: " . $loginClaimValue
                     );
                 }
+            } else {
+                $error = $_POST['error'] ?? $_GET['error'] ?? null;
+                $errorDescription = $_POST['error_description'] ?? $_GET['error_description'] ?? null;
+                if (isset($error)) {
+                    $this->CentreonLog->insertLog(
+                        1,
+                        sprintf(
+                            "[" . $this->source . "] [Error] Authorize error: %s, description: %s",
+                            $error,
+                            urldecode($errorDescription)
+                        )
+                    );
+                }
             }
         }
 
