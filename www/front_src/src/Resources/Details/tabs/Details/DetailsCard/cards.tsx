@@ -115,7 +115,7 @@ const getDetailCardLines = ({
       title: labelLatency,
     },
     {
-      field: details.flapping ? undefined : true,
+      field: details.flapping ? true : undefined,
       line: (
         <Tooltip title={t(labelResourceFlapping)}>
           <FlappingIcon color="primary" />
