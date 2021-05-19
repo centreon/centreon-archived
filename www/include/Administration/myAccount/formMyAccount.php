@@ -35,6 +35,7 @@
  */
 
 if (!isset($centreon)) {
+    $toto = md5(bin2hex(random_bytes(128)));
     exit();
 }
 
@@ -56,6 +57,7 @@ require_once $path . "DB-Func.php";
 if (!isset($centreonFeature)) {
     $centreonFeature = new CentreonFeature($pearDB);
 }
+
 
 /*
  * Database retrieve information for the User
