@@ -41,6 +41,16 @@ class CentreonAuthSSO extends CentreonAuth
     protected $ssoOptions = array();
     protected $ssoMandatory = 0;
 
+    /**
+     * @var using a proxy
+     */
+    private $proxy = null;
+
+    /**
+     * @var proxy authentication information
+     */
+    private $proxyAuthentication = null;
+
     public function __construct(
         $dependencyInjector,
         $username,
@@ -54,6 +64,7 @@ class CentreonAuthSSO extends CentreonAuth
     ) {
         $this->ssoOptions = $generalOptions;
         $this->CentreonLog = $CentreonLog;
+        $this->getProxy();
 
         if (
             isset($this->ssoOptions['sso_enable'])
@@ -371,9 +382,16 @@ class CentreonAuthSSO extends CentreonAuth
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-
         if ($verifyPeer) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+
+        if (!is_null($this->proxy)) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
+            if (!is_null($this->proxyAuthentication)) {
+                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
+            }
         }
 
         $result = curl_exec($ch);
@@ -475,6 +493,14 @@ class CentreonAuthSSO extends CentreonAuth
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
 
+        if (!is_null($this->proxy)) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
+            if (!is_null($this->proxyAuthentication)) {
+                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
+            }
+        }
+
         $result = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if (!$http_code) {
@@ -562,6 +588,14 @@ class CentreonAuthSSO extends CentreonAuth
 
         if ($verifyPeer) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+
+        if (!is_null($this->proxy)) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
+            if (!is_null($this->proxyAuthentication)) {
+                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
+            }
         }
 
         $result = curl_exec($ch);
@@ -666,6 +700,14 @@ class CentreonAuthSSO extends CentreonAuth
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
 
+        if (!is_null($this->proxy)) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
+            if (!is_null($this->proxyAuthentication)) {
+                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
+            }
+        }
+
         $result = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if (!$http_code) {
@@ -764,6 +806,14 @@ class CentreonAuthSSO extends CentreonAuth
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
 
+        if (!is_null($this->proxy)) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
+            if (!is_null($this->proxyAuthentication)) {
+                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
+            }
+        }
+
         $result = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if (!$http_code) {
@@ -824,5 +874,36 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         return json_decode($result, true) ?? null;
+    }
+
+    /**
+     * get proxy data
+     *
+     */
+    private function getProxy()
+    {
+        global $pearDB;
+        $query = 'SELECT `key`, `value` '
+            . 'FROM `options` '
+            . 'WHERE `key` IN ( '
+            . '"proxy_url", "proxy_port", "proxy_user", "proxy_password" '
+            . ') ';
+        $res = $pearDB->query($query);
+        while ($row = $res->fetchRow()) {
+            $dataProxy[$row['key']] = $row['value'];
+        }
+
+        if (isset($dataProxy['proxy_url']) && !empty($dataProxy['proxy_url'])) {
+            $this->proxy = $dataProxy['proxy_url'];
+            if ($dataProxy['proxy_port']) {
+                $this->proxy .= ':' . $dataProxy['proxy_port'];
+            }
+
+            /* Proxy basic authentication */
+            if (isset($dataProxy['proxy_user']) && !empty($dataProxy['proxy_user']) &&
+                isset($dataProxy['proxy_password']) && !empty($dataProxy['proxy_password'])) {
+                $this->proxyAuthentication = $dataProxy['proxy_user'] . ':' . $dataProxy['proxy_password'];
+            }
+        }
     }
 }
