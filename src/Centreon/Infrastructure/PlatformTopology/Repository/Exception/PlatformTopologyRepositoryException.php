@@ -30,7 +30,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
     /**
      * @inheritDoc
      */
-    public static function failToGetToken(string $centralServerAddress): self
+    public static function failToGetToken(string $centralServerAddress): PlatformTopologyRepositoryExceptionInterface
     {
         return new self(
             sprintf(
@@ -43,7 +43,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
     /**
      * @inheritDoc
      */
-    public static function apiRequestOnCentralException(string $details): self
+    public static function apiRequestOnCentralException(string $details): PlatformTopologyRepositoryExceptionInterface
     {
         return new self(_("Request to the Central's API failed") . (' : ') . $details);
     }
@@ -51,7 +51,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
     /**
      * @inheritDoc
      */
-    public static function apiClientException(string $details): self
+    public static function apiClientException(string $details): PlatformTopologyRepositoryExceptionInterface
     {
         return new self(_("API calling the Central returned a Client exception") . (' : ') . $details);
     }
@@ -59,7 +59,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
     /**
      * @inheritDoc
      */
-    public static function apiRedirectionException(string $details): self
+    public static function apiRedirectionException(string $details): PlatformTopologyRepositoryExceptionInterface
     {
         return new self(_("API calling the Central returned a Redirection exception") . (' : ') . $details);
     }
@@ -67,7 +67,10 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
     /**
      * @inheritDoc
      */
-    public static function apiServerException(string $message, string $details): self
+    public static function apiServerException(
+        string $message,
+        string $details
+    ): PlatformTopologyRepositoryExceptionInterface
     {
         return new self($message . (' : ') . $details);
     }
@@ -75,7 +78,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
     /**
      * @inheritDoc
      */
-    public static function apiDecodingResponseFailure(string $details): self
+    public static function apiDecodingResponseFailure(string $details): PlatformTopologyRepositoryExceptionInterface
     {
         return new self(_("Unable to decode Central's API response") . (' : ') . $details);
     }
@@ -83,7 +86,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
     /**
      * @inheritDoc
      */
-    public static function apiUndeterminedError(string $details): self
+    public static function apiUndeterminedError(string $details): PlatformTopologyRepositoryExceptionInterface
     {
         return new self(_("Error from Central's register API") . (' : ') . $details);
     }

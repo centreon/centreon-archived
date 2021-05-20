@@ -30,50 +30,53 @@ interface PlatformTopologyRepositoryExceptionInterface extends RepositoryExcepti
     /**
      * Failure on authentication token retrieval
      * @param string $centralServerAddress
-     * @return self
+     * @return PlatformTopologyRepositoryExceptionInterface
      */
-    public static function failToGetToken(string $centralServerAddress): self;
+    public static function failToGetToken(string $centralServerAddress): PlatformTopologyRepositoryExceptionInterface;
 
     /**
      * Failure returned from the API calling the Central
      * @param string $details
-     * @return self
+     * @return PlatformTopologyRepositoryExceptionInterface
      */
-    public static function apiRequestOnCentralException(string $details): self;
+    public static function apiRequestOnCentralException(string $details): PlatformTopologyRepositoryExceptionInterface;
 
     /**
      * Transport exception related to the client
      * @param string $details
-     * @return self
+     * @return PlatformTopologyRepositoryExceptionInterface
      */
-    public static function apiClientException(string $details): self;
+    public static function apiClientException(string $details): PlatformTopologyRepositoryExceptionInterface;
 
     /**
      * Transport exception related to the redirection
      * @param string $details
-     * @return self
+     * @return PlatformTopologyRepositoryExceptionInterface
      */
-    public static function apiRedirectionException(string $details): self;
+    public static function apiRedirectionException(string $details): PlatformTopologyRepositoryExceptionInterface;
 
     /**
      * Transport exception related to the server
      * @param string $message concatenated message with the central response
      * @param string $details
-     * @return self
+     * @return PlatformTopologyRepositoryExceptionInterface
      */
-    public static function apiServerException(string $message, string $details): self;
+    public static function apiServerException(
+        string $message,
+        string $details
+    ): PlatformTopologyRepositoryExceptionInterface;
 
     /**
      * Central response decoding failure
      * @param string $details
-     * @return self
+     * @return PlatformTopologyRepositoryExceptionInterface
      */
-    public static function apiDecodingResponseFailure(string $details): self;
+    public static function apiDecodingResponseFailure(string $details): PlatformTopologyRepositoryExceptionInterface;
 
     /**
      * Undetermined error when calling the central's API
      * @param string $details
-     * @return self
+     * @return PlatformTopologyRepositoryExceptionInterface
      */
-    public static function apiUndeterminedError(string $details): self;
+    public static function apiUndeterminedError(string $details): PlatformTopologyRepositoryExceptionInterface;
 }
