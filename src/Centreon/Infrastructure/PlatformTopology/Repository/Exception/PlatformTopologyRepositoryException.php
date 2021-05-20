@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\PlatformInformation\Repository\Exception;
+namespace Centreon\Infrastructure\PlatformTopology\Repository\Exception;
 
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
 
