@@ -37,7 +37,7 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
-use Centreon\Infrastructure\PlatformInformation\Repository\Exception\PlatformTopologyRepositoryException;
+use Centreon\Infrastructure\PlatformTopology\Repository\Exception\PlatformTopologyRepositoryException;
 
 class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterRepositoryInterface
 {

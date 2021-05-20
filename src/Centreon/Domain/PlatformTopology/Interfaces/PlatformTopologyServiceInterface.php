@@ -28,7 +28,7 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
-use Centreon\Domain\Repository\PlatformTopologyRepositoryExceptionInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
 
 interface PlatformTopologyServiceInterface
 {

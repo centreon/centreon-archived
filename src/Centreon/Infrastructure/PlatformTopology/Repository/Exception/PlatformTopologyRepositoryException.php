@@ -70,8 +70,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
     public static function apiServerException(
         string $message,
         string $details
-    ): PlatformTopologyRepositoryExceptionInterface
-    {
+    ): PlatformTopologyRepositoryExceptionInterface {
         return new self($message . (' : ') . $details);
     }
 
