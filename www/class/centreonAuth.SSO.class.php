@@ -393,7 +393,7 @@ class CentreonAuthSSO extends CentreonAuth
         } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Error] Unable to get Token Access Information: " . get_class($e) . ', message' . $e->getMessage()
+                "[" . $this->source . "] [Error] Unable to get Token Access Information: " . get_class($e) . ', message: ' . $e->getMessage()
             );
         }
 
@@ -447,7 +447,7 @@ class CentreonAuthSSO extends CentreonAuth
         } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Error] Unable to get Token Introspection Information: " . get_class($e) . ', message' . $e->getMessage()
+                "[" . $this->source . "] [Error] Unable to get Token Introspection Information: " . get_class($e) . ', message: ' . $e->getMessage()
             );
         }
 
@@ -492,7 +492,7 @@ class CentreonAuthSSO extends CentreonAuth
         } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Error] Unable to get User Information: " . get_class($e) . ', message' . $e->getMessage()
+                "[" . $this->source . "] [Error] Unable to get User Information: " . get_class($e) . ', message: ' . $e->getMessage()
             );
         }
 
@@ -550,7 +550,7 @@ class CentreonAuthSSO extends CentreonAuth
         } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Error] Unable to refresh token: " . get_class($e) . ', message' . $e->getMessage()
+                "[" . $this->source . "] [Error] Unable to refresh token: " . get_class($e) . ', message: ' . $e->getMessage()
             );
         }
 
@@ -604,7 +604,7 @@ class CentreonAuthSSO extends CentreonAuth
         } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Error] Unable to logout the user: " . get_class($e) . ', message' . $e->getMessage()
+                "[" . $this->source . "] [Error] Unable to logout the user: " . get_class($e) . ', message: ' . $e->getMessage()
             );
         }
 
