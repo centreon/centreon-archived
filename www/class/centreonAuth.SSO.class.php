@@ -66,6 +66,7 @@ class CentreonAuthSSO extends CentreonAuth
         $this->ssoOptions = $generalOptions;
         $this->CentreonLog = $CentreonLog;
         $this->getProxy();
+        $this->debug = $this->getLogFlag();
 
         if (
             isset($this->ssoOptions['sso_enable'])
@@ -97,7 +98,6 @@ class CentreonAuthSSO extends CentreonAuth
             && !empty($this->ssoOptions['openid_connect_client_secret'])
         ) {
             $this->source = "OpenId";
-            $debug = 0;
 
             # Get configured values
             $clientId = $this->ssoOptions['openid_connect_client_id'];
@@ -152,8 +152,7 @@ class CentreonAuthSSO extends CentreonAuth
                     $clientId,
                     $clientSecret,
                     $inputCode,
-                    $verifyPeer,
-                    $debug
+                    $verifyPeer
                 );
 
                 # Checking the token expiration
@@ -168,7 +167,6 @@ class CentreonAuthSSO extends CentreonAuth
                         $clientSecret,
                         $tokenInfo['refresh_token'],
                         $verifyPeer,
-                        $debug,
                         !empty($this->ssoOptions['openid_connect_scope'])
                             ? $this->ssoOptions['openid_connect_scope']
                             : null
@@ -187,8 +185,7 @@ class CentreonAuthSSO extends CentreonAuth
                                 $clientId,
                                 $clientSecret,
                                 $tokenInfo['refresh_token'],
-                                $verifyPeer,
-                                $debug
+                                $verifyPeer
                             );
                         }
                         $tokenInfo = null;
@@ -203,8 +200,7 @@ class CentreonAuthSSO extends CentreonAuth
                         $clientId,
                         $clientSecret,
                         $tokenInfo['access_token'],
-                        $verifyPeer,
-                        $debug
+                        $verifyPeer
                     );
                 }
 
@@ -218,8 +214,7 @@ class CentreonAuthSSO extends CentreonAuth
                     $user = $this->getOpenIdConnectUserInfo(
                         $userInfoEndpoint,
                         $tokenInfo['access_token'],
-                        $verifyPeer,
-                        $debug
+                        $verifyPeer
                     );
                 }
 
@@ -360,7 +355,6 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $clientSecret OpenId Connect Client Secret
      * @param string $code         OpenId Connect Authorization Code
      * @param bool   $verifyPeer   Disable SSL verify peer
-     * @param bool   $debug        Print debug in login logs
      *
      * @return array|null
     */
@@ -370,8 +364,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $code,
-        bool   $verifyPeer,
-        bool   $debug
+        bool   $verifyPeer
     ): ?array
     {
         $data = [
@@ -404,7 +397,7 @@ class CentreonAuthSSO extends CentreonAuth
             );
         }
 
-        if ($debug) {
+        if ($this->debug && isset($result)) {
             $this->CentreonLog->insertLog(
                 1,
                 "[" . $this->source . "] [Debug] Token Access Information: " . json_encode($result)
@@ -422,7 +415,6 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $clientSecret OpenId Connect Client Secret
      * @param string $token        OpenId Connect Token Access
      * @param bool   $verifyPeer   Disable SSL verify peer
-     * @param bool   $debug        Print debug in login logs
      *
      * @return array|null
      */
@@ -431,8 +423,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $token,
-        bool   $verifyPeer,
-        bool   $debug
+        bool   $verifyPeer
     ): ?array
     {
         $data = [
@@ -463,7 +454,7 @@ class CentreonAuthSSO extends CentreonAuth
             );
         }
 
-        if ($debug) {
+        if ($this->debug && isset($result)) {
             $this->CentreonLog->insertLog(
                 1,
                 "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($result)
@@ -479,15 +470,13 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $url        OpenId Connect Introspection Token Endpoint
      * @param string $token      OpenId Connect Token Access
      * @param bool   $verifyPeer Disable SSL verify peer
-     * @param bool   $debug      Print debug in login logs
      *
      * @return array|null
      */
     public function getOpenIdConnectUserInfo(
         string $url,
         string $token,
-        bool   $verifyPeer,
-        bool   $debug
+        bool   $verifyPeer
     ): ?array
     {
         $authentication = "Authorization: Bearer " . trim($token);
@@ -513,7 +502,7 @@ class CentreonAuthSSO extends CentreonAuth
             );
         }
 
-        if ($debug) {
+        if ($this->debug && isset($result)) {
             $this->CentreonLog->insertLog(
                 1,
                 "[" . $this->source . "] [Debug] User Information: " . json_encode($result)
@@ -531,7 +520,6 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string      $clientSecret OpenId Connect Client Secret
      * @param string      $refreshToken OpenId Connect Refresh Token Access
      * @param bool        $verifyPeer   Disable SSL verify peer
-     * @param bool        $debug        Print debug in login logs
      * @param string|null $scope        The scope
      *
      * @return array|null
@@ -542,7 +530,6 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientSecret,
         string $refreshToken,
         bool   $verifyPeer,
-        bool   $debug,
         string $scope = null
     ): ?array
     {
@@ -576,7 +563,7 @@ class CentreonAuthSSO extends CentreonAuth
             );
         }
 
-        if ($debug) {
+        if ($this->debug && isset($result)) {
             $this->CentreonLog->insertLog(
                 1,
                 "[" . $this->source . "] [Debug] Refresh Token Information: " . json_encode($result)
@@ -594,7 +581,6 @@ class CentreonAuthSSO extends CentreonAuth
      * @param string $clientSecret OpenId Connect Client Secret
      * @param string $refreshToken OpenId Connect Refresh Token Access
      * @param bool   $verifyPeer   Disable SSL verify peer
-     * @param bool        $debug        Print debug in login logs
      *
      * @return array|null
      */
@@ -603,8 +589,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $refreshToken,
-        bool   $verifyPeer,
-        bool   $debug
+        bool   $verifyPeer
     ): ?array
     {
         $data = [
@@ -635,7 +620,7 @@ class CentreonAuthSSO extends CentreonAuth
             );
         }
 
-        if ($debug) {
+        if ($this->debug && isset($result)) {
             $this->CentreonLog->insertLog(
                 1,
                 "[" . $this->source . "] [Debug] Logout user Information: " . json_encode($result)
@@ -678,5 +663,21 @@ class CentreonAuthSSO extends CentreonAuth
                 $this->proxyAuthentication = $dataProxy['proxy_user'] . ':' . $dataProxy['proxy_password'];
             }
         }
+    }
+
+    /**
+     * Log enabled
+     *
+     * @return int
+     */
+    protected function getLogFlag()
+    {
+        global $pearDB;
+        $res = $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_auth'");
+        $data = $res->fetch();
+        if (isset($data["value"])) {
+            return $data["value"];
+        }
+        return 0;
     }
 }
