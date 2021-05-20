@@ -34,6 +34,7 @@
  */
 
 include_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonRestHttp.class.php";
 
 class CentreonAuthSSO extends CentreonAuth
 {
@@ -96,7 +97,7 @@ class CentreonAuthSSO extends CentreonAuth
             && !empty($this->ssoOptions['openid_connect_client_secret'])
         ) {
             $this->source = "OpenId";
-            $debug = 0;
+            $debug = 1;
 
             # Get configured values
             $clientId = $this->ssoOptions['openid_connect_client_id'];
@@ -379,82 +380,31 @@ class CentreonAuthSSO extends CentreonAuth
             "redirect_uri" => $redirectUri
         ];
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-        if ($verifyPeer) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        }
-
-        if (!is_null($this->proxy)) {
-            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
-            if (!is_null($this->proxyAuthentication)) {
-                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
-            }
-        }
-
-        $result = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if (!$http_code) {
-            $http_code = 404;
-        }
-        curl_close($ch);
-
-        /* Manage HTTP status code */
-        $exceptionClass = null;
-        $logMessage = 'Unknown HTTP error';
-        switch ($http_code) {
-            case 200:
-            case 201:
-                break;
-            case 400:
-                $exceptionClass = 'RestBadRequestException';
-                break;
-            case 401:
-                $exceptionClass = 'RestUnauthorizedException';
-                break;
-            case 403:
-                $exceptionClass = 'RestForbiddenException';
-                break;
-            case 404:
-                $exceptionClass = 'RestNotFoundException';
-                $logMessage = 'Page not found';
-                break;
-            case 405:
-                $exceptionClass = 'RestMethodNotAllowedException';
-                break;
-            case 409:
-                $exceptionClass = 'RestConflictException';
-                break;
-            case 500:
-            default:
-                $exceptionClass = 'RestInternalServerErrorException';
-                break;
-        }
-
-        if (!is_null($exceptionClass)) {
-            if (is_array($result)) {
-                $message = json_encode($result);
-            } elseif (isset($result)) {
-                $message = $result;
-            } else {
-                $message = $logMessage;
-            }
-            $this->CentreonLog->insertLog(
-                1,
-                "[" . $this->source . "] [Error] Unable to get Token Access Information. Exception: "
-                    . "$exceptionClass, url: $url, message: $message"
+        $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
+        try { 
+            $result = $restHttp->call(
+                $url,
+                'POST',
+                $data,
+                null,
+                true,
+                $verifyPeer
             );
-        } elseif ($debug) {
+        } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] Token Access Information: $result"
+                "[" . $this->source . "] [Error] Unable to get Token Access Information: " . get_class($e) . ', message' . $e->getMessage()
             );
         }
 
-        return json_decode($result, true) ?? null;
+        if ($debug) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Token Access Information: " . json_encode($result)
+            );
+        }
+
+        return $result ?? null;
     }
 
     /**
@@ -484,84 +434,31 @@ class CentreonAuthSSO extends CentreonAuth
             "client_secret" => $clientSecret
         ];
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization" => "Bearer " . $token]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-
-        if ($verifyPeer) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        }
-
-        if (!is_null($this->proxy)) {
-            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
-            if (!is_null($this->proxyAuthentication)) {
-                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
-            }
-        }
-
-        $result = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if (!$http_code) {
-            $http_code = 404;
-        }
-        curl_close($ch);
-
-        /* Manage HTTP status code */
-        $exceptionClass = null;
-        $logMessage = 'Unknown HTTP error';
-        switch ($http_code) {
-            case 200:
-            case 201:
-                break;
-            case 400:
-                $exceptionClass = 'RestBadRequestException';
-                break;
-            case 401:
-                $exceptionClass = 'RestUnauthorizedException';
-                break;
-            case 403:
-                $exceptionClass = 'RestForbiddenException';
-                break;
-            case 404:
-                $exceptionClass = 'RestNotFoundException';
-                $logMessage = 'Page not found';
-                break;
-            case 405:
-                $exceptionClass = 'RestMethodNotAllowedException';
-                break;
-            case 409:
-                $exceptionClass = 'RestConflictException';
-                break;
-            case 500:
-            default:
-                $exceptionClass = 'RestInternalServerErrorException';
-                break;
-        }
-
-        if (!is_null($exceptionClass)) {
-            if (is_array($result)) {
-                $message = json_encode($result);
-            } elseif (isset($result)) {
-                $message = $result;
-            } else {
-                $message = $logMessage;
-            }
-            $this->CentreonLog->insertLog(
-                1,
-                "[" . $this->source . "] [Error] Unable to get Token Introspection Information. Exception: "
-                    . "$exceptionClass, url: $url, message: $message"
+        $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
+        try { 
+            $result = $restHttp->call(
+                $url,
+                'POST',
+                $data,
+                ["Authorization" => "Bearer " . $token],
+                true,
+                $verifyPeer
             );
-        } elseif ($debug) {
+        } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] Token Introspection Information: $result"
+                "[" . $this->source . "] [Error] Unable to get Token Introspection Information: " . get_class($e) . ', message' . $e->getMessage()
             );
         }
 
-        return json_decode($result, true) ?? null;
+        if ($debug) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($result)
+            );
+        }
+
+        return $result ?? null;
     }
 
     /**
@@ -581,84 +478,32 @@ class CentreonAuthSSO extends CentreonAuth
         bool $debug
     ): ?array
     {
-        $ch = curl_init($url);
         $authentication = "Authorization: Bearer " . trim($token);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [$authentication]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-
-        if ($verifyPeer) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        }
-
-        if (!is_null($this->proxy)) {
-            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
-            if (!is_null($this->proxyAuthentication)) {
-                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
-            }
-        }
-
-        $result = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if (!$http_code) {
-            $http_code = 404;
-        }
-        curl_close($ch);
-
-        /* Manage HTTP status code */
-        $exceptionClass = null;
-        $logMessage = 'Unknown HTTP error';
-        switch ($http_code) {
-            case 200:
-            case 201:
-                break;
-            case 400:
-                $exceptionClass = 'RestBadRequestException';
-                break;
-            case 401:
-                $exceptionClass = 'RestUnauthorizedException';
-                break;
-            case 403:
-                $exceptionClass = 'RestForbiddenException';
-                break;
-            case 404:
-                $exceptionClass = 'RestNotFoundException';
-                $logMessage = 'Page not found';
-                break;
-            case 405:
-                $exceptionClass = 'RestMethodNotAllowedException';
-                break;
-            case 409:
-                $exceptionClass = 'RestConflictException';
-                break;
-            case 500:
-            default:
-                $exceptionClass = 'RestInternalServerErrorException';
-                break;
-        }
-
-        if (!is_null($exceptionClass)) {
-            if (is_array($result)) {
-                $message = json_encode($result);
-            } elseif (isset($result)) {
-                $message = $result;
-            } else {
-                $message = $logMessage;
-            }
-            $this->CentreonLog->insertLog(
-                1,
-                "[" . $this->source . "] [Error] Unable to get User Additional Information. Exception: "
-                    . "$exceptionClass, url: $url, message: $message"
+        $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
+        try { 
+            $result = $restHttp->call(
+                $url,
+                'POST',
+                $data,
+                [$authentication],
+                true,
+                $verifyPeer
             );
-        } elseif ($debug) {
+        } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] User Information: $result"
+                "[" . $this->source . "] [Error] Unable to get User Information: " . get_class($e) . ', message' . $e->getMessage()
             );
         }
 
-        return json_decode($result, true) ?? null;
+        if ($debug) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] User Information: " . json_encode($result)
+            );
+        }
+
+        return $result ?? null;
     }
 
     /**
@@ -692,83 +537,31 @@ class CentreonAuthSSO extends CentreonAuth
             "scope" => $scope
         ];
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-
-        if ($verifyPeer) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        }
-
-        if (!is_null($this->proxy)) {
-            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
-            if (!is_null($this->proxyAuthentication)) {
-                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
-            }
-        }
-
-        $result = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if (!$http_code) {
-            $http_code = 404;
-        }
-        curl_close($ch);
-
-        /* Manage HTTP status code */
-        $exceptionClass = null;
-        $logMessage = 'Unknown HTTP error';
-        switch ($http_code) {
-            case 200:
-            case 201:
-                break;
-            case 400:
-                $exceptionClass = 'RestBadRequestException';
-                break;
-            case 401:
-                $exceptionClass = 'RestUnauthorizedException';
-                break;
-            case 403:
-                $exceptionClass = 'RestForbiddenException';
-                break;
-            case 404:
-                $exceptionClass = 'RestNotFoundException';
-                $logMessage = 'Page not found';
-                break;
-            case 405:
-                $exceptionClass = 'RestMethodNotAllowedException';
-                break;
-            case 409:
-                $exceptionClass = 'RestConflictException';
-                break;
-            case 500:
-            default:
-                $exceptionClass = 'RestInternalServerErrorException';
-                break;
-        }
-
-        if (!is_null($exceptionClass)) {
-            if (is_array($result)) {
-                $message = json_encode($result);
-            } elseif (isset($result)) {
-                $message = $result;
-            } else {
-                $message = $logMessage;
-            }
-            $this->CentreonLog->insertLog(
-                1,
-                "[" . $this->source . "] [Error] Unable to refresh token. Exception: "
-                    . "$exceptionClass, url: $url, message: $message"
+        $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
+        try { 
+            $result = $restHttp->call(
+                $url,
+                'POST',
+                $data,
+                null,
+                true,
+                $verifyPeer
             );
-        } elseif ($debug) {
+        } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] Refresh Token Information: $result"
+                "[" . $this->source . "] [Error] Unable to refresh token: " . get_class($e) . ', message' . $e->getMessage()
             );
         }
 
-        return json_decode($result, true) ?? null;
+        if ($debug) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Refresh Token Information: " . json_encode($result)
+            );
+        }
+
+        return $result ?? null;
     }
 
     /**
@@ -798,83 +591,31 @@ class CentreonAuthSSO extends CentreonAuth
             "refresh_token" => $refreshToken
         ];
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-
-        if ($verifyPeer) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        }
-
-        if (!is_null($this->proxy)) {
-            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
-            if (!is_null($this->proxyAuthentication)) {
-                curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyAuthentication);
-            }
-        }
-
-        $result = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if (!$http_code) {
-            $http_code = 404;
-        }
-        curl_close($ch);
-
-        /* Manage HTTP status code */
-        $exceptionClass = null;
-        $logMessage = 'Unknown HTTP error';
-        switch ($http_code) {
-            case 200:
-            case 201:
-                break;
-            case 400:
-                $exceptionClass = 'RestBadRequestException';
-                break;
-            case 401:
-                $exceptionClass = 'RestUnauthorizedException';
-                break;
-            case 403:
-                $exceptionClass = 'RestForbiddenException';
-                break;
-            case 404:
-                $exceptionClass = 'RestNotFoundException';
-                $logMessage = 'Page not found';
-                break;
-            case 405:
-                $exceptionClass = 'RestMethodNotAllowedException';
-                break;
-            case 409:
-                $exceptionClass = 'RestConflictException';
-                break;
-            case 500:
-            default:
-                $exceptionClass = 'RestInternalServerErrorException';
-                break;
-        }
-
-        if (!is_null($exceptionClass)) {
-            if (is_array($result)) {
-                $message = json_encode($result);
-            } elseif (isset($result)) {
-                $message = $result;
-            } else {
-                $message = $logMessage;
-            }
-            $this->CentreonLog->insertLog(
-                1,
-                "[" . $this->source . "] [Error] Unable to logout the user. Exception: "
-                    . "$exceptionClass, url: $url, message: $message"
+        $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
+        try { 
+            $result = $restHttp->call(
+                $url,
+                'POST',
+                $data,
+                null,
+                true,
+                $verifyPeer
             );
-        } elseif ($debug) {
+        } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] Logout user Information: $result"
+                "[" . $this->source . "] [Error] Unable to logout the user: " . get_class($e) . ', message' . $e->getMessage()
             );
         }
 
-        return json_decode($result, true) ?? null;
+        if ($debug) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Logout user Information: " . json_encode($result)
+            );
+        }
+
+        return $result ?? null;
     }
 
     /**
