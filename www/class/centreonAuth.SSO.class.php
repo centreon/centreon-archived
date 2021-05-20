@@ -169,7 +169,9 @@ class CentreonAuthSSO extends CentreonAuth
                         $tokenInfo['refresh_token'],
                         $verifyPeer,
                         $debug,
-                        !empty($this->ssoOptions['openid_connect_scope']) ? $this->ssoOptions['openid_connect_scope'] : null
+                        !empty($this->ssoOptions['openid_connect_scope'])
+                            ? $this->ssoOptions['openid_connect_scope']
+                            : null
                     );
                     if (empty($result['error']) && !empty($result)) {
                         $tokenInfo = $result;
@@ -178,7 +180,7 @@ class CentreonAuthSSO extends CentreonAuth
                             1,
                             "[" . $this->source . "] [Error] Refresh Token Info: " . json_encode($result)
                         );
-        
+
                         if (!empty($endSessionEndpoint)) {
                             $result = $this->logout(
                                 $endSessionEndpoint,
@@ -228,7 +230,7 @@ class CentreonAuthSSO extends CentreonAuth
                         $this->ssoMandatory = 1;
                         $username = $this->ssoUsername;
                     }
-                } elseif(isset($user['error'])) {
+                } elseif (isset($user['error'])) {
                     $this->CentreonLog->insertLog(
                         1,
                         "[" . $this->source . "] [Error] Can't authenticate user: " . $user['error']
@@ -246,7 +248,8 @@ class CentreonAuthSSO extends CentreonAuth
                     $this->CentreonLog->insertLog(
                         1,
                         sprintf(
-                            "[" . $this->source . "] [Error] Authorize error: %s, description: %s",
+                            "[%s] [Error] Authorize error: %s, description: %s",
+                            $this->source,
                             $error,
                             urldecode($errorDescription)
                         )
@@ -348,7 +351,6 @@ class CentreonAuthSSO extends CentreonAuth
         }
     }
 
-
     /**
      * Connect to OpenId Connect and get token access
      *
@@ -368,8 +370,8 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $code,
-        bool $verifyPeer,
-        bool $debug
+        bool   $verifyPeer,
+        bool   $debug
     ): ?array
     {
         $data = [
@@ -381,7 +383,7 @@ class CentreonAuthSSO extends CentreonAuth
         ];
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
-        try { 
+        try {
             $result = $restHttp->call(
                 $url,
                 'POST',
@@ -393,7 +395,12 @@ class CentreonAuthSSO extends CentreonAuth
         } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Error] Unable to get Token Access Information: " . get_class($e) . ', message: ' . $e->getMessage()
+                sprintf(
+                    "[%s] [Error] Unable to get Token Access Information: %S, message: %s",
+                    $this->source,
+                    get_class($e),
+                    $e->getMessage()
+                )
             );
         }
 
@@ -424,8 +431,8 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $token,
-        bool $verifyPeer,
-        bool $debug
+        bool   $verifyPeer,
+        bool   $debug
     ): ?array
     {
         $data = [
@@ -435,7 +442,7 @@ class CentreonAuthSSO extends CentreonAuth
         ];
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
-        try { 
+        try {
             $result = $restHttp->call(
                 $url,
                 'POST',
@@ -447,7 +454,12 @@ class CentreonAuthSSO extends CentreonAuth
         } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Error] Unable to get Token Introspection Information: " . get_class($e) . ', message: ' . $e->getMessage()
+                sprintf(
+                    "[%s] [Error] Unable to get Token Introspection Information: %s, message: %s",
+                    $this->source,
+                    get_class($e),
+                    $e->getMessage()
+                )
             );
         }
 
@@ -474,13 +486,13 @@ class CentreonAuthSSO extends CentreonAuth
     public function getOpenIdConnectUserInfo(
         string $url,
         string $token,
-        bool $verifyPeer,
-        bool $debug
+        bool   $verifyPeer,
+        bool   $debug
     ): ?array
     {
         $authentication = "Authorization: Bearer " . trim($token);
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
-        try { 
+        try {
             $result = $restHttp->call(
                 $url,
                 'POST',
@@ -492,7 +504,12 @@ class CentreonAuthSSO extends CentreonAuth
         } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Error] Unable to get User Information: " . get_class($e) . ', message: ' . $e->getMessage()
+                sprintf(
+                    "[%s] [Error] Unable to get User Information: %s, message: %s",
+                    $this->source,
+                    get_class($e),
+                    $e->getMessage()
+                )
             );
         }
 
@@ -538,7 +555,7 @@ class CentreonAuthSSO extends CentreonAuth
         ];
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
-        try { 
+        try {
             $result = $restHttp->call(
                 $url,
                 'POST',
@@ -550,7 +567,12 @@ class CentreonAuthSSO extends CentreonAuth
         } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Error] Unable to refresh token: " . get_class($e) . ', message: ' . $e->getMessage()
+                sprintf(
+                    "[%s] [Error] Unable to refresh token: %s, message: %s",
+                    $this->source,
+                    get_class($e),
+                    $e->getMessage()
+                )
             );
         }
 
@@ -581,8 +603,8 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $refreshToken,
-        bool $verifyPeer,
-        bool $debug
+        bool   $verifyPeer,
+        bool   $debug
     ): ?array
     {
         $data = [
@@ -592,7 +614,7 @@ class CentreonAuthSSO extends CentreonAuth
         ];
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
-        try { 
+        try {
             $result = $restHttp->call(
                 $url,
                 'POST',
@@ -604,7 +626,12 @@ class CentreonAuthSSO extends CentreonAuth
         } catch (Exception $e) {
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Error] Unable to logout the user: " . get_class($e) . ', message: ' . $e->getMessage()
+                sprintf(
+                    "[%s] [Error] Unable to logout the user: %s, message: %s",
+                    $this->source,
+                    get_class($e),
+                    $e->getMessage()
+                )
             );
         }
 
@@ -642,8 +669,12 @@ class CentreonAuthSSO extends CentreonAuth
             }
 
             /* Proxy basic authentication */
-            if (isset($dataProxy['proxy_user']) && !empty($dataProxy['proxy_user']) &&
-                isset($dataProxy['proxy_password']) && !empty($dataProxy['proxy_password'])) {
+            if (
+                isset($dataProxy['proxy_user'])
+                && !empty($dataProxy['proxy_user'])
+                && isset($dataProxy['proxy_password'])
+                && !empty($dataProxy['proxy_password'])
+            ) {
                 $this->proxyAuthentication = $dataProxy['proxy_user'] . ':' . $dataProxy['proxy_password'];
             }
         }
