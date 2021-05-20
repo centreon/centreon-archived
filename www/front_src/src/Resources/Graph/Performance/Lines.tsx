@@ -74,7 +74,10 @@ const getGraphLines = ({
         const props = {
           dataKey: metric,
           dot: false,
-          fill: transparency ? fade(areaColor, transparency * 0.01) : undefined,
+          fill:
+            transparency && areaColor && filled
+              ? fade(areaColor, transparency * 0.01)
+              : 'transparent',
           isAnimationActive: false,
           opacity: highlight === false ? 0.3 : 1,
           stroke: lineColor,
