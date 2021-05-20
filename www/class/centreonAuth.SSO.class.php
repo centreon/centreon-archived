@@ -97,7 +97,7 @@ class CentreonAuthSSO extends CentreonAuth
             && !empty($this->ssoOptions['openid_connect_client_secret'])
         ) {
             $this->source = "OpenId";
-            $debug = 1;
+            $debug = 0;
 
             # Get configured values
             $clientId = $this->ssoOptions['openid_connect_client_id'];
