@@ -1,5 +1,4 @@
 {
-  "$schema": "https://on.cypress.io/cypress.schema.json",
   "testFiles": "**/*.feature",
   "ignoreTestFiles": ["*.js", "*.ts", "*.md"],
   "supportFile": "cypress/support/index.ts",
@@ -11,9 +10,7 @@
   "reporterOptions": {
     "mochaFile": "cypress/results/reports/junit-report.xml"
   },
-  "retries": {
-    "runMode": 1
-  },
+  "retries": 2,
   "defaultCommandTimeout": 6000,
   "requestTimeout": 10000,
   "execTimeout": 60000,

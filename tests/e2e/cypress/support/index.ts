@@ -5,20 +5,15 @@ import {
   submitResultApiClapi,
   removeDataResources,
   applyCfgApi,
+  resourcesMatching,
+  refreshListing,
 } from './centreonData';
 
 before(() => {
   setUserTokenApiV1();
   setUserTokenApiV2();
 
-  initDataResources().then(() => {
-    applyCfgApi().then(() => {
-      // Necessary to wait checks on the engine
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(5000);
-      submitResultApiClapi();
-    });
-  });
+  initDataResources().then(() => applyCfgApi());
 
   cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {
     cy.visit(`${Cypress.config().baseUrl}`);
@@ -28,7 +23,13 @@ before(() => {
       cy.get('input[placeholder="Password"]').type(userAdmin.password);
     });
 
-    cy.get('form').submit();
+    cy.get('form')
+      .submit()
+      .then(() => {
+        submitResultApiClapi().then(() => {
+          refreshListing().then(() => resourcesMatching());
+        });
+      });
   });
 
   Cypress.Cookies.defaults({
@@ -36,4 +37,9 @@ before(() => {
   });
 });
 
-after(() => setUserTokenApiV1().then(() => removeDataResources()));
+after(() => {
+  setUserTokenApiV1().then(() => {
+    removeDataResources();
+    applyCfgApi();
+  });
+});

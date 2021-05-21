@@ -1,7 +1,7 @@
 {
   "results": [
       {
-        "updatetime": "1528884076",
+        "updatetime": "",
         "host": "test_host",
         "service": "service_test",
         "status": "2",
@@ -9,7 +9,7 @@
         "perfdata": ""
       },
       {
-        "updatetime": "1528884076",
+        "updatetime": "",
         "host": "test_host",
         "service": "service_test_dt",
         "status": "2",

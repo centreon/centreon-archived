@@ -10,9 +10,7 @@
   "reporterOptions": {
     "mochaFile": "cypress/results/dev/reports/junit-report.xml"
   },
-  "retries": {
-    "runMode": 1
-  },
+  "retries": 2,
   "defaultCommandTimeout": 6000,
   "requestTimeout": 10000,
   "execTimeout": 60000,

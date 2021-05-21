@@ -2,20 +2,13 @@ import { When, Then, Before } from 'cypress-cucumber-preprocessor/steps';
 
 import {
   stateFilterContainer,
-  refreshButton,
   serviceName,
   serviceNameDowntime,
   resourceMonitoringApi,
   bgCssColors,
   actions,
 } from '../common';
-
-const refreshListing = (timeout = 5000) => {
-  // "wait" here, it's necessary to allow time for the action
-  // to be taken into account before launching a call to the API.
-  cy.wait(timeout);
-  cy.get(refreshButton).click();
-};
+import { refreshListing } from '../../../support/centreonData';
 
 Before(() => {
   cy.get(stateFilterContainer).click().get('[data-value="all"]').click();
@@ -43,7 +36,7 @@ When('I select the acknowledge action on a problematic Resource', () => {
 });
 
 Then('The problematic Resource is displayed as acknowledged', () => {
-  refreshListing();
+  refreshListing(3000);
 
   cy.wait('@getResources');
   cy.contains(serviceName)
@@ -68,7 +61,7 @@ When('I select the downtime action on a problematic Resource', () => {
 });
 
 Then('The problematic Resource is displayed as in downtime', () => {
-  refreshListing();
+  refreshListing(3000);
 
   cy.wait('@getResources');
   cy.contains(serviceNameDowntime)

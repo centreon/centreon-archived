@@ -16,29 +16,8 @@ import {
   setUserFilter,
   deleteUserFilter,
   setUserTokenApiV2,
+  resourcesMatching,
 } from '../../../support/centreonData';
-
-interface Status {
-  severity_code: number;
-  name: string;
-}
-
-interface Resource {
-  type: 'host' | 'service';
-  name: string;
-  status: Status;
-  acknowledged: boolean;
-  in_downtime: boolean;
-}
-
-const resourcesMatching = (): Cypress.Chainable => {
-  return cy.get<Array<Resource>>('@resources').then((resources) => {
-    resources.forEach(({ name }) => {
-      cy.contains(name).should('exist');
-      cy.contains('CRITICAL');
-    });
-  });
-};
 
 Before(() => {
   setUserTokenApiV2();
@@ -49,14 +28,7 @@ Before(() => {
 });
 
 When('I filter on unhandled problems', () => cy.contains('Unhandled problems'));
-Then('Only non-ok resources are displayed', () => {
-  cy.get<Array<Resource>>('@resources').then((resources) => {
-    resources.forEach(({ name }) => {
-      cy.contains(name).should('exist');
-      cy.contains('CRITICAL').should('exist');
-    });
-  });
-});
+Then('Only non-ok resources are displayed', () => resourcesMatching());
 
 When('I put in some criterias', () => {
   cy.get(toggleCriteriasButton).click();
@@ -74,10 +46,11 @@ When('I put in some criterias', () => {
 });
 Then(
   'only the Resources matching the selected criterias are displayed in the result',
-  () => resourcesMatching,
+  () => resourcesMatching(),
 );
 
 Given('a saved custom filter', () => {
+  cy.reload();
   cy.get(stateFilterContainer)
     .click()
     .then(() => cy.contains('E2E').should('exist'));

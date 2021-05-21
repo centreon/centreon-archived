@@ -1,3 +1,5 @@
+import { refreshButton } from '../integration/Resources-status/common';
+
 import { apiActionV1, apiLoginV2, apiFilterResourcesBeta } from './model';
 
 interface Criteria {
@@ -16,6 +18,47 @@ interface ActionClapi {
   object?: string;
   values: string;
 }
+
+interface Status {
+  severity_code: number;
+  name: string;
+}
+interface Resource {
+  type: 'host' | 'service';
+  name: string;
+  status: Status;
+  acknowledged: boolean;
+  in_downtime: boolean;
+}
+
+const refreshListing = (timeout = 0): Cypress.Chainable => {
+  // "wait" here, it's necessary to allow time for the action
+  // to be taken into account before launching a call to the API.
+  if (timeout > 0) cy.wait(timeout);
+  cy.get(refreshButton).children('button').should('be.enabled');
+  return cy.get(refreshButton).click();
+};
+
+const resourcesMatching = (): Cypress.Chainable => {
+  cy.readFile('cypress/fixtures/resources.txt').then((data) => {
+    const resourceLines = data.split('\n').filter((d) => d.includes('ADD'));
+
+    const resources = resourceLines.map((line: string) => {
+      const [name, description] = line
+        .split(';')
+        .filter((_, index: number) => index === 2 || index === 3);
+      return { name, description };
+    });
+    cy.wrap(resources).as('resources');
+  });
+
+  return cy.get<Array<Resource>>('@resources').then((resources) => {
+    resources.forEach(({ name }) => {
+      cy.contains(name).should('exist');
+      cy.contains('CRITICAL');
+    });
+  });
+};
 
 const actionClapiApi = (
   bodyContent: ActionClapi,
@@ -106,16 +149,26 @@ const deleteUserFilter = (): Cypress.Chainable => {
 const submitResultApiClapi = (): Cypress.Chainable => {
   return cy
     .fixture('resources/clapi/submit-results.json')
-    .then((submitResults) => {
-      return cy.request({
-        method: 'POST',
-        url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
-        body: submitResults,
-        headers: {
-          'Content-Type': 'application/json',
-          'centreon-auth-token': window.localStorage.getItem('userTokenApiV1'),
-        },
+    .then(({ results }) => {
+      const timestampNow = Math.floor(Date.now() / 1000) - 15;
+
+      const submitResults = results.map((res) => {
+        res.updatetime = timestampNow.toString();
+        return res;
       });
+
+      return cy
+        .request({
+          method: 'POST',
+          url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
+          body: { results: submitResults },
+          headers: {
+            'Content-Type': 'application/json',
+            'centreon-auth-token':
+              window.localStorage.getItem('userTokenApiV1'),
+          },
+        })
+        .then((response) => expect(response.status).to.eq(200));
     });
 };
 
@@ -132,13 +185,13 @@ const initDataResources = (): Cypress.Chainable => {
     actionClapiApi(raw),
   );
 
-  cy.fixture(
-    'resources/clapi/service1/03-disable-active-check.json',
-  ).then((raw) => actionClapiApi(raw));
+  cy.fixture('resources/clapi/service1/03-disable-active-check.json').then(
+    (raw) => actionClapiApi(raw),
+  );
 
-  cy.fixture(
-    'resources/clapi/service1/04-enable-passive-check.json',
-  ).then((raw) => actionClapiApi(raw));
+  cy.fixture('resources/clapi/service1/04-enable-passive-check.json').then(
+    (raw) => actionClapiApi(raw),
+  );
 
   cy.fixture('resources/clapi/service2/01-add.json').then((raw) =>
     actionClapiApi(raw),
@@ -148,9 +201,9 @@ const initDataResources = (): Cypress.Chainable => {
     actionClapiApi(raw),
   );
 
-  cy.fixture(
-    'resources/clapi/service2/03-disable-active-check.json',
-  ).then((raw) => actionClapiApi(raw));
+  cy.fixture('resources/clapi/service2/03-disable-active-check.json').then(
+    (raw) => actionClapiApi(raw),
+  );
 
   return cy
     .fixture('resources/clapi/service2/04-enable-passive-check.json')
@@ -182,4 +235,6 @@ export {
   initDataResources,
   removeDataResources,
   applyCfgApi,
+  resourcesMatching,
+  refreshListing,
 };
