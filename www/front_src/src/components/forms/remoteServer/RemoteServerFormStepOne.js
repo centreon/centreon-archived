@@ -45,7 +45,6 @@ class RemoteServerFormStepOne extends Component {
       this.initializeFromRest(waitList.length > 0);
     }
     this.setState({
-      centreon_folder: '/centreon/',
       initialized: true,
     });
   };
@@ -57,7 +56,7 @@ class RemoteServerFormStepOne extends Component {
   };
 
   render() {
-    const { error, handleSubmit, onSubmit, waitList, t } = this.props;
+    const { error, handleSubmit, onSubmit, waitList, defaultCentralIp, t } = this.props;
     const { inputTypeManual } = this.state;
     return (
       <div className={styles['form-wrapper']}>
@@ -120,26 +119,6 @@ class RemoteServerFormStepOne extends Component {
                   placeholder=""
                   type="text"
                   validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Centreon Web Folder on Remote')}:`}
-                  name="centreon_folder"
-                  placeholder="/centreon/"
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={CheckboxField}
-                  label={t('Do not check SSL certificate validation')}
-                  name="no_check_certificate"
-                />
-                <Field
-                  component={CheckboxField}
-                  label={t(
-                    'Do not use configured proxy to connect to this server',
-                  )}
-                  name="no_proxy"
                 />
               </div>
             ) : null}
@@ -207,26 +186,6 @@ class RemoteServerFormStepOne extends Component {
                   placeholder=""
                   type="text"
                   validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Centreon Web Folder on Remote')}:`}
-                  name="centreon_folder"
-                  placeholder="/centreon/"
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={CheckboxField}
-                  label={t('Do not check SSL certificate validation')}
-                  name="no_check_certificate"
-                />
-                <Field
-                  component={CheckboxField}
-                  label={t(
-                    'Do not use configured proxy to connect to this server',
-                  )}
-                  name="no_proxy"
                 />
               </div>
             ) : null}

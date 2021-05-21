@@ -94,6 +94,16 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         return $statement->fetchAll();
     }
 
+    public function postGetCentralDefaultIp(): string
+    {
+        $statement = $this->pearDB->query("
+            SELECT address FROM `platform_topology`
+            WHERE `type` = 'central'
+        ");
+        $result = $statement->fetch();
+        return $result['address'];
+    }
+
     /**
      * Get Pollers servers waitlist
      *
