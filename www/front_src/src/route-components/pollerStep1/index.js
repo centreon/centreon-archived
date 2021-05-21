@@ -31,10 +31,15 @@ class PollerStepOneRoute extends Component {
   state = {
     error: null,
     waitList: null,
+    defaultCentralIp: null,
   };
 
   wizardFormWaitListApi = axios(
     'internal.php?object=centreon_configuration_remote&action=getPollerWaitList',
+  );
+
+  wizardFormDefaultCentralApi = axios(
+    'internal.php?object=centreon_configuration_remote&action=getCentralDefaultIp',
   );
 
   getWaitList = () => {
@@ -48,8 +53,20 @@ class PollerStepOneRoute extends Component {
       });
   };
 
+  getDefaultCentralIp = () => {
+    this.wizardFormDefaultCentralApi
+      .post()
+      .then((response) => {
+        this.setState({ defaultCentralIp: response.data})
+      })
+      .catch(() => {
+        this.setState({ defaultCentralIp: null });
+      });
+  }
+
   componentDidMount = () => {
     this.getWaitList();
+    this.getDefaultCentralIp();
   };
 
   handleSubmit = (data) => {
@@ -60,12 +77,12 @@ class PollerStepOneRoute extends Component {
 
   render() {
     const { links } = this;
-    const { waitList } = this.state;
+    const { waitList, defaultCentralIp } = this.state;
     return (
       <BaseWizard>
         <ProgressBar links={links} />
         <Form
-          initialValues={{}}
+          initialValues={{centreon_central_ip: defaultCentralIp}}
           waitList={waitList}
           onSubmit={this.handleSubmit.bind(this)}
         />
