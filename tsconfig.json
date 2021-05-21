@@ -1,5 +1,5 @@
 {
-  "extends": "./node_modules/@centreon/frontend-core/tsconfig/index",
+  "extends": "./node_modules/@centreon/centreon-frontend/packages/frontend-config/tsconfig/index",
   "compilerOptions": {
     "baseUrl": "./",
     "typeRoots": [
@@ -7,6 +7,10 @@
       "./node_modules/@types"
     ],
     "module": "esnext",
+    "paths": {
+      "@centreon/ui": ["./node_modules/@centreon/centreon-frontend/packages/centreon-ui"],
+      "@centreon/ui-context": ["./node_modules/@centreon/centreon-frontend/packages/ui-context"]
+    }
   },
   "include": [
     "./www/front_src/src"

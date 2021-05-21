@@ -4,8 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const { merge } = require('webpack-merge');
 
-const baseConfig = require('@centreon/frontend-core/webpack/base');
-const extractCssConfig = require('@centreon/frontend-core/webpack/patch/extractCss');
+const baseConfig = require('@centreon/centreon-frontend/packages/frontend-config/webpack/base');
+const extractCssConfig = require('@centreon/centreon-frontend/packages/frontend-config/webpack/patch/extractCss');
 
 module.exports = merge(baseConfig, extractCssConfig, {
   entry: ['@babel/polyfill', './www/front_src/src/index.js'],
@@ -58,6 +58,12 @@ module.exports = merge(baseConfig, extractCssConfig, {
   ],
   resolve: {
     alias: {
+      '@centreon/ui': path.resolve(
+        './node_modules/@centreon/centreon-frontend/packages/centreon-ui',
+      ),
+      '@centreon/ui-context': path.resolve(
+        './node_modules/@centreon/centreon-frontend/packages/ui-context',
+      ),
       react: path.resolve('./node_modules/react'),
     },
   },

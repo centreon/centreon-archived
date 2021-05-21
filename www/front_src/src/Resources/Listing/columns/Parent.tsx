@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Typography } from '@material-ui/core';
 
-import { ComponentColumnProps, StatusChip } from '@centreon/ui/src';
+import { ComponentColumnProps, StatusChip } from '@centreon/ui';
 
 import { useColumnStyles } from '.';
 
