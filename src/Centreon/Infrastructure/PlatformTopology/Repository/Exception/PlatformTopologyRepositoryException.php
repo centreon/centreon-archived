@@ -45,7 +45,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
      */
     public static function apiRequestOnCentralException(string $details): PlatformTopologyRepositoryExceptionInterface
     {
-        return new self(_("Request to the Central's API failed") . (' : ') . $details);
+        return new self(_("Request to the Central's API failed") . ' : ' . $details);
     }
 
     /**
@@ -53,7 +53,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
      */
     public static function apiClientException(string $details): PlatformTopologyRepositoryExceptionInterface
     {
-        return new self(_("API calling the Central returned a Client exception") . (' : ') . $details);
+        return new self(_("API calling the Central returned a Client exception") . ' : ' . $details);
     }
 
     /**
@@ -61,7 +61,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
      */
     public static function apiRedirectionException(string $details): PlatformTopologyRepositoryExceptionInterface
     {
-        return new self(_("API calling the Central returned a Redirection exception") . (' : ') . $details);
+        return new self(_("API calling the Central returned a Redirection exception") . ' : ' . $details);
     }
 
     /**
@@ -71,7 +71,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
         string $message,
         string $details
     ): PlatformTopologyRepositoryExceptionInterface {
-        return new self($message . (' : ') . $details);
+        return new self($message . ' : ' . $details);
     }
 
     /**
@@ -79,7 +79,7 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
      */
     public static function apiDecodingResponseFailure(string $details): PlatformTopologyRepositoryExceptionInterface
     {
-        return new self(_("Unable to decode Central's API response") . (' : ') . $details);
+        return new self(_("Unable to decode Central's API response") . ' : ' . $details);
     }
 
     /**
@@ -87,6 +87,6 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
      */
     public static function apiUndeterminedError(string $details): PlatformTopologyRepositoryExceptionInterface
     {
-        return new self(_("Error from Central's register API") . (' : ') . $details);
+        return new self(_("Error from Central's register API") . ' : ' . $details);
     }
 }
