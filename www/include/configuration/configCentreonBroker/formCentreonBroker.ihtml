@@ -141,30 +141,32 @@
     {literal}
 
     jQuery('#Form').centreonValidate();
+    jQuery(document).ready(function() {
+        clonifyTableFields('parentGroup','displaynamegroup');
+    });
 
+    function mk_paginationFF(){};
+    function set_header_title(){};
 
-function mk_paginationFF(){};
-function set_header_title(){};
+    function Infos() {
+        this.tags = new Array();
 
-function Infos() {
-    this.tags = new Array();
+        this.getPos = function(type){
+            if (this.tags[type] == undefined) {
+                    this.tags[type] = 0;
+            }
+            return this.tags[type];
+        };
 
-    this.getPos = function(type){
-        if (this.tags[type] == undefined) {
-                this.tags[type] = 0;
-        }
-        return this.tags[type];
-    };
+        this.setPos = function(type, value){
+            this.tags[type] = value;
+        };
 
-    this.setPos = function(type, value){
-        this.tags[type] = value;
-    };
+        this.incrementPos = function(type){
+            this.tags[type]++;
+        };
 
-    this.incrementPos = function(type){
-        this.tags[type]++;
-    };
-
-}
+    }
 
     function addInfo(type) {
         var prev_id = infos.getPos(type);
