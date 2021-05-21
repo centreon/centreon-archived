@@ -7,7 +7,6 @@ import { Avatar, makeStyles, Tooltip } from '@material-ui/core';
 
 import { IconButton } from '@centreon/ui';
 
-import { labelUrl } from '../../../translatedLabels';
 import IconColumn from '../IconColumn';
 
 const useStyles = makeStyles((theme) => ({
