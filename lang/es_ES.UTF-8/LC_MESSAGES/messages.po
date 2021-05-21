@@ -14343,7 +14343,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "End time"
 #  msgstr ""
 
-#  msgid "Is this resource flapping?"
+#  msgid "This Resource is flapping"
 #  msgstr ""
 
 #  msgid "Show criterias filters"

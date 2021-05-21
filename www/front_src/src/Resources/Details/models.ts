@@ -33,6 +33,7 @@ export interface ResourceDetails extends NamedEntity {
   next_check: string;
   notification_number: number;
   parent: Parent;
+  passive_checks?: boolean;
   percent_state_change: number;
   performance_data?: string;
   severity_level: number;
