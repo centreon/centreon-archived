@@ -15,7 +15,7 @@ gpgkey=https://raw.githubusercontent.com/centreon/centreon/master/varinstall/yum
 module_hotfixes=1
 
 [centreon-testing-noarch]
-name=Centreon open source software repository. (UNSUPPORTED)
+name=Centreon open source software testing repository. (UNSUPPORTED)
 baseurl=https://yum.centreon.com/standard/21.04/el8/testing/noarch/
 enabled=0
 gpgcheck=1
@@ -23,7 +23,7 @@ gpgkey=https://raw.githubusercontent.com/centreon/centreon/master/varinstall/yum
 module_hotfixes=1
 
 [centreon-testing]
-name=Centreon open source software repository. (UNSUPPORTED)
+name=Centreon open source software testing repository. (UNSUPPORTED)
 baseurl=https://yum.centreon.com/standard/21.04/el8/testing/$basearch/
 enabled=0
 gpgcheck=1
@@ -31,7 +31,7 @@ gpgkey=https://raw.githubusercontent.com/centreon/centreon/master/varinstall/yum
 module_hotfixes=1
 
 [centreon-unstable-noarch]
-name=Centreon open source software repository. (UNSUPPORTED)
+name=Centreon open source software unstable repository. (UNSUPPORTED)
 baseurl=https://yum.centreon.com/standard/21.04/el8/unstable/noarch/
 enabled=0
 gpgcheck=1
@@ -39,7 +39,7 @@ gpgkey=https://raw.githubusercontent.com/centreon/centreon/master/varinstall/yum
 module_hotfixes=1
 
 [centreon-unstable]
-name=Centreon open source software repository. (UNSUPPORTED)
+name=Centreon open source software unstable repository. (UNSUPPORTED)
 baseurl=https://yum.centreon.com/standard/21.04/el8/unstable/$basearch/
 enabled=0
 gpgcheck=1
@@ -47,7 +47,7 @@ gpgkey=https://raw.githubusercontent.com/centreon/centreon/master/varinstall/yum
 module_hotfixes=1
 
 [centreon-canary-noarch]
-name=Centreon open source software repository. (UNSUPPORTED)
+name=Centreon open source software canary repository. (UNSUPPORTED)
 baseurl=https://yum.centreon.com/standard/21.04/el8/canary/noarch/
 enabled=0
 gpgcheck=1
@@ -55,7 +55,7 @@ gpgkey=https://raw.githubusercontent.com/centreon/centreon/master/varinstall/yum
 module_hotfixes=1
 
 [centreon-canary]
-name=Centreon open source software repository. (UNSUPPORTED)
+name=Centreon open source software canary repository. (UNSUPPORTED)
 baseurl=https://yum.centreon.com/standard/21.04/el8/canary/$basearch/
 enabled=0
 gpgcheck=1
