@@ -123,8 +123,8 @@ function log() {
 	# get the message log level
 	log_message_level="${1}"
 
-        # shift once to get the log message (string or array)
-        shift
+	# shift once to get the log message (string or array)
+	shift
 	
 	# get the log message (full log message)
 	log_message="${@}"
