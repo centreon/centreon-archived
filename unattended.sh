@@ -689,7 +689,7 @@ function update_after_installation() {
 #========= begin of function enable_debug_mode()
 function enable_debug_mode() {
 	log "INFO" "Enabling advanced logging and debug options"
-	log "INFO" "Attention: this option will create huge amount of logs"
+	log "INFO" "Attention: this option will create many logs"
 
 	if [ "$wizard_autoplay" == "true" ]; then
 		mysql -u root centreon <<-EOF
