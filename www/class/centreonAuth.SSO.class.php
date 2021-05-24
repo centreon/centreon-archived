@@ -364,7 +364,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $code,
-        bool   $verifyPeer
+        bool $verifyPeer
     ): ?array
     {
         $data = [
@@ -423,7 +423,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $token,
-        bool   $verifyPeer
+        bool $verifyPeer
     ): ?array
     {
         $data = [
@@ -476,7 +476,7 @@ class CentreonAuthSSO extends CentreonAuth
     public function getOpenIdConnectUserInfo(
         string $url,
         string $token,
-        bool   $verifyPeer
+        bool $verifyPeer
     ): ?array
     {
         $authentication = "Authorization: Bearer " . trim($token);
@@ -529,7 +529,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $refreshToken,
-        bool   $verifyPeer,
+        bool $verifyPeer,
         string $scope = null
     ): ?array
     {
@@ -589,7 +589,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $refreshToken,
-        bool   $verifyPeer
+        bool $verifyPeer
     ): ?array
     {
         $data = [
