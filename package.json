@@ -24,7 +24,7 @@
     "@babel/preset-env": "^7.13.12",
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.13.0",
-    "@centreon/frontend-core": "github:centreon/frontend-core#21.04.x",
+    "@centreon/frontend-core": "git+https://centreon@github.com/centreon/frontend-core#21.04.x",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.11.10",
@@ -63,7 +63,7 @@
     "jest-junit": "^12.0.0",
     "mini-css-extract-plugin": "^1.3.9",
     "mockdate": "^3.0.5",
-    "node-sass": "^5.0.0",
+    "node-sass": "^6.0.0",
     "postcss-loader": "^5.2.0",
     "postcss-safe-parser": "^5.0.2",
     "prettier": "^2.2.1",
@@ -85,8 +85,8 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
-    "@centreon/ui": "github:centreon/centreon-ui#21.04.x",
-    "@centreon/ui-context": "github:centreon/ui-context#21.04.x",
+    "@centreon/ui": "git+https://centreon@github.com/centreon/centreon-ui#21.04.x",
+    "@centreon/ui-context": "git+https://centreon@github.com/centreon/ui-context#21.04.x",
     "@date-io/dayjs": "1.3.13",
     "@material-ui/core": "4.11.3",
     "@material-ui/icons": "^4.11.2",
