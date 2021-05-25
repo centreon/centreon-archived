@@ -114,6 +114,9 @@
     {literal}
 
     jQuery('#Form').centreonValidate();
+    jQuery(document).ready(function() {
+        clonifyTableFields('parentGroup','displaynamegroup');
+    });
 
     function mk_paginationFF(){};
     function set_header_title(){};
