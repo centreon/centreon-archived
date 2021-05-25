@@ -40,9 +40,9 @@ interface SeverityTimeFraction {
 const toStartTime = ({ interval }: IntervalWithSeverity): number =>
   interval.start;
 const toEndTime = ({ interval }: IntervalWithSeverity): number => interval.end;
-const toIntervalWithSeverity = (severityCode: SeverityCode) => (
-  interval: Interval,
-): IntervalWithSeverity => ({ interval, severityCode });
+const toIntervalWithSeverity =
+  (severityCode: SeverityCode) =>
+  (interval: Interval): IntervalWithSeverity => ({ interval, severityCode });
 
 const getTimeSeries = (graphData: GraphData): Array<SeverityTimeFraction> => {
   const getStatusIntervals = ({

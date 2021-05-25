@@ -18,17 +18,17 @@ const buildListServicesEndpoint = ({ parameters, hostId }): string => {
   });
 };
 
-const listServices = (cancelToken: CancelToken) => (
-  hostId: number,
-): Promise<ServiceListing> => {
-  return getData<ServiceListing>(cancelToken)(
-    buildListServicesEndpoint({
-      hostId,
-      parameters: {
-        limit: 100,
-      },
-    }),
-  );
-};
+const listServices =
+  (cancelToken: CancelToken) =>
+  (hostId: number): Promise<ServiceListing> => {
+    return getData<ServiceListing>(cancelToken)(
+      buildListServicesEndpoint({
+        hostId,
+        parameters: {
+          limit: 100,
+        },
+      }),
+    );
+  };
 
 export { listServices };

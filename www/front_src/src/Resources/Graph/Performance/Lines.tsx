@@ -10,13 +10,15 @@ import formatMetricValue from './formatMetricValue';
 
 import { fontFamily } from '.';
 
-const formatTick = ({ unit, base }) => (value): string => {
-  if (isNil(value)) {
-    return '';
-  }
+const formatTick =
+  ({ unit, base }) =>
+  (value): string => {
+    if (isNil(value)) {
+      return '';
+    }
 
-  return formatMetricValue({ base, unit, value }) as string;
-};
+    return formatMetricValue({ base, unit, value }) as string;
+  };
 
 interface GraphLinesProps {
   base?: number;

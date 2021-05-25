@@ -40,15 +40,11 @@ const ResourceActions = (): JSX.Element => {
   const { t } = useTranslation();
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
-  const [
-    moreActionsMenuAnchor,
-    setMoreActionsMenuAnchor,
-  ] = React.useState<Element | null>(null);
+  const [moreActionsMenuAnchor, setMoreActionsMenuAnchor] =
+    React.useState<Element | null>(null);
 
-  const [
-    resourceToSubmitStatus,
-    setresourceToSubmitStatus,
-  ] = React.useState<Resource | null>();
+  const [resourceToSubmitStatus, setresourceToSubmitStatus] =
+    React.useState<Resource | null>();
 
   const {
     resourcesToCheck,
