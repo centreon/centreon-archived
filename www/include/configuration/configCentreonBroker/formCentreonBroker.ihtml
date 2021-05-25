@@ -96,6 +96,9 @@
 <script type="text/javascript" src="./include/common/javascript/centreon/brokerConfig.js"></script>
 <script type="text/javascript">
     jQuery('#Form').centreonValidate();
+    jQuery(document).ready(function() {
+        clonifyTableFields('parentGroup','displaynamegroup');
+    });
 
     function mk_paginationFF(){};
     function set_header_title(){};
