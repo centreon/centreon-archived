@@ -32,10 +32,6 @@ on the market; it is absolutely free and Open Source.
 <a href="https://github.com/lpinsivy"><img src="https://avatars2.githubusercontent.com/u/3351916?s=400&v=4" title="Laurent Pinsivy" width="80" height="80"></a>&nbsp;
 <a href="https://github.com/sbrizini"><img src="https://avatars.githubusercontent.com/u/40829131?s=400&v=4" title="Samir Brizini" width="80" height="80"></a>&nbsp;
 
-<h4> Product Owner </h4>
-
-<a href="https://github.com/cgagnaire"><img src="https://avatars1.githubusercontent.com/u/23257354?s=400&v=4" title="Colin Gagnaire" width="80" height="80"></a> &nbsp;
-
 <h4> Development team </h4>
 
 <a href="https://github.com/kduret"><img src="https://avatars1.githubusercontent.com/u/11978823?s=400&v=4" title="Kévin Duret" width="80" height="80"></a> &nbsp;

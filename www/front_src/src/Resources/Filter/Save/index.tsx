@@ -63,9 +63,8 @@ const SaveFilterMenuContent = ({
   const { t } = useTranslation();
 
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
-  const [createFilterDialogOpen, setCreateFilterDialogOpen] = React.useState(
-    false,
-  );
+  const [createFilterDialogOpen, setCreateFilterDialogOpen] =
+    React.useState(false);
 
   const {
     sendRequest: sendUpdateFilterRequest,

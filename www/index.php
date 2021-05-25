@@ -61,7 +61,6 @@ require_once $classdir . "/centreonSession.class.php";
 require_once $classdir . "/centreonAuth.SSO.class.php";
 require_once $classdir . "/centreonLog.class.php";
 require_once $classdir . "/centreonDB.class.php";
-require_once SMARTY_DIR . "Smarty.class.php";
 
 /*
  * Get auth type

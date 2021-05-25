@@ -141,43 +141,43 @@
     {literal}
 
     jQuery('#Form').centreonValidate();
+    jQuery(document).ready(function() {
+        clonifyTableFields('parentGroup','displaynamegroup');
+    });
 
+    function mk_paginationFF(){};
+    function set_header_title(){};
 
-function mk_paginationFF(){};
-function set_header_title(){};
+    function Infos() {
+        this.tags = new Array();
 
-function Infos() {
-    this.tags = new Array();
+        this.getPos = function(type){
+            if (this.tags[type] == undefined) {
+                    this.tags[type] = 0;
+            }
+            return this.tags[type];
+        };
 
-    this.getPos = function(type){
-        if (this.tags[type] == undefined) {
-                this.tags[type] = 0;
-        }
-        return this.tags[type];
-    };
+        this.setPos = function(type, value){
+            this.tags[type] = value;
+        };
 
-    this.setPos = function(type, value){
-        this.tags[type] = value;
-    };
+        this.incrementPos = function(type){
+            this.tags[type]++;
+        };
 
-    this.incrementPos = function(type){
-        this.tags[type]++;
-    };
-
-}
+    }
 
     function addInfo(type) {
         var prev_id = infos.getPos(type);
         var id = prev_id + 1;
         var id_name = type + '_' + id;
         var blockId = jQuery('#block_' + type).val();
-        var params;
 
         var tbody = jQuery('<tbody>');
         tbody.attr('id', id_name);
         tbody.attr('class', 'collapse-wrapper');
         jQuery('#' + type).append(tbody);
-        params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
         var url = './api/internal.php?object=centreon_configuration_broker&resultFormat=html&action=block' +
 		    '&page=' + {/literal}{$p}{literal} + '&position=' + id +
             '&blockId=' + blockId + '&tag=' + type;

@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -43,33 +44,40 @@ $serverIsMaster = $informationsService->serverIsMaster();
 /*
  * Database retrieve information for Modify a present "Action Access"
  */
-if (($o == "c") && $acl_action_id) {
+if (($o === "c") && $aclActionId) {
     // 1. Get "Actions Rule" id selected by user
-    $DBRESULT = $pearDB->query("SELECT * FROM acl_actions WHERE acl_action_id = '" . $acl_action_id . "' LIMIT 1");
+    $statement = $pearDB->prepare(
+        "SELECT * FROM acl_actions WHERE acl_action_id = :aclActionId LIMIT 1"
+    );
+    $statement->bindValue(':aclActionId', $aclActionId, \PDO::PARAM_INT);
+    $statement->execute();
     $action_infos = array();
-    $action_infos = array_map("myDecode", $DBRESULT->fetchRow());
+    $action_infos = array_map("myDecode", $statement->fetch());
 
     // 2. Get "Groups" id linked with the selected Rule in order to initialize the form
-    $query = "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations " .
-        "WHERE acl_action_id = '" . $acl_action_id . "'";
-    $DBRESULT = $pearDB->query($query);
-
+    $statement = $pearDB->prepare(
+        "SELECT DISTINCT acl_group_id FROM acl_group_actions_relations " .
+        "WHERE acl_action_id = :aclActionId"
+    );
+    $statement->bindValue(':aclActionId', $aclActionId, \PDO::PARAM_INT);
+    $statement->execute();
     $selected = array();
-    for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
+    while ($contacts = $statement->fetch()) {
         $selected[] = $contacts["acl_group_id"];
     }
     $action_infos["acl_groups"] = $selected;
-
-    // 3. Range in a table variable, all Groups used in this "Actions Access"
-    $query = "SELECT acl_action_name FROM `acl_actions_rules` WHERE `acl_action_rule_id` = $acl_action_id";
-    $DBRESULT = $pearDB->query($query);
-
+    $statement = $pearDB->prepare(
+        "SELECT acl_action_name FROM `acl_actions_rules` " .
+        "WHERE `acl_action_rule_id` = :aclActionId"
+    );
+    $statement->bindValue(':aclActionId', $aclActionId, \PDO::PARAM_INT);
+    $statement->execute();
     $selected_actions = array();
-    for ($i = 0; $act = $DBRESULT->fetchRow(); $i++) {
+    while ($act = $statement->fetch()) {
         $selected_actions[$act["acl_action_name"]] = 1;
     }
 
-    $DBRESULT->closeCursor();
+    $statement->closeCursor();
 }
 
 // Database retrieve information for differents elements list we need on the page
@@ -221,7 +229,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
 
 // Smarty template Init
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 // Modify an Action Group
 if ($o == "c" && isset($selected_actions) && isset($action_infos)) {
@@ -268,7 +276,7 @@ $tpl->assign('serverIsMaster', $serverIsMaster);
 
 $action = $form->getSubmitValue("action");
 if ($valid) {
-    require_once($path . "listsActionsAccess.php");
+    require_once(__DIR__ . "/listsActionsAccess.php");
 } else {
     // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

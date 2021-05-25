@@ -7,6 +7,7 @@ import {
   waitFor,
   render,
   RenderResult,
+  act,
 } from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
@@ -28,8 +29,6 @@ import {
   labelAll,
   labelUnhandledProblems,
   labelShowCriteriasFilters,
-  labelOpen,
-  labelClear,
   labelSearchHelp,
   labelSearchOnFields,
   labelNewFilter,
@@ -172,6 +171,8 @@ const FilterTest = (): JSX.Element | null => {
   const detailsState = useDetails();
   const listingState = useListing();
   const actionsState = useActions();
+
+  filterState.filterExpanded = true;
 
   return (
     <Context.Provider
@@ -370,12 +371,8 @@ describe(Filter, () => {
       endpointParamChanged,
       selectEndpointMockAction,
     ) => {
-      const {
-        getByTitle,
-        getByLabelText,
-        getByPlaceholderText,
-        findByText,
-      } = renderFilter();
+      const { getByLabelText, getByPlaceholderText, findByText, getByText } =
+        renderFilter();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
@@ -391,7 +388,7 @@ describe(Filter, () => {
         target: { value: searchValue },
       });
 
-      const filterToChange = getByTitle(`${labelOpen} ${filterName}`);
+      const filterToChange = getByText(filterName);
       fireEvent.click(filterToChange);
 
       const selectedOption = await findByText(optionToSelect);
@@ -415,22 +412,73 @@ describe(Filter, () => {
         .mockReturnValueOnce(JSON.stringify(filter))
         .mockReturnValueOnce(JSON.stringify(true));
 
-      const { getByText, getByDisplayValue, queryByLabelText } = renderFilter();
+      mockedAxios.get
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [],
+          },
+        });
+
+      const renderResult = renderFilter();
+
+      const { getByText, queryByLabelText, findByPlaceholderText } =
+        renderResult;
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
       expect(mockedLocalStorageGetItem).toHaveBeenCalledWith(filterKey);
+
       expect(queryByLabelText(labelUnhandledProblems)).not.toBeInTheDocument();
-      expect(getByDisplayValue('Search me')).toBeInTheDocument();
+
+      const searchField = await findByPlaceholderText(labelSearch);
+
+      expect(searchField).toHaveDisplayValue('Search me');
+
+      fireEvent.click(getByText(labelResource));
       expect(getByText(labelHost)).toBeInTheDocument();
+
+      fireEvent.click(getByText(labelState));
       expect(getByText(labelAcknowledged)).toBeInTheDocument();
+
+      fireEvent.click(getByText(labelStatus));
       expect(getByText(labelOk)).toBeInTheDocument();
+
+      act(() => {
+        fireEvent.click(getByText(labelHostGroup));
+      });
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
       expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
+
+      act(() => {
+        fireEvent.click(getByText(labelServiceGroup));
+      });
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
       expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
     });
 
     it('stores filter values in localStorage when updated', async () => {
-      const { getByText, getByPlaceholderText, findByText } = renderFilter();
+      const renderResult = renderFilter();
+
+      const { getByText, findByPlaceholderText, findByText } = renderResult;
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
@@ -449,7 +497,9 @@ describe(Filter, () => {
         JSON.stringify(allFilter),
       );
 
-      fireEvent.change(getByPlaceholderText(labelSearch), {
+      const searchField = await findByPlaceholderText(labelSearch);
+
+      fireEvent.change(searchField, {
         target: { value: 'searching...' },
       });
 
@@ -467,43 +517,9 @@ describe(Filter, () => {
       );
     });
 
-    it('clears all filters and set filter group to all when the clear all button is clicked', async () => {
-      mockedLocalStorageGetItem
-        .mockReturnValueOnce(JSON.stringify(filter))
-        .mockReturnValueOnce(JSON.stringify(true));
-
-      mockedAxios.get.mockResolvedValue({ data: {} });
-
-      const {
-        getByText,
-        queryByDisplayValue,
-        getByLabelText,
-        queryByText,
-      } = renderFilter();
-
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-      fireEvent.click(getByLabelText(labelShowCriteriasFilters));
-
-      fireEvent.click(getByText(labelClear));
-
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
-
-      expect(getByText(labelAll)).toBeInTheDocument();
-      expect(queryByDisplayValue('searching...')).toBeNull();
-      expect(queryByText(labelHost)).toBeNull();
-      expect(queryByText(labelAcknowledged)).toBeNull();
-      expect(queryByText(labelOk)).toBeNull();
-      expect(queryByText(linuxServersHostGroup.name)).toBeNull();
-      expect(queryByText(webAccessServiceGroup.name)).toBeNull();
-    });
-
     it('leaves search help tooltip visible when the search input is filled', async () => {
-      const {
-        getByLabelText,
-        getByText,
-        getByPlaceholderText,
-      } = renderFilter();
+      const { getByLabelText, getByText, getByPlaceholderText } =
+        renderFilter();
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
@@ -534,11 +550,30 @@ describe(Filter, () => {
         },
       ]);
 
-      const {
-        getByText,
-        getByDisplayValue,
-        getByPlaceholderText,
-      } = renderFilter();
+      mockedAxios.get
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [],
+          },
+        });
+
+      const { getByText, getByDisplayValue, getAllByPlaceholderText } =
+        renderFilter();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledTimes(2);
@@ -546,13 +581,31 @@ describe(Filter, () => {
 
       expect(getByText('New filter')).toBeInTheDocument();
       expect(getByDisplayValue('Search me')).toBeInTheDocument();
+
+      fireEvent.click(getByText(labelResource));
       expect(getByText(labelHost)).toBeInTheDocument();
+
+      fireEvent.click(getByText(labelState));
       expect(getByText(labelAcknowledged)).toBeInTheDocument();
+
+      fireEvent.click(getByText(labelStatus));
       expect(getByText(labelOk)).toBeInTheDocument();
+
+      fireEvent.click(getByText(labelHostGroup));
       expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
+
+      fireEvent.click(getByText(labelServiceGroup));
       expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
 
-      fireEvent.change(getByPlaceholderText(labelSearch), {
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
+
+      fireEvent.change(getAllByPlaceholderText(labelSearch)[0], {
         target: { value: 'Search me two' },
       });
 

@@ -6,9 +6,9 @@ import { ResourceListing } from '../../models';
 
 import { buildResourcesEndpoint, ListResourcesProps } from './endpoint';
 
-const listResources = (cancelToken: CancelToken) => (
-  parameters: ListResourcesProps,
-): Promise<ResourceListing> =>
-  getData<ResourceListing>(cancelToken)(buildResourcesEndpoint(parameters));
+const listResources =
+  (cancelToken: CancelToken) =>
+  (parameters: ListResourcesProps): Promise<ResourceListing> =>
+    getData<ResourceListing>(cancelToken)(buildResourcesEndpoint(parameters));
 
 export { listResources };

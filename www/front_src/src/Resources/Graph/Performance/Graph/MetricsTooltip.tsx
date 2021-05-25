@@ -42,11 +42,8 @@ const truncateInMiddle = (label: string): string => {
 
 const MetricsTooltip = (): JSX.Element | null => {
   const classes = useStyles();
-  const {
-    metricsValue,
-    getFormattedMetricData,
-    formatDate,
-  } = useMetricsValueContext();
+  const { metricsValue, getFormattedMetricData, formatDate } =
+    useMetricsValueContext();
 
   return (
     <div className={classes.tooltip}>

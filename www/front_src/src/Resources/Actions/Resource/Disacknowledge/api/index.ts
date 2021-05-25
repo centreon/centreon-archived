@@ -11,19 +11,21 @@ interface ResourcesWithDisacknowledgeParams {
   resources: Array<Resource>;
 }
 
-const disacknowledgeResources = (cancelToken: CancelToken) => ({
-  resources,
-  disacknowledgeAttachedResources,
-}: ResourcesWithDisacknowledgeParams): Promise<Array<AxiosResponse>> => {
-  return axios.delete(disacknowledgeEndpoint, {
-    cancelToken,
-    data: {
-      disacknowledgement: {
-        with_services: disacknowledgeAttachedResources,
+const disacknowledgeResources =
+  (cancelToken: CancelToken) =>
+  ({
+    resources,
+    disacknowledgeAttachedResources,
+  }: ResourcesWithDisacknowledgeParams): Promise<Array<AxiosResponse>> => {
+    return axios.delete(disacknowledgeEndpoint, {
+      cancelToken,
+      data: {
+        disacknowledgement: {
+          with_services: disacknowledgeAttachedResources,
+        },
+        resources: map(pick(['type', 'id', 'parent']), resources),
       },
-      resources: map(pick(['type', 'id', 'parent']), resources),
-    },
-  });
-};
+    });
+  };
 
 export { disacknowledgeResources, disacknowledgeEndpoint };

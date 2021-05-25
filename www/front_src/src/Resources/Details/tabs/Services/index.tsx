@@ -215,11 +215,8 @@ const MemoizedServiceTabContent = memoizeComponent<ServicesTabContentProps>({
 });
 
 const ServicesTab = ({ details }: TabProps): JSX.Element => {
-  const {
-    selectResource,
-    tabParameters,
-    setServicesTabParameters,
-  } = useResourceContext();
+  const { selectResource, tabParameters, setServicesTabParameters } =
+    useResourceContext();
 
   return (
     <MemoizedServiceTabContent

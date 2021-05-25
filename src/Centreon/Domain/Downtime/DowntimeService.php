@@ -257,7 +257,7 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
             throw new EntityNotFoundException(_('Downtime not found'));
         }
 
-        $downtimeType = ($downtime->getServiceId() === null) ? 'host' : 'service';
+        $downtimeType = (empty($downtime->getServiceId())) ? 'host' : 'service';
 
         if (!is_null($downtime->getDeletionTime())) {
             throw new DowntimeException(

@@ -15303,8 +15303,8 @@ msgstr "La date de fin doit être supérieure à la date de début"
 msgid "End time"
 msgstr "Heure de fin"
 
-msgid "Is this resource flapping?"
-msgstr "Cette ressource est-elle bagottante?"
+msgid "This Resource is flapping"
+msgstr "Cette Ressource est bagottante"
 
 msgid "Show criterias filters"
 msgstr "Montrer les critères de filtre"
@@ -15322,7 +15322,7 @@ msgid "Host group"
 msgstr "Groupe d'hôtes"
 
 msgid "Downtime"
-msgstr "Plannifier une plage de maintenance"
+msgstr "Plage de maintenance"
 
 msgid "In downtime"
 msgstr "En plage de maintenance"
@@ -16137,3 +16137,6 @@ msgstr "Type de calcul"
 
 msgid "At least one column must be selected"
 msgstr "Au moins une colonne doit être sélectionnée"
+
+msgid "The duration must be lesser than a year"
+msgstr "La durée doit être inférieure à une année"

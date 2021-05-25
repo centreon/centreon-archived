@@ -72,10 +72,8 @@ const useTimePeriod = ({
   details,
   onTimePeriodChange,
 }: Props): TimePeriodState => {
-  const [
-    resourceDetailsUpdated,
-    setResourceDetailsUpdated,
-  ] = React.useState<boolean>(false);
+  const [resourceDetailsUpdated, setResourceDetailsUpdated] =
+    React.useState<boolean>(false);
   const defaultTimePeriod = cond([
     [
       (timePeriodId) =>
@@ -89,10 +87,8 @@ const useTimePeriod = ({
     [T, always(null)],
   ])(defaultSelectedTimePeriodId);
 
-  const [
-    selectedTimePeriod,
-    setSelectedTimePeriod,
-  ] = React.useState<TimePeriod | null>(defaultTimePeriod);
+  const [selectedTimePeriod, setSelectedTimePeriod] =
+    React.useState<TimePeriod | null>(defaultTimePeriod);
 
   const { sending } = useResourceContext();
 
@@ -126,17 +122,17 @@ const useTimePeriod = ({
     };
   };
 
-  const [
-    customTimePeriod,
-    setCustomTimePeriod,
-  ] = React.useState<CustomTimePeriod>(
-    defaultSelectedCustomTimePeriod
-      ? getNewCustomTimePeriod({
-          end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
-          start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
-        })
-      : getTimeperiodFromNow(defaultTimePeriod),
-  );
+  const [customTimePeriod, setCustomTimePeriod] =
+    React.useState<CustomTimePeriod>(
+      defaultSelectedCustomTimePeriod
+        ? getNewCustomTimePeriod({
+            end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
+            start: new Date(
+              propOr(0, 'start', defaultSelectedCustomTimePeriod),
+            ),
+          })
+        : getTimeperiodFromNow(defaultTimePeriod),
+    );
 
   const getDates = (timePeriod): [string, string] => {
     if (isNil(timePeriod)) {

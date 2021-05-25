@@ -31,7 +31,6 @@ import {
   labelCurrentStateDuration,
   labelLastStateChange,
   labelNextCheck,
-  labelActive,
   labelCheckDuration,
   labelLatency,
   labelPercentStateChange,
@@ -44,8 +43,6 @@ import {
   label31Days,
   labelCopy,
   labelCommand,
-  labelResourceFlapping,
-  labelNo,
   labelComment,
   labelConfigure,
   labelViewLogs,
@@ -70,6 +67,8 @@ import {
   labelMax,
   labelAvg,
   labelCompactTimePeriod,
+  labelFlapping,
+  labelCheck,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -114,7 +113,7 @@ const retrievedDetails = {
     comment: 'Acknowledged by Admin',
     entry_time: '2020-03-18T18:57:59Z',
   },
-  active_checks: true,
+  active_checks: false,
   alias: 'Central-Centreon',
   checked: true,
   command_line: 'base_host_alive',
@@ -132,7 +131,7 @@ const retrievedDetails = {
   ],
   duration: '22m',
   execution_time: 0.070906,
-  flapping: false,
+  flapping: true,
   fqdn: 'central.centreon.com',
   groups: [{ id: 0, name: 'Linux-servers' }],
   id: resourceServiceId,
@@ -171,6 +170,7 @@ const retrievedDetails = {
     status: { severity_code: 1 },
     type: resourceHostType,
   },
+  passive_checks: false,
   percent_state_change: 3.5,
   performance_data:
     'rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100',
@@ -431,12 +431,7 @@ describe(Details, () => {
   it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const {
-      getByText,
-      queryByText,
-      getAllByText,
-      getAllByTitle,
-    } = renderDetails();
+    const { getByText, queryByText, getAllByText } = renderDetails();
 
     act(() => {
       setSelectedServiceResource();
@@ -499,16 +494,15 @@ describe(Details, () => {
     expect(getByText(labelNextCheck)).toBeInTheDocument();
     expect(getByText('06/18/2020 7:15 PM')).toBeInTheDocument();
 
-    expect(getAllByTitle(labelActive)).toHaveLength(2);
-
     expect(getByText(labelCheckDuration)).toBeInTheDocument();
     expect(getByText('0.070906 s')).toBeInTheDocument();
 
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();
 
-    expect(getByText(labelResourceFlapping)).toBeInTheDocument();
-    expect(getByText(labelNo)).toBeInTheDocument();
+    expect(getByText(labelFlapping)).toBeInTheDocument();
+
+    expect(getByText(labelCheck)).toBeInTheDocument();
 
     expect(getByText(labelPercentStateChange)).toBeInTheDocument();
     expect(getByText('3.5%')).toBeInTheDocument();
@@ -678,14 +672,10 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const {
-      getByText,
-      getAllByText,
-      getAllByLabelText,
-      baseElement,
-    } = renderDetails({
-      openTabId: timelineTabId,
-    });
+    const { getByText, getAllByText, getAllByLabelText, baseElement } =
+      renderDetails({
+        openTabId: timelineTabId,
+      });
 
     act(() => {
       setSelectedServiceResource();

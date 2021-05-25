@@ -62,26 +62,17 @@ export interface DetailsState {
 }
 
 const useDetails = (): DetailsState => {
-  const [openDetailsTabId, setOpenDetailsTabId] = React.useState<TabId>(
-    detailsTabId,
-  );
-  const [
-    selectedResourceUuid,
-    setSelectedResourceUuid,
-  ] = React.useState<string>();
+  const [openDetailsTabId, setOpenDetailsTabId] =
+    React.useState<TabId>(detailsTabId);
+  const [selectedResourceUuid, setSelectedResourceUuid] =
+    React.useState<string>();
   const [selectedResourceId, setSelectedResourceId] = React.useState<number>();
-  const [
-    selectedResourceParentId,
-    setSelectedResourceParentId,
-  ] = React.useState<number>();
-  const [
-    selectedResourceType,
-    setSelectedResourceType,
-  ] = React.useState<string>();
-  const [
-    selectedResourceParentType,
-    setSelectedResourceParentType,
-  ] = React.useState<string>();
+  const [selectedResourceParentId, setSelectedResourceParentId] =
+    React.useState<number>();
+  const [selectedResourceType, setSelectedResourceType] =
+    React.useState<string>();
+  const [selectedResourceParentType, setSelectedResourceParentType] =
+    React.useState<string>();
   const [details, setDetails] = React.useState<ResourceDetails>();
   const [tabParameters, setTabParameters] = React.useState<TabParameters>({});
   const [panelWidth, setPanelWidth] = React.useState(
@@ -111,7 +102,8 @@ const useDetails = (): DetailsState => {
   React.useEffect(() => {
     const urlQueryParameters = getUrlQueryParameters();
 
-    const detailsUrlQueryParameters = urlQueryParameters.details as DetailsUrlQueryParameters;
+    const detailsUrlQueryParameters =
+      urlQueryParameters.details as DetailsUrlQueryParameters;
 
     if (isNil(detailsUrlQueryParameters)) {
       return;

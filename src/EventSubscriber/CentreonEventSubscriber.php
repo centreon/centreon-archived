@@ -47,12 +47,14 @@ use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\VersionHelper;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
@@ -110,6 +112,10 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @var ContactInterface
      */
     private $contact;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * @param RequestParametersInterface $requestParameters
@@ -117,19 +123,22 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @param Security $security
      * @param ApiPlatform $apiPlatform
      * @param ContactInterface $contact
+     * @param LoggerInterface $logger
      */
     public function __construct(
         RequestParametersInterface $requestParameters,
         ContainerInterface $container,
         Security $security,
         ApiPlatform $apiPlatform,
-        ContactInterface $contact
+        ContactInterface $contact,
+        LoggerInterface $logger
     ) {
         $this->container = $container;
         $this->requestParameters = $requestParameters;
         $this->security = $security;
         $this->apiPlatform = $apiPlatform;
         $this->contact = $contact;
+        $this->logger = $logger;
     }
 
     /**
@@ -149,7 +158,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 ['addApiVersion', 10]
             ],
             KernelEvents::EXCEPTION => [
-                ['onKernelException', -10]
+                ['onKernelException', 10]
             ]
         ];
     }
@@ -330,7 +339,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         $errorIsBeforeController = true;
 
         // We detect if the exception occurred before the kernel called the controller
-        foreach ($event->getException()->getTrace() as $trace) {
+        foreach ($event->getThrowable()->getTrace() as $trace) {
             if (
                 array_key_exists('class', $trace)
                 && strlen($trace['class']) > strlen($flagController)
@@ -347,56 +356,56 @@ class CentreonEventSubscriber implements EventSubscriberInterface
          * If we don't do that a HTML error will appeared.
          */
         if ($errorIsBeforeController) {
-            if ($event->getException()->getCode() !== 403) {
-                $errorCode = $event->getException()->getCode() > 0
-                    ? $event->getException()->getCode()
+            if ($event->getThrowable()->getCode() !== 403) {
+                $errorCode = $event->getThrowable()->getCode() > 0
+                    ? $event->getThrowable()->getCode()
                     : Response::HTTP_INTERNAL_SERVER_ERROR;
                 $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             } else {
-                $errorCode = $event->getException()->getCode();
+                $errorCode = $event->getThrowable()->getCode();
                 $statusCode = Response::HTTP_FORBIDDEN;
             }
-
+            $this->logException($event->getThrowable());
             // Manage exception outside controllers
             $event->setResponse(
                 new Response(
                     json_encode([
                         'code' => $errorCode,
-                        'message' => $event->getException()->getMessage()
+                        'message' => $event->getThrowable()->getMessage()
                     ]),
                     $statusCode
                 )
             );
         } else {
-            $errorCode = $event->getException()->getCode() > 0
-                ? $event->getException()->getCode()
+            $errorCode = $event->getThrowable()->getCode() > 0
+                ? $event->getThrowable()->getCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
-            $httpCode = ($event->getException()->getCode() >= 100 && $event->getException()->getCode() < 600)
-                ? $event->getException()->getCode()
+            $httpCode = ($event->getThrowable()->getCode() >= 100 && $event->getThrowable()->getCode() < 600)
+                ? $event->getThrowable()->getCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
 
-            if ($event->getException() instanceof EntityNotFoundException) {
+            if ($event->getThrowable() instanceof EntityNotFoundException) {
                 $errorMessage = json_encode([
                     'code' => Response::HTTP_NOT_FOUND,
-                    'message' => $event->getException()->getMessage()
+                    'message' => $event->getThrowable()->getMessage()
                 ]);
                 $httpCode = Response::HTTP_NOT_FOUND;
-            } elseif ($event->getException() instanceof ValidationFailedException) {
+            } elseif ($event->getThrowable() instanceof ValidationFailedException) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
                     'message' => EntityValidator::formatErrors(
-                        $event->getException()->getConstraintViolationList(),
+                        $event->getThrowable()->getConstraintViolationList(),
                         true
                     )
                 ]);
-            } elseif ($event->getException() instanceof \PDOException) {
+            } elseif ($event->getThrowable() instanceof \PDOException) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
                     'message' => 'An error has occurred in a repository'
                 ]);
-            } elseif ($event->getException() instanceof AccessDeniedException) {
+            } elseif ($event->getThrowable() instanceof AccessDeniedException) {
                 $errorMessage = null;
-            } elseif (get_class($event->getException()) == \Exception::class) {
+            } elseif (get_class($event->getThrowable()) == \Exception::class) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
                     'message' => 'Internal error'
@@ -404,12 +413,27 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             } else {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
-                    'message' => $event->getException()->getMessage()
+                    'message' => $event->getThrowable()->getMessage()
                 ]);
             }
+            $this->logException($event->getThrowable());
             $event->setResponse(
                 new Response($errorMessage, $httpCode)
             );
+        }
+    }
+
+    /**
+     * Used to log the message according to the code and type of exception.
+     *
+     * @param \Throwable $exception
+     */
+    private function logException(\Throwable $exception): void
+    {
+        if (!$exception instanceof HttpExceptionInterface || $exception->getCode() >= 500) {
+            $this->logger->critical($exception->getMessage(), ['context' => $exception]);
+        } else {
+            $this->logger->error($exception->getMessage(), ['context' => $exception]);
         }
     }
 
