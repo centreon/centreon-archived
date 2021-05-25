@@ -73,32 +73,30 @@ const Events = ({
 
   return (
     <div>
-      {eventsByDate.map(
-        ([date, events]): JSX.Element => {
-          const isLastDate = equals(last(dates), date);
+      {eventsByDate.map(([date, events]): JSX.Element => {
+        const isLastDate = equals(last(dates), date);
 
-          return (
-            <div key={date}>
-              <div className={classes.events}>
-                <Typography variant="h6">{date}</Typography>
+        return (
+          <div key={date}>
+            <div className={classes.events}>
+              <Typography variant="h6">{date}</Typography>
 
-                {events.map((event) => {
-                  const { id, type } = event;
+              {events.map((event) => {
+                const { id, type } = event;
 
-                  const Event = TimelineEventByType[type];
+                const Event = TimelineEventByType[type];
 
-                  return (
-                    <Paper key={`${id}-${type}`}>
-                      <Event event={event} />
-                    </Paper>
-                  );
-                })}
-              </div>
-              {isLastDate && <div ref={infiniteScrollTriggerRef} />}
+                return (
+                  <Paper key={`${id}-${type}`}>
+                    <Event event={event} />
+                  </Paper>
+                );
+              })}
             </div>
-          );
-        },
-      )}
+            {isLastDate && <div ref={infiniteScrollTriggerRef} />}
+          </div>
+        );
+      })}
     </div>
   );
 };

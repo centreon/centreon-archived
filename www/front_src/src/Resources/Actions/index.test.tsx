@@ -259,12 +259,8 @@ describe(Actions, () => {
   );
 
   it('sends an acknowledgement request when Resources are selected and the Ackowledgement action is clicked and confirmed', async () => {
-    const {
-      getByText,
-      getByLabelText,
-      findByLabelText,
-      getAllByText,
-    } = renderActions();
+    const { getByText, getByLabelText, findByLabelText, getAllByText } =
+      renderActions();
 
     const selectedResources = [host, service];
 
@@ -363,12 +359,8 @@ describe(Actions, () => {
   });
 
   it('cannot send a downtime request when Downtime action is clicked, type is flexible and duration is empty', async () => {
-    const {
-      findByText,
-      getAllByText,
-      getByLabelText,
-      getByDisplayValue,
-    } = renderActions();
+    const { findByText, getAllByText, getByLabelText, getByDisplayValue } =
+      renderActions();
 
     const selectedResources = [host];
 
@@ -393,12 +385,8 @@ describe(Actions, () => {
   });
 
   it('cannot send a downtime request when Downtime action is clicked and start date is greater than end date', async () => {
-    const {
-      container,
-      getByLabelText,
-      getAllByText,
-      findByText,
-    } = renderActions();
+    const { container, getByLabelText, getAllByText, findByText } =
+      renderActions();
 
     const selectedResources = [host];
 

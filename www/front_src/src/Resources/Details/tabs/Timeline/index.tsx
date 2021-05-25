@@ -73,9 +73,8 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   })) as Array<Type>;
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
-  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
-    translatedTypes,
-  );
+  const [selectedTypes, setSelectedTypes] =
+    React.useState<Array<Type>>(translatedTypes);
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [limit] = React.useState(30);

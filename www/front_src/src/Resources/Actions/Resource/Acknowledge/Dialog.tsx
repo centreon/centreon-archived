@@ -48,10 +48,8 @@ const DialogAcknowledge = ({
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const {
-    getAcknowledgementDeniedTypeAlert,
-    canAcknowledgeServices,
-  } = useAclQuery();
+  const { getAcknowledgementDeniedTypeAlert, canAcknowledgeServices } =
+    useAclQuery();
 
   const deniedTypeAlert = getAcknowledgementDeniedTypeAlert(resources);
 
