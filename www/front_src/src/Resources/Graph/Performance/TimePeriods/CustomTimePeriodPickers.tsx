@@ -120,22 +120,24 @@ const CustomTimePeriodPickers = ({
   const isInvalidDate = ({ startDate, endDate }) =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
-  const changeDate = ({ property, date }) => () => {
-    const currentDate = customTimePeriod[property];
+  const changeDate =
+    ({ property, date }) =>
+    () => {
+      const currentDate = customTimePeriod[property];
 
-    if (
-      or(
-        dayjs(date).isSame(dayjs(currentDate)),
-        isInvalidDate({ endDate: end, startDate: start }),
-      )
-    ) {
-      return;
-    }
-    acceptDate({
-      date,
-      property,
-    });
-  };
+      if (
+        or(
+          dayjs(date).isSame(dayjs(currentDate)),
+          isInvalidDate({ endDate: end, startDate: start }),
+        )
+      ) {
+        return;
+      }
+      acceptDate({
+        date,
+        property,
+      });
+    };
 
   React.useEffect(() => {
     if (

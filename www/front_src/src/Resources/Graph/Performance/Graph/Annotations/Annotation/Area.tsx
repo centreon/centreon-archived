@@ -48,12 +48,8 @@ const AreaAnnotation = ({
 
   const classes = useStyles();
 
-  const {
-    annotationHovered,
-    setAnnotationHovered,
-    getFill,
-    getIconColor,
-  } = useAnnotationsContext();
+  const { annotationHovered, setAnnotationHovered, getFill, getIconColor } =
+    useAnnotationsContext();
 
   const xIconMargin = -iconSize / 2;
 
