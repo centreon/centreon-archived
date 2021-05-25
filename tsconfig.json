@@ -7,10 +7,6 @@
       "./node_modules/@types"
     ],
     "module": "esnext",
-    "paths": {
-      "@centreon/ui": ["./node_modules/@centreon/centreon-frontend/packages/centreon-ui"],
-      "@centreon/ui-context": ["./node_modules/@centreon/centreon-frontend/packages/ui-context"]
-    }
   },
   "include": [
     "./www/front_src/src"

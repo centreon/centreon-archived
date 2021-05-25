@@ -56,15 +56,4 @@ module.exports = merge(baseConfig, extractCssConfig, {
     }),
     new HtmlWebpackHarddiskPlugin(),
   ],
-  resolve: {
-    alias: {
-      '@centreon/ui': path.resolve(
-        './node_modules/@centreon/centreon-frontend/packages/centreon-ui',
-      ),
-      '@centreon/ui-context': path.resolve(
-        './node_modules/@centreon/centreon-frontend/packages/ui-context',
-      ),
-      react: path.resolve('./node_modules/react'),
-    },
-  },
 });
