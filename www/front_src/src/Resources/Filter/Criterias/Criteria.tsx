@@ -58,6 +58,7 @@ const CriteriaContent = ({
     label: t(label),
     limitTags,
     openText: `${t(labelOpen)} ${t(label)}`,
+    placeholder: t(label),
     search: autocompleteSearch,
   };
 
