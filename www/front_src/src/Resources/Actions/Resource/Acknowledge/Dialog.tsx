@@ -44,10 +44,8 @@ const DialogAcknowledge = ({
   handleChange,
   loading,
 }: Props): JSX.Element => {
-  const {
-    getAcknowledgementDeniedTypeAlert,
-    canAcknowledgeServices,
-  } = useAclQuery();
+  const { getAcknowledgementDeniedTypeAlert, canAcknowledgeServices } =
+    useAclQuery();
 
   const deniedTypeAlert = getAcknowledgementDeniedTypeAlert(resources);
 

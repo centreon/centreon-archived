@@ -101,16 +101,15 @@ const Filter = (): JSX.Element => {
     customFiltersLoading,
   } = useResourceContext();
 
-  const getConnectedAutocompleteEndpoint = (buildEndpoint) => ({
-    search,
-    page,
-  }): string => {
-    return buildEndpoint({
-      limit: 10,
-      page,
-      search,
-    });
-  };
+  const getConnectedAutocompleteEndpoint =
+    (buildEndpoint) =>
+    ({ search, page }): string => {
+      return buildEndpoint({
+        limit: 10,
+        page,
+        search,
+      });
+    };
 
   const setNewFilter = (): void => {
     if (isCustom(filter)) {

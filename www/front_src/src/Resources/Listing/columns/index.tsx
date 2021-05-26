@@ -139,20 +139,19 @@ const StatusColumnOnHover = ({
   );
 };
 
-const StatusColumn = (actions) => ({
-  row,
-  isHovered,
-}: ComponentColumnProps): JSX.Element => {
-  return isHovered ? (
-    <StatusColumnOnHover actions={actions} row={row} />
-  ) : (
-    <StatusChip
-      label={row.status.name}
-      severityCode={row.status.severity_code}
-      style={{ height: 20, margin: 2, width: 100 }}
-    />
-  );
-};
+const StatusColumn =
+  (actions) =>
+  ({ row, isHovered }: ComponentColumnProps): JSX.Element => {
+    return isHovered ? (
+      <StatusColumnOnHover actions={actions} row={row} />
+    ) : (
+      <StatusChip
+        label={row.status.name}
+        severityCode={row.status.severity_code}
+        style={{ height: 20, margin: 2, width: 100 }}
+      />
+    );
+  };
 
 const ResourceColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   const classes = useStyles();

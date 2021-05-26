@@ -44,11 +44,8 @@ interface Props {
 }
 
 const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
-  const {
-    enabledAutorefresh,
-    setEnabledAutorefresh,
-    sending,
-  } = useResourceContext();
+  const { enabledAutorefresh, setEnabledAutorefresh, sending } =
+    useResourceContext();
 
   const toggleAutorefresh = (): void => {
     setEnabledAutorefresh(!enabledAutorefresh);

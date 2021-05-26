@@ -59,10 +59,8 @@ const GraphTab = ({ links }: Props): JSX.Element => {
   const { endpoints } = links;
   const { performanceGraph: performanceGraphEndpoint } = endpoints;
 
-  const [
-    selectedTimePeriod,
-    setSelectedTimePeriod,
-  ] = React.useState<TimePeriod>(defaultTimePeriod);
+  const [selectedTimePeriod, setSelectedTimePeriod] =
+    React.useState<TimePeriod>(defaultTimePeriod);
 
   const getQueryParams = (timePeriod): string => {
     const now = new Date(Date.now()).toISOString();

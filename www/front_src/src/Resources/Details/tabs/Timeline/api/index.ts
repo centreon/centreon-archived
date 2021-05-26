@@ -21,13 +21,12 @@ const buildListTimelineEventsEndpoint = ({
     parameters,
   });
 
-const listTimelineEvents = (cancelToken: CancelToken) => ({
-  endpoint,
-  parameters,
-}: Props): Promise<ListingModel<TimelineEvent>> => {
-  return getData<ListingModel<TimelineEvent>>(cancelToken)(
-    buildListTimelineEventsEndpoint({ endpoint, parameters }),
-  );
-};
+const listTimelineEvents =
+  (cancelToken: CancelToken) =>
+  ({ endpoint, parameters }: Props): Promise<ListingModel<TimelineEvent>> => {
+    return getData<ListingModel<TimelineEvent>>(cancelToken)(
+      buildListTimelineEventsEndpoint({ endpoint, parameters }),
+    );
+  };
 
 export { listTimelineEvents, buildListTimelineEventsEndpoint };

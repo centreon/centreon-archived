@@ -1,4 +1,5 @@
 module.exports = {
-  extends: '@centreon/frontend-core/babel/typescript',
+  extends:
+    '@centreon/centreon-frontend/packages/frontend-config/babel/typescript',
   plugins: ['react-hot-loader/babel'],
 };

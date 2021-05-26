@@ -102,9 +102,11 @@ const DialogDowntime = ({
 
   const hasHosts = resources.find((resource) => resource.type === 'host');
 
-  const changeDate = (field) => (value): void => {
-    setFieldValue(field, value);
-  };
+  const changeDate =
+    (field) =>
+    (value): void => {
+      setFieldValue(field, value);
+    };
 
   React.useEffect(() => {
     moment.locale(locale);
