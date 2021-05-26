@@ -41,13 +41,12 @@ try {
     $statement = $pearDB->query(
         "SELECT `host_id` FROM `host` WHERE `host_name` = '_Module_Meta'"
     );
-    $result = $statement->fetch()
-    $moduleMetaId = $result['host_id'];
 
     /*
-     * Add missing releation
+     * Add missing relation
      */
-    if (is_int($moduleMetaId)) {
+    if ($moduleMeta = $statement->fetch()) {
+        $moduleMetaId = $moduleMeta['host_id'];
         $errorMessage = "Unable to add relation between Module Meta and default poller.";
         $statement = $pearDB->prepare(
             "INSERT INTO ns_host_relation(`nagios_server_id`, `host_host_id`)
