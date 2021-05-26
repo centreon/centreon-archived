@@ -26,7 +26,9 @@ namespace Centreon\Infrastructure\PlatformTopology\Repository\Exception;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
 use Centreon\Domain\Repository\RepositoryException;
 
-class PlatformTopologyRepositoryException extends RepositoryException implements PlatformTopologyRepositoryExceptionInterface
+class PlatformTopologyRepositoryException
+extends RepositoryException implements
+    PlatformTopologyRepositoryExceptionInterface
 {
     /**
      * Failure on authentication token retrieval
