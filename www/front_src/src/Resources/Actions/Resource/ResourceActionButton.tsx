@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useMediaQuery, useTheme } from '@material-ui/core';
 
-import { IconButton } from '@centreon/ui/src';
+import { IconButton } from '@centreon/ui';
 
 import ActionButton from '../ActionButton';
 

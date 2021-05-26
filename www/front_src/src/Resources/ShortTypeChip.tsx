@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { makeStyles } from '@material-ui/core';
 
-import { SeverityCode, StatusChip } from '@centreon/ui/src';
+import { SeverityCode, StatusChip } from '@centreon/ui';
 
 const useStyles = makeStyles((theme) => ({
   extraSmallChipContainer: {
