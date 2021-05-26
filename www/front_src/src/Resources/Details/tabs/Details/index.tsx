@@ -16,8 +16,7 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import IconCopyFile from '@material-ui/icons/FileCopy';
 
-import { useSnackbar, Severity } from '@centreon/ui';
-import copyToClipBoard from '@centreon/ui/src/utils/copy';
+import { useSnackbar, Severity, copyToClipboard } from '@centreon/ui';
 
 import {
   labelCopy,
@@ -86,7 +85,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
 
   const copyCommandLine = (): void => {
     try {
-      copyToClipBoard(details.command_line as string);
+      copyToClipboard(details.command_line as string);
 
       showMessage({
         message: t(labelCommandCopied),
