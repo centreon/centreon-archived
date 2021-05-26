@@ -27,9 +27,6 @@ $versionOfTheUpgrade = 'UPGRADE - 21.04.2: ';
 
 $pearDB = new CentreonDB('centreon', 3, false);
 
--- Add missing link between _Module_Meta and localhost poller
-
-
 /**
  * Query with transaction
  */
