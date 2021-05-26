@@ -24,13 +24,16 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\PlatformTopology\Repository\Exception;
 
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
+use Centreon\Domain\Repository\RepositoryException;
 
-class PlatformTopologyRepositoryException extends \Exception implements PlatformTopologyRepositoryExceptionInterface
+class PlatformTopologyRepositoryException extends RepositoryException implements PlatformTopologyRepositoryExceptionInterface
 {
     /**
-     * @inheritDoc
+     * Failure on authentication token retrieval
+     * @param string $centralServerAddress
+     * @return PlatformTopologyRepositoryException
      */
-    public static function failToGetToken(string $centralServerAddress): PlatformTopologyRepositoryExceptionInterface
+    public static function failToGetToken(string $centralServerAddress): self
     {
         return new self(
             sprintf(
@@ -41,51 +44,62 @@ class PlatformTopologyRepositoryException extends \Exception implements Platform
     }
 
     /**
-     * @inheritDoc
+     * Failure returned from the API calling the Central
+     * @param string $details
+     * @return PlatformTopologyRepositoryException
      */
-    public static function apiRequestOnCentralException(string $details): PlatformTopologyRepositoryExceptionInterface
+    public static function apiRequestOnCentralException(string $details): self
     {
         return new self(_("Request to the Central's API failed") . ' : ' . $details);
     }
 
     /**
-     * @inheritDoc
+     * Transport exception related to the client
+     * @param string $details
+     * @return PlatformTopologyRepositoryException
      */
-    public static function apiClientException(string $details): PlatformTopologyRepositoryExceptionInterface
+    public static function apiClientException(string $details): self
     {
         return new self(_("API calling the Central returned a Client exception") . ' : ' . $details);
     }
 
     /**
-     * @inheritDoc
+     * Transport exception related to the redirection
+     * @param string $details
+     * @return PlatformTopologyRepositoryException
      */
-    public static function apiRedirectionException(string $details): PlatformTopologyRepositoryExceptionInterface
+    public static function apiRedirectionException(string $details): self
     {
         return new self(_("API calling the Central returned a Redirection exception") . ' : ' . $details);
     }
 
     /**
-     * @inheritDoc
+     * Transport exception related to the server
+     * @param string $message concatenated message with the central response
+     * @param string $details
+     * @return PlatformTopologyRepositoryException
      */
-    public static function apiServerException(
-        string $message,
-        string $details
-    ): PlatformTopologyRepositoryExceptionInterface {
+    public static function apiServerException(string $message, string $details): self
+    {
         return new self($message . ' : ' . $details);
     }
 
     /**
-     * @inheritDoc
+     * Central response decoding failure
+     * @param string $details
+     * @return PlatformTopologyRepositoryException
      */
-    public static function apiDecodingResponseFailure(string $details): PlatformTopologyRepositoryExceptionInterface
+    public static function apiDecodingResponseFailure(string $details): self
     {
         return new self(_("Unable to decode Central's API response") . ' : ' . $details);
     }
 
     /**
-     * @inheritDoc
+     * Undetermined error when calling the central's API
+     * @param string $details
+     * @return PlatformTopologyRepositoryException
      */
-    public static function apiUndeterminedError(string $details): PlatformTopologyRepositoryExceptionInterface
+    public static function apiUndeterminedError(string $details): self
     {
         return new self(_("Error from Central's register API") . ' : ' . $details);
     }

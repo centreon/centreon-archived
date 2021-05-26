@@ -55,7 +55,7 @@ class PlatformTopologyException extends \Exception
     {
         return new self(
             sprintf(
-                _("Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."),
+                _("Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form"),
                 $name,
                 $address
             )
@@ -71,7 +71,7 @@ class PlatformTopologyException extends \Exception
     {
         return new self(
             sprintf(
-                _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."),
+                _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first"),
                 $name,
                 $address
             )
@@ -87,7 +87,7 @@ class PlatformTopologyException extends \Exception
     {
         return new self(
             sprintf(
-                _("Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."),
+                _("Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form"),
                 $name,
                 $address
             )
@@ -103,7 +103,7 @@ class PlatformTopologyException extends \Exception
     {
         return new self(
             sprintf(
-                _("Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                _("Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form"),
                 $name,
                 $address
             )
@@ -119,7 +119,7 @@ class PlatformTopologyException extends \Exception
     {
         return new self(
             sprintf(
-                _("Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                _("Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form"),
                 $name,
                 $address
             )
@@ -135,7 +135,7 @@ class PlatformTopologyException extends \Exception
     {
         return new self(
             sprintf(
-                _("Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."),
+                _("Central's path is missing on: '%s'@'%s'. Please check the Remote Access form"),
                 $name,
                 $address
             )
@@ -202,7 +202,7 @@ class PlatformTopologyException extends \Exception
     {
         return new self(
             sprintf(
-                _("The platform '%s'@'%s' cannot be found on the Central."),
+                _("The platform '%s'@'%s' cannot be found on the Central"),
                 $name,
                 $address
             )
@@ -218,7 +218,7 @@ class PlatformTopologyException extends \Exception
     {
         return new self(
             sprintf(
-                _("The platform: '%s'@'%s' is not declared as a 'remote'."),
+                _("The platform: '%s'@'%s' is not declared as a 'remote'"),
                 $name,
                 $address
             )
@@ -234,7 +234,7 @@ class PlatformTopologyException extends \Exception
     {
         return new self(
             sprintf(
-                _("Same address and parent_address for platform : '%s'@'%s'."),
+                _("Same address and parent_address for platform : '%s'@'%s'"),
                 $name,
                 $address
             )
