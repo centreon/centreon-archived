@@ -130,7 +130,7 @@ class PlatformTopologyController extends AbstractController
             return $this->view(null, Response::HTTP_CREATED);
         } catch (EntityNotFoundException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
-        } catch (PlatformTopologyException | \Throwable $ex) {
+        } catch (\Throwable $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
