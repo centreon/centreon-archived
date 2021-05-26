@@ -54,7 +54,7 @@ try {
                 (SELECT id FROM nagios_server WHERE localhost = '1'),
                 (:moduleMetaId)
             )
-            ON DUPLICATE KEY UPDATE nagios_server_id = (SELECT id FROM nagios_server WHERE localhost = '1')"
+            ON DUPLICATE KEY UPDATE nagios_server_id = nagios_server_id"
         );
         $statement->bindValue(':moduleMetaId', (int) $moduleMetaId, \PDO::PARAM_INT);
         $statement->execute();
