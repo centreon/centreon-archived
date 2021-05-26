@@ -26,8 +26,7 @@ namespace Centreon\Infrastructure\PlatformTopology\Repository\Exception;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
 use Centreon\Domain\Repository\RepositoryException;
 
-class PlatformTopologyRepositoryException
-extends RepositoryException implements
+class PlatformTopologyRepositoryException extends RepositoryException implements
     PlatformTopologyRepositoryExceptionInterface
 {
     /**
