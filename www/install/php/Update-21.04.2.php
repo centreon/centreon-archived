@@ -44,7 +44,7 @@ try {
     $result = $statement->fetch()
     $moduleMetaId = $result['host_id'];
 
-    /* 
+    /*
      * Add missing releation
      */
     if (is_int($moduleMetaId)) {
