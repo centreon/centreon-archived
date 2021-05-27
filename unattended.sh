@@ -123,8 +123,11 @@ function log() {
 	# get the message log level
 	log_message_level="${1}"
 
-	# get the log message
-	log_message="${2}"
+	# shift once to get the log message (string or array)
+	shift
+	
+	# get the log message (full log message)
+	log_message="${@}"
 
 	# check if the log_message_level is greater than the runtime_log_level
 	[[ ${SUPPORTED_LOG_LEVEL[$log_message_level]} ]] || return 1
