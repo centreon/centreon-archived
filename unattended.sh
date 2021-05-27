@@ -352,10 +352,10 @@ function set_required_prerequisite() {
 			$PKG_MGR config-manager --set-enabled powertools
 			;;
 
-                centos-release-8.2*)
-                        BASE_PACKAGES=(dnf-plugins-core epel-release)
-                        $PKG_MGR config-manager --set-enabled PowerTools
-                        ;;
+		centos-release-8.2*)
+			BASE_PACKAGES=(dnf-plugins-core epel-release)
+			$PKG_MGR config-manager --set-enabled PowerTools
+			;;
 
 		oraclelinux-release* | enterprise-release*)
 			BASE_PACKAGES=(dnf-plugins-core oracle-epel-release-el8)
