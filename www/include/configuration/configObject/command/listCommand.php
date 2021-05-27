@@ -146,13 +146,16 @@ for ($i = 0; $cmd = $DBRESULT->fetchRow(); $i++) {
     } else {
         $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$cmd['command_id']."]'></input>";
     }
-    
+
+    $decodedCommand = myDecodeCommand($cmd["command_line"]);
     $elemArr[$i] = array(
         "MenuClass" => "list_".$style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $cmd["command_name"],
         "RowMenu_link" => "?p=".$p."&o=c&command_id=".$cmd['command_id']."&type=".$cmd['command_type'],
-        "RowMenu_desc" => CentreonUtils::escapeSecure(substr(myDecodeCommand($cmd["command_line"]), 0, 50)) . "...",
+        "RowMenu_desc" => (strlen($decodedCommand) > 50)
+            ? CentreonUtils::escapeSecure(substr($decodedCommand, 0, 50), CentreonUtils::ESCAPE_ALL) . "..."
+            : CentreonUtils::escapeSecure($decodedCommand, CentreonUtils::ESCAPE_ALL),
         "RowMenu_type" => $commandType[$cmd["command_type"]],
         "RowMenu_huse" => "<a name='#' title='"._("Host links (host template links)")."'>".getHostNumberUse($cmd['command_id']) . " (".getHostTPLNumberUse($cmd['command_id']).")</a>",
         "RowMenu_suse" => "<a name='#' title='"._("Service links (service template links)")."'>".getServiceNumberUse($cmd['command_id']) . " (".getServiceTPLNumberUse($cmd['command_id']).")</a>",
