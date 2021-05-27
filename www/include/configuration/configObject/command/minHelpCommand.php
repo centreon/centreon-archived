@@ -47,7 +47,7 @@ $commandName = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-if ($commandId != null) {
+if ($commandId !== false) {
     //Get command information
     $sth = $pearDB->prepare('SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1');
     $sth->bindParam(':command_id', $commandId, PDO::PARAM_INT);
