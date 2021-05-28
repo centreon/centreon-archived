@@ -27,6 +27,7 @@ use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Menu\MenuException;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
 
 interface RemoteServerServiceInterface
 {
@@ -37,13 +38,18 @@ interface RemoteServerServiceInterface
      * @throws EntityNotFoundException
      * @throws MenuException
      * @throws PlatformTopologyException
-     * @throws MenuException
+     * @throws PlatformTopologyRepositoryExceptionInterface
      */
     public function convertCentralToRemote(PlatformInformation $platformInformation): void;
 
     /**
      * Convert a Remote Server into a Central
      * @param PlatformInformation $platformInformation
+     * @throws PlatformTopologyException
+     * @throws EntityNotFoundException
+     * @throws MenuException
+     * @throws PlatformTopologyException
+     * @throws PlatformTopologyRepositoryExceptionInterface
      */
     public function convertRemoteToCentral(PlatformInformation $platformInformation): void;
 }

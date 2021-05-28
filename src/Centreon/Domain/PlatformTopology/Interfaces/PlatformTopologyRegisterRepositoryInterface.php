@@ -24,9 +24,9 @@ declare(strict_types=1);
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
-use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\Proxy\Proxy;
-use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
 
 interface PlatformTopologyRegisterRepositoryInterface
 {
@@ -36,8 +36,8 @@ interface PlatformTopologyRegisterRepositoryInterface
      * @param PlatformInterface $platform
      * @param PlatformInformation $platformInformation
      * @param Proxy|null $proxy
-     * @throws RepositoryException
-     * @throws PlatformTopologyConflictException
+     * @throws PlatformTopologyRepositoryExceptionInterface
+     * @throws PlatformTopologyException
      */
     public function registerPlatformToParent(
         PlatformInterface $platform,
@@ -51,8 +51,8 @@ interface PlatformTopologyRegisterRepositoryInterface
      * @param PlatformInterface $platform
      * @param PlatformInformation $platformInformation
      * @param Proxy|null $proxy
-     * @throws RepositoryException
-     * @throws PlatformTopologyConflictException
+     * @throws PlatformTopologyRepositoryExceptionInterface
+     * @throws PlatformTopologyException
      */
     public function deletePlatformToParent(
         PlatformInterface $platform,

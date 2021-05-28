@@ -23,21 +23,21 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology\Repository;
 
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\Proxy\Proxy;
 use Centreon\Application\ApiPlatform;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
-use Centreon\Domain\Repository\RepositoryException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
-use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
+use Centreon\Infrastructure\PlatformTopology\Repository\Exception\PlatformTopologyRepositoryException;
 
 class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterRepositoryInterface
 {
@@ -77,7 +77,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
      * @throws RedirectionExceptionInterface
-     * @throws RepositoryException
+     * @throws PlatformTopologyRepositoryException
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
@@ -130,7 +130,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
         $token = $loginResponse->toArray()['security']['token'] ?? false;
 
         if (false === $token) {
-            throw RepositoryException::failToGetToken($platformInformation->getCentralServerAddress());
+            throw PlatformTopologyRepositoryException::failToGetToken($platformInformation->getCentralServerAddress());
         }
         return $token;
     }
@@ -183,26 +183,26 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
                     $errorMessage .= "  /  " . _("Central's response => Code : ") .
                         implode(', ', $returnedMessage);
                 }
-                throw new PlatformTopologyConflictException(
+                throw new PlatformTopologyException(
                     $errorMessage
                 );
             }
         } catch (TransportExceptionInterface $e) {
-            throw RepositoryException::apiRequestOnCentralException($e->getMessage());
+            throw PlatformTopologyRepositoryException::apiRequestOnCentralException($e->getMessage());
         } catch (ClientExceptionInterface $e) {
-            throw RepositoryException::apiClientException($e->getMessage());
+            throw PlatformTopologyRepositoryException::apiClientException($e->getMessage());
         } catch (RedirectionExceptionInterface $e) {
-            throw RepositoryException::apiRedirectionException($e->getMessage());
+            throw PlatformTopologyRepositoryException::apiRedirectionException($e->getMessage());
         } catch (ServerExceptionInterface $e) {
             $message = _("API calling the Central returned a Server exception");
             if (!empty($optionPayload['proxy'])) {
                 $message .= '. ' . _("Please check the 'Centreon UI' form and your proxy configuration");
             }
-            throw RepositoryException::apiServerException($message, $e->getMessage());
+            throw PlatformTopologyRepositoryException::apiServerException($message, $e->getMessage());
         } catch (DecodingExceptionInterface $e) {
-            throw RepositoryException::apiDecodingResponseFailure($e->getMessage());
+            throw PlatformTopologyRepositoryException::apiDecodingResponseFailure($e->getMessage());
         } catch (\Exception $e) {
-            throw RepositoryException::apiUndeterminedError($e->getMessage());
+            throw PlatformTopologyRepositoryException::apiUndeterminedError($e->getMessage());
         }
     }
 
@@ -241,7 +241,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
                     $errorMessage .= "  /  " . _("Central's response => Code : ") .
                         implode(', ', $returnedMessage);
                 }
-                throw new PlatformTopologyConflictException(
+                throw new PlatformTopologyException(
                     $errorMessage
                 );
             }
@@ -258,7 +258,7 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
             }
 
             if ($platformToDeleteId === null) {
-                throw PlatformTopologyConflictException::notFoundOnCentral(
+                throw PlatformTopologyException::notFoundOnCentral(
                     $platform->getName(),
                     $platform->getAddress()
                 );
@@ -288,24 +288,24 @@ class PlatformTopologyRegisterRepositoryAPI implements PlatformTopologyRegisterR
                     $errorMessage .= "  /  " . _("Central's response => Code : ") .
                         implode(', ', $returnedMessage);
                 }
-                throw new PlatformTopologyConflictException($errorMessage);
+                throw new PlatformTopologyException($errorMessage);
             }
         } catch (TransportExceptionInterface $e) {
-            throw RepositoryException::apiRequestOnCentralException($e->getMessage());
+            throw PlatformTopologyRepositoryException::apiRequestOnCentralException($e->getMessage());
         } catch (ClientExceptionInterface $e) {
-            throw RepositoryException::apiClientException($e->getMessage());
+            throw PlatformTopologyRepositoryException::apiClientException($e->getMessage());
         } catch (RedirectionExceptionInterface $e) {
-            throw RepositoryException::apiRedirectionException($e->getMessage());
+            throw PlatformTopologyRepositoryException::apiRedirectionException($e->getMessage());
         } catch (ServerExceptionInterface $e) {
             $message = _("API calling the Central returned a Server exception");
             if (!empty($optionPayload['proxy'])) {
                 $message .= '. ' . _("Please check the 'Centreon UI' form and your proxy configuration");
             }
-            throw RepositoryException::apiServerException($message, $e->getMessage());
+            throw PlatformTopologyRepositoryException::apiServerException($message, $e->getMessage());
         } catch (DecodingExceptionInterface $e) {
-            throw RepositoryException::apiDecodingResponseFailure($e->getMessage());
+            throw PlatformTopologyRepositoryException::apiDecodingResponseFailure($e->getMessage());
         } catch (\Exception $e) {
-            throw RepositoryException::apiUndeterminedError($e->getMessage());
+            throw PlatformTopologyRepositoryException::apiUndeterminedError($e->getMessage());
         }
     }
 }
