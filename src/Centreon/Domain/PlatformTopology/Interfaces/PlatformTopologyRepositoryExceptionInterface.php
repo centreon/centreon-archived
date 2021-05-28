@@ -18,13 +18,13 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Centreon\Domain\Repository;
+namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-/**
- * @package Centreon\Domain\Repository
- */
-class RepositoryException extends \Exception
+use Centreon\Domain\Repository\Interfaces\RepositoryExceptionInterface;
+
+interface PlatformTopologyRepositoryExceptionInterface extends RepositoryExceptionInterface
 {
 }
