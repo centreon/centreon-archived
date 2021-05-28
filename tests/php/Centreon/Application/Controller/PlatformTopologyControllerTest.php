@@ -21,7 +21,6 @@
 
 namespace Tests\Centreon\Application\Controller;
 
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
 use FOS\RestBundle\Context\Context;
@@ -36,7 +35,6 @@ use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Infrastructure\PlatformTopology\Repository\Model\PlatformJsonGraph;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
 use Centreon\Application\Controller\PlatformTopologyController;
-use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
@@ -182,7 +180,7 @@ class PlatformTopologyControllerTest extends TestCase
 
     /**
      * test addPlatformToTopology with conflict
-     * @throws PlatformTopologyConflictException
+     * @throws PlatformTopologyException
      */
     public function testAddPlatformToTopologyConflict(): void
     {
@@ -192,7 +190,7 @@ class PlatformTopologyControllerTest extends TestCase
 
         $this->platformTopologyService->expects($this->any())
             ->method('addPlatformToTopology')
-            ->will($this->throwException(new PlatformTopologyConflictException('conflict')));
+            ->will($this->throwException(new PlatformTopologyException('conflict')));
 
         $platformTopologyController = new PlatformTopologyController($this->platformTopologyService);
         $platformTopologyController->setContainer($this->container);
