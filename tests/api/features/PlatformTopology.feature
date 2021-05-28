@@ -274,7 +274,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"Same address and parent_address for platform : 'my_poller_4'@'1.1.1.4'."}
+            {"message":"Same address and parent_address for platform : 'my_poller_4'@'1.1.1.4'"}
             """
 
         # Register a platform behind wrong parent type / Should fail and an error should be returned
