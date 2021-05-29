@@ -85,7 +85,12 @@ class CentreonAuthSSO extends CentreonAuth
         ) {
             $clientId = $this->ssoOptions['openid_connect_client_id'];
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
-            $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
+            $redirectSubstitutions = [
+                '{$scheme}' => $_SERVER['REQUEST_SCHEME'],
+                '{$hostname}' => $_SERVER['SERVER_NAME'],
+                '{$port}' => $_SERVER['SERVER_PORT']
+            ];
+            $redirectNoEncode = strtr($this->ssoOptions['openid_connect_redirect_url'], $redirectSubstitutions);
             $baseUrl = rtrim($this->ssoOptions['openid_connect_base_url'], "/");
             $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
             $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");

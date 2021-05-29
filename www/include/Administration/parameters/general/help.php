@@ -174,7 +174,7 @@ $help['openid_connect_scope'] = dgettext(
 );
 $help['openid_connect_redirect_url'] = dgettext(
     'help',
-    'Your OpenId Connect redirect url (this server).'
+    'Your OpenId Connect redirect url (this server, {$scheme}, {$hostname} and {$port} can be used for substitions).'
 );
 $help['openid_connect_client_id'] = dgettext(
     'help',
