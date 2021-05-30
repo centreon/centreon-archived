@@ -301,7 +301,12 @@ $form->addElement('text', 'openid_connect_client_id', _('Client ID'), array('siz
 $form->addElement('text', 'openid_connect_client_secret', _('Client Secret'), array('size' => 50));
 
 $openIdConnectClientBasicAuth[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
-$form->addGroup($openIdConnectClientBasicAuth, 'openid_connect_client_basic_auth', _("Use Basic Auth for Token Endpoint Authentication"), '&nbsp;&nbsp;');
+$form->addGroup(
+    $openIdConnectClientBasicAuth,
+    'openid_connect_client_basic_auth',
+    _("Use Basic Auth for Token Endpoint Authentication"),
+    '&nbsp;&nbsp;'
+);
 
 $openIdConnectVerifyPeer[] = $form->createElement(
     'checkbox',

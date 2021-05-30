@@ -308,8 +308,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $code,
         bool $clientBasicAuth,
         bool $verifyPeer
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "grant_type" => "authorization_code",
             "code" => $code,
@@ -321,7 +320,7 @@ class CentreonAuthSSO extends CentreonAuth
         curl_setopt($ch, CURLOPT_POST, true);
 
         if ($clientBasicAuth) {
-            curl_setopt($ch, CURLOPT_USERPWD, $clientId.':'.$clientSecret);
+            curl_setopt($ch, CURLOPT_USERPWD, $clientId . ':' . $clientSecret);
         } else {
             $data["client_id"] = $clientId;
             $data["client_secret"] = $clientSecret;
@@ -426,8 +425,7 @@ class CentreonAuthSSO extends CentreonAuth
         bool $clientBasicAuth,
         bool $verifyPeer,
         string $scope = null
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "grant_type" => "refresh_token",
             "refresh_token" => $refreshToken,
@@ -439,7 +437,7 @@ class CentreonAuthSSO extends CentreonAuth
         curl_setopt($ch, CURLOPT_POST, true);
 
         if ($clientBasicAuth) {
-            curl_setopt($ch, CURLOPT_USERPWD, $clientId.':'.$clientSecret);
+            curl_setopt($ch, CURLOPT_USERPWD, $clientId . ':' . $clientSecret);
         } else {
             $data["client_id"] = $clientId;
             $data["client_secret"] = $clientSecret;
@@ -474,8 +472,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $refreshToken,
         bool $clientBasicAuth,
         bool $verifyPeer
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "refresh_token" => $refreshToken
         ];
@@ -485,7 +482,7 @@ class CentreonAuthSSO extends CentreonAuth
         curl_setopt($ch, CURLOPT_POST, true);
 
         if ($clientBasicAuth) {
-            curl_setopt($ch, CURLOPT_USERPWD, $clientId.':'.$clientSecret);
+            curl_setopt($ch, CURLOPT_USERPWD, $clientId . ':' . $clientSecret);
         } else {
             $data["client_id"] = $clientId;
             $data["client_secret"] = $clientSecret;

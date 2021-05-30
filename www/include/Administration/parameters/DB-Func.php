@@ -801,7 +801,8 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "openid_connect_client_basic_auth",
-        isset($ret["openid_connect_client_basic_auth"]["yes"]) && $ret["openid_connect_client_basic_auth"]["yes"] != null ? 1 : 0
+        isset($ret["openid_connect_client_basic_auth"]["yes"])
+            && $ret["openid_connect_client_basic_auth"]["yes"] != null ? 1 : 0
     );
     updateOption(
         $pearDB,
