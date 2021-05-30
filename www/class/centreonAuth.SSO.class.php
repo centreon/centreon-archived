@@ -97,6 +97,8 @@ class CentreonAuthSSO extends CentreonAuth
                 $endSessionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
             }
 
+            $clientBasicAuth = $this->ssoOptions['openid_connect_client_basic_auth'];
+
             $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
 
             $redirect = urlencode($redirectNoEncode);
@@ -129,6 +131,7 @@ class CentreonAuthSSO extends CentreonAuth
                     $clientId,
                     $clientSecret,
                     $inputCode,
+                    $clientBasicAuth,
                     $verifyPeer
                 );
 
@@ -141,6 +144,7 @@ class CentreonAuthSSO extends CentreonAuth
                         $clientId,
                         $clientSecret,
                         $tokenInfo['refresh_token'],
+                        $clientBasicAuth,
                         $verifyPeer,
                         !empty($this->ssoOptions['openid_connect_scope']) ? $this->ssoOptions['openid_connect_scope'] : null
                     );
@@ -153,6 +157,7 @@ class CentreonAuthSSO extends CentreonAuth
                                 $clientId,
                                 $clientSecret,
                                 $tokenInfo['refresh_token'],
+                                $clientBasicAuth,
                                 $verifyPeer
                             );
                         }
@@ -301,12 +306,11 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $code,
+        bool $clientBasicAuth,
         bool $verifyPeer
     ): ?array
     {
         $data = [
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
             "grant_type" => "authorization_code",
             "code" => $code,
             "redirect_uri" => $redirectUri
@@ -315,6 +319,13 @@ class CentreonAuthSSO extends CentreonAuth
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
+
+        if ($clientBasicAuth) {
+            curl_setopt($ch, CURLOPT_USERPWD, $clientId.':'.$clientSecret);
+        } else {
+            $data["client_id"] = $clientId;
+            $data["client_secret"] = $clientSecret;
+        }
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 
         if ($verifyPeer) {
@@ -412,13 +423,12 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $refreshToken,
+        bool $clientBasicAuth,
         bool $verifyPeer,
         string $scope = null
     ): ?array
     {
         $data = [
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
             "grant_type" => "refresh_token",
             "refresh_token" => $refreshToken,
             "scope" => $scope
@@ -427,6 +437,13 @@ class CentreonAuthSSO extends CentreonAuth
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
+
+        if ($clientBasicAuth) {
+            curl_setopt($ch, CURLOPT_USERPWD, $clientId.':'.$clientSecret);
+        } else {
+            $data["client_id"] = $clientId;
+            $data["client_secret"] = $clientSecret;
+        }
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 
         if ($verifyPeer) {
@@ -455,18 +472,24 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $refreshToken,
+        bool $clientBasicAuth,
         bool $verifyPeer
     ): ?array
     {
         $data = [
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
             "refresh_token" => $refreshToken
         ];
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
+
+        if ($clientBasicAuth) {
+            curl_setopt($ch, CURLOPT_USERPWD, $clientId.':'.$clientSecret);
+        } else {
+            $data["client_id"] = $clientId;
+            $data["client_secret"] = $clientSecret;
+        }
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 
         if ($verifyPeer) {
