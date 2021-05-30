@@ -22,7 +22,13 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Typography, Theme } from '@material-ui/core';
+import {
+  makeStyles,
+  Typography,
+  Theme,
+  MenuItem,
+  Menu,
+} from '@material-ui/core';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
 import { Skeleton } from '@material-ui/lab';
 
@@ -40,7 +46,10 @@ import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
 import {
+  labelCurrentSizeExport,
   labelExportToPng,
+  labelLargeSizeExport,
+  labelMediumSizeExport,
   labelNoDataForThisPeriod,
 } from '../../translatedLabels';
 import {
@@ -165,6 +174,14 @@ const PerformanceGraph = ({
   const [exporting, setExporting] = React.useState<boolean>(false);
   const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = React.useRef<number>(0);
+  const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
+
+  const openSizeExportMenu = (event: React.MouseEvent): void => {
+    setMenuAnchor(event.currentTarget);
+  };
+  const closeSizeExportMenu = (): void => {
+    setMenuAnchor(null);
+  };
 
   const { selectedResourceId } = useResourceContext();
 
@@ -340,7 +357,8 @@ const PerformanceGraph = ({
     setExporting(true);
     exportToPng({
       element: performanceGraphRef.current as HTMLElement,
-      title: `${resource?.name}-performance`,
+      title: `${resource?.name}-performanceo`,
+      // add size props
     }).finally(() => {
       setExporting(false);
     });
@@ -378,14 +396,32 @@ const PerformanceGraph = ({
                 loading={exporting}
                 loadingIndicatorSize={16}
               >
-                <IconButton
-                  disableTouchRipple
-                  disabled={isNil(timeline)}
-                  title={t(labelExportToPng)}
-                  onClick={convertToPng}
-                >
-                  <SaveAsImageIcon style={{ fontSize: 18 }} />
-                </IconButton>
+                <>
+                  <IconButton
+                    disableTouchRipple
+                    disabled={isNil(timeline)}
+                    title={t(labelExportToPng)}
+                    onClick={openSizeExportMenu}
+                  >
+                    <SaveAsImageIcon style={{ fontSize: 18 }} />
+                  </IconButton>
+                  <Menu
+                    keepMounted
+                    anchorEl={menuAnchor}
+                    open={Boolean(menuAnchor)}
+                    onClose={closeSizeExportMenu}
+                  >
+                    <MenuItem onClick={convertToPng}>
+                      {t(labelCurrentSizeExport)}
+                    </MenuItem>
+                    <MenuItem onClick={convertToPng}>
+                      {t(labelMediumSizeExport)}
+                    </MenuItem>
+                    <MenuItem onClick={convertToPng}>
+                      {t(labelLargeSizeExport)}
+                    </MenuItem>
+                  </Menu>
+                </>
               </ContentWithCircularLoading>
             </div>
           </div>
