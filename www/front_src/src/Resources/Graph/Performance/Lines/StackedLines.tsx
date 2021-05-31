@@ -1,17 +1,20 @@
 import * as React from 'react';
 
 import { map, nth, pipe, path, all, not, isNil, prop } from 'ramda';
-import { AreaStack, curveBasis } from '@visx/visx';
+import { AreaStack, curveLinear } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { Line, TimeValue } from '../models';
 import { getTime } from '../timeSeries';
+
+import StackedAnchorPoint, { StackValue } from './StackedAnchorPoint';
 
 import { getFillColor } from '.';
 
 interface Props {
   lines: Array<Line>;
   timeSeries: Array<TimeValue>;
+  timeTick: Date | null;
   xScale: ScaleTime<number, number>;
   yScale: ScaleLinear<number, number>;
 }
@@ -21,9 +24,10 @@ const StackLines = ({
   lines,
   yScale,
   xScale,
+  timeTick,
 }: Props): JSX.Element => (
   <AreaStack
-    curve={curveBasis}
+    curve={curveLinear}
     data={timeSeries}
     defined={(d): boolean => {
       return pipe(
@@ -43,14 +47,24 @@ const StackLines = ({
           lines,
         ) as Line;
         return (
-          <path
-            d={linePath(stack) || ''}
-            fill={getFillColor({ areaColor, transparency })}
-            key={`stack-${prop('key', stack)}`}
-            opacity={highlight === false ? 0.3 : 1}
-            stroke={lineColor}
-            strokeWidth={highlight ? 2 : 1}
-          />
+          <React.Fragment key={`stack-${prop('key', stack)}`}>
+            <StackedAnchorPoint
+              areaColor={areaColor}
+              lineColor={lineColor}
+              stackValues={stack as unknown as Array<StackValue>}
+              timeTick={timeTick}
+              transparency={transparency}
+              xScale={xScale}
+              yScale={yScale}
+            />
+            <path
+              d={linePath(stack) || ''}
+              fill={getFillColor({ areaColor, transparency })}
+              opacity={highlight === false ? 0.3 : 1}
+              stroke={lineColor}
+              strokeWidth={highlight ? 2 : 1}
+            />
+          </React.Fragment>
         );
       });
     }}

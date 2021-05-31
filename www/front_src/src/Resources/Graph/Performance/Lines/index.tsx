@@ -1,14 +1,13 @@
 import * as React from 'react';
 
-import { prop, difference, min, max, isNil } from 'ramda';
-import { AreaClosed, LinePath, curveLinear, scaleLinear } from '@visx/visx';
+import { difference, min, max, isNil } from 'ramda';
+import { scaleLinear } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { fade } from '@material-ui/core';
 
 import { Line, TimeValue } from '../models';
 import {
-  getTime,
   getUnits,
   getSortedStackedLines,
   getTimeSeriesForLines,
@@ -106,12 +105,14 @@ const Lines = ({
       <StackedLines
         lines={regularStackedLines}
         timeSeries={regularStackedTimeSeries}
+        timeTick={timeTick}
         xScale={xScale}
         yScale={stackedYScale}
       />
       <StackedLines
         lines={invertedStackedLines}
         timeSeries={invertedStackedTimeSeries}
+        timeTick={timeTick}
         xScale={xScale}
         yScale={stackedYScale}
       />

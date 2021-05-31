@@ -446,9 +446,10 @@ const GraphContent = ({
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
   );
 
-  const timeTick = mousePosition
-    ? xScale.invert(mousePosition[0] - margin.left)
-    : null;
+  const timeTick =
+    containsMetrics && mousePosition
+      ? xScale.invert(mousePosition[0] - margin.left)
+      : null;
 
   return (
     <AnnotationsContext.Provider value={annotations}>
