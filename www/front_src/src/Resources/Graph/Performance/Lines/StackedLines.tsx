@@ -4,9 +4,10 @@ import { map, nth, pipe, path, all, not, isNil, prop } from 'ramda';
 import { AreaStack, curveBasis } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
-import { Line, TimeValue } from './models';
-import { getFillColor } from './Lines';
-import { getTime } from './timeSeries';
+import { Line, TimeValue } from '../models';
+import { getTime } from '../timeSeries';
+
+import { getFillColor } from '.';
 
 interface Props {
   lines: Array<Line>;

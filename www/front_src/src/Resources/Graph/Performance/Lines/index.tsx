@@ -6,7 +6,7 @@ import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { fade } from '@material-ui/core';
 
-import { Line, TimeValue } from './models';
+import { Line, TimeValue } from '../models';
 import {
   getTime,
   getUnits,
@@ -17,7 +17,10 @@ import {
   getNotInvertedStackedLines,
   getInvertedStackedLines,
   getYScale,
-} from './timeSeries';
+} from '../timeSeries';
+
+import RegularLine from './RegularLine';
+import AnchorPoint from './AnchorPoint';
 import StackedLines from './StackedLines';
 
 interface Props {
@@ -26,6 +29,7 @@ interface Props {
   lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
   timeSeries: Array<TimeValue>;
+  timeTick: Date | null;
   xScale: ScaleTime<number, number>;
 }
 
@@ -75,6 +79,7 @@ const Lines = ({
   timeSeries,
   lines,
   graphHeight,
+  timeTick,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -131,32 +136,33 @@ const Lines = ({
               unit,
             });
 
-            const props = {
-              curve: curveLinear,
-              data: timeSeries,
-              defined: (value): boolean => !isNil(value[metric]),
-              opacity: highlight === false ? 0.3 : 1,
-              stroke: lineColor,
-              strokeWidth: highlight ? 2 : 1,
-              unit,
-              x: (timeValue): number => xScale(getTime(timeValue)) as number,
-              y: (timeValue): number => yScale(prop(metric, timeValue)) ?? null,
-            };
-
-            if (filled) {
-              return (
-                <AreaClosed<TimeValue>
-                  fill={getFillColor({ areaColor, transparency })}
-                  fillRule="nonzero"
-                  key={metric}
-                  y0={Math.min(yScale(0), graphHeight)}
+            return (
+              <React.Fragment key={metric}>
+                <AnchorPoint
+                  areaColor={areaColor}
+                  lineColor={lineColor}
+                  metric={metric}
+                  timeSeries={timeSeries}
+                  timeTick={timeTick}
+                  transparency={transparency}
+                  xScale={xScale}
                   yScale={yScale}
-                  {...props}
                 />
-              );
-            }
-
-            return <LinePath<TimeValue> key={metric} {...props} />;
+                <RegularLine
+                  areaColor={areaColor}
+                  filled={filled}
+                  graphHeight={graphHeight}
+                  highlight={highlight}
+                  lineColor={lineColor}
+                  metric={metric}
+                  timeSeries={timeSeries}
+                  transparency={transparency}
+                  unit={unit}
+                  xScale={xScale}
+                  yScale={yScale}
+                />
+              </React.Fragment>
+            );
           },
         )}
       </>

@@ -66,7 +66,6 @@ import TimeShiftZones, {
   TimeShiftDirection,
 } from './TimeShiftZones';
 import { useMetricsValueContext } from './useMetricsValue';
-import AnchorPoints from './AnchorPoints';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -175,7 +174,7 @@ const getScale = ({
   });
 };
 
-const bisectDate = bisector(identity).center;
+export const bisectDate = bisector(identity).center;
 
 const GraphContent = ({
   width,
@@ -447,7 +446,9 @@ const GraphContent = ({
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
   );
 
-  const timeValue = getTimeValue(mousePosition?.[0] || 0);
+  const timeTick = mousePosition
+    ? xScale.invert(mousePosition[0] - margin.left)
+    : null;
 
   return (
     <AnnotationsContext.Provider value={annotations}>
@@ -488,6 +489,7 @@ const GraphContent = ({
                 lines={lines}
                 rightScale={rightScale}
                 timeSeries={timeSeries}
+                timeTick={timeTick}
                 xScale={xScale}
               />
               {displayEventAnnotations && (
@@ -507,13 +509,6 @@ const GraphContent = ({
               />
               {containsMetrics && (
                 <>
-                  <AnchorPoints
-                    leftScale={leftScale}
-                    lines={lines}
-                    rightScale={rightScale}
-                    timeValue={timeValue}
-                    xScale={xScale}
-                  />
                   <Line
                     from={{ x: mousePositionX, y: 0 }}
                     pointerEvents="none"
