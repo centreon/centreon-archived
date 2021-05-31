@@ -135,7 +135,7 @@ class CentreonDB extends \PDO
             ];
 
             switch (strtolower($db)) {
-                case self::DB_REALTIME:
+                case self::LABEL_DB_REALTIME:
                     $this->dsn['hostspec'] = $conf_centreon["hostCentstorage"];
                     $this->dsn['database'] = $conf_centreon["dbcstg"];
                     break;
