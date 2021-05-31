@@ -80,7 +80,10 @@ switch ($o) {
         require_once($path . "formHostGroupDependency.php");
         break;
     case "m": # Duplicate n Dependencies
-        multipleHostGroupDependencyInDB(is_array($select) ? $select : [], $dupNbr);
+        multipleHostGroupDependencyInDB(
+            is_array($select) ? $select : [],
+            is_array($dupNbr) ? $dupNbr : []
+        );
         require_once($path . "listHostGroupDependency.php");
         break;
     case "d": # Delete n Dependency
