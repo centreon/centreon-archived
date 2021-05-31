@@ -58,7 +58,7 @@ class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface
     {
         global $dependencyInjector;
         $pearDB = new \CentreonDB(
-            \CentreonDB::DB_CONFIGURATION,
+            \CentreonDB::LABEL_DB_CONFIGURATION,
             3,
             true
         );

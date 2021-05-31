@@ -48,8 +48,8 @@ require_once __DIR__ . '/centreonLog.class.php';
  */
 class CentreonDB extends \PDO
 {
-    public const DB_CONFIGURATION = 'centreon';
-    public const DB_REALTIME = 'centstorage';
+    public const LABEL_DB_CONFIGURATION = 'centreon';
+    public const LABEL_DB_REALTIME = 'centstorage';
     private static $instance = [];
     protected $db_type = "mysql";
     protected $db_port = "3306";
@@ -86,7 +86,7 @@ class CentreonDB extends \PDO
      *
      * @throws Exception
      */
-    public function __construct($db = self::DB_CONFIGURATION, $retry = 3, $silent = false)
+    public function __construct($db = self::LABEL_DB_CONFIGURATION, $retry = 3, $silent = false)
     {
         try {
             $conf_centreon['hostCentreon'] = hostCentreon;
@@ -318,9 +318,9 @@ class CentreonDB extends \PDO
      * @return CentreonDB
      * @throws Exception
      */
-    public static function factory($name = self::DB_CONFIGURATION)
+    public static function factory($name = self::LABEL_DB_CONFIGURATION)
     {
-        if (!in_array($name, [self::DB_CONFIGURATION, self::DB_REALTIME])) {
+        if (!in_array($name, [self::LABEL_DB_CONFIGURATION, self::LABEL_DB_REALTIME])) {
             throw new Exception("The datasource isn't defined in configuration file.");
         }
         if (!isset(self::$instance[$name])) {
