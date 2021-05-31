@@ -79,14 +79,14 @@ class CentreonDB extends \PDO
     /**
      * Constructor
      *
-     * @param string $db | centreon, centstorage, or ndo
+     * @param string $db | centreon, centstorage
      * @param int $retry
      * @param bool $silent | when silent is set to false, it will display an HTML error msg,
      *                       otherwise it will throw an Exception
      *
      * @throws Exception
      */
-    public function __construct($db = "centreon", $retry = 3, $silent = false)
+    public function __construct($db = self::DB_CONFIG, $retry = 3, $silent = false)
     {
         try {
             $conf_centreon['hostCentreon'] = hostCentreon;
@@ -318,9 +318,9 @@ class CentreonDB extends \PDO
      * @return CentreonDB
      * @throws Exception
      */
-    public static function factory($name = "centreon")
+    public static function factory($name = self::DB_CONFIG)
     {
-        if (!in_array($name, ['centreon', 'centstorage', 'ndo'])) {
+        if (!in_array($name, [self::DB_CONFIG, self::DB_REALTIME])) {
             throw new Exception("The datasource isn't defined in configuration file.");
         }
         if (!isset(self::$instance[$name])) {
