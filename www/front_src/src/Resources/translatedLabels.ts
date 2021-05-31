@@ -216,4 +216,4 @@ export const labelMaxDuration1Year = 'The duration must be lesser than a year';
 export const labelSelectedSizeExport = 'Selected Size Export';
 export const labelCurrentSizeExport = 'Current size export';
 export const labelMediumSizeExport = 'Medium size export';
-export const labelLargeSizeExport = 'Large size export';
+export const labelSmallSizeExport = 'Large size export';

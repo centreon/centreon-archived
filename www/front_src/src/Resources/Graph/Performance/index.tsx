@@ -48,7 +48,7 @@ import { CommentParameters } from '../../Actions/api';
 import {
   labelCurrentSizeExport,
   labelExportToPng,
-  labelLargeSizeExport,
+  labelSmallSizeExport,
   labelMediumSizeExport,
   labelNoDataForThisPeriod,
 } from '../../translatedLabels';
@@ -418,7 +418,7 @@ const PerformanceGraph = ({
                       {t(labelMediumSizeExport)}
                     </MenuItem>
                     <MenuItem onClick={convertToPng}>
-                      {t(labelLargeSizeExport)}
+                      {t(labelSmallSizeExport)}
                     </MenuItem>
                   </Menu>
                 </>
