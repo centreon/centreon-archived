@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { isNil, isEmpty } from 'ramda';
-import { useTranslation } from 'react-i18next';
 
 import { Avatar, makeStyles, Tooltip } from '@material-ui/core';
 
@@ -31,7 +30,6 @@ const UrlColumn = ({
   icon,
   avatarTitle,
 }: Props): JSX.Element | null => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
   const isEndpointEmpty = isNil(endpoint) || isEmpty(endpoint);
