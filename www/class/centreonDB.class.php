@@ -48,6 +48,8 @@ require_once __DIR__ . '/centreonLog.class.php';
  */
 class CentreonDB extends \PDO
 {
+    public const DB_CONFIG = 'centreon';
+    public const DB_REALTIME = 'centstorage';
     private static $instance = [];
     protected $db_type = "mysql";
     protected $db_port = "3306";
@@ -133,12 +135,11 @@ class CentreonDB extends \PDO
             ];
 
             switch (strtolower($db)) {
-                case "centstorage":
+                case self::DB_REALTIME:
                     $this->dsn['hostspec'] = $conf_centreon["hostCentstorage"];
                     $this->dsn['database'] = $conf_centreon["dbcstg"];
                     break;
-                case "centreon":
-                case "default":
+                default:
                     $this->dsn['hostspec'] = $conf_centreon["hostCentreon"];
                     $this->dsn['database'] = $conf_centreon["db"];
                     break;
