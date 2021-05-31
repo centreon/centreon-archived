@@ -55,6 +55,8 @@ iframe {
 
 .ui-tabs .ui-tabs-panel { display: block; border-width: 0; padding: 1em 0.4em; background: none; }
 .ui-tabs .ui-tabs-nav li a { float: left; padding: .4em 1em 0.4em .4em; text-decoration: none; background: #009fdf;}
+.ui-tabs .ui-tabs-nav li { background: #009fdf; }
 .ui-tabs .ui-tabs-nav li.ui-state-active a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text;  background: none; }
+.ui-tabs .ui-tabs-nav li.ui-state-active, .ui-tabs .ui-tabs-nav li.ui-state-disabled, .ui-tabs .ui-tabs-nav li.ui-state-processing { background: none; }
 
 #globalView {padding-bottom:10px;}
