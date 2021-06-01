@@ -14707,3 +14707,13 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "The duration must be lesser than a year"
 #  msgstr ""
+
+#  msgid "Current"
+#  msgstr ""
+
+#  msgid "Medium"
+#  msgstr ""
+
+
+#  msgid "Small"
+#  msgstr ""

@@ -16140,3 +16140,12 @@ msgstr "Au moins une colonne doit être sélectionnée"
 
 msgid "The duration must be lesser than a year"
 msgstr "La durée doit être inférieure à une année"
+
+#  msgid "Current"
+#  msgstr "Taille courante"
+
+#  msgid "Medium"
+#  msgstr "Taille moyenne"
+
+#  msgid "Small"
+#  msgstr "Taille petite"

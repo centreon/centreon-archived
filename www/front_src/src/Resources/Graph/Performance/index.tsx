@@ -353,12 +353,13 @@ const PerformanceGraph = ({
     });
   };
 
-  const convertToPng = (): void => {
+  const convertToPng = (ratio: number): void => {
+    setMenuAnchor(null);
     setExporting(true);
     exportToPng({
       element: performanceGraphRef.current as HTMLElement,
-      title: `${resource?.name}-performanceo`,
-      // add size props
+      ratio,
+      title: `${resource?.name}-performance`,
     }).finally(() => {
       setExporting(false);
     });
@@ -411,13 +412,13 @@ const PerformanceGraph = ({
                     open={Boolean(menuAnchor)}
                     onClose={closeSizeExportMenu}
                   >
-                    <MenuItem onClick={convertToPng}>
+                    <MenuItem onClick={() => convertToPng(1)}>
                       {t(labelCurrentSizeExport)}
                     </MenuItem>
-                    <MenuItem onClick={convertToPng}>
+                    <MenuItem onClick={() => convertToPng(0.75)}>
                       {t(labelMediumSizeExport)}
                     </MenuItem>
-                    <MenuItem onClick={convertToPng}>
+                    <MenuItem onClick={() => convertToPng(0.5)}>
                       {t(labelSmallSizeExport)}
                     </MenuItem>
                   </Menu>
