@@ -26,9 +26,9 @@ before(() => {
     cy.get('form')
       .submit()
       .then(() => {
-        submitResultApiClapi().then(() => {
-          refreshListing().then(() => resourcesMatching());
-        });
+        submitResultApiClapi().then(() =>
+          refreshListing(5000).then(() => resourcesMatching()),
+        );
       });
   });
 

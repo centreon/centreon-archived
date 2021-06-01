@@ -4,13 +4,13 @@ import { apiActionV1, apiLoginV2, apiFilterResourcesBeta } from './model';
 
 interface Criteria {
   name: string;
-  value: Array<{ id: string; name: string }>;
-  type: string;
   object_type: string | null;
+  type: string;
+  value: Array<{ id: string; name: string }>;
 }
 interface Filter {
-  name: string;
   criterias: Array<Criteria>;
+  name: string;
 }
 
 interface ActionClapi {
@@ -20,15 +20,15 @@ interface ActionClapi {
 }
 
 interface Status {
-  severity_code: number;
   name: string;
+  severity_code: number;
 }
 interface Resource {
-  type: 'host' | 'service';
-  name: string;
-  status: Status;
   acknowledged: boolean;
   in_downtime: boolean;
+  name: string;
+  status: Status;
+  type: 'host' | 'service';
 }
 
 const refreshListing = (timeout = 0): Cypress.Chainable => {
@@ -47,13 +47,13 @@ const resourcesMatching = (): Cypress.Chainable => {
       const [name, description] = line
         .split(';')
         .filter((_, index: number) => index === 2 || index === 3);
-      return { name, description };
+      return { description, name };
     });
     cy.wrap(resources).as('resources');
   });
 
   return cy.get<Array<Resource>>('@resources').then((resources) => {
-    resources.forEach(({ name }) => {
+    return resources.forEach(({ name }) => {
       cy.contains(name).should('exist');
       cy.contains('CRITICAL');
     });
@@ -65,13 +65,13 @@ const actionClapiApi = (
   method?: string,
 ): Cypress.Chainable => {
   return cy.request({
-    method: method || 'POST',
-    url: `${apiActionV1}?action=action&object=centreon_clapi`,
     body: bodyContent,
     headers: {
       'Content-Type': 'application/json',
       'centreon-auth-token': window.localStorage.getItem('userTokenApiV1'),
     },
+    method: method || 'POST',
+    url: `${apiActionV1}?action=action&object=centreon_clapi`,
   });
 };
 
@@ -79,15 +79,15 @@ const setUserTokenApiV1 = (): Cypress.Chainable => {
   return cy.fixture('users/admin.json').then((userAdmin) => {
     return cy
       .request({
-        method: 'POST',
-        url: `${apiActionV1}?action=authenticate`,
         body: {
-          username: userAdmin.login,
           password: userAdmin.password,
+          username: userAdmin.login,
         },
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
+        method: 'POST',
+        url: `${apiActionV1}?action=authenticate`,
       })
       .then(({ body }) =>
         window.localStorage.setItem('userTokenApiV1', body.authToken),
@@ -99,8 +99,6 @@ const setUserTokenApiV2 = (): Cypress.Chainable => {
   return cy.fixture('users/admin.json').then((userAdmin) => {
     return cy
       .request({
-        method: 'POST',
-        url: apiLoginV2,
         body: {
           security: {
             credentials: {
@@ -109,6 +107,8 @@ const setUserTokenApiV2 = (): Cypress.Chainable => {
             },
           },
         },
+        method: 'POST',
+        url: apiLoginV2,
       })
       .then(({ body }) =>
         window.localStorage.setItem('userTokenApiV2', body.security.token),
@@ -119,12 +119,12 @@ const setUserTokenApiV2 = (): Cypress.Chainable => {
 const setUserFilter = (body: Filter): Cypress.Chainable => {
   return cy
     .request({
-      method: 'POST',
-      url: apiFilterResourcesBeta,
+      body,
       headers: {
         'X-Auth-Token': window.localStorage.getItem('userTokenApiV2'),
       },
-      body,
+      method: 'POST',
+      url: apiFilterResourcesBeta,
     })
     .then((response) => {
       expect(response.status).to.eq(200);
@@ -135,13 +135,13 @@ const setUserFilter = (body: Filter): Cypress.Chainable => {
 const deleteUserFilter = (): Cypress.Chainable => {
   return cy
     .request({
+      headers: {
+        'X-Auth-Token': window.localStorage.getItem('userTokenApiV2'),
+      },
       method: 'DELETE',
       url: `${apiFilterResourcesBeta}/${window.localStorage.getItem(
         'filterUserId',
       )}`,
-      headers: {
-        'X-Auth-Token': window.localStorage.getItem('userTokenApiV2'),
-      },
     })
     .then((response) => expect(response.status).to.eq(204));
 };
@@ -159,14 +159,14 @@ const submitResultApiClapi = (): Cypress.Chainable => {
 
       return cy
         .request({
-          method: 'POST',
-          url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
           body: { results: submitResults },
           headers: {
             'Content-Type': 'application/json',
             'centreon-auth-token':
               window.localStorage.getItem('userTokenApiV1'),
           },
+          method: 'POST',
+          url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
         })
         .then((response) => expect(response.status).to.eq(200));
     });

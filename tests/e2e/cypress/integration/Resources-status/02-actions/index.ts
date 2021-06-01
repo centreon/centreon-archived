@@ -14,8 +14,8 @@ Before(() => {
   cy.get(stateFilterContainer).click().get('[data-value="all"]').click();
 
   cy.intercept({
-    url: resourceMonitoringApi,
     method: 'GET',
+    url: resourceMonitoringApi,
   }).as('getResources');
 });
 
