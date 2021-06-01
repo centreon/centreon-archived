@@ -10,14 +10,13 @@ var msgErr = new Array();
 
 jQuery(function(){
     {/literal}{if $o != 'w'}{literal}
+    var removetab = function(tabselector, index) {
+        jQuery(".removetab").click(function(){
+            jQuery(tabselector).tabs('remove',index);
+        });
+    };
 
-    const tabs = jQuery("#tabs_periods").tabs();
-
-    tabs.on( "click", "span.ui-icon-close", function() {
-        var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
-        $( "#" + panelId ).remove();
-        tabs.tabs( "refresh" );
-    });
+    jQuery("#tabs_periods").tabs();
 
     if (jQuery('input[name="dt_id"]')[0].value) {
         jQuery.ajax({
@@ -46,10 +45,8 @@ function addPeriods() {
 
     var href = "#p_"+periods;
     var title = '{/literal}{$period}{literal} ' + periods;
-    var spanStyle = 'style="cursor:pointer;background-color:red;border-radius:inherit;margin:inherit"';
-    var spanClass = 'class="ui-icon ui-icon-close"';
-    jQuery('<li><a href="' + href + '">' + title + '</a> <span ' + spanStyle + ' ' + spanClass + '>Remove Tab</span>')
-        .appendTo(ulTabs);
+
+    jQuery('<li><a href="' + href + '">' + title + '</a>').appendTo(ulTabs);
     jQuery("#tabs_periods").tabs("refresh");
     jQuery("#tabs_periods").tabs("option", "active", (periods - 1));
 

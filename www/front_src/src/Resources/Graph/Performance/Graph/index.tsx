@@ -66,7 +66,6 @@ import TimeShiftZones, {
   TimeShiftDirection,
 } from './TimeShiftZones';
 import { useMetricsValueContext } from './useMetricsValue';
-import AnchorPoints from './AnchorPoints';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -174,8 +173,6 @@ const getScale = ({
     range: [height, upperRangeValue],
   });
 };
-
-const bisectDate = bisector(identity).center;
 
 const GraphContent = ({
   width,
@@ -299,9 +296,11 @@ const GraphContent = ({
     return getScale({ height: graphHeight, stackedValues, values });
   }, [timeSeries, lines, secondUnit, graphHeight]);
 
+  const bisectDate = bisector(identity).left;
+
   const getTimeValue = (x: number): TimeValue => {
     const date = xScale.invert(x - margin.left);
-    const index = bisectDate(getDates(timeSeries), date);
+    const index = bisectDate(getDates(timeSeries), date, 1);
 
     return timeSeries[index];
   };
@@ -447,8 +446,6 @@ const GraphContent = ({
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
   );
 
-  const timeValue = getTimeValue(mousePosition?.[0] || 0);
-
   return (
     <AnnotationsContext.Provider value={annotations}>
       <ClickAwayListener onClickAway={hideAddCommentTooltip}>
@@ -505,15 +502,20 @@ const GraphContent = ({
                 x={zoomBoundaries?.start || 0}
                 y={0}
               />
+              <MemoizedBar
+                className={classes.overlay}
+                fill="transparent"
+                height={graphHeight}
+                width={graphWidth}
+                x={0}
+                y={0}
+                onMouseDown={displayZoomPreview}
+                onMouseLeave={closeTooltip}
+                onMouseMove={displayTooltip}
+                onMouseUp={displayAddCommentTooltip}
+              />
               {containsMetrics && (
                 <>
-                  <AnchorPoints
-                    leftScale={leftScale}
-                    lines={lines}
-                    rightScale={rightScale}
-                    timeValue={timeValue}
-                    xScale={xScale}
-                  />
                   <Line
                     from={{ x: mousePositionX, y: 0 }}
                     pointerEvents="none"
@@ -530,18 +532,6 @@ const GraphContent = ({
                   />
                 </>
               )}
-              <MemoizedBar
-                className={classes.overlay}
-                fill="transparent"
-                height={graphHeight}
-                width={graphWidth}
-                x={0}
-                y={0}
-                onMouseDown={displayZoomPreview}
-                onMouseLeave={closeTooltip}
-                onMouseMove={displayTooltip}
-                onMouseUp={displayAddCommentTooltip}
-              />
             </Group>
             <TimeShiftContext.Provider
               value={{

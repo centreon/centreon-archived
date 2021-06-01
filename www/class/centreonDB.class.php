@@ -48,8 +48,6 @@ require_once __DIR__ . '/centreonLog.class.php';
  */
 class CentreonDB extends \PDO
 {
-    public const LABEL_DB_CONFIGURATION = 'centreon';
-    public const LABEL_DB_REALTIME = 'centstorage';
     private static $instance = [];
     protected $db_type = "mysql";
     protected $db_port = "3306";
@@ -79,14 +77,14 @@ class CentreonDB extends \PDO
     /**
      * Constructor
      *
-     * @param string $db | centreon, centstorage
+     * @param string $db | centreon, centstorage, or ndo
      * @param int $retry
      * @param bool $silent | when silent is set to false, it will display an HTML error msg,
      *                       otherwise it will throw an Exception
      *
      * @throws Exception
      */
-    public function __construct($db = self::LABEL_DB_CONFIGURATION, $retry = 3, $silent = false)
+    public function __construct($db = "centreon", $retry = 3, $silent = false)
     {
         try {
             $conf_centreon['hostCentreon'] = hostCentreon;
@@ -135,11 +133,12 @@ class CentreonDB extends \PDO
             ];
 
             switch (strtolower($db)) {
-                case self::LABEL_DB_REALTIME:
+                case "centstorage":
                     $this->dsn['hostspec'] = $conf_centreon["hostCentstorage"];
                     $this->dsn['database'] = $conf_centreon["dbcstg"];
                     break;
-                default:
+                case "centreon":
+                case "default":
                     $this->dsn['hostspec'] = $conf_centreon["hostCentreon"];
                     $this->dsn['database'] = $conf_centreon["db"];
                     break;
@@ -318,9 +317,9 @@ class CentreonDB extends \PDO
      * @return CentreonDB
      * @throws Exception
      */
-    public static function factory($name = self::LABEL_DB_CONFIGURATION)
+    public static function factory($name = "centreon")
     {
-        if (!in_array($name, [self::LABEL_DB_CONFIGURATION, self::LABEL_DB_REALTIME])) {
+        if (!in_array($name, ['centreon', 'centstorage', 'ndo'])) {
             throw new Exception("The datasource isn't defined in configuration file.");
         }
         if (!isset(self::$instance[$name])) {
