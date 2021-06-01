@@ -35,7 +35,9 @@ When('I put in some criterias', () => {
   cy.get(searchInput).type(searchValue);
   cy.contains('Search').should('exist').click();
 
-  cy.get('[aria-label="Resource"]')
+  cy.get('#fullscreen-wrapper')
+    .contains(/^Resource$/)
+    .should('exist')
     .click()
     .then(() =>
       cy
