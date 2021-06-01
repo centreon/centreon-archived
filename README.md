@@ -6,6 +6,8 @@
 
 ![Centreon ScreenShot](centreon-github-wall.jpg?raw=true "Title")
 
+[![Quality Gate Status](https://sonar-dev.int.centreon.com/api/project_badges/measure?project=centreon-web&metric=alert_status)](https://sonar-dev.int.centreon.com/dashboard?id=centreon-web)
+
 <h2> Introduction </h2>
 
 Centreon is one of the most flexible and powerful monitoring softwares
