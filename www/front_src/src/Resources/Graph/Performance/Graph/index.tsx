@@ -448,7 +448,7 @@ const GraphContent = ({
 
   const timeTick =
     containsMetrics && mousePosition
-      ? xScale.invert(mousePosition[0] - margin.left)
+      ? new Date(getTimeValue(mousePosition[0]).timeTick)
       : null;
 
   return (
