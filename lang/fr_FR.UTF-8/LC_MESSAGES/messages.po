@@ -15303,8 +15303,8 @@ msgstr "La date de fin doit être supérieure à la date de début"
 msgid "End time"
 msgstr "Heure de fin"
 
-msgid "Is this resource flapping?"
-msgstr "Cette ressource est-elle bagottante?"
+msgid "This Resource is flapping"
+msgstr "Cette Ressource est bagottante"
 
 msgid "Show criterias filters"
 msgstr "Montrer les critères de filtre"
@@ -15682,7 +15682,7 @@ msgid "Missing mandatory platform name"
 msgstr "Nom de la plateforme manquant"
 
 #: api/platform/topology
-msgid "Same address and parent_address for platform : '%s'@'%s'."
+msgid "Same address and parent_address for platform : '%s'@'%s'"
 msgstr "Les adresses de la plateforme : '%s'@'%s' et de son parent sont les mêmes"
 
 #: api/platform/topology
@@ -15698,8 +15698,8 @@ msgid "At least one non RFC compliant character was found in platform's hostname
 msgstr "Au moins un caractère ne respecte pas la norme RFC dans le nom de domaine de la plateforme: '%s'"
 
 #: api/platform/topology
-msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."
-msgstr "Données indispensables manquantes pour la plateforme : '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form"
+msgstr "Données indispensables manquantes pour la plateforme : '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/platform/topology
 msgid "Central platform's data are not consistent. Please check the 'Remote Access' form"
@@ -15718,28 +15718,28 @@ msgid "Error when searching monitoring server name"
 msgstr "Erreur lors de la recherche du nom du serveur de supervision"
 
 #: api/platform/topology
-msgid "The platform: '%s'@'%s' is not declared as a 'remote'."
-msgstr "La plateforme: '%s'@'%s' n'est pas déclarée comme un 'remote'."
+msgid "The platform: '%s'@'%s' is not declared as a 'remote'"
+msgstr "La plateforme: '%s'@'%s' n'est pas déclarée comme un 'remote'"
 
 #: api/platform/topology
-msgid "The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."
-msgstr "La plateforme: '%s'@'%s n'est pas liée à un Central. Veuillez d'abord utiliser l'assistant."
+msgid "The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first"
+msgstr "La plateforme: '%s'@'%s n'est pas liée à un Central. Veuillez d'abord utiliser l'assistant"
 
 #: api/platform/topology
-msgid "Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."
-msgstr "Le port du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgid "Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form"
+msgstr "Le port du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/platform/topology
-msgid "Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."
-msgstr "Le schéma du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgid "Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form"
+msgstr "Le schéma du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/platform/topology
 msgid "Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."
 msgstr "Le chemin vers le Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/platform/topology
-msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."
-msgstr "Les identifiants du Central sont manquants pour: '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form"
+msgstr "Les identifiants du Central sont manquants pour: '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/platform/topology
 msgid "Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form"
@@ -15815,6 +15815,10 @@ msgstr "Une erreur est survenue lors de la mise à jour de la plateforme"
 #: api/platform/topology
 msgid "platform not found"
 msgstr "plateforme non trouvée"
+
+#: api/platform/topology
+msgid "The platform '%s'@'%s' cannot be found on the Central"
+msgstr "La plateforme '%s'@'%s' n'a pas été trouvée sur le Central"
 
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
@@ -16137,3 +16141,6 @@ msgstr "Type de calcul"
 
 msgid "At least one column must be selected"
 msgstr "Au moins une colonne doit être sélectionnée"
+
+msgid "The duration must be lesser than a year"
+msgstr "La durée doit être inférieure à une année"

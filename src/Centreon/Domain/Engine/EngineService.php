@@ -343,7 +343,7 @@ class EngineService extends AbstractCentreonService implements
             throw new EngineException(_('Downtime internal id can not be null'));
         }
 
-        $suffix = ($downtime->getServiceId() === null) ? 'HOST' : 'SVC';
+        $suffix = (empty($downtime->getServiceId())) ? 'HOST' : 'SVC';
         $preCommand = sprintf('DEL_%s_DOWNTIME;%d', $suffix, $downtime->getInternalId());
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
         $commandFull = $this->createCommandHeader($host->getPollerId()) . $commandToSend;

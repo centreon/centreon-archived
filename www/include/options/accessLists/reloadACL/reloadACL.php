@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,12 +38,10 @@ if (!isset($centreon)) {
     exit();
 }
 
-$path = "./include/options/accessLists/reloadACL/";
-
 require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
 
-if (isset($_GET["o"]) && $_GET["o"] == "r") {
+if (isset($_GET["o"]) && $_GET["o"] === 'r') {
     $sid = session_id();
     $pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '" . $pearDB->escape($sid) . "'");
     $pearDB->query("UPDATE acl_resources SET changed = '1'");
@@ -51,9 +50,11 @@ if (isset($_GET["o"]) && $_GET["o"] == "r") {
     $msg->setText(_("ACL reloaded"));
     $msg->setTimeOut("3");
     passthru(_CENTREON_PATH_ . "/cron/centAcl.php");
-} elseif (isset($_POST["o"]) && $_POST["o"] == "u") {
-    isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = null;
-    isset($_POST["select"]) ? $sel = $_POST["select"] : $sel;
+} elseif (isset($_POST["o"]) && $_POST["o"] === 'u') {
+    $sel = filter_var_array(
+        $_GET["select"] ?? $_POST["select"] ?? [],
+        FILTER_VALIDATE_INT
+    );
 
     $pearDB->beginTransaction();
     try {
@@ -89,7 +90,7 @@ if (isset($_GET["o"]) && $_GET["o"] == "r") {
 
 # Smarty template Init
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 $res = $pearDB->query("SELECT DISTINCT * FROM session");
 $session_data = array();

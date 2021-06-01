@@ -15,8 +15,12 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import IconCopyFile from '@material-ui/icons/FileCopy';
 
-import { useSnackbar, Severity, useLocaleDateTimeFormat } from '@centreon/ui';
-import copyToClipBoard from '@centreon/ui/src/utils/copy';
+import {
+  useSnackbar,
+  Severity,
+  useLocaleDateTimeFormat,
+  copyToClipboard,
+} from '@centreon/ui';
 
 import {
   labelCopy,
@@ -40,6 +44,7 @@ import ExpandableCard from './ExpandableCard';
 import StateCard from './StateCard';
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
+import CommandWithArguments from './CommandLine';
 
 const useStyles = makeStyles((theme) => ({
   details: {
@@ -86,7 +91,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
 
   const copyCommandLine = (): void => {
     try {
-      copyToClipBoard(details.command_line as string);
+      copyToClipboard(details.command_line as string);
 
       showMessage({
         message: t(labelCommandCopied),
@@ -180,7 +185,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
                   </Grid>
                 </Grid>
               </Typography>
-              <Typography variant="body2">{details.command_line}</Typography>
+              <CommandWithArguments commandLine={details.command_line} />
             </Card>
           )}
         </div>

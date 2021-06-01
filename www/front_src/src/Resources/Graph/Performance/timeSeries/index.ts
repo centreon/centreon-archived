@@ -1,3 +1,5 @@
+import { scaleLinear } from '@visx/visx';
+import { ScaleLinear } from 'd3-scale';
 import {
   map,
   pipe,
@@ -271,6 +273,35 @@ const getTimeSeriesForLines = ({
   );
 };
 
+interface GetYScaleProps {
+  hasMoreThanTwoUnits: boolean;
+  invert: string | null;
+  leftScale: ScaleLinear<number, number>;
+  rightScale: ScaleLinear<number, number>;
+  secondUnit: string;
+  unit: string;
+}
+
+const getYScale = ({
+  hasMoreThanTwoUnits,
+  unit,
+  secondUnit,
+  leftScale,
+  rightScale,
+  invert,
+}: GetYScaleProps): ScaleLinear<number, number> => {
+  const isLeftScale = hasMoreThanTwoUnits || unit !== secondUnit;
+  const scale = isLeftScale ? leftScale : rightScale;
+
+  return invert
+    ? scaleLinear<number>({
+        domain: scale.domain().reverse(),
+        nice: true,
+        range: scale.range().reverse(),
+      })
+    : scale;
+};
+
 export {
   getTimeSeries,
   getLineData,
@@ -290,4 +321,5 @@ export {
   getInvertedStackedLines,
   getNotInvertedStackedLines,
   hasUnitStackedLines,
+  getYScale,
 };
