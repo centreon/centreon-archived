@@ -7,7 +7,9 @@ import { ScaleLinear, ScaleTime } from 'd3-scale';
 import { Line, TimeValue } from '../models';
 import { getTime } from '../timeSeries';
 
-import StackedAnchorPoint, { StackValue } from './StackedAnchorPoint';
+import StackedAnchorPoint, {
+  StackValue,
+} from './AnchorPoint/StackedAnchorPoint';
 
 import { getFillColor } from '.';
 

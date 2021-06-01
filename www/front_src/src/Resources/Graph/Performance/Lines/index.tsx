@@ -19,7 +19,7 @@ import {
 } from '../timeSeries';
 
 import RegularLine from './RegularLine';
-import AnchorPoint from './AnchorPoint';
+import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
 import StackedLines from './StackedLines';
 
 interface Props {
@@ -139,7 +139,7 @@ const Lines = ({
 
             return (
               <React.Fragment key={metric}>
-                <AnchorPoint
+                <RegularAnchorPoint
                   areaColor={areaColor}
                   lineColor={lineColor}
                   metric={metric}

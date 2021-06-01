@@ -3,9 +3,11 @@ import * as React from 'react';
 import { equals, isNil, prop } from 'ramda';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
-import { bisectDate } from '../Graph';
-import { getDates } from '../timeSeries';
-import { TimeValue } from '../models';
+import { bisectDate } from '../../Graph';
+import { getDates } from '../../timeSeries';
+import { TimeValue } from '../../models';
+
+import AnchorPoint from '.';
 
 interface Props {
   areaColor: string;
@@ -29,7 +31,7 @@ const getYAnchorPoint = ({
   return yScale(prop(metric, timeValue) as number);
 };
 
-const AnchorPoint = ({
+const RegularAnchorPoint = ({
   xScale,
   yScale,
   metric,
@@ -52,19 +54,18 @@ const AnchorPoint = ({
   });
 
   return (
-    <circle
-      cx={xAnchorPoint}
-      cy={yAnchorPoint}
-      fill={areaColor}
-      fillOpacity={1 - transparency * 0.01}
-      r={3}
-      stroke={lineColor}
+    <AnchorPoint
+      areaColor={areaColor}
+      lineColor={lineColor}
+      transparency={transparency}
+      x={xAnchorPoint}
+      y={yAnchorPoint}
     />
   );
 };
 
 export default React.memo(
-  AnchorPoint,
+  RegularAnchorPoint,
   (prevProps, nextProps) =>
     equals(prevProps.timeTick, nextProps.timeTick) &&
     equals(prevProps.timeSeries, nextProps.timeSeries),

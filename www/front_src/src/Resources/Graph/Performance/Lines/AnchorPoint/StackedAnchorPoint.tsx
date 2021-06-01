@@ -3,8 +3,10 @@ import * as React from 'react';
 import { equals, isNil, map, pipe } from 'ramda';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
-import { bisectDate } from '../Graph';
-import { TimeValue } from '../models';
+import { bisectDate } from '../../Graph';
+import { TimeValue } from '../../models';
+
+import AnchorPoint from '.';
 
 interface StackData {
   data: TimeValue;
@@ -60,13 +62,12 @@ const StackedAnchorPoint = ({
   });
 
   return (
-    <circle
-      cx={xAnchorPoint}
-      cy={yAnchorPoint}
-      fill={areaColor}
-      fillOpacity={1 - transparency * 0.01}
-      r={3}
-      stroke={lineColor}
+    <AnchorPoint
+      areaColor={areaColor}
+      lineColor={lineColor}
+      transparency={transparency}
+      x={xAnchorPoint}
+      y={yAnchorPoint}
     />
   );
 };
