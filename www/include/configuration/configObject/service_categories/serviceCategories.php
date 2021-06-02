@@ -81,7 +81,7 @@ switch ($o) {
         require_once($path . "listServiceCategories.php");
         break;
     case "ms":
-        enableServiceCategorieInDB(null, isset($select) ? $select : []);
+        enableServiceCategorieInDB(null, is_array($select) ? $select : []);
         require_once($path . "listServiceCategories.php");
         break;
     case "u": # Desactivate a service category
@@ -89,15 +89,18 @@ switch ($o) {
         require_once($path . "listServiceCategories.php");
         break;
     case "mu":
-        disableServiceCategorieInDB(null, isset($select) ? $select : []);
+        disableServiceCategorieInDB(null, is_array($select) ? $select : []);
         require_once($path . "listServiceCategories.php");
         break;
     case "m": # Duplicate n service categories
-        multipleServiceCategorieInDB(isset($select) ? $select : [], $dupNbr);
+        multipleServiceCategorieInDB(
+            is_array($select) ? $select : [],
+            is_array($dupNbr) ? $dupNbr : []
+        );
         require_once($path . "listServiceCategories.php");
         break;
     case "d": # Delete n service categories
-        deleteServiceCategorieInDB(isset($select) ? $select : []);
+        deleteServiceCategorieInDB(is_array($select) ? $select : []);
         require_once($path . "listServiceCategories.php");
         break;
     default:
