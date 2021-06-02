@@ -79,11 +79,14 @@ switch ($o) {
         require_once($path . "formServiceDependency.php");
         break;
     case "m": # Duplicate n Dependencies
-        multipleServiceDependencyInDB(isset($select) ? $select : array(), $dupNbr);
+        multipleServiceDependencyInDB(
+            is_array($select) ? $select : array(),
+            is_array($dupNbr) ? $dupNbr : array()
+        );
         require_once($path . "listServiceDependency.php");
         break;
     case "d": # Delete n Dependencies
-        deleteServiceDependencyInDB(isset($select) ? $select : array());
+        deleteServiceDependencyInDB(is_array($select) ? $select : array());
         require_once($path . "listServiceDependency.php");
         break;
     default:
