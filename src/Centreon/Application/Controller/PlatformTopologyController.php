@@ -152,7 +152,7 @@ class PlatformTopologyController extends AbstractController
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         // Check Topology access to Configuration > Pollers page
-        $user= $this->getUser();
+        $user = $this->getUser();
         if (
             !$user->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ)
             && !$user->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE)
