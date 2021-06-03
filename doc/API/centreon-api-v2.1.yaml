@@ -3638,42 +3638,6 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
-    Comment.Resources:
-      type: object
-      required: [ resources ]
-      properties:
-        resources:
-          type: array
-          items:
-            type: object
-            required: [ comment,id ]
-            properties:
-              type:
-                type: string
-                enum: [ host, service ]
-                description: "Type of resource"
-                example: "service"
-              id:
-                type: integer
-                description: "Resource ID"
-                example: 10
-              parent:
-                type: object
-                nullable: true
-                properties:
-                  id:
-                    type: integer
-                    description: "Parent resource ID"
-                    example: 17
-              date:
-                type: string
-                format: date-time
-                nullable: true
-                description: "Date of the comment (ISO8601)"
-              comment:
-                type: string
-                description: "Comment to add to the monitored resource"
-                example: "Resource is not-OK but it is expected"
     Configuration.Host.Category:
       type: object
       properties:
