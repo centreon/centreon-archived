@@ -1,10 +1,11 @@
 import { ListingModel } from '@centreon/ui';
 
-export type ResourceType =
-  | 'host'
-  | 'service'
-  | 'metaservice'
-  | 'business-activity';
+export enum ResourceType {
+  businessActivity = 'business-activity',
+  host = 'host',
+  metaservice = 'metaservice',
+  service = 'service',
+}
 
 export type ResourceShortType = 'h' | 's' | 'm' | 'a';
 
