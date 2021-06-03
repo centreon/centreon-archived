@@ -22,6 +22,7 @@ import {
   labelStatus,
   labelMonitoringServer,
   labelMetaService,
+  labelBusinessActivity,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -48,6 +49,7 @@ const criteriaValueNameById = {
   UP: labelUp,
   WARNING: labelWarning,
   acknowledged: labelAcknowledged,
+  'business-activity': labelBusinessActivity,
   host: labelHost,
   in_downtime: labelInDowntime,
   metaservice: labelMetaService,
@@ -92,11 +94,17 @@ const metaServiceResourceType = {
   id: metaServiceResourceTypeId,
   name: criteriaValueNameById[metaServiceResourceTypeId],
 };
+const businessActivityResourceTypeId = 'business-activity';
+const businessActivityResourceType = {
+  id: businessActivityResourceTypeId,
+  name: criteriaValueNameById[businessActivityResourceTypeId],
+};
 
 const selectableResourceTypes = [
   hostResourceType,
   serviceResourceType,
   metaServiceResourceType,
+  businessActivityResourceType,
 ];
 
 const okStatusId = 'OK';
