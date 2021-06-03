@@ -7,7 +7,7 @@ export enum ResourceType {
   service = 'service',
 }
 
-export type ResourceShortType = 'h' | 's' | 'm' | 'a';
+export type ResourceShortType = 'h' | 's' | 'm' | 'ba';
 
 export interface NamedEntity {
   id: number;
