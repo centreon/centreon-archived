@@ -25,7 +25,7 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
         {/* display loader until tasks are finished or error is displayed */}
         <p className={styles['form-text']}>
           {t('Creating Export Task')}
-          <ContentWithCircularLoading loading={loading} alignCenter>
+          <ContentWithCircularLoading alignCenter loading={loading}>
             <>
               <span
                 className={classnames(
@@ -44,7 +44,7 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
         </p>
         <p className={styles['form-text']}>
           {t('Generating Export Files')}
-          <ContentWithCircularLoading loading={loading} alignCenter>
+          <ContentWithCircularLoading alignCenter loading={loading}>
             <>
               <span
                 className={classnames(

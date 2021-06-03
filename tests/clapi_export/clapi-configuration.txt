@@ -45,9 +45,7 @@ ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Service Templat
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Export configuration;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Pollers;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Engine configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;Wizard;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;WizardAjax;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Resources;
@@ -428,13 +426,6 @@ CENTBROKERCFG;SETINPUT;central-broker-master;0;protocol;bbdo
 CENTBROKERCFG;SETINPUT;central-broker-master;0;tls;no
 CENTBROKERCFG;SETINPUT;central-broker-master;0;one_peer_retention_mode;no
 CENTBROKERCFG;SETINPUT;central-broker-master;0;compression;no
-CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker/central-broker-master.log;file
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;type;file
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;config;yes
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;debug;no
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;error;yes
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;info;no
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;level;low
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;central-broker-master-sql;sql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;type;sql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_type;mysql
@@ -445,6 +436,13 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_password;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_name;centreon_storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;buffering_timeout;0
+CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker/central-broker-master.log;file
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;type;file
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;config;yes
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;debug;no
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;error;yes
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;info;no
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;level;low
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;centreon-broker-master-rrd;ipv4
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;type;ipv4
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;one_peer_retention_mode;no
@@ -477,13 +475,6 @@ CENTBROKERCFG;SETPARAM;central-module-master;cache_directory;/var/lib/centreon-e
 CENTBROKERCFG;SETPARAM;central-module-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-module-master;daemon;0
 CENTBROKERCFG;SETPARAM;central-module-master;pool_size;
-CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
-CENTBROKERCFG;SETLOGGER;central-module-master;0;type;file
-CENTBROKERCFG;SETLOGGER;central-module-master;0;config;yes
-CENTBROKERCFG;SETLOGGER;central-module-master;0;debug;no
-CENTBROKERCFG;SETLOGGER;central-module-master;0;error;yes
-CENTBROKERCFG;SETLOGGER;central-module-master;0;info;no
-CENTBROKERCFG;SETLOGGER;central-module-master;0;level;low
 CENTBROKERCFG;ADDOUTPUT;central-module-master;central-module-master-output;ipv4
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;type;ipv4
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;negotiation;yes
@@ -495,6 +486,13 @@ CENTBROKERCFG;SETOUTPUT;central-module-master;0;buffering_timeout;0
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;protocol;bbdo
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;tls;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;compression;no
+CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
+CENTBROKERCFG;SETLOGGER;central-module-master;0;type;file
+CENTBROKERCFG;SETLOGGER;central-module-master;0;config;yes
+CENTBROKERCFG;SETLOGGER;central-module-master;0;debug;no
+CENTBROKERCFG;SETLOGGER;central-module-master;0;error;yes
+CENTBROKERCFG;SETLOGGER;central-module-master;0;info;no
+CENTBROKERCFG;SETLOGGER;central-module-master;0;level;low
 CENTBROKERCFG;ADD;central-rrd-master;Central
 CENTBROKERCFG;SETPARAM;central-rrd-master;filename;central-rrd.json
 CENTBROKERCFG;SETPARAM;central-rrd-master;cache_directory;/var/lib/centreon-broker
@@ -511,13 +509,6 @@ CENTBROKERCFG;SETINPUT;central-rrd-master;0;retry_interval;60
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;protocol;bbdo
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;tls;auto
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;compression;auto
-CENTBROKERCFG;ADDLOGGER;central-rrd-master;/var/log/centreon-broker/central-rrd-master.log;file
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;type;file
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;config;yes
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;debug;no
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;error;yes
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;info;no
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;level;low
 CENTBROKERCFG;ADDOUTPUT;central-rrd-master;central-rrd-master-output;rrd
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;type;rrd
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;metrics_path;/var/lib/centreon/metrics
@@ -560,13 +551,14 @@ ENGINECFG;setparam;Centreon Engine Central;log_external_commands;1
 ENGINECFG;setparam;Centreon Engine Central;log_passive_checks;2
 ENGINECFG;setparam;Centreon Engine Central;sleep_time;0.2
 ENGINECFG;setparam;Centreon Engine Central;service_inter_check_delay_method;s
+ENGINECFG;setparam;Centreon Engine Central;host_inter_check_delay_method;s
 ENGINECFG;setparam;Centreon Engine Central;service_interleave_factor;s
 ENGINECFG;setparam;Centreon Engine Central;max_concurrent_checks;400
 ENGINECFG;setparam;Centreon Engine Central;max_service_check_spread;5
+ENGINECFG;setparam;Centreon Engine Central;max_host_check_spread;15
 ENGINECFG;setparam;Centreon Engine Central;check_result_reaper_frequency;5
 ENGINECFG;setparam;Centreon Engine Central;interval_length;60
 ENGINECFG;setparam;Centreon Engine Central;auto_reschedule_checks;2
-ENGINECFG;setparam;Centreon Engine Central;use_aggressive_host_checking;1
 ENGINECFG;setparam;Centreon Engine Central;enable_flap_detection;0
 ENGINECFG;setparam;Centreon Engine Central;low_service_flap_threshold;25.0
 ENGINECFG;setparam;Centreon Engine Central;high_service_flap_threshold;50.0

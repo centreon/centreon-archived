@@ -10,9 +10,9 @@ let cachedFilterExpanded;
 
 const getStoredOrDefaultFilter = (defaultValue: Filter): Filter => {
   return getStoredOrDefault<Filter>({
+    cachedItem: cachedFilter,
     defaultValue,
     key: filterKey,
-    cachedItem: cachedFilter,
     onCachedItemUpdate: (updatedItem) => {
       cachedFilter = updatedItem;
     },
@@ -20,7 +20,7 @@ const getStoredOrDefaultFilter = (defaultValue: Filter): Filter => {
 };
 
 const storeFilter = (filter: Filter): void => {
-  store<Filter>({ value: filter, key: filterKey });
+  store<Filter>({ key: filterKey, value: filter });
 };
 
 const clearCachedFilter = (): void => {
@@ -29,9 +29,9 @@ const clearCachedFilter = (): void => {
 
 const getStoredOrDefaultFilterExpanded = (defaultValue: boolean): boolean => {
   return getStoredOrDefault<boolean>({
+    cachedItem: cachedFilterExpanded,
     defaultValue,
     key: filterExpandedKey,
-    cachedItem: cachedFilterExpanded,
     onCachedItemUpdate: (updatedItem) => {
       cachedFilterExpanded = updatedItem;
     },
@@ -39,7 +39,7 @@ const getStoredOrDefaultFilterExpanded = (defaultValue: boolean): boolean => {
 };
 
 const storeFilterExpanded = (filterExpanded: boolean): void => {
-  store<boolean>({ value: filterExpanded, key: filterExpandedKey });
+  store<boolean>({ key: filterExpandedKey, value: filterExpanded });
 };
 
 const clearCachedFilterExpanded = (): void => {

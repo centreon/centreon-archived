@@ -21,9 +21,9 @@ const LoadableHooks = ({
   ...rest
 }: Props): JSX.Element => {
   const basename = history.createHref({
+    hash: '',
     pathname: '/',
     search: '',
-    hash: '',
   });
 
   return (
@@ -36,7 +36,7 @@ const LoadableHooks = ({
           );
 
           return (
-            <React.Suspense key={path} fallback={<MenuLoader width={29} />}>
+            <React.Suspense fallback={<MenuLoader width={29} />} key={path}>
               <HookComponent centreonAxios={centreonAxios} {...rest} />
             </React.Suspense>
           );

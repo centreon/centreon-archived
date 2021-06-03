@@ -54,24 +54,24 @@ type CustomFiltersDispatch = React.Dispatch<
 
 export interface FilterState {
   customFilters: Array<Filter>;
-  filters: Array<Filter>;
-  filter: Filter;
-  updatedFilter: Filter;
-  filterExpanded: boolean;
-  toggleFilterExpanded: () => void;
-  setFilter: (filter: Filter) => void;
-  setNewFilter: () => void;
-  setCriteria: ({ name, value }: { name: string; value }) => void;
-  setCriteriaAndNewFilter: ({ name, value }: { name: string; value }) => void;
-  nextSearch?: string;
-  setNextSearch: SearchDispatch;
-  getCriteriaValue: (name: string) => CriteriaValue | undefined;
-  loadCustomFilters: () => Promise<Array<Filter>>;
-  setCustomFilters: CustomFiltersDispatch;
   customFiltersLoading: boolean;
   editPanelOpen: boolean;
-  setEditPanelOpen: EditPanelOpenDitpach;
+  filter: Filter;
+  filterExpanded: boolean;
+  filters: Array<Filter>;
+  getCriteriaValue: (name: string) => CriteriaValue | undefined;
   getMultiSelectCriterias: () => Array<Criteria>;
+  loadCustomFilters: () => Promise<Array<Filter>>;
+  nextSearch?: string;
+  setCriteria: ({ name, value }: { name: string; value }) => void;
+  setCriteriaAndNewFilter: ({ name, value }: { name: string; value }) => void;
+  setCustomFilters: CustomFiltersDispatch;
+  setEditPanelOpen: EditPanelOpenDitpach;
+  setFilter: (filter: Filter) => void;
+  setNewFilter: () => void;
+  setNextSearch: SearchDispatch;
+  toggleFilterExpanded: () => void;
+  updatedFilter: Filter;
 }
 
 const useFilter = (): FilterState => {
@@ -80,8 +80,8 @@ const useFilter = (): FilterState => {
     sendRequest: sendListCustomFiltersRequest,
     sending: customFiltersLoading,
   } = useRequest({
-    request: listCustomFilters,
     decoder: listCustomFiltersDecoder,
+    request: listCustomFilters,
   });
 
   const getDefaultCriterias = (): Array<Criteria> =>
@@ -132,9 +132,11 @@ const useFilter = (): FilterState => {
   };
 
   const setCriteriaAndNewFilter = ({ name, value }): void => {
+    const isCustomFilter = isCustom(filter);
+
     setFilter({
       ...getFilterWithUpdatedCriteria({ name, value }),
-      ...newFilter,
+      ...(!isCustomFilter && newFilter),
     });
   };
 
@@ -204,7 +206,7 @@ const useFilter = (): FilterState => {
       return;
     }
 
-    setFilter({ id: '', name: t(labelNewFilter), criterias: filter.criterias });
+    setFilter({ criterias: filter.criterias, id: '', name: t(labelNewFilter) });
   };
 
   const getCriteriaValue = (name: string): CriteriaValue | undefined => {
@@ -238,25 +240,25 @@ const useFilter = (): FilterState => {
   };
 
   return {
-    filter,
-    filters,
-    setFilter,
-    setCriteria,
-    setCriteriaAndNewFilter,
-    updatedFilter,
     customFilters,
-    nextSearch,
-    setNextSearch,
-    loadCustomFilters,
-    setCustomFilters,
     customFiltersLoading,
     editPanelOpen,
-    setEditPanelOpen,
-    setNewFilter,
+    filter,
+    filterExpanded,
+    filters,
     getCriteriaValue,
     getMultiSelectCriterias,
-    filterExpanded,
+    loadCustomFilters,
+    nextSearch,
+    setCriteria,
+    setCriteriaAndNewFilter,
+    setCustomFilters,
+    setEditPanelOpen,
+    setFilter,
+    setNewFilter,
+    setNextSearch,
     toggleFilterExpanded,
+    updatedFilter,
   };
 };
 

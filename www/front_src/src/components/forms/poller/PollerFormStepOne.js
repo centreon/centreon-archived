@@ -17,8 +17,8 @@ import { validateFieldRequired } from '../../../helpers/validators';
 
 class PollerFormStepOne extends Component {
   state = {
-    inputTypeManual: true,
     initialized: false,
+    inputTypeManual: true,
   };
 
   onManualInputChanged(inputTypeManual) {
@@ -66,62 +66,61 @@ class PollerFormStepOne extends Component {
           </div>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             <Field
+              checked={inputTypeManual}
+              component={RadioField}
+              label={t('Create new Poller')}
               name="inputTypeManual"
               onChange={() => {
                 this.onManualInputChanged(true);
               }}
-              checked={inputTypeManual}
-              component={RadioField}
-              label={t('Create new Poller')}
             />
             {inputTypeManual ? (
               <div>
                 <Field
-                  name="server_name"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${t('Server Name')}:`}
+                  name="server_name"
+                  placeholder=""
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
                 <Field
-                  name="server_ip"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${t('Server IP address')}:`}
+                  name="server_ip"
+                  placeholder=""
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
                 <Field
-                  name="centreon_central_ip"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${t(
                     'Centreon Central IP address, as seen by this server',
                   )}:`}
+                  name="centreon_central_ip"
+                  placeholder=""
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
               </div>
             ) : null}
             <Field
+              checked={!inputTypeManual}
+              component={RadioField}
+              label={`${t('Select a Poller')}:`}
               name="inputTypeManual"
               onClick={() => {
                 this.onManualInputChanged(false);
               }}
-              checked={!inputTypeManual}
-              component={RadioField}
-              label={`${t('Select a Poller')}:`}
             />
             {!inputTypeManual ? (
               <div>
                 {waitList ? (
                   <Field
-                    name="server_ip"
-                    onChange={this.handleChange}
+                    required
                     component={SelectField}
                     label={`${t('Select Pending Poller IP')}:`}
-                    required
+                    name="server_ip"
                     options={[
                       {
                         disabled: true,
@@ -130,34 +129,35 @@ class PollerFormStepOne extends Component {
                         value: '',
                       },
                     ].concat(
-                      waitList.map((c) => ({ value: c.ip, text: c.ip })),
+                      waitList.map((c) => ({ text: c.ip, value: c.ip })),
                     )}
+                    onChange={this.handleChange}
                   />
                 ) : null}
                 <Field
-                  name="server_name"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${t('Server Name')}:`}
+                  name="server_name"
+                  placeholder=""
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
                 <Field
-                  name="server_ip"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${t('Server IP address')}:`}
+                  name="server_ip"
+                  placeholder=""
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
                 <Field
-                  name="centreon_central_ip"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${t(
                     'Centreon Central IP address, as seen by this server',
                   )}:`}
+                  name="centreon_central_ip"
+                  placeholder=""
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
               </div>
@@ -179,9 +179,9 @@ class PollerFormStepOne extends Component {
 
 export default withTranslation()(
   connectForm({
-    form: 'PollerFormStepOne',
-    enableReinitialize: true,
     destroyOnUnmount: false,
+    enableReinitialize: true,
+    form: 'PollerFormStepOne',
     keepDirtyOnReinitialize: true,
   })(PollerFormStepOne),
 );

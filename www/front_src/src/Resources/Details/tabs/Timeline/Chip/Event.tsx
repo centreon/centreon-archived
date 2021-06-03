@@ -8,7 +8,7 @@ import Chip from '../../../../Chip';
 const EventChip = (): JSX.Element => {
   const theme = useTheme();
 
-  return <Chip icon={<IconEvent />} color={theme.palette.primary.main} />;
+  return <Chip color={theme.palette.primary.main} icon={<IconEvent />} />;
 };
 
 export default EventChip;

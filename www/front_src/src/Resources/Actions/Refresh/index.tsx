@@ -34,9 +34,9 @@ const AutorefreshButton = ({
   return (
     <IconButton
       ariaLabel={t(label)}
+      size="small"
       title={t(label)}
       onClick={toggleAutorefresh}
-      size="small"
     >
       {enabledAutorefresh ? <IconPause /> : <IconPlay />}
     </IconButton>
@@ -71,11 +71,11 @@ const RefreshActionsContent = ({
     <Grid container spacing={1}>
       <Grid item>
         <IconButton
-          title={t(labelRefresh)}
           ariaLabel={t(labelRefresh)}
           disabled={sending}
-          onClick={onRefresh}
           size="small"
+          title={t(labelRefresh)}
+          onClick={onRefresh}
         >
           <IconRefresh />
         </IconButton>
@@ -101,10 +101,10 @@ const RefreshActions = ({ onRefresh }: ActionsProps): JSX.Element => {
   return useMemoComponent({
     Component: (
       <RefreshActionsContent
-        onRefresh={onRefresh}
         enabledAutorefresh={enabledAutorefresh}
-        setEnabledAutorefresh={setEnabledAutorefresh}
         sending={sending}
+        setEnabledAutorefresh={setEnabledAutorefresh}
+        onRefresh={onRefresh}
       />
     ),
     memoProps: [sending, enabledAutorefresh, selectedResourceId],

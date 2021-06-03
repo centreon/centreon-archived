@@ -28,24 +28,24 @@ import { fetchExternalComponents } from '../../../../redux/actions/externalCompo
 
 class ExtensionsRoute extends Component {
   state = {
+    deleteToggled: false,
+    deletingEntity: false,
+    extensionDetails: false,
     extensions: {
       module: { entities: [] },
       widget: { entities: [] },
     },
-    widgetsActive: false,
-    modulesActive: false,
+    extensionsInstallingStatus: {},
+    extensionsUpdatingStatus: {},
+    installed: false,
     modalDetailsActive: false,
     modalDetailsLoading: false,
     modalDetailsType: 'module',
+    modulesActive: false,
     not_installed: false,
-    installed: false,
-    updated: false,
     search: '',
-    deleteToggled: false,
-    deletingEntity: false,
-    extensionsUpdatingStatus: {},
-    extensionsInstallingStatus: {},
-    extensionDetails: false,
+    updated: false,
+    widgetsActive: false,
   };
 
   componentDidMount = () => {
@@ -73,13 +73,13 @@ class ExtensionsRoute extends Component {
   clearFilters = () => {
     this.setState(
       {
-        widgetsActive: false,
+        installed: false,
         modulesActive: false,
         not_installed: false,
-        installed: false,
-        updated: false,
         nothingShown: false,
         search: '',
+        updated: false,
+        widgetsActive: false,
       },
       this.getData,
     );
@@ -315,8 +315,8 @@ class ExtensionsRoute extends Component {
   toggleDeleteModal = (entity, type) => {
     const { deleteToggled } = this.state;
     this.setState({
-      deletingEntity: entity ? { ...entity, type } : false,
       deleteToggled: !deleteToggled,
+      deletingEntity: entity ? { ...entity, type } : false,
     });
   };
 
@@ -454,63 +454,63 @@ class ExtensionsRoute extends Component {
       <div>
         <TopFilters
           fullText={{
+            filterKey: 'search',
             label: 'Search',
             value: search,
-            filterKey: 'search',
           }}
-          onChange={this.onChange.bind(this)}
           switches={[
             [
               {
                 customClass: 'container__col-md-4 container__col-xs-4',
-                switchTitle: 'Status',
-                switchStatus: 'Not installed',
-                value: not_installed,
                 filterKey: 'not_installed',
+                switchStatus: 'Not installed',
+                switchTitle: 'Status',
+                value: not_installed,
               },
               {
                 customClass: 'container__col-md-4 container__col-xs-4',
+                filterKey: 'installed',
                 switchStatus: 'Installed',
                 value: installed,
-                filterKey: 'installed',
               },
               {
                 customClass: 'container__col-md-4 container__col-xs-4',
+                filterKey: 'updated',
                 switchStatus: 'Outdated',
                 value: updated,
-                filterKey: 'updated',
               },
             ],
             [
               {
                 customClass: 'container__col-sm-3 container__col-xs-4',
-                switchTitle: 'Type',
-                switchStatus: 'Module',
-                value: modulesActive,
                 filterKey: 'modulesActive',
+                switchStatus: 'Module',
+                switchTitle: 'Type',
+                value: modulesActive,
               },
               {
                 customClass: 'container__col-sm-3 container__col-xs-4',
+                filterKey: 'widgetsActive',
                 switchStatus: 'Widget',
                 value: widgetsActive,
-                filterKey: 'widgetsActive',
               },
               {
                 button: true,
-                label: 'Clear Filters',
-                color: 'black',
                 buttonType: 'bordered',
+                color: 'black',
+                label: 'Clear Filters',
                 onClick: this.clearFilters.bind(this),
               },
             ],
           ]}
+          onChange={this.onChange.bind(this)}
         />
         <Wrapper>
           <Button
-            label={`${hasNoSelection ? 'Update all' : 'Update selection'}`}
             buttonType="regular"
-            customClass="mr-2"
             color="orange"
+            customClass="mr-2"
+            label={`${hasNoSelection ? 'Update all' : 'Update selection'}`}
             style={{
               opacity: '1',
             }}
@@ -522,10 +522,10 @@ class ExtensionsRoute extends Component {
             )}
           />
           <Button
-            label={`${hasNoSelection ? 'Install all' : 'Install selection'}`}
             buttonType="regular"
-            customClass="mr-2"
             color="green"
+            customClass="mr-2"
+            label={`${hasNoSelection ? 'Install all' : 'Install selection'}`}
             onClick={this.runActionOnAllEntities.bind(
               this,
               'installed',
@@ -540,32 +540,32 @@ class ExtensionsRoute extends Component {
             {extensions.result.module &&
             (modulesActive || (!modulesActive && !widgetsActive)) ? (
               <ExtensionsHolder
+                entities={extensions.result.module.entities}
+                installing={extensionsInstallingStatus}
+                title="Modules"
+                type="module"
+                updating={extensionsUpdatingStatus}
                 onCardClicked={this.activateExtensionsDetails}
                 onDelete={this.toggleDeleteModal}
                 onInstall={this.installById}
                 onUpdate={this.updateById}
-                title="Modules"
-                type="module"
-                updating={extensionsUpdatingStatus}
-                installing={extensionsInstallingStatus}
-                entities={extensions.result.module.entities}
               />
             ) : null}
             {extensions.result.widget &&
             (widgetsActive || (!modulesActive && !widgetsActive)) ? (
               <ExtensionsHolder
+                entities={extensions.result.widget.entities}
+                hrColor="blue"
+                hrTitleColor="blue"
+                installing={extensionsInstallingStatus}
+                title="Widgets"
+                titleColor="blue"
+                type="widget"
+                updating={extensionsUpdatingStatus}
                 onCardClicked={this.activateExtensionsDetails}
                 onDelete={this.toggleDeleteModal}
                 onInstall={this.installById}
                 onUpdate={this.updateById}
-                titleColor="blue"
-                hrTitleColor="blue"
-                hrColor="blue"
-                title="Widgets"
-                type="widget"
-                updating={extensionsUpdatingStatus}
-                installing={extensionsInstallingStatus}
-                entities={extensions.result.widget.entities}
               />
             ) : null}
           </>
@@ -573,21 +573,21 @@ class ExtensionsRoute extends Component {
 
         {extensionDetails && modalDetailsActive ? (
           <ExtensionDetailsPopup
-            type={modalDetailsType}
             loading={modalDetailsLoading}
-            onCloseClicked={this.hideExtensionDetails.bind(this)}
-            onInstallClicked={this.installById}
-            onDeleteClicked={this.toggleDeleteModalByIdAndType}
-            onUpdateClicked={this.updateById}
             modalDetails={extensionDetails}
+            type={modalDetailsType}
+            onCloseClicked={this.hideExtensionDetails.bind(this)}
+            onDeleteClicked={this.toggleDeleteModalByIdAndType}
+            onInstallClicked={this.installById}
+            onUpdateClicked={this.updateById}
           />
         ) : null}
 
         {deleteToggled ? (
           <ExtensionDeletePopup
             deletingEntity={deletingEntity}
-            onConfirm={this.deleteById}
             onCancel={this.toggleDeleteModal}
+            onConfirm={this.deleteById}
           />
         ) : null}
       </div>

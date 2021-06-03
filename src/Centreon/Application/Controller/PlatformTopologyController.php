@@ -32,10 +32,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Infrastructure\PlatformTopology\Repository\Model\PlatformJsonGraph;
 use Centreon\Domain\PlatformTopology\Model\PlatformPending;
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
-use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 
 /**
  * This controller is designed to manage platform topology API requests and register new servers.
@@ -132,8 +130,6 @@ class PlatformTopologyController extends AbstractController
             return $this->view(null, Response::HTTP_CREATED);
         } catch (EntityNotFoundException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
-        } catch (PlatformTopologyConflictException  $ex) {
-            return $this->view(['message' => $ex->getMessage()], Response::HTTP_CONFLICT);
         } catch (\Throwable $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         }

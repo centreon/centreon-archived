@@ -1,42 +1,73 @@
 import * as React from 'react';
 
 import { isNil, isEmpty } from 'ramda';
-import { useTranslation } from 'react-i18next';
+
+import { Avatar, makeStyles, Tooltip } from '@material-ui/core';
 
 import { IconButton } from '@centreon/ui';
 
-import { labelUrl } from '../../../translatedLabels';
+import IconColumn from '../IconColumn';
+
+const useStyles = makeStyles((theme) => ({
+  avatar: {
+    backgroundColor: theme.palette.primary.main,
+    fontSize: theme.typography.body2.fontSize,
+    height: theme.spacing(2),
+    width: theme.spacing(2),
+  },
+}));
 
 interface Props {
+  avatarTitle?: string;
   endpoint?: string;
-  title?: string;
   icon: JSX.Element;
+  title?: string;
 }
 
-const UrlColumn = ({ endpoint, title, icon }: Props): JSX.Element | null => {
-  const { t } = useTranslation();
+const UrlColumn = ({
+  endpoint,
+  title,
+  icon,
+  avatarTitle,
+}: Props): JSX.Element | null => {
+  const classes = useStyles();
 
-  if (isNil(endpoint) || isEmpty(endpoint)) {
+  const isEndpointEmpty = isNil(endpoint) || isEmpty(endpoint);
+  const isTitleEmpty = isNil(title) || isEmpty(title);
+
+  if (isEndpointEmpty && isTitleEmpty) {
     return null;
   }
 
+  if (isEndpointEmpty) {
+    return (
+      <IconColumn>
+        <Tooltip className={classes.avatar} title={title as string}>
+          <Avatar>{avatarTitle}</Avatar>
+        </Tooltip>
+      </IconColumn>
+    );
+  }
+
   return (
-    <a
-      href={endpoint}
-      onClick={(e): void => {
-        e.stopPropagation();
-      }}
-    >
-      <IconButton
-        title={t(title || labelUrl)}
-        ariaLabel={title}
-        onClick={(): null => {
-          return null;
+    <IconColumn>
+      <a
+        href={endpoint}
+        onClick={(e): void => {
+          e.stopPropagation();
         }}
       >
-        {icon}
-      </IconButton>
-    </a>
+        <IconButton
+          ariaLabel={title}
+          title={title || endpoint}
+          onClick={(): null => {
+            return null;
+          }}
+        >
+          {icon}
+        </IconButton>
+      </a>
+    </IconColumn>
   );
 };
 

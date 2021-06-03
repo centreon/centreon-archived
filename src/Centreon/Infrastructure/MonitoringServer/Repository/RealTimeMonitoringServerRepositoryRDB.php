@@ -129,7 +129,7 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
             );
         }
 
-            // Search
+        // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest) ? $searchRequest : '';
 

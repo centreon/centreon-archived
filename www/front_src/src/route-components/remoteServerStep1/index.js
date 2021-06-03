@@ -18,9 +18,9 @@ class RemoteServerStepOneRoute extends Component {
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
       path: routeMap.serverConfigurationWizard,
+      prevActive: true,
     },
     { active: true, number: 2, path: routeMap.remoteServerStep1 },
     { active: false, number: 3 },
@@ -64,8 +64,8 @@ class RemoteServerStepOneRoute extends Component {
       <BaseWizard>
         <ProgressBar links={links} />
         <Form
-          waitList={waitList}
           initialValues={{ ...pollerData, centreon_folder: '/centreon/' }}
+          waitList={waitList}
           onSubmit={this.handleSubmit.bind(this)}
         />
       </BaseWizard>

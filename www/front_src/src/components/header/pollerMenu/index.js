@@ -95,9 +95,9 @@ class PollerMenu extends Component {
   refreshInterval = null;
 
   state = {
-    toggled: false,
     data: null,
     intervalApplied: false,
+    toggled: false,
   };
 
   componentDidMount() {
@@ -228,7 +228,7 @@ class PollerMenu extends Component {
                       }
 
                       return (
-                        <li key={key} className={styles['submenu-top-item']}>
+                        <li className={styles['submenu-top-item']} key={key}>
                           <span className={styles['submenu-top-item-link']}>
                             {message}
                             <span className={styles['submenu-top-count']}>
@@ -245,8 +245,8 @@ class PollerMenu extends Component {
                                 }
                                 return (
                                   <span
-                                    key={poller.name}
                                     className={styles['submenu-top-item-link']}
+                                    key={poller.name}
                                     style={{ padding: '0px 16px 17px' }}
                                   >
                                     <span
@@ -272,13 +272,13 @@ class PollerMenu extends Component {
                     to={`/main.php?p=${POLLER_CONFIGURATION_TOPOLOGY_PAGE}`}
                   >
                     <button
-                      onClick={this.toggle}
                       className={classnames(
                         styles.btn,
                         styles['btn-big'],
                         styles['btn-green'],
                         styles['submenu-top-button'],
                       )}
+                      onClick={this.toggle}
                     >
                       {t('Configure pollers')}
                     </button>

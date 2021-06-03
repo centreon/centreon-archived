@@ -3,18 +3,18 @@ import * as React from 'react';
 import { Tooltip, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
-  tooltip: {
-    maxWidth: 'none',
-    backgroundColor: 'transparent',
-  },
   iconButton: {
     padding: 0,
+  },
+  tooltip: {
+    backgroundColor: 'transparent',
+    maxWidth: 'none',
   },
 }));
 
 interface Props {
-  children: React.ReactElement;
   Chip: () => JSX.Element;
+  children: React.ReactElement;
   label: string;
   onClick?: () => void;
 }
@@ -24,13 +24,6 @@ const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
 
   return (
     <Tooltip
-      placement="left"
-      title={children}
-      classes={{ tooltip: classes.tooltip }}
-      aria-label={label}
-      enterDelay={200}
-      enterNextDelay={200}
-      leaveDelay={0}
       interactive
       PopperProps={{
         onClick: (e): void => {
@@ -38,6 +31,13 @@ const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
           e.stopPropagation();
         },
       }}
+      aria-label={label}
+      classes={{ tooltip: classes.tooltip }}
+      enterDelay={200}
+      enterNextDelay={200}
+      leaveDelay={0}
+      placement="left"
+      title={children}
       onClick={(e): void => {
         e.preventDefault();
         e.stopPropagation();

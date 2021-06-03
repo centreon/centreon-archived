@@ -21,6 +21,7 @@ import {
   labelState,
   labelStatus,
   labelMonitoringServer,
+  labelMetaService,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -38,19 +39,20 @@ export interface Criteria {
 }
 
 const criteriaValueNameById = {
-  acknowledged: labelAcknowledged,
-  in_downtime: labelInDowntime,
-  unhandled_problems: labelUnhandled,
-  host: labelHost,
-  service: labelService,
+  CRITICAL: labelCritical,
+  DOWN: labelDown,
   OK: labelOk,
+  PENDING: labelPending,
+  UNKNOWN: labelUnknown,
+  UNREACHABLE: labelUnreachable,
   UP: labelUp,
   WARNING: labelWarning,
-  DOWN: labelDown,
-  CRITICAL: labelCritical,
-  UNREACHABLE: labelUnreachable,
-  UNKNOWN: labelUnknown,
-  PENDING: labelPending,
+  acknowledged: labelAcknowledged,
+  host: labelHost,
+  in_downtime: labelInDowntime,
+  metaservice: labelMetaService,
+  service: labelService,
+  unhandled_problems: labelUnhandled,
 };
 
 const unhandledStateId = 'unhandled_problems';
@@ -85,7 +87,17 @@ const serviceResourceType = {
   name: criteriaValueNameById[serviceResourceTypeId],
 };
 
-const selectableResourceTypes = [hostResourceType, serviceResourceType];
+const metaServiceResourceTypeId = 'metaservice';
+const metaServiceResourceType = {
+  id: metaServiceResourceTypeId,
+  name: criteriaValueNameById[metaServiceResourceTypeId],
+};
+
+const selectableResourceTypes = [
+  hostResourceType,
+  serviceResourceType,
+  metaServiceResourceType,
+];
 
 const okStatusId = 'OK';
 const okStatus = { id: okStatusId, name: criteriaValueNameById[okStatusId] };
@@ -141,11 +153,11 @@ const selectableStatuses = [
 ];
 
 export interface CriteriaDisplayProps {
+  autocompleteSearch?: Record<string, unknown>;
+  buildAutocompleteEndpoint?;
   label: string;
   options?: Array<SelectEntry>;
-  buildAutocompleteEndpoint?;
   sortId: number;
-  autocompleteSearch?: Record<string, unknown>;
 }
 
 export interface CriteriaById {
@@ -153,36 +165,36 @@ export interface CriteriaById {
 }
 
 const selectableCriterias: CriteriaById = {
-  resource_types: {
-    sortId: 0,
-    label: labelResource,
-    options: selectableResourceTypes,
-  },
-  states: {
-    sortId: 1,
-    label: labelState,
-    options: selectableStates,
-  },
-  statuses: {
-    sortId: 2,
-    label: labelStatus,
-    options: selectableStatuses,
-  },
   host_groups: {
-    sortId: 3,
-    label: labelHostGroup,
     buildAutocompleteEndpoint: buildHostGroupsEndpoint,
-  },
-  service_groups: {
-    sortId: 4,
-    label: labelServiceGroup,
-    buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
+    label: labelHostGroup,
+    sortId: 3,
   },
   monitoring_servers: {
-    sortId: 5,
-    label: labelMonitoringServer,
+    autocompleteSearch: { conditions: [{ field: 'running', value: true }] },
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
-    autocompleteSearch: { conditions: [{ field: 'is_activate', value: true }] },
+    label: labelMonitoringServer,
+    sortId: 5,
+  },
+  resource_types: {
+    label: labelResource,
+    options: selectableResourceTypes,
+    sortId: 0,
+  },
+  service_groups: {
+    buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
+    label: labelServiceGroup,
+    sortId: 4,
+  },
+  states: {
+    label: labelState,
+    options: selectableStates,
+    sortId: 1,
+  },
+  statuses: {
+    label: labelStatus,
+    options: selectableStatuses,
+    sortId: 2,
   },
 };
 

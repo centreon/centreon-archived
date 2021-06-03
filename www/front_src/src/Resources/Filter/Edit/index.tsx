@@ -21,19 +21,15 @@ import { patchFilter } from '../api';
 import EditFilterCard from './EditFilterCard';
 
 const useStyles = makeStyles((theme) => ({
-  header: {
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   container: {
     width: '100%',
   },
-  loadingIndicator: {
-    height: theme.spacing(1),
-    width: '100%',
-    marginBottom: theme.spacing(1),
+  filterCard: {
+    alignItems: 'center',
+    display: 'grid',
+    gridGap: theme.spacing(2),
+    gridTemplateColumns: '1fr auto',
+    padding: theme.spacing(1),
   },
   filters: {
     display: 'grid',
@@ -42,12 +38,16 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateRows: '1fr',
     width: '100%',
   },
-  filterCard: {
-    display: 'grid',
-    gridGap: theme.spacing(2),
-    gridTemplateColumns: '1fr auto',
+  header: {
     alignItems: 'center',
-    padding: theme.spacing(1),
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'center',
+  },
+  loadingIndicator: {
+    height: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    width: '100%',
   },
 }));
 
@@ -55,11 +55,8 @@ const EditFiltersPanel = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const {
-    customFilters,
-    setEditPanelOpen,
-    setCustomFilters,
-  } = useResourceContext();
+  const { customFilters, setEditPanelOpen, setCustomFilters } =
+    useResourceContext();
 
   const { sendRequest, sending } = useRequest({
     request: patchFilter,
@@ -106,9 +103,9 @@ const EditFiltersPanel = (): JSX.Element => {
                 >
                   {customFilters?.map((filter, index) => (
                     <Draggable
-                      key={filter.id}
                       draggableId={`${filter.id}`}
                       index={index}
+                      key={filter.id}
                     >
                       {(draggable): JSX.Element => (
                         <Paper
@@ -137,7 +134,7 @@ const EditFiltersPanel = (): JSX.Element => {
 
   const header = (
     <div className={classes.header}>
-      <Typography variant="h6" align="center">
+      <Typography align="center" variant="h6">
         {t(labelEditFilters)}
       </Typography>
     </div>
@@ -145,10 +142,10 @@ const EditFiltersPanel = (): JSX.Element => {
 
   return (
     <SectionPanel
-      sections={sections}
       header={header}
-      onClose={closeEditPanel}
       memoProps={[customFilters]}
+      sections={sections}
+      onClose={closeEditPanel}
     />
   );
 };

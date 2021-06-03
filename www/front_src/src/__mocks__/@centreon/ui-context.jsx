@@ -9,8 +9,8 @@ const setDowntime = jest.fn();
 const setRefreshInterval = jest.fn();
 
 const useUser = jest.fn(() => ({
-  user: 'admin',
   setUser,
+  user: 'admin',
 }));
 
 const useAcl = jest.fn(() => ({
@@ -29,34 +29,34 @@ const useRefreshInterval = jest.fn(() => ({
 }));
 
 const useUserContext = jest.fn(() => ({
-  alias: 'admin',
-  name: 'admin',
-  locale: 'en',
-  timezone: 'Europe/Paris',
-
   acl: {
     actions: {
-      service: {
-        downtime: true,
+      host: {
         acknowledgement: true,
-        disacknowledgement: true,
         check: true,
+        disacknowledgement: true,
+        downtime: true,
         submit_status: true,
       },
-      host: {
-        downtime: true,
+      service: {
         acknowledgement: true,
-        disacknowledgement: true,
         check: true,
+        disacknowledgement: true,
+        downtime: true,
         submit_status: true,
       },
     },
   },
-
+  alias: 'admin',
   downtime: {
     default_duration: 7200,
   },
+  locale: 'en',
+
+  name: 'admin',
+
   refresh_interval: 15,
+  timezone: 'Europe/Paris',
 }));
 
 const Context = {

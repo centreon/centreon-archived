@@ -292,63 +292,78 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      */
     public function findHostTemplatesRecursively(Host $host): array
     {
+        /*
+         * CTE recurse request next release:
+         *   WITH RECURSIVE template AS (
+         *       SELECT htr.*, 0 AS level
+         *       FROM `:db`.host_template_relation htr
+         *       WHERE htr.host_host_id  = :host_id
+         *       UNION
+         *       SELECT htr2.*, template.level + 1
+         *       FROM `:db`.host_template_relation htr2
+         *       INNER JOIN template
+         *           ON template.host_tpl_id = htr2.host_host_id
+         *       INNER JOIN `:db`.host
+         *           ON host.host_id = htr2.host_tpl_id
+         *           AND host.host_register = 1
+         *   )
+         *   SELECT host_host_id AS template_host_id, host_tpl_id AS template_id, `order` AS template_order,
+         *       `level` AS template_level, host.host_id AS id, host.host_name AS name, host.host_alias AS alias,
+         *       host.host_register AS type, host.host_activate AS is_activated
+         *   FROM template
+         *   INNER JOIN `:db`.host
+         *       ON host.host_id = template.host_tpl_id
+         *   ORDER BY `level`, host_host_id, `order`
+         */
         $request = $this->translateDbName(
-            'WITH RECURSIVE template AS (
-                SELECT htr.*, 0 AS level
-                FROM `:db`.host_template_relation htr 
-                WHERE htr.host_host_id  = :host_id
-                UNION
-                SELECT htr2.*, template.level + 1
-                FROM `:db`.host_template_relation htr2
-                INNER JOIN template 
-                    ON template.host_tpl_id = htr2.host_host_id
-                INNER JOIN `:db`.host 
-                    ON host.host_id = htr2.host_tpl_id 
-                    AND host.host_register = 1
-            )
-            SELECT host_host_id AS template_host_id, host_tpl_id AS template_id, `order` AS template_order, 
-                `level` AS template_level, host.host_id AS id, host.host_name AS name, host.host_alias AS alias,
-                host.host_register AS type, host.host_activate AS is_activated
-            FROM template
-            INNER JOIN `:db`.host 
-                ON host.host_id = template.host_tpl_id
-            ORDER BY `level`, host_host_id, `order`'
+            'SELECT
+                host.host_id AS id,
+                htr.`order` AS template_order,
+                host.host_name AS name,
+                host.host_alias AS alias,
+                host.host_register AS type,
+                host.host_activate AS is_activated
+             FROM `:db`.host_template_relation htr, `:db`.host
+             WHERE
+                htr.host_host_id = :host_id AND
+                htr.host_tpl_id = host.host_id AND
+                host.host_register = 1
+             ORDER BY htr.`order` ASC'
         );
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
-        $statement->execute();
-
-        /**
-         * Add a host template by browsing all templates recursively until we find the parent template.
-         *
-         * @param int $hostParentId Id of the host template for which we want to add the given template.
-         * @param Host $hostTemplate Host template to be added
-         * @param Host[] $templates Host templates where we will try to find the parent
-         *                          of the host template to be added
-         */
-        $addTemplateToHost =
-            function (int $hostParentId, Host $hostTemplate, array $templates) use (&$addTemplateToHost) {
-                foreach ($templates as $template) {
-                    if ($template->getId() === $hostParentId) {
-                        $template->addTemplate($hostTemplate);
-                    } else {
-                        $addTemplateToHost($hostParentId, $hostTemplate, $template->getTemplates());
-                    }
-                }
-            };
 
         $hostTemplates = [];
-        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            $hostTemplate = EntityCreator::createEntityByArray(
-                Host::class,
-                $record
-            );
-            if ((int) $record['template_host_id'] === $host->getId()) {
-                $hostTemplates[] = $hostTemplate;
-            } else {
-                $addTemplateToHost((int) $record['template_host_id'], $hostTemplate, $hostTemplates);
+        $stack = [[$host->getId(), 0, null, []]];
+        while (($hostTest = array_shift($stack))) {
+            if (isset($hostTest[3][$hostTest[0]])) {
+                continue;
             }
+            $hostTest[3][$hostTest[0]] = 1;
+
+            $statement = $this->db->prepare($request);
+            $statement->bindValue(':host_id', $hostTest[0], \PDO::PARAM_INT);
+            $statement->execute();
+
+            $hostTpl = [];
+            $currentLevel = $hostTest[1];
+            while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                $record['template_host_id'] = $hostTest[0];
+                $record['template_level'] = $currentLevel;
+                $hostTemplate = EntityCreator::createEntityByArray(
+                    Host::class,
+                    $record
+                );
+                if ($currentLevel === 0) {
+                    $hostTemplates[] = $hostTemplate;
+                } else {
+                    $hostTest[2]->addTemplate($hostTemplate);
+                }
+                $hostTpl[] = [$record['id'], $currentLevel + 1, $hostTemplate, $hostTest[3]];
+            }
+
+            $stack = array_merge($hostTpl, $stack);
         }
+
         return $hostTemplates;
     }
 
@@ -386,34 +401,65 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      */
     public function findCommandLine(int $hostId): ?string
     {
+        /*
+         * CTE recurse request next release:
+         *    WITH RECURSIVE inherite AS (
+         *       SELECT relation.host_host_id, relation.host_tpl_id, relation.order, host.command_command_id,
+         *       0 AS level
+         *       FROM `:db`.host
+         *       LEFT JOIN `:db`.host_template_relation relation
+         *           ON relation.host_host_id  = host.host_id
+         *       WHERE host.host_id = :host_id
+         *       UNION ALL
+         *       SELECT relation.host_host_id, relation.host_tpl_id, relation.order, host.command_command_id,
+         *       inherite.level + 1
+         *       FROM `:db`.host
+         *       INNER JOIN inherite
+         *           ON inherite.host_tpl_id = host.host_id
+         *       LEFT JOIN `:db`.host_template_relation relation
+         *           ON relation.host_host_id  = host.host_id
+         *    )
+         *    SELECT command.command_line
+         *    FROM inherite
+         *      INNER JOIN `:db`.command
+         *       ON command.command_id = inherite.command_command_id
+         */
         $request = $this->translateDbName(
-            'WITH RECURSIVE inherite AS (
-                SELECT relation.host_host_id, relation.host_tpl_id, relation.order, host.command_command_id,
-                0 AS level
-                FROM `:db`.host
-                LEFT JOIN `:db`.host_template_relation relation
-                    ON relation.host_host_id  = host.host_id
-                WHERE host.host_id = :host_id
-                UNION ALL
-                SELECT relation.host_host_id, relation.host_tpl_id, relation.order, host.command_command_id,
-                inherite.level + 1
-                FROM `:db`.host
-                INNER JOIN inherite
-                    ON inherite.host_tpl_id = host.host_id
-                LEFT JOIN `:db`.host_template_relation relation
-                    ON relation.host_host_id  = host.host_id
-            )
-            SELECT command.command_line
-            FROM inherite
-            INNER JOIN `:db`.command
-                ON command.command_id = inherite.command_command_id'
+            'SELECT
+                command.command_line, relation.templates
+             FROM `:db`.host
+                LEFT JOIN `:db`.command ON command.command_id = host.command_command_id,
+                (SELECT GROUP_CONCAT(host_tpl_id) as templates 
+                 FROM `:db`.host_template_relation htr
+                 WHERE htr.host_host_id = :host_id ORDER BY `order` ASC) as relation
+             WHERE host.host_id = :host_id LIMIT 1'
         );
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-        $statement->execute();
 
-        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            return (string)$record['command_line'];
+        $loop = [];
+        $stack = [$hostId];
+        while (($hostTest = array_shift($stack))) {
+            if (isset($loop[$hostTest])) {
+                continue;
+            }
+            $loop[$hostTest] = 1;
+
+            $statement = $this->db->prepare($request);
+            $statement->bindValue(':host_id', $hostTest, \PDO::PARAM_INT);
+            $statement->execute();
+
+            $hostTpl = null;
+            $record = $statement->fetch(\PDO::FETCH_ASSOC);
+            if (!is_null($record['templates']) && is_null($hostTpl)) {
+                $hostTpl = explode(',', $record['templates']);
+            }
+            if (!is_null($record['command_line'])) {
+                return (string)$record['command_line'];
+            }
+
+            if (!is_null($hostTpl)) {
+                $stack = array_merge($hostTpl, $stack);
+            }
         }
 
         return null;
@@ -424,67 +470,94 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      */
     public function findOnDemandHostMacros(int $hostId, bool $isUsingInheritance = false): array
     {
-        if ($isUsingInheritance) {
-            $request = $this->translateDbName(
-                'WITH RECURSIVE inherite AS (
-                    SELECT relation.host_host_id, relation.host_tpl_id, relation.order, demand.host_macro_id,
-                        demand.host_macro_name, 0 AS level
-                    FROM `:db`.host
-                    LEFT JOIN `:db`.host_template_relation relation
-                        ON relation.host_host_id  = host.host_id
-                    LEFT JOIN on_demand_macro_host demand
-                        ON demand.host_host_id = host.host_id
-                    WHERE host.host_id = :host_id
-                    UNION ALL
-                    SELECT relation.host_host_id, relation.host_tpl_id, relation.order, demand.host_macro_id,
-                        demand.host_macro_name, inherite.level + 1
-                    FROM `:db`.host
-                    INNER JOIN inherite
-                        ON inherite.host_tpl_id = host.host_id
-                    LEFT JOIN `:db`.host_template_relation relation
-                        ON relation.host_host_id  = host.host_id
-                    LEFT JOIN on_demand_macro_host demand
-                        ON demand.host_host_id = host.host_id
-                )
-                SELECT macro.host_macro_id AS id, macro.host_macro_name AS name,
-                    macro.host_macro_value AS `value`, macro.macro_order AS `order`, macro.host_host_id AS host_id,
-                    CASE
-                        WHEN is_password IS NULL THEN \'0\'
-                        ELSE is_password
-                    END is_password, description
-                FROM (
-                    SELECT * FROM inherite
-                    WHERE host_macro_id IS NOT NULL
-                    GROUP BY inherite.level, inherite.order, host_macro_name
-                ) AS tpl
-                INNER JOIN `:db`.on_demand_macro_host macro
-                    ON macro.host_macro_id = tpl.host_macro_id
-                GROUP BY tpl.host_macro_name'
-            );
-        } else {
-            $request = $this->translateDbName(
-                'SELECT host_macro_id AS id, host_macro_name AS name, host_macro_value AS `value`,
-                    macro_order AS `order`, host_host_id AS host_id,
-                    CASE
-                        WHEN is_password IS NULL THEN \'0\'
-                        ELSE is_password
-                    END is_password, description
-                FROM `:db`.on_demand_macro_host
-                WHERE host_host_id = :host_id'
-            );
-        }
-
+        /*
+         * CTE recurse request next release:
+         *   WITH RECURSIVE inherite AS (
+         *           SELECT relation.host_host_id, relation.host_tpl_id, relation.order, demand.host_macro_id,
+         *               demand.host_macro_name, 0 AS level
+         *           FROM `:db`.host
+         *           LEFT JOIN `:db`.host_template_relation relation
+         *              ON relation.host_host_id  = host.host_id
+         *           LEFT JOIN on_demand_macro_host demand
+         *               ON demand.host_host_id = host.host_id
+         *           WHERE host.host_id = :host_id
+         *           UNION ALL
+         *           SELECT relation.host_host_id, relation.host_tpl_id, relation.order, demand.host_macro_id,
+         *               demand.host_macro_name, inherite.level + 1
+         *           FROM `:db`.host
+         *           INNER JOIN inherite
+         *               ON inherite.host_tpl_id = host.host_id
+         *           LEFT JOIN `:db`.host_template_relation relation
+         *               ON relation.host_host_id  = host.host_id
+         *           LEFT JOIN on_demand_macro_host demand
+         *               ON demand.host_host_id = host.host_id
+         *       )
+         *       SELECT macro.host_macro_id AS id, macro.host_macro_name AS name,
+         *           macro.host_macro_value AS `value`, macro.macro_order AS `order`, macro.host_host_id AS host_id,
+         *           CASE
+         *               WHEN is_password IS NULL THEN \'0\'
+         *               ELSE is_password
+         *           END is_password, description
+         *       FROM (
+         *           SELECT * FROM inherite
+         *           WHERE host_macro_id IS NOT NULL
+         *           GROUP BY inherite.level, inherite.order, host_macro_name
+         *       ) AS tpl
+         *       INNER JOIN `:db`.on_demand_macro_host macro
+         *           ON macro.host_macro_id = tpl.host_macro_id
+         *       GROUP BY tpl.host_macro_name
+         */
+        $request = $this->translateDbName(
+            'SELECT
+                host.host_id, macro.host_macro_id AS id, macro.host_macro_name AS name, 
+                macro.host_macro_value AS `value`, macro.macro_order AS `order`,
+                macro.is_password, macro.description, relation.templates
+             FROM `:db`.host
+                LEFT JOIN `:db`.on_demand_macro_host macro ON macro.host_host_id = host.host_id,
+                (SELECT GROUP_CONCAT(host_tpl_id) as templates 
+                 FROM `:db`.host_template_relation htr
+                 WHERE htr.host_host_id = :host_id ORDER BY `order` ASC) as relation
+             WHERE host.host_id = :host_id'
+        );
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-        $statement->execute();
 
         $hostMacros = [];
-        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            $hostMacros[] = EntityCreator::createEntityByArray(
-                HostMacro::class,
-                $record
-            );
+        $macrosAdded = [];
+        $loop = [];
+        $stack = [$hostId];
+        while (($hostTest = array_shift($stack))) {
+            if (isset($loop[$hostTest])) {
+                continue;
+            }
+            $loop[$hostTest] = 1;
+
+            $statement = $this->db->prepare($request);
+            $statement->bindValue(':host_id', $hostTest, \PDO::PARAM_INT);
+            $statement->execute();
+            $hostTpl = null;
+            while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                if (!is_null($record['templates']) && is_null($hostTpl)) {
+                    $hostTpl = explode(',', $record['templates']);
+                }
+                if (is_null($record['name']) || isset($macrosAdded[$record['name']])) {
+                    continue;
+                }
+                $macrosAdded[$record['name']] = 1;
+                $record['is_password'] = is_null($record['is_password']) ? 0 : $record['is_password'];
+                $hostMacros[] = EntityCreator::createEntityByArray(
+                    HostMacro::class,
+                    $record
+                );
+            }
+            if (!$isUsingInheritance) {
+                break;
+            }
+
+            if (!is_null($hostTpl)) {
+                $stack = array_merge($hostTpl, $stack);
+            }
         }
+
         return $hostMacros;
     }
 
@@ -689,7 +762,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 ')
                 );
                 $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
-                $statement->bindValue(':severity_id', 55555, \PDO::PARAM_INT);
+                $statement->bindValue(':severity_id', $severity->getId(), \PDO::PARAM_INT);
                 $statement->execute();
             } catch (\Throwable $ex) {
                 throw HostSeverityException::notFoundException(['id' => $severity->getId()], $ex);

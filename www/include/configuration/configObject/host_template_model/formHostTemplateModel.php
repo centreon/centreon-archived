@@ -997,10 +997,8 @@ if ($form->validate() && $from_list_menu == false) {
         }
         updateHostInDB($hostObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        foreach ($select as $key => $value) {
-            if ($value) {
-                updateHostInDB($value, true);
-            }
+        foreach (array_keys($select) as $hostTemplateIdToUpdate) {
+            updateHostInDB($hostTemplateIdToUpdate, true);
         }
     }
     $o = null;

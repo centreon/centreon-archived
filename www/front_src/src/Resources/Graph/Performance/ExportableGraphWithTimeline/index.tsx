@@ -1,66 +1,50 @@
 import * as React from 'react';
 
-import { path, isNil } from 'ramda';
-import { useTranslation } from 'react-i18next';
+import { path, isNil, or, not } from 'ramda';
 
-import {
-  Paper,
-  Theme,
-  makeStyles,
-  FormControlLabel,
-  Switch,
-  Typography,
-} from '@material-ui/core';
-import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
+import { Paper, Theme, makeStyles } from '@material-ui/core';
 
-import {
-  IconButton,
-  useRequest,
-  ListingModel,
-  ContentWithCircularLoading,
-} from '@centreon/ui';
+import { useRequest, ListingModel } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
-import {
-  labelDisplayEvents,
-  labelExportToPng,
-} from '../../../translatedLabels';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/decoders';
 import PerformanceGraph from '..';
-import { TimePeriod } from '../../../Details/tabs/Graph/models';
+import {
+  CustomTimePeriod,
+  TimePeriod,
+} from '../../../Details/tabs/Graph/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
+import { AdjustTimePeriodProps, GraphOptionId } from '../models';
+import { useIntersection } from '../useGraphIntersection';
 
-import exportToPng from './exportToPng';
+import { defaultGraphOptions, useGraphOptionsContext } from './useGraphOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  exportToPngButton: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    margin: theme.spacing(0, 1, 1, 2),
+  graph: {
+    height: '100%',
+    margin: 'auto',
+    width: '100%',
   },
   graphContainer: {
     display: 'grid',
-    padding: theme.spacing(2, 1, 1),
     gridTemplateRows: '1fr',
-  },
-  graph: {
-    margin: 'auto',
-    height: '100%',
-    width: '100%',
+    padding: theme.spacing(2, 1, 1),
   },
 }));
 
 interface Props {
-  resource?: Resource | ResourceDetails;
-  selectedTimePeriod: TimePeriod;
+  adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
+  customTimePeriod: CustomTimePeriod;
   getIntervalDates: () => [string, string];
-  periodQueryParameters: string;
   graphHeight: number;
-  onTooltipDisplay?: (position?: [number, number]) => void;
-  tooltipPosition?: [number, number];
+  limitLegendRows?: boolean;
+  periodQueryParameters: string;
+  resource?: Resource | ResourceDetails;
+  resourceDetailsUpdated: boolean;
+  selectedTimePeriod: TimePeriod | null;
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
@@ -69,27 +53,33 @@ const ExportablePerformanceGraphWithTimeline = ({
   getIntervalDates,
   periodQueryParameters,
   graphHeight,
-  onTooltipDisplay,
-  tooltipPosition,
+  customTimePeriod,
+  adjustTimePeriod,
+  resourceDetailsUpdated,
+  limitLegendRows,
 }: Props): JSX.Element => {
   const classes = useStyles();
-  const { t } = useTranslation();
 
   const { alias } = useUserContext();
 
-  const performanceGraphRef = React.useRef<HTMLDivElement>();
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
   >({
-    request: listTimelineEvents,
     decoder: listTimelineEventsDecoder,
+    request: listTimelineEvents,
   });
 
-  const [eventAnnotationsActive, setEventAnnotationsActive] = React.useState(
-    false,
-  );
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
-  const [exporting, setExporting] = React.useState(false);
+  const graphOptions =
+    useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
+  const graphContainerRef = React.useRef<HTMLElement | null>(null);
+
+  const { setElement, isInViewport } = useIntersection();
+
+  const displayEventAnnotations = path<boolean>(
+    [GraphOptionId.displayEvents, 'value'],
+    graphOptions,
+  );
 
   const endpoint = path(['links', 'endpoints', 'performance_graph'], resource);
   const timelineEndpoint = path<string>(
@@ -98,7 +88,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   );
 
   const retrieveTimeline = (): void => {
-    if (isNil(timelineEndpoint)) {
+    if (or(isNil(timelineEndpoint), not(displayEventAnnotations))) {
       setTimeline([]);
       return;
     }
@@ -108,7 +98,9 @@ const ExportablePerformanceGraphWithTimeline = ({
     sendGetTimelineRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        limit: selectedTimePeriod.timelineEventsLimit,
+        limit:
+          selectedTimePeriod?.timelineEventsLimit ||
+          customTimePeriod.timelineLimit,
         search: {
           conditions: [
             {
@@ -132,7 +124,11 @@ const ExportablePerformanceGraphWithTimeline = ({
     }
 
     retrieveTimeline();
-  }, [endpoint, selectedTimePeriod]);
+  }, [endpoint, selectedTimePeriod, customTimePeriod, displayEventAnnotations]);
+
+  React.useEffect(() => {
+    setElement(graphContainerRef.current);
+  }, []);
 
   const getEndpoint = (): string | undefined => {
     if (isNil(endpoint)) {
@@ -142,80 +138,42 @@ const ExportablePerformanceGraphWithTimeline = ({
     return `${endpoint}${periodQueryParameters}`;
   };
 
-  const changeEventAnnotationsActive = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ): void => {
-    setEventAnnotationsActive(event.target.checked);
-  };
-
-  const convertToPng = (): void => {
-    setExporting(true);
-    exportToPng({
-      element: performanceGraphRef.current as HTMLElement,
-      title: `${resource?.name}-performance`,
-    }).finally(() => {
-      setExporting(false);
-    });
-  };
-
   const addCommentToTimeline = ({ date, comment }): void => {
     setTimeline([
       ...(timeline as Array<TimelineEvent>),
       {
+        contact: { name: alias },
+        content: comment,
+        date,
         id: Math.random(),
         type: 'comment',
-        date,
-        content: comment,
-        contact: { name: alias },
       },
     ]);
   };
 
   return (
     <Paper className={classes.graphContainer}>
-      <div className={classes.exportToPngButton}>
-        <FormControlLabel
-          disabled={isNil(timeline)}
-          control={
-            <Switch
-              color="primary"
-              size="small"
-              onChange={changeEventAnnotationsActive}
-            />
-          }
-          label={
-            <Typography variant="body2">{t(labelDisplayEvents)}</Typography>
-          }
-        />
-        <ContentWithCircularLoading
-          loading={exporting}
-          loadingIndicatorSize={16}
-          alignCenter={false}
-        >
-          <IconButton
-            disabled={isNil(timeline)}
-            title={t(labelExportToPng)}
-            onClick={convertToPng}
-          >
-            <SaveAsImageIcon style={{ fontSize: 18 }} />
-          </IconButton>
-        </ContentWithCircularLoading>
-      </div>
       <div
         className={classes.graph}
-        ref={performanceGraphRef as React.RefObject<HTMLDivElement>}
+        ref={graphContainerRef as React.MutableRefObject<HTMLDivElement>}
       >
         <PerformanceGraph
+          toggableLegend
+          adjustTimePeriod={adjustTimePeriod}
+          customTimePeriod={customTimePeriod}
+          displayEventAnnotations={displayEventAnnotations}
           endpoint={getEndpoint()}
           graphHeight={graphHeight}
-          xAxisTickFormat={selectedTimePeriod.dateTimeFormat}
-          toggableLegend
+          isInViewport={isInViewport}
+          limitLegendRows={limitLegendRows}
           resource={resource as Resource}
-          eventAnnotationsActive={eventAnnotationsActive}
+          resourceDetailsUpdated={resourceDetailsUpdated}
           timeline={timeline}
+          xAxisTickFormat={
+            selectedTimePeriod?.dateTimeFormat ||
+            customTimePeriod.xAxisTickFormat
+          }
           onAddComment={addCommentToTimeline}
-          onTooltipDisplay={onTooltipDisplay}
-          tooltipPosition={tooltipPosition}
         />
       </div>
     </Paper>

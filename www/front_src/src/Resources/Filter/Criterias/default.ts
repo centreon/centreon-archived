@@ -1,13 +1,13 @@
-import { SelectEntry } from '@centreon/ui/src';
+import { SelectEntry } from '@centreon/ui';
 
 import { Criteria } from './models';
 
 interface DefaultCriteriaValues {
+  hostGroups?: Array<SelectEntry>;
   resourceTypes?: Array<SelectEntry>;
+  serviceGroups?: Array<SelectEntry>;
   states?: Array<SelectEntry>;
   statuses?: Array<SelectEntry>;
-  hostGroups?: Array<SelectEntry>;
-  serviceGroups?: Array<SelectEntry>;
 }
 
 const defaultSortField = 'status_severity_code';
@@ -21,55 +21,55 @@ const getDefaultCriterias = (
     hostGroups = [],
     serviceGroups = [],
   }: DefaultCriteriaValues = {
+    hostGroups: [],
     resourceTypes: [],
+    serviceGroups: [],
     states: [],
     statuses: [],
-    hostGroups: [],
-    serviceGroups: [],
   },
 ): Array<Criteria> => {
   return [
     {
       name: 'resource_types',
-      value: resourceTypes,
-      type: 'multi_select',
       object_type: null,
+      type: 'multi_select',
+      value: resourceTypes,
     },
     {
       name: 'states',
-      value: states,
-      type: 'multi_select',
       object_type: null,
+      type: 'multi_select',
+      value: states,
     },
     {
       name: 'statuses',
-      value: statuses,
-      type: 'multi_select',
       object_type: null,
+      type: 'multi_select',
+      value: statuses,
     },
     {
       name: 'host_groups',
-      value: hostGroups,
-      type: 'multi_select',
       object_type: 'host_groups',
+      type: 'multi_select',
+      value: hostGroups,
     },
     {
       name: 'service_groups',
-      value: serviceGroups,
-      type: 'multi_select',
       object_type: 'service_groups',
+      type: 'multi_select',
+      value: serviceGroups,
     },
     {
       name: 'search',
-      value: '',
-      type: 'text',
       object_type: null,
+      type: 'text',
+      value: '',
     },
     {
       name: 'sort',
-      value: [defaultSortField, defaultSortOrder],
-      type: 'array',
       object_type: null,
+      type: 'array',
+      value: [defaultSortField, defaultSortOrder],
     },
   ];
 };
@@ -78,9 +78,9 @@ const getAllCriterias = (): Array<Criteria> => [
   ...getDefaultCriterias(),
   {
     name: 'monitoring_servers',
-    value: [],
-    type: 'multi_select',
     object_type: 'monitoring_servers',
+    type: 'multi_select',
+    value: [],
   },
 ];
 

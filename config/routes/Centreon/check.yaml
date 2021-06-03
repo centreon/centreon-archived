@@ -27,6 +27,14 @@ centreon_application_check_checkService:
     controller: 'Centreon\Application\Controller\CheckController::checkService'
     condition: "request.attributes.get('version') >= 2.0"
 
+centreon_application_check_checkMetaService:
+    methods: POST
+    path: /monitoring/metaservices/{metaId}/check
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\CheckController::checkMetaService'
+    condition: "request.attributes.get('version') >= 2.1"
+
 centreon_application_check_checkResources:
     methods: POST
     path: /monitoring/resources/check

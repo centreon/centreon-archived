@@ -193,11 +193,7 @@ $dbResult = $pearDB->query(
     ' LIMIT ' . $num * $limit . ', ' . $limit
 );
 
-$totalRowsQuery = 'SELECT COUNT(*) as count ' . $queryTablesToFetch . $queryWhereClause;
-$rowsCountStatement = $pearDB->query($totalRowsQuery);
-$totalRowsResult = $rowsCountStatement->fetch();
-
-$rows = $totalRowsResult['count'];
+$rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 if (!($dbResult->rowCount())) {
     $dbResult = $pearDB->query(

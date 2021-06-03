@@ -9,20 +9,28 @@ import { labelSomethingWentWrong } from '../translatedLabels';
 
 import ApiNotFoundMessage from './ApiNotFoundMessage';
 import { listResources } from './api';
+import { defaultSelectedColumnIds } from './columns';
+import {
+  clearCachedColumnIds,
+  getStoredOrDefaultColumnIds,
+  storeColumnIds,
+} from './columns/storedColumnIds';
 
 type ListingDispatch<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export interface ListingState {
-  listing?: ResourceListing;
-  setListing: ListingDispatch<ResourceListing | undefined>;
-  limit: number;
-  setLimit: ListingDispatch<number>;
-  page?: number;
-  setPage: ListingDispatch<number | undefined>;
   enabledAutorefresh: boolean;
-  setEnabledAutorefresh: ListingDispatch<boolean>;
+  limit: number;
+  listing?: ResourceListing;
+  page?: number;
+  selectedColumnIds: Array<string>;
   sendRequest: (params) => Promise<ResourceListing>;
   sending: boolean;
+  setEnabledAutorefresh: ListingDispatch<boolean>;
+  setLimit: ListingDispatch<number>;
+  setListing: ListingDispatch<ResourceListing | undefined>;
+  setPage: ListingDispatch<number | undefined>;
+  setSelectedColumnIds: (columnIds: Array<string>) => void;
 }
 
 const useListing = (): ListingState => {
@@ -30,27 +38,42 @@ const useListing = (): ListingState => {
   const [limit, setLimit] = React.useState<number>(30);
   const [page, setPage] = React.useState<number>();
   const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
+  const [selectedColumnIds, setSelectedColumnIds] = React.useState(
+    getStoredOrDefaultColumnIds(defaultSelectedColumnIds),
+  );
+
+  React.useEffect(() => {
+    storeColumnIds(selectedColumnIds);
+  }, [selectedColumnIds]);
+
+  React.useEffect(() => {
+    return (): void => {
+      clearCachedColumnIds();
+    };
+  });
 
   const { sendRequest, sending } = useRequest<ResourceListing>({
-    request: listResources,
     getErrorMessage: ifElse(
       pathEq(['response', 'status'], 404),
       always(ApiNotFoundMessage),
       pathOr(labelSomethingWentWrong, ['response', 'data', 'message']),
     ),
+    request: listResources,
   });
 
   return {
-    listing,
-    setListing,
-    limit,
-    setLimit,
-    page,
-    setPage,
     enabledAutorefresh,
-    setEnabledAutorefresh,
+    limit,
+    listing,
+    page,
+    selectedColumnIds,
     sendRequest,
     sending,
+    setEnabledAutorefresh,
+    setLimit,
+    setListing,
+    setPage,
+    setSelectedColumnIds,
   };
 };
 

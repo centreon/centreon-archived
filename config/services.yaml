@@ -17,6 +17,7 @@ parameters:
     centreon_path: "%env(_CENTREON_PATH_)%"
     centreon_etc_path: "%env(_CENTREON_ETC_)%"
     translation_path: "%centreon_path%/www/locale"
+    log_path: "%env(_CENTREON_LOG_)%"
     media_path: "img/media"
 
 services:

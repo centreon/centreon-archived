@@ -1,8 +1,0 @@
-<div class="content">
-   <form id="step1">
-       <p class="title">{$lang.welcome}</p>
-       <p>{$lang.steptext}</p>
-       <p class="form"><input type="radio" name="step1_configtype" id="step1_configtype_central" value="central" checked="checked" />&nbsp;<label for="step1_configtype_central">{$lang.central_configuration}</label></p>
-       <p class="form"><input type="radio" name="step1_configtype" id="step1_configtype_poller" value="poller" />&nbsp;<label for="step1_configtype_poller">{$lang.poller_configuration}</label></p>
-   </form>
-</div>

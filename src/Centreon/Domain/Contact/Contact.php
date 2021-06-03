@@ -47,12 +47,15 @@ class Contact implements UserInterface, ContactInterface
     public const ROLE_HOST_SUBMIT_RESULT = 'ROLE_HOST_SUBMIT_RESULT';
     public const ROLE_HOST_ADD_COMMENT = 'ROLE_HOST_ADD_COMMENT';
     public const ROLE_SERVICE_ADD_COMMENT = 'ROLE_SERVICE_ADD_COMMENT';
+    public const ROLE_DISPLAY_COMMAND = 'ROLE_DISPLAY_COMMAND';
 
     // user pages access
     public const ROLE_CONFIGURATION_HOSTS_WRITE = 'ROLE_CONFIGURATION_HOSTS_HOSTS_RW';
     public const ROLE_CONFIGURATION_HOSTS_READ = 'ROLE_CONFIGURATION_HOSTS_HOSTS_R';
     public const ROLE_CONFIGURATION_SERVICES_WRITE = 'ROLE_CONFIGURATION_SERVICES_SERVICES_BY_HOST_RW';
     public const ROLE_CONFIGURATION_SERVICES_READ = 'ROLE_CONFIGURATION_SERVICES_SERVICES_BY_HOST_R';
+    public const ROLE_CONFIGURATION_META_SERVICES_WRITE = 'ROLE_CONFIGURATION_SERVICES_META_SERVICES_RW';
+    public const ROLE_CONFIGURATION_META_SERVICES_READ = 'ROLE_CONFIGURATION_SERVICES_META_SERVICES_R';
     public const ROLE_MONITORING_EVENT_LOGS = 'ROLE_MONITORING_EVENT_LOGS_EVENT_LOGS_RW';
     public const ROLE_REPORTING_DASHBOARD_HOSTS = 'ROLE_REPORTING_DASHBOARD_HOSTS_RW';
     public const ROLE_REPORTING_DASHBOARD_SERVICES = 'ROLE_REPORTING_DASHBOARD_SERVICES_RW';
@@ -416,11 +419,13 @@ class Contact implements UserInterface, ContactInterface
     public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): self
     {
         $this->hasAccessToApiConfiguration = $hasAccessToApiConfiguration;
-        if ($this->hasAccessToApiRealTime) {
+
+        if ($this->hasAccessToApiConfiguration) {
             $this->addRole(self::ROLE_API_CONFIGURATION);
         } else {
             $this->removeRole(self::ROLE_API_CONFIGURATION);
         }
+
         return $this;
     }
 
@@ -557,6 +562,11 @@ class Contact implements UserInterface, ContactInterface
         return $this;
     }
 
+    /**
+     * get user default page
+     *
+     * @return string|null
+     */
     public function getDefaultPage(): ?string
     {
         return $this->defaultPage;

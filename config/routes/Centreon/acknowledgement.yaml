@@ -57,6 +57,22 @@ centreon_application_acknowledgement_addserviceacknowledgement:
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::addServiceAcknowledgement'
 
+centreon_application_acknowledgement_addmetaserviceacknowledgement:
+    methods: POST
+    path: /monitoring/metaservices/{metaId}/acknowledgements
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::addMetaServiceAcknowledgement'
+    condition: "request.attributes.get('version') >= 2.1"
+
+centreon_application_acknowledgement_findacknowledgementsbymetaservice:
+    methods: GET
+    path: /monitoring/metaservices/{metaId}/acknowledgements
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::findAcknowledgementsByMetaService'
+    condition: "request.attributes.get('version') >= 2.1"
+
 centreon_application_acknowledgement_disacknowledgeservice:
     methods: DELETE
     path: /monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements
@@ -64,6 +80,14 @@ centreon_application_acknowledgement_disacknowledgeservice:
         hostId: '\d+'
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeService'
+
+centreon_application_acknowledgement_disacknowledgemetaservice:
+    methods: DELETE
+    path: /monitoring/metaservices/{metaId}/acknowledgements
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeMetaService'
+    condition: "request.attributes.get('version') >= 2.1"
 
 centreon_application_acknowledgement_findacknowledgements:
     methods: GET

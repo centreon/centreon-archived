@@ -1,3 +1,4 @@
 module.exports = {
-  extends: './node_modules/@centreon/frontend-core/eslint/react/typescript.eslintrc.js',
+  extends:
+    './node_modules/@centreon/centreon-frontend/packages/frontend-config/eslint/react/typescript.eslintrc.js',
 };

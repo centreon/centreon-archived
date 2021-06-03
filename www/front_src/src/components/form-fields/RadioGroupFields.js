@@ -31,11 +31,11 @@ const RadioGroupField = ({ options, className, label, meta, ...rest }) => {
       <RadioField
         key={i}
         {...props}
-        value={getValue(item)}
-        label={t(getLabel(item))}
-        info={getInfo(item)}
         checked={getValue(item) === props.input.value}
         className={styles['radio-group-field__radio']}
+        info={getInfo(item)}
+        label={t(getLabel(item))}
+        value={getValue(item)}
       />
     ));
 

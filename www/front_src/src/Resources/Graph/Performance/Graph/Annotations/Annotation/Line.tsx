@@ -13,12 +13,12 @@ import useAnnotationsContext from '../../Context';
 import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
 type Props = {
-  color: string;
-  graphHeight: number;
-  xScale: ScaleTime<number, number>;
-  date: string;
   Icon: (props) => JSX.Element;
   ariaLabel: string;
+  color: string;
+  date: string;
+  graphHeight: number;
+  xScale: ScaleTime<number, number>;
 } & Omit<
   AnnotationProps,
   'marker' | 'xIcon' | 'header' | 'icon' | 'setAnnotationHovered'
@@ -62,40 +62,40 @@ const LineAnnotation = ({
   const line = (
     <Line
       from={{ x: xIcon, y: yMargin + iconSize + 2 }}
-      to={{ x: xIcon, y: graphHeight }}
       stroke={color}
-      strokeWidth={getStrokeWidth(prop('event', props))}
       strokeOpacity={getStrokeOpacity(prop('event', props))}
+      strokeWidth={getStrokeWidth(prop('event', props))}
+      to={{ x: xIcon, y: graphHeight }}
     />
   );
 
   const icon = (
     <Icon
       aria-label={ariaLabel}
+      className={classes.icon}
       height={iconSize}
-      width={iconSize}
       style={{
         color: getIconColor({
           color,
           event: prop('event', props),
         }),
       }}
-      className={classes.icon}
+      width={iconSize}
     />
   );
 
   return useMemoComponent({
     Component: (
       <Annotation
-        xIcon={xIcon + xIconMargin}
-        marker={line}
         header={header}
         icon={icon}
+        marker={line}
         setAnnotationHovered={setAnnotationHovered}
+        xIcon={xIcon + xIconMargin}
         {...props}
       />
     ),
-    memoProps: [annotationHovered],
+    memoProps: [annotationHovered, xIcon],
   });
 };
 

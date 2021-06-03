@@ -2,8 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { withSnackbar, ListingPage } from '@centreon/ui';
-import WithPanel from '@centreon/ui/src/Panel/WithPanel';
+import { withSnackbar, ListingPage, WithPanel } from '@centreon/ui';
 
 import Context from './Context';
 import Filter from './Filter';
@@ -25,12 +24,12 @@ const ResourcesPage = ({
   editPanelOpen,
   selectedResourceId,
 }: Props): JSX.Element => (
-  <WithPanel panel={<EditFiltersPanel />} open={editPanelOpen}>
+  <WithPanel open={editPanelOpen} panel={<EditFiltersPanel />}>
     <ListingPage
-      panelOpen={!isNil(selectedResourceId)}
       filters={<Filter />}
       listing={<Listing />}
       panel={<Details />}
+      panelOpen={!isNil(selectedResourceId)}
     />
   </WithPanel>
 );
@@ -38,8 +37,8 @@ const ResourcesPage = ({
 const memoProps = ['editPanelOpen', 'selectedResourceId'];
 
 const MemoizedResourcesPage = memoizeComponent<Props>({
-  memoProps,
   Component: ResourcesPage,
+  memoProps,
 });
 
 const Resources = (): JSX.Element => {

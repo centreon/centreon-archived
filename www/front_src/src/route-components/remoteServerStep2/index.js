@@ -24,15 +24,15 @@ class RemoteServerStepTwoRoute extends Component {
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
       path: routeMap.serverConfigurationWizard,
+      prevActive: true,
     },
     {
       active: true,
-      prevActive: true,
       number: 2,
       path: routeMap.remoteServerStep1,
+      prevActive: true,
     },
     { active: true, number: 3 },
     { active: false, number: 4 },

@@ -20,9 +20,9 @@ import useAclQuery from '../aclQuery';
 import { disacknowledgeResources } from './api';
 
 interface Props {
-  resources: Array<Resource>;
   onClose;
   onSuccess;
+  resources: Array<Resource>;
 }
 
 const DisacknowledgeForm = ({
@@ -32,10 +32,8 @@ const DisacknowledgeForm = ({
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
   const { showMessage } = useSnackbar();
-  const [
-    disacknowledgeAttachedResources,
-    setDisacknowledgeAttachedResources,
-  ] = React.useState(true);
+  const [disacknowledgeAttachedResources, setDisacknowledgeAttachedResources] =
+    React.useState(true);
 
   const {
     sendRequest: sendDisacknowledgeResources,
@@ -44,10 +42,8 @@ const DisacknowledgeForm = ({
     request: disacknowledgeResources,
   });
 
-  const {
-    getDisacknowledgementDeniedTypeAlert,
-    canDisacknowledgeServices,
-  } = useAclQuery();
+  const { getDisacknowledgementDeniedTypeAlert, canDisacknowledgeServices } =
+    useAclQuery();
 
   const deniedTypeAlert = getDisacknowledgementDeniedTypeAlert(resources);
 
@@ -64,8 +60,8 @@ const DisacknowledgeForm = ({
 
   const submitDisacknowledge = (): void => {
     sendDisacknowledgeResources({
-      resources,
       disacknowledgeAttachedResources,
+      resources,
     }).then(() => {
       showSuccess(t(labelDisacknowledgementCommandSent));
       onSuccess();
@@ -80,17 +76,17 @@ const DisacknowledgeForm = ({
 
   return (
     <Dialog
+      open
+      confirmDisabled={sendingDisacknowledgeResources}
       labelCancel={t(labelCancel)}
       labelConfirm={t(labelDisacknowledge)}
       labelTitle={t(labelDisacknowledge)}
-      open
-      onClose={onClose}
-      onCancel={onClose}
-      onConfirm={submitDisacknowledge}
-      confirmDisabled={sendingDisacknowledgeResources}
       submitting={sendingDisacknowledgeResources}
+      onCancel={onClose}
+      onClose={onClose}
+      onConfirm={submitDisacknowledge}
     >
-      <Grid direction="column" container spacing={1}>
+      <Grid container direction="column" spacing={1}>
         {deniedTypeAlert && (
           <Grid item>
             <Alert severity="warning">{deniedTypeAlert}</Alert>
@@ -105,11 +101,11 @@ const DisacknowledgeForm = ({
                     canDisacknowledgeServices() &&
                     disacknowledgeAttachedResources
                   }
+                  color="primary"
                   disabled={!canDisacknowledgeServices()}
                   inputProps={{ 'aria-label': t(labelDisacknowledgeServices) }}
-                  color="primary"
-                  onChange={changeDisacknowledgeAttachedRessources}
                   size="small"
+                  onChange={changeDisacknowledgeAttachedRessources}
                 />
               }
               label={t(labelDisacknowledgeServices)}

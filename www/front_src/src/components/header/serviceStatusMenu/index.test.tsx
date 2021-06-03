@@ -25,18 +25,18 @@ describe(ServiceMenu, () => {
           total: 4,
           unhandled: 4,
         },
-        warning: {
-          total: 3,
-          unhandled: 3,
-        },
+        ok: 1,
+        pending: 0,
+        refreshTime: 15,
+        total: 9,
         unknown: {
           total: 2,
           unhandled: 2,
         },
-        ok: 1,
-        pending: 0,
-        total: 9,
-        refreshTime: 15,
+        warning: {
+          total: 3,
+          unhandled: 3,
+        },
       },
     });
 

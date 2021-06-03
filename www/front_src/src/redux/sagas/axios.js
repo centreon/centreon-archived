@@ -34,7 +34,7 @@ export function* resetUploadProgress() {
 
 function* resetProgress(action) {
   try {
-    yield put({ type: actions.FILE_UPLOAD_PROGRESS, data: { reset: true } });
+    yield put({ data: { reset: true }, type: actions.FILE_UPLOAD_PROGRESS });
     action.resolve();
   } catch (err) {
     action.reject(err);
@@ -49,11 +49,11 @@ const upload = ({ files, url }, onProgress) => {
   }
 
   const config = {
-    onUploadProgress: onProgress,
-    withCredentials: true,
     headers: {
       'Content-Type': 'multipart/form-data',
     },
+    onUploadProgress: onProgress,
+    withCredentials: true,
   };
 
   return axios.post(url, data, config);
@@ -81,42 +81,42 @@ const createUploader = (action) => {
 function* watchOnProgress(channel) {
   while (true) {
     const data = yield take(channel);
-    yield put({ type: actions.FILE_UPLOAD_PROGRESS, data });
+    yield put({ data, type: actions.FILE_UPLOAD_PROGRESS });
   }
 }
 
 function* uploadRequest(action) {
   try {
     let data = {
-      status: false,
       result: {
         errors: [],
         successed: [],
       },
+      status: false,
     };
     const responses = yield all(
       action.files.map((file, idx) =>
-        call(uploadSource, { ...action, files: [file], fileIndex: idx }),
+        call(uploadSource, { ...action, fileIndex: idx, files: [file] }),
       ),
     );
 
     for (const response of responses) {
       if (response.result.errors) {
         data = {
-          status: true,
           result: {
             ...data.result,
             errors: [...data.result.errors, ...response.result.errors],
           },
+          status: true,
         };
       }
       if (response.result.successed) {
         data = {
-          status: true,
           result: {
             ...data.result,
             successed: [...data.result.successed, ...response.result.successed],
           },
+          status: true,
         };
       }
     }
@@ -159,7 +159,7 @@ function* axiosRequest(action) {
 
       const { propKey } = action;
       if (propKey) {
-        yield put({ type: actions.SET_AXIOS_DATA, data, propKey });
+        yield put({ data, propKey, type: actions.SET_AXIOS_DATA });
       }
       if (data) {
         action.resolve(data);

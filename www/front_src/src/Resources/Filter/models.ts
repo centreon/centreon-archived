@@ -21,15 +21,15 @@ import {
 } from './Criterias/models';
 
 export interface Filter {
+  criterias: Array<Criteria>;
   id: number | string;
   name: string;
-  criterias: Array<Criteria>;
 }
 
 const allFilter = {
+  criterias: getDefaultCriterias(),
   id: 'all',
   name: labelAll,
-  criterias: getDefaultCriterias(),
 };
 
 const newFilter = {
@@ -38,25 +38,25 @@ const newFilter = {
 } as Filter;
 
 const unhandledProblemsFilter: Filter = {
-  id: 'unhandled_problems',
-  name: labelUnhandledProblems,
   criterias: getDefaultCriterias({
     states: [unhandledState],
     statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
   }),
+  id: 'unhandled_problems',
+  name: labelUnhandledProblems,
 };
 
 const resourceProblemsFilter: Filter = {
-  id: 'resource_problems',
-  name: labelResourceProblems,
   criterias: getDefaultCriterias({
     statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
   }),
+  id: 'resource_problems',
+  name: labelResourceProblems,
 };
 
 const standardFilterById = {
-  resource_problems: resourceProblemsFilter,
   all: allFilter,
+  resource_problems: resourceProblemsFilter,
   unhandled_problems: unhandledProblemsFilter,
 };
 

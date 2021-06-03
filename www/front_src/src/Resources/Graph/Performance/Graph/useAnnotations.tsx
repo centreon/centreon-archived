@@ -25,31 +25,30 @@ import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 
 export interface Annotations {
   annotationHovered: TimelineEvent | undefined;
+  changeAnnotationHovered: (props: ChangeAnnotationHoveredProps) => void;
+  getFill: (props: GetColorProps) => string;
+  getIconColor: (props: GetColorProps) => string;
+  getStrokeOpacity: (event: TimelineEvent) => number;
+  getStrokeWidth: (event: TimelineEvent) => number;
   setAnnotationHovered: React.Dispatch<
     React.SetStateAction<TimelineEvent | undefined>
   >;
-  getStrokeWidth: (event: TimelineEvent) => number;
-  getStrokeOpacity: (event: TimelineEvent) => number;
-  getFill: (props: GetColorProps) => string;
-  getIconColor: (props: GetColorProps) => string;
-  changeAnnotationHovered: (props: ChangeAnnotationHoveredProps) => void;
 }
 
 interface GetColorProps {
-  event: TimelineEvent;
   color: string;
+  event: TimelineEvent;
 }
 
 interface ChangeAnnotationHoveredProps {
-  xScale: ScaleTime<number, number>;
   mouseX: number;
   timeline: Array<TimelineEvent> | undefined;
+  xScale: ScaleTime<number, number>;
 }
 
 export const useAnnotations = (graphWidth: number): Annotations => {
-  const [annotationHovered, setAnnotationHovered] = React.useState<
-    TimelineEvent | undefined
-  >(undefined);
+  const [annotationHovered, setAnnotationHovered] =
+    React.useState<TimelineEvent | undefined>(undefined);
 
   const getIsBetween = ({ xStart, xEnd }) => {
     const gteX = gte(__, xStart);
@@ -64,8 +63,8 @@ export const useAnnotations = (graphWidth: number): Annotations => {
     timeline,
   }: ChangeAnnotationHoveredProps): void => {
     const isWithinErrorMargin = getIsBetween({
-      xStart: dec(mouseX),
       xEnd: inc(mouseX),
+      xStart: dec(mouseX),
     });
 
     setAnnotationHovered(
@@ -75,10 +74,10 @@ export const useAnnotations = (graphWidth: number): Annotations => {
         }
 
         const isBetweenStartAndEndDate = getIsBetween({
-          xStart: xScale(new Date(startDate as string)),
           xEnd: xScale(
             endDate ? new Date(endDate) : last(xScale.domain()) || graphWidth,
           ),
+          xStart: xScale(new Date(startDate as string)),
         });
 
         return isBetweenStartAndEndDate(mouseX);
@@ -119,12 +118,12 @@ export const useAnnotations = (graphWidth: number): Annotations => {
 
   return {
     annotationHovered,
-    setAnnotationHovered,
-    getStrokeWidth,
-    getStrokeOpacity,
+    changeAnnotationHovered,
     getFill,
     getIconColor,
-    changeAnnotationHovered,
+    getStrokeOpacity,
+    getStrokeWidth,
+    setAnnotationHovered,
   };
 };
 

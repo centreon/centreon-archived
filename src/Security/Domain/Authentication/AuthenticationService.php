@@ -126,6 +126,9 @@ class AuthenticationService implements AuthenticationServiceInterface
         );
     }
 
+    /**
+     * @inheritDoc
+     */
     public function createAPIAuthenticationTokens(
         string $token,
         ContactInterface $contact,
@@ -147,6 +150,9 @@ class AuthenticationService implements AuthenticationServiceInterface
         );
     }
 
+    /**
+     * @inheritDoc
+     */
     public function deleteSession(string $sessionToken): void
     {
         $this->repository->deleteSession($sessionToken);

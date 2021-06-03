@@ -20,10 +20,10 @@ const MenuLoader = ({ width = 15 }: Props): JSX.Element => {
 
   return (
     <Skeleton
-      width={theme.spacing(width)}
-      height={theme.spacing(5)}
-      className={classes.skeleton}
       animation="wave"
+      className={classes.skeleton}
+      height={theme.spacing(5)}
+      width={theme.spacing(width)}
     />
   );
 };

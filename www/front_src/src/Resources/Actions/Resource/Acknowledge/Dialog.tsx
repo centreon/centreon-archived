@@ -24,14 +24,14 @@ import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
 
 interface Props {
-  resources: Array<Resource>;
   canConfirm: boolean;
+  errors?;
+  handleChange;
   onCancel;
   onConfirm;
-  errors?;
-  values;
-  handleChange;
+  resources: Array<Resource>;
   submitting: boolean;
+  values;
 }
 
 const DialogAcknowledge = ({
@@ -46,10 +46,8 @@ const DialogAcknowledge = ({
 }: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const {
-    getAcknowledgementDeniedTypeAlert,
-    canAcknowledgeServices,
-  } = useAclQuery();
+  const { getAcknowledgementDeniedTypeAlert, canAcknowledgeServices } =
+    useAclQuery();
 
   const deniedTypeAlert = getAcknowledgementDeniedTypeAlert(resources);
 
@@ -59,17 +57,17 @@ const DialogAcknowledge = ({
 
   return (
     <Dialog
+      confirmDisabled={!canConfirm}
       labelCancel={t(labelCancel)}
       labelConfirm={t(labelAcknowledge)}
       labelTitle={t(labelAcknowledge)}
       open={open}
-      onClose={onCancel}
-      onCancel={onCancel}
-      onConfirm={onConfirm}
-      confirmDisabled={!canConfirm}
       submitting={submitting}
+      onCancel={onCancel}
+      onClose={onCancel}
+      onConfirm={onConfirm}
     >
-      <Grid direction="column" container spacing={1}>
+      <Grid container direction="column" spacing={1}>
         {deniedTypeAlert && (
           <Grid item>
             <Alert severity="warning">{deniedTypeAlert}</Alert>
@@ -77,13 +75,13 @@ const DialogAcknowledge = ({
         )}
         <Grid item>
           <TextField
+            fullWidth
+            multiline
+            error={errors?.comment}
+            label={t(labelComment)}
+            rows={3}
             value={values.comment}
             onChange={handleChange('comment')}
-            multiline
-            label={t(labelComment)}
-            fullWidth
-            rows={3}
-            error={errors?.comment}
           />
         </Grid>
         <Grid item>
@@ -91,10 +89,10 @@ const DialogAcknowledge = ({
             control={
               <Checkbox
                 checked={values.notify}
-                inputProps={{ 'aria-label': t(labelNotify) }}
                 color="primary"
-                onChange={handleChange('notify')}
+                inputProps={{ 'aria-label': t(labelNotify) }}
                 size="small"
+                onChange={handleChange('notify')}
               />
             }
             label={t(labelNotify)}
@@ -110,11 +108,11 @@ const DialogAcknowledge = ({
                     canAcknowledgeServices() &&
                     values.acknowledgeAttachedResources
                   }
+                  color="primary"
                   disabled={!canAcknowledgeServices()}
                   inputProps={{ 'aria-label': t(labelAcknowledgeServices) }}
-                  color="primary"
-                  onChange={handleChange('acknowledgeAttachedResources')}
                   size="small"
+                  onChange={handleChange('acknowledgeAttachedResources')}
                 />
               }
               label={t(labelAcknowledgeServices)}

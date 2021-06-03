@@ -115,6 +115,7 @@ class SubmitResultController extends AbstractController
             if (
                 ($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
                 || ($resource['type'] === ResourceEntity::TYPE_SERVICE && $hasServiceRights)
+                || ($resource['type'] === ResourceEntity::TYPE_META && $hasServiceRights)
             ) {
                 continue;
             }
@@ -161,15 +162,18 @@ class SubmitResultController extends AbstractController
         foreach ($results['resources'] as $submitResource) {
             $result = (new SubmitResult($submitResource['id'], $submitResource['status']))
                 ->setOutput($submitResource['output'])
-                ->setPerformanceData($submitResource['performance_data'])
-                ->setParentResourceId($submitResource['parent']['id']);
+                ->setPerformanceData($submitResource['performance_data']);
             try {
                 if ($submitResource['type'] === ResourceEntity::TYPE_SERVICE) {
+                    $result->setParentResourceId($submitResource['parent']['id']);
                     $this->submitResultService
                         ->submitServiceResult($result);
                 } elseif ($submitResource['type'] === ResourceEntity::TYPE_HOST) {
                     $this->submitResultService
                         ->submitHostResult($result);
+                } elseif ($submitResource['type'] === ResourceEntity::TYPE_META) {
+                    $this->submitResultService
+                        ->submitMetaServiceResult($result);
                 }
             } catch (EntityNotFoundException $e) {
                 throw $e;

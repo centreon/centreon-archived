@@ -75,6 +75,15 @@ interface MonitoringServiceInterface extends ContactFilterInterface
     public function findOneService(int $hostId, int $serviceId): ?Service;
 
     /**
+     * Find a service based on its description
+     *
+     * @param string $description description of the service
+     * @return Service|null
+     * @throws \Exception
+     */
+    public function findOneServiceByDescription(string $description): ?Service;
+
+    /**
      * Find all service groups.
      *
      * @param bool $withHosts Indicates whether service groups must be completed with their hosts

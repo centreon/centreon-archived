@@ -3,7 +3,7 @@ import * as React from 'react';
 import { all, head, pathEq, pick } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { ButtonProps, Grid, Menu, MenuItem } from '@material-ui/core';
+import { makeStyles, Menu, MenuItem } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 import IconMore from '@material-ui/icons/MoreHoriz';
@@ -13,6 +13,7 @@ import {
   Severity,
   useSnackbar,
   SeverityCode,
+  IconButton,
 } from '@centreon/ui';
 
 import IconDowntime from '../../icons/Downtime';
@@ -30,7 +31,6 @@ import {
 import { ResourceContext, useResourceContext } from '../../Context';
 import { checkResources } from '../api';
 import { Resource } from '../../models';
-import ActionButton from '../ActionButton';
 import AddCommentForm from '../../Graph/Performance/Graph/AddCommentForm';
 import memoizeComponent from '../../memoizedComponent';
 
@@ -39,10 +39,17 @@ import DowntimeForm from './Downtime';
 import AcknowledgeForm from './Acknowledge';
 import DisacknowledgeForm from './Disacknowledge';
 import SubmitStatusForm from './SubmitStatus';
+import ResourceActionButton from './ResourceActionButton';
 
-const ContainedActionButton = (props: ButtonProps): JSX.Element => (
-  <ActionButton variant="contained" {...props} />
-);
+const useStyles = makeStyles((theme) => ({
+  action: {
+    marginRight: theme.spacing(1),
+  },
+  flex: {
+    alignItems: 'center',
+    display: 'flex',
+  },
+}));
 
 type Props = Pick<
   ResourceContext,
@@ -71,21 +78,16 @@ const ResourceActionsContent = ({
   setResourcesToDisacknowledge,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
+  const classes = useStyles();
   const { cancel, token } = useCancelTokenSource();
   const { showMessage } = useSnackbar();
-  const [
-    moreActionsMenuAnchor,
-    setMoreActionsMenuAnchor,
-  ] = React.useState<Element | null>(null);
+  const [moreActionsMenuAnchor, setMoreActionsMenuAnchor] =
+    React.useState<Element | null>(null);
 
-  const [
-    resourceToSubmitStatus,
-    setResourceToSubmitStatus,
-  ] = React.useState<Resource | null>();
-  const [
-    resourceToComment,
-    setResourceToComment,
-  ] = React.useState<Resource | null>();
+  const [resourceToSubmitStatus, setResourceToSubmitStatus] =
+    React.useState<Resource | null>();
+  const [resourceToComment, setResourceToComment] =
+    React.useState<Resource | null>();
 
   const showError = (message): void =>
     showMessage({ message, severity: Severity.error });
@@ -119,8 +121,8 @@ const ResourceActionsContent = ({
     }
 
     checkResources({
-      resources: resourcesToCheck,
       cancelToken: token,
+      resources: resourcesToCheck,
     })
       .then(() => {
         confirmAction();
@@ -210,98 +212,99 @@ const ResourceActionsContent = ({
     selectedResources.length !== 1 || !canComment(selectedResources);
 
   return (
-    <Grid container spacing={1}>
-      <Grid item>
-        <ContainedActionButton
-          disabled={disableAcknowledge}
-          startIcon={<IconAcknowledge />}
-          onClick={prepareToAcknowledge}
+    <div className={classes.flex}>
+      <div className={classes.flex}>
+        <div className={classes.action}>
+          <ResourceActionButton
+            disabled={disableAcknowledge}
+            icon={<IconAcknowledge />}
+            label={t(labelAcknowledge)}
+            onClick={prepareToAcknowledge}
+          />
+        </div>
+        <div className={classes.action}>
+          <ResourceActionButton
+            disabled={disableDowntime}
+            icon={<IconDowntime />}
+            label={t(labelSetDowntime)}
+            onClick={prepareToSetDowntime}
+          />
+        </div>
+        <div className={classes.action}>
+          <ResourceActionButton
+            disabled={disableCheck}
+            icon={<IconCheck />}
+            label={t(labelCheck)}
+            onClick={prepareToCheck}
+          />
+        </div>
+        {resourcesToAcknowledge.length > 0 && (
+          <AcknowledgeForm
+            resources={resourcesToAcknowledge}
+            onClose={cancelAcknowledge}
+            onSuccess={confirmAction}
+          />
+        )}
+        {resourcesToSetDowntime.length > 0 && (
+          <DowntimeForm
+            resources={resourcesToSetDowntime}
+            onClose={cancelSetDowntime}
+            onSuccess={confirmAction}
+          />
+        )}
+        {resourcesToDisacknowledge.length > 0 && (
+          <DisacknowledgeForm
+            resources={resourcesToDisacknowledge}
+            onClose={cancelDisacknowledge}
+            onSuccess={confirmAction}
+          />
+        )}
+        {resourceToSubmitStatus && (
+          <SubmitStatusForm
+            resource={resourceToSubmitStatus}
+            onClose={cancelSubmitStatus}
+            onSuccess={confirmAction}
+          />
+        )}
+        {resourceToComment && (
+          <AddCommentForm
+            date={new Date()}
+            resource={resourceToComment as Resource}
+            onClose={cancelComment}
+            onSuccess={confirmAction}
+          />
+        )}
+      </div>
+
+      <div className={classes.flex}>
+        <IconButton title={t(labelMoreActions)} onClick={openMoreActionsMenu}>
+          <IconMore color="primary" fontSize="small" />
+        </IconButton>
+      </div>
+
+      <Menu
+        keepMounted
+        anchorEl={moreActionsMenuAnchor}
+        open={Boolean(moreActionsMenuAnchor)}
+        onClose={closeMoreActionsMenu}
+      >
+        <MenuItem
+          disabled={disableDisacknowledge}
+          onClick={prepareToDisacknowledge}
         >
-          {t(labelAcknowledge)}
-        </ContainedActionButton>
-      </Grid>
-      <Grid item>
-        <ContainedActionButton
-          disabled={disableDowntime}
-          startIcon={<IconDowntime />}
-          onClick={prepareToSetDowntime}
+          {t(labelDisacknowledge)}
+        </MenuItem>
+        <MenuItem
+          disabled={disableSubmitStatus}
+          onClick={prepareToSubmitStatus}
         >
-          {t(labelSetDowntime)}
-        </ContainedActionButton>
-      </Grid>
-      <Grid item>
-        <ContainedActionButton
-          disabled={disableCheck}
-          startIcon={<IconCheck />}
-          onClick={prepareToCheck}
-        >
-          {t(labelCheck)}
-        </ContainedActionButton>
-      </Grid>
-      <Grid item>
-        <ActionButton startIcon={<IconMore />} onClick={openMoreActionsMenu}>
-          {t(labelMoreActions)}
-        </ActionButton>
-        <Menu
-          anchorEl={moreActionsMenuAnchor}
-          keepMounted
-          open={Boolean(moreActionsMenuAnchor)}
-          onClose={closeMoreActionsMenu}
-        >
-          <MenuItem
-            disabled={disableDisacknowledge}
-            onClick={prepareToDisacknowledge}
-          >
-            {t(labelDisacknowledge)}
-          </MenuItem>
-          <MenuItem
-            disabled={disableSubmitStatus}
-            onClick={prepareToSubmitStatus}
-          >
-            {t(labelSubmitStatus)}
-          </MenuItem>
-          <MenuItem disabled={disableAddComment} onClick={prepareToAddComment}>
-            {t(labelAddComment)}
-          </MenuItem>
-        </Menu>
-      </Grid>
-      {resourcesToAcknowledge.length > 0 && (
-        <AcknowledgeForm
-          resources={resourcesToAcknowledge}
-          onClose={cancelAcknowledge}
-          onSuccess={confirmAction}
-        />
-      )}
-      {resourcesToSetDowntime.length > 0 && (
-        <DowntimeForm
-          resources={resourcesToSetDowntime}
-          onClose={cancelSetDowntime}
-          onSuccess={confirmAction}
-        />
-      )}
-      {resourcesToDisacknowledge.length > 0 && (
-        <DisacknowledgeForm
-          resources={resourcesToDisacknowledge}
-          onClose={cancelDisacknowledge}
-          onSuccess={confirmAction}
-        />
-      )}
-      {resourceToSubmitStatus && (
-        <SubmitStatusForm
-          resource={resourceToSubmitStatus}
-          onClose={cancelSubmitStatus}
-          onSuccess={confirmAction}
-        />
-      )}
-      {resourceToComment && (
-        <AddCommentForm
-          resource={resourceToComment as Resource}
-          onClose={cancelComment}
-          onSuccess={confirmAction}
-          date={new Date()}
-        />
-      )}
-    </Grid>
+          {t(labelSubmitStatus)}
+        </MenuItem>
+        <MenuItem disabled={disableAddComment} onClick={prepareToAddComment}>
+          {t(labelAddComment)}
+        </MenuItem>
+      </Menu>
+    </div>
   );
 };
 
@@ -314,8 +317,8 @@ const memoProps = [
 ];
 
 const MemoizedResourceActionsContent = memoizeComponent<Props>({
-  memoProps,
   Component: ResourceActionsContent,
+  memoProps,
 });
 
 const functionProps = [

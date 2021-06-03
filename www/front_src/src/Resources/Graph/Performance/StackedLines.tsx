@@ -9,10 +9,10 @@ import { getFillColor } from './Lines';
 import { getTime } from './timeSeries';
 
 interface Props {
-  timeSeries: Array<TimeValue>;
   lines: Array<Line>;
-  yScale: ScaleLinear<number, number>;
+  timeSeries: Array<TimeValue>;
   xScale: ScaleTime<number, number>;
+  yScale: ScaleLinear<number, number>;
 }
 
 const StackLines = ({
@@ -22,18 +22,18 @@ const StackLines = ({
   xScale,
 }: Props): JSX.Element => (
   <AreaStack
-    data={timeSeries}
-    keys={map(prop('metric'), lines)}
-    x={(d): number => xScale(getTime(d.data)) ?? 0}
-    y0={(d): number => yScale(d[0]) ?? 0}
-    y1={(d): number => yScale(d[1]) ?? 0}
     curve={curveBasis}
+    data={timeSeries}
     defined={(d): boolean => {
       return pipe(
         map(prop('metric')) as (lines) => Array<string>,
         all((metric) => pipe(path(['data', metric]), isNil, not)(d)),
       )(lines);
     }}
+    keys={map(prop('metric'), lines)}
+    x={(d): number => xScale(getTime(d.data)) ?? 0}
+    y0={(d): number => yScale(d[0]) ?? 0}
+    y1={(d): number => yScale(d[1]) ?? 0}
   >
     {({ stacks, path: linePath }): Array<JSX.Element> => {
       return stacks.map((stack, index) => {
@@ -43,12 +43,12 @@ const StackLines = ({
         ) as Line;
         return (
           <path
-            key={`stack-${prop('key', stack)}`}
             d={linePath(stack) || ''}
-            stroke={lineColor}
-            fill={getFillColor({ transparency, areaColor })}
-            strokeWidth={highlight ? 2 : 1}
+            fill={getFillColor({ areaColor, transparency })}
+            key={`stack-${prop('key', stack)}`}
             opacity={highlight === false ? 0.3 : 1}
+            stroke={lineColor}
+            strokeWidth={highlight ? 2 : 1}
           />
         );
       });

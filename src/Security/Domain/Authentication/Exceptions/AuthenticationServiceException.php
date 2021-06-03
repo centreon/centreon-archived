@@ -47,26 +47,41 @@ class AuthenticationServiceException extends \Exception
         return new self(sprintf(_('Provider configuration (%s) not found'), $configurationName));
     }
 
+    /**
+     * @return self
+     */
     public static function refreshTokenException(): self
     {
         return new self(_('Error while refresh token'));
     }
 
+    /**
+     * @return self
+     */
     public static function sessionExpiredException(): self
     {
         return new self(_('Your session has expired'));
     }
 
+    /**
+     * @return self
+     */
     public static function providerNotFoundException(): self
     {
         return new self(_('Provider not found'));
     }
 
+    /**
+     * @return self
+     */
     public static function sessionTokenNotFoundException(): self
     {
         return new self(_('Session token not found'));
     }
 
+    /**
+     * @return self
+     */
     public static function sessionNotFoundException(): self
     {
         return new self(_('Session not found'));

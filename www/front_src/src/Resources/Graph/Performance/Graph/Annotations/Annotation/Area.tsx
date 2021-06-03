@@ -14,13 +14,13 @@ import useAnnotationsContext from '../../Context';
 import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
 type Props = {
-  color: string;
-  graphHeight: number;
-  xScale: ScaleTime<number, number>;
-  startDate: string;
-  endDate: string;
   Icon: (props) => JSX.Element;
   ariaLabel: string;
+  color: string;
+  endDate: string;
+  graphHeight: number;
+  startDate: string;
+  xScale: ScaleTime<number, number>;
 } & Omit<
   AnnotationProps,
   'marker' | 'xIcon' | 'header' | 'icon' | 'setAnnotationHovered'
@@ -48,12 +48,8 @@ const AreaAnnotation = ({
 
   const classes = useStyles();
 
-  const {
-    annotationHovered,
-    setAnnotationHovered,
-    getFill,
-    getIconColor,
-  } = useAnnotationsContext();
+  const { annotationHovered, setAnnotationHovered, getFill, getIconColor } =
+    useAnnotationsContext();
 
   const xIconMargin = -iconSize / 2;
 
@@ -62,11 +58,11 @@ const AreaAnnotation = ({
 
   const area = (
     <Bar
+      fill={getFill({ color, event: prop('event', props) })}
+      height={graphHeight + iconSize / 2}
+      width={xEnd - xStart}
       x={xStart}
       y={yMargin + iconSize + 2}
-      width={xEnd - xStart}
-      height={graphHeight + iconSize / 2}
-      fill={getFill({ event: prop('event', props), color })}
       onMouseEnter={() => setAnnotationHovered(() => prop('event', props))}
       onMouseLeave={() => setAnnotationHovered(() => undefined)}
     />
@@ -80,30 +76,30 @@ const AreaAnnotation = ({
   const icon = (
     <Icon
       aria-label={ariaLabel}
-      height={iconSize}
-      width={iconSize}
       className={classes.icon}
+      height={iconSize}
       style={{
         color: getIconColor({
           color,
           event: prop('event', props),
         }),
       }}
+      width={iconSize}
     />
   );
 
   return useMemoComponent({
     Component: (
       <Annotation
-        xIcon={xStart + (xEnd - xStart) / 2 + xIconMargin}
-        marker={area}
         header={header}
         icon={icon}
+        marker={area}
         setAnnotationHovered={setAnnotationHovered}
+        xIcon={xStart + (xEnd - xStart) / 2 + xIconMargin}
         {...props}
       />
     ),
-    memoProps: [annotationHovered],
+    memoProps: [annotationHovered, xStart, xEnd],
   });
 };
 

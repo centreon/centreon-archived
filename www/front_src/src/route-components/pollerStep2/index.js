@@ -23,11 +23,11 @@ class PollerStepTwoRoute extends Component {
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
       path: routeMap.serverConfigurationWizard,
+      prevActive: true,
     },
-    { active: true, prevActive: true, number: 2, path: routeMap.pollerStep1 },
+    { active: true, number: 2, path: routeMap.pollerStep1, prevActive: true },
     { active: true, number: 3 },
     { active: false, number: 4 },
   ];
@@ -77,8 +77,8 @@ class PollerStepTwoRoute extends Component {
       <BaseWizard>
         <ProgressBar links={links} />
         <Form
-          pollers={pollers}
           initialValues={pollerData}
+          pollers={pollers}
           onSubmit={this.handleSubmit.bind(this)}
         />
       </BaseWizard>

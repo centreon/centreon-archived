@@ -9,13 +9,13 @@ import LineAnnotation from './Annotation/Line';
 import AreaAnnotation from './Annotation/Area';
 
 interface Props {
-  type: string;
-  xScale: ScaleTime<number, number>;
-  timeline: Array<TimelineEvent>;
-  graphHeight: number;
   Icon: (props) => JSX.Element;
   ariaLabel: string;
   color: string;
+  graphHeight: number;
+  timeline: Array<TimelineEvent>;
+  type: string;
+  xScale: ScaleTime<number, number>;
 }
 
 const EventAnnotations = ({
@@ -35,21 +35,21 @@ const EventAnnotations = ({
         const props = {
           Icon,
           ariaLabel,
-          graphHeight,
           color,
-          xScale,
           event,
+          graphHeight,
+          xScale,
         };
 
         if (isNil(event.startDate) && isNil(event.endDate)) {
-          return <LineAnnotation key={event.id} date={event.date} {...props} />;
+          return <LineAnnotation date={event.date} key={event.id} {...props} />;
         }
 
         return (
           <AreaAnnotation
+            endDate={event.endDate as string}
             key={event.id}
             startDate={event.startDate as string}
-            endDate={event.endDate as string}
             {...props}
           />
         );

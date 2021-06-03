@@ -52,7 +52,6 @@ class Authenticate
      * @param AuthenticationServiceInterface $authenticationService
      * @param ContactServiceInterface $contactService
      * @param SessionInterface $session
-     * @param OptionServiceInterface $optionService
      */
     public function __construct(
         AuthenticationServiceInterface $authenticationService,

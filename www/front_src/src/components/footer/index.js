@@ -23,8 +23,8 @@ class Footer extends Component {
               <li className={styles['footer-list-item']}>
                 <a
                   href="https://documentation.centreon.com/"
-                  target="_blank"
                   rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Documentation
                 </a>
@@ -32,8 +32,8 @@ class Footer extends Component {
               <li className={styles['footer-list-item']}>
                 <a
                   href="https://support.centreon.com"
-                  target="_blank"
                   rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Centreon Support
                 </a>
@@ -41,8 +41,8 @@ class Footer extends Component {
               <li className={styles['footer-list-item']}>
                 <a
                   href="https://www.centreon.com"
-                  target="_blank"
                   rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Centreon
                 </a>
@@ -50,8 +50,8 @@ class Footer extends Component {
               <li className={styles['footer-list-item']}>
                 <a
                   href="https://github.com/centreon/centreon.git"
-                  target="_blank"
                   rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Github Project
                 </a>
@@ -59,8 +59,8 @@ class Footer extends Component {
               <li className={styles['footer-list-item']}>
                 <a
                   href="https://centreon.github.io"
-                  target="_blank"
                   rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Slack
                 </a>

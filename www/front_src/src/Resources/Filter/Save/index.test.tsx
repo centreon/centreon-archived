@@ -57,13 +57,11 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const filterId = 0;
 
 const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
-  id: filterId,
-  name,
   criterias: [
     {
       name: 'resource_types',
-      type: 'multi_select',
       object_type: null,
+      type: 'multi_select',
       value: [
         {
           id: 'host',
@@ -73,8 +71,8 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
     },
     {
       name: 'states',
-      type: 'multi_select',
       object_type: null,
+      type: 'multi_select',
       value: [
         {
           id: 'unhandled_problems',
@@ -84,8 +82,8 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
     },
     {
       name: 'statuses',
-      type: 'multi_select',
       object_type: null,
+      type: 'multi_select',
       value: [
         {
           id: 'OK',
@@ -95,6 +93,7 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
     },
     {
       name: 'host_groups',
+      object_type: 'host_groups',
       type: 'multi_select',
       value: [
         {
@@ -102,10 +101,10 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
           name: 'Linux-servers',
         },
       ],
-      object_type: 'host_groups',
     },
     {
       name: 'service_groups',
+      object_type: 'service_groups',
       type: 'multi_select',
       value: [
         {
@@ -113,30 +112,31 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
           name: 'Web-services',
         },
       ],
-      object_type: 'service_groups',
     },
     {
       name: 'search',
+      object_type: null,
       type: 'text',
       value: search,
-      object_type: null,
     },
     {
       name: 'sort',
+      object_type: null,
       type: 'array',
       value: [defaultSortField, defaultSortOrder],
-      object_type: null,
     },
   ],
+  id: filterId,
+  name,
 });
 
 const retrievedCustomFilters = {
-  result: [getFilter({})],
   meta: {
-    page: 1,
     limit: 30,
+    page: 1,
     total: 1,
   },
+  result: [getFilter({})],
 };
 
 const getCustomFilter = (): Filter =>

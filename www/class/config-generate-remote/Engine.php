@@ -120,7 +120,6 @@ class Engine extends AbstractObject
         log_external_commands,
         log_passive_checks,
         auto_reschedule_checks,
-        use_aggressive_host_checking,
         soft_state_dependencies,
         obsess_over_services,
         obsess_over_hosts,

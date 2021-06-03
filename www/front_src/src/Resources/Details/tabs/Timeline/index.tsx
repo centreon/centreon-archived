@@ -40,14 +40,13 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     name: t(type.name),
   })) as Array<Type>;
 
-  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
-    translatedTypes,
-  );
+  const [selectedTypes, setSelectedTypes] =
+    React.useState<Array<Type>>(translatedTypes);
   const limit = 30;
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
-    request: listTimelineEvents,
     decoder: listTimelineEventsDecoder,
+    request: listTimelineEvents,
   });
 
   const getSearch = (): SearchParameter | undefined => {
@@ -75,8 +74,8 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        page: atPage,
         limit,
+        page: atPage,
         search: getSearch(),
       },
     });
@@ -89,29 +88,29 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   return (
     <InfiniteScroll
       details={details}
-      sendListingRequest={listTimeline}
-      loading={sending}
-      limit={limit}
-      loadingSkeleton={<LoadingSkeleton />}
-      reloadDependencies={[selectedTypes]}
       filter={
         <Paper className={classes.filter}>
           <MultiAutocompleteField
-            label={t(labelEvent)}
-            onChange={changeSelectedTypes}
-            value={selectedTypes}
-            options={translatedTypes}
             fullWidth
+            label={t(labelEvent)}
             limitTags={3}
+            options={translatedTypes}
+            value={selectedTypes}
+            onChange={changeSelectedTypes}
           />
         </Paper>
       }
+      limit={limit}
+      loading={sending}
+      loadingSkeleton={<LoadingSkeleton />}
+      reloadDependencies={[selectedTypes]}
+      sendListingRequest={listTimeline}
     >
       {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
         return (
           <Events
-            timeline={entities}
             infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+            timeline={entities}
           />
         );
       }}

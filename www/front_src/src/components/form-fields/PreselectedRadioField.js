@@ -20,15 +20,15 @@ const RadioField = ({ checked, error, label, info, className, ...rest }) => (
     )}
   >
     <input
+      info
+      aria-checked={checked}
+      checked={checked}
       className={styles['form-check-input']}
       type="radio"
-      checked={checked}
-      aria-checked={checked}
-      info
       {...prepareInputProps(rest)}
     />
 
-    <label htmlFor={rest.id} className={styles['custom-control-label']}>
+    <label className={styles['custom-control-label']} htmlFor={rest.id}>
       {label}
       {info}
     </label>

@@ -99,11 +99,11 @@ const fieldHoc = (WrapComponent) => {
           {...input}
           {...rest}
           {...extra}
-          label={label}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          id={this.getId()}
           error={this.renderError()}
+          id={this.getId()}
+          label={label}
+          onBlur={this.handleBlur}
+          onFocus={this.handleFocus}
         />
       );
     }
@@ -112,11 +112,11 @@ const fieldHoc = (WrapComponent) => {
   FieldHoc.displayName = `FieldHoc(${WrapComponent.displayName})`;
 
   FieldHoc.propTypes = {
-    meta: PropTypes.object.isRequired,
     input: PropTypes.object.isRequired,
     label: PropTypes.string,
-    onFocus: PropTypes.func,
+    meta: PropTypes.object.isRequired,
     onBlur: PropTypes.func,
+    onFocus: PropTypes.func,
   };
 
   return FieldHoc;

@@ -80,7 +80,6 @@ $release = $dbResult->fetchRow();
                     <p>Adrien Gelibert</p>
                     <p>Adrien Morais</p>
                     <p>Bruno D'auria</p>
-                    <p>Colin Gagnaire</p>
                     <p>David Boucher</p>
                     <p>Etienne Gautier</p>
                     <p>Jérémy Delpierre</p>
@@ -162,6 +161,9 @@ $release = $dbResult->fetchRow();
                         <tr>
                             <td>Ira Janssen</td>
                             <td>SuL</td>
+                        </tr>
+                        <tr>
+                            <td>Colin Gagnaire</td>
                         </tr>
                         <tr>
                             <td colspan="2">
