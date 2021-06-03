@@ -51,7 +51,7 @@ class AuthenticateRequest
     /**
      * Get credentials
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getCredentials(): array
     {
