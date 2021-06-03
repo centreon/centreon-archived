@@ -16142,10 +16142,10 @@ msgid "The duration must be lesser than a year"
 msgstr "La durée doit être inférieure à une année"
 
 #  msgid "Current"
-#  msgstr "Taille courante"
+#  msgstr "Courante"
 
 #  msgid "Medium"
-#  msgstr "Taille moyenne"
+#  msgstr "Moyenne"
 
 #  msgid "Small"
-#  msgstr "Taille petite"
+#  msgstr "Petite"
