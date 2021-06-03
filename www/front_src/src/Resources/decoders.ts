@@ -5,6 +5,7 @@ import {
   Notes,
   Parent,
   Resource,
+  ResourceAdditionals,
   ResourceEndpoints,
   ResourceExternals,
   ResourceLinks,
@@ -25,6 +26,16 @@ const statusDecoder = JsonDecoder.object<Status>(
 const commonDecoders = {
   acknowledged: JsonDecoder.optional(JsonDecoder.boolean),
   active_checks: JsonDecoder.optional(JsonDecoder.boolean),
+  additionals: JsonDecoder.optional(
+    JsonDecoder.object<ResourceAdditionals>(
+      {
+        calculation_method: JsonDecoder.string,
+        calculation_ratio_mode: JsonDecoder.optional(JsonDecoder.string),
+        health: JsonDecoder.optional(JsonDecoder.number),
+      },
+      'ResourceAdditionals',
+    ),
+  ),
   duration: JsonDecoder.optional(JsonDecoder.string),
   icon: JsonDecoder.optional(
     JsonDecoder.object<Icon>(
@@ -38,7 +49,6 @@ const commonDecoders = {
   id: JsonDecoder.number,
   in_downtime: JsonDecoder.optional(JsonDecoder.boolean),
   information: JsonDecoder.optional(JsonDecoder.string),
-
   last_check: JsonDecoder.optional(JsonDecoder.string),
   links: JsonDecoder.optional(
     JsonDecoder.object<ResourceLinks>(
@@ -55,20 +65,22 @@ const commonDecoders = {
           },
           'ResourceLinksEndpoints',
         ),
-        externals: JsonDecoder.object<ResourceExternals>(
-          {
-            action_url: JsonDecoder.optional(JsonDecoder.string),
-            notes: JsonDecoder.optional(
-              JsonDecoder.object<Notes>(
-                {
-                  label: JsonDecoder.optional(JsonDecoder.string),
-                  url: JsonDecoder.string,
-                },
-                'ResourceLinksExternalNotes',
+        externals: JsonDecoder.optional(
+          JsonDecoder.object<ResourceExternals>(
+            {
+              action_url: JsonDecoder.optional(JsonDecoder.string),
+              notes: JsonDecoder.optional(
+                JsonDecoder.object<Notes>(
+                  {
+                    label: JsonDecoder.optional(JsonDecoder.string),
+                    url: JsonDecoder.string,
+                  },
+                  'ResourceLinksExternalNotes',
+                ),
               ),
-            ),
-          },
-          'ResourceLinksExternals',
+            },
+            'ResourceLinksExternals',
+          ),
         ),
         uris: JsonDecoder.object<ResourceUris>(
           {
@@ -91,6 +103,7 @@ const commonDecoders = {
       JsonDecoder.isExactly('h'),
       JsonDecoder.isExactly('m'),
       JsonDecoder.isExactly('s'),
+      JsonDecoder.isExactly('a'),
     ],
     'ResourceShortType',
   ),
@@ -101,6 +114,7 @@ const commonDecoders = {
       JsonDecoder.isExactly('host'),
       JsonDecoder.isExactly('metaservice'),
       JsonDecoder.isExactly('service'),
+      JsonDecoder.isExactly('business-activity'),
     ],
     'ResourceType',
   ),
