@@ -104,7 +104,7 @@ paths:
       tags:
         - Authentication
       summary: "Login redirection"
-      description: "Entre point to redirect user for his authentication"
+      description: "Entry point to redirect user for his authentication"
       responses:
         '302':
           description: "Found"
