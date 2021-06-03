@@ -424,7 +424,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     private function buildDefaultPage(array $defaultPage): string
     {
-
         if ($defaultPage['is_react'] === "1") {
             // redirect to the react path
             $redirectUri = $defaultPage['topology_url'];
