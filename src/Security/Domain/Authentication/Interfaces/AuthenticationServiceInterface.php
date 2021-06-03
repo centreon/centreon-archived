@@ -93,12 +93,6 @@ interface AuthenticationServiceInterface
      */
     public function findProvidersConfigurations(): array;
 
-
-    /**
-     * @inheritDoc
-     */
-    public function deleteTokenFromContact(string $authToken): void;
-
     /**
      * Find a provider by configuration id.
      *

@@ -167,19 +167,6 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
-     * @inheritDoc
-     */
-    public function deleteTokenFromContact(string $authToken): void
-    {
-        //@TODO: reimplement this
-        $token = $this->findAuthenticationTokensByToken($authToken);
-        if ($token !== null) {
-            $this->repository->deleteSession(
-                $token->getSessionToken()
-            );
-        }
-    }
-    /**
      * Check if the session is valid.
      *
      * @param string $sessionToken Session token
