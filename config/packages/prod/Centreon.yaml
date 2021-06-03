@@ -300,6 +300,9 @@ services:
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
 
+    Centreon\Domain\Authentication\UseCase\Authenticate:
+        arguments: [ "%redirect_default_page%" ]
+        public: true
 
     Centreon\Domain\Authentication\UseCase\AuthenticateAPI:
         public: true

@@ -30,15 +30,6 @@ namespace Security\Domain\Authentication\Exceptions;
 class AuthenticationServiceException extends \Exception
 {
     /**
-     * @param array<string, mixed> $data
-     * @return self
-     */
-    public static function providerNotFound(array $data): self
-    {
-        return new self(sprintf(_('Provider (%s) not found'), $data['name'] ?? $data['id'] ?? null));
-    }
-
-    /**
      * @param string $configurationName
      * @return self
      */
@@ -50,7 +41,7 @@ class AuthenticationServiceException extends \Exception
     /**
      * @return self
      */
-    public static function refreshTokenException(): self
+    public static function refreshToken(): self
     {
         return new self(_('Error while refresh token'));
     }
@@ -58,7 +49,7 @@ class AuthenticationServiceException extends \Exception
     /**
      * @return self
      */
-    public static function sessionExpiredException(): self
+    public static function sessionExpired(): self
     {
         return new self(_('Your session has expired'));
     }
@@ -66,7 +57,7 @@ class AuthenticationServiceException extends \Exception
     /**
      * @return self
      */
-    public static function providerNotFoundException(): self
+    public static function providerNotFound(): self
     {
         return new self(_('Provider not found'));
     }
@@ -74,7 +65,7 @@ class AuthenticationServiceException extends \Exception
     /**
      * @return self
      */
-    public static function sessionTokenNotFoundException(): self
+    public static function sessionTokenNotFound(): self
     {
         return new self(_('Session token not found'));
     }
@@ -82,7 +73,7 @@ class AuthenticationServiceException extends \Exception
     /**
      * @return self
      */
-    public static function sessionNotFoundException(): self
+    public static function sessionNotFound(): self
     {
         return new self(_('Session not found'));
     }

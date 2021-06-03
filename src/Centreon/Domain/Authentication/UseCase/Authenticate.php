@@ -22,9 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
-use Security\Domain\Authentication\Model\ProviderToken;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
@@ -32,7 +30,6 @@ use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 
 class Authenticate
 {
-    public const REDIRECT_DEFAULT_PAGE = "/monitoring/resources";
     /**
      * @var AuthenticationServiceInterface
      */
@@ -44,20 +41,28 @@ class Authenticate
     private $contactService;
 
     /**
+     * @var string
+     */
+    private $redirectDefaultPage;
+
+    /**
      * @var SessionInterface
      */
     private $session;
 
     /**
+     * @param string $redirectDefaultPage
      * @param AuthenticationServiceInterface $authenticationService
      * @param ContactServiceInterface $contactService
      * @param SessionInterface $session
      */
     public function __construct(
+        string $redirectDefaultPage,
         AuthenticationServiceInterface $authenticationService,
         ContactServiceInterface $contactService,
         SessionInterface $session
     ) {
+        $this->redirectDefaultPage = $redirectDefaultPage;
         $this->authenticationService = $authenticationService;
         $this->contactService = $contactService;
         $this->session = $session;
@@ -84,19 +89,19 @@ class Authenticate
         $authenticationProvider->authenticate($request->getCredentials());
 
         if (!$authenticationProvider->isAuthenticated()) {
-            throw AuthenticationException::notAuthenticatedException();
+            throw AuthenticationException::notAuthenticated();
         }
 
         $providerUser = $authenticationProvider->getUser();
         if ($providerUser === null) {
-            throw AuthenticationException::userNotFoundException();
+            throw AuthenticationException::userNotFound();
         }
 
         if (!$this->contactService->exists($providerUser)) {
             if ($authenticationProvider->canCreateUser()) {
                 $this->contactService->addUser($providerUser);
             } else {
-                throw AuthenticationException::cannotCreateUserException();
+                throw AuthenticationException::cannotCreateUser();
             }
         } else {
             $this->contactService->updateUser($providerUser);
@@ -119,7 +124,7 @@ class Authenticate
         if ($providerUser->getDefaultPage() !== null) {
             return $providerUser->getDefaultPage();
         } else {
-            return self::REDIRECT_DEFAULT_PAGE;
+            return $this->redirectDefaultPage;
         }
     }
 }

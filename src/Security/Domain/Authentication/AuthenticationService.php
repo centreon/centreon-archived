@@ -76,7 +76,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         $authenticationTokens = $this->findAuthenticationTokensByToken($token);
         if ($authenticationTokens === null) {
-            throw AuthenticationServiceException::sessionNotFoundException();
+            throw AuthenticationServiceException::sessionNotFound();
         }
 
         $provider = $this->findProviderByConfigurationId(
@@ -84,16 +84,16 @@ class AuthenticationService implements AuthenticationServiceInterface
         );
 
         if ($provider === null) {
-            throw AuthenticationServiceException::providerNotFoundException();
+            throw AuthenticationServiceException::providerNotFound();
         }
 
         if ($authenticationTokens->getProviderToken()->isExpired()) {
             if (!$provider->canRefreshToken() || $authenticationTokens->getProviderRefreshToken()->isExpired()) {
-                throw AuthenticationServiceException::sessionExpiredException();
+                throw AuthenticationServiceException::sessionExpired();
             }
             $newAuthenticationTokens = $provider->refreshToken($authenticationTokens);
             if ($newAuthenticationTokens === null) {
-                throw AuthenticationServiceException::refreshTokenException();
+                throw AuthenticationServiceException::refreshToken();
             }
             $this->updateAuthenticationTokens($newAuthenticationTokens);
         }

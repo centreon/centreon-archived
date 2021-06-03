@@ -214,7 +214,7 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
     public function checkCredentials($credentials, UserInterface $user)
     {
         if (!array_key_exists('session', $credentials)) {
-            throw AuthenticationServiceException::sessionTokenNotFoundException();
+            throw AuthenticationServiceException::sessionTokenNotFound();
         }
         $sessionToken = $credentials['session'];
 
