@@ -35,7 +35,7 @@ class AuthenticateRequest
     private $providerConfigurationName;
 
     /**
-     * @param array $credentials
+     * @param array<string, mixed> $credentials
      * @param string $providerConfigurationName
      */
     public function __construct(array $credentials, string $providerConfigurationName)
