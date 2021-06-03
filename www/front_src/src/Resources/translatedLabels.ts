@@ -213,3 +213,5 @@ export const labelCalculationType = 'Calculation type';
 export const labelSelectAtLeastOneColumn =
   'At least one column must be selected';
 export const labelMaxDuration1Year = 'The duration must be lesser than a year';
+export const labelHealth = 'Health';
+export const labelCalculationMethod = 'Calculation method';

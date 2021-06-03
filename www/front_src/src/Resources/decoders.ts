@@ -1,6 +1,7 @@
 import { JsonDecoder } from 'ts.data.json';
 
 import {
+  ResourceCalculationMethod,
   Icon,
   Notes,
   Parent,
@@ -29,7 +30,10 @@ const commonDecoders = {
   additionals: JsonDecoder.optional(
     JsonDecoder.object<ResourceAdditionals>(
       {
-        calculation_method: JsonDecoder.string,
+        calculation_method: JsonDecoder.enumeration<ResourceCalculationMethod>(
+          ResourceCalculationMethod,
+          'Resource Calculation Method',
+        ),
         calculation_ratio_mode: JsonDecoder.optional(JsonDecoder.string),
         health: JsonDecoder.optional(JsonDecoder.number),
       },

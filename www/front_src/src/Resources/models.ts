@@ -95,8 +95,15 @@ export interface ResourceLinks {
   uris: ResourceUris;
 }
 
+export enum ResourceCalculationMethod {
+  bestStatus = 'best status',
+  impact = 'impact',
+  ratio = 'ratio',
+  worstStatus = 'worst status',
+}
+
 export interface ResourceAdditionals {
-  calculation_method: string;
+  calculation_method: ResourceCalculationMethod;
   calculation_ratio_mode?: string;
   health?: number;
 }
