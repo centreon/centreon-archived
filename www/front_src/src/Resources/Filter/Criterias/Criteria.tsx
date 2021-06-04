@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
+import { isNil, not, path } from 'ramda';
 
 import {
   PopoverMultiAutocompleteField,
@@ -9,8 +9,10 @@ import {
   SelectEntry,
   useMemoComponent,
 } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { ResourceContext, useResourceContext } from '../../Context';
+import { ResourceType } from '../../models';
 
 import { criteriaValueNameById, selectableCriterias } from './models';
 
@@ -25,6 +27,7 @@ const CriteriaContent = ({
   setCriteriaAndNewFilter,
 }: Props & Pick<ResourceContext, 'setCriteriaAndNewFilter'>): JSX.Element => {
   const { t } = useTranslation();
+  const { platformModules } = useUserContext();
 
   const getTranslated = (values: Array<SelectEntry>): Array<SelectEntry> => {
     return values.map((entry) => ({
@@ -73,12 +76,21 @@ const CriteriaContent = ({
     );
   }
 
+  const getBusinessActivityOptionDisabled = (option: SelectEntry) =>
+    not(
+      path(
+        ['modules', 'centreon-bam-server', 'license', 'status'],
+        platformModules,
+      ),
+    ) && option.id === ResourceType.businessActivity;
+
   const translatedValues = getTranslated(value);
   const translatedOptions = getTranslated(options);
 
   return (
     <PopoverMultiAutocompleteField
       {...commonProps}
+      getOptionDisabled={getBusinessActivityOptionDisabled}
       options={translatedOptions}
       value={translatedValues}
       onChange={(_, updatedValue) => {
