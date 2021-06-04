@@ -213,6 +213,6 @@ export const labelCalculationType = 'Calculation type';
 export const labelSelectAtLeastOneColumn =
   'At least one column must be selected';
 export const labelMaxDuration1Year = 'The duration must be lesser than a year';
-export const labelOriginalSizeExport = 'Original';
-export const labelMediumSizeExport = 'Medium';
-export const labelSmallSizeExport = 'Small';
+export const labelOriginal = 'Original';
+export const labelMedium = 'Medium';
+export const labelSmall = 'Small';
