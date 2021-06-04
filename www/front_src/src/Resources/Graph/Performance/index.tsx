@@ -46,10 +46,10 @@ import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
 import {
-  labelOriginalSizeExport,
+  labelOriginal,
   labelExportToPng,
-  labelSmallSizeExport,
-  labelMediumSizeExport,
+  labelSmall,
+  labelMedium,
   labelNoDataForThisPeriod,
 } from '../../translatedLabels';
 import {
@@ -413,13 +413,13 @@ const PerformanceGraph = ({
                     onClose={closeSizeExportMenu}
                   >
                     <MenuItem onClick={() => convertToPng(1)}>
-                      {t(labelOriginalSizeExport)}
+                      {t(labelOriginal)}
                     </MenuItem>
                     <MenuItem onClick={() => convertToPng(0.75)}>
-                      {t(labelMediumSizeExport)}
+                      {t(labelMedium)}
                     </MenuItem>
                     <MenuItem onClick={() => convertToPng(0.5)}>
-                      {t(labelSmallSizeExport)}
+                      {t(labelSmall)}
                     </MenuItem>
                   </Menu>
                 </>
