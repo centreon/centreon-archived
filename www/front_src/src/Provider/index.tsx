@@ -20,8 +20,10 @@ import {
   useAcl,
   useDowntime,
   useRefreshInterval,
+  usePlatformModules,
   User,
   Actions,
+  PlatformModules,
 } from '@centreon/ui-context';
 
 import createStore from '../store';
@@ -32,6 +34,7 @@ import {
   translationEndpoint,
   aclEndpoint,
   userEndpoint,
+  platformModulesEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
 
@@ -48,6 +51,7 @@ const AppProvider = (): JSX.Element | null => {
   const { downtime, setDowntime } = useDowntime();
   const { refreshInterval, setRefreshInterval } = useRefreshInterval();
   const { actionAcl, setActionAcl } = useAcl();
+  const { platformModules, setPlatformModules } = usePlatformModules();
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
@@ -60,6 +64,9 @@ const AppProvider = (): JSX.Element | null => {
     request: getData,
   });
   const { sendRequest: getAcl } = useRequest<Actions>({
+    request: getData,
+  });
+  const { sendRequest: getPlatformModules } = useRequest<PlatformModules>({
     request: getData,
   });
 
@@ -88,6 +95,7 @@ const AppProvider = (): JSX.Element | null => {
       getParameters(parametersEndpoint),
       getTranslations(translationEndpoint),
       getAcl(aclEndpoint),
+      getPlatformModules(platformModulesEndpoint),
     ])
       .then(
         ([
@@ -95,6 +103,7 @@ const AppProvider = (): JSX.Element | null => {
           retrievedParameters,
           retrievedTranslations,
           retrievedAcl,
+          retrievedPlatformModules,
         ]) => {
           setUser({
             alias: retrievedUser.alias,
@@ -115,6 +124,7 @@ const AppProvider = (): JSX.Element | null => {
             ),
           );
           setActionAcl(retrievedAcl);
+          setPlatformModules(retrievedPlatformModules);
 
           initializeI18n({
             retrievedTranslations,
@@ -135,6 +145,8 @@ const AppProvider = (): JSX.Element | null => {
     return <PageLoader />;
   }
 
+  console.log(platformModules);
+
   return (
     <Context.Provider
       value={{
@@ -143,6 +155,7 @@ const AppProvider = (): JSX.Element | null => {
           actions: actionAcl,
         },
         downtime,
+        platformModules,
         refreshInterval,
       }}
     >
