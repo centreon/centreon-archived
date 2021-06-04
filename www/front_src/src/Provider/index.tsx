@@ -145,8 +145,6 @@ const AppProvider = (): JSX.Element | null => {
     return <PageLoader />;
   }
 
-  console.log(platformModules);
-
   return (
     <Context.Provider
       value={{
