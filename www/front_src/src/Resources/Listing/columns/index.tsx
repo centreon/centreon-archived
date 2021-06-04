@@ -1,4 +1,14 @@
-import { pipe, split, head, propOr, T } from 'ramda';
+import {
+  pipe,
+  split,
+  head,
+  propOr,
+  T,
+  isNil,
+  cond,
+  always,
+  propEq,
+} from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -21,8 +31,15 @@ import {
   labelMonitoringServer,
   labelNotification,
   labelCheck,
+  labelHealth,
+  labelCalculationMethod,
 } from '../../translatedLabels';
 import truncate from '../../truncate';
+import {
+  Resource,
+  ResourceAdditionals,
+  ResourceCalculationMethod,
+} from '../../models';
 
 import StateColumn from './State';
 import GraphColumn from './Graph';
@@ -219,6 +236,32 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     label: t(labelCheck),
     rowMemoProps: ['passive_checks', 'active_checks'],
     type: ColumnType.component,
+  },
+  {
+    getFormattedString: ({ additionals }) =>
+      `${isNil(additionals?.health) ? '' : additionals.health}`,
+    id: 'health',
+    label: t(labelHealth),
+    sortable: true,
+    type: ColumnType.string,
+  },
+  {
+    getFormattedString: ({ additionals }: Resource) =>
+      additionals
+        ? cond<ResourceAdditionals, string>([
+            [
+              propEq('calculation_method', ResourceCalculationMethod.ratio),
+              always(
+                `${additionals.calculation_method} ${additionals.calculation_ratio_mode}`,
+              ),
+            ],
+            [T, always(`${additionals.calculation_method}`)],
+          ])(additionals as ResourceAdditionals)
+        : '',
+    id: 'calculation_method',
+    label: t(labelCalculationMethod),
+    sortable: true,
+    type: ColumnType.string,
   },
 ];
 

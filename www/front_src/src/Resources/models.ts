@@ -1,8 +1,13 @@
 import { ListingModel } from '@centreon/ui';
 
-export type ResourceType = 'host' | 'service' | 'metaservice';
+export enum ResourceType {
+  businessActivity = 'business-activity',
+  host = 'host',
+  metaservice = 'metaservice',
+  service = 'service',
+}
 
-export type ResourceShortType = 'h' | 's' | 'm';
+export type ResourceShortType = 'h' | 's' | 'm' | 'ba';
 
 export interface NamedEntity {
   id: number;
@@ -24,6 +29,7 @@ export interface Status {
 export interface Resource extends NamedEntity {
   acknowledged?: boolean;
   active_checks?: boolean;
+  additionals?: ResourceAdditionals;
   duration?: string;
   icon?: Icon;
   in_downtime?: boolean;
@@ -86,8 +92,21 @@ export interface ResourceExternals {
 
 export interface ResourceLinks {
   endpoints: ResourceEndpoints;
-  externals: ResourceExternals;
+  externals?: ResourceExternals;
   uris: ResourceUris;
+}
+
+export enum ResourceCalculationMethod {
+  bestStatus = 'best status',
+  impact = 'impact',
+  ratio = 'ratio',
+  worstStatus = 'worst status',
+}
+
+export interface ResourceAdditionals {
+  calculation_method: ResourceCalculationMethod;
+  calculation_ratio_mode?: string;
+  health?: number;
 }
 
 export type TranslationType = (label: string) => string;

@@ -1,6 +1,6 @@
 import { SelectEntry } from '@centreon/ui';
 
-import { SortOrder } from '../../models';
+import { ResourceType, SortOrder } from '../../models';
 import {
   labelAcknowledged,
   labelInDowntime,
@@ -22,6 +22,7 @@ import {
   labelStatus,
   labelMonitoringServer,
   labelMetaService,
+  labelBusinessActivity,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -48,10 +49,11 @@ const criteriaValueNameById = {
   UP: labelUp,
   WARNING: labelWarning,
   acknowledged: labelAcknowledged,
-  host: labelHost,
+  [ResourceType.businessActivity]: labelBusinessActivity,
+  [ResourceType.host]: labelHost,
   in_downtime: labelInDowntime,
-  metaservice: labelMetaService,
-  service: labelService,
+  [ResourceType.metaservice]: labelMetaService,
+  [ResourceType.service]: labelService,
   unhandled_problems: labelUnhandled,
 };
 
@@ -75,28 +77,34 @@ const inDowntimeState = {
 
 const selectableStates = [unhandledState, acknowledgedState, inDowntimeState];
 
-const hostResourceTypeId = 'host';
+const hostResourceTypeId = ResourceType.host;
 const hostResourceType = {
   id: hostResourceTypeId,
   name: criteriaValueNameById[hostResourceTypeId],
 };
 
-const serviceResourceTypeId = 'service';
+const serviceResourceTypeId = ResourceType.service;
 const serviceResourceType = {
   id: serviceResourceTypeId,
   name: criteriaValueNameById[serviceResourceTypeId],
 };
 
-const metaServiceResourceTypeId = 'metaservice';
+const metaServiceResourceTypeId = ResourceType.metaservice;
 const metaServiceResourceType = {
   id: metaServiceResourceTypeId,
   name: criteriaValueNameById[metaServiceResourceTypeId],
+};
+const businessActivityResourceTypeId = ResourceType.businessActivity;
+const businessActivityResourceType = {
+  id: businessActivityResourceTypeId,
+  name: criteriaValueNameById[businessActivityResourceTypeId],
 };
 
 const selectableResourceTypes = [
   hostResourceType,
   serviceResourceType,
   metaServiceResourceType,
+  businessActivityResourceType,
 ];
 
 const okStatusId = 'OK';
