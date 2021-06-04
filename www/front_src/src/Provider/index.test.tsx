@@ -8,6 +8,7 @@ import {
   useAcl,
   useDowntime,
   useRefreshInterval,
+  usePlatformModules,
 } from '@centreon/ui-context';
 
 import AppProvider from '.';
@@ -45,6 +46,54 @@ const retrievedTranslations = {
   },
 };
 
+const retrievedPlatformModules = {
+  modules: {
+    'centreon-autodiscovery-server': {
+      fix: '0-beta.1',
+      license: {
+        status: true,
+      },
+      major: '21',
+      minor: '10',
+      version: '21.10.0-beta.1',
+    },
+    'centreon-bam-server': {
+      fix: '0-beta.1',
+      license: {
+        status: false,
+      },
+      major: '21',
+      minor: '10',
+      version: '21.10.0-beta.1',
+    },
+    'centreon-license-manager': {
+      fix: '0-beta.1',
+      license: {
+        status: true,
+      },
+      major: '21',
+      minor: '10',
+      version: '21.10.0-beta.1',
+    },
+    'centreon-pp-manager': {
+      fix: '0-beta.1',
+      license: {
+        status: true,
+      },
+      major: '21',
+      minor: '10',
+      version: '21.10.0-beta.1',
+    },
+  },
+  web: {
+    fix: '0',
+    license: null,
+    major: '21',
+    minor: '10',
+    version: '21.10.0',
+  },
+};
+
 jest.mock('../App', () => {
   const ComponentWithUserContext = (): JSX.Element => {
     return <></>;
@@ -74,6 +123,9 @@ describe(AppProvider, () => {
       })
       .mockResolvedValueOnce({
         data: retrievedActionsAcl,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedPlatformModules,
       });
   });
 
@@ -89,6 +141,9 @@ describe(AppProvider, () => {
       });
       expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
         retrievedDefaultParameters.monitoring_default_refresh_interval,
+      );
+      expect(usePlatformModules().setPlatformModules).toHaveBeenCalledWith(
+        retrievedPlatformModules,
       );
     });
   });

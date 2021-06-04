@@ -8,6 +8,8 @@ const setDowntime = jest.fn();
 
 const setRefreshInterval = jest.fn();
 
+const setPlatformModules = jest.fn();
+
 const useUser = jest.fn(() => ({
   setUser,
   user: 'admin',
@@ -26,6 +28,11 @@ const useDowntime = jest.fn(() => ({
 const useRefreshInterval = jest.fn(() => ({
   refreshInterval: 0,
   setRefreshInterval,
+}));
+
+const usePlatformModules = jest.fn(() => ({
+  platformModules: {},
+  setPlatformModules,
 }));
 
 const useUserContext = jest.fn(() => ({
@@ -69,5 +76,6 @@ export {
   useAcl,
   useDowntime,
   useRefreshInterval,
+  usePlatformModules,
   Context,
 };
