@@ -25,7 +25,7 @@ namespace Centreon\Domain\Authentication\UseCase;
 class AuthenticateRequest
 {
     /**
-     * @var array
+     * @var array<string,mixed>
      */
     private $credentials;
 
@@ -35,7 +35,7 @@ class AuthenticateRequest
     private $providerConfigurationName;
 
     /**
-     * @param array<string, mixed> $credentials
+     * @param array<string,mixed> $credentials
      * @param string $providerConfigurationName
      */
     public function __construct(array $credentials, string $providerConfigurationName)
@@ -51,7 +51,7 @@ class AuthenticateRequest
     /**
      * Get credentials
      *
-     * @return array<string, mixed>
+     * @return array<string,mixed>
      */
     public function getCredentials(): array
     {

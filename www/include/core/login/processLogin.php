@@ -125,7 +125,7 @@ if (
             "VALUES (:token, :createdAt, :expireAt)"
         );
         $securityTokenStatement->bindValue(":token", session_id(), \PDO::PARAM_STR);
-        $securityTokenStatement->bindValue(':createdAt', (new DateTime())->getTimestamp(), \PDO::PARAM_INT);
+        $securityTokenStatement->bindValue(':createdAt', (new \DateTime())->getTimestamp(), \PDO::PARAM_INT);
         $securityTokenStatement->bindValue(
             ':expireAt',
             (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M'))->getTimestamp(),

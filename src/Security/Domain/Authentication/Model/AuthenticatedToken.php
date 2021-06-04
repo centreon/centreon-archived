@@ -35,10 +35,12 @@ class AuthenticatedToken implements TokenInterface
      * @param string|\Stringable|UserInterface
      */
     private $user;
+
     /**
      * @param bool
      */
     private $isAuthenticated = false;
+
     /**
      * @var array
      */
@@ -48,6 +50,7 @@ class AuthenticatedToken implements TokenInterface
      * @var Role[]
      */
     private $roles = [];
+
     /**
      * @var array
      */
@@ -243,6 +246,9 @@ class AuthenticatedToken implements TokenInterface
         $this->attributes[$name] = $value;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getRoleNames(): array
     {
         return $this->roleNames;

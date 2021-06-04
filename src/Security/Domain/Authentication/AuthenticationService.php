@@ -113,9 +113,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     ): void {
         $providerConfiguration = $this->findProviderConfigurationByConfigurationName($providerConfigurationName);
         if ($providerConfiguration === null) {
-            throw new \InvalidArgumentException(
-                sprintf(_('Provider configuration (%) not found'), $providerConfigurationName)
-            );
+            AuthenticationServiceException::providerConfigurationNotFound($providerConfigurationName);
         }
         $this->repository->addAuthenticationTokens(
             $sessionToken,
@@ -137,9 +135,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     ): void {
         $providerConfiguration = $this->findProviderConfigurationByConfigurationName('local');
         if ($providerConfiguration === null) {
-            throw new \InvalidArgumentException(
-                sprintf(_('Provider configuration (%) not found'), 'local')
-            );
+            AuthenticationServiceException::providerConfigurationNotFound('local');
         }
         $this->repository->addAPIAuthenticationTokens(
             $token,

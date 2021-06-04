@@ -36,7 +36,7 @@ class AuthenticateAPIRequest
 
     /**
      * @return array<string,mixed>
-     *//** */
+     */
     public function getCredentials(): array
     {
         return $this->credentials;
