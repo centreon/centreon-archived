@@ -23,23 +23,19 @@ declare(strict_types=1);
 namespace Security\Infrastructure\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
+use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Security\Domain\Authentication\Model\ProviderToken;
+use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Infrastructure\Repository\Exception\AuthenticationRepositoryException;
 
 /**
  * @package Security\Repository
  */
 class AuthenticationRepository extends AbstractRepositoryDRB implements AuthenticationRepositoryInterface
 {
-    /**
-     * @var SqlRequestParametersTranslator
-     */
-    private $sqlRequestTranslator;
-
     /**
      * @param DatabaseConnection $db
      * @param SqlRequestParametersTranslator $sqlRequestTranslator
@@ -395,7 +391,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
                 }
             }
         } catch (\PDOException $ex) {
-            throw new \Exception("Error during deleting expired session");
+            throw AuthenticationRepositoryException::deleteExpiredSession();
         }
     }
 

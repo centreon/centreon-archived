@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
-use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Security\Domain\Authentication\Exceptions\AuthenticationTokensFactoryException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 /**
@@ -64,10 +64,10 @@ class AuthenticationTokensFactory
             $providerConfigurationName
         );
         if ($providerConfiguration == null) {
-            throw new \Exception('Provider configuration not found');
+            throw AuthenticationTokensFactoryException::ProviderConfigurationNotFound();
         }
+
         return new AuthenticationTokens(
-            null,
             $contact->getId(),
             $providerConfiguration->getId(),
             $sessionToken,

@@ -22,21 +22,20 @@ declare(strict_types=1);
 
 namespace Security;
 
-use Centreon\Domain\Exception\ContactDisabledException;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
-use Centreon\Infrastructure\Service\Exception\NotFoundException;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Centreon\Domain\Exception\ContactDisabledException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
+use Security\Domain\Authentication\Exceptions\AuthenticatorException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 
 /**
  * Class used to authenticate a request by using a session id.
@@ -214,7 +213,7 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
     public function checkCredentials($credentials, UserInterface $user)
     {
         if (!array_key_exists('session', $credentials)) {
-            throw AuthenticationServiceException::sessionTokenNotFound();
+            throw AuthenticatorException::sessionTokenNotFound();
         }
         $sessionToken = $credentials['session'];
 
