@@ -43,6 +43,7 @@ interface DetailCardLineProps {
   t: (label: string) => string;
   toDateTime: (date: string | Date) => string;
 }
+
 const getDetailCardLines = ({
   details,
   toDateTime,
@@ -53,6 +54,7 @@ const getDetailCardLines = ({
   const activeChecksDisabled = details.active_checks === false;
 
   const displayChecksIcon = checksDisabled || activeChecksDisabled;
+  console.log(details.flapping);
 
   return [
     {
@@ -115,18 +117,13 @@ const getDetailCardLines = ({
       title: labelLatency,
     },
     {
-      field: details.flapping ? true : undefined,
+      field: !details.flapping,
       line: (
-        <Tooltip title={t(labelResourceFlapping)}>
+        <Tooltip title={`${details.percent_state_change}%`}>
           <FlappingIcon color="primary" />
         </Tooltip>
       ),
       title: labelFlapping,
-    },
-    {
-      field: details.percent_state_change,
-      line: <DetailsLine line={`${details.percent_state_change}%`} />,
-      title: labelPercentStateChange,
     },
     {
       field: details.last_notification,
