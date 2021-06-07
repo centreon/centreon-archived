@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -40,7 +41,9 @@ $dep = array();
 $initialValues = array();
 
 if (($o == "c" || $o == "w") && $dep_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $dep_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->prepare('SELECT * FROM dependency WHERE dep_id = :dep_id LIMIT 1');
+    $DBRESULT->bindValue(':dep_id', $dep_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
 
     # Set base value
     $dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -267,13 +270,11 @@ if ($o == "w") {
     }
     $form->setDefaults($dep);
     $form->freeze();
-} # Modify a Dependency information
-elseif ($o == "c") {
+} elseif ($o == "c") { # Modify a Dependency information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($dep);
-} # Add a Dependency information
-elseif ($o == "a") {
+} elseif ($o == "a") { # Add a Dependency information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults(array('inherits_parent', '0'));
