@@ -64,7 +64,7 @@ class AuthenticationTokensFactory
             $providerConfigurationName
         );
         if ($providerConfiguration == null) {
-            throw AuthenticationTokensFactoryException::ProviderConfigurationNotFound();
+            throw AuthenticationTokensFactoryException::providerConfigurationNotFound();
         }
 
         return new AuthenticationTokens(

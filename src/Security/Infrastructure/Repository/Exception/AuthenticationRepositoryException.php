@@ -26,7 +26,7 @@ namespace Security\Infrastructure\Repository\Exception;
 use Centreon\Domain\Repository\RepositoryException;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryExceptionInterface;
 
-class AuthenticationRepositoryException extends RepositoryException implements 
+class AuthenticationRepositoryException extends RepositoryException implements
     AuthenticationRepositoryExceptionInterface
 {
     /**

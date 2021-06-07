@@ -25,4 +25,5 @@ namespace Security\Domain\Authentication\Interfaces;
 use Centreon\Domain\Repository\Interfaces\RepositoryExceptionInterface;
 
 interface AuthenticationRepositoryExceptionInterface extends RepositoryExceptionInterface
-{}
+{
+}

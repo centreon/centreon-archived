@@ -34,7 +34,7 @@ class AuthenticationTokensFactoryException extends \Exception
      *
      * @return self
      */
-    public static function ProviderConfigurationNotFound(): self
+    public static function providerConfigurationNotFound(): self
     {
         return new self(_('Provider configuration not found'));
     }
