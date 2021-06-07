@@ -28,7 +28,7 @@ use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
-class logout
+class Logout
 {
     /**
      * @var AuthenticationServiceInterface
