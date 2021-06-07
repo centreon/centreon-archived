@@ -70,6 +70,10 @@ services:
         class: Security\Domain\Authentication\AuthenticationService
         public: true
 
+    Security\Domain\Authentication\Interfaces\ProviderServiceInterface:
+        class: Security\Domain\Authentication\ProviderService
+        public: true
+
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']
 
