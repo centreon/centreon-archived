@@ -38,9 +38,12 @@ class Redirect
         $this->authenticationService = $authenticationService;
     }
 
-    public function execute(RedirectRequest $request): string
+    public function execute(RedirectRequest $request): RedirectResponse
     {
         $providers = $this->authenticationService->findProvidersConfigurations();
+        $redirectionUri = $request->getBaseUri();
+        $response = new RedirectResponse();
+
         foreach ($providers as $provider) {
             $provider->setCentreonBaseUri($request->getBaseUri());
             $redirectionUri = $provider->getAuthenticationUri();
@@ -49,6 +52,7 @@ class Redirect
             }
         }
 
-        return $redirectionUri ?? $request->getBaseUri();
+        $response->setRedirectionUri($redirectionUri);
+        return $response;
     }
 }

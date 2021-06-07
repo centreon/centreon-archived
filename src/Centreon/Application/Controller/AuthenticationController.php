@@ -121,14 +121,14 @@ class AuthenticationController extends AbstractController
     public function redirection(Request $request, Redirect $redirect): View
     {
         $request = new RedirectRequest($this->getBaseUri());
-        $redirectionUri = $redirect->execute($request);
+        $response = $redirect->execute($request);
 
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
-            return View::create(['authentication_uri' => $redirectionUri]);
+            return View::create($response->getRedirectionUriApi());
         } else {
             // Otherwise, we send a redirection response.
-            $view = View::createRedirect($redirectionUri);
+            $view = View::createRedirect($response->getRedirectionUri());
             $view->setHeader('Content-Type', 'text/html');
             return $view;
         }
