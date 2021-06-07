@@ -45,7 +45,7 @@ class ProviderConfiguration
     private $name;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $centreonBaseUri = '/centreon';
 

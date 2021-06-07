@@ -48,7 +48,7 @@ interface ProviderInterface
     /**
      * Set legacy Centreon session
      *
-     * @param \CentreonSession|null $legacySession
+     * @param \Centreon $legacySession
      */
     public function setLegacySession(?\Centreon $legacySession): void;
 

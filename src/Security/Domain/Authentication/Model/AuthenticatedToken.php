@@ -32,12 +32,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class AuthenticatedToken implements TokenInterface
 {
     /**
-     * @param string|\Stringable|UserInterface
+     * @var string|UserInterface
      */
     private $user;
 
     /**
-     * @param bool
+     * @var bool
      */
     private $isAuthenticated = false;
 
@@ -47,21 +47,21 @@ class AuthenticatedToken implements TokenInterface
     private $attributes = [];
 
     /**
-     * @var Role[]
+     * @var array<Role>
      */
     private $roles = [];
 
     /**
-     * @var array
+     * @var array<string>
      */
     private $roleNames = [];
 
     /**
      * Token constructor.
      *
-     * @param $roles Role[]|string[]
+     * @param array<Role>|array<string> $roles
      */
-    public function __construct($roles)
+    public function __construct(array $roles)
     {
         foreach ($roles as $role) {
             if (\is_string($role)) {
@@ -163,7 +163,7 @@ class AuthenticatedToken implements TokenInterface
     /**
      * @inheritDoc
      */
-    public function setUser($user)
+    public function setUser($user): void
     {
         $this->user = $user;
     }

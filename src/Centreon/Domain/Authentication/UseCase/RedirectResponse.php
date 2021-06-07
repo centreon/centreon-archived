@@ -44,18 +44,16 @@ class RedirectResponse
 
     /**
      * @param string $redirectionUri
-     * @return self
      */
-    public function setRedirectionUri(string $redirectionUri): self
+    public function setRedirectionUri(string $redirectionUri): void
     {
         $this->redirectionUri = $redirectionUri;
-        return $this;
     }
 
     /**
      * Return an array with redirection URI formatted to an API Response.
      *
-     * @return array
+     * @return array<string,string>
      */
     public function getRedirectionUriApi(): array
     {

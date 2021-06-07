@@ -23,8 +23,8 @@ declare(strict_types=1);
 namespace Security\Domain\Authentication\Model;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Exceptions\AuthenticationTokensFactoryException;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 /**
  * @package Security\Domain\Authentication\Model
@@ -32,16 +32,16 @@ use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 class AuthenticationTokensFactory
 {
     /**
-     * @var AuthenticationServiceInterface
+     * @var ProviderServiceInterface
      */
-    private $authenticationService;
+    private $providerService;
 
     /**
-     * @param AuthenticationServiceInterface $authenticationService
+     * @param ProviderServiceInterface $providerService
      */
-    public function __construct(AuthenticationServiceInterface $authenticationService)
+    public function __construct(ProviderServiceInterface $providerService)
     {
-        $this->authenticationService = $authenticationService;
+        $this->providerService = $providerService;
     }
 
     /**
@@ -60,16 +60,16 @@ class AuthenticationTokensFactory
         ProviderToken $providerToken,
         ProviderToken $providerRefreshToken
     ) {
-        $providerConfiguration = $this->authenticationService->findProviderConfigurationByConfigurationName(
+        $providerConfiguration = $this->providerService->findProviderConfigurationByConfigurationName(
             $providerConfigurationName
         );
-        if ($providerConfiguration == null) {
+        if ($providerConfiguration == null || ($providerConfigurationId = $providerConfiguration->getId()) === null) {
             throw AuthenticationTokensFactoryException::providerConfigurationNotFound();
         }
 
         return new AuthenticationTokens(
             $contact->getId(),
-            $providerConfiguration->getId(),
+            $providerConfigurationId,
             $sessionToken,
             $providerToken,
             $providerRefreshToken

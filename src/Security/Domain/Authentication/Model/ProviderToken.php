@@ -28,7 +28,7 @@ namespace Security\Domain\Authentication\Model;
 class ProviderToken
 {
     /**
-     * @var int
+     * @var int|null
      */
     private $id;
 
@@ -38,7 +38,7 @@ class ProviderToken
     private $token;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
     private $creationDate;
 
@@ -70,7 +70,7 @@ class ProviderToken
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -86,7 +86,7 @@ class ProviderToken
     /**
      * @return \DateTime
      */
-    public function getCreationDate(): \DateTime
+    public function getCreationDate(): ?\DateTime
     {
         return $this->creationDate;
     }
@@ -117,6 +117,10 @@ class ProviderToken
      */
     public function isExpired(\DateTime $now = null): bool
     {
+        if ($this->expirationDate === null) {
+            return false;
+        }
+
         if ($now === null) {
             $now = new \DateTime();
         }

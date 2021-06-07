@@ -22,11 +22,9 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
-use Centreon\Domain\Contact\Contact;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
 
 /**
  * @package Security\Domain\Authentication\Interfaces
@@ -47,7 +45,7 @@ interface AuthenticationServiceInterface
      * @param string $sessionToken
      * @param string $providerConfigurationName
      * @param ContactInterface $contact
-     * @param ProviderToken|null $providerToken
+     * @param ProviderToken $providerToken
      * @param ProviderToken|null $providerRefreshToken
      */
     public function createAuthenticationTokens(
@@ -70,7 +68,7 @@ interface AuthenticationServiceInterface
      *
      * @param string $token
      * @param ContactInterface $contact
-     * @param ProviderToken|null $providerToken
+     * @param ProviderToken $providerToken
      * @param ProviderToken|null $providerRefreshToken
      */
     public function createAPIAuthenticationTokens(
@@ -87,51 +85,12 @@ interface AuthenticationServiceInterface
     public function deleteExpiredAPITokens(): void;
 
     /**
-     * Find providers configurations
-     *
-     * @return ProviderConfiguration[]
-     */
-    public function findProvidersConfigurations(): array;
-
-    /**
-     * Find a provider by configuration id.
-     *
-     * @param int $providerConfigurationId
-     * @return ProviderInterface|null
-     * @throws \Exception
-     */
-    public function findProviderByConfigurationId(int $providerConfigurationId): ?ProviderInterface;
-
-    /**
-     * Find a provider by the configuration name.
-     *
-     * @param string $providerConfigurationName
-     * @return ProviderInterface|null
-     */
-    public function findProviderByConfigurationName(string $providerConfigurationName): ?ProviderInterface;
-
-    /**
-     * @param string $providerConfigurationName
-     * @return ProviderConfiguration|null
-     */
-    public function findProviderConfigurationByConfigurationName(
-        string $providerConfigurationName
-    ): ?ProviderConfiguration;
-
-    /**
-     * @param string $sessionToken
-     * @return ProviderInterface|null
-     * @throws \Exception
-     */
-    public function findProviderBySession(string $sessionToken): ?ProviderInterface;
-
-    /**
      * @param AuthenticationTokens $authenticationToken
      */
     public function updateAuthenticationTokens(AuthenticationTokens $authenticationToken): void;
 
     /**
-     * @param string $sessionToken
+     * @param string $token
      * @return AuthenticationTokens|null
      */
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens;

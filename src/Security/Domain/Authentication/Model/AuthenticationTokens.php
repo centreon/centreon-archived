@@ -42,7 +42,7 @@ class AuthenticationTokens
     private $providerToken;
 
     /**
-     * @var ProviderToken
+     * @var null|ProviderToken
      */
     private $providerRefreshToken;
 

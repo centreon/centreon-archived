@@ -36,7 +36,7 @@ class ProviderFactory
     private $providers;
 
     /**
-     * @param \Traversable $providers
+     * @param \Traversable<ProviderInterface> $providers
      * @throws ProviderFactoryException
      */
     public function __construct(\Traversable $providers)

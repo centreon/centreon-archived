@@ -22,11 +22,13 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
+use Security\Domain\Authentication\Exceptions\ProviderServiceException;
+use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 class Authenticate
 {
@@ -41,6 +43,11 @@ class Authenticate
     private $contactService;
 
     /**
+     * @var ProviderServiceInterface
+     */
+    private $providerService;
+
+    /**
      * @var string
      */
     private $redirectDefaultPage;
@@ -53,17 +60,20 @@ class Authenticate
     /**
      * @param string $redirectDefaultPage
      * @param AuthenticationServiceInterface $authenticationService
+     * @param ProviderServiceInterface $providerService
      * @param ContactServiceInterface $contactService
      * @param SessionInterface $session
      */
     public function __construct(
         string $redirectDefaultPage,
         AuthenticationServiceInterface $authenticationService,
+        ProviderServiceInterface $providerService,
         ContactServiceInterface $contactService,
         SessionInterface $session
     ) {
         $this->redirectDefaultPage = $redirectDefaultPage;
         $this->authenticationService = $authenticationService;
+        $this->providerService = $providerService;
         $this->contactService = $contactService;
         $this->session = $session;
     }
@@ -74,14 +84,14 @@ class Authenticate
      * @param AuthenticateRequest $request
      * @return string
      */
-    public function execute(AuthenticateRequest $request): string
+    public function execute(AuthenticateRequest $request): AuthenticateResponse
     {
-        $authenticationProvider = $this->authenticationService->findProviderByConfigurationName(
+        $authenticationProvider = $this->providerService->findProviderByConfigurationName(
             $request->getProviderConfigurationName()
         );
 
         if ($authenticationProvider === null) {
-            throw AuthenticationServiceException::providerConfigurationNotFound(
+            throw ProviderServiceException::providerConfigurationNotFound(
                 $request->getProviderConfigurationName()
             );
         }
@@ -121,10 +131,12 @@ class Authenticate
             );
         }
 
+        $response = new AuthenticateResponse();
         if ($providerUser->getDefaultPage() !== null) {
-            return $providerUser->getDefaultPage();
+            $response->setRedirectionUri($request->getCentreonBaseUri() . $providerUser->getDefaultPage());
         } else {
-            return $this->redirectDefaultPage;
+            $response->setRedirectionUri($request->getCentreonBaseUri() . $this->redirectDefaultPage);
         }
+        return $response;
     }
 }

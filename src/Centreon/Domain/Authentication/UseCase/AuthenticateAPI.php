@@ -22,7 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 
 class AuthenticateAPI
 {
@@ -32,16 +35,25 @@ class AuthenticateAPI
     private $authenticationService;
 
     /**
+     * @var ProviderServiceInterface
+     */
+    private $providerService;
+
+    /**
      * @param AuthenticationServiceInterface $authenticationService
      */
-    public function __construct(AuthenticationServiceInterface $authenticationService)
+    public function __construct(
+        AuthenticationServiceInterface $authenticationService,
+        ProviderServiceInterface $providerService
+    )
     {
         $this->authenticationService = $authenticationService;
+        $this->providerService = $providerService;
     }
 
     /**
      * @param AuthenticateAPIRequest $request
-     * @return array
+     * @return array<string,mixed>
      */
     public function execute(AuthenticateAPIRequest $request): array
     {
@@ -50,11 +62,18 @@ class AuthenticateAPI
         } catch (\Exception $ex) {
             // We don't propagate this error.
         }
-        $localProvider = $this->authenticationService->findProviderByConfigurationName('local');
+        $localProvider = $this->providerService->findProviderByConfigurationName('local');
+
+        if($localProvider === null) {
+            throw ProviderServiceException::providerConfigurationNotFound('local');
+        }
         $localProvider->authenticate($request->getCredentials());
         $response = [];
         if ($localProvider->isAuthenticated()) {
             $contact = $localProvider->getUser();
+            if ($contact === null) {
+                throw AuthenticationException::userNotFound();
+            }
             $token = md5(bin2hex(random_bytes(128)));
 
             $this->authenticationService->createAPIAuthenticationTokens(

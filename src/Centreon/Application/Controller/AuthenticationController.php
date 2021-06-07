@@ -31,9 +31,11 @@ use Centreon\Domain\Authentication\UseCase\Redirect;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateAPI;
-use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
-use Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest;
 use Centreon\Domain\Authentication\UseCase\RedirectRequest;
+use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
+use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
+use Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest;
+use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
@@ -67,7 +69,7 @@ class AuthenticationController extends AbstractController
      */
     public function login(Request $request, AuthenticateAPI $authenticate)
     {
-        $contentBody = json_decode($request->getContent(), true);
+        $contentBody = json_decode((string) $request->getContent(), true);
         $credentials = [
             "login" => $contentBody['security']['credentials']['login'] ?? '',
             "password" => $contentBody['security']['credentials']['password'] ?? ''
@@ -120,8 +122,8 @@ class AuthenticationController extends AbstractController
      */
     public function redirection(Request $request, Redirect $redirect): View
     {
-        $request = new RedirectRequest($this->getBaseUri());
-        $response = $redirect->execute($request);
+        $redirectRequest = new RedirectRequest($this->getBaseUri());
+        $response = $redirect->execute($redirectRequest);
 
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
@@ -139,10 +141,9 @@ class AuthenticationController extends AbstractController
      *
      * @return View
      */
-    public function findProvidersConfigurations(): View
+    public function findProvidersConfigurations(FindProvidersConfigurations $findProviderConfigurations): View
     {
-        $providers = $this->authenticationService->findProvidersConfigurations();
-
+        $providers = $findProviderConfigurations->execute();
         return View::create($providers);
     }
 
@@ -169,15 +170,26 @@ class AuthenticationController extends AbstractController
         }
 
         $requestParameters = [];
+
+        /**
+         * @var string $key
+         */
         foreach ($data as $key => $value) {
             $requestParameters[$key] = $value;
         }
 
-        $authenticateRequest = new AuthenticateRequest($requestParameters, $providerConfigurationName);
+        $authenticateRequest = new AuthenticateRequest(
+            $requestParameters,
+            $providerConfigurationName,
+            $this->getBaseUri()
+        );
+        /**
+         * @var AuthenticateResponse
+         */
         $response = $authenticate->execute($authenticateRequest);
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
-            return View::create(['redirect_uri' => $this->getBaseUri() . $response]);
+            return View::create($response->getRedirectionUriApi());
         } else {
             // Otherwise, we send a redirection response.
             return View::createRedirect(

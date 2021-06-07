@@ -23,41 +23,26 @@ declare(strict_types=1);
 namespace Security\Domain\Authentication\Exceptions;
 
 /**
- * This class is designed to contain all exceptions for the context of the authentication service.
+ * This class is designed to contain all exceptions for both contexts of SessionAPI & TokenAPI authenticators.
  *
  * @package Security\Domain\Authentication\Exceptions
  */
-class AuthenticationServiceException extends \Exception
+class ProviderServiceException extends \Exception
 {
     /**
+     * @param string $configurationName
      * @return self
      */
-    public static function refreshToken(): self
+    public static function providerConfigurationNotFound(string $configurationName): self
     {
-        return new self(_('Error while refresh token'));
+        return new self(sprintf(_('Provider configuration (%s) not found'), $configurationName));
     }
 
     /**
      * @return self
      */
-    public static function sessionExpired(): self
+    public static function providerNotFound(): self
     {
-        return new self(_('Your session has expired'));
-    }
-
-    /**
-     * @return self
-     */
-    public static function sessionTokenNotFound(): self
-    {
-        return new self(_('Session token not found'));
-    }
-
-    /**
-     * @return self
-     */
-    public static function sessionNotFound(): self
-    {
-        return new self(_('Session not found'));
+        return new self(_('Provider not found'));
     }
 }

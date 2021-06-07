@@ -35,10 +35,15 @@ class AuthenticateRequest
     private $providerConfigurationName;
 
     /**
+     * @var string
+     */
+    private $centreonBaseUri;
+
+    /**
      * @param array<string,mixed> $credentials
      * @param string $providerConfigurationName
      */
-    public function __construct(array $credentials, string $providerConfigurationName)
+    public function __construct(array $credentials, string $providerConfigurationName, string $centreonBaseUri)
     {
         if (empty($credentials)) {
             throw new \InvalidArgumentException(_('Missing credentials arguments'));
@@ -46,6 +51,7 @@ class AuthenticateRequest
 
         $this->credentials = $credentials;
         $this->providerConfigurationName = $providerConfigurationName;
+        $this->centreonBaseUri = $centreonBaseUri;
     }
 
     /**
@@ -66,5 +72,15 @@ class AuthenticateRequest
     public function getProviderConfigurationName(): string
     {
         return $this->providerConfigurationName;
+    }
+
+    /**
+     * Get redirection uri
+     *
+     * @return string
+     */
+    public function getCentreonBaseUri(): string
+    {
+        return $this->centreonBaseUri;
     }
 }

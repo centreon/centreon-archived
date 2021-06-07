@@ -29,6 +29,9 @@ class AuthenticateAPIRequest
      */
     private $credentials;
 
+    /**
+     * @param array<string,mixed> $credentials
+     */
     public function __construct(array $credentials)
     {
         $this->credentials = $credentials;

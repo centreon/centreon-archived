@@ -23,10 +23,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
-use Centreon\Domain\Authentication\UseCase\RedirectRequest;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 
-class Redirect
+class FindProvidersConfigurations
 {
     /**
      * @var ProviderServiceInterface
@@ -38,21 +37,12 @@ class Redirect
         $this->providerService = $providerService;
     }
 
-    public function execute(RedirectRequest $request): RedirectResponse
+    public function execute(): FindProvidersConfigurationsResponse
     {
         $providers = $this->providerService->findProvidersConfigurations();
-        $redirectionUri = $request->getBaseUri();
-        $response = new RedirectResponse();
+        $response = new FindProvidersConfigurationsResponse();
+        $response->setProvidersConfigurations($providers);
 
-        foreach ($providers as $provider) {
-            $provider->setCentreonBaseUri($request->getBaseUri());
-            $redirectionUri = $provider->getAuthenticationUri();
-            if ($provider->isForced()) {
-                break;
-            }
-        }
-
-        $response->setRedirectionUri($redirectionUri);
         return $response;
     }
 }

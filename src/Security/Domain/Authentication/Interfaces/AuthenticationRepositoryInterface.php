@@ -83,7 +83,7 @@ interface AuthenticationRepositoryInterface
     /**
      * Find the authentication token using the session token.
      *
-     * @param string $sessionToken Session token
+     * @param string $token Session token
      * @return AuthenticationTokens|null
      */
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens;
@@ -101,7 +101,6 @@ interface AuthenticationRepositoryInterface
      * Updates the provider authentication tokens.
      *
      * @param AuthenticationTokens $authenticationTokens Provider tokens
-     * @return mixed
      */
     public function updateAuthenticationTokens(AuthenticationTokens $authenticationTokens): void;
 

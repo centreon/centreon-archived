@@ -68,7 +68,7 @@ class LocalProvider implements ProviderInterface
     private $optionService;
 
     /**
-     * @var \Centreon
+     * @var \Centreon|null
      */
     private $legacySession;
 
@@ -76,18 +76,15 @@ class LocalProvider implements ProviderInterface
      * LocalProvider constructor.
      *
      * @param ContactServiceInterface $contactService
-     * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param Container $dependencyInjector
      * @param OptionServiceInterface $optionService
      */
     public function __construct(
         ContactServiceInterface $contactService,
-        AuthenticationRepositoryInterface $authenticationRepository,
         Container $dependencyInjector,
         OptionServiceInterface $optionService
     ) {
         $this->contactService = $contactService;
-        $this->authenticationRepository = $authenticationRepository;
         $this->dependencyInjector = $dependencyInjector;
         $this->optionService = $optionService;
     }
@@ -215,8 +212,7 @@ class LocalProvider implements ProviderInterface
             null,
             $token,
             new \DateTime(),
-            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M')),
-            null
+            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M'))
         );
     }
 

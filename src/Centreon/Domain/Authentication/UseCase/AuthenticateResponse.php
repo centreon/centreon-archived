@@ -20,44 +20,42 @@
  */
 declare(strict_types=1);
 
-namespace Security\Domain\Authentication\Exceptions;
+namespace Centreon\Domain\Authentication\UseCase;
 
-/**
- * This class is designed to contain all exceptions for the context of the authentication service.
- *
- * @package Security\Domain\Authentication\Exceptions
- */
-class AuthenticationServiceException extends \Exception
+class AuthenticateResponse
 {
+    public const REDIRECT_URI_KEY = 'redirect_uri';
+
     /**
-     * @return self
+     * @var string
      */
-    public static function refreshToken(): self
+    private $redirectionUri;
+
+    /**
+     * Return the redirection URI.
+     *
+     * @return string
+     */
+    public function getRedirectionUri(): string
     {
-        return new self(_('Error while refresh token'));
+        return $this->redirectionUri;
     }
 
     /**
-     * @return self
+     * @param string $redirectionUri
      */
-    public static function sessionExpired(): self
+    public function setRedirectionUri(string $redirectionUri): void
     {
-        return new self(_('Your session has expired'));
+        $this->redirectionUri = $redirectionUri;
     }
 
     /**
-     * @return self
+     * Return an array with redirection URI formatted to an API Response.
+     *
+     * @return array<string,string>
      */
-    public static function sessionTokenNotFound(): self
+    public function getRedirectionUriApi(): array
     {
-        return new self(_('Session token not found'));
-    }
-
-    /**
-     * @return self
-     */
-    public static function sessionNotFound(): self
-    {
-        return new self(_('Session not found'));
+        return [self::REDIRECT_URI_KEY => $this->redirectionUri];
     }
 }
