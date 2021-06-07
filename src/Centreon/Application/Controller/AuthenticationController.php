@@ -27,11 +27,13 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Authentication\UseCase\Logout;
+use Centreon\Domain\Authentication\UseCase\Redirect;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateAPI;
 use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest;
+use Centreon\Domain\Authentication\UseCase\RedirectRequest;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
@@ -116,17 +118,10 @@ class AuthenticationController extends AbstractController
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \InvalidArgumentException
      */
-    public function redirection(Request $request): View
+    public function redirection(Request $request, Redirect $redirect): View
     {
-        $redirectionUri = $this->getBaseUri();
-        $providers = $this->authenticationService->findProvidersConfigurations();
-        foreach ($providers as $provider) {
-            $provider->setCentreonBaseUri($this->getBaseUri());
-            $redirectionUri = $provider->getAuthenticationUri();
-            if ($provider->isForced()) {
-                break;
-            }
-        }
+        $request = new RedirectRequest($this->getBaseUri());
+        $redirectionUri = $redirect->execute($request);
 
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
