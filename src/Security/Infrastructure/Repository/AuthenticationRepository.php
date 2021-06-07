@@ -349,7 +349,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         // TODO: Implement updateProviderToken() method.
     }
 
-/**
+    /**
      * @inheritDoc
      */
     public function deleteSession(string $token): void

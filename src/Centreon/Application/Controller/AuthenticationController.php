@@ -159,7 +159,7 @@ class AuthenticationController extends AbstractController
         Request $request,
         Authenticate $authenticate,
         string $providerConfigurationName
-    ) {
+    ): View {
         if ($request->getMethod() === 'GET') {
             // redirect from external idp
             $data = $request->query->getIterator();
