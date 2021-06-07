@@ -82,7 +82,7 @@ class Authenticate
      * Execute authentication scenario and return the redirection URI.
      *
      * @param AuthenticateRequest $request
-     * @return string
+     * @return AuthenticateResponse
      */
     public function execute(AuthenticateRequest $request): AuthenticateResponse
     {
