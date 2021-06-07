@@ -45,8 +45,7 @@ class AuthenticateAPI
     public function __construct(
         AuthenticationServiceInterface $authenticationService,
         ProviderServiceInterface $providerService
-    )
-    {
+    ) {
         $this->authenticationService = $authenticationService;
         $this->providerService = $providerService;
     }
@@ -64,7 +63,7 @@ class AuthenticateAPI
         }
         $localProvider = $this->providerService->findProviderByConfigurationName('local');
 
-        if($localProvider === null) {
+        if ($localProvider === null) {
             throw ProviderServiceException::providerConfigurationNotFound('local');
         }
         $localProvider->authenticate($request->getCredentials());
