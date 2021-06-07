@@ -32,17 +32,31 @@ class RedirectResponse
      */
     private $redirectionUri;
 
+    /**
+     * Return the redirection URI.
+     *
+     * @return string
+     */
     public function getRedirectionUri(): string
     {
         return $this->redirectionUri;
     }
 
+    /**
+     * @param string $redirectionUri
+     * @return self
+     */
     public function setRedirectionUri(string $redirectionUri): self
     {
         $this->redirectionUri = $redirectionUri;
         return $this;
     }
 
+    /**
+     * Return an array with redirection URI formatted to an API Response.
+     *
+     * @return array
+     */
     public function getRedirectionUriApi(): array
     {
         return [self::AUTHENTICATION_URI_KEY => $this->redirectionUri];
