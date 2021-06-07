@@ -21,6 +21,8 @@
 
 declare(strict_types=1);
 
+namespace Security\Domain\Authentication;
+
 use Security\Domain\Authentication\Model\ProviderFactory;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;

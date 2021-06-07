@@ -22,14 +22,14 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @package Security\Authentication
  */
-class AuthenticatedToken implements TokenInterface
+class AuthenticatedToken extends AbstractToken
 {
     /**
      * @var string|UserInterface
@@ -75,43 +75,6 @@ class AuthenticatedToken implements TokenInterface
             $this->roles[] = $role;
             $this->roleNames[] = (string) $role;
         }
-    }
-
-    public function __serialize(): array
-    {
-        return [$this->user, $this->isAuthenticated, $this->roles, $this->attributes, $this->roleNames];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function serialize()
-    {
-        return $this->__serialize();
-    }
-
-    /**
-     * @param array<mixed> $data
-     */
-    public function __unserialize(array $data): void
-    {
-        [$this->user, $this->isAuthenticated, $this->roles, $this->attributes] = $data;
-
-        // migration path to 4.3+
-        if (null === $this->roleNames = $data[4] ?? null) {
-            $this->roleNames = [];
-            foreach ($this->roles as $role) {
-                $this->roleNames[] = (string) $role;
-            }
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function unserialize($serialized)
-    {
-        $this->__unserialize(\is_array($serialized) ? $serialized : unserialize($serialized));
     }
 
     /**

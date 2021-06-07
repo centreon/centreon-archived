@@ -311,14 +311,10 @@ class CentreonAuthSSO extends CentreonAuth
             "code" => $code,
             "redirect_uri" => $redirectUri
         ];
-        $debugCurlFile = fopen('/tmp/curl_debug.log', 'a');
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURLOPT_STDERR, $debugCurlFile);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         if ($verifyPeer) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -326,7 +322,6 @@ class CentreonAuthSSO extends CentreonAuth
 
         $result = curl_exec($ch);
         curl_close($ch);
-        fclose($debugCurlFile);
 
         return json_decode($result, true) ?? null;
     }
