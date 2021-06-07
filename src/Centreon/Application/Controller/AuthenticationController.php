@@ -18,19 +18,22 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Authentication\UseCase\Authenticate;
-use Centreon\Domain\Authentication\UseCase\AuthenticateAPI;
-use Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest;
-use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
 use FOS\RestBundle\View\View;
-use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Authentication\UseCase\Logout;
+use Centreon\Domain\Authentication\UseCase\Authenticate;
+use Centreon\Domain\Authentication\UseCase\LogoutRequest;
+use Centreon\Domain\Authentication\UseCase\AuthenticateAPI;
+use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
+use Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest;
+use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 /**
  * @package Centreon\Application\Controller
@@ -44,11 +47,9 @@ class AuthenticationController extends AbstractController
 
     /**
      * @param AuthenticationServiceInterface $authenticationService
-     * @throws \InvalidArgumentException
      */
-    public function __construct(
-        AuthenticationServiceInterface $authenticationService
-    ) {
+    public function __construct(AuthenticationServiceInterface $authenticationService)
+    {
         $this->authenticationService = $authenticationService;
     }
 
@@ -88,21 +89,19 @@ class AuthenticationController extends AbstractController
      * @return View
      * @throws \RestException
      */
-    public function logout(Request $request)
+    public function logout(Request $request, Logout $logout)
     {
-        try {
-            // We take this opportunity to delete all expired tokens
-            $this->authenticationService->deleteExpiredAPITokens();
-        } catch (\Exception $ex) {
-            // We don't propagate this error
+        $token = $request->headers->get('X-AUTH-TOKEN');
+
+        if ($token === null) {
+            return $this->view([
+                "code" => Response::HTTP_UNAUTHORIZED,
+                "message" => 'Invalid credentials'
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
-        try {
-            $token = $request->headers->get('X-AUTH-TOKEN');
-            $this->authenticationService->deleteSession($token);
-        } catch (\Exception $ex) {
-            throw new \RestException($ex->getMessage(), $ex->getCode(), $ex);
-        }
+        $request = new LogoutRequest($token);
+        $logout->execute($request);
 
         return $this->view([
             'message' => 'Successful logout'

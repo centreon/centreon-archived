@@ -18,6 +18,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\Exception;
@@ -29,18 +30,36 @@ namespace Centreon\Domain\Authentication\Exception;
  */
 class AuthenticationException extends \Exception
 {
+    /**
+     * @return self
+     */
     public static function notAuthenticated(): self
     {
         return new self(_('Authentication failed'));
     }
 
+    /**
+     * @return self
+     */
     public static function userNotFound(): self
     {
         return new self(_('User cannot be retrieved from the provider'));
     }
 
+    /**
+     * @return self
+     */
     public static function cannotCreateUser(): self
     {
         return new self(_('Cannot create user'));
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function cannotLogout(\Throwable $ex): self
+    {
+        return new self(_('User cannot be logout'), 0, $ex);
     }
 }
