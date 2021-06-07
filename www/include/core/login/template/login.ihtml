@@ -56,17 +56,24 @@
         </form>
         {literal}
         <script type="text/javascript">
-            jQuery.ajax({
-                url: '/centreon/authentication/providers/local',
-                data: {
-                    useralias: "admin",
-                    password: "centreon"
-                },
-                method: 'POST'
-            }).done((res) => {
-                console.log(res)
-                window.location.href = res.redirect_uri
-            })
+            jQuery(() => {
+                jQuery('form[name="login"]').submit(() => {
+                    jQuery.ajax({
+                        url: '/centreon/authentication/providers/local',
+                        data: {
+                            useralias: jQuery('input[name="useralias"]').val(),
+                            password: jQuery('input[name="password"]').val()
+                        },
+                        method: 'POST'
+                    }).done((res) => {
+                        console.log(res)
+                        window.location.href = res.redirect_uri
+                    }).fail((err) => {
+                        console.log(err)
+                    })
+                    return false;
+                });
+            });
           // check :
           //  - if login page is in an iframe
           //  - if iframe url is login page with disconnect parameter
