@@ -49,11 +49,11 @@ class ProviderService implements ProviderServiceInterface
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,
         ProviderFactory $providerFactory
-    )
-    {
+    ) {
         $this->repository = $authenticationRepository;
         $this->providerFactory = $providerFactory;
     }
+
     /**
      * @inheritDoc
      */
