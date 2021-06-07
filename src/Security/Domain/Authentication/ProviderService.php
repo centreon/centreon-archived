@@ -28,7 +28,7 @@ use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 
-class  ProviderService implements ProviderServiceInterface
+class ProviderService implements ProviderServiceInterface
 {
     /**
      * @var AuthenticationRepositoryInterface
@@ -40,6 +40,10 @@ class  ProviderService implements ProviderServiceInterface
      */
     private $providerFactory;
 
+    /**
+    * @param AuthenticationRepositoryInterface $authenticationRepository
+    * @param ProviderFactory $providerFactory
+    */
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,
         ProviderFactory $providerFactory
