@@ -122,13 +122,17 @@ class AuthenticationService implements AuthenticationServiceInterface
         if ($providerConfiguration === null || ($providerConfigurationId = $providerConfiguration->getId()) === null) {
             throw ProviderServiceException::providerConfigurationNotFound($providerConfigurationName);
         }
-        $this->repository->addAuthenticationTokens(
-            $sessionToken,
-            $providerConfigurationId,
-            $contact->getId(),
-            $providerToken,
-            $providerRefreshToken
-        );
+        try {
+            $this->repository->addAuthenticationTokens(
+                $sessionToken,
+                $providerConfigurationId,
+                $contact->getId(),
+                $providerToken,
+                $providerRefreshToken
+            );
+        } catch(\Exception $ex) {
+            throw AuthenticationServiceException::addAuthenticationToken($ex);
+        }
     }
 
     /**
@@ -144,13 +148,17 @@ class AuthenticationService implements AuthenticationServiceInterface
         if ($providerConfiguration === null || ($providerConfigurationId = $providerConfiguration->getId()) === null) {
             throw ProviderServiceException::providerConfigurationNotFound('local');
         }
-        $this->repository->addAPIAuthenticationTokens(
-            $token,
-            $providerConfigurationId,
-            $contact->getId(),
-            $providerToken,
-            $providerRefreshToken
-        );
+        try {
+            $this->repository->addAPIAuthenticationTokens(
+                $token,
+                $providerConfigurationId,
+                $contact->getId(),
+                $providerToken,
+                $providerRefreshToken
+            );
+        } catch(\Exception $ex) {
+            throw AuthenticationServiceException::addAuthenticationToken($ex);
+        }
     }
 
     /**
@@ -158,7 +166,11 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function deleteSession(string $sessionToken): void
     {
-        $this->repository->deleteSession($sessionToken);
+        try {
+            $this->repository->deleteSession($sessionToken);
+        } catch (\Exception $ex){
+            throw AuthenticationServiceException::deleteSession($ex);
+        }
     }
 
     /**
@@ -166,19 +178,24 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function deleteExpiredAPITokens(): void
     {
-        $this->localProviderRepository->deleteExpiredAPITokens();
+        try {
+            $this->localProviderRepository->deleteExpiredAPITokens();
+        } catch(\Exception $ex) {
+            throw AuthenticationServiceException::deleteExpireToken($ex);
+        }
     }
 
     /**
-     * Check if the session is valid.
-     *
-     * @param string $token Session token
-     * @param ProviderInterface $provider Provider that will be used to refresh the token if necessary
-     * @return bool
+     * @inheritDoc
      */
     public function hasValidSession(string $token, ProviderInterface $provider): bool
     {
-        $authenticationTokens = $this->repository->findAuthenticationTokensByToken($token);
+        try {
+            $authenticationTokens = $this->repository->findAuthenticationTokensByToken($token);
+        } catch(\Exception $ex) {
+            throw AuthenticationServiceException::authenticationTokensNotFound($ex);
+        }
+
         if ($authenticationTokens === null) {
             return false;
         }
@@ -200,12 +217,15 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
-     * @param string $token
-     * @return AuthenticationTokens|null
+     * @inheritDoc
      */
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens
     {
-        return $this->repository->findAuthenticationTokensByToken($token);
+        try {
+            return $this->repository->findAuthenticationTokensByToken($token);
+        } catch(\Exception $ex) {
+            throw AuthenticationServiceException::authenticationTokensNotFound($ex);
+        }
     }
 
     /**
@@ -213,6 +233,10 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function updateAuthenticationTokens(AuthenticationTokens $authenticationTokens): void
     {
-        $this->repository->updateAuthenticationTokens($authenticationTokens);
+        try {
+            $this->repository->updateAuthenticationTokens($authenticationTokens);
+        } catch(\Exception $ex) {
+            throw AuthenticationServiceException::updateAuthenticationTokens($ex);
+        }
     }
 }

@@ -16156,3 +16156,21 @@ msgstr "L'utilisateur ne peut pas être retrouvé depuis le fournisseur"
 
 msgid "Cannot create user"
 msgstr "Impossible de créer l'utilisateur"
+
+msgid "Error while deleting expired token"
+msgstr "Erreur lors de la suppression du jeton expiré"
+
+msgid "Error while adding authentication token"
+msgstr "Erreur lors de l'ajout du jeton d'authentification"
+
+msgid "Error while deleting session"
+msgstr "Erreur lors de la suppression de la session"
+
+msgid "Error while searching authentication tokens"
+msgstr "Erreur lors de la recherche des jetons d'authentification"
+
+msgid "Error while updating authentication tokens"
+msgstr "Erreur lors de la mise à jour des jetons d'authentification"
+
+msgid "Error while searching providers configurations"
+msgstr "Erreur lors de la recherche des configurations de fournisseurs"

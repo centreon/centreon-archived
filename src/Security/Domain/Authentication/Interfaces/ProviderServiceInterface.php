@@ -31,6 +31,7 @@ interface ProviderServiceInterface
      * Find providers configurations
      *
      * @return ProviderConfiguration[]
+     * @throws ProviderServiceException
      */
     public function findProvidersConfigurations(): array;
 
@@ -39,7 +40,7 @@ interface ProviderServiceInterface
      *
      * @param int $providerConfigurationId
      * @return ProviderInterface|null
-     * @throws \Exception
+     * @throws ProviderServiceException
      */
     public function findProviderByConfigurationId(int $providerConfigurationId): ?ProviderInterface;
 
@@ -48,12 +49,14 @@ interface ProviderServiceInterface
      *
      * @param string $providerConfigurationName
      * @return ProviderInterface|null
+     * @throws ProviderServiceException
      */
     public function findProviderByConfigurationName(string $providerConfigurationName): ?ProviderInterface;
 
     /**
      * @param string $providerConfigurationName
      * @return ProviderConfiguration|null
+     * @throws ProviderServiceException
      */
     public function findProviderConfigurationByConfigurationName(
         string $providerConfigurationName
@@ -62,7 +65,7 @@ interface ProviderServiceInterface
     /**
      * @param string $sessionToken
      * @return ProviderInterface|null
-     * @throws \Exception
+     * @throws ProviderServiceException
      */
     public function findProviderBySession(string $sessionToken): ?ProviderInterface;
 }

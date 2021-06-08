@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Authentication\UseCase;
 
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
@@ -44,16 +43,12 @@ class Logout
      * Execute the Logout Use Case.
      *
      * @param LogoutRequest $request
-     * @throws AuthenticationException
+     * @throws AuthenticationServiceException
      */
     public function execute(LogoutRequest $request): void
     {
         $token = $request->getToken();
-        try {
-            $this->authenticationService->deleteExpiredAPITokens();
-            $this->authenticationService->deleteSession($token);
-        } catch (AuthenticationServiceException $ex) {
-            throw AuthenticationException::cannotLogout($ex);
-        }
+        $this->authenticationService->deleteExpiredAPITokens();
+        $this->authenticationService->deleteSession($token);
     }
 }

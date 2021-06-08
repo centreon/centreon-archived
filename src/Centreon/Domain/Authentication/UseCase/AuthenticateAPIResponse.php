@@ -34,7 +34,7 @@ class AuthenticateApiResponse
     /**
      * Return the redirection URI.
      *
-     * @return string
+     * @return array<string,mixed>
      */
     public function getApiAuthentication(): array
     {
@@ -42,7 +42,8 @@ class AuthenticateApiResponse
     }
 
     /**
-     * @param string $redirectionUri
+     * @param ContactInterface $contact
+     * @param string $token
      */
     public function setApiAuthentication(ContactInterface $contact, string $token): void
     {

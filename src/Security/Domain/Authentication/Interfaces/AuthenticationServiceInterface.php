@@ -36,6 +36,8 @@ interface AuthenticationServiceInterface
      *
      * @param string $token
      * @return boolean
+     * @throws ProviderServiceException
+     * @throws AuthenticationServiceException
      */
     public function checkToken(string $token): bool;
 
@@ -47,6 +49,7 @@ interface AuthenticationServiceInterface
      * @param ContactInterface $contact
      * @param ProviderToken $providerToken
      * @param ProviderToken|null $providerRefreshToken
+     * @throws AuthenticationServiceException
      */
     public function createAuthenticationTokens(
         string $sessionToken,
@@ -60,6 +63,7 @@ interface AuthenticationServiceInterface
      * Delete a session.
      *
      * @param string $sessionToken
+     * @throws AuthenticationServiceException
      */
     public function deleteSession(string $sessionToken): void;
 
@@ -70,6 +74,7 @@ interface AuthenticationServiceInterface
      * @param ContactInterface $contact
      * @param ProviderToken $providerToken
      * @param ProviderToken|null $providerRefreshToken
+     * @throws AuthenticationServiceException
      */
     public function createAPIAuthenticationTokens(
         string $token,
@@ -80,18 +85,20 @@ interface AuthenticationServiceInterface
 
     /**
      * Delete all expired API tokens
-     *
+     * @throws AuthenticationServiceException
      */
     public function deleteExpiredAPITokens(): void;
 
     /**
      * @param AuthenticationTokens $authenticationToken
+     * @throws AuthenticationServiceException
      */
     public function updateAuthenticationTokens(AuthenticationTokens $authenticationToken): void;
 
     /**
      * @param string $token
      * @return AuthenticationTokens|null
+     * @throws AuthenticationServiceException
      */
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens;
 
@@ -101,7 +108,7 @@ interface AuthenticationServiceInterface
      * @param string $sessionToken Session token
      * @param ProviderInterface $provider Provider that will be used to refresh the token if necessary
      * @return bool Returns true if the session is valid (after use of the refresh token by the provider if necessary)
-     * @throws \Exception *
+     * @throws AuthenticationServiceException
      */
     public function hasValidSession(string $sessionToken, ProviderInterface $provider): bool;
 }

@@ -45,4 +45,22 @@ class ProviderServiceException extends \Exception
     {
         return new self(_('Provider not found'));
     }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function findProvidersConfigurations(\Throwable $ex):  self
+    {
+        return new self(_('Error while searching providers configurations'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function authenticationTokensNotFound(\Throwable $ex): self
+    {
+        return new self(_('Error while searching authentication tokens'), 0, $ex);
+    }
 }
