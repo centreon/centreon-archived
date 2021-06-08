@@ -304,7 +304,7 @@ services:
         arguments: [ "%redirect_default_page%" ]
         public: true
 
-    Centreon\Domain\Authentication\UseCase\AuthenticateAPI:
+    Centreon\Domain\Authentication\UseCase\AuthenticateApi:
         public: true
 
     # Log configuration
