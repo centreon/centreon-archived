@@ -111,7 +111,7 @@ class Authenticate
             if ($authenticationProvider->canCreateUser()) {
                 $this->contactService->addUser($providerUser);
             } else {
-                throw AuthenticationException::cannotCreateUser();
+                throw AuthenticationException::userNotFoundAndCannotBeCreated();
             }
         } else {
             $this->contactService->updateUser($providerUser);
@@ -137,6 +137,7 @@ class Authenticate
         } else {
             $response->setRedirectionUri($request->getCentreonBaseUri() . $this->redirectDefaultPage);
         }
+
         return $response;
     }
 }

@@ -49,9 +49,9 @@ class AuthenticationException extends \Exception
     /**
      * @return self
      */
-    public static function cannotCreateUser(): self
+    public static function userNotFoundAndCannotBeCreated(): self
     {
-        return new self(_('Cannot create user'));
+        return new self(_('User not found and cannot be created'));
     }
 
     /**
