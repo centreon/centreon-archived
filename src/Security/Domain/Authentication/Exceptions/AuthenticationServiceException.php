@@ -60,4 +60,49 @@ class AuthenticationServiceException extends \Exception
     {
         return new self(_('Session not found'));
     }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function deleteExpireToken(\Throwable $ex): self
+    {
+        return new self(_('Error while deleting expired token'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function addAuthenticationToken(\Throwable $ex): self
+    {
+        return new self (_('Error while adding authentication token'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function deleteSession(\Throwable $ex): self
+    {
+        return new self(_('Error while deleting session'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function authenticationTokensNotFound(\Throwable $ex): self
+    {
+        return new self(_('Error while searching authentication tokens'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function updateAuthenticationTokens(\Throwable $ex): self
+    {
+        return new self(_('Error while updating authentication tokens'), 0, $ex);
+    }
 }

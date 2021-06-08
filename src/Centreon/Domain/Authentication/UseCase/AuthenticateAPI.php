@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Authentication\UseCase;
 
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
@@ -55,13 +56,14 @@ class AuthenticateApi
      * @param AuthenticateApiRequest $request
      * @return AuthenticateApiResponse
      * @throws ProviderServiceException
+     * @throws AuthenticationServiceException
      * @throws AuthenticationException
      */
     public function execute(AuthenticateApiRequest $request): AuthenticateApiResponse
     {
         try {
             $this->authenticationService->deleteExpiredAPITokens();
-        } catch (\Exception $ex) {
+        } catch (AuthenticationServiceException $ex) {
             // We don't propagate this error.
         }
         $localProvider = $this->providerService->findProviderByConfigurationName(LocalProvider::NAME);

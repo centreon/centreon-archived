@@ -44,16 +44,12 @@ class Logout
      * Execute the Logout Use Case.
      *
      * @param LogoutRequest $request
-     * @throws AuthenticationException
+     * @throws AuthenticationServiceException
      */
     public function execute(LogoutRequest $request): void
     {
         $token = $request->getToken();
-        try {
-            $this->authenticationService->deleteExpiredAPITokens();
-            $this->authenticationService->deleteSession($token);
-        } catch (AuthenticationServiceException $ex) {
-            throw AuthenticationException::cannotLogout($ex);
-        }
+        $this->authenticationService->deleteExpiredAPITokens();
+        $this->authenticationService->deleteSession($token);
     }
 }

@@ -29,7 +29,6 @@ use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Security\Infrastructure\Repository\Exception\AuthenticationRepositoryException;
 
 /**
  * @package Security\Repository
@@ -376,22 +375,18 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
      */
     public function deleteExpiredSession(): void
     {
-        try {
-            $sessionIdStatement = $this->db->query(
-                'SELECT session_id FROM `session`
-                WHERE last_reload <
-                    (SELECT UNIX_TIMESTAMP(NOW() - INTERVAL (`value` * 60) SECOND)
-                    FROM `options`
-                    wHERE `key` = \'session_expire\')
-                OR last_reload IS NULL'
-            );
-            if ($results = $sessionIdStatement->fetchAll(\PDO::FETCH_ASSOC)) {
-                foreach ($results as $result) {
-                    $this->deleteSession($result['session_id']);
-                }
+        $sessionIdStatement = $this->db->query(
+            'SELECT session_id FROM `session`
+            WHERE last_reload <
+                (SELECT UNIX_TIMESTAMP(NOW() - INTERVAL (`value` * 60) SECOND)
+                FROM `options`
+                wHERE `key` = \'session_expire\')
+            OR last_reload IS NULL'
+        );
+        if ($results = $sessionIdStatement->fetchAll(\PDO::FETCH_ASSOC)) {
+            foreach ($results as $result) {
+                $this->deleteSession($result['session_id']);
             }
-        } catch (\PDOException $ex) {
-            throw AuthenticationRepositoryException::deleteExpiredSession();
         }
     }
 

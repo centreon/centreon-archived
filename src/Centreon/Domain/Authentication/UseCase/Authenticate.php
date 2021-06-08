@@ -83,6 +83,9 @@ class Authenticate
      *
      * @param AuthenticateRequest $request
      * @return AuthenticateResponse
+     * @throws ProviderServiceException
+     * @throws AuthenticationServiceException
+     * @throws AuthenticationException
      */
     public function execute(AuthenticateRequest $request): AuthenticateResponse
     {

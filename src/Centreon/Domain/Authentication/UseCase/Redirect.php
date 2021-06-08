@@ -33,11 +33,21 @@ class Redirect
      */
     private $providerService;
 
+    /**
+     * @param ProviderServiceInterface $providerService
+     */
     public function __construct(ProviderServiceInterface $providerService)
     {
         $this->providerService = $providerService;
     }
 
+    /**
+     * Execute redirection scenario and return the redirection URI.
+     *
+     * @param RedirectRequest $request
+     * @return RedirectResponse
+     * @throws ProviderServiceException
+     */
     public function execute(RedirectRequest $request): RedirectResponse
     {
         $providers = $this->providerService->findProvidersConfigurations();

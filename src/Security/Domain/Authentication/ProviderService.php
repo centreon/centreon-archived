@@ -59,7 +59,11 @@ class ProviderService implements ProviderServiceInterface
      */
     public function findProvidersConfigurations(): array
     {
-        return $this->repository->findProvidersConfigurations();
+        try {
+            return $this->repository->findProvidersConfigurations();
+        } catch(\Exception $ex) {
+            ProviderServiceException::findProvidersConfigurations($ex);
+        }
     }
 
     /**
@@ -67,13 +71,15 @@ class ProviderService implements ProviderServiceInterface
      */
     public function findProviderByConfigurationId(int $providerConfigurationId): ?ProviderInterface
     {
-        $providerConfiguration = $this->repository->findProviderConfiguration(
-            $providerConfigurationId
-        );
-        if ($providerConfiguration !== null) {
-            return $this->providerFactory->create($providerConfiguration);
+        try {
+            $providerConfiguration = $this->repository->findProviderConfiguration($providerConfigurationId);
+        } catch(\Exception $ex) {
+            ProviderServiceException::findProvidersConfigurations($ex);
         }
-        return null;
+        if ($providerConfiguration === null) {
+            return null;
+        }
+        return $this->providerFactory->create($providerConfiguration);
     }
 
     /**
@@ -81,12 +87,16 @@ class ProviderService implements ProviderServiceInterface
      */
     public function findProviderByConfigurationName(string $providerConfigurationName): ?ProviderInterface
     {
-        $providerConfiguration = $this->findProviderConfigurationByConfigurationName(
-            $providerConfigurationName
-        );
+        try {
+            $providerConfiguration = $this->repository->findProviderConfigurationByConfigurationName(
+                $providerConfigurationName
+            );
+        } catch(\Exception $ex) {
+            ProviderServiceException::findProvidersConfigurations($ex);
+        }
 
         if ($providerConfiguration === null) {
-            throw ProviderServiceException::providerConfigurationNotFound($providerConfigurationName);
+            return null;
         }
         return $this->providerFactory->create($providerConfiguration);
     }
@@ -96,7 +106,11 @@ class ProviderService implements ProviderServiceInterface
      */
     public function findProviderBySession(string $token): ?ProviderInterface
     {
-        $authenticationToken = $this->repository->findAuthenticationTokensByToken($token);
+        try {
+            $authenticationToken = $this->repository->findAuthenticationTokensByToken($token);
+        } catch(\Exception $ex) {
+            ProviderServiceException::authenticationTokensNotFound($ex);
+        }
         if ($authenticationToken === null) {
             return null;
         }
@@ -109,6 +123,10 @@ class ProviderService implements ProviderServiceInterface
     public function findProviderConfigurationByConfigurationName(
         string $providerConfigurationName
     ): ?ProviderConfiguration {
-        return $this->repository->findProviderConfigurationByConfigurationName($providerConfigurationName);
+        try {
+            return $this->repository->findProviderConfigurationByConfigurationName($providerConfigurationName);
+        } catch(\Exception $ex) {
+            ProviderServiceException::findProvidersConfigurations($ex);
+        }
     }
 }
