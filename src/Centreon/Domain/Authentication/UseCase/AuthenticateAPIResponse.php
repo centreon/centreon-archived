@@ -34,7 +34,7 @@ class AuthenticateApiResponse
     /**
      * Return the redirection URI.
      *
-     * @return array
+     * @return array<string,mixed>
      */
     public function getApiAuthentication(): array
     {
