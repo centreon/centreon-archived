@@ -27,7 +27,6 @@ use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 
 /**

@@ -71,7 +71,7 @@ class AuthenticationController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        return $this->view($response);
+        return $this->view($response->getApiAuthentication());
     }
 
     /**
