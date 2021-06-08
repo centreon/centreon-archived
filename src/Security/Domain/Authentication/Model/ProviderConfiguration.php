@@ -129,10 +129,12 @@ class ProviderConfiguration
      * Set centreon base uri
      *
      * @param string $centreonBaseUri
+     * @return self
      */
-    public function setCentreonBaseUri(string $centreonBaseUri): void
+    public function setCentreonBaseUri(string $centreonBaseUri): self
     {
         $this->centreonBaseUri = $centreonBaseUri;
+        return $this;
     }
 
     /**

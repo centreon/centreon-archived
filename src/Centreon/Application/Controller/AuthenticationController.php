@@ -104,6 +104,7 @@ class AuthenticationController extends AbstractController
      * Provide the default connection url.
      *
      * @param Request $request
+     * @param Redirect $redirect
      * @return View
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \InvalidArgumentException
@@ -132,7 +133,7 @@ class AuthenticationController extends AbstractController
     public function findProvidersConfigurations(FindProvidersConfigurations $findProviderConfigurations): View
     {
         $providers = $findProviderConfigurations->execute();
-        return View::create($providers);
+        return View::create($providers->getProvidersConfigurations());
     }
 
     /**
