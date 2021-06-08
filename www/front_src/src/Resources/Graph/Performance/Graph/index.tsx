@@ -205,8 +205,9 @@ const GraphContent = ({
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
-  const [zoomPivotPosition, setZoomPivotPosition] =
-    React.useState<number | null>(null);
+  const [zoomPivotPosition, setZoomPivotPosition] = React.useState<
+    number | null
+  >(null);
   const [zoomBoundaries, setZoomBoundaries] =
     React.useState<ZoomBoundaries | null>(null);
   const { canComment } = useAclQuery();
@@ -446,10 +447,11 @@ const GraphContent = ({
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
   );
 
-  const timeTick =
-    containsMetrics && mousePosition
-      ? new Date(getTimeValue(mousePosition[0]).timeTick)
-      : null;
+  const mousePositionTimeTick = mousePosition
+    ? getTimeValue(mousePosition[0]).timeTick
+    : 0;
+
+  const timeTick = containsMetrics ? new Date(mousePositionTimeTick) : null;
 
   return (
     <AnnotationsContext.Provider value={annotations}>
