@@ -61,10 +61,11 @@
                     jQuery.ajax({
                         url: '/centreon/authentication/providers/local',
                         data: {
-                            useralias: jQuery('input[name="useralias"]').val(),
+                            login: jQuery('input[name="useralias"]').val(),
                             password: jQuery('input[name="password"]').val()
                         },
-                        method: 'POST'
+                        method: 'POST',
+                        contentType: 'application/json'
                     }).done((res) => {
                         console.log(res)
                         window.location.href = res.redirect_uri

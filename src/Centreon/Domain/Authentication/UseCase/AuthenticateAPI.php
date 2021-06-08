@@ -73,7 +73,7 @@ class AuthenticateAPI
             if ($contact === null) {
                 throw AuthenticationException::userNotFound();
             }
-            $token = password_hash(bin2hex(random_bytes(128)), PASSWORD_ARGON2I);
+            $token = password_hash(bin2hex(random_bytes(128)), PASSWORD_BCRYPT);
 
             $this->authenticationService->createAPIAuthenticationTokens(
                 $token,
