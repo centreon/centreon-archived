@@ -279,12 +279,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
         }
 
         $parentId = $this->arguments['parent_id'];
-        $params = isset($this->arguments['params']) ? $this->arguments['params'] : '';
-
-        // try to deserialize params string to array
-        if (!$params = unserialize($params)) {
-            $params = [];
-        }
+        $params = [];
 
         // add new task
         $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_IMPORT, $params, $parentId);
