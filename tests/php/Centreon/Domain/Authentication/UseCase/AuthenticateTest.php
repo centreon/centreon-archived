@@ -28,7 +28,6 @@ use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
@@ -38,10 +37,45 @@ use Security\Domain\Authentication\Model\ProviderToken;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21
+ * @package Tests\Centreon\Domain\Authentication\UseCase
  */
 class AuthenticateTest extends TestCase
 {
+    /**
+     * @var AuthenticationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $authenticationService;
+
+    /**
+     * @var ProviderServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $providerService;
+
+    /**
+     * @var ContactServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $contactService;
+
+    /**
+     * @var SessionInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $session;
+
+    /**
+     * @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $provider;
+
+    /**
+     * @var ContactInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $contact;
+
+    /**
+     * @var AuthenticationTokens|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $authenticationTokens;
+
     protected function setUp(): void
     {
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
@@ -51,9 +85,11 @@ class AuthenticateTest extends TestCase
         $this->provider = $this->createMock(ProviderInterface::class);
         $this->contact = $this->createMock(ContactInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
-        $this->authenticateResponse = $this->createMock(AuthenticateResponse::class);
     }
 
+    /**
+     * test execute when provider configuration is not found
+     */
     public function testExecuteProviderConfigurationNotFound(): void
     {
         $authenticate = new Authenticate(
@@ -79,6 +115,9 @@ class AuthenticateTest extends TestCase
         $authenticate->execute($authenticateRequest);
     }
 
+    /**
+     * test execute when login / password are wrong
+     */
     public function testExecuteNotAuthenticated(): void
     {
         $this->provider
@@ -114,6 +153,9 @@ class AuthenticateTest extends TestCase
         $authenticate->execute($authenticateRequest);
     }
 
+    /**
+     * test execute when user is not found by provider
+     */
     public function testExecuteUserNotFound(): void
     {
         $this->provider
@@ -154,6 +196,9 @@ class AuthenticateTest extends TestCase
         $authenticate->execute($authenticateRequest);
     }
 
+    /**
+     * test execute when user is created
+     */
     public function testExecuteCreateUser(): void
     {
         $this->provider
@@ -216,6 +261,9 @@ class AuthenticateTest extends TestCase
         $authenticate->execute($authenticateRequest);
     }
 
+    /**
+     * test execute when user is not found and cannot be created
+     */
     public function testExecuteCannotCreateUser(): void
     {
         $this->provider
@@ -266,6 +314,9 @@ class AuthenticateTest extends TestCase
         $authenticate->execute($authenticateRequest);
     }
 
+    /**
+     * test execute when user is updated
+     */
     public function testExecuteUpdateUser(): void
     {
         $this->provider
@@ -323,6 +374,9 @@ class AuthenticateTest extends TestCase
         $authenticate->execute($authenticateRequest);
     }
 
+    /**
+     * test execute when authentication tokens are created
+     */
     public function testExecuteCreateAuthenticationTokens(): void
     {
         $this->provider
@@ -398,6 +452,9 @@ class AuthenticateTest extends TestCase
         $authenticate->execute($authenticateRequest);
     }
 
+    /**
+     * test execute response with default page
+     */
     public function testExecuteDefaultPage(): void
     {
         $this->provider
@@ -457,6 +514,9 @@ class AuthenticateTest extends TestCase
         $this->assertEquals('//monitoring/resources', $response->getRedirectionUri());
     }
 
+    /**
+     * test execute response with custom default page (defined by user)
+     */
     public function testExecuteCustomDefaultPage(): void
     {
         $this->provider
