@@ -30,33 +30,19 @@ use Centreon\Domain\Authentication\UseCase\Logout;
 use Centreon\Domain\Authentication\UseCase\Redirect;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
-use Centreon\Domain\Authentication\UseCase\AuthenticateAPI;
+use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
 use Centreon\Domain\Authentication\UseCase\RedirectRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
-use Centreon\Domain\Authentication\UseCase\AuthenticateAPIRequest;
+use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 /**
  * @package Centreon\Application\Controller
  */
 class AuthenticationController extends AbstractController
 {
-    /**
-     * @var AuthenticationServiceInterface
-     */
-    private $authenticationService;
-
-    /**
-     * @param AuthenticationServiceInterface $authenticationService
-     */
-    public function __construct(AuthenticationServiceInterface $authenticationService)
-    {
-        $this->authenticationService = $authenticationService;
-    }
-
     /**
      * Entry point used to identify yourself and retrieve an authentication token.
      * (If view_response_listener = true, we need to write the following
@@ -67,7 +53,7 @@ class AuthenticationController extends AbstractController
      * @return View
      * @throws \Exception
      */
-    public function login(Request $request, AuthenticateAPI $authenticate)
+    public function login(Request $request, AuthenticateApi $authenticate)
     {
         $contentBody = json_decode((string) $request->getContent(), true);
         $credentials = [
@@ -75,15 +61,17 @@ class AuthenticationController extends AbstractController
             "password" => $contentBody['security']['credentials']['password'] ?? ''
         ];
 
-        $request =  new AuthenticateAPIRequest($credentials);
-        $response = $authenticate->execute($request);
-        if (!empty($response)) {
-            return $this->view($response);
+        $request = new AuthenticateApiRequest($credentials);
+        try {
+            $response = $authenticate->execute($request);
+        } catch (\Exception $e) {
+            return $this->view([
+                "code" => Response::HTTP_UNAUTHORIZED,
+                "message" => 'Invalid credentials'
+            ], Response::HTTP_UNAUTHORIZED);
         }
-        return $this->view([
-            "code" => Response::HTTP_UNAUTHORIZED,
-            "message" => 'Invalid credentials'
-        ], Response::HTTP_UNAUTHORIZED);
+
+        return $this->view($response);
     }
 
     /**

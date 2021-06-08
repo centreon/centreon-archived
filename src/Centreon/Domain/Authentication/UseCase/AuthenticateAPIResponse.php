@@ -22,26 +22,41 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
-class AuthenticateApiRequest
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+
+class AuthenticateApiResponse
 {
     /**
      * @var array<string,mixed>
      */
-    private $credentials;
+    private $apiAuthentication = [];
 
     /**
-     * @param array<string,mixed> $credentials
+     * Return the redirection URI.
+     *
+     * @return string
      */
-    public function __construct(array $credentials)
+    public function getApiAuthentication(): array
     {
-        $this->credentials = $credentials;
+        return $this->apiAuthentication;
     }
 
     /**
-     * @return array<string,mixed>
+     * @param string $redirectionUri
      */
-    public function getCredentials(): array
+    public function setApiAuthentication(ContactInterface $contact, string $token): void
     {
-        return $this->credentials;
+        $this->apiAuthentication = [
+            'contact' => [
+                'id' => $contact->getId(),
+                'name' => $contact->getName(),
+                'alias' => $contact->getAlias(),
+                'email' => $contact->getEmail(),
+                'is_admin' => $contact->isAdmin()
+            ],
+            'security' => [
+                'token' => $token
+            ]
+        ];
     }
 }
