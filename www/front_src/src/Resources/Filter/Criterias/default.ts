@@ -1,4 +1,4 @@
-import { SelectEntry } from '@centreon/ui/src';
+import { SelectEntry } from '@centreon/ui';
 
 import { Criteria } from './models';
 

@@ -40,8 +40,6 @@ interface PlatformTopologyWriteRepositoryInterface
      * Delete a Platform.
      *
      * @param int $serverId
-     * @throws EntityNotFoundException
-     * @throws RepositoryException
      */
     public function deletePlatform(int $serverId): void;
 

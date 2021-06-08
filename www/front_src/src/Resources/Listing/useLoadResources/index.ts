@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { isNil, equals, not, prop } from 'ramda';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import { SelectEntry } from '@centreon/ui/src';
+import { SelectEntry } from '@centreon/ui';
 
 import { useResourceContext } from '../../Context';
 import { SortOrder } from '../../models';

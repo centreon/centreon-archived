@@ -13,8 +13,8 @@ import {
   IconButton,
   useSnackbar,
   Severity,
+  copyToClipboard,
 } from '@centreon/ui';
-import copyToClipboard from '@centreon/ui/src/utils/copy';
 
 import {
   labelCopyLink,
