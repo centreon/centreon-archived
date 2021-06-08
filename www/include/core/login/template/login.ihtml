@@ -60,10 +60,10 @@
                 jQuery('form[name="login"]').submit(() => {
                     jQuery.ajax({
                         url: '/centreon/authentication/providers/local',
-                        data: {
+                        data: JSON.stringify({
                             login: jQuery('input[name="useralias"]').val(),
                             password: jQuery('input[name="password"]').val()
-                        },
+                        }),
                         method: 'POST',
                         contentType: 'application/json'
                     }).done((res) => {
