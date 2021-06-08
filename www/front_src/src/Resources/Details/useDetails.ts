@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, ifElse, pathEq, always, pathOr } from 'ramda';
+import { isNil, ifElse, pathEq, always, pathOr, or, and } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -15,7 +15,7 @@ import {
   labelNoResourceFound,
   labelSomethingWentWrong,
 } from '../translatedLabels';
-import { Resource } from '../models';
+import { pluralizedResourceType, Resource } from '../models';
 
 import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
 import { TabId } from './tabs/models';
@@ -156,11 +156,22 @@ const useDetails = (): DetailsState => {
   ]);
 
   const getSelectedResourceDetailsEndpoint = (): string | undefined => {
-    if (!isNil(selectedResourceParentId)) {
-      return `${resourcesEndpoint}/${selectedResourceParentType}s/${selectedResourceParentId}/${selectedResourceType}s/${selectedResourceId}`;
+    if (or(isNil(selectedResourceType), isNil(selectedResourceId))) {
+      return undefined;
     }
 
-    return `${resourcesEndpoint}/${selectedResourceType}s/${selectedResourceId}`;
+    const pluralizedSelectedResourceType =
+      pluralizedResourceType[selectedResourceType as string];
+
+    if (
+      and(!isNil(selectedResourceParentId), !isNil(selectedResourceParentType))
+    ) {
+      const pluralizedSelectResourceParentType =
+        pluralizedResourceType[selectedResourceParentType as string];
+      return `${resourcesEndpoint}/${pluralizedSelectResourceParentType}/${selectedResourceParentId}/${pluralizedSelectedResourceType}/${selectedResourceId}`;
+    }
+
+    return `${resourcesEndpoint}/${pluralizedSelectedResourceType}/${selectedResourceId}`;
   };
 
   const clearSelectedResource = (): void => {

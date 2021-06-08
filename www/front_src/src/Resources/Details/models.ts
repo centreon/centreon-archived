@@ -6,6 +6,7 @@ import {
   Parent,
   ResourceLinks,
   NamedEntity,
+  ResourceAdditionals,
 } from '../models';
 
 import { StoredCustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
@@ -14,6 +15,7 @@ export interface ResourceDetails extends NamedEntity {
   acknowledged: boolean;
   acknowledgement?: Acknowledgement;
   active_checks: boolean;
+  additionals: ResourceAdditionals;
   alias?: string;
   calculation_type?: string;
   command_line?: string;

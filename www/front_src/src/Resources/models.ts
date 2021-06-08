@@ -7,6 +7,13 @@ export enum ResourceType {
   service = 'service',
 }
 
+export const pluralizedResourceType = {
+  [ResourceType.businessActivity]: 'business-activities',
+  [ResourceType.host]: 'hosts',
+  [ResourceType.metaservice]: 'metaservices',
+  [ResourceType.service]: 'services',
+};
+
 export type ResourceShortType = 'h' | 's' | 'm' | 'ba';
 
 export interface NamedEntity {

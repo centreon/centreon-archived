@@ -1,10 +1,11 @@
 import * as React from 'react';
 
-import { pick } from 'ramda';
+import { path, pick } from 'ramda';
 
 import { Grid, Chip, Tooltip } from '@material-ui/core';
 import FlappingIcon from '@material-ui/icons/SwapCalls';
 
+import { getFormattedCalculationMethod } from '../../../../Listing/columns';
 import ChecksIcon from '../../../../ChecksIcon';
 import {
   labelCurrentStateDuration,
@@ -25,6 +26,8 @@ import {
   labelCalculationType,
   labelCheck,
   labelFlapping,
+  labelCalculationMethod,
+  labelHealth,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 
@@ -142,6 +145,24 @@ const getDetailCardLines = ({
       field: details.calculation_type,
       line: <DetailsLine line={details.calculation_type} />,
       title: labelCalculationType,
+    },
+    {
+      field: path(['additionals', 'calculation_method'], details),
+      line: (
+        <DetailsLine
+          line={
+            details.additionals
+              ? getFormattedCalculationMethod(details.additionals)
+              : ''
+          }
+        />
+      ),
+      title: labelCalculationMethod,
+    },
+    {
+      field: path(['additionals', 'health'], details),
+      line: <DetailsLine line={`${details.additionals?.health || ''}`} />,
+      title: labelHealth,
     },
     {
       field: details.groups,

@@ -85,6 +85,19 @@ export const defaultSelectedColumnIds = [
   'state',
 ];
 
+export const getFormattedCalculationMethod = (
+  additionals: ResourceAdditionals,
+): string =>
+  cond<ResourceAdditionals, string>([
+    [
+      propEq('calculation_method', ResourceCalculationMethod.ratio),
+      always(
+        `${additionals.calculation_method} ${additionals.calculation_ratio_mode}`,
+      ),
+    ],
+    [T, always(`${additionals.calculation_method}`)],
+  ])(additionals);
+
 export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
   {
     Component: SeverityColumn,
@@ -247,17 +260,7 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
   },
   {
     getFormattedString: ({ additionals }: Resource) =>
-      additionals
-        ? cond<ResourceAdditionals, string>([
-            [
-              propEq('calculation_method', ResourceCalculationMethod.ratio),
-              always(
-                `${additionals.calculation_method} ${additionals.calculation_ratio_mode}`,
-              ),
-            ],
-            [T, always(`${additionals.calculation_method}`)],
-          ])(additionals as ResourceAdditionals)
-        : '',
+      additionals ? getFormattedCalculationMethod(additionals) : '',
     id: 'calculation_method',
     label: t(labelCalculationMethod),
     sortable: true,
