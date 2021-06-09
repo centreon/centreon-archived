@@ -50,7 +50,7 @@ class ProviderServiceException extends \Exception
      * @param \Throwable $ex
      * @return self
      */
-    public static function findProvidersConfigurations(\Throwable $ex):  self
+    public static function findProvidersConfigurations(\Throwable $ex): self
     {
         return new self(_('Error while searching providers configurations'), 0, $ex);
     }

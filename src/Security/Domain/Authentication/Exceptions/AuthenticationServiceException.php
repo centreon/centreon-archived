@@ -76,7 +76,7 @@ class AuthenticationServiceException extends \Exception
      */
     public static function addAuthenticationToken(\Throwable $ex): self
     {
-        return new self (_('Error while adding authentication token'), 0, $ex);
+        return new self(_('Error while adding authentication token'), 0, $ex);
     }
 
     /**

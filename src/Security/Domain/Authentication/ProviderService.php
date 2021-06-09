@@ -61,7 +61,7 @@ class ProviderService implements ProviderServiceInterface
     {
         try {
             return $this->repository->findProvidersConfigurations();
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw ProviderServiceException::findProvidersConfigurations($ex);
         }
     }
@@ -73,7 +73,7 @@ class ProviderService implements ProviderServiceInterface
     {
         try {
             $providerConfiguration = $this->repository->findProviderConfiguration($providerConfigurationId);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw ProviderServiceException::findProvidersConfigurations($ex);
         }
         if ($providerConfiguration === null) {
@@ -91,7 +91,7 @@ class ProviderService implements ProviderServiceInterface
             $providerConfiguration = $this->repository->findProviderConfigurationByConfigurationName(
                 $providerConfigurationName
             );
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw ProviderServiceException::findProvidersConfigurations($ex);
         }
 
@@ -108,7 +108,7 @@ class ProviderService implements ProviderServiceInterface
     {
         try {
             $authenticationToken = $this->repository->findAuthenticationTokensByToken($token);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw ProviderServiceException::authenticationTokensNotFound($ex);
         }
         if ($authenticationToken === null) {

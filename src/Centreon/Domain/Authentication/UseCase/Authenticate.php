@@ -29,6 +29,7 @@ use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 
 class Authenticate
 {
@@ -84,8 +85,8 @@ class Authenticate
      * @param AuthenticateRequest $request
      * @return AuthenticateResponse
      * @throws ProviderServiceException
-     * @throws AuthenticationServiceException
      * @throws AuthenticationException
+     * @throws AuthenticationServiceException
      */
     public function execute(AuthenticateRequest $request): AuthenticateResponse
     {

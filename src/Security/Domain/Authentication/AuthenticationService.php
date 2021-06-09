@@ -130,7 +130,7 @@ class AuthenticationService implements AuthenticationServiceInterface
                 $providerToken,
                 $providerRefreshToken
             );
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw AuthenticationServiceException::addAuthenticationToken($ex);
         }
     }
@@ -156,7 +156,7 @@ class AuthenticationService implements AuthenticationServiceInterface
                 $providerToken,
                 $providerRefreshToken
             );
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw AuthenticationServiceException::addAuthenticationToken($ex);
         }
     }
@@ -168,7 +168,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         try {
             $this->repository->deleteSession($sessionToken);
-        } catch (\Exception $ex){
+        } catch (\Exception $ex) {
             throw AuthenticationServiceException::deleteSession($ex);
         }
     }
@@ -180,7 +180,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         try {
             $this->localProviderRepository->deleteExpiredAPITokens();
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw AuthenticationServiceException::deleteExpireToken($ex);
         }
     }
@@ -223,7 +223,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         try {
             return $this->repository->findAuthenticationTokensByToken($token);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw AuthenticationServiceException::authenticationTokensNotFound($ex);
         }
     }
@@ -235,7 +235,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         try {
             $this->repository->updateAuthenticationTokens($authenticationTokens);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw AuthenticationServiceException::updateAuthenticationTokens($ex);
         }
     }
