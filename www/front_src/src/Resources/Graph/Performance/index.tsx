@@ -46,10 +46,10 @@ import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
 import {
-  labelOriginal,
+  labelOriginalSize,
   labelExportToPng,
-  labelSmall,
-  labelMedium,
+  labelSmallSize,
+  labelMediumSize,
   labelNoDataForThisPeriod,
 } from '../../translatedLabels';
 import {
@@ -377,8 +377,6 @@ const PerformanceGraph = ({
 
   const containsMetrics = not(isNil(metrics)) && not(isEmpty(metrics));
 
-  const keySize = ' size';
-
   return (
     <MetricsValueContext.Provider value={metricsValueProps}>
       <div
@@ -415,16 +413,13 @@ const PerformanceGraph = ({
                     onClose={closeSizeExportMenu}
                   >
                     <MenuItem onClick={() => convertToPng(1)}>
-                      {t(labelOriginal)}
-                      {keySize}
+                      {t(labelOriginalSize)}
                     </MenuItem>
                     <MenuItem onClick={() => convertToPng(0.75)}>
-                      {t(labelMedium)}
-                      {keySize}
+                      {t(labelMediumSize)}
                     </MenuItem>
                     <MenuItem onClick={() => convertToPng(0.5)}>
-                      {t(labelSmall)}
-                      {keySize}
+                      {t(labelSmallSize)}
                     </MenuItem>
                   </Menu>
                 </>
