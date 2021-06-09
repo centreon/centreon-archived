@@ -28,6 +28,7 @@ use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
+use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 
