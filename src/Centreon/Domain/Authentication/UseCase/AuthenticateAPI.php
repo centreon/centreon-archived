@@ -90,7 +90,8 @@ class AuthenticateApi
             null
         );
 
-        $response = (new AuthenticateApiResponse())->setApiAuthentication($contact, $token);
+        $response = new AuthenticateApiResponse();
+        $response->setApiAuthentication($contact, $token);
 
         return $response;
     }
