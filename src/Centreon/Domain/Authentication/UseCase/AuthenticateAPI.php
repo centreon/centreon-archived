@@ -64,7 +64,7 @@ class AuthenticateApi
         try {
             $this->authenticationService->deleteExpiredAPITokens();
         } catch (AuthenticationServiceException $ex) {
-            // We don't propagate this error.
+            // We don't propagate this error
         }
         $localProvider = $this->providerService->findProviderByConfigurationName(LocalProvider::NAME);
 

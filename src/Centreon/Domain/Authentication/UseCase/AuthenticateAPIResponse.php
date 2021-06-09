@@ -53,10 +53,10 @@ class AuthenticateApiResponse
                 'name' => $contact->getName(),
                 'alias' => $contact->getAlias(),
                 'email' => $contact->getEmail(),
-                'is_admin' => $contact->isAdmin()
+                'is_admin' => $contact->isAdmin(),
             ],
             'security' => [
-                'token' => $token
+                'token' => $token,
             ]
         ];
     }
