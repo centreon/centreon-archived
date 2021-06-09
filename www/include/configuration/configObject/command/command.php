@@ -59,11 +59,6 @@ $type = filter_var(
     FILTER_VALIDATE_INT
 );
 
-$sg_id = filter_var(
-    $_GET['sg_id'] ?? $_POST['sg_id'] ?? null,
-    FILTER_VALIDATE_INT
-);
-
 $select = filter_var_array(
     getSelectOption(),
     FILTER_VALIDATE_INT
