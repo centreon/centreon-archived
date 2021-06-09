@@ -377,6 +377,8 @@ const PerformanceGraph = ({
 
   const containsMetrics = not(isNil(metrics)) && not(isEmpty(metrics));
 
+  const keySize = ' size';
+
   return (
     <MetricsValueContext.Provider value={metricsValueProps}>
       <div
@@ -414,12 +416,15 @@ const PerformanceGraph = ({
                   >
                     <MenuItem onClick={() => convertToPng(1)}>
                       {t(labelOriginal)}
+                      {keySize}
                     </MenuItem>
                     <MenuItem onClick={() => convertToPng(0.75)}>
                       {t(labelMedium)}
+                      {keySize}
                     </MenuItem>
                     <MenuItem onClick={() => convertToPng(0.5)}>
                       {t(labelSmall)}
+                      {keySize}
                     </MenuItem>
                   </Menu>
                 </>
