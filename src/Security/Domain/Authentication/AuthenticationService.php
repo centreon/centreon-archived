@@ -192,7 +192,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         try {
             $authenticationTokens = $this->repository->findAuthenticationTokensByToken($token);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw AuthenticationServiceException::authenticationTokensNotFound($ex);
         }
 

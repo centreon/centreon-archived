@@ -125,7 +125,7 @@ class ProviderService implements ProviderServiceInterface
     ): ?ProviderConfiguration {
         try {
             return $this->repository->findProviderConfigurationByConfigurationName($providerConfigurationName);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             throw ProviderServiceException::findProvidersConfigurations($ex);
         }
     }
