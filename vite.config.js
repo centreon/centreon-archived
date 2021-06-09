@@ -87,7 +87,19 @@ export default defineConfig({
 
   plugins: [svgr(), reactRefresh()],
 
-  resolve: {},
+  resolve: {
+    alias: {
+      '@centreon/frontend-config': path.resolve(
+        './node_modules/@centreon/centreon-frontend/package/frontend-config',
+      ),
+      '@centreon/ui': path.resolve(
+        './node_modules/@centreon/centreon-frontend/package/centreon-ui',
+      ),
+      '@centreon/ui-context': path.resolve(
+        './node_modules/@centreon/centreon-frontend/package/ui-context',
+      ),
+    },
+  },
 
   root: './www',
   server: {
