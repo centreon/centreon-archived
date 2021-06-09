@@ -22,7 +22,6 @@
 namespace Centreon\Test\Api\Context;
 
 use Centreon\Test\Behat\Api\Context\ApiContext;
-use Centreon\Test\Behat\Api\Context\RestContextTrait;
 
 class AuthenticationContext extends ApiContext
 {
@@ -32,14 +31,14 @@ class AuthenticationContext extends ApiContext
     public function iLogInWithInvalidCredentials()
     {
         $this->setHttpHeaders(['Content-Type' => 'application/json']);
-        $response = $this->iSendARequestToWithBody(
+        $this->iSendARequestToWithBody(
             'POST',
-            $this->getBaseUri() . '/beta/login',
+            $this->getBaseUri() . '/api/beta/login',
             json_encode([
                 'security' => [
                     'credentials' => [
-                        'login' => 'toto',
-                        'password' => 'tata',
+                        'login' => 'bad_login',
+                        'password' => 'bad_password',
                     ],
                 ],
             ])

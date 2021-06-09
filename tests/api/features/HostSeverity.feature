@@ -17,7 +17,7 @@ Feature:
     HC;setseverity;severity1;42;logos/centreon.png
     """
 
-    When I send a GET request to '/v2.1/configuration/hosts/severities'
+    When I send a GET request to '/api/v2.1/configuration/hosts/severities'
     Then the response code should be "200"
     And the JSON should be equal to:
     """

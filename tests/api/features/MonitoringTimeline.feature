@@ -17,17 +17,17 @@ Feature:
     """
     And the configuration is generated and exported
     And I wait until host "test" is monitored
-    And I send a GET request to '/beta/monitoring/hosts?search={"host.name":"test"}'
+    And I send a GET request to '/api/beta/monitoring/hosts?search={"host.name":"test"}'
     And I store response values in:
       | name   | path         |
       | hostId | result[0].id |
-    And I send a POST request to '/beta/monitoring/hosts/<hostId>/check' with body:
+    And I send a POST request to '/api/beta/monitoring/hosts/<hostId>/check' with body:
     """
     {}
     """
-    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/timeline" (tries: 30)
+    And I wait to get 1 result from "/api/beta/monitoring/hosts/<hostId>/timeline" (tries: 30)
 
-    When I send a GET request to '/beta/monitoring/hosts/<hostId>/timeline?search={"type":"event"}'
+    When I send a GET request to '/api/beta/monitoring/hosts/<hostId>/timeline?search={"type":"event"}'
 
     Then the JSON node "result[0].status.name" should be equal to the string "DOWN"
 
@@ -42,17 +42,17 @@ Feature:
     """
     And the configuration is generated and exported
     And I wait until service "test_service1" from host "test" is monitored
-    And I send a GET request to '/beta/monitoring/services?search={"$and":[{"host.name":"test"},{"service.description":"test_service1"}]}'
+    And I send a GET request to '/api/beta/monitoring/services?search={"$and":[{"host.name":"test"},{"service.description":"test_service1"}]}'
     And I store response values in:
       | name      | path              |
       | hostId    | result[0].host.id |
       | serviceId | result[0].id      |
-    And I send a POST request to '/beta/monitoring/hosts/<hostId>/services/<serviceId>/check' with body:
+    And I send a POST request to '/api/beta/monitoring/hosts/<hostId>/services/<serviceId>/check' with body:
     """
     {}
     """
-    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline" (tries: 30)
+    And I wait to get 1 result from "/api/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline" (tries: 30)
 
-    When I send a GET request to '/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline?search={"type":"event"}'
+    When I send a GET request to '/api/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline?search={"type":"event"}'
 
     Then the JSON node "result[0].status.name" should be equal to the string "UNKNOWN"
