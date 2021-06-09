@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Authentication\UseCase;
 
 use Centreon\Domain\Authentication\UseCase\RedirectRequest;
-use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 
