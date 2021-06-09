@@ -14,7 +14,7 @@ import {
   toPairs,
 } from 'ramda';
 
-import AddIcon from '@material-ui/icons/esm/AddCircle';
+import AddIcon from '@material-ui/icons/AddCircle';
 
 import {
   IconPopoverMultiSelectField,

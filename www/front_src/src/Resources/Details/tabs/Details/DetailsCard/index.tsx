@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Typography, makeStyles, Tooltip } from '@material-ui/core';
-import IconCheck from '@material-ui/icons/esm/Check';
+import IconCheck from '@material-ui/icons/Check';
 
 import { labelActive } from '../../../../translatedLabels';
 import Card from '../Card';

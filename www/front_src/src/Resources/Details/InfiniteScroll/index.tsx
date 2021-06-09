@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { always, isNil, isEmpty, cond, T, concat } from 'ramda';
 
 import { CircularProgress, Button, makeStyles } from '@material-ui/core';
-import IconRefresh from '@material-ui/icons/esm/Refresh';
+import IconRefresh from '@material-ui/icons/Refresh';
 
 import { useIntersectionObserver, ListingModel } from '@centreon/ui';
 

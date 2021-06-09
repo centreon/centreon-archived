@@ -10,7 +10,7 @@ import {
   LinearProgress,
   Paper,
 } from '@material-ui/core';
-import MoveIcon from '@material-ui/icons/esm/UnfoldMore';
+import MoveIcon from '@material-ui/icons/UnfoldMore';
 
 import { MemoizedSectionPanel as SectionPanel, useRequest } from '@centreon/ui';
 

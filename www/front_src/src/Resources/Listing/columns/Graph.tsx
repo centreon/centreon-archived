@@ -3,7 +3,7 @@ import * as React from 'react';
 import { path, isNil } from 'ramda';
 
 import { makeStyles, Paper } from '@material-ui/core';
-import IconGraph from '@material-ui/icons/esm/BarChart';
+import IconGraph from '@material-ui/icons/BarChart';
 
 import { IconButton, ComponentColumnProps } from '@centreon/ui';
 

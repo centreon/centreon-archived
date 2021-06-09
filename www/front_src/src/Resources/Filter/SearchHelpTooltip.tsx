@@ -3,8 +3,8 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Tooltip, IconButton, Box, Link, makeStyles } from '@material-ui/core';
-import IconHelp from '@material-ui/icons/esm/HelpOutline';
-import IconClose from '@material-ui/icons/esm/HighlightOff';
+import IconHelp from '@material-ui/icons/HelpOutline';
+import IconClose from '@material-ui/icons/HighlightOff';
 
 import {
   labelSearchHelp,

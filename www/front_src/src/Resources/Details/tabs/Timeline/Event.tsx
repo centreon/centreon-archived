@@ -4,10 +4,10 @@ import { prop, isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Chip, Typography } from '@material-ui/core';
-import EventIcon from '@material-ui/icons/esm/Event';
-import CommentIcon from '@material-ui/icons/esm/Comment';
-import NotificationIcon from '@material-ui/icons/esm/Notifications';
-import FaceIcon from '@material-ui/icons/esm/Face';
+import EventIcon from '@material-ui/icons/Event';
+import CommentIcon from '@material-ui/icons/Comment';
+import NotificationIcon from '@material-ui/icons/Notifications';
+import FaceIcon from '@material-ui/icons/Face';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 

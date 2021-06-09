@@ -90,14 +90,15 @@ export default defineConfig({
   resolve: {
     alias: {
       '@centreon/frontend-config': path.resolve(
-        './node_modules/@centreon/centreon-frontend/package/frontend-config',
+        './node_modules/@centreon/centreon-frontend/packages/frontend-config',
       ),
       '@centreon/ui': path.resolve(
-        './node_modules/@centreon/centreon-frontend/package/centreon-ui',
+        './node_modules/@centreon/centreon-frontend/packages/centreon-ui',
       ),
       '@centreon/ui-context': path.resolve(
-        './node_modules/@centreon/centreon-frontend/package/ui-context',
+        './node_modules/@centreon/centreon-frontend/packages/ui-context',
       ),
+      '@material-ui/icons': '@material-ui/icons/esm',
     },
   },
 

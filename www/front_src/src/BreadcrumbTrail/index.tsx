@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { connect } from 'react-redux';
 
 import { makeStyles, Breadcrumbs as MuiBreadcrumbs } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/esm/NavigateNext';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 import breadcrumbSelector from './selector';
 import { Breadcrumb as BreadcrumbModel, BreadcrumbsByPath } from './models';

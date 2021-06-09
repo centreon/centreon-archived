@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { pathEq } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
-import IconAcknowledge from '@material-ui/icons/esm/Person';
-import IconCheck from '@material-ui/icons/esm/Sync';
+import IconAcknowledge from '@material-ui/icons/Person';
+import IconCheck from '@material-ui/icons/Sync';
 
 import {
   ComponentColumnProps,

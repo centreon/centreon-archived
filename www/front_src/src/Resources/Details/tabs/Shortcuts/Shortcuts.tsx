@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { prop, pipe, isNil, not, filter } from 'ramda';
 
 import { makeStyles, Paper, Link } from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/esm/Settings';
-import LogsIcon from '@material-ui/icons/esm/Assignment';
-import ReportIcon from '@material-ui/icons/esm/Assessment';
+import SettingsIcon from '@material-ui/icons/Settings';
+import LogsIcon from '@material-ui/icons/Assignment';
+import ReportIcon from '@material-ui/icons/Assessment';
 
 import { ResourceUris } from '../../../models';
 import {

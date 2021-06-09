@@ -9,7 +9,7 @@ import {
   CircularProgress,
   makeStyles,
 } from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/esm/Settings';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import { IconButton, useRequest, useSnackbar, Severity } from '@centreon/ui';
 

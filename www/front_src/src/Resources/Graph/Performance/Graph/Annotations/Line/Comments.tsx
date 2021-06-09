@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@material-ui/core';
-import IconComment from '@material-ui/icons/esm/Comment';
+import IconComment from '@material-ui/icons/Comment';
 
 import { labelComment } from '../../../../../translatedLabels';
 import { Props } from '..';

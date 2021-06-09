@@ -4,9 +4,9 @@ import { all, head, pathEq, pick } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Menu, MenuItem } from '@material-ui/core';
-import IconAcknowledge from '@material-ui/icons/esm/Person';
-import IconCheck from '@material-ui/icons/esm/Sync';
-import IconMore from '@material-ui/icons/esm/MoreHoriz';
+import IconAcknowledge from '@material-ui/icons/Person';
+import IconCheck from '@material-ui/icons/Sync';
+import IconMore from '@material-ui/icons/MoreHoriz';
 
 import {
   useCancelTokenSource,

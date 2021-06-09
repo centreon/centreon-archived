@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTheme } from '@material-ui/core';
-import IconAcknowledge from '@material-ui/icons/esm/Person';
+import IconAcknowledge from '@material-ui/icons/Person';
 
 import Chip from '.';
 

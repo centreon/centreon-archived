@@ -10,7 +10,7 @@ import {
   Popover,
   Switch,
 } from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/esm/Settings';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import { IconButton } from '@centreon/ui';
 

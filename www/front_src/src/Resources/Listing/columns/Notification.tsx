@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import NotificationsOffIcon from '@material-ui/icons/esm/NotificationsOff';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import { Tooltip } from '@material-ui/core';
 
 import { ComponentColumnProps } from '@centreon/ui';

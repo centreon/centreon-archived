@@ -3,9 +3,9 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Grid } from '@material-ui/core';
-import IconRefresh from '@material-ui/icons/esm/Refresh';
-import IconPlay from '@material-ui/icons/esm/PlayArrow';
-import IconPause from '@material-ui/icons/esm/Pause';
+import IconRefresh from '@material-ui/icons/Refresh';
+import IconPlay from '@material-ui/icons/PlayArrow';
+import IconPause from '@material-ui/icons/Pause';
 
 import { IconButton, useMemoComponent } from '@centreon/ui';
 

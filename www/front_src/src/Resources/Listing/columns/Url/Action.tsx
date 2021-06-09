@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { path } from 'ramda';
 
-import IconAction from '@material-ui/icons/esm/FlashOn';
+import IconAction from '@material-ui/icons/FlashOn';
 
 import { ComponentColumnProps } from '@centreon/ui';
 

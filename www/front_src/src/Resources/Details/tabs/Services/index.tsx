@@ -3,8 +3,8 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNil, path, pathOr } from 'ramda';
 
-import GraphIcon from '@material-ui/icons/esm/BarChart';
-import ListIcon from '@material-ui/icons/esm/List';
+import GraphIcon from '@material-ui/icons/BarChart';
+import ListIcon from '@material-ui/icons/List';
 
 import { useRequest, IconButton, ListingModel } from '@centreon/ui';
 

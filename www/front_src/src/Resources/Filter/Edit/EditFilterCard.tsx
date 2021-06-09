@@ -14,7 +14,7 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import DeleteIcon from '@material-ui/icons/esm/Delete';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core';
 
 import {

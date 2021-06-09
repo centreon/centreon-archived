@@ -13,7 +13,7 @@ import {
   Button,
   Popover,
 } from '@material-ui/core';
-import AccessTimeIcon from '@material-ui/icons/esm/AccessTime';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
 
 import { useUserContext } from '@centreon/ui-context';
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { equals, last } from 'ramda';
 
 import { makeStyles, Typography } from '@material-ui/core';
-import ShowChartOutlinedIcon from '@material-ui/icons/esm/ShowChartOutlined';
+import ShowChartOutlinedIcon from '@material-ui/icons/ShowChartOutlined';
 
 import { ResourceContext } from '../../../Context';
 import Card from '../Details/Card';

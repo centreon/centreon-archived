@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import { not } from 'ramda';
 
-import ArrowBackIosIcon from '@material-ui/icons/esm/ArrowBackIos';
-import ArrowForwardIosIcon from '@material-ui/icons/esm/ArrowForwardIos';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import { labelBackward, labelForward } from '../../../../translatedLabels';
 
