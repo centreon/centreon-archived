@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 import { isNil, join, path, pick } from 'ramda';
-import { ResourceAdditionals } from 'www/front_src/src/Resources/models';
 
 import { Grid, Chip, Tooltip } from '@material-ui/core';
 import FlappingIcon from '@material-ui/icons/SwapCalls';
 
+import { ResourceAdditionals } from '../../../../models';
 import { getFormattedCalculationMethod } from '../../../../Listing/columns';
 import ChecksIcon from '../../../../ChecksIcon';
 import {
