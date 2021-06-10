@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { path, pick } from 'ramda';
+import { isNil, join, path, pick } from 'ramda';
+import { ResourceAdditionals } from 'www/front_src/src/Resources/models';
 
 import { Grid, Chip, Tooltip } from '@material-ui/core';
 import FlappingIcon from '@material-ui/icons/SwapCalls';
@@ -46,6 +47,22 @@ interface DetailCardLineProps {
   t: (label: string) => string;
   toDateTime: (date: string | Date) => string;
 }
+
+const getCalculationMethodAndHealthInformations = (
+  additionals: ResourceAdditionals | undefined,
+): string | undefined => {
+  if (isNil(additionals)) {
+    return undefined;
+  }
+  const formattedCalculationMethod = getFormattedCalculationMethod(additionals);
+
+  const formattedHealth = !isNil(additionals.health)
+    ? `(${labelHealth}: ${additionals.health})`
+    : '';
+
+  return join(' ', [formattedCalculationMethod, formattedHealth]);
+};
+
 const getDetailCardLines = ({
   details,
   toDateTime,
@@ -151,8 +168,8 @@ const getDetailCardLines = ({
       line: (
         <DetailsLine
           line={
-            details.additionals
-              ? getFormattedCalculationMethod(details.additionals)
+            details
+              ? getCalculationMethodAndHealthInformations(details.additionals)
               : ''
           }
         />
