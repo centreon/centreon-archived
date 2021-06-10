@@ -63,7 +63,13 @@ class Redirect
             $this->debug('Getting Authentication Uri for provider', ['provider' => $provider->getName()]);
             $provider->setCentreonBaseUri($request->getBaseUri());
             $redirectionUri = $provider->getAuthenticationUri();
-            $this->debug('Redirection found', ['provider' => $provider->getName(), 'redirection_uri' => $redirectionUri]);
+            $this->debug(
+                'Redirection found',
+                [
+                    'provider' => $provider->getName(),
+                    'redirection_uri' => $redirectionUri
+                ]
+            );
             if ($provider->isForced()) {
                 $this->debug('Provider usage is forced', ['provider' => $provider->getName()]);
                 break;
