@@ -24,11 +24,14 @@ declare(strict_types=1);
 namespace Centreon\Domain\Authentication\UseCase;
 
 use Centreon\Domain\Authentication\UseCase\RedirectRequest;
+use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 
 class Redirect
 {
+    use LoggerTrait;
+
     /**
      * @var ProviderServiceInterface
      */
@@ -51,18 +54,22 @@ class Redirect
      */
     public function execute(RedirectRequest $request): RedirectResponse
     {
+        $this->info('Gathering providers configurations');
         $providers = $this->providerService->findProvidersConfigurations();
         $redirectionUri = $request->getBaseUri();
         $response = new RedirectResponse();
 
         foreach ($providers as $provider) {
+            $this->debug('Getting Authentication Uri for provider', ['provider' => $provider->getName()]);
             $provider->setCentreonBaseUri($request->getBaseUri());
             $redirectionUri = $provider->getAuthenticationUri();
             if ($provider->isForced()) {
+                $this->debug('Provider usage is forced', ['provider' => $provider->getName()]);
                 break;
             }
         }
 
+        $this->debug('Redirection found', ['provider' => $provider->getName(), 'redirection_uri' => $redirectionUri]);
         $response->setRedirectionUri($redirectionUri);
         return $response;
     }

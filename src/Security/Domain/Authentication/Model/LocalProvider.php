@@ -24,6 +24,7 @@ namespace Security\Domain\Authentication\Model;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Pimple\Container;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
@@ -34,6 +35,8 @@ use Security\Domain\Authentication\Model\ProviderConfiguration;
  */
 class LocalProvider implements ProviderInterface
 {
+    use LoggerTrait;
+
     public const NAME = 'local';
 
     /**
@@ -108,13 +111,28 @@ class LocalProvider implements ProviderInterface
             "",
             "WEB"
         );
-
+        $this->debug(
+            'local provider trying to authenticate using legacy Authentication',
+            [
+                "class" => \CentreonAuth::class,
+            ],
+            function() use ($auth) {
+                $userInfos = $auth->userInfos;
+                return [
+                    'contact_id' => $userInfos['contact_id'],
+                    'contact_alias' => $userInfos['contact_alias'],
+                    'contact_auth_type' => $userInfos['contact_auth_type'],
+                    'contact_ldap_dn' => $userInfos['contact_ldap_dn']
+                ];
+            }
+        );
         if ($auth->passwdOk === 1) {
             if ($auth->userInfos !== null) {
                 $this->contactId = (int) $auth->userInfos['contact_id'];
                 $this->setLegacySession(new \Centreon($auth->userInfos));
             }
             $this->isAuthenticated = true;
+            $this->debug('authentication succeed from legacy Authentication');
         } else {
             $this->isAuthenticated = false;
         }

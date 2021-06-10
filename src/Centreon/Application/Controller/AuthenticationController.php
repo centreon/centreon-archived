@@ -36,6 +36,7 @@ use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
+use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 
 /**
@@ -43,6 +44,7 @@ use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
  */
 class AuthenticationController extends AbstractController
 {
+    use LoggerTrait;
     /**
      * Entry point used to identify yourself and retrieve an authentication token.
      * (If view_response_listener = true, we need to write the following
@@ -63,8 +65,10 @@ class AuthenticationController extends AbstractController
 
         $request = new AuthenticateApiRequest($credentials);
         try {
+            $this->info("Beginning API authentication for contact '${credentials['login']}'...");
             $response = $authenticate->execute($request);
         } catch (\Exception $e) {
+            $this->error('Invalid credentials', ['exception' => $e]);
             return $this->view([
                 "code" => Response::HTTP_UNAUTHORIZED,
                 "message" => 'Invalid credentials'
@@ -92,6 +96,7 @@ class AuthenticationController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
+        $this->info("Logging out...");
         $request = new LogoutRequest($token);
         $logout->execute($request);
 
@@ -111,6 +116,7 @@ class AuthenticationController extends AbstractController
      */
     public function redirection(Request $request, Redirect $redirect): View
     {
+        $this->info('Redirection to authentication...');
         $redirectRequest = new RedirectRequest($this->getBaseUri());
         $response = $redirect->execute($redirectRequest);
 
@@ -172,6 +178,8 @@ class AuthenticationController extends AbstractController
             $providerConfigurationName,
             $this->getBaseUri()
         );
+
+        $this->info("Beginning authentication on provider", ['provider_name' => $providerConfigurationName]);
         /**
          * @var AuthenticateResponse
          */

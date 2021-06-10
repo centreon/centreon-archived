@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
@@ -33,6 +34,8 @@ use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 
 class Authenticate
 {
+    use LoggerTrait;
+
     /**
      * @var AuthenticationServiceInterface
      */
@@ -99,20 +102,36 @@ class Authenticate
                 $request->getProviderConfigurationName()
             );
         }
-
+        $this->info('Authentication using provider', ['provider_name' => $request->getProviderConfigurationName()]);
         $authenticationProvider->authenticate($request->getCredentials());
 
         if (!$authenticationProvider->isAuthenticated()) {
+            $this->warning(
+                "Provider can't authenticate successfully user ",
+                [
+                    "provider_name" => $authenticationProvider->getName(),
+                    "user" => $request->getCredentials()["login"]
+                ]
+            );
             throw AuthenticationException::notAuthenticated();
         }
 
+        $this->info('Retrieving user informations from provider');
         $providerUser = $authenticationProvider->getUser();
         if ($providerUser === null) {
+            $this->error(
+                'No contact could be found from provider',
+                ['provider_name' => $request->getProviderConfigurationName()]
+            );
             throw AuthenticationException::userNotFound();
         }
 
         if (!$this->contactService->exists($providerUser)) {
             if ($authenticationProvider->canCreateUser()) {
+                $this->info(
+                    'Provider is allow to create user. Creating user...',
+                    ['user' => $providerUser->getAlias()]
+                );
                 $this->contactService->addUser($providerUser);
             } else {
                 throw AuthenticationException::userNotFoundAndCannotBeCreated();
@@ -126,6 +145,7 @@ class Authenticate
 
         $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
         if ($authenticationTokens === null) {
+            $this->info('Creating authentication tokens for user', ['user' => $providerUser->getAlias()]);
             $this->authenticationService->createAuthenticationTokens(
                 $this->session->getId(),
                 $request->getProviderConfigurationName(),
@@ -136,6 +156,14 @@ class Authenticate
         }
 
         $response = new AuthenticateResponse();
+        $this->info(
+            "Authentication success",
+            [
+                "provider_name" => $request->getProviderConfigurationName(),
+                "contact_id" => $providerUser->getId(),
+                "contact_alias" => $providerUser->getAlias()
+            ]
+        );
         if ($providerUser->getDefaultPage() !== null) {
             $response->setRedirectionUri($request->getCentreonBaseUri() . $providerUser->getDefaultPage());
         } else {

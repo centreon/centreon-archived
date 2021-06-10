@@ -22,15 +22,19 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
-use Security\Domain\Authentication\Exceptions\ProviderServiceException;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
+use Security\Encryption;
+use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Model\LocalProvider;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Security\Domain\Authentication\Exceptions\ProviderServiceException;
+use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
+use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 class AuthenticateApi
 {
+    use LoggerTrait;
+
     /**
      * @var AuthenticationServiceInterface
      */
@@ -71,18 +75,29 @@ class AuthenticateApi
         if ($localProvider === null) {
             throw ProviderServiceException::providerConfigurationNotFound(LocalProvider::NAME);
         }
+        $this->info('Authentication using provider', ['provider_name' => LocalProvider::NAME]);
         $localProvider->authenticate($request->getCredentials());
 
         if (!$localProvider->isAuthenticated()) {
+            $this->warning(
+                "Provider can't authenticate successfully user ",
+                [
+                    "provider_name" => $localProvider->getName(),
+                    "user" => $request->getCredentials()["login"]
+                ]
+            );
             throw AuthenticationException::notAuthenticated();
         }
 
+        $this->info('Retrieving user informations from provider');
         $contact = $localProvider->getUser();
         if ($contact === null) {
+            $this->error('No contact could be found from provider', ['provider_name' => LocalProvider::NAME]);
             throw AuthenticationException::userNotFound();
         }
-        $token = password_hash(bin2hex(random_bytes(128)), PASSWORD_BCRYPT);
+        $token = Encryption::generateRandomString();
 
+        $this->info('Creating authentication tokens for user', ['user' => $contact->getAlias()]);
         $this->authenticationService->createAPIAuthenticationTokens(
             $token,
             $contact,
@@ -92,7 +107,14 @@ class AuthenticateApi
 
         $response = new AuthenticateApiResponse();
         $response->setApiAuthentication($contact, $token);
-
+        $this->info(
+            "Authentication success",
+            [
+                "provider_name" => LocalProvider::NAME,
+                "contact_id" => $contact->getId(),
+                "contact_alias" => $contact->getAlias()
+            ]
+        );
         return $response;
     }
 }

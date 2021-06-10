@@ -24,11 +24,14 @@ declare(strict_types=1);
 namespace Centreon\Domain\Authentication\UseCase;
 
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
+use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 class Logout
 {
+    use LoggerTrait;
+
     /**
      * @var AuthenticationServiceInterface
      */
@@ -48,6 +51,7 @@ class Logout
     public function execute(LogoutRequest $request): void
     {
         $token = $request->getToken();
+        $this->info('Deleting Session...');
         $this->authenticationService->deleteExpiredAPITokens();
         $this->authenticationService->deleteSession($token);
     }
