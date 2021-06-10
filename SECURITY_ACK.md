@@ -12,4 +12,5 @@ Centreon reserves the right to make final decisions regarding publishing acknowl
 
 <h3> 2021 </h3>
 
-* [Sick Codes](https://twitter.com/sickcodes), [wabaf3t](https://twitter.com/wabafet1) and [d0rkerdevil](https://twitter.com/d0rkerdevil) - 2021/02/16
+* 2021/04/02 - [Alexandru Cucea](https://acucea.github.io/)
+* 2021/02/16 - [Sick Codes](https://twitter.com/sickcodes), [wabaf3t](https://twitter.com/wabafet1) and [d0rkerdevil](https://twitter.com/d0rkerdevil)
