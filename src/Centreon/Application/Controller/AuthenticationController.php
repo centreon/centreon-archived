@@ -45,6 +45,7 @@ use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 class AuthenticationController extends AbstractController
 {
     use LoggerTrait;
+
     /**
      * Entry point used to identify yourself and retrieve an authentication token.
      * (If view_response_listener = true, we need to write the following

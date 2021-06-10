@@ -116,7 +116,7 @@ class LocalProvider implements ProviderInterface
             [
                 "class" => \CentreonAuth::class,
             ],
-            function() use ($auth) {
+            function () use ($auth) {
                 $userInfos = $auth->userInfos;
                 return [
                     'contact_id' => $userInfos['contact_id'],
