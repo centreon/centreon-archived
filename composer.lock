@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "63bacea2ec3c3eead1f6e53e219dff15",
+    "content-hash": "21b733b445af3cd89826dbb90b2cc0eb",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6416,7 +6416,7 @@
                 "issues": "https://github.com/minkphp/Mink/issues",
                 "source": "https://github.com/minkphp/Mink/tree/master"
             },
-            "time": "2020-08-28T19:36:29+00:00"
+            "time": "2021-06-04T18:51:52+00:00"
         },
         {
             "name": "behat/mink-extension",
@@ -6663,16 +6663,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-master",
+            "version": "dev-delegate-authentication",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "40e0a5e2e928ebd383b890219cdae9f15a4396a9"
+                "reference": "a5ccd3f74221f205f9ced9b456aeee7d07f094cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/40e0a5e2e928ebd383b890219cdae9f15a4396a9",
-                "reference": "40e0a5e2e928ebd383b890219cdae9f15a4396a9",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/a5ccd3f74221f205f9ced9b456aeee7d07f094cb",
+                "reference": "a5ccd3f74221f205f9ced9b456aeee7d07f094cb",
                 "shasum": ""
             },
             "require": {
@@ -6691,7 +6691,6 @@
                 "behat/mink": "Browser controller/emulator abstraction for PHP",
                 "behat/mink-selenium2-driver": "Mink driver using Selenium"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6720,9 +6719,9 @@
             ],
             "support": {
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
-                "source": "https://github.com/centreon/centreon-test-lib/tree/master"
+                "source": "https://github.com/centreon/centreon-test-lib/tree/delegate-authentication"
             },
-            "time": "2021-05-03T10:27:45+00:00"
+            "time": "2021-06-09T09:48:21+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -8047,16 +8046,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.5.15",
+            "version": "8.5.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "038d4196d8e8cb405cd5e82cedfe413ad6eef9ef"
+                "reference": "cc66f2fc61296be66c99931a862200e7456b9a01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/038d4196d8e8cb405cd5e82cedfe413ad6eef9ef",
-                "reference": "038d4196d8e8cb405cd5e82cedfe413ad6eef9ef",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/cc66f2fc61296be66c99931a862200e7456b9a01",
+                "reference": "cc66f2fc61296be66c99931a862200e7456b9a01",
                 "shasum": ""
             },
             "require": {
@@ -8128,7 +8127,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.15"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.16"
             },
             "funding": [
                 {
@@ -8140,7 +8139,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-03-17T07:27:54+00:00"
+            "time": "2021-06-05T04:46:20+00:00"
         },
         {
             "name": "psr/http-client",

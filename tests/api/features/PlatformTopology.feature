@@ -12,7 +12,7 @@ Feature:
 
         # Register the Central on the container with a name which doesn't exist in nagios_server table
         # Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "wrong_name",
@@ -28,7 +28,7 @@ Feature:
 
         # Successfully register the Central on the container
         # (Notice : this step is automatically done on a real platform on fresh install and update)
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "Central",
@@ -40,7 +40,7 @@ Feature:
         Then the response code should be "201"
 
         # Register the same Central a second time / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "Central",
@@ -55,7 +55,7 @@ Feature:
             """
 
         # Register a second Central while the first is still registered / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "Central_2",
@@ -72,7 +72,7 @@ Feature:
 
         # Register a Central linked to another Central
         # Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "Central_2",
@@ -89,7 +89,7 @@ Feature:
 
         # Check data consistency
         # Register a platform using not allowed type / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "wrong_type_server",
@@ -106,7 +106,7 @@ Feature:
             """
 
         # Register a platform using inconsistent address / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "inconsistent_address",
@@ -122,7 +122,7 @@ Feature:
             """
 
         # Register a platform using name with illegal characters / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "ill*ga|_character$_found",
@@ -137,7 +137,7 @@ Feature:
         # as it contains unescaped characters and behat interpret them, so the strings are always different.
 
         # Register a platform using hostname with at least one space / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "space_in_hostname",
@@ -154,7 +154,7 @@ Feature:
             """
 
         # Register a platform using hostname with illegal characters / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "illegal_character_in_hostname",
@@ -171,7 +171,7 @@ Feature:
             """
 
         # Register a platform using inconsistent parent_address / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "inconsistent_parent_address",
@@ -188,7 +188,7 @@ Feature:
             """
 
         # Register a poller linked to the Central.
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller",
@@ -201,7 +201,7 @@ Feature:
         Then the response code should be "201"
 
         # Register a second time the already registered poller / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller",
@@ -217,7 +217,7 @@ Feature:
             """
 
         # Register a poller using type not formatted as expected / Should be successful
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller_2",
@@ -230,7 +230,7 @@ Feature:
         Then the response code should be "201"
 
         # Register a poller with not registered parent / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller_3",
@@ -247,7 +247,7 @@ Feature:
             """
 
         # Register a poller with no parent address / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller_4",
@@ -262,7 +262,7 @@ Feature:
             """
 
         # Register a poller using same address and parent address / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller_4",
@@ -278,7 +278,7 @@ Feature:
             """
 
         # Register a platform behind wrong parent type / Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
+        When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "inconsistent_parent_type",
@@ -295,7 +295,7 @@ Feature:
 
         # Actually we can't have server_id because the register is not fully complete (wizard not executed)
         # So we can't test pollers or remote edges.
-        When I send a GET request to "/beta/platform/topology"
+        When I send a GET request to "/api/beta/platform/topology"
         Then the response code should be "200"
         And the JSON should be equal to:
             """
@@ -351,9 +351,9 @@ Feature:
             }
             """
 
-        When I send a DELETE request to "/beta/platform/topology/3"
+        When I send a DELETE request to "/api/beta/platform/topology/3"
         Then the response code should be "204"
-        When I send a GET request to "/beta/platform/topology"
+        When I send a GET request to "/api/beta/platform/topology"
         Then the response code should be "200"
         And the JSON should be equal to:
             """
