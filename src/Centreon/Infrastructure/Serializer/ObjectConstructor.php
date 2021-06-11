@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Serializer;
 
+use Centreon\Infrastructure\Serializer\Exception\SerializerException;
+use Exception;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -35,7 +37,9 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 class ObjectConstructor implements ObjectConstructorInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @throws SerializerException
+     * @throws \ReflectionException
      */
     public function construct(
         DeserializationVisitorInterface $visitor,
@@ -45,6 +49,33 @@ class ObjectConstructor implements ObjectConstructorInterface
         DeserializationContext $context
     ): ?object {
         $className = $metadata->name;
-        return new $className();
+        if (!class_exists($className)) {
+            throw new \ReflectionException(sprintf(_('Class %s not found'), $className));
+        }
+        $reflection = new \ReflectionClass($className);
+        $constructor = $reflection->getConstructor();
+        if ($constructor !== null && $constructor->getNumberOfRequiredParameters() > 0) {
+            $parameters = $constructor->getParameters();
+            $constructorParameters = [];
+            foreach ($parameters as $parameter) {
+                if (!$parameter->isOptional()) {
+                    if (array_key_exists($parameter->getName(), $data)) {
+                        $constructorParameters[$parameter->getPosition()] = $data[$parameter->getName()];
+                    }
+                }
+            }
+            if (!empty($constructorParameters)) {
+                try {
+                    return $reflection->newInstanceArgs($constructorParameters);
+                } catch (\Throwable $ex) {
+                    if ($ex instanceof \ArgumentCountError) {
+                        throw SerializerException::notEnoughtConstructorArguments($className, $ex);
+                    }
+                }
+            }
+        } else {
+            return new $className();
+        }
+        return null;
     }
 }

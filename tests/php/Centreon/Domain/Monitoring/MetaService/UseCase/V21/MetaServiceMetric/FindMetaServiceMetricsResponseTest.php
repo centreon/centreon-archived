@@ -47,7 +47,7 @@ class FindMetaServiceMetricsResponseTest extends TestCase
     public function testNotEmptyResponse(): void
     {
         $metaServiceMetric = MetaServiceMetricTest::createMetaServiceMetricEntity();
-        $metaServiceMetric->setResource(MetaServiceMetricTest::createResourceEntity());
+        $metaServiceMetric->setMonitoringResource(MetaServiceMetricTest::createResourceEntity());
         $response = new FindMetaServiceMetricsResponse();
         $response->setMetaServiceMetrics([$metaServiceMetric]);
         $metaServiceMetrics = $response->getMetaServiceMetrics();

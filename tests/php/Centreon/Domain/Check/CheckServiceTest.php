@@ -21,21 +21,21 @@
 
 namespace Tests\Centreon\Domain\Check;
 
+use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Check\Check;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\Host;
-use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Check\CheckService;
-use Centreon\Domain\Check\Check;
-use Centreon\Domain\Monitoring\Resource;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
+use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Entity\EntityValidator;
-use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolation;
-use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use PHPUnit\Framework\TestCase;
+use JMS\Serializer\Exception\ValidationFailedException;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
+use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 class CheckServiceTest extends TestCase
 {
@@ -76,12 +76,8 @@ class CheckServiceTest extends TestCase
         $this->service = (new Service())
             ->setId(1);
 
-        $this->hostResource = (new Resource())
-            ->setType('host')
-            ->setId(1);
-        $this->serviceResource = (new Resource())
-            ->setType('service')
-            ->setId(1)
+        $this->hostResource = new MonitoringResource(1, 'hostName', 'host');
+        $this->serviceResource = (new MonitoringResource(1, 'serviceName', 'service'))
             ->setParent($this->hostResource);
 
         $this->check = (new Check())

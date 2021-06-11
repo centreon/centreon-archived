@@ -32,8 +32,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResultException;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\Monitoring\SubmitResult\Interfaces\SubmitResultServiceInterface;
 use Exception;
 
@@ -58,8 +58,8 @@ class SubmitResultController extends AbstractController
      *
      * @param Request $request
      * @param string $jsonValidatorFile
-     * @return array $results
-     * @throws InvalidArgumentException
+     * @return array<string, mixed> $results
+     * @throws \InvalidArgumentException
      */
     private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
     {
@@ -96,7 +96,7 @@ class SubmitResultController extends AbstractController
      * by the current user.
      *
      * @param Contact $contact
-     * @param array $resources
+     * @param array<int, array<string, mixed>> $resources
      * @return bool
      */
     private function hasSubmitResultRightsForResources(Contact $contact, array $resources): bool
@@ -113,9 +113,9 @@ class SubmitResultController extends AbstractController
 
         foreach ($resources as $resource) {
             if (
-                ($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
-                || ($resource['type'] === ResourceEntity::TYPE_SERVICE && $hasServiceRights)
-                || ($resource['type'] === ResourceEntity::TYPE_META && $hasServiceRights)
+                ($resource['type'] === MonitoringResource::TYPE_HOST && $hasHostRights)
+                || ($resource['type'] === MonitoringResource::TYPE_SERVICE && $hasServiceRights)
+                || ($resource['type'] === MonitoringResource::TYPE_META && $hasServiceRights)
             ) {
                 continue;
             }
@@ -164,14 +164,14 @@ class SubmitResultController extends AbstractController
                 ->setOutput($submitResource['output'])
                 ->setPerformanceData($submitResource['performance_data']);
             try {
-                if ($submitResource['type'] === ResourceEntity::TYPE_SERVICE) {
+                if ($submitResource['type'] === MonitoringResource::TYPE_SERVICE) {
                     $result->setParentResourceId($submitResource['parent']['id']);
                     $this->submitResultService
                         ->submitServiceResult($result);
-                } elseif ($submitResource['type'] === ResourceEntity::TYPE_HOST) {
+                } elseif ($submitResource['type'] === MonitoringResource::TYPE_HOST) {
                     $this->submitResultService
                         ->submitHostResult($result);
-                } elseif ($submitResource['type'] === ResourceEntity::TYPE_META) {
+                } elseif ($submitResource['type'] === MonitoringResource::TYPE_META) {
                     $this->submitResultService
                         ->submitMetaServiceResult($result);
                 }

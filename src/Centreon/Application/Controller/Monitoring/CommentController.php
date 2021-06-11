@@ -34,9 +34,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Monitoring\Comment\Comment;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Application\Controller\AbstractController;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Comment\Interfaces\CommentServiceInterface;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 class CommentController extends AbstractController
 {
@@ -69,7 +69,7 @@ class CommentController extends AbstractController
      *
      * @param Request $request
      * @param string $jsonValidatorFile
-     * @return array $receivedData
+     * @return array<string, mixed> $receivedData
      * @throws \InvalidArgumentException
      */
     private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
@@ -107,7 +107,7 @@ class CommentController extends AbstractController
      * on the selected resources
      *
      * @param Contact $contact
-     * @param array $resources
+     * @param array<int, array<string, mixed>> $resources
      * @return boolean
      */
     private function hasCommentRightsForResources(Contact $contact, array $resources): bool
@@ -130,9 +130,9 @@ class CommentController extends AbstractController
 
         foreach ($resources as $resource) {
             if (
-                ($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
-                || ($resource['type'] === ResourceEntity::TYPE_SERVICE && $hasServiceRights)
-                || ($resource['type'] === ResourceEntity::TYPE_META && $hasServiceRights)
+                ($resource['type'] === MonitoringResource::TYPE_HOST && $hasHostRights)
+                || ($resource['type'] === MonitoringResource::TYPE_SERVICE && $hasServiceRights)
+                || ($resource['type'] === MonitoringResource::TYPE_META && $hasServiceRights)
             ) {
                 continue;
             }
@@ -189,15 +189,15 @@ class CommentController extends AbstractController
             $comments[$commentResource['id']] = (new Comment($commentResource['id'], $commentResource['comment']))
                 ->setDate($date);
 
-            if ($commentResource['type'] === ResourceEntity::TYPE_HOST) {
+            if ($commentResource['type'] === MonitoringResource::TYPE_HOST) {
                 $resourceIds['host'][] = $commentResource['id'];
-            } elseif ($commentResource['type'] === ResourceEntity::TYPE_SERVICE) {
+            } elseif ($commentResource['type'] === MonitoringResource::TYPE_SERVICE) {
                 $comments[$commentResource['id']]->setParentResourceId($commentResource['parent']['id']);
                 $resourceIds['service'][] = [
                     'host_id' => $commentResource['parent']['id'],
                     'service_id' => $commentResource['id']
                 ];
-            } elseif ($commentResource['type'] === ResourceEntity::TYPE_META) {
+            } elseif ($commentResource['type'] === MonitoringResource::TYPE_META) {
                 $resourceIds['metaservice'][] = [
                     'service_id' => $commentResource['id']
                 ];

@@ -23,11 +23,11 @@ declare(strict_types=1);
 namespace Centreon\Domain\Check\Interfaces;
 
 use Centreon\Domain\Check\Check;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 interface CheckServiceInterface extends ContactFilterInterface
 {
@@ -68,10 +68,10 @@ interface CheckServiceInterface extends ContactFilterInterface
      * Adds a resource check.
      *
      * @param Check $check
-     * @param ResourceEntity $resource
+     * @param MonitoringResource $monitoringResource
      * @throws EntityNotFoundException
      * @throws \Exception
      * @return void
      */
-    public function checkResource(Check $check, ResourceEntity $resource): void;
+    public function checkResource(Check $check, MonitoringResource $monitoringResource): void;
 }

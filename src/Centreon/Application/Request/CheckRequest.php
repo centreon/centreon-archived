@@ -22,16 +22,16 @@
 namespace Centreon\Application\Request;
 
 use Centreon\Domain\Check\Check;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 class CheckRequest
 {
     /**
      * resources
      *
-     * @var ResourceEntity[]
+     * @var MonitoringResource[]
      */
-    private $resources = [];
+    private $monitoringResources = [];
 
     /**
      * check
@@ -43,24 +43,28 @@ class CheckRequest
     /**
      * Get resources
      *
-     * @return ResourceEntity[]
+     * @return MonitoringResource[]
      */
-    public function getResources(): array
+    public function getMonitoringResources(): array
     {
-        return $this->resources;
+        return $this->monitoringResources;
     }
 
     /**
      * Set resources
      *
-     * @param ResourceEntity[]  $resources  resources
+     * @param MonitoringResource[]  $monitoringResources
      *
      * @return self
      */
-    public function setResources(array $resources): CheckRequest
+    public function setMonitoringResource(array $monitoringResources): CheckRequest
     {
-        $this->resources = $resources;
-
+        foreach ($monitoringResources as $monitoringResource) {
+            if (!($monitoringResource instanceof MonitoringResource)) {
+                throw new \InvalidArgumentException(_('One of the elements provided is not a MonitoringResource type'));
+            }
+        }
+        $this->monitoringResources = $monitoringResources;
         return $this;
     }
 

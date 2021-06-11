@@ -23,13 +23,11 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller;
 
 use DateTime;
-use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Contact\Contact;
-use JsonSchema\Constraints\Constraint;
 use JMS\Serializer\SerializerInterface;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\Check\CheckException;
 use JMS\Serializer\DeserializationContext;
 use Centreon\Domain\Entity\EntityValidator;
@@ -39,6 +37,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveCheckValidatorInterface;
 
 /**
  * Used to manage all requests to schedule checks on hosts and services
@@ -98,7 +97,7 @@ class CheckController extends AbstractController
          */
         $checks = $serializer->deserialize(
             (string) $request->getContent(),
-            'array<' . Check::class . '>',
+            'array<' . Check::class . '>', // @phpstan-ignore-line
             'json',
             $context
         );
@@ -133,10 +132,10 @@ class CheckController extends AbstractController
      * Check if the resource can be checked by the current user
      *
      * @param Contact $contact
-     * @param ResourceEntity $resource
+     * @param MonitoringResource $monitoringResource
      * @return bool
      */
-    private function hasCheckRightsForResource(Contact $contact, ResourceEntity $resource): bool
+    private function hasCheckRightsForResource(Contact $contact, MonitoringResource $monitoringResource): bool
     {
         if ($contact->isAdmin()) {
             return true;
@@ -144,12 +143,12 @@ class CheckController extends AbstractController
 
         $hasRights = false;
 
-        switch ($resource->getType()) {
-            case ResourceEntity::TYPE_HOST:
+        switch ($monitoringResource->getType()) {
+            case MonitoringResource::TYPE_HOST:
                 $hasRights = $contact->hasRole(Contact::ROLE_HOST_CHECK);
                 break;
-            case ResourceEntity::TYPE_SERVICE:
-            case ResourceEntity::TYPE_META:
+            case MonitoringResource::TYPE_SERVICE:
+            case MonitoringResource::TYPE_META:
                 $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_CHECK);
                 break;
         }
@@ -188,7 +187,7 @@ class CheckController extends AbstractController
          */
         $checks = $serializer->deserialize(
             (string) $request->getContent(),
-            'array<' . Check::class . '>',
+            'array<' . Check::class . '>', // @phpstan-ignore-line
             'json',
             $context
         );
@@ -405,9 +404,10 @@ class CheckController extends AbstractController
      * @throws \Exception
      * @throws CheckException
      */
-    public function checkResources(
+    public function massCheckResources(
         Request $request,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        MassiveCheckValidatorInterface $checkValidator
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -416,50 +416,34 @@ class CheckController extends AbstractController
          */
         $user = $this->getUser();
 
-        $checks = json_decode((string) $request->getContent(), true);
-        if (!is_array($checks)) {
-            throw new \InvalidArgumentException(_('Error when decoding sent data'));
+        $payload = (string) $request->getContent();
+        $checkPayload = json_decode($payload, true);
+
+        if ($checkPayload === false) {
+            throw new CheckException('Error when decoding your sent data');
         }
 
-        /*
-         * Validate the content of the POST request against the JSON schema validator
-         */
-        $validator = new Validator();
-        $content = json_decode((string) $request->getContent());
-        $file = 'file://' . $this->getParameter('centreon_path') .
-            'config/json_validator/latest/Centreon/Check/AddChecks.json';
-        $validator->validate(
-            $content,
-            (object) ['$ref' => $file],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new CheckException($message);
-        }
+        // validate the payload sent
+        $checkValidator->validateOrFail($checkPayload);
 
         /**
          * @var CheckRequest $checkRequest
          */
         $checkRequest = $serializer->deserialize(
-            (string)$request->getContent(),
+            $payload,
             CheckRequest::class,
             'json'
         );
 
         $checkRequest->setCheck((new Check())->setCheckTime(new DateTime()));
 
-        foreach ($checkRequest->getResources() as $resource) {
+        foreach ($checkRequest->getMonitoringResources() as $monitoringResource) {
             // start check process
             try {
-                if ($this->hasCheckRightsForResource($user, $resource)) {
+                if ($this->hasCheckRightsForResource($user, $monitoringResource)) {
                     $this->checkService
                         ->filterByContact($user)
-                        ->checkResource($checkRequest->getCheck(), $resource);
+                        ->checkResource($checkRequest->getCheck(), $monitoringResource);
                 }
             } catch (EntityNotFoundException $e) {
                 continue;

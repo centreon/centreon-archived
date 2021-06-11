@@ -24,8 +24,8 @@ namespace Centreon\Domain\Downtime\Interfaces;
 
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 interface DowntimeServiceInterface
 {
@@ -130,9 +130,9 @@ interface DowntimeServiceInterface
     public function cancelDowntime(int $downtimeId, Host $host): void;
 
     /**
-     * @param ResourceEntity $resource
+     * @param MonitoringResource $monitoringResource
      * @param Downtime $downtime
      * @throws \Exception
      */
-    public function addResourceDowntime(ResourceEntity $resource, Downtime $downtime): void;
+    public function addResourceDowntime(MonitoringResource $monitoringResource, Downtime $downtime): void;
 }

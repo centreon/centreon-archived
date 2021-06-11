@@ -1,6 +1,5 @@
 Centreon\Application\Request\CheckRequest:
     properties:
-        resources:
-            type: array<Centreon\Domain\Monitoring\Resource>
-            groups:
-                - 'add_checks'
+        monitoringResources:
+            type: array<Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource>
+            serialized_name: 'resources'

@@ -215,6 +215,44 @@ class Assertion
     }
 
     /**
+     * Assert that value is null.
+     *
+     * @param mixed $value Value to test
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function null($value, string $propertyPath = null): void
+    {
+        Assert::null(
+            $value,
+            function (array $parameters) {
+                return AssertionException::null($parameters['propertyPath']);
+            },
+            $propertyPath
+        );
+    }
+
+    /**
+     * Assert that the key exists.
+     *
+     * @param mixed $value Value to test
+     * @param mixed $key Key to check
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function keyExists($value, $key, string $propertyPath = null): void
+    {
+        Assert::keyExists(
+            $value,
+            $key,
+            function (array $parameters) {
+                return AssertionException::keyExists($parameters['propertyPath']);
+            },
+            $propertyPath
+        );
+    }
+
+    /**
      * Calculates the string length or fails.
      *
      * @param string $value Value for which we have to calculate the length
@@ -236,5 +274,99 @@ class Assertion
             );
         }
         return $length;
+    }
+
+    /**
+     * Assert that value is an integer.
+     *
+     * @param mixed $value Value to test
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function integer($value, string $propertyPath = null): void
+    {
+        Assert::integer(
+            $value,
+            function (array $parameters) {
+                return AssertionException::integer($parameters['propertyPath']);
+            },
+            $propertyPath
+        );
+    }
+
+    /**
+     * Assert that value is a string.
+     *
+     * @param mixed $value Value to test
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function string($value, string $propertyPath = null): void
+    {
+        Assert::string(
+            $value,
+            function (array $parameters) {
+                return AssertionException::string($parameters['propertyPath']);
+            },
+            $propertyPath
+        );
+    }
+
+    /**
+     * Assert that value is a boolean.
+     *
+     * @param mixed $value Value to test
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function boolean($value, string $propertyPath = null): void
+    {
+        Assert::boolean(
+            $value,
+            function (array $parameters) {
+                return AssertionException::boolean($parameters['propertyPath']);
+            },
+            $propertyPath
+        );
+    }
+
+    /**
+     * Assert that value is a boolean.
+     *
+     * @param mixed $value Value to test
+     * @param string $format date format handled by date()
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function date($value, string $format, string $propertyPath = null): void
+    {
+        Assert::date(
+            $value,
+            $format,
+            function (array $parameters) {
+                return AssertionException::date($parameters['propertyPath']);
+            },
+            $propertyPath
+        );
+    }
+
+    /**
+     * Assert that value is equal to an other one.
+     *
+     * @param mixed $value value to compare
+     * @param mixed $value2 value expected
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function eq($value, $value2, string $propertyPath = null): void
+    {
+        Assert::eq(
+            $value,
+            $value2,
+            function (array $parameters) {
+                return AssertionException::eq($parameters['propertyPath']);
+            },
+            $propertyPath
+        );
     }
 }

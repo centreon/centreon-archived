@@ -25,14 +25,12 @@ use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
 use Psr\Container\ContainerInterface;
-use Centreon\Domain\Monitoring\Resource;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResultService;
-use Centreon\Domain\Monitoring\SubmitResult\SubmitResultException;
 use Centreon\Application\Controller\Monitoring\SubmitResultController;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -67,6 +65,7 @@ class SubmitResultControllerTest extends TestCase
                 [
                     'type' => 'host',
                     'id' => 1,
+                    'name' => 'hostName',
                     'parent' => null,
                     'status' => 2,
                     'output' => 'Host went down',
@@ -74,9 +73,12 @@ class SubmitResultControllerTest extends TestCase
                 ],
                 [
                     'type' => 'service',
+                    'name' => 'serviceName',
                     'id' => 1,
                     'parent' => [
+                        'type' => 'host',
                         'id' => 1,
+                        'name' => 'hostName',
                     ],
                     'status' => 2,
                     'output' => 'Service went critical',
@@ -97,13 +99,17 @@ class SubmitResultControllerTest extends TestCase
             'performance_data' => 'proc: 0'
         ];
 
-        $this->hostResource = (new Resource())
-            ->setType($correctJsonSubmitResult['resources'][0]['type'])
-            ->setId($correctJsonSubmitResult['resources'][0]['id']);
-        $this->serviceResource = (new Resource())
-            ->setType($correctJsonSubmitResult['resources'][1]['type'])
-            ->setId($correctJsonSubmitResult['resources'][1]['id'])
-            ->setParent($this->hostResource);
+        $this->hostResource = new MonitoringResource(
+            $correctJsonSubmitResult['resources'][0]['id'],
+            $correctJsonSubmitResult['resources'][0]['name'],
+            $correctJsonSubmitResult['resources'][0]['type'],
+        );
+
+        $this->serviceResource = (new MonitoringResource(
+            $correctJsonSubmitResult['resources'][1]['id'],
+            $correctJsonSubmitResult['resources'][1]['name'],
+            $correctJsonSubmitResult['resources'][1]['type'],
+        ))->setParent($this->hostResource);
 
         $this->correctJsonSubmitResult = json_encode($correctJsonSubmitResult);
         $this->serviceSubmitResultJson = json_encode($serviceSubmitResultJson);

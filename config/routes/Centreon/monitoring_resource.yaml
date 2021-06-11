@@ -1,30 +1,30 @@
 centreon_application_monitoring_resource_list:
     methods: GET
     path: /monitoring/resources
-    controller: 'Centreon\Application\Controller\MonitoringResourceController::list'
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::findMonitoringResources'
     condition: "request.attributes.get('version') >= 21.10"
 
-centreon_application_monitoring_resource_details_host:
+centreon_application_monitoring_resource_detail_host:
     methods: GET
     path: /monitoring/resources/hosts/{hostId}
-    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsHost'
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailHost'
     requirements:
         hostId: '\d+'
     condition: "request.attributes.get('version') >= 21.10"
 
-centreon_application_monitoring_resource_details_service:
+centreon_application_monitoring_resource_detail_service:
     methods: GET
     path: /monitoring/resources/hosts/{hostId}/services/{serviceId}
-    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsService'
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailService'
     requirements:
         hostId: '\d+'
         serviceId: '\d+'
     condition: "request.attributes.get('version') >= 21.10"
 
-centreon_application_monitoring_resource_details_meta_service:
+centreon_application_monitoring_resource_detail_meta_service:
     methods: GET
     path: /monitoring/resources/metaservices/{metaId}
-    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsMetaService'
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailMetaService'
     requirements:
         metaId: '\d+'
     condition: "request.attributes.get('version') >= 21.10"

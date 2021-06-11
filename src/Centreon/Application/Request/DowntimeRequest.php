@@ -22,7 +22,7 @@
 namespace Centreon\Application\Request;
 
 use Centreon\Domain\Downtime\Downtime;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 class DowntimeRequest
 {
@@ -32,9 +32,9 @@ class DowntimeRequest
     private $downtime;
 
     /**
-     * @var ResourceEntity[]
+     * @var MonitoringResource[]
      */
-    private $resources = [];
+    private $monitoringResources = [];
 
     /**
      * @return Downtime
@@ -55,20 +55,25 @@ class DowntimeRequest
     }
 
     /**
-     * @return ResourceEntity[]
+     * @return MonitoringResource[]
      */
-    public function getResources(): array
+    public function getMonitoringResources(): array
     {
-        return $this->resources;
+        return $this->monitoringResources;
     }
 
     /**
-     * @param ResourceEntity[] $resources
+     * @param MonitoringResource[] $monitoringResources
      * @return DowntimeRequest
      */
-    public function setResources(array $resources): DowntimeRequest
+    public function setResources(array $monitoringResources): DowntimeRequest
     {
-        $this->resources = $resources;
+        foreach ($monitoringResources as $monitoringResource) {
+            if (!($monitoringResource instanceof MonitoringResource)) {
+                throw new \InvalidArgumentException(_('One of the elements provided is not a MonitoringResource type'));
+            }
+        }
+        $this->monitoringResources = $monitoringResources;
         return $this;
     }
 }
