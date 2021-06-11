@@ -1,8 +1,9 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { pick } from 'ramda';
 
-import { Grid, Chip, Tooltip } from '@material-ui/core';
+import { Grid, Chip, Tooltip, makeStyles } from '@material-ui/core';
 import FlappingIcon from '@material-ui/icons/SwapCalls';
 
 import ChecksIcon from '../../../../ChecksIcon';
@@ -16,7 +17,6 @@ import {
   labelCheckDuration,
   labelLatency,
   labelResourceFlapping,
-  labelPercentStateChange,
   labelLastNotification,
   labelCurrentNotificationNumber,
   labelFqdn,
@@ -30,6 +30,15 @@ import { ResourceDetails } from '../../../models';
 
 import DetailsLine from './DetailsLine';
 
+const useStyles = makeStyles((theme) => ({
+  flappingTile: {
+    alignItems: 'center',
+    columnGap: `${theme.spacing(1)}px`,
+    display: 'grid',
+    gridTemplateColumns: 'min-content auto',
+  },
+}));
+
 interface DetailCardLine {
   active?: boolean;
   field?: string | number | boolean | Array<unknown>;
@@ -38,11 +47,30 @@ interface DetailCardLine {
   xs?: 6 | 12;
 }
 
+interface FlappingtileProps {
+  details: ResourceDetails;
+}
+
 interface DetailCardLineProps {
   details: ResourceDetails;
   t: (label: string) => string;
   toDateTime: (date: string | Date) => string;
 }
+
+const Flappingtile = ({ details }: FlappingtileProps): JSX.Element => {
+  const classes = useStyles();
+  const { t } = useTranslation();
+
+  return (
+    <div className={classes.flappingTile}>
+      <Tooltip title={t(labelResourceFlapping) as string}>
+        <FlappingIcon color="primary" fontSize="small" />
+      </Tooltip>
+      <DetailsLine line={`${details.percent_state_change}%`} />
+    </div>
+  );
+};
+
 const getDetailCardLines = ({
   details,
   toDateTime,
@@ -116,25 +144,8 @@ const getDetailCardLines = ({
     },
     {
       field: details.flapping ? true : undefined,
-      line: (
-        <>
-          <Tooltip title={t(labelResourceFlapping)}>
-            <FlappingIcon color="primary" fontSize="small" />
-          </Tooltip>
-          <DetailsLine line={`${details.percent_state_change}%`} />
-        </>
-      ),
+      line: <Flappingtile details={details} />,
       title: labelFlapping,
-    },
-    {
-      field: details.percent_state_change && details.flapping === false,
-      line: (
-        <>
-          <DetailsLine line={`${details.percent_state_change}%`} />
-        </>
-      ),
-
-      title: labelPercentStateChange,
     },
     {
       field: details.last_notification,
