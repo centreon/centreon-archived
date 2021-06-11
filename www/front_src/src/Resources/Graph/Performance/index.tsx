@@ -46,7 +46,7 @@ import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
 import {
-  labelAsCurrentSize,
+  labelAsDisplayed,
   labelExportToPng,
   labelSmallSize,
   labelMediumSize,
@@ -413,7 +413,7 @@ const PerformanceGraph = ({
                     onClose={closeSizeExportMenu}
                   >
                     <MenuItem onClick={() => convertToPng(1)}>
-                      {t(labelAsCurrentSize)}
+                      {t(labelAsDisplayed)}
                     </MenuItem>
                     <MenuItem onClick={() => convertToPng(0.75)}>
                       {t(labelMediumSize)}
