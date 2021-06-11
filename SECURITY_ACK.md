@@ -2,7 +2,9 @@
 
 Centreon is committed to the security of its product and services and is continuously improving policies, processes, and products to meet the highest standards.
 
-We acknowledge that Centreon users and security researchers following our Centreon Security Policy to report vulnerabilities are key to the success of this commitment. If you have reported first a confirmed vulnerability, we would like to recognize your contribution by listing your name or the name of your organization on this page. You may obviously choose to remain anonymous.
+We acknowledge that Centreon users and security researchers following our Centreon Security Policy to report vulnerabilities are key to the success of this commitment.
+If you are the first to report a confirmed vulnerability, we would like to recognize your contribution by listing your name or the name of your organization on this page.
+You may obviously choose to remain anonymous.
 
 To report a security vulnerability, follow this link: [Security Policy](SECURITY.md).
 
