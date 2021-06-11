@@ -54,13 +54,13 @@ const getCalculationMethodAndHealthInformations = (
   if (isNil(additionals)) {
     return undefined;
   }
-  const formattedCalculationMethod = getFormattedCalculationMethod(additionals);
+  const formattedCalculationMethod = `(${getFormattedCalculationMethod(
+    additionals,
+  )})`;
 
-  const formattedHealth = !isNil(additionals.health)
-    ? `(${labelHealth}: ${additionals.health})`
-    : '';
+  const formattedHealth = !isNil(additionals.health) ? additionals.health : '';
 
-  return join(' ', [formattedCalculationMethod, formattedHealth]);
+  return join(' ', [formattedHealth, formattedCalculationMethod]);
 };
 
 const getDetailCardLines = ({
@@ -174,11 +174,6 @@ const getDetailCardLines = ({
           }
         />
       ),
-      title: labelCalculationMethod,
-    },
-    {
-      field: path(['additionals', 'health'], details),
-      line: <DetailsLine line={`${details.additionals?.health || ''}`} />,
       title: labelHealth,
     },
     {
