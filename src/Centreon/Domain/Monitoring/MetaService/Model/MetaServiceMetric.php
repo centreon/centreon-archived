@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\MetaService\Model;
 
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Domain\Common\Assertion\Assertion;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 /**
  * This class is designed to represent a  meta service metric.
@@ -54,9 +54,9 @@ class MetaServiceMetric
     private $value;
 
     /**
-     * @var ResourceEntity Resource on which Metric is attached
+     * @var MonitoringResource Resource on which Metric is attached
      */
-    private $resource;
+    private $monitoringResource;
 
     /**
      * Contructor of MetaServiceMetric entity
@@ -148,20 +148,20 @@ class MetaServiceMetric
     }
 
     /**
-     * @return ResourceEntity|null
+     * @return MonitoringResource|null
      */
-    public function getResource(): ?ResourceEntity
+    public function getMonitoringResource(): ?MonitoringResource
     {
-        return $this->resource;
+        return $this->monitoringResource;
     }
 
     /**
-     * @param ResourceEntity|null $resource
+     * @param MonitoringResource|null $monitoringResource
      * @return MetaServiceMetric
      */
-    public function setResource(?ResourceEntity $resource): MetaServiceMetric
+    public function setMonitoringResource(?MonitoringResource $monitoringResource): MetaServiceMetric
     {
-        $this->resource = $resource;
+        $this->monitoringResource = $monitoringResource;
         return $this;
     }
 }

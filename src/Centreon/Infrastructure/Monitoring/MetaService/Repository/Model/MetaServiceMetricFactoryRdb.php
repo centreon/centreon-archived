@@ -22,8 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring\MetaService\Repository\Model;
 
-use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\MetaService\Model\MetaServiceMetric;
+use Centreon\Domain\Monitoring\MonitoringResource\Exception\MonitoringResourceException;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 /**
  * This class is designed to provide a way to create the MetaServiceMetric entity from the database.
@@ -46,22 +47,22 @@ class MetaServiceMetricFactoryRdb
             ->setUnit($data['unit_name'])
             ->setValue((float) $data['current_value']);
 
-        /**
-         * Create the Service Resource type
-         */
-        $resource = (new Resource())
-            ->setId((int) $data['service_id'])
-            ->setName($data['service_description'])
-            ->setType(Resource::TYPE_SERVICE);
+        // create the service monitoring resource type
+        $monitoringResource = new MonitoringResource(
+            (int) $data['service_id'],
+            $data['service_description'],
+            MonitoringResource::TYPE_SERVICE
+        );
 
-        $parentResource = (new Resource())
-            ->setId((int) $data['host_id'])
-            ->setName($data['host_name'])
-            ->setType(Resource::TYPE_HOST);
+        $parentMonitoringResource = new MonitoringResource(
+            (int) $data['host_id'],
+            $data['host_name'],
+            MonitoringResource::TYPE_HOST
+        );
 
-        $resource->setParent($parentResource);
+        $monitoringResource->setParent($parentMonitoringResource);
 
-        $metaServiceMetric->setResource($resource);
+        $metaServiceMetric->setMonitoringResource($monitoringResource);
 
         return $metaServiceMetric;
     }

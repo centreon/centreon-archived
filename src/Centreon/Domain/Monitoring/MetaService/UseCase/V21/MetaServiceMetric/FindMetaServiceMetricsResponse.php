@@ -47,7 +47,7 @@ class FindMetaServiceMetricsResponse
                 'name' => $metaServiceMetric->getName(),
                 'unit' => $metaServiceMetric->getUnit(),
                 'value' => $metaServiceMetric->getValue(),
-                'resource' => $metaServiceMetric->getResource()
+                'resource' => $metaServiceMetric->getMonitoringResource()
             ];
         }
     }

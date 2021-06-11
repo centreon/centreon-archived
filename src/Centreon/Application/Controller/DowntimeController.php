@@ -22,25 +22,26 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Application\Request\DowntimeRequest;
+use JsonSchema\Validator;
+use FOS\RestBundle\View\View;
+use FOS\RestBundle\Context\Context;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Downtime\Downtime;
-use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
-use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\View\View;
-use JMS\Serializer\Exception\ValidationFailedException;
-use JMS\Serializer\SerializerInterface;
 use JsonSchema\Constraints\Constraint;
-use JsonSchema\Validator;
+use JMS\Serializer\SerializerInterface;
+use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Centreon\Domain\Entity\EntityValidator;
-use Symfony\Component\Validator\ConstraintViolationList;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Downtime\DowntimeException;
 use Centreon\Domain\Monitoring\ResourceService;
+use Centreon\Application\Request\DowntimeRequest;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveDowntimeValidatorInterface;
 
 /**
  * This class is design to manage all API REST about downtime requests
@@ -110,7 +111,7 @@ class DowntimeController extends AbstractController
          */
         $downtimes = $serializer->deserialize(
             (string) $request->getContent(),
-            'array<' . Downtime::class . '>',
+            'array<' . Downtime::class . '>', // @phpstan-ignore-line
             'json'
         );
 
@@ -165,7 +166,7 @@ class DowntimeController extends AbstractController
          */
         $downtimes = $serializer->deserialize(
             (string) $request->getContent(),
-            'array<' . Downtime::class . '>',
+            'array<' . Downtime::class . '>', // @phpstan-ignore-line
             'json'
         );
 
@@ -631,15 +632,14 @@ class DowntimeController extends AbstractController
     /**
      * Entry point to bulk set downtime for resources (hosts and services)
      * @param Request $request
-     * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
      * @return View
      * @throws \Exception
      */
     public function massDowntimeResources(
         Request $request,
-        EntityValidator $entityValidator,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        MassiveDowntimeValidatorInterface $massiveDowntimeValidator
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -647,6 +647,15 @@ class DowntimeController extends AbstractController
          * @var Contact $contact
          */
         $contact = $this->getUser();
+
+        $payload = (string) $request->getContent();
+        $downtimePayload = json_decode($payload, true);
+
+        if ($downtimePayload === false) {
+            throw new DowntimeException('Error when decoding your sent data');
+        }
+
+        $massiveDowntimeValidator->validateOrFail($downtimePayload);
 
         /**
          * @var DowntimeRequest $dtRequest
@@ -659,55 +668,10 @@ class DowntimeController extends AbstractController
 
         $this->downtimeService->filterByContact($contact);
 
-        //validate input
-        $errorList = new ConstraintViolationList();
-
-        //validate resources
-        $resources = $dtRequest->getResources() ?? [];
-
-        foreach ($resources as $resource) {
-            switch ($resource->getType()) {
-                case ResourceEntity::TYPE_HOST:
-                    $errorList->addAll(ResourceService::validateResource(
-                        $entityValidator,
-                        $resource,
-                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_HOST
-                    ));
-                    break;
-                case ResourceEntity::TYPE_SERVICE:
-                    $errorList->addAll(ResourceService::validateResource(
-                        $entityValidator,
-                        $resource,
-                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_SERVICE
-                    ));
-                    break;
-                case ResourceEntity::TYPE_META:
-                    $errorList->addAll(ResourceService::validateResource(
-                        $entityValidator,
-                        $resource,
-                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_META
-                    ));
-                    break;
-                default:
-                    throw new \RestBadRequestException(_('Incorrect resource type for downtime'));
-            }
-        }
-
         // validate downtime
         $downtime = $dtRequest->getDowntime();
-        $errorList->addAll(
-            $entityValidator->validate(
-                $downtime,
-                null,
-                Downtime::VALIDATION_GROUP_DT_RESOURCE
-            )
-        );
 
-        if ($errorList->count() > 0) {
-            throw new ValidationFailedException($errorList);
-        }
-
-        foreach ($resources as $resource) {
+        foreach ($dtRequest->getMonitoringResources() as $resource) {
             //start applying downtime process
             try {
                 if ($this->hasDtRightsForResource($contact, $resource)) {
@@ -730,18 +694,18 @@ class DowntimeController extends AbstractController
 
     /**
      * @param Contact $contact
-     * @param ResourceEntity $resouce
+     * @param MonitoringResource $monitoringResource
      * @return bool
      */
-    private function hasDtRightsForResource(Contact $contact, ResourceEntity $resouce): bool
+    private function hasDtRightsForResource(Contact $contact, MonitoringResource $monitoringResource): bool
     {
         $hasRights = false;
 
-        if ($resouce->getType() === ResourceEntity::TYPE_HOST) {
+        if ($monitoringResource->getType() === MonitoringResource::TYPE_HOST) {
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME);
-        } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
+        } elseif ($monitoringResource->getType() === MonitoringResource::TYPE_SERVICE) {
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
-        } elseif ($resouce->getType() === ResourceEntity::TYPE_META) {
+        } elseif ($monitoringResource->getType() === MonitoringResource::TYPE_META) {
             $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
         }
 
@@ -762,6 +726,12 @@ class DowntimeController extends AbstractController
             throw new \InvalidArgumentException(_('Error when decoding sent data'));
         }
         $centreonPath = $this->getParameter('centreon_path');
+
+        if (is_string($centreonPath) === false) {
+            throw new InvalidConfigurationException(
+                _('Failed to get centreon path in configuration')
+            );
+        }
         /*
         * Validate the content of the POST request against the JSON schema validator
         */

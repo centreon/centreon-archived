@@ -22,7 +22,7 @@
 namespace Centreon\Application\Request;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 class AckRequest
 {
@@ -32,9 +32,9 @@ class AckRequest
     private $acknowledgement;
 
     /**
-     * @var ResourceEntity[]
+     * @var MonitoringResource[]
      */
-    private $resources = [];
+    private $monitoringResources = [];
 
     /**
      * @return Acknowledgement
@@ -55,20 +55,25 @@ class AckRequest
     }
 
     /**
-     * @return ResourceEntity[]
+     * @return MonitoringResource[]
      */
-    public function getResources(): array
+    public function getMonitoringResources(): array
     {
-        return $this->resources;
+        return $this->monitoringResources;
     }
 
     /**
-     * @param ResourceEntity[] $resources
+     * @param MonitoringResource[] $monitoringResources
      * @return AckRequest
      */
-    public function setResources(array $resources): AckRequest
+    public function setMonitoringResources(array $monitoringResources): AckRequest
     {
-        $this->resources = $resources;
+        foreach ($monitoringResources as $monitoringResource) {
+            if (!($monitoringResource instanceof MonitoringResource)) {
+                throw new \InvalidArgumentException(_('One of the elements provided is not a MonitoringResource type'));
+            }
+        }
+        $this->monitoringResources = $monitoringResources;
         return $this;
     }
 }

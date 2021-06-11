@@ -38,6 +38,6 @@ centreon_application_check_checkMetaService:
 centreon_application_check_checkResources:
     methods: POST
     path: /monitoring/resources/check
-    controller: 'Centreon\Application\Controller\CheckController::checkResources'
+    controller: 'Centreon\Application\Controller\CheckController::massCheckResources'
     condition: "request.attributes.get('version') >= 21.10"
 

@@ -22,13 +22,12 @@
 namespace Tests\Centreon\Domain\Monitoring;
 
 use PHPUnit\Framework\TestCase;
-use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Monitoring\ResourceService;
-use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
+use Centreon\Domain\Monitoring\MonitoringResource\MonitoringResourceService;
+use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceRepositoryInterface;
 
 class ResourceServiceTest extends TestCase
 {
@@ -37,35 +36,29 @@ class ResourceServiceTest extends TestCase
      */
     public function testFindResources()
     {
-        $hostResource = (new Resource())
-            ->setType('host')
+        $contact = (new Contact())
             ->setId(1)
-            ->setName('host1');
-        $serviceResource = (new Resource())
-            ->setType('service')
-            ->setId(1)
-            ->setName('service1')
+            ->setName('admin')
+            ->setAdmin(true);
+
+        $hostResource = new MonitoringResource(1, 'host1', 'host');
+        $serviceResource = (new MonitoringResource(1, 'service1', 'service'))
             ->setParent($hostResource);
 
-        $resourceRepository = $this->createMock(ResourceRepositoryInterface::class);
-        $resourceRepository->expects(self::any())
-            ->method('findResources')
+        $monitoringResourceRepository = $this->createMock(MonitoringResourceRepositoryInterface::class);
+        $monitoringResourceRepository->expects(self::any())
+            ->method('findAll')
             ->willReturn([$hostResource, $serviceResource]); // values returned for the all next tests
-
-        $monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
 
-        $metaServiceConfigurationRepository = $this->createMock(MetaServiceConfigurationReadRepositoryInterface::class);
-
-        $resourceService = new ResourceService(
-            $resourceRepository,
-            $monitoringRepository,
-            $accessGroup,
-            $metaServiceConfigurationRepository
+        $resourceService = new MonitoringResourceService(
+            $monitoringResourceRepository,
+            $contact,
+            $accessGroup
         );
 
-        $resourcesFound = $resourceService->findResources(new ResourceFilter());
+        $resourcesFound = $resourceService->findAllWithoutAcl(new ResourceFilter());
 
         $this->assertCount(2, $resourcesFound);
         $this->assertEquals('h1', $resourcesFound[0]->getUuid());

@@ -190,4 +190,116 @@ class AssertionException extends \InvalidArgumentException
             )
         );
     }
+
+    /**
+     * Exception when the value is not null.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @return self
+     */
+    public static function null(string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value is not null, but null value was expected'),
+                $propertyPath
+            )
+        );
+    }
+
+    /**
+     * Exception when the key of an array does not exist.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @return self
+     */
+    public static function keyExists(string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The key is not defined although it was expected'),
+                $propertyPath
+            )
+        );
+    }
+
+    /**
+     * Exception when the value is not an integer.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @return self
+     */
+    public static function integer(string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value is not an integer, but integer value was expected'),
+                $propertyPath
+            )
+        );
+    }
+
+    /**
+     * Exception when the value is not a string.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @return self
+     */
+    public static function string(string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value is not a string, string value was expected'),
+                $propertyPath
+            )
+        );
+    }
+
+    /**
+     * Exception when the value is not a boolean.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @return self
+     */
+    public static function boolean(string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value is not a boolean, but boolean value was expected'),
+                $propertyPath
+            )
+        );
+    }
+
+    /**
+     * Exception when the value does not match the date format provided.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @return self
+     */
+    public static function date(string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value is not a date or does not match the expected date format'),
+                $propertyPath
+            )
+        );
+    }
+
+    /**
+     * Exception when the two values are not equal.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @return self
+     */
+    public static function eq(string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] Unexpected value provided'),
+                $propertyPath
+            )
+        );
+    }
 }

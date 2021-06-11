@@ -21,21 +21,21 @@
 
 namespace Tests\Centreon\Application\Controller;
 
-use Centreon\Domain\Contact\Contact;
-use Centreon\Application\Controller\CheckController;
-use Centreon\Application\Request\CheckRequest;
+use FOS\RestBundle\View\View;
+use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Check\Check;
-use Centreon\Domain\Check\CheckException;
-use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Contact\Contact;
+use Psr\Container\ContainerInterface;
+use JMS\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Centreon\Application\Request\CheckRequest;
+use Centreon\Application\Controller\CheckController;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveCheckValidatorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\HttpFoundation\Request;
-use JMS\Serializer\SerializerInterface;
-use FOS\RestBundle\View\View;
-use Psr\Container\ContainerInterface;
-use PHPUnit\Framework\TestCase;
 
 class CheckControllerTest extends TestCase
 {
@@ -54,6 +54,7 @@ class CheckControllerTest extends TestCase
 
     protected $request;
     protected $serializer;
+    protected $massiveCheckValidator;
 
     protected function setUp(): void
     {
@@ -70,31 +71,40 @@ class CheckControllerTest extends TestCase
                 [
                     'type' => 'host',
                     'id' => 1,
+                    'name' => 'hostName',
                     'parent' => null,
                 ],
                 [
                     'type' => 'service',
                     'id' => 1,
+                    'name' => 'serviceName',
                     'parent' => [
                         'id' => 1,
+                        'type' => 'host',
+                        'name' => 'hostName'
                     ],
                 ],
             ],
         ];
-        $this->hostResource = (new Resource())
-            ->setType($goodJsonCheck['resources'][0]['type'])
-            ->setId($goodJsonCheck['resources'][0]['id']);
-        $this->serviceResource = (new Resource())
-            ->setType($goodJsonCheck['resources'][1]['type'])
-            ->setId($goodJsonCheck['resources'][1]['id'])
-            ->setParent($this->hostResource);
+
+        $this->hostResource = new MonitoringResource(
+            $goodJsonCheck['resources'][0]['id'],
+            $goodJsonCheck['resources'][0]['name'],
+            $goodJsonCheck['resources'][0]['type']
+        );
+
+        $this->serviceResource = (new MonitoringResource(
+            $goodJsonCheck['resources'][1]['id'],
+            $goodJsonCheck['resources'][1]['name'],
+            $goodJsonCheck['resources'][1]['type']
+        ))->setParent($this->hostResource);
 
         $this->goodJsonCheck = json_encode($goodJsonCheck);
 
         $this->check = (new Check())
             ->setCheckTime(new \DateTime());
         $this->checkRequest = (new CheckRequest())
-            ->setResources([$this->hostResource, $this->serviceResource])
+            ->setMonitoringResource([$this->hostResource, $this->serviceResource])
             ->setCheck($this->check);
 
         $this->badJsonCheck = json_encode([
@@ -138,40 +148,9 @@ class CheckControllerTest extends TestCase
                 }
             );
 
+        $this->massiveCheckValidator = $this->createMock(MassiveCheckValidatorInterface::class);
         $this->request = $this->createMock(Request::class);
         $this->serializer = $this->createMock(SerializerInterface::class);
-    }
-
-    /**
-     * test checkResources with bad json format
-     */
-    public function testCheckResourcesBadJsonFormat()
-    {
-        $checkController = new CheckController($this->checkService);
-        $checkController->setContainer($this->container);
-
-        $this->request->expects($this->once())
-            ->method('getContent')
-            ->willReturn('[}');
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Error when decoding sent data');
-        $checkController->checkResources($this->request, $this->serializer);
-    }
-
-    /**
-     * test checkResources with bad json properties
-     */
-    public function testCheckResourcesBadJsonProperties()
-    {
-        $checkController = new CheckController($this->checkService);
-        $checkController->setContainer($this->container);
-
-        $this->request->expects($this->any())
-            ->method('getContent')
-            ->willReturn($this->badJsonCheck);
-        $this->expectException(CheckException::class);
-        $this->expectExceptionMessage('[resources] The property resources is required');
-        $checkController->checkResources($this->request, $this->serializer);
     }
 
     /**
@@ -193,7 +172,7 @@ class CheckControllerTest extends TestCase
         $this->request->expects($this->any())
             ->method('getContent')
             ->willReturn($this->goodJsonCheck);
-        $view = $checkController->checkResources($this->request, $this->serializer);
+        $view = $checkController->massCheckResources($this->request, $this->serializer, $this->massiveCheckValidator);
 
         $this->assertEquals($view, View::create());
     }

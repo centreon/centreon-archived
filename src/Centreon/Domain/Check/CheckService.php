@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Check;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Service\AbstractCentreonService;
@@ -184,47 +184,54 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
     /**
      * @inheritDoc
      */
-    public function checkResource(Check $check, ResourceEntity $resource): void
+    public function checkResource(Check $check, MonitoringResource $monitoringResource): void
     {
-        switch ($resource->getType()) {
-            case ResourceEntity::TYPE_HOST:
-                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
-                if (is_null($host)) {
+        switch ($monitoringResource->getType()) {
+            case MonitoringResource::TYPE_HOST:
+                $host = $this->monitoringRepository->findOneHost($monitoringResource->getId());
+                if ($host === null) {
                     throw new EntityNotFoundException(
                         sprintf(
                             _('Host %d not found'),
-                            $resource->getId()
+                            $monitoringResource->getId()
                         )
                     );
                 }
                 $this->engineService->scheduleHostCheck($check, $host);
                 break;
-            case ResourceEntity::TYPE_SERVICE:
-                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+            case MonitoringResource::TYPE_SERVICE:
+                if ($monitoringResource->getParent() === null) {
+                    throw new EntityNotFoundException(
+                        sprintf(
+                            _('Host not found for service %d'),
+                            $monitoringResource->getId()
+                        )
+                    );
+                }
+                $host = $this->monitoringRepository->findOneHost($monitoringResource->getParent()->getId());
                 $service = $this->monitoringRepository->findOneService(
-                    $resource->getParent()->getId(),
-                    $resource->getId()
+                    $monitoringResource->getParent()->getId(),
+                    $monitoringResource->getId()
                 );
-                if (is_null($service)) {
+                if ($service === null) {
                     throw new EntityNotFoundException(
                         sprintf(
                             _('Service %d (parent: %d) not found'),
-                            $resource->getId(),
-                            $resource->getParent()->getId()
+                            $monitoringResource->getId(),
+                            $monitoringResource->getParent()->getId()
                         )
                     );
                 }
                 $service->setHost($host);
                 $this->engineService->scheduleServiceCheck($check, $service);
                 break;
-            case ResourceEntity::TYPE_META:
-                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
-                if (is_null($service)) {
+            case MonitoringResource::TYPE_META:
+                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $monitoringResource->getId());
+                if ($service === null) {
                     throw new EntityNotFoundException(
                         sprintf(
-                            _('Service %d (parent: %d) not found'),
-                            $resource->getId(),
-                            $resource->getParent()->getId()
+                            _('Service %d not found'),
+                            $monitoringResource->getId()
                         )
                     );
                 }
@@ -233,7 +240,7 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
                 $this->engineService->scheduleServiceCheck($check, $service);
                 break;
             default:
-                throw new \InvalidArgumentException(sprintf(_('Incorrect Resource type: %s'), $resource->getType()));
+                throw new \InvalidArgumentException(sprintf(_('Incorrect Resource type: %s'), $monitoringResource->getType()));
         }
     }
 }

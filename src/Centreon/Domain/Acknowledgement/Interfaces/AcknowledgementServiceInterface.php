@@ -22,14 +22,14 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Acknowledgement\Interfaces;
 
+use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Acknowledgement\AcknowledgementException;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
-use Centreon\Domain\Engine\EngineException;
-use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
-use JMS\Serializer\Exception\ValidationFailedException;
 
 interface AcknowledgementServiceInterface extends ContactFilterInterface
 {
@@ -167,22 +167,22 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     public function disacknowledgeMetaService(int $metaId): void;
 
     /**
-     * Acknowledge resource and its services if needed.
+     * Add an acknowledgement on a monitoring resource.
      *
-     * @param ResourceEntity $resource Resource to be acknowledged
-     * @param Acknowledgement $ack
+     * @param MonitoringResource $monitoringResource Resource to be acknowledged
+     * @param Acknowledgement $acknowledgement Acknowledgement to add
      * @throws EntityNotFoundException
      * @throws \Exception
      */
-    public function acknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void;
+    public function acknowledgeResource(MonitoringResource $monitoringResource, Acknowledgement $acknowledgement): void;
 
     /**
-     * Discknowledge resource and its services if needed.
+     * Remove an acknowledgement from a monitoring resource
      *
-     * @param ResourceEntity $resource Resource to be acknowledged
-     * @param Acknowledgement $ack
+     * @param MonitoringResource $monitoringResource Resource to be acknowledged
+     * @param Acknowledgement $acknowledgement Acknowledgement to remove
      * @throws EntityNotFoundException
      * @throws \Exception
      */
-    public function disacknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void;
+    public function disacknowledgeResource(MonitoringResource $monitoringResource, Acknowledgement $acknowledgement): void;
 }

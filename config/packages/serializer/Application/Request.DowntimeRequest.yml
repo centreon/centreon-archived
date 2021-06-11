@@ -4,7 +4,8 @@ Centreon\Application\Request\DowntimeRequest:
             type: Centreon\Domain\Downtime\Downtime
             groups:
                 - 'resource_dt'
-        resources:
-            type: array<Centreon\Domain\Monitoring\Resource>
+        monitoringResources:
+            type: array<Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource>
+            serialized_name: 'resources'
             groups:
                 - 'resource_dt'

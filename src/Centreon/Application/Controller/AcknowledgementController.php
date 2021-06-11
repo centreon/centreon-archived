@@ -22,25 +22,25 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Application\Request\AckRequest;
-use Centreon\Domain\Acknowledgement\Acknowledgement;
-use Centreon\Domain\Acknowledgement\AcknowledgementService;
-use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface;
-use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Entity\EntityValidator;
-use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
-use Centreon\Domain\Monitoring\ResourceService;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use FOS\RestBundle\Context\Context;
+use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
-use JMS\Serializer\Exception\ValidationFailedException;
+use FOS\RestBundle\Context\Context;
+use Centreon\Domain\Contact\Contact;
 use JMS\Serializer\SerializerInterface;
+use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Application\Request\AckRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\ConstraintViolationList;
-use JsonSchema\Validator;
-use JsonSchema\Constraints\Constraint;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use JMS\Serializer\Exception\ValidationFailedException;
+use Centreon\Domain\Acknowledgement\AcknowledgementService;
+use Centreon\Domain\Acknowledgement\AcknowledgementException;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveAcknowledgementValidatorInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveDisacknowledgementValidatorInterface;
 
 /**
  * Used to manage all requests of hosts acknowledgements
@@ -62,46 +62,6 @@ class AcknowledgementController extends AbstractController
     public function __construct(AcknowledgementServiceInterface $acknowledgementService)
     {
         $this->acknowledgementService = $acknowledgementService;
-    }
-
-    /**
-     * This function will ensure that the POST data is valid
-     * regarding validation constraints defined and will return
-     * the decoded JSON content
-     *
-     * @param Request $request
-     * @param string $jsonValidatorFile
-     * @return array $results
-     * @throws \InvalidArgumentException
-     */
-    private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
-    {
-        $results = json_decode((string) $request->getContent(), true);
-        if (!is_array($results)) {
-            throw new \InvalidArgumentException(_('Error when decoding sent data'));
-        }
-
-        /*
-        * Validate the content of the POST request against the JSON schema validator
-        */
-        $validator = new Validator();
-        $bodyContent = json_decode((string) $request->getContent());
-        $file = 'file://' . __DIR__ . '/../../../../config/json_validator/latest/Centreon/' . $jsonValidatorFile;
-        $validator->validate(
-            $bodyContent,
-            (object) ['$ref' => $file],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s" . PHP_EOL, $error['property'], $error['message']);
-            }
-            throw new \InvalidArgumentException($message);
-        }
-
-        return $results;
     }
 
     /**
@@ -260,8 +220,8 @@ class AcknowledgementController extends AbstractController
          * @var Acknowledgement[] $acknowledgements
          */
         $acknowledgements = $serializer->deserialize(
-            (string)$request->getContent(),
-            'array<' . Acknowledgement::class . '>',
+            (string) $request->getContent(),
+            'array<' . Acknowledgement::class . '>', // @phpstan-ignore-line
             'json'
         );
 
@@ -317,7 +277,7 @@ class AcknowledgementController extends AbstractController
          */
         $acknowledgements = $serializer->deserialize(
             (string)$request->getContent(),
-            'array<' . Acknowledgement::class . '>',
+            'array<' . Acknowledgement::class . '>', // @phpstan-ignore-line
             'json'
         );
 
@@ -369,9 +329,16 @@ class AcknowledgementController extends AbstractController
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
+        $content = json_decode((string) $request->getContent(), true);
+
+        // @todo check errors already sent for this
+        if ($content === false) {
+            throw new \InvalidArgumentException(_('Invalid data sent'));
+        }
+
         $errors = $entityValidator->validateEntity(
             Acknowledgement::class,
-            json_decode($request->getContent(), true),
+            $content,
             AcknowledgementService::VALIDATION_GROUPS_ADD_HOST_ACK,
             false // To avoid error message for missing fields
         );
@@ -384,7 +351,7 @@ class AcknowledgementController extends AbstractController
          * @var Acknowledgement $acknowledgement
          */
         $acknowledgement = $serializer->deserialize(
-            $request->getContent(),
+            (string) $request->getContent(),
             Acknowledgement::class,
             'json'
         );
@@ -417,14 +384,29 @@ class AcknowledgementController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact|null
+         */
         $contact = $this->getUser();
+        if ($contact === null) {
+            // @todo add log 'Could not find the contact'
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
+        $content = json_decode((string) $request->getContent(), true);
+
+        if ($content === false) {
+            // @todo check
+            throw new \InvalidArgumentException(_('Invalid data sent'));
+        }
+
         $errors = $entityValidator->validateEntity(
             Acknowledgement::class,
-            json_decode($request->getContent(), true),
+            $content,
             AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK,
             false // To show errors on not expected fields
         );
@@ -437,7 +419,7 @@ class AcknowledgementController extends AbstractController
          * @var Acknowledgement $acknowledgement
          */
         $acknowledgement = $serializer->deserialize(
-            $request->getContent(),
+            (string) $request->getContent(),
             Acknowledgement::class,
             'json'
         );
@@ -470,14 +452,30 @@ class AcknowledgementController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact|null
+         */
         $contact = $this->getUser();
+
+        if ($contact === null) {
+            // @todo add log
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
+        $content = json_decode((string) $request->getContent(), true);
+
+        if ($content === false) {
+            // @todo check
+            throw new \InvalidArgumentException(_('Invalid data sent'));
+        }
+
         $errors = $entityValidator->validateEntity(
             Acknowledgement::class,
-            json_decode($request->getContent(), true),
+            $content,
             AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK,
             false // To show errors on not expected fields
         );
@@ -490,7 +488,7 @@ class AcknowledgementController extends AbstractController
          * @var Acknowledgement $acknowledgement
          */
         $acknowledgement = $serializer->deserialize(
-            $request->getContent(),
+            (string) $request->getContent(),
             Acknowledgement::class,
             'json'
         );
@@ -515,7 +513,15 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact|null
+         */
         $contact = $this->getUser();
+
+        if ($contact === null) {
+            // @todo add log
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
 
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -540,7 +546,15 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact|null
+         */
         $contact = $this->getUser();
+
+        if ($contact === null) {
+            // @todo add log
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
 
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -564,7 +578,15 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact|null
+         */
         $contact = $this->getUser();
+
+        if ($contact === null) {
+            // @todo add log
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
 
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -632,7 +654,10 @@ class AcknowledgementController extends AbstractController
      * @param Request $request
      * @return View
      */
-    public function massDisacknowledgeResources(Request $request): View
+    public function massDisacknowledgeResources(
+        Request $request,
+        MassiveDisacknowledgementValidatorInterface $massiveDisacknowledgementValidator
+    ): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -642,38 +667,46 @@ class AcknowledgementController extends AbstractController
         $contact = $this->getUser();
         $this->acknowledgementService->filterByContact($contact);
 
-        // Validate the content of the DELETE request against the JSON schema validator
-        $results = $this->validateAndRetrievePostData(
-            $request,
-            'Acknowledgement/DisacknowledgeResources.json'
-        );
+        $payload = (string) $request->getContent();
+        $disacknowledgementPayload = json_decode($payload, true);
 
-        $disacknowledgement = new Acknowledgement();
-        if (isset($results['disacknowledgement']['with_services'])) {
-            $disacknowledgement->setWithServices($results['disacknowledgement']['with_services']);
+        if ($disacknowledgementPayload === false) {
+            throw new AcknowledgementException('Error when decoding your sent data');
         }
 
-        foreach ($results['resources'] as $resultingResource) {
-            $resource = (new ResourceEntity())
-                ->setType($resultingResource['type'])
-                ->setId($resultingResource['id']);
+        $massiveDisacknowledgementValidator->validateOrFail($disacknowledgementPayload);
+
+        $disacknowledgement = new Acknowledgement();
+        if (isset($disacknowledgementPayload['disacknowledgement']['with_services'])) {
+            $disacknowledgement->setWithServices(
+                $disacknowledgementPayload['disacknowledgement']['with_services']
+            );
+        }
+
+        foreach ($disacknowledgementPayload['resources'] as $resultingResource) {
+            $monitoringResource = new MonitoringResource(
+                (int) $resultingResource['id'],
+                $resultingResource['name'],
+                $resultingResource['type']
+            );
             if (isset($resultingResource['parent']) && $resultingResource['parent'] !== null) {
-                $resource->setParent(
-                    (new ResourceEntity())
-                        ->setId($resultingResource['parent']['id'])
-                        ->setType(ResourceEntity::TYPE_HOST)
+                $monitoringResourceParent = new MonitoringResource(
+                    (int) $resultingResource['parent']['id'],
+                    $resultingResource['parent']['name'],
+                    $resultingResource['parent']['type'],
                 );
+                $monitoringResource->setParent($monitoringResourceParent);
             }
 
             // start disacknowledgement process
             try {
-                if ($this->hasDisackRightsForResource($contact, $resource)) {
+                if ($this->hasDisackRightsForResource($contact, $monitoringResource)) {
                     if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
                         $disacknowledgement->setWithServices(false);
                     }
 
                     $this->acknowledgementService->disacknowledgeResource(
-                        $resource,
+                        $monitoringResource,
                         $disacknowledgement
                     );
                 }
@@ -689,15 +722,14 @@ class AcknowledgementController extends AbstractController
     /**
      * Entry point to bulk acknowledge resources (hosts and services)
      * @param Request $request
-     * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
      * @return View
      * @throws \Exception
      */
     public function massAcknowledgeResources(
         Request $request,
-        EntityValidator $entityValidator,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        MassiveAcknowledgementValidatorInterface $massiveAcknowledgementValidator
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -706,78 +738,47 @@ class AcknowledgementController extends AbstractController
          */
         $contact = $this->getUser();
 
+        $this->acknowledgementService->filterByContact($contact);
+
+        $payload = (string) $request->getContent();
+        $acknowledgementPayload = json_decode($payload, true);
+
+        if ($acknowledgementPayload === false) {
+            throw new AcknowledgementException('Error when decoding your sent data');
+        }
+
+        // validate the payload sent
+        $massiveAcknowledgementValidator->validateOrFail($acknowledgementPayload);
+
         /**
          * @var AckRequest $ackRequest
          */
         $ackRequest = $serializer->deserialize(
-            (string)$request->getContent(),
+            $payload,
             AckRequest::class,
             'json'
         );
 
-        $this->acknowledgementService->filterByContact($contact);
-
-        //validate input
-        $errorList = new ConstraintViolationList();
-
-        //validate resources
-        $resources = $ackRequest->getResources() ?? [];
-        foreach ($resources as $resource) {
-            switch ($resource->getType()) {
-                case ResourceEntity::TYPE_HOST:
-                    $errorList->addAll(ResourceService::validateResource(
-                        $entityValidator,
-                        $resource,
-                        ResourceEntity::VALIDATION_GROUP_ACK_HOST
-                    ));
-                    break;
-                case ResourceEntity::TYPE_SERVICE:
-                    $errorList->addAll(ResourceService::validateResource(
-                        $entityValidator,
-                        $resource,
-                        ResourceEntity::VALIDATION_GROUP_ACK_SERVICE
-                    ));
-                    break;
-                case ResourceEntity::TYPE_META:
-                    $errorList->addAll(ResourceService::validateResource(
-                        $entityValidator,
-                        $resource,
-                        ResourceEntity::VALIDATION_GROUP_ACK_META
-                    ));
-                    break;
-                default:
-                    throw new \RestBadRequestException(_('Incorrect resource type for acknowledgement'));
-            }
-        }
-
-        //validate acknowledgement
+        // Get acknowledgement entity
         $acknowledgement = $ackRequest->getAcknowledgement();
-        $errorList->addAll(
-            $entityValidator->validate(
-                $acknowledgement,
-                null,
-                Acknowledgement::VALIDATION_GROUP_ACK_RESOURCE
-            )
-        );
-
-        if ($errorList->count() > 0) {
-            throw new ValidationFailedException($errorList);
-        }
 
         // set default values [sticky, persistent_comment] to true
         $acknowledgement->setSticky(true);
         $acknowledgement->setPersistentComment(true);
 
-        foreach ($resources as $resource) {
-            // start acknowledgement process
+        foreach ($ackRequest->getMonitoringResources() as $monitoringResource) {
+            /**
+             * Start the acknowledgement process.
+             * Failed acknowledgements are passed to avoid others to fail.
+             */
             try {
-                if ($this->hasAckRightsForResource($contact, $resource)) {
+                if ($this->hasAckRightsForResource($contact, $monitoringResource)) {
                     if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
                         $acknowledgement->setWithServices(false);
                     }
 
                     $this->acknowledgementService->acknowledgeResource(
-                        $resource,
+                        $monitoringResource,
                         $acknowledgement
                     );
                 }
@@ -793,10 +794,10 @@ class AcknowledgementController extends AbstractController
      * Check if the resource can be acknowledged
      *
      * @param Contact $contact
-     * @param ResourceEntity $resource
+     * @param MonitoringResource $monitoringResource
      * @return bool
      */
-    private function hasAckRightsForResource(Contact $contact, ResourceEntity $resource): bool
+    private function hasAckRightsForResource(Contact $contact, MonitoringResource $monitoringResource): bool
     {
         if ($contact->isAdmin()) {
             return true;
@@ -804,12 +805,12 @@ class AcknowledgementController extends AbstractController
 
         $hasRights = false;
 
-        switch ($resource->getType()) {
-            case ResourceEntity::TYPE_HOST:
+        switch ($monitoringResource->getType()) {
+            case MonitoringResource::TYPE_HOST:
                 $hasRights = $contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
                 break;
-            case ResourceEntity::TYPE_SERVICE:
-            case ResourceEntity::TYPE_META:
+            case MonitoringResource::TYPE_SERVICE:
+            case MonitoringResource::TYPE_META:
                 $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT);
                 break;
         }
@@ -821,10 +822,10 @@ class AcknowledgementController extends AbstractController
      * Check if the resource can be disacknowledged
      *
      * @param Contact $contact
-     * @param ResourceEntity $resource
+     * @param MonitoringResource $monitoringResource
      * @return bool
      */
-    private function hasDisackRightsForResource(Contact $contact, ResourceEntity $resource): bool
+    private function hasDisackRightsForResource(Contact $contact, MonitoringResource $monitoringResource): bool
     {
         if ($contact->isAdmin()) {
             return true;
@@ -832,12 +833,12 @@ class AcknowledgementController extends AbstractController
 
         $hasRights = false;
 
-        switch ($resource->getType()) {
-            case ResourceEntity::TYPE_HOST:
+        switch ($monitoringResource->getType()) {
+            case MonitoringResource::TYPE_HOST:
                 $hasRights = $contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT);
                 break;
-            case ResourceEntity::TYPE_SERVICE:
-            case ResourceEntity::TYPE_META:
+            case MonitoringResource::TYPE_SERVICE:
+            case MonitoringResource::TYPE_META:
                 $hasRights = $contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT);
                 break;
         }

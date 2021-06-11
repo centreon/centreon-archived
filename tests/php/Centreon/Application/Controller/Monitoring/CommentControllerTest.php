@@ -25,13 +25,13 @@ use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
 use Psr\Container\ContainerInterface;
-use Centreon\Domain\Monitoring\Resource;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Domain\Monitoring\Comment\CommentService;
 use Centreon\Application\Controller\Monitoring\CommentController;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -69,6 +69,7 @@ class CommentControllerTest extends TestCase
                 [
                     'type' => 'host',
                     'id' => 1,
+                    'name' => 'hostName',
                     'parent' => null,
                     'comment' => 'simple comment on a host resource',
                     'date' => null
@@ -76,8 +77,11 @@ class CommentControllerTest extends TestCase
                 [
                     'type' => 'service',
                     'id' => 1,
+                    'name' => 'serviceName',
                     'parent' => [
                         'id' => 1,
+                        'type' => 'host',
+                        'name' => 'hostName'
                     ],
                     'comment' => 'simple comment on a service resource',
                     'date' => $date
@@ -95,13 +99,17 @@ class CommentControllerTest extends TestCase
             'date' => $date
         ];
 
-        $this->hostResource = (new Resource())
-            ->setType($correctJsonComment['resources'][0]['type'])
-            ->setId($correctJsonComment['resources'][0]['id']);
-        $this->serviceResource = (new Resource())
-            ->setType($correctJsonComment['resources'][1]['type'])
-            ->setId($correctJsonComment['resources'][1]['id'])
-            ->setParent($this->hostResource);
+        $this->hostResource = new MonitoringResource(
+            $correctJsonComment['resources'][0]['id'],
+            $correctJsonComment['resources'][0]['name'],
+            $correctJsonComment['resources'][0]['type']
+        );
+
+        $this->serviceResource = (new MonitoringResource(
+            $correctJsonComment['resources'][1]['id'],
+            $correctJsonComment['resources'][1]['name'],
+            $correctJsonComment['resources'][1]['type']
+        ))->setParent($this->hostResource);
 
         $this->correctJsonComment = json_encode($correctJsonComment);
         $this->serviceCommentJson = json_encode($serviceCommentJson);

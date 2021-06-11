@@ -195,22 +195,57 @@ services:
 
     # Monitoring resources
     _instanceof:
-        Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface:
-            tags: ['monitoring.resource.providers']
+        Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Provider\ProviderInterface:
+            tags: ['monitoring.monitoringresource.repository.providers']
             calls:
                 - method: setSqlRequestTranslator
                   arguments: ['@sqlRequestTranslator']
+        Centreon\Domain\Monitoring\MonitoringResource\Interfaces\HyperMediaProviderInterface:
+            tags: ['monitoring.monitoringresource.hypermediaproviders']
+        Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MonitoringResourceValidatorInterface:
+            tags: ['monitoring.monitoringresource.api.validators']
 
-    Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
-        class: Centreon\Domain\Monitoring\ResourceService
-
-    Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
-        class: Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryRDB
+    Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceRepositoryInterface:
+        class: Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\MonitoringResourceRepositoryRDB
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
             - method: setProviders
-              arguments: [!tagged_iterator 'monitoring.resource.providers']
+              arguments: [!tagged_iterator 'monitoring.monitoringresource.repository.providers']
+
+    Centreon\Application\Controller\MonitoringResourceController:
+        calls:
+            - method: setHyperMediaProviders
+              arguments: [!tagged_iterator 'monitoring.monitoringresource.hypermediaproviders']
+
+    Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\FindMonitoringResources\FindMonitoringResources:
+        class: Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\FindMonitoringResources\FindMonitoringResources
+
+    Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource\DetailHostMonitoringResource:
+        class: Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource\DetailHostMonitoringResource
+
+    Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource\DetailServiceMonitoringResource:
+        class: Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource\DetailServiceMonitoringResource
+
+    Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource\DetailMetaServiceMonitoringResource:
+        class: Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource\DetailMetaServiceMonitoringResource
+
+    # Validators
+    Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveAcknowledgementValidatorInterface:
+        class: Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\MassiveAcknowledgementValidator
+        arguments: [!tagged_iterator 'monitoring.monitoringresource.api.validators']
+
+    Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveDisacknowledgementValidatorInterface:
+        class: Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\MassiveDisacknowledgementValidator
+        arguments: [!tagged_iterator 'monitoring.monitoringresource.api.validators']
+
+    Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveDowntimeValidatorInterface:
+        class: Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\MassiveDowntimeValidator
+        arguments: [!tagged_iterator 'monitoring.monitoringresource.api.validators']
+
+    Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveCheckValidatorInterface:
+        class: Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\MassiveCheckValidator
+        arguments: [!tagged_iterator 'monitoring.monitoringresource.api.validators']
 
     # Filters
     Centreon\Domain\Filter\Interfaces\FilterServiceInterface:
@@ -253,8 +288,8 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostSeverityRepositoryRDB
 
-    Centreon\Domain\HostConfiguration\UseCase\V2110\HostSeverity\FindHostSeverities:
-        class: Centreon\Domain\HostConfiguration\UseCase\V2110\HostSeverity\FindHostSeverities
+    Centreon\Domain\HostConfiguration\UseCase\v2110\HostSeverity\FindHostSeverities:
+        class: Centreon\Domain\HostConfiguration\UseCase\v2110\HostSeverity\FindHostSeverities
         calls:
             - method: setMediaPath
               arguments: ["%media_path%"]
@@ -263,8 +298,8 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostGroupRepositoryRDB
 
-    Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroups:
-        class: Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroups
+    Centreon\Domain\HostConfiguration\UseCase\v2110\HostGroup\FindHostGroups:
+        class: Centreon\Domain\HostConfiguration\UseCase\v2110\HostGroup\FindHostGroups
         calls:
             - method: setMediaPath
               arguments: ["%media_path%"]

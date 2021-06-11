@@ -25,7 +25,6 @@ use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
 use Psr\Container\ContainerInterface;
-use Centreon\Domain\Monitoring\Resource;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
@@ -34,21 +33,28 @@ use Centreon\Application\Controller\AcknowledgementController;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveDisacknowledgementValidatorInterface;
 
 class AcknowledgementControllerTest extends TestCase
 {
-    protected $adminContact;
+    private $adminContact;
 
-    protected $hostResource;
-    protected $serviceResource;
+    private $hostResource;
+    private $serviceResource;
 
-    protected $correctJsonDisackResources;
+    private $correctJsonDisackResources;
 
-    protected $acknowledgementService;
+    private $acknowledgementService;
 
-    protected $container;
+    private $container;
 
-    protected $request;
+    private $request;
+
+    /**
+     * @var MassiveDisacknowledgementValidatorInterface $massiveDisacknowledgementValidator
+     */
+    private $massiveDisacknowledgementValidator;
 
     protected function setUp():void
     {
@@ -68,29 +74,37 @@ class AcknowledgementControllerTest extends TestCase
                 [
                     'type' => 'host',
                     'id' => 1,
+                    'name' => 'hostName',
                     'parent' => null,
                 ],
                 [
                     'type' => 'service',
                     'id' => 1,
+                    'name' => 'serviceName',
                     'parent' => [
                         'id' => 1,
+                        'type' => 'host',
+                        'name' => 'hostName'
                     ],
                 ],
             ],
         ];
 
-        $this->hostResource = (new Resource())
-            ->setType($correctJsonDisackResources['resources'][0]['type'])
-            ->setId($correctJsonDisackResources['resources'][0]['id']);
-        $this->serviceResource = (new Resource())
-            ->setType($correctJsonDisackResources['resources'][1]['type'])
-            ->setId($correctJsonDisackResources['resources'][1]['id'])
-            ->setParent($this->hostResource);
+        $this->hostResource = new MonitoringResource(
+            $correctJsonDisackResources['resources'][0]['id'],
+            $correctJsonDisackResources['resources'][0]['name'],
+            $correctJsonDisackResources['resources'][0]['type'],
+        );
+
+        $this->serviceResource = (new MonitoringResource(
+            $correctJsonDisackResources['resources'][1]['id'],
+            $correctJsonDisackResources['resources'][1]['name'],
+            $correctJsonDisackResources['resources'][1]['type'],
+        ))->setParent($this->hostResource);
 
         $this->correctJsonDisackResources = json_encode($correctJsonDisackResources);
-
         $this->acknowledgementService = $this->createMock(AcknowledgementService::class);
+        $this->massiveDisacknowledgementValidator = $this->createMock(MassiveDisacknowledgementValidatorInterface::class);
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authorizationChecker->expects($this->once())
@@ -156,7 +170,10 @@ class AcknowledgementControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($this->correctJsonDisackResources);
 
-        $view = $acknowledgementController->massDisacknowledgeResources($this->request);
+        $view = $acknowledgementController->massDisacknowledgeResources(
+            $this->request,
+            $this->massiveDisacknowledgementValidator
+        );
 
         $this->assertEquals($view, View::create(null, Response::HTTP_NO_CONTENT));
     }

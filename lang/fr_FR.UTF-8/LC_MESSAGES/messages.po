@@ -16007,6 +16007,27 @@ msgstr "[%s] La valeur est vide, mais une valeur non vide était attendue"
 msgid "[%s] The value is null, but non null value was expected"
 msgstr "[%] La valeur est nulle, mais une valeur non nulle était attendue"
 
+msgid "[%s] The value is not null, but null value was expected"
+msgstr "[%] La valeur n'est pas nulle, alors qu'une valeur nulle était attendue"
+
+msgid "[%s] The key is not defined, although it was expected"
+msgstr "[%] La clé n'est pas définie, alors qu'elle était attendue"
+
+msgid "[%s] The value is not an integer, but integer value was expected"
+msgstr "[%] La valeur n'est pas un entier, alors qu'un entier était attendu"
+
+msgid "[%s] The value is not a string, but string value was expected"
+msgstr "[%] La valeur n'est pas une chaîne de caractères, alors qu'une chaîne de caractères était attendue"
+
+msgid "[%s] The value is not a boolean, but boolean value was expected"
+msgstr "[%] La valeur n'est pas booléen, alors qu'un booléen était attendu"
+
+msgid "[%s] The value is not a date or does not match the expected date format"
+msgstr "[%] La valeur n'est pas une date ou bien ne correspond pas au format de date attendu"
+
+msgid "[%s] Unexpected value provided"
+msgstr "[%] Valeur inattendue fournie"
+
 msgid "Switch to graph mode"
 msgstr "Basculer vers le mode graphique"
 

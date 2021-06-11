@@ -22,10 +22,11 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\Monitoring\MetaService\Model;
 
+use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\Monitoring\MetaService\Model\MetaServiceMetric;
-use Centreon\Domain\Monitoring\Resource;
-use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 /**
  * This class is designed to test all setters of the MetaServiceMetric entity, especially those with exceptions.
@@ -104,14 +105,9 @@ class MetaServiceMetricTest extends TestCase
      * @return Resource
      * @throws \Assert\AssertionFailedException
      */
-    public static function createResourceEntity(): Resource
+    public static function createResourceEntity(): MonitoringResource
     {
-        $parentResource = (new Resource())
-            ->setId(1)
-            ->setName('Centreon-Central');
-        return (new Resource())
-            ->setId(1)
-            ->setName('Ping')
-            ->setParent($parentResource);
+        $parentResource = new MonitoringResource(1, 'Centreon-Central', 'host');
+        return (new MonitoringResource(1, 'Ping', 'service'))->setParent($parentResource);
     }
 }

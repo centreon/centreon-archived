@@ -46,7 +46,7 @@ class FindMetaServiceMetricsTest extends TestCase
     {
         $this->metaServiceMetricService = $this->createMock(MetaServiceMetricService::class);
         $this->metaServiceMetric = MetaServiceMetricTest::createMetaServiceMetricEntity();
-        $this->metaServiceMetric->setResource(MetaServiceMetricTest::createResourceEntity());
+        $this->metaServiceMetric->setMonitoringResource(MetaServiceMetricTest::createResourceEntity());
     }
 
     /**

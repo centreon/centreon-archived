@@ -36,9 +36,17 @@ class Notes
     private $label;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $url;
+
+    /**
+     * @param string $url
+     */
+    public function __construct(string $url)
+    {
+        $this->url = $url;
+    }
 
     /**
      * Get label
@@ -65,9 +73,9 @@ class Notes
     /**
      * Get url
      *
-     * @return string|null
+     * @return string
      */
-    public function getUrl(): ?string
+    public function getUrl(): string
     {
         return $this->url;
     }
@@ -75,10 +83,10 @@ class Notes
     /**
      * Set url
      *
-     * @param string|null $url
+     * @param string $url
      * @return self
      */
-    public function setUrl(?string $url): self
+    public function setUrl(string $url): self
     {
         $this->url = $url;
         return $this;
