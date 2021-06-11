@@ -158,7 +158,10 @@ final class ServiceProvider extends Provider
                 WHEN s.state_type = 0 THEN 'S'
             END, ')') AS `tries`,
             s.last_check AS `last_check`,
-            s.next_check AS `next_check`,
+            CASE
+                WHEN s.active_checks = 0 THEN NULL
+                WHEN s.active_checks = 1 THEN s.next_check
+            END AS `next_check`,
             s.output AS `information`,
             s.perfdata AS `performance_data`,
             s.execution_time AS `execution_time`,

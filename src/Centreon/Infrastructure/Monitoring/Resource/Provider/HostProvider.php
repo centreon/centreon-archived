@@ -144,7 +144,10 @@ final class HostProvider extends Provider
                 WHEN h.state_type = 0 THEN 'S'
             END, ')') AS `tries`,
             h.last_check AS `last_check`,
-            h.next_check AS `next_check`,
+            CASE
+                WHEN h.active_checks = 0 THEN NULL
+                WHEN h.active_checks = 1 THEN h.next_check
+            END AS `next_check`,
             h.output AS `information`,
             h.perfdata AS `performance_data`,
             h.execution_time AS `execution_time`,
