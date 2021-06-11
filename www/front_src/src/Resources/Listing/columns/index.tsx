@@ -21,6 +21,7 @@ import {
   labelMonitoringServer,
   labelNotification,
   labelCheck,
+  labelSeverity,
 } from '../../translatedLabels';
 import truncate from '../../truncate';
 
@@ -73,8 +74,9 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     Component: SeverityColumn,
     getRenderComponentOnRowUpdateCondition: T,
     id: 'severity',
-    label: 'S',
+    label: t(labelSeverity),
     rowMemoProps: ['severity_level'],
+    shortName: 'S',
     sortField: 'severity_level',
     sortable: true,
     type: ColumnType.component,
@@ -210,6 +212,7 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     id: 'notification',
     label: t(labelNotification),
     rowMemoProps: ['notification_enabled'],
+    shortName: 'N',
     type: ColumnType.component,
   },
   {
@@ -218,6 +221,7 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     id: 'checks',
     label: t(labelCheck),
     rowMemoProps: ['passive_checks', 'active_checks'],
+    shortName: 'C',
     type: ColumnType.component,
   },
 ];
