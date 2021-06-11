@@ -27,7 +27,6 @@ import {
   labelCalculationType,
   labelCheck,
   labelFlapping,
-  labelCalculationMethod,
   labelHealth,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
