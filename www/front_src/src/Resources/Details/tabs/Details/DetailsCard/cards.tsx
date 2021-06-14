@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
 import { pick } from 'ramda';
 
-import { Grid, Chip, Tooltip, makeStyles } from '@material-ui/core';
-import FlappingIcon from '@material-ui/icons/SwapCalls';
+import { Grid, Chip } from '@material-ui/core';
 
 import ChecksIcon from '../../../../ChecksIcon';
 import {
@@ -16,7 +14,6 @@ import {
   labelNextCheck,
   labelCheckDuration,
   labelLatency,
-  labelResourceFlapping,
   labelLastNotification,
   labelCurrentNotificationNumber,
   labelFqdn,
@@ -24,20 +21,12 @@ import {
   labelGroups,
   labelCalculationType,
   labelCheck,
-  labelFlapping,
+  labelPercentStateChange,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 
 import DetailsLine from './DetailsLine';
-
-const useStyles = makeStyles((theme) => ({
-  flappingTile: {
-    alignItems: 'center',
-    columnGap: `${theme.spacing(1)}px`,
-    display: 'grid',
-    gridTemplateColumns: 'min-content auto',
-  },
-}));
+import PercentStateChangeCard from './PercentStateChangeCard';
 
 interface DetailCardLine {
   active?: boolean;
@@ -47,34 +36,15 @@ interface DetailCardLine {
   xs?: 6 | 12;
 }
 
-interface FlappingtileProps {
-  details: ResourceDetails;
-}
-
 interface DetailCardLineProps {
   details: ResourceDetails;
   t: (label: string) => string;
   toDateTime: (date: string | Date) => string;
 }
 
-const Flappingtile = ({ details }: FlappingtileProps): JSX.Element => {
-  const classes = useStyles();
-  const { t } = useTranslation();
-
-  return (
-    <div className={classes.flappingTile}>
-      <Tooltip title={t(labelResourceFlapping) as string}>
-        <FlappingIcon color="primary" fontSize="small" />
-      </Tooltip>
-      <DetailsLine line={`${details.percent_state_change}%`} />
-    </div>
-  );
-};
-
 const getDetailCardLines = ({
   details,
   toDateTime,
-  t,
 }: DetailCardLineProps): Array<DetailCardLine> => {
   const checksDisabled =
     details.active_checks === false && details.passive_checks === false;
@@ -143,9 +113,9 @@ const getDetailCardLines = ({
       title: labelLatency,
     },
     {
-      field: details.flapping ? true : undefined,
-      line: <Flappingtile details={details} />,
-      title: labelFlapping,
+      field: details.percent_state_change,
+      line: <PercentStateChangeCard details={details} />,
+      title: labelPercentStateChange,
     },
     {
       field: details.last_notification,
