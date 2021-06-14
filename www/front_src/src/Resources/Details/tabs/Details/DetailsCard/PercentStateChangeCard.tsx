@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { makeStyles, Tooltip } from '@material-ui/core';
 import FlappingIcon from '@material-ui/icons/SwapCalls';
 
-import { labelResourceFlapping } from '../../../../translatedLabels';
+import {
+  labelResourceFlapping,
+  labelFlapping,
+} from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 
 import DetailsLine from './DetailsLine';
@@ -31,7 +34,11 @@ const PercentStateChangeCard = ({ details }: Props): JSX.Element => {
       <DetailsLine line={`${details.percent_state_change}%`} />
       {details.flapping && (
         <Tooltip title={t(labelResourceFlapping) as string}>
-          <FlappingIcon color="primary" fontSize="small" />
+          <FlappingIcon
+            aria-label={t(labelFlapping)}
+            color="primary"
+            fontSize="small"
+          />
         </Tooltip>
       )}
     </div>
