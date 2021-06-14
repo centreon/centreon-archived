@@ -302,10 +302,6 @@ services:
 
     Centreon\Domain\Authentication\UseCase\Authenticate:
         arguments: [ "%redirect_default_page%" ]
-        public: true
-
-    Centreon\Domain\Authentication\UseCase\AuthenticateApi:
-        public: true
 
     # Log configuration
     monolog.error.formater:

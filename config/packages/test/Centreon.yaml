@@ -49,3 +49,10 @@ services:
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters
 
+    # Authentication
+    Centreon\Domain\Authentication\UseCase\Authenticate:
+        arguments: [ "%redirect_default_page%" ]
+        public: true
+
+    Centreon\Domain\Authentication\UseCase\AuthenticateApi:
+        public: true
