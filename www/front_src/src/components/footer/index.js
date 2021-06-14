@@ -33,7 +33,7 @@ class Footer extends Component {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  Centreon Support
+                  Support
                 </a>
               </li>
               <li className={styles['footer-list-item']}>
@@ -61,6 +61,15 @@ class Footer extends Component {
                   target="_blank"
                 >
                   Slack
+                </a>
+              </li>
+              <li className={styles['footer-list-item']}>
+                <a
+                  href="https://github.com/centreon/centreon/security/policy"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Security Issue
                 </a>
               </li>
             </ul>
