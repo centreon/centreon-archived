@@ -16142,7 +16142,7 @@ msgid "The duration must be lesser than a year"
 msgstr "La durée doit être inférieure à une année"
 
 #  msgid "As Displayed"
-#  msgstr "Comme Affiché"
+#  msgstr "Comme affiché"
 
 #  msgid "Medium size"
 #  msgstr "Taille Moyenne"
