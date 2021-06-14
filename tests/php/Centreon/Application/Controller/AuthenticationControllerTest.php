@@ -138,7 +138,7 @@ class AuthenticationControllerTest extends TestCase
             ->method('execute')
             ->willReturn($response);
 
-        $view = $authenticationController->login($this->request, $this->authenticateApi);
+        $view = $authenticationController->login($this->request, $this->authenticateApi, $response);
 
         $this->assertEquals(
             View::create($response->getApiAuthentication()),
@@ -177,7 +177,7 @@ class AuthenticationControllerTest extends TestCase
             ->method('execute')
             ->will($this->throwException(new \Exception('wrong credentials')));
 
-        $view = $authenticationController->login($this->request, $this->authenticateApi);
+        $view = $authenticationController->login($this->request, $this->authenticateApi, $response);
 
         $this->assertEquals(
             View::create(
@@ -268,7 +268,7 @@ class AuthenticationControllerTest extends TestCase
             }
         };
 
-        $view = $authenticationController->redirection($this->request, $this->redirect);
+        $view = $authenticationController->redirection($this->request, $this->redirect, $response);
 
         $this->assertEquals(
             View::create([
@@ -301,7 +301,7 @@ class AuthenticationControllerTest extends TestCase
             }
         };
 
-        $view = $authenticationController->redirection($this->request, $this->redirect);
+        $view = $authenticationController->redirection($this->request, $this->redirect, $response);
 
         $expectedView = View::createRedirect('/monitoring/resources');
         $expectedView->setHeader('Content-Type', 'text/html');
@@ -336,7 +336,7 @@ class AuthenticationControllerTest extends TestCase
             ->method('execute')
             ->willReturn($response);
 
-        $view = $authenticationController->findProvidersConfigurations($this->findProvidersConfigurations);
+        $view = $authenticationController->findProvidersConfigurations($this->findProvidersConfigurations, $response);
 
         $this->assertEquals(
             View::create([
@@ -391,7 +391,7 @@ class AuthenticationControllerTest extends TestCase
             ->method('execute')
             ->willReturn($response);
 
-        $view = $authenticationController->authentication($this->request, $this->authenticate, 'local');
+        $view = $authenticationController->authentication($this->request, $this->authenticate, 'local', $response);
 
         $this->assertEquals(
             View::create([
@@ -438,7 +438,7 @@ class AuthenticationControllerTest extends TestCase
             ->method('execute')
             ->willReturn($response);
 
-        $view = $authenticationController->authentication($this->request, $this->authenticate, 'local');
+        $view = $authenticationController->authentication($this->request, $this->authenticate, 'local', $response);
 
         $this->assertEquals(
             View::createRedirect(

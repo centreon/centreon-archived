@@ -29,6 +29,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
@@ -76,6 +77,11 @@ class AuthenticateTest extends TestCase
      */
     private $authenticationTokens;
 
+    /**
+     * @var AuthenticateResponse|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $response;
+
     protected function setUp(): void
     {
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
@@ -85,6 +91,7 @@ class AuthenticateTest extends TestCase
         $this->provider = $this->createMock(ProviderInterface::class);
         $this->contact = $this->createMock(ContactInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
+        $this->response = $this->createMock(AuthenticateResponse::class);
     }
 
     /**
@@ -112,7 +119,7 @@ class AuthenticateTest extends TestCase
         $this->expectException(ProviderServiceException::class);
         $this->expectExceptionMessage('Provider configuration (provider_configuration_1) not found');
 
-        $authenticate->execute($authenticateRequest);
+        $authenticate->execute($authenticateRequest, $this->response);
     }
 
     /**
@@ -150,7 +157,7 @@ class AuthenticateTest extends TestCase
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('Authentication failed');
 
-        $authenticate->execute($authenticateRequest);
+        $authenticate->execute($authenticateRequest, $this->response);
     }
 
     /**
@@ -193,7 +200,7 @@ class AuthenticateTest extends TestCase
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('User cannot be retrieved from the provider');
 
-        $authenticate->execute($authenticateRequest);
+        $authenticate->execute($authenticateRequest, $this->response);
     }
 
     /**
@@ -258,7 +265,7 @@ class AuthenticateTest extends TestCase
             '/'
         );
 
-        $authenticate->execute($authenticateRequest);
+        $authenticate->execute($authenticateRequest, $this->response);
     }
 
     /**
@@ -311,7 +318,7 @@ class AuthenticateTest extends TestCase
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('User not found and cannot be created');
 
-        $authenticate->execute($authenticateRequest);
+        $authenticate->execute($authenticateRequest, $this->response);
     }
 
     /**
@@ -371,7 +378,7 @@ class AuthenticateTest extends TestCase
             '/'
         );
 
-        $authenticate->execute($authenticateRequest);
+        $authenticate->execute($authenticateRequest, $this->response);
     }
 
     /**
@@ -449,7 +456,7 @@ class AuthenticateTest extends TestCase
             '/'
         );
 
-        $authenticate->execute($authenticateRequest);
+        $authenticate->execute($authenticateRequest, $this->response);
     }
 
     /**
@@ -509,9 +516,9 @@ class AuthenticateTest extends TestCase
             '/'
         );
 
-        $response = $authenticate->execute($authenticateRequest);
+        $authenticate->execute($authenticateRequest, $this->response);
 
-        $this->assertEquals('//monitoring/resources', $response->getRedirectionUri());
+        $this->assertEquals('//monitoring/resources', $this->response->getRedirectionUri());
     }
 
     /**
@@ -571,8 +578,7 @@ class AuthenticateTest extends TestCase
             '/'
         );
 
-        $response = $authenticate->execute($authenticateRequest);
-
-        $this->assertEquals('//my_custom_page', $response->getRedirectionUri());
+        $authenticate->execute($authenticateRequest, $this->response);
+        $this->assertEquals('//my_custom_page', $this->response->getRedirectionUri());
     }
 }
