@@ -52,7 +52,7 @@ class Logout
     {
         $token = $request->getToken();
         $this->info('Deleting Session...');
-        $this->authenticationService->deleteExpiredAPITokens();
+        $this->authenticationService->deleteExpiredSecurityTokens();
         $this->authenticationService->deleteSession($token);
     }
 }

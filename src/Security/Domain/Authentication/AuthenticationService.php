@@ -176,10 +176,10 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @inheritDoc
      */
-    public function deleteExpiredAPITokens(): void
+    public function deleteExpiredSecurityTokens(): void
     {
         try {
-            $this->localProviderRepository->deleteExpiredAPITokens();
+            $this->localProviderRepository->deleteExpiredSecurityTokens();
         } catch (\Exception $ex) {
             throw AuthenticationServiceException::deleteExpireToken($ex);
         }

@@ -39,7 +39,7 @@ class LocalProviderRepository extends AbstractRepositoryDRB implements LocalProv
     /**
      * @inheritDoc
      */
-    public function deleteExpiredAPITokens(): void
+    public function deleteExpiredSecurityTokens(): void
     {
         $this->db->query(
             $this->translateDbName(

@@ -58,17 +58,17 @@ class AuthenticateApi
 
     /**
      * @param AuthenticateApiRequest $request
-     * @return AuthenticateApiResponse
      * @throws ProviderServiceException
      * @throws AuthenticationServiceException
      * @throws AuthenticationException
      */
-    public function execute(AuthenticateApiRequest $request): AuthenticateApiResponse
+    public function execute(AuthenticateApiRequest $request, AuthenticateApiResponse $response): void
     {
+        $this->info(sprintf("Beginning API authentication for contact '%s'", $request->getLogin()));
         try {
-            $this->authenticationService->deleteExpiredAPITokens();
+            $this->authenticationService->deleteExpiredSecurityTokens();
         } catch (AuthenticationServiceException $ex) {
-            // We don't propagate this error
+            $this->error('Unable to delete expired security tokens');
         }
         $localProvider = $this->providerService->findProviderByConfigurationName(LocalProvider::NAME);
 
@@ -79,7 +79,7 @@ class AuthenticateApi
         $localProvider->authenticate(['login' => $request->getLogin(), 'password' => $request->getPassword()]);
 
         if (!$localProvider->isAuthenticated()) {
-            $this->warning(
+            $this->critical(
                 "Provider can't authenticate successfully user ",
                 [
                     "provider_name" => $localProvider->getName(),
@@ -105,7 +105,6 @@ class AuthenticateApi
             null
         );
 
-        $response = new AuthenticateApiResponse();
         $response->setApiAuthentication($contact, $token);
         $this->info(
             "Authentication success",
@@ -115,6 +114,5 @@ class AuthenticateApi
                 "contact_alias" => $contact->getAlias()
             ]
         );
-        return $response;
     }
 }

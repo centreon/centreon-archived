@@ -37,12 +37,15 @@ class FindProvidersConfigurations
         $this->providerService = $providerService;
     }
 
-    public function execute(): FindProvidersConfigurationsResponse
+    /**
+     * Execute the use case for finding providers configurations.
+     *
+     * @param FindProvidersConfigurationsResponse $response
+     * @return void
+     */
+    public function execute(FindProvidersConfigurationsResponse $response): void
     {
         $providers = $this->providerService->findProvidersConfigurations();
-        $response = new FindProvidersConfigurationsResponse();
         $response->setProvidersConfigurations($providers);
-
-        return $response;
     }
 }

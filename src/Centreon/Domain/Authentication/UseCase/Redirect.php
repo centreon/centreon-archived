@@ -49,16 +49,13 @@ class Redirect
      * Execute redirection scenario and return the redirection URI.
      *
      * @param RedirectRequest $request
-     * @return RedirectResponse
      * @throws ProviderServiceException
      */
-    public function execute(RedirectRequest $request): RedirectResponse
+    public function execute(RedirectRequest $request, RedirectResponse $response): void
     {
         $this->info('Gathering providers configurations');
         $providers = $this->providerService->findProvidersConfigurations();
         $redirectionUri = $request->getBaseUri();
-        $response = new RedirectResponse();
-
         foreach ($providers as $provider) {
             $this->debug('Getting Authentication Uri for provider', ['provider' => $provider->getName()]);
             $provider->setCentreonBaseUri($request->getBaseUri());
@@ -77,6 +74,5 @@ class Redirect
         }
 
         $response->setRedirectionUri($redirectionUri);
-        return $response;
     }
 }

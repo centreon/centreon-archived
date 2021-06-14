@@ -86,12 +86,11 @@ class Authenticate
      * Execute authentication scenario and return the redirection URI.
      *
      * @param AuthenticateRequest $request
-     * @return AuthenticateResponse
      * @throws ProviderServiceException
      * @throws AuthenticationException
      * @throws AuthenticationServiceException
      */
-    public function execute(AuthenticateRequest $request): AuthenticateResponse
+    public function execute(AuthenticateRequest $request, AuthenticateResponse $response): void
     {
         $authenticationProvider = $this->providerService->findProviderByConfigurationName(
             $request->getProviderConfigurationName()
@@ -155,7 +154,6 @@ class Authenticate
             );
         }
 
-        $response = new AuthenticateResponse();
         $this->info(
             "Authentication success",
             [
@@ -169,7 +167,5 @@ class Authenticate
         } else {
             $response->setRedirectionUri($request->getCentreonBaseUri() . $this->redirectDefaultPage);
         }
-
-        return $response;
     }
 }

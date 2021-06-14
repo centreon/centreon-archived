@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
     $authenticationService = $kernel->getContainer()->get(
         \Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface::class
     );
-    $authenticationService->deleteExpiredAPITokens();
+    $authenticationService->deleteExpiredSecurityTokens();
 }
 
 /* Test authentication */

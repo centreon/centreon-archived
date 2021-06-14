@@ -8,5 +8,5 @@ interface LocalProviderRepositoryInterface
      * Delete all expired API tokens registered.
      *
      */
-    public function deleteExpiredAPITokens(): void;
+    public function deleteExpiredSecurityTokens(): void;
 }

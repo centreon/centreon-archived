@@ -35,7 +35,10 @@ use Centreon\Domain\Authentication\UseCase\RedirectRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
+use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
+use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
+use Centreon\Domain\Authentication\UseCase\RedirectResponse;
 use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 
@@ -53,10 +56,11 @@ class AuthenticationController extends AbstractController
      * necessary).
      *
      * @param Request $request
+     * @param AuthenticateApiResponse $response
      * @return View
      * @throws \Exception
      */
-    public function login(Request $request, AuthenticateApi $authenticate)
+    public function login(Request $request, AuthenticateApi $authenticate, AuthenticateApiResponse $response): View
     {
         $contentBody = json_decode((string) $request->getContent(), true);
         $credentials = [
@@ -65,17 +69,7 @@ class AuthenticationController extends AbstractController
         ];
 
         $request = new AuthenticateApiRequest($credentials);
-        try {
-            $this->info("Beginning API authentication for contact '${credentials['login']}'...");
-            $response = $authenticate->execute($request);
-        } catch (\Exception $e) {
-            $this->error('Invalid credentials', ['exception' => $e]);
-            return $this->view([
-                "code" => Response::HTTP_UNAUTHORIZED,
-                "message" => 'Invalid credentials'
-            ], Response::HTTP_UNAUTHORIZED);
-        }
-
+        $authenticate->execute($request, $response);
         return $this->view($response->getApiAuthentication());
     }
 
@@ -86,7 +80,7 @@ class AuthenticationController extends AbstractController
      * @return View
      * @throws \RestException
      */
-    public function logout(Request $request, Logout $logout)
+    public function logout(Request $request, Logout $logout): View
     {
         $token = $request->headers->get('X-AUTH-TOKEN');
 
@@ -115,11 +109,11 @@ class AuthenticationController extends AbstractController
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \InvalidArgumentException
      */
-    public function redirection(Request $request, Redirect $redirect): View
+    public function redirection(Request $request, Redirect $redirect, RedirectResponse $response): View
     {
         $this->info('Redirection to authentication...');
         $redirectRequest = new RedirectRequest($this->getBaseUri());
-        $response = $redirect->execute($redirectRequest);
+        $redirect->execute($redirectRequest, $response);
 
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
@@ -137,10 +131,12 @@ class AuthenticationController extends AbstractController
      *
      * @return View
      */
-    public function findProvidersConfigurations(FindProvidersConfigurations $findProviderConfigurations): View
-    {
-        $providers = $findProviderConfigurations->execute();
-        return View::create($providers->getProvidersConfigurations());
+    public function findProvidersConfigurations(
+        FindProvidersConfigurations $findProviderConfigurations,
+        FindProvidersConfigurationsResponse $response
+    ): View {
+        $findProviderConfigurations->execute($response);
+        return View::create($response->getProvidersConfigurations());
     }
 
     /**
@@ -155,7 +151,8 @@ class AuthenticationController extends AbstractController
     public function authentication(
         Request $request,
         Authenticate $authenticate,
-        string $providerConfigurationName
+        string $providerConfigurationName,
+        AuthenticateResponse $response
     ): View {
         if ($request->getMethod() === 'GET') {
             // redirect from external idp
@@ -184,7 +181,7 @@ class AuthenticationController extends AbstractController
         /**
          * @var AuthenticateResponse
          */
-        $response = $authenticate->execute($authenticateRequest);
+        $authenticate->execute($authenticateRequest, $response);
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
             return View::create($response->getRedirectionUriApi());

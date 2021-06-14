@@ -87,7 +87,7 @@ interface AuthenticationServiceInterface
      * Delete all expired API tokens
      * @throws AuthenticationServiceException
      */
-    public function deleteExpiredAPITokens(): void;
+    public function deleteExpiredSecurityTokens(): void;
 
     /**
      * @param AuthenticationTokens $authenticationToken
