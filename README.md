@@ -63,6 +63,10 @@ on the market; it is absolutely free and Open Source.
 
 See also the list of our [**contributors**](https://github.com/centreon/centreon/graphs/contributors)
 
+<h4> Security Acknowledgement page </h4>
+
+We want to thank all [reporters and pentesters](SECURITY_ACK.md) who help us improve our product each day.
+
 <h2> Contributing </h2>
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, bug report, feature request and the process for submitting pull requests for us.
