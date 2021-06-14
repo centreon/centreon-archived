@@ -20,7 +20,7 @@ Feature:
                 "address": "1.1.1.10"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
             {"message":"The server type 'central' : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon or is disabled"}
@@ -48,7 +48,7 @@ Feature:
                 "address": "1.1.1.10"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
             {"message":"A platform using the name : 'Central' or address : '1.1.1.10' already exists"}
@@ -64,7 +64,7 @@ Feature:
                 "hostname": "server.test.localhost.localdomain"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
             {"message":"A 'central': 'Central'@'1.1.1.10' is already saved"}
@@ -210,7 +210,7 @@ Feature:
                 "parent_address": "1.1.1.10"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
             {"message":"A platform using the name : 'my_poller' or address : '1.1.1.1' already exists"}
@@ -271,10 +271,10 @@ Feature:
                 "parent_address": "1.1.1.4"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"Same address and parent_address for platform : 'my_poller_4'@'1.1.1.4'."}
+            {"message":"Same address and parent_address for platform : 'my_poller_4'@'1.1.1.4'"}
             """
 
         # Register a platform behind wrong parent type / Should fail and an error should be returned
@@ -287,7 +287,7 @@ Feature:
                 "parent_address": "1.1.1.2"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
             {"message":"Cannot register the 'poller' platform : 'inconsistent_parent_type'@'6.6.6.1' behind a 'poller' platform"}

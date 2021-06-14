@@ -109,7 +109,7 @@ const mockUserContext = {
   timezone: 'Europe/Paris',
 };
 
-jest.mock('@centreon/ui-context', () => ({
+jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
   ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
   useUserContext: jest.fn(),
 }));

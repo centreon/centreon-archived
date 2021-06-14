@@ -26,16 +26,15 @@ namespace Centreon\Application\Controller;
 use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Context\Context;
+use Centreon\Domain\Contact\Contact;
 use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Infrastructure\PlatformTopology\Repository\Model\PlatformJsonGraph;
 use Centreon\Domain\PlatformTopology\Model\PlatformPending;
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
-use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
+use Centreon\Infrastructure\PlatformTopology\Repository\Model\PlatformJsonGraph;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 
 /**
  * This controller is designed to manage platform topology API requests and register new servers.
@@ -100,6 +99,11 @@ class PlatformTopologyController extends AbstractController
         // check user rights
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        // Check Topology access to Configuration > Pollers page
+        if (!$this->getUser()->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE)) {
+            return $this->view(null, Response::HTTP_FORBIDDEN);
+        }
+
         // get http request content
         $platformToAdd = json_decode((string) $request->getContent(), true);
         if (!is_array($platformToAdd)) {
@@ -132,8 +136,6 @@ class PlatformTopologyController extends AbstractController
             return $this->view(null, Response::HTTP_CREATED);
         } catch (EntityNotFoundException $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
-        } catch (PlatformTopologyConflictException  $ex) {
-            return $this->view(['message' => $ex->getMessage()], Response::HTTP_CONFLICT);
         } catch (\Throwable $ex) {
             return $this->view(['message' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
         }
@@ -148,6 +150,15 @@ class PlatformTopologyController extends AbstractController
     public function getPlatformJsonGraph(): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        // Check Topology access to Configuration > Pollers page
+        $user = $this->getUser();
+        if (
+            !$user->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ)
+            && !$user->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE)
+        ) {
+            return $this->view(null, Response::HTTP_FORBIDDEN);
+        }
 
         try {
             $platformTopology = $this->platformTopologyService->getPlatformTopology();
@@ -191,6 +202,11 @@ class PlatformTopologyController extends AbstractController
     public function deletePlatform(int $serverId): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        // Check Topology access to Configuration > Pollers page
+        if (!$this->getUser()->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE)) {
+            return $this->view(null, Response::HTTP_FORBIDDEN);
+        }
 
         try {
             $this->platformTopologyService->deletePlatformAndReallocateChildren($serverId);

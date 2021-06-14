@@ -15,6 +15,8 @@ parameters:
     api.version.latest: "2.0"
     api.version.beta: "2.1"
     debug_log_file: '%log_path%/centreon-web.log'
+    debug_level: "%env(DEBUG_LEVEL)%"
+    env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
 
 services:
     _defaults:
@@ -315,4 +317,4 @@ services:
 
     monolog.debug.handler:
         class: Centreon\Domain\Log\DebugFileHandler
-        arguments: [ '@monolog.debug.formater', '%debug_log_file%', '%env(bool:APP_DEBUG)%', 664, !php/const Monolog\Logger::DEBUG ]
+        arguments: [ '@monolog.debug.formater', '%debug_log_file%', '%env(bool:APP_DEBUG)%', 664, '%debug_level%' ]
