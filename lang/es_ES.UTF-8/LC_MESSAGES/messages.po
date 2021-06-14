@@ -14708,7 +14708,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "The duration must be lesser than a year"
 #  msgstr ""
 
-#  msgid "As Displayed"
+#  msgid "As displayed"
 #  msgstr ""
 
 #  msgid "Medium size"
