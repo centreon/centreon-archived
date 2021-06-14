@@ -76,14 +76,14 @@ class AuthenticateApi
             throw ProviderServiceException::providerConfigurationNotFound(LocalProvider::NAME);
         }
         $this->info('Authentication using provider', ['provider_name' => LocalProvider::NAME]);
-        $localProvider->authenticate($request->getCredentials());
+        $localProvider->authenticate(['login' => $request->getLogin(), 'password' => $request->getPassword()]);
 
         if (!$localProvider->isAuthenticated()) {
             $this->warning(
                 "Provider can't authenticate successfully user ",
                 [
                     "provider_name" => $localProvider->getName(),
-                    "user" => $request->getCredentials()["login"]
+                    "user" => $request->getLogin()
                 ]
             );
             throw AuthenticationException::notAuthenticated();

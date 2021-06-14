@@ -25,23 +25,37 @@ namespace Centreon\Domain\Authentication\UseCase;
 class AuthenticateApiRequest
 {
     /**
-     * @var array<string,mixed>
+     * @var string
      */
-    private $credentials;
+    private $login;
+
+    /**
+     * @var string
+     */
+    private $password;
 
     /**
      * @param array<string,mixed> $credentials
      */
     public function __construct(array $credentials)
     {
-        $this->credentials = $credentials;
+        $this->login = $credentials['login'];
+        $this->password = $credentials['password'];
     }
 
     /**
-     * @return array<string,mixed>
+     * @return string
      */
-    public function getCredentials(): array
+    public function getLogin(): string
     {
-        return $this->credentials;
+        return $this->login;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
     }
 }
