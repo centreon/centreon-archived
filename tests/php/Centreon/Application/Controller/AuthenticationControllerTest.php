@@ -21,23 +21,24 @@
 
 namespace Tests\Centreon\Application\Controller;
 
+use FOS\RestBundle\View\View;
+use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
-use Centreon\Application\Controller\AuthenticationController;
-use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
-use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
-use Centreon\Domain\Authentication\UseCase\Logout;
-use Centreon\Domain\Authentication\UseCase\Redirect;
-use Centreon\Domain\Authentication\UseCase\RedirectResponse;
-use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
-use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Centreon\Domain\Authentication\UseCase\Authenticate;
-use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\View\View;
-use Psr\Container\ContainerInterface;
-use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Authentication\UseCase\Logout;
+use Centreon\Domain\Authentication\UseCase\Redirect;
+use Centreon\Domain\Authentication\UseCase\Authenticate;
+use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
+use Centreon\Domain\Authentication\UseCase\RedirectResponse;
+use Centreon\Application\Controller\AuthenticationController;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
+use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
+use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
+use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
 
 /**
  * @package Tests\Centreon\Application\Controller
@@ -133,11 +134,6 @@ class AuthenticationControllerTest extends TestCase
             'token'
         );
 
-        $this->authenticateApi
-            ->expects($this->once())
-            ->method('execute')
-            ->willReturn($response);
-
         $view = $authenticationController->login($this->request, $this->authenticateApi, $response);
 
         $this->assertEquals(
@@ -160,7 +156,7 @@ class AuthenticationControllerTest extends TestCase
             ->willReturn(json_encode([
                 'security' => [
                     'credentials' => [
-                        'login' => 'admin',
+                        'login' => 'toto',
                         'password' => 'centreon',
                     ],
                 ],
@@ -173,22 +169,12 @@ class AuthenticationControllerTest extends TestCase
         );
 
         $this->authenticateApi
-            ->expects($this->once())
-            ->method('execute')
-            ->will($this->throwException(new \Exception('wrong credentials')));
-
-        $view = $authenticationController->login($this->request, $this->authenticateApi, $response);
-
-        $this->assertEquals(
-            View::create(
-                [
-                    "code" => Response::HTTP_UNAUTHORIZED,
-                    "message" => 'Invalid credentials'
-                ],
-                Response::HTTP_UNAUTHORIZED
-            ),
-            $view
-        );
+        ->expects($this->once())
+        ->method('execute')
+        ->will($this->throwException(AuthenticationException::notAuthenticated()));
+        $this->expectException(AuthenticationException::class);
+        $this->expectExceptionMessage('Authentication failed');
+        $authenticationController->login($this->request, $this->authenticateApi, $response);
     }
 
     /**
@@ -256,11 +242,6 @@ class AuthenticationControllerTest extends TestCase
         $response = new RedirectResponse();
         $response->setRedirectionUri('/monitoring/resources');
 
-        $this->redirect
-            ->expects($this->once())
-            ->method('execute')
-            ->willReturn($response);
-
         $this->request->headers = new class () {
             public function get()
             {
@@ -288,11 +269,6 @@ class AuthenticationControllerTest extends TestCase
 
         $response = new RedirectResponse();
         $response->setRedirectionUri('/monitoring/resources');
-
-        $this->redirect
-            ->expects($this->once())
-            ->method('execute')
-            ->willReturn($response);
 
         $this->request->headers = new class () {
             public function get()
@@ -330,11 +306,6 @@ class AuthenticationControllerTest extends TestCase
 
         $response = new FindProvidersConfigurationsResponse();
         $response->setProvidersConfigurations([$localProvider]);
-
-        $this->findProvidersConfigurations
-            ->expects($this->once())
-            ->method('execute')
-            ->willReturn($response);
 
         $view = $authenticationController->findProvidersConfigurations($this->findProvidersConfigurations, $response);
 
@@ -386,11 +357,6 @@ class AuthenticationControllerTest extends TestCase
         $response = new AuthenticateResponse();
         $response->setRedirectionUri('/monitoring/resources');
 
-        $this->authenticate
-            ->expects($this->once())
-            ->method('execute')
-            ->willReturn($response);
-
         $view = $authenticationController->authentication($this->request, $this->authenticate, 'local', $response);
 
         $this->assertEquals(
@@ -432,11 +398,6 @@ class AuthenticationControllerTest extends TestCase
 
         $response = new AuthenticateResponse();
         $response->setRedirectionUri('/monitoring/resources');
-
-        $this->authenticate
-            ->expects($this->once())
-            ->method('execute')
-            ->willReturn($response);
 
         $view = $authenticationController->authentication($this->request, $this->authenticate, 'local', $response);
 

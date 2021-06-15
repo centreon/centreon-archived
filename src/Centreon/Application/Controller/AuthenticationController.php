@@ -178,9 +178,7 @@ class AuthenticationController extends AbstractController
         );
 
         $this->info("Beginning authentication on provider", ['provider_name' => $providerConfigurationName]);
-        /**
-         * @var AuthenticateResponse
-         */
+
         $authenticate->execute($authenticateRequest, $response);
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request

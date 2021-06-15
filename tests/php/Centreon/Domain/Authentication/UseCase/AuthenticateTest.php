@@ -499,6 +499,11 @@ class AuthenticateTest extends TestCase
             ->method('getDefaultPage')
             ->willReturn(null);
 
+        $this->response
+            ->expects($this->once())
+            ->method('getRedirectionUri')
+            ->willReturn('//monitoring/resources');
+
         $authenticate = new Authenticate(
             '/monitoring/resources',
             $this->authenticationService,
@@ -517,7 +522,6 @@ class AuthenticateTest extends TestCase
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
-
         $this->assertEquals('//monitoring/resources', $this->response->getRedirectionUri());
     }
 
@@ -560,6 +564,11 @@ class AuthenticateTest extends TestCase
             ->expects($this->exactly(2))
             ->method('getDefaultPage')
             ->willReturn('/my_custom_page');
+
+        $this->response
+            ->expects($this->once())
+            ->method('getRedirectionUri')
+            ->willReturn('//my_custom_page');
 
         $authenticate = new Authenticate(
             '/monitoring/resources',
