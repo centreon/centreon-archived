@@ -163,11 +163,7 @@ class AuthenticationController extends AbstractController
          * @var string $key
          */
         foreach ($data as $key => $value) {
-            switch($key) {
-                case 'login':
-                case 'password':
-                    $requestParameters[$key] = $value;
-            }
+            $requestParameters[$key] = $value;
         }
 
         $authenticateRequest = new AuthenticateRequest(
