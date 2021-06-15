@@ -503,7 +503,7 @@ describe(Details, () => {
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();
 
-    expect(getByLabelText(labelFlapping)).toBeInTheDocument();
+    expect(getAllByText(labelFlapping)).toBeInTheDocument();
 
     expect(getByText(labelCheck)).toBeInTheDocument();
 
