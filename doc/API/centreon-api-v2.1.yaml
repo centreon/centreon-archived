@@ -83,6 +83,8 @@ paths:
                 $ref: '#/components/schemas/LoginAuthenticationResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          description: "Internal Error"
   /logout:
     get:
       tags:
