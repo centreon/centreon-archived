@@ -53,7 +53,7 @@ class Redirect
      */
     public function execute(RedirectRequest $request, RedirectResponse $response): void
     {
-        $this->info('Gathering providers configurations');
+        $this->info('Redirection to authentication...');
         $providers = $this->providerService->findProvidersConfigurations();
         $redirectionUri = $request->getBaseUri();
         foreach ($providers as $provider) {

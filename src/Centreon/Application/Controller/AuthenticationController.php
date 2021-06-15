@@ -39,7 +39,6 @@ use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
 use Centreon\Domain\Authentication\UseCase\RedirectResponse;
-use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 
 /**
@@ -47,8 +46,6 @@ use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
  */
 class AuthenticationController extends AbstractController
 {
-    use LoggerTrait;
-
     /**
      * Entry point used to identify yourself and retrieve an authentication token.
      * (If view_response_listener = true, we need to write the following
@@ -91,7 +88,6 @@ class AuthenticationController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $this->info("Logging out...");
         $request = new LogoutRequest($token);
         $logout->execute($request);
 
@@ -111,7 +107,6 @@ class AuthenticationController extends AbstractController
      */
     public function redirection(Request $request, Redirect $redirect, RedirectResponse $response): View
     {
-        $this->info('Redirection to authentication...');
         $redirectRequest = new RedirectRequest($this->getBaseUri());
         $redirect->execute($redirectRequest, $response);
 
@@ -168,7 +163,11 @@ class AuthenticationController extends AbstractController
          * @var string $key
          */
         foreach ($data as $key => $value) {
-            $requestParameters[$key] = $value;
+            switch($key) {
+                case 'login':
+                case 'password':
+                    $requestParameters[$key] = $value;
+            }
         }
 
         $authenticateRequest = new AuthenticateRequest(
@@ -176,8 +175,6 @@ class AuthenticationController extends AbstractController
             $providerConfigurationName,
             $this->getBaseUri()
         );
-
-        $this->info("Beginning authentication on provider", ['provider_name' => $providerConfigurationName]);
 
         $authenticate->execute($authenticateRequest, $response);
         if ($request->headers->get('Content-Type') === 'application/json') {

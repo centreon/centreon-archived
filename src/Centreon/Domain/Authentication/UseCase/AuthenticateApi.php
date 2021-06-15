@@ -75,7 +75,7 @@ class AuthenticateApi
         if ($localProvider === null) {
             throw ProviderServiceException::providerConfigurationNotFound(LocalProvider::NAME);
         }
-        $this->info('Authentication using provider', ['provider_name' => LocalProvider::NAME]);
+        $this->debug('Authentication using provider', ['provider_name' => LocalProvider::NAME]);
         $localProvider->authenticate(['login' => $request->getLogin(), 'password' => $request->getPassword()]);
 
         if (!$localProvider->isAuthenticated()) {
@@ -92,12 +92,12 @@ class AuthenticateApi
         $this->info('Retrieving user informations from provider');
         $contact = $localProvider->getUser();
         if ($contact === null) {
-            $this->error('No contact could be found from provider', ['provider_name' => LocalProvider::NAME]);
+            $this->critical('No contact could be found from provider', ['provider_name' => LocalProvider::NAME]);
             throw AuthenticationException::userNotFound();
         }
         $token = Encryption::generateRandomString();
 
-        $this->info('Creating authentication tokens for user', ['user' => $contact->getAlias()]);
+        $this->debug('Creating authentication tokens for user', ['user' => $contact->getAlias()]);
         $this->authenticationService->createAPIAuthenticationTokens(
             $token,
             $contact,
@@ -106,7 +106,7 @@ class AuthenticateApi
         );
 
         $response->setApiAuthentication($contact, $token);
-        $this->info(
+        $this->debug(
             "Authentication success",
             [
                 "provider_name" => LocalProvider::NAME,
