@@ -11,7 +11,7 @@
     "eslint:fix": "npm run eslint -- --fix",
     "test": "jest",
     "test:watch": "npm test -- --watch",
-    "dev": "APP_ENV=development vite serve --host"
+    "dev": "crossenv APP_ENV=development vite serve --host"
   },
   "devDependencies": {
     "@babel/core": "^7.14.2",
