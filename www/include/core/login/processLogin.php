@@ -150,7 +150,6 @@ if (
         $securityAuthenticationTokenStatement->bindValue(':token', session_id(), \PDO::PARAM_STR);
         $securityAuthenticationTokenStatement->bindValue(':providerTokenId', $providerTokenId, \PDO::PARAM_INT);
         $securityAuthenticationTokenStatement->bindValue(':providerConfigurationId', $configurationId, \PDO::PARAM_INT);
-        $securityAuthenticationTokenStatement->bindValue(':providerTokenId', $providerTokenId, \PDO::PARAM_INT);
         $securityAuthenticationTokenStatement->bindValue(':userId', $centreon->user->user_id, \PDO::PARAM_INT);
         $securityAuthenticationTokenStatement->execute();
 
