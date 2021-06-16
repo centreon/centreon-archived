@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -116,12 +117,13 @@ $tpl = initSmartyTpl($path, $tpl);
  * Apply a template definition
  */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
-$tpl->assign('command_line', $command);
+$tpl->assign('command_line', CentreonUtils::escapeSecure($command, CentreonUtils::ESCAPE_ALL));
 if (isset($msg) && $msg) {
-    $tpl->assign('msg', $msg);
+    $tpl->assign('msg', CentreonUtils::escapeAllExceptSelectedTags($msg, ['br']));
 }
 
 $tpl->display("minHelpCommand.ihtml");
