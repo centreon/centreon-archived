@@ -150,9 +150,15 @@ class AuthenticationController extends AbstractController
         string $providerConfigurationName,
         AuthenticateResponse $response
     ): View {
-        $data = $request->request->getIterator();
+        if ($request->getMethod() === 'GET') {
+            // redirect from external idp
+            $data = $request->query->getIterator();
+        } else {
+            // submitted from form directly
+            $data = $request->request->getIterator();
+        }
         if (empty($data['login']) || empty($data['password'])) {
-            throw new \InvalidArgumentException('Missing credentials parameters');
+            return $this->view(['Missing credentials parameters'], Response::HTTP_BAD_REQUEST);
         }
         $credentials = (new Credentials())
             ->setLogin($data['login'])
