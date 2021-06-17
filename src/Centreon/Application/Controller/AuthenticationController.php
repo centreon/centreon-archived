@@ -57,7 +57,6 @@ class AuthenticationController extends AbstractController
      * @param AuthenticateApi $authenticate
      * @param AuthenticateApiResponse $response
      * @return View
-     * @throws \Exception
      */
     public function login(Request $request, AuthenticateApi $authenticate, AuthenticateApiResponse $response): View
     {
@@ -106,8 +105,6 @@ class AuthenticationController extends AbstractController
      * @param Redirect $redirect
      * @param RedirectResponse $response
      * @return View
-     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
-     * @throws \InvalidArgumentException
      */
     public function redirection(Request $request, Redirect $redirect, RedirectResponse $response): View
     {
@@ -145,9 +142,6 @@ class AuthenticationController extends AbstractController
      * @param string $providerConfigurationName
      * @param AuthenticateResponse $response
      * @return View
-     * @throws \InvalidArgumentException
-     * @throws AuthenticationServiceException
-     * @throws \Exception
      */
     public function authentication(
         Request $request,

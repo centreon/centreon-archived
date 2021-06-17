@@ -86,6 +86,7 @@ class Authenticate
      * Execute authentication scenario and return the redirection URI.
      *
      * @param AuthenticateRequest $request
+     * @param AuthenticateResponse $response
      * @throws ProviderServiceException
      * @throws AuthenticationException
      * @throws AuthenticationServiceException
@@ -124,6 +125,10 @@ class Authenticate
         }
 
         $this->info('Retrieving user informations from provider');
+
+        /**
+         * Check if the user exists in the idP
+         */
         $providerUser = $authenticationProvider->getUser();
         if ($providerUser === null) {
             $this->critical(
