@@ -65,6 +65,10 @@ class AuthenticateApi
     public function execute(AuthenticateApiRequest $request, AuthenticateApiResponse $response): void
     {
         $this->info(sprintf("Beginning API authentication for contact '%s'", $request->getLogin()));
+
+        /**
+         * Remove all expired token before starting authentication process.
+         */
         try {
             $this->authenticationService->deleteExpiredSecurityTokens();
         } catch (AuthenticationServiceException $ex) {
@@ -75,9 +79,13 @@ class AuthenticateApi
         if ($localProvider === null) {
             throw ProviderServiceException::providerConfigurationNotFound(LocalProvider::NAME);
         }
-        $this->debug('Authentication using provider', ['provider_name' => LocalProvider::NAME]);
-        $localProvider->authenticate(['login' => $request->getLogin(), 'password' => $request->getPassword()]);
 
+        $this->debug('Authentication using provider', ['provider_name' => LocalProvider::NAME]);
+
+        /**
+         * Authenticate with the legacy mechanism encapsulated into the Local Provider.
+         */
+        $localProvider->authenticate(['login' => $request->getLogin(), 'password' => $request->getPassword()]);
         if (!$localProvider->isAuthenticated()) {
             $this->critical(
                 "Provider can't authenticate successfully user ",
@@ -91,12 +99,21 @@ class AuthenticateApi
 
         $this->info('Retrieving user informations from provider');
         $contact = $localProvider->getUser();
+
+        /**
+         * Contact shouldn't be null in this case as the LocalProvider::authenticate method check if the user exists.
+         * But the ProviderInterface::getUser method could return a ContactInterface or null 
+         * so we need to do this check.
+         */
         if ($contact === null) {
             $this->critical('No contact could be found from provider', ['provider_name' => LocalProvider::NAME]);
             throw AuthenticationException::userNotFound();
         }
         $token = Encryption::generateRandomString();
 
+        /**
+         * Create the token.
+         */
         $this->authenticationService->createAPIAuthenticationTokens(
             $token,
             $localProvider->getConfiguration(),
@@ -105,6 +122,9 @@ class AuthenticateApi
             null
         );
 
+        /**
+         * Prepare the response with contact informations and API authentication token.
+         */
         $response->setApiAuthentication($contact, $token);
         $this->debug(
             "Authentication success",

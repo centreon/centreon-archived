@@ -54,6 +54,7 @@ class AuthenticationController extends AbstractController
      * necessary).
      *
      * @param Request $request
+     * @param AuthenticateApi $authenticate
      * @param AuthenticateApiResponse $response
      * @return View
      * @throws \Exception
@@ -75,6 +76,7 @@ class AuthenticationController extends AbstractController
      * Entry point used to delete an existing authentication token.
      *
      * @param Request $request
+     * @param Logout $logout
      * @return View
      * @throws \RestException
      */
@@ -102,6 +104,7 @@ class AuthenticationController extends AbstractController
      *
      * @param Request $request
      * @param Redirect $redirect
+     * @param RedirectResponse $response
      * @return View
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \InvalidArgumentException
@@ -124,7 +127,8 @@ class AuthenticationController extends AbstractController
 
     /**
      * Returns the list of available providers.
-     *
+     * @param FindProvidersConfigurations $findProviderConfigurations
+     * @param FindProvidersConfigurationsResponse $response
      * @return View
      */
     public function findProvidersConfigurations(
@@ -139,6 +143,7 @@ class AuthenticationController extends AbstractController
      * @param Request $request
      * @param Authenticate $authenticate
      * @param string $providerConfigurationName
+     * @param AuthenticateResponse $response
      * @return View
      * @throws \InvalidArgumentException
      * @throws AuthenticationServiceException

@@ -96,6 +96,7 @@ class ProviderService implements ProviderServiceInterface
                 $providerConfigurationName
             );
         } catch (\Exception $ex) {
+            $this->critical("Unable to retrieve provider with name '$providerConfigurationName'");
             throw ProviderServiceException::findProvidersConfigurations($ex);
         }
 

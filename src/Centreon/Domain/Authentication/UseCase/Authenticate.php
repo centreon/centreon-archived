@@ -106,6 +106,10 @@ class Authenticate
             );
         }
         $this->debug('Authentication using provider', ['provider_name' => $request->getProviderConfigurationName()]);
+
+        /**
+         * Authenticate using the provider chosen in the request.
+         */
         $authenticationProvider->authenticate($request->getCredentials());
 
         if (!$authenticationProvider->isAuthenticated()) {
@@ -129,6 +133,9 @@ class Authenticate
             throw AuthenticationException::userNotFound();
         }
 
+        /**
+         * Check if the user exists in Centreon and if the provider is allowed to create user.
+         */
         if (!$this->contactService->exists($providerUser)) {
             if ($authenticationProvider->canCreateUser()) {
                 $this->debug(
@@ -143,9 +150,16 @@ class Authenticate
             $this->contactService->updateUser($providerUser);
         }
 
+        /**
+         * Start the legacy Session.
+         */
         $this->session->start();
         $_SESSION['centreon'] = $authenticationProvider->getLegacySession();
 
+        /**
+         * Search for an already existing and available authentications token.
+         * Create a new one if no one are found.
+         */
         $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
         if ($authenticationTokens === null) {
             $this->debug('Creating authentication tokens for user', ['user' => $providerUser->getAlias()]);
@@ -166,6 +180,10 @@ class Authenticate
                 "contact_alias" => $providerUser->getAlias()
             ]
         );
+
+        /**
+         * Define the redirection uri where user will be redirect once logged.
+         */
         if ($providerUser->getDefaultPage() !== null) {
             $response->setRedirectionUri($request->getCentreonBaseUri() . $providerUser->getDefaultPage());
         } else {
