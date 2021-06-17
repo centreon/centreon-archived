@@ -1,7 +1,8 @@
 <?php
+
 /**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +34,6 @@
  *
  */
 
-
 require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
 
@@ -56,12 +56,11 @@ class CentreonUtils
      */
     const ESCAPE_ILLEGAL_CHARS = 4;
 
-
     /**
      * Defines all self-closing html tags allowed
      */
     public static $selfclosingHtmlTagsAllowed = ['br', 'hr'];
-    
+
     /**
      * Converts Object into Array
      *
@@ -321,7 +320,6 @@ class CentreonUtils
             }
         }
 
-
         if ($isCurrentSuperior) {
             return 1;
         } elseif (($isCurrentSuperior === false) && $isCurrentEqual) {
@@ -403,7 +401,7 @@ class CentreonUtils
                 // The current tag is not self-closing tag allowed
                 $index = 0;
                 $tagsFound = array();
-                
+
                 // Specific process for not self-closing HTML tags
                 while ($occurence = self::getHtmlTags($currentTag, $stringToEscape)) {
                     $tagsFound[$index] = $occurence['tag'];
@@ -428,9 +426,9 @@ class CentreonUtils
             }
             $tagOccurences[$linkToken] = $tagsFound;
         }
-        
+
         $escapedString = htmlentities($stringToEscape, ENT_QUOTES, 'UTF-8');
-        
+
         /**
          * After we escaped all unauthorized HTML tags, we will search and
          * replace all previous specifics tags by their original tag
@@ -441,10 +439,10 @@ class CentreonUtils
                 $escapedString = str_replace($linkTag, $tagsFound[$indexTag], $escapedString);
             }
         }
-        
+
         return $escapedString;
     }
-    
+
     /**
      * Convert all html tags into HTML entities except links (<a>...</a>)
      *
@@ -455,7 +453,7 @@ class CentreonUtils
     {
         return self::escapeAllExceptSelectedTags($stringToEscape, ['a']);
     }
-    
+
     /**
      * Return all occurrences of a html tag found in html string
      *
