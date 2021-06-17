@@ -326,48 +326,6 @@ class AuthenticationControllerTest extends TestCase
     }
 
     /**
-     * test authentication with get method
-     */
-    public function testAuthenticationWithGetMethod()
-    {
-        $authenticationController = new AuthenticationController();
-        $authenticationController->setContainer($this->container);
-
-        $this->request
-            ->expects($this->once())
-            ->method('getMethod')
-            ->willReturn('GET');
-
-        $this->request->query = new class () {
-            public function getIterator()
-            {
-                return [
-                    'parameter1' => 'value1',
-                ];
-            }
-        };
-
-        $this->request->headers = new class () {
-            public function get()
-            {
-                return 'application/json';
-            }
-        };
-
-        $response = new AuthenticateResponse();
-        $response->setRedirectionUri('/monitoring/resources');
-
-        $view = $authenticationController->authentication($this->request, $this->authenticate, 'local', $response);
-
-        $this->assertEquals(
-            View::create([
-                'redirect_uri' => '/monitoring/resources'
-            ]),
-            $view
-        );
-    }
-
-    /**
      * test authentication with post method
      */
     public function testAuthenticationWithPostMethod()
@@ -375,16 +333,12 @@ class AuthenticationControllerTest extends TestCase
         $authenticationController = new AuthenticationController();
         $authenticationController->setContainer($this->container);
 
-        $this->request
-            ->expects($this->once())
-            ->method('getMethod')
-            ->willReturn('POST');
-
         $this->request->request = new class () {
             public function getIterator()
             {
                 return [
-                    'parameter1' => 'value1',
+                    'login' => 'admin',
+                    'password' => 'centreon'
                 ];
             }
         };

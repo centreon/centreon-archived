@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
+use Centreon\Domain\Authentication\Model\Credentials;
+
 class AuthenticateRequest
 {
     /**
@@ -40,16 +42,15 @@ class AuthenticateRequest
     private $centreonBaseUri;
 
     /**
-     * @param array<string,mixed> $credentials
+     * @param Credentials $credentials
      * @param string $providerConfigurationName
      */
-    public function __construct(array $credentials, string $providerConfigurationName, string $centreonBaseUri)
+    public function __construct(Credentials $credentials, string $providerConfigurationName, string $centreonBaseUri)
     {
-        if (empty($credentials)) {
-            throw new \InvalidArgumentException(_('Missing credentials arguments'));
-        }
-
-        $this->credentials = $credentials;
+        $this->credentials = [
+            'login' => $credentials->getLogin(),
+            'password' => $credentials->getPassword()
+        ];
         $this->providerConfigurationName = $providerConfigurationName;
         $this->centreonBaseUri = $centreonBaseUri;
     }

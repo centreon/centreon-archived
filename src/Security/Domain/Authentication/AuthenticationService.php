@@ -24,6 +24,7 @@ namespace Security\Domain\Authentication;
 
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
@@ -32,12 +33,15 @@ use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\LocalProviderRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
 
 /**
  * @package Security\Authentication
  */
 class AuthenticationService implements AuthenticationServiceInterface
 {
+    use LoggerTrait;
+
     /**
      * @var AuthenticationRepositoryInterface
      */
@@ -140,18 +144,19 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function createAPIAuthenticationTokens(
         string $token,
+        ProviderConfiguration $providerConfiguration,
         ContactInterface $contact,
         ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken
     ): void {
-        $providerConfiguration = $this->providerService->findProviderConfigurationByConfigurationName('local');
-        if ($providerConfiguration === null || ($providerConfigurationId = $providerConfiguration->getId()) === null) {
-            throw ProviderServiceException::providerConfigurationNotFound('local');
-        }
+        $this->debug('Creating authentication tokens for user', ['user' => $contact->getAlias()]);
         try {
+            if ($providerConfiguration->getId() === null) {
+                throw new \InvalidArgumentException("Provider configuration can't be null");
+            }
             $this->repository->addAPIAuthenticationTokens(
                 $token,
-                $providerConfigurationId,
+                $providerConfiguration->getId(),
                 $contact->getId(),
                 $providerToken,
                 $providerRefreshToken

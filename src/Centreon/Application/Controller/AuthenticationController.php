@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\Authentication\Model\Credentials;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -149,25 +150,16 @@ class AuthenticationController extends AbstractController
         string $providerConfigurationName,
         AuthenticateResponse $response
     ): View {
-        if ($request->getMethod() === 'GET') {
-            // redirect from external idp
-            $data = $request->query->getIterator();
-        } else {
-            // submitted from form directly
-            $data = $request->request->getIterator();
+        $data = $request->request->getIterator();
+        if (empty($data['login']) || empty($data['password'])) {
+            throw new \InvalidArgumentException('Missing credentials parameters');
         }
-
-        $requestParameters = [];
-
-        /**
-         * @var string $key
-         */
-        foreach ($data as $key => $value) {
-            $requestParameters[$key] = $value;
-        }
+        $credentials = (new Credentials())
+            ->setLogin($data['login'])
+            ->setPassword($data['password']);
 
         $authenticateRequest = new AuthenticateRequest(
-            $requestParameters,
+            $credentials,
             $providerConfigurationName,
             $this->getBaseUri()
         );

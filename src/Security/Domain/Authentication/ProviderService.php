@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Model\ProviderFactory;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
@@ -32,6 +33,8 @@ use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 
 class ProviderService implements ProviderServiceInterface
 {
+    use LoggerTrait;
+
     /**
      * @var AuthenticationRepositoryInterface
      */
@@ -87,6 +90,7 @@ class ProviderService implements ProviderServiceInterface
      */
     public function findProviderByConfigurationName(string $providerConfigurationName): ?ProviderInterface
     {
+        $this->info("looking for provider '$providerConfigurationName'");
         try {
             $providerConfiguration = $this->repository->findProviderConfigurationByConfigurationName(
                 $providerConfigurationName

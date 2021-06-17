@@ -68,7 +68,7 @@ class AuthenticateApi
         try {
             $this->authenticationService->deleteExpiredSecurityTokens();
         } catch (AuthenticationServiceException $ex) {
-            $this->error('Unable to delete expired security tokens');
+            $this->notice('Unable to delete expired security tokens');
         }
         $localProvider = $this->providerService->findProviderByConfigurationName(LocalProvider::NAME);
 
@@ -86,7 +86,7 @@ class AuthenticateApi
                     "user" => $request->getLogin()
                 ]
             );
-            throw AuthenticationException::notAuthenticated();
+            throw AuthenticationException::invalidCredentials();
         }
 
         $this->info('Retrieving user informations from provider');
@@ -97,9 +97,9 @@ class AuthenticateApi
         }
         $token = Encryption::generateRandomString();
 
-        $this->debug('Creating authentication tokens for user', ['user' => $contact->getAlias()]);
         $this->authenticationService->createAPIAuthenticationTokens(
             $token,
+            $localProvider->getConfiguration(),
             $contact,
             $localProvider->getProviderToken($token),
             null

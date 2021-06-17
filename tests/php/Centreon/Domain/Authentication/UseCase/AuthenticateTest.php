@@ -29,6 +29,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Centreon\Domain\Authentication\Model\Credentials;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
@@ -107,11 +108,11 @@ class AuthenticateTest extends TestCase
             $this->session
         );
 
+        $credentials = (new Credentials())
+            ->setLogin('admin')
+            ->setPassword('centreon');
         $authenticateRequest = new AuthenticateRequest(
-            [
-                'login' => 'admin',
-                'password' => 'centreon',
-            ],
+            $credentials,
             'provider_configuration_1',
             '/'
         );
@@ -145,11 +146,11 @@ class AuthenticateTest extends TestCase
             $this->session
         );
 
+        $credentials = (new Credentials())
+            ->setLogin('admin')
+            ->setPassword('centreon');
         $authenticateRequest = new AuthenticateRequest(
-            [
-                'login' => 'admin',
-                'password' => 'centreon',
-            ],
+            $credentials,
             'provider_configuration_1',
             '/'
         );
@@ -188,11 +189,11 @@ class AuthenticateTest extends TestCase
             $this->session
         );
 
+        $credentials = (new Credentials())
+            ->setLogin('admin')
+            ->setPassword('centreon');
         $authenticateRequest = new AuthenticateRequest(
-            [
-                'login' => 'admin',
-                'password' => 'centreon',
-            ],
+            $credentials,
             'provider_configuration_1',
             '/'
         );
@@ -256,11 +257,11 @@ class AuthenticateTest extends TestCase
             $this->session
         );
 
+        $credentials = (new Credentials())
+            ->setLogin('admin')
+            ->setPassword('centreon');
         $authenticateRequest = new AuthenticateRequest(
-            [
-                'login' => 'admin',
-                'password' => 'centreon',
-            ],
+            $credentials,
             'provider_configuration_1',
             '/'
         );
@@ -306,11 +307,11 @@ class AuthenticateTest extends TestCase
             $this->session
         );
 
+        $credentials = (new Credentials())
+            ->setLogin('admin')
+            ->setPassword('centreon');
         $authenticateRequest = new AuthenticateRequest(
-            [
-                'login' => 'admin',
-                'password' => 'centreon',
-            ],
+            $credentials,
             'provider_configuration_1',
             '/'
         );
@@ -369,11 +370,11 @@ class AuthenticateTest extends TestCase
             $this->session
         );
 
+        $credentials = (new Credentials())
+            ->setLogin('admin')
+            ->setPassword('centreon');
         $authenticateRequest = new AuthenticateRequest(
-            [
-                'login' => 'admin',
-                'password' => 'centreon',
-            ],
+            $credentials,
             'provider_configuration_1',
             '/'
         );
@@ -447,11 +448,11 @@ class AuthenticateTest extends TestCase
             $this->session
         );
 
+        $credentials = (new Credentials())
+            ->setLogin('admin')
+            ->setPassword('centreon');
         $authenticateRequest = new AuthenticateRequest(
-            [
-                'login' => 'admin',
-                'password' => 'centreon',
-            ],
+            $credentials,
             'provider_configuration_1',
             '/'
         );
@@ -512,11 +513,11 @@ class AuthenticateTest extends TestCase
             $this->session
         );
 
+        $credentials = (new Credentials())
+            ->setLogin('admin')
+            ->setPassword('centreon');
         $authenticateRequest = new AuthenticateRequest(
-            [
-                'login' => 'admin',
-                'password' => 'centreon',
-            ],
+            $credentials,
             'provider_configuration_1',
             '/'
         );
@@ -578,11 +579,11 @@ class AuthenticateTest extends TestCase
             $this->session
         );
 
+        $credentials = (new Credentials())
+            ->setLogin('admin')
+            ->setPassword('centreon');
         $authenticateRequest = new AuthenticateRequest(
-            [
-                'login' => 'admin',
-                'password' => 'centreon',
-            ],
+            $credentials,
             'provider_configuration_1',
             '/'
         );

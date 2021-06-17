@@ -132,7 +132,7 @@ class LocalProvider implements ProviderInterface
                 $this->setLegacySession(new \Centreon($auth->userInfos));
             }
             $this->isAuthenticated = true;
-            $this->debug('authentication succeed from legacy Authentication');
+            $this->info('authentication succeed from legacy Authentication');
         } else {
             $this->isAuthenticated = false;
         }

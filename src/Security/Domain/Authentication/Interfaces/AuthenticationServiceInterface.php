@@ -25,6 +25,9 @@ namespace Security\Domain\Authentication\Interfaces;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
+use Security\Domain\Authentication\Exceptions\ProviderServiceException;
+use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 
 /**
  * @package Security\Domain\Authentication\Interfaces
@@ -72,12 +75,14 @@ interface AuthenticationServiceInterface
      *
      * @param string $token
      * @param ContactInterface $contact
+     * @param ProviderConfiguration $providerConfiguration
      * @param ProviderToken $providerToken
      * @param ProviderToken|null $providerRefreshToken
      * @throws AuthenticationServiceException
      */
     public function createAPIAuthenticationTokens(
         string $token,
+        ProviderConfiguration $providerConfiguration,
         ContactInterface $contact,
         ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken

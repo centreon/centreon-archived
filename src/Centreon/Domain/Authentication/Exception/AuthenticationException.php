@@ -33,6 +33,14 @@ class AuthenticationException extends \Exception
     /**
      * @return self
      */
+    public static function invalidCredentials(): self
+    {
+        return new self(_('Invalid Credentials'));
+    }
+
+    /**
+     * @return self
+     */
     public static function notAuthenticated(): self
     {
         return new self(_('Authentication failed'));
