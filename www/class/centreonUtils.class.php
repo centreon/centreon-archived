@@ -42,19 +42,19 @@ class CentreonUtils
     /**
      * Remove all <script> data
      */
-    const ESCAPE_LEGACY_METHOD = 0;
+    public const ESCAPE_LEGACY_METHOD = 0;
     /**
      * Convert all html tags into HTML entities except links
      */
-    const ESCAPE_ALL_EXCEPT_LINK = 1;
+    public const ESCAPE_ALL_EXCEPT_LINK = 1;
     /**
      * Convert all html tags into HTML entities
      */
-    const ESCAPE_ALL = 2;
+    public const ESCAPE_ALL = 2;
     /**
      * Remove all specific characters defined in the configuration > pollers > engine > admin, illegal characters field
      */
-    const ESCAPE_ILLEGAL_CHARS = 4;
+    public const ESCAPE_ILLEGAL_CHARS = 4;
 
     /**
      * Defines all self-closing html tags allowed
@@ -65,7 +65,7 @@ class CentreonUtils
      * Converts Object into Array
      *
      * @param int $idPage
-     * @param boolean $redirect
+     * @param bool $redirect
      * @return mixed
      */
     public function visit($idPage, $redirect = true)
