@@ -343,7 +343,7 @@ class CentreonUtils
      * @see CentreonUtils::ESCAPE_ILLEGAL_CHARS
      */
     public static function escapeSecure(
-        $stringToEscape,
+        string $stringToEscape,
         $escapeMethod = self::ESCAPE_LEGACY_METHOD
     ) {
         switch ($escapeMethod) {
@@ -363,18 +363,18 @@ class CentreonUtils
                 return str_replace(str_split($pattern), "", $stringToEscape);
         }
     }
-    
+
     /**
      * Convert all html tags into HTML entities
      *
-     * @param type $stringToEscape String to escape
+     * @param string $stringToEscape String to escape
      * @return string Converted string
      */
-    public static function escapeAll($stringToEscape)
+    public static function escapeAll(string $stringToEscape)
     {
         return htmlentities($stringToEscape, ENT_QUOTES, 'UTF-8');
     }
-    
+
     /**
      * Convert all HTML tags into HTML entities except those defined in parameter
      *
@@ -383,7 +383,7 @@ class CentreonUtils
      * @return string HTML escaped
      */
     public static function escapeAllExceptSelectedTags(
-        $stringToEscape,
+        string $stringToEscape,
         $tagsNotToEscape = []
     ) {
         if (!is_array($tagsNotToEscape)) {
@@ -457,7 +457,7 @@ class CentreonUtils
     }
     
     /**
-     * Return all occurences of a html tag found in html string
+     * Return all occurrences of a html tag found in html string
      *
      * @param string $tag HTML tag to find
      * @param string $html HTML to analyse
