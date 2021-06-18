@@ -25,9 +25,8 @@ interface TimeShiftContextProps {
   shiftTime?: (direction: TimeShiftDirection) => void;
 }
 
-export const TimeShiftContext = React.createContext<
-  TimeShiftContextProps | undefined
->(undefined);
+export const TimeShiftContext =
+  React.createContext<TimeShiftContextProps | undefined>(undefined);
 
 export const useTimeShiftContext = (): TimeShiftContextProps =>
   React.useContext(TimeShiftContext) as TimeShiftContextProps;
