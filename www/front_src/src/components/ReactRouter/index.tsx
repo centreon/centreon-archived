@@ -67,7 +67,7 @@ interface Props {
 
 const ReactRouter = React.memo<Props>(
   ({ allowedPages, history, pages, externalPagesFetched }: Props) => {
-    if (isEmpty(allowedPages)) {
+    if (!externalPagesFetched) {
       return <PageSkeleton />;
     }
     return (
