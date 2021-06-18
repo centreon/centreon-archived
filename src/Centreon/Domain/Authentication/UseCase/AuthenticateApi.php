@@ -102,7 +102,7 @@ class AuthenticateApi
 
         /**
          * Contact shouldn't be null in this case as the LocalProvider::authenticate method check if the user exists.
-         * But the ProviderInterface::getUser method could return a ContactInterface or null 
+         * But the ProviderInterface::getUser method could return a ContactInterface or null
          * so we need to do this check.
          */
         if ($contact === null) {
