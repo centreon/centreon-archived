@@ -213,3 +213,7 @@ export const labelMetaService = 'Meta service';
 export const labelCalculationType = 'Calculation type';
 export const labelSelectAtLeastOneColumn =
   'At least one column must be selected';
+export const labelMaxDuration1Year = 'The duration must be lesser than a year';
+export const labelAsDisplayed = 'As displayed';
+export const labelMediumSize = 'Medium size';
+export const labelSmallSize = 'Small size';
