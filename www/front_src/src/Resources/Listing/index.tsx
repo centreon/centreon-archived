@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals } from 'ramda';
+import { equals, includes, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme, fade } from '@material-ui/core';
@@ -20,6 +20,8 @@ import { labelSelectAtLeastOneColumn } from '../translatedLabels';
 
 import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
+
+export const okStatuses = ['OK', 'UP'];
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
@@ -145,6 +147,16 @@ const ResourceListing = (): JSX.Element => {
         selectedResources,
         selectedResourceUuid,
         sending,
+      ]}
+      predefinedRowsSelection={[
+        {
+          label: 'Ok',
+          rowCondition: ({ status }) => includes(status.name, okStatuses),
+        },
+        {
+          label: 'Not Ok',
+          rowCondition: ({ status }) => not(includes(status.name, okStatuses)),
+        },
       ]}
       rowColorConditions={[
         ...rowColorConditions(theme),
