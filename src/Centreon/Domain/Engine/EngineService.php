@@ -313,8 +313,6 @@ class EngineService extends AbstractCentreonService implements
         }
     }
 
-
-
     /**
      * @inheritDoc
      */
