@@ -27,14 +27,14 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 class AuthenticateApiResponse
 {
     /**
-     * @var array<string,array<string,mixed>
+     * @var array<string,array<string,mixed>>
      */
     private $apiAuthentication = [];
 
     /**
      * Return the redirection URI.
      *
-     * @return array<string,array<string,mixed>
+     * @return array<string,array<string,mixed>>
      */
     public function getApiAuthentication(): array
     {
