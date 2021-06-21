@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
 import * as React from 'react';
 
 import 'dayjs/locale/en';
@@ -87,7 +90,7 @@ const AppProvider = (): JSX.Element | null => {
       getUser(userEndpoint),
       getParameters(parametersEndpoint),
       getTranslations(translationEndpoint),
-      getAcl(aclEndpoint),
+      getAcl('http://localhost:5000/mock/acl'),
     ])
       .then(
         ([
@@ -137,6 +140,7 @@ const AppProvider = (): JSX.Element | null => {
 
   return (
     <Context.Provider
+      // @ts-ignore
       value={{
         ...user,
         acl: {
