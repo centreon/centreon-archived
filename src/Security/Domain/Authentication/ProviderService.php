@@ -90,7 +90,7 @@ class ProviderService implements ProviderServiceInterface
      */
     public function findProviderByConfigurationName(string $providerConfigurationName): ?ProviderInterface
     {
-        $this->info("looking for provider '$providerConfigurationName'");
+        $this->info("[PROVIDER SERVICE] Looking for provider '$providerConfigurationName'");
         try {
             $providerConfiguration = $this->repository->findProviderConfigurationByConfigurationName(
                 $providerConfigurationName

@@ -53,22 +53,22 @@ class Redirect
      */
     public function execute(RedirectRequest $request, RedirectResponse $response): void
     {
-        $this->info('Redirection to authentication...');
+        $this->info('[REDIRECT] Redirection to authentication...');
         $providers = $this->providerService->findProvidersConfigurations();
         $redirectionUri = $request->getBaseUri();
         foreach ($providers as $provider) {
-            $this->debug('Getting Authentication Uri for provider', ['provider' => $provider->getName()]);
+            $this->debug('[REDIRECT] Getting Authentication Uri for provider', ['provider' => $provider->getName()]);
             $provider->setCentreonBaseUri($request->getBaseUri());
             $redirectionUri = $provider->getAuthenticationUri();
             $this->debug(
-                'Redirection found',
+                '[REDIRECT] Redirection found',
                 [
                     'provider' => $provider->getName(),
                     'redirection_uri' => $redirectionUri
                 ]
             );
             if ($provider->isForced()) {
-                $this->debug('Provider usage is forced', ['provider' => $provider->getName()]);
+                $this->debug('[REDIRECT] Provider usage is forced', ['provider' => $provider->getName()]);
                 break;
             }
         }

@@ -64,7 +64,7 @@ class AuthenticateApi
      */
     public function execute(AuthenticateApiRequest $request, AuthenticateApiResponse $response): void
     {
-        $this->info(sprintf("Beginning API authentication for contact '%s'", $request->getLogin()));
+        $this->info(sprintf("[AUTHENTICATE API] Beginning API authentication for contact '%s'", $request->getLogin()));
 
         /**
          * Remove all expired token before starting authentication process.
@@ -72,7 +72,7 @@ class AuthenticateApi
         try {
             $this->authenticationService->deleteExpiredSecurityTokens();
         } catch (AuthenticationServiceException $ex) {
-            $this->notice('Unable to delete expired security tokens');
+            $this->notice('[AUTHENTICATE API] Unable to delete expired security tokens');
         }
         $localProvider = $this->providerService->findProviderByConfigurationName(LocalProvider::NAME);
 
@@ -80,7 +80,7 @@ class AuthenticateApi
             throw ProviderServiceException::providerConfigurationNotFound(LocalProvider::NAME);
         }
 
-        $this->debug('Authentication using provider', ['provider_name' => LocalProvider::NAME]);
+        $this->debug('[AUTHENTICATE API] Authentication using provider', ['provider_name' => LocalProvider::NAME]);
 
         /**
          * Authenticate with the legacy mechanism encapsulated into the Local Provider.
@@ -88,7 +88,7 @@ class AuthenticateApi
         $localProvider->authenticate(['login' => $request->getLogin(), 'password' => $request->getPassword()]);
         if (!$localProvider->isAuthenticated()) {
             $this->critical(
-                "Provider can't authenticate successfully user ",
+                "[AUTHENTICATE API] Provider can't authenticate successfully user ",
                 [
                     "provider_name" => $localProvider->getName(),
                     "user" => $request->getLogin()
@@ -97,7 +97,7 @@ class AuthenticateApi
             throw AuthenticationException::invalidCredentials();
         }
 
-        $this->info('Retrieving user informations from provider');
+        $this->info('[AUTHENTICATE API] Retrieving user informations from provider');
         $contact = $localProvider->getUser();
 
         /**
@@ -106,7 +106,10 @@ class AuthenticateApi
          * so we need to do this check.
          */
         if ($contact === null) {
-            $this->critical('No contact could be found from provider', ['provider_name' => LocalProvider::NAME]);
+            $this->critical(
+                '[AUTHENTICATE API] No contact could be found from provider',
+                ['provider_name' => LocalProvider::NAME]
+            );
             throw AuthenticationException::userNotFound();
         }
         $token = Encryption::generateRandomString();
@@ -127,7 +130,7 @@ class AuthenticateApi
          */
         $response->setApiAuthentication($contact, $token);
         $this->debug(
-            "Authentication success",
+            "[AUTHENTICATE API] Authentication success",
             [
                 "provider_name" => LocalProvider::NAME,
                 "contact_id" => $contact->getId(),

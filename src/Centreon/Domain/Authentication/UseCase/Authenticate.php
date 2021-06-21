@@ -94,7 +94,7 @@ class Authenticate
     public function execute(AuthenticateRequest $request, AuthenticateResponse $response): void
     {
         $this->debug(
-            "Beginning authentication on provider",
+            '[AUTHENTICATE] Beginning authentication on provider',
             ['provider_name' => $request->getProviderConfigurationName()]
         );
         $authenticationProvider = $this->providerService->findProviderByConfigurationName(
@@ -106,7 +106,7 @@ class Authenticate
                 $request->getProviderConfigurationName()
             );
         }
-        $this->debug('Authentication using provider', ['provider_name' => $request->getProviderConfigurationName()]);
+        $this->debug('[AUTHENTICATE] Authentication using provider', ['provider_name' => $request->getProviderConfigurationName()]);
 
         /**
          * Authenticate using the provider chosen in the request.
@@ -118,7 +118,7 @@ class Authenticate
 
         if (!$authenticationProvider->isAuthenticated()) {
             $this->critical(
-                "Provider can't authenticate successfully user ",
+                "[AUTHENTICATE] Provider can't authenticate successfully user ",
                 [
                     "provider_name" => $authenticationProvider->getName(),
                     "user" => $request->getLogin()
@@ -135,7 +135,7 @@ class Authenticate
         $providerUser = $authenticationProvider->getUser();
         if ($providerUser === null) {
             $this->critical(
-                'No contact could be found from provider',
+                '[AUTHENTICATE] No contact could be found from provider',
                 ['provider_name' => $request->getProviderConfigurationName()]
             );
             throw AuthenticationException::userNotFound();
@@ -147,7 +147,7 @@ class Authenticate
         if (!$this->contactService->exists($providerUser)) {
             if ($authenticationProvider->canCreateUser()) {
                 $this->debug(
-                    'Provider is allow to create user. Creating user...',
+                    '[AUTHENTICATE] Provider is allow to create user. Creating user...',
                     ['user' => $providerUser->getAlias()]
                 );
                 $this->contactService->addUser($providerUser);
@@ -170,7 +170,7 @@ class Authenticate
          */
         $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
         if ($authenticationTokens === null) {
-            $this->debug('Creating authentication tokens for user', ['user' => $providerUser->getAlias()]);
+            $this->debug('[AUTHENTICATE] Creating authentication tokens for user', ['user' => $providerUser->getAlias()]);
             $this->authenticationService->createAuthenticationTokens(
                 $this->session->getId(),
                 $request->getProviderConfigurationName(),
@@ -181,7 +181,7 @@ class Authenticate
         }
 
         $this->debug(
-            "Authentication success",
+            "[AUTHENTICATE] Authentication success",
             [
                 "provider_name" => $request->getProviderConfigurationName(),
                 "contact_id" => $providerUser->getId(),

@@ -149,7 +149,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken
     ): void {
-        $this->debug('Creating authentication tokens for user', ['user' => $contact->getAlias()]);
+        $this->debug('[AUTHENTICATION SERVICE] Creating authentication tokens for user', ['user' => $contact->getAlias()]);
         try {
             if ($providerConfiguration->getId() === null) {
                 throw new \InvalidArgumentException("Provider configuration can't be null");
