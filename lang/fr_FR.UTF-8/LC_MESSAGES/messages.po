@@ -16174,3 +16174,12 @@ msgstr "Erreur lors de la mise à jour des jetons d'authentification"
 
 msgid "Error while searching identity providers configurations"
 msgstr "Erreur lors de la recherche des configurations de fournisseurs d'identification"
+
+#  msgid "As displayed"
+#  msgstr "Comme affiché"
+
+#  msgid "Medium size"
+#  msgstr "Taille moyenne"
+
+#  msgid "Small size"
+#  msgstr "Petite Taille"
