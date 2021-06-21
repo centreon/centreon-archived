@@ -5,10 +5,10 @@ centreon_security_authentication_redirection:
 
 centreon_security_authentication_find_providers_configurations:
     methods: GET
-    path: /authentication/providers-configurations
+    path: /authentication/providers/configurations
     controller: 'Centreon\Application\Controller\AuthenticationController::findProvidersConfigurations'
 
 centreon_security_authentication_login:
     methods: GET|POST
-    path: /authentication/providers/{providerConfigurationName}
+    path: /authentication/providers/configurations/{name}
     controller: 'Centreon\Application\Controller\AuthenticationController::authentication'

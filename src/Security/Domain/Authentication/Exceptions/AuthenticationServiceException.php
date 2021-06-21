@@ -32,7 +32,7 @@ class AuthenticationServiceException extends \Exception
     /**
      * @return self
      */
-    public static function refreshToken(): self
+    public static function cannotRefreshToken(): self
     {
         return new self(_('Error while refresh token'));
     }
@@ -56,9 +56,9 @@ class AuthenticationServiceException extends \Exception
     /**
      * @return self
      */
-    public static function sessionNotFound(): self
+    public static function tokenNotFound(): self
     {
-        return new self(_('Session not found'));
+        return new self(_('token not found'));
     }
 
     /**

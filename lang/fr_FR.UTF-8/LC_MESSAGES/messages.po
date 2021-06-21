@@ -16151,8 +16151,8 @@ msgstr "Authentification échouée"
 msgid "User cannot be logout"
 msgstr "L'utilisateur ne peut pas être déconnecté"
 
-msgid "User cannot be retrieved from the provider"
-msgstr "L'utilisateur ne peut pas être retrouvé depuis le fournisseur"
+msgid "User cannot be retrieved from the identity provider"
+msgstr "L'utilisateur ne peut pas être retrouvé depuis le fournisseur d'identification"
 
 msgid "Cannot create user"
 msgstr "Impossible de créer l'utilisateur"
@@ -16172,5 +16172,5 @@ msgstr "Erreur lors de la recherche des jetons d'authentification"
 msgid "Error while updating authentication tokens"
 msgstr "Erreur lors de la mise à jour des jetons d'authentification"
 
-msgid "Error while searching providers configurations"
-msgstr "Erreur lors de la recherche des configurations de fournisseurs"
+msgid "Error while searching identity providers configurations"
+msgstr "Erreur lors de la recherche des configurations de fournisseurs d'identification"

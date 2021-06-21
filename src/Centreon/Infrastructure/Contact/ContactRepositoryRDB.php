@@ -69,7 +69,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             $contact = $this->createContact($result);
             $this->addActionRules($contact);
             $this->addTopologyRules($contact);
-            if ($result['default_page'] !== null) {
+            if (!empty($result['default_page'])) {
                 $this->addDefaultPage($contact, (int) $result['default_page']);
             }
         }
@@ -100,7 +100,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             $contact = $this->createContact($result);
             $this->addActionRules($contact);
             $this->addTopologyRules($contact);
-            if ($result['default_page'] !== null) {
+            if (!empty($result['default_page'])) {
                 $this->addDefaultPage($contact, (int) $result['default_page']);
             }
         }
@@ -132,7 +132,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             $contact = $this->createContact($result);
             $this->addActionRules($contact);
             $this->addTopologyRules($contact);
-            if ($result['default_page'] !== null) {
+            if (!empty($result['default_page'])) {
                 $this->addDefaultPage($contact, (int) $result['default_page']);
             }
         }

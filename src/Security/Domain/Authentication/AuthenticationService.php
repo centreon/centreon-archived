@@ -81,7 +81,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         $authenticationTokens = $this->findAuthenticationTokensByToken($token);
         if ($authenticationTokens === null) {
-            throw AuthenticationServiceException::sessionNotFound();
+            throw AuthenticationServiceException::tokenNotFound();
         }
 
         $provider = $this->providerService->findProviderByConfigurationId(
@@ -102,7 +102,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             }
             $newAuthenticationTokens = $provider->refreshToken($authenticationTokens);
             if ($newAuthenticationTokens === null) {
-                throw AuthenticationServiceException::refreshToken();
+                throw AuthenticationServiceException::cannotRefreshToken();
             }
             $this->updateAuthenticationTokens($newAuthenticationTokens);
         }

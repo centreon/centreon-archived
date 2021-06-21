@@ -28,12 +28,12 @@ use Security\Domain\Authentication\Model\ProviderConfiguration;
 class FindProvidersConfigurationsResponse
 {
     /**
-     * @var array<mixed>
+     * @var array<int, array<string, mixed>>
      */
     private $providersConfigurations = [];
 
     /**
-     * @return array<mixed>
+     * @return array<int, array<string, mixed>>
      */
     public function getProvidersConfigurations(): array
     {
@@ -41,7 +41,7 @@ class FindProvidersConfigurationsResponse
     }
 
     /**
-     * @param array<ProviderConfiguration> $providersConfigurations
+     * @param ProviderConfiguration[] $providersConfigurations
      */
     public function setProvidersConfigurations(array $providersConfigurations): void
     {

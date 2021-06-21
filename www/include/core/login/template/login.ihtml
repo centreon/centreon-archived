@@ -59,7 +59,7 @@
             jQuery(() => {
                 jQuery('form[name="login"]').submit(() => {
                     jQuery.ajax({
-                        url: '/centreon/authentication/providers/local',
+                        url: '/centreon/authentication/providers/configurations/local',
                         data: JSON.stringify({
                             login: jQuery('input[name="useralias"]').val(),
                             password: jQuery('input[name="password"]').val()
