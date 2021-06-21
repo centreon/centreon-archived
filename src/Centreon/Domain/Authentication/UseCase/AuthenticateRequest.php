@@ -27,9 +27,14 @@ use Centreon\Domain\Authentication\Model\Credentials;
 class AuthenticateRequest
 {
     /**
-     * @var array<string,mixed>
+     * @var string
      */
-    private $credentials;
+    private $login;
+
+    /**
+     * @var string
+     */
+    private $password;
 
     /**
      * @var string
@@ -47,22 +52,20 @@ class AuthenticateRequest
      */
     public function __construct(Credentials $credentials, string $providerConfigurationName, string $centreonBaseUri)
     {
-        $this->credentials = [
-            'login' => $credentials->getLogin(),
-            'password' => $credentials->getPassword()
-        ];
+        $this->login = $credentials->getLogin();
+        $this->password = $credentials->getPassword();
         $this->providerConfigurationName = $providerConfigurationName;
         $this->centreonBaseUri = $centreonBaseUri;
     }
 
-    /**
-     * Get credentials
-     *
-     * @return array<string,mixed>
-     */
-    public function getCredentials(): array
+    public function getLogin(): string
     {
-        return $this->credentials;
+        return $this->login;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
     }
 
     /**

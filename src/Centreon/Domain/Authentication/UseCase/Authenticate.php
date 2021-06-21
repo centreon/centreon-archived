@@ -111,14 +111,17 @@ class Authenticate
         /**
          * Authenticate using the provider chosen in the request.
          */
-        $authenticationProvider->authenticate($request->getCredentials());
+        $authenticationProvider->authenticate([
+            'login' => $request->getLogin(),
+            'password' => $request->getPassword()
+        ]);
 
         if (!$authenticationProvider->isAuthenticated()) {
             $this->critical(
                 "Provider can't authenticate successfully user ",
                 [
                     "provider_name" => $authenticationProvider->getName(),
-                    "user" => $request->getCredentials()["login"]
+                    "user" => $request->getLogin()
                 ]
             );
             throw AuthenticationException::notAuthenticated();

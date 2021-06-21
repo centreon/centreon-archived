@@ -94,7 +94,7 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
-    public function authenticate(array $data): void
+    public function authenticate(array $credentials): void
     {
         global $pearDB;
         $pearDB = $this->dependencyInjector['configuration_db'];
@@ -102,8 +102,8 @@ class LocalProvider implements ProviderInterface
         $log = new \CentreonUserLog(0, $this->dependencyInjector['configuration_db']);
         $auth = new \CentreonAuth(
             $this->dependencyInjector,
-            $data['login'],
-            $data['password'],
+            $credentials['login'],
+            $credentials['password'],
             0,
             $this->dependencyInjector['configuration_db'],
             $log,
