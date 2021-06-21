@@ -41,6 +41,7 @@ use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
 use Centreon\Domain\Authentication\UseCase\RedirectResponse;
 use Security\Infrastructure\Authentication\API\Model\ApiAuthenticationV21Factory;
+use Security\Infrastructure\Authentication\API\Model\ProviderRedirectionV21Factory;
 use Security\Infrastructure\Authentication\API\Model\ProvidersConfigurationsV21Factory;
 
 /**
@@ -114,7 +115,7 @@ class AuthenticationController extends AbstractController
 
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
-            return View::create($response->getRedirectionUriApi());
+            return View::create(ProviderRedirectionV21Factory::createFromResponse($response));
         } else {
             // Otherwise, we send a redirection response.
             $view = View::createRedirect($response->getRedirectionUri());

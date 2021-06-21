@@ -25,8 +25,6 @@ namespace Centreon\Domain\Authentication\UseCase;
 
 class RedirectResponse
 {
-    public const AUTHENTICATION_URI_KEY = "authentication_uri";
-
     /**
      * @var string
      */
@@ -48,15 +46,5 @@ class RedirectResponse
     public function setRedirectionUri(string $redirectionUri): void
     {
         $this->redirectionUri = $redirectionUri;
-    }
-
-    /**
-     * Return an array with redirection URI formatted to an API Response.
-     *
-     * @return array<string,string>
-     */
-    public function getRedirectionUriApi(): array
-    {
-        return [self::AUTHENTICATION_URI_KEY => $this->redirectionUri];
     }
 }

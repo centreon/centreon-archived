@@ -144,7 +144,7 @@ class ProviderConfiguration
      */
     public function getAuthenticationUri(): string
     {
-        return $this->getCentreonBaseUri() . '/authentication/providers/'
+        return $this->getCentreonBaseUri() . '/authentication/providers/configurations/'
             . $this->getName();
     }
 
