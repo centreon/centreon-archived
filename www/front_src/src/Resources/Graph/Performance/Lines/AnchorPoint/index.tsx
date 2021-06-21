@@ -4,20 +4,20 @@ interface Props {
   areaColor: string;
   lineColor: string;
   transparency: number;
-  xAnchorPoint: number;
-  yAnchorPoint: number;
+  x: number;
+  y: number;
 }
 
-const AnchorPoint = ({
-  xAnchorPoint,
-  yAnchorPoint,
+const Point = ({
   areaColor,
-  transparency,
   lineColor,
+  transparency,
+  x,
+  y,
 }: Props): JSX.Element => (
   <circle
-    cx={xAnchorPoint}
-    cy={yAnchorPoint}
+    cx={x}
+    cy={y}
     fill={areaColor}
     fillOpacity={1 - transparency * 0.01}
     r={3}
@@ -25,4 +25,4 @@ const AnchorPoint = ({
   />
 );
 
-export default AnchorPoint;
+export default Point;
