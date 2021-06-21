@@ -106,7 +106,10 @@ class Authenticate
                 $request->getProviderConfigurationName()
             );
         }
-        $this->debug('[AUTHENTICATE] Authentication using provider', ['provider_name' => $request->getProviderConfigurationName()]);
+        $this->debug(
+            '[AUTHENTICATE] Authentication using provider',
+            ['provider_name' => $request->getProviderConfigurationName()]
+        );
 
         /**
          * Authenticate using the provider chosen in the request.
@@ -170,7 +173,10 @@ class Authenticate
          */
         $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
         if ($authenticationTokens === null) {
-            $this->debug('[AUTHENTICATE] Creating authentication tokens for user', ['user' => $providerUser->getAlias()]);
+            $this->debug(
+                '[AUTHENTICATE] Creating authentication tokens for user',
+                ['user' => $providerUser->getAlias()]
+            );
             $this->authenticationService->createAuthenticationTokens(
                 $this->session->getId(),
                 $request->getProviderConfigurationName(),
