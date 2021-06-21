@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,7 +34,7 @@
  *
  */
 
-/* 
+/*
  * Database retrieve information
  */
 require_once("./class/centreonDB.class.php");
@@ -43,17 +44,22 @@ $pearDBO = new CentreonDB("centstorage");
 $metric = array();
 if (($o == 'cs') && $msr_id) {
     # Set base value
-    $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '" . $msr_id . "'");
+    $DBRESULT = $pearDB->prepare("SELECT * FROM meta_service_relation WHERE msr_id = :msr_id");
+    $DBRESULT->bindValue(':msr_id', $msr_id, \PDO::PARAM_INT);
+    $DBRESULT->execute();
 
     # Set base value
     $metric1 = array_map("myDecode", $DBRESULT->fetchRow());
-    if (!isset($host_id) || $metric1['host_id'] == $host_id) {
-        $query = "SELECT * FROM metrics, index_data WHERE metric_id = '" . $metric1["metric_id"] .
-            "' and metrics.index_id = index_data.id";
-        $DBRESULT = $pearDBO->query($query);
+    if ($host_id === false || $metric1['host_id'] == $host_id) {
+        $DBRESULT = $pearDBO->prepare(
+            'SELECT * FROM metrics, index_data
+            WHERE metric_id = :metric_id and metrics.index_id = index_data.id'
+        );
+        $DBRESULT->bindValue(':metric_id', $metric1["metric_id"], PDO::PARAM_INT);
+        $DBRESULT->execute();
         $metric2 = array_map("myDecode", $DBRESULT->fetchRow());
         $metric = array_merge($metric1, $metric2);
-        $host_id = $metric1["host_id"];
+        $host_id = (int) $metric1["host_id"];
         $metric["metric_sel"][0] = getMyServiceID($metric["service_description"], $metric["host_id"]);
         $metric["metric_sel"][1] = $metric["metric_id"];
     }
@@ -80,7 +86,7 @@ $hosts =
 
 $services1 = array(null => null);
 $services2 = array(null => null);
-if ($host_id) {
+if ($host_id !== false) {
     $services =
         array(null => null) + $acl->getHostServiceAclConf(
             $host_id,
@@ -179,8 +185,9 @@ if ($o == "cs") {
 }
 
 $valid = false;
-if (((isset($_POST["submitA"]) && $_POST["submitA"]) || (isset($_POST["submitC"]) && $_POST["submitC"])) &&
-    $form->validate()
+if (
+    ((isset($_POST["submitA"]) && $_POST["submitA"]) || (isset($_POST["submitC"]) && $_POST["submitC"]))
+    && $form->validate()
 ) {
     $msrObj = $form->getElement('msr_id');
     if ($form->getSubmitValue("submitA")) {
@@ -195,14 +202,14 @@ if ($valid) {
     require_once($path . "listMetric.php");
 } else {
     /*
-	 * Smarty template Init
-	 */
+     * Smarty template Init
+     */
     $tpl = new Smarty();
     $tpl = initSmartyTpl($path, $tpl);
 
     /*
-	 * Apply a template definition
-	 */
+     * Apply a template definition
+     */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
