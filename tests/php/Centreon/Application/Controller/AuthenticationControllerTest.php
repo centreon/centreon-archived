@@ -39,6 +39,9 @@ use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
+use Security\Infrastructure\Authentication\API\Model\ApiAuthenticationV21Factory;
+use Security\Infrastructure\Authentication\API\Model\ProviderRedirectionV21Factory;
+use Security\Infrastructure\Authentication\API\Model\ProvidersConfigurationsV21Factory;
 
 /**
  * @package Tests\Centreon\Application\Controller
@@ -135,9 +138,8 @@ class AuthenticationControllerTest extends TestCase
         );
 
         $view = $authenticationController->login($this->request, $this->authenticateApi, $response);
-
         $this->assertEquals(
-            View::create($response->getApiAuthentication()),
+            View::create(ApiAuthenticationV21Factory::createFromResponse($response)),
             $view
         );
     }
@@ -252,9 +254,7 @@ class AuthenticationControllerTest extends TestCase
         $view = $authenticationController->redirection($this->request, $this->redirect, $response);
 
         $this->assertEquals(
-            View::create([
-                'authentication_uri' => '/monitoring/resources'
-            ]),
+            View::create(ProviderRedirectionV21Factory::createFromResponse($response)),
             $view
         );
     }
@@ -310,17 +310,7 @@ class AuthenticationControllerTest extends TestCase
         $view = $authenticationController->findProvidersConfigurations($this->findProvidersConfigurations, $response);
 
         $this->assertEquals(
-            View::create([
-                [
-                    'id' => 1,
-                    'type' => 'local',
-                    'name' => 'local',
-                    'centreonBaseUri' => '/',
-                    'isActive' => true,
-                    'isForced' => true,
-                    'authenticationUri' => '//authentication/providers/local',
-                ],
-            ]),
+            View::create(ProvidersConfigurationsV21Factory::createFromResponse($response)),
             $view
         );
     }
