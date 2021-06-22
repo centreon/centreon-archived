@@ -22,16 +22,19 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
+use Centreon;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\ProviderInterface;
 
 class Authenticate
 {
@@ -94,27 +97,85 @@ class Authenticate
      */
     public function execute(AuthenticateRequest $request, AuthenticateResponse $response): void
     {
+        $authenticationProvider = $this->findProviderOrFail($request->getProviderConfigurationName());
+        $this->authenticateOrFail($authenticationProvider, $request);
+        $providerUser = $this->getUserFromProviderOrFail($authenticationProvider);
+
+        if (!$this->contactService->exists($providerUser)) {
+            $this->createUserOrFail($authenticationProvider, $providerUser);
+        } else {
+            $this->contactService->updateUser($providerUser);
+        }
+
+        $this->contactService->updateUserDefaultPage($providerUser);
+        $this->startLegacySessionOrFail($authenticationProvider->getLegacySession());
+
+        /**
+         * Search for an already existing and available authentications token.
+         * Create a new one if no one are found.
+         */
+        $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
+        if ($authenticationTokens === null) {
+            $this->createAuthenticationTokenOrFail($authenticationProvider, $providerUser);
+        }
+
+        $this->debug(
+            "[AUTHENTICATE] Authentication success",
+            [
+                "provider_name" => $request->getProviderConfigurationName(),
+                "contact_id" => $providerUser->getId(),
+                "contact_alias" => $providerUser->getAlias()
+            ]
+        );
+
+        /**
+         * Define the redirection uri where user will be redirect once logged.
+         */
+        $this->setResponseRedirectionUri($request, $response, $providerUser);
+    }
+
+    /**
+     * Find a provider or throw an Exception.
+     *
+     * @param string $providerConfigurationName
+     * @return ProviderInterface
+     * @throws ProviderServiceException
+     */
+    private function findProviderOrFail(string $providerConfigurationName): ProviderInterface
+    {
         $this->debug(
             '[AUTHENTICATE] Beginning authentication on provider',
-            ['provider_name' => $request->getProviderConfigurationName()]
+            ['provider_name' => $providerConfigurationName]
         );
         $authenticationProvider = $this->providerService->findProviderByConfigurationName(
-            $request->getProviderConfigurationName()
+            $providerConfigurationName
         );
 
         if ($authenticationProvider === null) {
             throw ProviderServiceException::providerConfigurationNotFound(
-                $request->getProviderConfigurationName()
+                $providerConfigurationName
             );
         }
+
+        return $authenticationProvider;
+    }
+
+    /**
+     * Authenticate the user or throw an Exception.
+     *
+     * @param ProviderInterface $authenticationProvider
+     * @param AuthenticateRequest $request
+     * @throws AuthenticationException
+     */
+    private function authenticateOrFail(ProviderInterface $authenticationProvider, AuthenticateRequest $request): void
+    {
+        /**
+         * Authenticate using the provider chosen in the request.
+         */
         $this->debug(
             '[AUTHENTICATE] Authentication using provider',
             ['provider_name' => $request->getProviderConfigurationName()]
         );
-
-        /**
-         * Authenticate using the provider chosen in the request.
-         */
         $authenticationProvider->authenticate([
             'login' => $request->getLogin(),
             'password' => $request->getPassword()
@@ -130,77 +191,105 @@ class Authenticate
             );
             throw AuthenticationException::notAuthenticated();
         }
+    }
 
+    /**
+     * Retrieve user from provider or throw an Exception.
+     *
+     * @param ProviderInterface $authenticationProvider
+     * @return ContactInterface
+     * @throws AuthenticationException
+     */
+    private function getUserFromProviderOrFail(ProviderInterface $authenticationProvider): ContactInterface
+    {
         $this->info('Retrieving user informations from provider');
-
-        /**
-         * Check if the user exists in the idP
-         */
         $providerUser = $authenticationProvider->getUser();
         if ($providerUser === null) {
             $this->critical(
                 '[AUTHENTICATE] No contact could be found from provider',
-                ['provider_name' => $request->getProviderConfigurationName()]
+                ['provider_name' => $authenticationProvider->getConfiguration()->getName()]
             );
             throw AuthenticationException::userNotFound();
         }
 
-        /**
-         * Check if the user exists in Centreon and if the provider is allowed to create user.
-         */
-        if (!$this->contactService->exists($providerUser)) {
-            if ($authenticationProvider->canCreateUser()) {
-                $this->debug(
-                    '[AUTHENTICATE] Provider is allow to create user. Creating user...',
-                    ['user' => $providerUser->getAlias()]
-                );
-                $this->contactService->addUser($providerUser);
-            } else {
-                throw AuthenticationException::userNotFoundAndCannotBeCreated();
-            }
-        } else {
-            $this->contactService->updateUser($providerUser);
-        }
+        return $providerUser;
+    }
 
-        /**
-         * Get the default page informations.
-         */
-        $this->contactService->updateUserDefaultPage($providerUser);
-
-        /**
-         * Start the legacy Session.
-         */
-        $this->session->start();
-        $_SESSION['centreon'] = $authenticationProvider->getLegacySession();
-
-        /**
-         * Search for an already existing and available authentications token.
-         * Create a new one if no one are found.
-         */
-        $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
-        if ($authenticationTokens === null) {
+    /**
+     * Create the user in Centreon or throw an Exception.
+     *
+     * @param ProviderInterface $authenticationProvider
+     * @param ContactInterface $providerUser
+     * @throws AuthenticationException
+     */
+    private function createUserOrFail(ProviderInterface $authenticationProvider, ContactInterface $providerUser): void
+    {
+        if ($authenticationProvider->canCreateUser()) {
             $this->debug(
-                '[AUTHENTICATE] Creating authentication tokens for user',
+                '[AUTHENTICATE] Provider is allow to create user. Creating user...',
                 ['user' => $providerUser->getAlias()]
             );
-            $this->authenticationService->createAuthenticationTokens(
-                $this->session->getId(),
-                $request->getProviderConfigurationName(),
-                $providerUser,
-                $authenticationProvider->getProviderToken($this->session->getId()),
-                $authenticationProvider->getProviderRefreshToken($this->session->getId())
-            );
+            $this->contactService->addUser($providerUser);
+        } else {
+            throw AuthenticationException::userNotFoundAndCannotBeCreated();
         }
+    }
 
+    /**
+     * Start the Centreon session.
+     *
+     * @param Centreon|null $legacySession
+     * @throws AuthenticationException
+     */
+    private function startLegacySessionOrFail(?Centreon $legacySession): void
+    {
+        $this->info('Starting Centreon Session');
+        if ($legacySession !== null) {
+            $this->session->start();
+            $_SESSION['centreon'] = $legacySession;
+            $this->info('Session Started');
+        } else {
+            $this->critical('[AUTHENTICATE] No Legacy has been found');
+            throw AuthenticationException::cannotStartLegacySession();
+        }
+    }
+
+    /**
+     * Create Authentication tokens or throw an Exception.
+     *
+     * @param ProviderInterface $authenticationProvider
+     * @param ContactInterface $providerUser
+     * @throws AuthenticationServiceException
+     */
+    private function createAuthenticationTokenOrFail(
+        ProviderInterface $authenticationProvider,
+        ContactInterface $providerUser
+    ): void {
         $this->debug(
-            "[AUTHENTICATE] Authentication success",
-            [
-                "provider_name" => $request->getProviderConfigurationName(),
-                "contact_id" => $providerUser->getId(),
-                "contact_alias" => $providerUser->getAlias()
-            ]
+            '[AUTHENTICATE] Creating authentication tokens for user',
+            ['user' => $providerUser->getAlias()]
         );
+        $this->authenticationService->createAuthenticationTokens(
+            $this->session->getId(),
+            $authenticationProvider->getConfiguration()->getName(),
+            $providerUser,
+            $authenticationProvider->getProviderToken($this->session->getId()),
+            $authenticationProvider->getProviderRefreshToken($this->session->getId())
+        );
+    }
 
+    /**
+     * Set the redirection Uri to the response.
+     *
+     * @param AuthenticateRequest $request
+     * @param AuthenticateResponse $response
+     * @param ContactInterface $providerUser
+     */
+    private function setResponseRedirectionUri(
+        AuthenticateRequest $request,
+        AuthenticateResponse $response,
+        ContactInterface $providerUser
+    ): void {
         /**
          * Define the redirection uri where user will be redirect once logged.
          */

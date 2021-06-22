@@ -70,4 +70,9 @@ class AuthenticationException extends \Exception
     {
         return new self(_('User cannot be logout'), 0, $ex);
     }
+
+    public static function cannotStartLegacySession(): self
+    {
+        return new self(_('Unable to start Centreon legacy session'));
+    }
 }

@@ -154,7 +154,7 @@ class Contact implements UserInterface, ContactInterface
     private $locale;
 
     /**
-     * @var string|null
+     * @var Page|null
      */
     private $defaultPage;
 
