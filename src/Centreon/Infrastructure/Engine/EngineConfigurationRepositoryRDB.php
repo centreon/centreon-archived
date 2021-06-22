@@ -98,7 +98,8 @@ class EngineConfigurationRepositoryRDB extends AbstractRepositoryDRB implements 
     {
         $statement = $this->db->prepare(
             $this->translateDbName(
-                'SELECT nagios_id, nagios_name, illegal_object_name_chars, nagios_server_id FROM `:db`.cfg_nagios cfg
+                'SELECT cfg.nagios_id, cfg.nagios_name, cfg.illegal_object_name_chars, cfg.nagios_server_id
+                FROM `:db`.cfg_nagios cfg
                 INNER JOIN `:db`.ns_host_relation nsr
                     ON nsr.nagios_server_id = :monitoring_server_id'
             )
