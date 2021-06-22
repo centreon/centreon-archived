@@ -26,10 +26,12 @@ use Security\Encryption;
 use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Model\LocalProvider;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\ProviderInterface;
 
 class AuthenticateApi
 {
@@ -65,7 +67,22 @@ class AuthenticateApi
     public function execute(AuthenticateApiRequest $request, AuthenticateApiResponse $response): void
     {
         $this->info(sprintf("[AUTHENTICATE API] Beginning API authentication for contact '%s'", $request->getLogin()));
+        $this->deleteExpiredToken();
 
+        $localProvider = $this->findLocalProviderOrFail();
+        $this->authenticateOrFail($localProvider, $request);
+
+        $contact = $this->getUserFromProviderOrFail($localProvider);
+        $token = Encryption::generateRandomString();
+        $this->createApiAuthenticationTokenOrFail($token, $localProvider, $contact);
+        $this->setResponseAuthentication($response, $contact, $token);
+    }
+
+    /**
+     * Delete all expired Security tokens.
+     */
+    private function deleteExpiredToken(): void
+    {
         /**
          * Remove all expired token before starting authentication process.
          */
@@ -74,17 +91,38 @@ class AuthenticateApi
         } catch (AuthenticationServiceException $ex) {
             $this->notice('[AUTHENTICATE API] Unable to delete expired security tokens');
         }
+    }
+
+    /**
+     * Find the local provider or throw an Exception.
+     *
+     * @return ProviderInterface
+     * @throws ProviderServiceException
+     */
+    private function findLocalProviderOrFail(): ProviderInterface
+    {
         $localProvider = $this->providerService->findProviderByConfigurationName(LocalProvider::NAME);
 
         if ($localProvider === null) {
             throw ProviderServiceException::providerConfigurationNotFound(LocalProvider::NAME);
         }
 
-        $this->debug('[AUTHENTICATE API] Authentication using provider', ['provider_name' => LocalProvider::NAME]);
+        return $localProvider;
+    }
 
+    /**
+     * Authenticate the user or throw an Exception.
+     *
+     * @param ProviderInterface $localProvider
+     * @param AuthenticateApiRequest $request
+     * @throws AuthenticationException
+     */
+    private function authenticateOrFail(ProviderInterface $localProvider, AuthenticateApiRequest $request): void
+    {
         /**
          * Authenticate with the legacy mechanism encapsulated into the Local Provider.
          */
+        $this->debug('[AUTHENTICATE API] Authentication using provider', ['provider_name' => LocalProvider::NAME]);
         $localProvider->authenticate(['login' => $request->getLogin(), 'password' => $request->getPassword()]);
         if (!$localProvider->isAuthenticated()) {
             $this->critical(
@@ -96,7 +134,17 @@ class AuthenticateApi
             );
             throw AuthenticationException::invalidCredentials();
         }
+    }
 
+    /**
+     * Retrieve user from provider or throw an Exception.
+     *
+     * @param ProviderInterface $localProvider
+     * @return ContactInterface
+     * @throws AuthenticationException
+     */
+    private function getUserFromProviderOrFail(ProviderInterface $localProvider): ContactInterface
+    {
         $this->info('[AUTHENTICATE API] Retrieving user informations from provider');
         $contact = $localProvider->getUser();
 
@@ -112,8 +160,23 @@ class AuthenticateApi
             );
             throw AuthenticationException::userNotFound();
         }
-        $token = Encryption::generateRandomString();
 
+        return $contact;
+    }
+
+    /**
+     * Create the authentication token or throw an Exception.
+     *
+     * @param string $token
+     * @param ProviderInterface $localProvider
+     * @param ContactInterface $contact
+     * @return void
+     */
+    private function createApiAuthenticationTokenOrFail(
+        string $token,
+        ProviderInterface $localProvider,
+        ContactInterface $contact
+    ): void {
         /**
          * Create the token.
          */
@@ -124,7 +187,20 @@ class AuthenticateApi
             $localProvider->getProviderToken($token),
             null
         );
+    }
 
+    /**
+     * Set the authentication to the response.
+     *
+     * @param AuthenticateApiResponse $response
+     * @param ContactInterface $contact
+     * @param string $token
+     */
+    private function setResponseAuthentication(
+        AuthenticateApiResponse $response,
+        ContactInterface $contact,
+        string $token
+    ): void {
         /**
          * Prepare the response with contact informations and API authentication token.
          */
