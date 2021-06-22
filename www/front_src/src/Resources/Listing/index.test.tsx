@@ -8,6 +8,7 @@ import {
   fireEvent,
   Matcher,
   act,
+  getByText,
 } from '@testing-library/react';
 import axios from 'axios';
 import {
@@ -25,6 +26,7 @@ import {
   __,
   propEq,
   find,
+  isNil,
 } from 'ramda';
 
 import { Column } from '@centreon/ui';
@@ -432,7 +434,7 @@ describe(Listing, () => {
   it.each(additionalIds)(
     'displays additional columns when selected from the corresponding menu',
     async (columnId) => {
-      const { getAllByText, getByTitle } = renderListing();
+      const { getAllByText, getByTitle, getByText } = renderListing();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
@@ -443,9 +445,17 @@ describe(Listing, () => {
       const columnLabel = find(propEq('id', columnId), columns)
         ?.label as string;
 
+      const columnShortLabel= find(propEq('id', columnId), columns)?.shortLabel as string;
+
       fireEvent.click(head(getAllByText(columnLabel)) as HTMLElement);
 
-      expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
-    },
-  );
+
+ if (isNil(columnLabel))
+ return
+      expect(getByText(columnShortLabel)).toBeInTheDocument();
+      expect(getByText('C')).toBeInTheDocument();
+    
+    expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
+
+  )};
 });

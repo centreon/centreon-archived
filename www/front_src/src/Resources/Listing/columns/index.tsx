@@ -120,7 +120,7 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     id: 'notes_url',
     label: t(labelNotes),
     rowMemoProps: ['links'],
-    shortLabel: 'U',
+    shortLabel: 'N',
     sortable: false,
     type: ColumnType.component,
   },
@@ -215,7 +215,7 @@ export const getColumns = ({ actions, t }: ColumnProps): Array<Column> => [
     id: 'notification',
     label: t(labelNotification),
     rowMemoProps: ['notification_enabled'],
-    shortLabel: 'N',
+    shortLabel: 'Notif',
     type: ColumnType.component,
   },
   {
