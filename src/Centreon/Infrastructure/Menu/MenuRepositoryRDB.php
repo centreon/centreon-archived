@@ -72,7 +72,8 @@ class MenuRepositoryRDB extends AbstractRepositoryDRB implements MenuRepositoryI
     {
         $statement = $this->db->prepare(
             $this->translateDbName(
-                "SELECT topology_id, topology_url, is_react, topology_url_opt FROM `:db`.topology WHERE topology_page = :topologyPage"
+                "SELECT topology_id, topology_url, is_react, topology_url_opt FROM `:db`.topology " .
+                "WHERE topology_page = :topologyPage"
             )
         );
         $statement->bindValue(':topologyPage', $topologyPage, \PDO::PARAM_STR);
