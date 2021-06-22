@@ -15165,7 +15165,6 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Medium size"
 #  msgstr ""
 
-
 #  msgid "Small size"
 #  msgstr ""
 
