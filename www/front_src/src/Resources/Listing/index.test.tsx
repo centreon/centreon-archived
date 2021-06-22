@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import * as React from 'react';
 
 import { useSelector } from 'react-redux';
@@ -8,6 +9,7 @@ import {
   fireEvent,
   Matcher,
   act,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getByText,
 } from '@testing-library/react';
 import axios from 'axios';
@@ -434,6 +436,7 @@ describe(Listing, () => {
   it.each(additionalIds)(
     'displays additional columns when selected from the corresponding menu',
     async (columnId) => {
+      // eslint-disable-next-line @typescript-eslint/no-shadow
       const { getAllByText, getByTitle, getByText } = renderListing();
 
       await waitFor(() => {
@@ -445,17 +448,16 @@ describe(Listing, () => {
       const columnLabel = find(propEq('id', columnId), columns)
         ?.label as string;
 
-      const columnShortLabel= find(propEq('id', columnId), columns)?.shortLabel as string;
+      const columnShortLabel = find(propEq('id', columnId), columns)
+        ?.shortLabel as string;
 
       fireEvent.click(head(getAllByText(columnLabel)) as HTMLElement);
 
+      if (isNil(columnShortLabel))
+        expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
 
- if (isNil(columnLabel))
- return
       expect(getByText(columnShortLabel)).toBeInTheDocument();
       expect(getByText('C')).toBeInTheDocument();
-    
-    expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
-
-  )};
+    },
+  );
 });
