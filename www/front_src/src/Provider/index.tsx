@@ -137,7 +137,6 @@ const AppProvider = (): JSX.Element | null => {
 
   return (
     <Context.Provider
-      // @ts-ignore
       value={{
         ...user,
         acl: {
