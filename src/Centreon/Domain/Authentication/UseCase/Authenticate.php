@@ -108,7 +108,7 @@ class Authenticate
         }
 
         $this->contactService->updateUserDefaultPage($providerUser);
-        $this->startLegacySessionOrFail($authenticationProvider->getLegacySession());
+        $this->startLegacySession($authenticationProvider->getLegacySession());
 
         /**
          * Search for an already existing and available authentications token.
@@ -241,17 +241,12 @@ class Authenticate
      * @param Centreon|null $legacySession
      * @throws AuthenticationException
      */
-    private function startLegacySessionOrFail(?Centreon $legacySession): void
+    private function startLegacySession(?Centreon $legacySession): void
     {
         $this->info('Starting Centreon Session');
-        if ($legacySession !== null) {
-            $this->session->start();
-            $_SESSION['centreon'] = $legacySession;
-            $this->info('Session Started');
-        } else {
-            $this->critical('[AUTHENTICATE] No Legacy has been found');
-            throw AuthenticationException::cannotStartLegacySession();
-        }
+        $this->session->start();
+        $_SESSION['centreon'] = $legacySession;
+        $this->info('Session Started');
     }
 
     /**

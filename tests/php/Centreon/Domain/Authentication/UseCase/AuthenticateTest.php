@@ -439,7 +439,13 @@ class AuthenticateTest extends TestCase
         $this->authenticationService
             ->expects($this->once())
             ->method('createAuthenticationTokens')
-            ->with('abdef', 'provider_configuration_1', $this->contact, $providerToken, $providerRefreshToken);
+            ->with(
+                'abdef',
+                $this->provider->getConfiguration()->getName(),
+                $this->contact,
+                $providerToken,
+                $providerRefreshToken
+            );
 
         $authenticate = new Authenticate(
             '/monitoring/resources',
