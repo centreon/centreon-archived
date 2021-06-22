@@ -22,15 +22,16 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\UseCase;
 
+use Centreon\Domain\Log\LoggerTrait;
+use Centreon\Domain\Menu\Model\Page;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 class Authenticate
 {
@@ -162,6 +163,11 @@ class Authenticate
         }
 
         /**
+         * Get the default page informations.
+         */
+        $this->contactService->updateUserDefaultPage($providerUser);
+
+        /**
          * Start the legacy Session.
          */
         $this->session->start();
@@ -198,10 +204,32 @@ class Authenticate
         /**
          * Define the redirection uri where user will be redirect once logged.
          */
-        if ($providerUser->getDefaultPage() !== null) {
-            $response->setRedirectionUri($request->getCentreonBaseUri() . $providerUser->getDefaultPage());
+        if ($providerUser->getDefaultPage() !== null  && $providerUser->getDefaultPage()->getUrl() !== null) {
+            $response->setRedirectionUri(
+                $request->getCentreonBaseUri() . $this->buildDefaultRedirectionUri($providerUser->getDefaultPage())
+            );
         } else {
             $response->setRedirectionUri($request->getCentreonBaseUri() . $this->redirectDefaultPage);
         }
+    }
+
+    /**
+     * build the redirection uri based on isReact page property.
+     *
+     * @param Page $defaultPage
+     * @return string
+     */
+    private function buildDefaultRedirectionUri(Page $defaultPage): string
+    {
+        if ($defaultPage->isReact() === true) {
+            // redirect to the react path
+            $redirectUri = $defaultPage->getUrl() ?? '';
+        } else {
+            $redirectUri = "/main.php?p=" . $defaultPage->getPageNumber();
+            if ($defaultPage->getUrlOptions() !== null) {
+                $redirectUri .= $defaultPage->getUrlOptions();
+            }
+        }
+        return $redirectUri;
     }
 }

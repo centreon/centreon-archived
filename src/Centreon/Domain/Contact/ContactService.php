@@ -25,6 +25,7 @@ namespace Centreon\Domain\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 
 class ContactService implements ContactServiceInterface
 {
@@ -33,9 +34,15 @@ class ContactService implements ContactServiceInterface
      */
     private $contactRepository;
 
-    public function __construct(ContactRepositoryInterface $contactRepository)
+    /**
+     * @var MenuRepositoryInterface
+     */
+    private $menuRepository;
+
+    public function __construct(ContactRepositoryInterface $contactRepository, MenuRepositoryInterface $menuRepository)
     {
         $this->contactRepository = $contactRepository;
+        $this->menuRepository = $menuRepository;
     }
 
     /**
@@ -75,5 +82,21 @@ class ContactService implements ContactServiceInterface
     public function findBySession(string $session): ?Contact
     {
         return $this->contactRepository->findBySession($session);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateUserDefaultPage(ContactInterface $contact): void
+    {
+        if ($contact->getDefaultPage() !== null && $contact->getDefaultPage()->getPageNumber() !== null) {
+            $defaultPage = $this->menuRepository->findPageByTopologyPage(
+                (string) $contact->getDefaultPage()->getPageNumber()
+            );
+
+            if ($defaultPage !== null) {
+                $contact->setDefaultPage($defaultPage);
+            }
+        }
     }
 }

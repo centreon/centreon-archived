@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact\Interfaces;
 
+use Centreon\Domain\Menu\Model\Page;
+
 interface ContactInterface
 {
     /**
@@ -124,7 +126,12 @@ interface ContactInterface
     /**
      * Contact default page.
      *
-     * @return string|null
+     * @return Page|null
      */
-    public function getDefaultPage(): ?string;
+    public function getDefaultPage(): ?Page;
+
+    /**
+     * @param Page|null $page
+     */
+    public function setDefaultPage(?Page $page): self;
 }

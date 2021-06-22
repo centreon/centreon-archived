@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Menu\Interfaces;
 
+use Centreon\Domain\Menu\Model\Page;
+
 interface MenuRepositoryInterface
 {
     /**
@@ -37,4 +39,12 @@ interface MenuRepositoryInterface
      * @return void
      */
     public function enableCentralMenus(): void;
+
+    /**
+     * Find a Page by its topology page number.
+     *
+     * @param string $topologyPage
+     * @return Page
+     */
+    public function findPageByTopologyPage(string $topologyPage): Page;
 }

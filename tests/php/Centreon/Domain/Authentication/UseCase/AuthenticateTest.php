@@ -22,21 +22,22 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\Authentication\UseCase;
 
-use Centreon\Domain\Authentication\UseCase\Authenticate;
-use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Menu\Model\Page;
 use Centreon\Domain\Authentication\Model\Credentials;
+use Security\Domain\Authentication\Model\ProviderToken;
+use Centreon\Domain\Authentication\UseCase\Authenticate;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Security\Domain\Authentication\Model\AuthenticationTokens;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
+use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
+use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Model\ProviderToken;
-use PHPUnit\Framework\TestCase;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 /**
  * @package Tests\Centreon\Domain\Authentication\UseCase
@@ -531,6 +532,12 @@ class AuthenticateTest extends TestCase
      */
     public function testExecuteCustomDefaultPage(): void
     {
+        $page = (new Page())
+            ->setId(1)
+            ->setPageNumber(60101)
+            ->setUrl('/my_custom_page')
+            ->setIsReact(false);
+
         $this->provider
             ->expects($this->once())
             ->method('isAuthenticated')
@@ -562,9 +569,9 @@ class AuthenticateTest extends TestCase
             ->willReturn($this->authenticationTokens);
 
         $this->contact
-            ->expects($this->exactly(2))
+            ->expects($this->any())
             ->method('getDefaultPage')
-            ->willReturn('/my_custom_page');
+            ->willReturn($page);
 
         $this->response
             ->expects($this->once())

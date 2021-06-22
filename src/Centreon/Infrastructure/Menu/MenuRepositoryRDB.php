@@ -26,6 +26,7 @@ namespace Centreon\Infrastructure\Menu;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
+use Centreon\Domain\Menu\Model\Page;
 
 class MenuRepositoryRDB extends AbstractRepositoryDRB implements MenuRepositoryInterface
 {
@@ -62,5 +63,27 @@ class MenuRepositoryRDB extends AbstractRepositoryDRB implements MenuRepositoryI
             '50102', '50707', '50120')
             OR topology_parent IN ('601', '602', '608', '604', '617', '650', '609', '610')"
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findPageByTopologyPage(string $topologyPage): Page
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                "SELECT topology_id, topology_url, is_react FROM `:db`.topology WHERE topology_page = :topologyPage"
+            )
+        );
+        $statement->bindValue(':topologyPage', $topologyPage, \PDO::PARAM_STR);
+        $statement->execute();
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        return (new Page())
+            ->setPageNumber((int) $topologyPage)
+            ->setUrl($result['topology_url'])
+            ->setUrlOptions($result['topology_url_opt'])
+            ->setId((int) $result['topology_id'])
+            ->setIsReact($result['is_react'] === '1');
     }
 }

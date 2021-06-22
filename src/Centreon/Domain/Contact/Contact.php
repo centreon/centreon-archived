@@ -22,9 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Menu\Model\Page;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
 class Contact implements UserInterface, ContactInterface
 {
@@ -555,10 +556,10 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @param string|null $defaultPage
+     * @param Page|null $defaultPage
      * @return self
      */
-    public function setDefaultPage(?string $defaultPage): self
+    public function setDefaultPage(?Page $defaultPage): ContactInterface
     {
         $this->defaultPage = $defaultPage;
         return $this;
@@ -567,9 +568,9 @@ class Contact implements UserInterface, ContactInterface
     /**
      * get user default page
      *
-     * @return string|null
+     * @return Page|null
      */
-    public function getDefaultPage(): ?string
+    public function getDefaultPage(): ?Page
     {
         return $this->defaultPage;
     }

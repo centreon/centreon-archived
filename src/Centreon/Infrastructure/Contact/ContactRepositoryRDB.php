@@ -23,6 +23,7 @@ namespace Centreon\Infrastructure\Contact;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
+use Centreon\Domain\Menu\Model\Page;
 use Centreon\Infrastructure\DatabaseConnection;
 
 /**
@@ -69,11 +70,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             $contact = $this->createContact($result);
             $this->addActionRules($contact);
             $this->addTopologyRules($contact);
-            if (!empty($result['default_page'])) {
-                $this->addDefaultPage($contact, (int) $result['default_page']);
-            }
         }
-
         return $contact;
     }
 
@@ -100,9 +97,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             $contact = $this->createContact($result);
             $this->addActionRules($contact);
             $this->addTopologyRules($contact);
-            if (!empty($result['default_page'])) {
-                $this->addDefaultPage($contact, (int) $result['default_page']);
-            }
         }
 
         return $contact;
@@ -132,9 +126,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             $contact = $this->createContact($result);
             $this->addActionRules($contact);
             $this->addTopologyRules($contact);
-            if (!empty($result['default_page'])) {
-                $this->addDefaultPage($contact, (int) $result['default_page']);
-            }
         }
 
         return $contact;
@@ -338,7 +329,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setAccessToApiRealTime($contact['reach_api_rt'] === '1')
             ->setAccessToApiConfiguration($contact['reach_api'] === '1')
             ->setTimezone(new \DateTimeZone($contactTimezoneName))
-            ->setLocale($contactLocale);
+            ->setLocale($contactLocale)
+            ->setDefaultPage((new Page())->setPageNumber((int) $contact['default_page']));
     }
 
     /**
@@ -394,49 +386,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 $contact->addRole(Contact::ROLE_DISPLAY_COMMAND);
                 break;
         }
-    }
-
-    /**
-     * Add default page to contact.
-     *
-     * @param Contact $contact
-     * @param integer $defaultPage
-     * @return void
-     */
-    private function addDefaultPage(Contact $contact, int $defaultPage): void
-    {
-        $defaultPageStatement = $this->db->prepare(
-            $this->translateDbName(
-                "SELECT topology_page, topology_url, is_react, topology_url_opt FROM topology " .
-                "WHERE topology_page = :defaultPage"
-            )
-        );
-        $defaultPageStatement->bindValue(':defaultPage', $defaultPage, \PDO::PARAM_INT);
-        $defaultPageStatement->execute();
-        if (($result = $defaultPageStatement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            $defaultPage = $this->buildDefaultPage($result);
-            $contact->setDefaultPage($defaultPage);
-        }
-    }
-
-    /**
-     * Build Default Page URI.
-     *
-     * @param array $defaultPage
-     * @return string
-     */
-    private function buildDefaultPage(array $defaultPage): string
-    {
-        if ($defaultPage['is_react'] === "1") {
-            // redirect to the react path
-            $redirectUri = $defaultPage['topology_url'];
-        } else {
-            $redirectUri = "/main.php?p=" . $defaultPage['topology_page'];
-            if ($defaultPage['topology_url_opt'] !== null) {
-                $redirectUri .= $defaultPage['topology_url_opt'];
-            }
-        }
-        return $redirectUri;
     }
 
     /**
