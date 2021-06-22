@@ -26,6 +26,7 @@ import {
   labelDisacknowledge,
   labelSubmitStatus,
   labelAddComment,
+  labelMoreActions,
 } from '../../translatedLabels';
 import { ResourceContext, useResourceContext } from '../../Context';
 import { checkResources } from '../api';
@@ -281,7 +282,10 @@ const ResourceActionsContent = ({
         )}
       </div>
 
-      <PopoverMenu icon={<IconMore color="primary" fontSize="small" />}>
+      <PopoverMenu
+        icon={<IconMore color="primary" fontSize="small" />}
+        title={t(labelMoreActions) as string}
+      >
         {({ close }) => (
           <>
             <ActionMenuItem
