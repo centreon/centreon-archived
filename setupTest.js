@@ -1,4 +1,12 @@
-jest.setTimeout(10000);
+import { configure } from '@testing-library/dom';
+
+const timeout = 10000;
+
+configure({
+  asyncUtilTimeout: timeout,
+});
+
+jest.setTimeout(timeout);
 
 document.createRange = () => ({
   setStart: () => {},
