@@ -87,7 +87,7 @@ const AppProvider = (): JSX.Element | null => {
       getUser(userEndpoint),
       getParameters(parametersEndpoint),
       getTranslations(translationEndpoint),
-      getAcl(aclEndpoint),
+      getAcl('http://localhost:5000/mock/acl'),
     ])
       .then(
         ([
