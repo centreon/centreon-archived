@@ -25,6 +25,7 @@ import {
   __,
   propEq,
   find,
+  last,
 } from 'ramda';
 
 import { Column } from '@centreon/ui';
@@ -440,10 +441,10 @@ describe(Listing, () => {
 
       fireEvent.click(getByTitle('Add columns').firstChild as HTMLElement);
 
-      const columnLabel = find(propEq('id', columnId), columns)
-        ?.label as string;
+      const column = find(propEq('id', columnId), columns);
+      const columnLabel = column?.label as string;
 
-      fireEvent.click(head(getAllByText(columnLabel)) as HTMLElement);
+      fireEvent.click(last(getAllByText(columnLabel)) as HTMLElement);
 
       expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
     },
