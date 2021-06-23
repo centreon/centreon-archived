@@ -146,7 +146,7 @@ const deleteUserFilter = (): Cypress.Chainable => {
     .then((response) => expect(response.status).to.eq(204));
 };
 
-const submitResultApiClapi = (): Cypress.Chainable => {
+const updateFixturesResult = (): Cypress.Chainable => {
   return cy
     .fixture('resources/clapi/submit-results.json')
     .then(({ results }) => {
@@ -157,19 +157,24 @@ const submitResultApiClapi = (): Cypress.Chainable => {
         return res;
       });
 
-      return cy
-        .request({
-          body: { results: submitResults },
-          headers: {
-            'Content-Type': 'application/json',
-            'centreon-auth-token':
-              window.localStorage.getItem('userTokenApiV1'),
-          },
-          method: 'POST',
-          url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
-        })
-        .then((response) => expect(response.status).to.eq(200));
+      return submitResults;
     });
+};
+
+const submitResultApiClapi = (): Cypress.Chainable => {
+  return updateFixturesResult().then((submitResults) => {
+    return cy
+      .request({
+        body: { results: submitResults },
+        headers: {
+          'Content-Type': 'application/json',
+          'centreon-auth-token': window.localStorage.getItem('userTokenApiV1'),
+        },
+        method: 'POST',
+        url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
+      })
+      .then((resp) => expect(resp.status).to.eq(200));
+  });
 };
 
 const initDataResources = (): Cypress.Chainable => {

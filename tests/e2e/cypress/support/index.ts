@@ -5,9 +5,8 @@ import {
   submitResultApiClapi,
   removeDataResources,
   applyCfgApi,
-  resourcesMatching,
-  refreshListing,
 } from './centreonData';
+import { countServicesDB } from './database';
 
 before(() => {
   setUserTokenApiV1();
@@ -26,9 +25,7 @@ before(() => {
     cy.get('form')
       .submit()
       .then(() => {
-        submitResultApiClapi().then(() =>
-          refreshListing(5000).then(() => resourcesMatching()),
-        );
+        submitResultApiClapi().then(() => countServicesDB());
       });
   });
 
