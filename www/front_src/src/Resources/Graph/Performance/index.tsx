@@ -76,6 +76,7 @@ import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
+  displayCompleteGraph?: () => void;
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
   endpoint?: string;
@@ -85,9 +86,9 @@ interface Props {
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
-  timeline?: Array<TimelineEvent>;
   toggableLegend?: boolean;
   xAxisTickFormat?: string;
+  timeline?: Array<TimelineEvent>;
 }
 
 interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
@@ -159,6 +160,7 @@ const PerformanceGraph = ({
   displayTitle = true,
   limitLegendRows,
   isInViewport = true,
+  displayCompleteGraph,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -199,22 +201,25 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendGetGraphDataRequest(endpoint).then((graphData) => {
-      setTimeSeries(getTimeSeries(graphData));
-      setBase(graphData.global.base);
-      setTitle(graphData.global.title);
-      const newLineData = getLineData(graphData);
-      if (lineData) {
-        setLineData(
-          newLineData.map((line) => ({
-            ...line,
-            display: find(propEq('name', line.name), lineData)?.display ?? true,
-          })),
-        );
-        return;
-      }
-      setLineData(newLineData);
-    });
+    sendGetGraphDataRequest('http://localhost:5001/centreon/performance').then(
+      (graphData) => {
+        setTimeSeries(getTimeSeries(graphData));
+        setBase(graphData.global.base);
+        setTitle(graphData.global.title);
+        const newLineData = getLineData(graphData);
+        if (lineData) {
+          setLineData(
+            newLineData.map((line) => ({
+              ...line,
+              display:
+                find(propEq('name', line.name), lineData)?.display ?? true,
+            })),
+          );
+          return;
+        }
+        setLineData(newLineData);
+      },
+    );
   }, [endpoint]);
 
   React.useEffect(() => {
@@ -460,6 +465,7 @@ const PerformanceGraph = ({
         <div className={classes.legend}>
           <Legend
             base={base as number}
+            displayCompleteGraph={displayCompleteGraph}
             limitLegendRows={limitLegendRows}
             lines={sortedLines}
             toggable={toggableLegend}
