@@ -9,7 +9,7 @@ interface ParseAndFormatProps {
 const parseAndFormat = ({ isoDate, to, locale }: ParseAndFormatProps): string =>
   moment
     .parseZone(isoDate)
-    .locale(locale || 'en')
+    .locale(locale?.substring(0, 2) || 'en')
     .format(to);
 
 const getFormattedDateTime = (isoDate: string): string =>
