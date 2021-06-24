@@ -2,7 +2,6 @@ import React, { Suspense } from 'react';
 
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 
 import { styled } from '@material-ui/core';
@@ -66,8 +65,9 @@ interface Props {
 
 const ReactRouter = React.memo<Props>(
   ({ allowedPages, history, pages, externalPagesFetched }: Props) => {
-    if (isEmpty(allowedPages)) {
-      return null;
+    if (!externalPagesFetched) {
+      // eslint-disable-next-line react/jsx-no-undef
+      return <PageContainer />;
     }
     return (
       <Suspense fallback={null}>
