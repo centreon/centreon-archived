@@ -86,9 +86,9 @@ interface Props {
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
+  timeline?: Array<TimelineEvent>;
   toggableLegend?: boolean;
   xAxisTickFormat?: string;
-  timeline?: Array<TimelineEvent>;
 }
 
 interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
@@ -201,25 +201,22 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendGetGraphDataRequest('http://localhost:5001/centreon/performance').then(
-      (graphData) => {
-        setTimeSeries(getTimeSeries(graphData));
-        setBase(graphData.global.base);
-        setTitle(graphData.global.title);
-        const newLineData = getLineData(graphData);
-        if (lineData) {
-          setLineData(
-            newLineData.map((line) => ({
-              ...line,
-              display:
-                find(propEq('name', line.name), lineData)?.display ?? true,
-            })),
-          );
-          return;
-        }
-        setLineData(newLineData);
-      },
-    );
+    sendGetGraphDataRequest(endpoint).then((graphData) => {
+      setTimeSeries(getTimeSeries(graphData));
+      setBase(graphData.global.base);
+      setTitle(graphData.global.title);
+      const newLineData = getLineData(graphData);
+      if (lineData) {
+        setLineData(
+          newLineData.map((line) => ({
+            ...line,
+            display: find(propEq('name', line.name), lineData)?.display ?? true,
+          })),
+        );
+        return;
+      }
+      setLineData(newLineData);
+    });
   }, [endpoint]);
 
   React.useEffect(() => {

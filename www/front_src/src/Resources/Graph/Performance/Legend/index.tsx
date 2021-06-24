@@ -160,11 +160,10 @@ const LegendContent = ({
     }) || 'N/A';
 
   const displayedLines = limitLegendRows
-    ? slice(0, maxLinesDisplayed, lines.concat(lines))
+    ? slice(0, maxLinesDisplayed, lines)
     : lines;
 
-  const hasMoreLines =
-    limitLegendRows ?? gt(length(lines.concat(lines)), maxLinesDisplayed);
+  const hasMoreLines = limitLegendRows ?? gt(length(lines), maxLinesDisplayed);
 
   return (
     <>
