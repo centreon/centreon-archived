@@ -184,54 +184,54 @@ stage('Source') {
 }
 
 try {
-  stage('Unit tests') {
-    parallel 'frontend': {
-      if (!hasFrontendChanges) {
-        Utils.markStageSkippedForConditional('frontend')
-      } else {
-        node {
-          checkoutCentreonBuild(buildBranch)
-          unstash 'tar-sources'
-          unstash 'node_modules'
-          sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
-          junit 'ut-fe.xml'
-          stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
-          stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
-        }
-      }
-    },
-    'backend': {
-      if (!hasBackendChanges) {
-        Utils.markStageSkippedForConditional('backend')
-      } else {
-        node {
-          checkoutCentreonBuild(buildBranch)
-          unstash 'tar-sources'
-          unstash 'vendor'
-          sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
-          junit 'ut-be.xml'
-          stash name: 'ut-be.xml', includes: 'ut-be.xml'
-          stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
-          stash name: 'codestyle-be.xml', includes: 'codestyle-be.xml'
-          stash name: 'phpstan.xml', includes: 'phpstan.xml'
-        }
-      }
-    },
-    'sonar': {
-      node {
-        // Run sonarQube analysis
-        checkoutCentreonBuild(buildBranch)
-        unstash 'git-sources'
-        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-        withSonarQubeEnv('SonarQubeDev') {
-          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-        }
-      }
-    }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Unit tests stage failure.');
-    }
-  }
+  // stage('Unit tests') {
+  //   parallel 'frontend': {
+  //     if (!hasFrontendChanges) {
+  //       Utils.markStageSkippedForConditional('frontend')
+  //     } else {
+  //       node {
+  //         checkoutCentreonBuild(buildBranch)
+  //         unstash 'tar-sources'
+  //         unstash 'node_modules'
+  //         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
+  //         junit 'ut-fe.xml'
+  //         stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
+  //         stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
+  //       }
+  //     }
+  //   },
+  //   'backend': {
+  //     if (!hasBackendChanges) {
+  //       Utils.markStageSkippedForConditional('backend')
+  //     } else {
+  //       node {
+  //         checkoutCentreonBuild(buildBranch)
+  //         unstash 'tar-sources'
+  //         unstash 'vendor'
+  //         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
+  //         junit 'ut-be.xml'
+  //         stash name: 'ut-be.xml', includes: 'ut-be.xml'
+  //         stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
+  //         stash name: 'codestyle-be.xml', includes: 'codestyle-be.xml'
+  //         stash name: 'phpstan.xml', includes: 'phpstan.xml'
+  //       }
+  //     }
+  //   },
+  //   'sonar': {
+  //     node {
+  //       // Run sonarQube analysis
+  //       checkoutCentreonBuild(buildBranch)
+  //       unstash 'git-sources'
+  //       sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+  //       withSonarQubeEnv('SonarQubeDev') {
+  //         sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+  //       }
+  //     }
+  //   }
+  //   if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+  //     error('Unit tests stage failure.');
+  //   }
+  // }
 
   // stage('Quality gate') {
   //   node {
