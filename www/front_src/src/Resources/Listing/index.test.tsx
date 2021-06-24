@@ -453,8 +453,8 @@ describe(Listing, () => {
 
       fireEvent.click(head(getAllByText(columnLabel)) as HTMLElement);
 
-      if (isNil(columnShortLabel))
-        expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
+      if (isNil(columnShortLabel)) return;
+      expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
 
       expect(getByText(columnShortLabel)).toBeInTheDocument();
       expect(getByText('C')).toBeInTheDocument();
