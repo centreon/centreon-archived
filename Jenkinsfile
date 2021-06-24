@@ -233,79 +233,79 @@ try {
     }
   }
 
-  stage('Quality gate') {
-    node {
-      discoverGitReferenceBuild()
+  // stage('Quality gate') {
+  //   node {
+  //     discoverGitReferenceBuild()
 
-      if (hasBackendChanges) {
-        unstash 'ut-be.xml'
-        unstash 'coverage-be.xml'
-        unstash 'codestyle-be.xml'
-        unstash 'phpstan.xml'
-      }
+  //     if (hasBackendChanges) {
+  //       unstash 'ut-be.xml'
+  //       unstash 'coverage-be.xml'
+  //       unstash 'codestyle-be.xml'
+  //       unstash 'phpstan.xml'
+  //     }
 
-      if (hasFrontendChanges) {
-        unstash 'ut-fe.xml'
-        unstash 'codestyle-fe.xml'
-      }
+  //     if (hasFrontendChanges) {
+  //       unstash 'ut-fe.xml'
+  //       unstash 'codestyle-fe.xml'
+  //     }
 
-      if (env.CHANGE_ID) { // pull request to comment with coding style issues
-        ViolationsToGitHub([
-          repositoryName: 'centreon',
-          pullRequestId: env.CHANGE_ID,
+  //     if (env.CHANGE_ID) { // pull request to comment with coding style issues
+  //       ViolationsToGitHub([
+  //         repositoryName: 'centreon',
+  //         pullRequestId: env.CHANGE_ID,
 
-          createSingleFileComments: true,
-          commentOnlyChangedContent: true,
-          commentOnlyChangedFiles: true,
-          keepOldComments: false,
+  //         createSingleFileComments: true,
+  //         commentOnlyChangedContent: true,
+  //         commentOnlyChangedFiles: true,
+  //         keepOldComments: false,
 
-          commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
+  //         commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
 
-          violationConfigs: [
-            [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
-            [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle'],
-            [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
-          ]
-        ])
-      }
+  //         violationConfigs: [
+  //           [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
+  //           [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle'],
+  //           [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
+  //         ]
+  //       ])
+  //     }
 
-      if (hasBackendChanges) {
-        recordIssues(
-          enabledForFailure: true,
-          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-          tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
-          trendChartType: 'NONE'
-        )
-        recordIssues(
-          enabledForFailure: true,
-          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-          tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
-          trendChartType: 'NONE'
-        )
-      }
+  //     if (hasBackendChanges) {
+  //       recordIssues(
+  //         enabledForFailure: true,
+  //         qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+  //         tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
+  //         trendChartType: 'NONE'
+  //       )
+  //       recordIssues(
+  //         enabledForFailure: true,
+  //         qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+  //         tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
+  //         trendChartType: 'NONE'
+  //       )
+  //     }
 
-      if (hasFrontendChanges) {
-        recordIssues(
-          enabledForFailure: true,
-          failOnError: true,
-          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
-          trendChartType: 'NONE'
-        )
-      }
-    }
+  //     if (hasFrontendChanges) {
+  //       recordIssues(
+  //         enabledForFailure: true,
+  //         failOnError: true,
+  //         qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+  //         tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
+  //         trendChartType: 'NONE'
+  //       )
+  //     }
+  //   }
 
-    timeout(time: 10, unit: 'MINUTES') {
-      def qualityGate = waitForQualityGate()
-      if (qualityGate.status != 'OK') {
-        currentBuild.result = 'FAIL'
-      }
-    }
+  //   timeout(time: 10, unit: 'MINUTES') {
+  //     def qualityGate = waitForQualityGate()
+  //     if (qualityGate.status != 'OK') {
+  //       currentBuild.result = 'FAIL'
+  //     }
+  //   }
 
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error("Quality gate failure: ${qualityGate.status}.");
-    }
-  }
+  //   if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+  //     error("Quality gate failure: ${qualityGate.status}.");
+  //   }
+  // }
 
   stage('Package') {
     def parallelSteps = [:]
@@ -345,33 +345,33 @@ try {
     }
   }
 
-  stage('API integration tests') {
-    if (hasBackendChanges) {
-      def parallelSteps = [:]
-      for (x in apiFeatureFiles) {
-        def feature = x
-        parallelSteps[feature] = {
-          node {
-            checkoutCentreonBuild(buildBranch)
-            unstash 'tar-sources'
-            unstash 'vendor'
-            def acceptanceStatus = sh(
-              script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
-              returnStatus: true
-            )
-            junit 'xunit-reports/**/*.xml'
-            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-              currentBuild.result = 'FAILURE'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
-          }
-        }
-      }
-      parallel parallelSteps
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('API integration tests stage failure.');
-      }
-    }
-  }
+  // stage('API integration tests') {
+  //   if (hasBackendChanges) {
+  //     def parallelSteps = [:]
+  //     for (x in apiFeatureFiles) {
+  //       def feature = x
+  //       parallelSteps[feature] = {
+  //         node {
+  //           checkoutCentreonBuild(buildBranch)
+  //           unstash 'tar-sources'
+  //           unstash 'vendor'
+  //           def acceptanceStatus = sh(
+  //             script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
+  //             returnStatus: true
+  //           )
+  //           junit 'xunit-reports/**/*.xml'
+  //           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+  //             currentBuild.result = 'FAILURE'
+  //           archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+  //         }
+  //       }
+  //     }
+  //     parallel parallelSteps
+  //     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+  //       error('API integration tests stage failure.');
+  //     }
+  //   }
+  // }
 
   stage('E2E tests') {
     def parallelSteps = [:]
@@ -396,33 +396,33 @@ try {
     }
   }
 
-  stage('Acceptance tests') {
-    if (hasBackendChanges || hasFrontendChanges) {
-      def parallelSteps = [:]
-      for (x in featureFiles) {
-        def feature = x
-        parallelSteps[feature] = {
-          node {
-            checkoutCentreonBuild(buildBranch)
-            unstash 'tar-sources'
-            unstash 'vendor'
-            def acceptanceStatus = sh(
-              script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
-              returnStatus: true
-            )
-            junit 'xunit-reports/**/*.xml'
-            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-              currentBuild.result = 'FAILURE'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
-          }
-        }
-      }
-      parallel parallelSteps
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Critical tests stage failure.');
-      }
-    }
-  }
+  // stage('Acceptance tests') {
+  //   if (hasBackendChanges || hasFrontendChanges) {
+  //     def parallelSteps = [:]
+  //     for (x in featureFiles) {
+  //       def feature = x
+  //       parallelSteps[feature] = {
+  //         node {
+  //           checkoutCentreonBuild(buildBranch)
+  //           unstash 'tar-sources'
+  //           unstash 'vendor'
+  //           def acceptanceStatus = sh(
+  //             script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
+  //             returnStatus: true
+  //           )
+  //           junit 'xunit-reports/**/*.xml'
+  //           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+  //             currentBuild.result = 'FAILURE'
+  //           archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+  //         }
+  //       }
+  //     }
+  //     parallel parallelSteps
+  //     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+  //       error('Critical tests stage failure.');
+  //     }
+  //   }
+  // }
 
   if (isStableBuild()) {
     stage('Delivery') {

@@ -6,7 +6,9 @@ services:
     ports:
       - 80
   cypress:
-    image: cypress/included:7.2.0
+    depends_on: 
+      - centreon-web
+    image: cypress/included:7.6.0
     container_name: e2e_cypress
     user: "@UID@"
     volumes:
