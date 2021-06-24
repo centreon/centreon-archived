@@ -163,7 +163,7 @@ const LegendContent = ({
     ? slice(0, maxLinesDisplayed, lines)
     : lines;
 
-  const hasMoreLines = limitLegendRows ?? gt(length(lines), maxLinesDisplayed);
+  const hasMoreLines = limitLegendRows && gt(length(lines), maxLinesDisplayed);
 
   return (
     <>
