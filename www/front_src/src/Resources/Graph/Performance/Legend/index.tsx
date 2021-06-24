@@ -31,7 +31,7 @@ import { useMetricsValueContext } from '../Graph/useMetricsValue';
 import formatMetricValue from '../formatMetricValue/index';
 import {
   labelAvg,
-  labelClickHereToDisplayAllLines,
+  labelDisplayAllLines,
   labelMax,
   labelMin,
 } from '../../../translatedLabels';
@@ -269,7 +269,7 @@ const LegendContent = ({
           size="small"
           onClick={displayCompleteGraph}
         >
-          {t(labelClickHereToDisplayAllLines)}
+          {t(labelDisplayAllLines)}
         </Button>
       )}
     </>

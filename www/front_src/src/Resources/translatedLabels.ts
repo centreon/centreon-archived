@@ -216,5 +216,4 @@ export const labelMaxDuration1Year = 'The duration must be lesser than a year';
 export const labelAsDisplayed = 'As displayed';
 export const labelMediumSize = 'Medium size';
 export const labelSmallSize = 'Small size';
-export const labelClickHereToDisplayAllLines =
-  'Click here to display all the lines';
+export const labelDisplayAllLines = 'Display all the lines';

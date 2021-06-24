@@ -16153,3 +16153,6 @@ msgstr "La durée doit être inférieure à une année"
 
 #  msgid "Small size"
 #  msgstr "Petite Taille"
+
+msgid "Display all the lines"
+msgstr "Afficher toutes les lignes"
