@@ -23,6 +23,7 @@ import {
   Box,
   Button,
 } from '@material-ui/core';
+import BarChartIcon from '@material-ui/icons/BarChart';
 
 import { ResourceContext, useResourceContext } from '../../../Context';
 import { Line } from '../models';
@@ -269,6 +270,7 @@ const LegendContent = ({
           size="small"
           onClick={displayCompleteGraph}
         >
+          <BarChartIcon fontSize="small" />
           {t(labelDisplayAllLines)}
         </Button>
       )}
