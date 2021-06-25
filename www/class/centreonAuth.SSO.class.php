@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -365,8 +366,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientSecret,
         string $code,
         bool $verifyPeer
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "client_id" => $clientId,
             "client_secret" => $clientSecret,
@@ -424,8 +424,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientSecret,
         string $token,
         bool $verifyPeer
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "token" => $token,
             "client_id" => $clientId,
@@ -477,8 +476,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $url,
         string $token,
         bool $verifyPeer
-    ): ?array
-    {
+    ): ?array {
         $authentication = "Authorization: Bearer " . trim($token);
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
         try {
@@ -531,8 +529,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $refreshToken,
         bool $verifyPeer,
         string $scope = null
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "client_id" => $clientId,
             "client_secret" => $clientSecret,
@@ -590,8 +587,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientSecret,
         string $refreshToken,
         bool $verifyPeer
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "client_id" => $clientId,
             "client_secret" => $clientSecret,
@@ -656,7 +652,9 @@ class CentreonAuthSSO extends CentreonAuth
             /* Proxy basic authentication */
             if (
                 isset($dataProxy['proxy_user'])
+                && !empty($dataProxy['proxy_user'])
                 && isset($dataProxy['proxy_password'])
+                && !empty($dataProxy['proxy_password'])
             ) {
                 $this->proxyAuthentication = $dataProxy['proxy_user'] . ':' . $dataProxy['proxy_password'];
             }
