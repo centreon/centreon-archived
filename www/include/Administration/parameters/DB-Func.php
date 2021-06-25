@@ -782,8 +782,7 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "openid_connect_login_claim",
-        isset($ret["openid_connect_login_claim"]) && $ret["openid_connect_login_claim"] != null
-            ? $pearDB->escape($ret["openid_connect_login_claim"]) : ""
+        isset($ret["openid_connect_login_claim"]) ? $pearDB->escape($ret["openid_connect_login_claim"]) : ""
     );
     updateOption(
         $pearDB,

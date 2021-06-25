@@ -656,9 +656,7 @@ class CentreonAuthSSO extends CentreonAuth
             /* Proxy basic authentication */
             if (
                 isset($dataProxy['proxy_user'])
-                && !empty($dataProxy['proxy_user'])
                 && isset($dataProxy['proxy_password'])
-                && !empty($dataProxy['proxy_password'])
             ) {
                 $this->proxyAuthentication = $dataProxy['proxy_user'] . ':' . $dataProxy['proxy_password'];
             }
@@ -676,7 +674,7 @@ class CentreonAuthSSO extends CentreonAuth
         $res = $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_auth'");
         $data = $res->fetch();
         if (isset($data["value"])) {
-            return $data["value"];
+            return (int) $data["value"];
         }
         return 0;
     }

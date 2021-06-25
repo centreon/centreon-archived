@@ -123,7 +123,7 @@ class CentreonRestHttp
         }
 
         if (!is_null($data)) {
-            if (isset($this->getContent) && $this->getContent == 'application/json') {
+            if (isset($this->contentType) && $this->contentType == 'application/json') {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
             } else {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
