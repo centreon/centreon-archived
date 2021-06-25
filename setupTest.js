@@ -1,7 +1,14 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { configure } from '@testing-library/dom';
 
-jest.setTimeout(10000);
+const timeout = 10000;
+
+configure({
+  asyncUtilTimeout: timeout,
+});
+
+jest.setTimeout(timeout);
 
 document.createRange = () => ({
   setStart: () => {},
