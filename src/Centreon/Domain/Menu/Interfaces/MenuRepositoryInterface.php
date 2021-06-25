@@ -43,7 +43,7 @@ interface MenuRepositoryInterface
     /**
      * Find a Page by its topology page number.
      *
-     * @param string $topologyPage
+     * @param string $pageNumber
      * @return Page
      */
     public function findPageByTopologyPageNumber(string $pageNumber): ?Page;

@@ -9,7 +9,7 @@ interface MenuServiceInterface
     /**
      * Find a Page by its topology Page Number
      *
-     * @param string $page
+     * @param string $pageNumber
      * @return Page|null
      */
     public function findPageByTopologyPageNumber(string $pageNumber): ?Page;

@@ -80,7 +80,7 @@ class MenuRepositoryRDB extends AbstractRepositoryDRB implements MenuRepositoryI
         $statement->execute();
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
-        if($result === false) {
+        if ($result === false) {
             return null;
         }
         return (new Page())
