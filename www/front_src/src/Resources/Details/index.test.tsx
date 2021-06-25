@@ -17,8 +17,8 @@ import {
   setUrlQueryParameters,
   getUrlQueryParameters,
   buildListingEndpoint,
+  copyToClipboard,
 } from '@centreon/ui';
-import copyToClipboard from '@centreon/ui/src/utils/copy';
 
 import {
   labelMore,
@@ -81,7 +81,10 @@ import Details from '.';
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../icons/Downtime');
-jest.mock('@centreon/ui/src/utils/copy', () => jest.fn());
+jest.mock(
+  '@centreon/centreon-frontend/packages/centreon-ui/src/utils/copy',
+  () => jest.fn(),
+);
 
 const resourceServiceUuid = 'h1-s1';
 const resourceServiceId = 1;

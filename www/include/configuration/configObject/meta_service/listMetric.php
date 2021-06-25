@@ -56,7 +56,9 @@ $tpl->assign('mode_access', $lvl_access);
 require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
-$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '" . $meta_id . "'");
+$DBRESULT = $pearDB->prepare('SELECT * FROM meta_service WHERE meta_id = :meta_id');
+$DBRESULT->bindValue(':meta_id', $meta_id, PDO::PARAM_INT);
+$DBRESULT->execute();
 
 $meta = $DBRESULT->fetchRow();
 $tpl->assign("meta", array(
@@ -83,12 +85,16 @@ if (!$oreon->user->admin) {
                  AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
 }
 
-$rq = "SELECT DISTINCT msr.*
-       FROM `meta_service_relation` msr $aclFrom
-       WHERE msr.meta_id = '" . $meta_id . "'
-       $aclCond
-       ORDER BY host_id";
-$results = $pearDB->query($rq);
+$statement = $pearDB->prepare(
+    "SELECT DISTINCT msr.*
+    FROM `meta_service_relation` msr $aclFrom
+    WHERE msr.meta_id = :meta_id
+    $aclCond
+    ORDER BY host_id"
+);
+$statement->bindValue(':meta_id', $meta_id, PDO::PARAM_INT);
+$statement->execute();
+
 $ar_relations = array();
 
 $form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
@@ -99,7 +105,7 @@ $form = new HTML_QuickFormCustom('Form', 'POST', "?p=" . $p);
 
 $metrics = array();
 
-while ($row = $results->fetchRow()) {
+while ($row = $statement->fetchRow()) {
     $ar_relations[$row['metric_id']][] = array("activate" => $row['activate'], "msr_id" => $row['msr_id']);
     $metrics[] = $row['metric_id'];
 }
@@ -111,12 +117,12 @@ if ($in_statement != "") {
         "AND m.index_id=i.id ORDER BY i.host_name, i.service_description, m.metric_name";
     $DBRESULTO = $pearDBO->query($query);
     /*
-	 * Different style between each lines
-	 */
+     * Different style between each lines
+     */
     $style = "one";
     /*
-	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
-	 */
+     * Fill a tab with a mutlidimensionnal Array we put in $tpl
+     */
     $elemArr1 = array();
     $i = 0;
     while ($metric = $DBRESULTO->fetchRow()) {

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,3 @@
  * For more information : contact@centreon.com
  *
  */
-declare(strict_types=1);
-
-namespace Centreon\Domain\Repository;
-
-use Throwable;
-
-class RepositoryException extends \Exception
-{
-}
