@@ -16151,8 +16151,8 @@ msgstr "Comme affiché"
 msgid "Medium size"
 msgstr "Taille moyenne"
 
-msgid "Display all the lines"
-msgstr "Afficher toutes les lignes"
+msgid "Display the complete graph"
+msgstr "Afficher le graphe complete"
 
 msgid "Small size"
 msgstr "Petite Taille"

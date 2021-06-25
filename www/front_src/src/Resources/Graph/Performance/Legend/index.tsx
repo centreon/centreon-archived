@@ -32,7 +32,7 @@ import { useMetricsValueContext } from '../Graph/useMetricsValue';
 import formatMetricValue from '../formatMetricValue/index';
 import {
   labelAvg,
-  labelDisplayAllLines,
+  labelDisplayCompleteGraph,
   labelMax,
   labelMin,
 } from '../../../translatedLabels';
@@ -270,7 +270,7 @@ const LegendContent = ({
           onClick={displayCompleteGraph}
         >
           <BarChartIcon fontSize="small" />
-          {t(labelDisplayAllLines)}
+          {t(labelDisplayCompleteGraph)}
         </Button>
       )}
     </>

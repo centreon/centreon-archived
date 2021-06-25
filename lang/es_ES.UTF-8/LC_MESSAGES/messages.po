@@ -14717,7 +14717,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Small size"
 #  msgstr ""
 
-# msgid "Display all the lines"
+# msgid "Display the complete graph"
 # msgstr ""
 
 # msgid "Action not permitted"
