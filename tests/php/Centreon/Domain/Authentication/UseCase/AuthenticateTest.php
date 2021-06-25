@@ -35,6 +35,7 @@ use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
@@ -84,6 +85,11 @@ class AuthenticateTest extends TestCase
      */
     private $response;
 
+    /**
+     * @var MenuServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $menuService;
+
     protected function setUp(): void
     {
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
@@ -94,6 +100,7 @@ class AuthenticateTest extends TestCase
         $this->contact = $this->createMock(ContactInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
         $this->response = $this->createMock(AuthenticateResponse::class);
+        $this->menuService = $this->createMock(MenuServiceInterface::class);
     }
 
     /**
@@ -106,7 +113,8 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session
+            $this->session,
+            $this->menuService
         );
 
         $credentials = (new Credentials())
@@ -115,7 +123,8 @@ class AuthenticateTest extends TestCase
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
-            '/'
+            '/',
+            null
         );
 
         $this->expectException(ProviderServiceException::class);
@@ -144,7 +153,8 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session
+            $this->session,
+            $this->menuService
         );
 
         $credentials = (new Credentials())
@@ -153,7 +163,8 @@ class AuthenticateTest extends TestCase
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
-            '/'
+            '/',
+            null
         );
 
         $this->expectException(AuthenticationException::class);
@@ -187,7 +198,8 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session
+            $this->session,
+            $this->menuService
         );
 
         $credentials = (new Credentials())
@@ -196,7 +208,8 @@ class AuthenticateTest extends TestCase
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
-            '/'
+            '/',
+            null
         );
 
         $this->expectException(AuthenticationException::class);
@@ -255,7 +268,8 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session
+            $this->session,
+            $this->menuService
         );
 
         $credentials = (new Credentials())
@@ -264,7 +278,8 @@ class AuthenticateTest extends TestCase
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
-            '/'
+            '/',
+            null
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
@@ -305,7 +320,8 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session
+            $this->session,
+            $this->menuService
         );
 
         $credentials = (new Credentials())
@@ -314,7 +330,8 @@ class AuthenticateTest extends TestCase
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
-            '/'
+            '/',
+            null
         );
 
         $this->expectException(AuthenticationException::class);
@@ -368,7 +385,8 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session
+            $this->session,
+            $this->menuService
         );
 
         $credentials = (new Credentials())
@@ -377,7 +395,8 @@ class AuthenticateTest extends TestCase
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
-            '/'
+            '/',
+            null
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
@@ -452,7 +471,8 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session
+            $this->session,
+            $this->menuService
         );
 
         $credentials = (new Credentials())
@@ -461,7 +481,8 @@ class AuthenticateTest extends TestCase
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
-            '/'
+            '/',
+            null
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
@@ -517,7 +538,8 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session
+            $this->session,
+            $this->menuService
         );
 
         $credentials = (new Credentials())
@@ -526,7 +548,8 @@ class AuthenticateTest extends TestCase
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
-            '/'
+            '/',
+            null
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
@@ -589,7 +612,8 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session
+            $this->session,
+            $this->menuService
         );
 
         $credentials = (new Credentials())
@@ -598,7 +622,8 @@ class AuthenticateTest extends TestCase
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
-            '/'
+            '/',
+            null
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
