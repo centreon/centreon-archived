@@ -30,6 +30,7 @@ use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Security\Domain\Authentication\Exceptions\ProviderServiceException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
@@ -66,24 +67,32 @@ class Authenticate
     private $session;
 
     /**
+     * @var MenuServiceInterface
+     */
+    private $menuService;
+
+    /**
      * @param string $redirectDefaultPage
      * @param AuthenticationServiceInterface $authenticationService
      * @param ProviderServiceInterface $providerService
      * @param ContactServiceInterface $contactService
      * @param SessionInterface $session
+     * @param MenuServiceInterface $menuService
      */
     public function __construct(
         string $redirectDefaultPage,
         AuthenticationServiceInterface $authenticationService,
         ProviderServiceInterface $providerService,
         ContactServiceInterface $contactService,
-        SessionInterface $session
+        SessionInterface $session,
+        MenuServiceInterface $menuService
     ) {
         $this->redirectDefaultPage = $redirectDefaultPage;
         $this->authenticationService = $authenticationService;
         $this->providerService = $providerService;
         $this->contactService = $contactService;
         $this->session = $session;
+        $this->menuService = $menuService;
     }
 
     /**
@@ -202,7 +211,7 @@ class Authenticate
      */
     private function getUserFromProviderOrFail(ProviderInterface $authenticationProvider): ContactInterface
     {
-        $this->info('Retrieving user informations from provider');
+        $this->info('[AUTHENTICATE] Retrieving user informations from provider');
         $providerUser = $authenticationProvider->getUser();
         if ($providerUser === null) {
             $this->critical(
@@ -243,10 +252,10 @@ class Authenticate
      */
     private function startLegacySession(?Centreon $legacySession): void
     {
-        $this->info('Starting Centreon Session');
+        $this->info('[AUTHENTICATE] Starting Centreon Session');
         $this->session->start();
         $_SESSION['centreon'] = $legacySession;
-        $this->info('Session Started');
+        $this->info('[AUTHENTICATE] Session Started');
     }
 
     /**
@@ -274,7 +283,7 @@ class Authenticate
     }
 
     /**
-     * Set the redirection Uri to the response.
+     * Define the redirection uri where user will be redirect once logged.
      *
      * @param AuthenticateRequest $request
      * @param AuthenticateResponse $response
@@ -286,9 +295,14 @@ class Authenticate
         ContactInterface $providerUser
     ): void {
         /**
-         * Define the redirection uri where user will be redirect once logged.
+         * Check if a legacy page could be get from the request referer.
          */
-        if ($providerUser->getDefaultPage() !== null  && $providerUser->getDefaultPage()->getUrl() !== null) {
+        $refererRedirectionPage = $this->getRedirectionPageFromReferer($request);
+        if ($refererRedirectionPage !== null) {
+            $response->setRedirectionUri(
+                $request->getCentreonBaseUri() . $this->buildDefaultRedirectionUri($refererRedirectionPage)
+            );
+        } elseif ($providerUser->getDefaultPage() !== null  && $providerUser->getDefaultPage()->getUrl() !== null) {
             $response->setRedirectionUri(
                 $request->getCentreonBaseUri() . $this->buildDefaultRedirectionUri($providerUser->getDefaultPage())
             );
@@ -315,5 +329,31 @@ class Authenticate
             }
         }
         return $redirectUri;
+    }
+
+    /**
+     * Get a Page from referer page number.
+     *
+     * @param AuthenticateRequest $request
+     * @return Page|null
+     */
+    private function getRedirectionPageFromReferer(AuthenticateRequest $request): ?Page
+    {
+        $refererRedirectionPage = null;
+        if ($request->getRefererQueryParameters() !== null) {
+            $queryParameters = [];
+            parse_str($request->getRefererQueryParameters(), $queryParameters);
+            if (array_key_exists('redirect', $queryParameters)) {
+                $redirectionPageParameters = [];
+                parse_str($queryParameters['redirect'], $redirectionPageParameters);
+                if (array_key_exists('p', $redirectionPageParameters)) {
+                    $refererRedirectionPage = $this->menuService->findPageByTopologyPageNumber($redirectionPageParameters['p']);
+                    unset($redirectionPageParameters['p']);
+                    $refererRedirectionPage->setUrlOptions('&' . http_build_query($redirectionPageParameters));
+                }
+            }
+        }
+
+        return $refererRedirectionPage;
     }
 }

@@ -47,29 +47,51 @@ class AuthenticateRequest
     private $centreonBaseUri;
 
     /**
+     * @var string|null
+     */
+    private $refererQueryParameters;
+
+    /**
      * @param Credentials $credentials
      * @param string $providerConfigurationName
      */
-    public function __construct(Credentials $credentials, string $providerConfigurationName, string $centreonBaseUri)
-    {
+    public function __construct(
+        Credentials $credentials,
+        string $providerConfigurationName,
+        string $centreonBaseUri,
+        ?string $referer
+    ) {
         $this->login = $credentials->getLogin();
         $this->password = $credentials->getPassword();
         $this->providerConfigurationName = $providerConfigurationName;
         $this->centreonBaseUri = $centreonBaseUri;
+        if ($referer !== null) {
+            $this->refererQueryParameters = parse_url($referer, PHP_URL_QUERY);
+        }
     }
 
+    /**
+     * Get user login.
+     *
+     * @return string
+     */
     public function getLogin(): string
     {
         return $this->login;
     }
 
+    /**
+     * Get user password.
+     *
+     * @return string
+     */
     public function getPassword(): string
     {
         return $this->password;
     }
 
     /**
-     * Get provider configuration name
+     * Get provider configuration name.
      *
      * @return string
      */
@@ -79,12 +101,22 @@ class AuthenticateRequest
     }
 
     /**
-     * Get redirection uri
+     * Get redirection uri.
      *
      * @return string
      */
     public function getCentreonBaseUri(): string
     {
         return $this->centreonBaseUri;
+    }
+
+    /**
+     * Get the GET parameters of a query.
+     *
+     * @return string|null
+     */
+    public function getRefererQueryParameters(): ?string
+    {
+        return $this->refererQueryParameters;
     }
 }

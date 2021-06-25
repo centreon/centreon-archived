@@ -153,7 +153,7 @@ class AuthenticationController extends AbstractController
     ): View {
         // submitted from form directly
         $data = $request->request->getIterator();
-
+        $referer = $request->headers->get('referer');
         if (empty($data['login']) || empty($data['password'])) {
             return $this->view(['Missing credentials parameters'], Response::HTTP_BAD_REQUEST);
         }
@@ -164,7 +164,8 @@ class AuthenticationController extends AbstractController
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             $providerConfigurationName,
-            $this->getBaseUri()
+            $this->getBaseUri(),
+            $referer
         );
 
         $authenticate->execute($authenticateRequest, $response);

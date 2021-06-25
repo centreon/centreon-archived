@@ -90,7 +90,7 @@ class ContactService implements ContactServiceInterface
     public function updateUserDefaultPage(ContactInterface $contact): void
     {
         if ($contact->getDefaultPage() !== null && $contact->getDefaultPage()->getPageNumber() !== null) {
-            $defaultPage = $this->menuRepository->findPageByTopologyPage(
+            $defaultPage = $this->menuRepository->findPageByTopologyPageNumber(
                 (string) $contact->getDefaultPage()->getPageNumber()
             );
 

@@ -81,33 +81,12 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     CentreonSession::stop();
 }
 
-$args = "&redirect='";
-$a = 0;
-foreach ($_GET as $key => $value) {
-    if ($a) {
-        $args .= '&';
-    }
-    if (is_string($value)) {
-        $args .= "{$key}={$value}";
-    }
-    $a++;
-}
-$args .= "'";
+$args = "&redirect=" . urlencode(http_build_query($_GET));
 
 // check centreon session
 // if session is not valid and autologin token is not given, then redirect to login page
 if (!isset($_SESSION["centreon"])) {
     if (!isset($_GET['autologin'])) {
-        $args = "&redirect='";
-        $a = 0;
-        foreach ($_GET as $key => $value) {
-            if ($a) {
-                $args .= '&';
-            }
-            $args .= "$key=$value";
-            $a++;
-        }
-        $args .= "'";
         header("Location: index.php?disconnect=1" . $args);
     } else {
         $args = null;

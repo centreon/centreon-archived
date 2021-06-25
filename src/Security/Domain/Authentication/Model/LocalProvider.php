@@ -112,7 +112,7 @@ class LocalProvider implements ProviderInterface
             "WEB"
         );
         $this->debug(
-            'local provider trying to authenticate using legacy Authentication',
+            '[LOCAL PROVIDER] local provider trying to authenticate using legacy Authentication',
             [
                 "class" => \CentreonAuth::class,
             ],
@@ -132,7 +132,7 @@ class LocalProvider implements ProviderInterface
                 $this->setLegacySession(new \Centreon($auth->userInfos));
             }
             $this->isAuthenticated = true;
-            $this->info('authentication succeed from legacy Authentication');
+            $this->info('[LOCAL PROVIDER] authentication succeed from legacy Authentication');
         } else {
             $this->isAuthenticated = false;
         }
