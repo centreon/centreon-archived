@@ -347,7 +347,9 @@ class Authenticate
                 $redirectionPageParameters = [];
                 parse_str($queryParameters['redirect'], $redirectionPageParameters);
                 if (array_key_exists('p', $redirectionPageParameters)) {
-                    $refererRedirectionPage = $this->menuService->findPageByTopologyPageNumber($redirectionPageParameters['p']);
+                    $refererRedirectionPage = $this->menuService->findPageByTopologyPageNumber(
+                        $redirectionPageParameters['p']
+                    );
                     unset($redirectionPageParameters['p']);
                     $refererRedirectionPage->setUrlOptions('&' . http_build_query($redirectionPageParameters));
                 }
