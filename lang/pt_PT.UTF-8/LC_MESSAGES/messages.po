@@ -15158,3 +15158,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 # msgid "Display all the lines"
 # msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""

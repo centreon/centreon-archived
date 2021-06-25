@@ -14719,3 +14719,6 @@ msgstr "Permitir certificado autofirmado"
 
 # msgid "Display all the lines"
 # msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""

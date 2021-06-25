@@ -217,3 +217,4 @@ export const labelAsDisplayed = 'As displayed';
 export const labelMediumSize = 'Medium size';
 export const labelSmallSize = 'Small size';
 export const labelDisplayAllLines = 'Display all the lines';
+export const labelActionNotPermitted = 'Action not permitted';
