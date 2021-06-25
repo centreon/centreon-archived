@@ -16181,8 +16181,14 @@ msgstr "Impossible de démarrer la session Centreon legacy"
 #  msgid "As displayed"
 #  msgstr "Comme affiché"
 
-#  msgid "Medium size"
-#  msgstr "Taille moyenne"
+msgid "As displayed"
+msgstr "Comme affiché"
 
-#  msgid "Small size"
-#  msgstr "Petite Taille"
+msgid "Medium size"
+msgstr "Taille moyenne"
+
+msgid "Small size"
+msgstr "Petite Taille"
+
+msgid "Action not permitted"
+msgstr "Action non autorisée"
