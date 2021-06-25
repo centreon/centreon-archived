@@ -28,20 +28,16 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Authentication\UseCase\Logout;
-use Centreon\Domain\Authentication\UseCase\Redirect;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
-use Centreon\Domain\Authentication\UseCase\RedirectRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
-use Centreon\Domain\Authentication\UseCase\RedirectResponse;
 use Security\Infrastructure\Authentication\API\Model\ApiAuthenticationV21Factory;
-use Security\Infrastructure\Authentication\API\Model\ProviderRedirectionV21Factory;
 use Security\Infrastructure\Authentication\API\Model\ProvidersConfigurationsV21Factory;
 
 /**
@@ -98,30 +94,6 @@ class AuthenticationController extends AbstractController
         return $this->view([
             'message' => 'Successful logout'
         ]);
-    }
-
-    /**
-     * Provide the default connection url.
-     *
-     * @param Request $request
-     * @param Redirect $redirect
-     * @param RedirectResponse $response
-     * @return View
-     */
-    public function redirection(Request $request, Redirect $redirect, RedirectResponse $response): View
-    {
-        $redirectRequest = new RedirectRequest($this->getBaseUri());
-        $redirect->execute($redirectRequest, $response);
-
-        if ($request->headers->get('Content-Type') === 'application/json') {
-            // Send redirection_uri in JSON format only for API request
-            return View::create(ProviderRedirectionV21Factory::createFromResponse($response));
-        } else {
-            // Otherwise, we send a redirection response.
-            $view = View::createRedirect($response->getRedirectionUri());
-            $view->setHeader('Content-Type', 'text/html');
-            return $view;
-        }
     }
 
     /**

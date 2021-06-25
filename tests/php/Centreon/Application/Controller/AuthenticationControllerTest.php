@@ -28,10 +28,8 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Authentication\UseCase\Logout;
-use Centreon\Domain\Authentication\UseCase\Redirect;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
-use Centreon\Domain\Authentication\UseCase\RedirectResponse;
 use Centreon\Application\Controller\AuthenticationController;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
@@ -40,7 +38,6 @@ use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
 use Security\Infrastructure\Authentication\API\Model\ApiAuthenticationV21Factory;
-use Security\Infrastructure\Authentication\API\Model\ProviderRedirectionV21Factory;
 use Security\Infrastructure\Authentication\API\Model\ProvidersConfigurationsV21Factory;
 
 /**
@@ -62,11 +59,6 @@ class AuthenticationControllerTest extends TestCase
      * @var Logout|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $logout;
-
-    /**
-     * @var Redirect|\PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $redirect;
 
     /**
      * @var FindProvidersConfigurations|\PHPUnit\Framework\MockObject\MockObject
@@ -102,7 +94,6 @@ class AuthenticationControllerTest extends TestCase
 
         $this->authenticateApi = $this->createMock(AuthenticateApi::class);
         $this->logout = $this->createMock(Logout::class);
-        $this->redirect = $this->createMock(Redirect::class);
         $this->findProvidersConfigurations = $this->createMock(FindProvidersConfigurations::class);
         $this->authenticate = $this->createMock(Authenticate::class);
 
@@ -229,61 +220,6 @@ class AuthenticationControllerTest extends TestCase
                 ],
                 Response::HTTP_UNAUTHORIZED
             ),
-            $view
-        );
-    }
-
-    /**
-     * test redirection from api
-     */
-    public function testRedirectionFromApi()
-    {
-        $authenticationController = new AuthenticationController();
-        $authenticationController->setContainer($this->container);
-
-        $response = new RedirectResponse();
-        $response->setRedirectionUri('/monitoring/resources');
-
-        $this->request->headers = new class () {
-            public function get()
-            {
-                return 'application/json';
-            }
-        };
-
-        $view = $authenticationController->redirection($this->request, $this->redirect, $response);
-
-        $this->assertEquals(
-            View::create(ProviderRedirectionV21Factory::createFromResponse($response)),
-            $view
-        );
-    }
-
-    /**
-     * test redirection from web
-     */
-    public function testRedirectionFromWeb()
-    {
-        $authenticationController = new AuthenticationController();
-        $authenticationController->setContainer($this->container);
-
-        $response = new RedirectResponse();
-        $response->setRedirectionUri('/monitoring/resources');
-
-        $this->request->headers = new class () {
-            public function get()
-            {
-                return 'text/html';
-            }
-        };
-
-        $view = $authenticationController->redirection($this->request, $this->redirect, $response);
-
-        $expectedView = View::createRedirect('/monitoring/resources');
-        $expectedView->setHeader('Content-Type', 'text/html');
-
-        $this->assertEquals(
-            $expectedView,
             $view
         );
     }
