@@ -7,10 +7,17 @@ import timezonePlugin from 'dayjs/plugin/timezone';
 import utcPlugin from 'dayjs/plugin/utc';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import ResizeObserver from 'resize-observer-polyfill';
+import { configure } from '@testing-library/dom';
 
 window.ResizeObserver = ResizeObserver;
 
-jest.setTimeout(10000);
+const timeout = 10000;
+
+configure({
+  asyncUtilTimeout: timeout,
+});
+
+jest.setTimeout(timeout);
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);

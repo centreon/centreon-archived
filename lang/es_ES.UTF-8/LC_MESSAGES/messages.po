@@ -14717,3 +14717,6 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Small size"
 #  msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""
