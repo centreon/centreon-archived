@@ -49,7 +49,7 @@ $searchLdap = filter_var(
     $_POST['searchLdap'] ?? $_GET['searchLdap'] ?? null,
     FILTER_SANITIZE_STRING
 );
-
+var_dump($searchLdap);
 $ldapConf = new CentreonLdapAdmin($pearDB);
 if (isset($_POST['searchLdap']) || isset($_GET['searchLdap'])) {
     $centreon->historySearch = array();
@@ -77,7 +77,7 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?o=ldap&p=" . $p);
 
 $attrBtnSuccess = array(
     "class" => "btc bt_success",
-    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "&o=ldap');"
 );
 $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
