@@ -1,0 +1,16 @@
+#Github context:
+#https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
+
+#Get author id when an issue is opened
+
+on:
+  issue:
+    types:
+      -opened
+
+jobs:
+  one:
+    runs-on: ubuntu-latest
+    steps:
+      - name: View PR author
+        run: echo "This PR is opened by ${{ github.event.pull_request.user.login }} ."
