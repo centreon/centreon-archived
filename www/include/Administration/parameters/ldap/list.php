@@ -49,7 +49,7 @@ $searchLdap = filter_var(
     $_POST['searchLdap'] ?? $_GET['searchLdap'] ?? null,
     FILTER_SANITIZE_STRING
 );
-var_dump($searchLdap);
+
 $ldapConf = new CentreonLdapAdmin($pearDB);
 if (isset($_POST['searchLdap']) || isset($_GET['searchLdap'])) {
     $centreon->historySearch = array();
