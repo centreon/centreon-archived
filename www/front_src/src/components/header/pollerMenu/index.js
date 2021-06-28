@@ -307,7 +307,11 @@ export default withTranslation()(
 );
 
 PollerMenu.propTypes = {
-  allowedPages: PropTypes.arrayOf(PropTypes.string).isRequired,
+  allowedPages: PropTypes.arrayOf(PropTypes.string),
   refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
     .isRequired,
+};
+
+PollerMenu.defaultProps = {
+  allowedPages: [],
 };
