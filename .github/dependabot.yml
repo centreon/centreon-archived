@@ -1,0 +1,35 @@
+# Basic set up for three package managers
+# https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      # Allow both direct and indirect updates for all packages
+      - dependency-type: "production"
+    commit-message:
+      # Prefix all commit messages
+      prefix: "npm production"
+
+  # Maintain dependencies for Composer
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      # Allow both direct and indirect updates for all packages
+      - dependency-type: "all"
+    commit-message:
+      # Prefix all commit messages
+      prefix: "composer"
