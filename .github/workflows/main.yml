@@ -13,4 +13,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: View PR author
-        run: echo "This PR is opened by ${{ github.event.pull_request.user.login }} ."
+        run: echo "This issue is opened by ${{ github.event.pull_request.user.login }}."
+        run: echo "This author has the id ${{ github.event.pull_request.user.id }}."
