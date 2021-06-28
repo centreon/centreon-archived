@@ -4,9 +4,9 @@
 #Get author id when an issue is opened
 
 on:
-  issue:
-    types:
-      -opened
+  pull_request:
+    branches:
+      - master
 
 jobs:
   one:
