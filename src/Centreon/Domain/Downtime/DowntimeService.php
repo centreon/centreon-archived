@@ -44,6 +44,7 @@ use Centreon\Domain\Service\AbstractCentreonService;
  */
 class DowntimeService extends AbstractCentreonService implements DowntimeServiceInterface
 {
+    public const DOWNTIME_YEAR_MAX = 2100;
     public const VALIDATION_GROUPS_ADD_HOST_DOWNTIME = ['Default', 'downtime_host', 'downtime_host_add'];
     public const VALIDATION_GROUPS_ADD_SERVICE_DOWNTIME = ['Default', 'downtime_service'];
 
@@ -120,6 +121,19 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      */
     public function addHostDowntime(Downtime $downtime, Host $host): void
     {
+        // The year of the start date and the end date cannot reach the maximum limit defined by DOWNTIME_MAX_YEAR
+        if (((int) $downtime->getStartTime()->format('Y')) >= self::DOWNTIME_YEAR_MAX) {
+            throw \Centreon\Domain\Downtime\Exception\DowntimeException::maximumDateReached(
+                self::DOWNTIME_YEAR_MAX,
+                $downtime->getStartTime()->format('c')
+            );
+        }
+        if (((int) $downtime->getEndTime()->format('Y')) >= self::DOWNTIME_YEAR_MAX) {
+            throw \Centreon\Domain\Downtime\Exception\DowntimeException::maximumDateReached(
+                self::DOWNTIME_YEAR_MAX,
+                $downtime->getEndTime()->format('c')
+            );
+        }
         $this->engineService->addHostDowntime($downtime, $host);
     }
 
@@ -128,6 +142,19 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      */
     public function addServiceDowntime(Downtime $downtime, Service $service): void
     {
+        // The year of the start date and the end date cannot reach the maximum limit defined by DOWNTIME_MAX_YEAR
+        if (((int) $downtime->getStartTime()->format('Y')) >= self::DOWNTIME_YEAR_MAX) {
+            throw \Centreon\Domain\Downtime\Exception\DowntimeException::maximumDateReached(
+                self::DOWNTIME_YEAR_MAX,
+                $downtime->getStartTime()->format('c')
+            );
+        }
+        if (((int) $downtime->getEndTime()->format('Y')) >= self::DOWNTIME_YEAR_MAX) {
+            throw \Centreon\Domain\Downtime\Exception\DowntimeException::maximumDateReached(
+                self::DOWNTIME_YEAR_MAX,
+                $downtime->getEndTime()->format('c')
+            );
+        }
         $this->engineService->addServiceDowntime($downtime, $service);
     }
 
