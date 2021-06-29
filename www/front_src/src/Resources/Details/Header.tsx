@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { hasPath, isNil, not } from 'ramda';
+import { hasPath, isNil, not, path } from 'ramda';
 
 import { Grid, Typography, makeStyles, Theme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -22,9 +22,10 @@ import {
   labelSomethingWentWrong,
 } from '../translatedLabels';
 import memoizeComponent from '../memoizedComponent';
-import { Parent } from '../models';
+import { Parent, ResourceUris } from '../models';
 
 import SelectableResourceName from './tabs/Details/SelectableResourceName';
+import ShortcutsTooltip from './ShortcutsTooltip';
 
 import { DetailsSectionProps } from '.';
 
@@ -39,7 +40,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     gridGap: theme.spacing(2),
     gridTemplateColumns: `${
       displaySeverity ? 'auto' : ''
-    } auto minmax(0, 1fr) auto`,
+    } auto minmax(0, 1fr) auto auto`,
     height: 43,
     padding: theme.spacing(0, 1),
   }),
@@ -98,6 +99,11 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
     return <LoadingSkeleton />;
   }
 
+  const resourceUris = path<ResourceUris>(
+    ['links', 'uris'],
+    details,
+  ) as ResourceUris;
+
   return (
     <>
       {details?.severity_level && (
@@ -127,6 +133,7 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
           </div>
         )}
       </div>
+      <ShortcutsTooltip resourceUris={resourceUris} />
       <IconButton
         ariaLabel={t(labelCopyLink)}
         size="small"
