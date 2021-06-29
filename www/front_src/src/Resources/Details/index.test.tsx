@@ -783,16 +783,6 @@ describe(Details, () => {
             reporting: '/reporting',
           },
         },
-        parent: {
-          ...retrievedDetails.parent,
-          links: {
-            uris: {
-              configuration: '/host/configuration',
-              logs: '/host/logs',
-              reporting: '/host/reporting',
-            },
-          },
-        },
       },
     });
 
@@ -835,7 +825,7 @@ describe(Details, () => {
       id: 2,
       parentId: 3,
       parentType: 'host',
-      tab: 'shortcuts',
+      tab: 'details',
       type: 'service',
       uuid: 'h3-s2',
     };
@@ -1293,5 +1283,44 @@ describe(Details, () => {
     expect(getByText('2.46k')).toBeInTheDocument();
     expect(getByLabelText(labelAvg)).toBeInTheDocument();
     expect(getByText('1.23k')).toBeInTheDocument();
+  });
+
+  it('displays the resource configuration link when the resource name is hovered', async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        ...retrievedDetails,
+        links: {
+          ...retrievedDetails.links,
+          uris: {
+            configuration: '/configuration',
+            logs: '/logs',
+            reporting: '/reporting',
+          },
+        },
+      },
+    });
+
+    const { getByText, getByLabelText } = renderDetails();
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        context.getSelectedResourceDetailsEndpoint() as string,
+        expect.anything(),
+      );
+    });
+
+    userEvent.hover(getByText(retrievedDetails.name));
+
+    expect(
+      getByLabelText(`${labelConfigure}_${retrievedDetails.name}`),
+    ).toBeInTheDocument();
+
+    expect(
+      getByLabelText(`${labelConfigure}_${retrievedDetails.name}`),
+    ).toHaveAttribute('href', '/configuration');
   });
 });
