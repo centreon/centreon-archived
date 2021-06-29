@@ -68,6 +68,7 @@ import {
   labelAvg,
   labelCompactTimePeriod,
   labelCheck,
+  labelShortcuts,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -76,13 +77,7 @@ import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 
 import { last7Days, last31Days, lastDayPeriod } from './tabs/Graph/models';
-import {
-  graphTabId,
-  timelineTabId,
-  shortcutsTabId,
-  servicesTabId,
-  metricsTabId,
-} from './tabs';
+import { graphTabId, timelineTabId, servicesTabId, metricsTabId } from './tabs';
 import { TabId } from './tabs/models';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 import useDetails from './useDetails';
@@ -776,7 +771,7 @@ describe(Details, () => {
     );
   });
 
-  it('displays the shortcut links when the shortcuts tab is selected', async () => {
+  it('displays the shortcut links when the More icon is clicked', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
@@ -801,9 +796,7 @@ describe(Details, () => {
       },
     });
 
-    const { getByText, getAllByText } = renderDetails({
-      openTabId: shortcutsTabId,
-    });
+    const { getByLabelText, getAllByLabelText } = renderDetails();
 
     act(() => {
       setSelectedServiceResource();
@@ -813,67 +806,20 @@ describe(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
-    expect(getAllByText(labelConfigure)[0]).toHaveAttribute(
+    userEvent.click(getByLabelText(labelShortcuts).firstChild as HTMLElement);
+
+    expect(getAllByLabelText(labelConfigure)[0]).toHaveAttribute(
       'href',
       '/configuration',
     );
-    expect(getAllByText(labelViewLogs)[0]).toHaveAttribute('href', '/logs');
-    expect(getAllByText(labelViewReport)[0]).toHaveAttribute(
+    expect(getAllByLabelText(labelViewLogs)[0]).toHaveAttribute(
+      'href',
+      '/logs',
+    );
+    expect(getAllByLabelText(labelViewReport)[0]).toHaveAttribute(
       'href',
       '/reporting',
     );
-
-    expect(getByText(labelService)).toBeInTheDocument();
-    expect(getByText(labelHost)).toBeInTheDocument();
-
-    expect(getAllByText(labelConfigure)[1]).toHaveAttribute(
-      'href',
-      '/host/configuration',
-    );
-    expect(getAllByText(labelViewLogs)[1]).toHaveAttribute(
-      'href',
-      '/host/logs',
-    );
-    expect(getAllByText(labelViewReport)[1]).toHaveAttribute(
-      'href',
-      '/host/reporting',
-    );
-  });
-
-  it('does not display parent shortcut links when the selected resource is a host and the shortcuts tab is selected', async () => {
-    mockedAxios.get.mockResolvedValueOnce({
-      data: {
-        ...retrievedDetails,
-        links: {
-          ...retrievedDetails.links,
-          uris: {
-            configuration: '/configuration',
-            logs: '/logs',
-            reporting: '/reporting',
-          },
-        },
-        type: resourceHostType,
-      },
-    });
-
-    const { getByText, getAllByText, queryByText } = renderDetails({
-      openTabId: shortcutsTabId,
-    });
-
-    act(() => {
-      setSelectedServiceResource();
-    });
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
-
-    expect(getAllByText(labelConfigure)).toHaveLength(1);
-    expect(getAllByText(labelViewLogs)).toHaveLength(1);
-    expect(getAllByText(labelViewReport)).toHaveLength(1);
-
-    expect(queryByText(labelService)).not.toBeInTheDocument();
-    expect(getByText(labelHost)).toBeInTheDocument();
   });
 
   it('sets the details according to the details URL query parameter when given', async () => {
@@ -908,8 +854,6 @@ describe(Details, () => {
         `${resourcesEndpoint}/${retrievedServiceDetails.parentType}s/${retrievedServiceDetails.parentId}/${retrievedServiceDetails.type}s/${retrievedServiceDetails.id}`,
         expect.anything(),
       );
-
-      expect(context.openDetailsTabId).toEqual(shortcutsTabId);
     });
 
     fireEvent.click(getByText(labelDetails));

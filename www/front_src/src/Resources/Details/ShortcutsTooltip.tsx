@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { filter, isNil, not, pipe, prop } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -20,6 +21,7 @@ import { PopoverMenu } from '@centreon/ui';
 import { ResourceUris } from '../models';
 import {
   labelConfigure,
+  labelShortcuts,
   labelViewLogs,
   labelViewReport,
 } from '../translatedLabels';
@@ -39,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const shortcuts = [
     {
@@ -61,10 +64,14 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
   const availableShortcuts = filter(pipe(prop('uri'), isNil, not), shortcuts);
 
   return (
-    <PopoverMenu icon={<MoreHorizIcon fontSize="small" />}>
+    <PopoverMenu
+      icon={<MoreHorizIcon fontSize="small" />}
+      title={t(labelShortcuts)}
+    >
       <List dense>
         {availableShortcuts.map(({ Icon, uri, name }) => (
           <Link
+            aria-label={t(name)}
             className={classes.link}
             color="inherit"
             href={uri as string}
@@ -74,7 +81,7 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
               <ListItemIcon className={classes.iconContainer}>
                 <Icon color="primary" />
               </ListItemIcon>
-              <ListItemText>{name}</ListItemText>
+              <ListItemText>{t(name)}</ListItemText>
             </ListItem>
           </Link>
         ))}

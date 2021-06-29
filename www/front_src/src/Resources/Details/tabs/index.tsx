@@ -25,7 +25,6 @@ const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
 const metricsTabId = 4;
-const shortcutsTabId = 5;
 
 export interface TabProps {
   details?: ResourceDetails;
@@ -106,7 +105,6 @@ const tabIdByLabel = {
   graph: graphTabId,
   metrics: metricsTabId,
   services: servicesTabId,
-  shortcuts: shortcutsTabId,
   timeline: timelineTabId,
 };
 
@@ -128,7 +126,6 @@ export {
   detailsTabId,
   timelineTabId,
   graphTabId,
-  shortcutsTabId,
   servicesTabId,
   metricsTabId,
   tabs,
