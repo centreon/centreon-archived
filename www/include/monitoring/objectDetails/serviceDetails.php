@@ -823,10 +823,7 @@ if (!is_null($host_id)) {
         }
 
         if (count($tools) > 0) {
-            foreach ($tools as $key => $value) {
-                $tools[$key] = CentreonUtils::escapeSecure($value);
-            }
-            $tpl->assign("tools", $tools);
+            $tpl->assign("tools", CentreonUtils::escapeSecure($tools));
         }
 
         /**
