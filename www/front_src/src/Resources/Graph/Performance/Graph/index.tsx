@@ -209,9 +209,8 @@ const GraphContent = ({
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
-  const [zoomPivotPosition, setZoomPivotPosition] = React.useState<
-    number | null
-  >(null);
+  const [zoomPivotPosition, setZoomPivotPosition] =
+    React.useState<number | null>(null);
   const [zoomBoundaries, setZoomBoundaries] =
     React.useState<ZoomBoundaries | null>(null);
   const { canComment } = useAclQuery();

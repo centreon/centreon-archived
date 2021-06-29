@@ -47,8 +47,6 @@ import {
   labelConfigure,
   labelViewLogs,
   labelViewReport,
-  labelHost,
-  labelService,
   labelDetails,
   labelCopyLink,
   labelServices,
