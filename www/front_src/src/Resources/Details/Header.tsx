@@ -1,11 +1,12 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { hasPath, isNil, not, path } from 'ramda';
+import { hasPath, isNil, not, path, prop } from 'ramda';
 
-import { Grid, Typography, makeStyles, Theme } from '@material-ui/core';
+import { Grid, Typography, makeStyles, Theme, Link } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import CopyIcon from '@material-ui/icons/FileCopy';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import {
   StatusChip,
@@ -17,6 +18,7 @@ import {
 } from '@centreon/ui';
 
 import {
+  labelConfigure,
   labelCopyLink,
   labelLinkCopied,
   labelSomethingWentWrong,
@@ -53,6 +55,21 @@ const useStylesHeaderContent = makeStyles((theme) => ({
     gridGap: theme.spacing(1),
     gridTemplateColumns: 'auto minmax(0, 1fr)',
   },
+  resourceName: {
+    columnGap: theme.spacing(0.5),
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, min-content)',
+    height: theme.spacing(3),
+    width: 'min-content',
+  },
+  resourceNameConfigurationIcon: {
+    alignSelf: 'center',
+    display: 'flex',
+    minWidth: theme.spacing(3),
+  },
+  resourceNameConfigurationLink: {
+    height: theme.spacing(2.5),
+  },
   truncated: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -76,9 +93,18 @@ type Props = {
 } & DetailsSectionProps;
 
 const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
+  const [resourceNameHovered, setResourceNameHovered] = React.useState(false);
   const { t } = useTranslation();
   const { showMessage } = useSnackbar();
   const classes = useStylesHeaderContent();
+
+  const hoverResourceName = () => {
+    setResourceNameHovered(true);
+  };
+
+  const leaveResourceName = () => {
+    setResourceNameHovered(false);
+  };
 
   const copyResourceLink = (): void => {
     try {
@@ -117,7 +143,25 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
         severityCode={details.status.severity_code}
       />
       <div>
-        <Typography className={classes.truncated}>{details.name}</Typography>
+        <div
+          aria-label={`${details.name}_hover`}
+          className={classes.resourceName}
+          onMouseEnter={hoverResourceName}
+          onMouseLeave={leaveResourceName}
+        >
+          <Typography className={classes.truncated}>{details.name}</Typography>
+          <div className={classes.resourceNameConfigurationIcon}>
+            {resourceNameHovered && (
+              <Link
+                aria-label={`${t(labelConfigure)}_${details.name}`}
+                className={classes.resourceNameConfigurationLink}
+                href={prop('configuration', resourceUris) as string}
+              >
+                <SettingsIcon fontSize="small" />
+              </Link>
+            )}
+          </div>
+        </div>
         {hasPath(['parent', 'status'], details) && (
           <div className={classes.parent}>
             <StatusChip
