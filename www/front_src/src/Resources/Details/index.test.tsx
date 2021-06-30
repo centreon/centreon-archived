@@ -75,7 +75,6 @@ import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 import useFilter from '../Filter/useFilter';
-import { ResourceType } from '../models';
 import { SelectableCriteriasName } from '../Filter/Criterias/models';
 
 import { last7Days, last31Days, lastDayPeriod } from './tabs/Graph/models';
