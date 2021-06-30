@@ -26,6 +26,7 @@ import {
   fade,
   useTheme,
   CircularProgress,
+  Tooltip,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
@@ -47,7 +48,10 @@ import {
   hasUnitStackedLines,
 } from '../timeSeries';
 import Lines from '../Lines';
-import { labelAddComment } from '../../../translatedLabels';
+import {
+  labelActionNotPermitted,
+  labelAddComment,
+} from '../../../translatedLabels';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
@@ -387,7 +391,7 @@ const GraphContent = ({
   const displayAddCommentTooltip = (event): void => {
     setZoomBoundaries(null);
     setZoomPivotPosition(null);
-    if (!canComment([resource]) || isNil(onAddComment)) {
+    if (isNil(onAddComment)) {
       return;
     }
 
@@ -452,6 +456,10 @@ const GraphContent = ({
     : 0;
 
   const timeTick = containsMetrics ? new Date(mousePositionTimeTick) : null;
+
+  const isCommentPermitted = canComment([resource]);
+
+  const commentTitle = isCommentPermitted ? '' : t(labelActionNotPermitted);
 
   return (
     <AnnotationsContext.Provider value={annotations}>
@@ -570,14 +578,19 @@ const GraphContent = ({
                   formatString: dateTimeFormat,
                 })}
               </Typography>
-              <Button
-                className={classes.addCommentButton}
-                color="primary"
-                size="small"
-                onClick={prepareAddComment}
-              >
-                {t(labelAddComment)}
-              </Button>
+              <Tooltip title={commentTitle}>
+                <div>
+                  <Button
+                    className={classes.addCommentButton}
+                    color="primary"
+                    disabled={!isCommentPermitted}
+                    size="small"
+                    onClick={prepareAddComment}
+                  >
+                    {t(labelAddComment)}
+                  </Button>
+                </div>
+              </Tooltip>
             </Paper>
           )}
           {addingComment && (
