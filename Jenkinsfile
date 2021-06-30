@@ -314,6 +314,9 @@ try {
         }
       }
     }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error("Quality gate failure: ${qualityGate.status}.");
+    }
   }
 }
 
