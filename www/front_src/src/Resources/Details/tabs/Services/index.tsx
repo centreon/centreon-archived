@@ -73,6 +73,7 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
     setSelectedResourceParentType,
     setOpenDetailsTabId,
     selectedResourceId,
+    selectedResourceUuid,
   } = useResourceContext();
 
   const [services, setServices] = React.useState<Array<Service>>();
@@ -98,11 +99,11 @@ const ServicesTab = ({ details }: TabProps): JSX.Element => {
 
   const selectService = (service) => (): void => {
     setOpenDetailsTabId(detailsTabId);
-    setSelectedResourceUuid(service.uuid);
+    setSelectedResourceUuid(`${selectedResourceUuid}-s${service.id}`);
     setSelectedResourceId(service.id);
-    setSelectedResourceType(service.type);
-    setSelectedResourceParentType(service?.parent?.type);
-    setSelectedResourceParentId(service?.parent?.id);
+    setSelectedResourceType('service');
+    setSelectedResourceParentType('host');
+    setSelectedResourceParentId(selectedResourceId);
   };
 
   const getContent = (): JSX.Element => {
