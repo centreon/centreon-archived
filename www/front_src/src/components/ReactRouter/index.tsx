@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { equals, isEmpty } from 'ramda';
+import { equals } from 'ramda';
 
 import { styled } from '@material-ui/core';
 
