@@ -29,6 +29,7 @@ import {
   propEq,
   find,
   isNil,
+  last,
 } from 'ramda';
 
 import { Column } from '@centreon/ui';
@@ -436,7 +437,6 @@ describe(Listing, () => {
   it.each(additionalIds)(
     'displays additional columns when selected from the corresponding menu',
     async (columnId) => {
-      // eslint-disable-next-line @typescript-eslint/no-shadow
       const { getAllByText, getByTitle, getByText } = renderListing();
 
       await waitFor(() => {
@@ -445,19 +445,28 @@ describe(Listing, () => {
 
       fireEvent.click(getByTitle('Add columns').firstChild as HTMLElement);
 
-      const columnLabel = find(propEq('id', columnId), columns)
-        ?.label as string;
+      const columnIds = find(propEq('id', columnId), columns);
+      const columnLabel = columnIds?.label as string;
 
-      const columnShortLabel = find(propEq('id', columnId), columns)
-        ?.shortLabel as string;
+      const columnShortLabel = columnIds?.shortLabel as string;
 
-      fireEvent.click(head(getAllByText(columnLabel)) as HTMLElement);
+      const hasShortLabel = !isNil(columnShortLabel);
 
-      if (isNil(columnShortLabel)) return;
-      expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
+      const columnDisplayLabel = hasShortLabel
+        ? `${columnLabel} (${columnShortLabel})`
+        : columnLabel;
 
-      expect(getByText(columnShortLabel)).toBeInTheDocument();
-      expect(getByText('C')).toBeInTheDocument();
+      fireEvent.click(last(getAllByText(columnDisplayLabel)) as HTMLElement);
+
+      const expectedLabelCount = hasShortLabel ? 1 : 2;
+
+      expect(getAllByText(columnDisplayLabel).length).toEqual(
+        expectedLabelCount,
+      );
+
+      if (hasShortLabel) {
+        expect(getByText(columnDisplayLabel)).toBeInTheDocument();
+      }
     },
   );
 });
