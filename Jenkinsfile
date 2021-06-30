@@ -1,5 +1,6 @@
 import org.apache.tools.ant.types.selectors.SelectorUtils
 import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
+import groovy.json.JsonSlurper
 
 /*
 ** Variables.
