@@ -125,18 +125,12 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
     return <LoadingSkeleton />;
   }
 
-  const uris: ResourceUris = {
-    configuration: undefined,
-    logs: 'coucou',
-    reporting: undefined,
-  };
-
   const resourceUris = path<ResourceUris>(
     ['links', 'uris'],
     details,
   ) as ResourceUris;
 
-  const resourceConfigurationUri = prop('configuration', uris);
+  const resourceConfigurationUri = prop('configuration', resourceUris);
 
   return (
     <>
@@ -185,7 +179,7 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
           </div>
         )}
       </div>
-      <ShortcutsTooltip resourceUris={uris} />
+      <ShortcutsTooltip resourceUris={resourceUris} />
       <IconButton
         ariaLabel={t(labelCopyLink)}
         size="small"
