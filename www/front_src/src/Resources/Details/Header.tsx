@@ -3,7 +3,14 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { hasPath, isNil, not, path, prop } from 'ramda';
 
-import { Grid, Typography, makeStyles, Theme, Link } from '@material-ui/core';
+import {
+  Grid,
+  Typography,
+  makeStyles,
+  Theme,
+  Link,
+  Tooltip,
+} from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import CopyIcon from '@material-ui/icons/FileCopy';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -18,6 +25,7 @@ import {
 } from '@centreon/ui';
 
 import {
+  labelActionNotPermitted,
   labelConfigure,
   labelCopyLink,
   labelLinkCopied,
@@ -65,7 +73,7 @@ const useStylesHeaderContent = makeStyles((theme) => ({
   resourceNameConfigurationIcon: {
     alignSelf: 'center',
     display: 'flex',
-    minWidth: theme.spacing(3),
+    minWidth: theme.spacing(2.5),
   },
   resourceNameConfigurationLink: {
     height: theme.spacing(2.5),
@@ -132,6 +140,14 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
 
   const resourceConfigurationUri = prop('configuration', resourceUris);
 
+  const resourceConfigurationUriTitle = isNil(resourceConfigurationUri)
+    ? t(labelActionNotPermitted)
+    : '';
+
+  const resourceConfigurationIconColor = isNil(resourceConfigurationUri)
+    ? 'disabled'
+    : 'primary';
+
   return (
     <>
       {details?.severity_level && (
@@ -153,14 +169,21 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
         >
           <Typography className={classes.truncated}>{details.name}</Typography>
           <div className={classes.resourceNameConfigurationIcon}>
-            {resourceNameHovered && not(isNil(resourceConfigurationUri)) && (
-              <Link
-                aria-label={`${t(labelConfigure)}_${details.name}`}
-                className={classes.resourceNameConfigurationLink}
-                href={resourceConfigurationUri}
-              >
-                <SettingsIcon fontSize="small" />
-              </Link>
+            {resourceNameHovered && (
+              <Tooltip title={resourceConfigurationUriTitle}>
+                <div>
+                  <Link
+                    aria-label={`${t(labelConfigure)}_${details.name}`}
+                    className={classes.resourceNameConfigurationLink}
+                    href={resourceConfigurationUri}
+                  >
+                    <SettingsIcon
+                      color={resourceConfigurationIconColor}
+                      fontSize="small"
+                    />
+                  </Link>
+                </div>
+              </Tooltip>
             )}
           </div>
         </div>
