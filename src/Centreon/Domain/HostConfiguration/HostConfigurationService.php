@@ -133,10 +133,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                 throw new HostConfigurationException(_('Unable to find the Engine configuration'));
             }
 
-            $safedHostName = EngineConfiguration::removeIllegalCharacters(
-                $host->getName(),
-                $engineConfiguration->getIllegalObjectNameCharacters()
-            );
+            $safedHostName = $engineConfiguration->removeIllegalCharacters($host->getName());
             if (empty($safedHostName)) {
                 throw new HostConfigurationException(_('Host name can not be empty'));
             }
