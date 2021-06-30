@@ -164,34 +164,43 @@ export interface CriteriaById {
   [criteria: string]: CriteriaDisplayProps;
 }
 
+export enum SelectableCriteriasName {
+  hostGroups = 'host_groups',
+  monitoringServers = 'monitoring_servers',
+  resourceTypes = 'resource_types',
+  serviceGroups = 'service_groups',
+  states = 'states',
+  statuses = 'statuses',
+}
+
 const selectableCriterias: CriteriaById = {
-  host_groups: {
+  [SelectableCriteriasName.hostGroups]: {
     buildAutocompleteEndpoint: buildHostGroupsEndpoint,
     label: labelHostGroup,
     sortId: 3,
   },
-  monitoring_servers: {
+  [SelectableCriteriasName.monitoringServers]: {
     autocompleteSearch: { conditions: [{ field: 'running', value: true }] },
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
     label: labelMonitoringServer,
     sortId: 5,
   },
-  resource_types: {
+  [SelectableCriteriasName.resourceTypes]: {
     label: labelResource,
     options: selectableResourceTypes,
     sortId: 0,
   },
-  service_groups: {
+  [SelectableCriteriasName.serviceGroups]: {
     buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
     label: labelServiceGroup,
     sortId: 4,
   },
-  states: {
+  [SelectableCriteriasName.states]: {
     label: labelState,
     options: selectableStates,
     sortId: 1,
   },
-  statuses: {
+  [SelectableCriteriasName.statuses]: {
     label: labelStatus,
     options: selectableStatuses,
     sortId: 2,
