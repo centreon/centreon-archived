@@ -61,25 +61,23 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
     },
   ];
 
-  const availableShortcuts = filter(pipe(prop('uri'), isNil, not), shortcuts);
-
   return (
     <PopoverMenu
       icon={<MoreHorizIcon fontSize="small" />}
       title={t(labelShortcuts)}
     >
       <List dense>
-        {availableShortcuts.map(({ Icon, uri, name }) => (
+        {shortcuts.map(({ Icon, uri, name }) => (
           <Link
             aria-label={t(name)}
             className={classes.link}
             color="inherit"
-            href={uri as string}
+            href={uri}
             key={name}
           >
-            <ListItem button>
+            <ListItem button disabled={isNil(uri)}>
               <ListItemIcon className={classes.iconContainer}>
-                <Icon color="primary" />
+                <Icon color={isNil(uri) ? 'disabled' : 'primary'} />
               </ListItemIcon>
               <ListItemText>{t(name)}</ListItemText>
             </ListItem>

@@ -125,10 +125,18 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
     return <LoadingSkeleton />;
   }
 
+  const uris: ResourceUris = {
+    configuration: undefined,
+    logs: 'coucou',
+    reporting: undefined,
+  };
+
   const resourceUris = path<ResourceUris>(
     ['links', 'uris'],
     details,
   ) as ResourceUris;
+
+  const resourceConfigurationUri = prop('configuration', uris);
 
   return (
     <>
@@ -151,11 +159,11 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
         >
           <Typography className={classes.truncated}>{details.name}</Typography>
           <div className={classes.resourceNameConfigurationIcon}>
-            {resourceNameHovered && (
+            {resourceNameHovered && not(isNil(resourceConfigurationUri)) && (
               <Link
                 aria-label={`${t(labelConfigure)}_${details.name}`}
                 className={classes.resourceNameConfigurationLink}
-                href={prop('configuration', resourceUris) as string}
+                href={resourceConfigurationUri}
               >
                 <SettingsIcon fontSize="small" />
               </Link>
@@ -177,7 +185,7 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
           </div>
         )}
       </div>
-      <ShortcutsTooltip resourceUris={resourceUris} />
+      <ShortcutsTooltip resourceUris={uris} />
       <IconButton
         ariaLabel={t(labelCopyLink)}
         size="small"
