@@ -28,6 +28,7 @@ import { useRequest, getData } from '@centreon/ui';
 import { timeFormat, dateTimeFormat } from '../format';
 import { parseAndFormat } from '../../dateTime';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
+import { useUserContext } from '../../../Provider/UserContext';
 
 import getTimeSeries, { getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
@@ -81,6 +82,7 @@ const PerformanceGraph = ({
 }: Props): JSX.Element | null => {
   const classes = useStyles({ graphHeight });
   const { t } = useTranslation();
+  const { locale } = useUserContext();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>([]);
@@ -135,10 +137,10 @@ const PerformanceGraph = ({
   };
 
   const formatXAxisTick = (tick): string =>
-    parseAndFormat({ isoDate: tick, to: xAxisTickFormat });
+    parseAndFormat({ isoDate: tick, locale, to: xAxisTickFormat });
 
   const formatTooltipTime = (tick): string =>
-    parseAndFormat({ isoDate: tick, to: dateTimeFormat });
+    parseAndFormat({ isoDate: tick, locale, to: dateTimeFormat });
 
   const getLineByMetric = (metric): LineModel => {
     return find(propEq('metric', metric), lineData) as LineModel;
