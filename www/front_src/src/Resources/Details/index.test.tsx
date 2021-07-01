@@ -67,7 +67,6 @@ import {
   labelMax,
   labelAvg,
   labelCompactTimePeriod,
-  labelFlapping,
   labelCheck,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
@@ -502,8 +501,6 @@ describe(Details, () => {
 
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();
-
-    expect(getByText(labelFlapping)).toBeInTheDocument();
 
     expect(getByText(labelCheck)).toBeInTheDocument();
 

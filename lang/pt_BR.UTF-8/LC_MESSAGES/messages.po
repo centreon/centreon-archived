@@ -15158,3 +15158,15 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "The duration must be lesser than a year"
 #  msgstr ""
+
+#  msgid "As Displayed"
+#  msgstr ""
+
+#  msgid "Medium size"
+#  msgstr ""
+
+#  msgid "Small size"
+#  msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""
