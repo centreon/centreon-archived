@@ -109,9 +109,6 @@ try {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
       }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error("Unit test stage failure.");
-      }
     },
     'centos8': {
       node {
@@ -120,6 +117,9 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
         junit 'ut-be.xml,ut-fe.xml'
       }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error("Unit test stage failure.");
     }
   }
 
@@ -152,9 +152,9 @@ try {
           }
         }
       }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Quality gate failure: ${qualityGate.status}.');
-      }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Quality gate failure: ${qualityGate.status}.');
     }
   }
 
