@@ -4,7 +4,7 @@ import { equals } from 'ramda';
 
 import { Grid, Chip } from '@material-ui/core';
 
-import { SelectableCriteriasName } from '../../../../Filter/Criterias/models';
+import { SelectableCriteriasType } from '../../../../Filter/Criterias/models';
 import { ResourceDetails } from '../../../models';
 import { NamedEntity, ResourceType } from '../../../../models';
 import { useResourceContext } from '../../../../Context';
@@ -19,8 +19,8 @@ const Groups = ({ details }: Props): JSX.Element => {
   const filterByGroup = (group: NamedEntity): void => {
     setCriteriaAndNewFilter({
       name: equals(details.type, ResourceType.host)
-        ? SelectableCriteriasName.hostGroups
-        : SelectableCriteriasName.serviceGroups,
+        ? SelectableCriteriasType.hostGroups
+        : SelectableCriteriasType.serviceGroups,
       value: [group],
     });
   };

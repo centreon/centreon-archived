@@ -75,7 +75,7 @@ import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 import useFilter from '../Filter/useFilter';
-import { SelectableCriteriasName } from '../Filter/Criterias/models';
+import { SelectableCriteriasType } from '../Filter/Criterias/models';
 
 import { last7Days, last31Days, lastDayPeriod } from './tabs/Graph/models';
 import {
@@ -1386,7 +1386,7 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(
-        context.getCriteriaValue(SelectableCriteriasName.serviceGroups),
+        context.getCriteriaValue(SelectableCriteriasType.serviceGroups),
       ).toEqual([{ id: 0, name: 'Linux-servers' }]);
     });
   });
