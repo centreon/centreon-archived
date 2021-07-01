@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { filter, isNil, not, pipe, prop } from 'ramda';
+import { isNil, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';

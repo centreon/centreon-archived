@@ -47,8 +47,9 @@ interface ChangeAnnotationHoveredProps {
 }
 
 export const useAnnotations = (graphWidth: number): Annotations => {
-  const [annotationHovered, setAnnotationHovered] =
-    React.useState<TimelineEvent | undefined>(undefined);
+  const [annotationHovered, setAnnotationHovered] = React.useState<
+    TimelineEvent | undefined
+  >(undefined);
 
   const getIsBetween = ({ xStart, xEnd }) => {
     const gteX = gte(__, xStart);
