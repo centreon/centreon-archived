@@ -68,30 +68,32 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
       icon={<MoreHorizIcon fontSize="small" />}
       title={t(labelShortcuts)}
     >
-      <List dense>
-        {shortcuts.map(({ Icon, uri, name }) => (
-          <Tooltip
-            key={name}
-            title={isNil(uri) ? (t(labelActionNotPermitted) as string) : ''}
-          >
-            <div>
-              <Link
-                aria-label={t(name)}
-                className={classes.link}
-                color="inherit"
-                href={uri}
-              >
-                <ListItem button disabled={isNil(uri)}>
-                  <ListItemIcon className={classes.iconContainer}>
-                    <Icon color={isNil(uri) ? 'disabled' : 'primary'} />
-                  </ListItemIcon>
-                  <ListItemText>{t(name)}</ListItemText>
-                </ListItem>
-              </Link>
-            </div>
-          </Tooltip>
-        ))}
-      </List>
+      {() => (
+        <List dense>
+          {shortcuts.map(({ Icon, uri, name }) => (
+            <Tooltip
+              key={name}
+              title={isNil(uri) ? (t(labelActionNotPermitted) as string) : ''}
+            >
+              <div>
+                <Link
+                  aria-label={t(name)}
+                  className={classes.link}
+                  color="inherit"
+                  href={uri}
+                >
+                  <ListItem button disabled={isNil(uri)}>
+                    <ListItemIcon className={classes.iconContainer}>
+                      <Icon color={isNil(uri) ? 'disabled' : 'primary'} />
+                    </ListItemIcon>
+                    <ListItemText>{t(name)}</ListItemText>
+                  </ListItem>
+                </Link>
+              </div>
+            </Tooltip>
+          ))}
+        </List>
+      )}
     </PopoverMenu>
   );
 };
