@@ -1,5 +1,5 @@
-const timeFormat = 'HH:mm';
-const dateTimeFormat = 'MM/DD HH:mm';
-const dateFormat = 'MM/DD';
+const timeFormat = 'LT';
+const dateTimeFormat = 'L LT';
+const dateFormat = 'LT';
 
 export { timeFormat, dateTimeFormat, dateFormat };
