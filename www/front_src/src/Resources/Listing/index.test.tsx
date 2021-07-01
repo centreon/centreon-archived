@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import * as React from 'react';
 
 import { useSelector } from 'react-redux';
@@ -8,6 +9,8 @@ import {
   fireEvent,
   Matcher,
   act,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getByText,
 } from '@testing-library/react';
 import axios from 'axios';
 import {
@@ -25,6 +28,8 @@ import {
   __,
   propEq,
   find,
+  isNil,
+  last,
 } from 'ramda';
 
 import { Column } from '@centreon/ui';
@@ -432,7 +437,7 @@ describe(Listing, () => {
   it.each(additionalIds)(
     'displays additional columns when selected from the corresponding menu',
     async (columnId) => {
-      const { getAllByText, getByTitle } = renderListing();
+      const { getAllByText, getByTitle, getByText } = renderListing();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
@@ -440,12 +445,28 @@ describe(Listing, () => {
 
       fireEvent.click(getByTitle('Add columns').firstChild as HTMLElement);
 
-      const columnLabel = find(propEq('id', columnId), columns)
-        ?.label as string;
+      const columnIds = find(propEq('id', columnId), columns);
+      const columnLabel = columnIds?.label as string;
 
-      fireEvent.click(head(getAllByText(columnLabel)) as HTMLElement);
+      const columnShortLabel = columnIds?.shortLabel as string;
 
-      expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
+      const hasShortLabel = !isNil(columnShortLabel);
+
+      const columnDisplayLabel = hasShortLabel
+        ? `${columnLabel} (${columnShortLabel})`
+        : columnLabel;
+
+      fireEvent.click(last(getAllByText(columnDisplayLabel)) as HTMLElement);
+
+      const expectedLabelCount = hasShortLabel ? 1 : 2;
+
+      expect(getAllByText(columnDisplayLabel).length).toEqual(
+        expectedLabelCount,
+      );
+
+      if (hasShortLabel) {
+        expect(getByText(columnDisplayLabel)).toBeInTheDocument();
+      }
     },
   );
 });

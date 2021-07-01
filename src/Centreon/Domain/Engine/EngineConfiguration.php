@@ -120,15 +120,14 @@ class EngineConfiguration
      * Remove all illegal characters from the given string.
      *
      * @param string $stringToAnalyse String for which we want to remove illegal characters
-     * @param string|null $illegalCharacters String containing illegal characters
      * @return string Return the string without illegal characters
      */
-    public static function removeIllegalCharacters(string $stringToAnalyse, ?string $illegalCharacters): string
+    public function removeIllegalCharacters(string $stringToAnalyse): string
     {
-        if ($illegalCharacters === null) {
+        if ($this->illegalObjectNameCharacters === null) {
             return $stringToAnalyse;
         }
-        $illegalCharacters = html_entity_decode($illegalCharacters);
+        $illegalCharacters = html_entity_decode($this->illegalObjectNameCharacters);
         return str_replace(str_split($illegalCharacters), '', $stringToAnalyse);
     }
 
@@ -136,11 +135,10 @@ class EngineConfiguration
      * Find if the given string has an illegal character in it.
      *
      * @param string $stringToCheck String to analyse
-     * @param string|null $illegalCharacters String containing illegal characters
      * @return bool Return true if illegal characters have been found
      */
-    public static function hasIllegalCharacters(string $stringToCheck, ?string $illegalCharacters): bool
+    public function hasIllegalCharacters(string $stringToCheck): bool
     {
-        return $stringToCheck !== self::removeIllegalCharacters($stringToCheck, $illegalCharacters);
+        return $stringToCheck !== $this->removeIllegalCharacters($stringToCheck);
     }
 }
