@@ -2,8 +2,6 @@ import * as React from 'react';
 
 import { pick } from 'ramda';
 
-import { Grid, Chip } from '@material-ui/core';
-
 import ChecksIcon from '../../../../ChecksIcon';
 import {
   labelCurrentStateDuration,
