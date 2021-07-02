@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -33,6 +34,9 @@
  *
  */
 
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
+use Centreon\Infrastructure\PlatformTopology\Repository\Model\PlatformTopologyFactoryRDB;
+
 require_once "Centreon/Object/Object.php";
 
 /**
@@ -55,5 +59,147 @@ class Centreon_Object_Instance extends Centreon_Object
 
         $row = $res->fetch();
         return $row['name'];
+    }
+
+    /**
+     * Insert platform in nagios_server and platform_topology tables.
+     *
+     * @param array $params
+     * @return void
+     */
+    public function insert($params = [])
+    {
+        $platformTopology = $this->findPlatformTopologyByAddress($params['ns_ip_address']);
+        $serverId = null;
+
+        if ($platformTopology !== null) {
+            if ($platformTopology->isPending() === false) {
+                throw new \Exception('Platform already created');
+            }
+
+            /**
+             * Check if the parent is a registered remote.
+             */
+            $parentPlatform = $this->findPlatformTopology($platformTopology->getParentId());
+            if ($parentPlatform !== null && $parentPlatform->getType() === 'remote') {
+                if ($parentPlatform->getServerId() === null) {
+                    throw new \Exception("Parent remote server isn't registered");
+                }
+                $params['remote_id'] = $parentPlatform->getServerId();
+            }
+
+            $this->db->beginTransaction();
+            try {
+                $serverId = parent::insert($params);
+                $platformTopology->setPending(false);
+                $platformTopology->setServerId($serverId);
+                $this->updatePlatformTopology($platformTopology);
+                $this->db->commit();
+            } catch (\Exception $ex) {
+                $this->db->rollBack();
+                throw new \Exception('Unable to update platform', 0, $ex);
+            }
+        } else {
+            $this->db->beginTransaction();
+            try {
+                $serverId = parent::insert($params);
+                $params['server_id'] = $serverId;
+                $this->insertIntoPlatformTopology($params);
+                $this->db->commit();
+            } catch (\Exception $ex) {
+                $this->db->rollBack();
+                throw new \Exception('Unable to create platform', 0, $ex);
+            }
+        }
+
+        return $serverId;
+    }
+
+    /**
+     * Find for existing platform by id.
+     *
+     * @param integer $id
+     * @return PlatformInterface|null
+     */
+    private function findPlatformTopology(int $id): ?PlatformInterface
+    {
+        $statement = $this->db->prepare("SELECT * FROM platform_topology WHERE id=:id");
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            return PlatformTopologyFactoryRDB::create($result);
+        }
+        return null;
+    }
+
+    /**
+     * Find for existing platform by address.
+     *
+     * @param string $address
+     * @return PlatformInterface|null
+     */
+    private function findPlatformTopologyByAddress(string $address): ?PlatformInterface
+    {
+        $statement = $this->db->prepare("SELECT * FROM platform_topology WHERE address=:address");
+        $statement->bindValue(':address', $address, \PDO::PARAM_STR);
+        $statement->execute();
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            return PlatformTopologyFactoryRDB::create($result);
+        }
+        return null;
+    }
+
+    /**
+     * Update a platform topology.
+     *
+     * @param PlatformInterface $platformTopology
+     * @return void
+     */
+    private function updatePlatformTopology(PlatformInterface $platformTopology): void
+    {
+        $statement = $this->db->prepare(
+            "UPDATE platform_topology SET pending=:isPending, server_id=:serverId WHERE address=:address"
+        );
+        $statement->bindValue(':isPending', $platformTopology->isPending() ? '1' : '0', \PDO::PARAM_STR);
+        $statement->bindValue(':serverId', $platformTopology->getServerId(), \PDO::PARAM_INT);
+        $statement->bindValue(':address', $platformTopology->getAddress(), \PDO::PARAM_STR);
+        $statement->execute();
+    }
+
+    /**
+     * Insert the poller in platform_topology.
+     *
+     * @param array $params
+     * @return void
+     */
+    private function insertIntoPlatformTopology(array $params): void
+    {
+        $centralPlatformTopologyId = $this->findCentralPlatformTopologyId();
+        if ($centralPlatformTopologyId === null) {
+            throw new \Exception('No Central found in topology');
+        }
+        $statement = $this->db->prepare(
+            "INSERT INTO platform_topology (address, name, type, pending, parent_id, server_id) " .
+            "VALUES (:address, :name, 'poller', '0', :parentId, :serverId)"
+        );
+        $statement->bindValue(':address', $params['ns_ip_address'], \PDO::PARAM_STR);
+        $statement->bindValue(':name', $params['name'], \PDO::PARAM_STR);
+        $statement->bindValue(':parentId', $centralPlatformTopologyId, \PDO::PARAM_INT);
+        $statement->bindValue(':serverId', $params['server_id'], \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * Find the Central Id in platform_topology.
+     *
+     * @return integer|null
+     */
+    private function findCentralPlatformTopologyId(): ?int
+    {
+        $result = $this->db->query("SELECT id from platform_topology WHERE type ='central'");
+        if ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
+            return (int) $row['id'];
+        }
+        return null;
     }
 }
