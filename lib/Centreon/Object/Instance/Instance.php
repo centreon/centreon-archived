@@ -64,7 +64,7 @@ class Centreon_Object_Instance extends Centreon_Object
     /**
      * Insert platform in nagios_server and platform_topology tables.
      *
-     * @param array $params
+     * @param array<string,mixed> $params
      * @return void
      */
     public function insert($params = [])
@@ -116,7 +116,7 @@ class Centreon_Object_Instance extends Centreon_Object
     }
 
     /**
-     * Find for existing platform by id.
+     * Find existing platform by id.
      *
      * @param integer $id
      * @return PlatformInterface|null
@@ -133,7 +133,7 @@ class Centreon_Object_Instance extends Centreon_Object
     }
 
     /**
-     * Find for existing platform by address.
+     * Find existing platform by address.
      *
      * @param string $address
      * @return PlatformInterface|null
@@ -153,7 +153,6 @@ class Centreon_Object_Instance extends Centreon_Object
      * Update a platform topology.
      *
      * @param PlatformInterface $platformTopology
-     * @return void
      */
     private function updatePlatformTopology(PlatformInterface $platformTopology): void
     {
@@ -169,8 +168,7 @@ class Centreon_Object_Instance extends Centreon_Object
     /**
      * Insert the poller in platform_topology.
      *
-     * @param array $params
-     * @return void
+     * @param array<string,mixed> $params
      */
     private function insertIntoPlatformTopology(array $params): void
     {
