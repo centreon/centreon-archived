@@ -25,9 +25,9 @@ on the market; it is absolutely free and Open Souce.
 Regarding the [Products Lifecycle Policy](https://docs.centreon.com/current/en/releases/lifecycle.html),
 only the following versions are supported:
 
-* Centreon 20.10.x, released the October 21, 2020, full support
-* Centreon 20.04.x, released the April 22, 2020, security and blocking issue support only
-* Centreon 19.10.x, released the April 23, 2019, security support only
+* Centreon 21.04.x, released on April 21, 2021, full support
+* Centreon 20.10.x, released on October 21, 2020, security and blocking issue support only
+* Centreon 20.04.x, released on April 22, 2020, security support only
 
 If your version is not one of the 3 versions specified above, we recommend that
 you [upgrade your platform](https://docs.centreon.com/current/en/upgrade/introduction.html)
@@ -42,11 +42,7 @@ immediately.
 
 <h4> Product managers </h4>
 
-<a href="https://github.com/Moujimouja"><img src="https://avatars2.githubusercontent.com/u/6620287?s=400&v=4" title="Etienne Gautier" width="80" height="80"></a> &nbsp; <a href="https://github.com/lpinsivy"><img src="https://avatars2.githubusercontent.com/u/3351916?s=400&v=4" title="Laurent Pinsivy" width="80" height="80"></a> &nbsp;
-
-<h4> Product Owner </h4>
-
-<a href="https://github.com/cgagnaire"><img src="https://avatars1.githubusercontent.com/u/23257354?s=400&v=4" title="Colin Gagnaire" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/sbrizini"><img src="https://avatars.githubusercontent.com/u/40829131?v=4" title="Samir Brizini" width="80" height="80"></a> &nbsp; <a href="https://github.com/omercier"><img src="https://avatars.githubusercontent.com/u/32134301?v=4" title="Olivier Mercier" width="80" height="80"></a> &nbsp; <a href="https://github.com/lpinsivy"><img src="https://avatars2.githubusercontent.com/u/3351916?s=400&v=4" title="Laurent Pinsivy" width="80" height="80"></a> &nbsp; 
 
 <h4> Development team </h4>
 
