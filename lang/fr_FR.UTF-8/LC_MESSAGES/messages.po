@@ -5283,7 +5283,7 @@ msgstr "Port d'accès au proxy internet"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:166
 msgid "Display downtime and acknowledgment on chart"
-msgstr "Afficher les plages de maintenances et acquittements sur les ghraphiques"
+msgstr "Afficher les plages de maintenances et acquittements sur les graphiques"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:173
 msgid "Display comment on chart"
