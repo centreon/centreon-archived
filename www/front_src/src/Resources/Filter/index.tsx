@@ -3,9 +3,14 @@ import * as React from 'react';
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, Tooltip } from '@material-ui/core';
+import TuneIcon from '@material-ui/icons/Tune';
 
-import { MemoizedFilters as Filters, SearchField } from '@centreon/ui';
+import {
+  IconButton,
+  MemoizedFilters as Filters,
+  SearchField,
+} from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -13,6 +18,7 @@ import {
   labelShowCriteriasFilters,
   labelNewFilter,
   labelMyFilters,
+  labelSearchOptions,
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
 
@@ -45,7 +51,15 @@ const Filter = (): JSX.Element => {
     toggleFilterExpanded,
   } = useResourceContext();
 
-  const memoProps = [filter, nextSearch, customFilters, customFiltersLoading];
+  const [criteriasOpen, setCriteriasOpen] = React.useState(false);
+
+  const memoProps = [
+    filter,
+    nextSearch,
+    customFilters,
+    customFiltersLoading,
+    criteriasOpen,
+  ];
 
   const requestSearch = (): void => {
     setCriteria({ name: 'search', value: nextSearch });
@@ -57,6 +71,10 @@ const Filter = (): JSX.Element => {
     if (enterKeyPressed) {
       requestSearch();
     }
+  };
+
+  const toggleCriteriasOpen = (): void => {
+    setCriteriasOpen(!criteriasOpen);
   };
 
   const prepareSearch = (event): void => {
@@ -102,13 +120,6 @@ const Filter = (): JSX.Element => {
 
   return (
     <Filters
-      expandLabel={labelShowCriteriasFilters}
-      expandableFilters={
-        <Grid container item alignItems="center" spacing={1}>
-          <Criterias />
-        </Grid>
-      }
-      expanded={filterExpanded}
       filters={
         <Grid container item alignItems="center" spacing={1} wrap="nowrap">
           <Grid item>
@@ -126,37 +137,27 @@ const Filter = (): JSX.Element => {
               />
             )}
           </Grid>
-          {filterExpanded ? (
-            <>
-              <Grid item>
-                <SearchField
-                  EndAdornment={SearchHelpTooltip}
-                  placeholder={t(labelSearch)}
-                  value={nextSearch || ''}
-                  onChange={prepareSearch}
-                  onKeyDown={requestSearchOnEnterKey}
-                />
-              </Grid>
-              <Grid item>
-                <Button
-                  color="primary"
-                  size="small"
-                  variant="contained"
-                  onClick={requestSearch}
-                >
-                  {t(labelSearch)}
-                </Button>
-              </Grid>
-            </>
-          ) : (
-            <Grid item>
-              <FilterSummary />
-            </Grid>
-          )}
+          <Grid item>
+            <SearchField
+              EndAdornment={() => (
+                <Grid container direction="row" wrap="nowrap">
+                  <Grid item>
+                    <Criterias />
+                  </Grid>
+                  <Grid item>
+                    <SearchHelpTooltip />
+                  </Grid>
+                </Grid>
+              )}
+              placeholder={t(labelSearch)}
+              value={nextSearch || ''}
+              onChange={prepareSearch}
+              onKeyDown={requestSearchOnEnterKey}
+            />
+          </Grid>
         </Grid>
       }
       memoProps={memoProps}
-      onExpand={toggleFilterExpanded}
     />
   );
 };
