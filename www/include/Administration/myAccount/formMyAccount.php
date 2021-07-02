@@ -344,7 +344,9 @@ $form->applyFilter('contact_name', 'myReplace');
 $form->addRule('contact_name', _("Compulsory name"), 'required');
 $form->addRule('contact_alias', _("Compulsory alias"), 'required');
 $form->addRule('contact_email', _("Valid Email"), 'required');
-$form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
+if ($cct["contact_auth_type"] !== 'ldap') {
+    $form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
+}
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('contact_name', _("Name already in use"), 'exist');
 $form->registerRule('existAlias', 'callback', 'testAliasExistence');
