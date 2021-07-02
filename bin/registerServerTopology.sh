@@ -250,10 +250,10 @@ function parse_current_node_fqdn() {
 # Display the usage message
 function usage() {
   cat << EOF
-  This script will register a platform (CURRENT NODE) on another (TARGET NODE).
-  If you register a CURRENT NODE on a TARGET NODE that is already linked to a Central,
-  your informations will automatically be forwarded to the Central.
-  If you register a Remote Server, this script will automatically convert your CURRENT NODE in Remote Server.
+  This script will register a platform (CURRENT NODE) onto another (TARGET NODE).
+  If you register the CURRENT NODE onto a TARGET NODE that is already linked to a Central,
+  your information will be automatically forwarded to the Central.
+  If you register a Remote Server, this script will automatically convert your CURRENT NODE into a Remote Server.
   After executing the script, please use the wizard on your Central to complete your installation.
 
   Global Options: (Be aware that all options are case sensitive)
@@ -266,18 +266,18 @@ function usage() {
               - mbi
     -n [--name] <mandatory>              name of the CURRENT NODE that will be displayed on the TARGET NODE
 
-    --help <optional>           get information about the parameters available
-    --root <optional>           your Centreon root path on TARGET NODE (by default "centreon")
-    --node-address <optional>   provide your FQDN or IP of the CURRENT NODE. FQDN must be resolvable on the TARGET NODE
-    --insecure <optional>       allow self-signed certificate
-    --template <optional>       provide the path of a register topology configuration file to automate the script
+    --help <optional>                    get information about the parameters available
+    --root <optional>                    your Centreon root path on TARGET NODE (by default "centreon")
+    --node-address <optional>            provide your FQDN or IP of the CURRENT NODE. FQDN must be resolvable on the TARGET NODE
+    --insecure <optional>                allow self-signed certificate
+    --template <optional>                provide the path of a register topology configuration file to automate the script
               - API_USERNAME             <mandatory> string
               - API_TARGET_PASSWORD      <mandatory> string
               - CURRENT_NODE_TYPE        <mandatory> string
               - TARGET_NODE_ADDRESS      <mandatory> string (PARENT NODE ADDRESS)
               - CURRENT_NODE_NAME        <mandatory> string (CURRENT NODE NAME)
               - CURRENT_NODE_ADDRESS     <mandatory> string (CURRENT NODE IP OR FQDN)
-              - CENTREON_BASE_URI     <optional> string (CENTRAL ROOT CENTREON FOLDER)
+              - CENTREON_BASE_URI        <optional> string (CENTRAL ROOT CENTREON FOLDER)
               - INSECURE                 <optional> boolean
 
               Additional Properties for Remote:
