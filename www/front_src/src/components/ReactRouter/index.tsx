@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { isEmpty, equals } from 'ramda';
+import { equals } from 'ramda';
 
 import { styled } from '@material-ui/core';
 
@@ -67,7 +67,7 @@ interface Props {
 
 const ReactRouter = React.memo<Props>(
   ({ allowedPages, history, pages, externalPagesFetched }: Props) => {
-    if (isEmpty(allowedPages)) {
+    if (!externalPagesFetched) {
       return <PageSkeleton />;
     }
     return (

@@ -18,6 +18,7 @@ import useAclQuery from '../../Actions/Resource/aclQuery';
 import IconDowntime from '../../icons/Downtime';
 import {
   labelAcknowledge,
+  labelActionNotPermitted,
   labelCheck,
   labelSetDowntime,
   labelSetDowntimeOn,
@@ -59,9 +60,21 @@ const StatusColumnOnHover = ({
     row,
   );
 
-  const disableAcknowledge = !canAcknowledge([row]) || isResourceOk;
-  const disableDowntime = !canDowntime([row]);
-  const disableCheck = !canCheck([row]);
+  const isAcknowledePermitted = canAcknowledge([row]);
+  const isDowntimePermitted = canDowntime([row]);
+  const isCheckPermitted = canCheck([row]);
+
+  const disableAcknowledge = !isAcknowledePermitted || isResourceOk;
+  const disableDowntime = !isDowntimePermitted;
+  const disableCheck = !isCheckPermitted;
+
+  const getActionTitle = ({ labelAction, isActionPermitted }): string => {
+    const translatedLabelAction = t(labelAction);
+
+    return isActionPermitted
+      ? translatedLabelAction
+      : `${translatedLabelAction} (${t(labelActionNotPermitted)})`;
+  };
 
   return (
     <div className={classes.actions}>
@@ -69,7 +82,10 @@ const StatusColumnOnHover = ({
         ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
         color="primary"
         disabled={disableAcknowledge}
-        title={t(labelAcknowledge)}
+        title={getActionTitle({
+          isActionPermitted: isAcknowledePermitted,
+          labelAction: labelAcknowledge,
+        })}
         onClick={(): void => actions.onAcknowledge(row)}
       >
         <IconAcknowledge fontSize="small" />
@@ -77,7 +93,10 @@ const StatusColumnOnHover = ({
       <IconButton
         ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
         disabled={disableDowntime}
-        title={t(labelSetDowntime)}
+        title={getActionTitle({
+          isActionPermitted: isDowntimePermitted,
+          labelAction: labelSetDowntime,
+        })}
         onClick={(): void => actions.onDowntime(row)}
       >
         <IconDowntime fontSize="small" />
@@ -85,7 +104,10 @@ const StatusColumnOnHover = ({
       <IconButton
         ariaLabel={`${t(labelCheck)} ${row.name}`}
         disabled={disableCheck}
-        title={t(labelCheck)}
+        title={getActionTitle({
+          isActionPermitted: isCheckPermitted,
+          labelAction: labelCheck,
+        })}
         onClick={(): void => actions.onCheck(row)}
       >
         <IconCheck fontSize="small" />

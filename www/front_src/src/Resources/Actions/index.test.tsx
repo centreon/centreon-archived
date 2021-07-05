@@ -307,13 +307,15 @@ describe(Actions, () => {
   });
 
   it('sends a discknowledgement request when Resources are selected and the Disackowledgement action is clicked and confirmed', async () => {
-    const { getByText, getAllByText } = renderActions();
+    const { getByTitle, getAllByText, getByText } = renderActions();
 
     const selectedResources = [host];
 
     act(() => {
       context.setSelectedResources(selectedResources);
     });
+
+    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
 
     fireEvent.click(getByText(labelDisacknowledge));
 
@@ -352,13 +354,15 @@ describe(Actions, () => {
   });
 
   it('does not display the "Discknowledge services attached to host" checkbox when only services are selected and the Disacknowledge action is clicked', async () => {
-    const { getByText, queryByText } = renderActions();
+    const { getByText, queryByText, getByTitle } = renderActions();
 
     const selectedResources = [service];
 
     act(() => {
       context.setSelectedResources(selectedResources);
     });
+
+    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
 
     fireEvent.click(getByText(labelDisacknowledge));
 
@@ -489,11 +493,13 @@ describe(Actions, () => {
   it('sends a submit status request when a Resource is selected and the Submit status action is clicked', async () => {
     mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
 
-    const { getByText, getByLabelText } = renderActions();
+    const { getByText, getByLabelText, getByTitle } = renderActions();
 
     act(() => {
       context.setSelectedResources([service]);
     });
+
+    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
 
     fireEvent.click(getByText(labelSubmitStatus));
 
@@ -545,6 +551,8 @@ describe(Actions, () => {
       context.setSelectedResources([host]);
     });
 
+    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
+
     fireEvent.click(getByText(labelSubmitStatus));
 
     userEvent.click(getByText(labelUp));
@@ -594,7 +602,7 @@ describe(Actions, () => {
       expect(getByText(labelSetDowntime).parentElement).toBeDisabled();
     });
 
-    fireEvent.click(getByTitle(labelMoreActions));
+    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
 
     expect(getByText(labelDisacknowledge)).toHaveAttribute(
       'aria-disabled',
@@ -702,13 +710,15 @@ describe(Actions, () => {
         acl,
       });
 
-      const { getByText } = renderActions();
+      const { getByText, getByTitle } = renderActions();
 
       const selectedResources = [host, service];
 
       act(() => {
         context.setSelectedResources(selectedResources);
       });
+
+      fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
 
       fireEvent.click(getByText(labelAction));
 
@@ -745,11 +755,13 @@ describe(Actions, () => {
         acl,
       });
 
-      const { getByText } = renderActions();
+      const { getByText, getByTitle } = renderActions();
 
       act(() => {
         context.setSelectedResources([host]);
       });
+
+      fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
 
       fireEvent.click(getByText(labelAction));
 
@@ -764,7 +776,7 @@ describe(Actions, () => {
   );
 
   it('disables the submit status action when one of the following condition is met: ACL are not sufficient, more than one resource is selected, selected resource is not passive', async () => {
-    const { getByText } = renderActions();
+    const { getByText, getByTitle } = renderActions();
 
     mockedUserContext.mockReset().mockReturnValue({
       ...mockUserContext,
@@ -782,6 +794,8 @@ describe(Actions, () => {
     act(() => {
       context.setSelectedResources([host, service]);
     });
+
+    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
 
     await waitFor(() => {
       expect(getByText(labelSubmitStatus)).toHaveAttribute(
@@ -825,7 +839,7 @@ describe(Actions, () => {
   });
 
   it('disables the comment action when the ACL are not sufficient or more than one resource is selected', async () => {
-    const { getByText } = renderActions();
+    const { getByText, getByTitle } = renderActions();
 
     mockedUserContext.mockReset().mockReturnValue({
       ...mockUserContext,
@@ -843,6 +857,8 @@ describe(Actions, () => {
     act(() => {
       context.setSelectedResources([host, service]);
     });
+
+    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
 
     await waitFor(() => {
       expect(getByText(labelAddComment)).toHaveAttribute(
