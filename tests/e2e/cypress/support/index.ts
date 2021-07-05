@@ -1,9 +1,9 @@
 import {
-  initDataResources,
+  initializeResourceData,
   setUserTokenApiV1,
   setUserTokenApiV2,
   submitResultApiClapi,
-  removeDataResources,
+  removeResourceData,
   applyCfgApi,
 } from './centreonData';
 import { countServicesDB } from './database';
@@ -12,7 +12,7 @@ before(() => {
   setUserTokenApiV1();
   setUserTokenApiV2();
 
-  initDataResources().then(() => applyCfgApi());
+  initializeResourceData().then(() => applyCfgApi());
 
   cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {
     cy.visit(`${Cypress.config().baseUrl}`);
@@ -36,7 +36,7 @@ before(() => {
 
 after(() => {
   setUserTokenApiV1().then(() => {
-    removeDataResources();
+    removeResourceData();
     applyCfgApi();
   });
 });

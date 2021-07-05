@@ -10,7 +10,7 @@ module.exports = (on) => {
   on('file:preprocessor', webpackPreprocessor(options));
 
   on('task', {
-    dbCheck: async (env: string) => {
+    checkServicesInDatabase: async (env: string) => {
       const sh = require('shell-exec');
 
       const req = `SELECT COUNT(service_id) as count_services from services WHERE services.description LIKE '%service_test%' AND services.output LIKE '%submit_status_2%';`;

@@ -34,7 +34,9 @@ interface Resource {
 const refreshListing = (timeout = 0): Cypress.Chainable => {
   // "wait" here, it's necessary to allow time for the action
   // to be taken into account before launching a call to the API.
-  if (timeout > 0) cy.wait(timeout);
+  if (timeout > 0) {
+    cy.wait(timeout);
+  }
   cy.get(refreshButton).children('button').should('be.enabled');
   return cy.get(refreshButton).click();
 };
@@ -177,7 +179,7 @@ const submitResultApiClapi = (): Cypress.Chainable => {
   });
 };
 
-const initDataResources = (): Cypress.Chainable => {
+const initializeResourceData = (): Cypress.Chainable => {
   cy.fixture('resources/clapi/host1/01-add.json').then((raw) =>
     actionClapiApi(raw),
   );
@@ -215,7 +217,7 @@ const initDataResources = (): Cypress.Chainable => {
     .then((raw) => actionClapiApi(raw));
 };
 
-const removeDataResources = (): Cypress.Chainable => {
+const removeResourceData = (): Cypress.Chainable => {
   return actionClapiApi({
     action: 'DEL',
     object: 'HOST',
@@ -237,8 +239,8 @@ export {
   setUserFilter,
   deleteUserFilter,
   submitResultApiClapi,
-  initDataResources,
-  removeDataResources,
+  initializeResourceData,
+  removeResourceData,
   applyCfgApi,
   resourcesMatching,
   refreshListing,

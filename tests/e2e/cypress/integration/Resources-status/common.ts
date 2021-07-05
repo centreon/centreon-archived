@@ -7,7 +7,7 @@ const serviceNameDowntime = 'service_test_dt';
 const searchValue = `s.description:${serviceName}`;
 const resourceMonitoringApi = /.+api\/beta\/monitoring\/resources.?page.+/;
 
-const bgCssColors = {
+const actionBackgroundColors = {
   acknowledge: 'rgb(247, 244, 229)',
   inDowntime: 'rgb(249, 231, 255)',
 };
@@ -25,6 +25,6 @@ export {
   serviceNameDowntime,
   searchValue,
   resourceMonitoringApi,
-  bgCssColors,
+  actionBackgroundColors,
   actions,
 };

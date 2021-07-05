@@ -5,7 +5,7 @@ import {
   serviceName,
   serviceNameDowntime,
   resourceMonitoringApi,
-  bgCssColors,
+  actionBackgroundColors,
   actions,
 } from '../common';
 import { refreshListing } from '../../../support/centreonData';
@@ -41,7 +41,7 @@ Then('The problematic Resource is displayed as acknowledged', () => {
   cy.wait('@getResources');
   cy.contains(serviceName)
     .parents('div[role="cell"]:first')
-    .should('have.css', 'background-color', bgCssColors.acknowledge);
+    .should('have.css', 'background-color', actionBackgroundColors.acknowledge);
 });
 
 When('I select the downtime action on a problematic Resource', () => {
@@ -66,5 +66,5 @@ Then('The problematic Resource is displayed as in downtime', () => {
   cy.wait('@getResources');
   cy.contains(serviceNameDowntime)
     .parents('div[role="cell"]:first')
-    .should('have.css', 'background-color', bgCssColors.inDowntime);
+    .should('have.css', 'background-color', actionBackgroundColors.inDowntime);
 });
