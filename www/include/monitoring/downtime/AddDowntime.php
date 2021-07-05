@@ -57,7 +57,7 @@ $resourceId = $resourceId ?? 0;
  */
 function checkYearMax($date)
 {
-    return ((int) (new \DateTime($date))->format('Y')) < 2100;
+    return ((int) (new \DateTime($date))->format('Y')) < DOWNTIME_YEAR_MAX;
 }
 
 if (
