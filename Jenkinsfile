@@ -402,11 +402,13 @@ try {
           checkoutCentreonBuild(buildBranch)
           unstash 'tar-sources'
           unstash 'cypress-node-modules'
+          timeout(time: 10, unit: 'MINUTES') {
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
           junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
           archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
+          }
         }
       }
     }
