@@ -76,6 +76,7 @@ import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
+  displayCompleteGraph?: () => void;
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
   endpoint?: string;
@@ -159,6 +160,7 @@ const PerformanceGraph = ({
   displayTitle = true,
   limitLegendRows,
   isInViewport = true,
+  displayCompleteGraph,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -460,6 +462,7 @@ const PerformanceGraph = ({
         <div className={classes.legend}>
           <Legend
             base={base as number}
+            displayCompleteGraph={displayCompleteGraph}
             limitLegendRows={limitLegendRows}
             lines={sortedLines}
             toggable={toggableLegend}

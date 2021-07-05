@@ -15168,5 +15168,8 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Small size"
 #  msgstr ""
 
+# msgid "Display the complete graph"
+# msgstr ""
+
 # msgid "Action not permitted"
 # msgstr ""
