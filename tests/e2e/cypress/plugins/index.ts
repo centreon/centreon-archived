@@ -13,7 +13,7 @@ module.exports = (on) => {
     checkServicesInDatabase: async (env: string) => {
       const sh = require('shell-exec');
 
-      const req = `SELECT COUNT(service_id) as count_services from services WHERE services.description LIKE '%service_test%' AND services.output LIKE '%submit_status_2%';`;
+      const req = `SELECT COUNT(s.service_id) as count_services from services as s WHERE s.description LIKE '%service_test%' AND s.output LIKE '%submit_status_2%' AND s.enabled=1;`;
       const cmd = `docker exec -i ${env} mysql -ucentreon -pcentreon centreon_storage <<< "${req}"`;
 
       const { stdout } = await sh(cmd);

@@ -36,7 +36,6 @@ before(() => {
 
 after(() => {
   setUserTokenApiV1().then(() => {
-    removeResourceData();
-    applyCfgApi();
+    removeResourceData().then(() => applyCfgApi());
   });
 });
