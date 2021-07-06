@@ -144,7 +144,7 @@
 					<td {$style_warning}>{$tb.WARNING_TP}% ({$tb.WARNING_MP}%)</td>
 					<td {$style_warning_alert} style="width:30px;">{$tb.WARNING_A}</td>
 					<td {$style_critical}>{$tb.CRITICAL_TP}% ({$tb.CRITICAL_MP}%)</td>
-					<td {$style_critical_alert style="width:30px;"}>{$tb.CRITICAL_A}</td>
+					<td {$style_critical_alert} style="width:30px;">{$tb.CRITICAL_A}</td>
 					<td {$style_unknown}>{$tb.UNKNOWN_TP}% ({$tb.UNKNOWN_MP}%)</td>
 					<td {$style_unknown_alert} style="width:30px;">{$tb.UNKNOWN_A}</td>
 					<td {$style_maintenance}>{$tb.MAINTENANCE_TP}%</td>
