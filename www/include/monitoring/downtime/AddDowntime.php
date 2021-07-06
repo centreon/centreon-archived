@@ -42,7 +42,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
 
-const DOWNTIME_YEAR_MAX = 2100;
+const DOWNTIME_YEAR_MAX = \Centreon\Domain\Downtime\DowntimeService::DOWNTIME_YEAR_MAX;
 
 $hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
 $hostAclId = preg_split('/,/', str_replace("'", "", $hostStr));
@@ -547,6 +547,7 @@ if (
          */
         $tpl = new Smarty();
         $tpl = initSmartyTpl($path, $tpl, "template/");
+        $tpl->assign('dataPickerMaxYear', DOWNTIME_YEAR_MAX - 1);
 
         /*
          * Apply a template definition
