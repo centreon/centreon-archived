@@ -308,7 +308,7 @@ function set_required_prerequisite() {
 		log "INFO" "Setting specific part for v7 ($detected_os_version)"
 
 		case "$detected_os_release" in
-		centos-release* | centos-linux-release*)
+		centos-release* | centos-linux-release* | rocky-release*)
 			BASE_PACKAGES=(centos-release-scl)
 			;;
 
@@ -347,7 +347,7 @@ function set_required_prerequisite() {
 			subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
 			;;
 
-		centos-release* | centos-linux-release* | centos-stream-release*)
+		centos-release* | centos-linux-release* | centos-stream-release* | rocky-release*)
 			BASE_PACKAGES=(dnf-plugins-core epel-release)
 			$PKG_MGR config-manager --set-enabled powertools
 			;;
