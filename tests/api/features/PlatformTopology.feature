@@ -16,13 +16,13 @@ Feature:
             {
                 "name": "Central",
                 "type": "central",
-                "address": "1.1.1.10"
+                "address": "127.0.0.1"
             }
             """
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"A platform using the name : 'Central' or address : '1.1.1.10' already exists"}
+            {"message":"A platform using the name : 'Central' or address : '127.0.0.1' already exists"}
             """
 
         # Register a second Central while the first is still registered / Should fail and an error should be returned
@@ -38,7 +38,7 @@ Feature:
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"A 'central': 'Central'@'1.1.1.10' is already saved"}
+            {"message":"A 'central': 'Central'@'127.0.0.1' is already saved"}
             """
 
         # Register a Central linked to another Central
@@ -49,7 +49,7 @@ Feature:
                 "name": "Central_2",
                 "type": "central",
                 "address": "1.1.1.11",
-                "parent_address": "1.1.1.10"
+                "parent_address": "127.0.0.1"
             }
             """
         Then the response code should be "400"
@@ -66,7 +66,7 @@ Feature:
                 "name": "wrong_type_server",
                 "type": "server",
                 "address": "6.6.6.1",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "server.test.localhost.localdomain"
             }
             """
@@ -83,7 +83,7 @@ Feature:
                 "name": "inconsistent_address",
                 "type": "poller",
                 "address": "666.",
-                "parent_address": "1.1.1.10"
+                "parent_address": "127.0.0.1"
             }
             """
         Then the response code should be "400"
@@ -99,7 +99,7 @@ Feature:
                 "name": "ill*ga|_character$_found",
                 "type": "poller",
                 "address": "1.1.10.10",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "localhost.localdomain"
             }
             """
@@ -114,7 +114,7 @@ Feature:
                 "name": "space_in_hostname",
                 "type": "poller",
                 "address": "1.1.10.20",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "found space"
             }
             """
@@ -131,7 +131,7 @@ Feature:
                 "name": "illegal_character_in_hostname",
                 "type": "poller",
                 "address": "1.1.10.20",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "i|!egal.h*stname"
             }
             """
@@ -165,7 +165,7 @@ Feature:
                 "name": "my_poller",
                 "type": "poller",
                 "address": "1.1.1.1",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "poller.test.localhost.localdomain"
             }
             """
@@ -178,7 +178,7 @@ Feature:
                 "name": "my_poller",
                 "type": "poller",
                 "address": "1.1.1.1",
-                "parent_address": "1.1.1.10"
+                "parent_address": "127.0.0.1"
             }
             """
         Then the response code should be "400"
@@ -194,7 +194,7 @@ Feature:
                 "name": "my_poller_2",
                 "type": "pOlLEr",
                 "address": "1.1.1.2",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "poller2.test.localhost.localdomain"
             }
             """
@@ -284,7 +284,7 @@ Feature:
                                 "pending": "true",
                                 "centreon-id": "1",
                                 "hostname": "central.test.localhost.localdomain",
-                                "address": "1.1.1.10"
+                                "address": "127.0.0.1"
                             }
                         },
                         "2": {
@@ -342,7 +342,7 @@ Feature:
                                 "pending": "true",
                                 "centreon-id": "1",
                                 "hostname": "central.test.localhost.localdomain",
-                                "address": "1.1.1.10"
+                                "address": "127.0.0.1"
                             }
                         },
                         "2": {
