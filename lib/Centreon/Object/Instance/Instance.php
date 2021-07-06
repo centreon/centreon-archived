@@ -76,6 +76,10 @@ class Centreon_Object_Instance extends Centreon_Object
         $platformTopology = $this->findPlatformTopologyByAddress($params['ns_ip_address']);
         $serverId = null;
 
+        $isAlreadyInTransaction = $this->db->inTransaction();
+        if (!$isAlreadyInTransaction) {
+            $this->db->beginTransaction();
+        }
         if ($platformTopology !== null) {
             if ($platformTopology->isPending() === false) {
                 throw new \Exception('Platform already created');
@@ -91,32 +95,33 @@ class Centreon_Object_Instance extends Centreon_Object
                 }
                 $params['remote_id'] = $parentPlatform->getServerId();
             }
-            $isAlreadyInTransaction = $this->db->inTransaction();
-            if (!$isAlreadyInTransaction) {
-                $this->db->beginTransaction();
-            }
+
             try {
                 $serverId = parent::insert($params);
                 $platformTopology->setPending(false);
                 $platformTopology->setServerId($serverId);
                 $this->updatePlatformTopology($platformTopology);
-                $this->db->commit();
+                if (!$isAlreadyInTransaction) {
+                    $this->db->commit();
+                }
             } catch (\Exception $ex) {
-                $this->db->rollBack();
+                if (!$isAlreadyInTransaction) {
+                    $this->db->rollBack();
+                }
                 throw new \Exception('Unable to update platform', 0, $ex);
             }
         } else {
-            $isAlreadyInTransaction = $this->db->inTransaction();
-            if (!$isAlreadyInTransaction) {
-                $this->db->beginTransaction();
-            }
             try {
                 $serverId = parent::insert($params);
                 $params['server_id'] = $serverId;
                 $this->insertIntoPlatformTopology($params);
-                $this->db->commit();
+                if (!$isAlreadyInTransaction) {
+                    $this->db->commit();
+                }
             } catch (\Exception $ex) {
-                $this->db->rollBack();
+                if (!$isAlreadyInTransaction) {
+                    $this->db->rollBack();
+                }
                 throw new \Exception('Unable to create platform', 0, $ex);
             }
         }
