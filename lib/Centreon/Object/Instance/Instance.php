@@ -35,6 +35,7 @@
  */
 
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
+use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
 use Centreon\Infrastructure\PlatformTopology\Repository\Model\PlatformTopologyFactoryRDB;
 
 require_once "Centreon/Object/Object.php";
@@ -69,6 +70,9 @@ class Centreon_Object_Instance extends Centreon_Object
      */
     public function insert($params = [])
     {
+        if (!array_key_exists('ns_ip_address', $params) || !array_key_exists('name', $params)) {
+            throw new \InvalidArgumentException('Missing parameters');
+        }
         $platformTopology = $this->findPlatformTopologyByAddress($params['ns_ip_address']);
         $serverId = null;
 
@@ -81,14 +85,16 @@ class Centreon_Object_Instance extends Centreon_Object
              * Check if the parent is a registered remote.
              */
             $parentPlatform = $this->findPlatformTopology($platformTopology->getParentId());
-            if ($parentPlatform !== null && $parentPlatform->getType() === 'remote') {
+            if ($parentPlatform !== null && $parentPlatform->getType() === PlatformRegistered::TYPE_REMOTE) {
                 if ($parentPlatform->getServerId() === null) {
                     throw new \Exception("Parent remote server isn't registered");
                 }
                 $params['remote_id'] = $parentPlatform->getServerId();
             }
-
-            $this->db->beginTransaction();
+            $isAlreadyInTransaction = $this->db->inTransaction();
+            if (!$isAlreadyInTransaction) {
+                $this->db->beginTransaction();
+            }
             try {
                 $serverId = parent::insert($params);
                 $platformTopology->setPending(false);
@@ -100,7 +106,10 @@ class Centreon_Object_Instance extends Centreon_Object
                 throw new \Exception('Unable to update platform', 0, $ex);
             }
         } else {
-            $this->db->beginTransaction();
+            $isAlreadyInTransaction = $this->db->inTransaction();
+            if (!$isAlreadyInTransaction) {
+                $this->db->beginTransaction();
+            }
             try {
                 $serverId = parent::insert($params);
                 $params['server_id'] = $serverId;
