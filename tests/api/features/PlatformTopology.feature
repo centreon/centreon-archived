@@ -268,100 +268,11 @@ Feature:
         # So we can't test pollers or remote edges.
         When I send a GET request to "/beta/platform/topology"
         Then the response code should be "200"
-        And the JSON should be equal to:
-            """
-            {
-                "graph": {
-                    "label": "centreon-topology",
-                    "metadata": {
-                        "version": "1.0.0"
-                    },
-                    "nodes": {
-                        "1": {
-                            "type": "central",
-                            "label": "Central",
-                            "metadata": {
-                                "pending": "true",
-                                "centreon-id": "1",
-                                "hostname": "central.test.localhost.localdomain",
-                                "address": "127.0.0.1"
-                            }
-                        },
-                        "2": {
-                            "type": "poller",
-                            "label": "my_poller",
-                            "metadata": {
-                                "pending": "true",
-                                "hostname": "poller.test.localhost.localdomain",
-                                "address": "1.1.1.1"
-                            }
-                        },
-                        "3": {
-                            "type": "poller",
-                            "label": "my_poller_2",
-                            "metadata": {
-                                "pending": "true",
-                                "hostname": "poller2.test.localhost.localdomain",
-                                "address": "1.1.1.2"
-                            }
-                        }
-                    },
-                    "edges": [
-                        {
-                            "source": "2",
-                            "relation": "normal",
-                            "target": "1"
-                        },
-                        {
-                            "source": "3",
-                            "relation": "normal",
-                            "target": "1"
-                        }
-                    ]
-                }
-            }
-            """
+        And the json node "graph.nodes" should have 3 elements
+        And the JSON node "graph.nodes.2.type" should be equal to the string "poller"
 
         When I send a DELETE request to "/beta/platform/topology/3"
         Then the response code should be "204"
         When I send a GET request to "/beta/platform/topology"
         Then the response code should be "200"
-        And the JSON should be equal to:
-            """
-            {
-                "graph": {
-                    "label": "centreon-topology",
-                    "metadata": {
-                        "version": "1.0.0"
-                    },
-                    "nodes": {
-                        "1": {
-                            "type": "central",
-                            "label": "Central",
-                            "metadata": {
-                                "pending": "true",
-                                "centreon-id": "1",
-                                "hostname": "central.test.localhost.localdomain",
-                                "address": "127.0.0.1"
-                            }
-                        },
-                        "2": {
-                            "type": "poller",
-                            "label": "my_poller",
-                            "metadata": {
-                                "pending": "true",
-                                "hostname": "poller.test.localhost.localdomain",
-                                "address": "1.1.1.1"
-                            }
-                        }
-                    },
-                    "edges": [
-                        {
-                            "source": "2",
-                            "relation": "normal",
-                            "target": "1"
-                        }
-                    ]
-                }
-            }
-            """
+        And the json node "graph.nodes" should have 2 elements
