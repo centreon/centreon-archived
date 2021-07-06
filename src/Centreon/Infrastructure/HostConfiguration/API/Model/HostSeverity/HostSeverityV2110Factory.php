@@ -22,24 +22,24 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeveritiesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostSeverity\FindHostSeveritiesResponse;
 
 /**
  * This class is designed to create the hostSeverityV21 entity
  *
  * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity
  */
-class HostSeverityV21Factory
+class HostSeverityV2110Factory
 {
     /**
      * @param FindHostSeveritiesResponse $response
-     * @return HostSeverityV21[]
+     * @return HostSeverityV2110[]
      */
     public static function createFromResponse(FindHostSeveritiesResponse $response): array
     {
         $hostSeverities = [];
         foreach ($response->getHostSeverities() as $hostSeverity) {
-            $newHostSeverity = new HostSeverityV21();
+            $newHostSeverity = new HostSeverityV2110();
             $newHostSeverity->id = $hostSeverity['id'];
             $newHostSeverity->name = $hostSeverity['name'];
             $newHostSeverity->alias = $hostSeverity['alias'];

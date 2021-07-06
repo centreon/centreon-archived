@@ -24,15 +24,15 @@ namespace Tests\Centreon\Infrastructure\MetaServiceConfiguration\API\Model;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfiguration;
-use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindMetaServicesConfigurationsResponse;
-use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindOneMetaServiceConfigurationResponse;
-use Centreon\Infrastructure\MetaServiceConfiguration\API\Model\MetaServiceConfigurationV21Factory;
+use Centreon\Domain\MetaServiceConfiguration\UseCase\V2110\FindMetaServicesConfigurationsResponse;
+use Centreon\Domain\MetaServiceConfiguration\UseCase\V2110\FindOneMetaServiceConfigurationResponse;
+use Centreon\Infrastructure\MetaServiceConfiguration\API\Model\MetaServiceConfigurationV2110Factory;
 use Tests\Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfigurationTest;
 
 /**
  * @package Tests\Centreon\Infrastructure\MetaServiceConfiguration\API\Model
  */
-class MetaServiceConfigurationV21FactoryTest extends TestCase
+class MetaServiceConfigurationV2110FactoryTest extends TestCase
 {
     /**
      * @var MetaServiceConfiguration
@@ -45,13 +45,13 @@ class MetaServiceConfigurationV21FactoryTest extends TestCase
     }
 
     /**
-     * We check the format sent for the API request (v2.1) using the factory
+     * We check the format sent for the API request (v21.10) using the factory
      */
     public function testCreateAllFromResponse(): void
     {
         $response = new FindMetaServicesConfigurationsResponse();
         $response->setMetaServicesConfigurations([$this->metaServiceConfiguration]);
-        $metaServiceConfigurationV21 = MetaServiceConfigurationV21Factory::createAllFromResponse($response);
+        $metaServiceConfigurationV21 = MetaServiceConfigurationV2110Factory::createAllFromResponse($response);
 
         $metaServiceConfiguration = $response->getMetaServicesConfigurations()[0];
         $this->assertEquals($metaServiceConfiguration['id'], $metaServiceConfigurationV21[0]->id);
@@ -72,13 +72,13 @@ class MetaServiceConfigurationV21FactoryTest extends TestCase
     }
 
     /**
-     * We check the format sent for the API request (v2.1) using the factory
+     * We check the format sent for the API request (v21.10) using the factory
      */
     public function testCreateFromResponse(): void
     {
         $response = new FindOneMetaServiceConfigurationResponse();
         $response->setMetaServiceConfiguration($this->metaServiceConfiguration);
-        $metaServiceConfigurationV21 = MetaServiceConfigurationV21Factory::createOneFromResponse($response);
+        $metaServiceConfigurationV21 = MetaServiceConfigurationV2110Factory::createOneFromResponse($response);
 
         $metaServiceConfiguration = $response->getMetaServiceConfiguration();
         $this->assertEquals($metaServiceConfiguration['id'], $metaServiceConfigurationV21->id);

@@ -22,24 +22,24 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostGroup;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroupsResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroupsResponse;
 
 /**
  * This class is designed to create the HostGroupV21 entity
  *
  * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostGroup
  */
-class HostGroupV21Factory
+class HostGroupV2110Factory
 {
     /**
      * @param FindHostGroupsResponse $response
-     * @return HostGroupV21[]
+     * @return HostGroupV2110[]
      */
     public static function createFromResponse(FindHostGroupsResponse $response): array
     {
         $hostGroups = [];
         foreach ($response->getHostGroups() as $hostGroup) {
-            $newHostGroup = new HostGroupV21();
+            $newHostGroup = new HostGroupV2110();
             $newHostGroup->id = $hostGroup['id'];
             $newHostGroup->name = $hostGroup['name'];
             $newHostGroup->alias = $hostGroup['alias'];

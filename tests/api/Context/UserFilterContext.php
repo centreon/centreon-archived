@@ -37,7 +37,7 @@ class UserFilterContext extends ApiContext
     {
         $response = $this->iSendARequestTo(
             'GET',
-            '/api/beta/monitoring/hostgroups'
+            '/api/v21.10/monitoring/hostgroups'
         );
         $decodedResponse = json_decode($response->getBody()->__toString(), true);
         $hostgroupId = $decodedResponse['result'][0]['id'];
@@ -59,7 +59,11 @@ class UserFilterContext extends ApiContext
 
         $this->iSendARequestToWithBody(
             'POST',
+<<<<<<< HEAD
             '/api/beta/users/filters/events-view',
+=======
+            '/v21.10/users/filters/events-view',
+>>>>>>> 0892921845 (Update all routes to v21.10)
             $this->requestBody
         );
     }
@@ -71,7 +75,11 @@ class UserFilterContext extends ApiContext
     {
         $this->iSendARequestToWithBody(
             'PUT',
+<<<<<<< HEAD
             '/api/beta/users/filters/events-view/1',
+=======
+            '/v21.10/users/filters/events-view/1',
+>>>>>>> 0892921845 (Update all routes to v21.10)
             $this->requestBody
         );
     }

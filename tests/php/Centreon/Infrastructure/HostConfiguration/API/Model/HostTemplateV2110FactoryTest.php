@@ -23,15 +23,15 @@ declare(strict_types=1);
 namespace Tests\Centreon\Infrastructure\HostConfiguration\API\Model;
 
 use Centreon\Domain\HostConfiguration\Model\HostTemplate;
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostTemplate\FindHostTemplatesResponse;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostTemplateV21Factory;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostTemplate\FindHostTemplatesResponse;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostTemplateV2110Factory;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;
 
 /**
  * @package Tests\Centreon\Infrastructure\HostConfiguration\API\Model
  */
-class HostTemplateV21FactoryTest extends TestCase
+class HostTemplateV2110FactoryTest extends TestCase
 {
     /**
      * @var HostTemplate
@@ -44,13 +44,13 @@ class HostTemplateV21FactoryTest extends TestCase
     }
 
     /**
-     * We check the format sent for the API request (v2.1) using the factory
+     * We check the format sent for the API request (v21.10) using the factory
      */
     public function testCreateFromResponse(): void
     {
         $response = new FindHostTemplatesResponse();
         $response->setHostTemplates([$this->hostTemplate]);
-        $hostTemplateV21 = HostTemplateV21Factory::createFromResponse($response);
+        $hostTemplateV21 = HostTemplateV2110Factory::createFromResponse($response);
 
         $oneHostTemplates = $response->getHostTemplates()[0];
         $this->assertCount(count($response->getHostTemplates()), $response->getHostTemplates());

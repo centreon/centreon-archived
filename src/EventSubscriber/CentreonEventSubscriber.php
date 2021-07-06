@@ -81,7 +81,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * If no beta version has been defined in the configuration,
      * this version will be used by default
      */
-    public const DEFAULT_API_BETA_VERSION = "2.1";
+    public const DEFAULT_API_BETA_VERSION = "22.04";
 
     /**
      * If no API header name has been defined in the configuration,

@@ -24,7 +24,7 @@ namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityServiceInterface;
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostSeverity\FindHostSeverities;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostSeverityTest;
 

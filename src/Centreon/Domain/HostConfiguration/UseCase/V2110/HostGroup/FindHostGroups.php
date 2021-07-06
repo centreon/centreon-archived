@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup;
+namespace Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Exception\HostGroupException;

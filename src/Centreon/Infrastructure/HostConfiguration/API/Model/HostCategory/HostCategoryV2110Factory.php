@@ -22,24 +22,24 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory\FindHostCategoriesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostCategory\FindHostCategoriesResponse;
 
 /**
  * This class is designed to create the hostCategoryV21 entity
  *
  * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory
  */
-class HostCategoryV21Factory
+class HostCategoryV2110Factory
 {
     /**
      * @param FindHostCategoriesResponse $response
-     * @return HostCategoryV21[]
+     * @return HostCategoryV2110[]
      */
     public static function createFromResponse(FindHostCategoriesResponse $response): array
     {
         $hostCategories = [];
         foreach ($response->getHostCategories() as $hostCategory) {
-            $newHostCategory = new HostCategoryV21();
+            $newHostCategory = new HostCategoryV2110();
             $newHostCategory->id = $hostCategory['id'];
             $newHostCategory->name = $hostCategory['name'];
             $newHostCategory->alias = $hostCategory['alias'];
