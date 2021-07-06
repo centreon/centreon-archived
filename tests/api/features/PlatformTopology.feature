@@ -10,35 +10,6 @@ Feature:
     Scenario: Register servers in Platform Topology
         Given I am logged in
 
-        # Register the Central on the container with a name which doesn't exist in nagios_server table
-        # Should fail and an error should be returned
-        When I send a POST request to '/latest/platform/topology' with body:
-            """
-            {
-                "name": "wrong_name",
-                "type": "central",
-                "address": "1.1.1.10"
-            }
-            """
-        Then the response code should be "400"
-        And the response should be equal to:
-            """
-            {"message":"The server type 'central' : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon or is disabled"}
-            """
-
-        # Successfully register the Central on the container
-        # (Notice : this step is automatically done on a real platform on fresh install and update)
-        When I send a POST request to '/latest/platform/topology' with body:
-            """
-            {
-                "name": "Central",
-                "type": "central",
-                "address": "1.1.1.10",
-                "hostname": "central.test.localhost.localdomain"
-            }
-            """
-        Then the response code should be "201"
-
         # Register the same Central a second time / Should fail and an error should be returned
         When I send a POST request to '/latest/platform/topology' with body:
             """

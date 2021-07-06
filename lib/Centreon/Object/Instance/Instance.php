@@ -101,9 +101,6 @@ class Centreon_Object_Instance extends Centreon_Object
                 $platformTopology->setPending(false);
                 $platformTopology->setServerId($serverId);
                 $this->updatePlatformTopology($platformTopology);
-                if (!$isAlreadyInTransaction) {
-                    $this->db->commit();
-                }
             } catch (\Exception $ex) {
                 if (!$isAlreadyInTransaction) {
                     $this->db->rollBack();
@@ -115,9 +112,6 @@ class Centreon_Object_Instance extends Centreon_Object
                 $serverId = parent::insert($params);
                 $params['server_id'] = $serverId;
                 $this->insertIntoPlatformTopology($params);
-                if (!$isAlreadyInTransaction) {
-                    $this->db->commit();
-                }
             } catch (\Exception $ex) {
                 if (!$isAlreadyInTransaction) {
                     $this->db->rollBack();
@@ -125,7 +119,9 @@ class Centreon_Object_Instance extends Centreon_Object
                 throw new \Exception('Unable to create platform', 0, $ex);
             }
         }
-
+        if (!$isAlreadyInTransaction) {
+            $this->db->commit();
+        }
         return $serverId;
     }
 
