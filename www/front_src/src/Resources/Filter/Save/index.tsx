@@ -41,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
 type Props = Pick<
   FilterState,
   | 'filter'
-  | 'updatedFilter'
   | 'setFilter'
   | 'loadCustomFilters'
   | 'customFilters'
@@ -51,7 +50,6 @@ type Props = Pick<
 
 const SaveFilterMenuContent = ({
   filter,
-  updatedFilter,
   setFilter,
   loadCustomFilters,
   customFilters,
@@ -111,8 +109,8 @@ const SaveFilterMenuContent = ({
 
   const updateFilter = (): void => {
     sendUpdateFilterRequest({
-      filter: omit(['id'], updatedFilter),
-      id: updatedFilter.id,
+      filter: omit(['id'], filter),
+      id: filter.id,
     }).then((savedFilter) => {
       closeSaveFilterMenu();
       showMessage({
@@ -132,7 +130,7 @@ const SaveFilterMenuContent = ({
   const isFilterDirty = (): boolean => {
     const retrievedFilter = find(propEq('id', filter.id), filters);
 
-    return !equals(retrievedFilter, updatedFilter);
+    return !equals(retrievedFilter, filter);
   };
 
   const isNewFilter = filter.id === '';
@@ -169,7 +167,7 @@ const SaveFilterMenuContent = ({
       {createFilterDialogOpen && (
         <CreateFilterDialog
           open
-          filter={updatedFilter}
+          filter={filter}
           onCancel={closeCreateFilterDialog}
           onCreate={confirmCreateFilter}
         />
@@ -188,7 +186,6 @@ const MemoizedSaveFilterMenuContent = memoizeComponent<Props>({
 const SaveFilterMenu = (): JSX.Element => {
   const {
     filter,
-    updatedFilter,
     setFilter,
     loadCustomFilters,
     customFilters,
@@ -204,7 +201,6 @@ const SaveFilterMenu = (): JSX.Element => {
       loadCustomFilters={loadCustomFilters}
       setEditPanelOpen={setEditPanelOpen}
       setFilter={setFilter}
-      updatedFilter={updatedFilter}
     />
   );
 };

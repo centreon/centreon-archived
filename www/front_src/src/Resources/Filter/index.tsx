@@ -3,22 +3,15 @@ import * as React from 'react';
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Grid, Tooltip } from '@material-ui/core';
-import TuneIcon from '@material-ui/icons/Tune';
+import { Grid, makeStyles } from '@material-ui/core';
 
-import {
-  IconButton,
-  MemoizedFilters as Filters,
-  SearchField,
-} from '@centreon/ui';
+import { MemoizedFilters as Filters, SearchField } from '@centreon/ui';
 
 import {
   labelStateFilter,
   labelSearch,
-  labelShowCriteriasFilters,
   labelNewFilter,
   labelMyFilters,
-  labelSearchOptions,
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
 
@@ -26,7 +19,6 @@ import SearchHelpTooltip from './SearchHelpTooltip';
 import SaveFilter from './Save';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
 import Criterias from './Criterias';
-import FilterSummary from './Summary';
 import {
   standardFilterById,
   unhandledProblemsFilter,
@@ -34,35 +26,47 @@ import {
   allFilter,
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
+import { build } from './Criterias/searchQueryLanguage';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'grid',
+    gridAutoFlow: 'column',
+    gridGap: theme.spacing(1),
+    gridTemplateColumns: 'auto auto 1fr',
+    width: '100%',
+  },
+}));
 
 const Filter = (): JSX.Element => {
   const { t } = useTranslation();
+  const classes = useStyles();
 
   const {
     filter,
     setFilter,
-    nextSearch,
-    setNextSearch,
+
     customFilters,
     customFiltersLoading,
     setCriteria,
+    setSearch,
     setNewFilter,
-    filterExpanded,
-    toggleFilterExpanded,
+    transientFilter,
+    setTransientFilter,
+    search,
   } = useResourceContext();
-
-  const [criteriasOpen, setCriteriasOpen] = React.useState(false);
 
   const memoProps = [
     filter,
-    nextSearch,
+    transientFilter,
     customFilters,
     customFiltersLoading,
-    criteriasOpen,
+    search,
+    setSearch,
   ];
 
   const requestSearch = (): void => {
-    setCriteria({ name: 'search', value: nextSearch });
+    // setCriteria({ name: 'search', value: nextSearch });
   };
 
   const requestSearchOnEnterKey = (event: React.KeyboardEvent): void => {
@@ -73,12 +77,11 @@ const Filter = (): JSX.Element => {
     }
   };
 
-  const toggleCriteriasOpen = (): void => {
-    setCriteriasOpen(!criteriasOpen);
-  };
-
   const prepareSearch = (event): void => {
-    setNextSearch(event.target.value);
+    // setNextSearch(event.target.value);
+    // setTr
+    setSearch(event.target.value);
+    console.log(event.target.value);
     setNewFilter();
   };
 
@@ -90,7 +93,6 @@ const Filter = (): JSX.Element => {
       customFilters?.find(propEq('id', filterId));
 
     setFilter(updatedFilter);
-    setNextSearch(updatedFilter.criterias.find(propEq('name', 'search')).value);
   };
 
   const translatedOptions = [
@@ -121,41 +123,36 @@ const Filter = (): JSX.Element => {
   return (
     <Filters
       filters={
-        <Grid container item alignItems="center" spacing={1} wrap="nowrap">
-          <Grid item>
-            <SaveFilter />
-          </Grid>
-          <Grid item>
-            {customFiltersLoading ? (
-              <FilterLoadingSkeleton />
-            ) : (
-              <SelectFilter
-                ariaLabel={t(labelStateFilter)}
-                options={options.map(pick(['id', 'name', 'type']))}
-                selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
-                onChange={changeFilter}
-              />
-            )}
-          </Grid>
-          <Grid item>
-            <SearchField
-              EndAdornment={() => (
-                <Grid container direction="row" wrap="nowrap">
-                  <Grid item>
-                    <Criterias />
-                  </Grid>
-                  <Grid item>
-                    <SearchHelpTooltip />
-                  </Grid>
-                </Grid>
-              )}
-              placeholder={t(labelSearch)}
-              value={nextSearch || ''}
-              onChange={prepareSearch}
-              onKeyDown={requestSearchOnEnterKey}
+        <div className={classes.container}>
+          <SaveFilter />
+          {customFiltersLoading ? (
+            <FilterLoadingSkeleton />
+          ) : (
+            <SelectFilter
+              ariaLabel={t(labelStateFilter)}
+              options={options.map(pick(['id', 'name', 'type']))}
+              selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
+              onChange={changeFilter}
             />
-          </Grid>
-        </Grid>
+          )}
+
+          <SearchField
+            EndAdornment={() => (
+              <Grid container direction="row" wrap="nowrap">
+                <Grid item>
+                  <Criterias />
+                </Grid>
+                <Grid item>
+                  <SearchHelpTooltip />
+                </Grid>
+              </Grid>
+            )}
+            placeholder={t(labelSearch)}
+            value={search}
+            onChange={prepareSearch}
+            onKeyDown={requestSearchOnEnterKey}
+          />
+        </div>
       }
       memoProps={memoProps}
     />

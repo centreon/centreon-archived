@@ -456,7 +456,7 @@ describe(Listing, () => {
         ? `${columnLabel} (${columnShortLabel})`
         : columnLabel;
 
-      fireEvent.click(last<HTMLElement>(getAllByText(columnDisplayLabel)));
+      fireEvent.click(last(getAllByText(columnDisplayLabel)) as HTMLElement);
 
       const expectedLabelCount = hasShortLabel ? 1 : 2;
 

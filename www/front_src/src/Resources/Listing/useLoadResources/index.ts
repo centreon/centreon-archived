@@ -18,7 +18,6 @@ const useLoadResources = (): LoadResources => {
     limit,
     page,
     setPage,
-    nextSearch,
     setListing,
     sendRequest,
     enabledAutorefresh,
@@ -111,10 +110,7 @@ const useLoadResources = (): LoadResources => {
   };
 
   const initAutorefreshAndLoad = (): void => {
-    if (
-      isNil(customFilters) ||
-      not(equals(getCriteriaValue('search'), nextSearch))
-    ) {
+    if (isNil(customFilters)) {
       return;
     }
 

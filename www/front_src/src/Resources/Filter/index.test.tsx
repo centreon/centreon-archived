@@ -172,8 +172,6 @@ const FilterTest = (): JSX.Element | null => {
   const listingState = useListing();
   const actionsState = useActions();
 
-  filterState.filterExpanded = true;
-
   return (
     <Context.Provider
       value={

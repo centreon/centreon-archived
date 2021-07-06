@@ -2,15 +2,10 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Button, Grid, makeStyles, Tooltip } from '@material-ui/core';
+import { Button, Grid, makeStyles } from '@material-ui/core';
 import TuneIcon from '@material-ui/icons/Tune';
 
-import {
-  IconButton,
-  PopoverMenu,
-  SelectEntry,
-  useMemoComponent,
-} from '@centreon/ui';
+import { PopoverMenu, SelectEntry, useMemoComponent } from '@centreon/ui';
 
 import { useResourceContext } from '../../Context';
 import {
@@ -19,7 +14,6 @@ import {
   labelSearchOptions,
 } from '../../translatedLabels';
 
-import CriteriasMultiSelect from './CriteriasMultiSelect';
 import Criteria from './Criteria';
 import { Criteria as CriteriaInterface } from './models';
 
