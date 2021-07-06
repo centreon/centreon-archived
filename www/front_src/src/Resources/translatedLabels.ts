@@ -217,3 +217,4 @@ export const labelAsDisplayed = 'As displayed';
 export const labelMediumSize = 'Medium size';
 export const labelSmallSize = 'Small size';
 export const labelSearchOptions = 'Search options';
+export const labelActionNotPermitted = 'Action not permitted';
