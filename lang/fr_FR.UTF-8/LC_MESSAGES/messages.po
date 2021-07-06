@@ -16159,3 +16159,9 @@ msgstr "Petite Taille"
 
 msgid "Action not permitted"
 msgstr "Action non autorisée"
+
+msgid "Please choose a date before %d"
+msgstr "Veuillez choisir une date avant %d"
+
+msgid "Year must be less than %d (%s)"
+msgstr "L'année doit être inférieure à %d (%s)"
