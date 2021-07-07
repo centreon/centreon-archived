@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { prop, isNil } from 'ramda';
-import { useTranslation } from 'react-i18next';
+import { TFunction, useTranslation } from 'react-i18next';
 
 import { makeStyles, Chip, Typography } from '@material-ui/core';
 import EventIcon from '@material-ui/icons/Event';
@@ -124,7 +124,6 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
 
   return (
     <div className={classes.event}>
-      <EventIcon aria-label={t(labelEvent)} color="primary" />
       <div className={classes.info}>
         <div className={classes.infoHeader}>
           <Date event={event} />
@@ -148,12 +147,10 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
-      <CommentIcon aria-label={t(labelComment)} color="primary" />
       <div className={classes.info}>
         <div className={classes.infoHeader}>
           <Date event={event} />
@@ -168,12 +165,10 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
-      <AcknowledgeChip aria-label={t(labelAcknowledgement)} />
       <div className={classes.info}>
         <div className={classes.infoHeader}>
           <Date event={event} />
@@ -208,7 +203,6 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
 
   return (
     <div className={classes.event}>
-      <DowntimeChip aria-label={t(labelDowntime)} />
       <div className={classes.info}>
         <div className={classes.infoHeader}>
           <Typography variant="caption">{getCaption()}</Typography>
@@ -250,4 +244,22 @@ const TimelineEventByType = {
   notification: NotificationTimelineEvent,
 };
 
-export { TimelineEventByType, types, getTypeIds };
+const TimelineIconByType = {
+  acknowledgement: (t: TFunction): JSX.Element => (
+    <AcknowledgeChip aria-label={t(labelAcknowledgement)} />
+  ),
+  comment: (t: TFunction): JSX.Element => (
+    <CommentIcon aria-label={t(labelComment)} color="primary" />
+  ),
+  downtime: (t: TFunction): JSX.Element => (
+    <DowntimeChip aria-label={t(labelDowntime)} />
+  ),
+  event: (t: TFunction): JSX.Element => (
+    <EventIcon aria-label={t(labelEvent)} color="primary" />
+  ),
+  notification: (t: TFunction): JSX.Element => (
+    <NotificationIcon aria-label={t(labelNotification)} color="primary" />
+  ),
+};
+
+export { TimelineEventByType, types, getTypeIds, TimelineIconByType };
