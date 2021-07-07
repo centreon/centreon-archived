@@ -1,14 +1,11 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
-import { always, isNil, isEmpty, cond, T, concat } from 'ramda';
+import { always, isNil, isEmpty, cond, T, concat, gt, equals, or } from 'ramda';
 
-import { CircularProgress, Button, makeStyles } from '@material-ui/core';
-import IconRefresh from '@material-ui/icons/Refresh';
+import { CircularProgress, makeStyles } from '@material-ui/core';
 
 import { useIntersectionObserver, ListingModel } from '@centreon/ui';
 
-import { labelRefresh } from '../../translatedLabels';
 import NoResultsMessage from '../NoResultsMessage';
 import { ResourceDetails } from '../models';
 import { ResourceContext, useResourceContext } from '../../Context';
@@ -31,8 +28,21 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
     width: '100%',
   },
+  entitiesContainer: {
+    paddingBottom: theme.spacing(0.5),
+    width: '100%',
+  },
   filter: {
     width: '100%',
+  },
+  scrollableContainer: {
+    bottom: 0,
+    left: 0,
+    overflow: 'auto',
+    padding: theme.spacing(2),
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
 }));
 
@@ -40,6 +50,7 @@ interface Props<TEntity> {
   children: (props) => JSX.Element;
   details?: ResourceDetails;
   filter?: JSX.Element;
+  header?: JSX.Element;
   limit: number;
   loading: boolean;
   loadingSkeleton: JSX.Element;
@@ -56,6 +67,7 @@ type InfiniteScrollContentProps<TEntity> = Props<TEntity> &
 const InfiniteScrollContent = <TEntity extends { id: number }>({
   limit,
   filter,
+  header,
   details,
   reloadDependencies = [],
   loadingSkeleton,
@@ -65,7 +77,6 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   sendListingRequest,
   children,
 }: InfiniteScrollContentProps<TEntity>): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
   const [entities, setEntities] = React.useState<Array<TEntity>>();
@@ -139,8 +150,19 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   const maxPage = Math.ceil(total / limit);
 
   const loadMoreEvents = (): void => {
+    if (equals(page, maxPage)) {
+      return;
+    }
     setLoadingMoreEvents(true);
     setPage(page + 1);
+  };
+
+  const autoReload = (event): void => {
+    if (or(equals(page, 1), gt(event.target.scrollTop, 0))) {
+      return;
+    }
+
+    reload();
   };
 
   const infiniteScrollTriggerRef = useIntersectionObserver({
@@ -151,27 +173,24 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   });
 
   return (
-    <div className={classes.container}>
-      <div className={classes.filter}>{filter}</div>
-      {page > 1 && (
-        <Button
-          color="primary"
-          size="small"
-          startIcon={<IconRefresh />}
-          variant="contained"
-          onClick={reload}
-        >
-          {t(labelRefresh)}
-        </Button>
-      )}
-      <div className={classes.entities}>
-        {cond([
-          [always(isNil(entities)), always(loadingSkeleton)],
-          [isEmpty, always(<NoResultsMessage />)],
-          [T, always(<>{children({ entities, infiniteScrollTriggerRef })}</>)],
-        ])(entities)}
+    <div className={classes.scrollableContainer} onScroll={autoReload}>
+      <div className={classes.container}>
+        <div className={classes.filter}>{header}</div>
+        <div className={classes.filter}>{filter}</div>
+        <div className={classes.entitiesContainer}>
+          <div className={classes.entities}>
+            {cond([
+              [always(isNil(entities)), always(loadingSkeleton)],
+              [isEmpty, always(<NoResultsMessage />)],
+              [
+                T,
+                always(<>{children({ entities, infiniteScrollTriggerRef })}</>),
+              ],
+            ])(entities)}
+          </div>
+        </div>
+        {loadingMoreEvents && <CircularProgress />}
       </div>
-      {loadingMoreEvents && <CircularProgress />}
     </div>
   );
 };
