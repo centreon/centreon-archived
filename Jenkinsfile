@@ -288,7 +288,7 @@ try {
       }
     }
 
-    timeout(time: 10, unit: 'MINUTES') {
+    timeout(time: 30, unit: 'MINUTES') {
       def qualityGate = waitForQualityGate()
       if (qualityGate.status != 'OK') {
         currentBuild.result = 'FAIL'
