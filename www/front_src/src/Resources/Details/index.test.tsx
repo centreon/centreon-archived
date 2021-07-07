@@ -1367,7 +1367,7 @@ describe(Details, () => {
     expect(getByText('1.23k')).toBeInTheDocument();
   });
 
-  it('updates the filter when clicking on a group chip and the Details tab is selected', async () => {
+  it('Filters on a group when the corresponding chip is clicked and the Details tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: retrievedDetails,
     });
