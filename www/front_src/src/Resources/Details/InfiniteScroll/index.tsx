@@ -1,8 +1,27 @@
 import * as React from 'react';
 
-import { always, isNil, isEmpty, cond, T, concat, gt, equals, or } from 'ramda';
+import {
+  always,
+  isNil,
+  isEmpty,
+  cond,
+  T,
+  concat,
+  gt,
+  equals,
+  or,
+  not,
+} from 'ramda';
+import { useTranslation } from 'react-i18next';
 
-import { CircularProgress, makeStyles } from '@material-ui/core';
+import {
+  CircularProgress,
+  Fab,
+  Fade,
+  makeStyles,
+  Tooltip,
+} from '@material-ui/core';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 import { useIntersectionObserver, ListingModel } from '@centreon/ui';
 
@@ -10,6 +29,7 @@ import NoResultsMessage from '../NoResultsMessage';
 import { ResourceDetails } from '../models';
 import { ResourceContext, useResourceContext } from '../../Context';
 import memoizeComponent from '../../memoizedComponent';
+import { labelScrollToTop } from '../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,6 +51,13 @@ const useStyles = makeStyles((theme) => ({
   entitiesContainer: {
     paddingBottom: theme.spacing(0.5),
     width: '100%',
+  },
+  fab: {
+    bottom: 0,
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginRight: theme.spacing(1.5),
+    position: 'sticky',
   },
   filter: {
     width: '100%',
@@ -78,11 +105,15 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   children,
 }: InfiniteScrollContentProps<TEntity>): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const [entities, setEntities] = React.useState<Array<TEntity>>();
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
+  const [isScrolling, setIsScrolling] = React.useState(false);
+  const scrollableContainerRef = React.useRef<HTMLDivElement | undefined>();
+  const preventScrollButtonRef = React.useRef(false);
 
   const listEntities = (
     { atPage } = {
@@ -157,12 +188,28 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
     setPage(page + 1);
   };
 
-  const autoReload = (event): void => {
-    if (or(equals(page, 1), gt(event.target.scrollTop, 0))) {
+  const scroll = (event): void => {
+    const { scrollTop } = event.target;
+    if (preventScrollButtonRef.current && gt(scrollTop, 0)) {
+      return;
+    }
+    setIsScrolling(not(equals(scrollTop, 0)));
+    preventScrollButtonRef.current = false;
+
+    if (or(equals(page, 1), gt(scrollTop, 0))) {
       return;
     }
 
     reload();
+  };
+
+  const scrollToTop = (): void => {
+    scrollableContainerRef.current?.scrollTo({
+      behavior: 'smooth',
+      top: 0,
+    });
+    preventScrollButtonRef.current = true;
+    setIsScrolling(false);
   };
 
   const infiniteScrollTriggerRef = useIntersectionObserver({
@@ -173,7 +220,11 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   });
 
   return (
-    <div className={classes.scrollableContainer} onScroll={autoReload}>
+    <div
+      className={classes.scrollableContainer}
+      ref={scrollableContainerRef as React.RefObject<HTMLDivElement>}
+      onScroll={scroll}
+    >
       <div className={classes.container}>
         <div className={classes.filter}>{header}</div>
         <div className={classes.filter}>{filter}</div>
@@ -187,6 +238,20 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
                 always(<>{children({ entities, infiniteScrollTriggerRef })}</>),
               ],
             ])(entities)}
+          </div>
+          <div className={classes.fab}>
+            <Fade in={isScrolling}>
+              <Tooltip title={t(labelScrollToTop) as string}>
+                <Fab
+                  aria-label={t(labelScrollToTop)}
+                  color="primary"
+                  size="small"
+                  onClick={scrollToTop}
+                >
+                  <KeyboardArrowUpIcon />
+                </Fab>
+              </Tooltip>
+            </Fade>
           </div>
         </div>
         {loadingMoreEvents && <CircularProgress />}

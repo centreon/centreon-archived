@@ -218,3 +218,4 @@ export const labelMediumSize = 'Medium size';
 export const labelSmallSize = 'Small size';
 export const labelDisplayCompleteGraph = 'Display the complete graph';
 export const labelActionNotPermitted = 'Action not permitted';
+export const labelScrollToTop = 'Scroll to top';
