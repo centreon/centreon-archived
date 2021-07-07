@@ -188,7 +188,7 @@ class Centreon_Object_Instance extends Centreon_Object
         }
         $statement = $this->db->prepare(
             "INSERT INTO platform_topology (address, name, type, pending, parent_id, server_id) " .
-            "VALUES (:address, :name, 'poller', '0', :parentId, :serverId)"
+            "VALUES (:address, :name, '" . PlatformRegistered::TYPE_POLLER . "', '0', :parentId, :serverId)"
         );
         $statement->bindValue(':address', $params['ns_ip_address'], \PDO::PARAM_STR);
         $statement->bindValue(':name', $params['name'], \PDO::PARAM_STR);
@@ -204,7 +204,9 @@ class Centreon_Object_Instance extends Centreon_Object
      */
     private function findCentralPlatformTopologyId(): ?int
     {
-        $result = $this->db->query("SELECT id from platform_topology WHERE type ='central'");
+        $result = $this->db->query(
+            "SELECT id from platform_topology WHERE type ='" . PlatformRegistered::TYPE_CENTRAL . "'"
+        );
         if ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
             return (int) $row['id'];
         }
