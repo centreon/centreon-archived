@@ -71,8 +71,88 @@ class AuthenticationException extends \Exception
         return new self(_('User cannot be logout'), 0, $ex);
     }
 
+    /**
+     * @return self
+     */
     public static function cannotStartLegacySession(): self
     {
         return new self(_('Unable to start Centreon legacy session'));
+    }
+
+    /**
+     * @return self
+     */
+    public static function cannotRefreshToken(): self
+    {
+        return new self(_('Error while refresh token'));
+    }
+
+    /**
+     * @return self
+     */
+    public static function sessionExpired(): self
+    {
+        return new self(_('Your session has expired'));
+    }
+
+    /**
+     * @return self
+     */
+    public static function sessionTokenNotFound(): self
+    {
+        return new self(_('Session token not found'));
+    }
+
+    /**
+     * @return self
+     */
+    public static function tokenNotFound(): self
+    {
+        return new self(_('token not found'));
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function deleteExpireToken(\Throwable $ex): self
+    {
+        return new self(_('Error while deleting expired token'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function addAuthenticationToken(\Throwable $ex): self
+    {
+        return new self(_('Error while adding authentication token'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function deleteSession(\Throwable $ex): self
+    {
+        return new self(_('Error while deleting session'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function authenticationTokensNotFound(\Throwable $ex): self
+    {
+        return new self(_('Error while searching authentication tokens'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function updateAuthenticationTokens(\Throwable $ex): self
+    {
+        return new self(_('Error while updating authentication tokens'), 0, $ex);
     }
 }

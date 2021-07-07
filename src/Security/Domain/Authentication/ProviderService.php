@@ -27,7 +27,8 @@ use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Model\ProviderFactory;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Security\Domain\Authentication\Exceptions\ProviderServiceException;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 
@@ -65,7 +66,7 @@ class ProviderService implements ProviderServiceInterface
         try {
             return $this->repository->findProvidersConfigurations();
         } catch (\Exception $ex) {
-            throw ProviderServiceException::findProvidersConfigurations($ex);
+            throw ProviderException::findProvidersConfigurations($ex);
         }
     }
 
@@ -77,7 +78,7 @@ class ProviderService implements ProviderServiceInterface
         try {
             $providerConfiguration = $this->repository->findProviderConfiguration($providerConfigurationId);
         } catch (\Exception $ex) {
-            throw ProviderServiceException::findProvidersConfigurations($ex);
+            throw ProviderException::findProvidersConfigurations($ex);
         }
         if ($providerConfiguration === null) {
             return null;
@@ -96,8 +97,7 @@ class ProviderService implements ProviderServiceInterface
                 $providerConfigurationName
             );
         } catch (\Exception $ex) {
-            $this->critical("Unable to retrieve provider with name '$providerConfigurationName'");
-            throw ProviderServiceException::findProvidersConfigurations($ex);
+            ProviderException::providerConfigurationNotFound($providerConfigurationName);
         }
 
         if ($providerConfiguration === null) {
@@ -114,7 +114,7 @@ class ProviderService implements ProviderServiceInterface
         try {
             $authenticationToken = $this->repository->findAuthenticationTokensByToken($token);
         } catch (\Exception $ex) {
-            throw ProviderServiceException::authenticationTokensNotFound($ex);
+            throw AuthenticationException::authenticationTokensNotFound($ex);
         }
         if ($authenticationToken === null) {
             return null;
@@ -131,7 +131,7 @@ class ProviderService implements ProviderServiceInterface
         try {
             return $this->repository->findProviderConfigurationByConfigurationName($providerConfigurationName);
         } catch (\Exception $ex) {
-            throw ProviderServiceException::findProvidersConfigurations($ex);
+            throw ProviderException::findProvidersConfigurations($ex);
         }
     }
 }

@@ -22,12 +22,9 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
-use Security\Domain\Authentication\Model\ProviderToken;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Security\Domain\Authentication\Exceptions\ProviderServiceException;
-use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
+use Security\Domain\Authentication\Exceptions\ProviderException;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
 
 /**
  * @package Security\Domain\Authentication\Interfaces
@@ -39,71 +36,35 @@ interface AuthenticationServiceInterface
      *
      * @param string $token
      * @return boolean
-     * @throws ProviderServiceException
-     * @throws AuthenticationServiceException
+     * @throws ProviderException
+     * @throws AuthenticationException
      */
     public function checkToken(string $token): bool;
-
-    /**
-     * Create the authentication tokens.
-     *
-     * @param string $sessionToken
-     * @param string $providerConfigurationName
-     * @param ContactInterface $contact
-     * @param ProviderToken $providerToken
-     * @param ProviderToken|null $providerRefreshToken
-     * @throws AuthenticationServiceException
-     */
-    public function createAuthenticationTokens(
-        string $sessionToken,
-        string $providerConfigurationName,
-        ContactInterface $contact,
-        ProviderToken $providerToken,
-        ?ProviderToken $providerRefreshToken
-    ): void;
 
     /**
      * Delete a session.
      *
      * @param string $sessionToken
-     * @throws AuthenticationServiceException
+     * @throws AuthenticationException
      */
     public function deleteSession(string $sessionToken): void;
 
     /**
-     * Create the authentication tokens for API.
-     *
-     * @param string $token
-     * @param ContactInterface $contact
-     * @param ProviderConfiguration $providerConfiguration
-     * @param ProviderToken $providerToken
-     * @param ProviderToken|null $providerRefreshToken
-     * @throws AuthenticationServiceException
-     */
-    public function createAPIAuthenticationTokens(
-        string $token,
-        ProviderConfiguration $providerConfiguration,
-        ContactInterface $contact,
-        ProviderToken $providerToken,
-        ?ProviderToken $providerRefreshToken
-    ): void;
-
-    /**
      * Delete all expired API tokens
-     * @throws AuthenticationServiceException
+     * @throws AuthenticationException
      */
     public function deleteExpiredSecurityTokens(): void;
 
     /**
      * @param AuthenticationTokens $authenticationToken
-     * @throws AuthenticationServiceException
+     * @throws AuthenticationException
      */
     public function updateAuthenticationTokens(AuthenticationTokens $authenticationToken): void;
 
     /**
      * @param string $token
      * @return AuthenticationTokens|null
-     * @throws AuthenticationServiceException
+     * @throws AuthenticationException
      */
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens;
 
@@ -113,7 +74,7 @@ interface AuthenticationServiceInterface
      * @param string $sessionToken Session token
      * @param ProviderInterface $provider Provider that will be used to refresh the token if necessary
      * @return bool Returns true if the session is valid (after use of the refresh token by the provider if necessary)
-     * @throws AuthenticationServiceException
+     * @throws AuthenticationException
      */
     public function hasValidSession(string $sessionToken, ProviderInterface $provider): bool;
 }

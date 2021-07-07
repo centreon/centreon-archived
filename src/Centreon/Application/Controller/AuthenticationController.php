@@ -64,7 +64,7 @@ class AuthenticationController extends AbstractController
             "password" => $contentBody['security']['credentials']['password'] ?? ''
         ];
 
-        $request = new AuthenticateApiRequest($credentials);
+        $request = new AuthenticateApiRequest($credentials['login'], $credentials['password']);
         $authenticate->execute($request, $response);
         return $this->view(ApiAuthenticationV21Factory::createFromResponse($response));
     }
@@ -107,7 +107,7 @@ class AuthenticationController extends AbstractController
         FindProvidersConfigurationsResponse $response
     ): View {
         $findProviderConfigurations->execute($response);
-        return View::create(ProvidersConfigurationsV21Factory::createFromResponse($response));
+        return $this->view(ProvidersConfigurationsV21Factory::createFromResponse($response));
     }
 
     /**
@@ -129,9 +129,7 @@ class AuthenticationController extends AbstractController
         if (empty($data['login']) || empty($data['password'])) {
             return $this->view(['Missing credentials parameters'], Response::HTTP_BAD_REQUEST);
         }
-        $credentials = (new Credentials())
-            ->setLogin($data['login'])
-            ->setPassword($data['password']);
+        $credentials = new Credentials($data['login'], $data['password']);
 
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
@@ -143,14 +141,7 @@ class AuthenticationController extends AbstractController
         $authenticate->execute($authenticateRequest, $response);
         if ($request->headers->get('Content-Type') === 'application/json') {
             // Send redirection_uri in JSON format only for API request
-            return View::create($response->getRedirectionUriApi());
-        } else {
-            // Otherwise, we send a redirection response.
-            return View::createRedirect(
-                $this->getBaseUri() . '/authentication/login',
-                Response::HTTP_OK,
-                ['content-type' => 'text/html']
-            );
+            return $this->view($response->getRedirectionUriApi());
         }
     }
 }

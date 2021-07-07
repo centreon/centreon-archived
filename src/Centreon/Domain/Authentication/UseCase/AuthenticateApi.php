@@ -25,13 +25,15 @@ namespace Centreon\Domain\Authentication\UseCase;
 use Security\Encryption;
 use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Model\LocalProvider;
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Security\Domain\Authentication\Exceptions\ProviderServiceException;
-use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
-use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Security\Domain\Authentication\Exceptions\ProviderException;
+use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 class AuthenticateApi
 {
@@ -48,20 +50,26 @@ class AuthenticateApi
     private $providerService;
 
     /**
+     * @var AuthenticationRepositoryInterface
+     */
+    private $authenticationRepository;
+
+    /**
      * @param AuthenticationServiceInterface $authenticationService
      */
     public function __construct(
         AuthenticationServiceInterface $authenticationService,
-        ProviderServiceInterface $providerService
+        ProviderServiceInterface $providerService,
+        AuthenticationRepositoryInterface $authenticationRepository
     ) {
         $this->authenticationService = $authenticationService;
         $this->providerService = $providerService;
+        $this->authenticationRepository = $authenticationRepository;
     }
 
     /**
      * @param AuthenticateApiRequest $request
-     * @throws ProviderServiceException
-     * @throws AuthenticationServiceException
+     * @throws ProviderException
      * @throws AuthenticationException
      */
     public function execute(AuthenticateApiRequest $request, AuthenticateApiResponse $response): void
@@ -74,8 +82,22 @@ class AuthenticateApi
 
         $contact = $this->getUserFromProviderOrFail($localProvider);
         $token = Encryption::generateRandomString();
-        $this->createApiAuthenticationTokenOrFail($token, $localProvider, $contact);
-        $this->setResponseAuthentication($response, $contact, $token);
+        $this->createAPIAuthenticationTokens(
+            $token,
+            $localProvider->getConfiguration(),
+            $contact,
+            $localProvider->getProviderToken($token),
+            null
+        );
+        $response->setApiAuthentication($contact, $token);
+        $this->debug(
+            "[AUTHENTICATE API] Authentication success",
+            [
+                "provider_name" => LocalProvider::NAME,
+                "contact_id" => $contact->getId(),
+                "contact_alias" => $contact->getAlias()
+            ]
+        );
     }
 
     /**
@@ -88,7 +110,7 @@ class AuthenticateApi
          */
         try {
             $this->authenticationService->deleteExpiredSecurityTokens();
-        } catch (AuthenticationServiceException $ex) {
+        } catch (AuthenticationException $ex) {
             $this->notice('[AUTHENTICATE API] Unable to delete expired security tokens');
         }
     }
@@ -97,14 +119,14 @@ class AuthenticateApi
      * Find the local provider or throw an Exception.
      *
      * @return ProviderInterface
-     * @throws ProviderServiceException
+     * @throws ProviderException
      */
     private function findLocalProviderOrFail(): ProviderInterface
     {
         $localProvider = $this->providerService->findProviderByConfigurationName(LocalProvider::NAME);
 
         if ($localProvider === null) {
-            throw ProviderServiceException::providerConfigurationNotFound(LocalProvider::NAME);
+            throw ProviderException::providerConfigurationNotFound(LocalProvider::NAME);
         }
 
         return $localProvider;
@@ -165,53 +187,32 @@ class AuthenticateApi
     }
 
     /**
-     * Create the authentication token or throw an Exception.
-     *
-     * @param string $token
-     * @param ProviderInterface $localProvider
-     * @param ContactInterface $contact
-     * @return void
+     * @inheritDoc
      */
-    private function createApiAuthenticationTokenOrFail(
+    public function createAPIAuthenticationTokens(
         string $token,
-        ProviderInterface $localProvider,
-        ContactInterface $contact
-    ): void {
-        /**
-         * Create the token.
-         */
-        $this->authenticationService->createAPIAuthenticationTokens(
-            $token,
-            $localProvider->getConfiguration(),
-            $contact,
-            $localProvider->getProviderToken($token),
-            null
-        );
-    }
-
-    /**
-     * Set the authentication to the response.
-     *
-     * @param AuthenticateApiResponse $response
-     * @param ContactInterface $contact
-     * @param string $token
-     */
-    private function setResponseAuthentication(
-        AuthenticateApiResponse $response,
+        ProviderConfiguration $providerConfiguration,
         ContactInterface $contact,
-        string $token
+        ProviderToken $providerToken,
+        ?ProviderToken $providerRefreshToken
     ): void {
-        /**
-         * Prepare the response with contact informations and API authentication token.
-         */
-        $response->setApiAuthentication($contact, $token);
         $this->debug(
-            "[AUTHENTICATE API] Authentication success",
-            [
-                "provider_name" => LocalProvider::NAME,
-                "contact_id" => $contact->getId(),
-                "contact_alias" => $contact->getAlias()
-            ]
+            '[AUTHENTICATION SERVICE] Creating authentication tokens for user',
+            ['user' => $contact->getAlias()]
         );
+        try {
+            if ($providerConfiguration->getId() === null) {
+                throw new \InvalidArgumentException("Provider configuration can't be null");
+            }
+            $this->authenticationRepository->addAPIAuthenticationTokens(
+                $token,
+                $providerConfiguration->getId(),
+                $contact->getId(),
+                $providerToken,
+                $providerRefreshToken
+            );
+        } catch (\Exception $ex) {
+            throw AuthenticationException::addAuthenticationToken($ex);
+        }
     }
 }

@@ -42,7 +42,7 @@ class MenuService implements MenuServiceInterface
     /**
      * @inheritDoc
      */
-    public function findPageByTopologyPageNumber(string $pageNumber): ?Page
+    public function findPageByTopologyPageNumber(int $pageNumber): ?Page
     {
         return $this->menuRepository->findPageByTopologyPageNumber($pageNumber);
     }

@@ -25,7 +25,7 @@ namespace Centreon\Domain\Authentication\UseCase;
 
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
 use Centreon\Domain\Log\LoggerTrait;
-use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 class Logout
@@ -46,7 +46,7 @@ class Logout
      * Execute the Logout Use Case.
      *
      * @param LogoutRequest $request
-     * @throws AuthenticationServiceException
+     * @throws AuthenticationException
      */
     public function execute(LogoutRequest $request): void
     {

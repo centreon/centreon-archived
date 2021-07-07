@@ -41,16 +41,16 @@ interface ProviderInterface
     /**
      * Get legacy Centreon session
      *
-     * @return \Centreon|null
+     * @return \Centreon
      */
-    public function getLegacySession(): ?\Centreon;
+    public function getLegacySession(): \Centreon;
 
     /**
      * Set legacy Centreon session
      *
      * @param \Centreon $legacySession
      */
-    public function setLegacySession(?\Centreon $legacySession): void;
+    public function setLegacySession(\Centreon $legacySession): void;
 
     /**
      * Indicates whether we can create the authenticated user or not.

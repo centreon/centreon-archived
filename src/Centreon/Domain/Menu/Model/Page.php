@@ -41,14 +41,20 @@ class Page
     private $urlOptions;
 
     /**
-     * @var int|null
+     * @var int
      */
     private $pageNumber;
 
     /**
      * @var bool
      */
-    private $isReact = false;
+    private $isReact;
+
+    public function __construct(int $pageNumber, bool $isReact = false)
+    {
+        $this->pageNumber = $pageNumber;
+        $this->isReact = $isReact;
+    }
 
     /**
      * @return int|null
@@ -69,7 +75,7 @@ class Page
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getUrl(): ?string
     {
@@ -105,21 +111,11 @@ class Page
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getPageNumber(): ?int
+    public function getPageNumber(): int
     {
         return $this->pageNumber;
-    }
-
-    /**
-     * @param int|null $pageNumber
-     * @return self
-     */
-    public function setPageNumber(?int $pageNumber): self
-    {
-        $this->pageNumber = $pageNumber;
-        return $this;
     }
 
     /**
@@ -128,15 +124,5 @@ class Page
     public function isReact(): bool
     {
         return $this->isReact;
-    }
-
-    /**
-     * @param boolean $isReact
-     * @return self
-     */
-    public function setIsReact(bool $isReact): self
-    {
-        $this->isReact = $isReact;
-        return $this;
     }
 }

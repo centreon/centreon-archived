@@ -27,7 +27,7 @@ namespace Security\Domain\Authentication\Exceptions;
  *
  * @package Security\Domain\Authentication\Exceptions
  */
-class ProviderServiceException extends \Exception
+class ProviderException extends \Exception
 {
     /**
      * @param string $configurationName
@@ -56,11 +56,10 @@ class ProviderServiceException extends \Exception
     }
 
     /**
-     * @param \Throwable $ex
      * @return self
      */
-    public static function authenticationTokensNotFound(\Throwable $ex): self
+    public static function emptyAuthenticationProvider(): self
     {
-        return new self(_('Error while searching authentication tokens'), 0, $ex);
+        return new self(_('You must at least add one authentication provider'));
     }
 }

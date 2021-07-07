@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\Model;
 
+use Centreon\Domain\Common\Assertion\Assertion;
+
 class Credentials
 {
     /**
@@ -35,25 +37,26 @@ class Credentials
      */
     private $password;
 
+    public function __construct(string $login, string $password)
+    {
+        Assertion::notEmpty($login, 'Credentials::login');
+        $this->login = $login;
+        $this->password = $password;
+    }
+
+    /**
+     * @return string
+     */
     public function getLogin(): string
     {
         return $this->login;
     }
 
-    public function setLogin(string $login): self
-    {
-        $this->login = $login;
-        return $this;
-    }
-
+    /**
+     * @return string
+     */
     public function getPassword(): string
     {
         return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-        return $this;
     }
 }

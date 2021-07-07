@@ -68,7 +68,7 @@ class MenuRepositoryRDB extends AbstractRepositoryDRB implements MenuRepositoryI
     /**
      * @inheritDoc
      */
-    public function findPageByTopologyPageNumber(string $pageNumber): ?Page
+    public function findPageByTopologyPageNumber(int $pageNumber): ?Page
     {
         $statement = $this->db->prepare(
             $this->translateDbName(
@@ -76,18 +76,16 @@ class MenuRepositoryRDB extends AbstractRepositoryDRB implements MenuRepositoryI
                 "WHERE topology_page = :topologyPage"
             )
         );
-        $statement->bindValue(':topologyPage', $pageNumber, \PDO::PARAM_STR);
+        $statement->bindValue(':topologyPage', $pageNumber, \PDO::PARAM_INT);
         $statement->execute();
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
         if ($result === false) {
             return null;
         }
-        return (new Page())
-            ->setPageNumber((int) $pageNumber)
+        return (new Page($pageNumber, $result['is_react'] === '1'))
             ->setUrl($result['topology_url'])
             ->setUrlOptions($result['topology_url_opt'])
-            ->setId((int) $result['topology_id'])
-            ->setIsReact($result['is_react'] === '1');
+            ->setId((int) $result['topology_id']);
     }
 }

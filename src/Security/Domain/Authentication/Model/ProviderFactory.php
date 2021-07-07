@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
-use Security\Domain\Authentication\Exceptions\ProviderFactoryException;
+use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 
 /**
@@ -37,12 +37,12 @@ class ProviderFactory
 
     /**
      * @param \Traversable<ProviderInterface> $providers
-     * @throws ProviderFactoryException
+     * @throws ProviderException
      */
     public function __construct(\Traversable $providers)
     {
         if (iterator_count($providers) === 0) {
-            throw ProviderFactoryException::emptyAuthenticationProvider();
+            throw ProviderException::emptyAuthenticationProvider();
         }
         $this->providers = iterator_to_array($providers);
     }

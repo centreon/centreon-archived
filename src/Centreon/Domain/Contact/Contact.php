@@ -559,7 +559,7 @@ class Contact implements UserInterface, ContactInterface
      * @param Page|null $defaultPage
      * @return self
      */
-    public function setDefaultPage(?Page $defaultPage): ContactInterface
+    public function setDefaultPage(?Page $defaultPage): self
     {
         $this->defaultPage = $defaultPage;
         return $this;

@@ -34,7 +34,7 @@ class ApiAuthenticationV21Factory
     public static function createFromResponse(AuthenticateApiResponse $response): \stdClass
     {
         $newApiAuthentication = self::createEmptyClass();
-        $newApiAuthentication->contact = $response->getApiAuthentication()['contact'];
+        $newApiAuthentication->contact['id'] = (int) $response->getApiAuthentication()['contact']['id'];
         $newApiAuthentication->security = $response->getApiAuthentication()['security'];
 
         return $newApiAuthentication;

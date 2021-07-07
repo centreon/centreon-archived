@@ -59,6 +59,25 @@ class ProviderConfiguration
      */
     private $isForced;
 
+    public function __construct(
+        ?int $id,
+        string $type,
+        string $name,
+        bool $isActive,
+        bool $isForced,
+        string $centreonBaseUri = '/centreon'
+    ) {
+        Assertion::minLength($type, 1, 'ConfigurationProvider::type');
+        Assertion::minLength($name, 1, 'ConfigurationProvider::name');
+
+        $this->id = $id;
+        $this->type = $type;
+        $this->name = $name;
+        $this->isActive = $isActive;
+        $this->isForced = $isForced;
+        $this->centreonBaseUri = $centreonBaseUri;
+    }
+
     /**
      * @return int|null
      */
@@ -86,33 +105,11 @@ class ProviderConfiguration
     }
 
     /**
-     * @param string $type
-     * @return ProviderConfiguration
-     * @throws \Assert\AssertionFailedException
-     */
-    public function setType(string $type): ProviderConfiguration
-    {
-        Assertion::minLength($type, 1, 'ConfigurationProvider::type');
-        $this->type = $type;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return ProviderConfiguration
-     */
-    public function setName(string $name): ProviderConfiguration
-    {
-        $this->name = $name;
-        return $this;
     }
 
     /**
@@ -123,18 +120,6 @@ class ProviderConfiguration
     public function getCentreonBaseUri(): string
     {
         return $this->centreonBaseUri;
-    }
-
-    /**
-     * Set centreon base uri
-     *
-     * @param string $centreonBaseUri
-     * @return self
-     */
-    public function setCentreonBaseUri(string $centreonBaseUri): self
-    {
-        $this->centreonBaseUri = $centreonBaseUri;
-        return $this;
     }
 
     /**
@@ -157,30 +142,10 @@ class ProviderConfiguration
     }
 
     /**
-     * @param boolean $isActive
-     * @return self
-     */
-    public function setActive(bool $isActive): self
-    {
-        $this->isActive = $isActive;
-        return $this;
-    }
-
-    /**
      * @return boolean
      */
     public function isForced(): bool
     {
         return $this->isForced;
-    }
-
-    /**
-     * @param boolean $isForced
-     * @return self
-     */
-    public function setForced(bool $isForced): self
-    {
-        $this->isForced = $isForced;
-        return $this;
     }
 }

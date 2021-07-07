@@ -24,7 +24,7 @@ namespace Security\Domain\Authentication\Interfaces;
 
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Security\Domain\Authentication\Exceptions\ProviderServiceException;
+use Security\Domain\Authentication\Exceptions\ProviderException;
 
 interface ProviderServiceInterface
 {
@@ -32,7 +32,7 @@ interface ProviderServiceInterface
      * Find providers configurations
      *
      * @return ProviderConfiguration[]
-     * @throws ProviderServiceException
+     * @throws ProviderException
      */
     public function findProvidersConfigurations(): array;
 
@@ -41,7 +41,7 @@ interface ProviderServiceInterface
      *
      * @param int $providerConfigurationId
      * @return ProviderInterface|null
-     * @throws ProviderServiceException
+     * @throws ProviderException
      */
     public function findProviderByConfigurationId(int $providerConfigurationId): ?ProviderInterface;
 
@@ -50,14 +50,14 @@ interface ProviderServiceInterface
      *
      * @param string $providerConfigurationName
      * @return ProviderInterface|null
-     * @throws ProviderServiceException
+     * @throws ProviderException
      */
     public function findProviderByConfigurationName(string $providerConfigurationName): ?ProviderInterface;
 
     /**
      * @param string $providerConfigurationName
      * @return ProviderConfiguration|null
-     * @throws ProviderServiceException
+     * @throws ProviderException
      */
     public function findProviderConfigurationByConfigurationName(
         string $providerConfigurationName
@@ -66,7 +66,7 @@ interface ProviderServiceInterface
     /**
      * @param string $sessionToken
      * @return ProviderInterface|null
-     * @throws ProviderServiceException
+     * @throws ProviderException
      */
     public function findProviderBySession(string $sessionToken): ?ProviderInterface;
 }

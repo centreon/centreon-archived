@@ -38,7 +38,7 @@ class ProviderToken
     private $token;
 
     /**
-     * @var \DateTime|null
+     * @var \DateTime
      */
     private $creationDate;
 
@@ -58,7 +58,7 @@ class ProviderToken
     public function __construct(
         ?int $id,
         string $token,
-        ?\DateTime $creationDate,
+        \DateTime $creationDate,
         \DateTime $expirationDate = null
     ) {
         $this->id = $id;

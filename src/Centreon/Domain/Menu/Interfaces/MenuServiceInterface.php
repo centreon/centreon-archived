@@ -30,8 +30,8 @@ interface MenuServiceInterface
     /**
      * Find a Page by its topology Page Number
      *
-     * @param string $pageNumber
+     * @param int $pageNumber
      * @return Page|null
      */
-    public function findPageByTopologyPageNumber(string $pageNumber): ?Page;
+    public function findPageByTopologyPageNumber(int $pageNumber): ?Page;
 }

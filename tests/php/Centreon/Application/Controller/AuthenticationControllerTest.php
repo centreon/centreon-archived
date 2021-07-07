@@ -232,13 +232,7 @@ class AuthenticationControllerTest extends TestCase
         $authenticationController = new AuthenticationController();
         $authenticationController->setContainer($this->container);
 
-        $localProvider = (new ProviderConfiguration())
-            ->setId(1)
-            ->setType('local')
-            ->setName('local')
-            ->setCentreonBaseUri('/')
-            ->setActive(true)
-            ->setForced(true);
+        $localProvider = new ProviderConfiguration(1, 'local', 'local', true, true, '/');
 
         $response = new FindProvidersConfigurationsResponse();
         $response->setProvidersConfigurations([$localProvider]);

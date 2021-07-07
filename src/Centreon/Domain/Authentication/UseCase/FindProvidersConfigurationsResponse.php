@@ -50,10 +50,10 @@ class FindProvidersConfigurationsResponse
                 'id' => $providersConfiguration->getId(),
                 'type' => $providersConfiguration->getType(),
                 'name' => $providersConfiguration->getName(),
-                'centreonBaseUri' => $providersConfiguration->getCentreonBaseUri(),
-                'isActive' => $providersConfiguration->isActive(),
-                'isForced' => $providersConfiguration->isForced(),
-                'authenticationUri' => $providersConfiguration->getAuthenticationUri(),
+                'centreon_base_uri' => $providersConfiguration->getCentreonBaseUri(),
+                'is_active' => $providersConfiguration->isActive(),
+                'is_forced' => $providersConfiguration->isForced(),
+                'authentication_uri' => $providersConfiguration->getAuthenticationUri(),
             ];
         }
     }

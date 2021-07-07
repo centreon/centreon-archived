@@ -1377,4 +1377,4 @@ VALUES
 
 -- Insert local authentication provider configuration
 INSERT INTO `provider_configuration` (type, name, isActive, isForced)
-VALUES ('local', 'local', true, false);
+VALUES ('local', 'local', true, true);

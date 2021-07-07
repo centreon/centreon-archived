@@ -36,7 +36,8 @@ use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
-use Security\Domain\Authentication\Exceptions\ProviderServiceException;
+use Security\Domain\Authentication\Exceptions\ProviderException;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
@@ -90,6 +91,11 @@ class AuthenticateTest extends TestCase
      */
     private $menuService;
 
+    /**
+     * @var AuthenticationRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $authenticationRepository;
+
     protected function setUp(): void
     {
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
@@ -101,6 +107,7 @@ class AuthenticateTest extends TestCase
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
         $this->response = $this->createMock(AuthenticateResponse::class);
         $this->menuService = $this->createMock(MenuServiceInterface::class);
+        $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
     }
 
     /**
@@ -114,12 +121,11 @@ class AuthenticateTest extends TestCase
             $this->providerService,
             $this->contactService,
             $this->session,
-            $this->menuService
+            $this->menuService,
+            $this->authenticationRepository
         );
 
-        $credentials = (new Credentials())
-            ->setLogin('admin')
-            ->setPassword('centreon');
+        $credentials = (new Credentials('admin', 'centreon'));
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -127,7 +133,7 @@ class AuthenticateTest extends TestCase
             null
         );
 
-        $this->expectException(ProviderServiceException::class);
+        $this->expectException(ProviderException::class);
         $this->expectExceptionMessage('Provider configuration (provider_configuration_1) not found');
 
         $authenticate->execute($authenticateRequest, $this->response);
@@ -154,12 +160,11 @@ class AuthenticateTest extends TestCase
             $this->providerService,
             $this->contactService,
             $this->session,
-            $this->menuService
+            $this->menuService,
+            $this->authenticationRepository
         );
 
-        $credentials = (new Credentials())
-            ->setLogin('admin')
-            ->setPassword('centreon');
+        $credentials = (new Credentials('admin', 'centreon'));
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -199,12 +204,11 @@ class AuthenticateTest extends TestCase
             $this->providerService,
             $this->contactService,
             $this->session,
-            $this->menuService
+            $this->menuService,
+            $this->authenticationRepository
         );
 
-        $credentials = (new Credentials())
-            ->setLogin('admin')
-            ->setPassword('centreon');
+        $credentials = (new Credentials('admin', 'centreon'));
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -269,12 +273,11 @@ class AuthenticateTest extends TestCase
             $this->providerService,
             $this->contactService,
             $this->session,
-            $this->menuService
+            $this->menuService,
+            $this->authenticationRepository
         );
 
-        $credentials = (new Credentials())
-            ->setLogin('admin')
-            ->setPassword('centreon');
+        $credentials = (new Credentials('admin', 'centreon'));
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -321,12 +324,11 @@ class AuthenticateTest extends TestCase
             $this->providerService,
             $this->contactService,
             $this->session,
-            $this->menuService
+            $this->menuService,
+            $this->authenticationRepository
         );
 
-        $credentials = (new Credentials())
-            ->setLogin('admin')
-            ->setPassword('centreon');
+        $credentials = (new Credentials('admin', 'centreon'));
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -386,12 +388,11 @@ class AuthenticateTest extends TestCase
             $this->providerService,
             $this->contactService,
             $this->session,
-            $this->menuService
+            $this->menuService,
+            $this->authenticationRepository
         );
 
-        $credentials = (new Credentials())
-            ->setLogin('admin')
-            ->setPassword('centreon');
+        $credentials = (new Credentials('admin', 'centreon'));
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -472,12 +473,11 @@ class AuthenticateTest extends TestCase
             $this->providerService,
             $this->contactService,
             $this->session,
-            $this->menuService
+            $this->menuService,
+            $this->authenticationRepository
         );
 
-        $credentials = (new Credentials())
-            ->setLogin('admin')
-            ->setPassword('centreon');
+        $credentials = (new Credentials('admin', 'centreon'));
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -539,12 +539,11 @@ class AuthenticateTest extends TestCase
             $this->providerService,
             $this->contactService,
             $this->session,
-            $this->menuService
+            $this->menuService,
+            $this->authenticationRepository
         );
 
-        $credentials = (new Credentials())
-            ->setLogin('admin')
-            ->setPassword('centreon');
+        $credentials = (new Credentials('admin', 'centreon'));
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -561,11 +560,9 @@ class AuthenticateTest extends TestCase
      */
     public function testExecuteCustomDefaultPage(): void
     {
-        $page = (new Page())
+        $page = (new Page( 60101, false))
             ->setId(1)
-            ->setPageNumber(60101)
-            ->setUrl('/my_custom_page')
-            ->setIsReact(false);
+            ->setUrl('/my_custom_page');
 
         $this->provider
             ->expects($this->once())
@@ -613,12 +610,11 @@ class AuthenticateTest extends TestCase
             $this->providerService,
             $this->contactService,
             $this->session,
-            $this->menuService
+            $this->menuService,
+            $this->authenticationRepository
         );
 
-        $credentials = (new Credentials())
-            ->setLogin('admin')
-            ->setPassword('centreon');
+        $credentials = (new Credentials('admin', 'centreon'));
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',

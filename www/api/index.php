@@ -58,7 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
     $authenticateApiUseCase = $kernel->getContainer()->get(
         \Centreon\Domain\Authentication\UseCase\AuthenticateApi::class
     );
-    $request = new \Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest($credentials);
+    $request = new \Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest(
+        $credentials['login'], $credentials['password']
+    );
     $response = new \Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse();
     $authenticateApiUseCase->execute($request, $response);
 

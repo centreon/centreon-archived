@@ -37,10 +37,10 @@ class AuthenticateApiRequest
     /**
      * @param array<string,mixed> $credentials
      */
-    public function __construct(array $credentials)
+    public function __construct(string $login, string $password)
     {
-        $this->login = $credentials['login'];
-        $this->password = $credentials['password'];
+        $this->login = $login;
+        $this->password = $password;
     }
 
     /**

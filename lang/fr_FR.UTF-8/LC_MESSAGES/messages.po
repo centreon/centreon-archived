@@ -16178,9 +16178,6 @@ msgstr "Erreur lors de la recherche des configurations de fournisseurs d'identif
 msgid "Unable to start Centreon legacy session"
 msgstr "Impossible de démarrer la session Centreon legacy"
 
-#  msgid "As displayed"
-#  msgstr "Comme affiché"
-
 msgid "As displayed"
 msgstr "Comme affiché"
 

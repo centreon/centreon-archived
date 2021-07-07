@@ -25,17 +25,18 @@ namespace Centreon\Domain\Authentication\UseCase;
 use Centreon;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
+use Security\Domain\Authentication\Model\ProviderToken;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
-use Security\Domain\Authentication\Exceptions\ProviderServiceException;
-use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
-use Security\Domain\Authentication\Exceptions\AuthenticationServiceException;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Security\Domain\Authentication\Exceptions\ProviderException;
+use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 class Authenticate
 {
@@ -72,12 +73,18 @@ class Authenticate
     private $menuService;
 
     /**
+     * @var AuthenticationRepositoryInterface
+     */
+    private $authenticationRepository;
+
+    /**
      * @param string $redirectDefaultPage
      * @param AuthenticationServiceInterface $authenticationService
      * @param ProviderServiceInterface $providerService
      * @param ContactServiceInterface $contactService
      * @param SessionInterface $session
      * @param MenuServiceInterface $menuService
+     * @param AuthenticationRepositoryInterface $authenticationRepository
      */
     public function __construct(
         string $redirectDefaultPage,
@@ -85,7 +92,8 @@ class Authenticate
         ProviderServiceInterface $providerService,
         ContactServiceInterface $contactService,
         SessionInterface $session,
-        MenuServiceInterface $menuService
+        MenuServiceInterface $menuService,
+        AuthenticationRepositoryInterface $authenticationRepository
     ) {
         $this->redirectDefaultPage = $redirectDefaultPage;
         $this->authenticationService = $authenticationService;
@@ -93,6 +101,7 @@ class Authenticate
         $this->contactService = $contactService;
         $this->session = $session;
         $this->menuService = $menuService;
+        $this->authenticationRepository = $authenticationRepository;
     }
 
     /**
@@ -100,9 +109,8 @@ class Authenticate
      *
      * @param AuthenticateRequest $request
      * @param AuthenticateResponse $response
-     * @throws ProviderServiceException
+     * @throws ProviderException
      * @throws AuthenticationException
-     * @throws AuthenticationServiceException
      */
     public function execute(AuthenticateRequest $request, AuthenticateResponse $response): void
     {
@@ -148,7 +156,7 @@ class Authenticate
      *
      * @param string $providerConfigurationName
      * @return ProviderInterface
-     * @throws ProviderServiceException
+     * @throws ProviderException
      */
     private function findProviderOrFail(string $providerConfigurationName): ProviderInterface
     {
@@ -161,7 +169,7 @@ class Authenticate
         );
 
         if ($authenticationProvider === null) {
-            throw ProviderServiceException::providerConfigurationNotFound(
+            throw ProviderException::providerConfigurationNotFound(
                 $providerConfigurationName
             );
         }
@@ -235,7 +243,7 @@ class Authenticate
     {
         if ($authenticationProvider->canCreateUser()) {
             $this->debug(
-                '[AUTHENTICATE] Provider is allow to create user. Creating user...',
+                '[AUTHENTICATE] Provider is allowed to create user. Creating user...',
                 ['user' => $providerUser->getAlias()]
             );
             $this->contactService->addUser($providerUser);
@@ -247,15 +255,14 @@ class Authenticate
     /**
      * Start the Centreon session.
      *
-     * @param Centreon|null $legacySession
+     * @param Centreon $legacySession
      * @throws AuthenticationException
      */
-    private function startLegacySession(?Centreon $legacySession): void
+    private function startLegacySession(Centreon $legacySession): void
     {
         $this->info('[AUTHENTICATE] Starting Centreon Session');
         $this->session->start();
         $_SESSION['centreon'] = $legacySession;
-        $this->info('[AUTHENTICATE] Session Started');
     }
 
     /**
@@ -263,7 +270,7 @@ class Authenticate
      *
      * @param ProviderInterface $authenticationProvider
      * @param ContactInterface $providerUser
-     * @throws AuthenticationServiceException
+     * @throws AuthenticationException
      */
     private function createAuthenticationTokenOrFail(
         ProviderInterface $authenticationProvider,
@@ -273,7 +280,7 @@ class Authenticate
             '[AUTHENTICATE] Creating authentication tokens for user',
             ['user' => $providerUser->getAlias()]
         );
-        $this->authenticationService->createAuthenticationTokens(
+        $this->createAuthenticationTokens(
             $this->session->getId(),
             $authenticationProvider->getConfiguration()->getName(),
             $providerUser,
@@ -302,7 +309,7 @@ class Authenticate
             $response->setRedirectionUri(
                 $request->getCentreonBaseUri() . $this->buildDefaultRedirectionUri($refererRedirectionPage)
             );
-        } elseif ($providerUser->getDefaultPage() !== null  && $providerUser->getDefaultPage()->getUrl() !== null) {
+        } elseif ($providerUser->getDefaultPage() !== null && $providerUser->getDefaultPage()->getUrl() !== null) {
             $response->setRedirectionUri(
                 $request->getCentreonBaseUri() . $this->buildDefaultRedirectionUri($providerUser->getDefaultPage())
             );
@@ -348,7 +355,7 @@ class Authenticate
                 parse_str($queryParameters['redirect'], $redirectionPageParameters);
                 if (array_key_exists('p', $redirectionPageParameters)) {
                     $refererRedirectionPage = $this->menuService->findPageByTopologyPageNumber(
-                        $redirectionPageParameters['p']
+                        (int) $redirectionPageParameters['p']
                     );
                     unset($redirectionPageParameters['p']);
                     $refererRedirectionPage->setUrlOptions('&' . http_build_query($redirectionPageParameters));
@@ -357,5 +364,34 @@ class Authenticate
         }
 
         return $refererRedirectionPage;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    private function createAuthenticationTokens(
+        string $sessionToken,
+        string $providerConfigurationName,
+        ContactInterface $contact,
+        ProviderToken $providerToken,
+        ?ProviderToken $providerRefreshToken
+    ): void {
+        $providerConfiguration = $this->providerService->findProviderConfigurationByConfigurationName(
+            $providerConfigurationName
+        );
+        if ($providerConfiguration === null || ($providerConfigurationId = $providerConfiguration->getId()) === null) {
+            throw ProviderException::providerConfigurationNotFound($providerConfigurationName);
+        }
+        try {
+            $this->authenticationRepository->addAuthenticationTokens(
+                $sessionToken,
+                $providerConfigurationId,
+                $contact->getId(),
+                $providerToken,
+                $providerRefreshToken
+            );
+        } catch (\Exception $ex) {
+            throw AuthenticationException::addAuthenticationToken($ex);
+        }
     }
 }

@@ -91,7 +91,7 @@ class ContactService implements ContactServiceInterface
     {
         if ($contact->getDefaultPage() !== null && $contact->getDefaultPage()->getPageNumber() !== null) {
             $defaultPage = $this->menuRepository->findPageByTopologyPageNumber(
-                (string) $contact->getDefaultPage()->getPageNumber()
+                $contact->getDefaultPage()->getPageNumber()
             );
 
             if ($defaultPage !== null) {
