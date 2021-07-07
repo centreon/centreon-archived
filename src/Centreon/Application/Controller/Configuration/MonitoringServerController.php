@@ -62,7 +62,6 @@ class MonitoringServerController extends AbstractController
     public function findServer(RequestParametersInterface $requestParameters, Request $request): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $server = $this->monitoringServerService->findServers();
         $context = (new Context())->setGroups([
             MonitoringServer::SERIALIZER_GROUP_MAIN,
@@ -71,9 +70,7 @@ class MonitoringServerController extends AbstractController
         return $this->view(
             [
                 'result' => $server,
-                'meta' => !$isBeta
-                    ? ['pagination' => $requestParameters->toArray()]
-                    : $requestParameters->toArray()
+                'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }

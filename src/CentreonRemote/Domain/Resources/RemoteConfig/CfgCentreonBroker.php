@@ -30,6 +30,7 @@ class CfgCentreonBroker
                 'event_queue_max_size'   => '100000',
                 'command_file'           => '',
                 'cache_directory'        => '/var/lib/centreon-broker',
+                'log_directory'          => '/var/log/centreon-broker',
                 'stats_activate'         => '1',
                 'daemon'                 => '1',
             ],
@@ -43,6 +44,7 @@ class CfgCentreonBroker
                 'event_queue_max_size'   => '100000',
                 'command_file'           => '',
                 'cache_directory'        => '/var/lib/centreon-engine',
+                'log_directory'          => '/var/log/centreon-broker',
                 'stats_activate'         => '1',
                 'daemon'                 => '0',
             ],
@@ -56,6 +58,7 @@ class CfgCentreonBroker
                 'event_queue_max_size'   => '100000',
                 'command_file'           => '',
                 'cache_directory'        => '/var/lib/centreon-broker',
+                'log_directory'          => '/var/log/centreon-broker',
                 'stats_activate'         => '1',
                 'daemon'                 => '1',
             ]

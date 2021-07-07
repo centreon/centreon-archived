@@ -22,18 +22,22 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup;
 
-use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupServiceInterface;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostGroupTest;
 
+/**
+ * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup
+ */
 class FindHostGroupsTest extends TestCase
 {
     /**
-     * @var HostGroupReadRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var HostGroupServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
-    private $hostGroupRepository;
+    private $hostGroupService;
     /**
      * @var HostGroup
      */
@@ -41,21 +45,39 @@ class FindHostGroupsTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->hostGroupRepository = $this->createMock(HostGroupReadRepositoryInterface::class);
+        $this->hostGroupService = $this->createMock(HostGroupServiceInterface::class);
         $this->hostGroup = HostGroupTest::createEntity();
     }
 
-    private function createHostGroupUseCase(): FindHostGroups
+    private function createHostGroupUseCase(bool $isAdmin = false): FindHostGroups
     {
-        return (new FindHostGroups($this->hostGroupRepository));
+        $contact = new Contact();
+        $contact->setAdmin($isAdmin);
+        return (new FindHostGroups($this->hostGroupService, $contact));
     }
 
-    public function testExecute(): void
+    /**
+     * Test as admin user
+     */
+    public function testExecuteAsAdmin(): void
     {
-        $this->hostGroupRepository->expects($this->once())
-            ->method('findHostGroups')
+        $this->hostGroupService->expects($this->once())
+            ->method('findAllWithoutAcl')
             ->willReturn([$this->hostGroup]);
-        $findHostGroup = $this->createHostGroupUseCase();
+        $findHostGroup = $this->createHostGroupUseCase(true);
+        $response = $findHostGroup->execute();
+        $this->assertCount(1, $response->getHostGroups());
+    }
+
+    /**
+     * Test as non admin user
+     */
+    public function testExecuteAsNonAdmin(): void
+    {
+        $this->hostGroupService->expects($this->once())
+            ->method('findAllWithAcl')
+            ->willReturn([$this->hostGroup]);
+        $findHostGroup = $this->createHostGroupUseCase(false);
         $response = $findHostGroup->execute();
         $this->assertCount(1, $response->getHostGroups());
     }

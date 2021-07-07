@@ -44,10 +44,10 @@ import memoizeComponent from '../../memoizedComponent';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {
+    alignItems: 'center',
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
-    alignItems: 'center',
     gridTemplateColumns: 'auto 1fr',
   },
 }));
@@ -106,7 +106,6 @@ const EditFilterCardContent = ({
     initialValues: {
       name,
     },
-    validationSchema,
     onSubmit: (values) => {
       const updatedFilter = { ...filter, name: values.name };
 
@@ -128,6 +127,7 @@ const EditFilterCardContent = ({
         setCustomFilters(update(index, updatedFilter, customFilters));
       });
     },
+    validationSchema,
   });
 
   const askDelete = (): void => {
@@ -181,32 +181,32 @@ const EditFilterCardContent = ({
   return (
     <div className={classes.filterCard}>
       <ContentWithCircularLoading
+        alignCenter={false}
         loading={sendingRequest}
         loadingIndicatorSize={24}
-        alignCenter={false}
       >
         <IconButton title={t(labelDelete)} onClick={askDelete}>
           <DeleteIcon fontSize="small" />
         </IconButton>
       </ContentWithCircularLoading>
       <TextField
+        transparent
         ariaLabel={`${t(labelFilter)}-${id}-${t(labelName)}`}
-        value={form.values.name}
         error={form.errors.name}
+        value={form.values.name}
+        onBlur={rename}
         onChange={form.handleChange('name') as (event) => void}
         onKeyDown={renameOnEnterKey}
-        onBlur={rename}
-        transparent
       />
 
       {deleting && (
         <ConfirmDialog
-          labelConfirm={t(labelDelete)}
+          open
           labelCancel={t(labelCancel)}
-          onConfirm={confirmDelete}
+          labelConfirm={t(labelDelete)}
           labelTitle={t(labelAskDelete)}
           onCancel={cancelDelete}
-          open
+          onConfirm={confirmDelete}
         />
       )}
     </div>
@@ -216,8 +216,8 @@ const EditFilterCardContent = ({
 const memoProps = ['filter', 'currentFilter', 'customFilters'];
 
 const MemoizedEditFilterCardContent = memoizeComponent<Props>({
-  memoProps,
   Component: EditFilterCardContent,
+  memoProps,
 });
 
 const EditFilterCard = ({ filter }: EditFilterCardProps): JSX.Element => {
@@ -231,11 +231,11 @@ const EditFilterCard = ({ filter }: EditFilterCardProps): JSX.Element => {
 
   return (
     <MemoizedEditFilterCardContent
-      filter={filter}
       currentFilter={currentFilter}
       customFilters={customFilters}
-      setFilter={setFilter}
+      filter={filter}
       setCustomFilters={setCustomFilters}
+      setFilter={setFilter}
       setNewFilter={setNewFilter}
     />
   );

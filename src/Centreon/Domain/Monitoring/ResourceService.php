@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\MetaServiceConfiguration\Exception\MetaServiceConfigurationException;
+use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
 use Centreon\Domain\Monitoring\ResourceGroup;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Repository\RepositoryException;
@@ -58,6 +60,11 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $accessGroupRepository;
 
     /**
+     * @var MetaServiceConfigurationReadRepositoryInterface
+     */
+    private $metaServiceConfigurationRepository;
+
+    /**
      * @param ResourceRepositoryInterface $resourceRepository
      * @param MonitoringRepositoryInterface $monitoringRepository,
      * @param AccessGroupRepositoryInterface $accessGroupRepository
@@ -65,11 +72,13 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     public function __construct(
         ResourceRepositoryInterface $resourceRepository,
         MonitoringRepositoryInterface $monitoringRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        AccessGroupRepositoryInterface $accessGroupRepository,
+        MetaServiceConfigurationReadRepositoryInterface $metaServiceConfigurationRepository
     ) {
         $this->resourceRepository = $resourceRepository;
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
+        $this->metaServiceConfigurationRepository = $metaServiceConfigurationRepository;
     }
 
     /**
@@ -115,7 +124,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         } catch (RepositoryException $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
-            throw new ResourceException(_('Error while searching for resources'), 0, $ex);
+            throw new ResourceException($ex->getMessage(), 0, $ex);
         }
 
         return $list;
@@ -126,11 +135,6 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     public function enrichHostWithDetails(ResourceEntity $resource): void
     {
-        $host = $this->monitoringRepository->findOneHost($resource->getId());
-        if ($host !== null) {
-            $resource->setPollerName($host->getPollerName());
-        }
-
         $downtimes = $this->monitoringRepository->findDowntimes(
             $resource->getId(),
             0
@@ -209,6 +213,40 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $resource->setGroups($resourceGroups);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public function enrichMetaServiceWithDetails(ResourceEntity $resource): void
+    {
+        $downtimes = $this->monitoringRepository->findDowntimes(
+            $resource->getHostId(),
+            $resource->getServiceId()
+        );
+        $resource->setDowntimes($downtimes);
+
+        if ($resource->getAcknowledged()) {
+            $acknowledgements = $this->monitoringRepository->findAcknowledgements(
+                $resource->getHostId(),
+                $resource->getServiceId()
+            );
+            if (!empty($acknowledgements)) {
+                $resource->setAcknowledgement($acknowledgements[0]);
+            }
+        }
+        /**
+         * Specific to the Meta Service Resource Type
+         * we need to add the Meta Service calculationType
+         */
+        $metaConfiguration = $this->contact->isAdmin()
+            ? $this->metaServiceConfigurationRepository->findById($resource->getId())
+            : $this->metaServiceConfigurationRepository->findByIdAndContact($resource->getId(), $this->contact);
+
+        if (!is_null($metaConfiguration)) {
+            $resource->setCalculationType($metaConfiguration->getCalculationType());
+        }
+    }
+
     /**
      * Find host id by resource
      * @param ResourceEntity $resource
@@ -271,7 +309,8 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     public function replaceMacrosInExternalLinks(ResourceEntity $resource): void
     {
         $actionUrl = $resource->getLinks()->getExternals()->getActionUrl();
-        $notesUrl = $resource->getLinks()->getExternals()->getNotesUrl();
+        $notesObject = $resource->getLinks()->getExternals()->getNotes();
+        $notesUrl = ($notesObject !== null) ? $notesObject->getUrl() : null;
         $resourceType = $resource->getType();
 
         if ($actionUrl !== null) {
@@ -289,7 +328,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
             } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
                 $notesUrl = $this->replaceMacrosInUrlsForServiceResource($resource, $notesUrl);
             }
-            $resource->getLinks()->getExternals()->setNotesUrl($notesUrl);
+            $resource->getLinks()->getExternals()->getNotes()->setUrl($notesUrl);
         }
     }
 

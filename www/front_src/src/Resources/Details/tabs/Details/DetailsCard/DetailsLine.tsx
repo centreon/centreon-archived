@@ -4,9 +4,9 @@ import { ParentSize } from '@visx/visx';
 
 import { Typography, Box, makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   lineText: {
-    fontSize: 15,
+    fontSize: theme.typography.body2.fontSize,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -14,20 +14,19 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  line?: string;
+  line?: JSX.Element | string;
 }
 
 const DetailsLine = ({ line }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <ParentSize>
+    <ParentSize parentSizeStyles={{ height: 'auto' }}>
       {({ width }): JSX.Element => (
         <Typography component="div">
           <Box
-            fontWeight={500}
-            lineHeight={1}
             className={classes.lineText}
+            lineHeight={1}
             style={{
               maxWidth: width || 'unset',
             }}

@@ -17,18 +17,18 @@ import BaseWizard from '../../components/forms/baseWizard';
 
 class RemoteServerStepThreeRoute extends Component {
   state = {
-    generateStatus: null,
     error: null,
+    generateStatus: null,
   };
 
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
+      prevActive: true,
     },
-    { active: true, prevActive: true, number: 2 },
-    { active: true, prevActive: true, number: 3 },
+    { active: true, number: 2, prevActive: true },
+    { active: true, number: 3, prevActive: true },
     { active: true, number: 4 },
   ];
 
@@ -56,8 +56,8 @@ class RemoteServerStepThreeRoute extends Component {
     } else {
       // display timeout error message
       this.setState({
-        generateStatus: false,
         error: 'Export generation timeout',
+        generateStatus: false,
       });
     }
   };
@@ -74,8 +74,8 @@ class RemoteServerStepThreeRoute extends Component {
       .then((response) => {
         if (response.data.success !== true) {
           this.setState({
-            generateStatus: false,
             error: JSON.stringify(response.data),
+            generateStatus: false,
           });
         } else if (response.data.status === 'completed') {
           // when export files is done, redirect to poller list page with 2 seconds delay
@@ -91,8 +91,8 @@ class RemoteServerStepThreeRoute extends Component {
       })
       .catch((err) => {
         this.setState({
-          generateStatus: false,
           error: JSON.stringify(err.response.data),
+          generateStatus: false,
         });
       });
   };
@@ -105,10 +105,10 @@ class RemoteServerStepThreeRoute extends Component {
       <BaseWizard>
         <ProgressBar links={links} />
         <WizardFormInstallingStatus
+          error={error}
+          formTitle={`${t('Finalizing Setup')}:`}
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
-          formTitle={`${t('Finalizing Setup')}:`}
-          error={error}
         />
       </BaseWizard>
     );

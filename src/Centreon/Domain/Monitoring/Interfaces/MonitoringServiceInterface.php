@@ -75,6 +75,15 @@ interface MonitoringServiceInterface extends ContactFilterInterface
     public function findOneService(int $hostId, int $serviceId): ?Service;
 
     /**
+     * Find a service based on its description
+     *
+     * @param string $description description of the service
+     * @return Service|null
+     * @throws \Exception
+     */
+    public function findOneServiceByDescription(string $description): ?Service;
+
+    /**
      * Find all service groups.
      *
      * @param bool $withHosts Indicates whether service groups must be completed with their hosts
@@ -129,7 +138,20 @@ interface MonitoringServiceInterface extends ContactFilterInterface
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
 
     /**
-     * Try to hide all macro password values of the command line.
+     * Try to hide all macro password values of the host command line.
+     *
+     * @param Host $monitoringHost Monitoring host
+     * @param string $replacementValue Replacement value used instead of macro password value
+     * @throws HostConfigurationException
+     * @throws MonitoringServiceException
+     * @throws RepositoryException
+     * @throws ServiceConfigurationException
+     * @throws MonitoringServerException
+     */
+    public function hidePasswordInHostCommandLine(Host $monitoringHost, string $replacementValue = '***'): void;
+
+    /**
+     * Try to hide all macro password values of the service command line.
      *
      * @param Service $monitoringService Monitoring service
      * @param string $replacementValue Replacement value used instead of macro password value
@@ -139,7 +161,10 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @throws ServiceConfigurationException
      * @throws MonitoringServerException
      */
-    public function hidePasswordInCommandLine(Service $monitoringService, string $replacementValue = '***'): void;
+    public function hidePasswordInServiceCommandLine(
+        Service $monitoringService,
+        string $replacementValue = '***'
+    ): void;
 
     /**
      * Find the command line of a service.

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { isNil, equals, not, prop } from 'ramda';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import { SelectEntry } from '@centreon/ui/src';
+import { SelectEntry } from '@centreon/ui';
 
 import { useResourceContext } from '../../Context';
 import { SortOrder } from '../../models';
@@ -33,7 +33,7 @@ const useLoadResources = (): LoadResources => {
   const refreshIntervalRef = React.useRef<number>();
 
   const refreshIntervalMs = useSelector(
-    (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
+    (state: { intervals }) => state.intervals.AjaxTimeReloadMonitoring * 1000,
   );
 
   const getSort = (): { [sortField: string]: SortOrder } | undefined => {
@@ -53,14 +53,19 @@ const useLoadResources = (): LoadResources => {
     const search = searchCriteria
       ? {
           regex: {
-            value: searchCriteria,
             fields: [
               'h.name',
               'h.alias',
               'h.address',
               's.description',
+              'name',
+              'alias',
+              'parent_name',
+              'parent_alias',
+              'fqdn',
               'information',
             ],
+            value: searchCriteria,
           },
         }
       : undefined;
@@ -74,15 +79,16 @@ const useLoadResources = (): LoadResources => {
     };
 
     sendRequest({
-      resourceTypes: getCriteriaIds('resource_types'),
-      states: getCriteriaIds('states'),
-      statuses: getCriteriaIds('statuses'),
       hostGroupIds: getCriteriaIds('host_groups'),
+      limit,
+      monitoringServerIds: getCriteriaIds('monitoring_servers'),
+      page,
+      resourceTypes: getCriteriaIds('resource_types'),
+      search,
       serviceGroupIds: getCriteriaIds('service_groups'),
       sort: getSort(),
-      limit,
-      page,
-      search,
+      states: getCriteriaIds('states'),
+      statuses: getCriteriaIds('statuses'),
     }).then(setListing);
 
     if (isNil(details)) {

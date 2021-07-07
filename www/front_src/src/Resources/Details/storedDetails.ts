@@ -1,14 +1,14 @@
 import { getStoredOrDefault, store } from '../storage';
 
-const key = 'centreon-resource-status-details-21.04';
+const key = 'centreon-resource-status-details-21.10';
 
 let cachedPanelWidth;
 
 const getStoredOrDefaultPanelWidth = (defaultValue: number): number => {
   return getStoredOrDefault<number>({
+    cachedItem: cachedPanelWidth,
     defaultValue,
     key,
-    cachedItem: cachedPanelWidth,
     onCachedItemUpdate: (updatedItem) => {
       cachedPanelWidth = updatedItem;
     },
@@ -16,7 +16,7 @@ const getStoredOrDefaultPanelWidth = (defaultValue: number): number => {
 };
 
 const storePanelWidth = (panelWidth: number): void => {
-  store({ value: panelWidth, key });
+  store({ key, value: panelWidth });
 };
 
 const clearCachedPanelWidth = (): void => {

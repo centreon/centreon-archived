@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -40,7 +41,9 @@
 $dep = array();
 $initialValues = array();
 if (($o == "c" || $o == "w") && $dep_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $dep_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->prepare('SELECT * FROM dependency WHERE dep_id = :dep_id LIMIT 1');
+    $DBRESULT->bindValue(':dep_id', $dep_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
 
     # Set base value
     $dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -227,8 +230,11 @@ $init->setValue(serialize($initialValues));
  * Form Rules
  */
 $form->applyFilter('__ALL__', 'myTrim');
+$form->registerRule('sanitize', 'callback', 'isNotEmptyAfterStringSanitize');
 $form->addRule('dep_name', _("Compulsory Name"), 'required');
+$form->addRule('dep_name', _("Unauthorized value"), 'sanitize');
 $form->addRule('dep_description', _("Required Field"), 'required');
+$form->addRule('dep_description', _("Unauthorized value"), 'sanitize');
 $form->addRule('dep_sgParents', _("Required Field"), 'required');
 $form->addRule('dep_sgChilds', _("Required Field"), 'required');
 
@@ -301,8 +307,8 @@ if ($valid) {
     require_once("listServiceGroupDependency.php");
 } else {
     /*
-	 * Apply a template definition
-	 */
+     * Apply a template definition
+     */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

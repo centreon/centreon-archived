@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
+import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -10,21 +11,19 @@ import { ColumnType, useLocaleDateTimeFormat } from '@centreon/ui';
 import {
   labelAuthor,
   labelFixed,
-  labelYes,
-  labelNo,
   labelStartTime,
   labelEndTime,
   labelComment,
 } from '../../../../translatedLabels';
 
-import DetailsTable, { DetailsTableProps } from '.';
+import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
 
 const useStyles = makeStyles({
   comment: {
     display: 'block',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
     overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 });
 
@@ -38,44 +37,41 @@ type Props = Pick<DetailsTableProps, 'endpoint'>;
 
 const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const { toDateTime } = useLocaleDateTimeFormat();
 
   const columns = [
     {
-      id: 'author',
-      label: labelAuthor,
-      type: ColumnType.string,
       getContent: ({ author_name }): string => author_name,
+      id: 'author',
+      label: t(labelAuthor),
+      type: ColumnType.string,
       width: 100,
     },
     {
+      getContent: ({ is_fixed }): string => t(getYesNoLabel(is_fixed)),
       id: 'is_fixed',
-      label: labelFixed,
+      label: t(labelFixed),
       type: ColumnType.string,
-      getContent: ({ is_fixed }): string => (is_fixed ? labelYes : labelNo),
       width: 100,
     },
     {
-      id: 'start_time',
-      label: labelStartTime,
-      type: ColumnType.string,
       getContent: ({ start_time }): string => toDateTime(start_time),
+      id: 'start_time',
+      label: t(labelStartTime),
+      type: ColumnType.string,
       width: 150,
     },
     {
-      id: 'end_time',
-      label: labelEndTime,
-      type: ColumnType.string,
       getContent: ({ end_time }): string => toDateTime(end_time),
+      id: 'end_time',
+      label: t(labelEndTime),
+      type: ColumnType.string,
       width: 150,
     },
 
     {
-      id: 'comment',
-      label: labelComment,
-      type: ColumnType.string,
-      width: 250,
       getContent: ({ comment }: DowntimeDetails): JSX.Element => {
         return (
           <span className={classes.comment}>
@@ -83,6 +79,10 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
           </span>
         );
       },
+      id: 'comment',
+      label: t(labelComment),
+      type: ColumnType.string,
+      width: 250,
     },
   ];
 

@@ -26,6 +26,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Exception\HostCategoryException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryServiceInterface;
+use Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryWriteRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
 
 /**
@@ -44,17 +45,36 @@ class HostCategoryService implements HostCategoryServiceInterface
      * @var ContactInterface
      */
     private $contact;
+    /**
+     * @var HostCategoryWriteRepositoryInterface
+     */
+    private $writeRepository;
 
     /**
-     * @param HostCategoryReadRepositoryInterface $repository
+     * @param HostCategoryReadRepositoryInterface $readRepository
+     * @param HostCategoryWriteRepositoryInterface $writeRepository
      * @param ContactInterface $contact
      */
     public function __construct(
-        HostCategoryReadRepositoryInterface $repository,
+        HostCategoryReadRepositoryInterface $readRepository,
+        HostCategoryWriteRepositoryInterface $writeRepository,
         ContactInterface $contact
     ) {
-        $this->readRepository = $repository;
         $this->contact = $contact;
+        $this->readRepository = $readRepository;
+        $this->writeRepository = $writeRepository;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addCategory(HostCategory $category): void
+    {
+        try {
+            $this->writeRepository->addCategory($category);
+        } catch (\Throwable $ex) {
+            HostCategoryException::addCategoryException($ex);
+        }
     }
 
     /**
@@ -126,6 +146,18 @@ class HostCategoryService implements HostCategoryServiceInterface
             return $this->readRepository->findByName($categoryName);
         } catch (\Throwable $ex) {
             throw HostCategoryException::findHostCategoryException($ex, ['name' => $categoryName]);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByNamesWithoutAcl(array $categoriesName): array
+    {
+        try {
+            return $this->readRepository->findByNames($categoriesName);
+        } catch (\Throwable $ex) {
+            throw HostCategoryException::findHostCategoriesException($ex);
         }
     }
 }

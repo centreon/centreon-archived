@@ -15,28 +15,24 @@ import {
 } from 'ramda';
 
 import AddIcon from '@material-ui/icons/AddCircle';
-import { ClickAwayListener, Popper, useTheme } from '@material-ui/core';
 
 import {
-  IconButton,
-  MultiAutocompleteField,
+  IconPopoverMultiSelectField,
+  SelectEntry,
   useMemoComponent,
 } from '@centreon/ui';
 
-import {
-  labelCriterias,
-  labelNewFilter,
-  labelSelectCriterias,
-} from '../../translatedLabels';
+import { labelNewFilter, labelSelectCriterias } from '../../translatedLabels';
 import { useResourceContext } from '../../Context';
 import { FilterState } from '../useFilter';
+import { allFilter } from '../models';
 
 import {
   CriteriaById,
   CriteriaDisplayProps,
   selectableCriterias,
 } from './models';
-import getDefaultCriterias from './default';
+import { getAllCriterias } from './default';
 
 const toCriteriaPairs = (criteriaById: CriteriaById) =>
   toPairs<CriteriaDisplayProps>(criteriaById);
@@ -49,34 +45,11 @@ const CriteriasMultiSelectContent = ({
   setFilter,
 }: Pick<FilterState, 'filter' | 'setFilter'>): JSX.Element => {
   const { t } = useTranslation();
-  const theme = useTheme();
-
-  const [anchorEl, setAnchorEl] = React.useState();
 
   const options = pipe(
     toCriteriaPairs,
     map(([id, { label }]) => ({ id, name: t(label) })),
   )(selectableCriterias);
-
-  const isOpen = Boolean(anchorEl);
-
-  const close = (reason?): void => {
-    const isClosedByInputClick = reason?.type === 'mousedown';
-
-    if (isClosedByInputClick) {
-      return;
-    }
-    setAnchorEl(undefined);
-  };
-
-  const toggle = (event): void => {
-    if (isOpen) {
-      close();
-      return;
-    }
-
-    setAnchorEl(event.currentTarget);
-  };
 
   const selectedCriterias = filter.criterias
     .filter(({ name }) => !isNil(selectableCriterias[name]))
@@ -85,7 +58,7 @@ const CriteriasMultiSelectContent = ({
       name: t(selectableCriterias[name].label),
     }));
 
-  const changeSelectedCriterias = (_, updatedCriterias) => {
+  const changeSelectedCriterias = (updatedCriterias: Array<SelectEntry>) => {
     const { criterias } = filter;
     const updatedNames = map(prop('id'), updatedCriterias) as Array<string>;
 
@@ -102,7 +75,7 @@ const CriteriasMultiSelectContent = ({
       criterias,
     );
 
-    const criteriasToAdd = getDefaultCriterias()
+    const criteriasToAdd = getAllCriterias()
       .filter(nameIsIn(criteriaNamesToAdd))
       .map((criteria) => {
         return { ...criteria, value: [] };
@@ -110,42 +83,26 @@ const CriteriasMultiSelectContent = ({
 
     setFilter({
       ...filter,
+      criterias: [...criteriasWithoutRemoved, ...criteriasToAdd],
       id: '',
       name: labelNewFilter,
-      criterias: [...criteriasWithoutRemoved, ...criteriasToAdd],
     });
   };
 
+  const resetCriteria = (): void => {
+    setFilter(allFilter);
+  };
+
   return (
-    <ClickAwayListener onClickAway={close}>
-      <div>
-        <IconButton
-          title={labelSelectCriterias}
-          ariaLabel={labelSelectCriterias}
-          onClick={toggle}
-        >
-          <AddIcon />
-        </IconButton>
-        <Popper
-          placement="bottom-end"
-          disablePortal
-          open={isOpen}
-          anchorEl={anchorEl}
-        >
-          <div style={{ backgroundColor: theme.palette.common.white }}>
-            <MultiAutocompleteField
-              onClose={close}
-              label={t(labelCriterias)}
-              options={options}
-              onChange={changeSelectedCriterias}
-              value={selectedCriterias}
-              open={isOpen}
-              limitTags={1}
-            />
-          </div>
-        </Popper>
-      </div>
-    </ClickAwayListener>
+    <IconPopoverMultiSelectField
+      icon={<AddIcon />}
+      options={options}
+      popperPlacement="bottom-start"
+      title={t(labelSelectCriterias)}
+      value={selectedCriterias}
+      onChange={changeSelectedCriterias}
+      onReset={resetCriteria}
+    />
   );
 };
 

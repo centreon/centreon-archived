@@ -380,6 +380,9 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             case 'service_comment':
                 $contact->addRole(Contact::ROLE_SERVICE_ADD_COMMENT);
                 break;
+            case 'service_display_command':
+                $contact->addRole(Contact::ROLE_DISPLAY_COMMAND);
+                break;
         }
     }
 

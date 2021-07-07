@@ -182,8 +182,11 @@ $init->setValue(serialize($initialValues));
  * Form Rules
  */
 $form->applyFilter('__ALL__', 'myTrim');
+$form->registerRule('sanitize', 'callback', 'isNotEmptyAfterStringSanitize');
 $form->addRule('dep_name', _("Compulsory Name"), 'required');
+$form->addRule('dep_name', _("Unauthorized value"), 'sanitize');
 $form->addRule('dep_description', _("Required Field"), 'required');
+$form->addRule('dep_description', _("Unauthorized value"), 'sanitize');
 $form->addRule('dep_hgParents', _("Required Field"), 'required');
 $form->addRule('dep_hgChilds', _("Required Field"), 'required');
 

@@ -171,19 +171,20 @@ function tidySearchKey($search, $advanced_search)
  *
  * @return {empty|object} A Smarty instance with configuration parameters
  */
-function initSmartyTpl($path = null, $tpl = null, $subDir = null)
+function initSmartyTpl($path = null, &$tpl = null, $subDir = null)
 {
-    if (!$tpl) {
-        return;
-    }
-    $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/cache";
-    $tpl->plugins_dir[] = __DIR__ . "/../../../GPL_LIB/smarty-plugins";
-    $tpl->caching = 0;
-    $tpl->compile_check = true;
-    $tpl->force_compile = true;
+    $tpl = new \SmartyBC();
+
+    $tpl->setTemplateDir($path . $subDir);
+    $tpl->setCompileDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/compile');
+    $tpl->setConfigDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/config');
+    $tpl->setCacheDir(__DIR__ . '/../../../GPL_LIB/SmartyCache/cache');
+    $tpl->addPluginsDir(__DIR__ . '/../../../GPL_LIB/smarty-plugins');
+    $tpl->loadPlugin('smarty_function_eval');
+    $tpl->setForceCompile(true);
+    $tpl->setAutoLiteral(false);
+    $tpl->allow_ambiguous_resources = true;
+
     return $tpl;
 }
 
@@ -2298,9 +2299,10 @@ function getSelectOption()
 {
     $stringToArray = function (string $value): array {
         if (strpos($value, ',') !== false) {
-            return explode(',', $value);
+            $value = explode(',', rtrim($value, ','));
+            return array_flip($value);
         }
-        return [$value];
+        return [$value => '1'];
     };
     if (isset($_GET["select"])) {
         return is_array($_GET["select"])
@@ -2333,5 +2335,14 @@ function getDuplicateNumberOption()
             : [];
     } else {
         return [];
+    }
+}
+
+function isNotEmptyAfterStringSanitize($test): bool
+{
+    if (empty(filter_var($test, FILTER_SANITIZE_STRING))) {
+        return false;
+    } else {
+        return true;
     }
 }

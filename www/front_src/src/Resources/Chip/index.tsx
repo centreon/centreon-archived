@@ -5,8 +5,8 @@ import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
 
 const useStyles = makeStyles<Theme, { color?: string }>((theme) => ({
   chip: ({ color }): CreateCSSProperties => ({
-    width: theme.spacing(2.5),
     height: theme.spacing(2.5),
+    width: theme.spacing(2.5),
     ...(color && {
       color,
     }),
@@ -14,8 +14,8 @@ const useStyles = makeStyles<Theme, { color?: string }>((theme) => ({
 }));
 
 interface Props {
-  icon: JSX.Element;
   color?: string;
+  icon: JSX.Element;
 }
 
 const Chip = ({ icon, color }: Props): JSX.Element => {

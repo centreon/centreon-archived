@@ -1,49 +1,43 @@
 import { ListingModel } from '@centreon/ui';
 
+export type ResourceType = 'host' | 'service' | 'metaservice';
+
+export type ResourceShortType = 'h' | 's' | 'm';
+
 export interface NamedEntity {
   id: number;
   name: string;
+  uuid: string;
 }
 
 export interface Icon {
+  name: string;
   url: string;
-  name: string;
 }
 
-type ParentLinks = Pick<ResourceLinks, 'uris'>;
-
-export interface Parent extends NamedEntity {
-  icon: Icon | null;
-  status: Status;
-  links: ParentLinks;
-  type?: string;
-}
-
+export type Parent = Omit<Resource, 'parent'>;
 export interface Status {
+  name: string;
   severity_code: number;
-  name: string;
-}
-
-export interface Severity {
-  name: string;
-  level: number;
 }
 
 export interface Resource extends NamedEntity {
+  acknowledged?: boolean;
+  active_checks?: boolean;
+  duration?: string;
   icon?: Icon;
+  in_downtime?: boolean;
+  information?: string;
+  last_check?: string;
+  links?: ResourceLinks;
+  notification_enabled?: boolean;
   parent?: Parent;
-  status: Status;
-  links: ResourceLinks;
-  acknowledged: boolean;
-  in_downtime: boolean;
-  duration: string;
-  tries: string;
-  last_check: string;
-  information: string;
-  severity?: Severity;
-  short_type: 'h' | 's';
-  type: 'host' | 'service';
-  passive_checks: boolean;
+  passive_checks?: boolean;
+  severity_level?: number;
+  short_type: ResourceShortType;
+  status?: Status;
+  tries?: string;
+  type: ResourceType;
 }
 
 export type ResourceListing = ListingModel<Resource>;
@@ -51,9 +45,9 @@ export type ResourceListing = ListingModel<Resource>;
 export interface Downtime {
   author_name: string;
   comment: string;
+  end_time: string;
   entry_time: string;
   start_time: string;
-  end_time: string;
 }
 
 export interface Acknowledgement {
@@ -65,28 +59,35 @@ export interface Acknowledgement {
 }
 
 export interface ResourceEndpoints {
-  details: string | null;
-  performance_graph: string | null;
-  status_graph: string | null;
-  timeline: string | null;
-  acknowledgement: string | null;
-  downtime: string | null;
+  acknowledgement?: string;
+  details?: string;
+  downtime?: string;
+  metrics?: string;
+  performance_graph?: string;
+  status_graph?: string;
+  timeline?: string;
 }
 
 export interface ResourceUris {
-  configuration: string | null;
-  logs: string | null;
-  reporting: string | null;
+  configuration?: string;
+  logs?: string;
+  reporting?: string;
+}
+
+export interface Notes {
+  label?: string;
+  url: string;
 }
 
 export interface ResourceExternals {
-  notes_url: string | null;
+  action_url?: string;
+  notes?: Notes;
 }
 
 export interface ResourceLinks {
   endpoints: ResourceEndpoints;
-  uris: ResourceUris;
   externals: ResourceExternals;
+  uris: ResourceUris;
 }
 
 export type TranslationType = (label: string) => string;

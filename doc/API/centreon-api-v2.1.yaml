@@ -48,6 +48,7 @@ tags:
     description: "Login and logout endpoints to retrieve authentication token"
   - name: Proxy
   - name: Monitoring Server
+  - name: Meta Service
   - name: Host
   - name: Service
   - name: Host Group
@@ -105,7 +106,13 @@ paths:
         - Host template
       summary: "List all host templates"
       description: |
-        List of all host template configurations
+        Return all host templates configurations.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * id
+        * name
+        * alias
       responses:
         "200":
           description: "OK"
@@ -324,6 +331,137 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/metaservices:
+    get:
+      tags:
+        - Meta Service
+      summary: "List all meta services configurations"
+      description: |
+        List all meta services configurations.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+          * is_activate
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.MetaServices'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/metaservices/{meta_id}:
+    get:
+      tags:
+        - Meta Service
+      summary: "Get a meta service"
+      description: "Get a meta service configuration by its id"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.MetaServices'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/metrics:
+    get:
+      tags:
+        - Meta Service
+      summary: "List all meta service metrics"
+      description: |
+        List all meta services metrics from realtime.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+          * service_description
+          * host_name
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.MetaServiceMetric'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/servers:
+    get:
+      tags:
+        - Monitoring Server
+      summary: "List all real time monitoring servers"
+      description: |
+        List all monitoring servers configured and stored in real time.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+          * running
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.Servers'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /users/acl/actions:
     get:
       tags:
@@ -368,6 +506,45 @@ paths:
                         type: boolean
                         description: if downtime is allowed on service
                         example: false
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/users/current/parameters:
+    get:
+      tags:
+      - User parameters
+      summary: "List user parameters"
+      description: "List configured parameters for the current user"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the current user
+                    example: Administrator
+                  alias:
+                    type: string
+                    description: Alias of the current user
+                    example: admin
+                  email:
+                    type: string
+                    description: Email of the current user
+                    example: admin@localhost
+                  timezone:
+                    type: string
+                    description: Timezone for the current user
+                    example: Europe/Paris
+                  locale:
+                    type: string
+                    nullable: true
+                    description: Locale of the current user
+                    example: en_US
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -575,6 +752,8 @@ paths:
         * status_code
         * status
         * action_url
+        * notes_label
+        * notes_url
         * parent_name
         * parent_status
         * severity_level
@@ -584,20 +763,17 @@ paths:
         * tries
         * last_check
         * information
+        * monitoring_server_name
 
         Only for **searching**:
 
         ---
 
-        * h.group
-        * h.group.id
         * h.name
         * h.alias
         * h.address
         * h.fqdn
         * s.description
-        * s.group
-        * s.group.id
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
@@ -1229,6 +1405,68 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/acknowledgements:
+    get:
+      tags:
+        - Acknowledgement
+      summary: "List all acknowledgements of a metaservice"
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Acknowledgement.Service'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Acknowledgement
+      summary: "Add an acknowledgement on chosen metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Acknowledgement.Service.Add'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Acknowledgement
+      summary: "Cancel an acknowledgement on a metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/downtimes:
     get:
       tags:
@@ -1591,6 +1829,72 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/downtimes:
+    get:
+      tags:
+        - Downtime
+      summary: "List all downtimes of a metaservice"
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+        - $ref: '#/components/parameters/MetaId'
+      description: |
+        List all downtimes of a service.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * entry_time
+          * is_cancelled
+          * comment
+          * deletion_time
+          * duration
+          * end_time
+          * is_fixed
+          * start_time
+          * contact.id
+          * contact.name
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Downtime.Service'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Downtime
+      summary: "Add a downtime on a metaservice"
+      description: "Add a downtime on a metaservice."
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Service.Add'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts/check:
     post:
       tags:
@@ -1674,6 +1978,29 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/check:
+    post:
+      tags:
+        - Check
+      summary: "Check metaservice"
+      description: "Schedule immediate check on chosen metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Check.Service'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/resources/check:
     post:
       tags:
@@ -1742,6 +2069,29 @@ paths:
           description: 'Host or service not found'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/metaservices/{meta_id}/submit:
+    post:
+      tags:
+        - Submit
+      summary: "Submit a result to a single metaservice"
+      description: "Submit a result (check status, output and perfdata) to a single metaservice"
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitResult.Service'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/resources/submit:
     post:
       tags:
@@ -1754,6 +2104,27 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SubmitResult.Resources'
+      responses:
+        '204':
+          description: 'Command Sent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Host or service not found'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/comments:
+    post:
+      tags:
+      - Comment
+      summary: "Add comment to resources"
+      description: "Add at least one comment to a single or to multiple resources"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment.Resources'
       responses:
         '204':
           description: 'Command Sent'
@@ -1964,14 +2335,26 @@ paths:
                               type: string
                               description: label to display in legend
                               example: 'Last:1.00'
+                        last_value:
+                          type: number
+                          nullable: true
+                          description: last value
+                          example: 5.0
                         minimum_value:
                           type: number
+                          nullable: true
                           description: minimum value
-                          example: 1.0
+                          example: 0.0
                         maximum_value:
                           type: number
+                          nullable: true
                           description: maximum value
-                          example: 1.0
+                          example: 10.0
+                        average_value:
+                          type: number
+                          nullable: true
+                          description: average value
+                          example: 5.64
                   times:
                     type: array
                     items:
@@ -2515,6 +2898,26 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /platform:
+    patch:
+      tags:
+        - Platform
+      summary: "Update a platform information"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Platform.Full'
+      responses:
+        '400':
+          description: 'Bad Request'
+        '204':
+          description: "Platform updated"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /platform/topology:
     post:
       tags:
@@ -2624,6 +3027,90 @@ paths:
                               type: string
                               description: parent platform id as known in the topology
                               example: "1"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /platform/topology/{poller_id}:
+    delete:
+      tags:
+        - Topology
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+      summary: 'Delete a Platform'
+      description: "Delete a platform from the topology"
+      responses:
+        '204':
+          description: "Platform deleted"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /gorgone/pollers/{poller_id}/responses/{token}:
+    get:
+      tags:
+        - Gorgone
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+        - $ref: '#/components/parameters/GorgoneToken'
+      summary: "Gorgone poller responses token"
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  items:
+                    $ref: '#/components/schemas/Gorgone.Response'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /gorgone/pollers/{poller_id}/commands/{command_name}:
+    post:
+      tags:
+        - Gorgone
+      parameters:
+        - $ref: '#/components/parameters/PollerId'
+        - $ref: '#/components/parameters/CommandName'
+      summary: "Gorgone command on specific poller"
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    token:
+                      type: string
+                      description: "Token used to retrieve the data linked to the command"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /administration/parameters:
+    post:
+      tags:
+        - Administration parameters
+      summary: "Administration parameters"
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    monitoring_default_downtime_duration:
+                      type: integer
+                      description: Default downtime duration
+                      example: 3600
+                    monitoring_default_refresh_interval:
+                      type: integer
+                      description: Default monitoring refresh interval
+                      example: 15
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -2772,7 +3259,7 @@ components:
         type: array
         items:
           type: string
-          enum: [service, host]
+          enum: [service, host, metaservice]
         example: '["host"]'
     ResourceFilterState:
       in: query
@@ -2852,6 +3339,15 @@ components:
         type: integer
         format: int64
         example: 5
+    MetaId:
+      in: path
+      name: meta_id
+      description: "ID of the meta service"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
     AcknowledgementId:
       in: path
       name: acknowledgement_id
@@ -2887,6 +3383,29 @@ components:
         type: integer
         format: int64
         example: 1
+    PollerId:
+      in: path
+      name: poller_id
+      description: "ID of the poller"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 5
+    GorgoneToken:
+      in: path
+      name: token
+      description: "Gorgone Token"
+      required: true
+      schema:
+        type: string
+    CommandName:
+      in: path
+      name: command_name
+      description: "Gorgone Command"
+      required: true
+      schema:
+        type: string
   responses:
     Unauthorized:
       description: "Unauthorized"
@@ -3024,6 +3543,42 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
+    Comment.Resources:
+      type: object
+      required: [ resources ]
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            required: [ comment,id ]
+            properties:
+              type:
+                type: string
+                enum: [ host, service ]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
+              date:
+                type: string
+                format: date-time
+                nullable: true
+                description: "Date of the comment (ISO8601)"
+              comment:
+                type: string
+                description: "Comment to add to the monitored resource"
+                example: "Resource is not-OK but it is expected"
     Configuration.Host.Category:
       type: object
       properties:
@@ -3408,14 +3963,6 @@ components:
           type: integer
           description: "SSH port of the server"
           example: 22
-        gorgone_communication_type:
-          type: integer
-          description: "Communication type used by Gorgone to communicate with the server"
-          example: 1
-        gorgone_port:
-          type: integer
-          description: "Port used by Gorgone to communicate with the server"
-          example: 5556
         last_restart:
           type: string
           format: date-time
@@ -3488,6 +4035,126 @@ components:
           type: boolean
           description: "Indicates whether the server configuration is activated"
           example: true
+    Configuration.MetaServices:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the meta service"
+          example: 2
+        name:
+          type: string
+          description: "Name of the meta service"
+          example: "TOTAL_FIREWALL_CONNECTIONS"
+        output:
+          type: string
+          description: "Output configured for the meta service"
+          example: "Number of connections: %d"
+        calulation_type:
+          type: string
+          description: |
+            Function to be applied to calculate the meta service status.
+             * average
+             * minimum
+             * maximum
+             * sum
+          example: "average"
+        data_source_type:
+          type: string
+          description: |
+            Data source type of the meta service.
+             * gauge
+             * counter
+             * derive
+             * absolute
+          default: "gauge"
+          example: "gauge"
+        meta_select_mode:
+          type: integer
+          description: |
+            Selection mode for services to be considered for this meta service.
+              * 1 - Service list mod, mark selected services in the options on meta service list.
+              * 2 - SQL matching mod, specify a search string to be used in an SQL query
+          default: 1
+          example: 2
+        regexp_string:
+          type: string
+          description: "Search string to be used in a SQL LIKE query for service selection"
+          example: "%service_name%"
+        metric:
+          type: string
+          description: "Metric name used to measure meta service status"
+          example: "used"
+        warning:
+          type: string
+          description: "Absolute value for warning level"
+          example: "80"
+        critical:
+          type: string
+          description: "Absolute value for critical level"
+          example: "90"
+        is_activated:
+          type: boolean
+          description: "Indicates whether the meta service configuration is activated"
+          example: true
+    Monitoring.MetaServiceMetric:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the meta service metric"
+          example: 2
+        name:
+          type: string
+          description: "Name of the meta service metric"
+          example: "rta"
+        unitName:
+          type: string
+          description: "Name of the meta service metric unit"
+          example: "ms"
+        currentValue:
+          type: number
+          description: "Current value of the metric in the realtime"
+          example: 0.250
+        resource:
+          $ref: '#/components/schemas/Monitoring.ResourceMain'
+    Monitoring.Servers:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the server"
+          example: 2
+        name:
+          type: string
+          description: "Name of the server"
+          example: "Central"
+        address:
+          type: string
+          description: "IP address of the server"
+          example: "127.0.0.1"
+          nullable: true
+        description:
+          type: string
+          description: "Description of the server"
+          example: "Central server"
+          nullable: true
+        isRunning:
+          type: boolean
+          description: "Indicates if the server is running or not"
+          example: true
+        lastAlive:
+          type: integer
+          description: "Timestamp of last time server was alive"
+          nullable: true
+        version:
+          type: string
+          description: "Version of the server (centreon-engine)"
+          example: "20.10.0"
+          nullable: true
     Acknowledgement.Resource:
       type: object
       properties:
@@ -3838,7 +4505,7 @@ components:
             properties:
               type:
                 type: string
-                enum: [host, service]
+                enum: [host, service, metaservice]
                 description: "Type of resource"
                 example: "service"
               id:
@@ -3912,7 +4579,7 @@ components:
             properties:
               type:
                 type: string
-                enum: [host, service]
+                enum: [host, service, metaservice]
                 description: "Type of resource"
                 example: "service"
               id:
@@ -4011,6 +4678,10 @@ components:
           example: null
         links:
           $ref: '#/components/schemas/Monitoring.ResourceLinks'
+        monitoring_server_name:
+          type: string
+          description: "Monitoring Server from which is monitored the Resource"
+          example: "Central"
         icon:
           type: object
           nullable: true
@@ -4118,18 +4789,11 @@ components:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        severity:
-          type: object
+        severity_level:
+          type: integer
           nullable: true
-          properties:
-            level:
-              type: integer
-              description: "level of the severity"
-              example: 1
-            name:
-              type: string
-              description: "Name of the severity"
-              example: "severity 1"
+          description: "level of the severity"
+          example: 1
         duration:
           type: string
           nullable: true
@@ -4226,11 +4890,22 @@ components:
               nullable: true
               description: "URL that can be used to provide more actions to be performed on the resource"
               example: "http://mediawiki/resource/name"
-            notes_url:
-              type: string
-              nullable: true
-              description: "URL that can be used to provide more information on the resource"
-              example: "http://mediawiki/resource/name"
+            notes:
+              $ref: '#/components/schemas/Monitoring.Notes'
+    Monitoring.Notes:
+      type: object
+      nullable: true
+      properties:
+        url:
+          type: string
+          nullable: true
+          description: "URL that can be used to provide more information on the resource"
+          example: "http://mediawiki/resource/name"
+        label:
+          type: string
+          nullable: true
+          description: "Note that can be used to describe the note url"
+          example: "How to turn back on the server"
     Monitoring.ResourceStatus:
       type: object
       properties:
@@ -4871,3 +5546,106 @@ components:
             - To link a remote server to a Central
             - To link a poller to a remote server
           example: "1.1.1.1"
+    Platform.Full:
+      type: object
+      properties:
+        platformName:
+          type: string
+          description: "The name of the platform"
+        isRemote:
+          type: boolean
+          example: true
+          description: "Platform is a remote server"
+        centralServerAddress:
+          type: string
+          example: "192.168.0.1"
+          description: "Central linked address"
+        apiUsername:
+          type: string
+          example: "admin"
+          description: "Api Username"
+        apiCredentials:
+          type: string
+          example: "centreon"
+          description: "Api Password"
+        apiScheme:
+          type: string
+          example: "http"
+          description: "Protocol"
+        apiPort:
+          type: integer
+          example: "80"
+          description: "Port used by the API"
+        apiPath:
+          type: string
+          example: "centreon"
+          description: "name of your API root folder"
+        peerValidation:
+          type: boolean
+          example: false
+          description: "Usage of peer validation"
+        proxy:
+          type: object
+          properties:
+            host:
+              type: string
+              nullable: true
+              example: "example.proxy.com"
+              description: "Host of your proxy"
+            port:
+              type: integer
+              nullable: true
+              example: 80
+              description: "Proxy port"
+            user:
+              type: string
+              nullable: true
+              example: "admin"
+              description: "proxy username"
+            password:
+              type: string
+              nullable: true
+              example: "centreon"
+              description: "proxy password"
+    Gorgone.Response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: "Message returned by Gorgone"
+          example: "Logs found"
+        token:
+          type: string
+          description: "Token used to identify the command"
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              creation_time:
+                type: string
+                format: date-time
+                description: "Creation of dataset in ISO Format"
+                example: "2020-11-24T09:13:04+01:00"
+              event_time:
+                type: string
+                format: date-time
+                description: "Time when event occured in ISO Format"
+                example: "2020-11-24T09:11:00+01:00"
+              id:
+                type: number
+                format: integer
+                description: "Id of the Event"
+                example: 1
+              token:
+                type: string
+                description: "Token used to identify the command"
+              code:
+                type: number
+                format: integer
+                description: "Return code of response"
+                example: 2
+              data:
+                type: string
+                description: "Data on JSON Format"
+                example: "{\"action\":\"getthumbprint\",\"data\":{\"thumbprint\":\"xxxx_xxxxxxxxx\"},\"message\":\"ok\"}"

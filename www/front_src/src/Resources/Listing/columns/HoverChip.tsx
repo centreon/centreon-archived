@@ -3,34 +3,33 @@ import * as React from 'react';
 import { Tooltip, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
-  tooltip: {
-    maxWidth: 'none',
-    backgroundColor: 'transparent',
-  },
   iconButton: {
     padding: 0,
+  },
+  tooltip: {
+    backgroundColor: 'transparent',
+    maxWidth: 'none',
   },
 }));
 
 interface Props {
-  children: React.ReactElement;
   Chip: () => JSX.Element;
+  children: (props?) => JSX.Element;
   label: string;
   onClick?: () => void;
 }
 
 const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
+  const [isChipHovered, setIsChipHovered] = React.useState<boolean>(false);
+
   const classes = useStyles();
+
+  const openTooltip = () => setIsChipHovered(true);
+
+  const closeTooltip = () => setIsChipHovered(false);
 
   return (
     <Tooltip
-      placement="left"
-      title={children}
-      classes={{ tooltip: classes.tooltip }}
-      aria-label={label}
-      enterDelay={200}
-      enterNextDelay={200}
-      leaveDelay={0}
       interactive
       PopperProps={{
         onClick: (e): void => {
@@ -38,12 +37,22 @@ const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
           e.stopPropagation();
         },
       }}
+      aria-label={label}
+      classes={{ tooltip: classes.tooltip }}
+      enterDelay={200}
+      enterNextDelay={200}
+      leaveDelay={0}
+      open={isChipHovered}
+      placement="left"
+      title={children({ close: closeTooltip })}
       onClick={(e): void => {
         e.preventDefault();
         e.stopPropagation();
 
         onClick?.();
       }}
+      onClose={closeTooltip}
+      onOpen={openTooltip}
     >
       <span>
         <Chip />

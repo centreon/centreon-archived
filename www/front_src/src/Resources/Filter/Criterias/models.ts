@@ -20,9 +20,12 @@ import {
   labelServiceGroup,
   labelState,
   labelStatus,
+  labelMonitoringServer,
+  labelMetaService,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
+  buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
 
@@ -36,19 +39,20 @@ export interface Criteria {
 }
 
 const criteriaValueNameById = {
-  acknowledged: labelAcknowledged,
-  in_downtime: labelInDowntime,
-  unhandled_problems: labelUnhandled,
-  host: labelHost,
-  service: labelService,
+  CRITICAL: labelCritical,
+  DOWN: labelDown,
   OK: labelOk,
+  PENDING: labelPending,
+  UNKNOWN: labelUnknown,
+  UNREACHABLE: labelUnreachable,
   UP: labelUp,
   WARNING: labelWarning,
-  DOWN: labelDown,
-  CRITICAL: labelCritical,
-  UNREACHABLE: labelUnreachable,
-  UNKNOWN: labelUnknown,
-  PENDING: labelPending,
+  acknowledged: labelAcknowledged,
+  host: labelHost,
+  in_downtime: labelInDowntime,
+  metaservice: labelMetaService,
+  service: labelService,
+  unhandled_problems: labelUnhandled,
 };
 
 const unhandledStateId = 'unhandled_problems';
@@ -83,7 +87,17 @@ const serviceResourceType = {
   name: criteriaValueNameById[serviceResourceTypeId],
 };
 
-const selectableResourceTypes = [hostResourceType, serviceResourceType];
+const metaServiceResourceTypeId = 'metaservice';
+const metaServiceResourceType = {
+  id: metaServiceResourceTypeId,
+  name: criteriaValueNameById[metaServiceResourceTypeId],
+};
+
+const selectableResourceTypes = [
+  hostResourceType,
+  serviceResourceType,
+  metaServiceResourceType,
+];
 
 const okStatusId = 'OK';
 const okStatus = { id: okStatusId, name: criteriaValueNameById[okStatusId] };
@@ -139,9 +153,11 @@ const selectableStatuses = [
 ];
 
 export interface CriteriaDisplayProps {
+  autocompleteSearch?: Record<string, unknown>;
+  buildAutocompleteEndpoint?;
   label: string;
   options?: Array<SelectEntry>;
-  buildAutocompleteEndpoint?;
+  sortId: number;
 }
 
 export interface CriteriaById {
@@ -149,25 +165,36 @@ export interface CriteriaById {
 }
 
 const selectableCriterias: CriteriaById = {
+  host_groups: {
+    buildAutocompleteEndpoint: buildHostGroupsEndpoint,
+    label: labelHostGroup,
+    sortId: 3,
+  },
+  monitoring_servers: {
+    autocompleteSearch: { conditions: [{ field: 'running', value: true }] },
+    buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
+    label: labelMonitoringServer,
+    sortId: 5,
+  },
   resource_types: {
     label: labelResource,
     options: selectableResourceTypes,
+    sortId: 0,
+  },
+  service_groups: {
+    buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
+    label: labelServiceGroup,
+    sortId: 4,
   },
   states: {
     label: labelState,
     options: selectableStates,
+    sortId: 1,
   },
   statuses: {
     label: labelStatus,
     options: selectableStatuses,
-  },
-  host_groups: {
-    label: labelHostGroup,
-    buildAutocompleteEndpoint: buildHostGroupsEndpoint,
-  },
-  service_groups: {
-    label: labelServiceGroup,
-    buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
+    sortId: 2,
   },
 };
 

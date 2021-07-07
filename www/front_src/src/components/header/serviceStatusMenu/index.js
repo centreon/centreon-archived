@@ -49,18 +49,18 @@ const statusSchema = yup.object().shape({
     total: numberFormat,
     unhandled: numberFormat,
   }),
-  warning: yup.object().shape({
-    total: numberFormat,
-    unhandled: numberFormat,
-  }),
+  ok: numberFormat,
+  pending: numberFormat,
+  refreshTime: numberFormat,
+  total: numberFormat,
   unknown: yup.object().shape({
     total: numberFormat,
     unhandled: numberFormat,
   }),
-  ok: numberFormat,
-  pending: numberFormat,
-  total: numberFormat,
-  refreshTime: numberFormat,
+  warning: yup.object().shape({
+    total: numberFormat,
+    unhandled: numberFormat,
+  }),
 });
 
 class ServiceStatusMenu extends Component {
@@ -71,9 +71,9 @@ class ServiceStatusMenu extends Component {
   refreshInterval = null;
 
   state = {
-    toggled: false,
     data: null,
     intervalApplied: false,
+    toggled: false,
   };
 
   componentDidMount() {
@@ -149,10 +149,10 @@ class ServiceStatusMenu extends Component {
         className={`${styles.wrapper} wrap-right-services`}
         ref={(service) => (this.service = service)}
       >
-        <SubmenuHeader submenuType="top" active={toggled}>
+        <SubmenuHeader active={toggled} submenuType="top">
           <IconHeader
-            iconType="services"
             iconName={t('Services')}
+            iconType="services"
             onClick={this.toggle}
           >
             {data.pending > 0 && <span className={styles['custom-icon']} />}
@@ -160,58 +160,58 @@ class ServiceStatusMenu extends Component {
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to={getServiceResourcesUrl({
-              statusCriterias: criticalCriterias,
               stateCriterias: unhandledStateCriterias,
+              statusCriterias: criticalCriterias,
             })}
           >
             <IconNumber
-              iconType={`${
-                data.critical.unhandled > 0 ? 'colored' : 'bordered'
-              }`}
               iconColor="red"
               iconNumber={
                 <span id="count-svc-critical">
                   {numeral(data.critical.unhandled).format('0a')}
                 </span>
               }
+              iconType={`${
+                data.critical.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
             />
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to={getServiceResourcesUrl({
-              statusCriterias: warningCriterias,
               stateCriterias: unhandledStateCriterias,
+              statusCriterias: warningCriterias,
             })}
           >
             <IconNumber
-              iconType={`${
-                data.warning.unhandled > 0 ? 'colored' : 'bordered'
-              }`}
               iconColor="orange"
               iconNumber={
                 <span id="count-svc-warning">
                   {numeral(data.warning.unhandled).format('0a')}
                 </span>
               }
+              iconType={`${
+                data.warning.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
             />
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to={getServiceResourcesUrl({
-              statusCriterias: unknownCriterias,
               stateCriterias: unhandledStateCriterias,
+              statusCriterias: unknownCriterias,
             })}
           >
             <IconNumber
-              iconType={`${
-                data.unknown.unhandled > 0 ? 'colored' : 'bordered'
-              }`}
               iconColor="gray-light"
               iconNumber={
                 <span id="count-svc-unknown">
                   {numeral(data.unknown.unhandled).format('0a')}
                 </span>
               }
+              iconType={`${
+                data.unknown.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
             />
           </Link>
           <Link
@@ -219,11 +219,11 @@ class ServiceStatusMenu extends Component {
             to={getServiceResourcesUrl({ statusCriterias: okCriterias })}
           >
             <IconNumber
-              iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
               iconColor="green"
               iconNumber={
                 <span id="count-svc-ok">{numeral(data.ok).format('0a')}</span>
               }
+              iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
             />
           </Link>
           <IconToggleSubmenu
@@ -239,85 +239,85 @@ class ServiceStatusMenu extends Component {
           >
             <SubmenuItems>
               <Link
-                to={getServiceResourcesUrl()}
                 className={styles.link}
+                to={getServiceResourcesUrl()}
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle={t('All')}
                   submenuCount={numeral(data.total).format()}
+                  submenuTitle={t('All')}
                 />
               </Link>
               <Link
-                to={getServiceResourcesUrl({
-                  statusCriterias: criticalCriterias,
-                  stateCriterias: unhandledStateCriterias,
-                })}
                 className={styles.link}
+                to={getServiceResourcesUrl({
+                  stateCriterias: unhandledStateCriterias,
+                  statusCriterias: criticalCriterias,
+                })}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={t('Critical')}
                   submenuCount={`${numeral(
                     data.critical.unhandled,
                   ).format()}/${numeral(data.critical.total).format()}`}
+                  submenuTitle={t('Critical')}
                 />
               </Link>
               <Link
-                to={getServiceResourcesUrl({
-                  statusCriterias: warningCriterias,
-                  stateCriterias: unhandledStateCriterias,
-                })}
                 className={styles.link}
+                to={getServiceResourcesUrl({
+                  stateCriterias: unhandledStateCriterias,
+                  statusCriterias: warningCriterias,
+                })}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="orange"
-                  submenuTitle={t('Warning')}
                   submenuCount={`${numeral(
                     data.warning.unhandled,
                   ).format()}/${numeral(data.warning.total).format()}`}
+                  submenuTitle={t('Warning')}
                 />
               </Link>
               <Link
-                to={getServiceResourcesUrl({
-                  statusCriterias: unknownCriterias,
-                  stateCriterias: unhandledStateCriterias,
-                })}
                 className={styles.link}
+                to={getServiceResourcesUrl({
+                  stateCriterias: unhandledStateCriterias,
+                  statusCriterias: unknownCriterias,
+                })}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle={t('Unknown')}
                   submenuCount={`${numeral(
                     data.unknown.unhandled,
                   ).format()}/${numeral(data.unknown.total).format()}`}
+                  submenuTitle={t('Unknown')}
                 />
               </Link>
               <Link
-                to={getServiceResourcesUrl({ statusCriterias: okCriterias })}
                 className={styles.link}
+                to={getServiceResourcesUrl({ statusCriterias: okCriterias })}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle={t('Ok')}
                   submenuCount={numeral(data.ok).format()}
+                  submenuTitle={t('Ok')}
                 />
               </Link>
               <Link
+                className={styles.link}
                 to={getServiceResourcesUrl({
                   statusCriterias: pendingCriterias,
                 })}
-                className={styles.link}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle={t('Pending')}
                   submenuCount={numeral(data.pending).format()}
+                  submenuTitle={t('Pending')}
                 />
               </Link>
             </SubmenuItems>

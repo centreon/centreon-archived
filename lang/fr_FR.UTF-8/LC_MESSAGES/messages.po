@@ -2519,7 +2519,7 @@ msgstr "Date de génération"
 #: centreon-web/www/include/monitoring/comments/AddSvcComment.php:124
 #: centreon-web/www/include/monitoring/comments/AddComment.php:125
 msgid "Persistent"
-msgstr "Acquittement persistant en cas de redémarrage de l'ordonnanceur."
+msgstr "Persistant"
 
 #: centreon-web/www/install/smarty_translate.php:915
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:82
@@ -3229,8 +3229,11 @@ msgstr "Métriques"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: centreon-web/www/install/menu_translation.php:109
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:129
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Divers"
 
@@ -5457,7 +5460,7 @@ msgstr "Intervalle de rafraîchissement de la page"
 #: centreon-web/www/include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php:85
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:114
 msgid "Sticky"
-msgstr "Acquittement persistant en cas de changement de statut non-OK"
+msgstr "Persistant (non-OK)"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:99
 #: centreon-web/www/include/monitoring/acknowlegement/hostAcknowledge.php:77
@@ -8299,10 +8302,6 @@ msgstr "Groupe system de supervision"
 #: centreon-web/www/include/configuration/configServers/listServers.php:120
 msgid "Default"
 msgstr "Défaut"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:181
-msgid "Postpone Notification Option"
-msgstr "Report de notification"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:181
 msgid "Notification Option"
@@ -11770,10 +11769,6 @@ msgstr "Informations Gorgone"
 msgid "Monitoring Engine Information"
 msgstr "Information sur le moteur de supervision"
 
-#: centreon-web/www/include/configuration/configServers/formServers.php:104
-msgid "Miscelleneous"
-msgstr "Divers"
-
 #: centreon-web/www/include/configuration/configServers/formServers.php:105
 msgid "Centreon Trap Collector"
 msgstr "Colleteur de traps SNMP Centreon"
@@ -15155,6 +15150,9 @@ msgstr "Erreur lors de la recherche de ressources"
 msgid "Error when searching for monitoring servers"
 msgstr "Erreur lors de la recherche de serveurs de supervision"
 
+msgid "Error when searching for real time monitoring servers"
+msgstr "Erreur lors de la recherche de serveurs de supervision dans le temps réel"
+
 #:Centreon/Domain/MonitoringServer/MonitoringServerService.php:142
 msgid "Error when deleting a monitoring server"
 msgstr "Erreur lors de la supression d'un serveur de supervision"
@@ -15305,8 +15303,8 @@ msgstr "La date de fin doit être supérieure à la date de début"
 msgid "End time"
 msgstr "Heure de fin"
 
-msgid "Is this resource flapping?"
-msgstr "Cette ressource est-elle bagottante?"
+msgid "This Resource is flapping"
+msgstr "Cette Ressource est bagottante"
 
 msgid "Show criterias filters"
 msgstr "Montrer les critères de filtre"
@@ -15324,19 +15322,28 @@ msgid "Host group"
 msgstr "Groupe d'hôtes"
 
 msgid "Downtime"
-msgstr "Plannifier une plage de maintenance"
+msgstr "Plage de maintenance"
 
 msgid "In downtime"
 msgstr "En plage de maintenance"
 
-msgid "Last 24 hours"
-msgstr "24 dernières heures"
+msgid "1 day"
+msgstr "1 jour"
+
+msgid "7 days"
+msgstr "7 jours"
+
+msgid "31 days"
+msgstr "31 jours"
+
+msgid "Last day"
+msgstr "Dernier jour"
 
 msgid "Last 7 days"
-msgstr "7 derniers jours"
+msgstr "Derniers 7 jours"
 
 msgid "Last 31 days"
-msgstr "31 derniers jours"
+msgstr "Derniers 31 jours"
 
 msgid "Set downtime on"
 msgstr "Programmer une plage de maintenance sur"
@@ -15356,7 +15363,7 @@ msgstr "Dernier changement d'état"
 msgid "Next check"
 msgstr "Prochain contrôle"
 
-msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
+msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident on the resource has been acknowledged"
 msgstr "Si cette option est cochée, une notification sera envoyée aux contacts liés à l'objet afin d'avertir que l'incident de la ressource a été acquitté"
 
 msgid "Open"
@@ -15582,6 +15589,38 @@ msgstr "Une erreur est survenue lors de la mise à jour de la topology de la pla
 msgid "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
 msgstr "Votre central est lié a d'autre remote(s), la conversion en Remote n'est pas autorisée"
 
+#: api/platform
+msgid "Additional properties are not allowed"
+msgstr "Les propriétés additionnelles ne sont pas autorisées"
+
+#: api/platform
+msgid "Nullable property is not allowed"
+msgstr "Les propriétés nullable ne sont pas autorisées"
+
+#: api/platform
+msgid "Missing required property: %s"
+msgstr "propriété requise manquante: %s"
+
+#: api/platform
+msgid "Invalid property type %s for %s, type %s expected"
+msgstr "Type de propriétés invalide %s pour %s, type %s attendu"
+
+#: api/platform
+msgid "Bad JSON schema format"
+msgstr "Mauvais format de JSON schema"
+
+#: api/platform
+msgid "Bad JSON schema path"
+msgstr "Mauvais chemin de JSON Schema"
+
+#: api/platform
+msgid "the address %s is already used in the topology and can't be provided as Central Server Address"
+msgstr "l'adresse %s est déjà utilisé dans la topology et ne peut pas être renseigné comme Adresse de Serveur Central"
+
+#: api/platform
+msgid "the address %s is already used has proxy address and can't be provided as Central Server Address"
+msgstr "l'adresse %s est déjà utilisé comme addresse de proxy et ne peut pas être renseigné comme Adresse de Serveur Central"
+
 #: api/platform/topology
 msgid "The address '%s' of '%s' is not valid or not resolvable"
 msgstr "L'adresse '%s' de la plateforme '%s' n'est pas valide ou ne peut être résolue"
@@ -15623,7 +15662,7 @@ msgid "Cannot link a 'remote': '%s'@'%s' to another Remote server type"
 msgstr "Il n'est pas possible de lier un 'remote': '%s'@'%s' à un autre serveur de type 'Remote'"
 
 #: api/platform/topology
-msgid "A '%s': '%s'@'%s' is already registered"
+msgid "A '%s': '%s'@'%s' is already saved"
 msgstr "Un '%s': '%s'@'%s' est déjà enregistré"
 
 #: api/platform/topology
@@ -15643,7 +15682,7 @@ msgid "Missing mandatory platform name"
 msgstr "Nom de la plateforme manquant"
 
 #: api/platform/topology
-msgid "Same address and parent_address for platform : '%s'@'%s'."
+msgid "Same address and parent_address for platform : '%s'@'%s'"
 msgstr "Les adresses de la plateforme : '%s'@'%s' et de son parent sont les mêmes"
 
 #: api/platform/topology
@@ -15659,8 +15698,8 @@ msgid "At least one non RFC compliant character was found in platform's hostname
 msgstr "Au moins un caractère ne respecte pas la norme RFC dans le nom de domaine de la plateforme: '%s'"
 
 #: api/platform/topology
-msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."
-msgstr "Données indispensables manquantes pour la plateforme : '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form"
+msgstr "Données indispensables manquantes pour la plateforme : '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/platform/topology
 msgid "Central platform's data are not consistent. Please check the 'Remote Access' form"
@@ -15679,28 +15718,28 @@ msgid "Error when searching monitoring server name"
 msgstr "Erreur lors de la recherche du nom du serveur de supervision"
 
 #: api/platform/topology
-msgid "The platform: '%s'@'%s' is not declared as a 'remote'."
-msgstr "La plateforme: '%s'@'%s' n'est pas déclarée comme un 'remote'."
+msgid "The platform: '%s'@'%s' is not declared as a 'remote'"
+msgstr "La plateforme: '%s'@'%s' n'est pas déclarée comme un 'remote'"
 
 #: api/platform/topology
-msgid "The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."
-msgstr "La plateforme: '%s'@'%s n'est pas liée à un Central. Veuillez d'abord utiliser l'assistant."
+msgid "The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first"
+msgstr "La plateforme: '%s'@'%s n'est pas liée à un Central. Veuillez d'abord utiliser l'assistant"
 
 #: api/platform/topology
-msgid "Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."
-msgstr "Le port du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgid "Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form"
+msgstr "Le port du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/platform/topology
-msgid "Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."
-msgstr "Le schéma du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgid "Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form"
+msgstr "Le schéma du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/platform/topology
 msgid "Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."
 msgstr "Le chemin vers le Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
 
 #: api/platform/topology
-msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."
-msgstr "Les identifiants du Central sont manquants pour: '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'."
+msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form"
+msgstr "Les identifiants du Central sont manquants pour: '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'"
 
 #: api/platform/topology
 msgid "Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form"
@@ -15738,8 +15777,8 @@ msgid "Please check the 'Centreon UI' and 'Remote access' forms"
 msgstr "Veuillez vérifier les formulaires 'Centreon Web' et 'Accès du Remote'"
 
 #: api/platform/topology
-msgid "Unable to convert Central's API response"
-msgstr "Impossible de convertir la réponse de L'API provenant du Central"
+msgid "Unable to decode Central's API response"
+msgstr "Impossible de décoder la réponse de L'API provenant du Central"
 
 #: api/platform/topology
 msgid "Error from Central's register API : "
@@ -15766,16 +15805,20 @@ msgid "No top level platform found to link the child platforms"
 msgstr "Aucune platforme principale trouvée pour lier les plateformes enfants"
 
 #: api/platform/topology
-msgid "An error occured while deleting the platform"
+msgid "An error occurred while deleting the platform"
 msgstr "Une erreur est survenue lors de la suppression de la plateforme"
 
 #: api/platform/topology
-msgid "An error occured while updating the platform"
+msgid "An error occurred while updating the platform"
 msgstr "Une erreur est survenue lors de la mise à jour de la plateforme"
 
 #: api/platform/topology
 msgid "platform not found"
 msgstr "plateforme non trouvée"
+
+#: api/platform/topology
+msgid "The platform '%s'@'%s' cannot be found on the Central"
+msgstr "La plateforme '%s'@'%s' n'a pas été trouvée sur le Central"
 
 msgid "You are not authorized to access this resource"
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
@@ -15979,11 +16022,11 @@ msgstr "Un des éléments fourni n'est pas de type ResourceGroup"
 msgid "Error when searching for host categories"
 msgstr "Erreur lors de la recherche des catégories d'hôtes"
 
-msgid "Parent"
-msgstr "Parent"
-
 msgid "Error when searching for host severities"
 msgstr "Erreur lors de la recherche des sévérités d'hôtes"
+
+msgid "Parent"
+msgstr "Parent"
 
 msgid "Error when searching for host groups"
 msgstr "Erreur lors de la recherche de groupes d'hôtes"
@@ -15994,5 +16037,125 @@ msgstr "Sélectionner les critères"
 msgid "Error when searching for the host category (%s)"
 msgstr "Erreur lors de la recherche de la catégorie de l'hôte (%s)"
 
+msgid "Error when searching for the host group (%s)"
+msgstr "Erreur lors de la recherche du groupe d'hôte (%s)"
+
 msgid "Host category (%s) not found"
 msgstr "Catégorie de l'hôte (%s) non trouvé"
+
+msgid "Host group (%s) not found"
+msgstr "Groupe d'hôte (%s) non trouvé"
+
+msgid "Service id cannot be null"
+msgstr "L'id du service ne peut pas être nul"
+
+msgid "Configuration has changed"
+msgstr "La configuration a changé"
+
+msgid "Macro passwords cannot be detected"
+msgstr "Les macros de type mot de passe ne peuvent pas être détectées"
+
+msgid "Configuration command cannot be splitted by macros"
+msgstr "La commande de configuration ne peut être séparée par macros"
+
+msgid "Unable to hide passwords in command (Reason: %s)"
+msgstr "Impossible de cacher les mots de passe dans la commande (Raison: %s)"
+
+msgid "Check command of host id %d not found"
+msgstr "Commande de contrôle de l'id d'hôte %d non trouvée"
+
+msgid "Check command of service id %d not found"
+msgstr "Commande de contrôle de l'id de service %d non trouvée"
+
+msgid "Error while searching for the command of host"
+msgstr "Erreur lors de la recheche de la commande de l'hôte"
+
+msgid "Monitoring server"
+msgstr "Serveur de supervision"
+
+msgid "Error when adding a host macro"
+msgstr "Erreur lors de l'ajout d'une macro hôte"
+
+msgid "Error when adding a host"
+msgstr "Erreur lors de l'ajout d'un hôte"
+
+msgid "Error when adding a host category"
+msgstr "Erreur lors de l'ajout d'une catégorie hôte"
+
+msgid "Error when adding a host group"
+msgstr "Erreur lors de l'ajout d'un groupe d'hôte"
+
+msgid "Error when searching for the meta services configurations"
+msgstr "Erreur lors de la recherche des configurations des meta services"
+
+msgid "Error when searching for the meta service configuration (%s)"
+msgstr "Erreur lors de la recherche du meta service (%s)"
+
+msgid "Calculation method provided not supported (%s)"
+msgstr "Méthode de calcul fournie non supportée (%s)"
+
+msgid "Meta Service linked to service %d not found"
+msgstr "Meta Service lié au service %d non trouvé"
+
+msgid "Host meta for meta %d not found"
+msgstr "Hôte lié au meta %d non trouvé"
+
+msgid "Forward"
+msgstr "En avant"
+
+msgid "Backward"
+msgstr "En arrière"
+
+msgid "The end date must be greater than the start date"
+msgstr "La date de fin doit être supérieure à la date de début"
+
+msgid "Graph options"
+msgstr "Options de graphe"
+
+msgid "Check duration"
+msgstr "Temps d'exécution"
+
+msgid "Avg"
+msgstr "Moy"
+
+msgid "Compact time period"
+msgstr "Période de temps compacte"
+
+msgid "Notifications enabled"
+msgstr "Notifications activées"
+
+msgid "Notifications disabled"
+msgstr "Notifications désactivées"
+
+msgid "All checks are disabled"
+msgstr "Tous les contrôles sont désactivés"
+
+msgid "Only passive checks are enabled"
+msgstr "Seulement les contrôles passifs sont activés"
+
+msgid "Mandatory data to create the entity '%s' is missing"
+msgstr "Les données obligatoires pour créer l'entité '%s' sont manquantes"
+
+msgid "Calculation type"
+msgstr "Type de calcul"
+
+msgid "At least one column must be selected"
+msgstr "Au moins une colonne doit être sélectionnée"
+
+msgid "The duration must be lesser than a year"
+msgstr "La durée doit être inférieure à une année"
+
+msgid "As displayed"
+msgstr "Comme affiché"
+
+msgid "Medium size"
+msgstr "Taille moyenne"
+
+msgid "Display the complete graph"
+msgstr "Afficher le graphe complet"
+
+msgid "Small size"
+msgstr "Petite Taille"
+
+msgid "Action not permitted"
+msgstr "Action non autorisée"

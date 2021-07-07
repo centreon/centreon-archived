@@ -1,210 +1,152 @@
 import * as React from 'react';
 
+import { pick } from 'ramda';
+
 import { Grid, Chip } from '@material-ui/core';
 
+import ChecksIcon from '../../../../ChecksIcon';
 import {
   labelCurrentStateDuration,
-  labelPoller,
+  labelMonitoringServer,
   labelTimezone,
   labelLastStateChange,
   labelLastCheck,
   labelNextCheck,
   labelCheckDuration,
   labelLatency,
-  labelResourceFlapping,
-  labelYes,
-  labelPercentStateChange,
   labelLastNotification,
   labelCurrentNotificationNumber,
-  labelNo,
   labelFqdn,
   labelAlias,
   labelGroups,
+  labelCalculationType,
+  labelCheck,
+  labelPercentStateChange,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 
 import DetailsLine from './DetailsLine';
-import ActiveLine from './ActiveLine';
+import PercentStateChangeCard from './PercentStateChangeCard';
 
-type Lines = Array<{ key: string; line: JSX.Element | null }>;
-
-interface DetailCardLines {
-  title: string;
+interface DetailCardLine {
+  active?: boolean;
   field?: string | number | boolean | Array<unknown>;
+  line: JSX.Element;
+  title: string;
   xs?: 6 | 12;
-  getLines: () => Lines;
 }
 
 interface DetailCardLineProps {
   details: ResourceDetails;
-  toDate: (date: string | Date) => string;
-  toTime: (date: string | Date) => string;
+  t: (label: string) => string;
+  toDateTime: (date: string | Date) => string;
 }
 
 const getDetailCardLines = ({
   details,
-  toDate,
-  toTime,
-}: DetailCardLineProps): Array<DetailCardLines> => {
-  const getDateTimeLines = ({ label, field }): DetailCardLines => ({
-    title: label,
-    field,
-    getLines: (): Lines => [
-      {
-        key: `${label}_date`,
-        line: <DetailsLine line={toDate(field)} />,
-      },
-      {
-        key: `${label}_time`,
-        line: <DetailsLine key="tries" line={toTime(field)} />,
-      },
-    ],
-  });
+  toDateTime,
+}: DetailCardLineProps): Array<DetailCardLine> => {
+  const checksDisabled =
+    details.active_checks === false && details.passive_checks === false;
+  const activeChecksDisabled = details.active_checks === false;
 
-  const getCheckLines = ({ label, field }): DetailCardLines => ({
-    ...getDateTimeLines({ label, field }),
-    getLines: (): Lines => [
-      ...getDateTimeLines({ label, field }).getLines(),
-      {
-        key: `${label}_active`,
-        line: details.active_checks ? <ActiveLine /> : null,
-      },
-    ],
-  });
+  const displayChecksIcon = checksDisabled || activeChecksDisabled;
 
   return [
     {
-      title: labelFqdn,
       field: details.fqdn,
+      line: <DetailsLine line={details.fqdn} />,
+      title: labelFqdn,
       xs: 12,
-      getLines: (): Lines => [
-        {
-          key: 'fqdn',
-          line: <DetailsLine line={details.fqdn} />,
-        },
-      ],
     },
     {
-      title: labelAlias,
       field: details.alias,
-      getLines: (): Lines => [
-        {
-          key: 'fqdn',
-          line: <DetailsLine line={details.alias} />,
-        },
-      ],
+      line: <DetailsLine line={details.alias} />,
+      title: labelAlias,
     },
     {
-      title: labelPoller,
-      field: details.poller_name,
-      getLines: (): Lines => [
-        {
-          key: 'poller',
-          line: <DetailsLine line={details.poller_name} />,
-        },
-      ],
+      field: details.monitoring_server_name,
+      line: <DetailsLine line={details.monitoring_server_name} />,
+      title: labelMonitoringServer,
     },
     {
-      title: labelTimezone,
       field: details.timezone,
-      getLines: (): Lines => [
-        {
-          key: 'timezone',
-          line: <DetailsLine line={details.timezone} />,
-        },
-      ],
+      line: <DetailsLine line={details.timezone} />,
+      title: labelTimezone,
     },
     {
-      title: labelCurrentStateDuration,
       field: details.duration,
-      getLines: (): Lines => [
-        { key: 'duration', line: <DetailsLine line={details.duration} /> },
-        {
-          key: 'tries',
-          line: <DetailsLine key="tries" line={details.tries} />,
-        },
-      ],
+      line: <DetailsLine line={`${details.duration} - ${details.tries}`} />,
+      title: labelCurrentStateDuration,
     },
-    getDateTimeLines({
-      label: labelLastStateChange,
+    {
       field: details.last_status_change,
-    }),
-    getCheckLines({ label: labelLastCheck, field: details.last_check }),
-    getCheckLines({ label: labelNextCheck, field: details.next_check }),
+      line: <DetailsLine line={toDateTime(details.last_status_change)} />,
+      title: labelLastStateChange,
+    },
     {
-      title: labelCheckDuration,
+      field: details.last_check,
+      line: <DetailsLine line={toDateTime(details.last_check)} />,
+      title: labelLastCheck,
+    },
+    {
+      field: displayChecksIcon ? true : undefined,
+      line: (
+        <ChecksIcon {...pick(['active_checks', 'passive_checks'], details)} />
+      ),
+
+      title: labelCheck,
+    },
+    {
+      field: details.next_check,
+      line: <DetailsLine line={toDateTime(details.next_check)} />,
+      title: labelNextCheck,
+    },
+    {
       field: details.execution_time,
-      getLines: (): Lines => [
-        {
-          key: 'check_duration',
-          line: <DetailsLine line={`${details.execution_time} s`} />,
-        },
-      ],
+      line: <DetailsLine line={`${details.execution_time} s`} />,
+      title: labelCheckDuration,
     },
     {
-      title: labelLatency,
       field: details.latency,
-      getLines: (): Lines => [
-        {
-          key: 'latency',
-          line: <DetailsLine line={`${details.latency} s`} />,
-        },
-      ],
+      line: <DetailsLine line={`${details.latency} s`} />,
+      title: labelLatency,
     },
     {
-      title: labelResourceFlapping,
-      field: details.flapping,
-      getLines: (): Lines => [
-        {
-          key: 'flapping',
-          line: <DetailsLine line={details.flapping ? labelYes : labelNo} />,
-        },
-      ],
-    },
-    {
-      title: labelPercentStateChange,
       field: details.percent_state_change,
-      getLines: (): Lines => [
-        {
-          key: 'percent_state_change',
-          line: <DetailsLine line={`${details.percent_state_change}%`} />,
-        },
-      ],
+      line: <PercentStateChangeCard details={details} />,
+      title: labelPercentStateChange,
     },
-    getDateTimeLines({
-      label: labelLastNotification,
+    {
       field: details.last_notification,
-    }),
-    {
-      title: labelCurrentNotificationNumber,
-      field: details.notification_number,
-      getLines: (): Lines => [
-        {
-          key: 'notification_number',
-          line: <DetailsLine line={details.notification_number.toString()} />,
-        },
-      ],
+      line: <DetailsLine line={toDateTime(details.last_notification)} />,
+      title: labelLastNotification,
     },
     {
-      title: labelGroups,
+      field: details.notification_number,
+      line: <DetailsLine line={details.notification_number.toString()} />,
+      title: labelCurrentNotificationNumber,
+    },
+    {
+      field: details.calculation_type,
+      line: <DetailsLine line={details.calculation_type} />,
+      title: labelCalculationType,
+    },
+    {
       field: details.groups,
+      line: (
+        <Grid container spacing={1}>
+          {details.groups?.map((group) => {
+            return (
+              <Grid item key={group.name}>
+                <Chip label={group.name} />
+              </Grid>
+            );
+          })}
+        </Grid>
+      ),
+      title: labelGroups,
       xs: 12,
-      getLines: (): Lines => [
-        {
-          key: 'groups',
-          line: (
-            <Grid container spacing={1}>
-              {details.groups?.map((group) => {
-                return (
-                  <Grid item key={group.name}>
-                    <Chip label={group.name} />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          ),
-        },
-      ],
     },
   ];
 };

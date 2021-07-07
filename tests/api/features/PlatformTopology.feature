@@ -12,7 +12,7 @@ Feature:
 
         # Register the Central on the container with a name which doesn't exist in nagios_server table
         # Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "wrong_name",
@@ -20,7 +20,7 @@ Feature:
                 "address": "1.1.1.10"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
             {"message":"The server type 'central' : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon or is disabled"}
@@ -28,7 +28,7 @@ Feature:
 
         # Successfully register the Central on the container
         # (Notice : this step is automatically done on a real platform on fresh install and update)
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "Central",
@@ -40,7 +40,7 @@ Feature:
         Then the response code should be "201"
 
         # Register the same Central a second time / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "Central",
@@ -48,14 +48,14 @@ Feature:
                 "address": "1.1.1.10"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
+            {"message":"A platform using the name : 'Central' or address : '1.1.1.10' already exists"}
             """
 
         # Register a second Central while the first is still registered / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "Central_2",
@@ -64,15 +64,15 @@ Feature:
                 "hostname": "server.test.localhost.localdomain"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"A 'central': 'Central'@'1.1.1.10' is already registered"}
+            {"message":"A 'central': 'Central'@'1.1.1.10' is already saved"}
             """
 
         # Register a Central linked to another Central
         # Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "Central_2",
@@ -89,7 +89,7 @@ Feature:
 
         # Check data consistency
         # Register a platform using not allowed type / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "wrong_type_server",
@@ -106,7 +106,7 @@ Feature:
             """
 
         # Register a platform using inconsistent address / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "inconsistent_address",
@@ -122,7 +122,7 @@ Feature:
             """
 
         # Register a platform using name with illegal characters / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "ill*ga|_character$_found",
@@ -137,7 +137,7 @@ Feature:
         # as it contains unescaped characters and behat interpret them, so the strings are always different.
 
         # Register a platform using hostname with at least one space / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "space_in_hostname",
@@ -154,7 +154,7 @@ Feature:
             """
 
         # Register a platform using hostname with illegal characters / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "illegal_character_in_hostname",
@@ -171,7 +171,7 @@ Feature:
             """
 
         # Register a platform using inconsistent parent_address / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "inconsistent_parent_address",
@@ -188,7 +188,7 @@ Feature:
             """
 
         # Register a poller linked to the Central.
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller",
@@ -201,7 +201,7 @@ Feature:
         Then the response code should be "201"
 
         # Register a second time the already registered poller / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller",
@@ -210,14 +210,14 @@ Feature:
                 "parent_address": "1.1.1.10"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
             {"message":"A platform using the name : 'my_poller' or address : '1.1.1.1' already exists"}
             """
 
         # Register a poller using type not formatted as expected / Should be successful
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller_2",
@@ -230,7 +230,7 @@ Feature:
         Then the response code should be "201"
 
         # Register a poller with not registered parent / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller_3",
@@ -247,7 +247,7 @@ Feature:
             """
 
         # Register a poller with no parent address / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller_4",
@@ -262,7 +262,7 @@ Feature:
             """
 
         # Register a poller using same address and parent address / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "my_poller_4",
@@ -271,14 +271,14 @@ Feature:
                 "parent_address": "1.1.1.4"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"Same address and parent_address for platform : 'my_poller_4'@'1.1.1.4'."}
+            {"message":"Same address and parent_address for platform : 'my_poller_4'@'1.1.1.4'"}
             """
 
         # Register a platform behind wrong parent type / Should fail and an error should be returned
-        When I send a POST request to '/v2.0/platform/topology' with body:
+        When I send a POST request to '/latest/platform/topology' with body:
             """
             {
                 "name": "inconsistent_parent_type",
@@ -287,7 +287,7 @@ Feature:
                 "parent_address": "1.1.1.2"
             }
             """
-        Then the response code should be "409"
+        Then the response code should be "400"
         And the response should be equal to:
             """
             {"message":"Cannot register the 'poller' platform : 'inconsistent_parent_type'@'6.6.6.1' behind a 'poller' platform"}
@@ -310,6 +310,7 @@ Feature:
                             "type": "central",
                             "label": "Central",
                             "metadata": {
+                                "pending": "true",
                                 "centreon-id": "1",
                                 "hostname": "central.test.localhost.localdomain",
                                 "address": "1.1.1.10"
@@ -319,6 +320,7 @@ Feature:
                             "type": "poller",
                             "label": "my_poller",
                             "metadata": {
+                                "pending": "true",
                                 "hostname": "poller.test.localhost.localdomain",
                                 "address": "1.1.1.1"
                             }
@@ -327,12 +329,24 @@ Feature:
                             "type": "poller",
                             "label": "my_poller_2",
                             "metadata": {
+                                "pending": "true",
                                 "hostname": "poller2.test.localhost.localdomain",
                                 "address": "1.1.1.2"
                             }
                         }
                     },
-                    "edges": []
+                    "edges": [
+                        {
+                            "source": "2",
+                            "relation": "normal",
+                            "target": "1"
+                        },
+                        {
+                            "source": "3",
+                            "relation": "normal",
+                            "target": "1"
+                        }
+                    ]
                 }
             }
             """
@@ -354,6 +368,7 @@ Feature:
                             "type": "central",
                             "label": "Central",
                             "metadata": {
+                                "pending": "true",
                                 "centreon-id": "1",
                                 "hostname": "central.test.localhost.localdomain",
                                 "address": "1.1.1.10"
@@ -363,12 +378,19 @@ Feature:
                             "type": "poller",
                             "label": "my_poller",
                             "metadata": {
+                                "pending": "true",
                                 "hostname": "poller.test.localhost.localdomain",
                                 "address": "1.1.1.1"
                             }
                         }
                     },
-                    "edges": []
+                    "edges": [
+                        {
+                            "source": "2",
+                            "relation": "normal",
+                            "target": "1"
+                        }
+                    ]
                 }
             }
             """

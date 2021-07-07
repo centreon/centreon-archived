@@ -4,32 +4,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const { merge } = require('webpack-merge');
 
-const baseConfig = require('@centreon/frontend-core/webpack/base');
-const extractCssConfig = require('@centreon/frontend-core/webpack/patch/extractCss');
+const baseConfig = require('@centreon/centreon-frontend/packages/frontend-config/webpack/base');
+const extractCssConfig = require('@centreon/centreon-frontend/packages/frontend-config/webpack/patch/extractCss');
 
 module.exports = merge(baseConfig, extractCssConfig, {
   entry: ['@babel/polyfill', './www/front_src/src/index.js'],
-  output: {
-    path: path.resolve(`${__dirname}/www/static`),
-    publicPath: './static/',
-    library: ['name'],
-  },
-  resolve: {
-    alias: {
-      react: path.resolve('./node_modules/react'),
-    },
-  },
-  optimization: {
-    runtimeChunk: true,
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      alwaysWriteToDisk: true,
-      template: './www/front_src/public/index.html',
-      filename: path.resolve(`${__dirname}`, 'www', 'index.html'),
-    }),
-    new HtmlWebpackHarddiskPlugin(),
-  ],
   module: {
     rules: [
       { parser: { system: false } },
@@ -63,4 +42,18 @@ module.exports = merge(baseConfig, extractCssConfig, {
       },
     ],
   },
+  output: {
+    crossOriginLoading: 'anonymous',
+    library: ['name'],
+    path: path.resolve(`${__dirname}/www/static`),
+    publicPath: './static/',
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      alwaysWriteToDisk: true,
+      filename: path.resolve(`${__dirname}`, 'www', 'index.html'),
+      template: './www/front_src/public/index.html',
+    }),
+    new HtmlWebpackHarddiskPlugin(),
+  ],
 });

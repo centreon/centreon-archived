@@ -1,9 +1,14 @@
 jms_serializer:
     visitors:
-        xml:
+        xml_serialization:
             format_output: '%kernel.debug%'
-        json:
+        json_deserialization:
             options:
                 - JSON_UNESCAPED_SLASHES
                 - JSON_PRESERVE_ZERO_FRACTION
+        json_serialization:
+            options:
+                - JSON_UNESCAPED_SLASHES
+                - JSON_PRESERVE_ZERO_FRACTION
+
 

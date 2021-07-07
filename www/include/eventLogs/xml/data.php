@@ -206,7 +206,6 @@ if (isset($sid) && $sid) {
 // binding limit value
 $limit = $inputs['limit'];
 $num = $inputs['num'];
-$queryValues['limit'] = [\PDO::PARAM_INT => $limit];
 
 $StartDate = isset($inputs["StartDate"]) ? htmlentities($inputs["StartDate"]) : "";
 $EndDate = isset($inputs["EndDate"]) ? $EndDate = htmlentities($inputs["EndDate"]) : "";
@@ -400,8 +399,8 @@ $flag_begin = 0;
 
 $whereOutput = "";
 if (isset($output) && $output != "") {
-    $queryValues['whereOutput'] = [\PDO::PARAM_STR => '%' . CentreonUtils::escapeSecure($output) . '%'];
-    $whereOutput = " AND logs.output like :whereOutput";
+    $queryValues[':output'] = [\PDO::PARAM_STR => '%' . $output . '%'];
+    $whereOutput = " AND logs.output like :output ";
 }
 
 $innerJoinEngineLog = "";
@@ -640,7 +639,12 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
                 }
             }
             if ($str != "") {
-                $str_unitSVC .= $req_append . " (logs.host_id = '" . $host_id . "' AND logs.service_id IN ($str)) ";
+                if ($host_id === '_Module_Meta') {
+                    $str_unitSVC .= $req_append . " (logs.host_name = '" . $host_id . "' "
+                        . "AND logs.service_id IN (" . $str . ")) ";
+                } else {
+                    $str_unitSVC .= $req_append . " (logs.host_id = '" . $host_id . "' AND logs.service_id IN ($str)) ";
+                }
                 $req_append = " OR";
             }
         }
@@ -676,6 +680,7 @@ if (isset($req) && $req) {
     if ($export !== "1") {
         $offset = $num * $limit;
         $queryValues['offset'] = [\PDO::PARAM_INT => $offset];
+        $queryValues['limit'] = [\PDO::PARAM_INT => $limit];
         $limitReq = " LIMIT :offset, :limit";
     }
     $stmt = $pearDBO->prepare($req . $limitReq);

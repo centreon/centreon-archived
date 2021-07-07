@@ -24,6 +24,10 @@ default:
       paths: [ "%paths.base%/features/ResourceMonitoring.feature" ]
       contexts:
         - Centreon\Test\Api\Context\ResourceMonitoringContext
+    real_time_monitoring_server:
+      paths: [ "%paths.base%/features/RealTimeMonitoringServer.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\RealTimeMonitoringServerContext
     authentication:
       paths: [ "%paths.base%/features/Authentication.feature" ]
       contexts:

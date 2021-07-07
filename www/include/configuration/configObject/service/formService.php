@@ -1171,7 +1171,7 @@ if ($form->validate() && $from_list_menu == false) {
         }
         updateServiceInDB($serviceObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        foreach ($select as $serviceIdToUpdate) {
+        foreach (array_keys($select) as $serviceIdToUpdate) {
             updateServiceInDB($serviceIdToUpdate, true);
         }
     }

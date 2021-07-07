@@ -6,8 +6,6 @@ import { ParentSize } from '@visx/visx';
 
 import {
   Grid,
-  Card,
-  CardContent,
   Typography,
   styled,
   Tooltip,
@@ -17,8 +15,12 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import IconCopyFile from '@material-ui/icons/FileCopy';
 
-import { useSnackbar, Severity, useLocaleDateTimeFormat } from '@centreon/ui';
-import copyToClipBoard from '@centreon/ui/src/utils/copy';
+import {
+  useSnackbar,
+  Severity,
+  useLocaleDateTimeFormat,
+  copyToClipboard,
+} from '@centreon/ui';
 
 import {
   labelCopy,
@@ -37,20 +39,22 @@ import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
 import { ResourceDetails } from '../../models';
 
+import Card from './Card';
 import ExpandableCard from './ExpandableCard';
 import StateCard from './StateCard';
 import DetailsCard from './DetailsCard';
 import getDetailCardLines from './DetailsCard/cards';
+import CommandWithArguments from './CommandLine';
 
 const useStyles = makeStyles((theme) => ({
-  loadingSkeleton: {
-    display: 'grid',
-    gridTemplateRows: '120px 75px 75px',
-    gridRowGap: theme.spacing(2),
-  },
   details: {
     display: 'grid',
     gridRowGap: theme.spacing(2),
+  },
+  loadingSkeleton: {
+    display: 'grid',
+    gridRowGap: theme.spacing(2),
+    gridTemplateRows: '67px',
   },
 }));
 
@@ -76,7 +80,7 @@ interface Props {
 
 const DetailsTab = ({ details }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { toDateTime, toDate, toTime } = useLocaleDateTimeFormat();
+  const { toDateTime } = useLocaleDateTimeFormat();
   const classes = useStyles();
 
   const { showMessage } = useSnackbar();
@@ -87,7 +91,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
 
   const copyCommandLine = (): void => {
     try {
-      copyToClipBoard(details.command_line as string);
+      copyToClipboard(details.command_line as string);
 
       showMessage({
         message: t(labelCommandCopied),
@@ -106,46 +110,50 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
       {({ width }): JSX.Element => (
         <div className={classes.details}>
           <ExpandableCard
-            title={t(labelStatusInformation)}
             content={details.information}
             severityCode={details.status.severity_code}
+            title={t(labelStatusInformation)}
           />
           {details.downtimes?.map(({ start_time, end_time, comment }) => (
             <StateCard
-              key={`downtime-${start_time}-${end_time}`}
-              title={t(labelDowntimeDuration)}
+              chip={<DowntimeChip />}
+              commentLine={comment}
               contentLines={[
                 ...[
-                  { prefix: labelFrom, time: start_time },
-                  { prefix: labelTo, time: end_time },
+                  { prefix: t(labelFrom), time: start_time },
+                  { prefix: t(labelTo), time: end_time },
                 ].map(({ prefix, time }) => `${prefix} ${toDateTime(time)}`),
               ]}
-              commentLine={comment}
-              chip={<DowntimeChip />}
+              key={`downtime-${start_time}-${end_time}`}
+              title={t(labelDowntimeDuration)}
             />
           ))}
           {details.acknowledgement && (
             <StateCard
-              title={t(labelAcknowledgedBy)}
+              chip={<AcknowledgeChip />}
+              commentLine={details.acknowledgement.comment}
               contentLines={[
                 `${details.acknowledgement.author_name} ${t(
                   labelAt,
                 )} ${toDateTime(details.acknowledgement.entry_time)}`,
               ]}
-              commentLine={details.acknowledgement.comment}
-              chip={<AcknowledgeChip />}
+              title={t(labelAcknowledgedBy)}
             />
           )}
-          <Grid container spacing={2} alignItems="stretch">
-            {getDetailCardLines({ details, toDate, toTime }).map(
-              ({ title, field, xs = 6, getLines }) => {
+          <Grid container spacing={1}>
+            {getDetailCardLines({ details, t, toDateTime }).map(
+              ({ title, field, xs = 6, line, active }) => {
                 const variableXs = (width > 600 ? xs / 2 : xs) as 3 | 6 | 12;
                 const displayCard = !isNil(field) && !isEmpty(field);
 
                 return (
                   displayCard && (
-                    <Grid key={title} item xs={variableXs}>
-                      <DetailsCard title={t(title)} lines={getLines()} />
+                    <Grid item key={title} xs={variableXs}>
+                      <DetailsCard
+                        active={active}
+                        line={line}
+                        title={t(title)}
+                      />
                     </Grid>
                   )
                 );
@@ -154,31 +162,30 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           </Grid>
           {details.performance_data && (
             <ExpandableCard
-              title={t(labelPerformanceData)}
               content={details.performance_data}
+              title={t(labelPerformanceData)}
             />
           )}
           {details.command_line && (
             <Card>
-              <CardContent>
-                <Typography
-                  variant="subtitle2"
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  <Grid container alignItems="center" spacing={1}>
-                    <Grid item>{t(labelCommand)}</Grid>
-                    <Grid item>
-                      <Tooltip onClick={copyCommandLine} title={labelCopy}>
-                        <IconButton size="small">
-                          <IconCopyFile color="primary" fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Grid>
+              <Typography
+                gutterBottom
+                color="textSecondary"
+                component="div"
+                variant="body1"
+              >
+                <Grid container alignItems="center" spacing={1}>
+                  <Grid item>{t(labelCommand)}</Grid>
+                  <Grid item>
+                    <Tooltip title={labelCopy} onClick={copyCommandLine}>
+                      <IconButton size="small">
+                        <IconCopyFile color="primary" fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </Grid>
-                </Typography>
-                <Typography variant="body2">{details.command_line}</Typography>
-              </CardContent>
+                </Grid>
+              </Typography>
+              <CommandWithArguments commandLine={details.command_line} />
             </Card>
           )}
         </div>

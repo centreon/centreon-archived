@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,25 +38,25 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["nagios_id"]) ? $cG = $_GET["nagios_id"] : $cG = null;
-isset($_POST["nagios_id"]) ? $cP = $_POST["nagios_id"] : $cP = null;
-$cG ? $nagios_id = $cG : $nagios_id = $cP;
+$nagiosId = filter_var(
+    $_GET['nagios_id'] ?? $_POST['nagios_id'],
+    FILTER_VALIDATE_INT
+) ?: null;
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+$select = filter_var_array(
+    $_GET["select"] ?? $_POST["select"] ?? [],
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+$dupNbr = filter_var_array(
+    $_GET["dupNbr"] ?? $_POST["dupNbr"] ?? [],
+    FILTER_VALIDATE_INT
+);
 
-/* Path to the configuration dir */
-$path = "./include/configuration/configNagios/";
-    
 /* PHP functions */
-require_once $path."DB-Func.php";
+require_once __DIR__ . '/DB-Func.php';
 require_once "./include/common/common-Func.php";
-    
+
 /* Set the real page */
 if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
@@ -65,7 +66,7 @@ $acl = $oreon->user->access;
 $serverString = $acl->getPollerString();
 $allowedMainConf = array();
 if ($serverString != "''" && !empty($serverString)) {
-    $sql = "SELECT nagios_id FROM cfg_nagios WHERE nagios_server_id IN (".$serverString.")";
+    $sql = "SELECT nagios_id FROM cfg_nagios WHERE nagios_server_id IN (" . $serverString . ")";
     $res = $pearDB->query($sql);
     while ($row = $res->fetchRow()) {
         $allowedMainConf[$row['nagios_id']] = true;
@@ -74,31 +75,31 @@ if ($serverString != "''" && !empty($serverString)) {
 
 switch ($o) {
     case "a":
-        require_once($path."formNagios.php");
+        require_once(__DIR__ . '/formNagios.php');
         break; #Add Nagios.cfg
     case "w":
-        require_once($path."formNagios.php");
+        require_once(__DIR__ . '/formNagios.php');
         break; #Watch Nagios.cfg
     case "c":
-        require_once($path."formNagios.php");
+        require_once(__DIR__ . '/formNagios.php');
         break; #Modify Nagios.cfg
     case "s":
-        enableNagiosInDB($nagios_id);
-        require_once($path."listNagios.php");
+        enableNagiosInDB($nagiosId);
+        require_once(__DIR__ . '/listNagios.php');
         break; #Activate a nagios CFG
     case "u":
-        disableNagiosInDB($nagios_id);
-        require_once($path."listNagios.php");
+        disableNagiosInDB($nagiosId);
+        require_once(__DIR__ . '/listNagios.php');
         break; #Desactivate a nagios CFG
     case "m":
         multipleNagiosInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listNagios.php");
+        require_once(__DIR__ . '/listNagios.php');
         break; #Duplicate n nagios CFGs
     case "d":
         deleteNagiosInDB(isset($select) ? $select : array());
-        require_once($path."listNagios.php");
+        require_once(__DIR__ . '/listNagios.php');
         break; #Delete n nagios CFG
     default:
-        require_once($path."listNagios.php");
+        require_once(__DIR__ . '/listNagios.php');
         break;
 }

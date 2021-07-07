@@ -25,18 +25,18 @@ describe(ServiceMenu, () => {
           total: 4,
           unhandled: 4,
         },
-        warning: {
-          total: 3,
-          unhandled: 3,
-        },
+        ok: 1,
+        pending: 0,
+        refreshTime: 15,
+        total: 9,
         unknown: {
           total: 2,
           unhandled: 2,
         },
-        ok: 1,
-        pending: 0,
-        total: 9,
-        refreshTime: 15,
+        warning: {
+          total: 3,
+          unhandled: 3,
+        },
       },
     });
 
@@ -56,52 +56,52 @@ describe(ServiceMenu, () => {
 
     fireEvent.click(getByText('4'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"CRITICAL"}],"states":[{"id":"unhandled_problems"}],"search":""}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":[{"name":"resource_types","value":[{"id":"service","name":"Service"}]},{"name":"statuses","value":[{"id":"CRITICAL","name":"Critical"}]},{"name":"states","value":[{"id":"unhandled_problems","name":"Unhandled"}]},{"name":"search","value":""}]}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('3'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"WARNING"}],"states":[{"id":"unhandled_problems"}],"search":""}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":[{"name":"resource_types","value":[{"id":"service","name":"Service"}]},{"name":"statuses","value":[{"id":"WARNING","name":"Warning"}]},{"name":"states","value":[{"id":"unhandled_problems","name":"Unhandled"}]},{"name":"search","value":""}]}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('2'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"UNKNOWN"}],"states":[{"id":"unhandled_problems"}],"search":""}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":[{"name":"resource_types","value":[{"id":"service","name":"Service"}]},{"name":"statuses","value":[{"id":"UNKNOWN","name":"Unknown"}]},{"name":"states","value":[{"id":"unhandled_problems","name":"Unhandled"}]},{"name":"search","value":""}]}&fromTopCounter=true',
     );
 
     fireEvent.click(getAllByText('1')[0]);
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"OK"}],"search":""}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":[{"name":"resource_types","value":[{"id":"service","name":"Service"}]},{"name":"statuses","value":[{"id":"OK","name":"Ok"}]},{"name":"states","value":[]},{"name":"search","value":""}]}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('All'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"search":""}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":[{"name":"resource_types","value":[{"id":"service","name":"Service"}]},{"name":"statuses","value":[]},{"name":"states","value":[]},{"name":"search","value":""}]}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Critical'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"CRITICAL"}],"states":[{"id":"unhandled_problems"}],"search":""}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":[{"name":"resource_types","value":[{"id":"service","name":"Service"}]},{"name":"statuses","value":[{"id":"CRITICAL","name":"Critical"}]},{"name":"states","value":[{"id":"unhandled_problems","name":"Unhandled"}]},{"name":"search","value":""}]}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Warning'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"WARNING"}],"states":[{"id":"unhandled_problems"}],"search":""}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":[{"name":"resource_types","value":[{"id":"service","name":"Service"}]},{"name":"statuses","value":[{"id":"WARNING","name":"Warning"}]},{"name":"states","value":[{"id":"unhandled_problems","name":"Unhandled"}]},{"name":"search","value":""}]}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Unknown'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"UNKNOWN"}],"states":[{"id":"unhandled_problems"}],"search":""}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":[{"name":"resource_types","value":[{"id":"service","name":"Service"}]},{"name":"statuses","value":[{"id":"UNKNOWN","name":"Unknown"}]},{"name":"states","value":[{"id":"unhandled_problems","name":"Unhandled"}]},{"name":"search","value":""}]}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Ok'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"OK"}],"search":""}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":[{"name":"resource_types","value":[{"id":"service","name":"Service"}]},{"name":"statuses","value":[{"id":"OK","name":"Ok"}]},{"name":"states","value":[]},{"name":"search","value":""}]}&fromTopCounter=true',
     );
 
     fireEvent.click(getByText('Pending'));
     expect(decodeURI(window.location.href)).toBe(
-      'http://localhost/monitoring/resources?filter={"criterias":{"resourceTypes":[{"id":"service"}],"statuses":[{"id":"PENDING"}],"search":""}}&fromTopCounter=true',
+      'http://localhost/monitoring/resources?filter={"criterias":[{"name":"resource_types","value":[{"id":"service","name":"Service"}]},{"name":"statuses","value":[{"id":"PENDING","name":"Pending"}]},{"name":"states","value":[]},{"name":"search","value":""}]}&fromTopCounter=true',
     );
   });
 });

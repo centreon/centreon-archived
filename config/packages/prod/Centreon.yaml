@@ -14,6 +14,9 @@ parameters:
     api.header: "Api-Version"
     api.version.latest: "2.0"
     api.version.beta: "2.1"
+    debug_log_file: '%log_path%/centreon-web.log'
+    debug_level: "%env(DEBUG_LEVEL)%"
+    env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
 
 services:
     _defaults:
@@ -58,6 +61,7 @@ services:
     # Contact
     Centreon\Domain\Contact\Interfaces\ContactInterface:
         class: Centreon\Domain\Contact\Contact
+        public: true
 
     Centreon\Domain\Contact\Interfaces\ContactServiceInterface:
         class: Centreon\Domain\Contact\ContactService
@@ -108,10 +112,10 @@ services:
         class: Centreon\Domain\PlatformTopology\PlatformTopologyService
 
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRepositoryRDB
+        class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRepositoryRDB
 
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformTopology\PlatformTopologyRegisterRepositoryAPI
+        class: Centreon\Infrastructure\PlatformTopology\Repository\PlatformTopologyRegisterRepositoryAPI
 
     # Real time monitoring
     sqlRequestTranslator:
@@ -178,17 +182,38 @@ services:
         class: Centreon\Domain\PlatformInformation\PlatformInformationService
 
     Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface:
-        class: Centreon\Infrastructure\PlatformInformation\PlatformInformationRepositoryRDB
+        class: Centreon\Infrastructure\PlatformInformation\Repository\PlatformInformationRepositoryRDB
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
+
+    Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationReadRepositoryInterface:
+        class: Centreon\Infrastructure\PlatformInformation\Repository\PlatformInformationRepositoryRDB
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
+
+    Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation:
+        class: Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation
+        calls:
+            - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
 
     # Monitoring resources
+    _instanceof:
+        Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface:
+            tags: ['monitoring.resource.providers']
+            calls:
+                - method: setSqlRequestTranslator
+                  arguments: ['@sqlRequestTranslator']
+
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
         class: Centreon\Domain\Monitoring\ResourceService
 
     Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface:
-        class: Centreon\Infrastructure\Monitoring\ResourceRepositoryRDB
+        class: Centreon\Infrastructure\Monitoring\Resource\ResourceRepositoryRDB
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
+            - method: setProviders
+              arguments: [!tagged_iterator 'monitoring.resource.providers']
 
     # Filters
     Centreon\Domain\Filter\Interfaces\FilterServiceInterface:
@@ -280,3 +305,16 @@ services:
     # Menu
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
+
+    # Log configuration
+    monolog.error.formater:
+        class: Monolog\Formatter\LineFormatter
+        arguments: [ "%%level_name%%: %%message%% %%context%%\n" ]
+
+    monolog.debug.formater:
+        class: Monolog\Formatter\LineFormatter
+        arguments: [ "[%%datetime%%] %%level_name%%: %%message%% %%context%%\n", null, false, true ]
+
+    monolog.debug.handler:
+        class: Centreon\Domain\Log\DebugFileHandler
+        arguments: [ '@monolog.debug.formater', '%debug_log_file%', '%env(bool:APP_DEBUG)%', 664, '%debug_level%' ]

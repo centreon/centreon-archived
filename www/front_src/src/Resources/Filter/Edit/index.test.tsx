@@ -40,59 +40,59 @@ const EditFilterPanelTest = (): JSX.Element => {
 };
 
 const retrievedCustomFilters = {
+  meta: {
+    limit: 30,
+    page: 1,
+    total: 1,
+  },
   result: [0, 1].map((index) => ({
-    id: index,
-    name: `My filter ${index}`,
     criterias: [
       {
         name: 'resource_types',
-        type: 'multi_select',
         object_type: null,
+        type: 'multi_select',
         value: [],
       },
       {
         name: 'states',
-        type: 'multi_select',
         object_type: null,
+        type: 'multi_select',
         value: [],
       },
       {
         name: 'statuses',
-        type: 'multi_select',
         object_type: null,
+        type: 'multi_select',
         value: [],
       },
       {
         name: 'host_groups',
+        object_type: 'host_groups',
         type: 'multi_select',
         value: [],
-        object_type: 'host_groups',
       },
       {
         name: 'service_groups',
+        object_type: 'service_groups',
         type: 'multi_select',
         value: [],
-        object_type: 'service_groups',
       },
       {
         name: 'search',
-        type: 'text',
         object_type: null,
+        type: 'text',
         value: '',
       },
       {
         name: 'sort',
+        object_type: null,
         type: 'array',
         value: [defaultSortField, defaultSortOrder],
-        object_type: null,
       },
     ],
+    id: index,
+    name: `My filter ${index}`,
   })),
-  meta: {
-    page: 1,
-    limit: 30,
-    total: 1,
-  },
 };
 
 const renderEditFilterPanel = (): RenderResult =>
@@ -205,9 +205,9 @@ describe(EditFilterPanel, () => {
     );
 
     await makeDnd({
+      direction: DND_DIRECTION_DOWN,
       getByText,
       getDragEl: () => firstFilterDraggable,
-      direction: DND_DIRECTION_DOWN,
       positions: 1,
     });
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,15 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller\Monitoring;
 
-use Centreon\Application\Controller\AbstractController;
-use Centreon\Domain\Monitoring\Metric\Interfaces\MetricServiceInterface;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Domain\Exception\EntityNotFoundException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\View\View;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Application\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Monitoring\Metric\Interfaces\MetricServiceInterface;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 
 /**
  * This class is design to manage all API REST about metric requests
@@ -242,7 +243,7 @@ class MetricController extends AbstractController
         list($start, $end) = $this->extractDatesFromRequestParameters($requestParameters);
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
 
@@ -275,11 +276,85 @@ class MetricController extends AbstractController
         list($start, $end) = $this->extractDatesFromRequestParameters($requestParameters);
 
         /**
-         * @var $contact Contact
+         * @var Contact $contact
          */
         $contact = $this->getUser();
 
         $service = $this->findService($hostId, $serviceId);
+
+        $status = $this->metricService
+            ->filterByContact($contact)
+            ->findStatusByService($service, $start, $end);
+
+        return $this->view($status);
+    }
+
+    /**
+     * Entry point to get meta service performance metrics
+     *
+     * @param int $metaId
+     * @return View
+     * @throws \Exception
+     */
+    public function getMetaServicePerformanceMetrics(
+        RequestParametersInterface $requestParameters,
+        int $metaId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        list($start, $end) = $this->extractDatesFromRequestParameters($requestParameters);
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        $service = $this->monitoringService
+            ->filterByContact($contact)
+            ->findOneServiceByDescription('meta_' . $metaId);
+        if ($service === null) {
+            throw new EntityNotFoundException(
+                sprintf(_('Meta Service linked to service %d not found'), $metaId)
+            );
+        }
+
+        $metrics = $this->metricService
+            ->filterByContact($contact)
+            ->findMetricsByService($service, $start, $end);
+
+        $metrics = $this->normalizePerformanceMetricsDates($metrics);
+
+        return $this->view($metrics);
+    }
+
+    /**
+     * Entry point to get metaservice status metrics
+     *
+     * @param int $metaId
+     * @return View
+     * @throws \Exception
+     */
+    public function getMetaServiceStatusMetrics(
+        RequestParametersInterface $requestParameters,
+        int $metaId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        list($start, $end) = $this->extractDatesFromRequestParameters($requestParameters);
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        $service = $this->monitoringService
+            ->filterByContact($contact)
+            ->findOneServiceByDescription('meta_' . $metaId);
+        if ($service === null) {
+            throw new EntityNotFoundException(
+                sprintf(_('Meta Service linked to service %d not found'), $metaId)
+            );
+        }
 
         $status = $this->metricService
             ->filterByContact($contact)

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -120,7 +120,7 @@ switch ($o) {
         if (!in_array(false, $select)) {
             deleteServerInDB($select);
         }
-        //then require the same file than default
+    //then require the same file than default
     default:
         require_once($path . "listServers.php");
         break;

@@ -9,3 +9,9 @@ centreon_application_monitoring_gettimelinebyhostandservice:
     path: /monitoring/hosts/{hostId}/services/{serviceId}/timeline
     controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getServiceTimeline'
     condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_gettimelinebymetaservices:
+    methods: GET
+    path: /monitoring/metaservice/{metaId}/timeline
+    controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getMetaServiceTimeline'
+    condition: "request.attributes.get('version') >= 2.1"

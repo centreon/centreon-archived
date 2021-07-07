@@ -26,7 +26,7 @@ use Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroupsRespon
 use Tests\Centreon\Domain\HostConfiguration\Model\HostGroupTest;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21
+ * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup
  */
 class FindHostGroupsResponseTest extends \PHPUnit\Framework\TestCase
 {

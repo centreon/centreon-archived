@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostCategory;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\HostConfiguration\Exception\HostCategoryException;
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
 
 /**
@@ -42,10 +43,10 @@ interface HostCategoryReadRepositoryInterface
     public function findById(int $categoryId): ?HostCategory;
 
     /**
-     * Find a host category by id and access groups.
+     * Find a host category by id and contact.
      *
      * @param int $categoryId Id of the host category to be found
-     * @param ContactInterface $contact Contact related to host categories
+     * @param ContactInterface $contact Contact related to host category
      * @return HostCategory|null
      * @throws \Throwable
      */
@@ -73,8 +74,18 @@ interface HostCategoryReadRepositoryInterface
      *
      * @param string $hostCategoryName Name of the host category to be found
      * @return HostCategory|null
+     * @throws \Throwable
      */
     public function findByName(string $hostCategoryName): ?HostCategory;
+
+    /**
+     * Find host categories by name (for admin user).
+     *
+     * @param string[] $categoriesName List of names of host categories to be found
+     * @return HostCategory[]
+     * @throws \Throwable
+     */
+    public function findByNames(array $categoriesName): array;
 
     /**
      * Find a host category by name and contact.
@@ -82,6 +93,7 @@ interface HostCategoryReadRepositoryInterface
      * @param string $hostCategoryName Name of the host category to be found
      * @param ContactInterface $contact Contact related to host categories
      * @return HostCategory|null
+     * @throws \Throwable
      */
     public function findByNameAndContact(string $hostCategoryName, ContactInterface $contact): ?HostCategory;
 }

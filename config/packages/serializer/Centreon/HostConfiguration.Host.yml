@@ -38,6 +38,16 @@ Centreon\Domain\HostConfiguration\Host:
       type: array<Centreon\Domain\HostConfiguration\Model\HostCategory>
       groups:
         - 'host_categories'
+    groups:
+      since_version: 2.1
+      type: array<Centreon\Domain\HostConfiguration\Model\HostGroup>
+      groups:
+        - 'host_groups'
+    severities:
+      since_version: 2.1
+      type: array<Centreon\Domain\HostConfiguration\Model\HostSeverity>
+      groups:
+        - 'host_severities'
     comment:
       type: string
       groups:

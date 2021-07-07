@@ -78,45 +78,40 @@ if ($serverString != "''" && !empty($serverString)) {
         $allowedBrokerConf[$row['config_id']] = true;
     }
 }
-
 switch ($o) {
-    case "j":
-        require_once($path."blockConfig.php");
-        break;
-
     case "a":
-        require_once($path."formCentreonBroker.php");
+        require_once($path . "formCentreonBroker.php");
         break; // Add CentreonBroker
 
     case "w":
-        require_once($path."formCentreonBroker.php");
+        require_once($path . "formCentreonBroker.php");
         break; // Watch CentreonBroker
 
     case "c":
-        require_once($path."formCentreonBroker.php");
+        require_once($path . "formCentreonBroker.php");
         break; // modify CentreonBroker
 
     case "s":
         enableCentreonBrokerInDB($id);
-        require_once($path."listCentreonBroker.php");
+        require_once($path . "listCentreonBroker.php");
         break; // Activate a CentreonBroker CFG
 
     case "u":
         disablCentreonBrokerInDB($id);
-        require_once($path."listCentreonBroker.php");
+        require_once($path . "listCentreonBroker.php");
         break; // Desactivate a CentreonBroker CFG
 
     case "m":
         multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listCentreonBroker.php");
+        require_once($path . "listCentreonBroker.php");
         break; // Duplicate n CentreonBroker CFGs
 
     case "d":
         deleteCentreonBrokerInDB(isset($select) ? $select : array());
-        require_once($path."listCentreonBroker.php");
+        require_once($path . "listCentreonBroker.php");
         break; // Delete n CentreonBroker CFG
 
     default:
-        require_once($path."listCentreonBroker.php");
+        require_once($path . "listCentreonBroker.php");
         break;
 }

@@ -4,35 +4,27 @@ import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
 
 import {
-  MultiAutocompleteField,
-  MultiConnectedAutocompleteField,
+  PopoverMultiAutocompleteField,
+  PopoverMultiConnectedAutocompleteField,
   SelectEntry,
   useMemoComponent,
 } from '@centreon/ui';
 
-import { useStyles } from '..';
 import { ResourceContext, useResourceContext } from '../../Context';
-import { labelOpen } from '../../translatedLabels';
 
 import { criteriaValueNameById, selectableCriterias } from './models';
 
 interface Props {
   name: string;
   value: Array<SelectEntry>;
-  parentWidth: number;
 }
 
 const CriteriaContent = ({
   name,
   value,
-  parentWidth,
-  setCriteria,
-  setNewFilter,
-}: Props &
-  Pick<ResourceContext, 'setCriteria' | 'setNewFilter'>): JSX.Element => {
+  setCriteriaAndNewFilter,
+}: Props & Pick<ResourceContext, 'setCriteriaAndNewFilter'>): JSX.Element => {
   const { t } = useTranslation();
-  const classes = useStyles();
-  const limitTags = parentWidth < 1000 ? 1 : 2;
 
   const getTranslated = (values: Array<SelectEntry>): Array<SelectEntry> => {
     return values.map((entry) => ({
@@ -42,8 +34,7 @@ const CriteriaContent = ({
   };
 
   const changeCriteria = (updatedValue): void => {
-    setCriteria({ name, value: updatedValue });
-    setNewFilter();
+    setCriteriaAndNewFilter({ name, value: updatedValue });
   };
 
   const getUntranslated = (values): Array<SelectEntry> => {
@@ -53,73 +44,63 @@ const CriteriaContent = ({
     }));
   };
 
-  const { label, options, buildAutocompleteEndpoint } = selectableCriterias[
-    name
-  ];
+  const { label, options, buildAutocompleteEndpoint, autocompleteSearch } =
+    selectableCriterias[name];
 
   const commonProps = {
-    limitTags,
     label: t(label),
-    className: classes.field,
-    openText: `${t(labelOpen)} ${t(label)}`,
-    value,
+    search: autocompleteSearch,
   };
 
   if (isNil(options)) {
     const getEndpoint = ({ search, page }) =>
       buildAutocompleteEndpoint({
-        search,
-        page,
         limit: 10,
+        page,
+        search,
       });
+
     return (
-      <MultiConnectedAutocompleteField
-        getEndpoint={getEndpoint}
+      <PopoverMultiConnectedAutocompleteField
+        {...commonProps}
         field="name"
+        getEndpoint={getEndpoint}
+        value={value}
         onChange={(_, updatedValue) => {
           changeCriteria(updatedValue);
         }}
-        {...commonProps}
       />
     );
   }
 
+  const translatedValues = getTranslated(value);
+  const translatedOptions = getTranslated(options);
+
   return (
-    <MultiAutocompleteField
-      options={getTranslated(options)}
+    <PopoverMultiAutocompleteField
+      {...commonProps}
+      options={translatedOptions}
+      value={translatedValues}
       onChange={(_, updatedValue) => {
         changeCriteria(getUntranslated(updatedValue));
       }}
-      {...commonProps}
     />
   );
 };
 
-const Criteria = ({ value, name, parentWidth }: Props): JSX.Element => {
-  const {
-    setCriteria,
-    setNewFilter,
-    getMultiSelectCriterias,
-    nextSearch,
-  } = useResourceContext();
+const Criteria = ({ value, name }: Props): JSX.Element => {
+  const { setCriteriaAndNewFilter, getMultiSelectCriterias, nextSearch } =
+    useResourceContext();
 
   return useMemoComponent({
     Component: (
       <CriteriaContent
-        setCriteria={setCriteria}
-        setNewFilter={setNewFilter}
-        value={value}
         name={name}
-        parentWidth={parentWidth}
+        setCriteriaAndNewFilter={setCriteriaAndNewFilter}
+        value={value}
       />
     ),
-    memoProps: [
-      value,
-      name,
-      parentWidth,
-      getMultiSelectCriterias(),
-      nextSearch,
-    ],
+    memoProps: [value, name, getMultiSelectCriterias(), nextSearch],
   });
 };
 

@@ -1076,6 +1076,11 @@ class CentreonGraphNg
             } else {
                 $metricFullname = 'vv' . $metric['vmetric_id'];
             }
+
+            $metric['last_value'] = null;
+            $metric['minimum_value'] = null;
+            $metric['maximum_value'] = null;
+            $metric['average_value'] = null;
             for (; $gprintsPos < $gprintsSize; $gprintsPos++) {
                 if (isset($rrdData['meta']['gprints'][$gprintsPos]['line'])) {
                     if ($rrdData['meta']['gprints'][$gprintsPos]['line'] == $metricFullname) {
@@ -1085,25 +1090,31 @@ class CentreonGraphNg
                     }
                 } elseif ($insert == 1) {
                     $metric['prints'][] = array_values($rrdData['meta']['gprints'][$gprintsPos]);
+                    foreach (array_values($rrdData['meta']['gprints'][$gprintsPos]) as $gprintValue) {
+                        if (preg_match('/^(.+):((?:\d|\.)+)$/', $gprintValue, $matches)) {
+                            switch ($matches[1]) {
+                                case 'Last':
+                                    $metric['last_value'] = (float) $matches[2];
+                                    break;
+                                case 'Min':
+                                    $metric['minimum_value'] = (float) $matches[2];
+                                    break;
+                                case 'Max':
+                                    $metric['maximum_value'] = (float) $matches[2];
+                                    break;
+                                case 'Average':
+                                    $metric['average_value'] = (float) $matches[2];
+                                    break;
+                            }
+                        }
+                    }
                 }
             }
 
-            $minimumValue = null;
-            $maximumValue = null;
             for ($dataIndex = 0; $dataIndex < $size; $dataIndex++) {
                 $metric['data'][] = $rrdData['data'][$dataIndex][$metricIndex];
-                if (!is_null($rrdData['data'][$dataIndex][$metricIndex]) &&
-                    (is_null($minimumValue) || $rrdData['data'][$dataIndex][$metricIndex] < $minimumValue)) {
-                    $minimumValue = $rrdData['data'][$dataIndex][$metricIndex];
-                }
-                if (!is_null($rrdData['data'][$dataIndex][$metricIndex]) &&
-                    (is_null($maximumValue) || $rrdData['data'][$dataIndex][$metricIndex] > $maximumValue)) {
-                    $maximumValue = $rrdData['data'][$dataIndex][$metricIndex];
-                }
             }
 
-            $metric['minimum_value'] = $minimumValue;
-            $metric['maximum_value'] = $maximumValue;
             $metricIndex++;
         }
     }

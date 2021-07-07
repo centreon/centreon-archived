@@ -217,6 +217,12 @@ class CentreonUtils
             case "notlike":
                 $result = "NOT LIKE";
                 break;
+            case "regex":
+                $result = "REGEXP";
+                break;
+            case "notregex":
+                $result = "NOT REGEXP";
+                break;
             default:
                 $result = "";
                 break;
@@ -236,7 +242,13 @@ class CentreonUtils
         $init = array();
         try {
             $initForm = $form->getElement('initialValues');
-            $initialValues = unserialize($initForm->getValue());
+            $initForm = filter_var($initForm->getValue(), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+
+            if ($initForm === false) {
+                throw new \InvalidArgumentException('Invalid Parameters');
+            }
+            $initialValues = unserialize($initForm);
+
             if (!empty($initialValues) && isset($initialValues[$key])) {
                 $init = $initialValues[$key];
             }

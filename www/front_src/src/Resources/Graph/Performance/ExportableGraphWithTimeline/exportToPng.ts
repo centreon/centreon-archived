@@ -1,22 +1,34 @@
-import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
+import dom2image from 'dom-to-image';
 
 interface Props {
   element: HTMLElement;
+  ratio: number;
   title: string;
 }
 
-const exportToPng = ({ element, title }: Props): Promise<void> => {
-  return html2canvas(element).then((canvas) => {
-    const canvasUrl = canvas.toDataURL('image/png;base64');
+const exportToPng = async ({ element, title, ratio }: Props): Promise<void> => {
+  const dateTime = new Date().toISOString().substring(0, 19);
 
-    const downloadLink = document.createElement('a');
-    const dateTime = new Date().toISOString().substring(0, 19);
-    downloadLink.download = `${title}-${dateTime}.png`;
-    downloadLink.href = canvasUrl;
+  const getTranslation = (size: number) => {
+    return ((1 - ratio) * size) / 2;
+  };
 
-    downloadLink.click();
-    downloadLink.remove();
-  });
+  const translateY = getTranslation(element.offsetHeight);
+  const translateX = getTranslation(element.offsetWidth);
+
+  return dom2image
+    .toBlob(element, {
+      bgcolor: '#FFFFFF',
+      height: element.offsetHeight * ratio,
+      style: {
+        transform: `translate(-${translateX}px, -${translateY}px) scale(${ratio})`,
+      },
+      width: element.offsetWidth * ratio,
+    })
+    .then((blob) => {
+      return saveAs(blob, `${title}-${dateTime}.png`);
+    });
 };
 
 export default exportToPng;

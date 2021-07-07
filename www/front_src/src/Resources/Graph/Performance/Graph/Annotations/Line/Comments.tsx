@@ -8,26 +8,17 @@ import IconComment from '@material-ui/icons/Comment';
 import { labelComment } from '../../../../../translatedLabels';
 import { Props } from '..';
 import EventAnnotations from '../EventAnnotations';
-import { iconSize } from '../Annotation';
 
 const CommentAnnotations = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const icon = (
-    <IconComment
-      aria-label={t(labelComment)}
-      height={iconSize}
-      width={iconSize}
-      color="primary"
-    />
-  );
-
   return (
     <EventAnnotations
-      type="comment"
-      icon={icon}
+      Icon={IconComment}
+      ariaLabel={t(labelComment)}
       color={theme.palette.primary.main}
+      type="comment"
       {...props}
     />
   );

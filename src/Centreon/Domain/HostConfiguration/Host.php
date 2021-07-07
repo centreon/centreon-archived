@@ -23,6 +23,8 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration;
 
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
+use Centreon\Domain\HostConfiguration\Model\HostGroup;
+use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Annotation\EntityDescriptor;
 
@@ -119,6 +121,16 @@ class Host
      * @var HostCategory[]
      */
     private $categories = [];
+
+    /**
+     * @var HostGroup[]
+     */
+    private $groups = [];
+
+    /**
+     * @var HostSeverity[]
+     */
+    private $severities = [];
 
     /**
      * @return int|null
@@ -405,7 +417,7 @@ class Host
 
     /**
      * @param HostCategory $category
-     * @return $this
+     * @return self
      */
     public function addCategory(HostCategory $category): self
     {
@@ -427,6 +439,60 @@ class Host
     public function clearCategories(): self
     {
         $this->categories = [];
+        return $this;
+    }
+
+    /**
+     * @param HostGroup $hostGroup
+     * @return self
+     */
+    public function addGroup(HostGroup $hostGroup): self
+    {
+        $this->groups[] = $hostGroup;
+        return $this;
+    }
+
+    /**
+     * @return HostGroup[]
+     */
+    public function getGroups(): array
+    {
+        return $this->groups;
+    }
+
+    /**
+     * @return self
+     */
+    public function clearGroups(): self
+    {
+        $this->groups = [];
+        return $this;
+    }
+
+    /**
+     * @param HostSeverity $hostSeverity
+     * @return self
+     */
+    public function addSeverity(HostSeverity $hostSeverity): self
+    {
+        $this->severities[] = $hostSeverity;
+        return $this;
+    }
+
+    /**
+     * @return HostSeverity[]
+     */
+    public function getSeverities(): array
+    {
+        return $this->severities;
+    }
+
+    /**
+     * @return self
+     */
+    public function clearSeverities(): self
+    {
+        $this->severities = [];
         return $this;
     }
 }

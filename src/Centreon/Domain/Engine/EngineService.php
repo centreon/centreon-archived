@@ -23,12 +23,15 @@ declare(strict_types=1);
 namespace Centreon\Domain\Engine;
 
 use Centreon\Domain\Check\Check;
+use Centreon\Domain\Common\Assertion\Assertion;
+use Centreon\Domain\Engine\Exception\EngineConfigurationException;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Downtime\DowntimeService;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Service\AbstractCentreonService;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
@@ -181,9 +184,6 @@ class EngineService extends AbstractCentreonService implements
         if (empty($this->contact->getAlias())) {
             throw new EngineException(_('The contact alias is empty'));
         }
-        if ($host === null) {
-            throw new EngineException(_('Host of downtime not found'));
-        }
         if (empty($host->getName())) {
             throw new EngineException(_('Host name can not be empty'));
         }
@@ -279,6 +279,24 @@ class EngineService extends AbstractCentreonService implements
     /**
      * @inheritDoc
      */
+    public function findEngineConfigurationByMonitoringServer(MonitoringServer $monitoringServer): ?EngineConfiguration
+    {
+        try {
+            Assertion::notNull($monitoringServer->getId(), 'MonitoringServer::id');
+            return $this->engineConfigurationRepository->findEngineConfigurationByMonitoringServerId(
+                $monitoringServer->getId()
+            );
+        } catch (\Throwable $ex) {
+            throw EngineConfigurationException::findEngineConfigurationException(
+                $ex,
+                ['id' => $monitoringServer->getId()]
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findEngineConfigurationByHost(\Centreon\Domain\HostConfiguration\Host $host): ?EngineConfiguration
     {
         if ($host->getId() === null) {
@@ -343,7 +361,7 @@ class EngineService extends AbstractCentreonService implements
             throw new EngineException(_('Downtime internal id can not be null'));
         }
 
-        $suffix = ($downtime->getServiceId() === null) ? 'HOST' : 'SVC';
+        $suffix = (empty($downtime->getServiceId())) ? 'HOST' : 'SVC';
         $preCommand = sprintf('DEL_%s_DOWNTIME;%d', $suffix, $downtime->getInternalId());
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
         $commandFull = $this->createCommandHeader($host->getPollerId()) . $commandToSend;

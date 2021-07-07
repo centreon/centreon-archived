@@ -10,7 +10,7 @@ const containerName = 'centreon-web-only';
 
 // parse args of script execution to define and set the docker image
 process.argv.forEach(() => {
-  release = process.argv[2] || '21.04';
+  release = process.argv[2] || '21.10';
   imageName = process.argv[3] || 'mon-web';
   distrib = process.argv[4] || 'centos7';
 });

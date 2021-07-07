@@ -1,11 +1,21 @@
 import * as React from 'react';
 
-import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
+import {
+  isNil,
+  isEmpty,
+  pipe,
+  not,
+  defaultTo,
+  propEq,
+  findIndex,
+  pick,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Tab, useTheme, fade } from '@material-ui/core';
+import { useTheme, fade } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 
-import { MemoizedPanel as Panel } from '@centreon/ui';
+import { MemoizedPanel as Panel, Tab } from '@centreon/ui';
 
 import { useResourceContext } from '../Context';
 import { rowColorConditions } from '../colors';
@@ -19,9 +29,21 @@ export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = (): JSX.Element => {
+export interface TabBounds {
+  bottom: number;
+  top: number;
+}
+
+const Context = React.createContext<TabBounds>({
+  bottom: 0,
+  top: 0,
+});
+
+const Details = (): JSX.Element | null => {
   const { t } = useTranslation();
   const theme = useTheme();
+
+  const panelRef = React.useRef<HTMLDivElement>();
 
   const {
     openDetailsTabId,
@@ -30,6 +52,7 @@ const Details = (): JSX.Element => {
     setOpenDetailsTabId,
     clearSelectedResource,
     setPanelWidth,
+    selectResource,
   } = useResourceContext();
 
   React.useEffect(() => {
@@ -70,8 +93,8 @@ const Details = (): JSX.Element => {
     const foundColorCondition = rowColorConditions(theme).find(
       ({ condition }) =>
         condition({
-          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
           acknowledged: !isNil(acknowledgement),
+          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
         }),
     );
 
@@ -83,26 +106,34 @@ const Details = (): JSX.Element => {
   };
 
   return (
-    <Panel
-      onClose={clearSelectedResource}
-      header={<Header details={details} />}
-      headerBackgroundColor={getHeaderBackgroundColor()}
-      tabs={getVisibleTabs().map(({ id, title }) => (
-        <Tab
-          style={{ minWidth: 'unset' }}
-          key={id}
-          label={t(title)}
-          disabled={isNil(details)}
-          onClick={changeSelectedTabId(id)}
-        />
-      ))}
-      selectedTabId={getTabIndex(openDetailsTabId)}
-      selectedTab={<TabById id={openDetailsTabId} details={details} />}
-      width={panelWidth}
-      onResize={setPanelWidth}
-      memoProps={[openDetailsTabId, details, panelWidth]}
-    />
+    <Context.Provider
+      value={pick(
+        ['top', 'bottom'],
+        panelRef.current?.getBoundingClientRect() || { bottom: 0, top: 0 },
+      )}
+    >
+      <Panel
+        header={<Header details={details} onSelectParent={selectResource} />}
+        headerBackgroundColor={getHeaderBackgroundColor()}
+        memoProps={[openDetailsTabId, details, panelWidth]}
+        ref={panelRef as React.RefObject<HTMLDivElement>}
+        selectedTab={<TabById details={details} id={openDetailsTabId} />}
+        selectedTabId={getTabIndex(openDetailsTabId)}
+        tabs={getVisibleTabs().map(({ id, title }) => (
+          <Tab
+            disabled={isNil(details)}
+            key={id}
+            label={isNil(details) ? <Skeleton width={60} /> : t(title)}
+            onClick={changeSelectedTabId(id)}
+          />
+        ))}
+        width={panelWidth}
+        onClose={clearSelectedResource}
+        onResize={setPanelWidth}
+      />
+    </Context.Provider>
   );
 };
 
 export default Details;
+export { Context as TabContext };

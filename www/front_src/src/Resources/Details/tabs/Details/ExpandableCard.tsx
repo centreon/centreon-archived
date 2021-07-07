@@ -1,11 +1,10 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { isEmpty, pipe, reject, slice } from 'ramda';
 
 import {
   Typography,
-  Card,
-  CardContent,
   Divider,
   CardActions,
   Button,
@@ -18,19 +17,21 @@ import { getStatusColors } from '@centreon/ui';
 
 import { labelMore, labelLess } from '../../../translatedLabels';
 
+import Card from './Card';
+
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
     getStatusColors({
-      theme,
       severityCode,
+      theme,
     }).backgroundColor;
 
   return {
     card: ({ severityCode }): CreateCSSProperties => ({
       ...(severityCode && {
-        borderWidth: 2,
-        borderStyle: 'solid',
         borderColor: getStatusBackgroundColor(severityCode),
+        borderStyle: 'solid',
+        borderWidth: 2,
       }),
     }),
     title: ({ severityCode }): CreateCSSProperties => ({
@@ -40,9 +41,9 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
 });
 
 interface Props {
-  title: string;
   content: string;
   severityCode?: number;
+  title: string;
 }
 
 const ExpandableCard = ({
@@ -56,34 +57,32 @@ const ExpandableCard = ({
   const [outputExpanded, setOutputExpanded] = React.useState(false);
 
   const lines = content.split(/\n|\\n/);
-  const threeFirstlines = lines.slice(0, 3);
-  const lastlines = lines.slice(2, lines.length);
+  const threeFirstLines = lines.slice(0, 3);
+  const lastLines = pipe(slice(3, lines.length), reject(isEmpty))(lines);
 
   const toggleOutputExpanded = (): void => {
     setOutputExpanded(!outputExpanded);
   };
 
   const Line = (line, index): JSX.Element => (
-    <Typography key={`${line}-${index}`} variant="body2" component="p">
+    <Typography component="p" key={`${line}-${index}`} variant="body2">
       {line}
     </Typography>
   );
 
   return (
     <Card className={classes.card}>
-      <CardContent>
-        <Typography
-          className={classes.title}
-          variant="subtitle2"
-          color="textSecondary"
-          gutterBottom
-        >
-          {title}
-        </Typography>
-        {threeFirstlines.map(Line)}
-        {outputExpanded && lastlines.map(Line)}
-      </CardContent>
-      {lastlines.length > 0 && (
+      <Typography
+        gutterBottom
+        className={classes.title}
+        color="textSecondary"
+        variant="subtitle2"
+      >
+        {title}
+      </Typography>
+      {threeFirstLines.map(Line)}
+      {outputExpanded && lastLines.map(Line)}
+      {lastLines.length > 0 && (
         <>
           <Divider />
           <CardActions>

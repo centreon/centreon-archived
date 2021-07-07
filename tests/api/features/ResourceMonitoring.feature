@@ -13,7 +13,6 @@ Feature:
     """
     HOST;ADD;host_test;Test host;127.0.0.1;generic-host;central;
     SERVICE;ADD;host_test;service_ping;Ping-LAN
-    SERVICE;setparam;host_test;service_ping;notes_url;$HOSTNAME$_$SERVICEDESC$
     """
     And the configuration is generated and exported
     And I wait until host "host_test" is monitored
@@ -24,4 +23,3 @@ Feature:
     And the response should be formatted like JSON format "standard/listing.json"
     And the json node "result" should have 1 elements
     And the JSON node "result[0].name" should be equal to the string "service_ping"
-    And the JSON node "result[0].links.externals.notes_url" should be equal to the string "host_test_service_ping"

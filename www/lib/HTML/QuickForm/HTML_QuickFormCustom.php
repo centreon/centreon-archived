@@ -85,12 +85,9 @@ class HTML_QuickFormCustom extends HTML_QuickForm
      */
     public function createSecurityToken()
     {
-        $token = md5(uniqid());
+        $token = bin2hex(openssl_random_pseudo_bytes(16));
 
-        if (false === isset($_SESSION['x-centreon-token']) &&
-            (isset($_SESSION['x-centreon-token']) &&
-                false === is_array($_SESSION['x-centreon-token']))
-        ) {
+        if (!isset($_SESSION['x-centreon-token']) || !is_array($_SESSION['x-centreon-token'])) {
             $_SESSION['x-centreon-token'] = array();
             $_SESSION['x-centreon-token-generated-at'] = array();
         }

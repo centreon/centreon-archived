@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,22 +24,25 @@ declare(strict_types=1);
 namespace Centreon\Domain\PlatformTopology;
 
 use Centreon\Domain\Engine\EngineException;
-use Centreon\Domain\PlatformTopology\Platform;
 use Centreon\Domain\Engine\EngineConfiguration;
-use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
+use Centreon\Domain\PlatformTopology\Model\PlatformPending;
+use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\PlatformTopology\PlatformException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
-use Centreon\Domain\PlatformInformation\PlatformInformation;
 use Centreon\Domain\MonitoringServer\MonitoringServerException;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
+use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
-use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
 
 /**
  * Service intended to register a new server to the platform topology
@@ -103,6 +106,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * @param MonitoringServerServiceInterface $monitoringServerService
      * @param BrokerRepositoryInterface $brokerRepository
      * @param PlatformTopologyRegisterRepositoryInterface $platformTopologyRegisterRepository
+     * @param RemoteServerRepositoryInterface $remoteServerRepository
      */
     public function __construct(
         PlatformTopologyRepositoryInterface $platformTopologyRepository,
@@ -127,36 +131,40 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * @inheritDoc
      */
-    public function addPlatformToTopology(Platform $platform): void
+    public function addPendingPlatformToTopology(PlatformInterface $platformPending): void
     {
         // check entity consistency
-        $this->checkEntityConsistency($platform);
+        $this->checkEntityConsistency($platformPending);
 
         /**
          * Search for already registered central or remote top level server on this platform
          * As only top level platform do not need parent_address and only one should be registered
          */
-        if (Platform::TYPE_CENTRAL === $platform->getType()) {
-            // New unique Central top level platform case
-            $this->searchAlreadyRegisteredTopLevelPlatformByType(Platform::TYPE_CENTRAL);
-            $this->searchAlreadyRegisteredTopLevelPlatformByType(Platform::TYPE_REMOTE);
-            $this->setMonitoringServerId($platform);
-        } elseif (Platform::TYPE_REMOTE === $platform->getType()) {
-            // Cannot add a Remote behind another Remote
-            $this->searchAlreadyRegisteredTopLevelPlatformByType(Platform::TYPE_REMOTE);
-            if (null === $platform->getParentAddress()) {
-                // New unique Remote top level platform case
-                $this->searchAlreadyRegisteredTopLevelPlatformByType(Platform::TYPE_CENTRAL);
-                $this->setMonitoringServerId($platform);
-            }
+
+        $this->checkForAlreadyRegisteredSameNameOrAddress($platformPending);
+
+        switch ($platformPending->getType()) {
+            case PlatformPending::TYPE_CENTRAL:
+                // New unique Central top level platform case
+                $this->searchAlreadyRegisteredTopLevelPlatformByType(PlatformPending::TYPE_CENTRAL);
+                $this->searchAlreadyRegisteredTopLevelPlatformByType(PlatformPending::TYPE_REMOTE);
+                $this->setMonitoringServerId($platformPending);
+                break;
+            case PlatformPending::TYPE_REMOTE:
+                // Cannot add a Remote behind another Remote
+                $this->searchAlreadyRegisteredTopLevelPlatformByType(PlatformPending::TYPE_REMOTE);
+                if (null === $platformPending->getParentAddress()) {
+                    // New unique Remote top level platform case
+                    $this->searchAlreadyRegisteredTopLevelPlatformByType(PlatformPending::TYPE_CENTRAL);
+                    $this->setMonitoringServerId($platformPending);
+                }
+                break;
         }
 
-        $this->checkForAlreadyRegisteredSameNameOrAddress($platform);
-
         /**
-         * @var Platform|null $registeredParentInTopology
+         * @var PlatformInterface|null $registeredParentInTopology
          */
-        $registeredParentInTopology = $this->findParentPlatform($platform);
+        $registeredParentInTopology = $this->findParentPlatform($platformPending);
 
         /**
          * The top level platform is defined as a Remote :
@@ -166,95 +174,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             null !== $registeredParentInTopology
             && true === $registeredParentInTopology->isLinkedToAnotherServer()
         ) {
-            /**
-             * Getting platform information's data
-             * @var PlatformInformation|null $foundPlatformInformation
-             */
-            $foundPlatformInformation = $this->platformInformationService->getInformation();
-
-            if (null === $foundPlatformInformation) {
-                throw new PlatformException(
-                    sprintf(
-                        _("Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form."),
-                        $platform->getName(),
-                        $platform->getAddress()
-                    )
-                );
-            }
-            if (false === $foundPlatformInformation->isRemote()) {
-                throw new PlatformConflictException(
-                    sprintf(
-                        _("The platform: '%s'@'%s' is not declared as a 'remote'."),
-                        $platform->getName(),
-                        $platform->getAddress()
-                    )
-                );
-            }
-            if (null === $foundPlatformInformation->getCentralServerAddress()) {
-                throw new PlatformException(
-                    sprintf(
-                        _("The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first."),
-                        $platform->getName(),
-                        $platform->getAddress()
-                    )
-                );
-            }
-            if (
-                null === $foundPlatformInformation->getApiUsername()
-                || null === $foundPlatformInformation->getApiCredentials()
-            ) {
-                throw new PlatformException(
-                    sprintf(
-                        _("Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form."),
-                        $platform->getName(),
-                        $platform->getAddress()
-                    )
-                );
-            }
-            if (null === $foundPlatformInformation->getApiScheme()) {
-                throw new PlatformException(
-                    sprintf(
-                        _("Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form."),
-                        $platform->getName(),
-                        $platform->getAddress()
-                    )
-                );
-            }
-            if (null === $foundPlatformInformation->getApiPort()) {
-                throw new PlatformException(
-                    sprintf(
-                        _("Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form."),
-                        $platform->getName(),
-                        $platform->getAddress()
-                    )
-                );
-            }
-            if (null === $foundPlatformInformation->getApiPath()) {
-                throw new PlatformException(
-                    sprintf(
-                        _("Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."),
-                        $platform->getName(),
-                        $platform->getAddress()
-                    )
-                );
-            }
-
-            /**
-             * Register this platform to its Central
-             */
-            try {
-                $this->platformTopologyRegisterRepository->registerPlatformToParent(
-                    $platform,
-                    $foundPlatformInformation,
-                    $this->proxyService->getProxy()
-                );
-            } catch (PlatformConflictException $ex) {
-                throw $ex;
-            } catch (RepositoryException $ex) {
-                throw new PlatformException($ex->getMessage(), $ex->getCode(), $ex);
-            } catch (\Exception $ex) {
-                throw new PlatformException(_("Error from Central's register API"), 0, $ex);
-            }
+            $this->registerPlatformToParent($platformPending);
         }
 
         /*
@@ -262,15 +182,88 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
          */
         try {
             // add the new platform
-            $this->platformTopologyRepository->addPlatformToTopology($platform);
+            $this->platformTopologyRepository->addPlatformToTopology($platformPending);
         } catch (\Exception $ex) {
-            throw new PlatformException(
-                sprintf(
-                    _("Error when adding in topology the platform : '%s'@'%s'"),
-                    $platform->getName(),
-                    $platform->getAddress()
-                )
+            throw PlatformTopologyException::errorWhenAddingThePlatform(
+                $platformPending->getName(),
+                $platformPending->getAddress()
             );
+        }
+    }
+
+    /**
+     * @param PlatformInterface $platformPending
+     * @throws PlatformTopologyException
+     * @throws PlatformInformationException
+     */
+    private function registerPlatformToParent(PlatformInterface $platformPending): void
+    {
+        /**
+         * Getting platform information's data
+         * @var PlatformInformation|null $foundPlatformInformation
+         */
+        $foundPlatformInformation = $this->platformInformationService->getInformation();
+        if (null === $foundPlatformInformation) {
+            throw PlatformTopologyException::missingMandatoryData(
+                $platformPending->getName(),
+                $platformPending->getAddress()
+            );
+        }
+        if (false === $foundPlatformInformation->isRemote()) {
+            throw PlatformTopologyException::notTypeRemote(
+                $platformPending->getName(),
+                $platformPending->getAddress()
+            );
+        }
+        if (null === $foundPlatformInformation->getCentralServerAddress()) {
+            throw PlatformTopologyException::platformNotLinkedToTheCentral(
+                $platformPending->getName(),
+                $platformPending->getAddress()
+            );
+        }
+        if (
+            null === $foundPlatformInformation->getApiUsername()
+            || null === $foundPlatformInformation->getApiCredentials()
+        ) {
+            throw PlatformTopologyException::missingCentralCredentials(
+                $platformPending->getName(),
+                $platformPending->getAddress()
+            );
+        }
+        if (null === $foundPlatformInformation->getApiScheme()) {
+            throw PlatformTopologyException::missingCentralScheme(
+                $platformPending->getName(),
+                $platformPending->getAddress()
+            );
+        }
+        if (null === $foundPlatformInformation->getApiPort()) {
+            throw PlatformTopologyException::missingCentralPort(
+                $platformPending->getName(),
+                $platformPending->getAddress()
+            );
+        }
+        if (null === $foundPlatformInformation->getApiPath()) {
+            throw PlatformTopologyException::missingCentralPath(
+                $platformPending->getName(),
+                $platformPending->getAddress()
+            );
+        }
+
+        /**
+         * Register this platform to its Parent
+         */
+        try {
+            $this->platformTopologyRegisterRepository->registerPlatformToParent(
+                $platformPending,
+                $foundPlatformInformation,
+                $this->proxyService->getProxy()
+            );
+        } catch (PlatformTopologyException $ex) {
+            throw $ex;
+        } catch (PlatformTopologyRepositoryExceptionInterface $ex) {
+            throw new PlatformTopologyException($ex->getMessage(), $ex->getCode(), $ex);
+        } catch (\Exception $ex) {
+            throw new PlatformTopologyException(_("Error from Central's register API"), 0, $ex);
         }
     }
 
@@ -278,7 +271,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * Get engine configuration's illegal characters and check for illegal characters in hostname
      * @param string|null $stringToCheck
      * @throws EngineException
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      * @throws MonitoringServerException
      */
     private function checkName(?string $stringToCheck): void
@@ -289,29 +282,21 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
         $monitoringServerName = $this->monitoringServerService->findLocalServer();
         if (null === $monitoringServerName || null === $monitoringServerName->getName()) {
-            throw new PlatformException(
-                _('Unable to find local monitoring server name')
-            );
+            throw PlatformTopologyException::unableToFindMonitoringServerName();
         }
 
         $engineConfiguration = $this->engineConfigurationService->findEngineConfigurationByName(
             $monitoringServerName->getName()
         );
         if (null === $engineConfiguration) {
-            throw new PlatformException(_('Unable to find the Engine configuration'));
+            throw PlatformTopologyException::unableToFindEngineConfiguration();
         }
 
-        $foundIllegalCharacters = EngineConfiguration::hasIllegalCharacters(
-            $stringToCheck,
-            $engineConfiguration->getIllegalObjectNameCharacters()
-        );
+        $foundIllegalCharacters = $engineConfiguration->hasIllegalCharacters($stringToCheck);
         if (true === $foundIllegalCharacters) {
-            throw new PlatformException(
-                sprintf(
-                    _("At least one illegal character in '%s' was found in platform's name: '%s'"),
-                    $engineConfiguration->getIllegalObjectNameCharacters(),
-                    $stringToCheck
-                )
+            throw PlatformTopologyException::illegalCharacterFound(
+                $engineConfiguration->getIllegalObjectNameCharacters(),
+                $stringToCheck
             );
         }
     }
@@ -338,7 +323,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * Check hostname consistency
      * @param string|null $stringToCheck
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      */
     private function checkHostname(?string $stringToCheck): void
     {
@@ -347,25 +332,19 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         if (false === $this->isHostnameValid($stringToCheck)) {
-            throw new PlatformException(
-                sprintf(
-                    _("At least one non RFC compliant character was found in platform's hostname: '%s'"),
-                    $stringToCheck
-                )
-            );
+            throw PlatformTopologyException::illegalRfcCharacterFound($stringToCheck);
         }
     }
 
     /**
      * Check consistency of each mandatory and optional parameters
-     * @param Platform $platform
+     * @param PlatformInterface $platform
      * @throws EngineException
      * @throws EntityNotFoundException
      * @throws MonitoringServerException
-     * @throws PlatformConflictException
-     * @throws PlatformException
+     * @throws PlatformTopologyException
      */
-    private function checkEntityConsistency(Platform $platform): void
+    private function checkEntityConsistency(PlatformInterface $platform): void
     {
         // Check non RFC compliant characters in name and hostname
         if (null === $platform->getName()) {
@@ -389,7 +368,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             null === $platform->getParentAddress()
             && !in_array(
                 $platform->getType(),
-                [Platform::TYPE_CENTRAL, Platform::TYPE_REMOTE],
+                [PlatformPending::TYPE_CENTRAL, PlatformPending::TYPE_REMOTE],
                 false
             )
         ) {
@@ -404,12 +383,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
         // or Check for similar parent_address and address
         if ($platform->getParentAddress() === $platform->getAddress()) {
-            throw new PlatformConflictException(
-                sprintf(
-                    _("Same address and parent_address for platform : '%s'@'%s'."),
-                    $platform->getName(),
-                    $platform->getAddress()
-                )
+            throw PlatformTopologyException::addressConflict(
+                $platform->getName(),
+                $platform->getAddress()
             );
         }
     }
@@ -418,20 +394,17 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      * Used when parent_address is null, to check if this type of platform is already registered
      *
      * @param string $type platform type to find
-     * @throws PlatformConflictException
+     * @throws PlatformTopologyException
      * @throws \Exception
      */
     private function searchAlreadyRegisteredTopLevelPlatformByType(string $type): void
     {
         $foundAlreadyRegisteredTopLevelPlatform = $this->platformTopologyRepository->findTopLevelPlatformByType($type);
         if (null !== $foundAlreadyRegisteredTopLevelPlatform) {
-            throw new PlatformConflictException(
-                sprintf(
-                    _("A '%s': '%s'@'%s' is already registered"),
-                    $type,
-                    $foundAlreadyRegisteredTopLevelPlatform->getName(),
-                    $foundAlreadyRegisteredTopLevelPlatform->getAddress()
-                )
+            throw PlatformTopologyException::platformAlreadySaved(
+                $type,
+                $foundAlreadyRegisteredTopLevelPlatform->getName(),
+                $foundAlreadyRegisteredTopLevelPlatform->getAddress()
             );
         }
     }
@@ -439,11 +412,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * Search for platforms monitoring ID and set it as serverId
      *
-     * @param Platform $platform
-     * @throws PlatformConflictException
+     * @param PlatformInterface $platform
+     * @throws PlatformTopologyException
      * @throws \Exception
      */
-    private function setMonitoringServerId(Platform $platform): void
+    private function setMonitoringServerId(PlatformInterface $platform): void
     {
         $foundServerInNagiosTable = null;
         if (null !== $platform->getName()) {
@@ -453,13 +426,10 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         }
 
         if (null === $foundServerInNagiosTable) {
-            throw new PlatformConflictException(
-                sprintf(
-                    _("The server type '%s' : '%s'@'%s' does not match the one configured in Centreon or is disabled"),
-                    $platform->getType(),
-                    $platform->getName(),
-                    $platform->getAddress()
-                )
+            throw PlatformTopologyException::platformDoesNotMatchTheSavedOne(
+                $platform->getType(),
+                $platform->getName(),
+                $platform->getAddress()
             );
         }
         $platform->setServerId($foundServerInNagiosTable->getId());
@@ -468,11 +438,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * Search for already registered platforms using same name or address
      *
-     * @param Platform $platform
-     * @throws PlatformConflictException
+     * @param PlatformInterface $platform
+     * @throws PlatformTopologyException
      * @throws EntityNotFoundException
+     * @throws \Exception
      */
-    private function checkForAlreadyRegisteredSameNameOrAddress(Platform $platform): void
+    private function checkForAlreadyRegisteredSameNameOrAddress(PlatformInterface $platform): void
     {
         // Two next checks are required for phpStan lvl8. But already done in the checkEntityConsistency method
         if (null === $platform->getName()) {
@@ -487,18 +458,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             );
         }
 
-        $isAlreadyRegistered = $this->platformTopologyRepository->isPlatformAlreadyRegisteredInTopology(
-            $platform->getAddress(),
-            $platform->getName()
-        );
-
-        if (true === $isAlreadyRegistered) {
-            throw new PlatformConflictException(
-                sprintf(
-                    _("A platform using the name : '%s' or address : '%s' already exists"),
-                    $platform->getName(),
-                    $platform->getAddress()
-                )
+        $addressAlreadyRegistered = $this->platformTopologyRepository->findPlatformByAddress($platform->getAddress());
+        $nameAlreadyRegistered = $this->platformTopologyRepository->findPlatformByName($platform->getName());
+        if (null !== $nameAlreadyRegistered || null !== $addressAlreadyRegistered) {
+            throw PlatformTopologyException::platformNameOrAddressAlreadyExist(
+                $platform->getName(),
+                $platform->getAddress()
             );
         }
     }
@@ -506,13 +471,13 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
     /**
      * Search for platform's parent ID in topology
      *
-     * @param Platform $platform
-     * @return Platform|null
+     * @param PlatformInterface $platform
+     * @return PlatformInterface|null
      * @throws EntityNotFoundException
-     * @throws PlatformConflictException
+     * @throws PlatformTopologyException
      * @throws \Exception
      */
-    private function findParentPlatform(Platform $platform): ?Platform
+    private function findParentPlatform(PlatformInterface $platform): ?PlatformInterface
     {
         if (null === $platform->getParentAddress()) {
             return null;
@@ -533,15 +498,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
 
         // Avoid to link a remote to another remote
         if (
-            Platform::TYPE_REMOTE === $platform->getType()
-            && Platform::TYPE_REMOTE === $registeredParentInTopology->getType()
+            PlatformPending::TYPE_REMOTE === $platform->getType()
+            && PlatformPending::TYPE_REMOTE === $registeredParentInTopology->getType()
         ) {
-            throw new PlatformConflictException(
-                sprintf(
-                    _("Unable to link a 'remote': '%s'@'%s' to another remote platform"),
-                    $registeredParentInTopology->getName(),
-                    $registeredParentInTopology->getAddress()
-                )
+            throw PlatformTopologyException::unableToLinkARemoteToAnotherRemote(
+                $registeredParentInTopology->getName(),
+                $registeredParentInTopology->getAddress()
             );
         }
 
@@ -549,18 +511,15 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         if (
             !in_array(
                 $registeredParentInTopology->getType(),
-                [Platform::TYPE_REMOTE, Platform::TYPE_CENTRAL],
+                [PlatformPending::TYPE_REMOTE, PlatformPending::TYPE_CENTRAL],
                 false
             )
         ) {
-            throw new PlatformConflictException(
-                sprintf(
-                    _("Cannot register the '%s' platform : '%s'@'%s' behind a '%s' platform"),
-                    $platform->getType(),
-                    $platform->getName(),
-                    $platform->getAddress(),
-                    $registeredParentInTopology->getType()
-                )
+            throw PlatformTopologyException::inconsistentTypeToLinkThePlatformTo(
+                $platform->getType(),
+                $platform->getName(),
+                $platform->getAddress(),
+                $registeredParentInTopology->getType()
             );
         }
 
@@ -569,7 +528,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
         // A platform behind a remote needs to send the data to the Central too
         if (
             null === $registeredParentInTopology->getParentId()
-            && $registeredParentInTopology->getType() === Platform::TYPE_REMOTE
+            && $registeredParentInTopology->getType() === PlatformPending::TYPE_REMOTE
         ) {
             $registeredParentInTopology->setLinkedToAnotherServer(true);
             return $registeredParentInTopology;
@@ -582,9 +541,6 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
      */
     public function getPlatformTopology(): array
     {
-        /**
-         * @var Platform[] $platformTopology
-         */
         $platformTopology = $this->platformTopologyRepository->getPlatformTopology();
         if (empty($platformTopology)) {
             throw new EntityNotFoundException(_('No Platform Topology found.'));
@@ -596,7 +552,9 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                 $platformParent = $this->platformTopologyRepository->findPlatform(
                     $platform->getParentId()
                 );
-                $platform->setParentAddress($platformParent->getAddress());
+                if (null !== $platformParent) {
+                    $platform->setParentAddress($platformParent->getAddress());
+                }
             }
 
             //Set the broker relation type if the platform is completely registered
@@ -613,8 +571,11 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
                         break;
                     }
                 }
+            } else {
+                $platform->setRelation(PlatformRelation::NORMAL_RELATION);
             }
         }
+
         return $platformTopology;
     }
 
@@ -627,17 +588,12 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             if (($deletedPlatform = $this->platformTopologyRepository->findPlatform($serverId)) === null) {
                 throw new EntityNotFoundException(_('Platform not found'));
             }
-            /**
-             * @var Platform[] $childPlatforms
-             */
             $childPlatforms = $this->platformTopologyRepository->findChildrenPlatformsByParentId($serverId);
 
             if (!empty($childPlatforms)) {
                 /**
                  * If at least one children platform was found,
                  * find the Top Parent platform and link children platform(s) to it.
-                 *
-                 * @var Platform $topLevelPlatform
                  */
                 $topLevelPlatform = $this->findTopLevelPlatform();
 
@@ -658,7 +614,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              * Delete the monitoring server and the topology.
              */
             if ($deletedPlatform->getServerId() !== null) {
-                if ($deletedPlatform->getType() === Platform::TYPE_REMOTE) {
+                if ($deletedPlatform->getType() === PlatformPending::TYPE_REMOTE) {
                     $this->remoteServerRepository->deleteRemoteServerByAddress($deletedPlatform->getAddress());
                     $this->remoteServerRepository->deleteAdditionalRemoteServer($deletedPlatform->getServerId());
                 }
@@ -667,29 +623,29 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             } else {
                 $this->platformTopologyRepository->deletePlatform($deletedPlatform->getId());
             }
-        } catch (EntityNotFoundException | PlatformException $ex) {
+        } catch (EntityNotFoundException | PlatformTopologyException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
-            throw new PlatformException(_('An error occured while deleting the platform'), 0, $ex);
+            throw new PlatformTopologyException(_('An error occurred while deleting the platform'), 0, $ex);
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function updatePlatformParameters(Platform $platform): void
+    public function updatePlatformParameters(PlatformInterface $platform): void
     {
         try {
             $this->platformTopologyRepository->updatePlatformParameters($platform);
         } catch (\Exception $ex) {
-            throw new PlatformException(_('An error occured while updating the platform'), 0, $ex);
+            throw new PlatformTopologyException(_('An error occurred while updating the platform'), 0, $ex);
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function findTopLevelPlatform(): ?Platform
+    public function findTopLevelPlatform(): ?PlatformInterface
     {
         return $this->platformTopologyRepository->findTopLevelPlatform();
     }

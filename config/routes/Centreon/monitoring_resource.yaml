@@ -20,3 +20,11 @@ centreon_application_monitoring_resource_details_service:
         hostId: '\d+'
         serviceId: '\d+'
     condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_resource_details_meta_service:
+    methods: GET
+    path: /monitoring/resources/metaservices/{metaId}
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsMetaService'
+    requirements:
+        metaId: '\d+'
+    condition: "request.attributes.get('version') >= 2.1"

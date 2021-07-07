@@ -2967,8 +2967,11 @@ msgstr "métrica"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: centreon-web/www/install/menu_translation.php:109
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:129
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Diverso"
 
@@ -11262,10 +11265,6 @@ msgstr "Información Gorgone"
 msgid "Monitoring Engine Information"
 msgstr "Información sobre el motor de supervisión."
 
-#: centreon-web/www/include/configuration/configServers/formServers.php:104
-msgid "Miscelleneous"
-msgstr "Diverso"
-
 #: centreon-web/www/include/configuration/configServers/formServers.php:105
 msgid "Centreon Trap Collector"
 msgstr "Colector de trampas Centreon SNMP"
@@ -14344,7 +14343,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "End time"
 #  msgstr ""
 
-#  msgid "Is this resource flapping?"
+#  msgid "This Resource is flapping"
 #  msgstr ""
 
 #  msgid "Show criterias filters"
@@ -14368,14 +14367,23 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "In downtime"
 #  msgstr ""
 
-#  msgid "Last 24 hours"
-#  msgstr ""
+# msgid "1 day"
+# msgstr ""
 
-#  msgid "Last 7 days"
-#  msgstr ""
+# msgid "7 days"
+# msgstr ""
 
-#  msgid "Last 31 days"
-#  msgstr ""
+# msgid "31 days"
+# msgstr ""
+
+# msgid "Last day"
+# msgstr ""
+
+# msgid "Last 7 days"
+# msgstr ""
+
+# msgid "Last 31 days"
+# msgstr ""
 
 #  msgid "Set downtime on"
 #  msgstr ""
@@ -14643,3 +14651,74 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "Select criterias"
 #  msgstr ""
+
+#  msgid "Monitoring server"
+#  msgstr ""
+
+#  msgid "The end date must be greater than the start date"
+#  msgstr ""
+
+#  msgid "Forward"
+#  msgstr ""
+
+#  msgid "Backward"
+#  msgstr ""
+
+# msgid "Graph options"
+# msgstr ""
+
+# msgid "Check duration"
+# msgstr ""
+
+# msgid "Avg"
+# msgstr ""
+
+# msgid "Compact time period"
+# msgstr ""
+
+#  msgid "Check duration"
+
+#  msgid "Display tooltips"
+#  msgstr ""
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Notifications disabled"
+#  msgstr ""
+
+#  msgid "All checks are disabled"
+#  msgstr ""
+
+#  msgid "Only passive checks are enabled"
+#  msgstr ""
+
+#  msgid "Calculation type"
+#  msgstr ""
+
+#  msgid "Mandatory data to create the entity '%s' is missing"
+#  msgstr ""
+
+#  msgid "At least one column must be selected"
+#  msgstr ""
+
+#  msgid "The duration must be lesser than a year"
+#  msgstr ""
+
+#  msgid "As displayed"
+#  msgstr ""
+
+#  msgid "Medium size"
+#  msgstr ""
+
+#  msgid "Small size"
+#  msgstr ""
+
+# msgid "Display the complete graph"
+# msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""

@@ -16,9 +16,9 @@ import AcknowledgementDetailsTable from './DetailsTable/Acknowledgement';
 import DowntimeDetailsTable from './DetailsTable/Downtime';
 
 interface StateChipProps {
-  endpoint: string;
   Chip: () => JSX.Element;
   DetailsTable: React.SFC<{ endpoint: string }>;
+  endpoint: string;
   label: string;
 }
 
@@ -30,7 +30,7 @@ const StateHoverChip = ({
 }: StateChipProps): JSX.Element => {
   return (
     <HoverChip Chip={Chip} label={label}>
-      <DetailsTable endpoint={endpoint} />
+      {() => <DetailsTable endpoint={endpoint} />}
     </HoverChip>
   );
 };
@@ -44,10 +44,10 @@ const DowntimeHoverChip = ({
 
   return (
     <StateHoverChip
+      Chip={DowntimeChip}
+      DetailsTable={DowntimeDetailsTable}
       endpoint={downtimeEndpoint as string}
       label={`${resource.name} ${labelInDowntime}`}
-      DetailsTable={DowntimeDetailsTable}
-      Chip={DowntimeChip}
     />
   );
 };
@@ -64,17 +64,17 @@ const AcknowledgeHoverChip = ({
 
   return (
     <StateHoverChip
+      Chip={AcknowledgeChip}
+      DetailsTable={AcknowledgementDetailsTable}
       endpoint={acknowledgementEndpoint as string}
       label={`${resource.name} ${labelAcknowledged}`}
-      DetailsTable={AcknowledgementDetailsTable}
-      Chip={AcknowledgeChip}
     />
   );
 };
 
 const StateColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   return (
-    <Grid container spacing={1}>
+    <Grid container justify="center" spacing={1}>
       {row.in_downtime && (
         <Grid item>
           <DowntimeHoverChip resource={row} />

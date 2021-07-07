@@ -102,14 +102,16 @@ if ($row = $centralServerQuery->fetch()) {
             `name`,
             `type`,
             `parent_id`,
-            `server_id`
+            `server_id`,
+            `pending`
         ) VALUES (
             :centralAddress,
             :hostname,
             :name,
             'central',
             NULL,
-            :id
+            :id,
+            '0'
         )
     ");
     $stmt->bindValue(':centralAddress', $_SERVER['SERVER_ADDR'], \PDO::PARAM_STR);

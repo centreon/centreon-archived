@@ -22,10 +22,10 @@ describe(AddCommentForm, () => {
 
     const resource = {
       id: 0,
-      type: 'service',
       parent: {
         id: 1,
       },
+      type: 'service',
     } as Resource;
 
     const onSuccess = jest.fn();
@@ -34,8 +34,8 @@ describe(AddCommentForm, () => {
       <AddCommentForm
         date={date}
         resource={resource}
-        onSuccess={onSuccess}
         onClose={jest.fn()}
+        onSuccess={onSuccess}
       />,
     );
 

@@ -14,7 +14,7 @@
                 <h3>| {$form.header.title}</h3>
             </td>
         </tr>
-	 	<tr class="list_lvl_1">
+        <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
                 <h4>{$form.header.Server_Informations}</h4>
             </td>
@@ -103,7 +103,7 @@
                     <h4>{$form.header.Misc}</h4>
                 </td>
             </tr>
-		<tr class="list_two">
+        <tr class="list_two">
             <td class="FormRowField">
                 <img class="helpTooltip" name="pollercmd"> {t}Post-Restart command{/t}
             </td>
@@ -112,9 +112,9 @@
             </td>
         </tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ns_activate"> {$form.ns_activate.label}</td><td class="FormRowValue">{$form.ns_activate.html}</td></tr>
-		{if $o == "a" || $o == "c"}
-		    <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required_note}</td></tr>
-		{/if}
+        {if $o == "a" || $o == "c"}
+            <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required_note}</td></tr>
+        {/if}
     </table>
     </div>
     <div id="validForm">

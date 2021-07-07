@@ -3,7 +3,7 @@ import * as React from 'react';
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Button, makeStyles, Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 
 import { MemoizedFilters as Filters, SearchField } from '@centreon/ui';
 
@@ -20,6 +20,7 @@ import SearchHelpTooltip from './SearchHelpTooltip';
 import SaveFilter from './Save';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
 import Criterias from './Criterias';
+import FilterSummary from './Summary';
 import {
   standardFilterById,
   unhandledProblemsFilter,
@@ -28,29 +29,7 @@ import {
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
 
-const useStyles = makeStyles(() => ({
-  filterSelect: {
-    width: 200,
-  },
-  criterias: {
-    marginLeft: 36,
-  },
-  searchField: {
-    width: 375,
-  },
-  field: {
-    minWidth: 155,
-  },
-  filterLineLabel: {
-    width: 60,
-    textAlign: 'center',
-  },
-}));
-
 const Filter = (): JSX.Element => {
-  const [expanded, setExpanded] = React.useState(false);
-  const classes = useStyles();
-
   const { t } = useTranslation();
 
   const {
@@ -62,6 +41,8 @@ const Filter = (): JSX.Element => {
     customFiltersLoading,
     setCriteria,
     setNewFilter,
+    filterExpanded,
+    toggleFilterExpanded,
   } = useResourceContext();
 
   const memoProps = [filter, nextSearch, customFilters, customFiltersLoading];
@@ -100,8 +81,6 @@ const Filter = (): JSX.Element => {
     allFilter,
   ].map(({ id, name }) => ({ id, name: t(name) }));
 
-  const expandFilters = () => setExpanded((expand) => !expand);
-
   const customFilterOptions = isEmpty(customFilters)
     ? []
     : [
@@ -123,11 +102,15 @@ const Filter = (): JSX.Element => {
 
   return (
     <Filters
-      expanded={expanded}
       expandLabel={labelShowCriteriasFilters}
-      onExpand={expandFilters}
+      expandableFilters={
+        <Grid container item alignItems="center" spacing={1}>
+          <Criterias />
+        </Grid>
+      }
+      expanded={filterExpanded}
       filters={
-        <Grid container spacing={1} alignItems="center">
+        <Grid container item alignItems="center" spacing={1} wrap="nowrap">
           <Grid item>
             <SaveFilter />
           </Grid>
@@ -136,40 +119,46 @@ const Filter = (): JSX.Element => {
               <FilterLoadingSkeleton />
             ) : (
               <SelectFilter
+                ariaLabel={t(labelStateFilter)}
                 options={options.map(pick(['id', 'name', 'type']))}
                 selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
                 onChange={changeFilter}
-                ariaLabel={t(labelStateFilter)}
-                className={classes.filterSelect}
               />
             )}
           </Grid>
-          <Grid item>
-            <SearchField
-              EndAdornment={SearchHelpTooltip}
-              value={nextSearch || ''}
-              onChange={prepareSearch}
-              placeholder={t(labelSearch)}
-              onKeyDown={requestSearchOnEnterKey}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={requestSearch}
-            >
-              {t(labelSearch)}
-            </Button>
-          </Grid>
+          {filterExpanded ? (
+            <>
+              <Grid item>
+                <SearchField
+                  EndAdornment={SearchHelpTooltip}
+                  placeholder={t(labelSearch)}
+                  value={nextSearch || ''}
+                  onChange={prepareSearch}
+                  onKeyDown={requestSearchOnEnterKey}
+                />
+              </Grid>
+              <Grid item>
+                <Button
+                  color="primary"
+                  size="small"
+                  variant="contained"
+                  onClick={requestSearch}
+                >
+                  {t(labelSearch)}
+                </Button>
+              </Grid>
+            </>
+          ) : (
+            <Grid item>
+              <FilterSummary />
+            </Grid>
+          )}
         </Grid>
       }
-      expandableFilters={<Criterias />}
       memoProps={memoProps}
+      onExpand={toggleFilterExpanded}
     />
   );
 };
 
 export default Filter;
-export { useStyles };

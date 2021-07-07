@@ -22,9 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
+use Assert\AssertionFailedException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
+use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostSeverityFactoryRdb;
@@ -74,7 +76,8 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
      *
      * @param int|null $contactId Contact id related to host severities
      * @return HostSeverity[]
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
+     * @throws \InvalidArgumentException
      */
     private function findAllRequest(?int $contactId): array
     {
@@ -178,5 +181,96 @@ class HostSeverityRepositoryRDB extends AbstractRepositoryDRB implements HostSev
             $hostSeverities[] = HostSeverityFactoryRdb::create($record);
         }
         return $hostSeverities;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findById(int $hostSeverityId): ?HostSeverity
+    {
+        try {
+            return $this->findByIdRequest($hostSeverityId, null);
+        } catch (AssertionFailedException $ex) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByIdAndContact(int $hostSeverityId, ContactInterface $contact): ?HostSeverity
+    {
+        try {
+            return $this->findByIdRequest($hostSeverityId, $contact->getId());
+        } catch (AssertionFailedException $ex) {
+            throw new RepositoryException($ex->getMessage(), 0, $ex);
+        }
+    }
+
+    /**
+     * Find a severity by id and contact id.
+     *
+     * @param int $hostSeverityId Id of the host severity to be found
+     * @param int|null $contactId Contact id related to host severity
+     * @return HostSeverity|null
+     * @throws AssertionFailedException
+     */
+    private function findByIdRequest(int $hostSeverityId, ?int $contactId): ?HostSeverity
+    {
+        if ($contactId === null) {
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    'SELECT hc.*, icon.img_id AS img_id, icon.img_name AS img_name,
+                    CONCAT(iconD.dir_name,\'/\',icon.img_path) AS img_path, icon.img_comment AS img_comment
+                    FROM `:db`.hostcategories hc
+                    LEFT JOIN `:db`.view_img icon
+                        ON icon.img_id = hc.icon_id
+                    LEFT JOIN `:db`.view_img_dir_relation iconR
+                        ON iconR.img_img_id = icon.img_id
+                    LEFT JOIN `:db`.view_img_dir iconD
+                        ON iconD.dir_id = iconR.dir_dir_parent_id
+                    WHERE hc_id = :id AND hc.level IS NOT NULL'
+                )
+            );
+        } else {
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    'SELECT hc.*, icon.img_id AS img_id, icon.img_name AS img_name,
+                    CONCAT(iconD.dir_name,\'/\',icon.img_path) AS img_path, icon.img_comment AS img_comment
+                    FROM `:db`.hostcategories hc
+                    LEFT JOIN `:db`.view_img icon
+                        ON icon.img_id = hc.icon_id
+                    LEFT JOIN `:db`.view_img_dir_relation iconR
+                        ON iconR.img_img_id = icon.img_id
+                    LEFT JOIN `:db`.view_img_dir iconD
+                        ON iconD.dir_id = iconR.dir_dir_parent_id
+                    INNER JOIN `:db`.acl_resources_hc_relations arhr
+                        ON hc.hc_id = arhr.hc_id
+                    INNER JOIN `:db`.acl_resources res
+                        ON arhr.acl_res_id = res.acl_res_id
+                    INNER JOIN `:db`.acl_res_group_relations argr
+                        ON res.acl_res_id = argr.acl_res_id
+                    INNER JOIN `:db`.acl_groups ag
+                        ON argr.acl_group_id = ag.acl_group_id
+                    LEFT JOIN `:db`.acl_group_contacts_relations agcr
+                        ON ag.acl_group_id = agcr.acl_group_id
+                    LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
+                        ON ag.acl_group_id = agcgr.acl_group_id
+                    LEFT JOIn `:db`.contactgroup_contact_relation cgcr
+                        ON  cgcr.contactgroup_cg_id = agcgr.cg_cg_id
+                    WHERE hc.hc_id = :id AND hc.level IS NOT NULL
+                        AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)'
+                )
+            );
+            $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
+        }
+
+        $statement->bindValue(':id', $hostSeverityId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            return HostSeverityFactoryRdb::create($result);
+        }
+        return null;
     }
 }

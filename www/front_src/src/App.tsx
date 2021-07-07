@@ -30,45 +30,45 @@ import PageLoader from './components/PageLoader';
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
 
 const styles = createStyles({
-  wrapper: {
-    display: 'flex',
-    alignItems: 'stretch',
-    height: '100%',
-    overflow: 'hidden',
-  },
-  fullScreenWrapper: {
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-    flexGrow: 1,
-  },
-  mainContent: {
-    height: '100%',
-    width: '100%',
-    backgroundcolor: 'white',
-  },
   content: {
     display: 'flex',
     flexDirection: 'column',
+    height: ' 100vh',
+    overflow: 'hidden',
+    position: 'relative',
+    transition: 'all 0.3s',
+    width: '100%',
+  },
+  fullScreenWrapper: {
+    flexGrow: 1,
+    height: '100%',
     overflow: 'hidden',
     width: '100%',
-    height: ' 100vh',
-    transition: 'all 0.3s',
-    position: 'relative',
+  },
+  mainContent: {
+    backgroundcolor: 'white',
+    height: '100%',
+    width: '100%',
+  },
+  wrapper: {
+    alignItems: 'stretch',
+    display: 'flex',
+    height: '100%',
+    overflow: 'hidden',
   },
 });
 
 // Extends Window interface
 declare global {
   interface Window {
-    fullscreenSearch: string | null;
     fullscreenHash: string | null;
+    fullscreenSearch: string | null;
   }
 }
 
 interface Props {
-  fetchExternalComponents: () => void;
   classes;
+  fetchExternalComponents: () => void;
 }
 
 interface State {
@@ -107,9 +107,9 @@ class App extends Component<Props, State> {
   private removeFullscreenParams = (): void => {
     if (history.location.pathname === '/main.php') {
       history.push({
+        hash: window.fullscreenHash,
         pathname: '/main.php',
         search: window.fullscreenSearch,
-        hash: window.fullscreenHash,
       });
     }
 
@@ -155,18 +155,18 @@ class App extends Component<Props, State> {
             <div className={classes.wrapper}>
               {!min && <NavigationComponent />}
               <Tooltip />
-              <div id="content" className={classes.content}>
+              <div className={classes.content} id="content">
                 {!min && <Header />}
                 <div
-                  id="fullscreen-wrapper"
                   className={classes.fullScreenWrapper}
+                  id="fullscreen-wrapper"
                 >
                   <Fullscreen
                     enabled={this.state.isFullscreenEnabled}
-                    onClose={this.removeFullscreenParams}
                     onChange={(isFullscreenEnabled): void => {
                       this.setState({ isFullscreenEnabled });
                     }}
+                    onClose={this.removeFullscreenParams}
                   >
                     <div className={classes.mainContent}>
                       <MainRouter />

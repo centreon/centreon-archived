@@ -18,29 +18,29 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-use Centreon\Domain\PlatformInformation\PlatformInformation;
-use Centreon\Domain\PlatformTopology\Platform;
-use Centreon\Domain\PlatformTopology\PlatformConflictException;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\Proxy\Proxy;
-use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
 
 interface PlatformTopologyRegisterRepositoryInterface
 {
     /**
      * Register the platform on its parent
      *
-     * @param Platform $platformTopology
+     * @param PlatformInterface $platform
      * @param PlatformInformation $platformInformation
      * @param Proxy|null $proxy
-     * @throws RepositoryException
-     * @throws PlatformConflictException
+     * @throws PlatformTopologyRepositoryExceptionInterface
+     * @throws PlatformTopologyException
      */
     public function registerPlatformToParent(
-        Platform $platformTopology,
+        PlatformInterface $platform,
         PlatformInformation $platformInformation,
         Proxy $proxy = null
     ): void;
@@ -48,14 +48,14 @@ interface PlatformTopologyRegisterRepositoryInterface
     /**
      * Delete the platform on its parent
      *
-     * @param Platform $platform
+     * @param PlatformInterface $platform
      * @param PlatformInformation $platformInformation
-     * @param Proxy $proxy
-     * @throws RepositoryException
-     * @throws PlatformConflictException
+     * @param Proxy|null $proxy
+     * @throws PlatformTopologyRepositoryExceptionInterface
+     * @throws PlatformTopologyException
      */
     public function deletePlatformToParent(
-        Platform $platform,
+        PlatformInterface $platform,
         PlatformInformation $platformInformation,
         Proxy $proxy = null
     ): void;

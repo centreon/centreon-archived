@@ -64,3 +64,5 @@ src/Centreon*
 www/modules/centreon-*
 www/widgets
 !www/widgets/require.php
+
+.DS_store

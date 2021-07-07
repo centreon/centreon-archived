@@ -5,15 +5,16 @@ import { Filter } from '../Filter/models';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 interface EndpointParams {
-  sort?;
-  page?: number;
+  hostGroupIds?: Array<number>;
   limit?: number;
+  monitoringServerIds?: Array<number>;
+  page?: number;
+  resourceTypes?: Array<string>;
   search?: string;
+  serviceGroupIds?: Array<number>;
+  sort?;
   states?: Array<string>;
   statuses?: Array<string>;
-  resourceTypes?: Array<string>;
-  hostGroupIds?: Array<number>;
-  serviceGroupIds?: Array<number>;
 }
 
 const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
@@ -25,6 +26,11 @@ const searchableFields = [
   'h.alias',
   'h.address',
   's.description',
+  'name',
+  'alias',
+  'parent_name',
+  'parent_alias',
+  'fqdn',
   'information',
 ];
 
@@ -37,31 +43,38 @@ const getListingEndpoint = ({
   resourceTypes = defaultResourceTypes,
   hostGroupIds = [],
   serviceGroupIds = [],
+  monitoringServerIds = [],
   search,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
-    page,
+    hostGroupIds,
     limit,
-    sort,
-    statuses,
-    states,
+    monitoringServerIds,
+    page,
+    resourceTypes,
     search: search
       ? {
           regex: {
-            value: search,
             fields: [
               'h.name',
               'h.alias',
               'h.address',
               's.description',
+              'name',
+              'alias',
+              'parent_name',
+              'parent_alias',
+              'fqdn',
               'information',
             ],
+            value: search,
           },
         }
       : undefined,
-    resourceTypes,
-    hostGroupIds,
     serviceGroupIds,
+    sort,
+    states,
+    statuses,
   });
 
 const cancelTokenRequestParam = { cancelToken: {} };
@@ -89,9 +102,9 @@ const getCriteriaValue = ({
 };
 
 interface FilterAndCriteriaToUpdate {
-  filter: Filter;
   criteriaName: string;
   criteriaValue: CriteriaValue;
+  filter: Filter;
 }
 
 const getFilterWithUpdatedCriteria = ({

@@ -183,21 +183,19 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /configuration/monitoring-servers:
+  /monitoring/servers:
     get:
       tags:
         - Monitoring Server
-      summary: "List all monitoring servers configurations"
+      summary: "List all real time monitoring servers"
       description: |
-        List all monitoring servers configurations.
+        List all monitoring servers configured and stored in real time.
 
         The available parameters to **search** / **sort_by** are:
 
           * id
           * name
-          * is_localhost
-          * address
-          * is_activate
+          * running
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
@@ -214,7 +212,7 @@ paths:
                   result:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Configuration.MonitoringServerMain'
+                      $ref: '#/components/schemas/Monitoring.Servers'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
@@ -265,45 +263,6 @@ paths:
                         type: boolean
                         description: if downtime is allowed on service
                         example: false
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /configuration/users/current/parameters:
-    get:
-      tags:
-        - User parameters
-      summary: "List user parameters"
-      description: "List configured parameters for the current user"
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: Name of the current user
-                    example: Administrator
-                  alias:
-                    type: string
-                    description: Alias of the current user
-                    example: admin
-                  email:
-                    type: string
-                    description: Email of the current user
-                    example: admin@localhost
-                  timezone:
-                    type: string
-                    description: Timezone for the current user
-                    example: Europe/Paris
-                  locale:
-                    type: string
-                    nullable: true
-                    description: Locale of the current user
-                    example: en_US
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -511,6 +470,8 @@ paths:
         * status_code
         * status
         * action_url
+        * notes_label
+        * notes_url
         * parent_name
         * parent_status
         * severity_level
@@ -520,20 +481,17 @@ paths:
         * tries
         * last_check
         * information
+        * monitoring_server_name
 
         Only for **searching**:
 
         ---
 
-        * h.group
-        * h.group.id
         * h.name
         * h.alias
         * h.address
         * h.fqdn
         * s.description
-        * s.group
-        * s.group.id
       parameters:
         - $ref: '#/components/parameters/Search'
         - $ref: '#/components/parameters/Limit'
@@ -2008,14 +1966,26 @@ paths:
                               type: string
                               description: label to display in legend
                               example: 'Last:1.00'
+                        last_value:
+                          type: number
+                          nullable: true
+                          description: last value
+                          example: 5.0
                         minimum_value:
                           type: number
+                          nullable: true
                           description: minimum value
-                          example: 1.0
+                          example: 0.0
                         maximum_value:
                           type: number
+                          nullable: true
                           description: maximum value
-                          example: 1.0
+                          example: 10.0
+                        average_value:
+                          type: number
+                          nullable: true
+                          description: average value
+                          example: 5.64
                   times:
                     type: array
                     items:
@@ -2562,7 +2532,7 @@ paths:
   /platform:
     patch:
       tags:
-        - Platform'
+        - Platform
       summary: "Update a platform information"
       requestBody:
         required: true
@@ -2714,14 +2684,16 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PollerId'
         - $ref: '#/components/parameters/GorgoneToken'
+      summary: "Gorgone poller responses token"
       responses:
         '200':
             description: "OK"
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/Gorgone.Response'
                   type: object
+                  items:
+                    $ref: '#/components/schemas/Gorgone.Response'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -2733,6 +2705,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PollerId'
         - $ref: '#/components/parameters/CommandName'
+      summary: "Gorgone command on specific poller"
       responses:
         '200':
             description: "OK"
@@ -2752,6 +2725,7 @@ paths:
     post:
       tags:
         - Administration parameters
+      summary: "Administration parameters"
       responses:
         '200':
             description: "OK"
@@ -3225,7 +3199,7 @@ components:
           type: integer
           description: filter order
           example: 1
-    Configuration.MonitoringServerMain:
+    Monitoring.Servers:
       type: object
       properties:
         id:
@@ -3241,98 +3215,25 @@ components:
           type: string
           description: "IP address of the server"
           example: "127.0.0.1"
-        is_localhost:
+          nullable: true
+        description:
+          type: string
+          description: "Description of the server"
+          example: "Central server"
+          nullable: true
+        isRunning:
           type: boolean
-          description: "Indicates whether it's the localhost server"
+          description: "Indicates if the server is running or not"
           example: true
-        is_default:
-          type: boolean
-          description: "Indicates whether it's the default server"
-          example: true
-        ssh_port:
+        lastAlive:
           type: integer
-          description: "SSH port of the server"
-          example: 22
-        gorgone_communication_type:
-          type: integer
-          description: "Communication type used by Gorgone to communicate with the server"
-          example: 1
-        gorgone_port:
-          type: integer
-          description: "Port used by Gorgone to communicate with the server"
-          example: 5556
-        last_restart:
+          description: "Timestamp of last time server was alive"
+          nullable: true
+        version:
           type: string
-          format: date-time
-          description: "Date of the last Engine restart request"
-        engine_start_command:
-          type: string
-          description: "System start command for Engine"
-          example: "service centengine start"
-        engine_stop_command:
-          type: string
-          description: "System stop command for Engine"
-          example: "service centengine stop"
-        engine_restart_command:
-          type: string
-          description: "System restart command for Engine"
-          example: "service centengine restart"
-        engine_reload_command:
-          type: string
-          description: "System reload command for Engine"
-          example: "service centengine reload"
-        nagios_bin:
-          type: string
-          description: "Full path of the Engine binary"
-          example: "/usr/sbin/centengine"
-        nagiostats_bin:
-          type: string
-          description: "Full path of the Engine statistics binary"
-          example: "/usr/sbin/centenginestats"
-        broker_reload_command:
-          type: string
-          description: "System reload command for Broker"
-          example: "service cbd reload"
-        centreonbroker_cfg_path:
-          type: string
-          description: "Full path of the Broker configuration"
-          example: "/etc/centreon-broker"
-        centreonbroker_module_path:
-          type: string
-          description: "Full path of the Broker module's libraries"
-          example: "/usr/share/centreon/lib/centreon-broker"
-        centreonbroker_logs_path:
-          type: string
-          description: "Full path of the Broker logs"
-          example: null
-        centreonconnector_path:
-          type: string
-          description: "Full path of the Engine connectors"
-          example: "/usr/lib64/centreon-connector"
-        init_script_centreontrapd:
-          type: string
-          description: "System name of Centreontrapd daemon"
-          example: "centreontrapd"
-        snmp_trapd_path_conf:
-          type: string
-          description: "Full path of the Centreontrapd daemon configuration"
-          example: "/etc/snmp/centreon_traps/"
-        remote_id:
-          type: integer
-          description: "ID of the master Remote Server linked to the server"
-          example: null
-        remote_server_use_as_proxy:
-          type: boolean
-          description: "Indicates whether Remote Servers are used as SSH proxies"
-          example: true
-        is_updated:
-          type: boolean
-          description: "Indicates whether the monitoring configuration has changed since last restart"
-          example: true
-        is_activate:
-          type: boolean
-          description: "Indicates whether the server configuration is activated"
-          example: true
+          description: "Version of the server (centreon-engine)"
+          example: "20.10.0"
+          nullable: true
     Acknowledgement.Resource:
       type: object
       properties:
@@ -4042,6 +3943,10 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Monitoring.ResourceGroup'
+            monitoring_server_name:
+              type: string
+              description: "Monitoring Server from which is monitored the Resource"
+              example: "Central"
             status:
               type: object
               properties:
@@ -4100,18 +4005,11 @@ components:
           type: boolean
           description: "Indicates whether resource is acknowledged"
           example: false
-        severity:
-          type: object
+        severity_level:
+          type: integer
           nullable: true
-          properties:
-            level:
-              type: integer
-              description: "level of the severity"
-              example: 1
-            name:
-              type: string
-              description: "Name of the severity"
-              example: "severity 1"
+          description: "level of the severity"
+          example: 1
         duration:
           type: string
           nullable: true
@@ -4208,11 +4106,8 @@ components:
                 nullable: true
                 description: "URL that can be used to provide more actions to be performed on the resource"
                 example: "http://mediawiki/resource/name"
-              notes_url:
-                type: string
-                nullable: true
-                description: "URL that can be used to provide more information on the resource"
-                example: "http://mediawiki/resource/name"
+              notes:
+                $ref: '#/components/schemas/Monitoring.Notes'
     Monitoring.ResourceGroup:
       type: object
       properties:
@@ -4224,6 +4119,20 @@ components:
           type: string
           description: "Name of the group to which belongs the resource"
           example: "ESX-France|Cpus"
+    Monitoring.Notes:
+      type: object
+      nullable: true
+      properties:
+        url:
+          type: string
+          nullable: true
+          description: "URL that can be used to provide more information on the resource"
+          example: "http://mediawiki/resource/name"
+        label:
+          type: string
+          nullable: true
+          description: "Note that can be used to describe the note url"
+          example: "How to turn back on the server"
     Monitoring.ResourceStatus:
       type: object
       properties:
@@ -4867,14 +4776,13 @@ components:
     Platform.Full:
       type: object
       properties:
+        platformName:
+          type: string
+          description: "The name of the platform"
         isRemote:
           type: boolean
           example: true
           description: "Platform is a remote server"
-        isCentral:
-          type: boolean
-          example: true
-          description: "Platform is a central"
         centralServerAddress:
           type: string
           example: "192.168.0.1"
@@ -4908,18 +4816,22 @@ components:
           properties:
             host:
               type: string
+              nullable: true
               example: "example.proxy.com"
               description: "Host of your proxy"
             port:
               type: integer
+              nullable: true
               example: 80
               description: "Proxy port"
             user:
               type: string
+              nullable: true
               example: "admin"
               description: "proxy username"
             password:
               type: string
+              nullable: true
               example: "centreon"
               description: "proxy password"
     Gorgone.Response:

@@ -22,17 +22,17 @@ import {
 } from '../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
-  tooltip: {
-    backgroundColor: theme.palette.common.white,
-    color: theme.palette.text.primary,
-    boxShadow: theme.shadows[3],
-    fontSize: theme.typography.pxToRem(12),
-    maxWidth: 500,
-    padding: theme.spacing(1, 2, 1, 1),
-  },
   buttonClose: {
     position: 'absolute',
     right: theme.spacing(0.5),
+  },
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    boxShadow: theme.shadows[3],
+    color: theme.palette.text.primary,
+    fontSize: theme.typography.pxToRem(12),
+    maxWidth: 500,
+    padding: theme.spacing(1, 2, 1, 1),
   },
 }));
 
@@ -55,9 +55,9 @@ const Content = ({ onClose }: ContentProps): JSX.Element => {
   return (
     <>
       <IconButton
+        className={classes.buttonClose}
         size="small"
         onClick={onClose}
-        className={classes.buttonClose}
       >
         <IconClose fontSize="small" />
       </IconButton>
@@ -94,8 +94,8 @@ const Content = ({ onClose }: ContentProps): JSX.Element => {
           {`${t(labelGetRegexHelp)} `}
           <Link
             href="https://regex101.com"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             regex101.com
           </Link>
@@ -122,17 +122,17 @@ const SearchHelpTooltip = (): JSX.Element => {
 
   return (
     <Tooltip
+      interactive
+      classes={{ tooltip: classes.tooltip }}
       open={open}
       title={<Content onClose={closeTooltip} />}
-      classes={{ tooltip: classes.tooltip }}
-      interactive
     >
       <IconButton
         aria-label={t(labelSearchHelp)}
         size="small"
         onClick={toggleTooltip}
       >
-        <IconHelp />
+        <IconHelp fontSize="small" />
       </IconButton>
     </Tooltip>
   );
