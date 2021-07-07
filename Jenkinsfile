@@ -1,6 +1,5 @@
 import org.apache.tools.ant.types.selectors.SelectorUtils
 import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
-import groovy.json.JsonSlurper
 
 /*
 ** Variables.
@@ -8,10 +7,11 @@ import groovy.json.JsonSlurper
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
 def serie = '20.04'
 def maintenanceBranch = "${serie}.x"
+env.REF_BRANCH = 'master'
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
-} else if ((env.BRANCH_NAME == 'master') || (env.BRANCH_NAME == maintenanceBranch)) {
+} else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
   env.BUILD = 'REFERENCE'
 } else {
   env.BUILD = 'CI'
@@ -113,36 +113,15 @@ try {
 
   // sonarQube step to get qualityGate result
   stage('Quality gate') {
-    node {
-      def reportFilePath = "target/sonar/report-task.txt"
-      def reportTaskFileExists = fileExists "${reportFilePath}"
-      if (reportTaskFileExists) {
-        echo "Found report task file"
-        def taskProps = readProperties file: "${reportFilePath}"
-        echo "taskId[${taskProps['ceTaskId']}]"
-        timeout(time: 10, unit: 'MINUTES') {
-          while (true) {
-            sleep 5
-            def taskStatusResult    =
-              sh(returnStdout: true, script: "curl -s -X GET -u ${authString} \'${sonarProps['sonar.host.url']}/api/ce/task?id=${taskProps['ceTaskId']}\'")
-              echo "taskStatusResult[${taskStatusResult}]"
-              def taskStatus  = new JsonSlurper().parseText(taskStatusResult).task.status
-              echo "taskStatus[${taskStatus}]"
-              // Status can be SUCCESS, ERROR, PENDING, or IN_PROGRESS. The last two indicate it's
-              // not done yet.
-              if (taskStatus != "IN_PROGRESS" && taskStatus != "PENDING") {
-                  break;
-              }
-              def qualityGate = waitForQualityGate()
-              if (qualityGate.status != 'OK') {
-                currentBuild.result = 'FAIL'
-              }
-          }
-        }
+    timeout(time: 10, unit: 'MINUTES') {
+      def qualityGate = waitForQualityGate()
+      if (qualityGate.status != 'OK') {
+        currentBuild.result = 'FAIL'
       }
     }
+
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Quality gate failure: ${qualityGate.status}.');
+      error("Quality gate failure: ${qualityGate.status}.");
     }
   }
 
