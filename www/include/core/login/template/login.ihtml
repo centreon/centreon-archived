@@ -17,9 +17,9 @@
             {/if}
             <div class="login_wrapper">
                 <div class="LoginInvitLogo">
-                    {foreach from=$loginMessages item=message}
-                        <div class="error_msg"><span class='msg'>{$message}</span></div>
-                    {/foreach}
+                    <div class="error_msg" style="visibility: hidden">
+                        <span class='msg'></span>
+                    </div>
                    <img src="img/centreon.png" alt="Centreon Logo" title="Centreon Logo" />
                 </div>
                 <div class="logintab">
@@ -58,6 +58,7 @@
         <script type="text/javascript">
             jQuery(() => {
                 jQuery('form[name="login"]').submit(() => {
+                    jQuery('input[type="submit"]').prop('disabled', true)
                     jQuery.ajax({
                         url: '/centreon/authentication/providers/configurations/local',
                         data: JSON.stringify({
@@ -69,7 +70,10 @@
                     }).done((res) => {
                         window.location.href = res.redirect_uri
                     }).fail((err) => {
-                        console.log(err)
+                        jQuery('span.msg').text('Your credentials are incorrect.')
+                        jQuery('div.error_msg').css('visibility', '')
+                    }).always(() => {
+                        jQuery('input[type="submit"]').prop('disabled', false)
                     })
                     return false;
                 });

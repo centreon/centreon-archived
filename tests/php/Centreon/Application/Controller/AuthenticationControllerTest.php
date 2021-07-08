@@ -37,8 +37,8 @@ use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
-use Security\Infrastructure\Authentication\API\Model\ApiAuthenticationV21Factory;
-use Security\Infrastructure\Authentication\API\Model\ProvidersConfigurationsV21Factory;
+use Security\Infrastructure\Authentication\API\Model_2110\ApiAuthenticationFactory;
+use Security\Infrastructure\Authentication\API\Model_2110\ProvidersConfigurationsFactory;
 
 /**
  * @package Tests\Centreon\Application\Controller
@@ -130,7 +130,7 @@ class AuthenticationControllerTest extends TestCase
 
         $view = $authenticationController->login($this->request, $this->authenticateApi, $response);
         $this->assertEquals(
-            View::create(ApiAuthenticationV21Factory::createFromResponse($response)),
+            View::create(ApiAuthenticationFactory::createFromResponse($response)),
             $view
         );
     }
@@ -240,7 +240,7 @@ class AuthenticationControllerTest extends TestCase
         $view = $authenticationController->findProvidersConfigurations($this->findProvidersConfigurations, $response);
 
         $this->assertEquals(
-            View::create(ProvidersConfigurationsV21Factory::createFromResponse($response)),
+            View::create(ProvidersConfigurationsFactory::createFromResponse($response)),
             $view
         );
     }

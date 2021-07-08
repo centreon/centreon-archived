@@ -63,11 +63,4 @@ interface ContactServiceInterface
      * @param ContactInterface $contact Contact to be updated
      */
     public function updateUser(ContactInterface $contact): void;
-
-    /**
-     * Update the user's default page.
-     *
-     * @param ContactInterface $contact
-     */
-    public function updateUserDefaultPage(ContactInterface $contact): void;
 }

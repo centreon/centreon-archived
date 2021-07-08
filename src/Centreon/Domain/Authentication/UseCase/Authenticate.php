@@ -142,8 +142,6 @@ class Authenticate
         } else {
             $this->contactService->updateUser($providerUser);
         }
-
-        $this->contactService->updateUserDefaultPage($providerUser);
         $this->startLegacySession($authenticationProvider->getLegacySession());
 
         /**

@@ -21,11 +21,11 @@
 
 declare(strict_types=1);
 
-namespace Security\Infrastructure\Authentication\API\Model;
+namespace Security\Infrastructure\Authentication\API\Model_2110;
 
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 
-class ApiAuthenticationV21Factory
+class ApiAuthenticationFactory
 {
     /**
      * @param AuthenticateApiResponse $response

@@ -26,12 +26,12 @@ namespace Centreon\Domain\Menu\Model;
 class Page
 {
     /**
-     * @var int|null
+     * @var int
      */
     private $id;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $url;
 
@@ -50,8 +50,10 @@ class Page
      */
     private $isReact;
 
-    public function __construct(int $pageNumber, bool $isReact = false)
+    public function __construct(int $id, string $url, int $pageNumber, bool $isReact = false)
     {
+        $this->id = $id;
+        $this->url = $url;
         $this->pageNumber = $pageNumber;
         $this->isReact = $isReact;
     }
@@ -65,31 +67,11 @@ class Page
     }
 
     /**
-     * @param int|null $id
-     * @return self
-     */
-    public function setId(?int $id): self
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getUrl(): ?string
     {
         return $this->url;
-    }
-
-    /**
-     * @param string|null $url
-     * @return self
-     */
-    public function setUrl(?string $url): self
-    {
-        $this->url = $url;
-        return $this;
     }
 
     /**

@@ -16192,3 +16192,6 @@ msgstr "Petite Taille"
 
 msgid "Action not permitted"
 msgstr "Action non autorisée"
+
+msgid "Missing mandatory parameter: '%s'"
+msgstr "Paramètre obligatoire manquant: '%s'"

@@ -26,6 +26,7 @@ namespace Centreon\Domain\Authentication\UseCase;
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 
 class Logout
@@ -37,9 +38,17 @@ class Logout
      */
     private $authenticationService;
 
-    public function __construct(AuthenticationServiceInterface $authenticationService)
-    {
+    /**
+     * @var AuthenticationRepositoryInterface
+     */
+    private $authenticationRepository;
+
+    public function __construct(
+        AuthenticationServiceInterface $authenticationService,
+        AuthenticationRepositoryInterface $authenticationRepository
+    ) {
         $this->authenticationService = $authenticationService;
+        $this->authenticationRepository = $authenticationRepository;
     }
 
     /**
@@ -53,6 +62,6 @@ class Logout
         $token = $request->getToken();
         $this->info('[LOGOUT] Deleting Session...');
         $this->authenticationService->deleteExpiredSecurityTokens();
-        $this->authenticationService->deleteSession($token);
+        $this->authenticationRepository->deleteSecurityToken($token);
     }
 }

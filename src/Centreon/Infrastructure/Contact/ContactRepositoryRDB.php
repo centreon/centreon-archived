@@ -53,11 +53,13 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findById(int $contactId): ?Contact
     {
         $request = $this->translateDbName(
-            "SELECT contact.*, tz.timezone_name
+            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
-            WHERE contact_id = :contact_id"
+            LEFT JOIN `:db`.topology t
+                ON t.topology_page = contact.default_page
+            WHERE contact_id = :contact_id'
         );
 
         $statement = $this->db->prepare($request);
@@ -80,10 +82,12 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findByName(string $name): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, tz.timezone_name
+            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
+            LEFT JOIN `:db`.topology t
+                ON t.topology_page = contact.default_page
             WHERE contact_alias = :username
             LIMIT 1'
         );
@@ -108,10 +112,12 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findBySession(string $sessionId): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, tz.timezone_name
+            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
+            LEFT JOIN `:db`.topology t
+                ON t.topology_page = contact.default_page
             INNER JOIN `:db`.session
               on session.user_id = contact.contact_id
             WHERE session.session_id = :session_id
@@ -316,7 +322,16 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ? $this->parseLocaleFromContactLang($contact['contact_lang'])
             : null;
 
-        $page = new Page((int) $contact['default_page']);
+        $page = new Page(
+            (int) $contact['topology_id'],
+            $contact['topology_url'],
+            (int) $contact['default_page'],
+            (bool) $contact['is_react']
+        );
+
+        if (!empty($contact['topology_url_opt'])) {
+            $page->setUrlOptions($contact['topology_url_opt']);
+        }
 
         return (new Contact())
             ->setId((int) $contact['contact_id'])

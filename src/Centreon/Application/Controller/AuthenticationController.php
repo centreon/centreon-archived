@@ -37,8 +37,8 @@ use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
-use Security\Infrastructure\Authentication\API\Model\ApiAuthenticationV21Factory;
-use Security\Infrastructure\Authentication\API\Model\ProvidersConfigurationsV21Factory;
+use Security\Infrastructure\Authentication\API\Model_2110\ApiAuthenticationFactory;
+use Security\Infrastructure\Authentication\API\Model_2110\ProvidersConfigurationsFactory;
 
 /**
  * @package Centreon\Application\Controller
@@ -66,7 +66,7 @@ class AuthenticationController extends AbstractController
 
         $request = new AuthenticateApiRequest($credentials['login'], $credentials['password']);
         $authenticate->execute($request, $response);
-        return $this->view(ApiAuthenticationV21Factory::createFromResponse($response));
+        return $this->view(ApiAuthenticationFactory::createFromResponse($response));
     }
 
     /**
@@ -107,7 +107,7 @@ class AuthenticationController extends AbstractController
         FindProvidersConfigurationsResponse $response
     ): View {
         $findProviderConfigurations->execute($response);
-        return $this->view(ProvidersConfigurationsV21Factory::createFromResponse($response));
+        return $this->view(ProvidersConfigurationsFactory::createFromResponse($response));
     }
 
     /**

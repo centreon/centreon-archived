@@ -26,10 +26,10 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Repository\AbstractRepositoryDRB;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Security\Domain\Authentication\Interfaces\ProviderRepositoryInterface;
+use Security\Infrastructure\Repository\Model\ProviderConfigurationFactoryRdb;
 
 class ProviderRepository extends AbstractRepositoryDRB implements ProviderRepositoryInterface
 {
-
     /**
      * @param DatabaseConnection $db
      */
@@ -49,13 +49,7 @@ class ProviderRepository extends AbstractRepositoryDRB implements ProviderReposi
         $statement->execute();
         $providersConfigurations = [];
         while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $providerConfiguration = new ProviderConfiguration(
-                (int) $result['id'],
-                $result['type'],
-                $result['name'],
-                (bool) $result['is_active'],
-                (bool) $result['is_forced']
-            );
+            $providerConfiguration = ProviderConfigurationFactoryRdb::create($result);
             $providersConfigurations[] = $providerConfiguration;
         }
         return $providersConfigurations;
@@ -76,13 +70,7 @@ class ProviderRepository extends AbstractRepositoryDRB implements ProviderReposi
         $statement->execute();
         $providerConfiguration = null;
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $providerConfiguration = new ProviderConfiguration(
-                (int) $result['id'],
-                $result['type'],
-                $result['name'],
-                (bool) $result['is_active'],
-                (bool) $result['is_forced']
-            );
+            $providerConfiguration = ProviderConfigurationFactoryRdb::create($result);
         }
         return $providerConfiguration;
     }
@@ -102,13 +90,7 @@ class ProviderRepository extends AbstractRepositoryDRB implements ProviderReposi
         $statement->execute();
         $providerConfiguration = null;
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $providerConfiguration = new ProviderConfiguration(
-                (int) $result['id'],
-                $result['type'],
-                $result['name'],
-                (bool) $result['is_active'],
-                (bool) $result['is_forced']
-            );
+            $providerConfiguration = ProviderConfigurationFactoryRdb::create($result);
         }
         return $providerConfiguration;
     }

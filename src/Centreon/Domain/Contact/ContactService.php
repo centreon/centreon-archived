@@ -83,20 +83,4 @@ class ContactService implements ContactServiceInterface
     {
         return $this->contactRepository->findBySession($session);
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function updateUserDefaultPage(ContactInterface $contact): void
-    {
-        if ($contact->getDefaultPage() !== null && $contact->getDefaultPage()->getPageNumber() !== null) {
-            $defaultPage = $this->menuRepository->findPageByTopologyPageNumber(
-                $contact->getDefaultPage()->getPageNumber()
-            );
-
-            if ($defaultPage !== null) {
-                $contact->setDefaultPage($defaultPage);
-            }
-        }
-    }
 }
