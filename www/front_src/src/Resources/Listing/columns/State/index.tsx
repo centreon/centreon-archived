@@ -30,7 +30,7 @@ const StateHoverChip = ({
 }: StateChipProps): JSX.Element => {
   return (
     <HoverChip Chip={Chip} label={label}>
-      <DetailsTable endpoint={endpoint} />
+      {() => <DetailsTable endpoint={endpoint} />}
     </HoverChip>
   );
 };
