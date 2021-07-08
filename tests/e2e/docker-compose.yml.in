@@ -10,7 +10,8 @@ services:
       - centreon-web
     image: registry.centreon.com/cypress-included-docker:7.7.0
     container_name: e2e_cypress
-    user: "@UID@"
+    user: "root"
+    privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - .:/e2e
