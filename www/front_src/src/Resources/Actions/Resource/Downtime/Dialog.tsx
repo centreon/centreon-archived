@@ -2,6 +2,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { not } from 'ramda';
 
 import {
   Checkbox,
@@ -66,7 +67,6 @@ const pickerCommonProps = {
     disableUnderline: true,
   },
   TextFieldComponent: TextField,
-  disableToolbar: true,
   inputVariant: 'filled',
   margin: 'none',
   variant: 'inline',
@@ -74,12 +74,12 @@ const pickerCommonProps = {
 
 const datePickerProps = {
   ...pickerCommonProps,
+  disableToolbar: true,
   format: 'L',
 } as Omit<DatePickerProps, 'onChange' | 'value'>;
 
 const timePickerProps = {
   ...pickerCommonProps,
-  ampm: false,
   format: 'LT',
 } as Omit<TimePickerProps, 'onChange' | 'value'>;
 
@@ -97,7 +97,7 @@ const DialogDowntime = ({
   const { t } = useTranslation();
   const { locale } = useUserContext();
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
-  const Adapter = useDateTimePickerAdapter();
+  const { Adapter, isMeridianFormat } = useDateTimePickerAdapter();
 
   const open = resources.length > 0;
 
@@ -149,6 +149,7 @@ const DialogDowntime = ({
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeStartTime),
                   }}
+                  ampm={isMeridianFormat(values.timeStart)}
                   aria-label={t(labelStartTime)}
                   error={errors?.timeStart !== undefined}
                   helperText={errors?.timeStart}
@@ -180,7 +181,9 @@ const DialogDowntime = ({
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeEndTime),
                   }}
+                  ampm={isMeridianFormat(values.timeEnd)}
                   aria-label={t(labelEndTime)}
+                  disableToolbar={not(isMeridianFormat(values.timeEnd))}
                   error={errors?.timeEnd !== undefined}
                   helperText={errors?.timeEnd}
                   value={values.timeEnd}

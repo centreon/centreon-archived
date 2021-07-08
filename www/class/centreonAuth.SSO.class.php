@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,12 +35,23 @@
  */
 
 include_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonRestHttp.class.php";
 
 class CentreonAuthSSO extends CentreonAuth
 {
 
     protected $ssoOptions = array();
     protected $ssoMandatory = 0;
+
+    /**
+     * @var using a proxy
+     */
+    private $proxy = null;
+
+    /**
+     * @var proxy authentication information
+     */
+    private $proxyAuthentication = null;
 
     public function __construct(
         $dependencyInjector,
@@ -53,6 +65,9 @@ class CentreonAuthSSO extends CentreonAuth
         $generalOptions = array()
     ) {
         $this->ssoOptions = $generalOptions;
+        $this->CentreonLog = $CentreonLog;
+        $this->getProxy();
+        $this->debug = $this->getLogFlag();
 
         if (
             isset($this->ssoOptions['sso_enable'])
@@ -83,9 +98,15 @@ class CentreonAuthSSO extends CentreonAuth
             && !empty($this->ssoOptions['openid_connect_client_id'])
             && !empty($this->ssoOptions['openid_connect_client_secret'])
         ) {
+            $this->source = "OpenId";
+
+            # Get configured values
             $clientId = $this->ssoOptions['openid_connect_client_id'];
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
             $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
+            $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
+
+            # Build endpoint urls
             $baseUrl = rtrim($this->ssoOptions['openid_connect_base_url'], "/");
             $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
             $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
@@ -96,19 +117,20 @@ class CentreonAuthSSO extends CentreonAuth
             if (!empty($this->ssoOptions['openid_connect_end_session_endpoint'])) {
                 $endSessionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
             }
-
-            $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
-
             $redirect = urlencode($redirectNoEncode);
             $authUrl = $authEndpoint . "?client_id=" . $clientId . "&response_type=code&redirect_uri=" . $redirect;
             if (!empty($this->ssoOptions['openid_connect_scope'])) {
-                $authUrl .= "&scope=" . $this->ssoOptions['openid_connect_scope'];
+                $authUrl .= "&scope=" . urlencode($this->ssoOptions['openid_connect_scope']);
             }
+            $authUrl .= "&state=" . uniqid();
 
+            # Authnetication is OpenId only or mixed mode?
             $inputForce = filter_var(
                 $_POST['force'] ?? $_GET['force'] ?? null,
                 FILTER_SANITIZE_NUMBER_INT
             );
+
+            # Access to IdP authentication page
             if (
                 (isset($inputForce) && $inputForce == 1)
                 || (isset($this->ssoOptions['openid_connect_mode'])
@@ -117,12 +139,14 @@ class CentreonAuthSSO extends CentreonAuth
                 header('Location: ' . $authUrl);
             }
 
+            # Reception of the IDP code
             $inputCode = filter_var(
                 $_POST['code'] ?? $_GET['code'] ?? null,
                 FILTER_SANITIZE_STRING
             );
 
             if (!empty($inputCode)) {
+                # Retrieving the connection token
                 $tokenInfo = $this->getOpenIdConnectToken(
                     $tokenEndpoint,
                     $redirectNoEncode,
@@ -132,21 +156,30 @@ class CentreonAuthSSO extends CentreonAuth
                     $verifyPeer
                 );
 
+                # Checking the token expiration
                 if (
                     (!empty($tokenInfo['expires_in']) && (int) $tokenInfo['expires_in'] < 0)
                     || (!empty($tokenInfo['active']) && (int) $tokenInfo['active'] !== 1)
                 ) {
+                    # If previsous session is expired, refresh request
                     $result = $this->refreshToken(
                         $tokenEndpoint,
                         $clientId,
                         $clientSecret,
                         $tokenInfo['refresh_token'],
                         $verifyPeer,
-                        !empty($this->ssoOptions['openid_connect_scope']) ? $this->ssoOptions['openid_connect_scope'] : null
+                        !empty($this->ssoOptions['openid_connect_scope'])
+                            ? $this->ssoOptions['openid_connect_scope']
+                            : null
                     );
                     if (empty($result['error']) && !empty($result)) {
                         $tokenInfo = $result;
                     } else {
+                        $this->CentreonLog->insertLog(
+                            1,
+                            "[" . $this->source . "] [Error] Refresh Token Info: " . json_encode($result)
+                        );
+
                         if (!empty($endSessionEndpoint)) {
                             $result = $this->logout(
                                 $endSessionEndpoint,
@@ -161,6 +194,7 @@ class CentreonAuthSSO extends CentreonAuth
                     }
                 }
 
+                # Retrieving user information
                 if (!empty($tokenInfo['access_token'])) {
                     $user = $this->getOpenIdConnectIntrospectionToken(
                         $introspectionEndpoint,
@@ -171,7 +205,13 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
 
-                if (!isset($user["preferred_username"]) && isset($userInfoEndpoint)) {
+                # Login retrieval
+                $loginClaimValue = !empty($this->ssoOptions['openid_connect_login_claim'])
+                    ? $this->ssoOptions['openid_connect_login_claim']
+                    : 'preferred_username';
+
+                # If no login, retrieve additional information
+                if (!isset($user[$loginClaimValue]) && isset($userInfoEndpoint) && isset($tokenInfo['access_token'])) {
                     $user = $this->getOpenIdConnectUserInfo(
                         $userInfoEndpoint,
                         $tokenInfo['access_token'],
@@ -179,12 +219,37 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
 
-                if (!isset($user['error']) && isset($user["preferred_username"])) {
-                    $this->ssoUsername = $user["preferred_username"];
+                # User authentication
+                if (!isset($user['error']) && isset($user[$loginClaimValue])) {
+                    $this->ssoUsername = $user[$loginClaimValue];
                     if ($this->checkSsoClient()) {
                         $this->ssoMandatory = 1;
                         $username = $this->ssoUsername;
                     }
+                } elseif (isset($user['error'])) {
+                    $this->CentreonLog->insertLog(
+                        1,
+                        "[" . $this->source . "] [Error] Can't authenticate user: " . $user['error']
+                    );
+                } elseif (!isset($user[$loginClaimValue])) {
+                    $this->CentreonLog->insertLog(
+                        1,
+                        "[" . $this->source . "] [Error] Unable to get login from claim: " . $loginClaimValue
+                    );
+                }
+            } else {
+                $error = $_POST['error'] ?? $_GET['error'] ?? null;
+                $errorDescription = $_POST['error_description'] ?? $_GET['error_description'] ?? null;
+                if (isset($error)) {
+                    $this->CentreonLog->insertLog(
+                        1,
+                        sprintf(
+                            "[%s] [Error] Authorize error: %s, description: %s",
+                            $this->source,
+                            $error,
+                            urldecode($errorDescription)
+                        )
+                    );
                 }
             }
         }
@@ -282,7 +347,6 @@ class CentreonAuthSSO extends CentreonAuth
         }
     }
 
-
     /**
      * Connect to OpenId Connect and get token access
      *
@@ -302,8 +366,7 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientSecret,
         string $code,
         bool $verifyPeer
-    ): ?array
-    {
+    ): ?array {
         $data = [
             "client_id" => $clientId,
             "client_secret" => $clientSecret,
@@ -311,19 +374,37 @@ class CentreonAuthSSO extends CentreonAuth
             "code" => $code,
             "redirect_uri" => $redirectUri
         ];
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 
-        if ($verifyPeer) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
+        try {
+            $result = $restHttp->call(
+                $url,
+                'POST',
+                $data,
+                null,
+                true,
+                $verifyPeer
+            );
+        } catch (Exception $e) {
+            $this->CentreonLog->insertLog(
+                1,
+                sprintf(
+                    "[%s] [Error] Unable to get Token Access Information: %S, message: %s",
+                    $this->source,
+                    get_class($e),
+                    $e->getMessage()
+                )
+            );
         }
 
-        $result = curl_exec($ch);
-        curl_close($ch);
+        if ($this->debug && isset($result)) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Token Access Information: " . json_encode($result)
+            );
+        }
 
-        return json_decode($result, true) ?? null;
+        return $result ?? null;
     }
 
     /**
@@ -350,20 +431,36 @@ class CentreonAuthSSO extends CentreonAuth
             "client_secret" => $clientSecret
         ];
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization" => "Bearer " . $token]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-
-        if ($verifyPeer) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
+        try {
+            $result = $restHttp->call(
+                $url,
+                'POST',
+                $data,
+                ["Authorization" => "Bearer " . $token],
+                true,
+                $verifyPeer
+            );
+        } catch (Exception $e) {
+            $this->CentreonLog->insertLog(
+                1,
+                sprintf(
+                    "[%s] [Error] Unable to get Token Introspection Information: %s, message: %s",
+                    $this->source,
+                    get_class($e),
+                    $e->getMessage()
+                )
+            );
         }
 
-        $result = curl_exec($ch);
-        curl_close($ch);
+        if ($this->debug && isset($result)) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($result)
+            );
+        }
 
-        return json_decode($result, true) ?? null;
+        return $result ?? null;
     }
 
     /**
@@ -375,22 +472,42 @@ class CentreonAuthSSO extends CentreonAuth
      *
      * @return array|null
      */
-    public function getOpenIdConnectUserInfo(string $url, string $token, bool $verifyPeer): ?array
-    {
-        $ch = curl_init($url);
+    public function getOpenIdConnectUserInfo(
+        string $url,
+        string $token,
+        bool $verifyPeer
+    ): ?array {
         $authentication = "Authorization: Bearer " . trim($token);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [$authentication]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-
-        if ($verifyPeer) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
+        try {
+            $result = $restHttp->call(
+                $url,
+                'POST',
+                $data,
+                [$authentication],
+                true,
+                $verifyPeer
+            );
+        } catch (Exception $e) {
+            $this->CentreonLog->insertLog(
+                1,
+                sprintf(
+                    "[%s] [Error] Unable to get User Information: %s, message: %s",
+                    $this->source,
+                    get_class($e),
+                    $e->getMessage()
+                )
+            );
         }
 
-        $result = curl_exec($ch);
-        curl_close($ch);
+        if ($this->debug && isset($result)) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] User Information: " . json_encode($result)
+            );
+        }
 
-        return json_decode($result, true) ?? null;
+        return $result ?? null;
     }
 
     /**
@@ -421,19 +538,36 @@ class CentreonAuthSSO extends CentreonAuth
             "scope" => $scope
         ];
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-
-        if ($verifyPeer) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
+        try {
+            $result = $restHttp->call(
+                $url,
+                'POST',
+                $data,
+                null,
+                true,
+                $verifyPeer
+            );
+        } catch (Exception $e) {
+            $this->CentreonLog->insertLog(
+                1,
+                sprintf(
+                    "[%s] [Error] Unable to refresh token: %s, message: %s",
+                    $this->source,
+                    get_class($e),
+                    $e->getMessage()
+                )
+            );
         }
 
-        $result = curl_exec($ch);
-        curl_close($ch);
+        if ($this->debug && isset($result)) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Refresh Token Information: " . json_encode($result)
+            );
+        }
 
-        return json_decode($result, true) ?? null;
+        return $result ?? null;
     }
 
     /**
@@ -460,18 +594,86 @@ class CentreonAuthSSO extends CentreonAuth
             "refresh_token" => $refreshToken
         ];
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-
-        if ($verifyPeer) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
+        try {
+            $result = $restHttp->call(
+                $url,
+                'POST',
+                $data,
+                null,
+                true,
+                $verifyPeer
+            );
+        } catch (Exception $e) {
+            $this->CentreonLog->insertLog(
+                1,
+                sprintf(
+                    "[%s] [Error] Unable to logout the user: %s, message: %s",
+                    $this->source,
+                    get_class($e),
+                    $e->getMessage()
+                )
+            );
         }
 
-        $result = curl_exec($ch);
-        curl_close($ch);
+        if ($this->debug && isset($result)) {
+            $this->CentreonLog->insertLog(
+                1,
+                "[" . $this->source . "] [Debug] Logout user Information: " . json_encode($result)
+            );
+        }
 
-        return json_decode($result, true) ?? null;
+        return $result ?? null;
+    }
+
+    /**
+     * get proxy data
+     *
+     */
+    private function getProxy()
+    {
+        global $pearDB;
+        $query = 'SELECT `key`, `value` '
+            . 'FROM `options` '
+            . 'WHERE `key` IN ( '
+            . '"proxy_url", "proxy_port", "proxy_user", "proxy_password" '
+            . ') ';
+        $res = $pearDB->query($query);
+        while ($row = $res->fetchRow()) {
+            $dataProxy[$row['key']] = $row['value'];
+        }
+
+        if (isset($dataProxy['proxy_url']) && !empty($dataProxy['proxy_url'])) {
+            $this->proxy = $dataProxy['proxy_url'];
+            if ($dataProxy['proxy_port']) {
+                $this->proxy .= ':' . $dataProxy['proxy_port'];
+            }
+
+            /* Proxy basic authentication */
+            if (
+                isset($dataProxy['proxy_user'])
+                && !empty($dataProxy['proxy_user'])
+                && isset($dataProxy['proxy_password'])
+                && !empty($dataProxy['proxy_password'])
+            ) {
+                $this->proxyAuthentication = $dataProxy['proxy_user'] . ':' . $dataProxy['proxy_password'];
+            }
+        }
+    }
+
+    /**
+     * Log enabled
+     *
+     * @return int
+     */
+    protected function getLogFlag()
+    {
+        global $pearDB;
+        $res = $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_auth'");
+        $data = $res->fetch();
+        if (isset($data["value"])) {
+            return (int) $data["value"];
+        }
+        return 0;
     }
 }
