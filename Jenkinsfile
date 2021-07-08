@@ -109,7 +109,6 @@ try {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
       }
-<<<<<<< HEAD
     },
     'centos8': {
       node {
@@ -127,10 +126,7 @@ try {
   // sonarQube step to get qualityGate result
   stage('Quality gate') {
     timeout(time: 10, unit: 'MINUTES') {
-=======
-      // sonarQube step to get qualityGate result
       sleep 120
->>>>>>> 354f8ca... fix(ci): Sonar quality gate fix (#9976)
       def qualityGate = waitForQualityGate()
       if (qualityGate.status != 'OK') {
         error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
