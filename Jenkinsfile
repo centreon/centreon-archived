@@ -112,15 +112,14 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
         junit 'ut-be.xml,ut-fe.xml'
       }
-    }
-  }
-
-  // sonarQube step to get qualityGate result
-  stage('Quality gate') {
-    timeout(time: 10, unit: 'MINUTES') {
+      // sonarQube step to get qualityGate result
+      sleep 120
       def qualityGate = waitForQualityGate()
       if (qualityGate.status != 'OK') {
-        currentBuild.result = 'FAIL'
+        error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error("Quality gate failure: ${qualityGate.status}.");
       }
     }
 
