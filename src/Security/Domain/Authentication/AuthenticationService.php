@@ -76,8 +76,8 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         $authenticationTokens = $this->findAuthenticationTokensByToken($token);
         if ($authenticationTokens === null) {
-            return false;
             $this->notice('[AUTHENTICATION SERVICE] token not found');
+            return false;
         }
 
         $provider = $this->providerService->findProviderByConfigurationId(
@@ -85,8 +85,8 @@ class AuthenticationService implements AuthenticationServiceInterface
         );
 
         if ($provider === null) {
-            return false;
             $this->notice('[AUTHENTICATION SERVICE] Provider not found');
+            return false;
         }
 
         if ($authenticationTokens->getProviderToken()->isExpired()) {
@@ -95,13 +95,13 @@ class AuthenticationService implements AuthenticationServiceInterface
                 || ($authenticationTokens->getProviderRefreshToken() !== null
                 && $authenticationTokens->getProviderRefreshToken()->isExpired())
             ) {
-                return false;
                 $this->notice('Your session has expired');
+                return false;
             }
             $newAuthenticationTokens = $provider->refreshToken($authenticationTokens);
             if ($newAuthenticationTokens === null) {
-                return false;
                 $this->notice('Error while refresh token');
+                return false;
             }
             $this->updateAuthenticationTokens($newAuthenticationTokens);
         }
