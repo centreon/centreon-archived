@@ -1253,7 +1253,6 @@ function updateService($service_id = null, $from_MC = false, $params = array())
         $ret = $form->getSubmitValues();
     }
 
-
     $ret["service_description"] = $service->checkIllegalChar($ret["service_description"]);
 
     if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null) {
