@@ -217,12 +217,10 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
 };
 
 const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
-      <NotificationIcon aria-label={t(labelNotification)} color="primary" />
       <div className={classes.info}>
         <div className={classes.infoHeader}>
           <Date event={event} />
