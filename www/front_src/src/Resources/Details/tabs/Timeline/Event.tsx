@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { prop, isNil, filter, sortBy, pipe, sort } from 'ramda';
+import { prop, isNil, filter, equals } from 'ramda';
 import { TFunction, useTranslation } from 'react-i18next';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 import { makeStyles, Chip, Typography } from '@material-ui/core';
 import EventIcon from '@material-ui/icons/Event';
@@ -21,6 +21,13 @@ import {
   labelTo,
   labelTries,
   labelNotification,
+  labelToday,
+  labelYesterday,
+  labelThisWeek,
+  labelLastWeek,
+  labelLastMonth,
+  labelLastYear,
+  labelBeforeTheLastYear,
 } from '../../../translatedLabels';
 import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
@@ -94,16 +101,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  displayFullDate?: boolean;
   event: TimelineEvent;
 }
 
-const Date = ({ event, displayFullDate }: Props): JSX.Element => {
-  const { toTime, toDateTime } = useLocaleDateTimeFormat();
+const Date = ({ event }: Props): JSX.Element => {
+  const { toTime, format } = useLocaleDateTimeFormat();
 
-  const parseDate = displayFullDate ? toDateTime : toTime;
+  const parsedDate = format({ date: event.date, formatString: 'LLLL' });
 
-  return <Typography variant="caption">{parseDate(event.date)}</Typography>;
+  return <Typography variant="caption">{parsedDate}</Typography>;
 };
 
 const Author = ({ event }: Props): JSX.Element => {
@@ -122,7 +128,7 @@ const Author = ({ event }: Props): JSX.Element => {
   );
 };
 
-const EventTimelineEvent = ({ event, displayFullDate }: Props): JSX.Element => {
+const EventTimelineEvent = ({ event }: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
 
@@ -130,7 +136,7 @@ const EventTimelineEvent = ({ event, displayFullDate }: Props): JSX.Element => {
     <div className={classes.event}>
       <div className={classes.info}>
         <div className={classes.infoHeader}>
-          <Date displayFullDate={displayFullDate} event={event} />
+          <Date event={event} />
           <CompactStatusChip
             label={t(event.status?.name as string)}
             severityCode={event.status?.severity_code as number}
@@ -150,17 +156,14 @@ const EventTimelineEvent = ({ event, displayFullDate }: Props): JSX.Element => {
   );
 };
 
-const CommentTimelineEvent = ({
-  event,
-  displayFullDate,
-}: Props): JSX.Element => {
+const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
       <div className={classes.info}>
         <div className={classes.infoHeader}>
-          <Date displayFullDate={displayFullDate} event={event} />
+          <Date event={event} />
           <div className={classes.title}>
             <Author event={event} />
           </div>
@@ -171,17 +174,14 @@ const CommentTimelineEvent = ({
   );
 };
 
-const AcknowledgeTimelineEvent = ({
-  event,
-  displayFullDate,
-}: Props): JSX.Element => {
+const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
       <div className={classes.info}>
         <div className={classes.infoHeader}>
-          <Date displayFullDate={displayFullDate} event={event} />
+          <Date event={event} />
           <div className={classes.title}>
             <Author event={event} />
           </div>
@@ -226,17 +226,14 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
   );
 };
 
-const NotificationTimelineEvent = ({
-  event,
-  displayFullDate,
-}: Props): JSX.Element => {
+const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
       <div className={classes.info}>
         <div className={classes.infoHeader}>
-          <Date displayFullDate={displayFullDate} event={event} />
+          <Date event={event} />
           <div className={classes.title}>
             <Author event={event} />
           </div>
@@ -278,43 +275,159 @@ const sortEventsByDate = (
   { date: nextDate }: TimelineEvent,
 ): number => dayjs(nextDate).valueOf() - dayjs(prevDate).valueOf();
 
-const eventsByDateDivision = [
+const getWeeksInDays = (weeks: number): number => weeks * -7;
+
+interface GetDateFromNowWithWeeksProps {
+  locale: string;
+  weeks: number;
+}
+
+const getDateFromNowWithWeeks = ({
+  weeks,
+  locale,
+}: GetDateFromNowWithWeeksProps): Dayjs =>
+  dayjs().locale(locale).weekday(getWeeksInDays(weeks));
+
+const thisWeek = 0;
+const lastWeek = 1;
+const lastMonth = lastWeek + 4;
+const lastYear = lastMonth + 52;
+
+interface GetEventsByDateInWeeksProps {
+  events: Array<TimelineEvent>;
+  fromNumberOfWeeks: number;
+  locale: string;
+  toNumberOfWeeks: number;
+}
+
+const getEventsByDateInWeeks = ({
+  events,
+  locale,
+  fromNumberOfWeeks,
+  toNumberOfWeeks,
+}: GetEventsByDateInWeeksProps): Array<TimelineEvent> =>
+  events
+    .filter(
+      ({ date }) =>
+        dayjs(date).isBetween(
+          getDateFromNowWithWeeks({ locale, weeks: fromNumberOfWeeks }),
+          getDateFromNowWithWeeks({ locale, weeks: toNumberOfWeeks }),
+          'day',
+          '(]',
+        ),
+      events,
+    )
+    .sort(sortEventsByDate);
+
+interface GetEventsByDateProps {
+  events: Array<TimelineEvent>;
+  locale: string;
+}
+
+interface EventsByDateDivisions {
+  endDate?: (locale: string) => Dayjs;
+  getEventsByDate: (props: GetEventsByDateProps) => Array<TimelineEvent>;
+  label: string;
+  startDate?: (locale: string) => Dayjs;
+}
+
+const eventsByDateDivisions: Array<EventsByDateDivisions> = [
   {
-    displayFullDate: false,
-    getEventsByDate: ({ events }): Array<TimelineEvent> =>
-      (
-        filter(
-          ({ date }) => dayjs(date).isToday(),
-          events,
-        ) as Array<TimelineEvent>
-      ).sort(sortEventsByDate),
-    label: 'Today',
+    getEventsByDate: ({ events }: GetEventsByDateProps): Array<TimelineEvent> =>
+      events
+        .filter(({ date }) => dayjs(date).isToday(), events)
+        .sort(sortEventsByDate),
+    label: labelToday,
   },
   {
-    displayFullDate: false,
     getEventsByDate: ({ events }): Array<TimelineEvent> =>
-      (
-        filter(
-          ({ date }) => dayjs(date).isYesterday(),
-          events,
-        ) as Array<TimelineEvent>
-      ).sort(sortEventsByDate),
-    label: 'Yesterday',
+      events
+        .filter(({ date }) => dayjs(date).isYesterday(), events)
+        .sort(sortEventsByDate),
+    label: labelYesterday,
   },
   {
-    displayFullDate: true,
+    endDate: (): Dayjs => dayjs().subtract(2, 'day'),
+    getEventsByDate: ({ events, locale }): Array<TimelineEvent> =>
+      (
+        filter(({ date }) => {
+          const isFirstWeekday = equals(
+            dayjs()
+              .locale(locale as string)
+              .subtract(2, 'day')
+              .weekday(),
+            0,
+          );
+          return isFirstWeekday
+            ? false
+            : dayjs(date).isBetween(
+                dayjs()
+                  .locale(locale as string)
+                  .weekday(getWeeksInDays(thisWeek)),
+                dayjs().subtract(2, 'day'),
+                'day',
+                '(]',
+              );
+        }, events) as Array<TimelineEvent>
+      ).sort(sortEventsByDate),
+    label: labelThisWeek,
+    startDate: (locale): Dayjs =>
+      getDateFromNowWithWeeks({ locale, weeks: thisWeek }).add(1, 'day'),
+  },
+  {
+    endDate: (locale: string): Dayjs =>
+      getDateFromNowWithWeeks({ locale, weeks: thisWeek }),
+    getEventsByDate: (props): Array<TimelineEvent> =>
+      getEventsByDateInWeeks({
+        ...props,
+        fromNumberOfWeeks: thisWeek,
+        toNumberOfWeeks: lastWeek,
+      }),
+    label: labelLastWeek,
+    startDate: (locale: string): Dayjs =>
+      getDateFromNowWithWeeks({ locale, weeks: lastWeek }).add(1, 'day'),
+  },
+  {
+    endDate: (locale: string): Dayjs =>
+      getDateFromNowWithWeeks({ locale, weeks: lastWeek }),
+    getEventsByDate: (props): Array<TimelineEvent> =>
+      getEventsByDateInWeeks({
+        ...props,
+        fromNumberOfWeeks: lastWeek,
+        toNumberOfWeeks: lastMonth,
+      }),
+    label: labelLastMonth,
+    startDate: (locale: string): Dayjs =>
+      getDateFromNowWithWeeks({ locale, weeks: lastMonth }).add(1, 'day'),
+  },
+  {
+    endDate: (locale: string): Dayjs =>
+      getDateFromNowWithWeeks({ locale, weeks: lastMonth }),
+    getEventsByDate: (props): Array<TimelineEvent> =>
+      getEventsByDateInWeeks({
+        ...props,
+        fromNumberOfWeeks: lastMonth,
+        toNumberOfWeeks: lastYear,
+      }),
+    label: labelLastYear,
+    startDate: (locale: string): Dayjs =>
+      getDateFromNowWithWeeks({ locale, weeks: lastYear }).add(1, 'day'),
+  },
+  {
     getEventsByDate: ({ events, locale }): Array<TimelineEvent> =>
       (
         filter(
           ({ date }) =>
-            dayjs(date).isBetween(
-              dayjs().locale(locale).weekday(-7),
-              dayjs().subtract(2, 'day'),
+            dayjs(date).isSameOrBefore(
+              getDateFromNowWithWeeks({ locale, weeks: lastYear }),
+              'day',
             ),
           events,
         ) as Array<TimelineEvent>
       ).sort(sortEventsByDate),
-    label: 'This week',
+    label: labelBeforeTheLastYear,
+    startDate: (locale: string): Dayjs =>
+      getDateFromNowWithWeeks({ locale, weeks: lastYear }),
   },
 ];
 
@@ -323,6 +436,6 @@ export {
   types,
   getTypeIds,
   TimelineIconByType,
-  eventsByDateDivision,
+  eventsByDateDivisions,
   sortEventsByDate,
 };

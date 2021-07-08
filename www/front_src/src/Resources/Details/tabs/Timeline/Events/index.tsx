@@ -14,16 +14,21 @@ import {
 } from '@material-ui/lab';
 
 import { useUserContext } from '@centreon/ui-context';
+import { useLocaleDateTimeFormat } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 
+import { labelFrom, labelTo } from '../../../../translatedLabels';
 import { TimelineEvent } from '../models';
 import {
-  eventsByDateDivision,
+  eventsByDateDivisions,
   TimelineEventByType,
   TimelineIconByType,
   sortEventsByDate,
 } from '../Event';
 
 const useStyles = makeStyles((theme) => ({
+  divisionSubtitle: {
+    marginLeft: theme.spacing(4),
+  },
   event: {
     '&:before': {
       flex: 0,
@@ -50,26 +55,61 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const { locale } = useUserContext();
+  const { format } = useLocaleDateTimeFormat();
 
   const lastEvent = last(timeline.sort(sortEventsByDate));
 
   return (
     <div>
-      {eventsByDateDivision.map(
-        ({ label, getEventsByDate, displayFullDate }): JSX.Element | null => {
+      {eventsByDateDivisions.map(
+        ({
+          label,
+          getEventsByDate,
+          startDate,
+          endDate,
+        }): JSX.Element | null => {
           const eventsOfTheDivision = getEventsByDate({
             events: timeline,
-            locale,
+            locale: locale.substring(0, 2),
           });
 
           if (isEmpty(eventsOfTheDivision)) {
             return null;
           }
 
+          const formattedStartDate = startDate && (
+            <Typography display="inline">
+              {[
+                t(labelFrom),
+                format({
+                  date: startDate(locale).toISOString(),
+                  formatString: 'LL',
+                }),
+              ].join(' ')}
+            </Typography>
+          );
+
+          const formattedEndDate = endDate && (
+            <Typography display="inline">
+              {[
+                t(labelTo).toLowerCase(),
+                format({
+                  date: endDate(locale).toISOString(),
+                  formatString: 'LL',
+                }),
+              ].join(' ')}
+            </Typography>
+          );
+
           return (
             <div key={label}>
               <div className={classes.events}>
-                <Typography variant="h6">{label}</Typography>
+                <Typography display="inline" variant="h6">
+                  {t(label)}
+                  <span className={classes.divisionSubtitle}>
+                    {formattedStartDate} {formattedEndDate}
+                  </span>
+                </Typography>
                 <Timeline className={classes.timeline}>
                   {eventsOfTheDivision.map((event) => {
                     const { id, type } = event;
@@ -95,10 +135,7 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                         </TimelineSeparator>
                         <TimelineContent>
                           <Paper>
-                            <Event
-                              displayFullDate={displayFullDate}
-                              event={event}
-                            />
+                            <Event event={event} />
                           </Paper>
                           {equals(lastEvent, event) && (
                             <div ref={infiniteScrollTriggerRef} />
