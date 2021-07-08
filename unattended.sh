@@ -58,7 +58,7 @@ if [ "$wizard_autoplay" == "true" ]; then
 fi
 
 CENTREON_MAJOR_VERSION=$version
-CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-2"
+CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-1"
 
 #Variables dynamically set
 detected_os_release=
