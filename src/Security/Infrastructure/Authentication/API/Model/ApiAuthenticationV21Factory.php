@@ -35,7 +35,11 @@ class ApiAuthenticationV21Factory
     {
         $newApiAuthentication = self::createEmptyClass();
         $newApiAuthentication->contact['id'] = (int) $response->getApiAuthentication()['contact']['id'];
-        $newApiAuthentication->security = $response->getApiAuthentication()['security'];
+        $newApiAuthentication->contact['name'] = $response->getApiAuthentication()['contact']['name'];
+        $newApiAuthentication->contact['alias'] = $response->getApiAuthentication()['contact']['alias'];
+        $newApiAuthentication->contact['email'] = $response->getApiAuthentication()['contact']['email'];
+        $newApiAuthentication->contact['is_admin'] = (bool) $response->getApiAuthentication()['contact']['is_admin'];
+        $newApiAuthentication->security['token'] = $response->getApiAuthentication()['security']['token'];
 
         return $newApiAuthentication;
     }

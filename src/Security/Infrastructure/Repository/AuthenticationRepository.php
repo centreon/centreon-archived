@@ -406,12 +406,13 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         $statement->execute();
         $providerConfiguration = null;
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $providerConfiguration = (new ProviderConfiguration())
-                ->setId((int) $result['id'])
-                ->setType($result['type'])
-                ->setName($result['name'])
-                ->setForced((bool) $result['isForced'])
-                ->setActive((bool) $result['isActive']);
+            $providerConfiguration = new ProviderConfiguration(
+                (int) $result['id'],
+                $result['type'],
+                $result['name'],
+                (bool) $result['is_active'],
+                (bool) $result['is_forced']
+            );
         }
         return $providerConfiguration;
     }
