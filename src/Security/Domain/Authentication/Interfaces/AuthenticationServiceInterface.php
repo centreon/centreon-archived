@@ -67,14 +67,4 @@ interface AuthenticationServiceInterface
      * @throws AuthenticationException
      */
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens;
-
-    /**
-     * Check if the session is valid (use the refresh token if necessary).
-     *
-     * @param string $sessionToken Session token
-     * @param ProviderInterface $provider Provider that will be used to refresh the token if necessary
-     * @return bool Returns true if the session is valid (after use of the refresh token by the provider if necessary)
-     * @throws AuthenticationException
-     */
-    public function hasValidSession(string $sessionToken, ProviderInterface $provider): bool;
 }

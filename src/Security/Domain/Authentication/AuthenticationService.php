@@ -137,37 +137,6 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @inheritDoc
      */
-    public function hasValidSession(string $token, ProviderInterface $provider): bool
-    {
-        try {
-            $authenticationTokens = $this->authenticationRepository->findAuthenticationTokensByToken($token);
-        } catch (\Exception $ex) {
-            throw AuthenticationException::authenticationTokensNotFound($ex);
-        }
-
-        if ($authenticationTokens === null) {
-            return false;
-        }
-        if ($authenticationTokens->getProviderToken()->isExpired()) {
-            if (
-                $provider->canRefreshToken()
-                && $authenticationTokens->getProviderRefreshToken() !== null
-                && !$authenticationTokens->getProviderRefreshToken()->isExpired()
-            ) {
-                $newAuthenticationTokens = $provider->refreshToken($authenticationTokens);
-                if ($newAuthenticationTokens !== null && !$newAuthenticationTokens->getProviderToken()->isExpired()) {
-                    $this->updateAuthenticationTokens($newAuthenticationTokens);
-                    return true;
-                }
-            }
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens
     {
         try {
