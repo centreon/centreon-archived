@@ -34,11 +34,11 @@ const useStyles = makeStyles((theme) => ({
       flex: 0,
       padding: 0,
     },
+    minHeight: theme.spacing(7),
   },
   events: {
     display: 'grid',
     gridAutoFlow: 'row',
-    gridGap: theme.spacing(1),
     width: '100%',
   },
   timeline: {

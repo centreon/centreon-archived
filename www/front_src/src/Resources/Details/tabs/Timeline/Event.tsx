@@ -71,11 +71,9 @@ const getTypeIds = (): Array<string> => {
 
 const useStyles = makeStyles((theme) => ({
   event: {
-    alignItems: 'center',
-    display: 'grid',
-    gridAutoFlow: 'columns',
-    gridGap: theme.spacing(2),
-    gridTemplateColumns: 'auto 1fr auto',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     padding: theme.spacing(1),
   },
   info: {
@@ -89,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
     gridTemplateColumns: 'minmax(80px, auto) auto 1fr',
+    marginRight: theme.spacing(2),
   },
   title: {
     alignItems: 'center',
@@ -134,24 +133,22 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
 
   return (
     <div className={classes.event}>
-      <div className={classes.info}>
-        <div className={classes.infoHeader}>
-          <Date event={event} />
-          <CompactStatusChip
-            label={t(event.status?.name as string)}
-            severityCode={event.status?.severity_code as number}
-          />
-          <Typography
-            style={{
-              justifySelf: 'end',
-            }}
-            variant="caption"
-          >
-            {`${t(labelTries)}: ${event.tries}`}
-          </Typography>
-        </div>
-        <OutputInformation bold content={event.content} />
+      <div className={classes.infoHeader}>
+        <Date event={event} />
+        <CompactStatusChip
+          label={t(event.status?.name as string)}
+          severityCode={event.status?.severity_code as number}
+        />
+        <Typography
+          style={{
+            justifySelf: 'end',
+          }}
+          variant="caption"
+        >
+          {`${t(labelTries)}: ${event.tries}`}
+        </Typography>
       </div>
+      <OutputInformation bold content={event.content} />
     </div>
   );
 };
@@ -161,15 +158,13 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
 
   return (
     <div className={classes.event}>
-      <div className={classes.info}>
-        <div className={classes.infoHeader}>
-          <Date event={event} />
-          <div className={classes.title}>
-            <Author event={event} />
-          </div>
+      <div className={classes.infoHeader}>
+        <Date event={event} />
+        <div className={classes.title}>
+          <Author event={event} />
         </div>
-        <OutputInformation bold content={event.content} />
       </div>
+      <OutputInformation bold content={event.content} />
     </div>
   );
 };
@@ -179,15 +174,13 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
 
   return (
     <div className={classes.event}>
-      <div className={classes.info}>
-        <div className={classes.infoHeader}>
-          <Date event={event} />
-          <div className={classes.title}>
-            <Author event={event} />
-          </div>
+      <div className={classes.infoHeader}>
+        <Date event={event} />
+        <div className={classes.title}>
+          <Author event={event} />
         </div>
-        <OutputInformation bold content={event.content} />
       </div>
+      <OutputInformation bold content={event.content} />
     </div>
   );
 };
@@ -213,15 +206,13 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
 
   return (
     <div className={classes.event}>
-      <div className={classes.info}>
-        <div className={classes.infoHeader}>
-          <Typography variant="caption">{getCaption()}</Typography>
-          <div className={classes.title}>
-            <Author event={event} />
-          </div>
+      <div className={classes.infoHeader}>
+        <Typography variant="caption">{getCaption()}</Typography>
+        <div className={classes.title}>
+          <Author event={event} />
         </div>
-        <OutputInformation bold content={event.content} />
       </div>
+      <OutputInformation bold content={event.content} />
     </div>
   );
 };
@@ -231,15 +222,13 @@ const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
 
   return (
     <div className={classes.event}>
-      <div className={classes.info}>
-        <div className={classes.infoHeader}>
-          <Date event={event} />
-          <div className={classes.title}>
-            <Author event={event} />
-          </div>
+      <div className={classes.infoHeader}>
+        <Date event={event} />
+        <div className={classes.title}>
+          <Author event={event} />
         </div>
-        <OutputInformation bold content={event.content} />
       </div>
+      <OutputInformation bold content={event.content} />
     </div>
   );
 };
