@@ -154,7 +154,7 @@ const ResourceListing = (): JSX.Element => {
           rowCondition: ({ status }) => includes(status.name, okStatuses),
         },
         {
-          label: 'Not Ok',
+          label: 'Non-ok',
           rowCondition: ({ status }) => not(includes(status.name, okStatuses)),
         },
       ]}
