@@ -796,6 +796,8 @@ function updateServiceInDB($service_id = null, $from_MC = false, $params = array
         $ret = $form->getSubmitValues();
     }
 
+    $isServiceTemplate = isset($ret['service_register']) && $ret['service_register'] === '0';
+
     if ($from_MC) {
         updateService_MC($service_id);
     } else {
@@ -900,12 +902,14 @@ function updateServiceInDB($service_id = null, $from_MC = false, $params = array
     // 1 - MC with deletion of existing sg
     // 2 - MC with addition of new sg
     // 3 - Normal update
-    if (isset($ret["mc_mod_sgs"]["mc_mod_sgs"]) && $ret["mc_mod_sgs"]["mc_mod_sgs"]) {
-        updateServiceServiceGroup($service_id);
-    } elseif (isset($ret["mc_mod_sgs"]["mc_mod_sgs"]) && !$ret["mc_mod_sgs"]["mc_mod_sgs"]) {
-        updateServiceServiceGroup_MC($service_id);
-    } else {
-        updateServiceServiceGroup($service_id);
+    if (!$isServiceTemplate) {
+        if (isset($ret["mc_mod_sgs"]["mc_mod_sgs"]) && $ret["mc_mod_sgs"]["mc_mod_sgs"]) {
+            updateServiceServiceGroup($service_id);
+        } elseif (isset($ret["mc_mod_sgs"]["mc_mod_sgs"]) && !$ret["mc_mod_sgs"]["mc_mod_sgs"]) {
+            updateServiceServiceGroup_MC($service_id);
+        } else {
+            updateServiceServiceGroup($service_id);
+        }
     }
 
     if ($from_MC) {
@@ -1248,6 +1252,7 @@ function updateService($service_id = null, $from_MC = false, $params = array())
     } else {
         $ret = $form->getSubmitValues();
     }
+
 
     $ret["service_description"] = $service->checkIllegalChar($ret["service_description"]);
 
@@ -1980,7 +1985,7 @@ function updateServiceServiceGroup($service_id = null, $ret = array())
 
     $rq = "DELETE FROM servicegroup_relation ";
     $rq .= "WHERE service_service_id = '" . $service_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
 
     if (isset($ret["service_sgs"])) {
         $ret = $ret["service_sgs"];
@@ -2005,7 +2010,7 @@ function updateServiceServiceGroup($service_id = null, $ret = array())
                 $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
                 $rq .= "VALUES ";
                 $rq .= "(NULL, '" . $value . "', '" . $service_id . "', '" . $ret[$i] . "')";
-                $dbResult = $pearDB->query($rq);
+                $pearDB->query($rq);
             }
         } elseif (count($ret1)) {
             foreach ($ret1 as $key => $value) {
@@ -2013,7 +2018,7 @@ function updateServiceServiceGroup($service_id = null, $ret = array())
                 $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
                 $rq .= "VALUES ";
                 $rq .= "('" . $value . "', NULL, '" . $service_id . "', '" . $ret[$i] . "')";
-                $dbResult = $pearDB->query($rq);
+                $pearDB->query($rq);
             }
         }
     }
