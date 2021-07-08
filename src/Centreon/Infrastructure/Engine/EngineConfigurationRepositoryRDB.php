@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,11 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
+/**
+ * This class is designed to represent the MariaDb repository to manage Engine configuration.
+ *
+ * @package Centreon\Infrastructure\Engine
+ */
 class EngineConfigurationRepositoryRDB extends AbstractRepositoryDRB implements EngineConfigurationRepositoryInterface
 {
     /**
@@ -73,6 +78,33 @@ class EngineConfigurationRepositoryRDB extends AbstractRepositoryDRB implements 
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (($records = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            return (new EngineConfiguration())
+                ->setId((int) $records['nagios_id'])
+                ->setName($records['nagios_name'])
+                ->setIllegalObjectNameCharacters($records['illegal_object_name_chars'])
+                ->setMonitoringServerId((int) $records['nagios_server_id']);
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws \PDOException
+     */
+    public function findEngineConfigurationByMonitoringServerId(int $monitoringServerId): ?EngineConfiguration
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT cfg.nagios_id, cfg.nagios_name, cfg.illegal_object_name_chars, cfg.nagios_server_id
+                FROM `:db`.cfg_nagios cfg
+                INNER JOIN `:db`.ns_host_relation nsr
+                    ON nsr.nagios_server_id = :monitoring_server_id'
+            )
+        );
+        $statement->bindValue(':monitoring_server_id', $monitoringServerId, \PDO::PARAM_INT);
         $statement->execute();
 
         if (($records = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {

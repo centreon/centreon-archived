@@ -29,11 +29,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface GraphProps {
+  displayCompleteGraph: () => void;
   endpoint?: string;
   row: Resource | ResourceDetails;
 }
 
-const Graph = ({ row, endpoint }: GraphProps): JSX.Element => {
+const Graph = ({
+  row,
+  endpoint,
+  displayCompleteGraph,
+}: GraphProps): JSX.Element => {
   const { periodQueryParameters } = useTimePeriod({});
   const mousePositionProps = useMousePosition();
 
@@ -41,6 +46,7 @@ const Graph = ({ row, endpoint }: GraphProps): JSX.Element => {
     <MousePositionContext.Provider value={mousePositionProps}>
       <PerformanceGraph
         limitLegendRows
+        displayCompleteGraph={displayCompleteGraph}
         displayTitle={false}
         endpoint={`${endpoint}${periodQueryParameters}`}
         graphHeight={150}
@@ -84,9 +90,18 @@ const GraphColumn = ({
           )}
           label={labelGraph}
         >
-          <Paper className={classes.graph}>
-            <Graph endpoint={endpoint} row={row} />
-          </Paper>
+          {({ close }) => (
+            <Paper className={classes.graph}>
+              <Graph
+                displayCompleteGraph={(): void => {
+                  onClick(row);
+                  close();
+                }}
+                endpoint={endpoint}
+                row={row}
+              />
+            </Paper>
+          )}
         </HoverChip>
       </IconColumn>
     );

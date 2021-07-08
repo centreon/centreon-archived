@@ -1,13 +1,21 @@
 /* eslint-disable class-methods-use-this */
 import DayjsAdapter from '@date-io/dayjs';
 import dayjs from 'dayjs';
+import { includes } from 'ramda';
 
 import { useUserContext } from '@centreon/ui-context';
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
-const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
+interface UseDateTimePickerAdapterProps {
+  Adapter: typeof DayjsAdapter;
+  isMeridianFormat: (date: Date) => boolean;
+}
+
+const meridians = ['AM', 'PM'];
+
+const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
   const { locale, timezone } = useUserContext();
-  const { format } = useLocaleDateTimeFormat();
+  const { format, toTime } = useLocaleDateTimeFormat();
 
   class Adapter extends DayjsAdapter {
     public format(date, formatString): string {
@@ -39,7 +47,16 @@ const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
     }
   }
 
-  return Adapter;
+  const isMeridianFormat = (date: Date) => {
+    const localizedTime = toTime(date);
+
+    return meridians.some((meridian) => includes(meridian, localizedTime));
+  };
+
+  return {
+    Adapter,
+    isMeridianFormat,
+  };
 };
 
 export default useDateTimePickerAdapter;
