@@ -26,8 +26,6 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 
 /**
@@ -37,55 +35,17 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
 {
     /**
      * @param DatabaseConnection $db
-     * @param SqlRequestParametersTranslator $sqlRequestTranslator
      */
     public function __construct(
-        DatabaseConnection $db,
-        SqlRequestParametersTranslator $sqlRequestTranslator
+        DatabaseConnection $db
     ) {
         $this->db = $db;
-        $this->sqlRequestTranslator = $sqlRequestTranslator;
     }
 
     /**
      * @inheritDoc
      */
     public function addAuthenticationTokens(
-        string $token,
-        int $providerConfigurationId,
-        int $contactId,
-        ProviderToken $providerToken,
-        ?ProviderToken $providerRefreshToken
-    ): void {
-        // We avoid to start again a database transaction
-        $isAlreadyInTransaction = $this->db->inTransaction();
-        if (!$isAlreadyInTransaction) {
-            $this->db->beginTransaction();
-        }
-        try {
-            $this->insertSessionToken($token, $contactId);
-            $this->insertProviderTokens(
-                $token,
-                $providerConfigurationId,
-                $contactId,
-                $providerToken,
-                $providerRefreshToken
-            );
-            if (!$isAlreadyInTransaction) {
-                $this->db->commit();
-            }
-        } catch (\Exception $e) {
-            if (!$isAlreadyInTransaction) {
-                $this->db->rollBack();
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addApiAuthenticationTokens(
         string $token,
         int $providerConfigurationId,
         int $contactId,
@@ -150,28 +110,6 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
             $securityRefreshTokenId,
             $providerConfigurationId
         );
-    }
-
-    /**
-     * Insert token into session table.
-     *
-     * @param string $token
-     * @param integer $contactId
-     */
-    private function insertSessionToken(string $token, int $contactId): void
-    {
-        $insertSessionStatement = $this->db->prepare(
-            $this->translateDbName(
-                "INSERT INTO `:db`.session (`session_id` , `user_id` , `last_reload`, `ip_address`) " .
-                "VALUES (:sessionId, :userId, :lastReload, :ipAddress)"
-            )
-        );
-        $insertSessionStatement->bindValue(':sessionId', $token, \PDO::PARAM_STR);
-        $insertSessionStatement->bindValue(':userId', $contactId, \PDO::PARAM_INT);
-        $insertSessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
-        // @todo get addr from controller
-        $insertSessionStatement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
-        $insertSessionStatement->execute();
     }
 
     /**
@@ -294,127 +232,11 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     }
 
     /**
-     * {@inheritDoc}
-     * @throws \Assert\AssertionFailedException
-     */
-    public function findProvidersConfigurations(): array
-    {
-        $statement = $this->db->prepare($this->translateDbName("SELECT * FROM `:db`.provider_configuration"));
-        $statement->execute();
-        $providersConfigurations = [];
-        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $providerConfiguration = new ProviderConfiguration(
-                (int) $result['id'],
-                $result['type'],
-                $result['name'],
-                (bool) $result['is_active'],
-                (bool) $result['is_forced']
-            );
-            $providersConfigurations[] = $providerConfiguration;
-        }
-        return $providersConfigurations;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @throws \Assert\AssertionFailedException
-     */
-    public function findProviderConfiguration(int $id): ?ProviderConfiguration
-    {
-        $statement = $this->db->prepare($this->translateDbName(
-            "SELECT * FROM `:db`.provider_configuration
-            WHERE id = :id
-            "
-        ));
-        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
-        $statement->execute();
-        $providerConfiguration = null;
-        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $providerConfiguration = new ProviderConfiguration(
-                (int) $result['id'],
-                $result['type'],
-                $result['name'],
-                (bool) $result['is_active'],
-                (bool) $result['is_forced']
-            );
-        }
-        return $providerConfiguration;
-    }
-
-    /**
      * @inheritDoc
      */
     public function updateAuthenticationTokens(AuthenticationTokens $authenticationTokens): void
     {
         // TODO: Implement updateProviderToken() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function deleteSession(string $token): void
-    {
-        $deleteSessionStatement = $this->db->prepare(
-            $this->translateDbName(
-                "DELETE FROM `:db`.session WHERE session_id = :token"
-            )
-        );
-        $deleteSessionStatement->bindValue(':token', $token, \PDO::PARAM_STR);
-        $deleteSessionStatement->execute();
-
-        $deleteSecurityTokenStatement = $this->db->prepare(
-            $this->translateDbName(
-                "DELETE FROM `:db`.security_token WHERE token = :token"
-            )
-        );
-        $deleteSecurityTokenStatement->bindValue(':token', $token, \PDO::PARAM_STR);
-        $deleteSecurityTokenStatement->execute();
-    }
-
-    /**
-     * Delete all expired sessions.
-     */
-    public function deleteExpiredSession(): void
-    {
-        $sessionIdStatement = $this->db->query(
-            'SELECT session_id FROM `session`
-            WHERE last_reload <
-                (SELECT UNIX_TIMESTAMP(NOW() - INTERVAL (`value` * 60) SECOND)
-                FROM `options`
-                wHERE `key` = \'session_expire\')
-            OR last_reload IS NULL'
-        );
-        if ($results = $sessionIdStatement->fetchAll(\PDO::FETCH_ASSOC)) {
-            foreach ($results as $result) {
-                $this->deleteSession($result['session_id']);
-            }
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findProviderConfigurationByConfigurationName(
-        string $providerConfigurationName
-    ): ?ProviderConfiguration {
-        $statement = $this->db->prepare($this->translateDbName(
-            "SELECT * FROM `:db`.provider_configuration
-            WHERE name = :name
-            "
-        ));
-        $statement->bindValue(':name', $providerConfigurationName, \PDO::PARAM_STR);
-        $statement->execute();
-        $providerConfiguration = null;
-        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $providerConfiguration = new ProviderConfiguration(
-                (int) $result['id'],
-                $result['type'],
-                $result['name'],
-                (bool) $result['is_active'],
-                (bool) $result['is_forced']
-            );
-        }
-        return $providerConfiguration;
     }
 
     /**
@@ -430,5 +252,28 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         $updateStatement->bindValue(':expiredAt', $providerToken->getExpirationDate()->getTimestamp(), \PDO::PARAM_INT);
         $updateStatement->bindValue(':token', $providerToken->getToken(), \PDO::PARAM_STR);
         $updateStatement->execute();
+    }
+
+    public function deleteSecurityToken(string $token): void
+    {
+        $deleteSecurityTokenStatement = $this->db->prepare(
+            $this->translateDbName(
+                "DELETE FROM `:db`.security_token WHERE token = :token"
+            )
+        );
+        $deleteSecurityTokenStatement->bindValue(':token', $token, \PDO::PARAM_STR);
+        $deleteSecurityTokenStatement->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteExpiredSecurityTokens(): void
+    {
+        $this->db->query(
+            $this->translateDbName(
+                "DELETE FROM `:db`.security_token WHERE expiration_date < UNIX_TIMESTAMP(NOW())"
+            )
+        );
     }
 }

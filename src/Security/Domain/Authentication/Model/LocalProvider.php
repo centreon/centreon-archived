@@ -75,6 +75,11 @@ class LocalProvider implements ProviderInterface
     private $legacySession;
 
     /**
+     * @var int
+     */
+    private $sessionExpirationDelay;
+
+    /**
      * LocalProvider constructor.
      *
      * @param ContactServiceInterface $contactService
@@ -82,10 +87,12 @@ class LocalProvider implements ProviderInterface
      * @param OptionServiceInterface $optionService
      */
     public function __construct(
+        int $sessionExpirationDelay,
         ContactServiceInterface $contactService,
         Container $dependencyInjector,
         OptionServiceInterface $optionService
     ) {
+        $this->sessionExpirationDelay = $sessionExpirationDelay;
         $this->contactService = $contactService;
         $this->dependencyInjector = $dependencyInjector;
         $this->optionService = $optionService;
@@ -221,16 +228,16 @@ class LocalProvider implements ProviderInterface
      */
     public function getProviderToken(string $token): ProviderToken
     {
-        $expirationSessionDelay = 120;
+        $this->debug((string) $this->sessionExpirationDelay);
         $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
         if (!empty($sessionExpireOption)) {
-            $expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();
+            $this->expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();
         }
         return new ProviderToken(
             null,
             $token,
             new \DateTime(),
-            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M'))
+            (new \DateTime())->add(new \DateInterval('PT' . $this->expirationSessionDelay . 'M'))
         );
     }
 

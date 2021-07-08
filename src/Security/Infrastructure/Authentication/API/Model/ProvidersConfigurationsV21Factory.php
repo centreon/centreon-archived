@@ -39,10 +39,10 @@ class ProvidersConfigurationsV21Factory
             $newProviderConfiguration->id = $providerConfiguration['id'];
             $newProviderConfiguration->type = $providerConfiguration['type'];
             $newProviderConfiguration->name = $providerConfiguration['name'];
-            $newProviderConfiguration->centreonBaseUri = $providerConfiguration['centreonBaseUri'];
-            $newProviderConfiguration->isForced = $providerConfiguration['isForced'];
-            $newProviderConfiguration->isActive = $providerConfiguration['isActive'];
-            $newProviderConfiguration->authenticationUri = $providerConfiguration['authenticationUri'];
+            $newProviderConfiguration->centreonBaseUri = $providerConfiguration['centreon_base_uri'];
+            $newProviderConfiguration->isForced = $providerConfiguration['is_forced'];
+            $newProviderConfiguration->isActive = $providerConfiguration['is_active'];
+            $newProviderConfiguration->authenticationUri = $providerConfiguration['authentication_uri'];
 
             $providersConfigurations[] = $newProviderConfiguration;
         }
@@ -55,7 +55,7 @@ class ProvidersConfigurationsV21Factory
     {
         return new class extends \stdClass {
             /**
-             * @var int|null
+             * @var int
              */
             public $id;
 

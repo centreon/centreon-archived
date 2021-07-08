@@ -19,15 +19,29 @@
  *
  */
 
-declare(strict_types=1);
-
 namespace Security\Domain\Authentication\Interfaces;
 
-interface LocalProviderRepositoryInterface
+use Security\Domain\Authentication\Model\Session;
+
+interface SessionRepositoryInterface
 {
     /**
-     * Delete all expired API tokens registered.
+     * Clear all information about the session token.
      *
+     * @param string $sessionToken
      */
-    public function deleteExpiredSecurityTokens(): void;
+    public function deleteSession(string $sessionToken): void;
+
+    /**
+     * Delete all expired sessions.
+     */
+    public function deleteExpiredSession(): void;
+
+    /**
+     * Insert token into session table.
+     *
+     * @param string $token
+     * @param integer $contactId
+     */
+    public function addSession(Session $session): void;
 }

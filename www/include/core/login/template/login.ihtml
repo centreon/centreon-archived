@@ -67,7 +67,6 @@
                         method: 'POST',
                         contentType: 'application/json'
                     }).done((res) => {
-                        console.log(res)
                         window.location.href = res.redirect_uri
                     }).fail((err) => {
                         console.log(err)

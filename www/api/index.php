@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
     $response = new \Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse();
     $authenticateApiUseCase->execute($request, $response);
 
-    if (isset($response->getApiAuthentication()['security']['token'])) {
+    if (!empty($response->getApiAuthentication()['security']['token'])) {
         CentreonWebService::sendResult(['authToken' => $response->getApiAuthentication()['security']['token']]);
     } else {
         CentreonWebService::sendResult('Invalid credentials', 403);

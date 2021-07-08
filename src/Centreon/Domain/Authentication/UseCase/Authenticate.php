@@ -25,18 +25,21 @@ namespace Centreon\Domain\Authentication\UseCase;
 use Centreon;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
+use Security\Domain\Authentication\Model\Session;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
+use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use Security\Domain\Authentication\Exceptions\ProviderException;
+use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 
 class Authenticate
 {
@@ -78,6 +81,16 @@ class Authenticate
     private $authenticationRepository;
 
     /**
+     * @var SessionRepositoryInterface
+     */
+    private $sessionRepository;
+
+    /**
+     * @var DataStorageEngineInterface
+     */
+    private $dataStorageEngine;
+
+    /**
      * @param string $redirectDefaultPage
      * @param AuthenticationServiceInterface $authenticationService
      * @param ProviderServiceInterface $providerService
@@ -85,6 +98,8 @@ class Authenticate
      * @param SessionInterface $session
      * @param MenuServiceInterface $menuService
      * @param AuthenticationRepositoryInterface $authenticationRepository
+     * @param SessionRepositoryInterface $sessionRepository
+     * @param DataStorageEngineInterface $dataStorageEngine
      */
     public function __construct(
         string $redirectDefaultPage,
@@ -93,7 +108,9 @@ class Authenticate
         ContactServiceInterface $contactService,
         SessionInterface $session,
         MenuServiceInterface $menuService,
-        AuthenticationRepositoryInterface $authenticationRepository
+        AuthenticationRepositoryInterface $authenticationRepository,
+        SessionRepositoryInterface $sessionRepository,
+        DataStorageEngineInterface $dataStorageEngine
     ) {
         $this->redirectDefaultPage = $redirectDefaultPage;
         $this->authenticationService = $authenticationService;
@@ -102,6 +119,8 @@ class Authenticate
         $this->session = $session;
         $this->menuService = $menuService;
         $this->authenticationRepository = $authenticationRepository;
+        $this->sessionRepository = $sessionRepository;
+        $this->dataStorageEngine = $dataStorageEngine;
     }
 
     /**
@@ -382,7 +401,14 @@ class Authenticate
         if ($providerConfiguration === null || ($providerConfigurationId = $providerConfiguration->getId()) === null) {
             throw ProviderException::providerConfigurationNotFound($providerConfigurationName);
         }
+        $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
+
+        if (!$isAlreadyInTransaction) {
+            $this->dataStorageEngine->startTransaction();
+        }
         try {
+            $session = new Session($sessionToken, $contact->getId());
+            $this->sessionRepository->addSession($session);
             $this->authenticationRepository->addAuthenticationTokens(
                 $sessionToken,
                 $providerConfigurationId,
@@ -390,7 +416,13 @@ class Authenticate
                 $providerToken,
                 $providerRefreshToken
             );
+            if (!$isAlreadyInTransaction) {
+                $this->dataStorageEngine->commitTransaction();
+            }
         } catch (\Exception $ex) {
+            if (!$isAlreadyInTransaction) {
+                $this->dataStorageEngine->rollbackTransaction();
+            }
             throw AuthenticationException::addAuthenticationToken($ex);
         }
     }

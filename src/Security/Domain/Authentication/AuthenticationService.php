@@ -22,17 +22,14 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication;
 
-use Security\Domain\Authentication\Model\ProviderToken;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\LocalProviderRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
+use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 
 /**
  * @package Security\Authentication
@@ -44,12 +41,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @var AuthenticationRepositoryInterface
      */
-    private $repository;
-
-    /**
-     * @var LocalProviderRepositoryInterface
-     */
-    private $localProviderRepository;
+    private $authenticationRepository;
 
     /**
      * @var ProviderServiceInterface
@@ -57,26 +49,30 @@ class AuthenticationService implements AuthenticationServiceInterface
     private $providerService;
 
     /**
+     * @var SessionRepositoryInterface
+     */
+    private $sessionRepository;
+
+    /**
      * AuthenticationService constructor.
      *
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param ProviderServiceInterface $providerService
-     * @param LocalProviderRepositoryInterface $localProviderRepository
      */
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,
         ProviderServiceInterface $providerService,
-        LocalProviderRepositoryInterface $localProviderRepository
+        SessionRepositoryInterface $sessionRepository
     ) {
-        $this->repository = $authenticationRepository;
-        $this->localProviderRepository = $localProviderRepository;
+        $this->authenticationRepository = $authenticationRepository;
+        $this->sessionRepository = $sessionRepository;
         $this->providerService = $providerService;
     }
 
     /**
      * @inheritDoc
      */
-    public function checkToken(string $token): bool
+    public function isValidToken(string $token): bool
     {
         $authenticationTokens = $this->findAuthenticationTokensByToken($token);
         if ($authenticationTokens === null) {
@@ -119,7 +115,8 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function deleteSession(string $sessionToken): void
     {
         try {
-            $this->repository->deleteSession($sessionToken);
+            $this->authenticationRepository->deleteSecurityToken($sessionToken);
+            $this->sessionRepository->deleteSession($sessionToken);
         } catch (\Exception $ex) {
             throw AuthenticationException::deleteSession($ex);
         }
@@ -131,7 +128,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function deleteExpiredSecurityTokens(): void
     {
         try {
-            $this->localProviderRepository->deleteExpiredSecurityTokens();
+            $this->authenticationRepository->deleteExpiredSecurityTokens();
         } catch (\Exception $ex) {
             throw AuthenticationException::deleteExpireToken($ex);
         }
@@ -143,7 +140,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function hasValidSession(string $token, ProviderInterface $provider): bool
     {
         try {
-            $authenticationTokens = $this->repository->findAuthenticationTokensByToken($token);
+            $authenticationTokens = $this->authenticationRepository->findAuthenticationTokensByToken($token);
         } catch (\Exception $ex) {
             throw AuthenticationException::authenticationTokensNotFound($ex);
         }
@@ -174,7 +171,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens
     {
         try {
-            return $this->repository->findAuthenticationTokensByToken($token);
+            return $this->authenticationRepository->findAuthenticationTokensByToken($token);
         } catch (\Exception $ex) {
             throw AuthenticationException::authenticationTokensNotFound($ex);
         }
@@ -186,7 +183,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function updateAuthenticationTokens(AuthenticationTokens $authenticationTokens): void
     {
         try {
-            $this->repository->updateAuthenticationTokens($authenticationTokens);
+            $this->authenticationRepository->updateAuthenticationTokens($authenticationTokens);
         } catch (\Exception $ex) {
             throw AuthenticationException::updateAuthenticationTokens($ex);
         }

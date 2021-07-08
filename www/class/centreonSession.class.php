@@ -163,7 +163,7 @@ class CentreonSession
                     SET `last_reload` = :lastReload, `ip_address` = :ipAddress
                     WHERE `session_id` = :sessionId"
                 );
-                $sessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_STR);
+                $sessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
                 $sessionStatement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
                 $sessionStatement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
 

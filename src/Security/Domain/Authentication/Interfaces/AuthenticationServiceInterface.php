@@ -39,7 +39,7 @@ interface AuthenticationServiceInterface
      * @throws ProviderException
      * @throws AuthenticationException
      */
-    public function checkToken(string $token): bool;
+    public function isValidToken(string $token): bool;
 
     /**
      * Delete a session.

@@ -2381,16 +2381,16 @@ CREATE TABLE `provider_configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `isActive` BOOLEAN NOT NULL DEFAULT 1,
-  `isForced` BOOLEAN NOT NULL DEFAULT 0,
+  `is_active` BOOLEAN NOT NULL DEFAULT 1,
+  `is_forced` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_token` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `token` varchar(255) NOT NULL,
-  `creation_date` int(11) NOT NULL,
-  `expiration_date` int(11) DEFAULT NULL,
+  `creation_date` bigint(11) UNSIGNED NOT NULL,
+  `expiration_date` bigint(11) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

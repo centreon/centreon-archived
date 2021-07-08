@@ -20,6 +20,7 @@ parameters:
     log_path: "%env(_CENTREON_LOG_)%"
     media_path: "img/media"
     redirect_default_page: "/monitoring/resources"
+    session_expiration_delay: 120
 
 services:
     # Default configuration for services in *this* file
@@ -70,12 +71,18 @@ services:
         class: Security\Domain\Authentication\AuthenticationService
         public: true
 
+    Security\Domain\Authentication\Interfaces\ProviderRepositoryInterface:
+        class: Security\Infrastructure\Repository\ProviderRepository
+
+    Security\Domain\Authentication\Interfaces\SessionRepositoryInterface:
+        class: Security\Infrastructure\Repository\SessionRepository
+
     Security\Domain\Authentication\Interfaces\ProviderServiceInterface:
         class: Security\Domain\Authentication\ProviderService
         public: true
 
+    Security\Domain\Authentication\Model\LocalProvider:
+        arguments: [ "%session_expiration_delay%" ]
+
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']
-
-    Security\Domain\Authentication\Interfaces\LocalProviderRepositoryInterface:
-        class: Security\Infrastructure\Repository\LocalProviderRepository

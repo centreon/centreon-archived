@@ -36,6 +36,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 
 /**
  * Class used to authenticate a request by using a session id.
@@ -50,30 +51,30 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
     private $authenticationService;
 
     /**
-     * @var AuthenticationRepositoryInterface
-     */
-    private $authenticationRepository;
-
-    /**
      * @var ContactRepositoryInterface
      */
     private $contactRepository;
 
     /**
+     * @var SessionRepositoryInterface
+     */
+    private $sessionRepository;
+
+    /**
      * SessionAPIAuthenticator constructor.
      *
      * @param AuthenticationServiceInterface $authenticationService
-     * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param ContactRepositoryInterface $contactRepository
+     * @param SessionRepositoryInterface $sessionRepository
      */
     public function __construct(
         AuthenticationServiceInterface $authenticationService,
-        AuthenticationRepositoryInterface $authenticationRepository,
-        ContactRepositoryInterface $contactRepository
+        ContactRepositoryInterface $contactRepository,
+        SessionRepositoryInterface $sessionRepository
     ) {
         $this->authenticationService = $authenticationService;
-        $this->authenticationRepository = $authenticationRepository;
         $this->contactRepository = $contactRepository;
+        $this->sessionRepository = $sessionRepository;
     }
 
     /**
@@ -175,7 +176,7 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
 
-        $this->authenticationRepository->deleteExpiredSession();
+        $this->sessionRepository->deleteExpiredSession();
 
         $contact = $this->contactRepository->findBySession($sessionId);
         if ($contact === null) {
@@ -215,9 +216,8 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
         if (!array_key_exists('session', $credentials)) {
             throw AuthenticatorException::sessionTokenNotFound();
         }
-        $sessionToken = $credentials['session'];
 
-        return $this->authenticationService->checkToken($sessionToken);
+        return $this->authenticationService->isValidToken($credentials['session']);
     }
 
     /**

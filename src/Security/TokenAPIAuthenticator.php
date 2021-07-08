@@ -36,7 +36,6 @@ use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
-use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
 
 /**
  * Class used to authenticate a request by using a security token.
@@ -45,6 +44,7 @@ use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
  */
 class TokenAPIAuthenticator extends AbstractGuardAuthenticator
 {
+    public const EXPIRATION_DELAY = 120;
     /**
      * @var AuthenticationRepositoryInterface
      */
@@ -69,15 +69,6 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
         $this->authenticationRepository = $authenticationRepository;
         $this->contactRepository = $contactRepository;
         $this->optionService = $optionService;
-    }
-
-    public function createAuthenticatedToken(UserInterface $user, $providerKey)
-    {
-        return new PostAuthenticationGuardToken(
-            $user,
-            'token_API',
-            $user->getRoles()
-        );
     }
 
     /**
@@ -153,7 +144,6 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
     {
         return [
             'token' => $request->headers->get('X-AUTH-TOKEN'),
-            'type' => 'local'
         ];
     }
 
@@ -194,7 +184,7 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
             throw new ContactDisabledException();
         }
 
-        $expirationSessionDelay = 120;
+        $expirationSessionDelay = self::EXPIRATION_DELAY;
         $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
         if (!empty($sessionExpireOption)) {
             $expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();

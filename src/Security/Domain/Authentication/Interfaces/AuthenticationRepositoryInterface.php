@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Security\Domain\Authentication\Interfaces;
 
 use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Security\Domain\Authentication\Model\ProviderToken;
 
 /**
@@ -47,55 +46,12 @@ interface AuthenticationRepositoryInterface
     ): void;
 
     /**
-     * @param string $token Session token
-     * @param int $providerConfigurationId Provider configuration id
-     * @param int $contactId Contact id
-     * @param ProviderToken $providerToken Provider token
-     * @param ProviderToken $providerRefreshToken Provider refresh token
-     */
-    public function addApiAuthenticationTokens(
-        string $token,
-        int $providerConfigurationId,
-        int $contactId,
-        ProviderToken $providerToken,
-        ?ProviderToken $providerRefreshToken
-    ): void;
-
-    /**
-     * Clear all information about the session token.
-     *
-     * @param string $sessionToken
-     */
-    public function deleteSession(string $sessionToken): void;
-
-    /**
-     * Delete all expired sessions.
-     */
-    public function deleteExpiredSession(): void;
-
-    /**
-     * Find providers configurations
-     *
-     * @return ProviderConfiguration[]
-     */
-    public function findProvidersConfigurations(): array;
-
-    /**
      * Find the authentication token using the session token.
      *
      * @param string $token Session token
      * @return AuthenticationTokens|null
      */
     public function findAuthenticationTokensByToken(string $token): ?AuthenticationTokens;
-
-    /**
-     * Find the provider's configuration.
-     *
-     * @param int $id Id of the provider configuration
-     * @return ProviderConfiguration|null
-     * @throws \Exception
-     */
-    public function findProviderConfiguration(int $id): ?ProviderConfiguration;
 
     /**
      * Updates the provider authentication tokens.
@@ -113,12 +69,16 @@ interface AuthenticationRepositoryInterface
     public function updateProviderToken(ProviderToken $providerToken): void;
 
     /**
-     * Find the provider configuration by name
+     * Delete all expired API tokens registered.
      *
-     * @param string $providerConfigurationName
-     * @return ProviderConfiguration|null
      */
-    public function findProviderConfigurationByConfigurationName(
-        string $providerConfigurationName
-    ): ?ProviderConfiguration;
+    public function deleteExpiredSecurityTokens(): void;
+
+    /**
+     * Delete a security token.
+     *
+     * @param string $token
+     * @return void
+     */
+    public function deleteSecurityToken(string $token): void;
 }

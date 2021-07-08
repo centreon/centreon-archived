@@ -31,6 +31,7 @@ use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\ProviderRepositoryInterface;
 
 class ProviderService implements ProviderServiceInterface
 {
@@ -39,7 +40,12 @@ class ProviderService implements ProviderServiceInterface
     /**
      * @var AuthenticationRepositoryInterface
      */
-    private $repository;
+    private $authenticationRepository;
+
+    /**
+     * @var ProviderRepositoryInterface
+     */
+    private $providerRepository;
 
     /**
      * @var ProviderFactory
@@ -48,13 +54,16 @@ class ProviderService implements ProviderServiceInterface
 
     /**
     * @param AuthenticationRepositoryInterface $authenticationRepository
+    * @param ProviderRepositoryInterface $providerRepository
     * @param ProviderFactory $providerFactory
     */
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,
+        ProviderRepositoryInterface $providerRepository,
         ProviderFactory $providerFactory
     ) {
-        $this->repository = $authenticationRepository;
+        $this->authenticationRepository = $authenticationRepository;
+        $this->providerRepository = $providerRepository;
         $this->providerFactory = $providerFactory;
     }
 
@@ -64,7 +73,7 @@ class ProviderService implements ProviderServiceInterface
     public function findProvidersConfigurations(): array
     {
         try {
-            return $this->repository->findProvidersConfigurations();
+            return $this->providerRepository->findProvidersConfigurations();
         } catch (\Exception $ex) {
             throw ProviderException::findProvidersConfigurations($ex);
         }
@@ -76,7 +85,7 @@ class ProviderService implements ProviderServiceInterface
     public function findProviderByConfigurationId(int $providerConfigurationId): ?ProviderInterface
     {
         try {
-            $providerConfiguration = $this->repository->findProviderConfiguration($providerConfigurationId);
+            $providerConfiguration = $this->providerRepository->findProviderConfiguration($providerConfigurationId);
         } catch (\Exception $ex) {
             throw ProviderException::findProvidersConfigurations($ex);
         }
@@ -93,7 +102,7 @@ class ProviderService implements ProviderServiceInterface
     {
         $this->info("[PROVIDER SERVICE] Looking for provider '$providerConfigurationName'");
         try {
-            $providerConfiguration = $this->repository->findProviderConfigurationByConfigurationName(
+            $providerConfiguration = $this->providerRepository->findProviderConfigurationByConfigurationName(
                 $providerConfigurationName
             );
         } catch (\Exception $ex) {
@@ -112,7 +121,7 @@ class ProviderService implements ProviderServiceInterface
     public function findProviderBySession(string $token): ?ProviderInterface
     {
         try {
-            $authenticationToken = $this->repository->findAuthenticationTokensByToken($token);
+            $authenticationToken = $this->authenticationRepository->findAuthenticationTokensByToken($token);
         } catch (\Exception $ex) {
             throw AuthenticationException::authenticationTokensNotFound($ex);
         }
@@ -129,7 +138,7 @@ class ProviderService implements ProviderServiceInterface
         string $providerConfigurationName
     ): ?ProviderConfiguration {
         try {
-            return $this->repository->findProviderConfigurationByConfigurationName($providerConfigurationName);
+            return $this->providerRepository->findProviderConfigurationByConfigurationName($providerConfigurationName);
         } catch (\Exception $ex) {
             throw ProviderException::findProvidersConfigurations($ex);
         }

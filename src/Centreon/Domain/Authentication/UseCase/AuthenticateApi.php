@@ -204,7 +204,7 @@ class AuthenticateApi
             if ($providerConfiguration->getId() === null) {
                 throw new \InvalidArgumentException("Provider configuration can't be null");
             }
-            $this->authenticationRepository->addAPIAuthenticationTokens(
+            $this->authenticationRepository->addAuthenticationTokens(
                 $token,
                 $providerConfiguration->getId(),
                 $contact->getId(),
