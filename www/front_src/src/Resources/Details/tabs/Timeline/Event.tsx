@@ -187,11 +187,14 @@ const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
 
 const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { toDateTime } = useLocaleDateTimeFormat();
+  const { format } = useLocaleDateTimeFormat();
   const classes = useStyles();
 
   const getCaption = (): string => {
-    const formattedStartDate = toDateTime(event.startDate as string);
+    const formattedStartDate = format({
+      date: event.startDate as string,
+      formatString: 'LLLL',
+    });
 
     const from = `${t(labelFrom)} ${formattedStartDate}`;
 
@@ -199,7 +202,10 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
       return from;
     }
 
-    const formattedEndDate = toDateTime(event.endDate);
+    const formattedEndDate = format({
+      date: event.endDate as string,
+      formatString: 'LLLL',
+    });
 
     return `${from} ${t(labelTo)} ${formattedEndDate}`;
   };
@@ -285,6 +291,7 @@ const lastYear = lastMonth + 52;
 interface GetEventsByDateInWeeksProps {
   events: Array<TimelineEvent>;
   fromNumberOfWeeks: number;
+  inclusionPolicy?: string;
   locale: string;
   toNumberOfWeeks: number;
 }
@@ -294,6 +301,7 @@ const getEventsByDateInWeeks = ({
   locale,
   fromNumberOfWeeks,
   toNumberOfWeeks,
+  inclusionPolicy = '[)',
 }: GetEventsByDateInWeeksProps): Array<TimelineEvent> =>
   events
     .filter(
@@ -302,7 +310,7 @@ const getEventsByDateInWeeks = ({
           getDateFromNowWithWeeks({ locale, weeks: fromNumberOfWeeks }),
           getDateFromNowWithWeeks({ locale, weeks: toNumberOfWeeks }),
           'day',
-          '(]',
+          inclusionPolicy,
         ),
       events,
     )
@@ -340,74 +348,77 @@ const eventsByDateDivisions: Array<EventsByDateDivisions> = [
     getEventsByDate: ({ events, locale }): Array<TimelineEvent> =>
       (
         filter(({ date }) => {
-          const isFirstWeekday = equals(
-            dayjs()
-              .locale(locale as string)
-              .subtract(2, 'day')
-              .weekday(),
-            0,
-          );
-          return isFirstWeekday
-            ? false
+          const startWeekday = dayjs()
+            .locale(locale as string)
+            .subtract(2, 'day')
+            .weekday();
+
+          if (equals(startWeekday, 6)) {
+            return false;
+          }
+
+          return equals(startWeekday, 0)
+            ? dayjs(date).isSame(dayjs().subtract(2, 'day'), 'day')
             : dayjs(date).isBetween(
                 dayjs()
                   .locale(locale as string)
                   .weekday(getWeeksInDays(thisWeek)),
                 dayjs().subtract(2, 'day'),
                 'day',
-                '(]',
+                '[]',
               );
         }, events) as Array<TimelineEvent>
       ).sort(sortEventsByDate),
     label: labelThisWeek,
     startDate: (locale): Dayjs =>
-      getDateFromNowWithWeeks({ locale, weeks: thisWeek }).add(1, 'day'),
-  },
-  {
-    endDate: (locale: string): Dayjs =>
       getDateFromNowWithWeeks({ locale, weeks: thisWeek }),
-    getEventsByDate: (props): Array<TimelineEvent> =>
-      getEventsByDateInWeeks({
-        ...props,
-        fromNumberOfWeeks: thisWeek,
-        toNumberOfWeeks: lastWeek,
-      }),
-    label: labelLastWeek,
-    startDate: (locale: string): Dayjs =>
-      getDateFromNowWithWeeks({ locale, weeks: lastWeek }).add(1, 'day'),
   },
   {
     endDate: (locale: string): Dayjs =>
-      getDateFromNowWithWeeks({ locale, weeks: lastWeek }),
+      getDateFromNowWithWeeks({ locale, weeks: thisWeek }).subtract(1, 'day'),
     getEventsByDate: (props): Array<TimelineEvent> =>
       getEventsByDateInWeeks({
         ...props,
         fromNumberOfWeeks: lastWeek,
-        toNumberOfWeeks: lastMonth,
+        inclusionPolicy: '[)',
+        toNumberOfWeeks: thisWeek,
       }),
-    label: labelLastMonth,
+    label: labelLastWeek,
     startDate: (locale: string): Dayjs =>
-      getDateFromNowWithWeeks({ locale, weeks: lastMonth }).add(1, 'day'),
+      getDateFromNowWithWeeks({ locale, weeks: lastWeek }),
   },
   {
     endDate: (locale: string): Dayjs =>
-      getDateFromNowWithWeeks({ locale, weeks: lastMonth }),
+      getDateFromNowWithWeeks({ locale, weeks: lastWeek }).subtract(1, 'day'),
     getEventsByDate: (props): Array<TimelineEvent> =>
       getEventsByDateInWeeks({
         ...props,
         fromNumberOfWeeks: lastMonth,
-        toNumberOfWeeks: lastYear,
+        toNumberOfWeeks: lastWeek,
+      }),
+    label: labelLastMonth,
+    startDate: (locale: string): Dayjs =>
+      getDateFromNowWithWeeks({ locale, weeks: lastMonth }),
+  },
+  {
+    endDate: (locale: string): Dayjs =>
+      getDateFromNowWithWeeks({ locale, weeks: lastMonth }).subtract(1, 'day'),
+    getEventsByDate: (props): Array<TimelineEvent> =>
+      getEventsByDateInWeeks({
+        ...props,
+        fromNumberOfWeeks: lastYear,
+        toNumberOfWeeks: lastMonth,
       }),
     label: labelLastYear,
     startDate: (locale: string): Dayjs =>
-      getDateFromNowWithWeeks({ locale, weeks: lastYear }).add(1, 'day'),
+      getDateFromNowWithWeeks({ locale, weeks: lastYear }),
   },
   {
     getEventsByDate: ({ events, locale }): Array<TimelineEvent> =>
       (
         filter(
           ({ date }) =>
-            dayjs(date).isSameOrBefore(
+            dayjs(date).isBefore(
               getDateFromNowWithWeeks({ locale, weeks: lastYear }),
               'day',
             ),
@@ -416,7 +427,7 @@ const eventsByDateDivisions: Array<EventsByDateDivisions> = [
       ).sort(sortEventsByDate),
     label: labelBeforeTheLastYear,
     startDate: (locale: string): Dayjs =>
-      getDateFromNowWithWeeks({ locale, weeks: lastYear }),
+      getDateFromNowWithWeeks({ locale, weeks: lastYear }).subtract(1, 'day'),
   },
 ];
 

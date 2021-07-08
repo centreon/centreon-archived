@@ -67,6 +67,13 @@ import {
   labelCompactTimePeriod,
   labelCheck,
   labelShortcuts,
+  labelToday,
+  labelYesterday,
+  labelThisWeek,
+  labelLastWeek,
+  labelLastMonth,
+  labelLastYear,
+  labelBeforeTheLastYear,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -215,7 +222,7 @@ const retrievedTimeline = {
   result: [
     {
       content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
-      date: '2020-06-22T08:40:00Z',
+      date: '2020-01-21T08:40:00Z',
       id: 1,
       status: {
         name: 'UP',
@@ -226,7 +233,7 @@ const retrievedTimeline = {
     },
     {
       content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
-      date: '2020-06-22T08:35:00Z',
+      date: '2020-01-21T08:35:00Z',
       id: 2,
       status: {
         name: 'DOWN',
@@ -240,7 +247,7 @@ const retrievedTimeline = {
         name: 'admin',
       },
       content: 'My little notification',
-      date: '2020-06-21T07:40:00Z',
+      date: '2020-01-20T07:40:00Z',
       id: 3,
       type: 'notification',
     },
@@ -249,7 +256,7 @@ const retrievedTimeline = {
         name: 'admin',
       },
       content: 'My little ack',
-      date: '2020-06-20T07:35:00Z',
+      date: '2020-01-19T07:35:00Z',
       id: 4,
       type: 'acknowledgement',
     },
@@ -258,10 +265,10 @@ const retrievedTimeline = {
         name: 'admin',
       },
       content: 'My little dt',
-      date: '2020-06-20T07:30:00Z',
-      end_date: '2020-06-22T07:33:00Z',
+      date: '2020-01-19T07:30:00Z',
+      end_date: '2020-01-21T07:33:00Z',
       id: 5,
-      start_date: '2020-06-20T07:30:00Z',
+      start_date: '2020-01-19T07:30:00Z',
       type: 'downtime',
     },
     {
@@ -269,10 +276,10 @@ const retrievedTimeline = {
         name: 'super_admin',
       },
       content: 'My little ongoing dt',
-      date: '2020-06-20T06:57:00Z',
+      date: '2020-01-19T06:57:00Z',
       end_date: null,
       id: 6,
-      start_date: '2020-06-19T07:30:00Z',
+      start_date: '2020-01-19T07:30:00Z',
       type: 'downtime',
     },
     {
@@ -280,10 +287,54 @@ const retrievedTimeline = {
         name: 'admin',
       },
       content: 'My little comment',
-      date: '2020-06-20T06:55:00Z',
-      end_date: '2020-06-22T07:33:00Z',
+      date: '2020-01-19T06:55:00Z',
+      end_date: '2020-01-21T07:33:00Z',
       id: 7,
-      start_date: '2020-06-20T07:30:00Z',
+      start_date: '2020-01-19T07:30:00Z',
+      type: 'comment',
+    },
+    {
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little comment two',
+      date: '2020-01-18T06:55:00Z',
+      end_date: null,
+      id: 8,
+      start_date: null,
+      type: 'comment',
+    },
+    {
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little comment three',
+      date: '2020-01-01T06:55:00Z',
+      end_date: null,
+      id: 8,
+      start_date: null,
+      type: 'comment',
+    },
+    {
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little comment four',
+      date: '2019-06-10T06:55:00Z',
+      end_date: null,
+      id: 8,
+      start_date: null,
+      type: 'comment',
+    },
+    {
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little comment five',
+      date: '2018-10-10T06:55:00Z',
+      end_date: null,
+      id: 8,
+      start_date: null,
       type: 'comment',
     },
   ],
@@ -660,15 +711,21 @@ describe(Details, () => {
     );
   });
 
-  it('displays retrieved timeline events, grouped by date, and filtered by selected event types, when the Timeline tab is selected', async () => {
+  it.only('displays retrieved timeline events, grouped by date, and filtered by selected event types, when the Timeline tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText, getAllByText, getAllByLabelText, baseElement } =
-      renderDetails({
-        openTabId: timelineTabId,
-      });
+    const {
+      getByText,
+      getAllByText,
+      getAllByLabelText,
+      baseElement,
+      debug,
+      getByLabelText,
+    } = renderDetails({
+      openTabId: timelineTabId,
+    });
 
     act(() => {
       setSelectedServiceResource();
@@ -695,9 +752,11 @@ describe(Details, () => {
       ),
     );
 
-    expect(getByText('06/22/2020')).toBeInTheDocument();
+    debug(getByLabelText('test'), 100000);
 
-    expect(getByText('10:40 AM')).toBeInTheDocument();
+    expect(getByText(labelToday)).toBeInTheDocument();
+
+    expect(getByText('Tuesday, January 21, 2020 9:40 AM')).toBeInTheDocument();
     expect(getAllByLabelText('Event')).toHaveLength(3); // 2 events + 1 selected option
     expect(getByText('UP')).toBeInTheDocument();
     expect(getByText('Tries: 1')).toBeInTheDocument();
@@ -705,41 +764,70 @@ describe(Details, () => {
       getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;'),
     ).toBeInTheDocument();
 
-    expect(getByText('10:35 AM')).toBeInTheDocument();
+    expect(getByText('Tuesday, January 21, 2020 9:35 AM')).toBeInTheDocument();
     expect(getByText('DOWN')).toBeInTheDocument();
     expect(getByText('Tries: 3')).toBeInTheDocument();
     expect(
       getByText('INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;'),
     ).toBeInTheDocument();
 
-    expect(getByText('06/21/2020')).toBeInTheDocument();
+    expect(getByText(labelYesterday)).toBeInTheDocument();
 
-    expect(getByText('9:40 AM')).toBeInTheDocument();
+    expect(getByText('Monday, January 20, 2020 8:40 AM')).toBeInTheDocument();
     expect(getByText('My little notification'));
 
-    expect(getByText('06/20/2020')).toBeInTheDocument();
+    expect(getByText(labelThisWeek)).toBeInTheDocument();
+    expect(getByText('January 19, 2020')).toBeInTheDocument();
 
-    expect(getByText('9:35 AM')).toBeInTheDocument();
+    expect(getByText('Sunday, January 19, 2020 8:35 AM')).toBeInTheDocument();
     expect(getByText('My little ack'));
 
     expect(
-      getByText('From 06/20/2020 9:30 AM To 06/22/2020 9:33 AM'),
+      getByText(
+        'From Sunday, January 19, 2020 8:30 AM To Tuesday, January 21, 2020 8:33 AM',
+      ),
     ).toBeInTheDocument();
     expect(getByText('My little dt'));
 
-    expect(getByText('From 06/19/2020 9:30 AM')).toBeInTheDocument();
+    expect(
+      getByText('From Sunday, January 19, 2020 8:30 AM'),
+    ).toBeInTheDocument();
     expect(getByText('My little ongoing dt'));
 
-    expect(getByText('8:55 AM')).toBeInTheDocument();
+    expect(getByText('Sunday, January 19, 2020 7:55 AM')).toBeInTheDocument();
     expect(getByText('My little comment'));
 
-    const dateRegExp = /\d+\/\d+\/\d+$/;
+    expect(getByText(labelLastWeek)).toBeInTheDocument();
+    expect(
+      getByText('From January 12, 2020 to January 18, 2020'),
+    ).toBeInTheDocument();
+
+    expect(getByText('Saturday, January 18, 2020 7:55 AM')).toBeInTheDocument();
+    expect(getByText('My little comment two'));
+
+    expect(getByText(labelLastMonth)).toBeInTheDocument();
+    expect(
+      getByText('From December 15, 2019 to January 11, 2020'),
+    ).toBeInTheDocument();
+
+    expect(getByText('Wednesday, January 1, 2020 7:55 AM')).toBeInTheDocument();
+    expect(getByText('My little comment three'));
+
+    expect(getByText(labelLastYear)).toBeInTheDocument();
+    expect(
+      getByText('From December 16, 2018 to December 14, 2019'),
+    ).toBeInTheDocument();
+
+    expect(getByText('Monday, June 10, 2019 8:55 AM')).toBeInTheDocument();
+    expect(getByText('My little comment four'));
+
+    expect(getByText(labelBeforeTheLastYear)).toBeInTheDocument();
+    expect(getByText('From December 15, 2018')).toBeInTheDocument();
 
     expect(
-      getAllByText(dateRegExp)
-        .map((element) => element.textContent)
-        .filter((text) => text !== '06/23/2020'), // corresponds to one of the graph X Scale ticks
-    ).toEqual(['06/22/2020', '06/21/2020', '06/20/2020']);
+      getByText('Wednesday, October 10, 2018 8:55 AM'),
+    ).toBeInTheDocument();
+    expect(getByText('My little comment five'));
 
     const removeEventIcon = baseElement.querySelectorAll(
       'svg[class*="deleteIcon"]',

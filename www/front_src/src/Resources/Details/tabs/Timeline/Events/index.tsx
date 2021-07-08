@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import { equals, last, not, isEmpty } from 'ramda';
+import { equals, last, not, isEmpty, isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import dayjs, { Dayjs } from 'dayjs';
 
 import { Typography, Paper, makeStyles } from '@material-ui/core';
 import {
@@ -59,8 +60,10 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
 
   const lastEvent = last(timeline.sort(sortEventsByDate));
 
+  const formattedLocale = locale.substring(0, 2);
+
   return (
-    <div>
+    <div aria-label="test">
       {eventsByDateDivisions.map(
         ({
           label,
@@ -70,36 +73,37 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
         }): JSX.Element | null => {
           const eventsOfTheDivision = getEventsByDate({
             events: timeline,
-            locale: locale.substring(0, 2),
+            locale: formattedLocale,
           });
 
           if (isEmpty(eventsOfTheDivision)) {
             return null;
           }
 
-          const formattedStartDate = startDate && (
-            <Typography display="inline">
-              {[
+          const formattedStartDate = startDate
+            ? [
                 t(labelFrom),
                 format({
-                  date: startDate(locale).toISOString(),
+                  date: startDate(formattedLocale).toISOString(),
                   formatString: 'LL',
                 }),
-              ].join(' ')}
-            </Typography>
-          );
+              ]
+            : [];
 
-          const formattedEndDate = endDate && (
-            <Typography display="inline">
-              {[
+          const formattedDivisionDates = endDate
+            ? [
+                ...(formattedStartDate || []),
                 t(labelTo).toLowerCase(),
                 format({
-                  date: endDate(locale).toISOString(),
+                  date: endDate(formattedLocale).toISOString(),
                   formatString: 'LL',
                 }),
-              ].join(' ')}
-            </Typography>
-          );
+              ]
+            : formattedStartDate;
+
+          const areStartAndEndDateEquals =
+            not(isEmpty(formattedDivisionDates)) &&
+            equals(formattedDivisionDates[1], formattedDivisionDates[3]);
 
           return (
             <div key={label}>
@@ -107,7 +111,16 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                 <Typography display="inline" variant="h6">
                   {t(label)}
                   <span className={classes.divisionSubtitle}>
-                    {formattedStartDate} {formattedEndDate}
+                    <Typography display="inline">
+                      {areStartAndEndDateEquals
+                        ? format({
+                            date: (
+                              startDate?.(formattedLocale) as Dayjs
+                            )?.toISOString(),
+                            formatString: 'LL',
+                          })
+                        : formattedDivisionDates.join(' ')}
+                    </Typography>
                   </span>
                 </Typography>
                 <Timeline className={classes.timeline}>

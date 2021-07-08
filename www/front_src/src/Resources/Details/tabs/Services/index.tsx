@@ -84,7 +84,7 @@ const ServicesTabContent = ({
     request: listResources,
   });
 
-  const limit = graphMode ? 6 : 10;
+  const limit = graphMode ? 6 : 30;
 
   const sendListingRequest = ({
     atPage,
