@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import { prop, isNil } from 'ramda';
+import { prop, isNil, filter, sortBy, pipe, sort } from 'ramda';
 import { TFunction, useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 
 import { makeStyles, Chip, Typography } from '@material-ui/core';
 import EventIcon from '@material-ui/icons/Event';
@@ -93,13 +94,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
+  displayFullDate?: boolean;
   event: TimelineEvent;
 }
 
-const Date = ({ event }: Props): JSX.Element => {
-  const { toTime } = useLocaleDateTimeFormat();
+const Date = ({ event, displayFullDate }: Props): JSX.Element => {
+  const { toTime, toDateTime } = useLocaleDateTimeFormat();
 
-  return <Typography variant="caption">{toTime(event.date)}</Typography>;
+  const parseDate = displayFullDate ? toDateTime : toTime;
+
+  return <Typography variant="caption">{parseDate(event.date)}</Typography>;
 };
 
 const Author = ({ event }: Props): JSX.Element => {
@@ -118,7 +122,7 @@ const Author = ({ event }: Props): JSX.Element => {
   );
 };
 
-const EventTimelineEvent = ({ event }: Props): JSX.Element => {
+const EventTimelineEvent = ({ event, displayFullDate }: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
 
@@ -126,7 +130,7 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
     <div className={classes.event}>
       <div className={classes.info}>
         <div className={classes.infoHeader}>
-          <Date event={event} />
+          <Date displayFullDate={displayFullDate} event={event} />
           <CompactStatusChip
             label={t(event.status?.name as string)}
             severityCode={event.status?.severity_code as number}
@@ -146,14 +150,17 @@ const EventTimelineEvent = ({ event }: Props): JSX.Element => {
   );
 };
 
-const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
+const CommentTimelineEvent = ({
+  event,
+  displayFullDate,
+}: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
       <div className={classes.info}>
         <div className={classes.infoHeader}>
-          <Date event={event} />
+          <Date displayFullDate={displayFullDate} event={event} />
           <div className={classes.title}>
             <Author event={event} />
           </div>
@@ -164,14 +171,17 @@ const CommentTimelineEvent = ({ event }: Props): JSX.Element => {
   );
 };
 
-const AcknowledgeTimelineEvent = ({ event }: Props): JSX.Element => {
+const AcknowledgeTimelineEvent = ({
+  event,
+  displayFullDate,
+}: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
       <div className={classes.info}>
         <div className={classes.infoHeader}>
-          <Date event={event} />
+          <Date displayFullDate={displayFullDate} event={event} />
           <div className={classes.title}>
             <Author event={event} />
           </div>
@@ -216,14 +226,17 @@ const DowntimeTimelineEvent = ({ event }: Props): JSX.Element => {
   );
 };
 
-const NotificationTimelineEvent = ({ event }: Props): JSX.Element => {
+const NotificationTimelineEvent = ({
+  event,
+  displayFullDate,
+}: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
     <div className={classes.event}>
       <div className={classes.info}>
         <div className={classes.infoHeader}>
-          <Date event={event} />
+          <Date displayFullDate={displayFullDate} event={event} />
           <div className={classes.title}>
             <Author event={event} />
           </div>
@@ -260,4 +273,56 @@ const TimelineIconByType = {
   ),
 };
 
-export { TimelineEventByType, types, getTypeIds, TimelineIconByType };
+const sortEventsByDate = (
+  { date: prevDate }: TimelineEvent,
+  { date: nextDate }: TimelineEvent,
+): number => dayjs(nextDate).valueOf() - dayjs(prevDate).valueOf();
+
+const eventsByDateDivision = [
+  {
+    displayFullDate: false,
+    getEventsByDate: ({ events }): Array<TimelineEvent> =>
+      (
+        filter(
+          ({ date }) => dayjs(date).isToday(),
+          events,
+        ) as Array<TimelineEvent>
+      ).sort(sortEventsByDate),
+    label: 'Today',
+  },
+  {
+    displayFullDate: false,
+    getEventsByDate: ({ events }): Array<TimelineEvent> =>
+      (
+        filter(
+          ({ date }) => dayjs(date).isYesterday(),
+          events,
+        ) as Array<TimelineEvent>
+      ).sort(sortEventsByDate),
+    label: 'Yesterday',
+  },
+  {
+    displayFullDate: true,
+    getEventsByDate: ({ events, locale }): Array<TimelineEvent> =>
+      (
+        filter(
+          ({ date }) =>
+            dayjs(date).isBetween(
+              dayjs().locale(locale).weekday(-7),
+              dayjs().subtract(2, 'day'),
+            ),
+          events,
+        ) as Array<TimelineEvent>
+      ).sort(sortEventsByDate),
+    label: 'This week',
+  },
+];
+
+export {
+  TimelineEventByType,
+  types,
+  getTypeIds,
+  TimelineIconByType,
+  eventsByDateDivision,
+  sortEventsByDate,
+};

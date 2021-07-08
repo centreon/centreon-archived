@@ -1,17 +1,6 @@
 import * as React from 'react';
 
-import {
-  reduceBy,
-  pipe,
-  prop,
-  toPairs,
-  sortWith,
-  descend,
-  head,
-  equals,
-  last,
-  not,
-} from 'ramda';
+import { equals, last, not, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Typography, Paper, makeStyles } from '@material-ui/core';
@@ -24,10 +13,15 @@ import {
   TimelineSeparator,
 } from '@material-ui/lab';
 
-import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { TimelineEvent } from '../models';
-import { TimelineEventByType, TimelineIconByType, types } from '../Event';
+import {
+  eventsByDateDivision,
+  TimelineEventByType,
+  TimelineIconByType,
+  sortEventsByDate,
+} from '../Event';
 
 const useStyles = makeStyles((theme) => ({
   event: {
@@ -47,8 +41,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type DateEvents = Array<[string, Array<TimelineEvent>]>;
-
 interface Props {
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
   timeline: Array<TimelineEvent>;
@@ -56,63 +48,71 @@ interface Props {
 
 const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
   const classes = useStyles();
-  const { toDate } = useLocaleDateTimeFormat();
   const { t } = useTranslation();
+  const { locale } = useUserContext();
 
-  const eventsByDate = pipe(
-    reduceBy<TimelineEvent, Array<TimelineEvent>>(
-      (acc, event) => acc.concat(event),
-      [],
-      pipe(prop('date'), toDate),
-    ),
-    toPairs,
-    sortWith([descend(pipe(head, Date.parse))]),
-  )(timeline) as DateEvents;
-
-  const dates = eventsByDate.map(head);
+  const lastEvent = last(timeline.sort(sortEventsByDate));
 
   return (
     <div>
-      {eventsByDate.map(([date, events]): JSX.Element => {
-        const isLastDate = equals(last(dates), date);
+      {eventsByDateDivision.map(
+        ({ label, getEventsByDate, displayFullDate }): JSX.Element | null => {
+          const eventsOfTheDivision = getEventsByDate({
+            events: timeline,
+            locale,
+          });
 
-        return (
-          <div key={date}>
-            <div className={classes.events}>
-              <Typography variant="h6">{date}</Typography>
-              <Timeline className={classes.timeline}>
-                {events.map((event) => {
-                  const { id, type } = event;
+          if (isEmpty(eventsOfTheDivision)) {
+            return null;
+          }
 
-                  const Event = TimelineEventByType[type];
+          return (
+            <div key={label}>
+              <div className={classes.events}>
+                <Typography variant="h6">{label}</Typography>
+                <Timeline className={classes.timeline}>
+                  {eventsOfTheDivision.map((event) => {
+                    const { id, type } = event;
 
-                  const icon = TimelineIconByType[type];
+                    const Event = TimelineEventByType[type];
 
-                  const isNotLastEvent = not(equals(event, last(events)));
+                    const icon = TimelineIconByType[type];
 
-                  return (
-                    <TimelineItem
-                      className={classes.event}
-                      key={`${id}-${type}`}
-                    >
-                      <TimelineSeparator>
-                        <TimelineDot variant="outlined">{icon(t)}</TimelineDot>
-                        {isNotLastEvent && <TimelineConnector />}
-                      </TimelineSeparator>
-                      <TimelineContent>
-                        <Paper>
-                          <Event event={event} />
-                        </Paper>
-                      </TimelineContent>
-                    </TimelineItem>
-                  );
-                })}
-              </Timeline>
+                    const isNotLastEvent = not(
+                      equals(event, last(eventsOfTheDivision)),
+                    );
+
+                    return (
+                      <TimelineItem
+                        className={classes.event}
+                        key={`${id}-${type}`}
+                      >
+                        <TimelineSeparator>
+                          <TimelineDot variant="outlined">
+                            {icon(t)}
+                          </TimelineDot>
+                          {isNotLastEvent && <TimelineConnector />}
+                        </TimelineSeparator>
+                        <TimelineContent>
+                          <Paper>
+                            <Event
+                              displayFullDate={displayFullDate}
+                              event={event}
+                            />
+                          </Paper>
+                          {equals(lastEvent, event) && (
+                            <div ref={infiniteScrollTriggerRef} />
+                          )}
+                        </TimelineContent>
+                      </TimelineItem>
+                    );
+                  })}
+                </Timeline>
+              </div>
             </div>
-            {isLastDate && <div ref={infiniteScrollTriggerRef} />}
-          </div>
-        );
-      })}
+          );
+        },
+      )}
     </div>
   );
 };
