@@ -40,8 +40,7 @@ interface SessionRepositoryInterface
     /**
      * Insert token into session table.
      *
-     * @param string $token
-     * @param integer $contactId
+     * @param Session $session
      */
     public function addSession(Session $session): void;
 }

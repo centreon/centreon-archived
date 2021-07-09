@@ -70,7 +70,7 @@ class LocalProvider implements ProviderInterface
     private $optionService;
 
     /**
-     * @var \Centreon|null
+     * @var \Centreon
      */
     private $legacySession;
 
@@ -231,13 +231,13 @@ class LocalProvider implements ProviderInterface
         $this->debug((string) $this->sessionExpirationDelay);
         $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
         if (!empty($sessionExpireOption)) {
-            $this->expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();
+            $this->sessionExpirationDelay = (int) $sessionExpireOption[0]->getValue();
         }
         return new ProviderToken(
             null,
             $token,
             new \DateTime(),
-            (new \DateTime())->add(new \DateInterval('PT' . $this->expirationSessionDelay . 'M'))
+            (new \DateTime())->add(new \DateInterval('PT' . $this->sessionExpirationDelay . 'M'))
         );
     }
 

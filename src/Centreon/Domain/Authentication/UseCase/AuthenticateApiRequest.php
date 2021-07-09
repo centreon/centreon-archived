@@ -35,7 +35,8 @@ class AuthenticateApiRequest
     private $password;
 
     /**
-     * @param array<string,mixed> $credentials
+     * @param string $login
+     * @param string $password
      */
     public function __construct(string $login, string $password)
     {

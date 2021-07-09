@@ -27,6 +27,10 @@ use Security\Domain\Authentication\Model\ProviderConfiguration;
 
 class ProviderConfigurationFactoryRdb
 {
+    /**
+     * @param array<string,mixed> $data
+     * @return ProviderConfiguration
+     */
     public static function create(array $data): ProviderConfiguration
     {
         $mandatoryFields = ['id', 'type', 'name', 'is_active', 'is_forced'];

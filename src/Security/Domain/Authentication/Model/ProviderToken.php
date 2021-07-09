@@ -52,7 +52,7 @@ class ProviderToken
      *
      * @param int|null $id
      * @param string $token
-     * @param \DateTime|null $creationDate
+     * @param \DateTime $creationDate
      * @param \DateTime|null $expirationDate
      */
     public function __construct(
@@ -86,7 +86,7 @@ class ProviderToken
     /**
      * @return \DateTime
      */
-    public function getCreationDate(): ?\DateTime
+    public function getCreationDate(): \DateTime
     {
         return $this->creationDate;
     }

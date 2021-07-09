@@ -2389,8 +2389,8 @@ CREATE TABLE `provider_configuration` (
 CREATE TABLE `security_token` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `token` varchar(255) NOT NULL,
-  `creation_date` bigint(11) UNSIGNED NOT NULL,
-  `expiration_date` bigint(11) UNSIGNED DEFAULT NULL,
+  `creation_date` bigint UNSIGNED NOT NULL,
+  `expiration_date` bigint UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -375,7 +375,9 @@ class Authenticate
                         (int) $redirectionPageParameters['p']
                     );
                     unset($redirectionPageParameters['p']);
-                    $refererRedirectionPage->setUrlOptions('&' . http_build_query($redirectionPageParameters));
+                    if ($refererRedirectionPage !== null) {
+                        $refererRedirectionPage->setUrlOptions('&' . http_build_query($redirectionPageParameters));
+                    }
                 }
             }
         }
@@ -384,7 +386,14 @@ class Authenticate
     }
 
     /**
-     * @inheritDoc
+     * create Authentication tokens.
+     *
+     * @param string $sessionToken
+     * @param string $providerConfigurationName
+     * @param ContactInterface $contact
+     * @param ProviderToken $providerToken
+     * @param ProviderToken|null $providerRefreshToken
+     * @return void
      */
     private function createAuthenticationTokens(
         string $sessionToken,
