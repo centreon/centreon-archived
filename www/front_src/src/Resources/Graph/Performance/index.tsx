@@ -22,7 +22,13 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Typography, Theme } from '@material-ui/core';
+import {
+  makeStyles,
+  Typography,
+  Theme,
+  MenuItem,
+  Menu,
+} from '@material-ui/core';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
 import { Skeleton } from '@material-ui/lab';
 
@@ -40,7 +46,10 @@ import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
 import {
+  labelAsDisplayed,
   labelExportToPng,
+  labelSmallSize,
+  labelMediumSize,
   labelNoDataForThisPeriod,
 } from '../../translatedLabels';
 import {
@@ -67,6 +76,7 @@ import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
+  displayCompleteGraph?: () => void;
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
   endpoint?: string;
@@ -150,6 +160,7 @@ const PerformanceGraph = ({
   displayTitle = true,
   limitLegendRows,
   isInViewport = true,
+  displayCompleteGraph,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -165,6 +176,14 @@ const PerformanceGraph = ({
   const [exporting, setExporting] = React.useState<boolean>(false);
   const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = React.useRef<number>(0);
+  const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
+
+  const openSizeExportMenu = (event: React.MouseEvent): void => {
+    setMenuAnchor(event.currentTarget);
+  };
+  const closeSizeExportMenu = (): void => {
+    setMenuAnchor(null);
+  };
 
   const { selectedResourceId } = useResourceContext();
 
@@ -336,10 +355,12 @@ const PerformanceGraph = ({
     });
   };
 
-  const convertToPng = (): void => {
+  const convertToPng = (ratio: number): void => {
+    setMenuAnchor(null);
     setExporting(true);
     exportToPng({
       element: performanceGraphRef.current as HTMLElement,
+      ratio,
       title: `${resource?.name}-performance`,
     }).finally(() => {
       setExporting(false);
@@ -378,14 +399,32 @@ const PerformanceGraph = ({
                 loading={exporting}
                 loadingIndicatorSize={16}
               >
-                <IconButton
-                  disableTouchRipple
-                  disabled={isNil(timeline)}
-                  title={t(labelExportToPng)}
-                  onClick={convertToPng}
-                >
-                  <SaveAsImageIcon style={{ fontSize: 18 }} />
-                </IconButton>
+                <>
+                  <IconButton
+                    disableTouchRipple
+                    disabled={isNil(timeline)}
+                    title={t(labelExportToPng)}
+                    onClick={openSizeExportMenu}
+                  >
+                    <SaveAsImageIcon style={{ fontSize: 18 }} />
+                  </IconButton>
+                  <Menu
+                    keepMounted
+                    anchorEl={menuAnchor}
+                    open={Boolean(menuAnchor)}
+                    onClose={closeSizeExportMenu}
+                  >
+                    <MenuItem onClick={() => convertToPng(1)}>
+                      {t(labelAsDisplayed)}
+                    </MenuItem>
+                    <MenuItem onClick={() => convertToPng(0.75)}>
+                      {t(labelMediumSize)}
+                    </MenuItem>
+                    <MenuItem onClick={() => convertToPng(0.5)}>
+                      {t(labelSmallSize)}
+                    </MenuItem>
+                  </Menu>
+                </>
               </ContentWithCircularLoading>
             </div>
           </div>
@@ -423,6 +462,7 @@ const PerformanceGraph = ({
         <div className={classes.legend}>
           <Legend
             base={base as number}
+            displayCompleteGraph={displayCompleteGraph}
             limitLegendRows={limitLegendRows}
             lines={sortedLines}
             toggable={toggableLegend}

@@ -91,7 +91,7 @@ class CentreonUserLog
          * Display error on Standard exit
          */
         if ($print) {
-            print $str;
+            print htmlspecialchars($str);
         }
 
         /*
