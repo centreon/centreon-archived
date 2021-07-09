@@ -91,7 +91,7 @@ interface Props<TEntity> {
   loadingSkeleton: JSX.Element;
   preventReloadWhen?: boolean;
   reloadDependencies?: Array<unknown>;
-  sendListingRequest: (parameters: {
+  sendListingRequest?: (parameters: {
     atPage?: number;
   }) => Promise<ListingModel<TEntity>>;
 }
@@ -127,8 +127,8 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
     { atPage } = {
       atPage: page,
     },
-  ): Promise<ListingModel<TEntity>> => {
-    return sendListingRequest({ atPage })
+  ): Promise<ListingModel<TEntity>> | undefined => {
+    return sendListingRequest?.({ atPage })
       .then((retrievedListing) => {
         const { meta } = retrievedListing;
         setTotal(meta.total);
@@ -142,7 +142,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
 
   const reload = (): void => {
     setPage(1);
-    listEntities({ atPage: 1 }).then(({ result }) => {
+    listEntities({ atPage: 1 })?.then(({ result }) => {
       setEntities(result);
     });
   };
@@ -164,7 +164,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       return;
     }
 
-    listEntities().then(({ result }) => {
+    listEntities()?.then(({ result }) => {
       setEntities(concat(entities, result));
     });
   }, [page]);

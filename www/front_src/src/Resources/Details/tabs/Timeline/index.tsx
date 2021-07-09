@@ -124,7 +124,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
         selectedTypes,
         selectedTimePeriod?.id || customTimePeriod,
       ]}
-      sendListingRequest={listTimeline}
+      sendListingRequest={isNil(timelineEndpoint) ? undefined : listTimeline}
     >
       {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
         return (
