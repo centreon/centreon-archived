@@ -34,7 +34,7 @@ use PHPUnit\Framework\TestCase;
 class ApiAuthenticationFactoryTest extends TestCase
 {
     /**
-     * @var array<string, string|int> $rdbData
+     * @var array<string, array<int|string>> $responseData
      */
     private $responseData;
 
