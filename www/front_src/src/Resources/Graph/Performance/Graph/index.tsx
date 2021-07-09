@@ -26,6 +26,7 @@ import {
   fade,
   useTheme,
   CircularProgress,
+  Tooltip,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
@@ -47,7 +48,10 @@ import {
   hasUnitStackedLines,
 } from '../timeSeries';
 import Lines from '../Lines';
-import { labelAddComment } from '../../../translatedLabels';
+import {
+  labelActionNotPermitted,
+  labelAddComment,
+} from '../../../translatedLabels';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
@@ -66,7 +70,6 @@ import TimeShiftZones, {
   TimeShiftDirection,
 } from './TimeShiftZones';
 import { useMetricsValueContext } from './useMetricsValue';
-import AnchorPoints from './AnchorPoints';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -175,7 +178,7 @@ const getScale = ({
   });
 };
 
-const bisectDate = bisector(identity).center;
+export const bisectDate = bisector(identity).center;
 
 const GraphContent = ({
   width,
@@ -206,8 +209,9 @@ const GraphContent = ({
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
-  const [zoomPivotPosition, setZoomPivotPosition] =
-    React.useState<number | null>(null);
+  const [zoomPivotPosition, setZoomPivotPosition] = React.useState<
+    number | null
+  >(null);
   const [zoomBoundaries, setZoomBoundaries] =
     React.useState<ZoomBoundaries | null>(null);
   const { canComment } = useAclQuery();
@@ -387,7 +391,7 @@ const GraphContent = ({
   const displayAddCommentTooltip = (event): void => {
     setZoomBoundaries(null);
     setZoomPivotPosition(null);
-    if (!canComment([resource]) || isNil(onAddComment)) {
+    if (isNil(onAddComment)) {
       return;
     }
 
@@ -447,7 +451,15 @@ const GraphContent = ({
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
   );
 
-  const timeValue = getTimeValue(mousePosition?.[0] || 0);
+  const mousePositionTimeTick = mousePosition
+    ? getTimeValue(mousePosition[0]).timeTick
+    : 0;
+
+  const timeTick = containsMetrics ? new Date(mousePositionTimeTick) : null;
+
+  const isCommentPermitted = canComment([resource]);
+
+  const commentTitle = isCommentPermitted ? '' : t(labelActionNotPermitted);
 
   return (
     <AnnotationsContext.Provider value={annotations}>
@@ -488,6 +500,7 @@ const GraphContent = ({
                 lines={lines}
                 rightScale={rightScale}
                 timeSeries={timeSeries}
+                timeTick={timeTick}
                 xScale={xScale}
               />
               {displayEventAnnotations && (
@@ -507,13 +520,6 @@ const GraphContent = ({
               />
               {containsMetrics && (
                 <>
-                  <AnchorPoints
-                    leftScale={leftScale}
-                    lines={lines}
-                    rightScale={rightScale}
-                    timeValue={timeValue}
-                    xScale={xScale}
-                  />
                   <Line
                     from={{ x: mousePositionX, y: 0 }}
                     pointerEvents="none"
@@ -572,14 +578,19 @@ const GraphContent = ({
                   formatString: dateTimeFormat,
                 })}
               </Typography>
-              <Button
-                className={classes.addCommentButton}
-                color="primary"
-                size="small"
-                onClick={prepareAddComment}
-              >
-                {t(labelAddComment)}
-              </Button>
+              <Tooltip title={commentTitle}>
+                <div>
+                  <Button
+                    className={classes.addCommentButton}
+                    color="primary"
+                    disabled={!isCommentPermitted}
+                    size="small"
+                    onClick={prepareAddComment}
+                  >
+                    {t(labelAddComment)}
+                  </Button>
+                </div>
+              </Tooltip>
             </Paper>
           )}
           {addingComment && (

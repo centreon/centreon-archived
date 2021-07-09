@@ -16144,3 +16144,18 @@ msgstr "Au moins une colonne doit être sélectionnée"
 
 msgid "The duration must be lesser than a year"
 msgstr "La durée doit être inférieure à une année"
+
+msgid "As displayed"
+msgstr "Comme affiché"
+
+msgid "Medium size"
+msgstr "Taille moyenne"
+
+msgid "Display the complete graph"
+msgstr "Afficher le graphe complet"
+
+msgid "Small size"
+msgstr "Petite Taille"
+
+msgid "Action not permitted"
+msgstr "Action non autorisée"

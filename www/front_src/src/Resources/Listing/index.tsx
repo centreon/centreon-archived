@@ -44,7 +44,7 @@ const ResourceListing = (): JSX.Element => {
     setResourcesToSetDowntime,
     setResourcesToCheck,
     sending,
-    setCriteria,
+    setCriteriaAndNewFilter,
     getCriteriaValue,
     selectedColumnIds,
     setSelectedColumnIds,
@@ -53,7 +53,7 @@ const ResourceListing = (): JSX.Element => {
   const { initAutorefreshAndLoad } = useLoadResources();
 
   const changeSort = ({ sortField, sortOrder }): void => {
-    setCriteria({ name: 'sort', value: [sortField, sortOrder] });
+    setCriteriaAndNewFilter({ name: 'sort', value: [sortField, sortOrder] });
   };
 
   const changeLimit = (value): void => {

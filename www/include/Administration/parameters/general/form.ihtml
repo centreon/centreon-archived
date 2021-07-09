@@ -176,23 +176,29 @@
     </tr>
     <tr class="list_two">
         <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_login_claim">{$form.openid_connect_login_claim.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_login_claim.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
             <img class="helpTooltip" name="openid_connect_redirect_url">{$form.openid_connect_redirect_url.label}
         </td>
         <td class="FormRowValue">{$form.openid_connect_redirect_url.html}</td>
     </tr>
-    <tr class="list_one">
+    <tr class="list_two">
         <td class="FormRowField">
             <img class="helpTooltip" name="openid_connect_client_id">{$form.openid_connect_client_id.label}
         </td>
         <td class="FormRowValue">{$form.openid_connect_client_id.html}</td>
     </tr>
-    <tr class="list_two">
+    <tr class="list_one">
         <td class="FormRowField">
             <img class="helpTooltip" name="openid_connect_client_secret">{$form.openid_connect_client_secret.label}
         </td>
         <td class="FormRowValue">{$form.openid_connect_client_secret.html}</td>
     </tr>
-    <tr class="list_one">
+    <tr class="list_two">
         <td class="FormRowField">
             <img class="helpTooltip" name="openid_connect_client_basic_auth">{$form.openid_connect_client_basic_auth.label}
         </td>

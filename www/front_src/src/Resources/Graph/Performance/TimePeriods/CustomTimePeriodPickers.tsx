@@ -115,7 +115,7 @@ const CustomTimePeriodPickers = ({
   const { t } = useTranslation();
   const { locale } = useUserContext();
   const { format } = useLocaleDateTimeFormat();
-  const Adapter = useDateTimePickerAdapter();
+  const { Adapter, isMeridianFormat } = useDateTimePickerAdapter();
 
   const isInvalidDate = ({ startDate, endDate }) =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
@@ -227,7 +227,10 @@ const CustomTimePeriodPickers = ({
               <div aria-label={t(labelStartDate)}>
                 <DateTimePickerInput
                   changeDate={changeDate}
-                  commonPickersProps={commonPickersProps}
+                  commonPickersProps={{
+                    ...commonPickersProps,
+                    ampm: isMeridianFormat(start),
+                  }}
                   date={start}
                   maxDate={customTimePeriod.end}
                   property={CustomTimePeriodProperty.start}
@@ -240,7 +243,10 @@ const CustomTimePeriodPickers = ({
               <div aria-label={t(labelEndDate)}>
                 <DateTimePickerInput
                   changeDate={changeDate}
-                  commonPickersProps={commonPickersProps}
+                  commonPickersProps={{
+                    ...commonPickersProps,
+                    ampm: isMeridianFormat(end),
+                  }}
                   date={end}
                   minDate={customTimePeriod.start}
                   property={CustomTimePeriodProperty.end}

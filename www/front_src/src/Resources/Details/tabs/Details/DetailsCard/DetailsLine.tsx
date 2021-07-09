@@ -21,7 +21,7 @@ const DetailsLine = ({ line }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <ParentSize>
+    <ParentSize parentSizeStyles={{ height: 'auto' }}>
       {({ width }): JSX.Element => (
         <Typography component="div">
           <Box

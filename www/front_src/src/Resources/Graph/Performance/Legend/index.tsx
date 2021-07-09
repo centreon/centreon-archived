@@ -1,7 +1,16 @@
 import * as React from 'react';
 
 import clsx from 'clsx';
-import { equals, find, includes, propOr, split } from 'ramda';
+import {
+  equals,
+  find,
+  gt,
+  includes,
+  length,
+  propOr,
+  slice,
+  split,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,14 +21,21 @@ import {
   Theme,
   Tooltip,
   Box,
+  Button,
 } from '@material-ui/core';
+import BarChartIcon from '@material-ui/icons/BarChart';
 
 import { ResourceContext, useResourceContext } from '../../../Context';
 import { Line } from '../models';
 import memoizeComponent from '../../../memoizedComponent';
 import { useMetricsValueContext } from '../Graph/useMetricsValue';
 import formatMetricValue from '../formatMetricValue/index';
-import { labelAvg, labelMax, labelMin } from '../../../translatedLabels';
+import {
+  labelAvg,
+  labelDisplayCompleteGraph,
+  labelMax,
+  labelMin,
+} from '../../../translatedLabels';
 
 import LegendMarker from './Marker';
 
@@ -27,6 +43,8 @@ interface MakeStylesProps {
   limitLegendRows: boolean;
   panelWidth: number;
 }
+
+const maxLinesDisplayed = 12;
 
 const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   caption: ({ panelWidth }) => ({
@@ -50,7 +68,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
     gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
     justifyContent: 'center',
     marginLeft: theme.spacing(0.5),
-    maxHeight: limitLegendRows ? theme.spacing(16) : 'unset',
+    maxHeight: limitLegendRows ? theme.spacing(28) : 'unset',
     overflowY: 'auto',
     width: '100%',
   }),
@@ -80,6 +98,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
 
 interface Props {
   base: number;
+  displayCompleteGraph?: () => void;
   limitLegendRows?: boolean;
   lines: Array<Line>;
   onClearHighlight: () => void;
@@ -106,6 +125,7 @@ const LegendContent = ({
   panelWidth,
   base,
   limitLegendRows = false,
+  displayCompleteGraph,
 }: LegendContentProps): JSX.Element => {
   const classes = useStyles({ limitLegendRows, panelWidth });
   const theme = useTheme();
@@ -139,102 +159,121 @@ const LegendContent = ({
       value,
     }) || 'N/A';
 
+  const displayedLines = limitLegendRows
+    ? slice(0, maxLinesDisplayed, lines)
+    : lines;
+
+  const hasMoreLines = limitLegendRows && gt(length(lines), maxLinesDisplayed);
+
   return (
-    <div className={classes.items}>
-      {lines.map((line) => {
-        const { color, name, display, metric: metricLine, highlight } = line;
+    <>
+      <div className={classes.items}>
+        {displayedLines.map((line) => {
+          const { color, name, display, metric: metricLine, highlight } = line;
 
-        const markerColor = display
-          ? color
-          : fade(theme.palette.text.disabled, 0.2);
+          const markerColor = display
+            ? color
+            : fade(theme.palette.text.disabled, 0.2);
 
-        const metric = find(
-          equals(line.metric),
-          propOr([], 'metrics', metricsValue),
-        );
+          const metric = find(
+            equals(line.metric),
+            propOr([], 'metrics', metricsValue),
+          );
 
-        const formattedValue =
-          metric && getFormattedMetricData(metric)?.formattedValue;
+          const formattedValue =
+            metric && getFormattedMetricData(metric)?.formattedValue;
 
-        const minMaxAvg = [
-          {
-            label: labelMin,
-            value: line.minimum_value,
-          },
-          {
-            label: labelMax,
-            value: line.maximum_value,
-          },
-          {
-            label: labelAvg,
-            value: line.average_value,
-          },
-        ];
+          const minMaxAvg = [
+            {
+              label: labelMin,
+              value: line.minimum_value,
+            },
+            {
+              label: labelMax,
+              value: line.maximum_value,
+            },
+            {
+              label: labelAvg,
+              value: line.average_value,
+            },
+          ];
 
-        const selectMetricLine = (event: React.MouseEvent): void => {
-          if (!toggable) {
-            return;
-          }
+          const selectMetricLine = (event: React.MouseEvent): void => {
+            if (!toggable) {
+              return;
+            }
 
-          if (event.ctrlKey || event.metaKey) {
-            onToggle(metricLine);
-            return;
-          }
+            if (event.ctrlKey || event.metaKey) {
+              onToggle(metricLine);
+              return;
+            }
 
-          onSelect(metricLine);
-        };
+            onSelect(metricLine);
+          };
 
-        return (
-          <Box
-            className={clsx(
-              classes.item,
-              highlight ? classes.highlight : classes.normal,
-              toggable && classes.toggable,
-            )}
-            key={name}
-            onClick={selectMetricLine}
-            onMouseEnter={(): void => onHighlight(metricLine)}
-            onMouseLeave={(): void => onClearHighlight()}
-          >
-            <LegendMarker color={markerColor} disabled={!display} />
-            <div className={classes.legendData}>
-              <div>
-                {getLegendName(line)}
-                <Typography
-                  className={classes.caption}
-                  component="p"
-                  variant="caption"
-                >
-                  {line.unit && `(${line.unit})`}
-                </Typography>
-              </div>
-              {formattedValue ? (
-                <Typography className={classes.legendValue} variant="h6">
-                  {formattedValue}
-                </Typography>
-              ) : (
-                <div className={classes.minMaxAvgContainer}>
-                  {minMaxAvg.map(({ label, value }) => (
-                    <div aria-label={t(label)} key={label}>
-                      <Typography variant="caption">{t(label)}: </Typography>
-                      <Typography
-                        className={classes.minMaxAvgValue}
-                        variant="caption"
-                      >
-                        {getMetricValue({
-                          unit: line.unit,
-                          value,
-                        })}
-                      </Typography>
-                    </div>
-                  ))}
-                </div>
+          return (
+            <Box
+              className={clsx(
+                classes.item,
+                highlight ? classes.highlight : classes.normal,
+                toggable && classes.toggable,
               )}
-            </div>
-          </Box>
-        );
-      })}
-    </div>
+              key={name}
+              onClick={selectMetricLine}
+              onMouseEnter={(): void => onHighlight(metricLine)}
+              onMouseLeave={(): void => onClearHighlight()}
+            >
+              <LegendMarker color={markerColor} disabled={!display} />
+              <div className={classes.legendData}>
+                <div>
+                  {getLegendName(line)}
+                  <Typography
+                    className={classes.caption}
+                    component="p"
+                    variant="caption"
+                  >
+                    {line.unit && `(${line.unit})`}
+                  </Typography>
+                </div>
+                {formattedValue ? (
+                  <Typography className={classes.legendValue} variant="h6">
+                    {formattedValue}
+                  </Typography>
+                ) : (
+                  <div className={classes.minMaxAvgContainer}>
+                    {minMaxAvg.map(({ label, value }) => (
+                      <div aria-label={t(label)} key={label}>
+                        <Typography variant="caption">{t(label)}: </Typography>
+                        <Typography
+                          className={classes.minMaxAvgValue}
+                          variant="caption"
+                        >
+                          {getMetricValue({
+                            unit: line.unit,
+                            value,
+                          })}
+                        </Typography>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Box>
+          );
+        })}
+      </div>
+      {hasMoreLines && (
+        <Button
+          fullWidth
+          color="primary"
+          size="small"
+          onClick={displayCompleteGraph}
+        >
+          <BarChartIcon fontSize="small" />
+          {t(labelDisplayCompleteGraph)}
+        </Button>
+      )}
+    </>
   );
 };
 

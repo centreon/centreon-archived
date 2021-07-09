@@ -2,9 +2,6 @@ import * as React from 'react';
 
 import { pick } from 'ramda';
 
-import { Grid, Chip, Tooltip } from '@material-ui/core';
-import FlappingIcon from '@material-ui/icons/SwapCalls';
-
 import ChecksIcon from '../../../../ChecksIcon';
 import {
   labelCurrentStateDuration,
@@ -15,8 +12,6 @@ import {
   labelNextCheck,
   labelCheckDuration,
   labelLatency,
-  labelResourceFlapping,
-  labelPercentStateChange,
   labelLastNotification,
   labelCurrentNotificationNumber,
   labelFqdn,
@@ -24,11 +19,13 @@ import {
   labelGroups,
   labelCalculationType,
   labelCheck,
-  labelFlapping,
+  labelPercentStateChange,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 
 import DetailsLine from './DetailsLine';
+import PercentStateChangeCard from './PercentStateChangeCard';
+import Groups from './Groups';
 
 interface DetailCardLine {
   active?: boolean;
@@ -43,10 +40,10 @@ interface DetailCardLineProps {
   t: (label: string) => string;
   toDateTime: (date: string | Date) => string;
 }
+
 const getDetailCardLines = ({
   details,
   toDateTime,
-  t,
 }: DetailCardLineProps): Array<DetailCardLine> => {
   const checksDisabled =
     details.active_checks === false && details.passive_checks === false;
@@ -115,17 +112,8 @@ const getDetailCardLines = ({
       title: labelLatency,
     },
     {
-      field: details.flapping ? true : undefined,
-      line: (
-        <Tooltip title={t(labelResourceFlapping)}>
-          <FlappingIcon color="primary" />
-        </Tooltip>
-      ),
-      title: labelFlapping,
-    },
-    {
       field: details.percent_state_change,
-      line: <DetailsLine line={`${details.percent_state_change}%`} />,
+      line: <PercentStateChangeCard details={details} />,
       title: labelPercentStateChange,
     },
     {
@@ -145,17 +133,7 @@ const getDetailCardLines = ({
     },
     {
       field: details.groups,
-      line: (
-        <Grid container spacing={1}>
-          {details.groups?.map((group) => {
-            return (
-              <Grid item key={group.name}>
-                <Chip label={group.name} />
-              </Grid>
-            );
-          })}
-        </Grid>
-      ),
+      line: <Groups details={details} />,
       title: labelGroups,
       xs: 12,
     },
