@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Menu\Model\Page;
 use Centreon\Domain\Authentication\Model\Credentials;
 use Security\Domain\Authentication\Model\ProviderToken;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
@@ -38,8 +39,10 @@ use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 
 /**
  * @package Tests\Centreon\Domain\Authentication\UseCase
@@ -96,6 +99,16 @@ class AuthenticateTest extends TestCase
      */
     private $authenticationRepository;
 
+    /**
+     * @var SessionRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $sessionRepository;
+
+    /**
+     * @var DataStorageEngineInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $dataStorageEngine;
+
     protected function setUp(): void
     {
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
@@ -108,6 +121,8 @@ class AuthenticateTest extends TestCase
         $this->response = $this->createMock(AuthenticateResponse::class);
         $this->menuService = $this->createMock(MenuServiceInterface::class);
         $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
+        $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
+        $this->dataStorageEngine = $this->createMock(DataStorageEngineInterface::class);
     }
 
     /**
@@ -122,7 +137,9 @@ class AuthenticateTest extends TestCase
             $this->contactService,
             $this->session,
             $this->menuService,
-            $this->authenticationRepository
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
         );
 
         $credentials = (new Credentials('admin', 'centreon'));
@@ -161,7 +178,9 @@ class AuthenticateTest extends TestCase
             $this->contactService,
             $this->session,
             $this->menuService,
-            $this->authenticationRepository
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
         );
 
         $credentials = (new Credentials('admin', 'centreon'));
@@ -205,7 +224,9 @@ class AuthenticateTest extends TestCase
             $this->contactService,
             $this->session,
             $this->menuService,
-            $this->authenticationRepository
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
         );
 
         $credentials = (new Credentials('admin', 'centreon'));
@@ -274,7 +295,9 @@ class AuthenticateTest extends TestCase
             $this->contactService,
             $this->session,
             $this->menuService,
-            $this->authenticationRepository
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
         );
 
         $credentials = (new Credentials('admin', 'centreon'));
@@ -325,7 +348,9 @@ class AuthenticateTest extends TestCase
             $this->contactService,
             $this->session,
             $this->menuService,
-            $this->authenticationRepository
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
         );
 
         $credentials = (new Credentials('admin', 'centreon'));
@@ -389,7 +414,9 @@ class AuthenticateTest extends TestCase
             $this->contactService,
             $this->session,
             $this->menuService,
-            $this->authenticationRepository
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
         );
 
         $credentials = (new Credentials('admin', 'centreon'));
@@ -456,16 +483,11 @@ class AuthenticateTest extends TestCase
             ->method('getProviderRefreshToken')
             ->willReturn($providerRefreshToken);
 
-        $this->authenticationService
+        $providerConfiguration = new ProviderConfiguration(1, 'local', 'local', true, true, '/centreon');
+        $this->providerService
             ->expects($this->once())
-            ->method('createAuthenticationTokens')
-            ->with(
-                'abdef',
-                $this->provider->getConfiguration()->getName(),
-                $this->contact,
-                $providerToken,
-                $providerRefreshToken
-            );
+            ->method('findProviderConfigurationByConfigurationName')
+            ->willReturn($providerConfiguration);
 
         $authenticate = new Authenticate(
             '/monitoring/resources',
@@ -474,7 +496,9 @@ class AuthenticateTest extends TestCase
             $this->contactService,
             $this->session,
             $this->menuService,
-            $this->authenticationRepository
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
         );
 
         $credentials = (new Credentials('admin', 'centreon'));
@@ -540,7 +564,9 @@ class AuthenticateTest extends TestCase
             $this->contactService,
             $this->session,
             $this->menuService,
-            $this->authenticationRepository
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
         );
 
         $credentials = (new Credentials('admin', 'centreon'));
@@ -560,9 +586,7 @@ class AuthenticateTest extends TestCase
      */
     public function testExecuteCustomDefaultPage(): void
     {
-        $page = (new Page( 60101, false))
-            ->setId(1)
-            ->setUrl('/my_custom_page');
+        $page = new Page(1, '/my_custom_page', 60101, false);
 
         $this->provider
             ->expects($this->once())
@@ -611,7 +635,9 @@ class AuthenticateTest extends TestCase
             $this->contactService,
             $this->session,
             $this->menuService,
-            $this->authenticationRepository
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
         );
 
         $credentials = (new Credentials('admin', 'centreon'));
