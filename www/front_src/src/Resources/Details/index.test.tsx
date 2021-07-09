@@ -74,6 +74,7 @@ import {
   labelLastMonth,
   labelLastYear,
   labelBeforeTheLastYear,
+  labelGraph,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -317,7 +318,7 @@ const retrievedTimeline = {
       content: 'My little comment three',
       date: '2020-01-01T06:55:00Z',
       end_date: null,
-      id: 8,
+      id: 9,
       start_date: null,
       type: 'comment',
     },
@@ -328,7 +329,7 @@ const retrievedTimeline = {
       content: 'My little comment four',
       date: '2019-06-10T06:55:00Z',
       end_date: null,
-      id: 8,
+      id: 10,
       start_date: null,
       type: 'comment',
     },
@@ -339,7 +340,7 @@ const retrievedTimeline = {
       content: 'My little comment five',
       date: '2018-10-10T06:55:00Z',
       end_date: null,
-      id: 8,
+      id: 11,
       start_date: null,
       type: 'comment',
     },
@@ -1437,14 +1438,16 @@ describe(Details, () => {
     ).toHaveAttribute('href', '/configuration');
   });
 
-  it.skip('keeps the selected time period when selecting the "Graph" tab and the "Timeline" tab is selected', async () => {
+  it('queries the performance graphs with the time period selected in the "Timeline" tab when the "Graph" tab is selected and the "Timeline" tab was selected', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedTimeline })
+      .mockResolvedValueOnce({ data: retrievedTimeline })
+      .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByLabelText, getByText } = renderDetails({
+    const { getByText } = renderDetails({
       openTabId: timelineTabId,
     });
 
@@ -1452,10 +1455,87 @@ describe(Details, () => {
       setSelectedServiceResource();
     });
 
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListTimelineEventsEndpoint({
+          endpoint: retrievedDetails.links.endpoints.timeline,
+          parameters: {
+            limit: 30,
+            page: 1,
+            search: {
+              conditions: [
+                {
+                  field: 'date',
+                  values: {
+                    $gt: '2020-01-20T06:00:00.000Z',
+                    $lt: '2020-01-21T06:00:00.000Z',
+                  },
+                },
+              ],
+              lists: [
+                {
+                  field: 'type',
+                  values: getTypeIds(),
+                },
+              ],
+            },
+          },
+        }),
+        expect.anything(),
+      ),
+    );
+
+    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
+
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListTimelineEventsEndpoint({
+          endpoint: retrievedDetails.links.endpoints.timeline,
+          parameters: {
+            limit: 30,
+            page: 1,
+            search: {
+              conditions: [
+                {
+                  field: 'date',
+                  values: {
+                    $gt: '2020-01-14T06:00:00.000Z',
+                    $lt: '2020-01-21T06:00:00.000Z',
+                  },
+                },
+              ],
+              lists: [
+                {
+                  field: 'type',
+                  values: getTypeIds(),
+                },
+              ],
+            },
+          },
+        }),
+        expect.anything(),
+      ),
+    );
+
+    expect(context.selectedTimePeriod?.id).toEqual(last7Days.id);
+
+    act(() => {
+      context.clearSelectedResource();
     });
 
-    // userEvent.click(getByText(label7Days).parentElement as HTMLElement);
+    renderDetails({
+      openTabId: graphTabId,
+    });
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-14T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
+        cancelTokenRequestParam,
+      );
+    });
   });
 });
