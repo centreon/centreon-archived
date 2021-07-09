@@ -63,9 +63,6 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-window.clearInterval = jest.fn();
-window.setInterval = jest.fn();
-
 const linuxServersHostGroup = {
   id: 0,
   name: 'Linux-servers',
