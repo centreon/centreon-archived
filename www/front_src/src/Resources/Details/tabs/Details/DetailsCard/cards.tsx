@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { Grid, Chip } from '@material-ui/core';
-
 import {
   labelCurrentStateDuration,
   labelMonitoringServer,
@@ -25,6 +23,7 @@ import {
 import { ResourceDetails } from '../../../models';
 
 import DetailsLine from './DetailsLine';
+import Groups from './Groups';
 
 interface DetailCardLine {
   active?: boolean;
@@ -125,17 +124,7 @@ const getDetailCardLines = ({
     },
     {
       field: details.groups,
-      line: (
-        <Grid container spacing={1}>
-          {details.groups?.map((group) => {
-            return (
-              <Grid item key={group.name}>
-                <Chip label={group.name} />
-              </Grid>
-            );
-          })}
-        </Grid>
-      ),
+      line: <Groups details={details} />,
       title: labelGroups,
       xs: 12,
     },
