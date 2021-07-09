@@ -74,7 +74,7 @@ class PlatformTopologyController extends AbstractController
         $validator = new Validator();
         $validator->validate(
             $platformTopologySchemaToValidate,
-            (object) ['ref' => 'file://' . $schemaPath],
+            (object) ['$ref' => 'file://' . $schemaPath],
             Constraint::CHECK_MODE_VALIDATE_SCHEMA
         );
 
