@@ -388,9 +388,9 @@ class CentreonAuthSSO extends CentreonAuth
                 $url,
                 'POST',
                 $data,
-		($clientBasicAuth)
-	            ? ["Authorization" => 'Basic ' . base64_encode($clientId . ':' . $clientSecret) ]
-		    : null,
+                ($clientBasicAuth)
+                    ? ["Authorization" => 'Basic ' . base64_encode($clientId . ':' . $clientSecret) ]
+                    : null,
                 true,
                 $verifyPeer
             );
@@ -556,9 +556,9 @@ class CentreonAuthSSO extends CentreonAuth
                 $url,
                 'POST',
                 $data,
-		($clientBasicAuth)
-	            ? ["Authorization" => 'Basic ' . base64_encode($clientId . ':' . $clientSecret) ]
-		    : null,
+                ($clientBasicAuth)
+                    ? ["Authorization" => 'Basic ' . base64_encode($clientId . ':' . $clientSecret) ]
+                    : null,
                 true,
                 $verifyPeer
             );
@@ -617,9 +617,9 @@ class CentreonAuthSSO extends CentreonAuth
                 $url,
                 'POST',
                 $data,
-		($clientBasicAuth)
-	            ? ["Authorization" => 'Basic ' . base64_encode($clientId . ':' . $clientSecret) ]
-		    : null,
+                ($clientBasicAuth)
+                    ? ["Authorization" => 'Basic ' . base64_encode($clientId . ':' . $clientSecret) ]
+                    : null,
                 true,
                 $verifyPeer
             );
