@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { prop, isEmpty, path } from 'ramda';
+import { prop, isEmpty, path, isNil } from 'ramda';
 
 import { makeStyles, Paper } from '@material-ui/core';
 
@@ -30,6 +30,7 @@ type TimelineListing = ListingModel<TimelineEvent>;
 const useStyles = makeStyles((theme) => ({
   filter: {
     padding: theme.spacing(2),
+    paddingTop: theme.spacing(0.5),
   },
 }));
 
@@ -106,6 +107,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       details={details}
       filter={
         <Paper className={classes.filter}>
+          <TimePeriodButtonGroup disableGraphOptions disablePaper />
           <MultiAutocompleteField
             fullWidth
             label={t(labelEvent)}
@@ -116,7 +118,6 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
           />
         </Paper>
       }
-      header={<TimePeriodButtonGroup disableGraphOptions />}
       limit={limit}
       loading={sending}
       loadingSkeleton={<LoadingSkeleton />}

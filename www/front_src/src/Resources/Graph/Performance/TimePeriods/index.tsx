@@ -11,6 +11,7 @@ import {
   Button,
   useTheme,
   Tooltip,
+  Theme,
 } from '@material-ui/core';
 
 import { timePeriods } from '../../../Details/tabs/Graph/models';
@@ -19,25 +20,29 @@ import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
 import { useTimePeriodContext } from './useTimePeriod';
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme, { disablePaper: boolean }>((theme) => ({
   button: {
     fontSize: theme.typography.body2.fontSize,
   },
   buttonGroup: {
     alignSelf: 'center',
   },
-  header: {
+  header: ({ disablePaper }) => ({
     alignItems: 'center',
+    backgroundColor: disablePaper ? 'transparent' : 'undefined',
+    border: disablePaper ? 'unset' : 'undefined',
+    boxShadow: disablePaper ? 'unset' : 'undefined',
     columnGap: `${theme.spacing(2)}px`,
     display: 'grid',
     gridTemplateColumns: `repeat(3, auto)`,
     justifyContent: 'center',
     padding: theme.spacing(1, 0.5),
-  },
+  }),
 }));
 
 interface Props {
   disableGraphOptions?: boolean;
+  disablePaper?: boolean;
   disabled?: boolean;
 }
 
@@ -46,9 +51,10 @@ const timePeriodOptions = map(pick(['id', 'name', 'largeName']), timePeriods);
 const TimePeriodButtonGroup = ({
   disabled = false,
   disableGraphOptions = false,
+  disablePaper = false,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const classes = useStyles();
+  const classes = useStyles({ disablePaper });
   const theme = useTheme();
 
   const {
