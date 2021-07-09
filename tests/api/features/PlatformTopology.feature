@@ -16,7 +16,8 @@ Feature:
             {
                 "name": "Central",
                 "type": "central",
-                "address": "127.0.0.1"
+                "address": "127.0.0.1",
+                "parent_address": null
             }
             """
         Then the response code should be "400"
@@ -32,7 +33,8 @@ Feature:
                 "name": "Central_2",
                 "type": "central",
                 "address": "1.1.1.11",
-                "hostname": "server.test.localhost.localdomain"
+                "hostname": "server.test.localhost.localdomain",
+                "parent_address": null
             }
             """
         Then the response code should be "400"
@@ -223,7 +225,8 @@ Feature:
             {
                 "name": "my_poller_4",
                 "type": "poller",
-                "address": "1.1.1.4"
+                "address": "1.1.1.4",
+                "parent_address": null
             }
             """
         Then the response code should be "404"
