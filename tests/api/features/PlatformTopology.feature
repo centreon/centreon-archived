@@ -16,7 +16,8 @@ Feature:
             {
                 "name": "Central",
                 "type": "central",
-                "address": "127.0.0.1"
+                "address": "127.0.0.1",
+                "parent_address": null
             }
             """
         Then the response code should be "400"
