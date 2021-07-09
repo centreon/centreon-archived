@@ -30,10 +30,11 @@ import { build } from './Criterias/searchQueryLanguage';
 
 const useStyles = makeStyles((theme) => ({
   container: {
+    alignItems: 'center',
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(1),
-    gridTemplateColumns: 'auto auto 1fr',
+    gridTemplateColumns: 'auto auto 1fr auto',
     width: '100%',
   },
 }));
@@ -43,45 +44,33 @@ const Filter = (): JSX.Element => {
   const classes = useStyles();
 
   const {
-    filter,
-    setFilter,
-
+    applyFilter,
     customFilters,
     customFiltersLoading,
-    setCriteria,
     setSearch,
     setNewFilter,
-    transientFilter,
-    setTransientFilter,
+    currentFilter,
     search,
+    applyCurrentFilter,
   } = useResourceContext();
 
   const memoProps = [
-    filter,
-    transientFilter,
     customFilters,
     customFiltersLoading,
     search,
-    setSearch,
+    currentFilter,
   ];
-
-  const requestSearch = (): void => {
-    // setCriteria({ name: 'search', value: nextSearch });
-  };
 
   const requestSearchOnEnterKey = (event: React.KeyboardEvent): void => {
     const enterKeyPressed = event.keyCode === 13;
 
     if (enterKeyPressed) {
-      requestSearch();
+      applyCurrentFilter();
     }
   };
 
   const prepareSearch = (event): void => {
-    // setNextSearch(event.target.value);
-    // setTr
     setSearch(event.target.value);
-    console.log(event.target.value);
     setNewFilter();
   };
 
@@ -92,7 +81,8 @@ const Filter = (): JSX.Element => {
       standardFilterById[filterId] ||
       customFilters?.find(propEq('id', filterId));
 
-    setFilter(updatedFilter);
+    applyFilter(updatedFilter);
+    setSearch(build(updatedFilter.criterias));
   };
 
   const translatedOptions = [
@@ -118,7 +108,10 @@ const Filter = (): JSX.Element => {
     ...customFilterOptions,
   ];
 
-  const canDisplaySelectedFilter = find(propEq('id', filter.id), options);
+  const canDisplaySelectedFilter = find(
+    propEq('id', currentFilter.id),
+    options,
+  );
 
   return (
     <Filters
@@ -131,7 +124,9 @@ const Filter = (): JSX.Element => {
             <SelectFilter
               ariaLabel={t(labelStateFilter)}
               options={options.map(pick(['id', 'name', 'type']))}
-              selectedOptionId={canDisplaySelectedFilter ? filter.id : ''}
+              selectedOptionId={
+                canDisplaySelectedFilter ? currentFilter.id : ''
+              }
               onChange={changeFilter}
             />
           )}
@@ -139,12 +134,7 @@ const Filter = (): JSX.Element => {
           <SearchField
             EndAdornment={() => (
               <Grid container direction="row" wrap="nowrap">
-                <Grid item>
-                  <Criterias />
-                </Grid>
-                <Grid item>
-                  <SearchHelpTooltip />
-                </Grid>
+                <SearchHelpTooltip />
               </Grid>
             )}
             placeholder={t(labelSearch)}
@@ -152,6 +142,7 @@ const Filter = (): JSX.Element => {
             onChange={prepareSearch}
             onKeyDown={requestSearchOnEnterKey}
           />
+          <Criterias />
         </div>
       }
       memoProps={memoProps}

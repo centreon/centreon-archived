@@ -6,6 +6,7 @@ import {
   isEmpty,
   isNil,
   keys,
+  map,
   partition,
   pipe,
   prop,
@@ -22,8 +23,7 @@ import {
   criteriaValueNameById,
   selectableCriterias,
 } from '../models';
-
-import { Criteria as ParsedCriteria, Search } from './models';
+import getDefaultCriterias from '../default';
 
 const isIn = flip(includes);
 
@@ -36,37 +36,51 @@ const parse = (search: string): Array<Criteria> => {
 
   const [criteriaParts, rawSearchParts] = partition(isCriteriaPart, parts);
 
-  // if (isNil(criteriaParts)) {
-  //   return [[], ''];
-  // }
-
   const criterias: Array<Criteria> = criteriaParts.map((criteria) => {
     const [key, value] = criteria.split(':');
 
-    const retrievedCriteria = selectableCriterias[key];
+    const defaultCriteria = find(propEq('name', key), getDefaultCriterias());
+    const objectType = defaultCriteria?.object_type || null;
 
     return {
       name: key,
-      object_type: retrievedCriteria.options ? key : null,
+      object_type: objectType,
       type: 'multi_select',
-      value: value.split(',').map((id) => ({
-        id,
-        name: criteriaValueNameById[id],
-      })),
+      value: value?.split(',').map((laGrosseValue) => {
+        const [resourceId, resourceName] = laGrosseValue.split('|');
+
+        const id = isNil(objectType) ? laGrosseValue : parseInt(resourceId, 10);
+        const name = isNil(objectType)
+          ? criteriaValueNameById[id]
+          : resourceName;
+
+        return {
+          id,
+          name,
+        };
+      }),
     };
   });
 
-  console.log(criterias);
-
-  return [
+  const criteriasWithSearch = [
     ...criterias,
     {
       name: 'search',
       object_type: null,
-      type: 'string',
+      type: 'text',
       value: rawSearchParts.join(' '),
     },
   ];
+
+  const toNames = map(prop('name'));
+  const criteriaNames = toNames(criteriasWithSearch);
+
+  const defaultCriterias = reject(
+    pipe(({ name }) => name, isIn(criteriaNames)),
+    getDefaultCriterias(),
+  );
+
+  return [...defaultCriterias, ...criteriasWithSearch];
 };
 
 const build = (criterias: Array<Criteria>): string => {
@@ -87,13 +101,22 @@ const build = (criterias: Array<Criteria>): string => {
 
   const builtCriterias = regularCriterias
     .filter(({ value }) => !isNil(value))
-    .map(({ name, value }): string => {
-      const val = value as Array<SelectEntry>;
-      return `${name}:${val.map(prop('id')).join(',')}`;
+    .map(({ name, value, object_type }): string => {
+      const values = value as Array<SelectEntry>;
+
+      const formattedValues = isNil(object_type)
+        ? values.map(prop('id'))
+        : values.map(({ id, name: valueName }) => `${id}|${valueName}`);
+
+      return `${name}:${formattedValues.join(',')}`;
     })
     .join(' ');
 
-  return `${builtCriterias} ${search?.value}`;
+  if (isEmpty(builtCriterias.trim())) {
+    return search?.value as string;
+  }
+
+  return [builtCriterias, search?.value].join(' ');
 };
 
 export { parse, build };

@@ -211,7 +211,7 @@ describe(Listing, () => {
   describe('column sorting', () => {
     afterEach(async () => {
       act(() => {
-        context.setFilter(unhandledProblemsFilter);
+        context.setCurrentFilter(unhandledProblemsFilter);
       });
 
       await waitFor(() => {

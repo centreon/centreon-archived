@@ -180,7 +180,7 @@ describe(SaveMenu, () => {
     const filter = getCustomFilter();
 
     act(() => {
-      context.setFilter(filter);
+      context.setCurrentFilter(filter);
 
       context.setNextSearch('toto');
     });

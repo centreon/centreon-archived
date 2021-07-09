@@ -13,6 +13,7 @@ import {
   labelSearch,
   labelSearchOptions,
 } from '../../translatedLabels';
+import { FilterState } from '../useFilter';
 
 import Criteria from './Criteria';
 import { Criteria as CriteriaInterface } from './models';
@@ -26,11 +27,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props {
+interface Props
+  extends Pick<FilterState, 'isCurrentFilterApplied' | 'applyCurrentFilter'> {
   criterias: Array<CriteriaInterface>;
 }
 
-const CriteriasContent = ({ criterias }: Props): JSX.Element => {
+const CriteriasContent = ({
+  criterias,
+  isCurrentFilterApplied,
+  applyCurrentFilter,
+}: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -63,7 +69,13 @@ const CriteriasContent = ({ criterias }: Props): JSX.Element => {
               </Button>
             </Grid>
             <Grid item>
-              <Button color="primary" size="small" variant="contained">
+              <Button
+                color="primary"
+                disabled={isCurrentFilterApplied}
+                size="small"
+                variant="contained"
+                onClick={applyCurrentFilter}
+              >
                 {t(labelSearch)}
               </Button>
             </Grid>
@@ -75,13 +87,23 @@ const CriteriasContent = ({ criterias }: Props): JSX.Element => {
 };
 
 const Criterias = (): JSX.Element => {
-  const { getMultiSelectCriterias } = useResourceContext();
+  const {
+    getMultiSelectCriterias,
+    isCurrentFilterApplied,
+    applyCurrentFilter,
+  } = useResourceContext();
 
   const criterias = getMultiSelectCriterias();
 
   return useMemoComponent({
-    Component: <CriteriasContent criterias={criterias} />,
-    memoProps: [criterias],
+    Component: (
+      <CriteriasContent
+        applyCurrentFilter={applyCurrentFilter}
+        criterias={criterias}
+        isCurrentFilterApplied={isCurrentFilterApplied}
+      />
+    ),
+    memoProps: [criterias, isCurrentFilterApplied],
   });
 };
 

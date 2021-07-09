@@ -1,6 +1,16 @@
 import * as React from 'react';
 
-import { equals, or, and, not, isEmpty, omit, find, propEq } from 'ramda';
+import {
+  or,
+  and,
+  not,
+  isEmpty,
+  omit,
+  find,
+  propEq,
+  pipe,
+  symmetricDifference,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -26,8 +36,11 @@ import { updateFilter as updateFilterRequest } from '../api';
 import { FilterState } from '../useFilter';
 import memoizeComponent from '../../memoizedComponent';
 import { Filter } from '../models';
+import { build } from '../Criterias/searchQueryLanguage';
 
 import CreateFilterDialog from './CreateFilterDialog';
+
+const areValuesEqual = pipe(symmetricDifference, isEmpty) as (a, b) => boolean;
 
 const useStyles = makeStyles((theme) => ({
   save: {
@@ -40,21 +53,25 @@ const useStyles = makeStyles((theme) => ({
 
 type Props = Pick<
   FilterState,
-  | 'filter'
-  | 'setFilter'
+  | 'currentFilter'
   | 'loadCustomFilters'
   | 'customFilters'
   | 'setEditPanelOpen'
   | 'filters'
+  | 'appliedFilter'
+  | 'search'
+  | 'setSearch'
+  | 'applyFilter'
 >;
 
 const SaveFilterMenuContent = ({
-  filter,
-  setFilter,
+  currentFilter,
+  applyFilter,
   loadCustomFilters,
   customFilters,
   setEditPanelOpen,
   filters,
+  setSearch,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -94,7 +111,8 @@ const SaveFilterMenuContent = ({
     closeCreateFilterDialog();
 
     loadCustomFilters().then(() => {
-      setFilter(newFilter);
+      applyFilter(newFilter);
+      setSearch(build(newFilter.criterias));
     });
   };
 
@@ -109,8 +127,8 @@ const SaveFilterMenuContent = ({
 
   const updateFilter = (): void => {
     sendUpdateFilterRequest({
-      filter: omit(['id'], filter),
-      id: filter.id,
+      filter: omit(['id'], currentFilter),
+      id: currentFilter.id,
     }).then((savedFilter) => {
       closeSaveFilterMenu();
       showMessage({
@@ -128,12 +146,15 @@ const SaveFilterMenuContent = ({
   };
 
   const isFilterDirty = (): boolean => {
-    const retrievedFilter = find(propEq('id', filter.id), filters);
+    const retrievedFilter = find(propEq('id', currentFilter.id), filters);
 
-    return !equals(retrievedFilter, filter);
+    return !areValuesEqual(
+      currentFilter.criterias,
+      retrievedFilter?.criterias || [],
+    );
   };
 
-  const isNewFilter = filter.id === '';
+  const isNewFilter = currentFilter.id === '';
   const canSaveFilter = and(isFilterDirty(), not(isNewFilter));
   const canSaveFilterAsNew = or(isFilterDirty(), isNewFilter);
 
@@ -167,7 +188,7 @@ const SaveFilterMenuContent = ({
       {createFilterDialogOpen && (
         <CreateFilterDialog
           open
-          filter={filter}
+          filter={currentFilter}
           onCancel={closeCreateFilterDialog}
           onCreate={confirmCreateFilter}
         />
@@ -176,7 +197,14 @@ const SaveFilterMenuContent = ({
   );
 };
 
-const memoProps = ['filter', 'updatedFilter', 'customFilters', 'filters'];
+const memoProps = [
+  'updatedFilter',
+  'customFilters',
+  'appliedFilter',
+  'filters',
+  'currentFilter',
+  'search',
+];
 
 const MemoizedSaveFilterMenuContent = memoizeComponent<Props>({
   Component: SaveFilterMenuContent,
@@ -185,22 +213,28 @@ const MemoizedSaveFilterMenuContent = memoizeComponent<Props>({
 
 const SaveFilterMenu = (): JSX.Element => {
   const {
-    filter,
-    setFilter,
+    filterWithParsedSearch,
+    applyFilter,
     loadCustomFilters,
     customFilters,
     setEditPanelOpen,
     filters,
+    appliedFilter,
+    search,
+    setSearch,
   } = useResourceContext();
 
   return (
     <MemoizedSaveFilterMenuContent
+      appliedFilter={appliedFilter}
+      applyFilter={applyFilter}
+      currentFilter={filterWithParsedSearch}
       customFilters={customFilters}
-      filter={filter}
       filters={filters}
       loadCustomFilters={loadCustomFilters}
+      search={search}
       setEditPanelOpen={setEditPanelOpen}
-      setFilter={setFilter}
+      setSearch={setSearch}
     />
   );
 };

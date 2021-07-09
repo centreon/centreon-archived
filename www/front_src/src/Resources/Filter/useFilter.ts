@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import {
+  equals,
   find,
   findIndex,
   isNil,
@@ -48,26 +49,28 @@ type CustomFiltersDispatch = React.Dispatch<
 >;
 
 export interface FilterState {
+  appliedFilter: Filter;
+  applyCurrentFilter: () => void;
+  applyFilter: (filter: Filter) => void;
+  currentFilter: Filter;
   customFilters: Array<Filter>;
   customFiltersLoading: boolean;
   editPanelOpen: boolean;
-  filter: Filter;
   filterWithParsedSearch: Filter;
   filters: Array<Filter>;
   getCriteriaValue: (name: string) => CriteriaValue | undefined;
   getMultiSelectCriterias: () => Array<Criteria>;
+  isCurrentFilterApplied: boolean;
   loadCustomFilters: () => Promise<Array<Filter>>;
   search: string;
-  // selectedFilter: Filter;
+  setAppliedFilter: (filter: Filter) => void;
   setCriteria: ({ name, value }: { name: string; value }) => void;
   setCriteriaAndNewFilter: ({ name, value }: { name: string; value }) => void;
+  setCurrentFilter: (filter: Filter) => void;
   setCustomFilters: CustomFiltersDispatch;
   setEditPanelOpen: EditPanelOpenDitpach;
-  setFilter: (filter: Filter) => void;
   setNewFilter: () => void;
   setSearch: (string) => void;
-  setTransientFilter: (filter: Filter) => void;
-  transientFilter: Filter;
 }
 
 const useFilter = (): FilterState => {
@@ -80,23 +83,17 @@ const useFilter = (): FilterState => {
     request: listCustomFilters,
   });
 
-  // const getDefaultCriterias = (): Array<Criteria> =>
-  //   getDefaultFilter().criterias;
-
-  // const getDefaultSearchCriteria = (): Criteria =>
-  //   getDefaultCriterias().find(propEq('name', 'search')) as Criteria;
-
   const [customFilters, setCustomFilters] = React.useState<Array<Filter>>([]);
-  const [filter, setFilter] = React.useState(getDefaultFilter());
-  const [transientFilter, setTransientFilter] = React.useState(
-    getDefaultFilter(),
-  );
+  const [currentFilter, setCurrentFilter] = React.useState(getDefaultFilter());
+  const [appliedFilter, setAppliedFilter] = React.useState(getDefaultFilter());
   const [search, setSearch] = React.useState('');
-  // const [nextSearch, setNextSearch] = React.useState<string | undefined>(
-  //   getDefaultSearchCriteria().value as string,
-  // );
 
   const [editPanelOpen, setEditPanelOpen] = React.useState<boolean>(false);
+
+  const filterWithParsedSearch = {
+    ...currentFilter,
+    criterias: parse(search),
+  };
 
   const loadCustomFilters = (): Promise<Array<Filter>> => {
     return sendListCustomFiltersRequest().then(({ result }) => {
@@ -107,10 +104,12 @@ const useFilter = (): FilterState => {
   };
 
   const getFilterWithUpdatedCriteria = ({ name, value }): Filter => {
-    const index = findIndex(propEq('name', name))(transientFilter.criterias);
+    const index = findIndex(propEq('name', name))(
+      filterWithParsedSearch.criterias,
+    );
     const lens = lensPath(['criterias', index, 'value']);
 
-    return set(lens, value, filter);
+    return set(lens, value, filterWithParsedSearch);
   };
 
   const filters = [
@@ -125,53 +124,37 @@ const useFilter = (): FilterState => {
   }, []);
 
   const setCriteria = ({ name, value }): void => {
-    setFilter(getFilterWithUpdatedCriteria({ name, value }));
+    setCurrentFilter(getFilterWithUpdatedCriteria({ name, value }));
   };
 
   const setCriteriaAndNewFilter = ({ name, value }): void => {
-    const isCustomFilter = isCustom(transientFilter);
-
-    setTransientFilter({
+    const isCustomFilter = isCustom(currentFilter);
+    const updatedFilter = {
       ...getFilterWithUpdatedCriteria({ name, value }),
       ...(!isCustomFilter && newFilter),
-    });
+    };
+
+    setSearch(build(updatedFilter.criterias));
+
+    setCurrentFilter(updatedFilter);
   };
 
-  const filterWithParsedSearch = {
-    ...transientFilter,
-    criterias: parse(search),
-  };
-  // useDeepCompareEffect(() => {
-  //   // setCriteria({ name: 'search', value: nextSearch });
-
-  //   setSearch(build(transientFilter.criterias));
-  // }, [transientFilter.criterias]);
+  useDeepCompareEffect(() => {
+    setSearch(build(currentFilter.criterias));
+  }, [currentFilter.criterias]);
 
   React.useEffect(() => {
-    // setCriteria({ name: 'search', value: nextSearch });
-
-    setTransientFilter({ ...transientFilter, criterias: parse(search) });
-  }, [search]);
-
-  React.useEffect(() => {
-    // const updatedFilter = getFilterWithUpdatedCriteria({
-    //   name: 'search',
-    //   value: nextSearch,
-    // });
-
-    // const searchModel =
-
-    storeFilter(transientFilter);
+    storeFilter(currentFilter);
 
     const queryParameters = [
       {
         name: 'filter',
-        value: transientFilter,
+        value: currentFilter,
       },
     ];
 
     setUrlQueryParameters(queryParameters);
-  }, [transientFilter]);
+  }, [currentFilter]);
 
   React.useEffect(() => {
     if (!getUrlQueryParameters().fromTopCounter) {
@@ -185,35 +168,32 @@ const useFilter = (): FilterState => {
       },
     ]);
 
-    setFilter(getDefaultFilter());
-    // const { criterias } = getDefaultFilter();
-    // const search = find<Criteria>(propEq('name', 'search'))(criterias);
-    // setNextSearch((search?.value as string) || '');
+    setCurrentFilter(getDefaultFilter());
   }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => (): void => {
     clearCachedFilter();
   });
 
-  // const updatedFilter = getFilterWithUpdatedCriteria({
-  //   name: 'search',
-  //   value: nextSearch,
-  // });
-
   const setNewFilter = (): void => {
-    if (isCustom(transientFilter)) {
+    if (isCustom(currentFilter)) {
       return;
     }
 
-    setFilter({
-      criterias: transientFilter.criterias,
+    const emptyFilter = {
+      criterias: currentFilter.criterias,
       id: '',
       name: t(labelNewFilter),
-    });
+    };
+
+    setCurrentFilter(emptyFilter);
+    setAppliedFilter(emptyFilter);
   };
 
   const getCriteriaValue = (name: string): CriteriaValue | undefined => {
-    const criteria = find<Criteria>(propEq('name', name))(filter.criterias);
+    const criteria = find<Criteria>(propEq('name', name))(
+      filterWithParsedSearch.criterias,
+    );
 
     if (isNil(criteria)) {
       return undefined;
@@ -235,29 +215,45 @@ const useFilter = (): FilterState => {
     return pipe(
       reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
       sortBy(getSortId),
-    )(filter.criterias);
+    )(filterWithParsedSearch.criterias);
+  };
+
+  const applyFilter = (filter: Filter): void => {
+    setCurrentFilter(filter);
+    setAppliedFilter(filter);
+  };
+
+  const isCurrentFilterApplied =
+    equals(currentFilter, appliedFilter) &&
+    equals(appliedFilter, filterWithParsedSearch);
+
+  const applyCurrentFilter = (): void => {
+    applyFilter(filterWithParsedSearch);
   };
 
   return {
+    appliedFilter,
+    applyCurrentFilter,
+    applyFilter,
+    currentFilter,
     customFilters,
     customFiltersLoading,
     editPanelOpen,
-    filter,
     filterWithParsedSearch,
     filters,
     getCriteriaValue,
     getMultiSelectCriterias,
+    isCurrentFilterApplied,
     loadCustomFilters,
     search,
+    setAppliedFilter,
     setCriteria,
     setCriteriaAndNewFilter,
+    setCurrentFilter,
     setCustomFilters,
     setEditPanelOpen,
-    setFilter,
     setNewFilter,
     setSearch,
-    setTransientFilter,
-    transientFilter,
   };
 };
 
