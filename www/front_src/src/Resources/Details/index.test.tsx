@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { last, head, equals, reject, path, isNil } from 'ramda';
+import { equals, reject, path, isNil } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import {
@@ -74,7 +74,6 @@ import {
   labelLastMonth,
   labelLastYear,
   labelBeforeTheLastYear,
-  labelGraph,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';

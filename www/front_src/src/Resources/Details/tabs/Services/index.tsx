@@ -24,7 +24,6 @@ import useGraphOptions, {
   defaultGraphOptions,
   GraphOptionsContext,
 } from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
-import { GraphOptionId } from '../../../Graph/Performance/models';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
