@@ -373,12 +373,14 @@ class CentreonAuthSSO extends CentreonAuth
         bool $verifyPeer
     ): ?array {
         $data = [
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
             "grant_type" => "authorization_code",
             "code" => $code,
             "redirect_uri" => $redirectUri
         ];
+        if (!$clientBasicAuth) {
+            $data["client_id"] = $clientId;
+            $data["client_secret"] = $clientSecret;
+        }
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
         try {
@@ -539,12 +541,14 @@ class CentreonAuthSSO extends CentreonAuth
         string $scope = null
     ): ?array {
         $data = [
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
             "grant_type" => "refresh_token",
             "refresh_token" => $refreshToken,
             "scope" => $scope
         ];
+        if (!$clientBasicAuth) {
+            $data["client_id"] = $clientId;
+            $data["client_secret"] = $clientSecret;
+        }
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
         try {
@@ -600,10 +604,12 @@ class CentreonAuthSSO extends CentreonAuth
         bool $verifyPeer
     ): ?array {
         $data = [
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
             "refresh_token" => $refreshToken
         ];
+        if (!$clientBasicAuth) {
+            $data["client_id"] = $clientId;
+            $data["client_secret"] = $clientSecret;
+        }
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
         try {
