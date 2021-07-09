@@ -14,6 +14,8 @@ export interface LoadResources {
 }
 
 const useLoadResources = (): LoadResources => {
+  const [areDetailsEmpty, setAreDetailsEmpty] = React.useState(false);
+
   const {
     limit,
     page,
@@ -131,6 +133,18 @@ const useLoadResources = (): LoadResources => {
       clearInterval(refreshIntervalRef.current);
     };
   }, []);
+
+  React.useEffect(() => {
+    setAreDetailsEmpty(isNil(details));
+  }, [details]);
+
+  React.useEffect(() => {
+    if (areDetailsEmpty) {
+      return;
+    }
+
+    initAutorefresh();
+  }, [areDetailsEmpty]);
 
   React.useEffect(() => {
     if (isNil(page)) {

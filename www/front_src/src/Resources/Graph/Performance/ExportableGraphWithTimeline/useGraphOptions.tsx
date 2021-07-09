@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { GraphOptions, GraphTabParameters } from '../../../Details/models';
+import { GraphOptions } from '../../../Details/models';
 import { labelDisplayEvents } from '../../../translatedLabels';
 import { GraphOptionId } from '../models';
 
@@ -26,16 +26,16 @@ export const defaultGraphOptions = {
 
 interface UseGraphOptionsState {
   changeTabGraphOptions: (graphOptions: GraphOptions) => void;
-  graphTabParameters?: GraphTabParameters;
+  graphOptionsParameters?: GraphOptions;
 }
 
 const useGraphOptions = ({
-  graphTabParameters,
+  graphOptionsParameters,
   changeTabGraphOptions,
 }: UseGraphOptionsState): GraphOptionsState => {
   const [graphOptions, setGraphOptions] = React.useState<GraphOptions>({
     ...defaultGraphOptions,
-    ...graphTabParameters?.graphOptions,
+    ...graphOptionsParameters,
   });
 
   const changeGraphOptions = (graphOptionId: GraphOptionId) => () => {

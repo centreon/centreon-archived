@@ -80,8 +80,14 @@ import useListing from '../Listing/useListing';
 import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
+import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
 
-import { last7Days, last31Days, lastDayPeriod } from './tabs/Graph/models';
+import {
+  last7Days,
+  last31Days,
+  lastDayPeriod,
+  CustomTimePeriodProperty,
+} from './tabs/Graph/models';
 import { graphTabId, timelineTabId, servicesTabId, metricsTabId } from './tabs';
 import { TabId } from './tabs/models';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
@@ -466,11 +472,10 @@ describe(Details, () => {
     mockDate.reset();
     mockedAxios.get.mockReset();
     act(() => {
-      context.setGraphTabParameters({
-        selectedCustomTimePeriod: undefined,
-        selectedTimePeriodId: lastDayPeriod.id,
-      });
       context.clearSelectedResource();
+    });
+    act(() => {
+      context.changeSelectedTimePeriod(lastDayPeriod.id);
     });
   });
 
@@ -629,16 +634,7 @@ describe(Details, () => {
         );
 
         if (!isNil(periodId)) {
-          expect(context.tabParameters.graph).toEqual({
-            graphOptions: {
-              displayEvents: {
-                id: 'displayEvents',
-                label: 'Display events',
-                value: true,
-              },
-            },
-            selectedTimePeriodId: periodId,
-          });
+          expect(context.selectedTimePeriod?.id).toEqual(periodId);
         }
       });
     },
@@ -686,7 +682,7 @@ describe(Details, () => {
     );
     const downtimeAnnotations = await findAllByLabelText(labelDowntime);
 
-    expect(commentAnnotations).toHaveLength(1);
+    expect(commentAnnotations).toHaveLength(5);
     expect(acknowledgementAnnotations).toHaveLength(1);
     expect(downtimeAnnotations).toHaveLength(2);
   });
@@ -710,8 +706,7 @@ describe(Details, () => {
       ),
     );
   });
-
-  it.only('displays retrieved timeline events, grouped by date, and filtered by selected event types, when the Timeline tab is selected', async () => {
+  it('displays retrieved timeline events and filtered by selected event types, when the Timeline tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
@@ -733,6 +728,15 @@ describe(Details, () => {
             limit: 30,
             page: 1,
             search: {
+              conditions: [
+                {
+                  field: 'date',
+                  values: {
+                    $gt: '2020-01-20T06:00:00.000Z',
+                    $lt: '2020-01-21T06:00:00.000Z',
+                  },
+                },
+              ],
               lists: [
                 {
                   field: 'type',
@@ -837,6 +841,15 @@ describe(Details, () => {
             limit: 30,
             page: 1,
             search: {
+              conditions: [
+                {
+                  field: 'date',
+                  values: {
+                    $gt: '2020-01-20T06:00:00.000Z',
+                    $lt: '2020-01-21T06:00:00.000Z',
+                  },
+                },
+              ],
               lists: [
                 {
                   field: 'type',
@@ -940,17 +953,19 @@ describe(Details, () => {
     act(() => {
       setSelectedHostResource();
       context.setGraphTabParameters({
-        selectedTimePeriodId: last7Days.id,
+        graphOptions: defaultGraphOptions,
       });
     });
 
     act(() => {
       context.setServicesTabParameters({
         graphMode: true,
-        graphTimePeriod: {
-          selectedTimePeriodId: last31Days.id,
-        },
+        graphOptions: defaultGraphOptions,
       });
+    });
+
+    act(() => {
+      context.changeSelectedTimePeriod(last7Days.id);
     });
 
     const updatedDetailsFromQueryParameters = getUrlQueryParameters()
@@ -958,16 +973,31 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
+        customTimePeriod: {
+          end: '2020-01-21T06:00:00.000Z',
+          start: '2020-01-14T06:00:00.000Z',
+        },
         id: 1,
+        selectedTimePeriodId: 'last_7_days',
         tab: 'details',
         tabParameters: {
           graph: {
-            selectedTimePeriodId: last7Days.id,
+            graphOptions: {
+              displayEvents: {
+                id: 'displayEvents',
+                label: labelDisplayEvents,
+                value: false,
+              },
+            },
           },
           services: {
             graphMode: true,
-            graphTimePeriod: {
-              selectedTimePeriodId: last31Days.id,
+            graphOptions: {
+              displayEvents: {
+                id: 'displayEvents',
+                label: labelDisplayEvents,
+                value: false,
+              },
             },
           },
         },
@@ -1086,7 +1116,7 @@ describe(Details, () => {
     act(() => {
       context.setServicesTabParameters({
         graphMode: false,
-        graphTimePeriod: {},
+        graphOptions: defaultGraphOptions,
       });
     });
   });
@@ -1112,7 +1142,7 @@ describe(Details, () => {
         data: retrievedPerformanceGraphData,
       });
 
-    const { getByLabelText, findByText, getAllByText } = renderDetails({
+    const { getByLabelText, findByText, getByText } = renderDetails({
       openTabId: servicesTabId,
     });
 
@@ -1132,16 +1162,14 @@ describe(Details, () => {
 
     expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
-    userEvent.click(head(getAllByText(label1Day)) as HTMLElement);
-    userEvent.click(last(getAllByText(label7Days)) as HTMLElement);
+    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledTimes(5);
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        'ping-performance?start=2020-01-14T06:00:00.000Z&end=2020-01-21T06:00:00.000Z',
+        cancelTokenRequestParam,
+      );
     });
-
-    expect(
-      context.tabParameters?.services?.graphTimePeriod.selectedTimePeriodId,
-    ).toEqual(last7Days.id);
   });
 
   it('queries performance graphs with a custom timeperiod when the Graph tab is selected and a custom time period is selected', async () => {
@@ -1169,12 +1197,15 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.setGraphTabParameters({
-        selectedCustomTimePeriod: {
-          end: endISOString,
-          start: startISOString,
-        },
-        selectedTimePeriodId: undefined,
+      context.changeCustomTimePeriod({
+        date: new Date(startISOString),
+        property: CustomTimePeriodProperty.start,
+      });
+    });
+    act(() => {
+      context.changeCustomTimePeriod({
+        date: new Date(endISOString),
+        property: CustomTimePeriodProperty.end,
       });
     });
 
@@ -1234,13 +1265,15 @@ describe(Details, () => {
     });
 
     act(() => {
-      setSelectedServiceResource();
-      context.setGraphTabParameters({
-        selectedCustomTimePeriod: {
-          end: '2020-01-21T06:00:00.000Z',
-          start: '2020-01-21T06:00:00.000Z',
-        },
-        selectedTimePeriodId: undefined,
+      context.changeCustomTimePeriod({
+        date: new Date('2020-01-21T06:00:00.000Z'),
+        property: CustomTimePeriodProperty.start,
+      });
+    });
+    act(() => {
+      context.changeCustomTimePeriod({
+        date: new Date('2020-01-21T06:00:00.000Z'),
+        property: CustomTimePeriodProperty.end,
       });
     });
 
@@ -1402,5 +1435,27 @@ describe(Details, () => {
     expect(
       getByLabelText(`${labelConfigure}_${retrievedDetails.name}`),
     ).toHaveAttribute('href', '/configuration');
+  });
+
+  it.skip('keeps the selected time period when selecting the "Graph" tab and the "Timeline" tab is selected', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedTimeline })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+      .mockResolvedValueOnce({ data: retrievedTimeline });
+
+    const { getByLabelText, getByText } = renderDetails({
+      openTabId: timelineTabId,
+    });
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    // userEvent.click(getByText(label7Days).parentElement as HTMLElement);
   });
 });

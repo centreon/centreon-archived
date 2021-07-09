@@ -59,7 +59,7 @@ const GraphTabContent = ({
 
   const graphOptions = useGraphOptions({
     changeTabGraphOptions,
-    graphTabParameters: tabParameters.graph,
+    graphOptionsParameters: tabParameters.graph?.graphOptions,
   });
 
   return (

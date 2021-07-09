@@ -19,9 +19,6 @@ import { MemoizedPanel as Panel, Tab } from '@centreon/ui';
 
 import { useResourceContext } from '../Context';
 import { rowColorConditions } from '../colors';
-import useTimePeriod, {
-  TimePeriodContext,
-} from '../Graph/Performance/TimePeriods/useTimePeriod';
 
 import Header from './Header';
 import { ResourceDetails } from './models';
@@ -57,10 +54,6 @@ const Details = (): JSX.Element | null => {
     setPanelWidth,
     selectResource,
   } = useResourceContext();
-
-  const timePeriodProps = useTimePeriod({
-    details,
-  });
 
   React.useEffect(() => {
     if (isNil(details)) {
@@ -119,27 +112,25 @@ const Details = (): JSX.Element | null => {
         panelRef.current?.getBoundingClientRect() || { bottom: 0, top: 0 },
       )}
     >
-      <TimePeriodContext.Provider value={timePeriodProps}>
-        <Panel
-          header={<Header details={details} onSelectParent={selectResource} />}
-          headerBackgroundColor={getHeaderBackgroundColor()}
-          memoProps={[openDetailsTabId, details, panelWidth]}
-          ref={panelRef as React.RefObject<HTMLDivElement>}
-          selectedTab={<TabById details={details} id={openDetailsTabId} />}
-          selectedTabId={getTabIndex(openDetailsTabId)}
-          tabs={getVisibleTabs().map(({ id, title }) => (
-            <Tab
-              disabled={isNil(details)}
-              key={id}
-              label={isNil(details) ? <Skeleton width={60} /> : t(title)}
-              onClick={changeSelectedTabId(id)}
-            />
-          ))}
-          width={panelWidth}
-          onClose={clearSelectedResource}
-          onResize={setPanelWidth}
-        />
-      </TimePeriodContext.Provider>
+      <Panel
+        header={<Header details={details} onSelectParent={selectResource} />}
+        headerBackgroundColor={getHeaderBackgroundColor()}
+        memoProps={[openDetailsTabId, details, panelWidth]}
+        ref={panelRef as React.RefObject<HTMLDivElement>}
+        selectedTab={<TabById details={details} id={openDetailsTabId} />}
+        selectedTabId={getTabIndex(openDetailsTabId)}
+        tabs={getVisibleTabs().map(({ id, title }) => (
+          <Tab
+            disabled={isNil(details)}
+            key={id}
+            label={isNil(details) ? <Skeleton width={60} /> : t(title)}
+            onClick={changeSelectedTabId(id)}
+          />
+        ))}
+        width={panelWidth}
+        onClose={clearSelectedResource}
+        onResize={setPanelWidth}
+      />
     </Context.Provider>
   );
 };

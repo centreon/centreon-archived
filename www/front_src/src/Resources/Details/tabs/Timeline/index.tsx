@@ -16,7 +16,7 @@ import { labelEvent } from '../../../translatedLabels';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
-import { useTimePeriodContext } from '../../../Graph/Performance/TimePeriods/useTimePeriod';
+import { useResourceContext } from '../../../Context';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -39,7 +39,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { getIntervalDates, selectedTimePeriod, customTimePeriod } =
-    useTimePeriodContext();
+    useResourceContext();
 
   const [start, end] = getIntervalDates();
 

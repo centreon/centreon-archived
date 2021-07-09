@@ -16,8 +16,8 @@ import {
 
 import { timePeriods } from '../../../Details/tabs/Graph/models';
 import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
+import { useResourceContext } from '../../../Context';
 
-import { useTimePeriodContext } from './useTimePeriod';
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
 const useStyles = makeStyles<Theme, { disablePaper: boolean }>((theme) => ({
@@ -62,7 +62,7 @@ const TimePeriodButtonGroup = ({
     changeCustomTimePeriod,
     changeSelectedTimePeriod,
     selectedTimePeriod,
-  } = useTimePeriodContext();
+  } = useResourceContext();
 
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,

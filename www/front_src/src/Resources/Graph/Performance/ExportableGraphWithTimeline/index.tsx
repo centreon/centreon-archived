@@ -15,7 +15,7 @@ import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { GraphOptionId } from '../models';
 import { useIntersection } from '../useGraphIntersection';
-import { useTimePeriodContext } from '../TimePeriods/useTimePeriod';
+import { useResourceContext } from '../../../Context';
 
 import { defaultGraphOptions, useGraphOptionsContext } from './useGraphOptions';
 
@@ -54,7 +54,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     adjustTimePeriod,
     selectedTimePeriod,
     resourceDetailsUpdated,
-  } = useTimePeriodContext();
+  } = useResourceContext();
 
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>

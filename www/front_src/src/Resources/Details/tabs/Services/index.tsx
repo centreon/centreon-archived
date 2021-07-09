@@ -21,8 +21,10 @@ import memoizeComponent from '../../../memoizedComponent';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import { GraphOptions } from '../../models';
 import useGraphOptions, {
+  defaultGraphOptions,
   GraphOptionsContext,
 } from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
+import { GraphOptionId } from '../../../Graph/Performance/models';
 
 import ServiceGraphs from './Graphs';
 import ServiceList from './List';
@@ -85,9 +87,9 @@ const ServicesTabContent = ({
 
     setServicesTabParameters({
       graphMode: mode,
-      graphTimePeriod: pathOr(
-        {},
-        ['services', 'graphTimePeriod'],
+      graphOptions: pathOr(
+        defaultGraphOptions,
+        ['services', 'graphOptions'],
         tabParameters,
       ),
     });
@@ -96,16 +98,16 @@ const ServicesTabContent = ({
   const changeTabGraphOptions = (graphOptions: GraphOptions) => {
     setServicesTabParameters({
       graphMode: tabParameters.services?.graphMode || false,
-      graphTimePeriod: {
-        ...tabParameters.services?.graphTimePeriod,
-        graphOptions,
+      graphOptions: {
+        ...tabParameters.services?.graphOptions,
+        ...graphOptions,
       },
     });
   };
 
   const graphOptions = useGraphOptions({
     changeTabGraphOptions,
-    graphTabParameters: tabParameters.services?.graphTimePeriod,
+    graphOptionsParameters: tabParameters.services?.graphOptions,
   });
 
   React.useEffect(() => {
