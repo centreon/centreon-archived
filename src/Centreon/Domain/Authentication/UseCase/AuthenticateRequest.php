@@ -54,6 +54,8 @@ class AuthenticateRequest
     /**
      * @param Credentials $credentials
      * @param string $providerConfigurationName
+     * @param string $centreonBaseUri
+     * @param string|null $referer
      */
     public function __construct(
         Credentials $credentials,
@@ -66,7 +68,7 @@ class AuthenticateRequest
         $this->providerConfigurationName = $providerConfigurationName;
         $this->centreonBaseUri = $centreonBaseUri;
         if ($referer !== null) {
-            $this->refererQueryParameters = parse_url($referer, PHP_URL_QUERY);
+            $this->refererQueryParameters = parse_url($referer, PHP_URL_QUERY) ?: null;
         }
     }
 

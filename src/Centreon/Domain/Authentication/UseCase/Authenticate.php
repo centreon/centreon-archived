@@ -375,7 +375,9 @@ class Authenticate
                         (int) $redirectionPageParameters['p']
                     );
                     unset($redirectionPageParameters['p']);
-                    $refererRedirectionPage->setUrlOptions('&' . http_build_query($redirectionPageParameters));
+                    if ($refererRedirectionPage !== null) {
+                        $refererRedirectionPage->setUrlOptions('&' . http_build_query($redirectionPageParameters));
+                    }
                 }
             }
         }
