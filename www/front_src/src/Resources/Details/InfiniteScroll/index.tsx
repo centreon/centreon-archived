@@ -9,7 +9,6 @@ import {
   concat,
   gt,
   equals,
-  or,
   not,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +17,7 @@ import {
   CircularProgress,
   Fab,
   Fade,
+  LinearProgress,
   makeStyles,
   Tooltip,
 } from '@material-ui/core';
@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
     alignContent: 'flex-start',
     alignItems: 'center',
     display: 'grid',
-    gridGap: theme.spacing(1),
     height: '100%',
     justifyItems: 'center',
     width: '100%',
@@ -60,6 +59,15 @@ const useStyles = makeStyles((theme) => ({
     position: 'sticky',
   },
   filter: {
+    width: '100%',
+  },
+  header: {
+    marginBottom: theme.spacing(),
+    width: '100%',
+  },
+  progress: {
+    height: theme.spacing(0.5),
+    marginBottom: theme.spacing(1),
     width: '100%',
   },
   scrollableContainer: {
@@ -166,8 +174,6 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       return;
     }
 
-    setEntities(undefined);
-
     reload();
   }, reloadDependencies);
 
@@ -196,7 +202,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
     setIsScrolling(not(equals(scrollTop, 0)));
     preventScrollButtonRef.current = false;
 
-    if (or(equals(page, 1), gt(scrollTop, 0))) {
+    if (gt(scrollTop, 0)) {
       return;
     }
 
@@ -226,8 +232,13 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       onScroll={scroll}
     >
       <div className={classes.container}>
-        <div className={classes.filter}>{header}</div>
+        <div className={classes.header}>{header}</div>
         <div className={classes.filter}>{filter}</div>
+        <div className={classes.progress}>
+          {loading && not(isNil(entities)) && (
+            <LinearProgress color="primary" />
+          )}
+        </div>
         <div className={classes.entitiesContainer}>
           <div className={classes.entities}>
             {cond([

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil, path, pathOr } from 'ramda';
+import { isNil, pathOr } from 'ramda';
 
 import GraphIcon from '@material-ui/icons/BarChart';
 import ListIcon from '@material-ui/icons/List';
@@ -18,7 +18,6 @@ import { listResources } from '../../../Listing/api';
 import { Resource } from '../../../models';
 import InfiniteScroll from '../../InfiniteScroll';
 import memoizeComponent from '../../../memoizedComponent';
-import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import { GraphOptions } from '../../models';
 import useGraphOptions, {
@@ -48,37 +47,6 @@ const ServicesTabContent = ({
   );
 
   const [canDisplayGraphs, setCanDisplayGraphs] = React.useState(false);
-
-  const {
-    selectedTimePeriod,
-    changeSelectedTimePeriod,
-    periodQueryParameters,
-    getIntervalDates,
-    customTimePeriod,
-    changeCustomTimePeriod,
-    adjustTimePeriod,
-    resourceDetailsUpdated,
-  } = useTimePeriod({
-    defaultGraphOptions: path(
-      ['services', 'graphTimePeriod', 'graphOptions'],
-      tabParameters,
-    ),
-    defaultSelectedCustomTimePeriod: path(
-      ['services', 'graphTimePeriod', 'selectedCustomTimePeriod'],
-      tabParameters,
-    ),
-    defaultSelectedTimePeriodId: path(
-      ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
-      tabParameters,
-    ),
-    details,
-    onTimePeriodChange: (graphTimePeriod) => {
-      setServicesTabParameters({
-        graphMode,
-        graphTimePeriod,
-      });
-    },
-  });
 
   const { sendRequest, sending } = useRequest({
     request: listResources,
@@ -155,15 +123,7 @@ const ServicesTabContent = ({
       <InfiniteScroll<Resource>
         details={details}
         filter={
-          graphMode ? (
-            <TimePeriodButtonGroup
-              changeCustomTimePeriod={changeCustomTimePeriod}
-              customTimePeriod={customTimePeriod}
-              disabled={loading}
-              selectedTimePeriodId={selectedTimePeriod?.id}
-              onChange={changeSelectedTimePeriod}
-            />
-          ) : undefined
+          graphMode ? <TimePeriodButtonGroup disabled={loading} /> : undefined
         }
         header={
           <IconButton
@@ -187,13 +147,7 @@ const ServicesTabContent = ({
 
           return displayGraphs ? (
             <ServiceGraphs
-              adjustTimePeriod={adjustTimePeriod}
-              customTimePeriod={customTimePeriod}
-              getIntervalDates={getIntervalDates}
               infiniteScrollTriggerRef={infiniteScrollTriggerRef}
-              periodQueryParameters={periodQueryParameters}
-              resourceDetailsUpdated={resourceDetailsUpdated}
-              selectedTimePeriod={selectedTimePeriod}
               services={entities}
             />
           ) : (

@@ -15,6 +15,8 @@ import {
 import { labelEvent } from '../../../translatedLabels';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
+import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
+import { useTimePeriodContext } from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -34,6 +36,11 @@ const useStyles = makeStyles((theme) => ({
 const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const { getIntervalDates, selectedTimePeriod, customTimePeriod } =
+    useTimePeriodContext();
+
+  const [start, end] = getIntervalDates();
 
   const translatedTypes = types.map((type) => ({
     ...type,
@@ -55,6 +62,15 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     }
 
     return {
+      conditions: [
+        {
+          field: 'date',
+          values: {
+            $gt: start,
+            $lt: end,
+          },
+        },
+      ],
       lists: [
         {
           field: 'type',
@@ -100,10 +116,14 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
           />
         </Paper>
       }
+      header={<TimePeriodButtonGroup disableGraphOptions />}
       limit={limit}
       loading={sending}
       loadingSkeleton={<LoadingSkeleton />}
-      reloadDependencies={[selectedTypes]}
+      reloadDependencies={[
+        selectedTypes,
+        selectedTimePeriod?.id || customTimePeriod,
+      ]}
       sendListingRequest={listTimeline}
     >
       {({ infiniteScrollTriggerRef, entities }): JSX.Element => {

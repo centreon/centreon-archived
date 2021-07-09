@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { always, cond, lt, lte, map, pick, T } from 'ramda';
+import { always, cond, lt, lte, map, not, pick, T } from 'ramda';
 import { ParentSize } from '@visx/visx';
 
 import {
@@ -13,14 +13,10 @@ import {
   Tooltip,
 } from '@material-ui/core';
 
-import {
-  ChangeCustomTimePeriodProps,
-  CustomTimePeriod,
-  TimePeriodId,
-  timePeriods,
-} from '../../../Details/tabs/Graph/models';
+import { timePeriods } from '../../../Details/tabs/Graph/models';
 import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
 
+import { useTimePeriodContext } from './useTimePeriod';
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
 const useStyles = makeStyles((theme) => ({
@@ -41,25 +37,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
-  customTimePeriod: CustomTimePeriod;
+  disableGraphOptions?: boolean;
   disabled?: boolean;
-  onChange: (timePeriod: TimePeriodId) => void;
-  selectedTimePeriodId?: string;
 }
 
 const timePeriodOptions = map(pick(['id', 'name', 'largeName']), timePeriods);
 
 const TimePeriodButtonGroup = ({
-  selectedTimePeriodId,
-  onChange,
   disabled = false,
-  customTimePeriod,
-  changeCustomTimePeriod,
+  disableGraphOptions = false,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles();
   const theme = useTheme();
+
+  const {
+    customTimePeriod,
+    changeCustomTimePeriod,
+    changeSelectedTimePeriod,
+    selectedTimePeriod,
+  } = useTimePeriodContext();
 
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,
@@ -90,9 +87,9 @@ const TimePeriodButtonGroup = ({
                       className={classes.button}
                       component="span"
                       variant={
-                        selectedTimePeriodId === id ? 'contained' : 'outlined'
+                        selectedTimePeriod?.id === id ? 'contained' : 'outlined'
                       }
-                      onClick={() => onChange(id)}
+                      onClick={() => changeSelectedTimePeriod(id)}
                     >
                       {cond<number, string>([
                         [lte(theme.breakpoints.values.md), always(largeName)],
@@ -109,7 +106,7 @@ const TimePeriodButtonGroup = ({
               customTimePeriod={customTimePeriod}
               isCompact={isCompact}
             />
-            <GraphOptions />
+            {not(disableGraphOptions) && <GraphOptions />}
           </Paper>
         );
       }}
