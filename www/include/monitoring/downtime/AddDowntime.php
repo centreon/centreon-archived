@@ -42,7 +42,7 @@ include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonHost.class.php";
 
-const DOWNTIME_YEAR_MAX = \Centreon\Domain\Downtime\DowntimeService::DOWNTIME_YEAR_MAX;
+const DOWNTIME_YEAR_MAX = \Centreon\Domain\Downtime\Downtime::DOWNTIME_YEAR_MAX;
 
 $hostStr = $centreon->user->access->getHostsString("ID", $pearDBO);
 $hostAclId = preg_split('/,/', str_replace("'", "", $hostStr));
