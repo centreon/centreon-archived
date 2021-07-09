@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { equals, last, not, isEmpty, isNil } from 'ramda';
+import { equals, last, not, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 
 import { Typography, Paper, makeStyles } from '@material-ui/core';
 import {

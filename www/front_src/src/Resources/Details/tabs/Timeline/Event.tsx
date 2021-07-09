@@ -104,7 +104,7 @@ interface Props {
 }
 
 const Date = ({ event }: Props): JSX.Element => {
-  const { toTime, format } = useLocaleDateTimeFormat();
+  const { format } = useLocaleDateTimeFormat();
 
   const parsedDate = format({ date: event.date, formatString: 'LLLL' });
 

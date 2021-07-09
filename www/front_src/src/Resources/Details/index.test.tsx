@@ -716,16 +716,10 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const {
-      getByText,
-      getAllByText,
-      getAllByLabelText,
-      baseElement,
-      debug,
-      getByLabelText,
-    } = renderDetails({
-      openTabId: timelineTabId,
-    });
+    const { getByText, getAllByLabelText, baseElement, debug, getByLabelText } =
+      renderDetails({
+        openTabId: timelineTabId,
+      });
 
     act(() => {
       setSelectedServiceResource();
