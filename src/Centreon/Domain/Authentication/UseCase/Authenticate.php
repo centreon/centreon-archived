@@ -150,7 +150,14 @@ class Authenticate
          */
         $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
         if ($authenticationTokens === null) {
-            $this->createAuthenticationTokenOrFail($authenticationProvider, $providerUser);
+            $this->createAuthenticationTokens(
+                $this->session->getId(),
+                $authenticationProvider->getConfiguration()->getName(),
+                $providerUser,
+                $authenticationProvider->getProviderToken($this->session->getId()),
+                $authenticationProvider->getProviderRefreshToken($this->session->getId()),
+                $request->getClientIp()
+            );
         }
 
         $this->debug(
@@ -283,30 +290,6 @@ class Authenticate
     }
 
     /**
-     * Create Authentication tokens or throw an Exception.
-     *
-     * @param ProviderInterface $authenticationProvider
-     * @param ContactInterface $providerUser
-     * @throws AuthenticationException
-     */
-    private function createAuthenticationTokenOrFail(
-        ProviderInterface $authenticationProvider,
-        ContactInterface $providerUser
-    ): void {
-        $this->debug(
-            '[AUTHENTICATE] Creating authentication tokens for user',
-            ['user' => $providerUser->getAlias()]
-        );
-        $this->createAuthenticationTokens(
-            $this->session->getId(),
-            $authenticationProvider->getConfiguration()->getName(),
-            $providerUser,
-            $authenticationProvider->getProviderToken($this->session->getId()),
-            $authenticationProvider->getProviderRefreshToken($this->session->getId())
-        );
-    }
-
-    /**
      * Define the redirection uri where user will be redirect once logged.
      *
      * @param AuthenticateRequest $request
@@ -400,7 +383,8 @@ class Authenticate
         string $providerConfigurationName,
         ContactInterface $contact,
         ProviderToken $providerToken,
-        ?ProviderToken $providerRefreshToken
+        ?ProviderToken $providerRefreshToken,
+        string $clientIp
     ): void {
         $providerConfiguration = $this->providerService->findProviderConfigurationByConfigurationName(
             $providerConfigurationName
@@ -414,7 +398,7 @@ class Authenticate
             $this->dataStorageEngine->startTransaction();
         }
         try {
-            $session = new Session($sessionToken, $contact->getId());
+            $session = new Session($sessionToken, $contact->getId(), $clientIp);
             $this->sessionRepository->addSession($session);
             $this->authenticationRepository->addAuthenticationTokens(
                 $sessionToken,

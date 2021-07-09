@@ -125,6 +125,10 @@ class AuthenticationController extends AbstractController
         // submitted from form directly
         $data = $request->request->getIterator();
         $referer = $request->headers->get('referer');
+        $clientIp = $request->getClientIp();
+        if ($clientIp === null) {
+            return $this->view(['Invalid address'], Response::HTTP_BAD_REQUEST);
+        }
         if (empty($data['login']) || empty($data['password'])) {
             return $this->view(['Missing credentials parameters'], Response::HTTP_BAD_REQUEST);
         }
@@ -134,7 +138,8 @@ class AuthenticationController extends AbstractController
             $credentials,
             $providerConfigurationName,
             $this->getBaseUri(),
-            $referer
+            $referer,
+            $clientIp
         );
 
         $authenticate->execute($authenticateRequest, $response);

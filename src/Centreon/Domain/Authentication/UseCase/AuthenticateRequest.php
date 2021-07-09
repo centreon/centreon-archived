@@ -52,6 +52,11 @@ class AuthenticateRequest
     private $refererQueryParameters;
 
     /**
+     * @var string
+     */
+    private $clientIp;
+
+    /**
      * @param Credentials $credentials
      * @param string $providerConfigurationName
      * @param string $centreonBaseUri
@@ -61,7 +66,8 @@ class AuthenticateRequest
         Credentials $credentials,
         string $providerConfigurationName,
         string $centreonBaseUri,
-        ?string $referer
+        ?string $referer,
+        string $clientIp
     ) {
         $this->login = $credentials->getLogin();
         $this->password = $credentials->getPassword();
@@ -70,6 +76,7 @@ class AuthenticateRequest
         if ($referer !== null) {
             $this->refererQueryParameters = parse_url($referer, PHP_URL_QUERY) ?: null;
         }
+        $this->clientIp = $clientIp;
     }
 
     /**
@@ -120,5 +127,15 @@ class AuthenticateRequest
     public function getRefererQueryParameters(): ?string
     {
         return $this->refererQueryParameters;
+    }
+
+    /**
+     * Get the Client IP.
+     *
+     * @return string
+     */
+    public function getClientIp(): string
+    {
+        return $this->clientIp;
     }
 }

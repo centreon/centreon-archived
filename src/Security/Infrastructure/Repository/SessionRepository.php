@@ -90,8 +90,7 @@ class SessionRepository extends AbstractRepositoryDRB implements SessionReposito
         $insertSessionStatement->bindValue(':sessionId', $session->getToken(), \PDO::PARAM_STR);
         $insertSessionStatement->bindValue(':userId', $session->getContactId(), \PDO::PARAM_INT);
         $insertSessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
-        // @todo get addr from controller
-        $insertSessionStatement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
+        $insertSessionStatement->bindValue(':ipAddress', $session->getClientIp(), \PDO::PARAM_STR);
         $insertSessionStatement->execute();
     }
 }
