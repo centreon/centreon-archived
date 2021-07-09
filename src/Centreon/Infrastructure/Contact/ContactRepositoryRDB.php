@@ -322,15 +322,17 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ? $this->parseLocaleFromContactLang($contact['contact_lang'])
             : null;
 
-        $page = new Page(
-            (int) $contact['topology_id'],
-            $contact['topology_url'],
-            (int) $contact['default_page'],
-            (bool) $contact['is_react']
-        );
-
-        if (!empty($contact['topology_url_opt'])) {
-            $page->setUrlOptions($contact['topology_url_opt']);
+        $page = null;
+        if ($contact['default_page'] !== null) {
+            $page = new Page(
+                (int) $contact['topology_id'],
+                $contact['topology_url'],
+                (int) $contact['default_page'],
+                (bool) $contact['is_react']
+            );
+            if (!empty($contact['topology_url_opt'])) {
+                $page->setUrlOptions($contact['topology_url_opt']);
+            }
         }
 
         return (new Contact())
