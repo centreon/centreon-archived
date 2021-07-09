@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import {
-  equals,
   find,
   findIndex,
   isNil,
@@ -52,6 +51,7 @@ export interface FilterState {
   appliedFilter: Filter;
   applyCurrentFilter: () => void;
   applyFilter: (filter: Filter) => void;
+  clearFilter: () => void;
   currentFilter: Filter;
   customFilters: Array<Filter>;
   customFiltersLoading: boolean;
@@ -60,7 +60,6 @@ export interface FilterState {
   filters: Array<Filter>;
   getCriteriaValue: (name: string) => CriteriaValue | undefined;
   getMultiSelectCriterias: () => Array<Criteria>;
-  isCurrentFilterApplied: boolean;
   loadCustomFilters: () => Promise<Array<Filter>>;
   search: string;
   setAppliedFilter: (filter: Filter) => void;
@@ -221,20 +220,22 @@ const useFilter = (): FilterState => {
   const applyFilter = (filter: Filter): void => {
     setCurrentFilter(filter);
     setAppliedFilter(filter);
+    setSearch(build(filter.criterias));
   };
-
-  const isCurrentFilterApplied =
-    equals(currentFilter, appliedFilter) &&
-    equals(appliedFilter, filterWithParsedSearch);
 
   const applyCurrentFilter = (): void => {
     applyFilter(filterWithParsedSearch);
+  };
+
+  const clearFilter = (): void => {
+    applyFilter(allFilter);
   };
 
   return {
     appliedFilter,
     applyCurrentFilter,
     applyFilter,
+    clearFilter,
     currentFilter,
     customFilters,
     customFiltersLoading,
@@ -243,7 +244,6 @@ const useFilter = (): FilterState => {
     filters,
     getCriteriaValue,
     getMultiSelectCriterias,
-    isCurrentFilterApplied,
     loadCustomFilters,
     search,
     setAppliedFilter,

@@ -4,6 +4,7 @@ import { Criteria } from './models';
 
 interface DefaultCriteriaValues {
   hostGroups?: Array<SelectEntry>;
+  monitoringServers?: Array<SelectEntry>;
   resourceTypes?: Array<SelectEntry>;
   serviceGroups?: Array<SelectEntry>;
   states?: Array<SelectEntry>;
@@ -20,8 +21,10 @@ const getDefaultCriterias = (
     statuses = [],
     hostGroups = [],
     serviceGroups = [],
+    monitoringServers = [],
   }: DefaultCriteriaValues = {
     hostGroups: [],
+    monitoringServers: [],
     resourceTypes: [],
     serviceGroups: [],
     states: [],
@@ -58,6 +61,12 @@ const getDefaultCriterias = (
       object_type: 'service_groups',
       type: 'multi_select',
       value: serviceGroups,
+    },
+    {
+      name: 'monitoring_servers',
+      object_type: 'monitoring_servers',
+      type: 'multi_select',
+      value: monitoringServers,
     },
     {
       name: 'search',

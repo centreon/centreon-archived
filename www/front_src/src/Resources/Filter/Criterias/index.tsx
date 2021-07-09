@@ -28,14 +28,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props
-  extends Pick<FilterState, 'isCurrentFilterApplied' | 'applyCurrentFilter'> {
+  extends Pick<FilterState, 'applyCurrentFilter' | 'clearFilter'> {
   criterias: Array<CriteriaInterface>;
 }
 
 const CriteriasContent = ({
   criterias,
-  isCurrentFilterApplied,
   applyCurrentFilter,
+  clearFilter,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -64,14 +64,13 @@ const CriteriasContent = ({
           })}
           <Grid container item className={classes.searchButton} spacing={1}>
             <Grid item>
-              <Button color="primary" size="small">
+              <Button color="primary" size="small" onClick={clearFilter}>
                 {t(labelClear)}
               </Button>
             </Grid>
             <Grid item>
               <Button
                 color="primary"
-                disabled={isCurrentFilterApplied}
                 size="small"
                 variant="contained"
                 onClick={applyCurrentFilter}
@@ -87,11 +86,8 @@ const CriteriasContent = ({
 };
 
 const Criterias = (): JSX.Element => {
-  const {
-    getMultiSelectCriterias,
-    isCurrentFilterApplied,
-    applyCurrentFilter,
-  } = useResourceContext();
+  const { getMultiSelectCriterias, applyCurrentFilter, clearFilter } =
+    useResourceContext();
 
   const criterias = getMultiSelectCriterias();
 
@@ -99,11 +95,11 @@ const Criterias = (): JSX.Element => {
     Component: (
       <CriteriasContent
         applyCurrentFilter={applyCurrentFilter}
+        clearFilter={clearFilter}
         criterias={criterias}
-        isCurrentFilterApplied={isCurrentFilterApplied}
       />
     ),
-    memoProps: [criterias, isCurrentFilterApplied],
+    memoProps: [criterias],
   });
 };
 

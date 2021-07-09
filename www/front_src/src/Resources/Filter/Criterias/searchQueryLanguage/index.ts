@@ -15,6 +15,7 @@ import {
   reject,
   split,
 } from 'ramda';
+import pluralize from 'pluralize';
 
 import { SelectEntry } from '@centreon/ui';
 
@@ -29,7 +30,7 @@ const isIn = flip(includes);
 
 const criteriaKeys = keys(selectableCriterias) as Array<string>;
 
-const isCriteriaPart = pipe(split(':'), head, isIn(criteriaKeys));
+const isCriteriaPart = pipe(split(':'), head, pluralize, isIn(criteriaKeys));
 
 const parse = (search: string): Array<Criteria> => {
   const parts = search.split(' ');
@@ -38,12 +39,16 @@ const parse = (search: string): Array<Criteria> => {
 
   const criterias: Array<Criteria> = criteriaParts.map((criteria) => {
     const [key, value] = criteria.split(':');
+    const pluralizedKey = pluralize(key);
 
-    const defaultCriteria = find(propEq('name', key), getDefaultCriterias());
+    const defaultCriteria = find(
+      propEq('name', pluralizedKey),
+      getDefaultCriterias(),
+    );
     const objectType = defaultCriteria?.object_type || null;
 
     return {
-      name: key,
+      name: pluralizedKey,
       object_type: objectType,
       type: 'multi_select',
       value: value?.split(',').map((laGrosseValue) => {
@@ -108,7 +113,7 @@ const build = (criterias: Array<Criteria>): string => {
         ? values.map(prop('id'))
         : values.map(({ id, name: valueName }) => `${id}|${valueName}`);
 
-      return `${name}:${formattedValues.join(',')}`;
+      return `${pluralize.singular(name)}:${formattedValues.join(',')}`;
     })
     .join(' ');
 

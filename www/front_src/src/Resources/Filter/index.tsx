@@ -26,7 +26,6 @@ import {
   allFilter,
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
-import { build } from './Criterias/searchQueryLanguage';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -82,7 +81,6 @@ const Filter = (): JSX.Element => {
       customFilters?.find(propEq('id', filterId));
 
     applyFilter(updatedFilter);
-    setSearch(build(updatedFilter.criterias));
   };
 
   const translatedOptions = [

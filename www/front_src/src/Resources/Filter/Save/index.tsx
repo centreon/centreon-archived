@@ -36,7 +36,6 @@ import { updateFilter as updateFilterRequest } from '../api';
 import { FilterState } from '../useFilter';
 import memoizeComponent from '../../memoizedComponent';
 import { Filter } from '../models';
-import { build } from '../Criterias/searchQueryLanguage';
 
 import CreateFilterDialog from './CreateFilterDialog';
 
@@ -60,7 +59,6 @@ type Props = Pick<
   | 'filters'
   | 'appliedFilter'
   | 'search'
-  | 'setSearch'
   | 'applyFilter'
 >;
 
@@ -71,7 +69,6 @@ const SaveFilterMenuContent = ({
   customFilters,
   setEditPanelOpen,
   filters,
-  setSearch,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -112,7 +109,6 @@ const SaveFilterMenuContent = ({
 
     loadCustomFilters().then(() => {
       applyFilter(newFilter);
-      setSearch(build(newFilter.criterias));
     });
   };
 
@@ -221,7 +217,6 @@ const SaveFilterMenu = (): JSX.Element => {
     filters,
     appliedFilter,
     search,
-    setSearch,
   } = useResourceContext();
 
   return (
@@ -234,7 +229,6 @@ const SaveFilterMenu = (): JSX.Element => {
       loadCustomFilters={loadCustomFilters}
       search={search}
       setEditPanelOpen={setEditPanelOpen}
-      setSearch={setSearch}
     />
   );
 };
