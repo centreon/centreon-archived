@@ -7,6 +7,10 @@ const countServicesDB = (): void => {
   cy.task('checkServicesInDatabase', `${Cypress.env('dockerName')}`).then(
     (stdout: any): Cypress.Chainable<any> | null => {
       const string = stdout.split('\n')[1];
+
+      cy.log('stdout : ', stdout);
+      cy.log('string extracted : ', string);
+
       const count = parseInt(string, 10);
       testCount += 1;
 
