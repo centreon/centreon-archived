@@ -66,7 +66,7 @@ class Centreon_Object_Instance extends Centreon_Object
      * Insert platform in nagios_server and platform_topology tables.
      *
      * @param array<string,mixed> $params
-     * @return void
+     * @return int
      */
     public function insert($params = [])
     {
