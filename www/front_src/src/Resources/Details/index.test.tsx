@@ -81,6 +81,8 @@ import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
+import useFilter from '../Filter/useFilter';
+import { SelectableCriteriasType } from '../Filter/Criterias/models';
 
 import {
   last7Days,
@@ -401,6 +403,17 @@ const retrievedServices = {
   ],
 };
 
+const retrievedFilters = {
+  data: {
+    meta: {
+      limit: 30,
+      page: 1,
+      total: 0,
+    },
+    result: [],
+  },
+};
+
 const currentDateIsoString = '2020-01-21T06:00:00.000Z';
 
 let context: ResourceContext;
@@ -436,6 +449,7 @@ interface Props {
 const DetailsTest = ({ openTabId }: Props): JSX.Element => {
   const listingState = useListing();
   const detailState = useDetails();
+  const filterState = useFilter();
 
   if (openTabId) {
     detailState.openDetailsTabId = openTabId;
@@ -444,6 +458,7 @@ const DetailsTest = ({ openTabId }: Props): JSX.Element => {
   context = {
     ...listingState,
     ...detailState,
+    ...filterState,
   } as ResourceContext;
 
   return (
@@ -466,6 +481,7 @@ const renderDetails = (
 describe(Details, () => {
   beforeEach(() => {
     mockDate.set(currentDateIsoString);
+    mockedAxios.get.mockResolvedValueOnce(retrievedFilters);
   });
 
   afterEach(() => {
@@ -1398,6 +1414,30 @@ describe(Details, () => {
     expect(getByText('1.23k')).toBeInTheDocument();
   });
 
+  it('Filters on a group when the corresponding chip is clicked and the Details tab is selected', async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: retrievedDetails,
+    });
+
+    const { getByText } = renderDetails();
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalled();
+    });
+
+    userEvent.click(getByText('Linux-servers').parentElement as HTMLElement);
+
+    await waitFor(() => {
+      expect(
+        context.getCriteriaValue(SelectableCriteriasType.serviceGroups),
+      ).toEqual([{ id: 0, name: 'Linux-servers' }]);
+    });
+  });
+
   it('displays the resource configuration link when the resource name is hovered', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
@@ -1442,6 +1482,7 @@ describe(Details, () => {
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedTimeline })
       .mockResolvedValueOnce({ data: retrievedTimeline })
+      .mockResolvedValueOnce(retrievedFilters)
       .mockResolvedValueOnce({ data: retrievedDetails })
       .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
       .mockResolvedValueOnce({ data: retrievedTimeline });

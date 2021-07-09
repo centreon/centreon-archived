@@ -6,6 +6,7 @@ import {
   Parent,
   ResourceLinks,
   NamedEntity,
+  ResourceType,
 } from '../models';
 
 import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
@@ -40,7 +41,7 @@ export interface ResourceDetails extends NamedEntity {
   status: Status;
   timezone?: string;
   tries: string;
-  type: 'service' | 'host' | 'metaservice';
+  type: ResourceType;
   uuid: string;
 }
 
