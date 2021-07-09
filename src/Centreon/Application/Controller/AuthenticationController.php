@@ -59,13 +59,12 @@ class AuthenticationController extends AbstractController
     public function login(Request $request, AuthenticateApi $authenticate, AuthenticateApiResponse $response): View
     {
         $contentBody = json_decode((string) $request->getContent(), true);
-        $credentials = [
-            "login" => $contentBody['security']['credentials']['login'] ?? '',
-            "password" => $contentBody['security']['credentials']['password'] ?? ''
-        ];
+        $login = $contentBody['security']['credentials']['login'] ?? '';
+        $password = $contentBody['security']['credentials']['password'] ?? '';
 
-        $request = new AuthenticateApiRequest($credentials['login'], $credentials['password']);
+        $request = new AuthenticateApiRequest($login, $password);
         $authenticate->execute($request, $response);
+
         return $this->view(ApiAuthenticationFactory::createFromResponse($response));
     }
 
