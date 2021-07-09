@@ -144,20 +144,19 @@ if (!empty($chartId)) {
     } else {
         throw new \InvalidArgumentException('chartId must be a combination of integers');
     }
-}
+    $statement = $pearDBO->prepare(
+        'SELECT id FROM index_data WHERE host_id = :hostId AND service_id = :serviceId'
+    );
+    $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+    $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
 
-$statement = $pearDBO->prepare(
-    'SELECT id FROM index_data WHERE host_id = :hostId AND service_id = :serviceId'
-);
-$statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-$statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+    $statement->execute();
 
-$statement->execute();
-
-if ($row = $statement->fetch()) {
-    $index = $row['id'];
-} else {
-    die('Resource not found');
+    if ($row = $statement->fetch()) {
+        $index = $row['id'];
+    } else {
+        die('Resource not found');
+    }
 }
 
 $res = $pearDB->prepare(
