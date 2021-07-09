@@ -45,14 +45,21 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 class TokenAPIAuthenticator extends AbstractGuardAuthenticator
 {
     public const EXPIRATION_DELAY = 120;
+
     /**
      * @var AuthenticationRepositoryInterface
      */
     private $authenticationRepository;
+
     /**
      * @var ContactRepositoryInterface
      */
     private $contactRepository;
+
+    /**
+     * @var OptionServiceInterface
+     */
+    private $optionService;
 
     /**
      * TokenAPIAuthenticator constructor.
@@ -180,7 +187,7 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
         }
 
         $contact = $this->contactRepository->findById($tokens->getUserId());
-        if ($contact->isActive() === false) {
+        if (isset($contact) && $contact->isActive() === false) {
             throw new ContactDisabledException();
         }
 

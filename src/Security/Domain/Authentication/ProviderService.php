@@ -106,7 +106,7 @@ class ProviderService implements ProviderServiceInterface
                 $providerConfigurationName
             );
         } catch (\Exception $ex) {
-            ProviderException::providerConfigurationNotFound($providerConfigurationName);
+            throw ProviderException::providerConfigurationNotFound($providerConfigurationName);
         }
 
         if ($providerConfiguration === null) {

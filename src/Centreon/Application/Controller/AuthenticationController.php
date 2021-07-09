@@ -139,9 +139,6 @@ class AuthenticationController extends AbstractController
         );
 
         $authenticate->execute($authenticateRequest, $response);
-        if ($request->headers->get('Content-Type') === 'application/json') {
-            // Send redirection_uri in JSON format only for API request
-            return $this->view($response->getRedirectionUriApi());
-        }
+        return $this->view($response->getRedirectionUriApi());
     }
 }

@@ -54,7 +54,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     ): void {
         // We avoid to start again a database transaction
         $isAlreadyInTransaction = $this->db->inTransaction();
-        if (!$isAlreadyInTransaction) {
+        if ($isAlreadyInTransaction === false) {
             $this->db->beginTransaction();
         }
         try {
@@ -65,11 +65,11 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
                 $providerToken,
                 $providerRefreshToken
             );
-            if (!$isAlreadyInTransaction) {
+            if ($isAlreadyInTransaction === false) {
                 $this->db->commit();
             }
         } catch (\Exception $e) {
-            if (!$isAlreadyInTransaction) {
+            if ($isAlreadyInTransaction === false) {
                 $this->db->rollBack();
             }
             throw $e;
@@ -133,7 +133,7 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
         );
         $insertSecurityTokenStatement->bindValue(
             ':expireAt',
-            $providerToken->getExpirationDate()->getTimestamp(),
+            $providerToken->getExpirationDate() !== null ? $providerToken->getExpirationDate()->getTimestamp() : null,
             \PDO::PARAM_INT
         );
         $insertSecurityTokenStatement->execute();
@@ -142,7 +142,8 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
     /**
      * Insert tokens and configuration id in security_authentication_tokens table.
      *
-     * @param integer $sessionId
+     * @param string $sessionId
+     * @param integer $contactId
      * @param integer $securityTokenId
      * @param integer|null $securityRefreshTokenId
      * @param integer $providerConfigurationId
@@ -249,7 +250,11 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
                 "UPDATE `:db`.security_token SET expiration_date = :expiredAt WHERE token = :token"
             )
         );
-        $updateStatement->bindValue(':expiredAt', $providerToken->getExpirationDate()->getTimestamp(), \PDO::PARAM_INT);
+        $updateStatement->bindValue(
+            ':expiredAt',
+            $providerToken->getExpirationDate() !== null ? $providerToken->getExpirationDate()->getTimestamp() : null,
+            \PDO::PARAM_INT
+        );
         $updateStatement->bindValue(':token', $providerToken->getToken(), \PDO::PARAM_STR);
         $updateStatement->execute();
     }
