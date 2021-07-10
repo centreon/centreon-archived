@@ -379,7 +379,7 @@ class CentreonAuthSSO extends CentreonAuth
         ];
         if ($clientBasicAuth) {
             $authentication =  "Authorization: Basic " . base64_encode($clientId . ":" . $clientSecret);
-	} else {
+        } else {
             $data["client_id"] = $clientId;
             $data["client_secret"] = $clientSecret;
         }
@@ -548,7 +548,7 @@ class CentreonAuthSSO extends CentreonAuth
         ];
         if ($clientBasicAuth) {
             $authentication =  "Authorization: Basic " . base64_encode($clientId . ":" . $clientSecret);
-	} else {
+        } else {
             $data["client_id"] = $clientId;
             $data["client_secret"] = $clientSecret;
         }
@@ -609,7 +609,7 @@ class CentreonAuthSSO extends CentreonAuth
         ];
         if ($clientBasicAuth) {
             $authentication =  "Authorization: Basic " . base64_encode($clientId . ":" . $clientSecret);
-	} else {
+        } else {
             $data["client_id"] = $clientId;
             $data["client_secret"] = $clientSecret;
         }
