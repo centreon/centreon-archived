@@ -10,6 +10,7 @@ import {
   gt,
   equals,
   not,
+  length,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -211,7 +212,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
 
   const scrollToTop = (): void => {
     scrollableContainerRef.current?.scrollTo({
-      behavior: 'smooth',
+      behavior: gt(length(entities as Array<TEntity>), 200) ? 'auto' : 'smooth',
       top: 0,
     });
     preventScrollButtonRef.current = true;
