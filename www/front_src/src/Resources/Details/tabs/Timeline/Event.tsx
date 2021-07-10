@@ -291,7 +291,7 @@ const lastYear = lastMonth + 52;
 interface GetEventsByDateInWeeksProps {
   events: Array<TimelineEvent>;
   fromNumberOfWeeks: number;
-  inclusionPolicy?: string;
+  inclusionPolicy?: '[)' | '()' | '[]' | '(]' | undefined;
   locale: string;
   toNumberOfWeeks: number;
 }
