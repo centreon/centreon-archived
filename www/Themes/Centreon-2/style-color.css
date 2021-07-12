@@ -1,6 +1,5 @@
-<?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,97 +32,75 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
+.ListTable a:link, #ListTable a:link, .ListTable a:visited, #ListTable a:visited {color:#666666;}
+.ListTable, .ListTableMedium, .ListTableSmall {border-color:#BFD0E2;}
 
-$pearDB = new CentreonDB();
+.list_lvl_1 { background-color:#D5DFEB; }
+.list_lvl_2 { background-color:#CED3ED; }
 
-/*
- * Get Options colors
- */
-$options = array();
-$DBRESULT = $pearDB->query("SELECT * FROM options");
-while ($res = $DBRESULT->fetch()) {
-    $options[$res["key"]] = $res["value"];
-}
-unset($res);
-
-?>
-.ListTable a:link, #ListTable a:link , .ListTable a:visited, #ListTable a:visited {
-    color:<?php print $color2; ?>;
-}
-
-.list_lvl_1{    background-color:<?php print $color4; ?>;}
-.list_lvl_2{    background-color:<?php print $color5; ?>;}
-
-.ListHeader{
-    background:<?php print $colorHeader_1; ?> ;
-}
-
-.ListSubHeader{
+.ListHeader     { background:#CFEDF9; }
+.ListSubHeader  {
     background-color:#A9C5F2;
     font-weight:bold;
     background-position:top left;
 }
 
-.ListTable, .ListTableMedium, .ListTableSmall {border-color: <?php print $color6; ?>;}
-
-.list_lvl_2 td, .list_lvl_1 td{
-    border-top-color: <?php print $color7; ?>;
-    border-left-color: <?php print $color7; ?>;
-    border-bottom-color: <?php print $color7; ?>;
-    border-right-color: <?php print $color7; ?>;
+.list_lvl_2 td, .list_lvl_1 td {
+    border-top-color: #AAAAAA;
+    border-left-color: #AAAAAA;
+    border-bottom-color: #AAAAAA;
+    border-right-color: #AAAAAA;
 }
 
 .list_one td, .list_two td, .list_three td, .list_four td, .list_up td, .list_down td, .line_ack td, 
 .line_downtime td, .list_unreachable td, .row_disabled td {
-    border-top-color: <?php print $color8; ?>;
-    border-left-color: <?php print $color8; ?>;
-    border-bottom-color: <?php print $color8; ?>;
-    border-right-color: <?php print $color8; ?>;
+    border-top-color: #D1DCEB;
+    border-left-color: #D1DCEB;
+    border-bottom-color: #D1DCEB;
+    border-right-color: #D1DCEB;
 }
 
 .tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td, .tab .list_up td, 
 .tab .list_down td,.tab .line_ack td,.tab .line_downtime td,.tab .list_unreachable td, .tab .row_disabled td {
-    border-top-color: <?php print $color8; ?>;
-    border-left-color: <?php print $color8; ?>;
-    border-bottom-color: <?php print $color8; ?>;
-    border-right-color: <?php print $color8; ?>;
+    border-top-color: #D1DCEB;
+    border-left-color: #D1DCEB;
+    border-bottom-color: #D1DCEB;
+    border-right-color: #D1DCEB;
 }
 
 .tab .list_lvl_2 td, .tab .list_lvl_1 td{
-    border-top-color: <?php print $color7; ?>;
-    border-left-color: <?php print $color7; ?>;
-    border-bottom-color: <?php print $color7; ?>;
-    border-right-color: <?php print $color7; ?>;
+    border-top-color: #AAAAAA;
+    border-left-color: #AAAAAA;
+    border-bottom-color: #AAAAAA;
+    border-right-color: #AAAAAA;
 }
 
 .ListHeader td{
-    border-top-color: <?php print $color9; ?>;
-    border-left-color: <?php print $color9; ?>;
+    border-top-color: #FFFFFF;
+    border-left-color: #FFFFFF;
 }
 
-.ListColFooterRight, .ListColFooterLeft, .ListColFooterCenter{
-    border-top-color: <?php print $color10; ?>;
+.ListColFooterRight, .ListColFooterLeft, .ListColFooterCenter {
+    border-top-color: #AAAAEE;
 }
 
-.list_one_fixe      {   background-color:<?php print $color_list_1; ?>;}
-.list_two_fixe      {   background-color:<?php print $color_list_2; ?>;}
+.list_one_fixe      {   background-color: #F8FDFF;}
+.list_two_fixe      {   background-color: #F0FBFF;}
 
-.list_one           {   background-color:<?php print $color_list_1; ?>;}
-.list_one:hover     {   background-color:#CFEDF9;;}
+.list_one           {   background-color: #F8FDFF;}
+.list_one:hover     {   background-color: #CFEDF9;}
 
-.list_two           {   background-color:<?php print $color_list_2; ?>; }
+.list_two           {   background-color: #F0FBFF;}
 .list_two:hover     {   background-color: #CFEDF9;}
 
-.list_three         {   background-color:<?php print $color_list_3; ?>;}
-.list_three:hover   {   background-color:<?php print $color_list_3_hover; ?>;}
+.list_three         {   background-color: #fada83;}
+.list_three:hover   {   background-color: #bada83;}
 
-.list_four          {   background-color:<?php print $color_list_4; ?>;}
-.list_four:hover    {   background-color:<?php print $color_list_4_hover; ?>;}
+.list_four          {   background-color: #fdc11e;}
+.list_four:hover    {   background-color: #bdc11e;}
 
 .list_up            {   background-color: #88b917;}
-.list_up:hover      {   background-color:<?php print $color_list_up_hover; ?>;}
+.list_up:hover      {   background-color: #B2A867;}
 
 .list_down          {   background-color: #ffaec1;}
 .list_down:hover    {   background-color: #e17790;}
@@ -137,63 +114,23 @@ unset($res);
 .line_ack           {   background-color: #fefc8e;}
 .line_ack:hover     {   background-color: #fcf17f;}
 
-/* Monitoring Side */
 
-/* Menu */
-#menu1_bgimg    {
-    background-color: <?php print $menu1_bgimg; ?>;
-}
-#menu1_bgcolor  {
-    background-color: <?php print $menu1_bgcolor; ?>;
-}
-#menu2_bgcolor  {
-    background-color: <?php print $menu2_bgcolor; ?>;
-}
-#menu2_bgcolor a {
-    color: <?php print $menu2_color; ?>;
+input[type="submit"]:hover, input[type="button"]:hover, input[type="reset"]:hover {
+    background: #009FDF;
+    color: #FFFFFF;
+    border-color: #009FDF;
 }
 
-.Tmenu3 .top .left {
-    background-color:  <?php print $color1; ?>;
-}
-.Tmenu3 .top .right     {
-    background-color:  <?php print $color1; ?>;
-}
-.Tmenu3 .bottom .left   {
-    background-color:  <?php print $color1; ?>;
-}
-.Tmenu3 .bottom .right  {
-    background-color:  <?php print $color1; ?>;
-}
-
-#Tmenu  {   border-right: 0px solid <?php print $menu1_bgcolor; ?>;}
-#footerline1    {   background-color:<?php print $menu1_bgcolor; ?>;}
-#footerline2    {   background-color:<?php print $footerline2; ?>;}
-
-input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
-    background : <?php print $menu1_bgcolor; ?>;
-    color : <?php print $color9; ?>;
-    border-color : <?php print $menu1_bgcolor; ?>;
-    }
-
-.limitPage{
-    color:<?php print $color9; ?>;
+.limitPage, .pageNumber {
+    color: #FFFFFF;
     background-position:top left;
     background-repeat:repeat-x;
-    background-color:<?php print $color6; ?> ;
-    }
-
-.pageNumber{
-    color:<?php print $color9; ?>;
-    background-position:top left;
-    background-repeat:repeat-x;
-    background-color:<?php print $color6; ?> ;
-    }
+    background-color:#BFD0E2;
+}
 
 .a, .b {
-    border-color:<?php print $color10; ?>;
+    border-color:#AAAAEE;
 }
-
 
 .msg_loading{
     position:absolute;
@@ -218,29 +155,27 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 .Toolbar_TDSelectAction_Top a { 
     font-family:Arial, Helvetica, Sans-Serif;
     font-size:11px;
-    color:<?php print $color13; ?>;
+    color:#5E5E5E;
 }
 .Toolbar_TDSelectAction_Top a:hover {
-    color:<?php print $color14; ?>;
+    color: #E8AB5C;
 }
 .Toolbar_TableBottom {
-    border-color:<?php print $menu1_bgcolor; ?>;
+    border-color: #009FDF;
 }
 
 .headerTabContainer {
-    border-bottom: 1px solid <?php print $menu2_bgcolor ?>;
+    border-bottom: 1px solid #009FDF;
 }
+
 #mainnav li {
-    background-color: <?php print $menu2_bgcolor ?>;
-    border: 1px solid <?php print $menu2_bgcolor ?>;
+    background-color: #009FDF;
+    border: 1px solid #009FDF;
 }
 #mainnav li.a a {
-    color: <?php print $menu2_bgcolor ?>;
+    color: #009FDF;
 }
 #mainnav li.b a {
-    color: <?php print $menu2_color ?>;
-}
-#mainnav li.b a {
-    color: <?php print $menu2_color ?>;
+    color: #C1ECFF;
 }
 
