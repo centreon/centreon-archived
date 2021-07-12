@@ -244,44 +244,4 @@ class AuthenticationControllerTest extends TestCase
             $view
         );
     }
-
-    /**
-     * test authentication with post method
-     */
-    public function testAuthenticationWithPostMethod()
-    {
-        $authenticationController = new AuthenticationController();
-        $authenticationController->setContainer($this->container);
-
-        $this->request->request = new class () {
-            public function getIterator()
-            {
-                return [
-                    'login' => 'admin',
-                    'password' => 'centreon'
-                ];
-            }
-        };
-
-        $this->request->headers = new class () {
-            public function get()
-            {
-                return 'text/html';
-            }
-        };
-
-        $response = new AuthenticateResponse();
-        $response->setRedirectionUri('/monitoring/resources');
-
-        $view = $authenticationController->authentication($this->request, $this->authenticate, 'local', $response);
-
-        $this->assertEquals(
-            View::createRedirect(
-                '/authentication/login',
-                Response::HTTP_OK,
-                ['content-type' => 'text/html']
-            ),
-            $view
-        );
-    }
 }
