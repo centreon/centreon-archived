@@ -10,48 +10,20 @@ Feature:
     Scenario: Register servers in Platform Topology
         Given I am logged in
 
-        # Register the Central on the container with a name which doesn't exist in nagios_server table
-        # Should fail and an error should be returned
-        When I send a POST request to '/api/latest/platform/topology' with body:
-            """
-            {
-                "name": "wrong_name",
-                "type": "central",
-                "address": "1.1.1.10"
-            }
-            """
-        Then the response code should be "400"
-        And the response should be equal to:
-            """
-            {"message":"The server type 'central' : 'wrong_name'@'1.1.1.10' does not match the one configured in Centreon or is disabled"}
-            """
-
-        # Successfully register the Central on the container
-        # (Notice : this step is automatically done on a real platform on fresh install and update)
-        When I send a POST request to '/api/latest/platform/topology' with body:
-            """
-            {
-                "name": "Central",
-                "type": "central",
-                "address": "1.1.1.10",
-                "hostname": "central.test.localhost.localdomain"
-            }
-            """
-        Then the response code should be "201"
-
         # Register the same Central a second time / Should fail and an error should be returned
         When I send a POST request to '/api/latest/platform/topology' with body:
             """
             {
                 "name": "Central",
                 "type": "central",
-                "address": "1.1.1.10"
+                "address": "127.0.0.1",
+                "parent_address": null
             }
             """
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"A platform using the name : 'Central' or address : '1.1.1.10' already exists"}
+            {"message":"A platform using the name : 'Central' or address : '127.0.0.1' already exists"}
             """
 
         # Register a second Central while the first is still registered / Should fail and an error should be returned
@@ -61,13 +33,14 @@ Feature:
                 "name": "Central_2",
                 "type": "central",
                 "address": "1.1.1.11",
-                "hostname": "server.test.localhost.localdomain"
+                "hostname": "server.test.localhost.localdomain",
+                "parent_address": null
             }
             """
         Then the response code should be "400"
         And the response should be equal to:
             """
-            {"message":"A 'central': 'Central'@'1.1.1.10' is already saved"}
+            {"message":"A 'central': 'Central'@'127.0.0.1' is already saved"}
             """
 
         # Register a Central linked to another Central
@@ -78,7 +51,7 @@ Feature:
                 "name": "Central_2",
                 "type": "central",
                 "address": "1.1.1.11",
-                "parent_address": "1.1.1.10"
+                "parent_address": "127.0.0.1"
             }
             """
         Then the response code should be "400"
@@ -95,7 +68,7 @@ Feature:
                 "name": "wrong_type_server",
                 "type": "server",
                 "address": "6.6.6.1",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "server.test.localhost.localdomain"
             }
             """
@@ -112,7 +85,7 @@ Feature:
                 "name": "inconsistent_address",
                 "type": "poller",
                 "address": "666.",
-                "parent_address": "1.1.1.10"
+                "parent_address": "127.0.0.1"
             }
             """
         Then the response code should be "400"
@@ -128,7 +101,7 @@ Feature:
                 "name": "ill*ga|_character$_found",
                 "type": "poller",
                 "address": "1.1.10.10",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "localhost.localdomain"
             }
             """
@@ -143,7 +116,7 @@ Feature:
                 "name": "space_in_hostname",
                 "type": "poller",
                 "address": "1.1.10.20",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "found space"
             }
             """
@@ -160,7 +133,7 @@ Feature:
                 "name": "illegal_character_in_hostname",
                 "type": "poller",
                 "address": "1.1.10.20",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "i|!egal.h*stname"
             }
             """
@@ -194,7 +167,7 @@ Feature:
                 "name": "my_poller",
                 "type": "poller",
                 "address": "1.1.1.1",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "poller.test.localhost.localdomain"
             }
             """
@@ -207,7 +180,7 @@ Feature:
                 "name": "my_poller",
                 "type": "poller",
                 "address": "1.1.1.1",
-                "parent_address": "1.1.1.10"
+                "parent_address": "127.0.0.1"
             }
             """
         Then the response code should be "400"
@@ -223,7 +196,7 @@ Feature:
                 "name": "my_poller_2",
                 "type": "pOlLEr",
                 "address": "1.1.1.2",
-                "parent_address": "1.1.1.10",
+                "parent_address": "127.0.0.1",
                 "hostname": "poller2.test.localhost.localdomain"
             }
             """
@@ -252,7 +225,8 @@ Feature:
             {
                 "name": "my_poller_4",
                 "type": "poller",
-                "address": "1.1.1.4"
+                "address": "1.1.1.4",
+                "parent_address": null
             }
             """
         Then the response code should be "404"
@@ -297,100 +271,11 @@ Feature:
         # So we can't test pollers or remote edges.
         When I send a GET request to "/api/beta/platform/topology"
         Then the response code should be "200"
-        And the JSON should be equal to:
-            """
-            {
-                "graph": {
-                    "label": "centreon-topology",
-                    "metadata": {
-                        "version": "1.0.0"
-                    },
-                    "nodes": {
-                        "1": {
-                            "type": "central",
-                            "label": "Central",
-                            "metadata": {
-                                "pending": "true",
-                                "centreon-id": "1",
-                                "hostname": "central.test.localhost.localdomain",
-                                "address": "1.1.1.10"
-                            }
-                        },
-                        "2": {
-                            "type": "poller",
-                            "label": "my_poller",
-                            "metadata": {
-                                "pending": "true",
-                                "hostname": "poller.test.localhost.localdomain",
-                                "address": "1.1.1.1"
-                            }
-                        },
-                        "3": {
-                            "type": "poller",
-                            "label": "my_poller_2",
-                            "metadata": {
-                                "pending": "true",
-                                "hostname": "poller2.test.localhost.localdomain",
-                                "address": "1.1.1.2"
-                            }
-                        }
-                    },
-                    "edges": [
-                        {
-                            "source": "2",
-                            "relation": "normal",
-                            "target": "1"
-                        },
-                        {
-                            "source": "3",
-                            "relation": "normal",
-                            "target": "1"
-                        }
-                    ]
-                }
-            }
-            """
+        And the json node "graph.nodes" should have 3 elements
+        And the JSON node "graph.nodes.2.type" should be equal to the string "poller"
 
         When I send a DELETE request to "/api/beta/platform/topology/3"
         Then the response code should be "204"
         When I send a GET request to "/api/beta/platform/topology"
         Then the response code should be "200"
-        And the JSON should be equal to:
-            """
-            {
-                "graph": {
-                    "label": "centreon-topology",
-                    "metadata": {
-                        "version": "1.0.0"
-                    },
-                    "nodes": {
-                        "1": {
-                            "type": "central",
-                            "label": "Central",
-                            "metadata": {
-                                "pending": "true",
-                                "centreon-id": "1",
-                                "hostname": "central.test.localhost.localdomain",
-                                "address": "1.1.1.10"
-                            }
-                        },
-                        "2": {
-                            "type": "poller",
-                            "label": "my_poller",
-                            "metadata": {
-                                "pending": "true",
-                                "hostname": "poller.test.localhost.localdomain",
-                                "address": "1.1.1.1"
-                            }
-                        }
-                    },
-                    "edges": [
-                        {
-                            "source": "2",
-                            "relation": "normal",
-                            "target": "1"
-                        }
-                    ]
-                }
-            }
-            """
+        And the json node "graph.nodes" should have 2 elements
