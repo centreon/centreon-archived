@@ -24,7 +24,6 @@ namespace Security\Domain\Authentication;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
