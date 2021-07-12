@@ -16165,3 +16165,6 @@ msgstr "Veuillez choisir une date avant %d"
 
 msgid "Year must be less than %d (%s)"
 msgstr "L'année doit être inférieure à %d (%s)"
+
+msgid "[%s] The date \"%s\" was expected to be at most %s"
+msgstr "[%s] La date \"%s\" devait être au maximum au %s"
