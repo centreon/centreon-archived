@@ -162,8 +162,7 @@ class Downtime implements EntityDescriptorMetadataInterface
         $this->maxDate = (new \DateTime('', new \DateTimeZone("UTC")))
             ->setDate(self::DOWNTIME_YEAR_MAX, 1, 1)
             ->setTime(0, 0)
-            ->modify('- 1 minute')
-            ->setTimezone(new \DateTimeZone("UTC"));
+            ->modify('- 1 minute');
     }
 
     /**

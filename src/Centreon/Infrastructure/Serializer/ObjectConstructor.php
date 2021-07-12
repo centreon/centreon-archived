@@ -34,7 +34,6 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
  */
 class ObjectConstructor implements ObjectConstructorInterface
 {
-
     /**
      * @inheritDoc
      */
