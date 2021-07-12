@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Security\Infrastructure\Repository\Model;
 
-use InvalidArgumentException;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 
 class ProviderConfigurationFactoryRdb
@@ -36,7 +35,7 @@ class ProviderConfigurationFactoryRdb
         $mandatoryFields = ['id', 'type', 'name', 'is_active', 'is_forced'];
         foreach ($mandatoryFields as $mandatoryField) {
             if (!array_key_exists($mandatoryField, $data)) {
-                throw new InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     _(sprintf("Missing mandatory parameter: '%s'", $mandatoryField))
                 );
             }

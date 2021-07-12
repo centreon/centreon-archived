@@ -2,8 +2,6 @@ import * as React from 'react';
 
 import { pick } from 'ramda';
 
-import { Grid, Chip } from '@material-ui/core';
-
 import ChecksIcon from '../../../../ChecksIcon';
 import {
   labelCurrentStateDuration,
@@ -27,6 +25,7 @@ import { ResourceDetails } from '../../../models';
 
 import DetailsLine from './DetailsLine';
 import PercentStateChangeCard from './PercentStateChangeCard';
+import Groups from './Groups';
 
 interface DetailCardLine {
   active?: boolean;
@@ -134,17 +133,7 @@ const getDetailCardLines = ({
     },
     {
       field: details.groups,
-      line: (
-        <Grid container spacing={1}>
-          {details.groups?.map((group) => {
-            return (
-              <Grid item key={group.name}>
-                <Chip label={group.name} />
-              </Grid>
-            );
-          })}
-        </Grid>
-      ),
+      line: <Groups details={details} />,
       title: labelGroups,
       xs: 12,
     },

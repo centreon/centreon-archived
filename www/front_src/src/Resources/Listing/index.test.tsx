@@ -34,7 +34,7 @@ import {
 
 import { Column } from '@centreon/ui';
 
-import { Resource } from '../models';
+import { Resource, ResourceType } from '../models';
 import Context, { ResourceContext } from '../Context';
 import useActions from '../Actions/useActions';
 import useDetails from '../Details/useDetails';
@@ -108,7 +108,7 @@ const fillEntities = (): Array<Resource> => {
       severity_code: 5,
     },
     tries: '1',
-    type: index % 4 === 0 ? 'service' : 'host',
+    type: index % 4 === 0 ? ResourceType.service : ResourceType.host,
     uuid: `${index}`,
   }));
 };
@@ -150,9 +150,6 @@ const ListingTest = (): JSX.Element => {
 const mockedSelector = useSelector as jest.Mock;
 
 const renderListing = (): RenderResult => render(<ListingTest />);
-
-window.clearInterval = jest.fn();
-window.setInterval = jest.fn();
 
 describe(Listing, () => {
   beforeEach(() => {

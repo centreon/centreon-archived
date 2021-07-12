@@ -389,9 +389,14 @@ class Authenticate
         $providerConfiguration = $this->providerService->findProviderConfigurationByConfigurationName(
             $providerConfigurationName
         );
-        if ($providerConfiguration === null || ($providerConfigurationId = $providerConfiguration->getId()) === null) {
+
+        $providerConfigurationId = null;
+        if ($providerConfiguration !== null && $providerConfiguration->getId() !== null) {
+            $providerConfigurationId = $providerConfiguration->getId();
+        } else {
             throw ProviderException::providerConfigurationNotFound($providerConfigurationName);
         }
+
         $isAlreadyInTransaction = $this->dataStorageEngine->isAlreadyinTransaction();
 
         if (!$isAlreadyInTransaction) {
