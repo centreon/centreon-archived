@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Grid, makeStyles } from '@material-ui/core';
 
-import { MemoizedFilters as Filters, SearchField } from '@centreon/ui';
+import { MemoizedFilter, SearchField } from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -112,8 +112,8 @@ const Filter = (): JSX.Element => {
   );
 
   return (
-    <Filters
-      filters={
+    <MemoizedFilter
+      content={
         <div className={classes.container}>
           <SaveFilter />
           {customFiltersLoading ? (
