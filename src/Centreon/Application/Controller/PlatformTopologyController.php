@@ -74,7 +74,7 @@ class PlatformTopologyController extends AbstractController
         $validator = new Validator();
         $validator->validate(
             $platformTopologySchemaToValidate,
-            (object) ['ref' => 'file://' . $schemaPath],
+            (object) ['$ref' => 'file://' . $schemaPath],
             Constraint::CHECK_MODE_VALIDATE_SCHEMA
         );
 
@@ -128,8 +128,11 @@ class PlatformTopologyController extends AbstractController
                 ->setName($platformToAdd['name'])
                 ->setAddress($platformToAdd['address'])
                 ->setType($platformToAdd['type'])
-                ->setHostname($platformToAdd['hostname'])
                 ->setParentAddress($platformToAdd['parent_address']);
+
+            if (isset($platformToAdd['hostname'])) {
+                $platformTopology->setHostname($platformToAdd['hostname']);
+            }
 
             $this->platformTopologyService->addPendingPlatformToTopology($platformTopology);
 
