@@ -15,7 +15,7 @@ Centreon\Domain\Monitoring\Model\ResourceDetailsService:
             groups:
                 - 'resource_details_service'
         parent:
-            type: Centreon\Domain\Monitoring\Resource
+            type: Centreon\Domain\Monitoring\Resources
             groups:
                 - 'resource_details_service'
         status:

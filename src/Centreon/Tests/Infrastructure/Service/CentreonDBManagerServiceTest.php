@@ -42,7 +42,7 @@ use Pimple\Psr11\Container as ContainerWrap;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 use Centreon\Test\Mock\CentreonDB;
-use Centreon\Tests\Resource\Mock\RepositoryMock;
+use Centreon\Tests\Resources\Mock\RepositoryMock;
 
 class CentreonDBManagerServiceTest extends TestCase
 {

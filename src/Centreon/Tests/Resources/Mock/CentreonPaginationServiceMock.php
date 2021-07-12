@@ -34,38 +34,44 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Dependency;
+namespace Centreon\Tests\Resources\Mock;
 
-use Pimple\Container;
-use Centreon\ServiceProvider;
+use Centreon\Infrastructure\Service\CentreonPaginationService;
+use Centreon\Application\DataRepresenter;
 
 /**
- * Container provider for Centreon\Infrastructure\Service\CentreonDBManagerService
+ * Mock of CentreonPaginationService service
  *
  * @author Centreon
  * @version 1.0.0
  * @package centreon
  * @subpackage test
  */
-trait CentreonDbManagerDependencyTrait
+class CentreonPaginationServiceMock extends CentreonPaginationService
 {
 
     /**
-     * Set up DB manager service in container
-     *
-     * <code>
-     * public function setUp()
-     * {
-     *     $container = new \Pimple\Container;
-     *     $this->setUpCentreonDbManager($container);
-     * }
-     * </code>
-     *
-     * @param \Pimple\Container $container
+     * Disable service requirements
      */
-    public function setUpCentreonDbManager(Container $container)
+    public function __construct()
     {
-        $container[ServiceProvider::CENTREON_DB_MANAGER] =
-            loadDependencyInjector()[ServiceProvider::CENTREON_DB_MANAGER];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getListing(): DataRepresenter\Listing
+    {
+        $result = [
+            [
+                'repository' => $this->repository,
+                'dataRepresenter' => $this->dataRepresenter,
+                'context' => $this->context,
+                'limit' => $this->limit,
+                'offset' => $this->offset,
+            ],
+        ];
+
+        return new DataRepresenter\Listing($result);
     }
 }

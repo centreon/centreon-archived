@@ -44,7 +44,7 @@ use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 use CentreonModule\ServiceProvider;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 class CentreonModuleWebserviceTest extends TestCase
 {

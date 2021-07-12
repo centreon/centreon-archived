@@ -25,7 +25,7 @@ use Centreon\Domain\Entity\ContactGroup;
 use Centreon\Domain\Repository\ContactGroupRepository;
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group Centreon

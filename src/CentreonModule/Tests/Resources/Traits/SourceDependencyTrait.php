@@ -34,7 +34,7 @@
  *
  */
 
-namespace CentreonModule\Tests\Resource\Traits;
+namespace CentreonModule\Tests\Resources\Traits;
 
 use Pimple\Container;
 use CentreonLegacy\Core\Module;

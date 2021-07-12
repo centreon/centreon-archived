@@ -46,7 +46,7 @@ use Symfony\Component\Finder\Finder;
 use CentreonModule\Application\Webservice;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use CentreonLegacy\Core\Configuration\Configuration;
-use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
+use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 /**
  * @group CentreonModule

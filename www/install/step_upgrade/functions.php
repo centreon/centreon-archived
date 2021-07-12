@@ -36,15 +36,6 @@
  * 
  */
 
-function Connexion($pNom, $pMotPasse, $pServeur)
-{
-    $connexion = @mysql_pconnect($pServeur, $pNom, $pMotPasse) or ($msg = mysql_error());
-    if (!isset($msg)) {
-        $msg = "";
-    }
-    return array($connexion, $msg);
-}
-
 function aff_header($str, $str2, $nb)
 {
     ?>

@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Check;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Resources as ResourceEntity;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Service\AbstractCentreonService;

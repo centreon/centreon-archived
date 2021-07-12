@@ -33,7 +33,7 @@ interface ResourceRepositoryInterface
      * Find all resources.
      *
      * @param ResourceFilter $filter
-     * @return \Centreon\Domain\Monitoring\Resource[]
+     * @return \Centreon\Domain\Monitoring\Resources[]
      */
     public function findResources(ResourceFilter $filter): array;
 

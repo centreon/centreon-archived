@@ -197,7 +197,7 @@ Centreon\Domain\Monitoring\ResourceFilter:
                     groups: [Default]
 
 # Used to validate the Resource Entity
-Centreon\Domain\Monitoring\Resource:
+Centreon\Domain\Monitoring\Resources:
     properties:
         id:
             - Type:

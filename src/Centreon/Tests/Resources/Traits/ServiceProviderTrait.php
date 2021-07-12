@@ -34,52 +34,38 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Traits;
+namespace Centreon\Tests\Resources\Traits;
 
-trait PaginationListTrait
+/**
+ * Trait with extension methods for ServiceProvider testing
+ *
+ * @author Centreon
+ * @version 1.0.0
+ * @subpackage test
+ */
+trait ServiceProviderTrait
 {
 
     /**
-     * @var \Centreon\Infrastructure\CentreonLegacyDB\Interfaces\PaginationRepositoryInterface
-     */
-    protected $repository;
-
-    /**
-     * Test pagination list
+     * Check list of services if they return specific instance
      *
-     * @param array $data
-     * @param array $filters
-     * @param int $limit
-     * @param int $offset
-     * @param array $ordering
-     * @return void
-     */
-    public function getPaginationListTrait(
-        array $data = [],
-        array $filters = null,
-        int $limit = null,
-        int $offset = null,
-        array $ordering = []
-    ): void {
-        $this->assertEquals(
-            [
-                $this->repository->getEntityPersister()->load($data),
-            ],
-            $this->repository->getPaginationList($filters, $limit, $offset, $ordering)
-        );
-    }
-
-    /**
-     * Test pagination list total
+     * <code>
+     * $this->checkServices([
+     *     \MyComponent\ServiceProvider::MY_SERVICE => \MyComponenct\Infrastructure\Service\MyService::class,
+     * ]);
+     * </code>
      *
-     * @param int|string $data
-     * @return void
+     * @param array $checkList
      */
-    public function getPaginationListTotalTrait($data = 0): void
+    public function checkServices(array $checkList)
     {
-        $this->assertEquals(
-            (int) $data,
-            $this->repository->getPaginationListTotal()
-        );
+        // check list of services
+        foreach ($checkList as $serviceName => $className) {
+            $this->assertTrue($this->container->offsetExists($serviceName));
+
+            $service = $this->container->offsetGet($serviceName);
+
+            $this->assertInstanceOf($className, $service);
+        }
     }
 }

@@ -40,11 +40,11 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\Application\Webservice\TopologyWebservice;
 use Centreon\Domain\Repository\TopologyRepository;
-use Centreon\Tests\Resource\Traits;
-use Centreon\Tests\Resource\Dependency;
+use Centreon\Tests\Resources\Traits;
+use Centreon\Tests\Resources\Dependency;
 use Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
-use Centreon\Tests\Resource\CheckPoint;
+use Centreon\Tests\Resources\CheckPoint;
 use Centreon\ServiceProvider;
 use CentreonUser;
 
