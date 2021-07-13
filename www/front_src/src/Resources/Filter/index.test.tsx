@@ -33,6 +33,7 @@ import {
   labelSearchOnFields,
   labelNewFilter,
   labelSelectCriterias,
+  labelSearchOptions,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../Actions/useActions';
@@ -82,59 +83,59 @@ type FilterParameter = [
 
 const filtersParams: Array<FilterParameter> = [
   [labelResource, labelHost, { resourceTypes: ['host'] }, undefined],
-  [
-    labelState,
-    labelAcknowledged,
-    {
-      states: [...defaultStates, 'acknowledged'],
-    },
-    undefined,
-  ],
-  [
-    labelStatus,
-    labelOk,
-    {
-      statuses: [...defaultStatuses, 'OK'],
-    },
-    undefined,
-  ],
-  [
-    labelHostGroup,
-    linuxServersHostGroup.name,
-    {
-      hostGroupIds: [linuxServersHostGroup.id],
-    },
-    (): void => {
-      mockedAxios.get.mockResolvedValueOnce({
-        data: {
-          meta: {
-            limit: 10,
-            total: 1,
-          },
-          result: [linuxServersHostGroup],
-        },
-      });
-    },
-  ],
-  [
-    labelServiceGroup,
-    webAccessServiceGroup.name,
+  // [
+  //   labelState,
+  //   labelAcknowledged,
+  //   {
+  //     states: [...defaultStates, 'acknowledged'],
+  //   },
+  //   undefined,
+  // ],
+  // [
+  //   labelStatus,
+  //   labelOk,
+  //   {
+  //     statuses: [...defaultStatuses, 'OK'],
+  //   },
+  //   undefined,
+  // ],
+  // [
+  //   labelHostGroup,
+  //   linuxServersHostGroup.name,
+  //   {
+  //     hostGroupIds: [linuxServersHostGroup.id],
+  //   },
+  //   (): void => {
+  //     mockedAxios.get.mockResolvedValueOnce({
+  //       data: {
+  //         meta: {
+  //           limit: 10,
+  //           total: 1,
+  //         },
+  //         result: [linuxServersHostGroup],
+  //       },
+  //     });
+  //   },
+  // ],
+  // [
+  //   labelServiceGroup,
+  //   webAccessServiceGroup.name,
 
-    {
-      serviceGroupIds: [webAccessServiceGroup.id],
-    },
-    (): void => {
-      mockedAxios.get.mockResolvedValueOnce({
-        data: {
-          meta: {
-            limit: 10,
-            total: 1,
-          },
-          result: [webAccessServiceGroup],
-        },
-      });
-    },
-  ],
+  //   {
+  //     serviceGroupIds: [webAccessServiceGroup.id],
+  //   },
+  //   (): void => {
+  //     mockedAxios.get.mockResolvedValueOnce({
+  //       data: {
+  //         meta: {
+  //           limit: 10,
+  //           total: 1,
+  //         },
+  //         result: [webAccessServiceGroup],
+  //       },
+  //     });
+  //   },
+  // ],
 ];
 
 const filter = {
@@ -221,7 +222,7 @@ describe(Filter, () => {
     window.history.pushState({}, '', window.location.pathname);
   });
 
-  it('executes a listing request with "Unhandled problems" filter group by default', async () => {
+  it('executes a listing request with "Unhandled problems" filter by default', async () => {
     renderFilter();
 
     await waitFor(() =>
@@ -331,7 +332,7 @@ describe(Filter, () => {
       },
     ],
   ])(
-    'executes a listing request with "%p" params when "%p" filter group is set',
+    'executes a listing request with "%p" params when "%p" filter is set',
     async (filterGroup, criterias) => {
       const { getByText } = renderFilter();
 
@@ -358,10 +359,10 @@ describe(Filter, () => {
     },
   );
 
-  it.each(filtersParams)(
+  it.only.each(filtersParams)(
     "executes a listing request with current search and selected %p filter options when it's changed",
     async (
-      filterName,
+      criteriaName,
       optionToSelect,
       endpointParamChanged,
       selectEndpointMockAction,
@@ -373,7 +374,9 @@ describe(Filter, () => {
         expect(mockedAxios.get).toHaveBeenCalled();
       });
 
-      fireEvent.click(getByLabelText(labelShowCriteriasFilters));
+      fireEvent.click(
+        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+      );
 
       selectEndpointMockAction?.();
       mockedAxios.get.mockResolvedValueOnce({ data: {} });
@@ -383,11 +386,13 @@ describe(Filter, () => {
         target: { value: searchValue },
       });
 
-      const filterToChange = getByText(filterName);
+      const filterToChange = getByText(criteriaName);
       fireEvent.click(filterToChange);
 
       const selectedOption = await findByText(optionToSelect);
       fireEvent.click(selectedOption);
+
+      fireEvent.click(getByText(labelSearch));
 
       await waitFor(() =>
         expect(mockedAxios.get).toHaveBeenCalledWith(
