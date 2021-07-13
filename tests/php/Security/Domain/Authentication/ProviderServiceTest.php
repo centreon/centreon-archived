@@ -197,7 +197,7 @@ class ProviderServiceTest extends TestCase
             ->willThrowException(new \Exception());
 
         $this->expectException(ProviderException::class);
-        $this->expectExceptionMessage('Provider configuration (local) not found');
+        $this->expectExceptionMessage("Error while searching provider configuration: 'local'");
 
         $providerService->findProviderByConfigurationName('local');
     }
