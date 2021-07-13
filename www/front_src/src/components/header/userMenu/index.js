@@ -106,7 +106,7 @@ class UserMenu extends Component {
 
     // check if edit profile page (My Account) is allowed
     const { allowedPages, t } = this.props;
-    const allowEditProfile = allowedPages.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
+    const allowEditProfile = allowedPages?.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
 
     const { fullname, username, autologinkey } = data;
 
