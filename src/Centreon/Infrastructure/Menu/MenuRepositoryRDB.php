@@ -83,7 +83,7 @@ class MenuRepositoryRDB extends AbstractRepositoryDRB implements MenuRepositoryI
         if ($result === false) {
             return null;
         }
-        return (new Page($result['topology_id'], $result['topology_url'], $pageNumber, $result['is_react'] === '1'))
+        return (new Page((int) $result['topology_id'], $result['topology_url'], $pageNumber, $result['is_react'] === '1'))
             ->setUrlOptions($result['topology_url_opt']);
     }
 }

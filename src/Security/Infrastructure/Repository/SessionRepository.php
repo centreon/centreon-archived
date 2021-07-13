@@ -67,9 +67,9 @@ class SessionRepository extends AbstractRepositoryDRB implements SessionReposito
             OR last_reload IS NULL'
         );
         if (
-            $sessionIdStatement !== false &&
-            ($results = $sessionIdStatement->fetchAll(\PDO::FETCH_ASSOC))
-            ) {
+            $sessionIdStatement !== false
+            && ($results = $sessionIdStatement->fetchAll(\PDO::FETCH_ASSOC))
+        ) {
             foreach ($results as $result) {
                 $this->deleteSession($result['session_id']);
             }

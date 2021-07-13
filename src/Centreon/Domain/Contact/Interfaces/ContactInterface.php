@@ -131,7 +131,7 @@ interface ContactInterface
     public function getDefaultPage(): ?Page;
 
     /**
-     * @param Page|null $page
+     * @param Page|null $defaultPage
      * @return self
      */
     public function setDefaultPage(?Page $defaultPage);

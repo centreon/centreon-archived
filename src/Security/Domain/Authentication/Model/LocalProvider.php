@@ -228,7 +228,6 @@ class LocalProvider implements ProviderInterface
      */
     public function getProviderToken(string $token): ProviderToken
     {
-        $this->debug((string) $this->sessionExpirationDelay);
         $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
         if (!empty($sessionExpireOption)) {
             $this->sessionExpirationDelay = (int) $sessionExpireOption[0]->getValue();

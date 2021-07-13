@@ -21,7 +21,9 @@ CREATE TABLE `security_token` (
   `token` varchar(255) NOT NULL,
   `creation_date` bigint UNSIGNED NOT NULL,
   `expiration_date` bigint UNSIGNED DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `token_index` (`token`),
+  INDEX `expiration_index` (`expiration_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (
@@ -45,3 +47,5 @@ CREATE TABLE `security_authentication_tokens` (
   CONSTRAINT `security_authentication_tokens_user_id_fk` FOREIGN KEY (`user_id`)
   REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED

@@ -56,5 +56,5 @@ interface DataStorageEngineInterface
      *
      * @return bool
      */
-    public  function isAlreadyinTransaction(): bool;
+    public function isAlreadyinTransaction(): bool;
 }

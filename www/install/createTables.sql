@@ -1880,7 +1880,7 @@ CREATE TABLE `session` (
   `session_id` varchar(256) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `current_page` int(11) DEFAULT NULL,
-  `last_reload` int(11) DEFAULT NULL,
+  `last_reload` bigint UNSIGNED DEFAULT NULL,
   `ip_address` varchar(45) DEFAULT NULL,
   `s_nbHostsUp` int(11) DEFAULT NULL,
   `s_nbHostsDown` int(11) DEFAULT NULL,
@@ -2391,7 +2391,9 @@ CREATE TABLE `security_token` (
   `token` varchar(255) NOT NULL,
   `creation_date` bigint UNSIGNED NOT NULL,
   `expiration_date` bigint UNSIGNED DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `token_index` (`token`),
+  INDEX `expiration_index` (`expiration_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (

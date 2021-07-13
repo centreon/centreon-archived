@@ -142,7 +142,7 @@ class AuthenticationException extends \Exception
      * @param \Throwable $ex
      * @return self
      */
-    public static function authenticationTokensNotFound(\Throwable $ex): self
+    public static function findAuthenticationToken(\Throwable $ex): self
     {
         return new self(_('Error while searching authentication tokens'), 0, $ex);
     }

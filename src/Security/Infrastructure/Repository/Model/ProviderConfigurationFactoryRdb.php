@@ -36,7 +36,7 @@ class ProviderConfigurationFactoryRdb
         foreach ($mandatoryFields as $mandatoryField) {
             if (!array_key_exists($mandatoryField, $data)) {
                 throw new \InvalidArgumentException(
-                    _(sprintf("Missing mandatory parameter: '%s'", $mandatoryField))
+                    sprintf(_("Missing mandatory parameter: '%s'"), $mandatoryField)
                 );
             }
         }

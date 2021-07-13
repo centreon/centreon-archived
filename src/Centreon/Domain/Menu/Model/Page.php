@@ -61,7 +61,7 @@ class Page
     /**
      * @return int|null
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -69,7 +69,7 @@ class Page
     /**
      * @return string
      */
-    public function getUrl(): ?string
+    public function getUrl(): string
     {
         return $this->url;
     }

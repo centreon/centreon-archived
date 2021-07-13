@@ -197,13 +197,13 @@ class AuthenticateApi
         ?ProviderToken $providerRefreshToken
     ): void {
         $this->debug(
-            '[AUTHENTICATION SERVICE] Creating authentication tokens for user',
+            '[AUTHENTICATE API] Creating authentication tokens for user',
             ['user' => $contact->getAlias()]
         );
+        if ($providerConfiguration->getId() === null) {
+            throw new \InvalidArgumentException("Provider configuration can't be null");
+        }
         try {
-            if ($providerConfiguration->getId() === null) {
-                throw new \InvalidArgumentException("Provider configuration can't be null");
-            }
             $this->authenticationRepository->addAuthenticationTokens(
                 $token,
                 $providerConfiguration->getId(),

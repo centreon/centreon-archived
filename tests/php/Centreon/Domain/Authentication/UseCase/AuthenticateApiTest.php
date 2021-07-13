@@ -98,7 +98,11 @@ class AuthenticateApiTest extends TestCase
      */
     public function testExecuteLocalProviderNotFound(): void
     {
-        $authenticateApi = new AuthenticateApi($this->authenticationService, $this->providerService, $this->authenticationRepository);
+        $authenticateApi = new AuthenticateApi(
+            $this->authenticationService,
+            $this->providerService,
+            $this->authenticationRepository
+        );
 
         $authenticateApiRequest = new AuthenticateApiRequest('admin', 'centreon');
 
@@ -125,7 +129,11 @@ class AuthenticateApiTest extends TestCase
      */
     public function testExecuteUserNotAuthenticated(): void
     {
-        $authenticateApi = new AuthenticateApi($this->authenticationService, $this->providerService, $this->authenticationRepository);
+        $authenticateApi = new AuthenticateApi(
+            $this->authenticationService,
+            $this->providerService,
+            $this->authenticationRepository
+        );
 
         $authenticateApiRequest = new AuthenticateApiRequest('admin', 'centreon');
 
@@ -165,7 +173,11 @@ class AuthenticateApiTest extends TestCase
      */
     public function testExecuteUserNotFound(): void
     {
-        $authenticateApi = new AuthenticateApi($this->authenticationService, $this->providerService, $this->authenticationRepository);
+        $authenticateApi = new AuthenticateApi(
+            $this->authenticationService,
+            $this->providerService,
+            $this->authenticationRepository
+        );
 
         $authenticateApiRequest = new AuthenticateApiRequest('admin', 'centreon');
 
@@ -210,7 +222,11 @@ class AuthenticateApiTest extends TestCase
      */
     public function testExecuteCannotCreateTokens(): void
     {
-        $authenticateApi = new AuthenticateApi($this->authenticationService, $this->providerService, $this->authenticationRepository);
+        $authenticateApi = new AuthenticateApi(
+            $this->authenticationService,
+            $this->providerService,
+            $this->authenticationRepository
+        );
 
         $authenticateApiRequest = new AuthenticateApiRequest('admin', 'centreon');
 
@@ -270,7 +286,11 @@ class AuthenticateApiTest extends TestCase
      */
     public function testExecuteSucceed(): void
     {
-        $authenticateApi = new AuthenticateApi($this->authenticationService, $this->providerService, $this->authenticationRepository);
+        $authenticateApi = new AuthenticateApi(
+            $this->authenticationService,
+            $this->providerService,
+            $this->authenticationRepository
+        );
 
         $authenticateApiRequest = new AuthenticateApiRequest('admin', 'centreon');
 

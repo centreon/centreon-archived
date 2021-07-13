@@ -106,7 +106,7 @@ class ProviderService implements ProviderServiceInterface
                 $providerConfigurationName
             );
         } catch (\Exception $ex) {
-            throw ProviderException::providerConfigurationNotFound($providerConfigurationName);
+            throw ProviderException::findProviderConfiguration($providerConfigurationName, $ex);
         }
 
         if ($providerConfiguration === null) {
@@ -123,7 +123,7 @@ class ProviderService implements ProviderServiceInterface
         try {
             $authenticationToken = $this->authenticationRepository->findAuthenticationTokensByToken($token);
         } catch (\Exception $ex) {
-            throw AuthenticationException::authenticationTokensNotFound($ex);
+            throw AuthenticationException::findAuthenticationToken($ex);
         }
         if ($authenticationToken === null) {
             return null;

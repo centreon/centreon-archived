@@ -16195,3 +16195,6 @@ msgstr "Action non autorisée"
 
 msgid "Missing mandatory parameter: '%s'"
 msgstr "Paramètre obligatoire manquant: '%s'"
+
+msgid "Error while searching provider configuration: '%s'"
+msgid "Erreur pendant la recherche de configuration du fournisseur d'identification: '%s'"
