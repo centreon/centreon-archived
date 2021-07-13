@@ -275,8 +275,8 @@ class AuthenticateApiTest extends TestCase
             ->method('getId')
             ->willReturn(null);
 
-        $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage('Error while adding authentication token');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Provider configuration can't be null");
 
         $authenticateApi->execute($authenticateApiRequest, $authenticateApiResponse);
     }

@@ -147,7 +147,8 @@ class AuthenticateTest extends TestCase
             $credentials,
             'provider_configuration_1',
             '/',
-            null
+            null,
+            '127.0.0.1'
         );
 
         $this->expectException(ProviderException::class);
@@ -188,7 +189,8 @@ class AuthenticateTest extends TestCase
             $credentials,
             'provider_configuration_1',
             '/',
-            null
+            null,
+            '127.0.0.1'
         );
 
         $this->expectException(AuthenticationException::class);
@@ -234,7 +236,8 @@ class AuthenticateTest extends TestCase
             $credentials,
             'provider_configuration_1',
             '/',
-            null
+            null,
+            '127.0.0.1'
         );
 
         $this->expectException(AuthenticationException::class);
@@ -305,7 +308,8 @@ class AuthenticateTest extends TestCase
             $credentials,
             'provider_configuration_1',
             '/',
-            null
+            null,
+            '127.0.0.1'
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
@@ -358,7 +362,8 @@ class AuthenticateTest extends TestCase
             $credentials,
             'provider_configuration_1',
             '/',
-            null
+            null,
+            '127.0.0.1'
         );
 
         $this->expectException(AuthenticationException::class);
@@ -424,7 +429,8 @@ class AuthenticateTest extends TestCase
             $credentials,
             'provider_configuration_1',
             '/',
-            null
+            null,
+            '127.0.0.1'
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
@@ -506,7 +512,8 @@ class AuthenticateTest extends TestCase
             $credentials,
             'provider_configuration_1',
             '/',
-            null
+            null,
+            '127.0.0.1'
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
@@ -574,7 +581,8 @@ class AuthenticateTest extends TestCase
             $credentials,
             'provider_configuration_1',
             '/',
-            null
+            null,
+            '127.0.0.1'
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
@@ -645,7 +653,8 @@ class AuthenticateTest extends TestCase
             $credentials,
             'provider_configuration_1',
             '/',
-            null
+            null,
+            '127.0.0.1'
         );
 
         $authenticate->execute($authenticateRequest, $this->response);
