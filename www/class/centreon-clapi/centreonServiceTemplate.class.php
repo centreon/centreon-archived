@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -49,11 +50,11 @@ require_once "Centreon/Object/Service/Template.php";
 class CentreonServiceTemplate extends CentreonObject
 {
 
-    const ORDER_SVCDESC = 0;
-    const ORDER_SVCALIAS = 1;
-    const ORDER_SVCTPL = 2;
-    const NB_UPDATE_PARAMS = 3;
-    const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const ORDER_SVCDESC = 0;
+    public const ORDER_SVCALIAS = 1;
+    public const ORDER_SVCTPL = 2;
+    public const NB_UPDATE_PARAMS = 3;
+    public const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
 
     public static $aDepends = array(
         'CMD',
@@ -203,8 +204,6 @@ class CentreonServiceTemplate extends CentreonObject
         if (count($params) < 2) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-
-        
         $authorizeParam = array(
             'activate',
             'description',
@@ -339,7 +338,6 @@ class CentreonServiceTemplate extends CentreonObject
                             $ret = $ret[$field];
                             break;
                     }
-                
                     if (!isset($exportedFields[$paramSearch])) {
                         $resultString .= $ret . $this->delim;
                         $exportedFields[$paramSearch] = 1;
@@ -356,7 +354,6 @@ class CentreonServiceTemplate extends CentreonObject
         echo implode(';', array_unique(explode(';', $paramString))) . "\n";
         echo substr($resultString, 0, -1) . "\n";
     }
-    
 
     /**
      * Get clapi action name from db column name
