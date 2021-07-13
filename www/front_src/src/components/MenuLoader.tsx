@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { useTheme, makeStyles, fade } from '@material-ui/core';
+import { useTheme, makeStyles, alpha } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   skeleton: {
-    backgroundColor: fade(theme.palette.grey[50], 0.4),
+    backgroundColor: alpha(theme.palette.grey[50], 0.4),
     margin: theme.spacing(0.5, 2, 1, 2),
   },
 }));
