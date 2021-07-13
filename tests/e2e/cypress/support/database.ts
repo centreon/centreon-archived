@@ -19,7 +19,7 @@ const countServicesDB = (): void => {
       if (count > 0) {
         return refreshListing().then(() => resourcesMatching());
       }
-      if (testCount < 50) {
+      if (testCount < 200) {
         countServicesDB();
       }
 
