@@ -59,6 +59,14 @@ class ProviderConfiguration
      */
     private $isForced;
 
+    /**
+     * @param integer|null $id
+     * @param string $type
+     * @param string $name
+     * @param boolean $isActive
+     * @param boolean $isForced
+     * @param string $centreonBaseUri
+     */
     public function __construct(
         ?int $id,
         string $type,
