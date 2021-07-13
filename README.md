@@ -20,6 +20,19 @@ on the market; it is absolutely free and Open Source.
 * Using the [**ISO**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-centreon-iso.html)
 * Using the [**VM**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-virtual-machines.html) (tutorial available on [Youtube](https://www.youtube.com/watch?v=rnq9QnljaQE))
 
+<h2> Supported versions <h2>
+
+Regarding the [Products Lifecycle Policy](https://docs.centreon.com/current/en/releases/lifecycle.html),
+only the following versions are supported:
+
+* Centreon 21.04.x, released on April 21, 2021, full support
+* Centreon 20.10.x, released on October 21, 2020, security and blocking issue support only
+* Centreon 20.04.x, released on April 22, 2020, security support only
+
+If your version is not one of the 3 versions specified above, we recommend that
+you [upgrade your platform](https://docs.centreon.com/current/en/upgrade/introduction.html)
+immediately.
+
 <h3> Authors </h3>
 
 <h4> Project leaders </h4>
@@ -29,8 +42,9 @@ on the market; it is absolutely free and Open Source.
 
 <h4> Product managers </h4>
 
-<a href="https://github.com/lpinsivy"><img src="https://avatars2.githubusercontent.com/u/3351916?s=400&v=4" title="Laurent Pinsivy" width="80" height="80"></a>&nbsp;
-<a href="https://github.com/sbrizini"><img src="https://avatars.githubusercontent.com/u/40829131?s=400&v=4" title="Samir Brizini" width="80" height="80"></a>&nbsp;
+<a href="https://github.com/sbrizini"><img src="https://avatars.githubusercontent.com/u/40829131?v=4" title="Samir Brizini" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/omercier"><img src="https://avatars.githubusercontent.com/u/32134301?v=4" title="Olivier Mercier" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/lpinsivy"><img src="https://avatars2.githubusercontent.com/u/3351916?s=400&v=4" title="Laurent Pinsivy" width="80" height="80"></a> &nbsp;
 
 <h4> Development team </h4>
 
