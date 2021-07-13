@@ -295,7 +295,6 @@ try {
         )
       }
       // sonarQube step to get qualityGate result
-      sleep 120
       def qualityGate = waitForQualityGate()
       if (qualityGate.status != 'OK') {
         error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
