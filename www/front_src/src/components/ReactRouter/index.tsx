@@ -35,7 +35,7 @@ const getExternalPageRoutes = ({
 
   const pageEntries = Object.entries(pages);
   const isAllowedPage = (path): boolean =>
-    allowedPages.find((allowedPage) => path.includes(allowedPage));
+    allowedPages?.find((allowedPage) => path.includes(allowedPage));
 
   const loadablePages = pageEntries.filter(([path]) => isAllowedPage(path));
 
@@ -67,7 +67,7 @@ interface Props {
 
 const ReactRouter = React.memo<Props>(
   ({ allowedPages, history, pages, externalPagesFetched }: Props) => {
-    if (!externalPagesFetched) {
+    if (!externalPagesFetched || !allowedPages) {
       return <PageSkeleton />;
     }
     return (
