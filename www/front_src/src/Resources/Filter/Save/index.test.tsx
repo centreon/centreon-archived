@@ -23,6 +23,7 @@ import { filterEndpoint } from '../api';
 import { Filter } from '../models';
 import useListing from '../../Listing/useListing';
 import { defaultSortField, defaultSortOrder } from '../Criterias/default';
+import { getFilterWithUpdatedCriteria } from '../../testUtils';
 
 import SaveMenu from '.';
 
@@ -114,6 +115,12 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       ],
     },
     {
+      name: 'monitoring_servers',
+      object_type: 'monitoring_servers',
+      type: 'multi_select',
+      value: [],
+    },
+    {
       name: 'search',
       object_type: null,
       type: 'text',
@@ -180,9 +187,13 @@ describe(SaveMenu, () => {
     const filter = getCustomFilter();
 
     act(() => {
-      context.setCurrentFilter(filter);
-
-      context.setNextSearch('toto');
+      context.setCurrentFilter(
+        getFilterWithUpdatedCriteria({
+          criteriaName: 'search',
+          criteriaValue: 'toto',
+          filter,
+        }),
+      );
     });
 
     expect(
@@ -219,14 +230,18 @@ describe(SaveMenu, () => {
 
     const newSearch = 'new search';
 
-    const updatedFilterRaw = getFilter({ search: newSearch });
+    const updatedFilter = getFilter({ search: newSearch });
 
-    mockedAxios.put.mockResolvedValue({ data: updatedFilterRaw });
+    mockedAxios.put.mockResolvedValue({ data: updatedFilter });
 
     act(() => {
-      context.setFilter(filter);
-
-      context.setNextSearch(newSearch);
+      context.setCurrentFilter(
+        getFilterWithUpdatedCriteria({
+          criteriaName: 'search',
+          criteriaValue: newSearch,
+          filter,
+        }),
+      );
     });
 
     expect(
@@ -237,7 +252,7 @@ describe(SaveMenu, () => {
 
     await waitFor(() => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
-        `${filterEndpoint}/${context.updatedFilter.id}`,
+        `${filterEndpoint}/${context.currentFilter.id}`,
         omit(['id'], getFilter({ search: newSearch })),
         expect.anything(),
       );

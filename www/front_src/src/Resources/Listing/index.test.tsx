@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
 import * as React from 'react';
 
 import { useSelector } from 'react-redux';
@@ -9,8 +8,6 @@ import {
   fireEvent,
   Matcher,
   act,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getByText,
 } from '@testing-library/react';
 import axios from 'axios';
 import {
@@ -31,6 +28,7 @@ import {
   isNil,
   last,
 } from 'ramda';
+import userEvent from '@testing-library/user-event';
 
 import { Column } from '@centreon/ui';
 
@@ -226,11 +224,15 @@ describe(Listing, () => {
       async (id, label, sortField) => {
         const { getByLabelText } = renderListing();
 
+        await waitFor(() => {
+          expect(mockedAxios.get).toHaveBeenCalled();
+        });
+
         mockedAxios.get.mockResolvedValue({ data: retrievedListing });
 
         const sortBy = (sortField || id) as string;
 
-        fireEvent.click(getByLabelText(`Column ${label}`));
+        userEvent.click(getByLabelText(`Column ${label}`));
 
         await waitFor(() => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
@@ -239,7 +241,7 @@ describe(Listing, () => {
           );
         });
 
-        fireEvent.click(getByLabelText(`Column ${label}`));
+        userEvent.click(getByLabelText(`Column ${label}`));
 
         await waitFor(() =>
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
@@ -442,10 +444,10 @@ describe(Listing, () => {
 
       fireEvent.click(getByTitle('Add columns').firstChild as HTMLElement);
 
-      const columnIds = find(propEq('id', columnId), columns);
-      const columnLabel = columnIds?.label as string;
+      const column = find(propEq('id', columnId), columns);
+      const columnLabel = column?.label as string;
 
-      const columnShortLabel = columnIds?.shortLabel as string;
+      const columnShortLabel = column?.shortLabel as string;
 
       const hasShortLabel = !isNil(columnShortLabel);
 

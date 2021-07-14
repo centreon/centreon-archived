@@ -53,7 +53,11 @@ const ResourceListing = (): JSX.Element => {
   const { initAutorefreshAndLoad } = useLoadResources();
 
   const changeSort = ({ sortField, sortOrder }): void => {
-    setCriteriaAndNewFilter({ name: 'sort', value: [sortField, sortOrder] });
+    setCriteriaAndNewFilter({
+      apply: true,
+      name: 'sort',
+      value: [sortField, sortOrder],
+    });
   };
 
   const changeLimit = (value): void => {

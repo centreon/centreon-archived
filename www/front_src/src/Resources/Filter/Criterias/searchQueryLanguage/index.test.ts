@@ -1,34 +1,23 @@
-import { CriteriaValue } from '../models';
-
 import { build, parse } from './index';
 
 const search =
-  'monitoring_server:1|Central host_group:53|Linux-Servers status:OK,UP state:unhandled_problems resource_type:host,service h.name:centreon';
+  'resource_type:host,service state:unhandled_problems status:OK,UP host_group:53|Linux-Servers monitoring_server:1|Central h.name:centreon';
 
 const parsedSearch = [
   {
-    name: 'service_groups',
-    object_type: 'service_groups',
-    type: 'multi_select',
-    value: [],
-  },
-  {
-    name: 'sort',
+    name: 'resource_types',
     object_type: null,
-    type: 'array',
-    value: ['status_severity_code', 'asc'] as CriteriaValue,
+    type: 'multi_select',
+    value: [
+      { id: 'host', name: 'Host' },
+      { id: 'service', name: 'Service' },
+    ],
   },
   {
-    name: 'monitoring_servers',
-    object_type: 'monitoring_servers',
+    name: 'states',
+    object_type: null,
     type: 'multi_select',
-    value: [{ id: 1, name: 'Central' }],
-  },
-  {
-    name: 'host_groups',
-    object_type: 'host_groups',
-    type: 'multi_select',
-    value: [{ id: 53, name: 'Linux-Servers' }],
+    value: [{ id: 'unhandled_problems', name: 'Unhandled' }],
   },
   {
     name: 'statuses',
@@ -40,19 +29,22 @@ const parsedSearch = [
     ],
   },
   {
-    name: 'states',
-    object_type: null,
+    name: 'host_groups',
+    object_type: 'host_groups',
     type: 'multi_select',
-    value: [{ id: 'unhandled_problems', name: 'Unhandled' }],
+    value: [{ id: 53, name: 'Linux-Servers' }],
   },
   {
-    name: 'resource_types',
-    object_type: null,
+    name: 'service_groups',
+    object_type: 'service_groups',
     type: 'multi_select',
-    value: [
-      { id: 'host', name: 'Host' },
-      { id: 'service', name: 'Service' },
-    ],
+    value: [],
+  },
+  {
+    name: 'monitoring_servers',
+    object_type: 'monitoring_servers',
+    type: 'multi_select',
+    value: [{ id: 1, name: 'Central' }],
   },
   { name: 'search', object_type: null, type: 'text', value: 'h.name:centreon' },
 ];

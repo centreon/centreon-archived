@@ -86,8 +86,12 @@ const CriteriasContent = ({
 };
 
 const Criterias = (): JSX.Element => {
-  const { getMultiSelectCriterias, applyCurrentFilter, clearFilter } =
-    useResourceContext();
+  const {
+    getMultiSelectCriterias,
+    applyCurrentFilter,
+    clearFilter,
+    filterWithParsedSearch,
+  } = useResourceContext();
 
   const criterias = getMultiSelectCriterias();
 
@@ -99,7 +103,7 @@ const Criterias = (): JSX.Element => {
         criterias={criterias}
       />
     ),
-    memoProps: [criterias],
+    memoProps: [criterias, filterWithParsedSearch],
   });
 };
 

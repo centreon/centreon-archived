@@ -1,17 +1,6 @@
 import * as React from 'react';
 
-import {
-  find,
-  findIndex,
-  isNil,
-  lensPath,
-  omit,
-  pipe,
-  propEq,
-  reject,
-  set,
-  sortBy,
-} from 'ramda';
+import { find, findIndex, isNil, lensPath, omit, propEq, set } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
@@ -26,11 +15,7 @@ import { labelNewFilter } from '../translatedLabels';
 import { clearCachedFilter, storeFilter } from './storedFilter';
 import { listCustomFilters } from './api';
 import { listCustomFiltersDecoder } from './api/decoders';
-import {
-  Criteria,
-  CriteriaValue,
-  selectableCriterias,
-} from './Criterias/models';
+import { Criteria, CriteriaValue } from './Criterias/models';
 import {
   unhandledProblemsFilter,
   allFilter,
@@ -59,12 +44,19 @@ export interface FilterState {
   filterWithParsedSearch: Filter;
   filters: Array<Filter>;
   getCriteriaValue: (name: string) => CriteriaValue | undefined;
-  getMultiSelectCriterias: () => Array<Criteria>;
   loadCustomFilters: () => Promise<Array<Filter>>;
   search: string;
   setAppliedFilter: (filter: Filter) => void;
   setCriteria: ({ name, value }: { name: string; value }) => void;
-  setCriteriaAndNewFilter: ({ name, value }: { name: string; value }) => void;
+  setCriteriaAndNewFilter: ({
+    name,
+    value,
+    apply,
+  }: {
+    apply?: boolean;
+    name: string;
+    value;
+  }) => void;
   setCurrentFilter: (filter: Filter) => void;
   setCustomFilters: CustomFiltersDispatch;
   setEditPanelOpen: EditPanelOpenDitpach;
@@ -91,7 +83,10 @@ const useFilter = (): FilterState => {
 
   const filterWithParsedSearch = {
     ...currentFilter,
-    criterias: parse(search),
+    criterias: [
+      ...parse(search),
+      find(propEq('name', 'sort'), currentFilter.criterias) as Criteria,
+    ],
   };
 
   const loadCustomFilters = (): Promise<Array<Filter>> => {
@@ -122,11 +117,11 @@ const useFilter = (): FilterState => {
     loadCustomFilters();
   }, []);
 
-  const setCriteria = ({ name, value }): void => {
+  const setCriteria = ({ name, value = false }): void => {
     setCurrentFilter(getFilterWithUpdatedCriteria({ name, value }));
   };
 
-  const setCriteriaAndNewFilter = ({ name, value }): void => {
+  const setCriteriaAndNewFilter = ({ name, value, apply = false }): void => {
     const isCustomFilter = isCustom(currentFilter);
     const updatedFilter = {
       ...getFilterWithUpdatedCriteria({ name, value }),
@@ -134,6 +129,11 @@ const useFilter = (): FilterState => {
     };
 
     setSearch(build(updatedFilter.criterias));
+
+    if (apply) {
+      applyFilter(updatedFilter);
+      return;
+    }
 
     setCurrentFilter(updatedFilter);
   };
@@ -143,17 +143,17 @@ const useFilter = (): FilterState => {
   }, [currentFilter.criterias]);
 
   React.useEffect(() => {
-    storeFilter(currentFilter);
+    storeFilter(filterWithParsedSearch);
 
     const queryParameters = [
       {
         name: 'filter',
-        value: currentFilter,
+        value: filterWithParsedSearch,
       },
     ];
 
     setUrlQueryParameters(queryParameters);
-  }, [currentFilter]);
+  }, [filterWithParsedSearch]);
 
   React.useEffect(() => {
     if (!getUrlQueryParameters().fromTopCounter) {
@@ -186,7 +186,6 @@ const useFilter = (): FilterState => {
     };
 
     setCurrentFilter(emptyFilter);
-    setAppliedFilter(emptyFilter);
   };
 
   const getCriteriaValue = (name: string): CriteriaValue | undefined => {
@@ -199,22 +198,6 @@ const useFilter = (): FilterState => {
     }
 
     return criteria.value;
-  };
-
-  const getMultiSelectCriterias = (): Array<Criteria> => {
-    const getSelectableCriteriaByName = (name: string) =>
-      selectableCriterias[name];
-
-    const isNonSelectableCriteria = (criteria: Criteria) =>
-      pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
-
-    const getSortId = ({ name }: Criteria) =>
-      getSelectableCriteriaByName(name).sortId;
-
-    return pipe(
-      reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
-      sortBy(getSortId),
-    )(filterWithParsedSearch.criterias);
   };
 
   const applyFilter = (filter: Filter): void => {
@@ -243,7 +226,6 @@ const useFilter = (): FilterState => {
     filterWithParsedSearch,
     filters,
     getCriteriaValue,
-    getMultiSelectCriterias,
     loadCustomFilters,
     search,
     setAppliedFilter,

@@ -13,6 +13,7 @@ import {
   propEq,
   propSatisfies,
   reject,
+  sortBy,
   split,
 } from 'ramda';
 import pluralize from 'pluralize';
@@ -21,12 +22,22 @@ import { SelectEntry } from '@centreon/ui';
 
 import {
   Criteria,
+  CriteriaNames,
   criteriaValueNameById,
   selectableCriterias,
 } from '../models';
 import getDefaultCriterias from '../default';
 
 const isIn = flip(includes);
+
+const criteriaNameSortOrder = {
+  [CriteriaNames.hostGroups]: 4,
+  [CriteriaNames.monitoringServers]: 6,
+  [CriteriaNames.resourceTypes]: 1,
+  [CriteriaNames.serviceGroups]: 5,
+  [CriteriaNames.states]: 2,
+  [CriteriaNames.statuses]: 3,
+};
 
 const criteriaKeys = keys(selectableCriterias) as Array<string>;
 
@@ -38,24 +49,26 @@ const parse = (search: string): Array<Criteria> => {
   const [criteriaParts, rawSearchParts] = partition(isCriteriaPart, parts);
 
   const criterias: Array<Criteria> = criteriaParts.map((criteria) => {
-    const [key, value] = criteria.split(':');
+    const [key, values] = criteria.split(':');
     const pluralizedKey = pluralize(key);
 
     const defaultCriteria = find(
       propEq('name', pluralizedKey),
       getDefaultCriterias(),
     );
+
     const objectType = defaultCriteria?.object_type || null;
 
     return {
       name: pluralizedKey,
       object_type: objectType,
       type: 'multi_select',
-      value: value?.split(',').map((laGrosseValue) => {
-        const [resourceId, resourceName] = laGrosseValue.split('|');
+      value: values?.split(',').map((value) => {
+        const [resourceId, resourceName] = value.split('|');
+        const isStaticCriteria = isNil(objectType);
 
-        const id = isNil(objectType) ? laGrosseValue : parseInt(resourceId, 10);
-        const name = isNil(objectType)
+        const id = isStaticCriteria ? value : parseInt(resourceId, 10);
+        const name = isStaticCriteria
           ? criteriaValueNameById[id]
           : resourceName;
 
@@ -85,7 +98,13 @@ const parse = (search: string): Array<Criteria> => {
     getDefaultCriterias(),
   );
 
-  return [...defaultCriterias, ...criteriasWithSearch];
+  return sortBy(
+    ({ name }) => criteriaNameSortOrder[name],
+    reject(propEq('name', 'sort'), [
+      ...defaultCriterias,
+      ...criteriasWithSearch,
+    ]),
+  );
 };
 
 const build = (criterias: Array<Criteria>): string => {
@@ -108,8 +127,9 @@ const build = (criterias: Array<Criteria>): string => {
     .filter(({ value }) => !isNil(value))
     .map(({ name, value, object_type }): string => {
       const values = value as Array<SelectEntry>;
+      const isStaticCriteria = isNil(object_type);
 
-      const formattedValues = isNil(object_type)
+      const formattedValues = isStaticCriteria
         ? values.map(prop('id'))
         : values.map(({ id, name: valueName }) => `${id}|${valueName}`);
 
