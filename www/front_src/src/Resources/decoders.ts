@@ -96,14 +96,7 @@ const commonDecoders = {
   ),
   status: JsonDecoder.optional(statusDecoder),
   tries: JsonDecoder.optional(JsonDecoder.string),
-  type: JsonDecoder.oneOf<ResourceType>(
-    [
-      JsonDecoder.isExactly('host'),
-      JsonDecoder.isExactly('metaservice'),
-      JsonDecoder.isExactly('service'),
-    ],
-    'ResourceType',
-  ),
+  type: JsonDecoder.enumeration<ResourceType>(ResourceType, 'ResourceType'),
   uuid: JsonDecoder.string,
 };
 

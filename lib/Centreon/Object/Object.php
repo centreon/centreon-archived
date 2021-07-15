@@ -263,15 +263,21 @@ abstract class Centreon_Object
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
                 if (!count($filterTab)) {
-                    $sql .= " WHERE $key LIKE ? ";
+                    $sql .= " WHERE $key ";
                 } else {
-                    $sql .= " $filterType $key LIKE ? ";
+                    $sql .= " $filterType $key ";
                 }
-                $value = trim($rawvalue);
-                $value = str_replace("\\", "\\\\", $value);
-                $value = str_replace("_", "\_", $value);
-                $value = str_replace(" ", "\ ", $value);
-                $filterTab[] = $value;
+                if (is_array($rawvalue)) {
+                    $sql .= ' IN (' . str_repeat('?,', count($rawvalue) - 1) . '?) ';
+                    $filterTab = array_merge($filterTab, $rawvalue);
+                } else {
+                    $sql .= ' LIKE ? ';
+                    $value = trim($rawvalue);
+                    $value = str_replace("\\", "\\\\", $value);
+                    $value = str_replace("_", "\_", $value);
+                    $value = str_replace(" ", "\ ", $value);
+                    $filterTab[] = $value;
+                }
             }
         }
         if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {

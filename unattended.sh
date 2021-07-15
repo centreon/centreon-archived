@@ -347,9 +347,14 @@ function set_required_prerequisite() {
 			subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
 			;;
 
-		centos-release* | centos-linux-release* | centos-stream-release*)
+		centos-release-8.[3-9]* | centos-linux-release* | centos-stream-release*)
 			BASE_PACKAGES=(dnf-plugins-core epel-release)
 			$PKG_MGR config-manager --set-enabled powertools
+			;;
+
+		centos-release-8.[1-2]*)
+			BASE_PACKAGES=(dnf-plugins-core epel-release)
+			$PKG_MGR config-manager --set-enabled PowerTools
 			;;
 
 		oraclelinux-release* | enterprise-release*)
