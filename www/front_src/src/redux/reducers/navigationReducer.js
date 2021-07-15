@@ -5,7 +5,7 @@ import * as actions from '../actions/navigationActions';
 // by default, no one menu entry is allowed
 const initialState = {
   fetched: false,
-  items: [],
+  items: undefined,
 };
 
 const navigationReducer = (state = initialState, action) => {

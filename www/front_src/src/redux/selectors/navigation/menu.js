@@ -76,6 +76,12 @@ const filterNotEmptyGroup = (group) => {
 
 const getNavigationItems = (state) => state.navigation.items;
 
-export const menuSelector = createSelector(getNavigationItems, (navItems) =>
-  navItems.reduce(filterShowableElements, []).reduce(removeEmptyGroups, []),
-);
+export const menuSelector = createSelector(getNavigationItems, (navItems) => {
+  if (navItems === undefined) {
+    return [];
+  }
+
+  return navItems
+    .reduce(filterShowableElements, [])
+    .reduce(removeEmptyGroups, []);
+});
