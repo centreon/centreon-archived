@@ -120,6 +120,26 @@ class AssertionException extends \InvalidArgumentException
     }
 
     /**
+     * Exception when the value of the date is higher than the expected date.
+     *
+     * @param \DateTime $date Tested date
+     * @param \DateTime $maxDate Maximum date
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @return self
+     */
+    public static function maxDate(\DateTime $date, \DateTime $maxDate, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The date "%s" was expected to be at most %s'),
+                $propertyPath,
+                $date->format('c'),
+                $maxDate->format('c')
+            )
+        );
+    }
+
+    /**
      * Exception when the value of the integer is less than the expected value.
      *
      * @param int $value Tested value
