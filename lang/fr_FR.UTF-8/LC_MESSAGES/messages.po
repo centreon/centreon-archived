@@ -16168,3 +16168,21 @@ msgstr "L'année doit être inférieure à %d (%s)"
 
 msgid "[%s] The date \"%s\" was expected to be at most %s"
 msgstr "[%s] La date \"%s\" devait être au maximum au %s"
+
+msgid "Scroll to top"
+msgstr "Défiler vers le haut"
+
+msgid "This week"
+msgstr "Cette semaine"
+
+msgid "Last week"
+msgstr "La semaine dernière"
+
+msgid "Last month"
+msgstr "Le mois dernier"
+
+msgid "Last year"
+msgstr "L'année dernière"
+
+msgid "Before the last year"
+msgstr "Avant l'année dernière"
