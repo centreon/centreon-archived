@@ -19,7 +19,7 @@ import {
 } from 'ramda';
 import { ScaleTime } from 'd3-scale';
 
-import { alpa } from '@material-ui/core';
+import { alpha } from '@material-ui/core';
 
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 
@@ -102,9 +102,9 @@ export const useAnnotations = (graphWidth: number): Annotations => {
 
   const getFill = ({ color, event }: GetColorProps): string =>
     cond<TimelineEvent | undefined, string>([
-      [isNil, always(alpa(color, 0.3))],
-      [equals<TimelineEvent | undefined>(event), always(alpa(color, 0.5))],
-      [T, always(alpa(color, 0.1))],
+      [isNil, always(alpha(color, 0.3))],
+      [equals<TimelineEvent | undefined>(event), always(alpha(color, 0.5))],
+      [T, always(alpha(color, 0.1))],
     ])(annotationHovered);
 
   const getIconColor = ({ color, event }: GetColorProps): string =>
@@ -112,7 +112,7 @@ export const useAnnotations = (graphWidth: number): Annotations => {
       [isNil, always(color)],
       [
         pipe(equals<TimelineEvent | undefined>(event), not),
-        always(alpa(color, 0.2)),
+        always(alpha(color, 0.2)),
       ],
       [T, always(color)],
     ])(annotationHovered);
