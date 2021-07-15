@@ -2380,20 +2380,22 @@ COMMENT='Registration and parent relation Table used to set the platform topolog
 CREATE TABLE `provider_configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL,
-  `name` varchar(255) UNIQUE NOT NULL,
+  `name` varchar(255) NOT NULL,
   `is_active` BOOLEAN NOT NULL DEFAULT 1,
   `is_forced` BOOLEAN NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_token` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(255) UNIQUE NOT NULL,
+  `token` varchar(255) NOT NULL,
   `creation_date` bigint UNSIGNED NOT NULL,
   `expiration_date` bigint UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `token_index` (`token`),
-  INDEX `expiration_index` (`expiration_date`)
+  INDEX `expiration_index` (`expiration_date`),
+  UNIQUE KEY `unique_token` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (
