@@ -969,14 +969,14 @@ describe(Details, () => {
     act(() => {
       setSelectedHostResource();
       context.setGraphTabParameters({
-        graphOptions: defaultGraphOptions,
+        options: defaultGraphOptions,
       });
     });
 
     act(() => {
       context.setServicesTabParameters({
         graphMode: true,
-        graphOptions: defaultGraphOptions,
+        options: defaultGraphOptions,
       });
     });
 
@@ -998,7 +998,7 @@ describe(Details, () => {
         tab: 'details',
         tabParameters: {
           graph: {
-            graphOptions: {
+            options: {
               displayEvents: {
                 id: 'displayEvents',
                 label: labelDisplayEvents,
@@ -1008,7 +1008,7 @@ describe(Details, () => {
           },
           services: {
             graphMode: true,
-            graphOptions: {
+            options: {
               displayEvents: {
                 id: 'displayEvents',
                 label: labelDisplayEvents,
@@ -1132,7 +1132,7 @@ describe(Details, () => {
     act(() => {
       context.setServicesTabParameters({
         graphMode: false,
-        graphOptions: defaultGraphOptions,
+        options: defaultGraphOptions,
       });
     });
   });

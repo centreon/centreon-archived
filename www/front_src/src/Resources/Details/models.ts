@@ -56,12 +56,12 @@ export interface GraphOptions {
 }
 
 export interface GraphTabParameters {
-  graphOptions?: GraphOptions;
+  options?: GraphOptions;
 }
 
 export interface ServicesTabParameters {
   graphMode: boolean;
-  graphOptions: GraphOptions;
+  options: GraphOptions;
 }
 
 export interface TabParameters {

@@ -71,12 +71,12 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
           startDate,
           endDate,
         }): JSX.Element | null => {
-          const eventsOfTheDivision = getEventsByDate({
+          const eventsByDate = getEventsByDate({
             events: timeline,
             locale: formattedLocale,
           });
 
-          if (isEmpty(eventsOfTheDivision)) {
+          if (isEmpty(eventsByDate)) {
             return null;
           }
 
@@ -101,7 +101,7 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
               ]
             : formattedStartDate;
 
-          const areStartAndEndDateEquals =
+          const areStartAndEndDateEqual =
             not(isEmpty(formattedDivisionDates)) &&
             equals(formattedDivisionDates[1], formattedDivisionDates[3]);
 
@@ -112,7 +112,7 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                   {t(label)}
                   <span className={classes.divisionSubtitle}>
                     <Typography display="inline">
-                      {areStartAndEndDateEquals
+                      {areStartAndEndDateEqual
                         ? format({
                             date: (
                               startDate?.(formattedLocale) as Dayjs
@@ -124,7 +124,7 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                   </span>
                 </Typography>
                 <Timeline className={classes.timeline}>
-                  {eventsOfTheDivision.map((event) => {
+                  {eventsByDate.map((event) => {
                     const { id, type } = event;
 
                     const Event = TimelineEventByType[type];
@@ -132,7 +132,7 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                     const icon = TimelineIconByType[type];
 
                     const isNotLastEvent = not(
-                      equals(event, last(eventsOfTheDivision)),
+                      equals(event, last(eventsByDate)),
                     );
 
                     return (

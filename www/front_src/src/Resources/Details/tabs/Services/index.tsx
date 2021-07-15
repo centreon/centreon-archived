@@ -86,9 +86,9 @@ const ServicesTabContent = ({
 
     setServicesTabParameters({
       graphMode: mode,
-      graphOptions: pathOr(
+      options: pathOr(
         defaultGraphOptions,
-        ['services', 'graphOptions'],
+        ['services', 'options'],
         tabParameters,
       ),
     });
@@ -97,8 +97,8 @@ const ServicesTabContent = ({
   const changeTabGraphOptions = (graphOptions: GraphOptions) => {
     setServicesTabParameters({
       graphMode: tabParameters.services?.graphMode || false,
-      graphOptions: {
-        ...tabParameters.services?.graphOptions,
+      options: {
+        ...tabParameters.services?.options,
         ...graphOptions,
       },
     });
@@ -106,7 +106,7 @@ const ServicesTabContent = ({
 
   const graphOptions = useGraphOptions({
     changeTabGraphOptions,
-    graphOptionsParameters: tabParameters.services?.graphOptions,
+    options: tabParameters.services?.options,
   });
 
   React.useEffect(() => {

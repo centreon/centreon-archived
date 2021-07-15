@@ -26,16 +26,16 @@ export const defaultGraphOptions = {
 
 interface UseGraphOptionsState {
   changeTabGraphOptions: (graphOptions: GraphOptions) => void;
-  graphOptionsParameters?: GraphOptions;
+  options?: GraphOptions;
 }
 
 const useGraphOptions = ({
-  graphOptionsParameters,
+  options,
   changeTabGraphOptions,
 }: UseGraphOptionsState): GraphOptionsState => {
   const [graphOptions, setGraphOptions] = React.useState<GraphOptions>({
     ...defaultGraphOptions,
-    ...graphOptionsParameters,
+    ...options,
   });
 
   const changeGraphOptions = (graphOptionId: GraphOptionId) => () => {

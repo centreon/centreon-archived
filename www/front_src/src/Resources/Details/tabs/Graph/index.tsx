@@ -50,16 +50,16 @@ const GraphTabContent = ({
 
   const mousePositionProps = useMousePosition();
 
-  const changeTabGraphOptions = (graphOptions: GraphOptions) => {
+  const changeTabGraphOptions = (options: GraphOptions) => {
     setGraphTabParameters({
       ...tabParameters.graph,
-      graphOptions,
+      options,
     });
   };
 
   const graphOptions = useGraphOptions({
     changeTabGraphOptions,
-    graphOptionsParameters: tabParameters.graph?.graphOptions,
+    options: tabParameters.graph?.options,
   });
 
   return (
