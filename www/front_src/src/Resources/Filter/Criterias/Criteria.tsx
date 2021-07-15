@@ -89,11 +89,8 @@ const CriteriaContent = ({
 };
 
 const Criteria = ({ value, name }: Props): JSX.Element => {
-  const {
-    setCriteriaAndNewFilter,
-    getMultiSelectCriterias,
-    filterWithParsedSearch,
-  } = useResourceContext();
+  const { setCriteriaAndNewFilter, filterWithParsedSearch } =
+    useResourceContext();
 
   return useMemoComponent({
     Component: (
@@ -103,7 +100,7 @@ const Criteria = ({ value, name }: Props): JSX.Element => {
         value={value}
       />
     ),
-    memoProps: [value, name, getMultiSelectCriterias(), filterWithParsedSearch],
+    memoProps: [value, name, filterWithParsedSearch],
   });
 };
 

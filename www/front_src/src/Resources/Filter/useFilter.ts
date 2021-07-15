@@ -1,6 +1,16 @@
 import * as React from 'react';
 
-import { find, findIndex, isNil, lensPath, omit, propEq, set } from 'ramda';
+import {
+  find,
+  findIndex,
+  isNil,
+  lensPath,
+  omit,
+  pipe,
+  propEq,
+  reject,
+  set,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
@@ -15,7 +25,11 @@ import { labelNewFilter } from '../translatedLabels';
 import { clearCachedFilter, storeFilter } from './storedFilter';
 import { listCustomFilters } from './api';
 import { listCustomFiltersDecoder } from './api/decoders';
-import { Criteria, CriteriaValue } from './Criterias/models';
+import {
+  Criteria,
+  CriteriaValue,
+  selectableCriterias,
+} from './Criterias/models';
 import {
   unhandledProblemsFilter,
   allFilter,
@@ -44,6 +58,7 @@ export interface FilterState {
   filterWithParsedSearch: Filter;
   filters: Array<Filter>;
   getCriteriaValue: (name: string) => CriteriaValue | undefined;
+  getMultiSelectCriterias: () => Array<Criteria>;
   loadCustomFilters: () => Promise<Array<Filter>>;
   search: string;
   setAppliedFilter: (filter: Filter) => void;
@@ -214,6 +229,18 @@ const useFilter = (): FilterState => {
     applyFilter(allFilter);
   };
 
+  const getMultiSelectCriterias = (): Array<Criteria> => {
+    const getSelectableCriteriaByName = (name: string) =>
+      selectableCriterias[name];
+
+    const isNonSelectableCriteria = (criteria: Criteria) =>
+      pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
+
+    return pipe(
+      reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
+    )(filterWithParsedSearch.criterias);
+  };
+
   return {
     appliedFilter,
     applyCurrentFilter,
@@ -226,6 +253,7 @@ const useFilter = (): FilterState => {
     filterWithParsedSearch,
     filters,
     getCriteriaValue,
+    getMultiSelectCriterias,
     loadCustomFilters,
     search,
     setAppliedFilter,

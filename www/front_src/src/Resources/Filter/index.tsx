@@ -3,7 +3,7 @@ import * as React from 'react';
 import { isEmpty, propEq, pick, find } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Grid, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
 import { MemoizedFilter, SearchField } from '@centreon/ui';
 
@@ -15,7 +15,6 @@ import {
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
 
-import SearchHelpTooltip from './SearchHelpTooltip';
 import SaveFilter from './Save';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
 import Criterias from './Criterias';
@@ -130,11 +129,6 @@ const Filter = (): JSX.Element => {
           )}
 
           <SearchField
-            EndAdornment={() => (
-              <Grid container direction="row" wrap="nowrap">
-                <SearchHelpTooltip />
-              </Grid>
-            )}
             placeholder={t(labelSearch)}
             value={search}
             onChange={prepareSearch}
