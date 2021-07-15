@@ -63,7 +63,7 @@ trait WebServiceExecuteTestTrait
      * Require to be set property fixturePath and webservice object to be property of the test case
      *
      * <example>
-     * $this->fixturePath = __DIR__ . '/../../Resource/Fixture/';
+     * $this->fixturePath = __DIR__ . '/../../Resources/Fixture/';
      * </example>
      *
      * @param string $method

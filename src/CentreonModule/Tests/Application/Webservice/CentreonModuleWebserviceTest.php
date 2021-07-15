@@ -197,7 +197,7 @@ class CentreonModuleWebserviceTest extends TestCase
 
         // load dependencies
         $this->webservice->setDi($container);
-        $this->fixturePath = __DIR__ . '/../../Resource/Fixture/';
+        $this->fixturePath = __DIR__ . '/../../Resources/Fixture/';
     }
 
     public function testGetList()

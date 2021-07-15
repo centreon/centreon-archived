@@ -57,7 +57,7 @@ class ImagesWebserviceTest extends TestCase
 
         // load dependencies
         $this->webservice->setDi($container);
-        $this->fixturePath = __DIR__ . '/../../Resource/Fixture/Images/';
+        $this->fixturePath = __DIR__ . '/../../Resources/Fixture/Images/';
     }
 
     /**

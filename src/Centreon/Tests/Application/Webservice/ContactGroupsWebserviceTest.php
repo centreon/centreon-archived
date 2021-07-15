@@ -57,7 +57,7 @@ class ContactGroupsWebserviceTest extends TestCase
 
         // load dependencies
         $this->webservice->setDi($container);
-        $this->fixturePath = __DIR__ . '/../../Resource/Fixture/ContactGroups/';
+        $this->fixturePath = __DIR__ . '/../../Resources/Fixture/ContactGroups/';
     }
 
     /**
