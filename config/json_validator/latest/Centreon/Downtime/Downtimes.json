@@ -1,0 +1,42 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Add downtimes to a hosts or a services",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["resource_id", "start_time", "end_time", "is_fixed", "duration", "comment"],
+        "properties": {
+            "resource_id": {
+                "type": "integer"
+            },
+            "parent_resource_id": {
+                "type": ["integer", "null"]
+            },
+            "start_time": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "end_time" : {
+                "type": "string",
+                "format": "date-time"
+            },
+            "is_fixed": {
+                "type": "boolean"
+            },
+            "duration": {
+                "type": "integer"
+            },
+            "author_id": {
+                "type": "integer"
+            },
+            "comment": {
+                "type": "string"
+            },
+            "with_services": {
+                "type": "boolean",
+                "default": false
+            }
+        }
+    }
+}
