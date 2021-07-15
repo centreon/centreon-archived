@@ -127,10 +127,10 @@ class AuthenticationController extends AbstractController
         $referer = $request->headers->get('referer');
         $clientIp = $request->getClientIp();
         if ($clientIp === null) {
-            return $this->view(['Invalid address'], Response::HTTP_BAD_REQUEST);
+            throw new \InvalidArgumentException('Invalid address');
         }
         if (empty($data['login']) || empty($data['password'])) {
-            return $this->view(['Missing credentials parameters'], Response::HTTP_BAD_REQUEST);
+            throw new \InvalidArgumentException('Missing credentials parameters');
         }
         $credentials = new Credentials($data['login'], $data['password']);
 

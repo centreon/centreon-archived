@@ -2380,7 +2380,7 @@ COMMENT='Registration and parent relation Table used to set the platform topolog
 CREATE TABLE `provider_configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) UNIQUE NOT NULL,
   `is_active` BOOLEAN NOT NULL DEFAULT 1,
   `is_forced` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
@@ -2388,7 +2388,7 @@ CREATE TABLE `provider_configuration` (
 
 CREATE TABLE `security_token` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(255) NOT NULL,
+  `token` varchar(255) UNIQUE NOT NULL,
   `creation_date` bigint UNSIGNED NOT NULL,
   `expiration_date` bigint UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
