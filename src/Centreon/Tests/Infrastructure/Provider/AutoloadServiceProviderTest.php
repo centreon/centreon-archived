@@ -99,7 +99,7 @@ class AutoloadServiceProviderTest extends TestCase
                     ->will($this->returnCallback(function () {
                         $this->checkPoint->mark('finder.getIterator.getRelativePath1');
 
-                        return 'Centreon\\Tests\\Resource\\Mock';
+                        return 'Centreon\\Tests\\Resources\\Mock';
                     }));
 
                 $fileInfo2 = $this->createMock(SplFileInfo::class);
@@ -107,7 +107,7 @@ class AutoloadServiceProviderTest extends TestCase
                     ->will($this->returnCallback(function () {
                         $this->checkPoint->mark('finder.getIterator.getRelativePath2');
 
-                        return 'Centreon\\Tests\\Resource\\Mock\\NonExistent';
+                        return 'Centreon\\Tests\\Resources\\Mock\\NonExistent';
                     }));
 
                 return new \ArrayIterator([
@@ -138,7 +138,7 @@ class AutoloadServiceProviderTest extends TestCase
             ->will($this->returnCallback(function () {
                 $fileInfo = $this->createMock(SplFileInfo::class);
                 $fileInfo->method('getRelativePath')
-                    ->willReturn('Centreon\\Tests\\Resource\\Mock');
+                    ->willReturn('Centreon\\Tests\\Resources\\Mock');
 
                 return new \ArrayIterator([
                     $fileInfo,
