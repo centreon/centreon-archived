@@ -16175,14 +16175,14 @@ msgstr "Défiler vers le haut"
 msgid "This week"
 msgstr "Cette semaine"
 
-msgid "Last week"
-msgstr "La semaine dernière"
+# msgid "Last week"
+# msgstr "La semaine dernière"
 
-msgid "Last month"
-msgstr "Le mois dernier"
+# msgid "Last month"
+# msgstr "Le mois dernier"
 
-msgid "Last year"
-msgstr "L'année dernière"
+# msgid "Last year"
+# msgstr "L'année dernière"
 
-msgid "Before the last year"
-msgstr "Avant l'année dernière"
+# msgid "Before the last year"
+# msgstr "Avant l'année dernière"
