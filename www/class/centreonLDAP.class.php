@@ -935,7 +935,7 @@ class CentreonLDAP
             $stmtManualRequest->execute();
             $contactData = $stmtManualRequest->fetch();
             // check if a manual override was set for this user
-            if ($contactData !== false && $contactData['contact_ldap_required_sync'] === '1') {
+            if ($contactData['contact_ldap_required_sync']) {
                 $this->centreonLog->insertLog(
                     3,
                     'LDAP AUTH : LDAP synchronization was requested manually for ' . $contactData['contact_name']
@@ -956,7 +956,7 @@ class CentreonLDAP
                 $syncState[$row['ari_name']] = $row['ari_value'];
             }
 
-            if ($syncState['ldap_auto_sync'] || $contactData['contact_ldap_last_sync'] === 0) {
+            if ($syncState['ldap_auto_sync'] || !$contactData['contact_ldap_last_sync']) {
                 // getting the base date reference set in the LDAP parameters
                 $stmtLdapBaseSync = $this->db->prepare(
                     'SELECT ar_sync_base_date AS `referenceDate` FROM auth_ressource
@@ -965,6 +965,11 @@ class CentreonLDAP
                 $stmtLdapBaseSync->bindValue(':arId', $arId, \PDO::PARAM_INT);
                 $stmtLdapBaseSync->execute();
                 $ldapBaseSync = $stmtLdapBaseSync->fetch();
+
+                // setting a default value, if the user account was imported and the user has never login
+                if (!$contactData['contact_ldap_last_sync']) {
+                    $contactData['contact_ldap_last_sync'] = 0;
+                }
 
                 // checking if the interval between two synchronizations is reached
                 $currentTime = time();
@@ -989,8 +994,7 @@ class CentreonLDAP
             // assuming it needs to be synchronized
             $this->centreonLog->insertLog(
                 3,
-                'LDAP AUTH : Updating user DN of ' .
-                (!empty($contactData['contact_name']) ? $contactData['contact_name'] : "contact id $contactId")
+                'LDAP AUTH : Updating user DN of ' . $contactData['contact_name']
             );
             return true;
         }
