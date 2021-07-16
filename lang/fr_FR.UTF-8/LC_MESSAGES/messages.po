@@ -984,7 +984,7 @@ msgstr "Au"
 msgid ""
 "The form has not been submitted since 15 minutes. Please retry to resubmit"
 msgstr ""
-"Le formulaire n'a pas été enovyé depuis 15 minutes. Essayer de renvoyer "
+"Le formulaire n'a pas été envoyé depuis 15 minutes. Essayer de renvoyer "
 "celui-ci"
 
 #: centreon-web/www/lib/HTML/QuickForm.php:2078
@@ -16159,3 +16159,12 @@ msgstr "Petite Taille"
 
 msgid "Action not permitted"
 msgstr "Action non autorisée"
+
+msgid "Please choose a date before %d"
+msgstr "Veuillez choisir une date avant %d"
+
+msgid "Year must be less than %d (%s)"
+msgstr "L'année doit être inférieure à %d (%s)"
+
+msgid "[%s] The date \"%s\" was expected to be at most %s"
+msgstr "[%s] La date \"%s\" devait être au maximum au %s"

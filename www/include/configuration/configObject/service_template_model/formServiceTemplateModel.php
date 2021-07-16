@@ -248,15 +248,6 @@ $attrServicetemplates = array(
     'linkedObject' => 'centreonServicetemplates'
 );
 
-$servGrAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup'
-    . '&action=list';
-$attrServicegroups = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => $servGrAvRoute,
-    'multiple' => true,
-    'linkedObject' => 'centreonServicegroups'
-);
-
 $servCatAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory'
     . '&action=list';
 $attrServicecategories = array(
