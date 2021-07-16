@@ -5,24 +5,25 @@ import { CSS, Transform } from '@dnd-kit/utilities';
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
 import { equals } from 'ramda';
 
-import { GridSize } from '@material-ui/core';
+import { DetailCardLine } from '../DetailsCard/cards';
 
 import Item from './Item';
 
-interface Props {
+interface Props
+  extends Pick<DetailCardLine, 'active' | 'line' | 'isCustomCard'> {
   title: string;
-  xs?: GridSize;
+  width: number;
+  xs?: number;
 }
 
-interface ContentProps {
+interface StyledDraggableItemProps extends Props {
   isDragging?: boolean;
   listeners?: DraggableSyntheticListeners;
   setNodeRef: (node: HTMLElement | null) => void;
   style?;
-  title: string;
   transform: Transform | null;
   transition: string | null;
-  xs?: GridSize;
+  width: number;
 }
 
 const StyledDraggableItem = ({
@@ -31,7 +32,7 @@ const StyledDraggableItem = ({
   transition,
   isDragging,
   ...props
-}: ContentProps) => {
+}: StyledDraggableItemProps) => {
   const style = {
     height: '100%',
     opacity: isDragging ? '0.7' : '1',
@@ -53,7 +54,7 @@ const MemoizedStyledDraggableItem = React.memo(
     equals(prevProps.isDragging, nextProps.isDragging),
 );
 
-const SortableItem = ({ title, xs }: Props): JSX.Element => {
+const SortableItem = ({ title, ...props }: Props): JSX.Element => {
   const {
     attributes,
     listeners,
@@ -72,7 +73,7 @@ const SortableItem = ({ title, xs }: Props): JSX.Element => {
       title={title}
       transform={transform}
       transition={transition}
-      xs={xs}
+      {...props}
     />
   );
 };

@@ -36,7 +36,7 @@ import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
 
-interface DetailCardLine {
+export interface DetailCardLine {
   active?: boolean;
   field?: string | number | boolean | Array<unknown>;
   isCustomCard?: boolean;
@@ -84,7 +84,7 @@ const getDetailCardLines = ({
       xs: 12,
     },
     {
-      field: details.acknowledgement ? [details.acknowledgement] : undefined,
+      field: details.acknowledgement ? true : undefined,
       isCustomCard: true,
       line: <AcknowledgementCard details={details} />,
       title: labelAcknowledgement,
@@ -131,7 +131,6 @@ const getDetailCardLines = ({
       line: (
         <ChecksIcon {...pick(['active_checks', 'passive_checks'], details)} />
       ),
-
       title: labelCheck,
     },
     {
