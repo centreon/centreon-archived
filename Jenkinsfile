@@ -103,14 +103,14 @@ try {
         withSonarQubeEnv('SonarQubeDev') {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
-      // sonarQube step to get qualityGate result
-      def qualityGate = waitForQualityGate()
-      if (qualityGate.status != 'OK') {
-        error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error("Quality gate failure: ${qualityGate.status}.");
-      }
+        // sonarQube step to get qualityGate result
+        def qualityGate = waitForQualityGate()
+        if (qualityGate.status != 'OK') {
+          error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+        }
+        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+          error("Quality gate failure: ${qualityGate.status}.");
+        }
       }
     },
     'centos8': {
