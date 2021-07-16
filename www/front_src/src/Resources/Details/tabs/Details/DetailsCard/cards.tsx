@@ -20,16 +20,26 @@ import {
   labelCalculationType,
   labelCheck,
   labelPercentStateChange,
+  labelStatusInformation,
+  labelDowntimeDuration,
+  labelAcknowledgement,
+  labelPerformanceData,
+  labelCommand,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
+import ExpandableCard from '../ExpandableCard';
 
 import DetailsLine from './DetailsLine';
 import PercentStateChangeCard from './PercentStateChangeCard';
 import Groups from './Groups';
+import DowntimesCard from './DowntimesCard';
+import AcknowledgementCard from './AcknowledegmentCard';
+import CommandLineCard from './CommandLineCard';
 
 interface DetailCardLine {
   active?: boolean;
   field?: string | number | boolean | Array<unknown>;
+  isCustomCard?: boolean;
   line: JSX.Element;
   title: string;
   xs?: 6 | 12;
@@ -44,6 +54,7 @@ interface DetailCardLineProps {
 const getDetailCardLines = ({
   details,
   toDateTime,
+  t,
 }: DetailCardLineProps): Array<DetailCardLine> => {
   const checksDisabled =
     details.active_checks === false && details.passive_checks === false;
@@ -52,6 +63,33 @@ const getDetailCardLines = ({
   const displayChecksIcon = checksDisabled || activeChecksDisabled;
 
   return [
+    {
+      field: details.information,
+      isCustomCard: true,
+      line: (
+        <ExpandableCard
+          content={details.information}
+          severityCode={details.status.severity_code}
+          title={t(labelStatusInformation)}
+        />
+      ),
+      title: labelStatusInformation,
+      xs: 12,
+    },
+    {
+      field: details.downtimes,
+      isCustomCard: true,
+      line: <DowntimesCard details={details} />,
+      title: labelDowntimeDuration,
+      xs: 12,
+    },
+    {
+      field: details.acknowledgement ? [details.acknowledgement] : undefined,
+      isCustomCard: true,
+      line: <AcknowledgementCard details={details} />,
+      title: labelAcknowledgement,
+      xs: 12,
+    },
     {
       field: details.fqdn,
       line: <DetailsLine line={details.fqdn} />,
@@ -135,6 +173,25 @@ const getDetailCardLines = ({
       field: details.groups,
       line: <Groups details={details} />,
       title: labelGroups,
+      xs: 12,
+    },
+    {
+      field: details.performance_data,
+      isCustomCard: true,
+      line: (
+        <ExpandableCard
+          content={details.performance_data || ''}
+          title={t(labelPerformanceData)}
+        />
+      ),
+      title: labelPerformanceData,
+      xs: 12,
+    },
+    {
+      field: details.command_line,
+      isCustomCard: true,
+      line: <CommandLineCard details={details} />,
+      title: labelCommand,
       xs: 12,
     },
   ];
