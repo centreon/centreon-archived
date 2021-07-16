@@ -32,7 +32,7 @@ class ServiceMonitoringContext extends ApiContext
     {
         $hostId = $this->iWaitUntilServiceIsMonitored($service, $host)[0];
         $serviceId = $this->iWaitUntilServiceIsMonitored($service, $host)[1];
-        $response = $this->iSendARequestTo('GET', "/beta/monitoring/hosts/$hostId/services/$serviceId");
+        $response = $this->iSendARequestTo('GET', "/api/beta/monitoring/hosts/$hostId/services/$serviceId");
         return $response;
     }
 }

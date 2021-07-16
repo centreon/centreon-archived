@@ -16,7 +16,7 @@ Feature:
     HC;setparam;host-cat1;hc_activate;1
     """
 
-    When I send a GET request to '/v2.1/configuration/hosts/categories'
+    When I send a GET request to '/api/v2.1/configuration/hosts/categories'
     Then the response code should be "200"
     And the JSON should be equal to:
     """

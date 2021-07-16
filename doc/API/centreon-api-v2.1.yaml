@@ -83,6 +83,8 @@ paths:
                 $ref: '#/components/schemas/LoginAuthenticationResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          description: "Internal Error"
   /logout:
     get:
       tags:
@@ -100,6 +102,94 @@ paths:
                 $ref: '#/components/schemas/LogoutAuthenticationResponse'
         '403':
           $ref: '#/components/responses/Forbidden'
+  /authentication/login:
+    get:
+      tags:
+        - Authentication
+      summary: "Login redirection"
+      description: "Entry point to redirect user for his authentication"
+      responses:
+        '302':
+          description: "Found"
+        '200':
+          description: "Authentication URI"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authentication_uri:
+                    type: string
+                    example: "/centreon/login"
+  /authentication/providers-configurations:
+    get:
+      tags:
+        - Authentication
+      summary: "Providers Configurations"
+      description: "Endpoint to list all the existing providers configuration"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Id of configuration"
+                    example: 1
+                  type:
+                    type: "string"
+                    description: "Type of provider"
+                    example: "local"
+                  name:
+                    type: "string"
+                    description: "Name of provider"
+                    example: "local"
+                  centreon_base_uri:
+                    type: "string"
+                    description: "Centreon Base Uri used by the provider to redirect"
+                    example: "/centreon"
+                  is_active:
+                    type: boolean
+                    description: "Provider active or not"
+                    example: true
+                  is_forced:
+                    type: boolean
+                    description: "Provider forced or not"
+                    example: false
+  /authentication/providers/{provider_configuration_name}:
+    post:
+      tags:
+       - Authentication
+      parameters:
+        - $ref: '#/components/parameters/providerConfigurationName'
+      summary: "Authentication to provider"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: "string"
+                  example: "admin"
+                password:
+                  type: "string"
+                  example: "centreon"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                properties:
+                  redirect_uri:
+                    type: string
+                    example: "/centreon/main.php?p=50113&o=ldap"
+        '302':
+          description: "Found"
   /configuration/hosts/templates:
     get:
       tags:
@@ -513,7 +603,7 @@ paths:
   /configuration/users/current/parameters:
     get:
       tags:
-      - User parameters
+        - User parameters
       summary: "List user parameters"
       description: "List configured parameters for the current user"
       responses:
@@ -2116,7 +2206,7 @@ paths:
   /monitoring/resources/comments:
     post:
       tags:
-      - Comment
+        - Comment
       summary: "Add comment to resources"
       description: "Add at least one comment to a single or to multiple resources"
       requestBody:
@@ -3366,6 +3456,13 @@ components:
         type: integer
         format: int64
         example: 329
+    providerConfigurationName:
+      in: path
+      name: provider_configuration_name
+      required: true
+      schema:
+        type: string
+        example: "local"
     FilterPageName:
       in: path
       name: page_name
@@ -3543,42 +3640,6 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
-    Comment.Resources:
-      type: object
-      required: [ resources ]
-      properties:
-        resources:
-          type: array
-          items:
-            type: object
-            required: [ comment,id ]
-            properties:
-              type:
-                type: string
-                enum: [ host, service ]
-                description: "Type of resource"
-                example: "service"
-              id:
-                type: integer
-                description: "Resource ID"
-                example: 10
-              parent:
-                type: object
-                nullable: true
-                properties:
-                  id:
-                    type: integer
-                    description: "Parent resource ID"
-                    example: 17
-              date:
-                type: string
-                format: date-time
-                nullable: true
-                description: "Date of the comment (ISO8601)"
-              comment:
-                type: string
-                description: "Comment to add to the monitored resource"
-                example: "Resource is not-OK but it is expected"
     Configuration.Host.Category:
       type: object
       properties:
@@ -3871,6 +3932,42 @@ components:
         is_activated:
           type: boolean
           description: "Indicates whether the host group is activated or not"
+    Comment.Resources:
+      type: object
+      required: [resources]
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            required: [comment,id]
+            properties:
+              type:
+                type: string
+                enum: [host, service]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
+              date:
+                type: string
+                format: date-time
+                nullable: true
+                description: "Date of the comment (ISO8601)"
+              comment:
+                type: string
+                description: "Comment to add to the monitored resource"
+                example: "Resource is not-OK but it is expected"
     Media.NullableImage:
       type: object
       nullable: true
