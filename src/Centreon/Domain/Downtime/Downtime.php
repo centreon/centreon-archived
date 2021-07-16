@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,17 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Downtime;
 
+use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
- * Class Downtime
+ * This class is designed to represent the downtime of a resource.
+ *
  * @package Centreon\Domain\Downtime
  */
 class Downtime implements EntityDescriptorMetadataInterface
 {
+    public const DOWNTIME_YEAR_MAX = 2038;
     // Groups for serialization
     public const SERIALIZER_GROUPS_MAIN = ['Default', 'downtime_host'];
     public const SERIALIZER_GROUPS_SERVICE = ['Default', 'downtime_service'];
@@ -113,7 +116,7 @@ class Downtime implements EntityDescriptorMetadataInterface
     private $internalId;
 
     /**
-     * @var boolean Indicates either the downtime is fixed or not
+     * @var bool Indicates either the downtime is fixed or not
      */
     private $isFixed;
 
@@ -146,6 +149,21 @@ class Downtime implements EntityDescriptorMetadataInterface
      * @var bool Indicates if this downtime should be applied to linked services
      */
     private $withServices = false;
+    /**
+     * @var \DateTime
+     */
+    private $maxDate;
+
+    /**
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        $this->maxDate = (new \DateTime('', new \DateTimeZone("UTC")))
+            ->setDate(self::DOWNTIME_YEAR_MAX, 1, 1)
+            ->setTime(0, 0)
+            ->modify('- 1 minute');
+    }
 
     /**
      * {@inheritdoc}
@@ -189,9 +207,14 @@ class Downtime implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $entryTime
+     * @throws \Centreon\Domain\Common\Assertion\AssertionException
+     * @throws \Exception
      */
     public function setEntryTime(?\DateTime $entryTime): void
     {
+        if ($entryTime !== null) {
+            Assertion::maxDate($entryTime, $this->maxDate, 'Downtime::entryTime');
+        }
         $this->entryTime = $entryTime;
     }
 
@@ -269,7 +292,7 @@ class Downtime implements EntityDescriptorMetadataInterface
 
     /**
      * @param int $resourceId
-     * @return Acknowledgement
+     * @return Downtime
      */
     public function setResourceId(int $resourceId): Downtime
     {
@@ -287,7 +310,7 @@ class Downtime implements EntityDescriptorMetadataInterface
 
     /**
      * @param int|null $parentResourceId
-     * @return Acknowledgement
+     * @return Downtime
      */
     public function setParentResourceId(?int $parentResourceId): Downtime
     {
@@ -337,9 +360,14 @@ class Downtime implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $deletionTime
+     * @throws \Centreon\Domain\Common\Assertion\AssertionException
+     * @throws \Exception
      */
     public function setDeletionTime(?\DateTime $deletionTime): void
     {
+        if ($deletionTime !== null) {
+            Assertion::maxDate($deletionTime, $this->maxDate, 'Downtime::deletionTime');
+        }
         $this->deletionTime = $deletionTime;
     }
 
@@ -369,9 +397,14 @@ class Downtime implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $endTime
+     * @throws \Centreon\Domain\Common\Assertion\AssertionException
+     * @throws \Exception
      */
     public function setEndTime(?\DateTime $endTime): void
     {
+        if ($endTime !== null) {
+            Assertion::maxDate($endTime, $this->maxDate, 'Downtime::endTime');
+        }
         $this->endTime = $endTime;
     }
 
@@ -433,9 +466,14 @@ class Downtime implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $startTime
+     * @throws \Centreon\Domain\Common\Assertion\AssertionException
+     * @throws \Exception
      */
     public function setStartTime(?\DateTime $startTime): void
     {
+        if ($startTime !== null) {
+            Assertion::maxDate($startTime, $this->maxDate, 'Downtime::startTime');
+        }
         $this->startTime = $startTime;
     }
 
@@ -449,9 +487,14 @@ class Downtime implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $actualStartTime
+     * @throws \Centreon\Domain\Common\Assertion\AssertionException
+     * @throws \Exception
      */
     public function setActualStartTime(?\DateTime $actualStartTime): void
     {
+        if ($actualStartTime !== null) {
+            Assertion::maxDate($actualStartTime, $this->maxDate, 'Downtime::actualStartTime');
+        }
         $this->actualStartTime = $actualStartTime;
     }
 
@@ -465,9 +508,14 @@ class Downtime implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $actualEndTime
+     * @throws \Centreon\Domain\Common\Assertion\AssertionException
+     * @throws \Exception
      */
     public function setActualEndTime(?\DateTime $actualEndTime): void
     {
+        if ($actualEndTime !== null) {
+            Assertion::maxDate($actualEndTime, $this->maxDate, 'Downtime::actualEndTime');
+        }
         $this->actualEndTime = $actualEndTime;
     }
 

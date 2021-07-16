@@ -39,6 +39,10 @@ services:
             - method: setStorageDbName
               arguments: ['%database_dbstg%']
 
+    jms_serializer.object_constructor:
+        class: Centreon\Infrastructure\Serializer\ObjectConstructor
+        public: false
+
     # Encryption
     Security\Interfaces\EncryptionInterface:
         class: Security\Encryption

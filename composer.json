@@ -34,7 +34,7 @@
         "webmozart/assert": "^1.8"
     },
     "require": {
-        "php": ">=7.1.3",
+        "php": ">=7.2",
         "ext-phar": "*",
         "pear/pear-core-minimal": "^1.10",
         "pimple/pimple": "^3.2",
@@ -46,7 +46,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "friendsofsymfony/rest-bundle": "^2.5",
-        "jms/serializer-bundle": "^2.4",
+        "jms/serializer-bundle": "^3.9",
         "sensio/framework-extra-bundle": "^5.3",
         "symfony/console": "4.4.*",
         "symfony/dotenv": "4.4.*",
