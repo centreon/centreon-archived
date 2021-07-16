@@ -161,6 +161,9 @@
     });
     jQuery(".timepicker").timepicker();
     initDatepicker();
+{/literal}
+    jQuery('.datepicker').datepicker('option', 'maxDate', '12/31/{$dataPickerMaxYear}');
+{literal}
     turnOnEvents();
     updateDateAndTime();
 </script>
