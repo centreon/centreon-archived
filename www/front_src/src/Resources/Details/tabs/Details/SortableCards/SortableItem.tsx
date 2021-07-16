@@ -10,7 +10,7 @@ import { DetailCardLine } from '../DetailsCard/cards';
 import Item from './Item';
 
 interface Props
-  extends Pick<DetailCardLine, 'active' | 'line' | 'isCustomCard'> {
+  extends Pick<DetailCardLine, 'active' | 'line' | 'isCustomCard' | 'field'> {
   title: string;
   width: number;
   xs?: number;
@@ -51,7 +51,10 @@ const MemoizedStyledDraggableItem = React.memo(
   (prevProps, nextProps) =>
     equals(prevProps.title, nextProps.title) &&
     equals(prevProps.transform, nextProps.transform) &&
-    equals(prevProps.isDragging, nextProps.isDragging),
+    equals(prevProps.isDragging, nextProps.isDragging) &&
+    equals(prevProps.active, nextProps.active) &&
+    equals(prevProps.line, nextProps.line) &&
+    equals(prevProps.field, nextProps.field),
 );
 
 const SortableItem = ({ title, ...props }: Props): JSX.Element => {
