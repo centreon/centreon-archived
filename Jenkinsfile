@@ -303,7 +303,7 @@ try {
 
   stage('Package') {
     def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7', 'centos8']
     for (x in osBuilds) {
       def osBuild = x
       parallelSteps[osBuild] = {
@@ -323,7 +323,7 @@ try {
 
   stage('Bundle') {
     def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7', 'centos8']
     for (x in osBuilds) {
       def osBuild = x
       parallelSteps[osBuild] = {
