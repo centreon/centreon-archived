@@ -29,7 +29,7 @@ import {
   propEq,
 } from 'ramda';
 
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid, useTheme } from '@material-ui/core';
 
 import { useLocaleDateTimeFormat } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 
@@ -51,6 +51,7 @@ interface Props {
 const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { toDateTime } = useLocaleDateTimeFormat();
+  const theme = useTheme();
 
   const storedDetailsCards = getStoredOrDefaultDetailsCards([]);
 
@@ -141,7 +142,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
             })}
           </Grid>
         </SortableContext>
-        <DragOverlay>
+        <DragOverlay style={{ zIndex: theme.zIndex.tooltip }}>
           <Grid container spacing={1} style={{ width: panelWidth }}>
             {activeId ? (
               <Item
