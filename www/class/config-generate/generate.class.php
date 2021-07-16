@@ -214,7 +214,7 @@ class Generate
         MetaService::getInstance($this->dependencyInjector)->reset();
         MetaHost::getInstance($this->dependencyInjector)->reset();
         Connector::getInstance($this->dependencyInjector)->reset();
-        Resource::getInstance($this->dependencyInjector)->reset();
+        Resources::getInstance($this->dependencyInjector)->reset();
         Engine::getInstance($this->dependencyInjector)->reset();
         Broker::getInstance($this->dependencyInjector)->reset();
         $this->resetModuleObjects();
