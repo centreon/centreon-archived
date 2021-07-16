@@ -78,12 +78,6 @@ services:
         public: true
 
     # Authentication
-    Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface:
-        class: Centreon\Infrastructure\Security\AuthenticationRepositoryRDB
-
-    Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface:
-        class: Centreon\Domain\Security\AuthenticationService
-
     Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface:
         class: Centreon\Infrastructure\Security\AccessGroupRepositoryRDB
 
@@ -308,6 +302,13 @@ services:
     # Menu
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
+
+    Centreon\Domain\Authentication\UseCase\Authenticate:
+        arguments: [ "%redirect_default_page%" ]
+        public: true
+
+    Centreon\Domain\Authentication\UseCase\AuthenticateApi:
+        public: true
 
     # Log configuration
     monolog.error.formater:

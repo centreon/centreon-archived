@@ -19,4 +19,3 @@ Feature:
     And the response should be formatted like JSON format "standard/listing.json"
     And the JSON node "result[0].name" should be equal to the string "Test Host Group"
     And the JSON node "result[0].alias" should be equal to the string "Alias Test host group"
-    

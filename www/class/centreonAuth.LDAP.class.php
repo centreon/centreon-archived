@@ -54,7 +54,7 @@ class CentreonAuthLDAP
      * Constructor
      *
      * @param CentreonDB $pearDB Connection to centreon database
-     * @param CentreonLog $CentreonLog Log event
+     * @param CentreonUserLog $CentreonLog Log event
      * @param string $login The username
      * @param string $password The user password
      * @param string $contactInfos
