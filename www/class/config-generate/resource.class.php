@@ -34,7 +34,7 @@
  *
  */
 
-class Resource extends AbstractObject
+class Resources extends AbstractObject
 {
     private $connectors = null;
     protected $generate_filename = 'resource.cfg';

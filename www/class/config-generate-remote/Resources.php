@@ -23,7 +23,7 @@ namespace ConfigGenerateRemote;
 use \PDO;
 use ConfigGenerateRemote\Abstracts\AbstractObject;
 
-class Resource extends AbstractObject
+class Resources extends AbstractObject
 {
     protected $table = 'cfg_resource';
     protected $generateFilename = 'resource.infile';
