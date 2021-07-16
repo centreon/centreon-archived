@@ -1,19 +1,9 @@
 import * as React from 'react';
 
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
-import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import {
-  fade,
-  Grid,
-  GridSize,
-  lighten,
-  makeStyles,
-  Paper,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Grid, makeStyles, Theme } from '@material-ui/core';
 
 import DetailsCard from '../DetailsCard';
 import { DetailCardLine } from '../DetailsCard/cards';
@@ -28,11 +18,14 @@ interface Props
   xs?: number;
 }
 
-const useStyles = makeStyles<Theme, { isDragging: boolean }>({
+const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
   tile: ({ isDragging }) => ({
+    '&:hover': {
+      boxShadow: theme.shadows[3],
+    },
     cursor: isDragging ? 'grabbing' : 'grab',
   }),
-});
+}));
 
 const Item = React.forwardRef(
   (
