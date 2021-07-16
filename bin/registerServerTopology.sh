@@ -175,7 +175,6 @@ function log() {
 function parse_fqdn() {
   # extract the user (if any)
   userpass="$(echo $1 | grep @ | cut -d@ -f1)"
-  pass="$(echo $userpass | grep : | cut -d: -f2)"
   url="$(echo ${1/${userpass}"@"/})"
   # extract the Scheme
   SCHEME="$(echo $url | grep :// | cut -d: -f1)"
