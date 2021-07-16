@@ -247,6 +247,7 @@ class CentreonUtils
             if ($initForm === false) {
                 throw new \InvalidArgumentException('Invalid Parameters');
             }
+
             $initialValues = unserialize($initForm, ['allowed_classes' => false]);
 
             if (!empty($initialValues) && isset($initialValues[$key])) {
