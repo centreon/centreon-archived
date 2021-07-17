@@ -3,7 +3,8 @@ import * as React from 'react';
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
 import { useTranslation } from 'react-i18next';
 
-import { Grid, makeStyles, Theme } from '@material-ui/core';
+import { Grid, makeStyles, Paper, Theme } from '@material-ui/core';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import DetailsCard from '../DetailsCard';
 import { DetailCardLine } from '../DetailsCard/cards';
@@ -19,12 +20,19 @@ interface Props
 }
 
 const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
-  tile: ({ isDragging }) => ({
+  handler: ({ isDragging }) => ({
+    alignItems: 'center',
+    cursor: isDragging ? 'grabbing' : 'grab',
+    display: 'flex',
+    height: '100%',
+  }),
+  tile: {
     '&:hover': {
       boxShadow: theme.shadows[3],
     },
-    cursor: isDragging ? 'grabbing' : 'grab',
-  }),
+    display: 'grid',
+    gridTemplateColumns: 'min-content auto',
+  },
 }));
 
 const Item = React.forwardRef(
@@ -37,6 +45,7 @@ const Item = React.forwardRef(
       isCustomCard,
       line,
       active,
+      listeners,
       ...props
     }: Props,
     ref: React.ForwardedRef<HTMLDivElement>,
@@ -48,14 +57,19 @@ const Item = React.forwardRef(
 
     return (
       <Grid item key={title} xs={variableXs} {...props}>
-        <div className={classes.tile} ref={ref}>
-          <DetailsCard
-            active={active}
-            isCustomCard={isCustomCard}
-            line={line}
-            title={t(title)}
-          />
-        </div>
+        <Paper>
+          <div className={classes.tile} ref={ref}>
+            <div {...listeners} className={classes.handler}>
+              <MoreVertIcon />
+            </div>
+            <DetailsCard
+              active={active}
+              isCustomCard={isCustomCard}
+              line={line}
+              title={t(title)}
+            />
+          </div>
+        </Paper>
       </Grid>
     );
   },

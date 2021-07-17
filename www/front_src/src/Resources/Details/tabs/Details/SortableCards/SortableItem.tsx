@@ -31,6 +31,7 @@ const StyledDraggableItem = ({
   transform,
   transition,
   isDragging,
+  listeners,
   ...props
 }: StyledDraggableItemProps) => {
   const style = {
@@ -42,7 +43,13 @@ const StyledDraggableItem = ({
   };
 
   return (
-    <Item {...props} isDragging={isDragging} ref={setNodeRef} style={style} />
+    <Item
+      {...props}
+      isDragging={isDragging}
+      listeners={listeners}
+      ref={setNodeRef}
+      style={style}
+    />
   );
 };
 
@@ -71,8 +78,8 @@ const SortableItem = ({ title, ...props }: Props): JSX.Element => {
     <MemoizedStyledDraggableItem
       setNodeRef={setNodeRef}
       {...attributes}
-      {...listeners}
       isDragging={isDragging}
+      listeners={listeners}
       title={title}
       transform={transform}
       transition={transition}
