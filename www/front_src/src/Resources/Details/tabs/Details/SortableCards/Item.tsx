@@ -60,7 +60,7 @@ const Item = React.forwardRef(
         <Paper>
           <div className={classes.tile} ref={ref}>
             <div {...listeners} className={classes.handler}>
-              <MoreVertIcon />
+              <MoreVertIcon fontSize="small" />
             </div>
             <DetailsCard
               active={active}
