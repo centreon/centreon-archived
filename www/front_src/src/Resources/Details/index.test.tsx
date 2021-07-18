@@ -67,6 +67,7 @@ import {
   labelCompactTimePeriod,
   labelCheck,
   labelShortcuts,
+  labelMonitoringServer,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -421,6 +422,12 @@ const renderDetails = (
   { openTabId }: RenderDetailsProps = { openTabId: undefined },
 ): RenderResult => render(<DetailsTest openTabId={openTabId} />);
 
+const mockedLocalStorageGetItem = jest.fn();
+const mockedLocalStorageSetItem = jest.fn();
+
+Storage.prototype.getItem = mockedLocalStorageGetItem;
+Storage.prototype.setItem = mockedLocalStorageSetItem;
+
 describe(Details, () => {
   beforeEach(() => {
     mockDate.set(currentDateIsoString);
@@ -430,6 +437,8 @@ describe(Details, () => {
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+    mockedLocalStorageSetItem.mockReset();
+    mockedLocalStorageGetItem.mockReset();
     act(() => {
       context.setGraphTabParameters({
         selectedCustomTimePeriod: undefined,
@@ -1360,5 +1369,33 @@ describe(Details, () => {
     expect(
       getByLabelText(`${labelConfigure}_${retrievedDetails.name}`),
     ).toHaveAttribute('href', '/configuration');
+  });
+  it('populates details tiles with values from localStorage if available', async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: retrievedDetails,
+    });
+
+    const { getByText, queryByText } = renderDetails();
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    mockedLocalStorageGetItem.mockReturnValue(
+      JSON.stringify([labelMonitoringServer, labelStatusInformation]),
+    );
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        context.getSelectedResourceDetailsEndpoint() as string,
+        expect.anything(),
+      );
+    });
+
+    expect(getByText(labelMonitoringServer)).toBeInTheDocument();
+    expect(getByText(labelStatusInformation)).toBeInTheDocument();
+
+    expect(queryByText(labelLastCheck)).not.toBeInTheDocument();
+    expect(queryByText(labelCommand)).not.toBeInTheDocument();
   });
 });
