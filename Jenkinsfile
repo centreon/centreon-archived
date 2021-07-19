@@ -147,7 +147,7 @@ stage('Source') {
     stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'node_modules', includes: 'node_modules.tar.gz'
-    stash name: 'api-doc', includes: 'centreon-api-v2.html'
+    stash name: 'api-doc', includes: 'centreon-api-v21.10.html'
     publishHTML([
       allowMissing: false,
       keepAll: true,
