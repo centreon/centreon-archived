@@ -34,39 +34,71 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Mock;
+namespace Centreon\Tests\Resources\Traits;
 
-use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
 use Pimple\Container;
+use Centreon\ServiceProvider;
 
 /**
- * Mock of CLAPI class
+ * Trait with extension methods for Webservice testing
+ *
+ * @author Centreon
+ * @version 1.0.0
+ * @package centreon-license-manager
+ * @subpackage test
  */
-class ClapiMock implements CentreonClapiServiceInterface
+trait WebserviceTrait
 {
 
     /**
-     * {@inheritdoc}
-     */
-    public function __construct(Container $di)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getName(): string
-    {
-        return 'ClapiMock';
-    }
-
-    /**
-     * Execute test CLI command
+     * Set up webservice service in container
      *
-     * @return void
+     * <code>
+     * public function setUp()
+     * {
+     *     $container = new \Pimple\Container;
+     *     $this->setUpWebservice($container);
+     * }
+     * </code>
+     *
+     * @param \Pimple\Container $container
      */
-    public function execute(): void
+    public function setUpWebservice(Container $container)
     {
-        throw new \Exception('test cmd');
+        
+        $this->container[ServiceProvider::CENTREON_WEBSERVICE] = new class {
+
+            protected $services = [];
+
+            public function add($class)
+            {
+                $this->services[$class] = $class;
+            }
+
+            public function getServices(): array
+            {
+                return $this->services;
+            }
+        };
+    }
+
+    /**
+     * Check list of webservices if they are registered in webservice chain service
+     *
+     * <code>
+     * $this->checkWebservices([
+     *     \MyComponenct\Application\Webservice\MyWebservice::class,
+     * ]);
+     * </code>
+     *
+     * @param array $checkList
+     */
+    public function checkWebservices(array $checkList)
+    {
+        // check webservices
+        $webservices = $this->container[ServiceProvider::CENTREON_WEBSERVICE]->getServices();
+        foreach ($checkList as $webservice) {
+            $this->assertArrayHasKey($webservice, $webservices);
+        }
     }
 }

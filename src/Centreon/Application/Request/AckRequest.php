@@ -22,7 +22,7 @@
 namespace Centreon\Application\Request;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Resources as ResourceEntity;
 
 class AckRequest
 {

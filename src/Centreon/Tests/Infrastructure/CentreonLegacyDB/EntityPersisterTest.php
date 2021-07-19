@@ -39,7 +39,7 @@ namespace Centreon\Tests\Infrastructure\CentreonLegacyDB;
 use PHPUnit\Framework\TestCase;
 use Centreon\Infrastructure\CentreonLegacyDB\EntityPersister;
 use Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata;
-use Centreon\Tests\Resource\Mock\EntityMock;
+use Centreon\Tests\Resources\Mock\EntityMock;
 
 class EntityPersisterTest extends TestCase
 {

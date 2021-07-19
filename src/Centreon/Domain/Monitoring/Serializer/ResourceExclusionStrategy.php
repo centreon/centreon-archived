@@ -26,7 +26,7 @@ use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\Context;
-use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\Resources;
 
 /**
  * Exclusion strategy for resource list to skip applying of SERIALIZER_GROUP_MAIN on the parent object

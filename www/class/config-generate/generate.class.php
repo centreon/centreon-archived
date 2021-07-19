@@ -62,7 +62,7 @@ require_once dirname(__FILE__) . '/meta_timeperiod.class.php';
 require_once dirname(__FILE__) . '/meta_command.class.php';
 require_once dirname(__FILE__) . '/meta_host.class.php';
 require_once dirname(__FILE__) . '/meta_service.class.php';
-require_once dirname(__FILE__) . '/resource.class.php';
+require_once dirname(__FILE__) . '/resources.class.php';
 require_once dirname(__FILE__) . '/engine.class.php';
 require_once dirname(__FILE__) . '/broker.class.php';
 require_once dirname(__FILE__) . '/timezone.class.php';
@@ -214,7 +214,7 @@ class Generate
         MetaService::getInstance($this->dependencyInjector)->reset();
         MetaHost::getInstance($this->dependencyInjector)->reset();
         Connector::getInstance($this->dependencyInjector)->reset();
-        Resource::getInstance($this->dependencyInjector)->reset();
+        Resources::getInstance($this->dependencyInjector)->reset();
         Engine::getInstance($this->dependencyInjector)->reset();
         Broker::getInstance($this->dependencyInjector)->reset();
         $this->resetModuleObjects();

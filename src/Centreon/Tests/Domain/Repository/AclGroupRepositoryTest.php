@@ -24,7 +24,7 @@ namespace Centreon\Tests\Domain\Repository;
 use Centreon\Domain\Repository\AclGroupRepository;
 use Centreon\Domain\Entity\AclGroup;
 use PHPUnit\Framework\TestCase;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 use Centreon\Test\Mock\CentreonDB;
 
 /**

@@ -44,7 +44,7 @@ use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 use CentreonModule\ServiceProvider;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 
 class CentreonModuleWebserviceTest extends TestCase
 {
@@ -197,7 +197,7 @@ class CentreonModuleWebserviceTest extends TestCase
 
         // load dependencies
         $this->webservice->setDi($container);
-        $this->fixturePath = __DIR__ . '/../../Resource/Fixture/';
+        $this->fixturePath = __DIR__ . '/../../Resources/Fixture/';
     }
 
     public function testGetList()

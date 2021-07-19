@@ -34,39 +34,28 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Dependency;
+namespace Centreon\Tests\Resources\Traits;
 
-use Pimple\Container;
-use Centreon\ServiceProvider;
-use Centreon\Test\Mock\CentreonDBManagerService;
-use Symfony\Component\Validator\Validator\RecursiveValidator;
+use Centreon\Infrastructure\Webservice\WebserviceAutorizePublicInterface;
 
 /**
- * Container provider for Symfony\Component\Validator\Validator\ValidatorInterface
+ * Trait with extension methods to test the authorize method in REST webservices
  *
  * @author Centreon
  * @version 1.0.0
  * @package centreon
  * @subpackage test
  */
-trait ValidatorDependencyTrait
+trait WebServiceAuthorizePublicTrait
 {
 
     /**
-     * Set up DB manager service in container
+     * Check is webservice implemented public authorization interface
      *
-     * <code>
-     * public function setUp()
-     * {
-     *     $container = new \Pimple\Container;
-     *     $this->setUpValidator($container);
-     * }
-     * </code>
-     *
-     * @param \Pimple\Container $container
+     * @return void
      */
-    public function setUpValidator(Container $container)
+    public function testAuthorize(): void
     {
-        $container[ServiceProvider::VALIDATOR] = $this->createMock(RecursiveValidator::class);
+        $this->assertInstanceOf(WebserviceAutorizePublicInterface::class, $this->webservice);
     }
 }

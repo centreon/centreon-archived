@@ -5,6 +5,6 @@ Centreon\Application\Request\DowntimeRequest:
             groups:
                 - 'resource_dt'
         resources:
-            type: array<Centreon\Domain\Monitoring\Resource>
+            type: array<Centreon\Domain\Monitoring\Resources>
             groups:
                 - 'resource_dt'

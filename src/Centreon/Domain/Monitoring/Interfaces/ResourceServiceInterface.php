@@ -103,7 +103,7 @@ interface ResourceServiceInterface
      * Find all resources.
      *
      * @param ResourceFilter $filter
-     * @return \Centreon\Domain\Monitoring\Resource[]
+     * @return \Centreon\Domain\Monitoring\Resources[]
      * @throws \Exception
      */
     public function findResources(ResourceFilter $filter): array;

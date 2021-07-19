@@ -39,7 +39,7 @@ namespace Centreon\Tests\Infrastructure\Service;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
-use Centreon\Tests\Resource\Mock\WebserviceMock;
+use Centreon\Tests\Resources\Mock\WebserviceMock;
 
 class CentreonWebserviceServiceTest extends TestCase
 {

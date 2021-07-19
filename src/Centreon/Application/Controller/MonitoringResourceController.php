@@ -36,7 +36,7 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Icon;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\Resources;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\Model\ResourceDetailsHost;
@@ -178,7 +178,7 @@ class MonitoringResourceController extends AbstractController
         );
 
         $context = (new Context())
-            ->setGroups(Resource::contextGroupsForListing())
+            ->setGroups(Resources::contextGroupsForListing())
             ->enableMaxDepth();
 
         $context->addExclusionStrategy(new ResourceExclusionStrategy());
@@ -210,7 +210,7 @@ class MonitoringResourceController extends AbstractController
                 'hostId' => $resource->getId(),
             ];
 
-            if ($resource->getType() === Resource::TYPE_SERVICE && $resource->getParent()) {
+            if ($resource->getType() === Resources::TYPE_SERVICE && $resource->getParent()) {
                 $parameters['hostId'] = $resource->getParent()->getId();
 
                 $resource->getParent()->setDetailsEndpoint($this->router->generate($routeNameDetails, $parameters));
@@ -382,13 +382,13 @@ class MonitoringResourceController extends AbstractController
     /**
      * Add internal uris (configuration, logs, reporting) to the given resource
      *
-     * @param Resource $resource
+     * @param Resources $resource
      * @param Contact $contact
      * @return void
      */
-    private function provideInternalUris(Resource $resource, Contact $contact): void
+    private function provideInternalUris(Resources $resource, Contact $contact): void
     {
-        if ($resource->getType() === Resource::TYPE_SERVICE && $resource->getParent()) {
+        if ($resource->getType() === Resources::TYPE_SERVICE && $resource->getParent()) {
             $this->provideHostInternalUris($resource->getParent(), $contact);
             $this->provideServiceInternalUris($resource, $contact);
         } else {
@@ -399,11 +399,11 @@ class MonitoringResourceController extends AbstractController
     /**
      * Add host internal uris (configuration, logs, reporting) to the given resource
      *
-     * @param Resource $resource
+     * @param Resources $resource
      * @param Contact $contact
      * @return void
      */
-    private function provideHostInternalUris(Resource $resource, Contact $contact): void
+    private function provideHostInternalUris(Resources $resource, Contact $contact): void
     {
         if (
             $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_WRITE)
@@ -430,11 +430,11 @@ class MonitoringResourceController extends AbstractController
     /**
      * Add service internal uris (configuration, logs, reporting) to the given resource
      *
-     * @param Resource $resource
+     * @param Resources $resource
      * @param Contact $contact
      * @return void
      */
-    private function provideServiceInternalUris(Resource $resource, Contact $contact): void
+    private function provideServiceInternalUris(Resources $resource, Contact $contact): void
     {
         if (
             $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
@@ -461,11 +461,11 @@ class MonitoringResourceController extends AbstractController
     /**
      * Generate full uri from relative path
      *
-     * @param Resource $resource
+     * @param Resources $resource
      * @param string $relativeUri
      * @return string
      */
-    private function generateResourceUri(Resource $resource, string $relativeUri): string
+    private function generateResourceUri(Resources $resource, string $relativeUri): string
     {
         $uri = str_replace('{resource_id}', $resource->getId(), $relativeUri);
 

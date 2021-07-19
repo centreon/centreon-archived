@@ -34,9 +34,9 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Traits;
+namespace Centreon\Tests\Resources\Traits;
 
-use Centreon\Tests\Resource\CheckPoint;
+use Centreon\Tests\Resources\CheckPoint;
 use Symfony\Component\Serializer\Serializer;
 use Centreon\ServiceProvider;
 
@@ -63,7 +63,7 @@ trait WebServiceExecuteTestTrait
      * Require to be set property fixturePath and webservice object to be property of the test case
      *
      * <example>
-     * $this->fixturePath = __DIR__ . '/../../Resource/Fixture/';
+     * $this->fixturePath = __DIR__ . '/../../Resources/Fixture/';
      * </example>
      *
      * @param string $method
@@ -86,7 +86,7 @@ trait WebServiceExecuteTestTrait
      * Mock the repository methods related with the pagination
      *
      * @param array $entities
-     * @param \Centreon\Tests\Resource\CheckPoint $checkPoints
+     * @param \Centreon\Tests\Resources\CheckPoint $checkPoints
      * @param string $repositoryClass
      * @param callable $callback
      */

@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Model;
 
-use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\Resources;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use CentreonDuration;
 

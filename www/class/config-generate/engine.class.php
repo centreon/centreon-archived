@@ -421,7 +421,7 @@ class Engine extends AbstractObject
     public function generateFromPoller($poller)
     {
         Connector::getInstance($this->dependencyInjector)->generateObjects($poller['centreonconnector_path']);
-        Resource::getInstance($this->dependencyInjector)->generateFromPollerId($poller['id']);
+        Resources::getInstance($this->dependencyInjector)->generateFromPollerId($poller['id']);
 
         $this->generate($poller['id']);
     }

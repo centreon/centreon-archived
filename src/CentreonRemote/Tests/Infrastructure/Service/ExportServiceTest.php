@@ -32,7 +32,7 @@ use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Domain\Exporter\ConfigurationExporter;
 use CentreonClapi\CentreonACL;
 use Centreon\Test\Mock;
-use Centreon\Tests\Resource\CheckPoint;
+use Centreon\Tests\Resources\CheckPoint;
 use Vfs\FileSystem;
 use Vfs\Node\Directory;
 use Vfs\Node\File;

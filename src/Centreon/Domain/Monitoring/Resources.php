@@ -33,7 +33,7 @@ use CentreonDuration;
  *
  * @package Centreon\Domain\Monitoring
  */
-class Resource
+class Resources
 {
     // Groups for serializing
     public const SERIALIZER_GROUP_MAIN = 'resource_main';
@@ -72,7 +72,7 @@ class Resource
     private $icon;
 
     /**
-     * @var \Centreon\Domain\Monitoring\Resource|null
+     * @var \Centreon\Domain\Monitoring\Resources|null
      */
     private $parent;
 
@@ -238,7 +238,7 @@ class Resource
 
     /**
      * @param int|null $id
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setId(?int $id): self
     {
@@ -257,7 +257,7 @@ class Resource
 
     /**
      * @param string|null $type
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setType(?string $type): self
     {
@@ -276,7 +276,7 @@ class Resource
 
     /**
      * @param string|null $name
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setName(?string $name): self
     {
@@ -295,7 +295,7 @@ class Resource
 
     /**
      * @param \Centreon\Domain\Monitoring\Icon|null $icon
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setIcon(?Icon $icon): self
     {
@@ -305,18 +305,18 @@ class Resource
     }
 
     /**
-     * @return \Centreon\Domain\Monitoring\Resource|null
+     * @return \Centreon\Domain\Monitoring\Resources|null
      */
-    public function getParent(): ?Resource
+    public function getParent(): ?Resources
     {
         return $this->parent;
     }
 
     /**
-     * @param \Centreon\Domain\Monitoring\Resource|null $parent
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @param \Centreon\Domain\Monitoring\Resources|null $parent
+     * @return \Centreon\Domain\Monitoring\Resources
      */
-    public function setParent(?Resource $parent): self
+    public function setParent(?Resources $parent): self
     {
         $this->parent = $parent;
 
@@ -333,7 +333,7 @@ class Resource
 
     /**
      * @param \Centreon\Domain\Monitoring\ResourceStatus|null $status
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setStatus(?ResourceStatus $status): self
     {
@@ -352,7 +352,7 @@ class Resource
 
     /**
      * @param bool $inDowntime
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setInDowntime(bool $inDowntime): self
     {
@@ -371,7 +371,7 @@ class Resource
 
     /**
      * @param bool $acknowledged
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setAcknowledged(bool $acknowledged): self
     {
@@ -390,7 +390,7 @@ class Resource
 
     /**
      * @param string|null $configurationUri
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setConfigurationUri(string $configurationUri): self
     {
@@ -408,7 +408,7 @@ class Resource
 
     /**
      * @param string|null $logsUri
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setLogsUri(string $logsUri): self
     {
@@ -426,7 +426,7 @@ class Resource
 
     /**
      * @param string|null $reportingUri
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setReportingUri(string $reportingUri): self
     {
@@ -444,7 +444,7 @@ class Resource
 
     /**
      * @param string $downtimeEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setDowntimeEndpoint(string $downtimeEndpoint): self
     {
@@ -463,7 +463,7 @@ class Resource
 
     /**
      * @param string $acknowledgementEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setAcknowledgementEndpoint(string $acknowledgementEndpoint): self
     {
@@ -482,7 +482,7 @@ class Resource
 
     /**
      * @param string|null $detailsEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setDetailsEndpoint(?string $detailsEndpoint): self
     {
@@ -501,7 +501,7 @@ class Resource
 
     /**
      * @param string|null $timelineEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setTimelineEndpoint(?string $timelineEndpoint): self
     {
@@ -520,7 +520,7 @@ class Resource
 
     /**
      * @param string $statusGraphEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setStatusGraphEndpoint(string $statusGraphEndpoint): self
     {
@@ -539,7 +539,7 @@ class Resource
 
     /**
      * @param string $performanceGraphEndpoint
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setPerformanceGraphEndpoint(string $performanceGraphEndpoint): self
     {
@@ -558,7 +558,7 @@ class Resource
 
     /**
      * @param \Centreon\Domain\Monitoring\ResourceSeverity|null $severity
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setSeverity(?ResourceSeverity $severity): self
     {
@@ -577,7 +577,7 @@ class Resource
 
     /**
      * @param int|null $impactedResourcesCount
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setImpactedResourcesCount(?int $impactedResourcesCount): self
     {
@@ -596,7 +596,7 @@ class Resource
 
     /**
      * @param string|null $actionUrl
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setActionUrl(?string $actionUrl): self
     {
@@ -615,7 +615,7 @@ class Resource
 
     /**
      * @param string|null $chartUrl
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setChartUrl(?string $chartUrl): self
     {
@@ -634,7 +634,7 @@ class Resource
 
     /**
      * @param \DateTime|null $lastStatusChange
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setLastStatusChange(?DateTime $lastStatusChange): self
     {
@@ -653,7 +653,7 @@ class Resource
 
     /**
      * @param string|null $tries
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setTries(?string $tries): self
     {
@@ -672,7 +672,7 @@ class Resource
 
     /**
      * @param \DateTime|null $lastCheck
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setLastCheck(?DateTime $lastCheck): self
     {
@@ -691,7 +691,7 @@ class Resource
 
     /**
      * @param string|null $information
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      */
     public function setInformation(?string $information): self
     {

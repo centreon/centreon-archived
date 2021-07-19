@@ -34,7 +34,7 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Mock;
+namespace Centreon\Tests\Resources\Mock;
 
 use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
 use PDO;

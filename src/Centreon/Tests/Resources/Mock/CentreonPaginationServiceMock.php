@@ -34,35 +34,44 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Traits;
+namespace Centreon\Tests\Resources\Mock;
 
-trait CheckListOfIdsTrait
+use Centreon\Infrastructure\Service\CentreonPaginationService;
+use Centreon\Application\DataRepresenter;
+
+/**
+ * Mock of CentreonPaginationService service
+ *
+ * @author Centreon
+ * @version 1.0.0
+ * @package centreon
+ * @subpackage test
+ */
+class CentreonPaginationServiceMock extends CentreonPaginationService
 {
-    public function checkListOfIdsTrait(
-        string $repositoryClass,
-        $method,
-        $tableName = null,
-        $identificator = null
-    ): void {
-        $ids = [1, 3, 5];
 
-        $repository = $this->createPartialMock(
-            $repositoryClass,
+    /**
+     * Disable service requirements
+     */
+    public function __construct()
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getListing(): DataRepresenter\Listing
+    {
+        $result = [
             [
-                'checkListOfIdsTrait',
-            ]
-        );
-        $repository->method('checkListOfIdsTrait')
-            ->will($this->returnCallback(function () use ($ids, $tableName, $identificator) {
-                $this->assertEquals([
-                    $ids,
-                    $tableName,
-                    $identificator,
-                ], func_get_args());
+                'repository' => $this->repository,
+                'dataRepresenter' => $this->dataRepresenter,
+                'context' => $this->context,
+                'limit' => $this->limit,
+                'offset' => $this->offset,
+            ],
+        ];
 
-                return true;
-            }));
-
-        $this->assertTrue($repository->$method($ids));
+        return new DataRepresenter\Listing($result);
     }
 }
