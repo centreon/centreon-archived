@@ -20,7 +20,6 @@
 
 namespace ConfigGenerateRemote;
 
-use \PDO;
 use ConfigGenerateRemote\Abstracts\AbstractObject;
 
 class Resources extends AbstractObject
@@ -58,10 +57,10 @@ class Resources extends AbstractObject
                 AND cfg_resource.resource_activate = '1'";
             $this->stmt = $this->backendInstance->db->prepare($query);
         }
-        $this->stmt->bindParam(':poller_id', $pollerId, PDO::PARAM_INT);
+        $this->stmt->bindParam(':poller_id', $pollerId, \PDO::PARAM_INT);
         $this->stmt->execute();
 
-        foreach ($this->stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
+        foreach ($this->stmt->fetchAll(\PDO::FETCH_ASSOC) as $value) {
             Relations\CfgResourceInstanceRelation::getInstance($this->dependencyInjector)
                 ->addRelation($value['resource_id'], $pollerId);
             if ($this->checkGenerate($value['resource_id'])) {
