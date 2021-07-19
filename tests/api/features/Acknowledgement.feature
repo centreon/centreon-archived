@@ -17,17 +17,17 @@ Feature:
     """
     And the configuration is generated and exported
     And I wait until host "test" is monitored
-    And I send a GET request to '/api/v10.10/monitoring/hosts?search={"host.name":"test"}'
+    And I send a GET request to '/api/v21.10/monitoring/hosts?search={"host.name":"test"}'
     And I store response values in:
       | name   | path         |
       | hostId | result[0].id |
-    And I send a POST request to '/api/beta/monitoring/hosts/<hostId>/check' with body:
+    And I send a POST request to '/api/v21.10/monitoring/hosts/<hostId>/check' with body:
     """
     {}
     """
-    And I wait to get 1 result from "/api/beta/monitoring/hosts/<hostId>/timeline" (tries: 30)
+    And I wait to get 1 result from "/api/v21.10/monitoring/hosts/<hostId>/timeline" (tries: 30)
 
-    When I send a POST request to '/api/beta/monitoring/resources/acknowledge' with body:
+    When I send a POST request to '/api/v21.10/monitoring/resources/acknowledge' with body:
     """
     {
       "acknowledgement": {
