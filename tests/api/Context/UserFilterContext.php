@@ -59,11 +59,7 @@ class UserFilterContext extends ApiContext
 
         $this->iSendARequestToWithBody(
             'POST',
-<<<<<<< HEAD
-            '/api/beta/users/filters/events-view',
-=======
-            '/v21.10/users/filters/events-view',
->>>>>>> 0892921845 (Update all routes to v21.10)
+            '/api/v21.10/users/filters/events-view',
             $this->requestBody
         );
     }
@@ -75,11 +71,7 @@ class UserFilterContext extends ApiContext
     {
         $this->iSendARequestToWithBody(
             'PUT',
-<<<<<<< HEAD
-            '/api/beta/users/filters/events-view/1',
-=======
-            '/v21.10/users/filters/events-view/1',
->>>>>>> 0892921845 (Update all routes to v21.10)
+            '/api/v21.10/users/filters/events-view/1',
             $this->requestBody
         );
     }
