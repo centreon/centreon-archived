@@ -34,52 +34,35 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Traits;
+namespace Centreon\Tests\Resources\Traits;
 
-trait PaginationListTrait
+trait CheckListOfIdsTrait
 {
-
-    /**
-     * @var \Centreon\Infrastructure\CentreonLegacyDB\Interfaces\PaginationRepositoryInterface
-     */
-    protected $repository;
-
-    /**
-     * Test pagination list
-     *
-     * @param array $data
-     * @param array $filters
-     * @param int $limit
-     * @param int $offset
-     * @param array $ordering
-     * @return void
-     */
-    public function getPaginationListTrait(
-        array $data = [],
-        array $filters = null,
-        int $limit = null,
-        int $offset = null,
-        array $ordering = []
+    public function checkListOfIdsTrait(
+        string $repositoryClass,
+        $method,
+        $tableName = null,
+        $identificator = null
     ): void {
-        $this->assertEquals(
-            [
-                $this->repository->getEntityPersister()->load($data),
-            ],
-            $this->repository->getPaginationList($filters, $limit, $offset, $ordering)
-        );
-    }
+        $ids = [1, 3, 5];
 
-    /**
-     * Test pagination list total
-     *
-     * @param int|string $data
-     * @return void
-     */
-    public function getPaginationListTotalTrait($data = 0): void
-    {
-        $this->assertEquals(
-            (int) $data,
-            $this->repository->getPaginationListTotal()
+        $repository = $this->createPartialMock(
+            $repositoryClass,
+            [
+                'checkListOfIdsTrait',
+            ]
         );
+        $repository->method('checkListOfIdsTrait')
+            ->will($this->returnCallback(function () use ($ids, $tableName, $identificator) {
+                $this->assertEquals([
+                    $ids,
+                    $tableName,
+                    $identificator,
+                ], func_get_args());
+
+                return true;
+            }));
+
+        $this->assertTrue($repository->$method($ids));
     }
 }

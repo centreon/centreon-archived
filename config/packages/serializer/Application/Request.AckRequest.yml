@@ -5,6 +5,6 @@ Centreon\Application\Request\AckRequest:
             groups:
                 - 'bulk_acknowledge'
         resources:
-            type: array<Centreon\Domain\Monitoring\Resource>
+            type: array<Centreon\Domain\Monitoring\Resources>
             groups:
                 - 'bulk_acknowledge'

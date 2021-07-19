@@ -26,7 +26,7 @@ use Centreon\Application\Controller\CheckController;
 use Centreon\Application\Request\CheckRequest;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Check\CheckException;
-use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\Resources;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -81,10 +81,10 @@ class CheckControllerTest extends TestCase
                 ],
             ],
         ];
-        $this->hostResource = (new Resource())
+        $this->hostResource = (new Resources())
             ->setType($goodJsonCheck['resources'][0]['type'])
             ->setId($goodJsonCheck['resources'][0]['id']);
-        $this->serviceResource = (new Resource())
+        $this->serviceResource = (new Resources())
             ->setType($goodJsonCheck['resources'][1]['type'])
             ->setId($goodJsonCheck['resources'][1]['id'])
             ->setParent($this->hostResource);

@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
- * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2015 Centreon
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,72 +32,38 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace Centreon\Tests\Resource;
-
-use PHPUnit\Framework\TestCase;
-
-/**
- * This class help to test list of callbacks or methods if they were executed
- *
- * <example>
- * class MyTest extends TestCase
- * {
- *      public testMethod()
- *      {
- *          $checkpoint = (new CheckPoint)
- *              ->add('point1');
- *      }
- * }
- * </example>
- */
-class CheckPoint
+class Resources extends AbstractObject
 {
+    private $connectors = null;
+    protected $generate_filename = 'resource.cfg';
+    protected $object_name = null;
+    protected $stmt = null;
+    protected $attributes_hash = array(
+        'resources'
+    );
 
-    /**
-     * @var array
-     */
-    protected $points;
-
-    /**
-     * Add point
-     *
-     * @param string $name
-     * @return void
-     */
-    public function add($name): self
+    public function generateFromPollerId($poller_id)
     {
-        $this->points[$name] = false;
-
-        return $this;
-    }
-
-    /**
-     * Mark point as executed
-     *
-     * @param $name
-     * @return void
-     */
-    public function mark($name): void
-    {
-        $this->points[$name] = true;
-    }
-
-    /**
-     * Check list of points
-     *
-     * @param \PHPUnit\Framework\TestCase $testCase
-     */
-    public function assert(TestCase $testCase): void
-    {
-        $expected = [];
-
-        foreach ($this->points as $key => $val) {
-            $expected[$key] = true;
+        if (is_null($poller_id)) {
+            return 0;
         }
 
-        $testCase->assertEquals($expected, $this->points);
+        if (is_null($this->stmt)) {
+            $query = "SELECT resource_name, resource_line FROM cfg_resource_instance_relations, cfg_resource " .
+                "WHERE instance_id = :poller_id AND cfg_resource_instance_relations.resource_id = " .
+                "cfg_resource.resource_id AND cfg_resource.resource_activate = '1'";
+            $this->stmt = $this->backend_instance->db->prepare($query);
+        }
+        $this->stmt->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
+        $this->stmt->execute();
+
+        $object = array('resources' => array());
+        foreach ($this->stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
+            $object['resources'][$value['resource_name']] = $value['resource_line'];
+        }
+
+        $this->generateFile($object);
     }
 }

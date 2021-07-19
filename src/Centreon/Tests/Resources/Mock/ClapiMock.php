@@ -34,32 +34,39 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Mock;
+namespace Centreon\Tests\Resources\Mock;
 
-use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
+use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
 use Pimple\Container;
 
 /**
- * Mock of service provider class
+ * Mock of CLAPI class
  */
-class ServiceProvider implements AutoloadServiceProviderInterface
+class ClapiMock implements CentreonClapiServiceInterface
 {
-    const DUMMY_SERVICE = 'dummy.service';
 
     /**
-     * Register dummy service
-     *
-     * @param \Pimple\Container $pimple
+     * {@inheritdoc}
      */
-    public function register(Container $pimple): void
+    public function __construct(Container $di)
     {
-        $pimple[static::DUMMY_SERVICE] = function () {
-            return true;
-        };
     }
 
-    public static function order(): int
+    /**
+     * {@inheritdoc}
+     */
+    public static function getName(): string
     {
-        return 4;
+        return 'ClapiMock';
+    }
+
+    /**
+     * Execute test CLI command
+     *
+     * @return void
+     */
+    public function execute(): void
+    {
+        throw new \Exception('test cmd');
     }
 }

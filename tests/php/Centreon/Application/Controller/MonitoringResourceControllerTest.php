@@ -22,7 +22,7 @@
 namespace Tests\Centreon\Application\Controller;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Resources as ResourceEntity;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;

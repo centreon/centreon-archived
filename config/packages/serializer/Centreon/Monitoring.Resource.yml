@@ -1,4 +1,4 @@
-Centreon\Domain\Monitoring\Resource:
+Centreon\Domain\Monitoring\Resources:
     virtual_properties:
         getDuration:
             name: getDuration
@@ -41,7 +41,7 @@ Centreon\Domain\Monitoring\Resource:
                 - 'resource_main'
                 - 'resource_parent'
         parent:
-            type: Centreon\Domain\Monitoring\Resource
+            type: Centreon\Domain\Monitoring\Resources
             groups:
                 - 'resource_main'
         status:

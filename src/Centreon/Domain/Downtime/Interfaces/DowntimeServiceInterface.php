@@ -25,7 +25,7 @@ namespace Centreon\Domain\Downtime\Interfaces;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Resources as ResourceEntity;
 
 interface DowntimeServiceInterface
 {

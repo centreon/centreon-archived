@@ -29,7 +29,7 @@ use Centreon\Domain\Check\Check;
 use Centreon\Domain\Contact\Contact;
 use JsonSchema\Constraints\Constraint;
 use JMS\Serializer\SerializerInterface;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Resources as ResourceEntity;
 use Centreon\Domain\Check\CheckException;
 use JMS\Serializer\DeserializationContext;
 use Centreon\Domain\Entity\EntityValidator;

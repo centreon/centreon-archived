@@ -25,8 +25,8 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\ServiceProvider;
 use CentreonUser\Application\Webservice\TimeperiodWebservice;
-use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Mock\CentreonPaginationServiceMock;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group CentreonUser
@@ -57,7 +57,7 @@ class TimeperiodWebserviceTest extends TestCase
 
         // load dependencies
         $this->webservice->setDi($container);
-        $this->fixturePath = __DIR__ . '/../../Resource/Fixture/';
+        $this->fixturePath = __DIR__ . '/../../Resources/Fixture/';
     }
 
     /**

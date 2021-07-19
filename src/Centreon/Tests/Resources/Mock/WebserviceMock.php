@@ -1,8 +1,7 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,38 +31,36 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-class Resource extends AbstractObject
+namespace Centreon\Tests\Resources\Mock;
+
+use Centreon\Infrastructure\Webservice;
+use Centreon\Application\DataRepresenter;
+
+/**
+ * Mock of webservice class
+ */
+class WebserviceMock extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizeRestApiInterface
 {
-    private $connectors = null;
-    protected $generate_filename = 'resource.cfg';
-    protected $object_name = null;
-    protected $stmt = null;
-    protected $attributes_hash = array(
-        'resources'
-    );
 
-    public function generateFromPollerId($poller_id)
+    /**
+     * {@inheritdoc}
+     */
+    public static function getName(): string
     {
-        if (is_null($poller_id)) {
-            return 0;
-        }
+        return 'webservice_mock';
+    }
 
-        if (is_null($this->stmt)) {
-            $query = "SELECT resource_name, resource_line FROM cfg_resource_instance_relations, cfg_resource " .
-                "WHERE instance_id = :poller_id AND cfg_resource_instance_relations.resource_id = " .
-                "cfg_resource.resource_id AND cfg_resource.resource_activate = '1'";
-            $this->stmt = $this->backend_instance->db->prepare($query);
-        }
-        $this->stmt->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
-        $this->stmt->execute();
-
-        $object = array('resources' => array());
-        foreach ($this->stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
-            $object['resources'][$value['resource_name']] = $value['resource_line'];
-        }
-
-        $this->generateFile($object);
+    /**
+     * Return empty list
+     *
+     * @return \Centreon\Application\DataRepresenter\Response
+     */
+    public function getList(): DataRepresenter\Response
+    {
+        return new DataRepresenter\Response([]);
     }
 }

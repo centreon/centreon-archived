@@ -27,7 +27,7 @@ use Centreon\Domain\Acknowledgement\AcknowledgementException;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Resources as ResourceEntity;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 use JMS\Serializer\Exception\ValidationFailedException;
 

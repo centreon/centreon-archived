@@ -1,6 +1,6 @@
 Centreon\Application\Request\CheckRequest:
     properties:
         resources:
-            type: array<Centreon\Domain\Monitoring\Resource>
+            type: array<Centreon\Domain\Monitoring\Resources>
             groups:
                 - 'add_checks'
