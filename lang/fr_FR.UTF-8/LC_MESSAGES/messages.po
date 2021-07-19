@@ -15322,7 +15322,7 @@ msgid "Host group"
 msgstr "Groupe d'hôtes"
 
 msgid "Downtime"
-msgstr "Plannifier une plage de maintenance"
+msgstr "Planifier une plage de maintenance"
 
 msgid "In downtime"
 msgstr "En plage de maintenance"
