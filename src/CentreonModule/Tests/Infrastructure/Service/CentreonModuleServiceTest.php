@@ -47,7 +47,7 @@ use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 use CentreonModule\Tests\Infrastructure\Source\WidgetSourceTest;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
-use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
+use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class CentreonModuleServiceTest extends TestCase
 {

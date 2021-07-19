@@ -281,9 +281,7 @@ if (isset($url) && $url) {
                     $centreon->historyLimit[$url] = 30;
                 }
                 break;
-
             default:
-                continue;
                 break;
         }
     }

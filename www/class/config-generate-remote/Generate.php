@@ -44,7 +44,7 @@ require_once __DIR__ . '/Media.php';
 require_once __DIR__ . '/MacroService.php';
 require_once __DIR__ . '/Host.php';
 require_once __DIR__ . '/ServiceCategory.php';
-require_once __DIR__ . '/Resource.php';
+require_once __DIR__ . '/Resources.php';
 require_once __DIR__ . '/Engine.php';
 require_once __DIR__ . '/Broker.php';
 require_once __DIR__ . '/Graph.php';

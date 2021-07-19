@@ -26,7 +26,7 @@ use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Check\CheckService;
 use Centreon\Domain\Check\Check;
-use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\Resources;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
@@ -76,10 +76,10 @@ class CheckServiceTest extends TestCase
         $this->service = (new Service())
             ->setId(1);
 
-        $this->hostResource = (new Resource())
+        $this->hostResource = (new Resources())
             ->setType('host')
             ->setId(1);
-        $this->serviceResource = (new Resource())
+        $this->serviceResource = (new Resources())
             ->setType('service')
             ->setId(1)
             ->setParent($this->hostResource);

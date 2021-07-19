@@ -38,7 +38,7 @@ namespace Centreon\Tests\Application\Webservice;
 
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Traits;
 use Centreon\Application\Webservice\CentreonI18n;
 use Centreon\Domain\Service\I18nService;
 use Centreon\ServiceProvider;

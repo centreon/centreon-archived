@@ -34,12 +34,12 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Mock;
+namespace Centreon\Tests\Resources\Mock;
 
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use Centreon\Infrastructure\CentreonLegacyDB\Interfaces\PaginationRepositoryInterface;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
-use Centreon\Tests\Resource\Mock\EntityMock;
+use Centreon\Tests\Resources\Mock\EntityMock;
 use PDO;
 
 /**

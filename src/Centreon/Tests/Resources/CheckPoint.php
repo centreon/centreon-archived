@@ -34,38 +34,69 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Traits;
+namespace Centreon\Tests\Resources;
+
+use PHPUnit\Framework\TestCase;
 
 /**
- * Trait with extension methods for ServiceProvider testing
+ * This class help to test list of callbacks or methods if they were executed
  *
- * @author Centreon
- * @version 1.0.0
- * @subpackage test
+ * <example>
+ * class MyTest extends TestCase
+ * {
+ *      public testMethod()
+ *      {
+ *          $checkpoint = (new CheckPoint)
+ *              ->add('point1');
+ *      }
+ * }
+ * </example>
  */
-trait ServiceProviderTrait
+class CheckPoint
 {
 
     /**
-     * Check list of services if they return specific instance
-     *
-     * <code>
-     * $this->checkServices([
-     *     \MyComponent\ServiceProvider::MY_SERVICE => \MyComponenct\Infrastructure\Service\MyService::class,
-     * ]);
-     * </code>
-     *
-     * @param array $checkList
+     * @var array
      */
-    public function checkServices(array $checkList)
+    protected $points;
+
+    /**
+     * Add point
+     *
+     * @param string $name
+     * @return void
+     */
+    public function add($name): self
     {
-        // check list of services
-        foreach ($checkList as $serviceName => $className) {
-            $this->assertTrue($this->container->offsetExists($serviceName));
+        $this->points[$name] = false;
 
-            $service = $this->container->offsetGet($serviceName);
+        return $this;
+    }
 
-            $this->assertInstanceOf($className, $service);
+    /**
+     * Mark point as executed
+     *
+     * @param $name
+     * @return void
+     */
+    public function mark($name): void
+    {
+        $this->points[$name] = true;
+    }
+
+    /**
+     * Check list of points
+     *
+     * @param \PHPUnit\Framework\TestCase $testCase
+     */
+    public function assert(TestCase $testCase): void
+    {
+        $expected = [];
+
+        foreach ($this->points as $key => $val) {
+            $expected[$key] = true;
         }
+
+        $testCase->assertEquals($expected, $this->points);
     }
 }

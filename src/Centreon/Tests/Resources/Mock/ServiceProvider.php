@@ -34,44 +34,32 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Mock;
+namespace Centreon\Tests\Resources\Mock;
 
-use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
-use Centreon\Tests\Resource\Mock\EntityMock;
+use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
+use Pimple\Container;
 
 /**
- * Mock of repository class
+ * Mock of service provider class
  */
-class RepositoryMock extends ServiceEntityRepository
+class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    const DUMMY_SERVICE = 'dummy.service';
 
     /**
-     * {@inheritdoc}
+     * Register dummy service
+     *
+     * @param \Pimple\Container $pimple
      */
-    public static function entityClass(): string
+    public function register(Container $pimple): void
     {
-        return EntityMock::class;
+        $pimple[static::DUMMY_SERVICE] = function () {
+            return true;
+        };
     }
 
-    /**
-     * Find entity by parameters
-     *
-     * @param array $params
-     * @return \Centreon\Test\Mock\EntityMock|null
-     */
-    public function findOneBy(array $params)
+    public static function order(): int
     {
-        return null;
-    }
-
-    /**
-     * Validate entity
-     *
-     * @param \Centreon\Test\Mock\EntityMock $object
-     * @return bool
-     */
-    public function validateEntity(EntityMock $object): bool
-    {
-        return false;
+        return 4;
     }
 }

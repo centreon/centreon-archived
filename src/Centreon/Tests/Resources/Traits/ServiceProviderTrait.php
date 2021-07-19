@@ -34,38 +34,38 @@
  *
  */
 
-namespace Centreon\Tests\Resource\Dependency;
-
-use Pimple\Container;
-use Centreon\ServiceProvider;
+namespace Centreon\Tests\Resources\Traits;
 
 /**
- * Container provider for Centreon\Infrastructure\Service\CentreonDBManagerService
+ * Trait with extension methods for ServiceProvider testing
  *
  * @author Centreon
  * @version 1.0.0
- * @package centreon
  * @subpackage test
  */
-trait CentreonDbManagerDependencyTrait
+trait ServiceProviderTrait
 {
 
     /**
-     * Set up DB manager service in container
+     * Check list of services if they return specific instance
      *
      * <code>
-     * public function setUp()
-     * {
-     *     $container = new \Pimple\Container;
-     *     $this->setUpCentreonDbManager($container);
-     * }
+     * $this->checkServices([
+     *     \MyComponent\ServiceProvider::MY_SERVICE => \MyComponenct\Infrastructure\Service\MyService::class,
+     * ]);
      * </code>
      *
-     * @param \Pimple\Container $container
+     * @param array $checkList
      */
-    public function setUpCentreonDbManager(Container $container)
+    public function checkServices(array $checkList)
     {
-        $container[ServiceProvider::CENTREON_DB_MANAGER] =
-            loadDependencyInjector()[ServiceProvider::CENTREON_DB_MANAGER];
+        // check list of services
+        foreach ($checkList as $serviceName => $className) {
+            $this->assertTrue($this->container->offsetExists($serviceName));
+
+            $service = $this->container->offsetGet($serviceName);
+
+            $this->assertInstanceOf($className, $service);
+        }
     }
 }

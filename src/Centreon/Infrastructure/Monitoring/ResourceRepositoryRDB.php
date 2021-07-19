@@ -28,7 +28,7 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\Icon;
-use Centreon\Domain\Monitoring\Resource;
+use Centreon\Domain\Monitoring\Resources;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceSeverity;
@@ -812,7 +812,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      * Parse array data from DB into Resource model
      *
      * @param array $data
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return \Centreon\Domain\Monitoring\Resources
      * @throws \Exception
      */
     protected function parseResource(array $data): Resource

@@ -22,7 +22,7 @@
 namespace Centreon\Application\Request;
 
 use Centreon\Domain\Downtime\Downtime;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Resources as ResourceEntity;
 
 class DowntimeRequest
 {

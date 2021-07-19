@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace CentreonRemote\Tests\Resource\Traits;
+namespace CentreonRemote\Tests\Resources\Traits;
 
 use Pimple\Container;
 use CentreonRemote\ServiceProvider;
