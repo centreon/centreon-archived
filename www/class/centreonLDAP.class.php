@@ -925,6 +925,7 @@ class CentreonLDAP
      */
     public function isSyncNeededAtLogin(int $arId, int $contactId): bool
     {
+        $contactData = [];
         try {
             // checking if an override was manually set on this contact
             $stmtManualRequest = $this->db->prepare(
@@ -956,7 +957,7 @@ class CentreonLDAP
                 $syncState[$row['ari_name']] = $row['ari_value'];
             }
 
-            if ($syncState['ldap_auto_sync'] || !$contactData['contact_ldap_last_sync']) {
+            if ($syncState['ldap_auto_sync'] || $contactData['contact_ldap_last_sync'] === 0) {
                 // getting the base date reference set in the LDAP parameters
                 $stmtLdapBaseSync = $this->db->prepare(
                     'SELECT ar_sync_base_date AS `referenceDate` FROM auth_ressource
@@ -965,11 +966,6 @@ class CentreonLDAP
                 $stmtLdapBaseSync->bindValue(':arId', $arId, \PDO::PARAM_INT);
                 $stmtLdapBaseSync->execute();
                 $ldapBaseSync = $stmtLdapBaseSync->fetch();
-
-                // setting a default value, if the user account was imported and the user has never login
-                if (!$contactData['contact_ldap_last_sync']) {
-                    $contactData['contact_ldap_last_sync'] = 0;
-                }
 
                 // checking if the interval between two synchronizations is reached
                 $currentTime = time();
