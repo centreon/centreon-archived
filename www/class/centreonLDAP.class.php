@@ -925,7 +925,6 @@ class CentreonLDAP
      */
     public function isSyncNeededAtLogin(int $arId, int $contactId): bool
     {
-        $contactData = [];
         try {
             // checking if an override was manually set on this contact
             $stmtManualRequest = $this->db->prepare(
