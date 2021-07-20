@@ -27,7 +27,7 @@
         "version": "1.5.2"
     },
     "centreon/centreon-test-lib": {
-        "version": "dev-mon-5775"
+        "version": "dev-master"
     },
     "curl/curl": {
         "version": "1.9.3"
@@ -164,7 +164,7 @@
         "version": "v1.0.2"
     },
     "phar-io/manifest": {
-        "version": "2.0.1"
+        "version": "2.0.3"
     },
     "phar-io/version": {
         "version": "3.1.0"
@@ -188,7 +188,7 @@
         "version": "0.5.5"
     },
     "phpstan/phpstan": {
-        "version": "0.12.92"
+        "version": "0.12.93"
     },
     "phpstan/phpstan-beberlei-assert": {
         "version": "0.12.6"
