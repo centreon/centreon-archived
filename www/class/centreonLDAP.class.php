@@ -989,7 +989,8 @@ class CentreonLDAP
             // assuming it needs to be synchronized
             $this->centreonLog->insertLog(
                 3,
-                'LDAP AUTH : Updating user DN of ' . $contactData['contact_name']
+                'LDAP AUTH : Updating user DN of ' .
+                (!empty($contactData['contact_name']) ? $contactData['contact_name'] : "contact id $contactId")
             );
             return true;
         }
