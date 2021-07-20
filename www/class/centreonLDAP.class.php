@@ -917,14 +917,13 @@ class CentreonLDAP
      * unless it's required
      * If it's enabled, we need to wait until the next synchronization
      *
-     * @param integer $arId : Id of the current LDAP
-     * @param integer $contactId : Id the contact
-     * @return boolean
-     * @throws Exception
+     * @param int $arId : Id of the current LDAP
+     * @param int $contactId : Id the contact
+     * @return bool
      * @internal Needed on user's login and when manually requesting an update of user's LDAP data
      *
      */
-    public function isSyncNeededAtLogin(int $arId = null, int $contactId): bool
+    public function isSyncNeededAtLogin(int $arId, int $contactId): bool
     {
         try {
             // checking if an override was manually set on this contact
@@ -934,11 +933,12 @@ class CentreonLDAP
             );
             $stmtManualRequest->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
             $stmtManualRequest->execute();
-            $manualOverride = $stmtManualRequest->fetch();
-            if ($manualOverride['contact_ldap_required_sync']) {
+            $contactData = $stmtManualRequest->fetch();
+            // check if a manual override was set for this user
+            if ($contactData !== false && $contactData['contact_ldap_required_sync'] === '1') {
                 $this->centreonLog->insertLog(
                     3,
-                    'LDAP AUTH : LDAP synchronization was requested manually for ' . $manualOverride['contact_name']
+                    'LDAP AUTH : LDAP synchronization was requested manually for ' . $contactData['contact_name']
                 );
                 return true;
             }
@@ -956,7 +956,7 @@ class CentreonLDAP
                 $syncState[$row['ari_name']] = $row['ari_value'];
             }
 
-            if ($syncState['ldap_auto_sync'] || !$manualOverride['contact_ldap_last_sync']) {
+            if ($syncState['ldap_auto_sync'] || $contactData['contact_ldap_last_sync'] === 0) {
                 // getting the base date reference set in the LDAP parameters
                 $stmtLdapBaseSync = $this->db->prepare(
                     'SELECT ar_sync_base_date AS `referenceDate` FROM auth_ressource
@@ -968,21 +968,30 @@ class CentreonLDAP
 
                 // checking if the interval between two synchronizations is reached
                 $currentTime = time();
+
                 if (
-                    ($syncState['ldap_sync_interval'] * 3600 + $ldapBaseSync['referenceDate']) <= $currentTime
-                    && $manualOverride['contact_ldap_last_sync'] < $ldapBaseSync['referenceDate']
+                    ($syncState['ldap_sync_interval'] * 3600 + $contactData['contact_ldap_last_sync']) <= $currentTime
+                    && $contactData['contact_ldap_last_sync'] < $ldapBaseSync['referenceDate']
                 ) {
                     // synchronization is expected
                     $this->centreonLog->insertLog(
                         3,
-                        'LDAP AUTH : Updating user DN of ' . $manualOverride['contact_name']
+                        'LDAP AUTH : Updating user DN of ' . $contactData['contact_name']
                     );
                     return true;
                 }
             }
         } catch (\PDOException $e) {
-            throw new \Exception('Error while getting automatic synchronization value for LDAP Id : ' . $arId);
+            $this->centreonLog->insertLog(
+                3,
+                'Error while getting automatic synchronization value for LDAP Id : ' . $arId
+            );
             // assuming it needs to be synchronized
+            $this->centreonLog->insertLog(
+                3,
+                'LDAP AUTH : Updating user DN of ' .
+                (!empty($contactData['contact_name']) ? $contactData['contact_name'] : "contact id $contactId")
+            );
             return true;
         }
         $this->centreonLog->insertLog(
