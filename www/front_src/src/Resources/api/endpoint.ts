@@ -1,4 +1,4 @@
-const baseEndpoint = './api/v21.10';
+const baseEndpoint = './api/latest';
 
 const monitoringEndpoint = `${baseEndpoint}/monitoring`;
 const resourcesEndpoint = `${monitoringEndpoint}/resources`;
