@@ -4960,12 +4960,12 @@ components:
               type: string
               nullable: true
               description: "resource details endpoint"
-              example: "/centreon/api/beta/monitoring/resources/hosts/11"
+              example: "/centreon/api/latest/monitoring/resources/hosts/11"
             timeline:
               type: string
               nullable: true
               description: "resource timeline endpoint"
-              example: "/centreon/api/beta/monitoring/hosts/11/timeline"
+              example: "/centreon/api/latest/monitoring/hosts/11/timeline"
             status_graph:
               type: string
               nullable: true
@@ -4980,12 +4980,12 @@ components:
               type: string
               nullable: true
               description: "current resource acknowledgement endpoint"
-              example: "/centreon/api/beta/monitoring/hosts/11/acknowledgements?limit=1"
+              example: "/centreon/api/latest/monitoring/hosts/11/acknowledgements?limit=1"
             downtime:
               type: string
               nullable: true
               description: "current resource downtimes endpoint"
-              example: "/centreon/api/beta/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
+              example: "/centreon/api/latest/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
         externals:
           type: object
           properties:

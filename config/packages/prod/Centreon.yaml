@@ -13,7 +13,6 @@ jms_serializer:
 parameters:
     api.header: "Api-Version"
     api.version.latest: "21.10"
-    api.version.beta: "22.04"
     debug_log_file: '%log_path%/centreon-web.log'
     debug_level: "%env(DEBUG_LEVEL)%"
     env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE

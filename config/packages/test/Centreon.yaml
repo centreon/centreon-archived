@@ -11,7 +11,6 @@ jms_serializer:
 parameters:
     api.header: "Api-Version"
     api.version.latest: "21.10"
-    api.version.beta: "22.04"
 
 services:
     _defaults:
