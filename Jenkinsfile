@@ -126,7 +126,6 @@ try {
   // sonarQube step to get qualityGate result
   stage('Quality gate') {
     timeout(time: 10, unit: 'MINUTES') {
-      sleep 120
       def qualityGate = waitForQualityGate()
       if (qualityGate.status != 'OK') {
         error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
