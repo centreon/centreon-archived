@@ -2,11 +2,13 @@ centreon_application_acknowledgement_findhostsacknowledgements:
     methods: GET
     path: /monitoring/hosts/acknowledgements
     controller: 'Centreon\Application\Controller\AcknowledgementController::findHostsAcknowledgements'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_acknowledgement_findservicesacknowledgements:
     methods: GET
     path: /monitoring/services/acknowledgements
     controller: 'Centreon\Application\Controller\AcknowledgementController::findServicesAcknowledgements'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_acknowledgement_findacknowledgementsbyhost:
     methods: GET
@@ -14,6 +16,7 @@ centreon_application_acknowledgement_findacknowledgementsbyhost:
     requirements:
         hostId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::findAcknowledgementsByHost'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_acknowledgement_addhostacknowledgements:
     methods: POST
@@ -33,6 +36,7 @@ centreon_application_acknowledgement_addhostacknowledgement:
     requirements:
         hostId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::addHostAcknowledgement'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_acknowledgement_disacknowledgehost:
     methods: DELETE
@@ -40,6 +44,7 @@ centreon_application_acknowledgement_disacknowledgehost:
     requirements:
         hostId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeHost'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_acknowledgement_findacknowledgementsbyservice:
     methods: GET
@@ -48,6 +53,7 @@ centreon_application_acknowledgement_findacknowledgementsbyservice:
         hostId: '\d+'
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::findAcknowledgementsByService'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_acknowledgement_addserviceacknowledgement:
     methods: POST
@@ -56,6 +62,7 @@ centreon_application_acknowledgement_addserviceacknowledgement:
         hostId: '\d+'
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::addServiceAcknowledgement'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_acknowledgement_addmetaserviceacknowledgement:
     methods: POST
@@ -80,6 +87,7 @@ centreon_application_acknowledgement_disacknowledgeservice:
         hostId: '\d+'
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::disacknowledgeService'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_acknowledgement_disacknowledgemetaservice:
     methods: DELETE
@@ -93,6 +101,7 @@ centreon_application_acknowledgement_findacknowledgements:
     methods: GET
     path: /monitoring/acknowledgements
     controller: 'Centreon\Application\Controller\AcknowledgementController::findAcknowledgements'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_acknowledgement_findoneacknowledgement:
     methods: GET
@@ -100,6 +109,7 @@ centreon_application_acknowledgement_findoneacknowledgement:
     requirements:
         acknowledgementId: '\d+'
     controller: 'Centreon\Application\Controller\AcknowledgementController::findOneAcknowledgement'
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_monitoring_disacknowledge_resources:
     methods: DELETE
