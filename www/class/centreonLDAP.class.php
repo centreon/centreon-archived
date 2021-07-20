@@ -935,7 +935,7 @@ class CentreonLDAP
             $stmtManualRequest->execute();
             $contactData = $stmtManualRequest->fetch();
             // check if a manual override was set for this user
-            if ($contactData['contact_ldap_required_sync']) {
+            if ($contactData !== false && $contactData['contact_ldap_required_sync'] === '1') {
                 $this->centreonLog->insertLog(
                     3,
                     'LDAP AUTH : LDAP synchronization was requested manually for ' . $contactData['contact_name']
