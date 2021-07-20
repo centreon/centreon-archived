@@ -75,7 +75,7 @@ class Footer extends Component {
             </ul>
           </div>
           <div className={styles['footer-wrap-right']}>
-            <span>Copyright &copy; 2005 - 2020</span>
+            <span>Copyright &copy; 2005 - 2021</span>
           </div>
         </div>
       </footer>
