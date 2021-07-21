@@ -12,8 +12,7 @@ jms_serializer:
                 path: '%kernel.root_dir%/../config/packages/serializer/Infrastructure'
 parameters:
     api.header: "Api-Version"
-    api.version.latest: "2.0"
-    api.version.beta: "2.1"
+    api.version.latest: "21.10"
     debug_log_file: '%log_path%/centreon-web.log'
     debug_level: "%env(DEBUG_LEVEL)%"
     env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
@@ -254,8 +253,8 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostSeverityRepositoryRDB
 
-    Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities:
-        class: Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities
+    Centreon\Domain\HostConfiguration\UseCase\V2110\HostSeverity\FindHostSeverities:
+        class: Centreon\Domain\HostConfiguration\UseCase\V2110\HostSeverity\FindHostSeverities
         calls:
             - method: setMediaPath
               arguments: ["%media_path%"]
@@ -264,8 +263,8 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostGroupRepositoryRDB
 
-    Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups:
-        class: Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups
+    Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroups:
+        class: Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroups
         calls:
             - method: setMediaPath
               arguments: ["%media_path%"]

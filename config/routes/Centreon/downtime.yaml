@@ -2,25 +2,25 @@ monitoring.downtime.addHostDowntimes:
     methods: POST
     path: /monitoring/hosts/downtimes
     controller: 'Centreon\Application\Controller\DowntimeController::addHostDowntimes'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.addServiceDowntimes:
     methods: POST
     path: /monitoring/services/downtimes
     controller: 'Centreon\Application\Controller\DowntimeController::addServiceDowntimes'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.addHostDowntime:
     methods: POST
     path: /monitoring/hosts/{hostId}/downtimes
     controller: 'Centreon\Application\Controller\DowntimeController::addHostDowntime'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.addServiceDowntime:
     methods: POST
     path: /monitoring/hosts/{hostId}/services/{serviceId}/downtimes
     controller: 'Centreon\Application\Controller\DowntimeController::addServiceDowntime'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.addMetaServiceDowntime:
     methods: POST
@@ -28,19 +28,19 @@ monitoring.downtime.addMetaServiceDowntime:
     requirements:
         metaId: '\d+'
     controller: 'Centreon\Application\Controller\DowntimeController::addMetaServiceDowntime'
-    condition: "request.attributes.get('version') >= 2.1"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.findHostDowntimes:
     methods: GET
     path: /monitoring/hosts/downtimes
     controller: 'Centreon\Application\Controller\DowntimeController::findHostDowntimes'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.findServiceDowntimes:
     methods: GET
     path: /monitoring/services/downtimes
     controller: 'Centreon\Application\Controller\DowntimeController::findServiceDowntimes'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.findDowntimesByService:
     methods: GET
@@ -48,7 +48,7 @@ monitoring.downtime.findDowntimesByService:
     requirements:
         hostId: '\d+'
     controller: 'Centreon\Application\Controller\DowntimeController::findDowntimesByService'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.findDowntimesByMetaService:
     methods: GET
@@ -56,7 +56,7 @@ monitoring.downtime.findDowntimesByMetaService:
     requirements:
         metaId: '\d+'
     controller: 'Centreon\Application\Controller\DowntimeController::findDowntimesByMetaService'
-    condition: "request.attributes.get('version') >= 2.1"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.findOneDowntime:
     methods: GET
@@ -64,13 +64,13 @@ monitoring.downtime.findOneDowntime:
     requirements:
         downtimeId: '\d+'
     controller: 'Centreon\Application\Controller\DowntimeController::findOneDowntime'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.findDowntimes:
     methods: GET
     path: /monitoring/downtimes
     controller: 'Centreon\Application\Controller\DowntimeController::findDowntimes'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.findDowntimesByHost:
     methods: GET
@@ -78,7 +78,7 @@ monitoring.downtime.findDowntimesByHost:
     requirements:
         hostId: '\d+'
     controller: 'Centreon\Application\Controller\DowntimeController::findDowntimesByHost'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.downtime.cancelOneDowntime:
     methods: DELETE
@@ -86,10 +86,10 @@ monitoring.downtime.cancelOneDowntime:
     requirements:
         downtimeId: '\d+'
     controller: 'Centreon\Application\Controller\DowntimeController::cancelOneDowntime'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_monitoring_resources_downtime:
     methods: POST
     path: /monitoring/resources/downtime
     controller: 'Centreon\Application\Controller\DowntimeController::massDowntimeResources'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
