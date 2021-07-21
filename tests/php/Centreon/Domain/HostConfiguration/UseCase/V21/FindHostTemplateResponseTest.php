@@ -20,13 +20,13 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V2110;
+namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
 
 use Centreon\Domain\HostConfiguration\UseCase\V2110\HostTemplate\FindHostTemplatesResponse;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\v2110
+ * @package Tests\Centreon\Domain\HostConfiguration\UseCase\v2_1
  */
 class FindHostTemplateResponseTest extends \PHPUnit\Framework\TestCase
 {

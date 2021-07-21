@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup;
+namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupServiceInterface;
@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostGroupTest;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup
+ * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup
  */
 class FindHostGroupsTest extends TestCase
 {
