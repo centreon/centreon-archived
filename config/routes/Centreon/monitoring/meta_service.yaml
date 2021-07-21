@@ -4,4 +4,4 @@ centreon_application_find_meta_service_metrics:
   controller: 'Centreon\Application\Controller\Monitoring\MetaServiceController::findMetaServiceMetrics'
   requirements:
       metaId: '\d+'
-  condition: "request.attributes.get('version') >= 2.1"
+  condition: "request.attributes.get('version') >= 21.10"

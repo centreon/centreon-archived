@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity\FindHostSeverities;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostSeverity\FindHostSeverities;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity\HostSeverityV21Factory;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity\HostSeverityV2110Factory;
 use FOS\RestBundle\View\View;
 
 /**
@@ -48,7 +48,7 @@ class HostSeverityController extends AbstractController
         $response = $findHostSeverities->execute();
         return $this->view(
             [
-                'result' => HostSeverityV21Factory::createFromResponse($response),
+                'result' => HostSeverityV2110Factory::createFromResponse($response),
                 'meta' => $requestParameters->toArray()
             ]
         );

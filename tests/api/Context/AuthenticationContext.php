@@ -34,7 +34,7 @@ class AuthenticationContext extends ApiContext
         $this->setHttpHeaders(['Content-Type' => 'application/json']);
         $response = $this->iSendARequestToWithBody(
             'POST',
-            $this->getBaseUri() . '/beta/login',
+            $this->getBaseUri() . '/api/v21.10/login',
             json_encode([
                 'security' => [
                     'credentials' => [
