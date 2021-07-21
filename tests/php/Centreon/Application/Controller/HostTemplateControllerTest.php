@@ -24,8 +24,8 @@ namespace Tests\Centreon\Application\Controller;
 
 use Centreon\Application\Controller\HostTemplateController;
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplates;
-use Centreon\Domain\HostConfiguration\UseCase\V21\FindHostTemplatesResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostTemplate\FindHostTemplates;
+use Centreon\Domain\HostConfiguration\UseCase\V21\HostTemplate\FindHostTemplatesResponse;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\HostConfiguration\API\Model\HostTemplateV21Factory;
