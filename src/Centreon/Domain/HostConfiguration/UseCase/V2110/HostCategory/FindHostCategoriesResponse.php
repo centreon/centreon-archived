@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory;
+namespace Centreon\Domain\HostConfiguration\UseCase\V2110\HostCategory;
 
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
 

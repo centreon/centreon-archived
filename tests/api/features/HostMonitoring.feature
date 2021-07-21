@@ -17,13 +17,13 @@ Feature:
     And the configuration is generated and exported
     And I wait until host "test2" is monitored
 
-    When I send a GET request to '/api/beta/monitoring/hosts?search={"host.name":{"$rg":"^test2$"}}'
+    When I send a GET request to '/api/v21.10/monitoring/hosts?search={"host.name":{"$rg":"^test2$"}}'
     Then the response code should be "200"
     And the response should be formatted like JSON format "standard/listing.json"
     And the response should be formatted like JSON format "monitoring/host/listing.json"
     And the json node "result" should have 1 elements
     And the JSON node "result[0].name" should be equal to the string "test2"
 
-    When I send a GET request to '/api/beta/monitoring/hosts'
+    When I send a GET request to '/api/v21.10/monitoring/hosts'
     Then the json node "result" should have 3 elements
 

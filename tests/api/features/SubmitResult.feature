@@ -16,13 +16,13 @@ Feature:
     """
     And the configuration is generated and exported
     And I wait until service "test_service_1" from host "test" is monitored
-    And I send a GET request to '/api/beta/monitoring/services?search={"$and":[{"host.name":"test"},{"service.description":"test_service_1"}]}'
+    And I send a GET request to '/api/v21.10/monitoring/services?search={"$and":[{"host.name":"test"},{"service.description":"test_service_1"}]}'
     And I store response values in:
       | name      | path              |
       | hostId    | result[0].host.id |
       | serviceId | result[0].id      |
 
-    When I send a POST request to '/api/beta/monitoring/resources/submit' with body:
+    When I send a POST request to '/api/v21.10/monitoring/resources/submit' with body:
     """
     {
       "resources": [

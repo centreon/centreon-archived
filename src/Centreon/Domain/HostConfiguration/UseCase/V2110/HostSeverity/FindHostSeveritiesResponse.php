@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\UseCase\V21\HostSeverity;
+namespace Centreon\Domain\HostConfiguration\UseCase\V2110\HostSeverity;
 
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 use Centreon\Domain\Media\Model\Image;

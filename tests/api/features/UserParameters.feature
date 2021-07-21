@@ -15,7 +15,7 @@ Feature:
     """
     And the configuration is generated and exported
 
-    When I send a GET request to '/api/beta/configuration/users/current/parameters'
+    When I send a GET request to '/api/v21.10/configuration/users/current/parameters'
     Then the response code should be "200"
     And the JSON node "name" should be equal to the string "admin admin"
     And the JSON node "alias" should be equal to the string "admin"

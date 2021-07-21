@@ -75,13 +75,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * If no version has been defined in the configuration,
      * this version will be used by default
      */
-    public const DEFAULT_API_VERSION = "2.0";
-
-    /**
-     * If no beta version has been defined in the configuration,
-     * this version will be used by default
-     */
-    public const DEFAULT_API_BETA_VERSION = "2.1";
+    public const DEFAULT_API_VERSION = "21.10";
 
     /**
      * If no API header name has been defined in the configuration,
@@ -167,6 +161,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * Use to update the api version into all responses
      *
      * @param ResponseEvent $event
+     * @throws \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
      */
     public function addApiVersion(ResponseEvent $event): void
     {
@@ -268,6 +263,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * the kernel to use it in routing conditions.
      *
      * @param RequestEvent $event
+     * @throws \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
      */
     public function defineApiVersionInAttributes(RequestEvent $event): void
     {
@@ -279,12 +275,6 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         $event->getRequest()->attributes->set('version.latest', $latestVersion);
         $event->getRequest()->attributes->set('version.is_latest', false);
 
-        if ($this->container->hasParameter('api.version.beta')) {
-            $betaVersion = $this->container->getParameter('api.version.beta');
-        } else {
-            $betaVersion = self::DEFAULT_API_BETA_VERSION;
-        }
-        $event->getRequest()->attributes->set('version.beta', $betaVersion);
         $event->getRequest()->attributes->set('version.is_beta', false);
         $event->getRequest()->attributes->set('version.not_beta', true);
 
@@ -306,13 +296,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 $event->getRequest()->attributes->set('version.is_latest', true);
                 $requestApiVersion = $latestVersion;
             }
-            if (
-                $requestApiVersion === 'beta'
-                || VersionHelper::compare($requestApiVersion, $betaVersion, VersionHelper::EQUAL)
-            ) {
+            if ($requestApiVersion === 'beta') {
                 $event->getRequest()->attributes->set('version.is_beta', true);
                 $event->getRequest()->attributes->set('version.not_beta', false);
-                $requestApiVersion = $betaVersion;
             }
 
             /**
@@ -332,6 +318,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * Used to manage exceptions outside controllers.
      *
      * @param ExceptionEvent $event
+     * @throws \InvalidArgumentException
      */
     public function onKernelException(ExceptionEvent $event): void
     {

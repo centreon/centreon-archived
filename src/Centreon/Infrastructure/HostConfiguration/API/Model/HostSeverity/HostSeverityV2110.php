@@ -20,18 +20,17 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostGroup;
+namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity;
 
 /**
  * This class is designed to represent the formatted response of the API request.
  *
- * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostGroup
+ * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostSeverity
  */
-class HostGroupV21
+class HostSeverityV2110
 {
-
     /**
-     * @var int|null
+     * @var int
      */
     public $id;
 
@@ -41,49 +40,24 @@ class HostGroupV21
     public $name;
 
     /**
-     * @var string|null
+     * @var string
      */
     public $alias;
 
     /**
-     * @var string|null
+     * @var int
      */
-    public $notes;
+    public $level;
 
     /**
-     * @var string|null
-     */
-    public $notesUrl;
-
-    /**
-     * @var string|null
-     */
-    public $actionUrl;
-
-    /**
-     * @var string|null
+     * @var string
      */
     public $icon;
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $iconMap;
-
-    /**
-     * @var int|null
-     */
-    public $rrd;
-
-    /**
-     * @var string|null
-     */
-    public $geoCoords;
-
-    /**
-     * @var string|null
-     */
-    public $comment;
+    public $comments;
 
     /**
      * @var bool

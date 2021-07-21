@@ -24,7 +24,7 @@ namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\HostConfiguration\HostCategoryService;
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory\FindHostCategories;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostCategory\FindHostCategories;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostCategoryTest;
 

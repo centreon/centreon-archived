@@ -27,7 +27,7 @@ namespace Centreon\Infrastructure\HostConfiguration\API\Model;
  *
  * @package Centreon\Infrastructure\HostConfiguration\API\Model
  */
-class HostTemplateV21
+class HostTemplateV2110
 {
     /**
      * @var int|null;

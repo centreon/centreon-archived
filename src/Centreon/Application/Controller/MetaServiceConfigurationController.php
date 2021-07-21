@@ -25,9 +25,9 @@ namespace Centreon\Application\Controller;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\MetaServiceConfiguration\Exception\MetaServiceConfigurationException;
-use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindMetaServicesConfigurations;
-use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindOneMetaServiceConfiguration;
-use Centreon\Infrastructure\MetaServiceConfiguration\API\Model\MetaServiceConfigurationV21Factory;
+use Centreon\Domain\MetaServiceConfiguration\UseCase\V2110\FindMetaServicesConfigurations;
+use Centreon\Domain\MetaServiceConfiguration\UseCase\V2110\FindOneMetaServiceConfiguration;
+use Centreon\Infrastructure\MetaServiceConfiguration\API\Model\MetaServiceConfigurationV2110Factory;
 
 /**
  * This class is designed to provide APIs for the context of meta service configuration.
@@ -52,7 +52,7 @@ class MetaServiceConfigurationController extends AbstractController
         $response = $findMetaServiceConfiguration->execute($metaId);
         return $this->view(
             [
-                'result' => MetaServiceConfigurationV21Factory::createOneFromResponse($response),
+                'result' => MetaServiceConfigurationV2110Factory::createOneFromResponse($response),
                 'meta' => $requestParameters->toArray()
             ]
         );
@@ -72,7 +72,7 @@ class MetaServiceConfigurationController extends AbstractController
         $response = $findMetasServicesConfigurations->execute();
         return $this->view(
             [
-                'result' => MetaServiceConfigurationV21Factory::createAllFromResponse($response),
+                'result' => MetaServiceConfigurationV2110Factory::createAllFromResponse($response),
                 'meta' => $requestParameters->toArray()
             ]
         );

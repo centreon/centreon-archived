@@ -5,7 +5,7 @@ Feature:
 
   Background:
     Given a running instance of Centreon Web API
-    And the endpoints are described in Centreon Web API documentation (version: 2.1)
+    And the endpoints are described in Centreon Web API documentation (version: 21.10)
 
   Scenario: Host severities listing
     Given I am logged in
@@ -17,7 +17,7 @@ Feature:
     HC;setseverity;severity1;42;logos/centreon.png
     """
 
-    When I send a GET request to '/api/v2.1/configuration/hosts/severities'
+    When I send a GET request to '/api/v21.10/configuration/hosts/severities'
     Then the response code should be "200"
     And the JSON should be equal to:
     """

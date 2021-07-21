@@ -27,7 +27,7 @@ namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory;
  *
  * @package Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory
  */
-class HostCategoryV21
+class HostCategoryV2110
 {
     /**
      * @var int

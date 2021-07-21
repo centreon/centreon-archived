@@ -269,13 +269,13 @@ Feature:
 
         # Actually we can't have server_id because the register is not fully complete (wizard not executed)
         # So we can't test pollers or remote edges.
-        When I send a GET request to "/api/beta/platform/topology"
+        When I send a GET request to "/api/v21.10/platform/topology"
         Then the response code should be "200"
         And the json node "graph.nodes" should have 3 elements
         And the JSON node "graph.nodes.2.type" should be equal to the string "poller"
 
-        When I send a DELETE request to "/api/beta/platform/topology/3"
+        When I send a DELETE request to "/api/v21.10/platform/topology/3"
         Then the response code should be "204"
-        When I send a GET request to "/api/beta/platform/topology"
+        When I send a GET request to "/api/v21.10/platform/topology"
         Then the response code should be "200"
         And the json node "graph.nodes" should have 2 elements

@@ -17,11 +17,12 @@ info:
   x-logo:
     url: ./centreon-logo.png
   contact:
+    name: Centreon
     url: 'https://www.centreon.com'
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-  version: "2.1"
+  version: "21.10"
 externalDocs:
   description: You can contact us on our community Slack
   url: 'https://centreon.slack.com/messages/CCRGLQSE5'
@@ -41,20 +42,25 @@ servers:
         default: '80'
         description: "Port used by HTTP server"
       version:
-        default: v2.1
+        default: v21.10
         description: "Version of the API"
 tags:
+  - name: Acknowledgement
+  - name: Administration
   - name: Authentication
     description: "Login and logout endpoints to retrieve authentication token"
-  - name: Proxy
-  - name: Monitoring Server
-  - name: Meta Service
-  - name: Host
-  - name: Service
-  - name: Host Group
-  - name: Service Group
-  - name: Acknowledgement
   - name: Downtime
+  - name: Gorgone
+  - name: Host
+  - name: Host category
+  - name: Host group
+  - name: Meta service
+  - name: Host severity
+  - name: Host template
+  - name: Monitoring server
+  - name: Proxy
+  - name: Service
+  - name: Service group
   - name: Topology
 security:
   - Token: []
@@ -81,10 +87,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginAuthenticationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '500':
-          description: "Internal Error"
+          $ref: '#/components/responses/InternalServerError'
   /logout:
     get:
       tags:
@@ -102,94 +110,8 @@ paths:
                 $ref: '#/components/schemas/LogoutAuthenticationResponse'
         '403':
           $ref: '#/components/responses/Forbidden'
-  /authentication/login:
-    get:
-      tags:
-        - Authentication
-      summary: "Login redirection"
-      description: "Entry point to redirect user for his authentication"
-      responses:
-        '302':
-          description: "Found"
-        '200':
-          description: "Authentication URI"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  authentication_uri:
-                    type: string
-                    example: "/centreon/login"
-  /authentication/providers-configurations:
-    get:
-      tags:
-        - Authentication
-      summary: "Providers Configurations"
-      description: "Endpoint to list all the existing providers configuration"
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    description: "Id of configuration"
-                    example: 1
-                  type:
-                    type: "string"
-                    description: "Type of provider"
-                    example: "local"
-                  name:
-                    type: "string"
-                    description: "Name of provider"
-                    example: "local"
-                  centreon_base_uri:
-                    type: "string"
-                    description: "Centreon Base Uri used by the provider to redirect"
-                    example: "/centreon"
-                  is_active:
-                    type: boolean
-                    description: "Provider active or not"
-                    example: true
-                  is_forced:
-                    type: boolean
-                    description: "Provider forced or not"
-                    example: false
-  /authentication/providers/{provider_configuration_name}:
-    post:
-      tags:
-       - Authentication
-      parameters:
-        - $ref: '#/components/parameters/providerConfigurationName'
-      summary: "Authentication to provider"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                login:
-                  type: "string"
-                  example: "admin"
-                password:
-                  type: "string"
-                  example: "centreon"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                properties:
-                  redirect_uri:
-                    type: string
-                    example: "/centreon/main.php?p=50113&o=ldap"
-        '302':
-          description: "Found"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/hosts/templates:
     get:
       tags:
@@ -379,6 +301,8 @@ paths:
       responses:
         '204':
           description: Command Sent
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -386,7 +310,7 @@ paths:
   /configuration/monitoring-servers:
     get:
       tags:
-        - Monitoring Server
+        - Monitoring server
       summary: "List all monitoring servers configurations"
       description: |
         List all monitoring servers configurations.
@@ -424,7 +348,7 @@ paths:
   /configuration/metaservices:
     get:
       tags:
-        - Meta Service
+        - Meta service
       summary: "List all meta services configurations"
       description: |
         List all meta services configurations.
@@ -460,7 +384,7 @@ paths:
   /configuration/metaservices/{meta_id}:
     get:
       tags:
-        - Meta Service
+        - Meta service
       summary: "Get a meta service"
       description: "Get a meta service configuration by its id"
       parameters:
@@ -481,7 +405,7 @@ paths:
   /monitoring/metaservices/{meta_id}/metrics:
     get:
       tags:
-        - Meta Service
+        - Meta service
       summary: "List all meta service metrics"
       description: |
         List all meta services metrics from realtime.
@@ -519,7 +443,7 @@ paths:
   /monitoring/servers:
     get:
       tags:
-        - Monitoring Server
+        - Monitoring server
       summary: "List all real time monitoring servers"
       description: |
         List all monitoring servers configured and stored in real time.
@@ -555,7 +479,7 @@ paths:
   /users/acl/actions:
     get:
       tags:
-        - User ACL actions
+        - User
       summary: "List allowed actions"
       description: "List allowed actions of the current user."
       responses:
@@ -603,7 +527,7 @@ paths:
   /configuration/users/current/parameters:
     get:
       tags:
-        - User parameters
+      - User
       summary: "List user parameters"
       description: "List configured parameters for the current user"
       responses:
@@ -642,7 +566,7 @@ paths:
   /users/filters/{page_name}:
     get:
       tags:
-        - User filters
+        - User
       summary: "List user filters by page"
       description: |
         `internal`
@@ -709,6 +633,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User.Filter'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -716,7 +642,7 @@ paths:
   /users/filters/{page_name}/{filter_id}:
     get:
       tags:
-        - User filters
+        - User
       summary: "Detailed user filter"
       description: |
         `internal`
@@ -1075,7 +1001,7 @@ paths:
   /monitoring/hosts/{host_id}/services/{service_id}/servicegroups:
     get:
       tags:
-        - Service Group
+        - Service group
       summary: "Get service groups by host id and service id"
       description: "Return a list of service groups for host-service pair."
       parameters:
@@ -1097,7 +1023,7 @@ paths:
   /monitoring/hosts/{host_id}/hostgroups:
     get:
       tags:
-        - Host Group
+        - Host group
       summary: "List all host groups by host id"
       description: |
         List all the host groups in real-time monitoring by host id
@@ -1128,7 +1054,7 @@ paths:
   /monitoring/hostgroups:
     get:
       tags:
-        - Host Group
+        - Host group
       summary: "List all host groups"
       description: |
         List all the host groups in real-time monitoring.
@@ -1172,7 +1098,7 @@ paths:
   /monitoring/servicegroups:
     get:
       tags:
-        - Service Group
+        - Service group
       summary: "List all service groups"
       description: |
         List all the service groups in real-time monitoring.
@@ -1251,6 +1177,8 @@ paths:
       responses:
         '204':
           description: "OK"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1318,6 +1246,8 @@ paths:
       responses:
         '204':
           description: "Commands Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1364,6 +1294,8 @@ paths:
       responses:
         '204':
           description: "Commands Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1413,6 +1345,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1426,6 +1360,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1477,6 +1413,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1491,6 +1429,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1499,6 +1439,7 @@ paths:
     get:
       tags:
         - Acknowledgement
+        - Meta service
       summary: "List all acknowledgements of a metaservice"
       parameters:
         - $ref: '#/components/parameters/Search'
@@ -1540,6 +1481,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1553,6 +1496,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1640,6 +1585,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -1711,6 +1658,8 @@ paths:
       responses:
         '204':
           description: "Commands Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1780,6 +1729,8 @@ paths:
       responses:
         '204':
           description: "Commands Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1847,6 +1798,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1915,6 +1868,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1923,6 +1878,7 @@ paths:
     get:
       tags:
         - Downtime
+        - Meta service
       summary: "List all downtimes of a metaservice"
       parameters:
         - $ref: '#/components/parameters/Search'
@@ -1981,6 +1937,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1999,6 +1957,8 @@ paths:
       responses:
         '204':
           description: "Commands Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -2017,6 +1977,8 @@ paths:
       responses:
         '204':
           description: "Commands Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -2038,6 +2000,8 @@ paths:
       responses:
         '204':
           description: 'Command Sent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -2062,6 +2026,8 @@ paths:
       responses:
         '204':
           description: 'Command Sent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -2072,6 +2038,7 @@ paths:
     post:
       tags:
         - Check
+        - Meta service
       summary: "Check metaservice"
       description: "Schedule immediate check on chosen metaservice"
       parameters:
@@ -2085,6 +2052,8 @@ paths:
       responses:
         '204':
           description: 'Command Sent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -2106,6 +2075,8 @@ paths:
       responses:
         '204':
           description: 'Command Sent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -2129,8 +2100,12 @@ paths:
       responses:
         '204':
           description: 'Command Sent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           description: 'Host not found'
         '500':
@@ -2155,6 +2130,10 @@ paths:
           description: 'Command Sent'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           description: 'Host or service not found'
         '500':
@@ -2163,6 +2142,7 @@ paths:
     post:
       tags:
         - Submit
+        - Meta service
       summary: "Submit a result to a single metaservice"
       description: "Submit a result (check status, output and perfdata) to a single metaservice"
       parameters:
@@ -2176,6 +2156,8 @@ paths:
       responses:
         '204':
           description: 'Command Sent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2197,6 +2179,8 @@ paths:
       responses:
         '204':
           description: 'Command Sent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2218,6 +2202,8 @@ paths:
       responses:
         '204':
           description: 'Command Sent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -2966,6 +2952,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -2984,6 +2972,8 @@ paths:
       responses:
         '204':
           description: "Command Sent"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -3001,7 +2991,7 @@ paths:
               $ref: '#/components/schemas/Platform.Full'
       responses:
         '400':
-          description: 'Bad Request'
+          $ref: '#/components/responses/BadRequest'
         '204':
           description: "Platform updated"
         '403':
@@ -3037,6 +3027,8 @@ paths:
                   message:
                     type: string
                     example: "A platform using the name : 'myPoller' or address : '1.1.1.2' already exists"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -3132,6 +3124,8 @@ paths:
       responses:
         '204':
           description: "Platform deleted"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -3176,6 +3170,8 @@ paths:
                     token:
                       type: string
                       description: "Token used to retrieve the data linked to the command"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -3183,7 +3179,7 @@ paths:
   /administration/parameters:
     post:
       tags:
-        - Administration parameters
+        - Administration
       summary: "Administration parameters"
       responses:
         '200':
@@ -3201,6 +3197,8 @@ paths:
                       type: integer
                       description: Default monitoring refresh interval
                       example: 15
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -3456,13 +3454,6 @@ components:
         type: integer
         format: int64
         example: 329
-    providerConfigurationName:
-      in: path
-      name: provider_configuration_name
-      required: true
-      schema:
-        type: string
-        example: "local"
     FilterPageName:
       in: path
       name: page_name
@@ -3517,6 +3508,22 @@ components:
                 example: 401
               message:
                 type: string
+    BadRequest:
+      description: |
+        Indicates that the server cannot or will not process the request due to something that is perceived to be
+        a client error (e.g., malformed request syntax, invalid request message framing)
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int64
+                example: 400
+              message:
+                type: string
+                example: "Property 'name' not found"
     Forbidden:
       description: "Forbidden"
       content:
@@ -3640,6 +3647,42 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
+    Comment.Resources:
+      type: object
+      required: [ resources ]
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            required: [ comment,id ]
+            properties:
+              type:
+                type: string
+                enum: [ host, service ]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
+              date:
+                type: string
+                format: date-time
+                nullable: true
+                description: "Date of the comment (ISO8601)"
+              comment:
+                type: string
+                description: "Comment to add to the monitored resource"
+                example: "Resource is not-OK but it is expected"
     Configuration.Host.Category:
       type: object
       properties:
@@ -3932,42 +3975,6 @@ components:
         is_activated:
           type: boolean
           description: "Indicates whether the host group is activated or not"
-    Comment.Resources:
-      type: object
-      required: [resources]
-      properties:
-        resources:
-          type: array
-          items:
-            type: object
-            required: [comment,id]
-            properties:
-              type:
-                type: string
-                enum: [host, service]
-                description: "Type of resource"
-                example: "service"
-              id:
-                type: integer
-                description: "Resource ID"
-                example: 10
-              parent:
-                type: object
-                nullable: true
-                properties:
-                  id:
-                    type: integer
-                    description: "Parent resource ID"
-                    example: 17
-              date:
-                type: string
-                format: date-time
-                nullable: true
-                description: "Date of the comment (ISO8601)"
-              comment:
-                type: string
-                description: "Comment to add to the monitored resource"
-                example: "Resource is not-OK but it is expected"
     Media.NullableImage:
       type: object
       nullable: true
@@ -4953,12 +4960,12 @@ components:
               type: string
               nullable: true
               description: "resource details endpoint"
-              example: "/centreon/api/beta/monitoring/resources/hosts/11"
+              example: "/centreon/api/latest/monitoring/resources/hosts/11"
             timeline:
               type: string
               nullable: true
               description: "resource timeline endpoint"
-              example: "/centreon/api/beta/monitoring/hosts/11/timeline"
+              example: "/centreon/api/latest/monitoring/hosts/11/timeline"
             status_graph:
               type: string
               nullable: true
@@ -4973,12 +4980,12 @@ components:
               type: string
               nullable: true
               description: "current resource acknowledgement endpoint"
-              example: "/centreon/api/beta/monitoring/hosts/11/acknowledgements?limit=1"
+              example: "/centreon/api/latest/monitoring/hosts/11/acknowledgements?limit=1"
             downtime:
               type: string
               nullable: true
               description: "current resource downtimes endpoint"
-              example: "/centreon/api/beta/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
+              example: "/centreon/api/latest/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
         externals:
           type: object
           properties:

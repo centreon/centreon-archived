@@ -20,14 +20,14 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\MetaServiceConfiguration\UseCase\V21;
+namespace Centreon\Domain\MetaServiceConfiguration\UseCase\V2110;
 
 use Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfiguration;
 
 /**
  * This class is a DTO for the FindMetaServicesConfigurations use case.
  *
- * @package Centreon\Domain\MetaServiceConfiguration\UseCase\V21
+ * @package Centreon\Domain\MetaServiceConfiguration\UseCase\V2110
  */
 class FindMetaServicesConfigurationsResponse
 {

@@ -23,15 +23,15 @@ declare(strict_types=1);
 namespace Tests\Centreon\Infrastructure\HostConfiguration\API\Model;
 
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroupsResponse;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostGroup\HostGroupV21Factory;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroupsResponse;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostGroup\HostGroupV2110Factory;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostGroupTest;
 
 /**
  * @package Tests\Centreon\Infrastructure\HostConfiguration\API\Model
  */
-class HostGroupV21FactoryTest extends TestCase
+class HostGroupV2110FactoryTest extends TestCase
 {
     /**
      * @var HostGroup
@@ -44,13 +44,13 @@ class HostGroupV21FactoryTest extends TestCase
     }
 
     /**
-     * We check the format sent for the API request (v2.1) using the factory
+     * We check the format sent for the API request (v21.10) using the factory
      */
     public function testCreateFromResponse(): void
     {
         $response = new FindHostGroupsResponse();
         $response->setHostGroups([$this->hostGroup]);
-        $hostGroupV21 = HostGroupV21Factory::createFromResponse($response);
+        $hostGroupV21 = HostGroupV2110Factory::createFromResponse($response);
 
         $oneHostGroups = $response->getHostGroups()[0];
         $this->assertCount(count($response->getHostGroups()), $response->getHostGroups());

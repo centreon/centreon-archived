@@ -20,19 +20,19 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\MetaServiceConfiguration\UseCase\V21;
+namespace Centreon\Domain\MetaServiceConfiguration\UseCase\V2110;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationServiceInterface;
-use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindMetaServicesConfigurationsResponse;
 use Centreon\Domain\MetaServiceConfiguration\Exception\MetaServiceConfigurationException;
+use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationServiceInterface;
+use Centreon\Domain\MetaServiceConfiguration\UseCase\V2110\FindOneMetaServiceConfigurationResponse;
 
 /**
  * This class is designed to represent a use case to find all host categories.
  *
- * @package Centreon\Domain\MetaServiceConfiguration\UseCase\V21
+ * @package Centreon\Domain\MetaServiceConfiguration\UseCase\V2110
  */
-class FindMetaServicesConfigurations
+class FindOneMetaServiceConfiguration
 {
     /**
      * @var MetaServiceConfigurationServiceInterface
@@ -59,17 +59,22 @@ class FindMetaServicesConfigurations
 
     /**
      * Execute the use case for which this class was designed.
-     *
-     * @return FindMetaServicesConfigurationsResponse
+     * @param int $metaId
+     * @return FindOneMetaServiceConfigurationResponse
      * @throws MetaServiceConfigurationException
      */
-    public function execute(): FindMetaServicesConfigurationsResponse
+    public function execute(int $metaId): FindOneMetaServiceConfigurationResponse
     {
-        $response = new FindMetaServicesConfigurationsResponse();
-        $metaServicesConfigurations = ($this->contact->isAdmin())
-            ? $this->metaServiceConfigurationService->findAllWithoutAcl()
-            : $this->metaServiceConfigurationService->findAllWithAcl();
-        $response->setMetaServicesConfigurations($metaServicesConfigurations);
+        $response = new FindOneMetaServiceConfigurationResponse();
+        $metaServiceConfiguration = ($this->contact->isAdmin())
+            ? $this->metaServiceConfigurationService->findWithoutAcl($metaId)
+            : $this->metaServiceConfigurationService->findWithAcl($metaId);
+
+        if (is_null($metaServiceConfiguration)) {
+            throw MetaServiceConfigurationException::findOneMetaServiceConfigurationNotFound($metaId);
+        }
+
+        $response->setMetaServiceConfiguration($metaServiceConfiguration);
         return $response;
     }
 }

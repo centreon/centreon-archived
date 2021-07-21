@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\UseCase\V21\HostTemplate;
+namespace Centreon\Domain\HostConfiguration\UseCase\V2110\HostTemplate;
 
 use Centreon\Domain\HostConfiguration\Model\HostTemplate;
 use Centreon\Domain\Media\Model\Image;
