@@ -69,7 +69,7 @@ function check_version() {
 }
 
 check_version || error_and_exit "This script can only be executed on Centos 7"
-​
+
 ## Main
 case $* in
     -h|--help)
