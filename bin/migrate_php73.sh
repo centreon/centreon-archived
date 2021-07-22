@@ -104,8 +104,8 @@ info "Copying php configuration from 7.2 to 7.3"
 cp /etc/opt/rh/rh-php72/php.d/50-centreon.ini /etc/opt/rh/rh-php73/php.d/50-centreon.ini
 
 info "Configuring system to use new PHP 7.3 binary"
-mv /opt/rh/rh-php72/root/bin/php{,.backup}
-ln -s /opt/rh/rh-php73/root/bin/php /opt/rh/rh-php72/root/bin/php
+mv /opt/rh/rh-php72/root/usr/bin/php{,.backup}
+ln -s /opt/rh/rh-php73/root/usr/bin/php /opt/rh/rh-php72/root/usr/bin/php
 systemctl -q stop rh-php72-php-fpm
 systemctl -q disable rh-php72-php-fpm
 systemctl -q start rh-php73-php-fpm
