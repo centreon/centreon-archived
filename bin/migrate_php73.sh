@@ -30,7 +30,7 @@
 # do not wish to do so, delete this exception statement from your version.
 #
 # For more information : contact@centreon.com
-​
+
 function usage() {
     cat <<EOF
 This script aims to upgrade the php library from 7.2 to 7.3. (Centos 7 only)
@@ -44,18 +44,18 @@ Parameters:
 EOF
     exit 0
 }
-​
+
 # Log errors
 function error_and_exit() {
     echo "[ERROR] $*"
     exit 1
 }
-​
+
 # Log information
 function info() {
     echo "[INFO] $*"
 }
-​
+
 function check_version() {
     distrib=$(cat /etc/os-release | grep -E "^ID=")
     distrib="${distrib##*=}"
@@ -63,11 +63,11 @@ function check_version() {
     version=$(cat /etc/os-release | grep -E "^VERSION_ID=")
     version="${version##*=}"
     version="${version//\"/}"
-​
+
     [[ $distrib == "centos" && $version == "7" ]] && return 0
     return 1
 }
-​
+
 check_version || error_and_exit "This script can only be executed on Centos 7"
 ​
 ## Main
@@ -77,7 +77,7 @@ case $* in
         ;;
     *)
 esac
-​
+
 info "Installing dependencies for PHP 7.3"
 yum install -q -y \
     rh-php73 \
@@ -96,13 +96,13 @@ yum install -q -y \
     rh-php73-php-pear \
     rh-php73-ioncube-loader \
     rh-php73-php-pecl-gnupg
-​
+
 info "Copying php-fpm configuration from 7.2 to 7.3"
 \cp /etc/opt/rh/rh-php72/php-fpm.d/*.conf /etc/opt/rh/rh-php73/php-fpm.d/
 
 info "Copying php configuration from 7.2 to 7.3"
 cp /etc/opt/rh/rh-php72/php.d/50-centreon.ini /etc/opt/rh/rh-php73/php.d/50-centreon.ini
-​
+
 info "Configuring system to use new PHP 7.3 binary"
 mv /opt/rh/rh-php72/root/bin/php{,.backup}
 ln -s /opt/rh/rh-php73/root/bin/php /opt/rh/rh-php72/root/bin/php
@@ -110,5 +110,5 @@ systemctl -q stop rh-php72-php-fpm
 systemctl -q disable rh-php72-php-fpm
 systemctl -q start rh-php73-php-fpm
 systemctl -q enable rh-php73-php-fpm
-​
+
 info "Upgrade finished"
