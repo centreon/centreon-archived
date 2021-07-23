@@ -1,4 +1,11 @@
 Centreon\Domain\Downtime\Downtime:
+    access_type: 'public_method'
+    accessor_order: 'custom'
+    custom_accessor_order:
+        - 'startTime'
+        - 'endTime'
+        - 'actualStartTime'
+        - 'actualEndTime'
     properties:
         id:
             type: int
@@ -43,11 +50,14 @@ Centreon\Domain\Downtime\Downtime:
             groups:
                 - 'downtime_services'
         isCancelled:
-            type: bool
+            accessor:
+                getter: 'isCancelled'
+                setter: 'setCancelled'
             groups:
                 - 'Default'
                 - 'downtime_main'
                 - 'downtime_event_list'
+            type: bool
         comment:
             type: string
             groups:
@@ -78,12 +88,15 @@ Centreon\Domain\Downtime\Downtime:
         internalId:
             type: int
         isFixed:
-            type: bool
+            accessor:
+                getter: 'isFixed'
+                setter: 'setFixed'
             groups:
                 - 'Default'
                 - 'downtime_main'
                 - 'downtime_event_list'
                 - 'resource_dt'
+            type: bool
         pollerId:
             type: int
             groups:
@@ -109,13 +122,19 @@ Centreon\Domain\Downtime\Downtime:
                 - 'downtime_main'
                 - 'downtime_event_list'
         isStarted:
-            type: bool
+            accessor:
+                getter: 'isStarted'
+                setter: 'setStarted'
             groups:
                 - 'Default'
                 - 'downtime_main'
                 - 'downtime_event_list'
-        withServices:
             type: bool
+        withServices:
+            accessor:
+                getter: 'isWithServices'
+                setter: 'setWithServices'
             groups:
                 - 'downtime_host_add'
                 - 'resource_dt'
+            type: bool
