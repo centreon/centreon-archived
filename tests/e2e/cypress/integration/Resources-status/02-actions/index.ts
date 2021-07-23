@@ -36,7 +36,7 @@ When('I select the acknowledge action on a problematic Resource', () => {
 });
 
 Then('The problematic Resource is displayed as acknowledged', () => {
-  refreshListing(3000);
+  refreshListing(5000);
 
   cy.wait('@getResources');
   cy.contains(serviceName)
@@ -61,7 +61,7 @@ When('I select the downtime action on a problematic Resource', () => {
 });
 
 Then('The problematic Resource is displayed as in downtime', () => {
-  refreshListing(3000);
+  refreshListing(5000);
 
   cy.wait('@getResources');
   cy.contains(serviceNameDowntime)
