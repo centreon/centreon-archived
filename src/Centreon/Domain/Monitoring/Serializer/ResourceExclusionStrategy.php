@@ -35,10 +35,11 @@ use Centreon\Domain\Monitoring\Resource as ResourceEntity;
  */
 class ResourceExclusionStrategy implements ExclusionStrategyInterface
 {
+
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext)
+    public function shouldSkipClass(ClassMetadata $metadata, Context $navigatorContext): bool
     {
         return false;
     }
@@ -46,7 +47,7 @@ class ResourceExclusionStrategy implements ExclusionStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
+    public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext): bool
     {
         if (
             $property->class === ResourceEntity::class
