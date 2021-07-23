@@ -5,10 +5,16 @@ Feature:
 
     Background:
         Given a running instance of Centreon Web API
-        And the endpoints are described in Centreon Web API documentation
 
     Scenario:
-        Given I log in with invalid credentials
-        Then the response code should be "401"
-        And the JSON node "code" should be equal to the number "401"
-        And the JSON node "message" should be equal to the string "Invalid credentials"
+        Given the endpoints are described in Centreon Web API documentation
+        When I log in with invalid credentials
+        Then the response code should be "500"
+        And the JSON node "code" should be equal to the number "500"
+        And the JSON node "message" should be equal to the string "Invalid Credentials"
+
+    # Internal local authentication
+    Scenario:
+        When I am logged in with local provider
+        Then the response code should be "200"
+        And the header "set-cookie" should contain "PHPSESSID="

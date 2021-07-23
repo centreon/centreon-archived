@@ -77,7 +77,7 @@ export TEXTDOMAIN
 line="------------------------------------------------------------------------"
 export line
 
-## log default vars 
+## log default vars
 . $INSTALL_VARS_DIR/vars
 
 ## Test if gettext was installed
@@ -86,13 +86,13 @@ found="0"
 OLDIFS="$IFS"
 IFS=:
 for p in $PATH ; do
-	[ -x "$p/gettext" ] && found="1"
+    if [ -x "$p/gettext.sh" ]; then
+        found="1"
+        . $p/gettext.sh
+    fi
 done
 IFS=$OLDIFS
-if [ $found -eq 1 ] ; then 
-	. $INSTALL_DIR/gettext.sh
-else
-	# if not, use my gettext dummy :p
+if [ $found -eq 0 ] ; then # if not, use dummy gettext
 	PATH="$PATH:$INSTALL_DIR"
 fi
 

@@ -24,11 +24,11 @@ namespace Tests\Centreon\Application\Controller\Configuration;
 
 use Centreon\Application\Controller\Configuration\HostGroupController;
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups;
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroupsResponse;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroups;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroupsResponse;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostGroup\HostGroupV21Factory;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostGroup\HostGroupV2110Factory;
 use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -125,7 +125,7 @@ class HostGroupControllerTest extends TestCase
         );
         $this->assertEquals(
             View::create([
-                'result' => HostGroupV21Factory::createFromResponse($findHostGroupResponse),
+                'result' => HostGroupV2110Factory::createFromResponse($findHostGroupResponse),
                 'meta' => (new RequestParameters())->toArray()
             ]),
             $view

@@ -24,7 +24,7 @@ namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21;
 
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Model\HostTemplate;
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostTemplate\FindHostTemplates;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostTemplate\FindHostTemplates;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostTemplateTest;
 

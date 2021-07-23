@@ -126,6 +126,10 @@ if (isset($_GET["disconnect"])) {
 
         $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
 
+        $sessionStatement = $pearDB->prepare("DELETE FROM security_token WHERE token = :sessionId");
+        $sessionStatement->bindValue(':sessionId', session_id(), \PDO::PARAM_STR);
+        $sessionStatement->execute();
+
         CentreonSession::restart();
     }
 }
