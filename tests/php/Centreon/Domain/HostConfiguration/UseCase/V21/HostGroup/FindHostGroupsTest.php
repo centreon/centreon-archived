@@ -25,7 +25,7 @@ namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupServiceInterface;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup\FindHostGroups;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroups;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostGroupTest;
 

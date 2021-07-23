@@ -68,4 +68,12 @@ class DataStorageEngineRdb implements DataStorageEngineInterface
     {
         return $this->db->rollBack();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function isAlreadyinTransaction(): bool
+    {
+        return $this->db->inTransaction();
+    }
 }
