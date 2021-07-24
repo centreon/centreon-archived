@@ -45,6 +45,13 @@ const useStyles = makeStyles((theme) => ({
   timeline: {
     margin: 0,
   },
+  timelineDot: {
+    alignItems: 'center',
+    display: 'grid',
+    height: theme.spacing(3),
+    justifyItems: 'center',
+    width: theme.spacing(3),
+  },
 }));
 
 interface Props {
@@ -141,7 +148,10 @@ const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
                         key={`${id}-${type}`}
                       >
                         <TimelineSeparator>
-                          <TimelineDot variant="outlined">
+                          <TimelineDot
+                            className={classes.timelineDot}
+                            variant="outlined"
+                          >
                             {icon(t)}
                           </TimelineDot>
                           {isNotLastEvent && <TimelineConnector />}
