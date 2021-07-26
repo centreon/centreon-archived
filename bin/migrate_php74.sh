@@ -69,7 +69,10 @@ function check_version() {
     return 1
 }
 
-check_version || error_and_exit "This script can only be executed on Centos 7"
+if [ \! -e /etc/redhat-release ] ; then
+  error_and_exit "This script can only be executed on Centos 7"
+fi
+rhrelease=$(rpm -E %{rhel})
 
 ## Main
 case $* in
@@ -79,11 +82,27 @@ case $* in
     *)
 esac
 
-rpm -U --quiet https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-rpm -U --quiet https://rpms.remirepo.net/enterprise/remi-release-7.rpm
-yum install -q -y yum-utils
-yum-config-manager --enable remi-php74
-#yum-config-manager --enable 'rhel-7-server-optional-rpms'
+case "$rhrelease" in
+  '7')
+    # CentOS 7 specific part
+    yum install -q -y \
+        https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+        https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
+        yum-utils
+    yum-config-manager --enable remi-php74
+    ;;
+  '8')
+    # CentOS 8 specific part
+    dnf install -q -y \
+        https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
+        https://rpms.remirepo.net/enterprise/remi-release-8.rpm
+    dnf module reset php
+    dnf module install php:remi-7.4
+    ;;
+  *)
+    error_and_exit "This unattended installation script only supports CentOS 7 and CentOS 8."
+    ;;
+esac
 
 info "Installing dependencies for PHP 7.4"
 yum install -q -y \
