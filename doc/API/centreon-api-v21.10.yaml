@@ -91,11 +91,8 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-<<<<<<< HEAD:doc/API/centreon-api-v2.1.yaml
-=======
         '500':
           $ref: '#/components/responses/InternalServerError'
->>>>>>> 4e01386636 (enh(api) Update all API access points to the new version 21.10 (#10001)):doc/API/centreon-api-v21.10.yaml
   /logout:
     get:
       tags:
@@ -113,11 +110,8 @@ paths:
                 $ref: '#/components/schemas/LogoutAuthenticationResponse'
         '403':
           $ref: '#/components/responses/Forbidden'
-<<<<<<< HEAD:doc/API/centreon-api-v2.1.yaml
-=======
         '500':
           $ref: '#/components/responses/InternalServerError'
->>>>>>> 4e01386636 (enh(api) Update all API access points to the new version 21.10 (#10001)):doc/API/centreon-api-v21.10.yaml
   /configuration/hosts/templates:
     get:
       tags:
@@ -533,11 +527,7 @@ paths:
   /configuration/users/current/parameters:
     get:
       tags:
-<<<<<<< HEAD:doc/API/centreon-api-v2.1.yaml
-      - User parameters
-=======
       - User
->>>>>>> 4e01386636 (enh(api) Update all API access points to the new version 21.10 (#10001)):doc/API/centreon-api-v21.10.yaml
       summary: "List user parameters"
       description: "List configured parameters for the current user"
       responses:
