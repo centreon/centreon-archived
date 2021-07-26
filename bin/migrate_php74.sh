@@ -90,6 +90,23 @@ case "$rhrelease" in
         https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
         yum-utils
     yum-config-manager --enable remi-php74
+    yum install -q -y \
+        php74 \
+        php74-php-cli \
+        php74-php-pdo \
+        php74-php-mysqlnd \
+        php74-php-gd \
+        php74-php-xml \
+        php74-php-mbstring \
+        php74-php-ldap \
+        php74-php-snmp \
+        php74-php-intl \
+        php74-php-fpm \
+        php74-php-curl \
+        php74-php-zip \
+        php74-php-pear \
+        php74-php-ioncube-loader \
+        php74-php-pecl-gnupg
     ;;
   '8')
     # CentOS 8 specific part
@@ -98,6 +115,22 @@ case "$rhrelease" in
         https://rpms.remirepo.net/enterprise/remi-release-8.rpm
     dnf module reset php
     dnf module install php:remi-7.4
+    dnf install -q -y \
+        php-cli \
+        php-pdo \
+        php-mysqlnd \
+        php-gd \
+        php-xml \
+        php-mbstring \
+        php-ldap \
+        php-snmp \
+        php-intl \
+        php-fpm \
+        php-curl \
+        php-zip \
+        php-pear \
+        php-ioncube-loader \
+        php-pecl-gnupg
     ;;
   *)
     error_and_exit "This unattended installation script only supports CentOS 7 and CentOS 8."
@@ -105,23 +138,7 @@ case "$rhrelease" in
 esac
 
 info "Installing dependencies for PHP 7.4"
-yum install -q -y \
-    php74 \
-    php74-php-cli \
-    php74-php-pdo \
-    php74-php-mysqlnd \
-    php74-php-gd \
-    php74-php-xml \
-    php74-php-mbstring \
-    php74-php-ldap \
-    php74-php-snmp \
-    php74-php-intl \
-    php74-php-fpm \
-    php74-php-curl \
-    php74-php-zip \
-    php74-php-pear \
-    php74-ioncube-loader \
-    php74-php-pecl-gnupg
+
 
 info "Copying php-fpm configuration from 7.2 to 7.4"
 \cp /etc/opt/rh/rh-php72/php-fpm.d/*.conf /etc/opt/remi/php74/php-fpm.d/
