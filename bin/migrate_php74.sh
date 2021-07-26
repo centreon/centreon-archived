@@ -33,7 +33,7 @@
 
 function usage() {
     cat <<EOF
-This script aims to upgrade the php library from 7.2 to 7.3. (Centos 7 only)
+This script aims to upgrade the php library from 7.2 to 7.4.
 This script will:
     - Install remi repository
     - Install dependencies needed for the upgrade
