@@ -57,39 +57,13 @@ function info() {
     echo "[INFO] $*"
 }
 
-function check_version() {
-    distrib=$(cat /etc/os-release | grep -E "^ID=")
-    distrib="${distrib##*=}"
-    distrib="${distrib//\"/}"
-    version=$(cat /etc/os-release | grep -E "^VERSION_ID=")
-    version="${version##*=}"
-    version="${version//\"/}"
-
-    [[ $distrib == "centos" && $version == "7" ]] && return 0
-    return 1
-}
-
-if [ \! -e /etc/redhat-release ] ; then
-  error_and_exit "This script can only be executed on Centos 7"
-fi
-rhrelease=$(rpm -E %{rhel})
-
-## Main
-case $* in
-    -h|--help)
-        usage
-        ;;
-    *)
-esac
-
-case "$rhrelease" in
-  '7')
-    # CentOS 7 specific part
+function upgrade_rhel7() {
+    info "Installing dependencies for PHP 7.4"
     yum install -q -y \
         https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
         https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
         yum-utils
-    yum-config-manager --enable remi-php74
+    yum-config-manager -q --enable remi-php74
     yum install -q -y \
         php74 \
         php74-php-cli \
@@ -107,9 +81,24 @@ case "$rhrelease" in
         php74-php-pear \
         php74-php-ioncube-loader \
         php74-php-pecl-gnupg
-    ;;
-  '8')
-    # CentOS 8 specific part
+
+    info "Copying php-fpm configuration from 7.2 to 7.4"
+    \cp /etc/opt/rh/rh-php72/php-fpm.d/*.conf /etc/opt/remi/php74/php-fpm.d/
+
+    info "Copying php configuration from 7.2 to 7.4"
+    cp /etc/opt/rh/rh-php72/php.d/50-centreon.ini /etc/opt/remi/php74/php.d/50-centreon.ini
+
+    info "Configuring system to use new PHP 7.4 binary"
+    mv /opt/rh/rh-php72/root/usr/bin/php{,.backup}
+    ln -s /opt/remi/php74/root/usr/bin/php /opt/rh/rh-php72/root/usr/bin/php
+    systemctl -q stop rh-php72-php-fpm
+    systemctl -q disable rh-php72-php-fpm
+    systemctl -q start php74-php-fpm
+    systemctl -q enable php74-php-fpm
+}
+
+function upgrade_rhel8() {
+    info "Installing dependencies for PHP 7.4"
     dnf install -q -y \
         https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
         https://rpms.remirepo.net/enterprise/remi-release-8.rpm
@@ -131,27 +120,38 @@ case "$rhrelease" in
         php-pear \
         php-ioncube-loader \
         php-pecl-gnupg
-    ;;
-  *)
-    error_and_exit "This unattended installation script only supports CentOS 7 and CentOS 8."
-    ;;
+
+    info "Backuping ioncube configuration of php 7.2"
+    mv /etc/php.d/10-ioncube_loader.ini{,.backup}
+
+    info "Restarting php-fpm"
+    systemctl -q restart php-fpm
+}
+
+if [ \! -e /etc/redhat-release ] ; then
+  error_and_exit "This script can only be executed on CentOS 7"
+fi
+rhrelease=$(rpm -E %{rhel})
+
+## Main
+case $* in
+    -h|--help)
+        usage
+        ;;
+    *)
 esac
 
-info "Installing dependencies for PHP 7.4"
 
-
-info "Copying php-fpm configuration from 7.2 to 7.4"
-\cp /etc/opt/rh/rh-php72/php-fpm.d/*.conf /etc/opt/remi/php74/php-fpm.d/
-
-info "Copying php configuration from 7.2 to 7.4"
-cp /etc/opt/rh/rh-php72/php.d/50-centreon.ini /etc/opt/remi/php74/php.d/50-centreon.ini
-
-info "Configuring system to use new PHP 7.4 binary"
-mv /opt/rh/rh-php72/root/usr/bin/php{,.backup}
-ln -s /opt/remi/php74/root/usr/bin/php /opt/rh/rh-php72/root/usr/bin/php
-systemctl -q stop rh-php72-php-fpm
-systemctl -q disable rh-php72-php-fpm
-systemctl -q start php74-php-fpm
-systemctl -q enable php74-php-fpm
+case "$rhrelease" in
+  '7')
+    upgrade_rhel7
+    ;;
+  '8')
+    upgrade_rhel8
+    ;;
+  *)
+    error_and_exit "This script only supports CentOS 7 and CentOS 8."
+    ;;
+esac
 
 info "Upgrade finished"
