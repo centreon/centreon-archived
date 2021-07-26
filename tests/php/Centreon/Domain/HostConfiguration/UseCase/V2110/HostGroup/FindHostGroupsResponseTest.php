@@ -20,13 +20,13 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup;
+namespace Tests\Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup;
 
 use Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroupsResponse;
 use Tests\Centreon\Domain\HostConfiguration\Model\HostGroupTest;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostGroup
+ * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup
  */
 class FindHostGroupsResponseTest extends \PHPUnit\Framework\TestCase
 {
