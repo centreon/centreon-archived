@@ -116,9 +116,9 @@ sub new {
 sub is_set {
     my $self = shift;
     my ($status, $sth) = $self->{dbc}->query(
-        "SELECT id,running,pid,time_launch FROM cron_operation WHERE name LIKE '$self->{name}'"
+        "SELECT `id`,`running`,`pid`,`time_launch` FROM `cron_operatio`n WHERE `name` LIKE '$self->{name}'"
     );
-    
+
     return 1 if ($status == -1);
     my $data = $sth->fetchrow_hashref();
 
@@ -145,8 +145,8 @@ sub set {
     $self->SUPER::set();
     if (defined $self->{not_created_yet}) {
         $status = $self->{dbc}->do(<<"EOQ");
-INSERT INTO cron_operation
-(name, system, activate)
+INSERT INTO `cron_operation`
+(`name`, `system`, `activate`)
 VALUES ('$self->{name}', '1', '1')
 EOQ
         goto error if $status == -1;
@@ -154,9 +154,9 @@ EOQ
         return;
     }
     $status = $self->{dbc}->do(<<"EOQ");
-UPDATE cron_operation
-SET running = '1', time_launch = '$self->{launch_time}', pid = '$self->{pid}'
-WHERE id = '$self->{id}'
+UPDATE `cron_operation`
+SET `running` = '1', `time_launch` = '$self->{launch_time}', `pid` = '$self->{pid}'
+WHERE `id` = '$self->{id}'
 EOQ
     goto error if $status == -1;
     return;
@@ -171,9 +171,9 @@ sub DESTROY {
     if (defined $self->{dbc}) {
         my $exectime = time() - $self->{launch_time};
         $self->{dbc}->do(<<"EOQ");
-UPDATE cron_operation
-SET last_execution_time = '$exectime'
-WHERE id = '$self->{id}'
+UPDATE `cron_operation`
+SET `last_execution_time` = '$exectime'
+WHERE `id` = '$self->{id}'
 EOQ
     }
 }
