@@ -201,7 +201,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             $query[RequestParameters::NAME_FOR_PAGE] ?? RequestParameters::DEFAULT_PAGE,
             FILTER_VALIDATE_INT
         );
-        if (empty($page)) {
+        if (false === $page) {
             throw RequestParametersException::integer(RequestParameters::NAME_FOR_PAGE);
         }
         $this->requestParameters->setPage($page);
