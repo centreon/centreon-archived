@@ -192,7 +192,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             $query[RequestParameters::NAME_FOR_LIMIT] ?? RequestParameters::DEFAULT_LIMIT,
             FILTER_VALIDATE_INT
         );
-        if (empty($limit)) {
+        if (false === $limit) {
             throw RequestParametersException::integer(RequestParameters::NAME_FOR_LIMIT);
         }
         $this->requestParameters->setLimit($limit);
