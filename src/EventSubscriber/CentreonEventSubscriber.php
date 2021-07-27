@@ -195,7 +195,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         if (empty($limit)) {
             throw RequestParametersException::integer(RequestParameters::NAME_FOR_LIMIT);
         }
-        $this->requestParameters->setLimit((int) $limit);
+        $this->requestParameters->setLimit($limit);
 
         $page = filter_var(
             $query[RequestParameters::NAME_FOR_PAGE] ?? RequestParameters::DEFAULT_PAGE,
@@ -204,7 +204,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         if (empty($page)) {
             throw RequestParametersException::integer(RequestParameters::NAME_FOR_PAGE);
         }
-        $this->requestParameters->setPage((int) $page);
+        $this->requestParameters->setPage($page);
 
         if (isset($query[RequestParameters::NAME_FOR_SORT])) {
             $this->requestParameters->setSort($query[RequestParameters::NAME_FOR_SORT]);
