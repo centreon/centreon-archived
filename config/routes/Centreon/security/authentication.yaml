@@ -1,0 +1,9 @@
+centreon_security_authentication_find_providers_configurations:
+    methods: GET
+    path: /authentication/providers/configurations
+    controller: 'Centreon\Application\Controller\AuthenticationController::findProvidersConfigurations'
+
+centreon_security_authentication_login:
+    methods: GET|POST
+    path: /authentication/providers/configurations/{providerConfigurationName}
+    controller: 'Centreon\Application\Controller\AuthenticationController::authentication'

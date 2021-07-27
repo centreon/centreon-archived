@@ -78,7 +78,7 @@ class CentreonAuth
      * @param string $password
      * @param int $autologin
      * @param CentreonDB $pearDB
-     * @param CentreonLog $CentreonLog
+     * @param CentreonUserLog $CentreonLog
      * @param int $encryptType
      * @param string $token | for autologin
      * @return void

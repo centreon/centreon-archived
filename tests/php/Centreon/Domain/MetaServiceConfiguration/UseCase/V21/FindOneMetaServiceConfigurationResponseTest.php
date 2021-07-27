@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\Monitoring\MetaServiceConfiguration\UseCase\V21;
 
-use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindOneMetaServiceConfigurationResponse;
+use Centreon\Domain\MetaServiceConfiguration\UseCase\V2110\FindOneMetaServiceConfigurationResponse;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfigurationTest;
 
