@@ -56,7 +56,13 @@ MNT_OPTIONS_NOT_XFS=""
 ###
 # Check MySQL launch
 ###
-process=$(ps -o args --no-headers -C mariadbd)
+if ps -o args --no-headers -C mariadbd >/dev/null  ; then
+    process="mariadb"
+elif ps -o args --no-header -C mysqld >/dev/null ; then
+    process="mysqld"
+else
+    output_log "ERROR: Can't find MySQL process running." 1
+fi
 started=0
 
 #####
@@ -193,8 +199,8 @@ echo "#####################"
 if [ "$started" -eq 1 ] ; then
     i=0
     output_log "Stopping mysqld:" 0 1
-    systemctl stop mariadb
-    while ps -o args --no-headers -C mariadbd >/dev/null; do
+    systemctl stop $process 
+    while ps -o args --no-headers -C mysqld >/dev/null; do
         if [ "$i" -gt "$STOP_TIMEOUT" ] ; then
             output_log ""
             output_log "ERROR: Can't stop MySQL Server" 1
@@ -219,7 +225,7 @@ lvcreate -l $free_pe -s -n dbbackup $lv_name
 # Start server
 ###
 output_log "Start mysqld:"
-systemctl start mariadb
+systemctl start $process
 
 ###
 # Mount snapshot
