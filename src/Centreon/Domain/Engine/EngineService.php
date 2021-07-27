@@ -97,11 +97,16 @@ class EngineService extends AbstractCentreonService implements
         if (empty($host->getName())) {
             throw new EngineException('Host name can not be empty');
         }
+        
+        $sticky = 0;
+        if ((int) $acknowledgement->isSticky() === 1) {
+            $sticky = 2;
+        }
 
         $preCommand = sprintf(
             'ACKNOWLEDGE_HOST_PROBLEM;%s;%d;%d;%d;%s;%s',
             $host->getName(),
-            (int) $acknowledgement->isSticky(),
+            $sticky,
             (int) $acknowledgement->isNotifyContacts(),
             (int) $acknowledgement->isPersistentComment(),
             $this->contact->getAlias(),
@@ -123,12 +128,17 @@ class EngineService extends AbstractCentreonService implements
         if (empty($service->getHost())) {
             throw new EngineException('The host of service is not defined');
         }
+        
+        $sticky = 0;
+        if ((int) $acknowledgement->isSticky() === 1) {
+            $sticky = 2;
+        }
 
         $preCommand = sprintf(
             'ACKNOWLEDGE_SVC_PROBLEM;%s;%s;%d;%d;%d;%s;%s',
             $service->getHost()->getName(),
             $service->getDescription(),
-            (int) $acknowledgement->isSticky(),
+            $sticky,
             (int) $acknowledgement->isNotifyContacts(),
             (int) $acknowledgement->isPersistentComment(),
             $this->contact->getAlias(),
