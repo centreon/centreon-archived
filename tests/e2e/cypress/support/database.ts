@@ -15,11 +15,12 @@ const countServicesDB = (): void => {
       testCount += 1;
 
       cy.log('responses found: ', count);
+      cy.log('test count: ', testCount);
 
       if (count > 0) {
         return refreshListing().then(() => resourcesMatching());
       }
-      if (testCount < 200) {
+      if (testCount < 100) {
         countServicesDB();
       }
 

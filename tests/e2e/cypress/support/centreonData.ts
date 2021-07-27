@@ -175,7 +175,7 @@ const submitResultApiClapi = (): Cypress.Chainable => {
         method: 'POST',
         url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
       })
-      .then((resp) => expect(resp.status).to.eq(200));
+      .then((resp) => expect([200, 204, 206]).to.include(resp.status));
   });
 };
 
