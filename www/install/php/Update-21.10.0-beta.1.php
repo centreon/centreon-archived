@@ -24,39 +24,32 @@ $centreonLog = new CentreonLog();
 
 $versionOfTheUpgrade = 'UPGRADE - 21.10.0-beta.1: ';
 
-$pearDB = new CentreonDB('centreon', 3, false);
+$pearDB = new CentreonDB();
 
 try {
+    $pearDB->beginTransaction();
     $errorMessage = "Unable to check if table 'password_security_policy' exists";
-    $dbResult = $pearDB->query(
-        "SELECT COUNT(*) AS `count` FROM information_schema.tables WHERE table_schema = 'centreon'"
-        . " AND table_name = 'password_security_policy'"
-    );
-    if ($dbResult !== false) {
-        $row = $dbResult->fetch();
-        $dbResult->closeCursor();
-        $count = $row['count'];
-        if ($count == 0) {
-            $errorMessage = "Unable to create table 'password_security_policy'";
-            $pearDB->query(
-                "CREATE TABLE `password_security_policy` (
-                `password_length` int(11) UNSIGNED NOT NULL DEFAULT 12,
-                `uppercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
-                `lowercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
-                `integer_characters` enum('0', '1') NOT NULL DEFAULT '1',
-                `special_characters` enum('0', '1') NOT NULL DEFAULT '1',
-                `attempts` int(11) UNSIGNED NOT NULL DEFAULT 5,
-                `blocking_duration` int(11) UNSIGNED NOT NULL DEFAULT 900,
-                `password_expiration` int(11) UNSIGNED NOT NULL DEFAULT 7776000,
-                `delay_before_new_password` int(11) UNSIGNED NOT NULL DEFAULT 3600)"
-            );
+    $dbResult = $pearDB->query("SHOW TABLES LIKE 'password_security_policy'");
+    if ($dbResult->fetch()) {
+        $errorMessage = "Unable to create table 'password_security_policy'";
+        $pearDB->query(
+            "CREATE TABLE `password_security_policy` (
+            `password_length` int(11) UNSIGNED NOT NULL DEFAULT 12,
+            `uppercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
+            `lowercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
+            `integer_characters` enum('0', '1') NOT NULL DEFAULT '1',
+            `special_characters` enum('0', '1') NOT NULL DEFAULT '1',
+            `attempts` int(11) UNSIGNED NOT NULL DEFAULT 5,
+            `blocking_duration` int(11) UNSIGNED NOT NULL DEFAULT 900,
+            `password_expiration` int(11) UNSIGNED NOT NULL DEFAULT 7776000,
+            `delay_before_new_password` int(11) UNSIGNED NOT NULL DEFAULT 3600)"
+        );
 
-            $errorMessage = "Unable to create insert default configuration in 'password_security_policy'";
-            $pearDB->query("INSERT INTO `password_security_policy`
-            (`password_length`, `uppercase_characters`, `lowercase_characters`, `integer_characters`,
-            `special_characters`, `attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`)
-            VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600)");
-        }
+        $errorMessage = "Unable to create insert default configuration in 'password_security_policy'";
+        $pearDB->query("INSERT INTO `password_security_policy`
+        (`password_length`, `uppercase_characters`, `lowercase_characters`, `integer_characters`,
+        `special_characters`, `attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`)
+        VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600)");
     }
     $pearDB->commit();
 } catch (Exception $e) {

@@ -61,7 +61,7 @@ if (!in_array('email', $err['required']) && !preg_match($emailRegexp, $parameter
 if (
     !in_array('admin_password', $err['required'])
     && !in_array('confirm_password', $err['required'])
-    && $parameters['admin_password'] != $parameters['confirm_password']
+    && $parameters['admin_password'] !== $parameters['confirm_password']
 ) {
     $err['password'] = false;
 }
