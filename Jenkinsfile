@@ -229,7 +229,7 @@ try {
   stage('Quality gate') {
     node {
       discoverGitReferenceBuild(
-        referenceJob: 'centreon/master'
+        referenceJob: "centreon-web/${env.REF_BRANCH}"
       )
 
       if (hasBackendChanges) {
