@@ -236,6 +236,10 @@ try {
 
   stage('Quality gate') {
     node {
+      discoverGitReferenceBuild(
+        referenceJob: "centreon-web/${env.REF_BRANCH}"
+      )
+
       if (hasBackendChanges) {
         unstash 'ut-be.xml'
         unstash 'coverage-be.xml'
