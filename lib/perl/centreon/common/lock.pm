@@ -116,7 +116,7 @@ sub new {
 sub is_set {
     my $self = shift;
     my ($status, $sth) = $self->{dbc}->query(
-        "SELECT `id`,`running`,`pid`,`time_launch` FROM `cron_operatio`n WHERE `name` LIKE '$self->{name}'"
+        "SELECT `id`,`running`,`pid`,`time_launch` FROM `cron_operation` WHERE `name` LIKE '$self->{name}'"
     );
 
     return 1 if ($status == -1);
