@@ -97,7 +97,7 @@ class EngineService extends AbstractCentreonService implements
         if (empty($host->getName())) {
             throw new EngineException('Host name can not be empty');
         }
-        
+
         $sticky = 0;
         if ((int) $acknowledgement->isSticky() === 1) {
             $sticky = 2;
@@ -128,7 +128,7 @@ class EngineService extends AbstractCentreonService implements
         if (empty($service->getHost())) {
             throw new EngineException('The host of service is not defined');
         }
-        
+
         $sticky = 0;
         if ((int) $acknowledgement->isSticky() === 1) {
             $sticky = 2;
