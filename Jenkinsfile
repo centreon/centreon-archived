@@ -229,7 +229,8 @@ try {
   stage('Quality gate') {
     node {
       discoverGitReferenceBuild(
-        referenceJob: 'centreon/master'
+        referenceJob: "centreon-web/${env.REF_BRANCH}",
+        maxCommits: 0
       )
 
       if (hasBackendChanges) {
