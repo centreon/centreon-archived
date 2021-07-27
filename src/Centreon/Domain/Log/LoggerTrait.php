@@ -40,14 +40,14 @@ trait LoggerTrait
      * @param LoggerInterface $centreonLogger
      * @required
      */
-    public function setLogger(LoggerInterface $centreonLogger)
+    public function setLogger(LoggerInterface $centreonLogger): void
     {
         $this->logger = $centreonLogger;
     }
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::emergency()
      */
@@ -63,7 +63,7 @@ trait LoggerTrait
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::alert()
      */
@@ -79,7 +79,7 @@ trait LoggerTrait
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::critical()
      */
@@ -95,7 +95,7 @@ trait LoggerTrait
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::error()
      */
@@ -111,7 +111,7 @@ trait LoggerTrait
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::warning()
      */
@@ -127,7 +127,7 @@ trait LoggerTrait
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::notice()
      */
@@ -143,7 +143,7 @@ trait LoggerTrait
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::info()
      */
@@ -159,7 +159,7 @@ trait LoggerTrait
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::debug()
      */
@@ -175,8 +175,8 @@ trait LoggerTrait
 
     /**
      * @param mixed $level
-     * @param $message
-     * @param array $context
+     * @param string $message
+     * @param mixed[] $context
      * @param callable|null $callable
      * @throws \Psr\Log\InvalidArgumentException
      * @see \Psr\Log\LoggerInterface::log()

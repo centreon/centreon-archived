@@ -75,7 +75,7 @@ class ProvidersConfigurationsFactoryTest extends TestCase
     /**
      * Tests model is properly created
      */
-    public function testCreateFromResponseWithAllProperties()
+    public function testCreateFromResponseWithAllProperties(): void
     {
         $response = new FindProvidersConfigurationsResponse();
         $response->setProvidersConfigurations($this->providersConfigurations);
