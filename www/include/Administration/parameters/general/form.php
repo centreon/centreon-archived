@@ -301,7 +301,8 @@ $form->addElement('text', 'openid_connect_client_id', _('Client ID'), array('siz
 $form->addElement(
     'text',
     'openid_connect_client_secret',
-    _('Client Secret'), array('size' => 50, 'autocomplete' => 'off')
+    _('Client Secret'),
+    array('size' => 50, 'autocomplete' => 'off')
 );
 
 $openIdConnectVerifyPeer[] = $form->createElement(
