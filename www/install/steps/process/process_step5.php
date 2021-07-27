@@ -66,12 +66,6 @@ if (
     $err['password'] = false;
 }
 
-
-/**
- * a regex to validate at least one lowercase, one uppercase and one digit, and one character from the list '@$!%*?&'
- */
-$passwordSecurityPolicyRegex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[a-zA-Z0-9@$!%*?&]{8,}$/";
-
 if (
     !preg_match(
         '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/',
