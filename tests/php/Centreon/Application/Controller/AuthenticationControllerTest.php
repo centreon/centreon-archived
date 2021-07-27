@@ -105,7 +105,7 @@ class AuthenticationControllerTest extends TestCase
     /**
      * test login
      */
-    public function testLogin()
+    public function testLogin(): void
     {
         $authenticationController = new AuthenticationController();
         $authenticationController->setContainer($this->container);
@@ -138,7 +138,7 @@ class AuthenticationControllerTest extends TestCase
     /**
      * test login with bad credentials
      */
-    public function testLoginFailed()
+    public function testLoginFailed(): void
     {
         $authenticationController = new AuthenticationController();
         $authenticationController->setContainer($this->container);
@@ -173,13 +173,13 @@ class AuthenticationControllerTest extends TestCase
     /**
      * test logout
      */
-    public function testLogout()
+    public function testLogout(): void
     {
         $authenticationController = new AuthenticationController();
         $authenticationController->setContainer($this->container);
 
         $this->request->headers = new class () {
-            public function get()
+            public function get(): string
             {
                 return 'token';
             }
@@ -198,15 +198,15 @@ class AuthenticationControllerTest extends TestCase
     /**
      * test logout with bad token
      */
-    public function testLogoutFailed()
+    public function testLogoutFailed(): void
     {
         $authenticationController = new AuthenticationController();
         $authenticationController->setContainer($this->container);
 
         $this->request->headers = new class () {
-            public function get()
+            public function get(): void
             {
-                return null;
+                return;
             }
         };
 
@@ -227,7 +227,7 @@ class AuthenticationControllerTest extends TestCase
     /**
      * test findProvidersConfigurations
      */
-    public function testFindProvidersConfigurations()
+    public function testFindProvidersConfigurations(): void
     {
         $authenticationController = new AuthenticationController();
         $authenticationController->setContainer($this->container);

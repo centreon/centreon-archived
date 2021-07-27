@@ -34,7 +34,7 @@ use PHPUnit\Framework\TestCase;
 class ApiAuthenticationFactoryTest extends TestCase
 {
     /**
-     * @var array<string, array<int|string>> $responseData
+     * @var array<string, array<int|string|bool>> $responseData
      */
     private $responseData;
 
@@ -69,7 +69,7 @@ class ApiAuthenticationFactoryTest extends TestCase
     /**
      * Tests model is properly created
      */
-    public function testCreateFromResponseWithAllProperties()
+    public function testCreateFromResponseWithAllProperties(): void
     {
         $response = new AuthenticateApiResponse();
         $response->setApiAuthentication($this->contact, 'abc123');
