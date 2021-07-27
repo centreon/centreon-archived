@@ -89,7 +89,7 @@ function upgrade_rhel7() {
     cp /etc/opt/rh/rh-php73/php.d/50-centreon.ini /etc/opt/remi/php74/php.d/50-centreon.ini
 
     info "Configuring system to use new PHP 7.4 binary"
-    mv /opt/rh/rh-php3/root/usr/bin/php{,.backup}
+    mv /opt/rh/rh-php73/root/usr/bin/php{,.backup}
     ln -s /opt/remi/php74/root/usr/bin/php /opt/rh/rh-php73/root/usr/bin/php
     systemctl -q stop rh-php73-php-fpm
     systemctl -q disable rh-php73-php-fpm
