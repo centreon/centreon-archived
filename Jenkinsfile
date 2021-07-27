@@ -228,7 +228,9 @@ try {
 
   stage('Quality gate') {
     node {
-      discoverGitReferenceBuild()
+      discoverGitReferenceBuild(
+        referenceJob: 'centreon/master'
+      )
 
       if (hasBackendChanges) {
         unstash 'ut-be.xml'
