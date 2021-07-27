@@ -10,7 +10,7 @@ Feature:
     Scenario: Update platform information
         Given I am logged in
 
-        When I send a PATCH request to '/latest/platform' with body:
+        When I send a PATCH request to '/api/latest/platform' with body:
         """
         {
             "apiUsername": "admin",

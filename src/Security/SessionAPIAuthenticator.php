@@ -22,19 +22,21 @@ declare(strict_types=1);
 
 namespace Security;
 
-use Centreon\Domain\Exception\ContactDisabledException;
-use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
-use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
-use Centreon\Infrastructure\Service\Exception\NotFoundException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Centreon\Domain\Exception\ContactDisabledException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
+use Security\Domain\Authentication\Exceptions\AuthenticatorException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 
 /**
  * Class used to authenticate a request by using a session id.
@@ -44,9 +46,9 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 class SessionAPIAuthenticator extends AbstractGuardAuthenticator
 {
     /**
-     * @var AuthenticationRepositoryInterface
+     * @var AuthenticationServiceInterface
      */
-    private $authenticationRepository;
+    private $authenticationService;
 
     /**
      * @var ContactRepositoryInterface
@@ -54,17 +56,25 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
     private $contactRepository;
 
     /**
+     * @var SessionRepositoryInterface
+     */
+    private $sessionRepository;
+
+    /**
      * SessionAPIAuthenticator constructor.
      *
-     * @param AuthenticationRepositoryInterface $authenticationRepository
+     * @param AuthenticationServiceInterface $authenticationService
      * @param ContactRepositoryInterface $contactRepository
+     * @param SessionRepositoryInterface $sessionRepository
      */
     public function __construct(
-        AuthenticationRepositoryInterface $authenticationRepository,
-        ContactRepositoryInterface $contactRepository
+        AuthenticationServiceInterface $authenticationService,
+        ContactRepositoryInterface $contactRepository,
+        SessionRepositoryInterface $sessionRepository
     ) {
-        $this->authenticationRepository = $authenticationRepository;
+        $this->authenticationService = $authenticationService;
         $this->contactRepository = $contactRepository;
+        $this->sessionRepository = $sessionRepository;
     }
 
     /**
@@ -166,12 +176,7 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
 
-        $this->authenticationRepository->deleteExpiredSession();
-
-        $session = $this->authenticationRepository->findSession($sessionId);
-        if ($session === null) {
-            throw new NotFoundException('Session not found');
-        }
+        $this->sessionRepository->deleteExpiredSession();
 
         $contact = $this->contactRepository->findBySession($sessionId);
         if ($contact === null) {
@@ -208,7 +213,11 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return true;
+        if (!array_key_exists('session', $credentials)) {
+            throw AuthenticatorException::sessionTokenNotFound();
+        }
+
+        return $this->authenticationService->isValidToken($credentials['session']);
     }
 
     /**
