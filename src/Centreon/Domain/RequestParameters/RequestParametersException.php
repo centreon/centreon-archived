@@ -30,7 +30,7 @@ namespace Centreon\Domain\RequestParameters;
 class RequestParametersException extends \InvalidArgumentException
 {
     /**
-     * @param \Throwable $ex
+     * @param string $paremeterName
      * @return RequestParametersException
      */
     public static function integer(string $parameterName): self
