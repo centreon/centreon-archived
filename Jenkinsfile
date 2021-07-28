@@ -228,11 +228,6 @@ try {
 
   stage('Quality gate') {
     node {
-      discoverGitReferenceBuild(
-        referenceJob: "centreon-web/${env.REF_BRANCH}",
-        maxCommits: 0
-      )
-
       if (hasBackendChanges) {
         unstash 'ut-be.xml'
         unstash 'coverage-be.xml'
@@ -267,12 +262,14 @@ try {
 
       if (hasBackendChanges) {
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
           trendChartType: 'NONE'
         )
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
@@ -282,6 +279,7 @@ try {
 
       if (hasFrontendChanges) {
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           failOnError: true,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
