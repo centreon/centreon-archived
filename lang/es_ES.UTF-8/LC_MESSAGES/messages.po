@@ -14738,5 +14738,5 @@ msgstr "Permitir certificado autofirmado"
 # msgid "Last year"
 # msgstr ""
 
-# msgid "Before the last year"
+# msgid "Before last year"
 # msgstr ""
