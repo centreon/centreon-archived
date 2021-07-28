@@ -280,8 +280,18 @@ $form->addElement('text', 'keycloak_blacklist_clients', _('Keycloak blacklist cl
 $form->addElement('text', 'keycloak_url', _('Keycloak Server Url'), array('size' => 50));
 $form->addElement('text', 'keycloak_redirect_url', _('Keycloak Redirect Url'), array('size' => 50));
 $form->addElement('text', 'keycloak_realm', _('Keycloak Client Realm'), array('size' => 50));
-$form->addElement('text', 'keycloak_client_id', _('Keycloak Client ID'), array('size' => 50));
-$form->addElement('text', 'keycloak_client_secret', _('Keycloak Client Secret'), array('size' => 50));
+$form->addElement(
+    'password',
+    'keycloak_client_id',
+    _('Keycloak Client ID'),
+    array('size' => 50, 'autocomplete' => 'off')
+);
+$form->addElement(
+    'password',
+    'keycloak_client_secret',
+    _('Keycloak Client Secret'),
+    array('size' => 50, 'autocomplete' => 'off')
+);
 
 /*
  * Support Email
