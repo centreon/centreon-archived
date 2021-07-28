@@ -103,7 +103,16 @@ class CentreonAuthSSO extends CentreonAuth
             $clientId = $this->ssoOptions['openid_connect_client_id'];
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
             if (empty($this->ssoOptions['openid_connect_redirect_url'])) {
-                $redirectNoEncode = '{$scheme}://{$hostname}:{$port}/centreon/index.php';
+                /*
+                 * we can not access $centreon->optGen["oreon_web_path"] before authentication and have to query the DB directly
+                 */
+                $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT `value` FROM `options` WHERE `key` = 'oreon_web_path'");
+                while ($opt = $DBRESULT->fetch()) {
+                    $path = $opt["value"];
+                }
+                $DBRESULT = null;
+                unset($opt);
+                $redirectNoEncode = '{$scheme}://{$hostname}:{$port}' . ($path ?? '/centreon/') . 'index.php';
             } else {
                 $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
             }
