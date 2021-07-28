@@ -72,7 +72,7 @@ if (
         $parameters['admin_password']
     )
 ) {
-    $err['passwordSecurityPolicy'] = false;
+    $err['password_security_policy'] = false;
 }
 
 if (!count($err['required']) && $err['password'] && $err['email']) {
