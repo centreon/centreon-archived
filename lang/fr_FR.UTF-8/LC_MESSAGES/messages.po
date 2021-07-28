@@ -16223,5 +16223,5 @@ msgstr "Cette semaine"
 # msgid "Last year"
 # msgstr "L'année dernière"
 
-# msgid "Before the last year"
+# msgid "Before last year"
 # msgstr "Avant l'année dernière"
