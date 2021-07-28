@@ -1,4 +1,5 @@
 import {
+  equals,
   filter,
   find,
   flip,
@@ -27,6 +28,7 @@ import {
   CriteriaNames,
   criteriaValueNameById,
   selectableCriterias,
+  selectableStates,
 } from '../models';
 import getDefaultCriterias from '../default';
 
@@ -146,7 +148,7 @@ const build = (criterias: Array<Criteria>): string => {
   return [builtCriterias, search?.value].join(' ');
 };
 
-const getAutocompleteSuggestion = (word: string): Array<string> => {
+const getAutocompleteSuggestionPrefix = (word: string): Array<string> => {
   const singularizedCriteriaKeys = map(
     pluralize.singular,
     criteriaKeys,
@@ -161,4 +163,20 @@ const getAutocompleteSuggestion = (word: string): Array<string> => {
   return found.map((suggestion) => `${suggestion}:`);
 };
 
-export { parse, build, getAutocompleteSuggestion };
+const getAutocompleteSuggestionSuffix = ({ word, prefix }): Array<string> => {
+  if (
+    prefix === `${pluralize.singular(CriteriaNames.states)}:` ||
+    map(prop('id'), selectableStates).includes(word)
+  ) {
+    return pipe(map(prop('id')), reject(equals(word)))(selectableStates);
+  }
+
+  return [];
+};
+
+export {
+  parse,
+  build,
+  getAutocompleteSuggestionPrefix,
+  getAutocompleteSuggestionSuffix,
+};
