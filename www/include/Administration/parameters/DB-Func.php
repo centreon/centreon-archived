@@ -736,18 +736,29 @@ function updateGeneralConfigData($gopt_id = null)
         isset($ret["keycloak_realm"]) && $ret["keycloak_realm"] != null
             ? $pearDB->escape($ret["keycloak_realm"]) : ""
     );
-    updateOption(
-        $pearDB,
-        "keycloak_client_id",
-        isset($ret["keycloak_client_id"]) && $ret["keycloak_client_id"] != null
-            ? $pearDB->escape($ret["keycloak_client_id"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "keycloak_client_secret",
-        isset($ret["keycloak_client_secret"]) && $ret["keycloak_client_secret"] != null
-            ? $pearDB->escape($ret["keycloak_client_secret"]) : ""
-    );
+
+    if (
+        isset($ret["keycloak_client_id"])
+        && $ret["keycloak_client_id"] !== CentreonAuth::PWS_OCCULTATION
+    ) {
+        updateOption(
+            $pearDB,
+            "keycloak_client_id",
+            $pearDB->escape($ret["keycloak_client_id"])
+        );
+    }
+
+    if (
+        isset($ret["keycloak_client_secret"])
+        && $ret["keycloak_client_secret"] !== CentreonAuth::PWS_OCCULTATION
+    ) {
+        updateOption(
+            $pearDB,
+            "keycloak_client_secret",
+            $pearDB->escape($ret["keycloak_client_secret"])
+        );
+    }
+
     updateOption(
         $pearDB,
         "centreon_support_email",
