@@ -347,33 +347,33 @@ try {
     }
   }
 
-  // stage('API integration tests') {
-  //   if (hasBackendChanges) {
-  //     def parallelSteps = [:]
-  //     for (x in apiFeatureFiles) {
-  //       def feature = x
-  //       parallelSteps[feature] = {
-  //         node {
-  //           checkoutCentreonBuild(buildBranch)
-  //           unstash 'tar-sources'
-  //           unstash 'vendor'
-  //           def acceptanceStatus = sh(
-  //             script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
-  //             returnStatus: true
-  //           )
-  //           junit 'xunit-reports/**/*.xml'
-  //           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-  //             currentBuild.result = 'FAILURE'
-  //           archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
-  //         }
-  //       }
-  //     }
-  //     parallel parallelSteps
-  //     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-  //       error('API integration tests stage failure.');
-  //     }
-  //   }
-  // }
+  stage('API integration tests') {
+    if (hasBackendChanges) {
+      def parallelSteps = [:]
+      for (x in apiFeatureFiles) {
+        def feature = x
+        parallelSteps[feature] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            unstash 'tar-sources'
+            unstash 'vendor'
+            def acceptanceStatus = sh(
+              script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
+              returnStatus: true
+            )
+            junit 'xunit-reports/**/*.xml'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              currentBuild.result = 'FAILURE'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+          }
+        }
+      }
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('API integration tests stage failure.');
+      }
+    }
+  }
 
   stage('E2E tests') {
     def parallelSteps = [:]
@@ -400,33 +400,33 @@ try {
     }
   }
 
-  // stage('Acceptance tests') {
-  //   if (hasBackendChanges || hasFrontendChanges) {
-  //     def parallelSteps = [:]
-  //     for (x in featureFiles) {
-  //       def feature = x
-  //       parallelSteps[feature] = {
-  //         node {
-  //           checkoutCentreonBuild(buildBranch)
-  //           unstash 'tar-sources'
-  //           unstash 'vendor'
-  //           def acceptanceStatus = sh(
-  //             script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
-  //             returnStatus: true
-  //           )
-  //           junit 'xunit-reports/**/*.xml'
-  //           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-  //             currentBuild.result = 'FAILURE'
-  //           archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
-  //         }
-  //       }
-  //     }
-  //     parallel parallelSteps
-  //     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-  //       error('Critical tests stage failure.');
-  //     }
-  //   }
-  // }
+  stage('Acceptance tests') {
+    if (hasBackendChanges || hasFrontendChanges) {
+      def parallelSteps = [:]
+      for (x in featureFiles) {
+        def feature = x
+        parallelSteps[feature] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            unstash 'tar-sources'
+            unstash 'vendor'
+            def acceptanceStatus = sh(
+              script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
+              returnStatus: true
+            )
+            junit 'xunit-reports/**/*.xml'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              currentBuild.result = 'FAILURE'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+          }
+        }
+      }
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Critical tests stage failure.');
+      }
+    }
+  }
 
   if (isStableBuild()) {
     stage('Delivery') {
