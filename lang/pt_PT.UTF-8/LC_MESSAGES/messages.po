@@ -15177,5 +15177,5 @@ msgstr "Erro ao remover tokens de um contato"
 # msgid "Last year"
 # msgstr ""
 
-# msgid "Before the last year"
+# msgid "Before last year"
 # msgstr ""
