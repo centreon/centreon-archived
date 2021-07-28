@@ -112,8 +112,7 @@ class CentreonAuthSSO extends CentreonAuth
                 while ($opt = $DBRESULT->fetch()) {
                     $path = $opt["value"];
                 }
-                $DBRESULT = null;
-                unset($opt);
+                $DBRESULT->closeCursor();
                 $redirectNoEncode = '{$scheme}://{$hostname}:{$port}' . ($path ?? '/centreon/') . 'index.php';
             } else {
                 $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
