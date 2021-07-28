@@ -81,33 +81,12 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     CentreonSession::stop();
 }
 
-$args = "&redirect='";
-$a = 0;
-foreach ($_GET as $key => $value) {
-    if ($a) {
-        $args .= '&';
-    }
-    if (is_string($value)) {
-        $args .= "{$key}={$value}";
-    }
-    $a++;
-}
-$args .= "'";
+$args = "&redirect=" . urlencode(http_build_query($_GET));
 
 // check centreon session
 // if session is not valid and autologin token is not given, then redirect to login page
 if (!isset($_SESSION["centreon"])) {
     if (!isset($_GET['autologin'])) {
-        $args = "&redirect='";
-        $a = 0;
-        foreach ($_GET as $key => $value) {
-            if ($a) {
-                $args .= '&';
-            }
-            $args .= "$key=$value";
-            $a++;
-        }
-        $args .= "'";
         header("Location: index.php?disconnect=1" . $args);
     } else {
         $args = null;
@@ -212,13 +191,18 @@ if ($DBRESULT->rowCount() && ($elem = $DBRESULT->fetch())) {
 //Update Session Table For last_reload and current_page row
 $page = '' . $level1 . $level2 . $level3 . $level4;
 if ($page == '') {
-    $page = "NULL";
+    $page = null;
 }
-$query = "UPDATE `session` SET `current_page` = " . $page .
-    ", `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
-    "' WHERE CONVERT(`session_id` USING utf8) = '" . session_id() . "' AND `user_id` = '" .
-    $centreon->user->user_id . "'";
-$DBRESULT = $pearDB->query($query);
+$sessionStatement = $pearDB->prepare(
+    "UPDATE `session`
+    SET `current_page` = :currentPage
+    WHERE `session_id` = :sessionId"
+);
+$sessionStatement->bindValue(':currentPage', $page, \PDO::PARAM_INT);
+$sessionStatement->bindValue(':sessionId', session_id(), \PDO::PARAM_STR);
+$sessionStatement->execute();
+
+$centreonSession->updateSession($pearDB);
 
 //Init Language
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);

@@ -147,7 +147,7 @@ stage('Source') {
     stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'node_modules', includes: 'node_modules.tar.gz'
-    stash name: 'api-doc', includes: 'centreon-api-v2.html'
+    stash name: 'api-doc', includes: 'centreon-api-v21.10.html'
     publishHTML([
       allowMissing: false,
       keepAll: true,
@@ -228,8 +228,6 @@ try {
 
   stage('Quality gate') {
     node {
-      discoverGitReferenceBuild()
-
       if (hasBackendChanges) {
         unstash 'ut-be.xml'
         unstash 'coverage-be.xml'
@@ -264,12 +262,14 @@ try {
 
       if (hasBackendChanges) {
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
           trendChartType: 'NONE'
         )
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
@@ -279,6 +279,7 @@ try {
 
       if (hasFrontendChanges) {
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           failOnError: true,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],

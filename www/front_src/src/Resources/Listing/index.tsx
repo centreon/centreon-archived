@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals } from 'ramda';
+import { equals, includes, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme, alpha } from '@material-ui/core';
@@ -16,10 +16,12 @@ import { rowColorConditions } from '../colors';
 import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource, SortOrder } from '../models';
-import { labelSelectAtLeastOneColumn } from '../translatedLabels';
+import { labelSelectAtLeastOneColumn, labelStatus } from '../translatedLabels';
 
 import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
+
+export const okStatuses = ['OK', 'UP'];
 
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
@@ -128,6 +130,17 @@ const ResourceListing = (): JSX.Element => {
     setSelectedColumnIds(updatedColumnIds);
   };
 
+  const predefinedRowsSelection = [
+    {
+      label: `${t(labelStatus).toLowerCase()}:OK`,
+      rowCondition: ({ status }) => includes(status.name, okStatuses),
+    },
+    {
+      label: `${t(labelStatus).toLowerCase()}:NOK`,
+      rowCondition: ({ status }) => not(includes(status.name, okStatuses)),
+    },
+  ];
+
   return (
     <Listing
       checkable
@@ -150,6 +163,7 @@ const ResourceListing = (): JSX.Element => {
         selectedResourceUuid,
         sending,
       ]}
+      predefinedRowsSelection={predefinedRowsSelection}
       rowColorConditions={[
         ...rowColorConditions(theme),
         resourceDetailsOpenCondition,

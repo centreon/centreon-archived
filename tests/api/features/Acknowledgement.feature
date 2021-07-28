@@ -17,17 +17,17 @@ Feature:
     """
     And the configuration is generated and exported
     And I wait until host "test" is monitored
-    And I send a GET request to '/beta/monitoring/hosts?search={"host.name":"test"}'
+    And I send a GET request to '/api/v21.10/monitoring/hosts?search={"host.name":"test"}'
     And I store response values in:
       | name   | path         |
       | hostId | result[0].id |
-    And I send a POST request to '/beta/monitoring/hosts/<hostId>/check' with body:
+    And I send a POST request to '/api/v21.10/monitoring/hosts/<hostId>/check' with body:
     """
     {}
     """
-    And I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/timeline" (tries: 30)
+    And I wait to get 1 result from "/api/v21.10/monitoring/hosts/<hostId>/timeline" (tries: 30)
 
-    When I send a POST request to '/beta/monitoring/resources/acknowledge' with body:
+    When I send a POST request to '/api/v21.10/monitoring/resources/acknowledge' with body:
     """
     {
       "acknowledgement": {
@@ -43,9 +43,9 @@ Feature:
       ]
     }
     """
-    Then I wait to get 1 result from "/beta/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
+    Then I wait to get 1 result from "/api/v21.10/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
 
-    When I send a DELETE request to '/beta/monitoring/resources/acknowledgements' with body:
+    When I send a DELETE request to '/api/v21.10/monitoring/resources/acknowledgements' with body:
     """
     {
       "disacknowledgement": {
@@ -59,4 +59,4 @@ Feature:
       ]
     }
     """
-    Then I wait to get 0 result from "/beta/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
+    Then I wait to get 0 result from "/api/v21.10/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
