@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isEmpty, propEq, pick, find, equals, last } from 'ramda';
+import { isEmpty, propEq, pick, find, equals, last, head } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
@@ -94,7 +94,7 @@ const Filter = (): JSX.Element => {
 
   const autoCompleteSuggestions = getAutocompleteSuggestions();
 
-  const currentSearchCursorPosition = searchRef?.current?.selectionStart;
+  const currentSearchCursorPosition = searchRef?.current?.selectionEnd || 0;
 
   React.useEffect(() => {
     if (equals(autoCompleteSuggestions, [])) {
@@ -111,11 +111,23 @@ const Filter = (): JSX.Element => {
     const backspaceKeyPressed = event.key === 'Backspace';
     const tabKeyPressed = event.key === 'Tab';
 
-    if (event.key === ',') {
-      const lastWord = last(search.split(/(,|:)/));
-      setCurrentWord(lastWord as string);
-      return;
-    }
+    console.log(currentSearchCursorPosition + 1);
+
+    const searchUntilCursor = search.substring(
+      0,
+      currentSearchCursorPosition + 1,
+    );
+
+    const lastWordy = last(searchUntilCursor.split(' ')) || '';
+
+    const lastCriteria = lastWordy.split(':');
+
+    const lastCriteriaName = head(lastCriteria);
+    const lastValues = last(lastCriteria) || '';
+
+    const lastValue = last(lastValues.split(','));
+
+    console.log(searchUntilCursor, lastCriteriaName, lastValue);
 
     if (event.key === ' ' || backspaceKeyPressed || enterKeyPressed) {
       setCurrentWord('');
