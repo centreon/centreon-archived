@@ -114,6 +114,7 @@
     "install": "^0.13.0",
     "jsdom": "^16.6.0",
     "kind-of": "^6.0.3",
+    "material-ui-popup-state": "^1.8.4",
     "numeral": "^2.0.6",
     "pluralize": "^8.0.0",
     "prop-types": "^15.7.2",

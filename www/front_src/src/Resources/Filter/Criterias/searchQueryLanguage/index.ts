@@ -1,4 +1,5 @@
 import {
+  filter,
   find,
   flip,
   head,
@@ -15,6 +16,7 @@ import {
   reject,
   sortBy,
   split,
+  startsWith,
 } from 'ramda';
 import pluralize from 'pluralize';
 
@@ -144,4 +146,19 @@ const build = (criterias: Array<Criteria>): string => {
   return [builtCriterias, search?.value].join(' ');
 };
 
-export { parse, build };
+const getAutocompleteSuggestion = (word: string): Array<string> => {
+  const singularizedCriteriaKeys = map(
+    pluralize.singular,
+    criteriaKeys,
+  ) as Array<string>;
+
+  if (isEmpty(word)) {
+    return [];
+  }
+
+  const found = filter(startsWith(word), singularizedCriteriaKeys);
+
+  return found.map((suggestion) => `${suggestion}:`);
+};
+
+export { parse, build, getAutocompleteSuggestion };

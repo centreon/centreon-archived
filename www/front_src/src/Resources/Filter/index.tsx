@@ -1,11 +1,22 @@
 import * as React from 'react';
 
-import { isEmpty, propEq, pick, find } from 'ramda';
+import { isEmpty, propEq, pick, find, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
-import { makeStyles } from '@material-ui/core';
+import {
+  ClickAwayListener,
+  List,
+  ListItem,
+  ListItemText,
+  makeStyles,
+  MenuItem,
+  Paper,
+  Popover,
+  Popper,
+} from '@material-ui/core';
 
-import { MemoizedFilter, SearchField } from '@centreon/ui';
+import { MemoizedFilter, SearchField, TextField } from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -25,6 +36,7 @@ import {
   allFilter,
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
+import { getAutocompleteSuggestion } from './Criterias/searchQueryLanguage';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -52,15 +64,45 @@ const Filter = (): JSX.Element => {
     applyCurrentFilter,
   } = useResourceContext();
 
-  const memoProps = [
-    customFilters,
-    customFiltersLoading,
-    search,
-    currentFilter,
-  ];
+  const [currentWord, setCurrentWord] = React.useState('');
+  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
+  const searchRef = React.useRef<HTMLDivElement>();
+
+  const open = Boolean(anchorEl);
+
+  const memoProps = [customFilters, customFiltersLoading, search, open];
+
+  // console.log(getAutocompleteSuggestion(currentWord));
+
+  const autoCompleteSuggestions = getAutocompleteSuggestion(currentWord);
+
+  React.useEffect(() => {
+    if (equals(autoCompleteSuggestions, [])) {
+      setAnchorEl(null);
+
+      return;
+    }
+
+    setAnchorEl(searchRef?.current as HTMLDivElement);
+  }, [autoCompleteSuggestions]);
 
   const requestSearchOnEnterKey = (event: React.KeyboardEvent): void => {
-    const enterKeyPressed = event.keyCode === 13;
+    const enterKeyPressed = event.key === 'Enter';
+    const backspaceKeyPressed = event.key === 'Backspace';
+    const tabKeyPressed = event.key === 'Tab';
+
+    if (event.key === ' ' || backspaceKeyPressed || enterKeyPressed) {
+      setCurrentWord('');
+    } else {
+      setCurrentWord(currentWord + event.key);
+    }
+
+    if (tabKeyPressed && !isEmpty(autoCompleteSuggestions)) {
+      setSearch(search.replace(currentWord, autoCompleteSuggestions[0]));
+      setNewFilter();
+      setCurrentWord('');
+      event.preventDefault();
+    }
 
     if (enterKeyPressed) {
       applyCurrentFilter();
@@ -68,7 +110,10 @@ const Filter = (): JSX.Element => {
   };
 
   const prepareSearch = (event): void => {
-    setSearch(event.target.value);
+    const { value } = event.target;
+
+    setSearch(value);
+
     setNewFilter();
   };
 
@@ -110,6 +155,11 @@ const Filter = (): JSX.Element => {
     options,
   );
 
+  const closeSuggestionPopover = () => {
+    setCurrentWord('');
+    setAnchorEl(null);
+  };
+
   return (
     <MemoizedFilter
       content={
@@ -128,12 +178,51 @@ const Filter = (): JSX.Element => {
             />
           )}
 
-          <SearchField
-            placeholder={t(labelSearch)}
-            value={search}
-            onChange={prepareSearch}
-            onKeyDown={requestSearchOnEnterKey}
-          />
+          <ClickAwayListener onClickAway={closeSuggestionPopover}>
+            <div>
+              <TextField
+                autoFocus
+                fullWidth
+                placeholder={t(labelSearch)}
+                ref={searchRef as React.RefObject<HTMLDivElement>}
+                value={search}
+                onChange={prepareSearch}
+                onKeyDown={requestSearchOnEnterKey}
+              />
+              <Popper
+                anchorEl={anchorEl}
+                // hideBackdrop
+                // PaperProps={{
+                //   style: {
+                //     width: searchRef.current?.clientWidth,
+                //   },
+                // }}
+                open={open}
+                // anchorOrigin={{
+                //   horizontal: 'center',
+                //   vertical: 'bottom',
+                // }}
+                style={{
+                  width: searchRef?.current?.clientWidth,
+                  zIndex: 1000,
+                }}
+                // transformOrigin={{
+                //   horizontal: 'center',
+                //   vertical: 'top',
+                // }}
+              >
+                {/* < dense> */}
+                <Paper square>
+                  {autoCompleteSuggestions.map((suggestion) => (
+                    <MenuItem key={suggestion} onClick={() => undefined}>
+                      {suggestion}
+                    </MenuItem>
+                  ))}
+                </Paper>
+                {/* </List> */}
+              </Popper>
+            </div>
+          </ClickAwayListener>
           <Criterias />
         </div>
       }
