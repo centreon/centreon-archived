@@ -49,9 +49,9 @@ class ResourceExclusionStrategy implements ExclusionStrategyInterface
     public function shouldSkipProperty(PropertyMetadata $property, Context $navigatorContext)
     {
         if (
-            $property->class === Resource::class
+            $property->class === Resources::class
             && $navigatorContext->getDepth() > 1
-            && !in_array(Resource::SERIALIZER_GROUP_PARENT, $property->groups)
+            && !in_array(Resources::SERIALIZER_GROUP_PARENT, $property->groups)
         ) {
             return true;
         }

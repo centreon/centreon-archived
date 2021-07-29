@@ -111,7 +111,7 @@ interface ResourceServiceInterface
     /**
      * Get list of resources with graph data.
      *
-     * @param Resource[] $resources
+     * @param Resources[] $resources
      * @return int[]
      */
     public function getListOfResourcesWithGraphData(array $resources): array;
