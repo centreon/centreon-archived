@@ -122,7 +122,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
   const [isScrolling, setIsScrolling] = React.useState(false);
   const scrollableContainerRef = React.useRef<HTMLDivElement | undefined>();
-  const preventScrollButtonRef = React.useRef(false);
+  const preventScrollingRef = React.useRef(false);
 
   const listEntities = (
     { atPage } = {
@@ -199,11 +199,11 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
 
   const scroll = (event): void => {
     const { scrollTop } = event.target;
-    if (preventScrollButtonRef.current && gt(scrollTop, 0)) {
+    if (preventScrollingRef.current && gt(scrollTop, 0)) {
       return;
     }
     setIsScrolling(not(equals(scrollTop, 0)));
-    preventScrollButtonRef.current = false;
+    preventScrollingRef.current = false;
 
     if (gt(scrollTop, 0)) {
       return;
@@ -219,7 +219,7 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       behavior: gt(length(entities as Array<TEntity>), 200) ? 'auto' : 'smooth',
       top: 0,
     });
-    preventScrollButtonRef.current = true;
+    preventScrollingRef.current = true;
     setIsScrolling(false);
   };
 
