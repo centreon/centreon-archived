@@ -63,18 +63,20 @@ $inputArguments = array(
 );
 $inputGet = filter_input_array(
     INPUT_GET,
-    $inputArguments
+    $inputArguments,
+    true
 );
 $inputPost = filter_input_array(
     INPUT_POST,
-    $inputArguments
+    $inputArguments,
+    true
 );
 
-$inputs = array();
+$inputs = [];
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!empty($inputGet[$argumentName]) && trim($inputGet[$argumentName]) !== '') {
+    if (!is_null($inputGet[$argumentName]) && trim($inputGet[$argumentName]) !== '') {
         $inputs[$argumentName] = $inputGet[$argumentName];
-    } elseif (!empty($inputPost[$argumentName]) && trim($inputPost[$argumentName]) !== '') {
+    } elseif (!is_null($inputPost[$argumentName]) && trim($inputPost[$argumentName]) !== '') {
         $inputs[$argumentName] = $inputPost[$argumentName];
     }
 }
@@ -271,11 +273,13 @@ $inputArguments = array(
 );
 $inputGet = filter_input_array(
     INPUT_GET,
-    $inputArguments
+    $inputArguments,
+    true
 );
 $inputPost = filter_input_array(
     INPUT_POST,
-    $inputArguments
+    $inputArguments,
+    true
 );
 
 if (isset($url) && $url) {
