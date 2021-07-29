@@ -256,7 +256,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
             // parse Resource object
             $service->setParent(EntityCreator::createEntityByArray(
-                Resource::class,
+                Resources::class,
                 $data,
                 'parent_'
             ));
@@ -815,10 +815,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      * @return \Centreon\Domain\Monitoring\Resources
      * @throws \Exception
      */
-    protected function parseResource(array $data): Resource
+    protected function parseResource(array $data): Resources
     {
         $resource = EntityCreator::createEntityByArray(
-            Resource::class,
+            Resources::class,
             $data
         );
 
@@ -853,7 +853,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
 
         // parse parent Resource object
         $parent = EntityCreator::createEntityByArray(
-            Resource::class,
+            Resources::class,
             $data,
             'parent_'
         );
