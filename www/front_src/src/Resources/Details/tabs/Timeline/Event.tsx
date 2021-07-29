@@ -87,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
     gridTemplateColumns: 'minmax(80px, auto) auto 1fr',
+    marginBottom: theme.spacing(1),
     marginRight: theme.spacing(2),
   },
   title: {
