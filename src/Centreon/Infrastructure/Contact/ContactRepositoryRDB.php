@@ -180,7 +180,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $prepare = $this->db->prepare(
             $this->translateDbName($request)
         );
-        if ($contact->isAdmin() !== false) {
+        if ($contact->isAdmin() === false) {
             $prepare->bindValue(':contact_id', $contact->getId(), \PDO::PARAM_INT);
         }
         $prepare->execute();
