@@ -76,12 +76,15 @@ foreach ($inputArguments as $argumentName => $argumentValue) {
         $inputs[$argumentName] = $inputGet[$argumentName];
     } elseif (!empty($inputPost[$argumentName]) && trim($inputPost[$argumentName]) !== '') {
         $inputs[$argumentName] = $inputPost[$argumentName];
+    } else {
+        $inputs[$argumentName] = null;
     }
 }
 
 if (empty($p)) {
     $p = $inputs["p"];
 }
+
 $o = $inputs["o"];
 $min = $inputs["min"];
 $type = $inputs["type"];
@@ -118,7 +121,7 @@ $acl_page = $centreon->user->access->page($p, true);
 if ($acl_page == 1 || $acl_page == 2) {
     if ($redirect["topology_page"] < 100) {
         $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-        if (!$ret['topology_page']) {
+        if ($ret === false || !$ret['topology_page']) {
             if (file_exists($redirect["topology_url"])) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
@@ -127,7 +130,7 @@ if ($acl_page == 1 || $acl_page == 2) {
             }
         } else {
             $ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
-            if ($ret2["topology_url_opt"]) {
+            if ($ret2 === false || $ret2["topology_url_opt"]) {
                 if (!$o) {
                     $tab = preg_split("/\=/", $ret2["topology_url_opt"]);
                     $o = $tab[1];
@@ -158,7 +161,7 @@ if ($acl_page == 1 || $acl_page == 2) {
         }
     } elseif ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
         $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-        if (!$ret['topology_page']) {
+        if ($ret === false || !$ret['topology_page']) {
             if (file_exists($redirect["topology_url"])) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);

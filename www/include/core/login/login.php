@@ -46,10 +46,18 @@ $release = $result->fetch();
  * Getting OpenId Connect login state
  */
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_enable' LIMIT 1");
-$openIdConnectEnabled = $result->fetch()["value"];
+$openIdConnectEnabled = "0";
+if ($result->fetch() !== false) {
+    $openIdConnectEnabled = $result->fetch()["value"];
+}
+
 
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_mode' LIMIT 1");
-$openIdConnectMode = $result->fetch()["value"];
+$openIdConnectMode = "0";
+if ($result->fetch() !== false) {
+    $openIdConnectMode = $result->fetch()["value"];
+}
+
 
 /**
  * Defining Login Form

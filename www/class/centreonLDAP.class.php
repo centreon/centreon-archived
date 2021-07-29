@@ -577,7 +577,6 @@ class CentreonLDAP
         $sr = ldap_search($this->ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
 
         /* Sort */
-        @ldap_sort($this->ds, $sr, "dn");
         $number_returned = ldap_count_entries($this->ds, $sr);
         $this->debug("LDAP Search : " . (isset($number_returned) ? $number_returned : "0") . " entries found");
 
@@ -1549,6 +1548,32 @@ class CentreonLdapAdmin
                     "WHERE ar_id = " . $this->db->escape($arId)
                 );
             }
+        }
+    }
+
+    private function sort($sortAttribute)
+    {
+        foreach ($this->entries as $key => $entry) {
+            $attributes = ldap_get_attributes(
+                $this->ldap->getResource(),
+                $entry['resource']
+            );
+
+            $attributes = array_change_key_case($attributes, CASE_LOWER);
+
+            if (isset($attributes[$sortAttribute][0])) {
+                $this->entries[$key]['sortValue'] =
+                    $attributes[$sortAttribute][0];
+            }
+        }
+
+        $sortFunction = $this->sortFunction;
+        $sorted = usort($this->entries, function ($a, $b) use ($sortFunction) {
+            return $sortFunction($a['sortValue'], $b['sortValue']);
+        });
+
+        if (! $sorted) {
+            throw new \Exception($this, 'sorting result-set');
         }
     }
 }
