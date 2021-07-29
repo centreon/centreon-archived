@@ -99,7 +99,7 @@ class EngineService extends AbstractCentreonService implements
         }
 
         $sticky = 0;
-        if ((int) $acknowledgement->isSticky() === 1) {
+        if ($acknowledgement->isSticky() === true) {
             $sticky = 2;
         }
 
