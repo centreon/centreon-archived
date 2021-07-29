@@ -32,7 +32,7 @@ use CentreonDuration;
 trait ResourceDetailsTrait
 {
     /**
-     * @var Resource|null
+     * @var Resources|null
      */
     protected $parent;
 
@@ -82,16 +82,16 @@ trait ResourceDetailsTrait
     /**
      * @return self|null
      */
-    public function getParent(): ?Resource
+    public function getParent(): ?Resources
     {
         return $this->parent;
     }
 
     /**
-     * @param ResourceStatus|null $parent
+     * @param Resources|null $parent
      * @return self
      */
-    public function setParent(?Resource $parent): self
+    public function setParent(?Resources $parent): self
     {
         $this->parent = $parent;
 
