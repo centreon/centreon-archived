@@ -11,13 +11,6 @@ import { ResourceDetails } from '../../models';
 import SortableCards from './SortableCards';
 
 const useStyles = makeStyles((theme) => ({
-  fab: {
-    bottom: theme.spacing(1.5),
-    display: 'flex',
-    justifyContent: 'flex-end',
-    marginRight: theme.spacing(1.5),
-    position: 'sticky',
-  },
   loadingSkeleton: {
     display: 'grid',
     gridRowGap: theme.spacing(2),
