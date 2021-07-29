@@ -48,12 +48,10 @@
         <td id="sel2" class="Toolbar_pagelimit"></td>
     </tr>
 </table>
-{if $host_name}
-<input type='hidden' name='host_name' value='{$host_name}'>
-{/if}
+
 <input name="p" value="{$p}" type="hidden">
 <input name='cmd' id='cmd' value='42' type='hidden'>
 <input name='o' value='{$o}' type='hidden'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
