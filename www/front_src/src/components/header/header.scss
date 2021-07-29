@@ -263,6 +263,7 @@
         padding: 10px;
         display: block;
         font-family: $primary-font-light;
+        background-color: #232f39;
         color: $white-color;
         text-decoration: none;
         font-size: 0.8rem;
@@ -336,12 +337,6 @@
       .submenu-user-name {
         display: block;
         margin-bottom: 10px;
-      }
-      .button-wrap {
-        .btn {
-          margin-top: 10px;
-          float: right;
-        }
       }
     }
     &-top-item {
@@ -489,4 +484,8 @@
 }
 .submenu-padding {
   height: 55px;
+}
+.logoutLink {
+  display: grid;
+  justify-content: flex-end;
 }
