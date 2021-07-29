@@ -72,14 +72,14 @@ $inputPost = filter_input_array(
 
 $inputs = array();
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!is_null($inputGet[$argumentName]) && trim($inputGet[$argumentName]) != '') {
+    if (!empty($inputGet[$argumentName]) && trim($inputGet[$argumentName]) !== '') {
         $inputs[$argumentName] = $inputGet[$argumentName];
-    } else {
+    } elseif (!empty($inputPost[$argumentName]) && trim($inputPost[$argumentName]) !== '') {
         $inputs[$argumentName] = $inputPost[$argumentName];
     }
 }
 
-if (is_null($p)) {
+if (empty($p)) {
     $p = $inputs["p"];
 }
 $o = $inputs["o"];
@@ -182,7 +182,7 @@ if ($acl_page == 1 || $acl_page == 2) {
         }
     } elseif ($redirect["topology_page"] >= 1000) {
         $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-        if (!$ret['topology_page']) {
+        if ($ret === false || !$ret['topology_page']) {
             if (file_exists($redirect["topology_url"])) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
