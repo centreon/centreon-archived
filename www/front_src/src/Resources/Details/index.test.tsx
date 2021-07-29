@@ -73,7 +73,7 @@ import {
   labelLastWeek,
   labelLastMonth,
   labelLastYear,
-  labelBeforeTheLastYear,
+  labelBeforeLastYear,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -835,7 +835,7 @@ describe(Details, () => {
     expect(getByText('Monday, June 10, 2019 8:55 AM')).toBeInTheDocument();
     expect(getByText('My little comment four'));
 
-    expect(getByText(labelBeforeTheLastYear)).toBeInTheDocument();
+    expect(getByText(labelBeforeLastYear)).toBeInTheDocument();
     expect(getByText('From December 15, 2018')).toBeInTheDocument();
 
     expect(

@@ -27,7 +27,7 @@ import {
   labelLastWeek,
   labelLastMonth,
   labelLastYear,
-  labelBeforeTheLastYear,
+  labelBeforeLastYear,
 } from '../../../translatedLabels';
 import DowntimeChip from '../../../Chip/Downtime';
 import AcknowledgeChip from '../../../Chip/Acknowledge';
@@ -425,7 +425,7 @@ const eventsByDateDivisions: Array<EventsByDateDivisions> = [
           events,
         ) as Array<TimelineEvent>
       ).sort(sortEventsByDate),
-    label: labelBeforeTheLastYear,
+    label: labelBeforeLastYear,
     startDate: (locale: string): Dayjs =>
       getDateFromNowWithWeeks({ locale, weeks: lastYear }).subtract(1, 'day'),
   },

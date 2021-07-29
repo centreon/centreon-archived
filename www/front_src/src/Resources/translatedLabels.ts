@@ -225,4 +225,4 @@ export const labelThisWeek = 'This week';
 export const labelLastWeek = 'Last week';
 export const labelLastMonth = 'Last month';
 export const labelLastYear = 'Last year';
-export const labelBeforeTheLastYear = 'Before the last year';
+export const labelBeforeLastYear = 'Before last year';
