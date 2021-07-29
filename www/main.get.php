@@ -63,20 +63,18 @@ $inputArguments = array(
 );
 $inputGet = filter_input_array(
     INPUT_GET,
-    $inputArguments,
-    true
+    $inputArguments
 );
 $inputPost = filter_input_array(
     INPUT_POST,
-    $inputArguments,
-    true
+    $inputArguments
 );
 
 $inputs = [];
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!is_null($inputGet[$argumentName]) && trim($inputGet[$argumentName]) !== '') {
+    if (!empty($inputGet[$argumentName]) && trim($inputGet[$argumentName]) !== '') {
         $inputs[$argumentName] = $inputGet[$argumentName];
-    } elseif (!is_null($inputPost[$argumentName]) && trim($inputPost[$argumentName]) !== '') {
+    } elseif (!empty($inputPost[$argumentName]) && trim($inputPost[$argumentName]) !== '') {
         $inputs[$argumentName] = $inputPost[$argumentName];
     }
 }
@@ -273,21 +271,19 @@ $inputArguments = array(
 );
 $inputGet = filter_input_array(
     INPUT_GET,
-    $inputArguments,
-    true
+    $inputArguments
 );
 $inputPost = filter_input_array(
     INPUT_POST,
-    $inputArguments,
-    true
+    $inputArguments
 );
 
 if (isset($url) && $url) {
     foreach ($inputArguments as $argumentName => $argumentFlag) {
         if ($argumentName === 'limit') {
-            if (!is_null($inputGet[$argumentName])) {
+            if (!empty($inputGet[$argumentName])) {
                 $centreon->historyLimit[$url] = $inputGet[$argumentName];
-            } elseif (!is_null($inputPost[$argumentName])) {
+            } elseif (!empty($inputPost[$argumentName])) {
                 $centreon->historyLimit[$url] = $inputPost[$argumentName];
             } else {
                 $centreon->historyLimit[$url] = 30;
