@@ -288,8 +288,8 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostSeverityRepositoryRDB
 
-    Centreon\Domain\HostConfiguration\UseCase\v2110\HostSeverity\FindHostSeverities:
-        class: Centreon\Domain\HostConfiguration\UseCase\v2110\HostSeverity\FindHostSeverities
+    Centreon\Domain\HostConfiguration\UseCase\V2110\HostSeverity\FindHostSeverities:
+        class: Centreon\Domain\HostConfiguration\UseCase\V2110\HostSeverity\FindHostSeverities
         calls:
             - method: setMediaPath
               arguments: ["%media_path%"]
@@ -298,8 +298,8 @@ services:
     Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface:
         class: Centreon\Infrastructure\HostConfiguration\Repository\HostGroupRepositoryRDB
 
-    Centreon\Domain\HostConfiguration\UseCase\v2110\HostGroup\FindHostGroups:
-        class: Centreon\Domain\HostConfiguration\UseCase\v2110\HostGroup\FindHostGroups
+    Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroups:
+        class: Centreon\Domain\HostConfiguration\UseCase\V2110\HostGroup\FindHostGroups
         calls:
             - method: setMediaPath
               arguments: ["%media_path%"]
