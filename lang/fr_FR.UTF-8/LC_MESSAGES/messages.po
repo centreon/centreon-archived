@@ -16183,3 +16183,6 @@ msgstr "Options de recherche"
 
 msgid "The parameter \"%s\" must be an integer"
 msgstr "Le paramètre \"%s\" doit être un entier"
+
+msgid "The parameter \"%s\" must be an integer"
+msgstr "Le paramètre \"%s\" doit être un entier"
