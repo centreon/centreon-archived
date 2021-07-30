@@ -456,7 +456,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                         $dbResult2 = $pearDB->query("SELECT COUNT(*) 
                                                 FROM host_service_relation 
                                                 WHERE service_service_id = '" . $service["service_service_id"] . "'");
-                        $mulHostSv = $dbResult2->fetchrow();
+                        $mulHostSv = $dbResult2->fetch();
                         if ($mulHostSv["COUNT(*)"] > 1) {
                             $dbResult3 = $pearDB->query("INSERT INTO host_service_relation 
                 VALUES (NULL, NULL, '" . $maxId["MAX(host_id)"] . "', NULL, '" . $service["service_service_id"] . "')");
@@ -2570,8 +2570,8 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_register':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1', '2', '3'])
-                        ? $inputValue[$inputName]
+                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1', '2', '3'])
+                        ? $inputValue
                         : null
                 ];
                 break;
