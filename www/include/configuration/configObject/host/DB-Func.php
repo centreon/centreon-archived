@@ -2390,30 +2390,6 @@ function updateNagiosServerRelation($host_id, $ret = array())
 }
 
 /**
- * For massive change. We just add the new list if the elem doesn't exist yet
- */
-function updateNagiosServerRelation_MC($host_id, $ret = array())
-{
-    global $form, $pearDB;
-
-    if (!$host_id) {
-        return;
-    }
-
-    $cgs = array();
-    while ($arr = $dbResult->fetch()) {
-        $cgs[$arr["nagios_server_id"]] = $arr["nagios_server_id"];
-    }
-
-    $ret = $form->getSubmitValue("nagios_server_id");
-    if (isset($ret) && $ret != "" && $ret != 0) {
-        $dbResult = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '" . (int)$host_id . "'");
-        $dbResult = $pearDB->query("INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) 
-                                    VALUES ('" . (int)$host_id . "', '" . $ret . "')");
-    }
-}
-
-/**
  * Inserts criticality relations
  *
  * @param int $hostId

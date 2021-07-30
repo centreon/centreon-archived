@@ -1513,7 +1513,7 @@ class CentreonACL
             }
 
             $result = $pearDBMonitoring->query($query);
-            while ($row = $result->fetchRow()) {
+            while ($row = $result->fetch()) {
                 if ($withServiceDescription) {
                     $tab[$row['host_id']][$row['service_id']] = $row['description'];
                 } else {
@@ -2573,7 +2573,7 @@ class CentreonACL
      * @param array $hcs | host categories to duplicate
      * @return void
      */
-    public function duplicateHcAcl($hcs = array())
+    public static function duplicateHcAcl($hcs = array())
     {
         $sql = "INSERT INTO %s 
                     (hc_id, acl_res_id)
