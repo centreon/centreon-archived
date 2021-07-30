@@ -47,11 +47,11 @@
         <td class='ListColCenter' style='width:120px;'><span class="badge service_{$elem.badge}">{$elem.modification_type}</span></td>
         <td class='ListColCenter'>{$elem.type}</td>
         <td class='ListColLeft'>
-        {if $elem.host != ''}
+        {if isset($elem.host)}
             <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.host} / {$elem.object_name}</a>
-        {elseif $elem.hostgroup != ''}
+        {elseif isset($elem.hostgroup)}
             <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.hostgroup} / {$elem.object_name}</a>
-        {elseif $elem.hosts}
+        {elseif isset($elem.hosts)}
             <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
             (
             {assign var=flag value=0}
@@ -61,7 +61,7 @@
                  {assign var=flag value=1}
             {/foreach}
             ) {$elem.object_name}</a>
-        {elseif $elem.hostgroups}
+        {elseif isset($elem.hostgroups)}
             <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
             (
             {assign var=flag value=0}

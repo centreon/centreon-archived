@@ -125,7 +125,7 @@ if (isset($_POST['SearchB'])) {
 /**
  * XSS secure
  */
-$otype = (int) $otype;
+$otype = (int) $otype ?? null;
 
 //Init QuickForm
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
