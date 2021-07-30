@@ -34,7 +34,7 @@ class MassiveCheckValidatorTest extends TestCase
     protected $massiveCheckValidator;
 
     /**
-     * @var MonitoringResourceValidatorInterface&MockObject $monitoringResourceValidator
+     * @var MonitoringResourceValidatorInterface&\PHPUnit\Framework\MockObject\MockObject $monitoringResourceValidator
      */
     private $monitoringResourceValidator;
 
