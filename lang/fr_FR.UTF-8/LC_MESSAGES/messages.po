@@ -15575,3 +15575,6 @@ msgstr "Commande de contrôle de l'id de service %d non trouvée"
 
 msgid "Error while searching for the command of host"
 msgstr "Erreur lors de la recheche de la commande de l'hôte"
+
+msgid "The parameter \"%s\" must be an integer"
+msgstr "Le paramètre \"%s\" doit être un entier"
