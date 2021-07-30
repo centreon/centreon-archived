@@ -1,4 +1,4 @@
-{$colorJS}
+
 {$form.javascript}
 <form {$form.attributes}>
 

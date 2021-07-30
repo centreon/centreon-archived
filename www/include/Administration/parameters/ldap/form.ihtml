@@ -1,5 +1,5 @@
 {$form.javascript}
-{$colorJS}
+
 <form {$form.attributes}>
 <table class="formTable table">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2"><h3>| {$optGen_ldap_properties}</h3></td></tr>

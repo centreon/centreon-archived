@@ -98,7 +98,7 @@ $inputPost = filter_input_array(
 
 $inputs = array();
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!is_null($inputPost[$argumentName]) && (
+    if (!empty($inputPost[$argumentName]) && (
             (is_array($inputPost[$argumentName]) && $inputPost[$argumentName]) ||
             (!is_array($inputPost[$argumentName]) && trim($inputPost[$argumentName]) != '')
         )
@@ -382,7 +382,9 @@ $tpl->assign('o', $o);
 $tpl->assign("num", $num);
 $tpl->assign("limit", $limit);
 $tpl->assign("data", $data);
-$tpl->assign("instances", $instances);
+if (isset($instances)) {
+    $tpl->assign("instances", $instances);
+}
 $tpl->assign("Host", _("Host"));
 $tpl->assign("Service", _("Service"));
 $tpl->assign("Metrics", _("Metrics"));

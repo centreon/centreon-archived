@@ -20,7 +20,7 @@
 </table>
 <table class="ToolbarTable table">
     <tr class="ToolbarTR">
-        <td style='width:30%;'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
+        <td style='width:30%;'>&nbsp;</td>
         {php}
            include './include/common/pagination.php';
         {/php}
@@ -81,7 +81,7 @@
 </table>
 <table class="ToolbarTable table">
     <tr class="ToolbarTR">
-        <td style='width:30%;'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
+        <td style='width:30%;'>&nbsp;</td>
         {php}
            include('./include/common/pagination.php');
         {/php}

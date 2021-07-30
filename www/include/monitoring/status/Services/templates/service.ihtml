@@ -1,6 +1,6 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form'>
-<input name="p" value="{$p}" type="hidden">
+
 <table class="ajaxOption table">
     <tr>
         <th colspan="6"><h5>{$filters}</h5></th>
@@ -76,7 +76,7 @@
     <tr class="ToolbarTR">
         <td class="Toolbar_TDSelectAction_Bottom" width="330">
             <span class="consol_button">{$form.o2.html}</span>
-            <input name="p" value="{$p}" type="hidden">
+            
         </td>
         <td id="pagination2" class="ToolbarPagination"></td>
         <td id="sel2" class="Toolbar_pagelimit"></td>

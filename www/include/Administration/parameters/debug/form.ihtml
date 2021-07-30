@@ -1,5 +1,4 @@
 {$form.javascript}
-{$colorJS}
 <form {$form.attributes}>
 <table class="formTable table">
  	<tr class="ListHeader">
@@ -20,7 +19,9 @@
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_sql_debug">{$form.debug_sql.label}</td><td class="FormRowValue">{$form.debug_sql.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centcore_debug">{$form.debug_gorgone.label}</td><td class="FormRowValue">{$form.debug_gorgone.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centreontrapd_debug">{$form.debug_centreontrapd.label}</td><td class="FormRowValue">{$form.debug_centreontrapd.html}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	{if isset($form.required)}
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	{/if}
 </table>
 {if !$valid}
 	<div id="validForm" class="oreonbutton">

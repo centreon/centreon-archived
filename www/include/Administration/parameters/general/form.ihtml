@@ -1,5 +1,5 @@
 {$form.javascript}
-{$colorJS}
+
 <div id ="testProxy"><p id="msg-wrapper"></p></div>
 <form {$form.attributes}>
 <table class="formTable table">
