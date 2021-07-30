@@ -45,6 +45,7 @@ use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Domain\RequestParameters\RequestParametersException;
 use Centreon\Domain\VersionHelper;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Psr\Log\LoggerInterface;
@@ -192,10 +193,22 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     {
         $query = $request->getRequest()->query->all();
 
-        $limit = (int) ($query[RequestParameters::NAME_FOR_LIMIT] ?? RequestParameters::DEFAULT_LIMIT);
+        $limit = filter_var(
+            $query[RequestParameters::NAME_FOR_LIMIT] ?? RequestParameters::DEFAULT_LIMIT,
+            FILTER_VALIDATE_INT
+        );
+        if (false === $limit) {
+            throw RequestParametersException::integer(RequestParameters::NAME_FOR_LIMIT);
+        }
         $this->requestParameters->setLimit($limit);
 
-        $page = (int) ($query[RequestParameters::NAME_FOR_PAGE] ?? RequestParameters::DEFAULT_PAGE);
+        $page = filter_var(
+            $query[RequestParameters::NAME_FOR_PAGE] ?? RequestParameters::DEFAULT_PAGE,
+            FILTER_VALIDATE_INT
+        );
+        if (false === $page) {
+            throw RequestParametersException::integer(RequestParameters::NAME_FOR_PAGE);
+        }
         $this->requestParameters->setPage($page);
 
         if (isset($query[RequestParameters::NAME_FOR_SORT])) {
