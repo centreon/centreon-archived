@@ -1550,30 +1550,4 @@ class CentreonLdapAdmin
             }
         }
     }
-
-    private function sort($sortAttribute)
-    {
-        foreach ($this->entries as $key => $entry) {
-            $attributes = ldap_get_attributes(
-                $this->ldap->getResource(),
-                $entry['resource']
-            );
-
-            $attributes = array_change_key_case($attributes, CASE_LOWER);
-
-            if (isset($attributes[$sortAttribute][0])) {
-                $this->entries[$key]['sortValue'] =
-                    $attributes[$sortAttribute][0];
-            }
-        }
-
-        $sortFunction = $this->sortFunction;
-        $sorted = usort($this->entries, function ($a, $b) use ($sortFunction) {
-            return $sortFunction($a['sortValue'], $b['sortValue']);
-        });
-
-        if (! $sorted) {
-            throw new \Exception($this, 'sorting result-set');
-        }
-    }
 }
