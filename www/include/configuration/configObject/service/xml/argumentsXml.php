@@ -117,7 +117,7 @@ if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId']) &
     $statement = $db->prepare($query2);
     $statement->bindValue(':cmd_id', $cmdId, \PDO::PARAM_INT);
     $statement->execute();
-    if ($row2 = $res2->fetch()) {
+    if ($row2 = $statement->fetch()) {
         $cmdLine = $row2['command_line'];
         preg_match_all("/\\\$(ARG[0-9]+)\\\$/", $cmdLine, $matches);
         foreach ($matches[1] as $key => $value) {
