@@ -26,10 +26,11 @@ use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\Monitoring\MonitoringResource\Exception\MonitoringResourceException;
 use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceServiceInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceRepositoryInterface;
-use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 /**
  * This class is designed to manage the monitoring resources.
@@ -54,17 +55,24 @@ class MonitoringResourceService extends AbstractCentreonService implements Monit
     private $accessGroupRepository;
 
     /**
+     * @var MonitoringRepositoryInterface
+     */
+    private $monitoringRepository;
+
+    /**
      * @param MonitoringResourceRepositoryInterface $monitoringResourceRepository
      * @param ContactInterface $contact
      */
     public function __construct(
         MonitoringResourceRepositoryInterface $monitoringResourceRepository,
         ContactInterface $contact,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        AccessGroupRepositoryInterface $accessGroupRepository,
+        MonitoringRepositoryInterface $monitoringRepository
     ) {
         $this->contact = $contact;
         $this->monitoringResourceRepository = $monitoringResourceRepository;
         $this->accessGroupRepository = $accessGroupRepository;
+        $this->monitoringRepository = $monitoringRepository;
     }
 
     /**

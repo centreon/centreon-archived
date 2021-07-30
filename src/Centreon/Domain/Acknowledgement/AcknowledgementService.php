@@ -457,7 +457,9 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                 $this->engineService->addServiceAcknowledgement($acknowledgement, $service);
                 break;
             case MonitoringResource::TYPE_META:
-                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $monitoringResource->getId());
+                $service = $this->monitoringRepository->findOneServiceByDescription(
+                    'meta_' . $monitoringResource->getId()
+                );
                 if (is_null($service)) {
                     throw new EntityNotFoundException(
                         sprintf(
