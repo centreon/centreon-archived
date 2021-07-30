@@ -2060,7 +2060,7 @@ function updateServiceServiceGroup_MC($service_id = null)
                 }
             } elseif (count($ret1)) {
                 foreach ($ret1 as $h) {
-                    if (!in_array($ret[$i], $hsgs[$h])) {
+                    if (!isset($hsgs[$h]) || !in_array($ret[$i], $hsgs[$h])) {
                         $rq = "INSERT INTO servicegroup_relation ";
                         $rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
                         $rq .= "VALUES ";
