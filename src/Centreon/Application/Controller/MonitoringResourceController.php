@@ -218,7 +218,10 @@ class MonitoringResourceController extends AbstractController
                 $this->monitoring->hidePasswordInServiceCommandLine($service);
                 $serviceMonitoringResource['command_line'] = $service->getCommandLine();
             } catch (\Throwable $ex) {
-                $serviceMonitoringResource['command_line'] = sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage());
+                $serviceMonitoringResource['command_line'] = sprintf(
+                    _('Unable to hide passwords in command (Reason: %s)'),
+                    $ex->getMessage()
+                );
             }
         } else {
             $serviceMonitoringResource['command_line'] = null;
@@ -264,7 +267,10 @@ class MonitoringResourceController extends AbstractController
         );
 
         return $this->view(
-            MonitoringResourceMetaServiceDetailFormatter::createFromResponse($response, $metaServiceMonitoringResourceLinks)
+            MonitoringResourceMetaServiceDetailFormatter::createFromResponse(
+                $response,
+                $metaServiceMonitoringResourceLinks
+            )
         );
     }
 

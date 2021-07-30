@@ -70,8 +70,15 @@ class MassiveAcknowledgementValidator implements MassiveAcknowledgementValidator
         Assertion::keyExists($payload['acknowledgement'], 'with_services', 'payload::acknowledgement::with_services');
         Assertion::boolean($payload['acknowledgement']['with_services'], 'payload::acknowledgement::with_services');
 
-        Assertion::keyExists($payload['acknowledgement'], 'is_notify_contacts', 'payload::acknowledgement::is_notify_contacts');
-        Assertion::boolean($payload['acknowledgement']['is_notify_contacts'], 'payload::acknowledgement::is_notify_contacts');
+        Assertion::keyExists(
+            $payload['acknowledgement'],
+            'is_notify_contacts',
+            'payload::acknowledgement::is_notify_contacts'
+        );
+        Assertion::boolean(
+            $payload['acknowledgement']['is_notify_contacts'],
+            'payload::acknowledgement::is_notify_contacts'
+        );
 
         Assertion::keyExists($payload, 'resources', 'payload::resources');
 

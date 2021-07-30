@@ -226,7 +226,9 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
                 $this->engineService->scheduleServiceCheck($check, $service);
                 break;
             case MonitoringResource::TYPE_META:
-                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $monitoringResource->getId());
+                $service = $this->monitoringRepository->findOneServiceByDescription(
+                    'meta_' . $monitoringResource->getId()
+                );
                 if ($service === null) {
                     throw new EntityNotFoundException(
                         sprintf(
@@ -240,7 +242,9 @@ class CheckService extends AbstractCentreonService implements CheckServiceInterf
                 $this->engineService->scheduleServiceCheck($check, $service);
                 break;
             default:
-                throw new \InvalidArgumentException(sprintf(_('Incorrect Resource type: %s'), $monitoringResource->getType()));
+                throw new \InvalidArgumentException(
+                    sprintf(_('Incorrect Resource type: %s'), $monitoringResource->getType())
+                );
         }
     }
 }

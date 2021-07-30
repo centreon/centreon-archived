@@ -75,7 +75,10 @@ class HostHyperMediaProvider extends HyperMediaProvider
                 ]
             ])
         ];
-        return $this->router->generate(static::HOST_DOWNTIME_ENDPOINT, array_merge(['hostId' => $hostId], $downtimeFilter));
+        return $this->router->generate(
+            static::HOST_DOWNTIME_ENDPOINT,
+            array_merge(['hostId' => $hostId], $downtimeFilter)
+        );
     }
 
     /**
@@ -87,7 +90,10 @@ class HostHyperMediaProvider extends HyperMediaProvider
     public function generateAcknowledgementEndpoint(int $hostId): string
     {
         $acknowledgementFilter = ['limit' => 1];
-        return $this->router->generate(static::HOST_DOWNTIME_ENDPOINT, array_merge(['hostId' => $hostId], $acknowledgementFilter));
+        return $this->router->generate(
+            static::HOST_DOWNTIME_ENDPOINT,
+            array_merge(['hostId' => $hostId], $acknowledgementFilter)
+        );
     }
 
     /**
@@ -115,7 +121,8 @@ class HostHyperMediaProvider extends HyperMediaProvider
             $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_WRITE)
             || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_READ)
         ) {
-            $configurationUri = parent::getBaseUri() . str_replace('{hostId}', (string) $hostId, static::HOST_CONFIGURATION_URI);
+            $configurationUri = parent::getBaseUri()
+                . str_replace('{hostId}', (string) $hostId, static::HOST_CONFIGURATION_URI);
         }
         return $configurationUri;
     }
@@ -134,7 +141,8 @@ class HostHyperMediaProvider extends HyperMediaProvider
             $contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)
             || $contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)
         ) {
-            $reportingUri = parent::getBaseUri() . str_replace('{hostId}', (string) $hostId, static::HOST_REPORTING_URI);
+            $reportingUri = parent::getBaseUri()
+                . str_replace('{hostId}', (string) $hostId, static::HOST_REPORTING_URI);
         }
         return $reportingUri;
     }

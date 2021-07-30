@@ -1038,7 +1038,7 @@ class MonitoringResource
 
     /**
      * @param bool $hasGraphData
-     * @return bool
+     * @return self
      */
     public function setHasGraphData(bool $hasGraphData): self
     {

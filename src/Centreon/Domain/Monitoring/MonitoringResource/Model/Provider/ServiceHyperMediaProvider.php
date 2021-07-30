@@ -54,7 +54,8 @@ class ServiceHyperMediaProvider extends HyperMediaProvider
             $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
             || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
         ) {
-            $configurationUri = parent::getBaseUri() . str_replace('{serviceId}', (string) $serviceId, static::SERVICE_CONFIGURATION_URI);
+            $configurationUri = parent::getBaseUri()
+                . str_replace('{serviceId}', (string) $serviceId, static::SERVICE_CONFIGURATION_URI);
         }
         return $configurationUri;
     }
@@ -149,7 +150,10 @@ class ServiceHyperMediaProvider extends HyperMediaProvider
      */
     public function generateAcknowledgementEndpoint(array $parameters): string
     {
-        return $this->router->generate(static::SERVICE_ACKNOWLEDGEMENT_ENDPOINT, array_merge($parameters, ['limit' => 1]));
+        return $this->router->generate(
+            static::SERVICE_ACKNOWLEDGEMENT_ENDPOINT,
+            array_merge($parameters, ['limit' => 1])
+        );
     }
 
     /**

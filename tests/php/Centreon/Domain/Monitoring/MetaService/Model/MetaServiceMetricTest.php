@@ -102,7 +102,7 @@ class MetaServiceMetricTest extends TestCase
     }
 
     /**
-     * @return Resource
+     * @return MonitoringResource
      * @throws \Assert\AssertionFailedException
      */
     public static function createResourceEntity(): MonitoringResource
