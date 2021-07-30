@@ -146,7 +146,7 @@ class CentreonUser
     public function getAllTopology($pearDB)
     {
         $DBRESULT = $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");
-        while ($topo = $DBRESULT->fetchRow()) {
+        while ($topo = $DBRESULT->fetch()) {
             if (isset($topo["topology_page"])) {
                 $lcaTopo[$topo["topology_page"]] = 1;
             }
@@ -168,13 +168,13 @@ class CentreonUser
             "WHERE session.session_id = '" . $sid .
             "' AND contact.contact_id = session.user_id AND contact.contact_register = '1'";
         $dbResult = $pearDB->query($query1);
-        $admin = $dbResult->fetchRow();
+        $admin = $dbResult->fetch();
         $dbResult->closeCursor();
 
         $query2 = "SELECT count(*) FROM `acl_group_contacts_relations` " .
             "WHERE contact_contact_id = '" . $admin["contact_id"] . "'";
         $dbResult = $pearDB->query($query2);
-        $admin2 = $dbResult->fetchRow();
+        $admin2 = $dbResult->fetch();
         $dbResult->closeCursor();
 
         if ($admin["contact_admin"]) {
@@ -196,7 +196,7 @@ class CentreonUser
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function get_name()
     {
@@ -205,7 +205,7 @@ class CentreonUser
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function get_email()
     {
@@ -223,7 +223,7 @@ class CentreonUser
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function get_version()
     {
@@ -232,7 +232,7 @@ class CentreonUser
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function get_lang()
     {
@@ -304,7 +304,7 @@ class CentreonUser
         global $pearDB;
 
         $DBRESULT = $pearDB->query('SELECT contact_js_effects FROM contact WHERE contact_id = ' . $this->user_id);
-        if (($jsEffectsEnabled = $DBRESULT->fetchRow()) && isset($jsEffectsEnabled['contact_js_effects'])) {
+        if (($jsEffectsEnabled = $DBRESULT->fetch()) && isset($jsEffectsEnabled['contact_js_effects'])) {
             $this->js_effects = $jsEffectsEnabled['contact_js_effects'];
         } else {
             $this->js_effects = 0;
@@ -426,7 +426,7 @@ class CentreonUser
         if (!isset($userNames)) {
             $userNames = array();
             $res = $db->query("SELECT contact_name, contact_id FROM contact");
-            while ($row = $res->fetchRow()) {
+            while ($row = $res->fetch()) {
                 $userNames[$row['contact_id']] = $row['contact_name'];
             }
         }
@@ -460,7 +460,7 @@ class CentreonUser
             . $queryParameters;
 
         $res = $db->query($query);
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $values[$row['cp_key']] = $row['cp_value'];
         }
 

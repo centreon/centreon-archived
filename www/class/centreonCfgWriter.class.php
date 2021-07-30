@@ -39,7 +39,6 @@
 class CentreonCfgWriter
 {
     private $buffer;
-    private $fd;
     private $xmlBuffer;
     private $centreon;
     private $file_path;
