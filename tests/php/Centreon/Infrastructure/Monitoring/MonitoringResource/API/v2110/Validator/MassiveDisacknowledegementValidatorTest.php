@@ -48,7 +48,8 @@ class MassiveDisacknowledgementValidatorTest extends TestCase
     /**
      * test Missing disacknowledgement key in payload
      */
-    public function testNoDisacknowledgementKeyProvided(): void {
+    public function testNoDisacknowledgementKeyProvided(): void
+    {
         $payload = [
             'resources' => []
         ];
@@ -64,7 +65,8 @@ class MassiveDisacknowledgementValidatorTest extends TestCase
     /**
      * test Missing with_services key
      */
-    public function testWithServicesKeyNotProvided(): void {
+    public function testWithServicesKeyNotProvided(): void
+    {
         $payload = [
             'disacknowledgement' => []
         ];
@@ -80,7 +82,8 @@ class MassiveDisacknowledgementValidatorTest extends TestCase
     /**
      * test with_services value not a boolean
      */
-    public function testWithServicesValueNotBoolean(): void {
+    public function testWithServicesValueNotBoolean(): void
+    {
         $payload = [
             'disacknowledgement' => [
                 'with_services' => 'true'
@@ -98,7 +101,8 @@ class MassiveDisacknowledgementValidatorTest extends TestCase
     /**
      * test Missing resources key
      */
-    public function testResourcesKeyNotProvided(): void {
+    public function testResourcesKeyNotProvided(): void
+    {
         $payload = [
             'disacknowledgement' => [
                 'with_services' => false
@@ -146,5 +150,4 @@ class MassiveDisacknowledgementValidatorTest extends TestCase
         $this->massiveDisacknowledgementValidator->validateOrFail($payload);
         $this->assertTrue(true);
     }
-
 }

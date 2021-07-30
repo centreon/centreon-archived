@@ -37,7 +37,7 @@ interface HyperMediaProviderInterface
      * This function will generate the endpoints for the provided resource
      *
      * @param array<string, mixed> $monitoringResource
-     * @return array<string, string>
+     * @return array<string, string|null>
      */
     public function generateEndpoints(array $monitoringResource): array;
 
@@ -46,7 +46,7 @@ interface HyperMediaProviderInterface
      *
      * @param array<string, mixed> $monitoringResource
      * @param Contact $contact
-     * @return array<string, mixed>
+     * @return array<string, string|null>
      */
     public function generateUris(array $monitoringResource, Contact $contact): array;
 }

@@ -48,7 +48,8 @@ class MassiveAcknowledgementValidatorTest extends TestCase
     /**
      * test Missing acknowledgement key in payload
      */
-    public function testNoAcknowledgementKeyProvided(): void {
+    public function testNoAcknowledgementKeyProvided(): void
+    {
         $payload = [
             'resources' => []
         ];
@@ -64,7 +65,8 @@ class MassiveAcknowledgementValidatorTest extends TestCase
     /**
      * test Missing comment key
      */
-    public function testCommentKeyNotProvided(): void {
+    public function testCommentKeyNotProvided(): void
+    {
         $payload = [
             'acknowledgement' => []
         ];
@@ -80,7 +82,8 @@ class MassiveAcknowledgementValidatorTest extends TestCase
     /**
      * test Comment value not a string
      */
-    public function testCommentValueNotString(): void {
+    public function testCommentValueNotString(): void
+    {
         $payload = [
             'acknowledgement' => [
                 'comment' => 10
@@ -98,7 +101,8 @@ class MassiveAcknowledgementValidatorTest extends TestCase
     /**
      * test Missing with_services key
      */
-    public function testWithServicesKeyNotProvided(): void {
+    public function testWithServicesKeyNotProvided(): void
+    {
         $payload = [
             'acknowledgement' => [
                 'comment' => 'this is an acknowledgement',
@@ -116,7 +120,8 @@ class MassiveAcknowledgementValidatorTest extends TestCase
     /**
      * test with_services value not a boolean
      */
-    public function testWithServicesValueNotBoolean(): void {
+    public function testWithServicesValueNotBoolean(): void
+    {
         $payload = [
             'acknowledgement' => [
                 'comment' => 'this is an acknowledgement',
@@ -135,7 +140,8 @@ class MassiveAcknowledgementValidatorTest extends TestCase
     /**
      * test Missing is_notify_contacts key
      */
-    public function testIsNotifyContactsKeyNotProvided(): void {
+    public function testIsNotifyContactsKeyNotProvided(): void
+    {
         $payload = [
             'acknowledgement' => [
                 'comment' => 'this is an acknowledgement',
@@ -154,7 +160,8 @@ class MassiveAcknowledgementValidatorTest extends TestCase
     /**
      * test is_notify_contacts value not a boolean
      */
-    public function testIsNotifyContactsValueNotBoolean(): void {
+    public function testIsNotifyContactsValueNotBoolean(): void
+    {
         $payload = [
             'acknowledgement' => [
                 'comment' => 'this is an acknowledgement',
@@ -174,7 +181,8 @@ class MassiveAcknowledgementValidatorTest extends TestCase
     /**
      * test Missing resources key
      */
-    public function testResourcesKeyNotProvided(): void {
+    public function testResourcesKeyNotProvided(): void
+    {
         $payload = [
             'acknowledgement' => [
                 'comment' => 'This is an acknowledgement',
@@ -226,5 +234,4 @@ class MassiveAcknowledgementValidatorTest extends TestCase
         $this->massiveAcknowledgementValidator->validateOrFail($payload);
         $this->assertTrue(true);
     }
-
 }
