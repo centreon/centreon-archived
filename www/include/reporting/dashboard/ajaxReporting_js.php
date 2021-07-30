@@ -41,6 +41,9 @@ if ($type == "Service") {
     $arg = "id=" . $id;
 }
 
+$startDate = 0;
+$endDate = 0;
+
 $arg .= "&color[UP]=#" . $colors["up"] . "&color[UNDETERMINED]=#" . $colors["undetermined"] .
         "&color[DOWN]=#" . $colors["down"] . "&color[UNREACHABLE]=#" . $colors["unreachable"] .
         "&color[OK]=#" . $colors["ok"] . "&color[WARNING]=#" . $colors["warning"] .

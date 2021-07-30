@@ -1,5 +1,3 @@
-{$form.javascript}
-{$styleB}
 <div class="cachediv">
 	<form id="datareport">
 		<input type="hidden" name="host_id" value="{$host_id}"><br />
@@ -24,8 +22,14 @@
 				<input type="radio" value="preset" name="period_choice" {if $period_choice == "preset" } checked="checked" {/if}/>
 					{$periodTitle} : {$formPeriod.period.html}{$periodORlabel}
 				<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
-					{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;{$formPeriod.alternativeDateStartDate.html}
-					{$formPeriod.EndDate.label} {$formPeriod.EndDate.html} {$formPeriod.alternativeDateEndDate.html}
+					{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
+					{if isset($formPeriod.alternativeDateStartDate)}
+						{$formPeriod.alternativeDateStartDate.html}
+					{/if}
+					{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
+					{if isset($formPeriod.alternativeDateEndDate)}
+						{$formPeriod.alternativeDateEndDate.html}
+					{/if}
 					{$formPeriod.button.html}{$formPeriod.hidden}
 			</form>
 		</td>
@@ -169,7 +173,6 @@
 {$host_up}
 {$host_down}
 {$host_unreachable}
-{$form.hidden}
 
 {literal}
 <script>
