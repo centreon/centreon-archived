@@ -330,7 +330,7 @@ class CentreonXMLBGRequest
 
     public function setServiceGroupsHistory($sg)
     {
-        $_SESSION['monitoring_default_servicegroups'] = sg;
+        $_SESSION['monitoring_default_servicegroups'] = $sg;
     }
 
     public function setCriticality($criticality)
