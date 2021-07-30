@@ -25,12 +25,16 @@
                 <h4>{t}From{/t}</h4>
                 {$form.StartDate.html}
                 {$form.StartTime.html}
-                {$form.alternativeDateStartDate.html}
+                {if isset($form.alternativeDateStartDate)}
+                    {$form.alternativeDateStartDate.html}
+                {/if}
                 <h4>{t}To{/t}</h4>
                 {$form.EndDate.html}
                 {$form.EndTime.html}
-                {$form.alternativeDateEndDate.html}
-            </td>			
+                {if isset($form.alternativeDateEndDate)}
+                    {$form.alternativeDateEndDate.html}
+                {/if}
+            </td>
             <td style='white-space:nowrap;'>{$form.graph.html}</td>
         </tr>
         <div>
