@@ -246,7 +246,7 @@ class CentreonDB extends \PDO
     /**
      * Query
      *
-     * @return \PDOStatement
+     * @return CentreonDBStatement
      */
     public function query($queryString, $parameters = null, ...$parametersArgs)
     {
