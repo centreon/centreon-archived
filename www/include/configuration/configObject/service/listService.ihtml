@@ -38,12 +38,11 @@
 		<tr class="ToolbarTR">
 			{if $mode_access == 'w'}
 				<td>
-					{$msg.options} {$form.o1.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+					{$form.o1.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 				</td>
 			{else}
 				<td>&nbsp;</td>
 			{/if}
-			<input name="p" value="{$p}" type="hidden" />
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -95,13 +94,12 @@
 		<tr>
 			{if $mode_access == 'w'}
 				<td class="Toolbar_TDSelectAction_Bottom">
-					{$msg.options} {$form.o2.html}
+					{$form.o2.html}
 					<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 				</td>
 			{else}
 				<td>&nbsp;</td>
 			{/if}
-			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}

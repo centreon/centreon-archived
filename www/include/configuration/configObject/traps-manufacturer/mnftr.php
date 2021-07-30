@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 }
 
 $id = filter_var(
-    $_GET['id'] ?? $_POST['id'],
+    $_GET['id'] ?? $_POST['id'] ?? null,
     FILTER_VALIDATE_INT
 ) ?: null;
 
@@ -57,7 +57,7 @@ require_once __DIR__ . "/DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
