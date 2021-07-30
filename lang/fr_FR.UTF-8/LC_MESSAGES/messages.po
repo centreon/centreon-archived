@@ -16018,3 +16018,6 @@ msgstr "L'année doit être inférieure à %d (%s)"
 
 msgid "[%s] The date \"%s\" was expected to be at most %s"
 msgstr "[%s] La date \"%s\" devait être au maximum au %s"
+
+msgid "The parameter \"%s\" must be an integer"
+msgstr "Le paramètre \"%s\" doit être un entier"
