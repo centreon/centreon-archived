@@ -51,7 +51,7 @@ class MonitoringResourceService extends AbstractCentreonService implements Monit
     /**
     * @var AccessGroupRepositoryInterface
     */
-   private $accessGroupRepository;
+    private $accessGroupRepository;
 
     /**
      * @param MonitoringResourceRepositoryInterface $monitoringResourceRepository

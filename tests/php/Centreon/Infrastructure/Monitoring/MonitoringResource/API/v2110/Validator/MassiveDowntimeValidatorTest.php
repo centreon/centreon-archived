@@ -48,7 +48,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test Missing downtime key in payload
      */
-    public function testNoDowntimeKeyProvided(): void {
+    public function testNoDowntimeKeyProvided(): void
+    {
         $payload = [
             'resources' => []
         ];
@@ -64,7 +65,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test Missing comment key
      */
-    public function testCommentKeyNotProvided(): void {
+    public function testCommentKeyNotProvided(): void
+    {
         $payload = [
             'downtime' => []
         ];
@@ -80,7 +82,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test Comment value not a string
      */
-    public function testCommentValueNotString(): void {
+    public function testCommentValueNotString(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 10
@@ -98,7 +101,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test Missing with_services key
      */
-    public function testWithServicesKeyNotProvided(): void {
+    public function testWithServicesKeyNotProvided(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'this is a comment',
@@ -116,7 +120,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test with_services value not a boolean
      */
-    public function testWithServicesValueNotBoolean(): void {
+    public function testWithServicesValueNotBoolean(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'this is a comment',
@@ -135,7 +140,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test Missing is_fixed key
      */
-    public function testIsFixedKeyNotProvided(): void {
+    public function testIsFixedKeyNotProvided(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'this is a comment',
@@ -154,7 +160,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test is_fixed value not a boolean
      */
-    public function testIsFixedValueNotBoolean(): void {
+    public function testIsFixedValueNotBoolean(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'this is a comment',
@@ -174,7 +181,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test Missing duration key
      */
-    public function testDurationKeyNotProvided(): void {
+    public function testDurationKeyNotProvided(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'this is a comment',
@@ -194,7 +202,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test duration value not an integer
      */
-    public function testDurationValueNotInteger(): void {
+    public function testDurationValueNotInteger(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'this is a comment',
@@ -215,7 +224,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test Missing start_time key
      */
-    public function testStartTimeKeyNotProvided(): void {
+    public function testStartTimeKeyNotProvided(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'this is a comment',
@@ -236,7 +246,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test start_time value not a ISO 8601 datetime formatted
      */
-    public function testStartTimeValueNotDateTimeISO8601(): void {
+    public function testStartTimeValueNotDateTimeISO8601(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'this is a comment',
@@ -258,7 +269,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test Missing end_time key
      */
-    public function testEndTimeKeyNotProvided(): void {
+    public function testEndTimeKeyNotProvided(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'this is a comment',
@@ -280,7 +292,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test end_time value not a ISO 8601 datetime formatted
      */
-    public function testEndTimeValueNotDateTimeISO8601(): void {
+    public function testEndTimeValueNotDateTimeISO8601(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'this is a comment',
@@ -303,7 +316,8 @@ class MassiveDowntimeValidatorTest extends TestCase
     /**
      * test Missing end_time key
      */
-    public function testResourcesKeyNotProvided(): void {
+    public function testResourcesKeyNotProvided(): void
+    {
         $payload = [
             'downtime' => [
                 'comment' => 'This is a downtime',
@@ -361,5 +375,4 @@ class MassiveDowntimeValidatorTest extends TestCase
         $this->massiveDowntimeValidator->validateOrFail($payload);
         $this->assertTrue(true);
     }
-
 }

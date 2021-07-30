@@ -48,7 +48,8 @@ class MassiveCheckValidatorTest extends TestCase
     /**
      * test Missing resources key
      */
-    public function testResourcesKeyNotProvided(): void {
+    public function testResourcesKeyNotProvided(): void
+    {
         $payload = [];
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
@@ -89,5 +90,4 @@ class MassiveCheckValidatorTest extends TestCase
         $this->massiveCheckValidator->validateOrFail($payload);
         $this->assertTrue(true);
     }
-
 }
