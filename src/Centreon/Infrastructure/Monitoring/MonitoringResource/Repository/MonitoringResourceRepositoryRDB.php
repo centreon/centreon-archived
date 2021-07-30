@@ -150,7 +150,7 @@ final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implem
      * Find all monitoring resources by contact id
      *
      * @param ResourceFilter $filter
-     * @param int|null $contactId
+     * @param AccessGroup[] $accessGroups
      * @return MonitoringResource[]
      * @throws AssertionFailedException
      * @throws \InvalidArgumentException

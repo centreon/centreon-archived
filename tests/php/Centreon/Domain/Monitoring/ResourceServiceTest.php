@@ -34,7 +34,7 @@ class ResourceServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testFindResources()
+    public function testFindResources(): void
     {
         $contact = (new Contact())
             ->setId(1)

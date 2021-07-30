@@ -296,7 +296,9 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
                 $this->addServiceDowntime($downtime, $service);
                 break;
             case MonitoringResource::TYPE_META:
-                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $monitoringResource->getId());
+                $service = $this->monitoringRepository->findOneServiceByDescription(
+                    'meta_' . $monitoringResource->getId()
+                );
                 if (is_null($service)) {
                     throw new EntityNotFoundException(_('Service not found'));
                 }

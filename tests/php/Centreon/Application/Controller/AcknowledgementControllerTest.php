@@ -56,7 +56,7 @@ class AcknowledgementControllerTest extends TestCase
      */
     private $massiveDisacknowledgementValidator;
 
-    protected function setUp():void
+    protected function setUp(): void
     {
         $timezone = new \DateTimeZone('Europe/Paris');
 
@@ -104,7 +104,9 @@ class AcknowledgementControllerTest extends TestCase
 
         $this->correctJsonDisackResources = json_encode($correctJsonDisackResources);
         $this->acknowledgementService = $this->createMock(AcknowledgementService::class);
-        $this->massiveDisacknowledgementValidator = $this->createMock(MassiveDisacknowledgementValidatorInterface::class);
+        $this->massiveDisacknowledgementValidator = $this->createMock(
+            MassiveDisacknowledgementValidatorInterface::class
+        );
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $authorizationChecker->expects($this->once())
@@ -147,7 +149,7 @@ class AcknowledgementControllerTest extends TestCase
     /**
      * Testing with a correct JSON DELETE data and successful massDisacknowledgeResources
      */
-    public function testMassDisacknowledgeResourcesSuccess()
+    public function testMassDisacknowledgeResourcesSuccess(): void
     {
         $this->acknowledgementService->expects($this->any())
             ->method('filterByContact')

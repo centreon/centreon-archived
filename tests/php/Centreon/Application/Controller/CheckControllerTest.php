@@ -54,6 +54,10 @@ class CheckControllerTest extends TestCase
 
     protected $request;
     protected $serializer;
+
+    /**
+     * @var MassiveCheckValidatorInterface
+     */
     protected $massiveCheckValidator;
 
     protected function setUp(): void

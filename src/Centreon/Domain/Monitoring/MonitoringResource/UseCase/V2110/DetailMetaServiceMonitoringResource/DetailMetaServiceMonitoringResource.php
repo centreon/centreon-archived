@@ -110,7 +110,10 @@ class DetailMetaServiceMonitoringResource
         // get the meta service calculation type
         $metaConfiguration = $this->contact->isAdmin()
             ? $this->metaServiceConfigurationRepository->findById($metaServiceMonitoringResource->getId())
-            : $this->metaServiceConfigurationRepository->findByIdAndContact($metaServiceMonitoringResource->getId(), $this->contact);
+            : $this->metaServiceConfigurationRepository->findByIdAndContact(
+                $metaServiceMonitoringResource->getId(),
+                $this->contact
+            );
 
         if (!is_null($metaConfiguration)) {
             $metaServiceMonitoringResource->setCalculationType($metaConfiguration->getCalculationType());

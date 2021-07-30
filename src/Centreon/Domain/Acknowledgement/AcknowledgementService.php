@@ -351,8 +351,10 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
-    public function disacknowledgeResource(MonitoringResource $monitoringResource, Acknowledgement $acknowledgement): void
-    {
+    public function disacknowledgeResource(
+        MonitoringResource $monitoringResource,
+        Acknowledgement $acknowledgement
+    ): void {
         switch ($monitoringResource->getType()) {
             case MonitoringResource::TYPE_HOST:
                 $host = $this->monitoringRepository->findOneHost($monitoringResource->getId());
@@ -390,7 +392,9 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                 $this->engineService->disacknowledgeService($service);
                 break;
             case MonitoringResource::TYPE_META:
-                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $monitoringResource->getId());
+                $service = $this->monitoringRepository->findOneServiceByDescription(
+                    'meta_' . $monitoringResource->getId()
+                );
                 if (is_null($service)) {
                     throw new EntityNotFoundException(
                         sprintf(
