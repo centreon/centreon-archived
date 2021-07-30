@@ -74,12 +74,16 @@ class MetaServiceProviderTest extends TestCase
     /**
      * test shouldBeSearched with resource name filter
      */
-    public function testShouldBeSearchedWithResourceName()
+    public function testShouldBeSearchedWithResourceName(): void
     {
         $this->metaServiceProvider->setSqlRequestTranslator($this->sqlRequestParametersTranslator);
-        $this->requestParameters->setSearch(json_encode([
+        $search = json_encode([
             'name' => 'test'
-        ]));
+        ]);
+
+        if ($search !== false) {
+            $this->requestParameters->setSearch($search);
+        }
 
         $shouldBeSearched = $this->metaServiceProvider->shouldBeSearched($this->resourceFilter);
 
@@ -89,12 +93,16 @@ class MetaServiceProviderTest extends TestCase
     /**
      * test shouldBeSearched with host name filter
      */
-    public function testShouldBeSearchedWithHostName()
+    public function testShouldBeSearchedWithHostName(): void
     {
         $this->metaServiceProvider->setSqlRequestTranslator($this->sqlRequestParametersTranslator);
-        $this->requestParameters->setSearch(json_encode([
+        $search = json_encode([
             'h.name' => 'test'
-        ]));
+        ]);
+
+        if ($search !== false) {
+            $this->requestParameters->setSearch($search);
+        }
 
         $shouldBeSearched = $this->metaServiceProvider->shouldBeSearched($this->resourceFilter);
 
@@ -104,13 +112,17 @@ class MetaServiceProviderTest extends TestCase
     /**
      * test shouldBeSearched with multiple filter criterias
      */
-    public function testShouldBeSearchedWithMultipleCriterias()
+    public function testShouldBeSearchedWithMultipleCriterias(): void
     {
         $this->metaServiceProvider->setSqlRequestTranslator($this->sqlRequestParametersTranslator);
-        $this->requestParameters->setSearch(json_encode([
+        $search = json_encode([
             'name' => 'test',
             's.description' => 'test'
-        ]));
+        ]);
+
+        if ($search !== false) {
+            $this->requestParameters->setSearch($search);
+        }
 
         $shouldBeSearched = $this->metaServiceProvider->shouldBeSearched($this->resourceFilter);
 
@@ -120,12 +132,16 @@ class MetaServiceProviderTest extends TestCase
     /**
      * test shouldBeSearched with service description filter
      */
-    public function testShouldNotBeSearched()
+    public function testShouldNotBeSearched(): void
     {
         $this->metaServiceProvider->setSqlRequestTranslator($this->sqlRequestParametersTranslator);
-        $this->requestParameters->setSearch(json_encode([
+        $search = json_encode([
             's.description' => 'test'
-        ]));
+        ]);
+
+        if ($search !== false) {
+            $this->requestParameters->setSearch($search);
+        }
 
         $shouldBeSearched = $this->metaServiceProvider->shouldBeSearched($this->resourceFilter);
 
@@ -135,7 +151,7 @@ class MetaServiceProviderTest extends TestCase
     /**
      * test excludeResourcesWithoutMetrics with a metaservice which has metrics
      */
-    public function testExcludeResourcesWithoutMetricsWithData()
+    public function testExcludeResourcesWithoutMetricsWithData(): void
     {
         $pdoStatement = $this->createMock(\PDOStatement::class);
         $pdoStatement->expects($this->exactly(2))
@@ -169,7 +185,7 @@ class MetaServiceProviderTest extends TestCase
     /**
      * test excludeResourcesWithoutMetrics with a metaservice which does not have metrics
      */
-    public function testExcludeResourcesWithoutMetricsWithoutData()
+    public function testExcludeResourcesWithoutMetricsWithoutData(): void
     {
         $pdoStatement = $this->createMock(\PDOStatement::class);
         $pdoStatement->expects($this->any())
