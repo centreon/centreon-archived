@@ -31,7 +31,8 @@ class ServiceHyperMediaProvider extends HyperMediaProvider
 
     public const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id={serviceId}',
                  SERVICE_EVENT_LOGS_URI = '/main.php?p=20301&svc={hostId}_{serviceId}',
-                 SERVICE_REPORTING_URI = '/main.php?p=30702&period=yesterday&start=&end=&host_id={hostId}&item={serviceId}';
+                 SERVICE_REPORTING_URI =
+                    '/main.php?p=30702&period=yesterday&start=&end=&host_id={hostId}&item={serviceId}';
 
     public const SERVICE_DETAILS_ENDPOINT = 'centreon_application_monitoring_resource_detail_service',
                  SERVICE_DOWNTIME_ENDPOINT = 'monitoring.downtime.addServiceDowntime',

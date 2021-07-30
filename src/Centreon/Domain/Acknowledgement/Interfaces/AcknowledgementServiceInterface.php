@@ -184,5 +184,8 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      * @throws EntityNotFoundException
      * @throws \Exception
      */
-    public function disacknowledgeResource(MonitoringResource $monitoringResource, Acknowledgement $acknowledgement): void;
+    public function disacknowledgeResource(
+        MonitoringResource $monitoringResource,
+        Acknowledgement $acknowledgement
+    ): void;
 }

@@ -34,7 +34,8 @@ class MetaServiceHyperMediaProvider extends HyperMediaProvider
 
     public const METASERVICE_DETAILS_ENDPOINT = 'centreon_application_monitoring_resource_detail_meta_service',
                  METASERVICE_DOWNTIME_ENDPOINT = 'monitoring.downtime.addMetaServiceDowntime',
-                 METASERVICE_ACKNOWLEDGEMENT_ENDPOINT = 'centreon_application_acknowledgement_addmetaserviceacknowledgement',
+                 METASERVICE_ACKNOWLEDGEMENT_ENDPOINT =
+                    'centreon_application_acknowledgement_addmetaserviceacknowledgement',
                  METASERVICE_TIMELINE_ENDPOINT = 'centreon_application_monitoring_gettimelinebymetaservices',
                  METASERVICE_STATUS_GRAPH_ENDPOINT = 'monitoring.metric.getMetaServiceStatusMetrics',
                  METASERVICE_METRIC_LIST_ENDPOINT = 'centreon_application_find_meta_service_metrics',
