@@ -38,6 +38,7 @@ import {
 import SelectFilter from './Fields/SelectFilter';
 import {
   getAutocompleteSuggestionPrefix,
+  getAutocompleteSuggestions,
   getAutocompleteSuggestionSuffix,
 } from './Criterias/searchQueryLanguage';
 
@@ -67,34 +68,38 @@ const Filter = (): JSX.Element => {
     applyCurrentFilter,
   } = useResourceContext();
 
-  const [currentWord, setCurrentWord] = React.useState('');
-  const [previousWord, setPreviousWord] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
   const searchRef = React.useRef<HTMLInputElement>();
+  const [autoCompleteSuggestions, setAutoCompleteSuggestions] = React.useState<
+    Array<string>
+  >([]);
+  const [cursorPosition, setCursorPosition] = React.useState(0);
 
   const open = Boolean(anchorEl);
 
-  const memoProps = [customFilters, customFiltersLoading, search, open];
+  const currentSearchCursorPosition = searchRef?.current?.selectionStart || 0;
 
-  const getAutocompleteSuggestions = (): Array<string> => {
-    const autoCompleteSuggestionsPrefix =
-      getAutocompleteSuggestionPrefix(currentWord);
+  React.useEffect(() => {
+    setAutoCompleteSuggestions(
+      getAutocompleteSuggestions({
+        cursorPosition,
+        search,
+      }),
+    );
+  }, [search, cursorPosition]);
 
-    const autoCompleteSuggestionsSuffix = getAutocompleteSuggestionSuffix({
-      prefix: previousWord,
-      word: currentWord,
-    });
+  // const autoCompleteSuggestions = getAutocompleteSuggestions({
+  //   cursorPosition,
+  //   search,
+  // });
 
-    if (isEmpty(autoCompleteSuggestionsPrefix)) {
-      return autoCompleteSuggestionsSuffix;
-    }
-
-    return autoCompleteSuggestionsPrefix;
-  };
-
-  const autoCompleteSuggestions = getAutocompleteSuggestions();
-
-  const currentSearchCursorPosition = searchRef?.current?.selectionEnd || 0;
+  const memoProps = [
+    customFilters,
+    customFiltersLoading,
+    search,
+    cursorPosition,
+    autoCompleteSuggestions,
+  ];
 
   React.useEffect(() => {
     if (equals(autoCompleteSuggestions, [])) {
@@ -111,39 +116,45 @@ const Filter = (): JSX.Element => {
     const backspaceKeyPressed = event.key === 'Backspace';
     const tabKeyPressed = event.key === 'Tab';
 
-    console.log(currentSearchCursorPosition + 1);
-
-    const searchUntilCursor = search.substring(
-      0,
-      currentSearchCursorPosition + 1,
-    );
-
-    const lastWordy = last(searchUntilCursor.split(' ')) || '';
-
-    const lastCriteria = lastWordy.split(':');
-
-    const lastCriteriaName = head(lastCriteria);
-    const lastValues = last(lastCriteria) || '';
-
-    const lastValue = last(lastValues.split(','));
-
-    console.log(searchUntilCursor, lastCriteriaName, lastValue);
-
-    if (event.key === ' ' || backspaceKeyPressed || enterKeyPressed) {
-      setCurrentWord('');
-    } else {
-      setCurrentWord(currentWord + event.key);
-    }
-
     if (tabKeyPressed && !isEmpty(autoCompleteSuggestions)) {
-      if (currentWord === '' || currentWord === ',') {
-        setSearch(search + autoCompleteSuggestions[0]);
+      const lastSuggestion = autoCompleteSuggestions[0];
+
+      if (search[cursorPosition] === ',') {
+        setSearch(search + lastSuggestion);
       } else {
-        setSearch(search.replace(currentWord, autoCompleteSuggestions[0]));
+        const searchUntilCursor = search.slice(0, cursorPosition + 1);
+        const lastWord = last(searchUntilCursor.split(' ')) || '';
+
+        const lastWordBeforeStop =
+          lastWord.endsWith(':') ||
+          lastWord.endsWith(',') ||
+          lastSuggestion.startsWith(',')
+            ? ''
+            : last(lastWord.slice(0, cursorPosition).split(/:|,/)) || '';
+
+        const cursorShift = lastSuggestion.length - lastWordBeforeStop.length;
+
+        const newSearch = [
+          search.slice(
+            0,
+            lastWordBeforeStop === '' ? cursorPosition + 1 : cursorPosition,
+          ),
+          lastSuggestion.substring(
+            lastWordBeforeStop.length,
+            lastSuggestion.length,
+          ),
+          search.slice(
+            lastWordBeforeStop === '' ? cursorPosition + 1 : cursorPosition,
+          ),
+        ].join('');
+
+        setSearch(newSearch);
+        const newCursorPosition = cursorPosition + cursorShift;
+        setCursorPosition(newCursorPosition);
       }
+
       setNewFilter();
-      setPreviousWord(autoCompleteSuggestions[0]);
-      setCurrentWord('');
+
       event.preventDefault();
     }
 
@@ -156,6 +167,7 @@ const Filter = (): JSX.Element => {
     const { value } = event.target;
 
     setSearch(value);
+    setCursorPosition(searchRef?.current?.selectionStart || 0);
 
     setNewFilter();
   };
@@ -199,7 +211,6 @@ const Filter = (): JSX.Element => {
   );
 
   const closeSuggestionPopover = () => {
-    setCurrentWord('');
     setAnchorEl(null);
   };
 
@@ -241,11 +252,13 @@ const Filter = (): JSX.Element => {
                 }}
               >
                 <Paper square>
-                  {autoCompleteSuggestions.map((suggestion) => (
-                    <MenuItem key={suggestion} onClick={() => undefined}>
-                      {suggestion}
-                    </MenuItem>
-                  ))}
+                  {autoCompleteSuggestions.map((suggestion) => {
+                    return (
+                      <MenuItem key={suggestion} onClick={() => undefined}>
+                        {suggestion}
+                      </MenuItem>
+                    );
+                  })}
                 </Paper>
               </Popper>
             </div>
