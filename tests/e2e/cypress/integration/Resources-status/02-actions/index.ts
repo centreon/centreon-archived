@@ -16,7 +16,7 @@ Before(() => {
   cy.intercept({
     method: 'GET',
     url: resourceMonitoringApi,
-  }).as('getResources');
+  });
 });
 
 When('I select the acknowledge action on a problematic Resource', () => {
@@ -38,7 +38,6 @@ When('I select the acknowledge action on a problematic Resource', () => {
 Then('The problematic Resource is displayed as acknowledged', () => {
   refreshListing(5000);
 
-  cy.wait('@getResources');
   cy.contains(serviceName)
     .parents('div[role="cell"]:first')
     .should('have.css', 'background-color', actionBackgroundColors.acknowledge);
@@ -63,7 +62,6 @@ When('I select the downtime action on a problematic Resource', () => {
 Then('The problematic Resource is displayed as in downtime', () => {
   refreshListing(5000);
 
-  cy.wait('@getResources');
   cy.contains(serviceNameDowntime)
     .parents('div[role="cell"]:first')
     .should('have.css', 'background-color', actionBackgroundColors.inDowntime);
