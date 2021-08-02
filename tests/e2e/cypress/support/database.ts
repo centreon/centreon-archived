@@ -5,13 +5,12 @@ let testCount = 0;
 const countServicesDB = (): void => {
   cy.log('Checking in database');
   cy.task('checkServicesInDatabase', `${Cypress.env('dockerName')}`).then(
-    (stdout: any): Cypress.Chainable<any> | null => {
-      const string = stdout.split('\n')[1];
+    (stdout: any): Cypress.Chainable<string> | null => {
+      let count = 0;
 
-      cy.log('stdout : ', stdout);
-      cy.log('string extracted : ', string);
-
-      const count = parseInt(string, 10);
+      if (stdout !== '') {
+        count = parseInt(stdout.split('\n')[1], 10);
+      }
       testCount += 1;
 
       cy.log('responses found: ', count);
@@ -19,6 +18,10 @@ const countServicesDB = (): void => {
 
       if (count > 0) {
         return refreshListing().then(() => resourcesMatching());
+      }
+
+      if (testCount === 50) {
+        refreshListing();
       }
       if (testCount < 100) {
         countServicesDB();
