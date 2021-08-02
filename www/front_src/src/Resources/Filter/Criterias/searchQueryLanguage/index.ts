@@ -1,5 +1,8 @@
 import {
+  allPass,
+  and,
   any,
+  endsWith,
   equals,
   filter,
   find,
@@ -11,6 +14,7 @@ import {
   keys,
   last,
   map,
+  not,
   partition,
   pipe,
   prop,
@@ -21,6 +25,7 @@ import {
   split,
   startsWith,
   without,
+  __,
 } from 'ramda';
 import pluralize from 'pluralize';
 
@@ -51,11 +56,15 @@ const criteriaNameSortOrder = {
 const criteriaKeys = keys(selectableCriterias) as Array<string>;
 
 const isCriteriaPart = pipe(split(':'), head, pluralize, isIn(criteriaKeys));
+const isFilledCriteria = pipe(endsWith(':'), not);
 
 const parse = (search: string): Array<Criteria> => {
   const parts = search.split(' ');
 
-  const [criteriaParts, rawSearchParts] = partition(isCriteriaPart, parts);
+  const [criteriaParts, rawSearchParts] = partition(
+    allPass([isCriteriaPart, isFilledCriteria]),
+    parts,
+  );
 
   const criterias: Array<Criteria> = criteriaParts.map((criteria) => {
     const [key, values] = criteria.split(':');
@@ -153,7 +162,7 @@ const build = (criterias: Array<Criteria>): string => {
   return [builtCriterias, search?.value].join(' ');
 };
 
-const getAutocompleteSuggestionPrefix = (word: string): Array<string> => {
+const getCriteriaNameSuggestions = (word: string): Array<string> => {
   const singularizedCriteriaKeys = map(
     pluralize.singular,
     criteriaKeys,
@@ -173,7 +182,7 @@ interface CriteriaValueSuggestionsProps {
   selectedValues: Array<string>;
 }
 
-const getCriteriaValuesSuggestion = ({
+const getCriteriaValueSuggestions = ({
   selectedValues,
   criterias,
 }: CriteriaValueSuggestionsProps): Array<string> => {
@@ -182,18 +191,7 @@ const getCriteriaValuesSuggestion = ({
   return without(selectedValues, criteriaIds);
 };
 
-const getAutocompleteSuggestionSuffix = ({ word, prefix }): Array<string> => {
-  if (
-    prefix === `${pluralize.singular(CriteriaNames.states)}:` ||
-    map(prop('id'), selectableStates).includes(word)
-  ) {
-    return pipe(map(prop('id')), reject(equals(word)))(selectableStates);
-  }
-
-  return [];
-};
-
-const mapping = {
+const staticCriteriaValuesById = {
   resource_type: selectableResourceTypes,
   state: selectableStates,
   status: selectableStatuses,
@@ -202,60 +200,59 @@ const mapping = {
 const getSelectableCriteriasByName = (
   name: string,
 ): Array<{ id: string; name: string }> => {
-  return mapping[name];
+  return staticCriteriaValuesById[name];
 };
+
+interface AutocompleteSuggestionProps {
+  cursorPosition: number;
+  search: string;
+}
 
 const getAutocompleteSuggestions = ({
   search,
   cursorPosition,
-}): Array<string> => {
+}: AutocompleteSuggestionProps): Array<string> => {
   if (isNil(cursorPosition)) {
     return [];
   }
 
   const searchUntilCursor = search.slice(0, cursorPosition + 1);
+  const lastInputExpression = last(searchUntilCursor.split(' ')) || '';
+  const foundCriteria = lastInputExpression.split(':');
+  const foundCriteriaName = head(foundCriteria) || '';
+  const foundCriteriaValues = last(foundCriteria)?.split(',') || [];
 
-  const lastWord = last(searchUntilCursor.split(' ')) || '';
+  const hasCriteriaStaticValues = Object.keys(
+    staticCriteriaValuesById,
+  ).includes(foundCriteriaName);
 
-  const lastCriteria = lastWord.split(':');
-
-  const lastCriteriaName = head(lastCriteria) || '';
-  const lastValues = (last(lastCriteria) || '').split(',');
-
-  const lastCriteriaRegular = Object.keys(mapping).includes(lastCriteriaName);
-
-  if (isEmpty(lastCriteriaName)) {
+  if (isEmpty(foundCriteriaName)) {
     return [];
   }
 
-  if (lastWord.includes(':') && lastCriteriaRegular) {
-    const criteriaValueSuggestions = getCriteriaValuesSuggestion({
-      criterias: getSelectableCriteriasByName(lastCriteriaName),
-      selectedValues: lastValues,
+  if (lastInputExpression.includes(':') && hasCriteriaStaticValues) {
+    const criterias = getSelectableCriteriasByName(foundCriteriaName);
+    const lastFoundCriteriaValue = last(foundCriteriaValues) || '';
+
+    const criteriaValueSuggestions = getCriteriaValueSuggestions({
+      criterias,
+      selectedValues: foundCriteriaValues,
     });
 
-    const isLastValueKnown = getCriteriaValuesSuggestion({
-      criterias: getSelectableCriteriasByName(lastCriteriaName),
+    const isLastValueInSuggestions = getCriteriaValueSuggestions({
+      criterias,
       selectedValues: [],
-    }).includes(last(lastValues) || '');
+    }).includes(lastFoundCriteriaValue);
 
-    const lastValue = last(lastValues) || '';
-
-    return isLastValueKnown
+    return isLastValueInSuggestions
       ? criteriaValueSuggestions.map((v) => `,${v}`)
-      : filter(startsWith(lastValue), criteriaValueSuggestions);
+      : filter(startsWith(lastFoundCriteriaValue), criteriaValueSuggestions);
   }
 
   return reject(
-    (v) => search.includes(v),
-    getAutocompleteSuggestionPrefix(lastCriteriaName),
+    includes(__, search),
+    getCriteriaNameSuggestions(foundCriteriaName),
   );
 };
 
-export {
-  parse,
-  build,
-  getAutocompleteSuggestionPrefix,
-  getAutocompleteSuggestionSuffix,
-  getAutocompleteSuggestions,
-};
+export { parse, build, getAutocompleteSuggestions };

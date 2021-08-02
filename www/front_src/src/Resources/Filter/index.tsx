@@ -1,22 +1,17 @@
 import * as React from 'react';
 
-import { isEmpty, propEq, pick, find, equals, last, head } from 'ramda';
+import { isEmpty, propEq, pick, find, equals, last } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
 import {
   ClickAwayListener,
-  List,
-  ListItem,
-  ListItemText,
   makeStyles,
   MenuItem,
   Paper,
-  Popover,
   Popper,
 } from '@material-ui/core';
 
-import { MemoizedFilter, SearchField, TextField } from '@centreon/ui';
+import { MemoizedFilter, SearchField } from '@centreon/ui';
 
 import {
   labelStateFilter,
@@ -36,11 +31,7 @@ import {
   allFilter,
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
-import {
-  getAutocompleteSuggestionPrefix,
-  getAutocompleteSuggestions,
-  getAutocompleteSuggestionSuffix,
-} from './Criterias/searchQueryLanguage';
+import { getAutocompleteSuggestions } from './Criterias/searchQueryLanguage';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -48,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(1),
-    gridTemplateColumns: 'auto auto 1fr auto',
+    gridTemplateColumns: 'auto auto auto 1fr',
     width: '100%',
   },
 }));
@@ -68,6 +59,7 @@ const Filter = (): JSX.Element => {
     applyCurrentFilter,
   } = useResourceContext();
 
+  const [isSearchFieldFocus, setIsSearchFieldFocus] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
   const searchRef = React.useRef<HTMLInputElement>();
   const [autoCompleteSuggestions, setAutoCompleteSuggestions] = React.useState<
@@ -76,8 +68,6 @@ const Filter = (): JSX.Element => {
   const [cursorPosition, setCursorPosition] = React.useState(0);
 
   const open = Boolean(anchorEl);
-
-  const currentSearchCursorPosition = searchRef?.current?.selectionStart || 0;
 
   React.useEffect(() => {
     setAutoCompleteSuggestions(
@@ -88,21 +78,17 @@ const Filter = (): JSX.Element => {
     );
   }, [search, cursorPosition]);
 
-  // const autoCompleteSuggestions = getAutocompleteSuggestions({
-  //   cursorPosition,
-  //   search,
-  // });
-
   const memoProps = [
     customFilters,
     customFiltersLoading,
     search,
     cursorPosition,
     autoCompleteSuggestions,
+    open,
   ];
 
   React.useEffect(() => {
-    if (equals(autoCompleteSuggestions, [])) {
+    if (equals(autoCompleteSuggestions, []) || !isSearchFieldFocus) {
       setAnchorEl(null);
 
       return;
@@ -111,49 +97,54 @@ const Filter = (): JSX.Element => {
     setAnchorEl(searchRef?.current as HTMLDivElement);
   }, [autoCompleteSuggestions]);
 
-  const requestSearchOnEnterKey = (event: React.KeyboardEvent): void => {
+  const acceptAutocompleteSuggestionAtIndex = (index) => {
+    setNewFilter();
+
+    const acceptedSuggestion = autoCompleteSuggestions[index];
+
+    if (search[cursorPosition] === ',') {
+      setSearch(search + acceptedSuggestion);
+      return;
+    }
+
+    const searchBeforeCursor = search.slice(0, cursorPosition + 1);
+    const lastExpression = last(searchBeforeCursor.split(' ')) || '';
+    const lastExpressionUntilCursor = lastExpression.slice(0, cursorPosition);
+
+    const lastExpressionAfterSeparator =
+      lastExpression.endsWith(':') ||
+      lastExpression.endsWith(',') ||
+      acceptedSuggestion.startsWith(',')
+        ? ''
+        : last(lastExpressionUntilCursor.split(/:|,/)) || '';
+
+    const cursorShift =
+      acceptedSuggestion.length - lastExpressionAfterSeparator.length;
+    const isLastExpressionEmpty = lastExpressionAfterSeparator === '';
+    const searchCutPosition = isLastExpressionEmpty
+      ? cursorPosition + 1
+      : cursorPosition;
+
+    const searchWithAcceptedSuggestion = [
+      search.slice(0, searchCutPosition),
+      acceptedSuggestion.slice(
+        lastExpressionAfterSeparator.length,
+        acceptedSuggestion.length,
+      ),
+      search.slice(searchCutPosition),
+    ].join('');
+
+    setSearch(searchWithAcceptedSuggestion);
+
+    setCursorPosition(cursorPosition + cursorShift);
+  };
+
+  const inputKey = (event: React.KeyboardEvent): void => {
     const enterKeyPressed = event.key === 'Enter';
-    const backspaceKeyPressed = event.key === 'Backspace';
     const tabKeyPressed = event.key === 'Tab';
 
     if (tabKeyPressed && !isEmpty(autoCompleteSuggestions)) {
-      const lastSuggestion = autoCompleteSuggestions[0];
-
-      if (search[cursorPosition] === ',') {
-        setSearch(search + lastSuggestion);
-      } else {
-        const searchUntilCursor = search.slice(0, cursorPosition + 1);
-        const lastWord = last(searchUntilCursor.split(' ')) || '';
-
-        const lastWordBeforeStop =
-          lastWord.endsWith(':') ||
-          lastWord.endsWith(',') ||
-          lastSuggestion.startsWith(',')
-            ? ''
-            : last(lastWord.slice(0, cursorPosition).split(/:|,/)) || '';
-
-        const cursorShift = lastSuggestion.length - lastWordBeforeStop.length;
-
-        const newSearch = [
-          search.slice(
-            0,
-            lastWordBeforeStop === '' ? cursorPosition + 1 : cursorPosition,
-          ),
-          lastSuggestion.substring(
-            lastWordBeforeStop.length,
-            lastSuggestion.length,
-          ),
-          search.slice(
-            lastWordBeforeStop === '' ? cursorPosition + 1 : cursorPosition,
-          ),
-        ].join('');
-
-        setSearch(newSearch);
-        const newCursorPosition = cursorPosition + cursorShift;
-        setCursorPosition(newCursorPosition);
-      }
-
-      setNewFilter();
+      acceptAutocompleteSuggestionAtIndex(0);
 
       event.preventDefault();
     }
@@ -231,17 +222,18 @@ const Filter = (): JSX.Element => {
               onChange={changeFilter}
             />
           )}
-
+          <Criterias />
           <ClickAwayListener onClickAway={closeSuggestionPopover}>
             <div>
-              <TextField
-                autoFocus
+              <SearchField
                 fullWidth
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}
+                onBlur={() => setIsSearchFieldFocus(false)}
                 onChange={prepareSearch}
-                onKeyDown={requestSearchOnEnterKey}
+                onFocus={() => setIsSearchFieldFocus(true)}
+                onKeyDown={inputKey}
               />
               <Popper
                 anchorEl={anchorEl}
@@ -252,9 +244,15 @@ const Filter = (): JSX.Element => {
                 }}
               >
                 <Paper square>
-                  {autoCompleteSuggestions.map((suggestion) => {
+                  {autoCompleteSuggestions.map((suggestion, index) => {
                     return (
-                      <MenuItem key={suggestion} onClick={() => undefined}>
+                      <MenuItem
+                        key={suggestion}
+                        onClick={() => {
+                          acceptAutocompleteSuggestionAtIndex(index);
+                          searchRef?.current?.focus();
+                        }}
+                      >
                         {suggestion}
                       </MenuItem>
                     );
@@ -263,7 +261,6 @@ const Filter = (): JSX.Element => {
               </Popper>
             </div>
           </ClickAwayListener>
-          <Criterias />
         </div>
       }
       memoProps={memoProps}

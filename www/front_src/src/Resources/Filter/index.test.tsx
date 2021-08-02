@@ -413,6 +413,39 @@ describe(Filter, () => {
     },
   );
 
+  it('accepts the first relevant autocomplete suggestion when the beginning of a criteria is input and the tab key is pressed', async () => {
+    const { getByPlaceholderText } = renderFilter();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    userEvent.type(
+      getByPlaceholderText(labelSearch),
+      '{selectall}{backspace}stat',
+    );
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue('state:');
+
+    userEvent.type(getByPlaceholderText(labelSearch), 'u');
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue(
+      'state:unhandled_problems',
+    );
+
+    userEvent.type(getByPlaceholderText(labelSearch), ' st');
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue(
+      'state:unhandled_problems status:',
+    );
+  });
+
   describe('Filter storage', () => {
     it('populates filter with values from localStorage if available', async () => {
       mockedLocalStorageGetItem
