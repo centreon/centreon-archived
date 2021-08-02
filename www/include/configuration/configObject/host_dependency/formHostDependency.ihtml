@@ -35,7 +35,9 @@
 		<tr class="list_two">
 			<td class="FormRowField"><img class="helpTooltip" name="dep_hSvChi"> {$form.dep_hSvChi.label}</td>
 			<td class="FormRowValue">
-				{$form.host_filter.html}
+				{if isset($form.host_filter)}
+					{$form.host_filter.html}
+				{/if}
 				{$form.dep_hSvChi.html}
 			</td>
 		</tr>
