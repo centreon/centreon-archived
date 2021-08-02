@@ -1,6 +1,6 @@
 import { refreshButton } from '../integration/Resources-status/common';
 
-import { apiActionV1, apiLoginV2, apiFilterResourcesBeta } from './model';
+import { apiActionV1, apiLoginV2, apiFilterResources } from './model';
 
 interface Criteria {
   name: string;
@@ -126,7 +126,7 @@ const setUserFilter = (body: Filter): Cypress.Chainable => {
         'X-Auth-Token': window.localStorage.getItem('userTokenApiV2'),
       },
       method: 'POST',
-      url: apiFilterResourcesBeta,
+      url: apiFilterResources,
     })
     .then((response) => {
       expect(response.status).to.eq(200);
@@ -141,7 +141,7 @@ const deleteUserFilter = (): Cypress.Chainable => {
         'X-Auth-Token': window.localStorage.getItem('userTokenApiV2'),
       },
       method: 'DELETE',
-      url: `${apiFilterResourcesBeta}/${window.localStorage.getItem(
+      url: `${apiFilterResources}/${window.localStorage.getItem(
         'filterUserId',
       )}`,
     })
