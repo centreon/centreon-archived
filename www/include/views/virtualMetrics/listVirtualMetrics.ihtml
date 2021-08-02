@@ -46,7 +46,7 @@
         </tr>
         {assign var=title_mode value=0}
         {section name=elem loop=$elemArr}
-        {if $elemArr[elem].title != $title_value}
+        {if isset($title_value) && $elemArr[elem].title != $title_value}
         {assign var=title_mode value=0}
         {/if}
         {if $elemArr[elem].title && $title_mode == 0}

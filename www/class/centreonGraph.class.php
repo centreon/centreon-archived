@@ -100,7 +100,10 @@ class CentreonGraph
     protected $dbPath;
     protected $dbStatusPath;
     protected $index;
-    protected $indexData;
+    protected $indexData = [
+        "host_name" => "",
+        "service_description" => ""
+    ];
     protected $templateId;
     protected $templateInformations;
     protected $gprintScaleOption;
@@ -1209,9 +1212,7 @@ class CentreonGraph
 
         $this->log("index_data for " . $svc_instance);
         $DBRESULT = $this->DBC->query("SELECT * FROM index_data WHERE id = '" . $svc_instance . "' LIMIT 1");
-        if (!$DBRESULT->rowCount()) {
-            $this->indexData = 0;
-        } else {
+        if ($DBRESULT->rowCount()) {
             $this->indexData = $DBRESULT->fetch();
             /*
              * Check Meta Service description
@@ -1766,7 +1767,7 @@ class CentreonGraph
      */
     private function log($message)
     {
-        if ($this->generalOpt['debug_rrdtool'] && is_writable($this->generalOpt['debug_path'])) {
+        if (isset($this->generalOpt['debug_rrdtool']) && is_writable($this->generalOpt['debug_path'])) {
             error_log(
                 "[" . date("d/m/Y H:i") . "] RDDTOOL : " . $message . " \n",
                 3,
