@@ -1253,7 +1253,6 @@ if ($valid) {
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('cloneSetTemplate', $cloneSetTemplate);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
-    $tpl->assign("k", $k);
     $tpl->assign("tpl", 0);
     $tpl->display("formHost.ihtml");
     ?>
