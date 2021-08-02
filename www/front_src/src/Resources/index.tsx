@@ -26,7 +26,7 @@ const ResourcesPage = ({
 }: Props): JSX.Element => (
   <WithPanel open={editPanelOpen} panel={<EditFiltersPanel />}>
     <ListingPage
-      filters={<Filter />}
+      filter={<Filter />}
       listing={<Listing />}
       panel={<Details />}
       panelOpen={!isNil(selectedResourceId)}
