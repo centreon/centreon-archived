@@ -68,9 +68,13 @@
         {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_notification_commands"> {$form.contact_svNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_svNotifCmds.html}</p></td></tr>
         {if $o == "a" || $o == "c"}
-            <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+            <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
         {/if}
-        {if is_array($modules_template)}
+        {if isset($modules_template) && is_array($modules_template)}
             {foreach item=module_template from=$modules_template}
                 {include file=$module_template}
             {/foreach}
@@ -103,7 +107,11 @@
         <tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
         <tr class="list_one"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
         {if $o == "a" || $o == "c"}
-            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
         {/if}
     </table>
     </div>

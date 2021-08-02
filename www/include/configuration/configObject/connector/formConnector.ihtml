@@ -58,10 +58,14 @@
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_id"> {$form.command_id.label}</td><td class="FormRowValue">{$form.command_id.html}</td></tr>            
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="connector_status"> {$form.connector_status.label}</td><td class="FormRowValue">{$form.connector_status.html}</td></tr>
         </table>
-    </div>              
+    </div>
     <div id="validForm">
 	{if $o == "a" || $o == "c"}
-		<p>{$form.action.html}</p>
+		<p>
+            {if isset($form.action)}
+                {$form.action.html}
+            {/if}
+        </p>
 		<p class="oreonbutton">
             {if isset($form.submitC)}
                 {$form.submitC.html}

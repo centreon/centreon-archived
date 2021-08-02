@@ -84,7 +84,11 @@
             <tr class="list_two"><td class="FormRowField">{$form.event_queue_max_size.label}</td><td class="FormRowValue">{$form.event_queue_max_size.html}</td></tr>
             <tr class="list_one"><td class="FormRowField">{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.pool_size.label}</td><td class="FormRowValue">{$form.pool_size.html}</td></tr>
-            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
         </table>
     </div>
 	{foreach from=$tabs item=tab name=tabForeach2}

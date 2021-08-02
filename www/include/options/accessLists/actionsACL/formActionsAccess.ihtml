@@ -138,7 +138,11 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_status">{$form.acl_action_activate.label}</td><td class="FormRowValue">{$form.acl_action_activate.html}</td></tr>
 		
 		{if $o == "a" || $o == "c"}
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
 		{/if}
 	</table>
 	</div>

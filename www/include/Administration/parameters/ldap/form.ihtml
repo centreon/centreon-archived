@@ -68,7 +68,11 @@
 	<tr class="list_one" id="group_filter"><td class="FormRowField"><img class="helpTooltip" name="group_filter" /><span>{$form.group_filter.label}</span></td><td class="FormRowValue">{$form.group_filter.html}</td></tr>
 	<tr class="list_two" id="group_name"><td class="FormRowField"><img class="helpTooltip" name="group_name" /><span>{$form.group_name.label}</span></td><td class="FormRowValue">{$form.group_name.html}</td></tr>
 	<tr class="list_one" id="group_member"><td class="FormRowField"><img class="helpTooltip" name="group_member" />{$form.group_member.label}</td><td class="FormRowValue">{$form.group_member.html}</td></tr>
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
 </table>
 {if !$valid}
 	<div id="validForm" class="oreonbutton">

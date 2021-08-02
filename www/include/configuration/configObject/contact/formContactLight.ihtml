@@ -75,7 +75,11 @@
         {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="aclgroups"> {$form.contact_acl_groups.label}</td><td class="FormRowValue">{$form.contact_acl_groups.html}</td></tr>
         {if $o == "a" || $o == "c"}
-            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
         {/if}
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
@@ -85,7 +89,11 @@
         <tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
         <tr class="list_two"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
         {if $o == "a" || $o == "c"}
-            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
         {/if}
     </table>
     <div id="validForm">
