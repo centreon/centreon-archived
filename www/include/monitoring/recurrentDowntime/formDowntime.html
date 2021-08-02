@@ -183,9 +183,9 @@ function validPeriods()
 </script>
         {/literal}
 
-<div id="msg_err" style="color: red; text-align: center; font-weight: bold; margin: 4px; {if !$msg_err }display: none;{/if}">{$msg_err}</div>
+<div id="msg_err" style="color: red; text-align: center; font-weight: bold; margin: 4px; {if !$msg_err_norelation }display: none;{/if}">{$msg_err_norelation}</div>
 
-{if $form.msgacl }
+{if isset($form.msgacl) }
 <div style="color: red; text-align: center; font-weight: bold; margin: 4px" >
     {t}You can't edit this downtime because you don't have access to all of its resources{/t}
 </div>
@@ -197,10 +197,18 @@ function validPeriods()
         <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
         <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
     </ul>
-        {if !$form.msgacl }
+        {if !isset($form.msgacl) }
             <div id="validFormTop">
             {if $o == "a" || $o == "c" || $o == "mc"}
-            <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+            <p class="oreonbutton">
+                {if isset($form.submitC)}
+                    {$form.submitC.html}
+                {elseif isset($form.submitMC)}
+                    {$form.submitMC.html}
+                {else}
+                    {$form.submitA.html}
+                {/if}
+                &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
             {else if $o == "w"}
             <p class="oreonbutton">{$form.change.html}</p>
             {/if}
@@ -231,9 +239,9 @@ function validPeriods()
             <td class="FormRowField"><img class="helpTooltip" name="downtime_period"> {$periods}</td>
             <td class="FormRowValue">
                 <table>
-                    {if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>{/if}
+                    {if isset($period_err) }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>{/if}
                     <tr>
-                        {if !$form.msgacl }
+                        {if !isset($form.msgacl) }
                         <td class="FormRowValue">
                             {if $o != "w"}
                             <div style="cursor: pointer; color : #009fdf;">
@@ -248,7 +256,7 @@ function validPeriods()
                         <td>
                             <div id="tabs_periods">
                                 <ul id="ul_tabs">
-                                    {if $o == "w" || $form.msgacl }
+                                    {if $o == "w" || isset($form.msgacl) }
                                     {foreach item=period from=$periods_tab}
                                     {assign var='nbperiod' value='1'}
                                     {if $period.month_cycle == 'none'}
@@ -301,7 +309,11 @@ function validPeriods()
             </td>
         </tr>
         {if $o == "a" || $o == "c"}
-        <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+        <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+            {if isset($form.required_note)}
+                {$form.required_note}
+            {/if}
+        </td></tr>
         {/if}
     </table>
     </div>
@@ -319,17 +331,37 @@ function validPeriods()
         </tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_relation"> {$form.host_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.host_relation.html}</p></td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_relation"> {$form.hostgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hostgroup_relation.html}</p></td></tr>
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="svc_relation"> {$form.svc_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.host4svc.html}{$form.svc_relation.html}</p></td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="svc_relation"> {$form.svc_relation.label}</td><td class="FormRowValue">
+            <p class="oreonbutton">
+                {if isset($form.host4svc)}
+                    {$form.host4svc.html}
+                {/if}
+                {$form.svc_relation.html}
+            </p>
+        </td></tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="svcgroup_relation"> {$form.svcgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.svcgroup_relation.html}</p></td></tr>
         {if $o == "a" || $o == "c"}
-        <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+        <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+            {if isset($form.required_note)}
+                {$form.required_note}
+            {/if}
+        </td></tr>
         {/if}
     </table>
     </div>
-    {if !$form.msgacl }
+    {if !isset($form.msgacl) }
         <div id="validForm">
         {if $o == "a" || $o == "c" || $o == "mc"}
-        <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        <p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {elseif isset($form.submitMC)}
+                {$form.submitMC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
         {else if $o == "w"}
         <p class="oreonbutton">{$form.change.html}</p>
         {/if}
