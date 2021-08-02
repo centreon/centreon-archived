@@ -119,7 +119,14 @@
     </div>
 	<div id="validForm">
 	{if $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		<p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
 	{else}
 		<p class="oreonbutton">{$form.change.html}</p>
 	{/if}

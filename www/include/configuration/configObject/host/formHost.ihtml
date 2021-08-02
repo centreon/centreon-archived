@@ -88,7 +88,7 @@
 				<td class="FormRowValue">{$form.dupSvTplAssoc.html}</td>
 			</tr>
             {/if}
-			{if $form.acl_groups}
+			{if isset($form.acl_groups)}
 		    <tr class="list_lvl_1">
 		        <td class="ListColLvl1_name" colspan="2"><img src="./img/icones/16x16/lock_new.gif">&nbsp;&nbsp;{$accessgroups}</td>
 		    </tr>
@@ -157,7 +157,11 @@
 				<td class="FormRowValue">{$form.host_passive_checks_enabled.html}</td>
 			</tr>
 			{if $o == "a" || $o == "c"}
-				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+				{if isset($required.note)}
+					{$form.required_note}
+				{/if}
+				</td></tr>
 			{/if}
 		<tbody>
 	</table>
@@ -364,7 +368,11 @@
          <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hostcategories"> {$form.host_hcs.label}</td><td class="FormRowValue">{$form.host_hcs.html} </td></tr>
 	{/if}
 	{if $o == "a" || $o == "c"}
-		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+		{if isset($form.required_note)}
+			{$form.required_note}
+		{/if}
+		</td></tr>
 	{/if}
  </table>
 </div>
@@ -423,7 +431,11 @@
 		{/if}</td>
 	</tr>
 	{if $o == "a" || $o == "c"}
-		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+			{if isset($required.note)}
+				{$form.required_note}
+			{/if}
+		</td></tr>
 	{/if}
  </table>
 </div>
@@ -463,7 +475,11 @@
 		<tr class="list_two"><td class="FormRowField">{$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
 		{if $o == "a" || $o == "c"}
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+				{if isset($required.note)}
+					{$form.required_note}
+				{/if}
+			</td></tr>
 		{/if}
 	</table>
 </div>

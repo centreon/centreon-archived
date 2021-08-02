@@ -11,7 +11,13 @@
 </ul>
 <div id="validFormTop">
 {if $o == "a" || $o == "c"}
-	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	<p class="oreonbutton">
+    {if isset($form.submitC)}
+        {$form.submitC.html}
+    {else}
+        {$form.submitA.html}
+    {/if}
+    &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
 	<p class="oreonbutton">{$form.change.html}</p>
 {/if}
@@ -142,7 +148,13 @@
 </div>
 <div id="validForm">
 {if $o == "a" || $o == "c"}
-	<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	<p>
+    {if isset($form.submitC)}
+        {$form.submitC.html}
+    {else}
+        {$form.submitA.html}
+    {/if}
+    &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
 	<p>{$form.change.html}</p>
 {/if}
