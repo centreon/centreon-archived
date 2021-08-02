@@ -1,5 +1,4 @@
 {$form.javascript}
-{$insertValueQuery}
 <form {$form.attributes}>
 	<div id="validFormTop">
 	{if $o == "a" || $o == "c"}
@@ -29,7 +28,6 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name"> {$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.alias.label}</td><td class="FormRowValue">{$form.alias.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="description"> {$form.description.label}</td><td class="FormRowValue">{$form.description.html}</td></tr>
-		
 	</table>
 	</div>
 	<div id="validForm">

@@ -39,7 +39,7 @@
         {if $form.ssh_port.label}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ssh_port"> {$form.ssh_port.label}</td><td class="FormRowValue">{$form.ssh_port.html}</td></tr>
         {/if}
-        {if $form.header.Remote_Configuration}
+        {if isset($form.header.Remote_Configuration)}
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
                 <h4>{$form.header.Remote_Configuration}</h4>
@@ -119,7 +119,11 @@
         </tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ns_activate"> {$form.ns_activate.label}</td><td class="FormRowValue">{$form.ns_activate.html}</td></tr>
         {if $o == "a" || $o == "c"}
-            <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required_note}</td></tr>
+            <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+            {if isset($form.required_note)}
+                {$form.required_note}
+            {/if}
+            </td></tr>
         {/if}
     </table>
     </div>

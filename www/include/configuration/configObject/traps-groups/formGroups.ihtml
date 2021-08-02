@@ -1,5 +1,4 @@
 {$form.javascript}
-{$insertValueQuery}
 <form {$form.attributes}>
 	<div id="validFormTop">
 	{if $o == "a" || $o == "c"}

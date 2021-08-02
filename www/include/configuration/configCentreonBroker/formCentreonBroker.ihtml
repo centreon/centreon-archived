@@ -44,11 +44,6 @@
             <tr class="list_one"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.cache_directory.label}</td><td class="FormRowValue">{$form.cache_directory.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField">{$form.activate_watchdog.label}</td><td class="FormRowValue">{$form.activate_watchdog.html}</td></tr>
-			<tr class="list_lvl_2">
-				<td class="ListColLvl1_name" colspan="2">
-					<h4>{$centreonbroker_watchdog_log}</h4>
-				</td>
-			</tr>
             <tr class="list_two"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
             <tr class="list_lvl_1">
                 <td class="ListColLvl1_name" colspan="2">
