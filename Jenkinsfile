@@ -12,6 +12,8 @@ env.REF_BRANCH = 'master'
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
+} else if ((env.BRANCH_NAME == 'master') || (env.BRANCH_NAME == maintenanceBranch)) {
+  env.BUILD = 'REFERENCE'
 } else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch)) {
   env.BUILD = 'QA'
 } else {
@@ -72,7 +74,7 @@ def acceptanceTag = ""
 ** Functions
 */
 def isStableBuild() {
-  return ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA'))
+  return ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE') || (env.BUILD == 'QA'))
 }
 
 def hasChanges(patterns) {
