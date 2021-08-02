@@ -35,7 +35,6 @@
             <h4>{$form.header.links}</h4>
           </td>
         </tr>
-		<!--<tr class="list_one"><td class="FormRowField">{$form.sc_svc.label}</td><td class="FormRowValue">{$form.sc_svc.html}</td></tr>-->
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_template"> {$form.sc_svcTpl.label}</td><td class="FormRowValue">{$form.sc_svcTpl.html}</td></tr>
                 <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sc_type"> {$form.sc_type.label}</td><td class="FormRowValue">{$form.sc_type.html}</td></tr>
                 <tr class="list_two" id="severity_level">

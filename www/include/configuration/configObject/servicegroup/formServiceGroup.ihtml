@@ -43,9 +43,13 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.sg_activate.label}</td><td class="FormRowValue">{$form.sg_activate.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.sg_comment.label}</td><td class="FormRowValue">{$form.sg_comment.html}</td></tr>
-		
+
 		{if $o == "a" || $o == "c"}
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+				{if isset($form.required)}
+					{$form.required._note}
+				{/if}
+			</td></tr>
 		{/if}
 	</table>
 	</div>

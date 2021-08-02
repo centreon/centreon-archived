@@ -3,12 +3,12 @@
 	<div id="validFormTop">
 	{if $o == "a" || $o == "c"}
 		<p class="oreonbutton">
-			{if isset($form.submitC)}
-				{$form.submitC.html}
-			{else}
-				{$form.submitA.html}
-			{/if}
-			&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		{if isset($form.submitC)}
+			{$form.submitC.html}
+		{else}
+			{$form.submitA.html}
+		{/if}
+		&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{$form.change.html}</p>
 	{/if}
@@ -69,19 +69,25 @@
 		<tr class="list_one"><td class="FormRowField">{$form.meta_comment.label}</td><td class="FormRowValue">{$form.meta_comment.html}</td></tr>
 		
 		{if $o == "a" || $o == "c"}
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+			<tr class="list_lvl_2">
+				<td class="ListColLvl2_name" colspan="2">
+				{if isset($form.required)}
+					{$form.required._note}
+				{/if}
+				</td>
+			</tr>
 		{/if}
 	</table>
 	</div>
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}
 		<p class="oreonbutton">
-			{if isset($form.submitC)}
-				{$form.submitC.html}
-			{else}
-				{$form.submitA.html}
-			{/if}
-			&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		{if isset($form.submitC)}
+			{$form.submitC.html}
+		{else}
+			{$form.submitA.html}
+		{/if}
+		&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{$form.change.html}</p>
 	{/if}
