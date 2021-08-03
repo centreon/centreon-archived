@@ -55,7 +55,7 @@ const CommandLineCard = ({ details }: Props): JSX.Element => {
   };
 
   return (
-    <Card className={classes.commandLineCard}>
+    <Card square className={classes.commandLineCard} elevation={0}>
       <Typography
         gutterBottom
         color="textSecondary"
