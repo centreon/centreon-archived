@@ -130,7 +130,6 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
                 displayCard && (
                   <SortableItem
                     active={active}
-                    field={field}
                     isCustomCard={isCustomCard}
                     key={detailsCardItem}
                     line={line as JSX.Element}
