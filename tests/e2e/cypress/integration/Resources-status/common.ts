@@ -1,5 +1,4 @@
 const stateFilterContainer = '[aria-label="State filter"]';
-const toggleCriteriasButton = '[aria-label="Show criterias filters"]';
 const searchInput = 'input[placeholder="Search"]';
 const refreshButton = '[aria-label="Refresh"]';
 const serviceName = 'service_test';
@@ -18,7 +17,6 @@ const actions = {
 
 export {
   stateFilterContainer,
-  toggleCriteriasButton,
   searchInput,
   refreshButton,
   serviceName,

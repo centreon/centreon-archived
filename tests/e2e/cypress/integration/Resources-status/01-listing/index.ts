@@ -6,12 +6,7 @@ import {
   Then,
 } from 'cypress-cucumber-preprocessor/steps';
 
-import {
-  searchInput,
-  toggleCriteriasButton,
-  searchValue,
-  stateFilterContainer,
-} from '../common';
+import { searchInput, searchValue, stateFilterContainer } from '../common';
 import {
   setUserFilter,
   deleteUserFilter,
@@ -31,20 +26,7 @@ When('I filter on unhandled problems', () => cy.contains('Unhandled problems'));
 Then('Only non-ok resources are displayed', () => resourcesMatching());
 
 When('I put in some criterias', () => {
-  cy.get(toggleCriteriasButton).click();
-  cy.get(searchInput).type(searchValue);
-  cy.contains('Search').should('exist').click();
-
-  cy.get('#fullscreen-wrapper')
-    .contains(/^Resource$/)
-    .should('exist')
-    .click()
-    .then(() =>
-      cy
-        .contains(/^Service$/)
-        .should('exist')
-        .click(),
-    );
+  cy.get(searchInput).type(searchValue).type('{enter}');
 });
 Then(
   'only the Resources matching the selected criterias are displayed in the result',
