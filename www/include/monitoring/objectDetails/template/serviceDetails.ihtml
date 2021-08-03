@@ -57,7 +57,7 @@
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_services_state}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if $service_data.state_type)}
+                                    {if $service_data.state_type}
                                         {$harsof[$service_data.state_type]}
                                     {/if}
                                 </td>
@@ -65,7 +65,7 @@
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_last_check_type}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if $service_data.check_type)}
+                                    {if $service_data.check_type}
                                         {$actpass[$service_data.check_type]}
                                     {/if}
                                 </td>
@@ -74,7 +74,7 @@
                                 <td class="ListColLeft ColPopup">{$m_mon_host_last_check}</td>
                                 <!-- using a class to format the timestamp -->
                                 <td class="ListColLeft ColPopup isTimestamp">
-                                    {if $service_data.last_check)}
+                                    {if $service_data.last_check}
                                         {$service_data.last_check}
                                     {/if}
                                 </td>
@@ -82,7 +82,7 @@
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_services_active_check}</td>
                                 <td class="ListColLeft ColPopup isTimestamp">
-                                    {if $service_data.next_check)}
+                                    {if $service_data.next_check}
                                         {$service_data.next_check}
                                     {/if}
                                 </td>
@@ -102,19 +102,19 @@
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_current_state_duration}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if $service_data.duration)}
+                                    {if $service_data.duration}
                                         {$service_data.duration}
                                     {/if}
                                 </td>
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_last_notification_serv}</td>
-                                <td class="ListColLeft ColPopup{if $service_data.last_notification)} isTimestamp">{$service_data.last_notification}{else}">{/if}</td>
+                                <td class="ListColLeft ColPopup{if $service_data.last_notification} isTimestamp">{$service_data.last_notification}{else}">{/if}</td>
                             </tr>
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_notification_nb}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if $service_data.current_notification_number)}
+                                    {if $service_data.current_notification_number}
                                         {$service_data.current_notification_number}
                                     {/if}
                                 </td>
@@ -126,7 +126,7 @@
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_percent_state_change}</td>
                                 <td class="ListColLeft ColPopup">
-                                    {if $service_data.percent_state_change)}
+                                    {if $service_data.percent_state_change}
                                         {$service_data.percent_state_change} 
                                     {/if}
                                     %
@@ -135,7 +135,7 @@
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_downtime_sc}</td>
                                 <td class="ListColLeft ColPopup" style='background:
-                                    {if $service_data.scheduled_downtime_depth)}
+                                    {if $service_data.scheduled_downtime_depth}
                                         {$color_onoff_inv[$service_data.scheduled_downtime_depth]};
                                     {else}
                                         {$color_onoff_inv[0]};
@@ -366,14 +366,14 @@
                                     <h4>{$m_mon_service_command}</h4>
                                 </td>
                             </tr>
-                                {if (isset($aclAct.service_schedule_check) || $admin == true) && isset($service_data.active_checks_enabled)}
+                                {if (isset($aclAct.service_schedule_check) || $admin == true) && isset($service_data.active_checks_enabled}
                                     <tr class='list_two'>
                                         <td class="ListColLeft ColPopup" id="service_schedule_check">
                                             <b><a href="#" onClick="send_command('service_schedule_check', '0');">{$m_mon_schedule}</a></b>
                                         </td>
                                     </tr>
                                 {/if}
-                                {if (isset($aclAct.service_schedule_forced_check) || $admin == true) && isset($service_data.active_checks_enabled)}
+                                {if (isset($aclAct.service_schedule_forced_check) || $admin == true) && $service_data.active_checks_enabled)}
                                     <tr class='list_one'>
                                         <td class="ListColLeft ColPopup" id="service_schedule_check_forced">
                                             <b><a href="#" onClick="send_command('service_schedule_check', '1', '{$m_mon_schedule_force}');">{$m_mon_schedule_force}</a></b>
@@ -383,7 +383,7 @@
                                 {if isset($aclAct.service_schedule_downtime) || $admin == true}
                                     <tr class='list_two'>
                                         <td class="ListColLeft ColPopup">
-                                            {if $service_data.service_id)}
+                                            {if $service_data.service_id}
                                                 <b><a href='./main.php?p=21001&o=a&host_id={$h.host_id}&service_id={$service_data.service_id}'>{$m_mon_schedule_downtime}</a></b>
                                             {/if}
                                         </td>
@@ -396,7 +396,7 @@
                                         </td>
                                     </tr>
                                 {/if}
-                                {if (isset($aclAct.service_submit_result) || $admin == true) && isset($service_data.passive_checks_enabled)}
+                                {if (isset($aclAct.service_submit_result) || $admin == true) && $service_data.passive_checks_enabled}
                                     <tr class='list_two'>
                                         <td class="ListColLeft ColPopup">
                                             <b><a href='./main.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}&is_meta={$is_meta}'>{$m_mon_submit_passive}</a></b>
