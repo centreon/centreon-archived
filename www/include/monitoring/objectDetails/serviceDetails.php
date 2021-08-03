@@ -233,6 +233,56 @@ if (!is_null($host_id)) {
             "unknown" => 'service_unknown',
             'pending' => 'pending'
         );
+
+        $service_status = [
+            "service_id" => null,
+            "current_state" => null,
+            "plugin_output" => null,
+            "plugin_output2" => null,
+            "current_attempt" => null,
+            "status_update_time" => null,
+            "last_state_change" => null,
+            "last_check" => null,
+            "last_time_ok" => null,
+            "last_time_warning" => null,
+            "last_time_critical" => null,
+            "last_time_unknown" => null,
+            "notifications_enabled" => null,
+            "next_check" => null,
+            "problem_has_been_acknowledged" => null,
+            "passive_checks_enabled" => null,
+            "active_checks_enabled" => null,
+            "event_handler_enabled" => null,
+            "performance_data" => null,
+            "is_flapping" => null,
+            "scheduled_downtime_depth" => null,
+            "percent_state_change" => null,
+            "current_notification_number" => null,
+            "obsess_over_service" => null,
+            "check_type" => null,
+            "check_command" => null,
+            "state_type" => null,
+            "check_latency" => null,
+            "check_execution_time" => null,
+            "flap_detection_enabled" => null,
+            "last_notification" => null,
+            "host_name" => null,
+            "service_description" => null,
+            "display_name" => null,
+            "notes_url" => null,
+            "notes" => null,
+            "action_url" => null,
+            "instance_name" => null,
+            "command_line" => null,
+            "current_stateid" => null,
+            "status_color" => null,
+            "status_class" => null,
+            "notification" => null,
+            "next_notification" => null,
+            "long_plugin_output" => null,
+            "duration" => null,
+        ];
+
         while ($data = $DBRESULT->fetchRow()) {
             if (isset($data['performance_data'])) {
                 $data['performance_data'] = $data['performance_data'];
@@ -679,6 +729,9 @@ if (!is_null($host_id)) {
             $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
         }
         $tpl->assign("host_data", $host_status[$host_name]);
+        echo '<pre>';
+        var_dump(array_keys($service_status));
+        echo '</pre>';
         $tpl->assign("service_data", $service_status);
         $tpl->assign("host_display_name", CentreonUtils::escapeSecure($hostNameDisplay));
         $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
