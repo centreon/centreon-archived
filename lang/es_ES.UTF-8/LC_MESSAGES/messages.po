@@ -14722,3 +14722,6 @@ msgstr "Permitir certificado autofirmado"
 
 # msgid "Action not permitted"
 # msgstr ""
+
+# msgid "Search options"
+# msgstr ""
