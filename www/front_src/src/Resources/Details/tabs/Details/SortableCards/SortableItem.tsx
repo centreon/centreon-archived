@@ -61,7 +61,8 @@ const MemoizedStyledDraggableItem = React.memo(
     equals(prevProps.isDragging, nextProps.isDragging) &&
     equals(prevProps.active, nextProps.active) &&
     equals(prevProps.line, nextProps.line) &&
-    equals(prevProps.field, nextProps.field),
+    equals(prevProps.field, nextProps.field) &&
+    equals(prevProps.width, nextProps.width),
 );
 
 const SortableItem = ({ title, ...props }: Props): JSX.Element => {

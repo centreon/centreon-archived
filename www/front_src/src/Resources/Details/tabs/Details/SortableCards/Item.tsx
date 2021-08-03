@@ -3,7 +3,7 @@ import * as React from 'react';
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
 import { useTranslation } from 'react-i18next';
 
-import { Grid, makeStyles, Paper, Theme } from '@material-ui/core';
+import { Grid, GridSize, makeStyles, Paper, Theme } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import DetailsCard from '../DetailsCard';
@@ -53,10 +53,12 @@ const Item = React.forwardRef(
     const { t } = useTranslation();
     const classes = useStyles({ isDragging });
 
-    const variableXs = (width > 600 ? xs / 2 : xs) as 3 | 6 | 12;
+    const getVariableXs = (): GridSize => {
+      return (width > 950 ? xs / 2 : xs) as GridSize;
+    };
 
     return (
-      <Grid item key={title} xs={variableXs} {...props}>
+      <Grid item key={title} xs={getVariableXs()} {...props}>
         <Paper>
           <div className={classes.tile} ref={ref}>
             <div {...listeners} className={classes.handler}>
