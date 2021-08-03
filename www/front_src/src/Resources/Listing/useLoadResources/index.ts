@@ -14,8 +14,6 @@ export interface LoadResources {
 }
 
 const useLoadResources = (): LoadResources => {
-  const [areDetailsEmpty, setAreDetailsEmpty] = React.useState(false);
-
   const {
     limit,
     page,
