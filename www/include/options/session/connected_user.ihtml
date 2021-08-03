@@ -7,9 +7,21 @@
 			<td class="ListColHeaderCenter">{ $wi_where }</td>
 			<td class="ListColHeaderCenter">{ $wi_last_req }</td>
 			{if $isAdmin == 1}
-				<td class="ListColHeaderCenter">{ $wi_last_sync }</td>
-				<td class="ListColHeaderCenter">{ $wi_syncLdap }</td>
-				<td class="ListColHeaderCenter">{ $wi_logoutUser }</td>
+				<td class="ListColHeaderCenter">
+					{if isset($wi_last_sync)}
+						{ $wi_last_sync }
+					{/if}
+				</td>
+				<td class="ListColHeaderCenter">
+					{if isset($wi_syncLdap)}
+						{ $wi_syncLdap }
+					{/if}
+				</td>
+				<td class="ListColHeaderCenter">
+					{if isset($wi_logoutUser)}
+						{ $wi_logoutUser }
+					{/if}
+				</td>
 			{/if}
 		</tr>
 		{foreach name=outer item=sd from=$session_data }
