@@ -199,7 +199,7 @@ echo "#####################"
 if [ "$started" -eq 1 ] ; then
     i=0
     output_log "Stopping mysqld:" 0 1
-    systemctl stop $process 
+    systemctl stop $process
     while ps -o args --no-headers -C mysqld >/dev/null; do
         if [ "$i" -gt "$STOP_TIMEOUT" ] ; then
             output_log ""
