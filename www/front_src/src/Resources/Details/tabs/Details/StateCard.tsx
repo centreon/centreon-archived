@@ -56,7 +56,7 @@ const StateCard = ({
   const classes = useStyles();
 
   return (
-    <Card square elevation={0} style={{ padding: 8 }}>
+    <Card elevation={0} style={{ padding: 8 }}>
       <div className={classes.container}>
         <Typography
           className={classes.contentTitle}
