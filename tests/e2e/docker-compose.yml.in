@@ -12,7 +12,8 @@ services:
     container_name: e2e_cypress
     user: "root"
     privileged: true
+    working_dir: /e2e
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - .:/e2e
-    working_dir: /e2e
+    command: "--spec @FEATURE_FILE@"
