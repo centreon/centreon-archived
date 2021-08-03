@@ -182,7 +182,7 @@ class CentreonDowntime
         }
         try {
             $res = $this->db->prepare($query);
-            if(!empty($this->safeSearch)) {
+            if (!empty($this->safeSearch)) {
                 $res->bindValue(':search', '%' . $this->safeSearch . '%', \PDO::PARAM_STR);
             }
             $res->execute();
