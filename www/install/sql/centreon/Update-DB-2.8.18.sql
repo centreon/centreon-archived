@@ -36,8 +36,8 @@ VALUES (
 (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Value of the metric.'),
 0, 3, NULL, NULL);
 
-INSERT INTO `cb_list` (`cb_field_id`, `default_value`)
-VALUES((SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.'), 'string');
+INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`)
+VALUES((SELECT IFNULL(MAX(l.cb_list_id), 0) + 1 from cb_list l), (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Type of the metric.'), 'string');
 
 INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`)
 VALUES
