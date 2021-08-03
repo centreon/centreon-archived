@@ -1378,3 +1378,8 @@ VALUES
 -- Insert local authentication provider configuration
 INSERT INTO `provider_configuration` (type, name, is_active, is_forced)
 VALUES ('local', 'local', true, true);
+
+INSERT INTO `password_security_policy`
+(`password_length`, `uppercase_characters`, `lowercase_characters`, `integer_characters`, `special_characters`,
+`attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`)
+VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600);
