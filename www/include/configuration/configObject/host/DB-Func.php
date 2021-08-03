@@ -984,7 +984,7 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
             $host_id['MAX(host_id)'],
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             false,
             $ret["command_command_id"]
