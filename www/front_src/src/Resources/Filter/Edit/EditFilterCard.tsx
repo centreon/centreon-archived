@@ -37,7 +37,7 @@ import {
   labelNameCannotBeEmpty,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
-import { Filter } from '../models';
+import { Filter, newFilter } from '../models';
 import { ResourceContext, useResourceContext } from '../../Context';
 import memoizeComponent from '../../memoizedComponent';
 
@@ -55,22 +55,24 @@ interface EditFilterCardProps {
   filter: Filter;
 }
 
-interface Props
-  extends EditFilterCardProps,
-    Pick<
-      ResourceContext,
-      'customFilters' | 'setFilter' | 'setCustomFilters' | 'setNewFilter'
-    > {
-  currentFilter: Filter;
-}
+type Props = EditFilterCardProps &
+  Pick<
+    ResourceContext,
+    | 'customFilters'
+    | 'setCurrentFilter'
+    | 'setCustomFilters'
+    | 'setAppliedFilter'
+    | 'currentFilter'
+    | 'currentFilter'
+  >;
 
 const EditFilterCardContent = ({
   filter,
   currentFilter,
   customFilters,
-  setFilter,
+  setCurrentFilter,
+  setAppliedFilter,
   setCustomFilters,
-  setNewFilter,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -115,7 +117,7 @@ const EditFilterCardContent = ({
         showSuccessMessage(t(labelFilterUpdated));
 
         if (equals(updatedFilter.id, currentFilter.id)) {
-          setFilter(updatedFilter);
+          setCurrentFilter(updatedFilter);
         }
 
         const index = findIndex(propEq('id', updatedFilter.id), customFilters);
@@ -137,7 +139,8 @@ const EditFilterCardContent = ({
       showSuccessMessage(t(labelFilterDeleted));
 
       if (equals(filter.id, currentFilter.id)) {
-        setNewFilter();
+        setCurrentFilter({ ...filter, ...newFilter });
+        setAppliedFilter({ ...filter, ...newFilter });
       }
 
       setCustomFilters(reject(equals(filter), customFilters));
@@ -215,21 +218,21 @@ const MemoizedEditFilterCardContent = memoizeComponent<Props>({
 
 const EditFilterCard = ({ filter }: EditFilterCardProps): JSX.Element => {
   const {
-    setFilter,
-    filter: currentFilter,
+    setCurrentFilter,
+    filterWithParsedSearch,
     setCustomFilters,
     customFilters,
-    setNewFilter,
+    setAppliedFilter,
   } = useResourceContext();
 
   return (
     <MemoizedEditFilterCardContent
-      currentFilter={currentFilter}
+      currentFilter={filterWithParsedSearch}
       customFilters={customFilters}
       filter={filter}
+      setAppliedFilter={setAppliedFilter}
+      setCurrentFilter={setCurrentFilter}
       setCustomFilters={setCustomFilters}
-      setFilter={setFilter}
-      setNewFilter={setNewFilter}
     />
   );
 };
