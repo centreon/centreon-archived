@@ -34,30 +34,33 @@ const output = isServing
     }
   : {};
 
+const modules = [
+  'centreon-license-manager',
+  'centreon-autodiscovery-server',
+  'centreon-bam-server',
+  'centreon-augmented-services',
+];
+
 module.exports = merge(baseConfig, devConfig, {
+  devServer: {
+    compress: true,
+    contentBase: modules.map((module) =>
+      path.resolve(`${__dirname}/www/modules/${module}/static`),
+    ),
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    host: '0.0.0.0',
+    hot: true,
+    port: devServerPort,
+    publicPath,
+    watchContentBase: true,
+  },
   output,
+  plugins,
   resolve: {
     alias: {
-      'react-router-dom': path.resolve('./node_modules/react-router-dom'),
       '@material-ui/core': path.resolve('./node_modules/@material-ui/core'),
       dayjs: path.resolve('./node_modules/dayjs'),
+      'react-router-dom': path.resolve('./node_modules/react-router-dom'),
     },
   },
-  devServer: {
-    contentBase: [
-      path.resolve(`${__dirname}/www/modules/centreon-license-manager/static`),
-      path.resolve(
-        `${__dirname}/www/modules/centreon-autodiscovery-server/static`,
-      ),
-      path.resolve(`${__dirname}/www/modules/centreon-bam-server/static`),
-    ],
-    compress: true,
-    host: '0.0.0.0',
-    port: devServerPort,
-    hot: true,
-    watchContentBase: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-    publicPath,
-  },
-  plugins,
 });

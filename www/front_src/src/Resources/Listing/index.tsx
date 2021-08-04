@@ -5,11 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useTheme, alpha } from '@material-ui/core';
 
-import {
-  MemoizedListing as Listing,
-  Severity,
-  useSnackbar,
-} from '@centreon/ui';
+import { MemoizedListing as Listing, useSnackbar } from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
@@ -26,7 +22,7 @@ export const okStatuses = ['OK', 'UP'];
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
+  const { showWarningMessage } = useSnackbar();
 
   const {
     listing,
@@ -119,10 +115,7 @@ const ResourceListing = (): JSX.Element => {
 
   const selectColumns = (updatedColumnIds: Array<string>): void => {
     if (updatedColumnIds.length === 0) {
-      showMessage({
-        message: t(labelSelectAtLeastOneColumn),
-        severity: Severity.warning,
-      });
+      showWarningMessage(t(labelSelectAtLeastOneColumn));
 
       return;
     }

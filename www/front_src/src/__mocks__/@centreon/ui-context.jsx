@@ -8,6 +8,9 @@ const setDowntime = jest.fn();
 
 const setRefreshInterval = jest.fn();
 
+const setAreCloudServicesEnabled = jest.fn();
+const areCloudServicesEnabled = false;
+
 const useUser = jest.fn(() => ({
   setUser,
   user: 'admin',
@@ -26,6 +29,11 @@ const useDowntime = jest.fn(() => ({
 const useRefreshInterval = jest.fn(() => ({
   refreshInterval: 0,
   setRefreshInterval,
+}));
+
+const useCloudServices = jest.fn(() => ({
+  areCloudServicesEnabled,
+  setAreCloudServicesEnabled,
 }));
 
 const useUserContext = jest.fn(() => ({
@@ -48,13 +56,17 @@ const useUserContext = jest.fn(() => ({
     },
   },
   alias: 'admin',
+  cloudServices: {
+    areCloudServicesEnabled,
+    setAreCloudServicesEnabled,
+  },
   downtime: {
     default_duration: 7200,
   },
+
   locale: 'en',
 
   name: 'admin',
-
   refresh_interval: 15,
   timezone: 'Europe/Paris',
 }));
@@ -69,5 +81,6 @@ export {
   useAcl,
   useDowntime,
   useRefreshInterval,
+  useCloudServices,
   Context,
 };
