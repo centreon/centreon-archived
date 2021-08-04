@@ -86,7 +86,9 @@ $authorized_actions = [
     "service_notifications" => "",
     "service_event_handler" => "",
     "service_flap_detection" => "",
-    "service_obsess" => ""
+    "service_obsess" => "",
+    "service_acknowledgement" => "",
+    "service_disacknowledgement" => "",
 ];
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = $centreon->user->access->getActions();
@@ -758,6 +760,7 @@ if (!is_null($host_id)) {
          * Contactgroups Display
          */
         $tpl->assign("contactgroups_label", _("Contact groups notified for this service"));
+        $tpl->assign("contactgroups", []);
         if (isset($contactGroups)) {
             $tpl->assign("contactgroups", CentreonUtils::escapeSecure($contactGroups));
         }
@@ -766,6 +769,7 @@ if (!is_null($host_id)) {
          * Contacts Display
          */
         $tpl->assign("contacts_label", _("Contacts notified for this service"));
+        $tpl->assign("contacts", []);
         if (isset($contacts)) {
             $tpl->assign("contacts", CentreonUtils::escapeSecure($contacts));
         }
@@ -774,6 +778,7 @@ if (!is_null($host_id)) {
          * Hostgroups Display
          */
         $tpl->assign("hostgroups_label", _("Host Groups"));
+        $tpl->assign("hostgroups", []);
         if (isset($hostGroups)) {
             $tpl->assign("hostgroups", CentreonUtils::escapeSecure($hostGroups));
         }
@@ -791,6 +796,7 @@ if (!is_null($host_id)) {
          * Service Categories
          */
         $tpl->assign("sg_label", _("Service Categories"));
+        $tpl->assign("service_categories", []);
         if (isset($serviceCategories)) {
             $tpl->assign("service_categories", CentreonUtils::escapeSecure($serviceCategories));
         }
