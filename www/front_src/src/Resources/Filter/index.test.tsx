@@ -413,7 +413,7 @@ describe(Filter, () => {
     },
   );
 
-  it('accepts the first relevant autocomplete suggestion when the beginning of a criteria is input and the tab key is pressed', async () => {
+  it.only('accepts the selected autocomplete suggestion when the beginning of a criteria is input and the tab key is pressed', async () => {
     const { getByPlaceholderText } = renderFilter();
 
     await waitFor(() => {
@@ -443,6 +443,16 @@ describe(Filter, () => {
 
     expect(getByPlaceholderText(labelSearch)).toHaveValue(
       'state:unhandled_problems status:',
+    );
+
+    userEvent.type(getByPlaceholderText(labelSearch), ' resource_type:');
+
+    userEvent.keyboard('{ArrowDown}');
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue(
+      'state:unhandled_problems status: resource_type:service',
     );
   });
 

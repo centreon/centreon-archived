@@ -1,9 +1,7 @@
 import {
   allPass,
-  and,
-  any,
+  concat,
   endsWith,
-  equals,
   filter,
   find,
   flip,
@@ -104,7 +102,7 @@ const parse = (search: string): Array<Criteria> => {
       name: 'search',
       object_type: null,
       type: 'text',
-      value: rawSearchParts.join(' '),
+      value: rawSearchParts.join(' ').trim(),
     },
   ];
 
@@ -212,47 +210,49 @@ const getAutocompleteSuggestions = ({
   search,
   cursorPosition,
 }: AutocompleteSuggestionProps): Array<string> => {
-  if (isNil(cursorPosition)) {
+  const nextCharacter = search[cursorPosition];
+  const isNextCharacterEmpty =
+    isNil(nextCharacter) || isEmpty(nextCharacter.trim());
+
+  if (isNil(cursorPosition) || !isNextCharacterEmpty) {
     return [];
   }
 
-  const searchUntilCursor = search.slice(0, cursorPosition + 1);
-  const lastInputExpression = last(searchUntilCursor.split(' ')) || '';
-  const foundCriteria = lastInputExpression.split(':');
-  const foundCriteriaName = head(foundCriteria) || '';
-  const foundCriteriaValues = last(foundCriteria)?.split(',') || [];
+  const searchBeforeCursor = search.slice(0, cursorPosition + 1);
+  const expressionBeforeCursor =
+    last(searchBeforeCursor.trim().split(' ')) || '';
+  const expressionCriteria = expressionBeforeCursor.split(':');
+  const criteriaName = head(expressionCriteria) || '';
+  const expressionCriteriaValues = last(expressionCriteria)?.split(',') || [];
 
   const hasCriteriaStaticValues = Object.keys(
     staticCriteriaValuesById,
-  ).includes(foundCriteriaName);
+  ).includes(criteriaName);
 
-  if (isEmpty(foundCriteriaName)) {
+  if (isEmpty(criteriaName)) {
     return [];
   }
 
-  if (lastInputExpression.includes(':') && hasCriteriaStaticValues) {
-    const criterias = getSelectableCriteriasByName(foundCriteriaName);
-    const lastFoundCriteriaValue = last(foundCriteriaValues) || '';
+  if (expressionBeforeCursor.includes(':') && hasCriteriaStaticValues) {
+    const criterias = getSelectableCriteriasByName(criteriaName);
+    const lastCriteriaValue = last(expressionCriteriaValues) || '';
 
     const criteriaValueSuggestions = getCriteriaValueSuggestions({
       criterias,
-      selectedValues: foundCriteriaValues,
+      selectedValues: expressionCriteriaValues,
     });
 
     const isLastValueInSuggestions = getCriteriaValueSuggestions({
       criterias,
       selectedValues: [],
-    }).includes(lastFoundCriteriaValue);
+    }).includes(lastCriteriaValue);
 
     return isLastValueInSuggestions
-      ? criteriaValueSuggestions.map((v) => `,${v}`)
-      : filter(startsWith(lastFoundCriteriaValue), criteriaValueSuggestions);
+      ? criteriaValueSuggestions.map(concat(','))
+      : filter(startsWith(lastCriteriaValue), criteriaValueSuggestions);
   }
 
-  return reject(
-    includes(__, search),
-    getCriteriaNameSuggestions(foundCriteriaName),
-  );
+  return reject(includes(__, search), getCriteriaNameSuggestions(criteriaName));
 };
 
 export { parse, build, getAutocompleteSuggestions };
