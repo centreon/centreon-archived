@@ -436,7 +436,10 @@
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_event_handler}</td>
                                 <td class="ListColLeft ColPopup">
-                                    <span class="badge" style='background-color:{$color_onoff[$service_data.event_handler_enabled]};'>{$en_disable[$service_data.event_handler_enabled]}</span></td>
+                                    {if !empty($service_data.event_handler_enabled)}
+                                        <span class="badge" style='background-color:{$color_onoff[$service_data.event_handler_enabled]};'>{$en_disable[$service_data.event_handler_enabled]}</span>
+                                    {/if}
+                                </td>
                                 <td class="ListColRight ColPopup" id="service_event_handler">
                                 {if !empty($service_data.event_handler_enabled) && ($aclAct.service_event_handler || $admin == true)}
                                     <a href="#" onClick="send_command('service_event_handler', '{$en_inv[$service_data.event_handler_enabled]}');" title='{$en_inv_text[$service_data.event_handler_enabled]} {$m_mon_event_handler}'>
