@@ -14740,3 +14740,6 @@ msgstr "Permitir certificado autofirmado"
 
 # msgid "Before last year"
 # msgstr ""
+
+# msgid "Search options"
+# msgstr ""

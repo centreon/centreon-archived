@@ -82,7 +82,7 @@ import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
 import useFilter from '../Filter/useFilter';
-import { SelectableCriteriasType } from '../Filter/Criterias/models';
+import { CriteriaNames } from '../Filter/Criterias/models';
 
 import {
   last7Days,
@@ -1432,9 +1432,9 @@ describe(Details, () => {
     userEvent.click(getByText('Linux-servers').parentElement as HTMLElement);
 
     await waitFor(() => {
-      expect(
-        context.getCriteriaValue(SelectableCriteriasType.serviceGroups),
-      ).toEqual([{ id: 0, name: 'Linux-servers' }]);
+      expect(context.getCriteriaValue(CriteriaNames.serviceGroups)).toEqual([
+        { id: 0, name: 'Linux-servers' },
+      ]);
     });
   });
 

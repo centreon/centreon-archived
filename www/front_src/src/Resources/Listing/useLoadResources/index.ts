@@ -1,8 +1,7 @@
 import * as React from 'react';
 
 import { useSelector } from 'react-redux';
-import { isNil, equals, not, prop } from 'ramda';
-import useDeepCompareEffect from 'use-deep-compare-effect';
+import { isNil, prop } from 'ramda';
 
 import { SelectEntry } from '@centreon/ui';
 
@@ -18,7 +17,6 @@ const useLoadResources = (): LoadResources => {
     limit,
     page,
     setPage,
-    nextSearch,
     setListing,
     sendRequest,
     enabledAutorefresh,
@@ -27,7 +25,7 @@ const useLoadResources = (): LoadResources => {
     details,
     selectedResourceId,
     getCriteriaValue,
-    filter,
+    appliedFilter,
   } = useResourceContext();
 
   const refreshIntervalRef = React.useRef<number>();
@@ -111,10 +109,7 @@ const useLoadResources = (): LoadResources => {
   };
 
   const initAutorefreshAndLoad = (): void => {
-    if (
-      isNil(customFilters) ||
-      not(equals(getCriteriaValue('search'), nextSearch))
-    ) {
+    if (isNil(customFilters)) {
       return;
     }
 
@@ -148,13 +143,13 @@ const useLoadResources = (): LoadResources => {
     initAutorefreshAndLoad();
   }, [page]);
 
-  useDeepCompareEffect(() => {
+  React.useEffect(() => {
     if (page === 1) {
       initAutorefreshAndLoad();
     }
 
     setPage(1);
-  }, [limit, ...filter.criterias]);
+  }, [limit, appliedFilter]);
 
   return { initAutorefreshAndLoad };
 };

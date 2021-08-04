@@ -3,7 +3,7 @@ import * as React from 'react';
 import { equals, includes, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme, fade } from '@material-ui/core';
+import { useTheme, alpha } from '@material-ui/core';
 
 import {
   MemoizedListing as Listing,
@@ -55,7 +55,11 @@ const ResourceListing = (): JSX.Element => {
   const { initAutorefreshAndLoad } = useLoadResources();
 
   const changeSort = ({ sortField, sortOrder }): void => {
-    setCriteriaAndNewFilter({ name: 'sort', value: [sortField, sortOrder] });
+    setCriteriaAndNewFilter({
+      apply: true,
+      name: 'sort',
+      value: [sortField, sortOrder],
+    });
   };
 
   const changeLimit = (value): void => {
@@ -75,7 +79,7 @@ const ResourceListing = (): JSX.Element => {
   };
 
   const resourceDetailsOpenCondition = {
-    color: fade(theme.palette.primary.main, 0.08),
+    color: alpha(theme.palette.primary.main, 0.08),
     condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
     name: 'detailsOpen',
   };

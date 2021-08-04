@@ -16214,17 +16214,20 @@ msgstr "Défiler vers le haut"
 msgid "This week"
 msgstr "Cette semaine"
 
-# msgid "Last week"
-# msgstr "La semaine dernière"
+msgid "Last week"
+msgstr "La semaine dernière"
 
-# msgid "Last month"
-# msgstr "Le mois dernier"
+msgid "Last month"
+msgstr "Le mois dernier"
 
-# msgid "Last year"
-# msgstr "L'année dernière"
+msgid "Last year"
+msgstr "L'année dernière"
 
-# msgid "Before last year"
-# msgstr "Avant l'année dernière"
+msgid "Before last year"
+msgstr "Avant l'année dernière"
+
+msgid "Search options"
+msgstr "Options de recherche"
 
 msgid "The parameter \"%s\" must be an integer"
 msgstr "Le paramètre \"%s\" doit être un entier"
