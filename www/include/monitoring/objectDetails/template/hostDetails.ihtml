@@ -480,7 +480,7 @@
                     </td>
                 </tr>
                 {/if}
-                {if (isset($aclAct.host_submit_result) || $admin == true) && $host_data.passive_checks_enabled}
+                {if (isset($aclAct.host_submit_result) || $admin == true) && !empty($host_data.passive_checks_enabled)}
                 <tr class='list_one'>
                     <td class="ListColLeft ColPopup">
                         <a href='./main.php?p={$p}&o=hpc&cmd=16&host_name={$host_data.host_name}'>{$m_mon_submit_passive}</a>
@@ -502,15 +502,17 @@
                 </tr>
                 {/if}
                 {section name=tool loop=$tools}
-                <tr class='list_two'>
-                    <td class="ListColLeft ColPopup">
-                        {if $tools[tool].popup == ""}
-                        <a href="{$tools[tool].url}" target="{$tools[tool].target}">
-                            {else}
-                            <a href="#tools" name="tools" onClick="window.open('{$tools[tool].url}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width={$tools[tool].width}, height={$tools[tool].height}');">
-                                {/if}
-                                &#9679;&nbsp;{$tools[tool].name}</a></td>
-                </tr>
+                {if !empty(tool)}
+                    <tr class='list_two'>
+                        <td class="ListColLeft ColPopup">
+                            {if $tools[tool].popup == ""}
+                            <a href="{$tools[tool].url}" target="{$tools[tool].target}">
+                                {else}
+                                <a href="#tools" name="tools" onClick="window.open('{$tools[tool].url}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width={$tools[tool].width}, height={$tools[tool].height}');">
+                                    {/if}
+                                    &#9679;&nbsp;{$tools[tool].name}</a></td>
+                    </tr>
+                {/if}
                 {/section}
             </table>
         </td>
