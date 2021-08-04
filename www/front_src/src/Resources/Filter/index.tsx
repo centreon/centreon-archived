@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(1),
-    gridTemplateColumns: 'auto auto 1fr auto',
+    gridTemplateColumns: 'auto auto auto 1fr',
     width: '100%',
   },
 }));

@@ -413,7 +413,7 @@ describe(Filter, () => {
     },
   );
 
-  it.only('accepts the selected autocomplete suggestion when the beginning of a criteria is input and the tab key is pressed', async () => {
+  it('accepts the selected autocomplete suggestion when the beginning of a criteria is input and the tab key is pressed', async () => {
     const { getByPlaceholderText } = renderFilter();
 
     await waitFor(() => {
