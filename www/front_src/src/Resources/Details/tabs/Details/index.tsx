@@ -17,7 +17,6 @@ import IconCopyFile from '@material-ui/icons/FileCopy';
 
 import {
   useSnackbar,
-  Severity,
   useLocaleDateTimeFormat,
   copyToClipboard,
 } from '@centreon/ui';
@@ -83,7 +82,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   const { toDateTime } = useLocaleDateTimeFormat();
   const classes = useStyles();
 
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage, showErrorMessage } = useSnackbar();
 
   if (isNil(details)) {
     return <LoadingSkeleton />;
@@ -93,15 +92,9 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
     try {
       copyToClipboard(details.command_line as string);
 
-      showMessage({
-        message: t(labelCommandCopied),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelCommandCopied));
     } catch (_) {
-      showMessage({
-        message: t(labelSomethingWentWrong),
-        severity: Severity.error,
-      });
+      showErrorMessage(t(labelSomethingWentWrong));
     }
   };
 

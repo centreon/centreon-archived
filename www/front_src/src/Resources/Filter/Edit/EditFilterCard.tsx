@@ -24,7 +24,6 @@ import {
   useRequest,
   ConfirmDialog,
   useSnackbar,
-  Severity,
 } from '@centreon/ui';
 
 import {
@@ -79,7 +78,7 @@ const EditFilterCardContent = ({
 
   const { t } = useTranslation();
 
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage } = useSnackbar();
 
   const [deleting, setDeleting] = React.useState(false);
 
@@ -115,10 +114,7 @@ const EditFilterCardContent = ({
         filter: omit(['id'], updatedFilter),
         id: updatedFilter.id,
       }).then(() => {
-        showMessage({
-          message: t(labelFilterUpdated),
-          severity: Severity.success,
-        });
+        showSuccessMessage(t(labelFilterUpdated));
 
         if (equals(updatedFilter.id, currentFilter.id)) {
           setCurrentFilter(updatedFilter);
@@ -140,10 +136,7 @@ const EditFilterCardContent = ({
     setDeleting(false);
 
     sendDeleteFilterRequest(filter).then(() => {
-      showMessage({
-        message: t(labelFilterDeleted),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelFilterDeleted));
 
       if (equals(filter.id, currentFilter.id)) {
         setCurrentFilter({ ...filter, ...newFilter });
