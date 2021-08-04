@@ -405,7 +405,7 @@
                                     {/if}
                                 </td>
                                 <td class="ListColRight ColPopup" id="service_passive_checks">
-                                    {if !empty($service_data.passive_checks_enabled) (&& $aclAct.service_passive_checks || $admin == true)}
+                                    {if !empty($service_data.passive_checks_enabled) && ( $aclAct.service_passive_checks || $admin == true)}
                                     <a href="#" onClick="send_command('service_passive_checks', '{$en_inv[$service_data.passive_checks_enabled]}');" title='{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}'>
                                     <img class="ico-16" src={$img_en[$service_data.passive_checks_enabled]}
                                     alt="{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}" />

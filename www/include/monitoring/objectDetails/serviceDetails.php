@@ -325,7 +325,7 @@ if (!is_null($host_id)) {
         }
 
         $service_status["current_stateid"] = $service_status["current_state"];
-        if (!empty($service_status["current_state"])) {
+        if ($service_status["current_state"] !== "") {
             $service_status["current_state"] = $tab_status_service[$service_status["current_state"]];
         }
 
@@ -415,10 +415,10 @@ if (!is_null($host_id)) {
         $centreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
         $service_status['command_line'] = str_replace(' -', "\n\t-", $service_status['command_line']);
         $service_status['performance_data'] = str_replace(' \'', "\n'", $service_status['performance_data']);
-        if (!empty($service_status['current_state'])) {
+        if ($service_status['current_state'] !== "") {
             $service_status["status_color"] = $centreon->optGen["color_" . strtolower($service_status["current_state"])];
+            $service_status["status_class"] = $tab_class_service[strtolower($service_status["current_state"])];
         }
-        $service_status["status_class"] = $tab_class_service[strtolower($service_status["current_state"])];
         !$service_status["check_latency"]
             ? $service_status["check_latency"] = "< 1 second"
             : $service_status["check_latency"] = $service_status["check_latency"] . " seconds";
