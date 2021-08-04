@@ -488,7 +488,11 @@
                                     {/if}
                                 </td>
                                 <td class="ListColRight ColPopup">
-                                    {if $aclAct.service_acknowledgement && !empty($service_data.problem_has_been_acknowledged) || $aclAct.service_disacknowledgement && !empty($service_data.problem_has_been_acknowledged) || $admin == true}
+                                    {if
+                                        ($aclAct.service_acknowledgement && !empty($service_data.problem_has_been_acknowledged))
+                                        || ($aclAct.service_disacknowledgement && !empty($service_data.problem_has_been_acknowledged))
+                                        || ($admin == true && !empty($service_data.problem_has_been_acknowledged))
+                                    }
                                         <a href='./main.php?p={$p}&o=svcak&cmd=15&host_name={$h.host_name|urlencode}&service_description={$svc_description|urlencode}&en={$en_acknowledge[$service_data.problem_has_been_acknowledged]}' title='{$en_acknowledge_text[$service_data.problem_has_been_acknowledged]}'>
                                             <img class="ico-16" src={$img_en[$service_data.problem_has_been_acknowledged]} alt="{$en_acknowledge_text[$service_data.problem_has_been_acknowledged]}" />
                                         </a>
