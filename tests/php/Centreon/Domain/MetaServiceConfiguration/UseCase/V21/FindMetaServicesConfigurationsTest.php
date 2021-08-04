@@ -24,7 +24,7 @@ namespace Tests\Centreon\Domain\MetaServiceConfiguration\UseCase\V21;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\MetaServiceConfiguration\MetaServiceConfigurationService;
-use Centreon\Domain\MetaServiceConfiguration\UseCase\V21\FindMetaServicesConfigurations;
+use Centreon\Domain\MetaServiceConfiguration\UseCase\V2110\FindMetaServicesConfigurations;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\MetaServiceConfiguration\Model\MetaServiceConfigurationTest;
 

@@ -50,4 +50,11 @@ interface DataStorageEngineInterface
      * @return bool
      */
     public function commitTransaction(): bool;
+
+    /**
+     * Check if a transaction is already started.
+     *
+     * @return bool
+     */
+    public function isAlreadyinTransaction(): bool;
 }

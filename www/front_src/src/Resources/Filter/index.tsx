@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(1),
-    gridTemplateColumns: 'auto auto auto 1fr',
+    gridTemplateColumns: 'auto auto 1fr auto',
     width: '100%',
   },
 }));
@@ -109,6 +109,7 @@ const Filter = (): JSX.Element => {
     autoCompleteSuggestions,
     open,
     selectedSuggestionIndex,
+    currentFilter,
   ];
 
   React.useEffect(() => {

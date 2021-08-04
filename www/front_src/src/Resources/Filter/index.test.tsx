@@ -342,7 +342,7 @@ describe(Filter, () => {
       },
     ],
   ])(
-    'executes a listing request with "%p" params when "%p" filter is set',
+    'executes a listing request with "%p" parameters when "%p" filter is set',
     async (filterGroup, criterias) => {
       const { getByText } = renderFilter();
 
