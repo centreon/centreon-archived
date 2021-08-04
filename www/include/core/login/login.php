@@ -47,15 +47,15 @@ $release = $result->fetch();
  */
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_enable' LIMIT 1");
 $openIdConnectEnabled = "0";
-if ($result->fetch() !== false) {
-    $openIdConnectEnabled = $result->fetch()["value"];
+if (($row = $result->fetch()) !== false) {
+    $openIdConnectEnabled = $row["value"];
 }
 
 
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_mode' LIMIT 1");
 $openIdConnectMode = "0";
-if ($result->fetch() !== false) {
-    $openIdConnectMode = $result->fetch()["value"];
+if (($row = $result->fetch()) !== false) {
+    $openIdConnectMode = $row["value"];
 }
 
 
