@@ -342,9 +342,11 @@ if (!$is_admin && !$haveAccess) {
             "comments" => ""
         ];
 
-        foreach ($data as $key => $value) {
-            if (!empty($value)) {
-                $host_status[$host_name][$key] = $value;
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                if (!empty($value)) {
+                    $host_status[$host_name][$key] = $value;
+                }
             }
         }
 
@@ -632,6 +634,7 @@ if (!$is_admin && !$haveAccess) {
          * Hostgroups Display
          */
         $tpl->assign("hostgroups_label", _("Member of Host Groups"));
+        $tpl->assign("hostgroups", []);
         if (isset($hostGroups)) {
             $tpl->assign("hostgroups", CentreonUtils::escapeSecure($hostGroups));
         }
@@ -648,6 +651,7 @@ if (!$is_admin && !$haveAccess) {
          * Contactgroups Display
          */
         $tpl->assign("contactgroups_label", _("Contact groups notified for this host"));
+        $tpl->assign("contactgroups", []);
         if (isset($contactGroups)) {
             $tpl->assign("contactgroups", CentreonUtils::escapeSecure($contactGroups));
         }
@@ -656,11 +660,12 @@ if (!$is_admin && !$haveAccess) {
          * Contacts Display
          */
         $tpl->assign("contacts_label", _("Contacts notified for this host"));
+        $tpl->assign("contacts", []);
         if (isset($contacts)) {
             $tpl->assign("contacts", CentreonUtils::escapeSecure($contacts));
         }
 
-
+        $tpl->assign("tab_comments_host", []);
         if (isset($tabCommentHosts)) {
             $tpl->assign(
                 "tab_comments_host",

@@ -280,7 +280,7 @@
                                             </tr>
                                             {/if}
                                             {if $host_data.current_state != 'UP'}
-                                            {if isset($aclAct.host_acknowledgement) && !empty($host_data.problem_has_been_acknowledged) || isset($aclAct.host_disacknowledgement) && $host_data.problem_has_been_acknowledged || $admin == true}
+                                            {if isset($aclAct.host_acknowledgement) && !empty($host_data.problem_has_been_acknowledged) || isset($aclAct.host_disacknowledgement) && !empty($host_data.problem_has_been_acknowledged) || $admin == true}
                                             <tr class='list_one'>
                                                 <td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
                                                 <td class="ListColLeft"><span class="badge {$color_onoff[$host_data.problem_has_been_acknowledged]}" >{$en[$host_data.problem_has_been_acknowledged]}</span>
