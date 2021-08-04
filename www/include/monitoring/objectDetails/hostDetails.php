@@ -302,8 +302,51 @@ if (!$is_admin && !$haveAccess) {
             " AND h.enabled = 1 ";
         $DBRESULT = $pearDBO->query($rq2);
         $data = $DBRESULT->fetchRow();
+        $host_status[$host_name] = [
+            "current_state" => "",
+            "name" => "",
+            "alias" => "",
+            "address" => "",
+            "host_id" => "",
+            "problem_has_been_acknowledged" => "",
+            "passive_checks_enabled" => "",
+            "active_checks_enabled" => "",
+            "notifications_enabled" => "",
+            "check_execution_time" => "",
+            "check_latency" => "",
+            "performance_data" => "",
+            "current_attempt" => "",
+            "max_check_attempts" => "",
+            "state_type" => "",
+            "check_type" => "",
+            "last_notification" => "",
+            "next_notification" => "",
+            "is_flapping" => "",
+            "flap_detection_enabled" => "",
+            "event_handler_enabled" => "",
+            "obsess_over_host" => "",
+            "current_notification_number" => "",
+            "percent_state_change" => "",
+            "scheduled_downtime_depth" => "",
+            "last_state_change" => "",
+            "plugin_output" => "",
+            "last_check" => "",
+            "next_check" => "",
+            "host_name" => "",
+            "notes_url" => "",
+            "notes" => "",
+            "action_url" => "",
+            "timezone" => "",
+            "instance_id" => "",
+            "instance_name" => "",
+            "comments" => ""
+        ];
 
-        $host_status[$host_name] = $data;
+        foreach ($data as $key => $value) {
+            if (!empty($value)) {
+                $host_status[$host_name][$key] = $value;
+            }
+        }
 
         // Get host timezone
         if (empty($host_status[$host_name]["timezone"])) {
@@ -424,10 +467,13 @@ if (!$is_admin && !$haveAccess) {
         if ($host_status[$host_name]["problem_has_been_acknowledged"]) {
             $host_status[$host_name]["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";
         }
+        if (!empty($host_status[$host_name]["state_type"])) {
+            $host_status[$host_name]["state_type"] = $tab_status_type[$host_status[$host_name]["state_type"]];
+        }
 
-        $host_status[$host_name]["state_type"] = $tab_status_type[$host_status[$host_name]["state_type"]];
-
-        $host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
+        if (!empty($host_status[$host_name]["is_flapping"])) {
+            $host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
+        }
 
         if (
             isset($host_status[$host_name]["scheduled_downtime_depth"]) &&
@@ -591,6 +637,7 @@ if (!$is_admin && !$haveAccess) {
         }
 
         $tpl->assign("hostcategorie_label", _("Host Categories"));
+        $tpl->assign("hostcategorie", []);
         if (isset($hostCategorie)) {
             $tpl->assign("hostcategorie", $hostCategorie);
         }
@@ -721,13 +768,13 @@ if (!$is_admin && !$haveAccess) {
         $deprecationMessage = _('[Page deprecated] Please use the new page: ');
         $resourcesStatusLabel = _('Resources Status');
         $redirectionUrl = $resourceController->buildHostDetailsUri($host_id);
-
         $tpl->display("hostDetails.ihtml");
     } else {
         echo "<div class='msg' align='center'>" .
             _("This host no longer exists in Centreon configuration. Please reload the configuration.") . "</div>";
     }
 }
+
 ?>
     <script>
         <?php
