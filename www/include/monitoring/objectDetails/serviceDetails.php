@@ -75,8 +75,20 @@ $allActions = false;
 /*
  * Get list of actions allowed for user
  */
+$authorized_actions = [
+    "service_schedule_check" => "",
+    "service_schedule_forced_check" => "",
+    "service_schedule_downtime" => "",
+    "service_comment" => "",
+    "service_submit_result" => "",
+    "service_checks" => "",
+    "service_passive_checks" => "",
+    "service_notifications" => "",
+    "service_event_handler" => "",
+    "service_flap_detection" => "",
+    "service_obsess" => ""
+];
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
-    $authorized_actions = array();
     $authorized_actions = $centreon->user->access->getActions();
 }
 
@@ -729,9 +741,6 @@ if (!is_null($host_id)) {
             $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
         }
         $tpl->assign("host_data", $host_status[$host_name]);
-        echo '<pre>';
-        var_dump(array_keys($service_status));
-        echo '</pre>';
         $tpl->assign("service_data", $service_status);
         $tpl->assign("host_display_name", CentreonUtils::escapeSecure($hostNameDisplay));
         $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
@@ -773,6 +782,7 @@ if (!is_null($host_id)) {
          * Servicegroup Display
          */
         $tpl->assign("servicegroups_label", _("Service groups"));
+        $tpl->assign("servicegroups", []);
         if (isset($serviceGroups)) {
             $tpl->assign("servicegroups", CentreonUtils::escapeSecure($serviceGroups));
         }
@@ -788,9 +798,11 @@ if (!is_null($host_id)) {
         /*
          * Macros
          */
+        $tpl->assign("proc_warning", "");
         if (isset($proc_warning) && $proc_warning) {
             $tpl->assign("proc_warning", $proc_warning);
         }
+        $tpl->assign("proc_critical", "");
         if (isset($proc_critical) && $proc_critical) {
             $tpl->assign("proc_critical", $proc_critical);
         }
