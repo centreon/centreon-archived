@@ -6,7 +6,7 @@ import { propEq } from 'ramda';
 import { Alert } from '@material-ui/lab';
 import { FormControlLabel, Checkbox, Grid } from '@material-ui/core';
 
-import { Severity, useSnackbar, useRequest, Dialog } from '@centreon/ui';
+import { useSnackbar, useRequest, Dialog } from '@centreon/ui';
 
 import {
   labelCancel,
@@ -31,7 +31,7 @@ const DisacknowledgeForm = ({
   onSuccess,
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage } = useSnackbar();
   const [disacknowledgeAttachedResources, setDisacknowledgeAttachedResources] =
     React.useState(true);
 
@@ -55,15 +55,12 @@ const DisacknowledgeForm = ({
     setDisacknowledgeAttachedResources(false);
   }, []);
 
-  const showSuccess = (message): void =>
-    showMessage({ message, severity: Severity.success });
-
   const submitDisacknowledge = (): void => {
     sendDisacknowledgeResources({
       disacknowledgeAttachedResources,
       resources,
     }).then(() => {
-      showSuccess(t(labelDisacknowledgementCommandSent));
+      showSuccessMessage(t(labelDisacknowledgementCommandSent));
       onSuccess();
     });
   };
