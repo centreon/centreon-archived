@@ -294,7 +294,7 @@ if (!is_null($host_id)) {
             "notification" => "",
             "next_notification" => "",
             "long_plugin_output" => "",
-            "duration" => "",
+            "duration" => ""
         ];
 
         while ($data = $DBRESULT->fetchRow()) {
@@ -586,7 +586,7 @@ if (!is_null($host_id)) {
                 );
             }
         }
-
+        $service_status["duration"] = "";
         if (isset($service_status["last_time_" . strtolower($service_status["current_state"])])) {
             !$service_status["last_state_change"]
                 ? $service_status["duration"] =

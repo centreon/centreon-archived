@@ -95,7 +95,11 @@
                             </tr>
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_current_state_duration}</td>
-                                <td class="ListColLeft ColPopup">{$service_data.duration}</td>
+                                <td class="ListColLeft ColPopup">
+                                    {if !empty($service_data.duration)}
+                                        {$service_data.duration}
+                                    {/if}
+                                </td>
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_last_notification_serv}</td>
