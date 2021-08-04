@@ -1,4 +1,4 @@
-import { concat, map, pipe, prop } from 'ramda';
+import { concat, pipe, prop } from 'ramda';
 
 import {
   selectableResourceTypes,
