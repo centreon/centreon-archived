@@ -748,7 +748,9 @@ if (!is_null($host_id)) {
         if (isset($host_id) && isset($service_id)) {
             $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
         }
-        $tpl->assign("host_data", $host_status[$host_name]);
+        if (isset($host_status) && isset($host_status[$host_name])) {
+            $tpl->assign("host_data", $host_status[$host_name]);
+        }
         $tpl->assign("service_data", $service_status);
         $tpl->assign("host_display_name", CentreonUtils::escapeSecure($hostNameDisplay));
         $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));

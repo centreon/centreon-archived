@@ -5,8 +5,10 @@
     {if $inheritance !="1" }
     <!-- notification inheritance option -->
     <div style='visibility: hidden'>
-        {$form.contact_additive_inheritance.html}
-        {$form.cg_additive_inheritance.html}
+        {if isset($form.contact_additive_inheritance) && isset($form.cg_additive_inheritance)}
+            {$form.contact_additive_inheritance.html}
+            {$form.cg_additive_inheritance.html}
+        {/if}
     </div>
     {/if}
 <div class="headerTabContainer">

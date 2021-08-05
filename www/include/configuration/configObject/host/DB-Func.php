@@ -1437,7 +1437,7 @@ function updateHost_MC($host_id = null)
             $host_id,
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             true
         );
