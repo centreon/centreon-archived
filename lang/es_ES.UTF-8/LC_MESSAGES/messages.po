@@ -14729,15 +14729,6 @@ msgstr "Permitir certificado autofirmado"
 # msgid "This week"
 # msgstr ""
 
-# msgid "Last week"
-# msgstr ""
-
-# msgid "Last month"
-# msgstr ""
-
-# msgid "Last year"
-# msgstr ""
-
 # msgid "Before last year"
 # msgstr ""
 

@@ -15168,15 +15168,6 @@ msgstr "Erro ao remover tokens de um contato"
 # msgid "This week"
 # msgstr ""
 
-# msgid "Last week"
-# msgstr ""
-
-# msgid "Last month"
-# msgstr ""
-
-# msgid "Last year"
-# msgstr ""
-
 # msgid "Before last year"
 # msgstr ""
 
