@@ -187,9 +187,13 @@ const Filter = (): JSX.Element => {
       : acceptedSuggestion;
 
     setSearch(
-      `${searchWithAcceptedSuggestion
-        .replace(expressionToShiftToTheEnd, '')
-        .trim()} ${expressionToShiftToTheEnd}`.trim(),
+      [
+        searchWithAcceptedSuggestion
+          .replace(expressionToShiftToTheEnd, '')
+          .trim(),
+        ' ',
+        expressionToShiftToTheEnd,
+      ].join(''),
     );
   };
 

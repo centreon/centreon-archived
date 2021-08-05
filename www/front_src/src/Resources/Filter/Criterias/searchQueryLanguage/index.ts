@@ -40,6 +40,8 @@ import {
 } from '../models';
 import getDefaultCriterias from '../default';
 
+import { CriteriaValueSuggestionsProps } from './models';
+
 const isIn = flip(includes);
 
 const criteriaNameSortOrder = {
@@ -190,15 +192,6 @@ const getCriteriaNameSuggestions = (word: string): Array<string> => {
 
   return suggestions.map((suggestion) => `${suggestion}:`);
 };
-
-interface CriteriaId {
-  id: string
-}
-
-interface CriteriaValueSuggestionsProps {
-  criterias: Array<CriteriaId>;
-  selectedValues: Array<string>;
-}
 
 const getCriteriaValueSuggestions = ({
   selectedValues,
