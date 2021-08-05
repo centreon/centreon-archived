@@ -6,7 +6,7 @@
     "config": {
         "secure-http": false,
         "platform": {
-            "php": "7.3"
+            "php": "8.0"
         }
     },
     "require-dev": {
@@ -34,7 +34,7 @@
     "require": {
         "beberlei/assert": "v3.3.0",
         "curl/curl" : "^1.5",
-        "dragonmantank/cron-expression": "3.0.1",
+        "dragonmantank/cron-expression": "3.1.0",
         "enshrined/svg-sanitize": "^0.14.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
