@@ -230,7 +230,7 @@ const Filter = (): JSX.Element => {
     }
 
     if (escapeKeyPressed) {
-      setAutocompleteAnchor(null);
+      closeSuggestionPopover();
 
       return;
     }
