@@ -557,7 +557,7 @@ class CentreonContact extends CentreonObject
                             $value,
                             $this->timezoneObject->getUniqueLabelField()
                         );
-                        if ($result !== false){
+                        if ($result !== false) {
                             $value = $result[$this->timezoneObject->getUniqueLabelField()];
                         }
                     }

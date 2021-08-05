@@ -352,7 +352,9 @@ if (!$is_admin && !$haveAccess) {
             // Get host timezone
             if (empty($host_status[$host_name]["timezone"])) {
                 $instanceObj = new CentreonConfigEngine($pearDB);
-                $host_status[$host_name]["timezone"] = $instanceObj->getTimezone($host_status[$host_name]["instance_id"]);
+                $host_status[$host_name]["timezone"] = $instanceObj->getTimezone(
+                    $host_status[$host_name]["instance_id"]
+                );
             } else {
                 $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
             }
@@ -364,13 +366,21 @@ if (!$is_admin && !$haveAccess) {
             );
             $host_status[$host_name]["current_state"] = $tab_host_status[$data["current_state"]] ?? '';
             if (isset($host_status[$host_name]["notes_url"]) && $host_status[$host_name]["notes_url"]) {
-                $host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes_url"]);
+                $host_status[$host_name]["notes_url"] = str_replace(
+                    "\$HOSTNAME\$",
+                    $data["host_name"],
+                    $data["notes_url"]
+                );
                 $host_status[$host_name]["notes_url"] = str_replace(
                     "\$HOSTADDRESS\$",
                     $data["address"],
                     $data["notes_url"]
                 );
-                $host_status[$host_name]["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
+                $host_status[$host_name]["notes_url"] = str_replace(
+                    "\$HOSTALIAS\$",
+                    $data["alias"],
+                    $data["notes_url"]
+                );
             }
             if (isset($host_status[$host_name]["notes"]) && $host_status[$host_name]["notes"]) {
                 $host_status[$host_name]["notes"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes"]);
@@ -388,7 +398,11 @@ if (!$is_admin && !$haveAccess) {
                     $data["address"],
                     $data["action_url"]
                 );
-                $host_status[$host_name]["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
+                $host_status[$host_name]["action_url"] = str_replace(
+                    "\$HOSTALIAS\$",
+                    $data["alias"],
+                    $data["action_url"]
+                );
             }
         }
 
