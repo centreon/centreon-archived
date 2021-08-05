@@ -340,7 +340,9 @@ if (!is_null($host_id)) {
         $DBRESULT = $pearDBO->query($rq2);
 
         $ndo2 = $DBRESULT->fetchRow();
-        $host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
+        if ($ndo2 !== false) {
+            $host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
+        }
 
         // Get Host informations
         $DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_id = " . $pearDB->escape($host_id));
