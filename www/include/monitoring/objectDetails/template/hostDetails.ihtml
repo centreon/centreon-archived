@@ -280,16 +280,20 @@
                                             </tr>
                                             {/if}
                                             {if $host_data.current_state != 'UP'}
-                                            {if isset($aclAct.host_acknowledgement) && !empty($host_data.problem_has_been_acknowledged) || isset($aclAct.host_disacknowledgement) && !empty($host_data.problem_has_been_acknowledged) || $admin == true}
-                                            <tr class='list_one'>
-                                                <td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
-                                                <td class="ListColLeft"><span class="badge {$color_onoff[$host_data.problem_has_been_acknowledged]}" >{$en[$host_data.problem_has_been_acknowledged]}</span>
-                                                </td>
-                                                <td class="ListColRight ColPopup">
-                                                    <a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$host_data.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'><img src={$img_en[$host_data.problem_has_been_acknowledged]} class="ico-16" alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}" /></a>
-                                                </td>
-                                            </tr>
-                                            {/if}
+                                                {if
+                                                    (isset($aclAct.host_acknowledgement) && !empty($host_data.problem_has_been_acknowledged))
+                                                    || (isset($aclAct.host_disacknowledgement) && !empty($host_data.problem_has_been_acknowledged))
+                                                    || ($admin == true && !empty($host_data.problem_has_been_acknowledged))
+                                                }
+                                                    <tr class='list_one'>
+                                                        <td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
+                                                        <td class="ListColLeft"><span class="badge {$color_onoff[$host_data.problem_has_been_acknowledged]}" >{$en[$host_data.problem_has_been_acknowledged]}</span>
+                                                        </td>
+                                                        <td class="ListColRight ColPopup">
+                                                            <a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$host_data.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'><img src={$img_en[$host_data.problem_has_been_acknowledged]} class="ico-16" alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}" /></a>
+                                                        </td>
+                                                    </tr>
+                                                {/if}
                                             {/if}
                                         </table>
                                     </td>

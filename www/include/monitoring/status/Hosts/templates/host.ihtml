@@ -67,7 +67,7 @@
 		<td id="sel2" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>
-{if $host_name}
+{if isset($host_name)}
 <input type='hidden' name='host_name' value='{$host_name}'>
 {/if}
 <input name='cmd' id='cmd' value='42' type='hidden'>
