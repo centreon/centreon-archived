@@ -12,7 +12,7 @@
             &nbsp;&nbsp;&nbsp;{$form.reset.html}
         </p>
         {else if $o == "w"}
-        <p class="oreonbutton">{$form.change.html}</p>
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
         {/if}
     </div>
     {/if}
@@ -128,7 +128,7 @@
             &nbsp;&nbsp;&nbsp;{$form.reset.html}
         </p>
         {else if $o == "w"}
-        <p class="oreonbutton">{$form.change.html}</p>
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
         {/if}
     </div>
     {/if}

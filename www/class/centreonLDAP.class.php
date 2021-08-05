@@ -1090,8 +1090,8 @@ class CentreonLdapAdmin
                 }
                 $insertStr .= "($arId, '" . $this->db->escape($addr) . "', '" .
                     $this->db->escape($portList[$key]) . "', " .
-                    $this->db->escape($sslList[$key] ? 1 : 0) . ", " .
-                    $this->db->escape($tlsList[$key] ? 1 : 0) . ", $i)";
+                    $this->db->escape(isset($sslList[$key]) ? 1 : 0) . ", " .
+                    $this->db->escape(isset($tlsList[$key]) ? 1 : 0) . ", $i)";
                 $i++;
             }
             if ($insertStr) {

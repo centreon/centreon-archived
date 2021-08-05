@@ -302,49 +302,108 @@ if (!$is_admin && !$haveAccess) {
             " AND h.enabled = 1 ";
         $DBRESULT = $pearDBO->query($rq2);
         $data = $DBRESULT->fetchRow();
+        $host_status[$host_name] = [
+            "current_state" => "",
+            "name" => "",
+            "alias" => "",
+            "address" => "",
+            "host_id" => "",
+            "problem_has_been_acknowledged" => "",
+            "passive_checks_enabled" => "",
+            "active_checks_enabled" => "",
+            "notifications_enabled" => "",
+            "check_execution_time" => "",
+            "check_latency" => "",
+            "performance_data" => "",
+            "current_attempt" => "",
+            "max_check_attempts" => "",
+            "state_type" => "",
+            "check_type" => "",
+            "last_notification" => "",
+            "next_notification" => "",
+            "is_flapping" => "",
+            "flap_detection_enabled" => "",
+            "event_handler_enabled" => "",
+            "obsess_over_host" => "",
+            "current_notification_number" => "",
+            "percent_state_change" => "",
+            "scheduled_downtime_depth" => "",
+            "last_state_change" => "",
+            "plugin_output" => "",
+            "last_check" => "",
+            "next_check" => "",
+            "host_name" => "",
+            "notes_url" => "",
+            "notes" => "",
+            "action_url" => "",
+            "timezone" => "",
+            "instance_id" => "",
+            "instance_name" => "",
+            "comments" => ""
+        ];
 
-        $host_status[$host_name] = $data;
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                if (!empty($value)) {
+                    $host_status[$host_name][$key] = $value;
+                }
+            }
 
-        // Get host timezone
-        if (empty($host_status[$host_name]["timezone"])) {
-            $instanceObj = new CentreonConfigEngine($pearDB);
-            $host_status[$host_name]["timezone"] = $instanceObj->getTimezone($host_status[$host_name]["instance_id"]);
-        } else {
-            $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
-        }
+            // Get host timezone
+            if (empty($host_status[$host_name]["timezone"])) {
+                $instanceObj = new CentreonConfigEngine($pearDB);
+                $host_status[$host_name]["timezone"] = $instanceObj->getTimezone(
+                    $host_status[$host_name]["instance_id"]
+                );
+            } else {
+                $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
+            }
 
-        $host_status[$host_name]["plugin_output"] = htmlentities(
-            $host_status[$host_name]["plugin_output"],
-            ENT_QUOTES,
-            "UTF-8"
-        );
-        $host_status[$host_name]["current_state"] = $tab_host_status[$data["current_state"]] ?? '';
-        if (isset($host_status[$host_name]["notes_url"]) && $host_status[$host_name]["notes_url"]) {
-            $host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes_url"]);
-            $host_status[$host_name]["notes_url"] = str_replace(
-                "\$HOSTADDRESS\$",
-                $data["address"],
-                $data["notes_url"]
+            $host_status[$host_name]["plugin_output"] = htmlentities(
+                $host_status[$host_name]["plugin_output"],
+                ENT_QUOTES,
+                "UTF-8"
             );
-            $host_status[$host_name]["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
-        }
-        if (isset($host_status[$host_name]["notes"]) && $host_status[$host_name]["notes"]) {
-            $host_status[$host_name]["notes"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes"]);
-            $host_status[$host_name]["notes"] = str_replace("\$HOSTADDRESS\$", $data["address"], $data["notes"]);
-            $host_status[$host_name]["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
-        }
-        if (isset($host_status[$host_name]["action_url"]) && $host_status[$host_name]["action_url"]) {
-            $host_status[$host_name]["action_url"] = str_replace(
-                "\$HOSTNAME\$",
-                $data["host_name"],
-                $data["action_url"]
-            );
-            $host_status[$host_name]["action_url"] = str_replace(
-                "\$HOSTADDRESS\$",
-                $data["address"],
-                $data["action_url"]
-            );
-            $host_status[$host_name]["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
+            $host_status[$host_name]["current_state"] = $tab_host_status[$data["current_state"]] ?? '';
+            if (isset($host_status[$host_name]["notes_url"]) && $host_status[$host_name]["notes_url"]) {
+                $host_status[$host_name]["notes_url"] = str_replace(
+                    "\$HOSTNAME\$",
+                    $data["host_name"],
+                    $data["notes_url"]
+                );
+                $host_status[$host_name]["notes_url"] = str_replace(
+                    "\$HOSTADDRESS\$",
+                    $data["address"],
+                    $data["notes_url"]
+                );
+                $host_status[$host_name]["notes_url"] = str_replace(
+                    "\$HOSTALIAS\$",
+                    $data["alias"],
+                    $data["notes_url"]
+                );
+            }
+            if (isset($host_status[$host_name]["notes"]) && $host_status[$host_name]["notes"]) {
+                $host_status[$host_name]["notes"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes"]);
+                $host_status[$host_name]["notes"] = str_replace("\$HOSTADDRESS\$", $data["address"], $data["notes"]);
+                $host_status[$host_name]["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
+            }
+            if (isset($host_status[$host_name]["action_url"]) && $host_status[$host_name]["action_url"]) {
+                $host_status[$host_name]["action_url"] = str_replace(
+                    "\$HOSTNAME\$",
+                    $data["host_name"],
+                    $data["action_url"]
+                );
+                $host_status[$host_name]["action_url"] = str_replace(
+                    "\$HOSTADDRESS\$",
+                    $data["address"],
+                    $data["action_url"]
+                );
+                $host_status[$host_name]["action_url"] = str_replace(
+                    "\$HOSTALIAS\$",
+                    $data["alias"],
+                    $data["action_url"]
+                );
+            }
         }
 
         $url_id = null;
@@ -424,10 +483,13 @@ if (!$is_admin && !$haveAccess) {
         if ($host_status[$host_name]["problem_has_been_acknowledged"]) {
             $host_status[$host_name]["current_state"] .= "&nbsp;&nbsp;<b>(" . _("ACKNOWLEDGED") . ")</b>";
         }
+        if (!empty($host_status[$host_name]["state_type"])) {
+            $host_status[$host_name]["state_type"] = $tab_status_type[$host_status[$host_name]["state_type"]];
+        }
 
-        $host_status[$host_name]["state_type"] = $tab_status_type[$host_status[$host_name]["state_type"]];
-
-        $host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
+        if (!empty($host_status[$host_name]["is_flapping"])) {
+            $host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
+        }
 
         if (
             isset($host_status[$host_name]["scheduled_downtime_depth"]) &&
@@ -586,11 +648,13 @@ if (!$is_admin && !$haveAccess) {
          * Hostgroups Display
          */
         $tpl->assign("hostgroups_label", _("Member of Host Groups"));
+        $tpl->assign("hostgroups", []);
         if (isset($hostGroups)) {
             $tpl->assign("hostgroups", CentreonUtils::escapeSecure($hostGroups));
         }
 
         $tpl->assign("hostcategorie_label", _("Host Categories"));
+        $tpl->assign("hostcategorie", []);
         if (isset($hostCategorie)) {
             $tpl->assign("hostcategorie", $hostCategorie);
         }
@@ -601,6 +665,7 @@ if (!$is_admin && !$haveAccess) {
          * Contactgroups Display
          */
         $tpl->assign("contactgroups_label", _("Contact groups notified for this host"));
+        $tpl->assign("contactgroups", []);
         if (isset($contactGroups)) {
             $tpl->assign("contactgroups", CentreonUtils::escapeSecure($contactGroups));
         }
@@ -609,11 +674,12 @@ if (!$is_admin && !$haveAccess) {
          * Contacts Display
          */
         $tpl->assign("contacts_label", _("Contacts notified for this host"));
+        $tpl->assign("contacts", []);
         if (isset($contacts)) {
             $tpl->assign("contacts", CentreonUtils::escapeSecure($contacts));
         }
 
-
+        $tpl->assign("tab_comments_host", []);
         if (isset($tabCommentHosts)) {
             $tpl->assign(
                 "tab_comments_host",
@@ -721,13 +787,13 @@ if (!$is_admin && !$haveAccess) {
         $deprecationMessage = _('[Page deprecated] Please use the new page: ');
         $resourcesStatusLabel = _('Resources Status');
         $redirectionUrl = $resourceController->buildHostDetailsUri($host_id);
-
         $tpl->display("hostDetails.ihtml");
     } else {
         echo "<div class='msg' align='center'>" .
             _("This host no longer exists in Centreon configuration. Please reload the configuration.") . "</div>";
     }
 }
+
 ?>
     <script>
         <?php

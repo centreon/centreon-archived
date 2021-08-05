@@ -346,7 +346,9 @@ class CentreonAPI
          * Manage version
          */
         $this->optGen = $this->getOptGen();
-        $version = $this->optGen["version"];
+        if (is_array($this->optGen)) {
+            $version = $this->optGen["version"];
+        }
         $this->delim = ";";
     }
 

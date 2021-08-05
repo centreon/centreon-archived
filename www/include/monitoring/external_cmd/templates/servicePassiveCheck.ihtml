@@ -19,7 +19,9 @@
 			</tr>
 		</table>		
 		<div id="validForm">
-			<p>{$form.action.html}</p>
+			{if isset($form.action)}
+				<p>{$form.action.html}</p>
+			{/if}
 			<p>
 				{if isset($form.submitC)}
 					{$form.submitC.html}

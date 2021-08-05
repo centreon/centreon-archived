@@ -5,8 +5,10 @@
     {if $inheritance !="1" }
     <!-- notification inheritance option -->
     <div style='visibility: hidden'>
-        {$form.contact_additive_inheritance.html}
-        {$form.cg_additive_inheritance.html}
+        {if isset($form.contact_additive_inheritance) && isset($form.cg_additive_inheritance)}
+            {$form.contact_additive_inheritance.html}
+            {$form.cg_additive_inheritance.html}
+        {/if}
     </div>
     {/if}
 <div class="headerTabContainer">
@@ -30,7 +32,7 @@
             &nbsp;&nbsp;&nbsp;{$form.reset.html}
         </p>
     {else if $o == "w"}
-        <p class="oreonbutton">{$form.change.html}</p>
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
     {/if}
     </div>
 </div>
@@ -412,7 +414,7 @@
 {/if}
 &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
-    <p class="oreonbutton">{$form.change.html}</p>
+    <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 {/if}
 </div>
 {$form.hidden}  

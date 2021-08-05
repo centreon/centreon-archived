@@ -118,7 +118,7 @@ $redirect = $DBRESULT->fetch();
  */
 $url = "";
 $acl_page = $centreon->user->access->page($p, true);
-if ($acl_page == 1 || $acl_page == 2) {
+if ($redirect !== false && ($acl_page == 1 || $acl_page == 2)) {
     if ($redirect["topology_page"] < 100) {
         $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
         if ($ret === false || !$ret['topology_page']) {

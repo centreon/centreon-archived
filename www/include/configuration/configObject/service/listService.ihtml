@@ -67,7 +67,10 @@
 			<tr class={$elemArr[elem].MenuClass}>
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 				<td class="ListColLeft">
-					{if $elemArr[elem].RowMenu_name != "" && $elemArr[elem].RowMenu_icone != ""}
+					{if
+						$elemArr[elem].RowMenu_name != ""
+						&& isset($elemArr[elem].RowMenu_icone)
+						&& $elemArr[elem].RowMenu_icone != ""}
 						<img src="{$elemArr[elem].RowMenu_icone}" class="ico-18" />
 					{/if}
 					<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>

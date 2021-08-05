@@ -75,8 +75,22 @@ $allActions = false;
 /*
  * Get list of actions allowed for user
  */
+$authorized_actions = [
+    "service_schedule_check" => "",
+    "service_schedule_forced_check" => "",
+    "service_schedule_downtime" => "",
+    "service_comment" => "",
+    "service_submit_result" => "",
+    "service_checks" => "",
+    "service_passive_checks" => "",
+    "service_notifications" => "",
+    "service_event_handler" => "",
+    "service_flap_detection" => "",
+    "service_obsess" => "",
+    "service_acknowledgement" => "",
+    "service_disacknowledgement" => "",
+];
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
-    $authorized_actions = array();
     $authorized_actions = $centreon->user->access->getActions();
 }
 
@@ -233,6 +247,56 @@ if (!is_null($host_id)) {
             "unknown" => 'service_unknown',
             'pending' => 'pending'
         );
+
+        $service_status = [
+            "service_id" => "",
+            "current_state" => "",
+            "plugin_output" => "",
+            "plugin_output2" => "",
+            "current_attempt" => "",
+            "status_update_time" => "",
+            "last_state_change" => "",
+            "last_check" => "",
+            "last_time_ok" => "",
+            "last_time_warning" => "",
+            "last_time_critical" => "",
+            "last_time_unknown" => "",
+            "notifications_enabled" => "",
+            "next_check" => "",
+            "problem_has_been_acknowledged" => "",
+            "passive_checks_enabled" => "",
+            "active_checks_enabled" => "",
+            "event_handler_enabled" => "",
+            "performance_data" => "",
+            "is_flapping" => "",
+            "scheduled_downtime_depth" => "",
+            "percent_state_change" => "",
+            "current_notification_number" => "",
+            "obsess_over_service" => "",
+            "check_type" => "",
+            "check_command" => "",
+            "state_type" => "",
+            "check_latency" => "",
+            "check_execution_time" => "",
+            "flap_detection_enabled" => "",
+            "last_notification" => "",
+            "host_name" => "",
+            "service_description" => "",
+            "display_name" => "",
+            "notes_url" => "",
+            "notes" => "",
+            "action_url" => "",
+            "instance_name" => "",
+            "command_line" => "",
+            "current_stateid" => "",
+            "status_color" => "",
+            "status_class" => "",
+            "notification" => "",
+            "next_notification" => "",
+            "long_plugin_output" => "",
+            "duration" => ""
+        ];
+
         while ($data = $DBRESULT->fetchRow()) {
             if (isset($data['performance_data'])) {
                 $data['performance_data'] = $data['performance_data'];
@@ -261,7 +325,9 @@ if (!is_null($host_id)) {
         }
 
         $service_status["current_stateid"] = $service_status["current_state"];
-        $service_status["current_state"] = $tab_status_service[$service_status["current_state"]];
+        if ($service_status["current_state"] !== "") {
+            $service_status["current_state"] = $tab_status_service[$service_status["current_state"]];
+        }
 
         /*
          * start ndo host detail
@@ -274,7 +340,9 @@ if (!is_null($host_id)) {
         $DBRESULT = $pearDBO->query($rq2);
 
         $ndo2 = $DBRESULT->fetchRow();
-        $host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
+        if ($ndo2 !== false) {
+            $host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
+        }
 
         // Get Host informations
         $DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_id = " . $pearDB->escape($host_id));
@@ -349,8 +417,10 @@ if (!is_null($host_id)) {
         $centreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
         $service_status['command_line'] = str_replace(' -', "\n\t-", $service_status['command_line']);
         $service_status['performance_data'] = str_replace(' \'', "\n'", $service_status['performance_data']);
-        $service_status["status_color"] = $centreon->optGen["color_" . strtolower($service_status["current_state"])];
-        $service_status["status_class"] = $tab_class_service[strtolower($service_status["current_state"])];
+        if ($service_status['current_state'] !== "") {
+            $service_status["status_color"] = $centreon->optGen["color_" . strtolower($service_status["current_state"])];
+            $service_status["status_class"] = $tab_class_service[strtolower($service_status["current_state"])];
+        }
         !$service_status["check_latency"]
             ? $service_status["check_latency"] = "< 1 second"
             : $service_status["check_latency"] = $service_status["check_latency"] . " seconds";
@@ -518,7 +588,7 @@ if (!is_null($host_id)) {
                 );
             }
         }
-
+        $service_status["duration"] = "";
         if (isset($service_status["last_time_" . strtolower($service_status["current_state"])])) {
             !$service_status["last_state_change"]
                 ? $service_status["duration"] =
@@ -678,7 +748,9 @@ if (!is_null($host_id)) {
         if (isset($host_id) && isset($service_id)) {
             $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
         }
-        $tpl->assign("host_data", $host_status[$host_name]);
+        if (isset($host_status) && isset($host_status[$host_name])) {
+            $tpl->assign("host_data", $host_status[$host_name]);
+        }
         $tpl->assign("service_data", $service_status);
         $tpl->assign("host_display_name", CentreonUtils::escapeSecure($hostNameDisplay));
         $tpl->assign("host_name", CentreonUtils::escapeSecure($host_name));
@@ -696,6 +768,7 @@ if (!is_null($host_id)) {
          * Contactgroups Display
          */
         $tpl->assign("contactgroups_label", _("Contact groups notified for this service"));
+        $tpl->assign("contactgroups", []);
         if (isset($contactGroups)) {
             $tpl->assign("contactgroups", CentreonUtils::escapeSecure($contactGroups));
         }
@@ -704,6 +777,7 @@ if (!is_null($host_id)) {
          * Contacts Display
          */
         $tpl->assign("contacts_label", _("Contacts notified for this service"));
+        $tpl->assign("contacts", []);
         if (isset($contacts)) {
             $tpl->assign("contacts", CentreonUtils::escapeSecure($contacts));
         }
@@ -712,6 +786,7 @@ if (!is_null($host_id)) {
          * Hostgroups Display
          */
         $tpl->assign("hostgroups_label", _("Host Groups"));
+        $tpl->assign("hostgroups", []);
         if (isset($hostGroups)) {
             $tpl->assign("hostgroups", CentreonUtils::escapeSecure($hostGroups));
         }
@@ -720,6 +795,7 @@ if (!is_null($host_id)) {
          * Servicegroup Display
          */
         $tpl->assign("servicegroups_label", _("Service groups"));
+        $tpl->assign("servicegroups", []);
         if (isset($serviceGroups)) {
             $tpl->assign("servicegroups", CentreonUtils::escapeSecure($serviceGroups));
         }
@@ -728,6 +804,7 @@ if (!is_null($host_id)) {
          * Service Categories
          */
         $tpl->assign("sg_label", _("Service Categories"));
+        $tpl->assign("service_categories", []);
         if (isset($serviceCategories)) {
             $tpl->assign("service_categories", CentreonUtils::escapeSecure($serviceCategories));
         }
@@ -735,9 +812,11 @@ if (!is_null($host_id)) {
         /*
          * Macros
          */
+        $tpl->assign("proc_warning", "");
         if (isset($proc_warning) && $proc_warning) {
             $tpl->assign("proc_warning", $proc_warning);
         }
+        $tpl->assign("proc_critical", "");
         if (isset($proc_critical) && $proc_critical) {
             $tpl->assign("proc_critical", $proc_critical);
         }

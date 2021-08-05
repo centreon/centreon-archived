@@ -240,7 +240,9 @@ class CentreonUser
 
         // Get locale from browser
         if ($lang === 'browser') {
-            $lang = \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+                $lang = \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            }
 
             // check that the variable value end with .UTF-8 or add it
             $lang = (strpos($lang, '.UTF-8') !== false) ?: $lang . '.UTF-8';
