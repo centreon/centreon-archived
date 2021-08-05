@@ -175,8 +175,12 @@ const getCriteriaNameSuggestions = (word: string): Array<string> => {
   return found.map((suggestion) => `${suggestion}:`);
 };
 
+interface CriteriaId {
+  id: string
+}
+
 interface CriteriaValueSuggestionsProps {
-  criterias: Array<{ id: string }>;
+  criterias: Array<CriteriaId>;
   selectedValues: Array<string>;
 }
 
