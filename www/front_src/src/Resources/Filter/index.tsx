@@ -127,7 +127,7 @@ const Filter = (): JSX.Element => {
 
     const acceptedSuggestion = autoCompleteSuggestions[index];
 
-    if (search[cursorPosition] === ',') {
+    if (equals(search[cursorPosition], ',')) {
       setSearch(search + acceptedSuggestion);
       return;
     }
