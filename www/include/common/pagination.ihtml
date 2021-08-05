@@ -1,7 +1,7 @@
 <td class="ToolbarPagination">
 	{if isset($firstPage)}&nbsp;<a href="{$firstPage}{if isset($host_name)}&host_name={$host_name}{/if}"><img src="./img/icons/first_rewind.png" class="ico-14" title='{$first}'></a>{/if}
 	{if isset($pagePrev)}&nbsp;<a href="{$pagePrev}{if isset($host_name)}&host_name={$host_name}{/if}"><img src="./img/icons/rewind.png" class="ico-14" title='{$previous}'></a>{/if}
-	{if isset $pageArr}}
+	{if isset($pageArr)}
 		{foreach key=key item=item from=$pageArr }
 			{if $pageArr[$key].num != $num}
 				&nbsp;<a href="{$pageArr[$key].url_page}{if isset($host_name)}&host_name={$host_name}{/if}" class="otherPageNumber">{$pageArr[$key].label_page}</a>
