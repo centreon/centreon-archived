@@ -76,7 +76,7 @@ describe(build, () => {
 describe(getAutocompleteSuggestions, () => {
   const testCases = [
     {
-      cursorPosition: 2,
+      cursorPosition: 3,
       expectedResult: ['state:', 'status:'],
       inputSearch: 'sta',
     },
