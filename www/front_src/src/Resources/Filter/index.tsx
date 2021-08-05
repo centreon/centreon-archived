@@ -181,7 +181,7 @@ const Filter = (): JSX.Element => {
     }
 
     // when the autocompletion takes part somewhere that is not at the end of the output,
-    // we need to shift the correspoding expression to the end, because that's where the cursor will end up
+    // we need to shift the corresponding expression to the end, because that's where the cursor will end up
     const expressionToShiftToTheEnd = expressionBeforeCursor.includes(':')
       ? expressionBeforeCursor + completedWord
       : acceptedSuggestion;
