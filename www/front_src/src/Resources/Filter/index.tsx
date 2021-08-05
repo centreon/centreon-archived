@@ -45,6 +45,9 @@ import SelectFilter from './Fields/SelectFilter';
 import { getAutocompleteSuggestions } from './Criterias/searchQueryLanguage';
 
 const useStyles = makeStyles((theme) => ({
+  autocompletePopper: {
+    zIndex: theme.zIndex.tooltip,
+  },
   container: {
     alignItems: 'center',
     display: 'grid',
@@ -338,10 +341,10 @@ const Filter = (): JSX.Element => {
               />
               <Popper
                 anchorEl={autocompleteAnchor}
+                className={classes.autocompletePopper}
                 open={open}
                 style={{
                   width: searchRef?.current?.clientWidth,
-                  zIndex: 1000,
                 }}
               >
                 <Paper square>
