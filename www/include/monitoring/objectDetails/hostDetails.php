@@ -348,48 +348,48 @@ if (!$is_admin && !$haveAccess) {
                     $host_status[$host_name][$key] = $value;
                 }
             }
-        }
 
-        // Get host timezone
-        if (empty($host_status[$host_name]["timezone"])) {
-            $instanceObj = new CentreonConfigEngine($pearDB);
-            $host_status[$host_name]["timezone"] = $instanceObj->getTimezone($host_status[$host_name]["instance_id"]);
-        } else {
-            $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
-        }
+            // Get host timezone
+            if (empty($host_status[$host_name]["timezone"])) {
+                $instanceObj = new CentreonConfigEngine($pearDB);
+                $host_status[$host_name]["timezone"] = $instanceObj->getTimezone($host_status[$host_name]["instance_id"]);
+            } else {
+                $host_status[$host_name]["timezone"] = substr($host_status[$host_name]["timezone"], 1);
+            }
 
-        $host_status[$host_name]["plugin_output"] = htmlentities(
-            $host_status[$host_name]["plugin_output"],
-            ENT_QUOTES,
-            "UTF-8"
-        );
-        $host_status[$host_name]["current_state"] = $tab_host_status[$data["current_state"]] ?? '';
-        if (isset($host_status[$host_name]["notes_url"]) && $host_status[$host_name]["notes_url"]) {
-            $host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes_url"]);
-            $host_status[$host_name]["notes_url"] = str_replace(
-                "\$HOSTADDRESS\$",
-                $data["address"],
-                $data["notes_url"]
+            $host_status[$host_name]["plugin_output"] = htmlentities(
+                $host_status[$host_name]["plugin_output"],
+                ENT_QUOTES,
+                "UTF-8"
             );
-            $host_status[$host_name]["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
-        }
-        if (isset($host_status[$host_name]["notes"]) && $host_status[$host_name]["notes"]) {
-            $host_status[$host_name]["notes"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes"]);
-            $host_status[$host_name]["notes"] = str_replace("\$HOSTADDRESS\$", $data["address"], $data["notes"]);
-            $host_status[$host_name]["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
-        }
-        if (isset($host_status[$host_name]["action_url"]) && $host_status[$host_name]["action_url"]) {
-            $host_status[$host_name]["action_url"] = str_replace(
-                "\$HOSTNAME\$",
-                $data["host_name"],
-                $data["action_url"]
-            );
-            $host_status[$host_name]["action_url"] = str_replace(
-                "\$HOSTADDRESS\$",
-                $data["address"],
-                $data["action_url"]
-            );
-            $host_status[$host_name]["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
+            $host_status[$host_name]["current_state"] = $tab_host_status[$data["current_state"]] ?? '';
+            if (isset($host_status[$host_name]["notes_url"]) && $host_status[$host_name]["notes_url"]) {
+                $host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes_url"]);
+                $host_status[$host_name]["notes_url"] = str_replace(
+                    "\$HOSTADDRESS\$",
+                    $data["address"],
+                    $data["notes_url"]
+                );
+                $host_status[$host_name]["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
+            }
+            if (isset($host_status[$host_name]["notes"]) && $host_status[$host_name]["notes"]) {
+                $host_status[$host_name]["notes"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes"]);
+                $host_status[$host_name]["notes"] = str_replace("\$HOSTADDRESS\$", $data["address"], $data["notes"]);
+                $host_status[$host_name]["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
+            }
+            if (isset($host_status[$host_name]["action_url"]) && $host_status[$host_name]["action_url"]) {
+                $host_status[$host_name]["action_url"] = str_replace(
+                    "\$HOSTNAME\$",
+                    $data["host_name"],
+                    $data["action_url"]
+                );
+                $host_status[$host_name]["action_url"] = str_replace(
+                    "\$HOSTADDRESS\$",
+                    $data["address"],
+                    $data["action_url"]
+                );
+                $host_status[$host_name]["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
+            }
         }
 
         $url_id = null;
