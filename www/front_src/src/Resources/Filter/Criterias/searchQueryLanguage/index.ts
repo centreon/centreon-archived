@@ -51,6 +51,19 @@ const criteriaNameSortOrder = {
   [CriteriaNames.statuses]: 3,
 };
 
+const searchableFields = [
+  'h.name',
+  'h.alias',
+  'h.address',
+  's.description',
+  'name',
+  'alias',
+  'parent_name',
+  'parent_alias',
+  'fqdn',
+  'information',
+];
+
 const criteriaKeys = keys(selectableCriterias) as Array<string>;
 
 const isCriteriaPart = pipe(split(':'), head, pluralize, isIn(criteriaKeys));
@@ -170,9 +183,12 @@ const getCriteriaNameSuggestions = (word: string): Array<string> => {
     return [];
   }
 
-  const found = filter(startsWith(word), singularizedCriteriaKeys);
+  const suggestions = filter(startsWith(word), [
+    ...singularizedCriteriaKeys,
+    ...searchableFields,
+  ]);
 
-  return found.map((suggestion) => `${suggestion}:`);
+  return suggestions.map((suggestion) => `${suggestion}:`);
 };
 
 interface CriteriaId {
@@ -259,4 +275,4 @@ const getAutocompleteSuggestions = ({
   return reject(includes(__, search), getCriteriaNameSuggestions(criteriaName));
 };
 
-export { parse, build, getAutocompleteSuggestions };
+export { parse, build, getAutocompleteSuggestions, searchableFields };
