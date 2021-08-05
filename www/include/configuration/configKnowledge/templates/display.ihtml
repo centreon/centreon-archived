@@ -103,7 +103,7 @@
             <td class="ListColLeft"><a
                     href="./include/configuration/configKnowledge/proxy/proxy.php?host_name={$services.$elem.h}"
                     target="_blank" title="Show Wiki Page"><img class="ico-14" src="./img/icons/link.png"></a>&nbsp;{if
-                $services.$elem.h != $hostname}{$services.$elem.h}{else} &nbsp;{/if}
+                isset($hostname) && $services.$elem.h != $hostname}{$services.$elem.h}{else} &nbsp;{/if}
             </td>
             <td class="ListColLeft"><a
                     href="./include/configuration/configKnowledge/proxy/proxy.php?host_name={$services.$elem.h}&service_description={$services.$elem.svc}"

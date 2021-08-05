@@ -340,7 +340,7 @@ if (!is_null($host_id)) {
         $DBRESULT = $pearDBO->query($rq2);
 
         $ndo2 = $DBRESULT->fetchRow();
-        if ($ndo2 !== false) {
+        if ($ndo2 !== false && $ndo2["current_state"] <= 2) {
             $host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
         }
 
