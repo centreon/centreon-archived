@@ -1,0 +1,20 @@
+{
+  "results": [
+      {
+        "updatetime": "",
+        "host": "test_host",
+        "service": "service_test",
+        "status": "2",
+        "output": "submit_status_2",
+        "perfdata": ""
+      },
+      {
+        "updatetime": "",
+        "host": "test_host",
+        "service": "service_test_dt",
+        "status": "2",
+        "output": "submit_status_2",
+        "perfdata": ""
+      }
+  ]
+}
