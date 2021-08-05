@@ -21,7 +21,7 @@ import {
 } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import { IconButton, useRequest, useSnackbar, Severity } from '@centreon/ui';
+import { IconButton, useRequest, useSnackbar } from '@centreon/ui';
 
 import {
   labelSaveFilter,
@@ -85,7 +85,7 @@ const SaveFilterMenuContent = ({
     request: updateFilterRequest,
   });
 
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage } = useSnackbar();
 
   const openSaveFilterMenu = (event: React.MouseEvent): void => {
     setMenuAnchor(event.currentTarget);
@@ -113,10 +113,7 @@ const SaveFilterMenuContent = ({
   };
 
   const confirmCreateFilter = (newFilter: Filter): void => {
-    showMessage({
-      message: t(labelFilterCreated),
-      severity: Severity.success,
-    });
+    showSuccessMessage(t(labelFilterCreated));
 
     loadFiltersAndUpdateCurrent(omit(['order'], newFilter));
   };
@@ -127,10 +124,7 @@ const SaveFilterMenuContent = ({
       id: currentFilter.id,
     }).then((savedFilter) => {
       closeSaveFilterMenu();
-      showMessage({
-        message: t(labelFilterSaved),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelFilterSaved));
 
       loadFiltersAndUpdateCurrent(omit(['order'], savedFilter));
     });

@@ -10,7 +10,6 @@ import {
   TextField,
   useSnackbar,
   useRequest,
-  Severity,
   useLocaleDateTimeFormat,
 } from '@centreon/ui';
 
@@ -40,7 +39,7 @@ const AddCommentForm = ({
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { toIsoString, toDateTime } = useLocaleDateTimeFormat();
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage } = useSnackbar();
   const [comment, setComment] = React.useState<string>();
 
   const { sendRequest, sending } = useRequest({
@@ -61,10 +60,7 @@ const AddCommentForm = ({
       parameters,
       resources: [resource],
     }).then(() => {
-      showMessage({
-        message: t(labelCommentAdded),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelCommentAdded));
       onSuccess(parameters);
     });
   };

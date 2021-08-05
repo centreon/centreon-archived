@@ -27,6 +27,7 @@ import {
   useRefreshInterval,
   User,
   Actions,
+  useCloudServices,
 } from '@centreon/ui-context';
 
 import createStore from '../store';
@@ -58,6 +59,7 @@ const AppProvider = (): JSX.Element | null => {
   const { downtime, setDowntime } = useDowntime();
   const { refreshInterval, setRefreshInterval } = useRefreshInterval();
   const { actionAcl, setActionAcl } = useAcl();
+  const cloudServices = useCloudServices();
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
@@ -152,6 +154,7 @@ const AppProvider = (): JSX.Element | null => {
         acl: {
           actions: actionAcl,
         },
+        cloudServices,
         downtime,
         refreshInterval,
       }}
