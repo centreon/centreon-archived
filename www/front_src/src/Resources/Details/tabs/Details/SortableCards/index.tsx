@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { rectIntersection } from '@dnd-kit/core';
 import { rectSortingStrategy } from '@dnd-kit/sortable';
-import { find, isEmpty, isNil, map, pluck, propEq } from 'ramda';
+import { filter, find, isEmpty, isNil, map, pluck, propEq } from 'ramda';
 
 import { Box, Grid } from '@material-ui/core';
 
@@ -47,7 +47,12 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
       ...(find(propEq('title', title), allDetailsCards) as DetailCardLine),
     }),
     defaultDetailsCardsLayout,
-  ).filter(({ field }) => !isNil(field) && !isEmpty(field));
+  );
+
+  const displayedCards = filter(
+    ({ field }) => !isNil(field) && !isEmpty(field),
+    cards,
+  );
 
   const RootComponent = ({ children }: RootComponentProps): JSX.Element => (
     <Grid container spacing={1} style={{ width: panelWidth }}>
@@ -74,7 +79,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
           'width',
           'title',
         ]}
-        items={cards}
+        items={displayedCards}
         sortingStrategy={rectSortingStrategy}
         onDragEnd={dragEnd}
       />
