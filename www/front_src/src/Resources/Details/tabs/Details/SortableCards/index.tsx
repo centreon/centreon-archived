@@ -1,37 +1,13 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import {
-  rectIntersection,
-  DndContext,
-  DragOverlay,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  rectSortingStrategy,
-} from '@dnd-kit/sortable';
-import {
-  equals,
-  find,
-  indexOf,
-  isEmpty,
-  isNil,
-  move,
-  not,
-  path,
-  pipe,
-  pluck,
-  propEq,
-} from 'ramda';
+import { rectIntersection } from '@dnd-kit/core';
+import { rectSortingStrategy } from '@dnd-kit/sortable';
+import { find, isEmpty, isNil, map, pluck, propEq } from 'ramda';
 
-import { Box, Grid, useTheme } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 
-import { useLocaleDateTimeFormat } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { SortbleItems, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import getDetailCardLines, { DetailCardLine } from '../DetailsCard/cards';
 import { ResourceDetails } from '../../../models';
@@ -40,18 +16,21 @@ import {
   storeDetailsCards,
 } from '../storedDetailsCards';
 
-import SortableItem from './SortableItem';
-import Item from './Item';
+import { CardsLayout } from './models';
+import Content from './Content';
 
 interface Props {
   details: ResourceDetails;
   panelWidth: number;
 }
 
+interface RootComponentProps {
+  children: JSX.Element | null;
+}
+
 const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { toDateTime } = useLocaleDateTimeFormat();
-  const theme = useTheme();
 
   const storedDetailsCards = getStoredOrDefaultDetailsCards([]);
 
@@ -61,103 +40,44 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     ? pluck('title', allDetailsCards)
     : storedDetailsCards;
 
-  const [activeId, setActiveId] = React.useState<string | null>(null);
-  const [detailsCardItems, setDetailsCardItems] = React.useState(
-    defaultDetailsCardsLayout,
-  );
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+  const cards = map<string, CardsLayout>(
+    (title) => ({
+      id: title,
+      width: panelWidth,
+      ...(find(propEq('title', title), allDetailsCards) as DetailCardLine),
     }),
+    defaultDetailsCardsLayout,
+  ).filter(({ field }) => !isNil(field) && !isEmpty(field));
+
+  const RootComponent = ({ children }: RootComponentProps): JSX.Element => (
+    <Grid container spacing={1} style={{ width: panelWidth }}>
+      {children}
+    </Grid>
   );
 
-  const dragStart = (event): void => {
-    setActiveId(path(['active', 'id'], event) as string);
+  const dragEnd = (items: Array<string>) => {
+    storeDetailsCards(items);
   };
-
-  const dragCancel = () => setActiveId(null);
-
-  const dragEnd = () => {
-    setActiveId(null);
-
-    storeDetailsCards(detailsCardItems);
-  };
-
-  const dragOver = (event): void => {
-    const overId = path(['over', 'id'], event);
-
-    if (
-      pipe(isNil, not)(overId) &&
-      pipe(equals(activeId), not)(overId as string | null)
-    ) {
-      const oldIndex = indexOf(activeId, detailsCardItems);
-      const newIndex = indexOf(overId, detailsCardItems);
-
-      const newCardsOrder = move<string>(oldIndex, newIndex, detailsCardItems);
-      setDetailsCardItems(newCardsOrder);
-    }
-  };
-
-  const activeDetailsCardLine = find(
-    propEq('title', activeId),
-    allDetailsCards,
-  );
 
   return (
     <Box>
-      <DndContext
+      <SortbleItems<CardsLayout>
+        Content={Content}
+        RootComponent={RootComponent}
         collisionDetection={rectIntersection}
-        sensors={sensors}
-        onDragCancel={dragCancel}
+        itemProps={[
+          'field',
+          'line',
+          'xs',
+          'active',
+          'isCustomCard',
+          'width',
+          'title',
+        ]}
+        items={cards}
+        sortingStrategy={rectSortingStrategy}
         onDragEnd={dragEnd}
-        onDragOver={dragOver}
-        onDragStart={dragStart}
-      >
-        <SortableContext
-          items={detailsCardItems}
-          strategy={rectSortingStrategy}
-        >
-          <Grid container spacing={1}>
-            {detailsCardItems.map((detailsCardItem) => {
-              const { field, line, xs, active, isCustomCard } = find(
-                propEq('title', detailsCardItem),
-                allDetailsCards,
-              ) as DetailCardLine;
-              const displayCard = !isNil(field) && !isEmpty(field);
-
-              return (
-                displayCard && (
-                  <SortableItem
-                    active={active}
-                    isCustomCard={isCustomCard}
-                    key={detailsCardItem}
-                    line={line as JSX.Element}
-                    title={detailsCardItem}
-                    width={panelWidth}
-                    xs={xs || 6}
-                  />
-                )
-              );
-            })}
-          </Grid>
-        </SortableContext>
-        <DragOverlay style={{ zIndex: theme.zIndex.tooltip }}>
-          <Grid container spacing={1} style={{ width: panelWidth }}>
-            {activeId ? (
-              <Item
-                isDragging
-                active={activeDetailsCardLine?.active}
-                isCustomCard={activeDetailsCardLine?.isCustomCard}
-                line={activeDetailsCardLine?.line as JSX.Element}
-                title={activeId}
-                width={panelWidth}
-                xs={activeDetailsCardLine?.xs}
-              />
-            ) : null}
-          </Grid>
-        </DragOverlay>
-      </DndContext>
+      />
     </Box>
   );
 };
