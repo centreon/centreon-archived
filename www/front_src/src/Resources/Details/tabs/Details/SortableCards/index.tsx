@@ -7,7 +7,11 @@ import { filter, find, isEmpty, isNil, map, pluck, propEq } from 'ramda';
 
 import { Box, Grid } from '@material-ui/core';
 
-import { SortbleItems, useLocaleDateTimeFormat } from '@centreon/ui';
+import {
+  SortableItems,
+  useLocaleDateTimeFormat,
+  RootComponentProps,
+} from '@centreon/ui';
 
 import getDetailCardLines, { DetailCardLine } from '../DetailsCard/cards';
 import { ResourceDetails } from '../../../models';
@@ -22,10 +26,6 @@ import Content from './Content';
 interface Props {
   details: ResourceDetails;
   panelWidth: number;
-}
-
-interface RootComponentProps {
-  children: JSX.Element | null;
 }
 
 const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
@@ -66,7 +66,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
 
   return (
     <Box>
-      <SortbleItems<CardsLayout>
+      <SortableItems<CardsLayout>
         Content={Content}
         RootComponent={RootComponent}
         collisionDetection={rectIntersection}
