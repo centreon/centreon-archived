@@ -26,7 +26,7 @@ const ResourcesPage = ({
 }: Props): JSX.Element => (
   <WithPanel open={editPanelOpen} panel={<EditFiltersPanel />}>
     <ListingPage
-      filters={<Filter />}
+      filter={<Filter />}
       listing={<Listing />}
       panel={<Details />}
       panelOpen={!isNil(selectedResourceId)}
@@ -66,4 +66,4 @@ const Resources = (): JSX.Element => {
   );
 };
 
-export default withSnackbar(Resources);
+export default withSnackbar({ Component: Resources });

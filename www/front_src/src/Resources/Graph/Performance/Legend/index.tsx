@@ -17,7 +17,7 @@ import {
   Typography,
   makeStyles,
   useTheme,
-  fade,
+  alpha,
   Theme,
   Tooltip,
   Box,
@@ -89,7 +89,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   },
   minMaxAvgValue: { fontWeight: 600 },
   normal: {
-    color: fade(theme.palette.common.black, 0.6),
+    color: alpha(theme.palette.common.black, 0.6),
   },
   toggable: {
     cursor: 'pointer',
@@ -173,7 +173,7 @@ const LegendContent = ({
 
           const markerColor = display
             ? color
-            : fade(theme.palette.text.disabled, 0.2);
+            : alpha(theme.palette.text.disabled, 0.2);
 
           const metric = find(
             equals(line.metric),

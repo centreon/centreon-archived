@@ -20,7 +20,6 @@ import {
   SeverityCode,
   IconButton,
   useSnackbar,
-  Severity,
   copyToClipboard,
 } from '@centreon/ui';
 
@@ -103,7 +102,7 @@ type Props = {
 const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
   const [resourceNameHovered, setResourceNameHovered] = React.useState(false);
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage, showErrorMessage } = useSnackbar();
   const classes = useStylesHeaderContent();
 
   const hoverResourceName = () => {
@@ -117,15 +116,9 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
   const copyResourceLink = (): void => {
     try {
       copyToClipboard(window.location.href);
-      showMessage({
-        message: t(labelLinkCopied),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelLinkCopied));
     } catch (_) {
-      showMessage({
-        message: t(labelSomethingWentWrong),
-        severity: Severity.error,
-      });
+      showErrorMessage(t(labelSomethingWentWrong));
     }
   };
 

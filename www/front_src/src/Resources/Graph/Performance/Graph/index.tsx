@@ -23,7 +23,7 @@ import {
   Paper,
   Typography,
   Theme,
-  fade,
+  alpha,
   useTheme,
   CircularProgress,
   Tooltip,
@@ -114,7 +114,7 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   },
   graphLoader: {
     alignItems: 'center',
-    backgroundColor: fade(theme.palette.common.white, 0.5),
+    backgroundColor: alpha(theme.palette.common.white, 0.5),
     display: 'flex',
     height: '100%',
     justifyContent: 'center',
@@ -511,9 +511,9 @@ const GraphContent = ({
                 />
               )}
               <MemoizedBar
-                fill={fade(theme.palette.primary.main, 0.2)}
+                fill={alpha(theme.palette.primary.main, 0.2)}
                 height={graphHeight}
-                stroke={fade(theme.palette.primary.main, 0.5)}
+                stroke={alpha(theme.palette.primary.main, 0.5)}
                 width={zoomBarWidth}
                 x={zoomBoundaries?.start || 0}
                 y={0}
