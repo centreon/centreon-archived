@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import IconCopyFile from '@material-ui/icons/FileCopy';
 
-import { copyToClipboard, Severity, useSnackbar } from '@centreon/ui';
+import { copyToClipboard, useSnackbar } from '@centreon/ui';
 
 import { ResourceDetails } from '../../../models';
 import CommandWithArguments from '../CommandLine';
@@ -35,22 +35,16 @@ const useStyles = makeStyles((theme) => ({
 
 const CommandLineCard = ({ details }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage, showErrorMessage } = useSnackbar();
   const classes = useStyles();
 
   const copyCommandLine = (): void => {
     try {
       copyToClipboard(details.command_line as string);
 
-      showMessage({
-        message: t(labelCommandCopied),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelCommandCopied));
     } catch (_) {
-      showMessage({
-        message: t(labelSomethingWentWrong),
-        severity: Severity.error,
-      });
+      showErrorMessage(t(labelSomethingWentWrong));
     }
   };
 
