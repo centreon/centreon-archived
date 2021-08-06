@@ -201,7 +201,8 @@ class PlatformPending implements PlatformInterface
         }
 
         // check for DNS to be resolved
-        if (false === ($address = filter_var(gethostbyname($address), FILTER_VALIDATE_IP))) {
+        $address = filter_var(gethostbyname($address), FILTER_VALIDATE_IP);
+        if (false === $address) {
             throw new \InvalidArgumentException(
                 sprintf(
                     _("The address '%s' of '%s' is not valid or not resolvable"),
