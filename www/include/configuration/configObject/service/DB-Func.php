@@ -1636,7 +1636,7 @@ function updateService_MC($service_id = null, $params = array())
             $service_id,
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             true,
             false,
@@ -1652,7 +1652,7 @@ function updateService_MC($service_id = null, $params = array())
     $centreon->CentreonLogAction->insertLog(
         "service",
         $service_id,
-        CentreonDB::escape($ret["service_description"]),
+        CentreonDB::escape($ret["service_description"] ?? ""),
         "mc",
         $fields
     );

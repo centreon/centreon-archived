@@ -1194,7 +1194,7 @@ if ($form->validate() && $from_list_menu == false) {
          * Before saving, we check if a password macro has changed its name to be able to give it the right password
          * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
          */
-        if (isset($$_REQUEST['macroInput'])) {
+        if (isset($_REQUEST['macroInput'])) {
             foreach ($_REQUEST['macroInput'] as $index => $macroName) {
                 if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
                     $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
