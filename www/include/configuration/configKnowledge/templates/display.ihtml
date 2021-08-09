@@ -96,15 +96,20 @@
             <td class="ListColHeaderCenter">{$actions_trans}&nbsp;&nbsp;&nbsp;</td>
         </tr>
         {assign var="line" value=0}
-        {assign var="l" value=0}
+        {php} $l = 0; {/php}
         {if $selection == 1}
         {foreach key=elem from=$content item=stt}
         <tr class="{php} global $line; print $line[$l%2]; {/php}">
             <td class="ListColCenter"><img class="ico-14" src="./img/icons/service.png"></td>
-            <td class="ListColLeft"><a
+            <td class="ListColLeft">
+                <a
                     href="./include/configuration/configKnowledge/proxy/proxy.php?host_name={$services.$elem.h}"
-                    target="_blank" title="Show Wiki Page"><img class="ico-14" src="./img/icons/link.png"></a>&nbsp;{if
-                isset($hostname) && $services.$elem.h != $hostname}{$services.$elem.h}{else} &nbsp;{/if}
+                    target="_blank"
+                    title="Show Wiki Page"
+                >
+                    <img class="ico-14" src="./img/icons/link.png">
+                </a>
+                &nbsp;{$services.$elem.h}
             </td>
             <td class="ListColLeft"><a
                     href="./include/configuration/configKnowledge/proxy/proxy.php?host_name={$services.$elem.h}&service_description={$services.$elem.svc}"
