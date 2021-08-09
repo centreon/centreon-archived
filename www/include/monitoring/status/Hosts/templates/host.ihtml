@@ -1,6 +1,6 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form'>
-
+<input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
 {assign var='nbCol' value='4'}
 {if $criticalityUsed}

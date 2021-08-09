@@ -1,6 +1,6 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form'>
-
+<input name="p" value="{$p}" type="hidden">
 <table class="ajaxOption table">
     <tr>
         <th colspan="6"><h5>{$filters}</h5></th>
