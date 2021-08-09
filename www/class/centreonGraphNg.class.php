@@ -68,7 +68,7 @@ class MetricUtils
         if (is_null(self::$instance)) {
             self::$instance = new MetricUtils();
         }
- 
+
         return self::$instance;
     }
 
@@ -141,12 +141,17 @@ class CentreonGraphNg
     protected $generalOpt;
     protected $dbPath;
     protected $dbStatusPath;
-    protected $indexData;
+    protected $indexData = [
+        'host_id' => null,
+        'host_name' => null,
+        'service_id' => null,
+        'service_description' => null,
+    ];
     protected $templateId;
     protected $templateInformations;
     protected $metrics;
     protected $indexIds;
-    
+
     protected $dsDefault;
     protected $colorCache;
     protected $componentsDsCache;
@@ -213,7 +218,6 @@ class CentreonGraphNg
         $this->dsDefault = null;
         $this->colorCache = null;
         $this->userId = $userId;
-        $this->indexData = null;
         $this->componentsDsCache = null;
         $this->listMetricsId = array();
         $this->metrics = array();
@@ -958,12 +962,17 @@ class CentreonGraphNg
          */
         $keys = array_keys($this->indexIds);
         $indexId = array_shift($keys);
-        
+
         $this->log("index_data for " . $indexId);
-        $stmt = $this->dbCs->prepare("SELECT * FROM index_data WHERE id = :index_id");
+        $stmt = $this->dbCs->prepare(
+            "SELECT host_id, host_name, service_id, service_description FROM index_data WHERE id = :index_id"
+        );
         $stmt->bindParam(':index_id', $indexId, PDO::PARAM_INT);
         $stmt->execute();
-        $this->indexData = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $this->indexData = $row;
+        }
+
         if (preg_match("/meta_([0-9]*)/", $this->indexData["service_description"], $matches)) {
             $stmt = $this->db->prepare("SELECT meta_name FROM meta_service WHERE `meta_id` = :meta_id");
             $stmt->bindParam(':meta_id', $matches[1], PDO::PARAM_INT);
@@ -971,7 +980,7 @@ class CentreonGraphNg
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->indexData["service_description"] = $row["meta_name"];
         }
-        
+
         if ($this->indexData["host_name"] != "_Module_Meta") {
             $this->extraDatas['title'] = $this->indexData['service_description'] . " " . _("graph on") . " "
                 . $this->indexData['host_name'];
@@ -979,7 +988,7 @@ class CentreonGraphNg
             $this->extraDatas['title'] = _("Graph") . " " . $this->indexData["service_description"];
         }
     }
-    
+
     /**
      * Assign graph template
      *
