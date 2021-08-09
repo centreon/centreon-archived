@@ -31,6 +31,8 @@
 #
 # For more information : contact@centreon.com
 
+set -e
+
 function usage() {
     cat <<EOF
 This script aims to upgrade the php library from 7.2 to 7.4.
