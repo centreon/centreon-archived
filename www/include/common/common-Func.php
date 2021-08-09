@@ -1019,9 +1019,8 @@ function getMyServiceExtendedInfoField($service_id, $field)
             "WHERE `extended_service_information`.`service_service_id` = '" . CentreonDb::escape($service_id) .
             "' AND `service`.`service_id` = '" . CentreonDb::escape($service_id) . "' LIMIT 1";
         $DBRESULT = $pearDB->query($query);
-        $row = $DBRESULT->fetchRow();
 
-        if ($row !== false) {
+        if ($row = $DBRESULT->fetch()) {
             if ($row[$field]) {
                 return $row[$field];
             } elseif ($row["service_template_model_stm_id"]) {
@@ -1033,6 +1032,8 @@ function getMyServiceExtendedInfoField($service_id, $field)
             } else {
                 break;
             }
+        } else {
+            break;
         }
     }
 }
