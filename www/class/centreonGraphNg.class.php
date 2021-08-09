@@ -922,28 +922,31 @@ class CentreonGraphNg
         $serviceId = $this->indexData["service_id"];
 
         $stmt = $this->db->prepare("SELECT
-                esi.graph_id, service_template_model_stm_id FROM service 
-            LEFT JOIN extended_service_information esi 
+                esi.graph_id, service_template_model_stm_id FROM service
+            LEFT JOIN extended_service_information esi
                 ON esi.service_service_id = service_id
                 WHERE service_id = :service_id");
         $tab = array();
         while (1) {
             $stmt->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
             $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($row["graph_id"]) {
-                return $row["graph_id"];
-            } elseif ($row["service_template_model_stm_id"]) {
-                if (isset($tab[$row['service_template_model_stm_id']])) {
+            if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                if ($row["graph_id"]) {
+                    return $row["graph_id"];
+                } elseif ($row["service_template_model_stm_id"]) {
+                    if (isset($tab[$row['service_template_model_stm_id']])) {
+                        break;
+                    }
+                    $serviceId = $row["service_template_model_stm_id"];
+                    $tab[$serviceId] = 1;
+                } else {
                     break;
                 }
-                $serviceId = $row["service_template_model_stm_id"];
-                $tab[$serviceId] = 1;
             } else {
                 break;
             }
         }
-        
+
         return null;
     }
 
@@ -1061,11 +1064,12 @@ class CentreonGraphNg
     {
         $this->graphData['times'] = [];
 
-        $size = (is_array($rrdData['data']) || $rrdData['data'] instanceof \Countable)
+        $size = isset($rrdData['data']) && (is_array($rrdData['data']) || $rrdData['data'] instanceof \Countable)
             ? count($rrdData['data'])
             : $rrdData['data'];
 
-        $gprintsSize = (is_array($rrdData['meta']['gprints']) || $rrdData['meta']['gprints'] instanceof \Countable)
+        $gprintsSize = isset($rrdData['meta']['gprints'])
+            && (is_array($rrdData['meta']['gprints']) || $rrdData['meta']['gprints'] instanceof \Countable)
             ? count($rrdData['meta']['gprints'])
             : 0;
 
