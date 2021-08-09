@@ -9,7 +9,7 @@ import {
 import { build, parse, getAutocompleteSuggestions } from './index';
 
 const search =
-  'resource_type:host,service state:unhandled_problems status:OK,UP host_group:53|Linux-Servers monitoring_server:1|Central h.name:centreon';
+  'type:host,service state:unhandled status:ok,up host_group:53|Linux-Servers monitoring_server:1|Central h.name:centreon';
 
 const parsedSearch = [
   {
@@ -86,9 +86,9 @@ describe(getAutocompleteSuggestions, () => {
       inputSearch: 'state:',
     },
     {
-      cursorPosition: 14,
+      cursorPosition: 5,
       expectedResult: selectableResourceTypes.map(prop('id')),
-      inputSearch: 'resource_type:',
+      inputSearch: 'type:',
     },
     {
       cursorPosition: 24,
