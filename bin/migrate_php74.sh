@@ -65,6 +65,8 @@ function upgrade_rhel7() {
         https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
         https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
         yum-utils
+    yum list installed -q remi-release
+    yum list installed -q epel-release
     yum-config-manager -q --enable remi-php74
     yum install -q -y \
         php74 \
@@ -85,7 +87,7 @@ function upgrade_rhel7() {
         php74-php-pecl-gnupg
 
     info "Copying php-fpm configuration from 7.2 to 7.4"
-    \cp /etc/opt/rh/rh-php72/php-fpm.d/*.conf /etc/opt/remi/php74/php-fpm.d/
+    cp /etc/opt/rh/rh-php72/php-fpm.d/*.conf /etc/opt/remi/php74/php-fpm.d/
 
     info "Copying php configuration from 7.2 to 7.4"
     cp /etc/opt/rh/rh-php72/php.d/50-centreon.ini /etc/opt/remi/php74/php.d/50-centreon.ini
