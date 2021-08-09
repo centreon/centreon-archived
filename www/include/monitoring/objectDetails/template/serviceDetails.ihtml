@@ -68,9 +68,11 @@
                             </tr>
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_last_check_type}</td>
+                                <td class="ListColLeft ColPopup">
                                 {if !empty($service_data.check_type)}
-                                    <td class="ListColLeft ColPopup">{$actpass[$service_data.check_type]}</td>
+                                    {$actpass[$service_data.check_type]}
                                 {/if}
+                                </td>
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_host_last_check}</td>
@@ -119,9 +121,16 @@
                             </tr>
                             <tr class='list_one'>
                                 <td class="ListColLeft ColPopup">{$m_mon_downtime_sc}</td>
-                                {if !empty($service_data.scheduled_downtime_depth)}
-                                    <td class="ListColLeft ColPopup" style='background:{$color_onoff_inv[$service_data.scheduled_downtime_depth]};'>{$en[$service_data.scheduled_downtime_depth]}</td>
-                                {/if}
+                                <td
+                                    class="ListColLeft ColPopup"
+                                    {if !empty($service_data.scheduled_downtime_depth)}
+                                        style='background:{$color_onoff_inv[$service_data.scheduled_downtime_depth]};'
+                                >
+                                    {$en[$service_data.scheduled_downtime_depth]}
+                                    {else}
+                                >
+                                    {/if}
+                                </td>
                             </tr>
                             <tr class='list_two'>
                                 <td class="ListColLeft ColPopup">{$m_mon_last_update}</td>
