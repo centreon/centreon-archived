@@ -1066,7 +1066,7 @@ class CentreonGraphNg
 
         $size = isset($rrdData['data']) && (is_array($rrdData['data']) || $rrdData['data'] instanceof \Countable)
             ? count($rrdData['data'])
-            : $rrdData['data'];
+            : 0;
 
         $gprintsSize = isset($rrdData['meta']['gprints'])
             && (is_array($rrdData['meta']['gprints']) || $rrdData['meta']['gprints'] instanceof \Countable)
