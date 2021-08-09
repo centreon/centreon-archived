@@ -167,14 +167,19 @@ class CentreonRtAcknowledgement extends CentreonObject
     private function parseShowParameters($parameters)
     {
         $parameters = explode(';', $parameters);
-        if(count($parameters) < 2) {
+        if (count($parameters) === 1) {
+            $resource = '';
+        } elseif (count($parameters) === 2) {
+            $resource = $parameters[1];
+        } else {
             throw new CentreonClapiException('Bad parameters');
         }
-        list($type, $resource) = $parameters;
-        return array(
+        $type = $parameters[0];
+
+        return [
             'type' => $type,
             'resource' => $resource,
-        );
+        ];
     }
 
     /**
