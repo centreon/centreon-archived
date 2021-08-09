@@ -896,12 +896,12 @@ class CentreonGraphNg
             $stmt->bindParam(':command_id', $commandId, PDO::PARAM_INT);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!is_null($row) && $row["graph_id"] != 0) {
+            if ($row !== false && $row["graph_id"] != 0) {
                 $this->templateId = $row["graph_id"];
                 return ;
             }
         }
-        
+
         $stmt = $this->db->prepare("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1'");
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
