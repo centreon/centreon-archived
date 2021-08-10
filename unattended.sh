@@ -125,7 +125,7 @@ function log() {
 
 	# shift once to get the log message (string or array)
 	shift
-	
+
 	# get the log message (full log message)
 	log_message="${@}"
 
@@ -303,6 +303,9 @@ function set_required_prerequisite() {
 
 	get_os_information
 
+	PHP_BIN="/usr/bin/php"
+	PHP_ETC="/etc/php.d/"
+
 	case "$detected_os_version" in
 	7*)
 		log "INFO" "Setting specific part for v7 ($detected_os_version)"
@@ -317,11 +320,14 @@ function set_required_prerequisite() {
 			;;
 		esac
 		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el7.centos.noarch.rpm"
+        REMI_RELEASE_RPM_URL="https://rpms.remirepo.net/enterprise/remi-release-8.rpm"
 		log "INFO" "Install Centreon from ${RELEASE_RPM_URL}"
-		PHP_BIN="/usr/bin/php"
-		PHP_ETC="/etc/php.d/"
 		OS_SPEC_SERVICES="php-fpm httpd24-httpd"
 		PKG_MGR="yum"
+
+		install_remi_repo
+		$PKG_MGR -y -q install yum-utils
+		yum-config-manager --enable remi-php80
 
 		set_centreon_repos
 
@@ -335,8 +341,7 @@ function set_required_prerequisite() {
 		log "INFO" "Setting specific part for v8 ($detected_os_version)"
 
 		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el8.noarch.rpm"
-		PHP_BIN="/bin/php"
-		PHP_ETC="/etc/php.d"
+		REMI_RELEASE_RPM_URL="https://rpms.remirepo.net/enterprise/remi-release-8.rpm"
 		OS_SPEC_SERVICES="php-fpm httpd"
 		PKG_MGR="dnf"
 
@@ -363,9 +368,12 @@ function set_required_prerequisite() {
 			;;
 		esac
 
-		log "INFO" "Installing PHP 7.3 and enable it"
-		$PKG_MGR module install php:7.3 -y -q
-		$PKG_MGR module enable php:7.3 -y -q
+		install_remi_repo
+		$PKG_MGR config-manager --set-enabled 'powertools'
+
+		log "INFO" "Installing PHP 8.0 and enable it"
+		$PKG_MGR module install php:remi-8.0 -y -q
+		$PKG_MGR module enable php:remi-8.0 -y -q
 
 		log "INFO" "Installing packages ${BASE_PACKAGES[@]}"
 		$PKG_MGR -y -q install ${BASE_PACKAGES[@]}
@@ -516,6 +524,26 @@ function install_centreon_repo() {
 	fi
 }
 #========= end of function install_centreon_repo()
+
+#========= begin of function install_remi_repo()
+# install Remi repositories
+#
+function install_remi_repo() {
+
+	log "INFO" "Remi repositories installation..."
+	$PKG_MGR -q clean all
+
+	rpm -q remi-release >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		$PKG_MGR -q install -y $REMI_RELEASE_RPM_URL
+		if [ $? -ne 0 ]; then
+			error_and_exit "Could not install Remi repository"
+		fi
+	else
+		log "INFO" "Remi repository seems to be already installed"
+	fi
+}
+#========= end of function install_remi_repo()
 
 #========= begin of function update_firewall_config()
 # add firewall configuration for newly added services
