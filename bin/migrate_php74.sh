@@ -62,11 +62,9 @@ function info() {
 function upgrade_rhel7() {
     info "Installing dependencies for PHP 7.4"
     yum install -q -y \
-        https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
         https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
         yum-utils
     yum list installed -q remi-release
-    yum list installed -q epel-release
     yum-config-manager -q --enable remi-php74
     yum install -q -y \
         php74 \
@@ -104,7 +102,6 @@ function upgrade_rhel7() {
 function upgrade_rhel8() {
     info "Installing dependencies for PHP 7.4"
     dnf install -q -y \
-        https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
         https://rpms.remirepo.net/enterprise/remi-release-8.rpm
     dnf module reset php
     dnf module install php:remi-7.4
