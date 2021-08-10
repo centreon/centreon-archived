@@ -65,7 +65,7 @@ trait CommandLineTrait
 
         if (preg_match('/' . $macroPattern . '/', $monitoringCommand, $foundMacroValues)) {
             // lazy and greedy regex should return the same result
-            // otherwise, it is not possible to known which section is the password
+            // otherwise, it is not possible to know which section is the password
             if (
                 preg_match('/' . $macroLazyPattern . '/', $monitoringCommand, $foundMacroLazyValues)
                 && $foundMacroLazyValues !== $foundMacroValues
