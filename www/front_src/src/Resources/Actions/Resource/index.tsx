@@ -10,7 +10,6 @@ import IconMore from '@material-ui/icons/MoreHoriz';
 
 import {
   useCancelTokenSource,
-  Severity,
   useSnackbar,
   SeverityCode,
   PopoverMenu,
@@ -81,17 +80,12 @@ const ResourceActionsContent = ({
   const { t } = useTranslation();
   const classes = useStyles();
   const { cancel, token } = useCancelTokenSource();
-  const { showMessage } = useSnackbar();
+  const { showErrorMessage, showSuccessMessage } = useSnackbar();
 
   const [resourceToSubmitStatus, setResourceToSubmitStatus] =
     React.useState<Resource | null>();
   const [resourceToComment, setResourceToComment] =
     React.useState<Resource | null>();
-
-  const showError = (message): void =>
-    showMessage({ message, severity: Severity.error });
-  const showSuccess = (message): void =>
-    showMessage({ message, severity: Severity.success });
 
   const {
     canAcknowledge,
@@ -125,9 +119,9 @@ const ResourceActionsContent = ({
     })
       .then(() => {
         confirmAction();
-        showSuccess(t(labelCheckCommandSent));
+        showSuccessMessage(t(labelCheckCommandSent));
       })
-      .catch(() => showError(t(labelSomethingWentWrong)));
+      .catch(() => showErrorMessage(t(labelSomethingWentWrong)));
   }, [resourcesToCheck]);
 
   React.useEffect(() => (): void => cancel(), []);

@@ -63,8 +63,13 @@ if (($row = $result->fetch()) !== false) {
  * Defining Login Form
  */
 $form = new HTML_QuickFormCustom('Form', 'post', './index.php');
-$form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic', 'autocomplete' => 'off'));
-$form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
+
+$optionsAliasField = array('placeholder' => _("Login"), 'class' => 'inputclassic', 'autocomplete' => 'off');
+$form->addElement('text', 'useralias', null, $optionsAliasField);
+
+$optionsPasswordField = array('placeholder' => _("Password"), 'class' => 'inputclassicPass');
+$form->addElement('password', 'password', null, $optionsPasswordField);
+
 $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));
 
 $loginValidate = $form->validate();

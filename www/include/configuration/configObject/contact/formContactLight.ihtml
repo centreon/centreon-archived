@@ -57,6 +57,13 @@
         {/if}
         {if $displayAdminFlag == 1}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="admin"> {$form.contact_admin.label}</td><td class="FormRowValue">{$form.contact_admin.html}</td></tr>
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="reach_api">
+                {$form.reach_api.label}
+            </td>
+            <td class="FormRowValue">{$form.reach_api.html}</td>
+        </tr>
         <tr class="list_two">
             <td class="FormRowField">
                 <img class="helpTooltip" name="reach_api_rt">
