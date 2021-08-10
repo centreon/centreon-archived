@@ -58,7 +58,7 @@ $displayLocked = filter_var(
 // keep checkbox state if navigating in pagination
 // this trick is mandatory cause unchecked checkboxes do not post any data
 if (
-    (isset($centreon->historyPage[$url]) && $centreon->historyPage[$url] > 0 || $num !== 0) 
+    (isset($centreon->historyPage[$url]) && $centreon->historyPage[$url] > 0 || $num !== 0)
     && isset($centreon->historySearch[$url]['displayLocked'])
 ) {
     $displayLocked = $centreon->historySearch[$url]['displayLocked'];

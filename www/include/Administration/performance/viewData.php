@@ -98,7 +98,8 @@ $inputPost = filter_input_array(
 
 $inputs = array();
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!empty($inputPost[$argumentName]) && (
+    if (
+        !empty($inputPost[$argumentName]) && (
             (is_array($inputPost[$argumentName]) && $inputPost[$argumentName]) ||
             (!is_array($inputPost[$argumentName]) && trim($inputPost[$argumentName]) != '')
         )

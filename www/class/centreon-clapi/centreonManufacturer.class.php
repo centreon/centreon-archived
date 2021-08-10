@@ -135,7 +135,7 @@ class CentreonManufacturer extends CentreonObject
         passthru("export MIBS=ALL && $centreonDir/bin/snmpttconvertmib --in=$tmpMibFile --out=$tmpMibFile.conf");
         passthru("$centreonDir/bin/centFillTrapDB -f $tmpMibFile.conf -m $vendorId");
         unlink($tmpMibFile);
-        if(file_exists($tmpMibFile . ".conf")) {
+        if (file_exists($tmpMibFile . ".conf")) {
             unlink($tmpMibFile . ".conf");
         }
     }

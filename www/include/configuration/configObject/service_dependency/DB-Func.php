@@ -213,8 +213,16 @@ function insertServiceDependency($ret = array()): int
     $statement->bindValue(':depName', $resourceValues['dep_name'], \PDO::PARAM_STR);
     $statement->bindValue(':depDescription', $resourceValues['dep_description'], \PDO::PARAM_STR);
     $statement->bindValue(':inheritsParent', $resourceValues['inherits_parent'], \PDO::PARAM_STR);
-    $statement->bindValue(':executionFailure', $resourceValues['execution_failure_criteria'] ?? null, \PDO::PARAM_STR);
-    $statement->bindValue(':notificationFailure', $resourceValues['notification_failure_criteria'] ?? null, \PDO::PARAM_STR);
+    $statement->bindValue(
+        ':executionFailure',
+        $resourceValues['execution_failure_criteria'] ?? null,
+        \PDO::PARAM_STR
+    );
+    $statement->bindValue(
+        ':notificationFailure',
+        $resourceValues['notification_failure_criteria'] ?? null,
+        \PDO::PARAM_STR
+    );
     $statement->bindValue(':depComment', $resourceValues['dep_comment'], \PDO::PARAM_STR);
     $statement->execute();
 
@@ -258,8 +266,16 @@ function updateServiceDependency($depId = null): void
     $statement->bindValue(':depName', $resourceValues['dep_name'], \PDO::PARAM_STR);
     $statement->bindValue(':depDescription', $resourceValues['dep_description'], \PDO::PARAM_STR);
     $statement->bindValue(':inheritsParent', $resourceValues['inherits_parent'], \PDO::PARAM_STR);
-    $statement->bindValue(':executionFailure', $resourceValues['execution_failure_criteria'] ?? null, \PDO::PARAM_STR);
-    $statement->bindValue(':notificationFailure', $resourceValues['notification_failure_criteria'] ?? null, \PDO::PARAM_STR);
+    $statement->bindValue(
+        ':executionFailure',
+        $resourceValues['execution_failure_criteria'] ?? null,
+        \PDO::PARAM_STR
+    );
+    $statement->bindValue(
+        ':notificationFailure',
+        $resourceValues['notification_failure_criteria'] ?? null,
+        \PDO::PARAM_STR
+    );
     $statement->bindValue(':depComment', $resourceValues['dep_comment'], \PDO::PARAM_STR);
     $statement->bindValue(':depId', $depId, \PDO::PARAM_INT);
     $statement->execute();

@@ -469,7 +469,8 @@ class CentreonUtils
     {
         $occurrences = false;
         $start = 0;
-        if (($start = stripos($html, "<$tag", $start)) !== false &&
+        if (
+            ($start = stripos($html, "<$tag", $start)) !== false &&
             ($end = stripos($html, "</$tag>", strlen("</$tag>")))
         ) {
             if (!is_array($occurrences[$tag])) {

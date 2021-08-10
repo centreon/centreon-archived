@@ -175,7 +175,7 @@ $form->registerRule('existName', 'callback', 'hasVirtualNameNeverUsed');
 $form->registerRule('RPNInfinityLoop', 'callback', '_TestRPNInfinityLoop');
 $form->addRule(
     'vmetric_name',
-    _("Name already in use for this Host/Service"), 
+    _("Name already in use for this Host/Service"),
     'existName',
     $vmetric['index_id'] ?? null
 );
