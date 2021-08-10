@@ -273,7 +273,7 @@ class CentreonDB extends \PDO
                 $this->log->insertLog(2, " QUERY : " . $string);
             }
 
-            throw new \PDOException($e->getMessage(), hexdec($e->getCode()));
+            throw $e;
         }
 
         $this->queryNumber++;
