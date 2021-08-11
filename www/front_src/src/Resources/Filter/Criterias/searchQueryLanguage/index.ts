@@ -1,6 +1,7 @@
 import {
   allPass,
   concat,
+  defaultTo,
   endsWith,
   filter,
   find,
@@ -20,10 +21,12 @@ import {
   propEq,
   propSatisfies,
   reject,
+  slice,
   sortBy,
   split,
   startsWith,
   toLower,
+  trim,
   without,
   __,
 } from 'ramda';
@@ -267,13 +270,17 @@ const getAutocompleteSuggestions = ({
     return [];
   }
 
-  const searchBeforeCursor = search.slice(0, cursorPosition + 1);
-  const expressionBeforeCursor =
-    last(searchBeforeCursor.trim().split(' ')) || '';
+  const searchBeforeCursor = slice(0, cursorPosition + 1, search);
+  const expressionBeforeCursor = pipe(
+    trim,
+    split(' '),
+    last,
+  )(searchBeforeCursor) as string;
+
   const expressionCriteria = expressionBeforeCursor.split(':');
-  const criteriaName = head(expressionCriteria) || '';
+  const criteriaName = head(expressionCriteria) as string;
   const unmappedCriteriaName = getUnmappedCriteriaId(criteriaName);
-  const expressionCriteriaValues = last(expressionCriteria)?.split(',') || [];
+  const expressionCriteriaValues = pipe(last, split(','))(expressionCriteria);
 
   const hasCriteriaStaticValues = Object.keys(
     staticCriteriaValuesById,
@@ -298,7 +305,7 @@ const getAutocompleteSuggestions = ({
     }).includes(lastCriteriaValue);
 
     return isLastValueInSuggestions
-      ? criteriaValueSuggestions.map(concat(','))
+      ? map(concat(','), criteriaValueSuggestions)
       : filter(startsWith(lastCriteriaValue), criteriaValueSuggestions);
   }
 
