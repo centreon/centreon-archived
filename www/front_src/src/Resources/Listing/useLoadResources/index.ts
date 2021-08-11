@@ -7,6 +7,7 @@ import { SelectEntry } from '@centreon/ui';
 
 import { useResourceContext } from '../../Context';
 import { SortOrder } from '../../models';
+import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
@@ -51,18 +52,7 @@ const useLoadResources = (): LoadResources => {
     const search = searchCriteria
       ? {
           regex: {
-            fields: [
-              'h.name',
-              'h.alias',
-              'h.address',
-              's.description',
-              'name',
-              'alias',
-              'parent_name',
-              'parent_alias',
-              'fqdn',
-              'information',
-            ],
+            fields: searchableFields,
             value: searchCriteria,
           },
         }
