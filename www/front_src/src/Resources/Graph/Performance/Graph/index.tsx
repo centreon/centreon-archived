@@ -331,7 +331,7 @@ const GraphContent = ({
     });
   };
 
-  const displayTooltip = (event) => {
+  const displayTooltip = (event): void => {
     setIsMouseOver(true);
     const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
@@ -373,7 +373,7 @@ const GraphContent = ({
     updateMetricsValue({ x });
   }, [mousePosition]);
 
-  const closeZoomPreview = () => {
+  const closeZoomPreview = (): void => {
     setZoomBoundaries(null);
     setZoomPivotPosition(null);
   };
@@ -431,7 +431,7 @@ const GraphContent = ({
     onAddComment?.(comment);
   };
 
-  const displayZoomPreview = (event) => {
+  const displayZoomPreview = (event): void => {
     if (isNil(onAddComment)) {
       return;
     }

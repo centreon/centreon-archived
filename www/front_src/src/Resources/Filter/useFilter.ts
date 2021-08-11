@@ -27,6 +27,7 @@ import { listCustomFilters } from './api';
 import { listCustomFiltersDecoder } from './api/decoders';
 import {
   Criteria,
+  CriteriaDisplayProps,
   CriteriaValue,
   selectableCriterias,
 } from './Criterias/models';
@@ -231,10 +232,10 @@ const useFilter = (): FilterState => {
   };
 
   const getMultiSelectCriterias = (): Array<Criteria> => {
-    const getSelectableCriteriaByName = (name: string) =>
+    const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
       selectableCriterias[name];
 
-    const isNonSelectableCriteria = (criteria: Criteria) =>
+    const isNonSelectableCriteria = (criteria: Criteria): boolean =>
       pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
 
     return pipe(

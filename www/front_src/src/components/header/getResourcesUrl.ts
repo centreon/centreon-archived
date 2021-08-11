@@ -1,3 +1,5 @@
+import { CriteriaValue } from '../../Resources/Filter/Criterias/models';
+
 const hostCriterias = {
   name: 'resource_types',
   value: [{ id: 'host', name: 'Host' }],
@@ -7,7 +9,12 @@ const serviceCriteria = {
   value: [{ id: 'service', name: 'Service' }],
 };
 
-const getStatusCriterias = (status) => {
+interface StatusCriterias {
+  name: string;
+  value: CriteriaValue;
+}
+
+const getStatusCriterias = (status): StatusCriterias => {
   return { name: 'statuses', value: [status] };
 };
 

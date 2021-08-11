@@ -62,8 +62,8 @@ const Annotation = ({
           width={iconSize}
           x={xIcon}
           y={yMargin}
-          onMouseEnter={() => setAnnotationHovered(() => event)}
-          onMouseLeave={() => setAnnotationHovered(() => undefined)}
+          onMouseEnter={(): void => setAnnotationHovered(() => event)}
+          onMouseLeave={(): void => setAnnotationHovered(() => undefined)}
         >
           <rect fill="transparent" height={iconSize} width={iconSize} />
           {icon}

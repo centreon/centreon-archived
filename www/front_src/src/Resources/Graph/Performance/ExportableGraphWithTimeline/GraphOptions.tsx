@@ -34,7 +34,7 @@ const GraphOptions = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const openGraphOptions = (event: React.MouseEvent) => {
+  const openGraphOptions = (event: React.MouseEvent): void => {
     if (isNil(anchorEl)) {
       setAnchorEl(event.currentTarget);
 
@@ -43,7 +43,7 @@ const GraphOptions = (): JSX.Element => {
     setAnchorEl(null);
   };
 
-  const closeGraphOptions = () => setAnchorEl(null);
+  const closeGraphOptions = (): void => setAnchorEl(null);
 
   const graphOptionsConfiguration = values(graphOptions);
 

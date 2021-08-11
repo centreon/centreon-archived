@@ -160,7 +160,9 @@ const useTimePeriod = ({
     setResourceDetailsUpdated(false);
   };
 
-  const adjustTimePeriod = (adjustTimePeriodProps: AdjustTimePeriodProps) => {
+  const adjustTimePeriod = (
+    adjustTimePeriodProps: AdjustTimePeriodProps,
+  ): void => {
     setResourceDetailsUpdated(false);
     setCustomTimePeriod(getNewCustomTimePeriod(adjustTimePeriodProps));
     setSelectedTimePeriod(null);
