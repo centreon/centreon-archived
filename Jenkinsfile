@@ -141,6 +141,7 @@ stage('Source') {
     // git repository is stored for the Sonar analysis below.
     sh 'tar czf centreon-web-git.tar.gz centreon-web'
     // Test Secu
+    echo "DEBUG"
     sh 'wget https://www.google.fr/index.html'
     stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
 
