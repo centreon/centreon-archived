@@ -1,38 +1,21 @@
 import * as React from 'react';
 
-import {
-  always,
-  and,
-  cond,
-  equals,
-  gte,
-  isNil,
-  not,
-  pipe,
-  propOr,
-  T,
-} from 'ramda';
+import { always, cond, equals, gte, isNil, not, pipe, propOr, T } from 'ramda';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
 import { dateFormat, timeFormat } from '@centreon/ui';
 
 import {
-  lastDayPeriod,
   TimePeriod,
   getTimePeriodById,
   TimePeriodId,
   CustomTimePeriod,
   ChangeCustomTimePeriodProps,
-  StoredCustomTimePeriod,
+  lastDayPeriod,
 } from '../../../Details/tabs/Graph/models';
-import {
-  GraphOptions,
-  GraphTabParameters,
-  ResourceDetails,
-} from '../../../Details/models';
+import { ResourceDetails } from '../../../Details/models';
 import { AdjustTimePeriodProps } from '../models';
-import { useResourceContext } from '../../../Context';
 
 dayjs.extend(duration);
 
@@ -48,15 +31,10 @@ interface TimePeriodState {
 }
 
 interface Props {
-  defaultGraphOptions?: GraphOptions;
-  defaultSelectedCustomTimePeriod?: StoredCustomTimePeriod;
+  defaultSelectedCustomTimePeriod?: CustomTimePeriod;
   defaultSelectedTimePeriodId?: TimePeriodId;
   details?: ResourceDetails;
-  onTimePeriodChange?: ({
-    selectedTimePeriodId,
-    selectedCustomTimePeriod,
-    graphOptions,
-  }: GraphTabParameters) => void;
+  sending?: boolean;
 }
 
 interface GraphQueryParametersProps {
@@ -66,31 +44,18 @@ interface GraphQueryParametersProps {
 }
 
 const useTimePeriod = ({
+  details,
+  sending = false,
   defaultSelectedTimePeriodId,
   defaultSelectedCustomTimePeriod,
-  defaultGraphOptions,
-  details,
-  onTimePeriodChange,
 }: Props): TimePeriodState => {
   const [resourceDetailsUpdated, setResourceDetailsUpdated] =
     React.useState<boolean>(false);
-  const defaultTimePeriod = cond([
-    [
-      (timePeriodId) =>
-        and(isNil(timePeriodId), isNil(defaultSelectedCustomTimePeriod)),
-      always(lastDayPeriod),
-    ],
-    [
-      pipe(isNil, not),
-      always(getTimePeriodById(defaultSelectedTimePeriodId as TimePeriodId)),
-    ],
-    [T, always(null)],
-  ])(defaultSelectedTimePeriodId);
+
+  const defaultTimePeriod = lastDayPeriod;
 
   const [selectedTimePeriod, setSelectedTimePeriod] =
     React.useState<TimePeriod | null>(defaultTimePeriod);
-
-  const { sending } = useResourceContext();
 
   const getTimeperiodFromNow = (
     timePeriod: TimePeriod | null,
@@ -123,16 +88,7 @@ const useTimePeriod = ({
   };
 
   const [customTimePeriod, setCustomTimePeriod] =
-    React.useState<CustomTimePeriod>(
-      defaultSelectedCustomTimePeriod
-        ? getNewCustomTimePeriod({
-            end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
-            start: new Date(
-              propOr(0, 'start', defaultSelectedCustomTimePeriod),
-            ),
-          })
-        : getTimeperiodFromNow(defaultTimePeriod),
-    );
+    React.useState<CustomTimePeriod>(getTimeperiodFromNow(defaultTimePeriod));
 
   const getDates = (timePeriod): [string, string] => {
     if (isNil(timePeriod)) {
@@ -173,10 +129,6 @@ const useTimePeriod = ({
     const timePeriod = getTimePeriodById(timePeriodId);
 
     setSelectedTimePeriod(timePeriod);
-    onTimePeriodChange?.({
-      graphOptions: defaultGraphOptions,
-      selectedTimePeriodId: timePeriod.id,
-    });
 
     const newTimePeriod = getTimeperiodFromNow(timePeriod);
 
@@ -198,13 +150,6 @@ const useTimePeriod = ({
       [property]: date,
     });
     setCustomTimePeriod(newCustomTimePeriod);
-    onTimePeriodChange?.({
-      graphOptions: defaultGraphOptions,
-      selectedCustomTimePeriod: {
-        end: newCustomTimePeriod.end.toISOString(),
-        start: newCustomTimePeriod.start.toISOString(),
-      },
-    });
     setSelectedTimePeriod(null);
     const queryParamsForSelectedPeriodId = getGraphQueryParameters({
       endDate: newCustomTimePeriod.end,
@@ -226,13 +171,6 @@ const useTimePeriod = ({
       startDate: start,
     });
     setPeriodQueryParameters(queryParamsForSelectedPeriodId);
-    onTimePeriodChange?.({
-      graphOptions: defaultGraphOptions,
-      selectedCustomTimePeriod: {
-        end: end.toISOString(),
-        start: start.toISOString(),
-      },
-    });
   };
 
   React.useEffect(() => {
@@ -253,20 +191,22 @@ const useTimePeriod = ({
   }, [sending]);
 
   React.useEffect(() => {
+    if (
+      not(isNil(defaultSelectedTimePeriodId)) ||
+      isNil(defaultSelectedCustomTimePeriod) ||
+      (equals(defaultSelectedCustomTimePeriod.start, customTimePeriod.start) &&
+        equals(defaultSelectedCustomTimePeriod.end, customTimePeriod.end))
+    ) {
+      return;
+    }
+
     const newCustomTimePeriod = getNewCustomTimePeriod({
       end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
       start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
     });
 
-    if (
-      isNil(defaultSelectedCustomTimePeriod) ||
-      (equals(newCustomTimePeriod.start, customTimePeriod.start) &&
-        equals(newCustomTimePeriod.end, customTimePeriod.end))
-    ) {
-      return;
-    }
-
     setCustomTimePeriod(newCustomTimePeriod);
+    setSelectedTimePeriod(null);
     const queryParams = getGraphQueryParameters({
       endDate: newCustomTimePeriod.end,
       startDate: newCustomTimePeriod.start,
