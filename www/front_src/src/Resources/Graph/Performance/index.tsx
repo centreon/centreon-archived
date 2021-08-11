@@ -213,6 +213,7 @@ const PerformanceGraph = ({
             display: find(propEq('name', line.name), lineData)?.display ?? true,
           })),
         );
+
         return;
       }
       setLineData(newLineData);

@@ -137,6 +137,7 @@ const LegendContent = ({
     const metricName = includes('#', legendName)
       ? split('#')(legendName)[1]
       : legendName;
+
     return (
       <div>
         <Tooltip placement="top" title={legendName}>
@@ -205,6 +206,7 @@ const LegendContent = ({
 
             if (event.ctrlKey || event.metaKey) {
               onToggle(metricLine);
+
               return;
             }
 

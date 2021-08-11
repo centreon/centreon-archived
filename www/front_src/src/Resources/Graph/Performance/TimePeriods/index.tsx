@@ -77,6 +77,7 @@ const TimePeriodButtonGroup = ({
     <ParentSize>
       {({ width }) => {
         const isCompact = lt(width, theme.breakpoints.values.sm);
+
         return (
           <Paper className={classes.header}>
             <ButtonGroup

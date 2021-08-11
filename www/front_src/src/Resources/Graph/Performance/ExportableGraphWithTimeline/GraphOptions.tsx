@@ -37,6 +37,7 @@ const GraphOptions = (): JSX.Element => {
   const openGraphOptions = (event: React.MouseEvent) => {
     if (isNil(anchorEl)) {
       setAnchorEl(event.currentTarget);
+
       return;
     }
     setAnchorEl(null);

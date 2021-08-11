@@ -70,6 +70,7 @@ const ReactRouter = React.memo<Props>(
     if (!externalPagesFetched || !allowedPages) {
       return <PageSkeleton />;
     }
+
     return (
       <React.Suspense fallback={<PageSkeleton />}>
         <Switch>

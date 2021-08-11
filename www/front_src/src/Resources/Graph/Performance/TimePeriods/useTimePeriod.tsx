@@ -97,6 +97,7 @@ const useTimePeriod = ({
         customTimePeriod.end.toISOString(),
       ];
     }
+
     return [
       timePeriod.getStart().toISOString(),
       new Date(Date.now()).toISOString(),

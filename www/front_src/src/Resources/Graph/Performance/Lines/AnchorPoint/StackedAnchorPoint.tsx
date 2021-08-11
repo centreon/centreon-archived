@@ -38,6 +38,7 @@ const getYAnchorPoint = ({
 }: Pick<Props, 'timeTick' | 'stackValues' | 'yScale'>): number => {
   const index = bisectDate(getStackedDates(stackValues), timeTick);
   const timeValue = stackValues[index];
+
   return yScale(timeValue[1] as number);
 };
 

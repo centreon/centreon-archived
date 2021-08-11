@@ -349,6 +349,7 @@ const GraphContent = ({
         start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
       });
       changeMetricsValue({ newMetricsValue: null });
+
       return;
     }
 
@@ -363,6 +364,7 @@ const GraphContent = ({
 
     if (isNil(mousePosition)) {
       changeMetricsValue({ newMetricsValue: null });
+
       return;
     }
 
@@ -400,6 +402,7 @@ const GraphContent = ({
         end: xScale.invert(zoomBoundaries?.end || graphWidth),
         start: xScale.invert(zoomBoundaries?.start || 0),
       });
+
       return;
     }
 

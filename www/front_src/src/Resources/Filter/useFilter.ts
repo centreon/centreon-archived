@@ -147,6 +147,7 @@ const useFilter = (): FilterState => {
 
     if (apply) {
       applyFilter(updatedFilter);
+
       return;
     }
 
