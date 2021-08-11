@@ -15162,5 +15162,14 @@ msgstr "Erro ao remover tokens de um contato"
 # msgid "Action not permitted"
 # msgstr ""
 
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
 # msgid "Search options"
 # msgstr ""

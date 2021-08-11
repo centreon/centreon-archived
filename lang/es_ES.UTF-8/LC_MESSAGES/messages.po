@@ -14723,5 +14723,14 @@ msgstr "Permitir certificado autofirmado"
 # msgid "Action not permitted"
 # msgstr ""
 
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
 # msgid "Search options"
 # msgstr ""

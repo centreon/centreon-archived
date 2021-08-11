@@ -118,6 +118,14 @@ const useLoadResources = (): LoadResources => {
   }, []);
 
   React.useEffect(() => {
+    if (isNil(details)) {
+      return;
+    }
+
+    initAutorefresh();
+  }, [isNil(details)]);
+
+  React.useEffect(() => {
     if (isNil(page)) {
       return;
     }
