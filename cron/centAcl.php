@@ -1,5 +1,6 @@
 #!@PHP_BIN@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -40,6 +41,7 @@ include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonLDAP.class.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonMeta.class.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
+
 include_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 $centreonDbName = $conf_centreon['db'];
@@ -49,6 +51,8 @@ $centreonLog = new CentreonLog();
  * Define the period between two update in second for LDAP user/contactgroup
  */
 define('LDAP_UPDATE_PERIOD', 3600);
+
+$centreonLog->insertLog(2, "test pipeline");
 
 /**
  * CentAcl script
