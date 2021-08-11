@@ -70,7 +70,7 @@ trait CommandLineTrait
                 preg_match('/' . $macroLazyPattern . '/', $monitoringCommand, $foundMacroLazyValues)
                 && $foundMacroLazyValues !== $foundMacroValues
             ) {
-                return $configurationCommand;
+                throw MonitoringServiceException::macroPasswordNotDetected();
             }
 
             array_shift($foundMacroValues); // remove global string matching
