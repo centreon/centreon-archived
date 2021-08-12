@@ -32,7 +32,7 @@ interface SerializerContextInterface
      * Options that normalizers/encoders have access to
      *
      * @link https://symfony.com/doc/current/components/serializer.html
-     * @var array
+     * @var array<string,string[]>
      */
     public static function context(): array;
 }
