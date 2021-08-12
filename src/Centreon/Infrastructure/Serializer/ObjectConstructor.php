@@ -26,6 +26,7 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use Doctrine\Instantiator\Instantiator;
 
 /**
  * This class is designed to allow the use of class constructors during deserialization phases.
@@ -34,6 +35,11 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
  */
 class ObjectConstructor implements ObjectConstructorInterface
 {
+    /**
+     * @var Instantiator
+     */
+    private $instantiator;
+
     /**
      * @inheritDoc
      */
@@ -45,6 +51,25 @@ class ObjectConstructor implements ObjectConstructorInterface
         DeserializationContext $context
     ): ?object {
         $className = $metadata->name;
-        return new $className();
+        $constructor = (new \ReflectionClass($className))->getConstructor();
+        if ($constructor !== null && count($constructor->getParameters()) === 0) {
+            return new $className();
+        }
+
+        return $this->getInstantiator()->instantiate($metadata->name);
+    }
+
+    /**
+     * get instantiator
+     *
+     * @return Instantiator
+     */
+    private function getInstantiator(): Instantiator
+    {
+        if (null === $this->instantiator) {
+            $this->instantiator = new Instantiator();
+        }
+
+        return $this->instantiator;
     }
 }
