@@ -46,7 +46,7 @@ interface PaginationRepositoryInterface
      * @param int $limit
      * @param int $offset
      * @param array<string,string> $ordering
-     * @return array<int,array<string,mixed>>
+     * @return array<int,mixed>
      */
     public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array;
 
