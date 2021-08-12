@@ -162,7 +162,7 @@ class CentreonUser
      * @param string $sid
      * @param \CentreonDB $pearDB
      */
-    public function checkUserStatus($sid = null, $pearDB)
+    public function checkUserStatus($sid, $pearDB)
     {
         $query1 = "SELECT contact_admin, contact_id FROM session, contact " .
             "WHERE session.session_id = '" . $sid .
