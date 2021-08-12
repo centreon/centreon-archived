@@ -61,8 +61,18 @@ trait CommandLineTrait
         $foundMacroNames = $this->extractMacroNamesFromCommandLine($configurationCommand);
 
         $macroPattern = $this->generateCommandMacroPattern($configurationCommand);
+        $macroLazyPattern = str_replace('(.*)', '(.*?)', $macroPattern);
 
         if (preg_match('/' . $macroPattern . '/', $monitoringCommand, $foundMacroValues)) {
+            // lazy and greedy regex should return the same result
+            // otherwise, it is not possible to know which section is the password
+            if (
+                preg_match('/' . $macroLazyPattern . '/', $monitoringCommand, $foundMacroLazyValues)
+                && $foundMacroLazyValues !== $foundMacroValues
+            ) {
+                throw MonitoringServiceException::macroPasswordNotDetected();
+            }
+
             array_shift($foundMacroValues); // remove global string matching
 
             // replace macros found in configuration command by matched value from monitoring command
