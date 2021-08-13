@@ -56,7 +56,6 @@ class CentreonCfgWriter
         $this->buffer = "";
         $this->xmlBuffer = new CentreonXML();
         $this->file_path = $file_full_path;
-        $this->fd = $this->createFile();
     }
 
     /**
@@ -66,9 +65,6 @@ class CentreonCfgWriter
      */
     protected function createFile()
     {
-        /*if (!$this->fd = fopen($this->file_path, 'w')) {
-            throw new Exception(_("Could not create file") . " : " . $this->file_path);
-        }*/
         $this->createFileHeader();
     }
 
@@ -180,10 +176,6 @@ class CentreonCfgWriter
     public function createCfgFile()
     {
         file_put_contents($this->file_path, $this->buffer);
-        /*if (!(strlen($this->buffer)) || !(fwrite($this->fd, $this->buffer))) {
-            throw new Exception(_("Could not write in file") . " : " . $this->file_path);
-        }
-        fclose($this->fd);*/
     }
 
     /**
