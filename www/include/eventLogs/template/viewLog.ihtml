@@ -68,16 +68,12 @@
             <td class="log-select">{$form.output.html}</td>
             <td>
                 {$form.StartDate.html}
-                {if isset($form.alternativeDateStartDate)}
-                    {$form.alternativeDateStartDate.html}
-                {/if}
+                {$form.alternativeDateStartDate.html}
                 {$form.StartTime.html}
             </td>
             <td>
                 {$form.EndDate.html}
-                {if isset($form.alternativeDateEndDate)}
-                    {$form.alternativeDateEndDate.html}
-                {/if}
+                {$form.alternativeDateEndDate.html}
                 {$form.EndTime.html}
             </td>
             <td>{$form.period.html}</td>
