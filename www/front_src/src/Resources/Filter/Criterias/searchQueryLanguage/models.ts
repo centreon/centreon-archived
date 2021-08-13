@@ -1,6 +1,11 @@
 import { prop, toLower } from 'ramda';
 
-import { CriteriaNames, selectableStatuses } from '../models';
+import {
+  CriteriaNames,
+  selectableResourceTypes,
+  selectableStates,
+  selectableStatuses,
+} from '../models';
 
 export interface CriteriaId {
   id: string;
@@ -20,6 +25,11 @@ export const criteriaNameSortOrder = {
   [CriteriaNames.statuses]: 3,
 };
 
+export interface AutocompleteSuggestionProps {
+  cursorPosition: number;
+  search: string;
+}
+
 export const searchableFields = [
   'h.name',
   'h.alias',
@@ -33,14 +43,28 @@ export const searchableFields = [
   'information',
 ];
 
-const statusMapping = selectableStatuses
+const statusNameToQueryLanguageName = selectableStatuses
   .map(prop('id'))
   .reduce((previous, current) => {
     return { ...previous, [current]: toLower(current) };
   }, {});
 
-export const criteriaIdToQueryLanguageId = {
-  ...statusMapping,
+export const criteriaNameToQueryLanguageName = {
+  ...statusNameToQueryLanguageName,
   resource_type: 'type',
   unhandled_problems: 'unhandled',
 };
+
+const staticCriteriaValuesByName = {
+  resource_type: selectableResourceTypes,
+  state: selectableStates,
+  status: selectableStatuses,
+};
+
+export const getSelectableCriteriasByName = (
+  name: string,
+): Array<{ id: string; name: string }> => {
+  return staticCriteriaValuesByName[name];
+};
+
+export const staticCriteriaNames = Object.keys(staticCriteriaValuesByName);
