@@ -414,7 +414,7 @@ $tpl->assign(
     array(
         "addL" => "main.php?p=" . $p . "&o=a",
         "addT" => _("Add"),
-        "delConfirm" => _("Do you confirm the deletion ?"),
+        "delConfirm" => _("Do you confirm the deletion ?")
     )
 );
 

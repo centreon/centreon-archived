@@ -7,17 +7,18 @@
             <li class="b" id='c3'><a href="#" style='cursor:pointer' onclick="javascript:montre('3');">{$tabTitle_3}</a></li>
         </ul>
         <div id="validFormTop">
-	     {if $o == "a" || $o == "c"}
-		    <p class="oreonbutton">
-      {if isset($form.submitC)}
-          {$form.submitC.html}
-      {else}
-          {$form.submitA.html}
-      {/if}
-      &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-	     {else if $o == "w"}
-		    <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
-	     {/if}
+            {if $o == "a" || $o == "c"}
+		        <p class="oreonbutton">
+                    {if isset($form.submitC)}
+                        {$form.submitC.html}
+                    {else}
+                        {$form.submitA.html}
+                    {/if}
+                    &nbsp;&nbsp;&nbsp;{$form.reset.html}
+                </p>
+            {else if $o == "w"}
+                <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
+            {/if}
         </div>
 	</div>
 	<div id='tab1' class='tab'>
@@ -197,17 +198,18 @@
             </table>
         </div>
 	<div id="validForm">
-	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">
-      {if isset($form.submitC)}
-          {$form.submitC.html}
-      {else}
-          {$form.submitA.html}
-      {/if}
-      &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-	{else if $o == "w"}
-		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
-	{/if}
+        {if $o == "a" || $o == "c"}
+            <p class="oreonbutton">
+                {if isset($form.submitC)}
+                    {$form.submitC.html}
+                {else}
+                    {$form.submitA.html}
+                {/if}
+                &nbsp;&nbsp;&nbsp;{$form.reset.html}
+            </p>
+    {else if $o == "w"}
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
+    {/if}
 	</div>
 	{$form.hidden}
 </form>

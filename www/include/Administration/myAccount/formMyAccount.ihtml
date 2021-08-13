@@ -112,18 +112,20 @@
             <tr class="list_two"><td class="FormRowField">{$form.monitoring_sound_svc_notification_1.label}</td><td class="FormRowValue">{$form.monitoring_sound_svc_notification_1.html}</td></tr>
             <tr class="list_one"><td class="FormRowField">{$form.monitoring_sound_svc_notification_2.label}</td><td class="FormRowValue">{$form.monitoring_sound_svc_notification_2.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.monitoring_sound_svc_notification_3.label}</td><td class="FormRowValue">{$form.monitoring_sound_svc_notification_3.html}</td></tr>
-    		{if $o == "c"}
-    		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+            {if $o == "c"}
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
                 {if isset($form.required)}
                     {$form.required._note}
                 {/if}
-            </td></tr>
-    		{/if}
+                </td>
+            </tr>
+            {/if}
 	    </table>
     </div>
 	<div id="validForm">
 	{if $o == "c"}
-		<p class="oreonbutton">
+        <p class="oreonbutton">
             {if isset($form.submitC)}
                 {$form.submitC.html}
             {else}

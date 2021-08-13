@@ -405,19 +405,20 @@
 <div id="validForm">
 {if $o == "a" || $o == "c" || $o == "mc"}
     <p class="oreonbutton">
-{if isset($form.submitC)}
-    {$form.submitC.html}
-{elseif isset($form.submitMC)}
-    {$form.submitMC.html}
-{else}
-    {$form.submitA.html}
-{/if}
-&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        {if isset($form.submitC)}
+            {$form.submitC.html}
+        {elseif isset($form.submitMC)}
+            {$form.submitMC.html}
+        {else}
+            {$form.submitA.html}
+        {/if}
+        &nbsp;&nbsp;&nbsp;{$form.reset.html}
+    </p>
 {else if $o == "w"}
     <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 {/if}
 </div>
-{$form.hidden}  
+{$form.hidden}
 </form>
 {$helptext}
 

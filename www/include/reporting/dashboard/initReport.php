@@ -105,6 +105,9 @@ $color["WARNING"] = $colors['warning'];
 $color["CRITICAL"] = $colors['critical'];
 $tpl->assign('color', $color);
 
+$startDate = 0;
+$endDate = 0;
+
 /*
  * Translations and styles
  */
