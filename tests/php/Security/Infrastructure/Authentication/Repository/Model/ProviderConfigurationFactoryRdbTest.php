@@ -50,7 +50,7 @@ class ProviderConfigurationFactoryRdbTest extends TestCase
     /**
      * Tests model is properly created
      */
-    public function testCreateWithAllProperties()
+    public function testCreateWithAllProperties(): void
     {
         $providerConfiguration = ProviderConfigurationFactoryRdb::create($this->dbData);
 
@@ -65,7 +65,7 @@ class ProviderConfigurationFactoryRdbTest extends TestCase
      /**
      * Tests model is properly created
      */
-    public function testCreateFromResponseWithMissingProperty()
+    public function testCreateFromResponseWithMissingProperty(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Missing mandatory parameter: 'is_forced'");
