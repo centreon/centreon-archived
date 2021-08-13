@@ -31,6 +31,8 @@
 #
 # For more information : contact@centreon.com
 
+set -e
+
 function usage() {
     cat <<EOF
 This script aims to upgrade the php library from 7.2 to 7.3. (Centos 7 only)
@@ -98,7 +100,7 @@ yum install -q -y \
     rh-php73-php-pecl-gnupg
 
 info "Copying php-fpm configuration from 7.2 to 7.3"
-\cp /etc/opt/rh/rh-php72/php-fpm.d/*.conf /etc/opt/rh/rh-php73/php-fpm.d/
+cp /etc/opt/rh/rh-php72/php-fpm.d/*.conf /etc/opt/rh/rh-php73/php-fpm.d/
 
 info "Copying php configuration from 7.2 to 7.3"
 cp /etc/opt/rh/rh-php72/php.d/50-centreon.ini /etc/opt/rh/rh-php73/php.d/50-centreon.ini
