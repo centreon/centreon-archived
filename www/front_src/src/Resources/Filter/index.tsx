@@ -132,6 +132,7 @@ const Filter = (): JSX.Element => {
 
     if (equals(search[cursorPosition], ',')) {
       setSearch(search + acceptedSuggestion);
+
       return;
     }
 
