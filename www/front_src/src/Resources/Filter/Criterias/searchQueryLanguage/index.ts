@@ -1,7 +1,6 @@
 import {
   allPass,
   concat,
-  defaultTo,
   endsWith,
   filter,
   find,
@@ -25,7 +24,6 @@ import {
   sortBy,
   split,
   startsWith,
-  toLower,
   trim,
   without,
   __,
@@ -37,7 +35,6 @@ import { SelectEntry } from '@centreon/ui';
 
 import {
   Criteria,
-  CriteriaNames,
   criteriaValueNameById,
   selectableCriterias,
   selectableResourceTypes,
@@ -46,52 +43,24 @@ import {
 } from '../models';
 import getDefaultCriterias from '../default';
 
-import { CriteriaId, CriteriaValueSuggestionsProps } from './models';
+import {
+  CriteriaId,
+  criteriaIdToQueryLanguageId,
+  criteriaNameSortOrder,
+  CriteriaValueSuggestionsProps,
+  searchableFields,
+} from './models';
 
 const singular = pluralize.singular as (string) => string;
 
 const isIn = flip(includes);
 
-const criteriaNameSortOrder = {
-  [CriteriaNames.hostGroups]: 4,
-  [CriteriaNames.monitoringServers]: 6,
-  [CriteriaNames.resourceTypes]: 1,
-  [CriteriaNames.serviceGroups]: 5,
-  [CriteriaNames.states]: 2,
-  [CriteriaNames.statuses]: 3,
-};
-
-const searchableFields = [
-  'h.name',
-  'h.alias',
-  'h.address',
-  's.description',
-  'name',
-  'alias',
-  'parent_name',
-  'parent_alias',
-  'fqdn',
-  'information',
-];
-
-const statusMapping = selectableStatuses
-  .map(prop('id'))
-  .reduce((previous, current) => {
-    return { ...previous, [current]: toLower(current) };
-  }, {});
-
-const mapping = {
-  ...statusMapping,
-  resource_type: 'type',
-  unhandled_problems: 'unhandled',
-};
-
 const getMappedCriteriaId = (id: string | number): string => {
-  return mapping[id] || (id as string);
+  return criteriaIdToQueryLanguageId[id] || (id as string);
 };
 
 const getUnmappedCriteriaId = (id: string): string => {
-  return invertObj(mapping)[id] || id;
+  return invertObj(criteriaIdToQueryLanguageId)[id] || id;
 };
 
 const criteriaKeys = keys(selectableCriterias) as Array<string>;
@@ -247,6 +216,8 @@ const staticCriteriaValuesById = {
   status: selectableStatuses,
 };
 
+const staticCriteriaIds = Object.keys(staticCriteriaValuesById);
+
 const getSelectableCriteriasByName = (
   name: string,
 ): Array<{ id: string; name: string }> => {
@@ -282,15 +253,16 @@ const getAutocompleteSuggestions = ({
   const unmappedCriteriaName = getUnmappedCriteriaId(criteriaName);
   const expressionCriteriaValues = pipe(last, split(','))(expressionCriteria);
 
-  const hasCriteriaStaticValues = Object.keys(
-    staticCriteriaValuesById,
-  ).includes(unmappedCriteriaName);
+  const hasCriteriaStaticValues = includes(
+    unmappedCriteriaName,
+    staticCriteriaIds,
+  );
 
   if (isEmpty(unmappedCriteriaName)) {
     return [];
   }
 
-  if (expressionBeforeCursor.includes(':') && hasCriteriaStaticValues) {
+  if (includes(':', expressionBeforeCursor) && hasCriteriaStaticValues) {
     const criterias = getSelectableCriteriasByName(unmappedCriteriaName);
     const lastCriteriaValue = last(expressionCriteriaValues) || '';
 
