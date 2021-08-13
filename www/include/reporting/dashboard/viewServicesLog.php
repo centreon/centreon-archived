@@ -91,26 +91,6 @@ $form->addElement('hidden', 'p', $p);
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateStartDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateEndDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-
 /*
  * Set service id with period selection form
  */

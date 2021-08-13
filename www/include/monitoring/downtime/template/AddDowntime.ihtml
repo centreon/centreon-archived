@@ -118,18 +118,12 @@
         <tr class="list_two">
             <td class="FormRowField">{$form.start.label}</td>
             <td class="FormRowValue">{$form.start.html}&nbsp;
-            {if isset($form.alternativeDateStart)}
-                {$form.alternativeDateStart.html}
-            {/if}
             &nbsp;{$form.start_time.html}
             </td>
         </tr>
         <tr class="list_one">
             <td class="FormRowField">{$form.end.label}</td>
             <td class="FormRowValue">{$form.end.html}&nbsp;
-            {if isset($form.alternativeDateEnd)}
-                {$form.alternativeDateEnd.html}
-            {/if}
             &nbsp;{$form.end_time.html}
             </td>
         </tr>

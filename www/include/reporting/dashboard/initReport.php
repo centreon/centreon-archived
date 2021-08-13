@@ -355,8 +355,33 @@ $formPeriod->addElement(
     _("to"),
     array("id"=>"EndDate", "size"=>10, "class"=>"datepicker", "onClick" => "javascript: togglePeriodType();")
 );
+/* adding hidden fields to get the result of datepicker in an unlocalized format */
+$formPeriod->addElement(
+    'hidden',
+    'alternativeDateStartDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+$formPeriod->addElement(
+    'hidden',
+    'alternativeDateEndDate',
+    'test',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
 $formPeriod->addElement('submit', 'button', _("Apply period"), array('class' => 'btc bt_success'));
-$formPeriod->setDefaults(array('period' => $period, "StartDate" => $get_date_start, "EndDate" => $get_date_end));
+$formPeriod->setDefaults(
+    [
+        'period' => $period,
+        'StartDate' => $get_date_start,
+        'EndDate' => $get_date_end,
+    ]
+);
 
 ?>
 <script type='text/javascript'>

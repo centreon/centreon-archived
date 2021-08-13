@@ -23,9 +23,7 @@
 					{$periodTitle} : {$formPeriod.period.html}{$periodORlabel}
 				<input type="radio" name="period_choice" value="custom" {if $period_choice == "custom" } checked="checked" {/if} />
 					{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
-					{$formPeriod.alternativeDateStartDate.html}
 					{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
-					{$formPeriod.alternativeDateEndDate.html}
 					{$formPeriod.button.html}{$formPeriod.hidden}
 			</form>
 		</td>

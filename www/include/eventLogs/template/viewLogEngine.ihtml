@@ -25,11 +25,9 @@
                 <h4>{t}From{/t}</h4>
                 {$form.StartDate.html}
                 {$form.StartTime.html}
-                {$form.alternativeDateStartDate.html}
                 <h4>{t}To{/t}</h4>
                 {$form.EndDate.html}
                 {$form.EndTime.html}
-                {$form.alternativeDateEndDate.html}
             </td>
             <td style='white-space:nowrap;'>{$form.graph.html}</td>
         </tr>
