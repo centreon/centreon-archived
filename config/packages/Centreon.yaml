@@ -24,8 +24,8 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, controller...
 
     Centreon\:
-        resource: '%kernel.root_dir%/src/Centreon/*'
-        exclude: '%kernel.root_dir%/src/Centreon/Tests'
+        resource: '%kernel.root_dir%/Centreon/*'
+        exclude: '%kernel.root_dir%/Centreon/Tests'
 
     Centreon\Infrastructure\DatabaseConnection:
         class: Centreon\Infrastructure\DatabaseConnection
