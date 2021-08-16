@@ -3,13 +3,13 @@ jms_serializer:
         directories:
             centreon:
                 namespace_prefix: "Centreon\\Domain"
-                path: '%kernel.root_dir%/../config/packages/serializer/Centreon'
+                path: '%kernel.project_dir%/config/packages/serializer/Centreon'
             application:
                 namespace_prefix: "Centreon\\Application"
-                path: '%kernel.root_dir%/../config/packages/serializer/Application'
+                path: '%kernel.project_dir%/config/packages/serializer/Application'
             infrastructure:
                 namespace_prefix: "Centreon\\Infrastructure"
-                path: '%kernel.root_dir%/../config/packages/serializer/Infrastructure'
+                path: '%kernel.project_dir%/config/packages/serializer/Infrastructure'
 parameters:
     api.header: "Api-Version"
     api.version.latest: "21.10"

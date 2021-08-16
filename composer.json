@@ -42,6 +42,7 @@
         "ext-phar": "*",
         "friendsofsymfony/rest-bundle": "^3.0",
         "jms/serializer": "^3.14",
+        "jms/serializer-bundle": "^3.10",
         "justinrainbow/json-schema": "^5.2",
         "nelmio/cors-bundle": "^2.1",
         "openpsa/quickform": "3.3.*",
