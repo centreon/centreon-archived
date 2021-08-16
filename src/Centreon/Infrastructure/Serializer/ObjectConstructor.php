@@ -22,11 +22,11 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Serializer;
 
+use Centreon\Infrastructure\Serializer\Exception\SerializerException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
-use Doctrine\Instantiator\Instantiator;
 
 /**
  * This class is designed to allow the use of class constructors during deserialization phases.
@@ -36,12 +36,9 @@ use Doctrine\Instantiator\Instantiator;
 class ObjectConstructor implements ObjectConstructorInterface
 {
     /**
-     * @var Instantiator
-     */
-    private $instantiator;
-
-    /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @throws SerializerException
+     * @throws \ReflectionException
      */
     public function construct(
         DeserializationVisitorInterface $visitor,
@@ -51,25 +48,31 @@ class ObjectConstructor implements ObjectConstructorInterface
         DeserializationContext $context
     ): ?object {
         $className = $metadata->name;
-        $constructor = (new \ReflectionClass($className))->getConstructor();
-        if ($constructor !== null && count($constructor->getParameters()) === 0) {
+        if (!class_exists($className)) {
+            throw new \ReflectionException(sprintf(_('Class %s not found'), $className));
+        }
+        $reflection = new \ReflectionClass($className);
+        $constructor = $reflection->getConstructor();
+        if ($constructor !== null && $constructor->getNumberOfParameters() > 0) {
+            $parameters = $constructor->getParameters();
+            $constructorParameters = [];
+            foreach ($parameters as $parameter) {
+                if (array_key_exists($parameter->getName(), $data)) {
+                    $constructorParameters[$parameter->getPosition()] = $data[$parameter->getName()];
+                } elseif ($parameter->isOptional() === true) {
+                    $constructorParameters[$parameter->getPosition()] = $parameter->getDefaultValue();
+                }
+            }
+            try {
+                return $reflection->newInstanceArgs($constructorParameters);
+            } catch (\Throwable $ex) {
+                if ($ex instanceof \ArgumentCountError) {
+                    throw SerializerException::notEnoughConstructorArguments($className, $ex);
+                }
+                throw $ex;
+            }
+        } else {
             return new $className();
         }
-
-        return $this->getInstantiator()->instantiate($metadata->name);
-    }
-
-    /**
-     * get instantiator
-     *
-     * @return Instantiator
-     */
-    private function getInstantiator(): Instantiator
-    {
-        if (null === $this->instantiator) {
-            $this->instantiator = new Instantiator();
-        }
-
-        return $this->instantiator;
     }
 }
