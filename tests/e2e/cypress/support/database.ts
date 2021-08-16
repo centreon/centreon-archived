@@ -1,7 +1,7 @@
 import { submitResultsViaClapi } from './centreonData';
 
 const stepWaitingTime = 500;
-const timeout = 10000;
+const timeout = 20000;
 const maxSteps = timeout / stepWaitingTime;
 
 let stepCount = 0;
@@ -18,8 +18,8 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
 
       stepCount += 1;
 
-      cy.log('Service count in database:', foundServiceCount);
-      cy.log('Service database check step count:', stepCount);
+      cy.log('Service count in database', foundServiceCount);
+      cy.log('Service database check step count', stepCount);
 
       if (foundServiceCount > 0) {
         return null;
@@ -27,7 +27,7 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
 
       if (stepCount < maxSteps) {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(500, { log: false });
+        cy.wait(stepWaitingTime, { log: false });
 
         return submitResultsViaClapi().then(() =>
           checkThatFixtureServicesExistInDatabase(),
