@@ -1,7 +1,7 @@
 import { submitResultsViaClapi } from './centreonData';
 
 const stepWaitingTime = 500;
-const timeout = 20000;
+const timeout = 100000;
 const maxSteps = timeout / stepWaitingTime;
 
 let stepCount = 0;
