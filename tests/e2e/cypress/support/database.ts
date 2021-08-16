@@ -1,41 +1,41 @@
-import {
-  refreshListing,
-  fixtureResourcesShouldBeDisplayed,
-} from './centreonData';
+import { submitResultsViaClapi } from './centreonData';
 
-let testCount = 0;
+const stepWaitingTime = 500;
+const timeout = 6000;
+const maxSteps = timeout / stepWaitingTime;
 
-const countServicesInDatabase = (): void => {
+let stepCount = 0;
+
+const checkThatFixtureServicesExistInDatabase = (): void => {
   cy.log('Checking in database');
   cy.task('checkServicesInDatabase', `${Cypress.env('dockerName')}`).then(
-    (stdout: any): Cypress.Chainable<string> | null => {
+    (stdout: any): Cypress.Chainable<void> | null => {
       let foundServiceCount = 0;
-
-      cy.log(stdout);
 
       if (stdout !== '') {
         foundServiceCount = parseInt(stdout.split('\n')[1], 10);
       }
-      testCount += 1;
 
-      cy.log('responses found: ', foundServiceCount);
-      cy.log('test count: ', testCount);
+      stepCount += 1;
 
-      // if (count > 0) {
-      //   return refreshListing().then(() => fixtureResourcesShouldBeDisplayed());
-      // }
+      cy.log('Service count in database:', foundServiceCount);
+      cy.log('Service database check step count:', stepCount);
 
-      // if (testCount === 50) {
-      //   refreshListing();
-      // }
-      if (testCount < 100) {
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(500, { log: false });
-        countServicesInDatabase();
+      if (foundServiceCount > 0) {
+        return null;
       }
 
-      return null;
+      if (stepCount < maxSteps) {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(500, { log: false });
+
+        return submitResultsViaClapi().then(() =>
+          checkThatFixtureServicesExistInDatabase(),
+        );
+      }
+
+      throw new Error(`No service found in the database after ${timeout}ms`);
     },
   );
 };
-export { countServicesInDatabase };
+export { checkThatFixtureServicesExistInDatabase };

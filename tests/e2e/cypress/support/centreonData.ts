@@ -62,11 +62,11 @@ const fixtureResourcesShouldBeDisplayed = (): Cypress.Chainable => {
   });
 };
 
-const actionClapiApi = (
+const executeActionViaClapi = (
   bodyContent: ActionClapi,
   method?: string,
 ): Cypress.Chainable => {
-  cy.log('result', bodyContent);
+  cy.log('result', JSON.stringify(bodyContent));
   return cy.request({
     body: bodyContent,
     headers: {
@@ -164,7 +164,7 @@ const updateFixturesResult = (): Cypress.Chainable => {
     });
 };
 
-const submitResultApiClapi = (): Cypress.Chainable => {
+const submitResultsViaClapi = (): Cypress.Chainable => {
   return updateFixturesResult().then((submitResults) => {
     return cy
       .request({
@@ -183,60 +183,60 @@ const submitResultApiClapi = (): Cypress.Chainable => {
 const initializeResourceData = (): Cypress.Chainable => {
   return cy
     .fixture('resources/clapi/host1/01-add.json')
-    .then((raw) => actionClapiApi(raw))
+    .then((raw) => executeActionViaClapi(raw))
     .then(() =>
       cy
         .fixture('resources/clapi/service1/01-add.json')
-        .then((raw) => actionClapiApi(raw)),
+        .then((raw) => executeActionViaClapi(raw)),
     )
 
     .then(() =>
       cy
         .fixture('resources/clapi/service1/02-set-max-check.json')
-        .then((raw) => actionClapiApi(raw)),
+        .then((raw) => executeActionViaClapi(raw)),
     )
     .then(() =>
       cy
         .fixture('resources/clapi/service1/03-disable-active-check.json')
-        .then((raw) => actionClapiApi(raw)),
+        .then((raw) => executeActionViaClapi(raw)),
     )
     .then(() =>
       cy
         .fixture('resources/clapi/service1/04-enable-passive-check.json')
-        .then((raw) => actionClapiApi(raw)),
+        .then((raw) => executeActionViaClapi(raw)),
     )
     .then(() =>
       cy
         .fixture('resources/clapi/service2/01-add.json')
-        .then((raw) => actionClapiApi(raw)),
+        .then((raw) => executeActionViaClapi(raw)),
     )
     .then(() =>
       cy
         .fixture('resources/clapi/service2/02-set-max-check.json')
-        .then((raw) => actionClapiApi(raw)),
+        .then((raw) => executeActionViaClapi(raw)),
     )
     .then(() =>
       cy
         .fixture('resources/clapi/service2/03-disable-active-check.json')
-        .then((raw) => actionClapiApi(raw)),
+        .then((raw) => executeActionViaClapi(raw)),
     )
     .then(() =>
       cy
         .fixture('resources/clapi/service2/04-enable-passive-check.json')
-        .then((raw) => actionClapiApi(raw)),
+        .then((raw) => executeActionViaClapi(raw)),
     );
 };
 
 const removeResourceData = (): Cypress.Chainable => {
-  return actionClapiApi({
+  return executeActionViaClapi({
     action: 'DEL',
     object: 'HOST',
     values: 'test_host',
   });
 };
 
-const applyCfgApi = (): Cypress.Chainable => {
-  return actionClapiApi({
+const applyConfigurationViaClapi = (): Cypress.Chainable => {
+  return executeActionViaClapi({
     action: 'APPLYCFG',
     values: '1',
   });
@@ -245,13 +245,13 @@ const applyCfgApi = (): Cypress.Chainable => {
 export {
   setUserTokenApiV1,
   setUserTokenApiV2,
-  actionClapiApi,
+  executeActionViaClapi,
   setUserFilter,
   deleteUserFilter,
-  submitResultApiClapi,
+  submitResultsViaClapi,
   initializeResourceData,
   removeResourceData,
-  applyCfgApi,
+  applyConfigurationViaClapi,
   fixtureResourcesShouldBeDisplayed,
   refreshListing,
 };

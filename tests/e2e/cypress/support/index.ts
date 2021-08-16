@@ -2,20 +2,20 @@ import {
   initializeResourceData,
   setUserTokenApiV1,
   setUserTokenApiV2,
-  submitResultApiClapi,
+  submitResultsViaClapi,
   removeResourceData,
-  applyCfgApi,
+  applyConfigurationViaClapi,
 } from './centreonData';
-import { countServicesInDatabase } from './database';
+import { checkThatFixtureServicesExistInDatabase } from './database';
 
 before(() => {
   setUserTokenApiV1();
   setUserTokenApiV2();
 
   initializeResourceData()
-    .then(() => applyCfgApi())
-    .then(() => submitResultApiClapi())
-    .then(() => countServicesInDatabase());
+    .then(() => applyConfigurationViaClapi())
+    .then(() => submitResultsViaClapi())
+    .then(() => checkThatFixtureServicesExistInDatabase());
 
   cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {
     cy.visit(`${Cypress.config().baseUrl}`);
@@ -35,6 +35,6 @@ before(() => {
 
 after(() => {
   setUserTokenApiV1().then(() => {
-    removeResourceData().then(() => applyCfgApi());
+    removeResourceData().then(() => applyConfigurationViaClapi());
   });
 });
