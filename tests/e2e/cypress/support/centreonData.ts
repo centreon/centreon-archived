@@ -41,7 +41,7 @@ const refreshListing = (timeout = 0): Cypress.Chainable => {
   return cy.get(refreshButton).click();
 };
 
-const resourcesMatching = (): Cypress.Chainable => {
+const fixtureResourcesShouldBeDisplayed = (): Cypress.Chainable => {
   cy.readFile('cypress/fixtures/resources.txt').then((data) => {
     const resourceLines = data.split('\n').filter((d) => d.includes('ADD'));
 
@@ -242,6 +242,6 @@ export {
   initializeResourceData,
   removeResourceData,
   applyCfgApi,
-  resourcesMatching,
+  fixtureResourcesShouldBeDisplayed,
   refreshListing,
 };
