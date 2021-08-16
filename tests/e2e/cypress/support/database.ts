@@ -11,6 +11,8 @@ const countServicesInDatabase = (): void => {
     (stdout: any): Cypress.Chainable<string> | null => {
       let foundServiceCount = 0;
 
+      cy.log(stdout);
+
       if (stdout !== '') {
         foundServiceCount = parseInt(stdout.split('\n')[1], 10);
       }
