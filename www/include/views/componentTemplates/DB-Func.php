@@ -342,7 +342,18 @@ function updateComponentTemplate($compoId = null)
  */
 function sanitizeFormComponentTemplatesParameters(array $ret): array
 {
-    $bindParams = [];
+    $bindParams = [
+        ':ds_stack' => [\PDO::PARAM_STR, '0'],
+        ':ds_invert' => [\PDO::PARAM_STR, '0'],
+        ':ds_filled' => [\PDO::PARAM_STR, '0'],
+        ':ds_hidecurve' => [\PDO::PARAM_STR, '0'],
+        ':ds_max' => [\PDO::PARAM_STR, '0'],
+        ':ds_min' => [\PDO::PARAM_STR, '0'],
+        ':ds_minmax_int' => [\PDO::PARAM_STR, '0'],
+        ':ds_average' => [\PDO::PARAM_STR, '0'],
+        ':ds_last' => [\PDO::PARAM_STR, '0'],
+        ':ds_total' => [\PDO::PARAM_STR, '0'],
+    ];
     foreach ($ret as $inputName => $inputValue) {
         switch ($inputName) {
             case 'name':
