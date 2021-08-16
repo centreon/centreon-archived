@@ -1,49 +1,39 @@
-import { refreshListing, resourcesMatching } from './centreonData';
+import {
+  refreshListing,
+  fixtureResourcesShouldBeDisplayed,
+} from './centreonData';
 
-const testCount = 0;
+let testCount = 0;
 
-const countServicesDB = (): void => {
+const countServicesInDatabase = (): void => {
   cy.log('Checking in database');
   cy.task('checkServicesInDatabase', `${Cypress.env('dockerName')}`).then(
     (stdout: any): Cypress.Chainable<string> | null => {
-      let count = 0;
+      let foundServiceCount = 0;
 
-      const timeout = 6000;
-      const waitTime = 200;
-      let totalWait = 0;
-
-      while (count === 0 || totalWait !== timeout) {
-        if (stdout !== '') {
-          count = parseInt(stdout.split('\n')[1], 10);
-        }
-
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(waitTime);
-        totalWait += waitTime;
-        cy.log(count.toString());
+      if (stdout !== '') {
+        foundServiceCount = parseInt(stdout.split('\n')[1], 10);
       }
+      testCount += 1;
 
-      // if (stdout !== '') {
-      //   count = parseInt(stdout.split('\n')[1], 10);
-      // }
-      // testCount += 1;
-
-      // cy.log('responses found: ', count);
-      // cy.log('test count: ', testCount);
+      cy.log('responses found: ', foundServiceCount);
+      cy.log('test count: ', testCount);
 
       // if (count > 0) {
-      //   return refreshListing().then(() => resourcesMatching());
+      //   return refreshListing().then(() => fixtureResourcesShouldBeDisplayed());
       // }
 
       // if (testCount === 50) {
       //   refreshListing();
       // }
-      // if (testCount < 100) {
-      //   countServicesDB();
-      // }
+      if (testCount < 100) {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(500, { log: false });
+        countServicesInDatabase();
+      }
 
       return null;
     },
   );
 };
-export { countServicesDB };
+export { countServicesInDatabase };

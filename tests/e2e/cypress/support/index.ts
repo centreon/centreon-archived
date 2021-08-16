@@ -6,13 +6,16 @@ import {
   removeResourceData,
   applyCfgApi,
 } from './centreonData';
-import { countServicesDB } from './database';
+import { countServicesInDatabase } from './database';
 
 before(() => {
   setUserTokenApiV1();
   setUserTokenApiV2();
 
-  initializeResourceData().then(() => applyCfgApi());
+  initializeResourceData()
+    .then(() => applyCfgApi())
+    .then(() => submitResultApiClapi())
+    .then(() => countServicesInDatabase());
 
   cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {
     cy.visit(`${Cypress.config().baseUrl}`);
@@ -22,11 +25,7 @@ before(() => {
       cy.get('input[placeholder="Password"]').type(userAdmin.password);
     });
 
-    cy.get('form')
-      .submit()
-      .then(() => {
-        submitResultApiClapi().then(() => countServicesDB());
-      });
+    cy.get('form').submit();
   });
 
   Cypress.Cookies.defaults({
