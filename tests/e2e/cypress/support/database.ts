@@ -4,7 +4,7 @@ import {
 } from './centreonData';
 
 const stepWaitingTime = 500;
-const timeout = 10000;
+const timeout = 100000;
 const maxSteps = timeout / stepWaitingTime;
 
 let stepCount = 0;
@@ -66,10 +66,7 @@ const checkThatConfigurationIsExported = (): void => {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(stepWaitingTime, { log: false });
 
-        return cy
-          .wrap(null)
-          .then(() => applyConfigurationViaClapi())
-          .then(() => checkThatConfigurationIsExported());
+        return cy.wrap(null).then(() => checkThatConfigurationIsExported());
       }
 
       throw new Error(`No configuration export after ${timeout}ms`);
