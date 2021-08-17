@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
+const sh = require('shell-exec');
 
 module.exports = (on) => {
   const options = {
@@ -11,8 +12,6 @@ module.exports = (on) => {
 
   on('task', {
     checkServicesInDatabase: async (env: string): Promise<string> => {
-      const sh = require('shell-exec');
-
       const req = `SELECT COUNT(s.service_id) as count_services from services as s WHERE s.description LIKE '%service_test%' AND s.output LIKE '%submit_status_2%' AND s.enabled=1;`;
       const cmd = `docker exec -i ${env} mysql -ucentreon -pcentreon centreon_storage <<< "${req}"`;
 
@@ -23,13 +22,11 @@ module.exports = (on) => {
 
   on('task', {
     checkConfigurationExport: async (env: string): Promise<boolean> => {
-      const sh = require('shell-exec');
-
       const { stdout } = await sh(
         `docker exec -i ${env} date -r /etc/centreon-engine/services.cfg`,
       );
 
-      const twoMinutes = 10000;
+      const twoMinutes = 45000;
       return new Date().getTime() - new Date(stdout).getTime() < twoMinutes;
     },
   });
