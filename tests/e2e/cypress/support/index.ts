@@ -1,3 +1,5 @@
+import sh from 'shell-exec';
+
 import {
   initializeResourceData,
   setUserTokenApiV1,
@@ -6,7 +8,10 @@ import {
   removeResourceData,
   applyConfigurationViaClapi,
 } from './centreonData';
-import { checkThatFixtureServicesExistInDatabase } from './database';
+import {
+  checkThatConfigurationIsExported,
+  checkThatFixtureServicesExistInDatabase,
+} from './database';
 
 before(() => {
   setUserTokenApiV1();
@@ -14,6 +19,7 @@ before(() => {
 
   initializeResourceData()
     .then(() => applyConfigurationViaClapi())
+    .then(() => checkThatConfigurationIsExported())
     .then(() => submitResultsViaClapi())
     .then(() => checkThatFixtureServicesExistInDatabase());
 
