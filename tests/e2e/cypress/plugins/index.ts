@@ -22,7 +22,7 @@ module.exports = (on) => {
 
   on('task', {
     checkConfigurationExport: async (env: string): Promise<boolean> => {
-      const pd = await sh(`docker exec -i ${env} ls  /etc/centreon-broker/`);
+      const pd = await sh(`docker exec -i ${env} ls  /etc/`);
 
       console.log(pd.stdout);
 
