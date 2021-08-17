@@ -46,7 +46,7 @@ let configCheckStepCount = 0;
 
 const checkThatConfigurationIsExported = (): void => {
   cy.log('Checking that configuration is exported');
-  cy.task('checkServicesInDatabase', `${Cypress.env('dockerName')}`).then(
+  cy.task('checkConfigurationExport', `${Cypress.env('dockerName')}`).then(
     (): Cypress.Chainable<void | Cypress.Exec | null> | null => {
       const configurationExported = false;
 
