@@ -65,7 +65,9 @@ const checkThatConfigurationIsExported = (): void => {
 
         return cy
           .exec(
-            'docker exec -i centreon-dev date -r /etc/centreon-engine/services.cfg',
+            `docker exec -i ${Cypress.env(
+              'dockerName',
+            )} date -r /etc/centreon-engine/services.cfg`,
           )
           .then(({ stdout }) => {
             cy.log('export date', new Date(stdout));
