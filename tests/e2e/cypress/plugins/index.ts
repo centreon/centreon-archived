@@ -23,7 +23,7 @@ module.exports = (on) => {
   on('task', {
     checkConfigurationExport: async (env: string): Promise<boolean> => {
       const { stdout } = await sh(
-        `docker exec -i ${env} date -r /etc/centreon-engine/services.cfg`,
+        `docker exec -i ${env} date -r /etc/centreon-engine/hosts.cfg`,
       );
 
       const twoMinutes = 5000;

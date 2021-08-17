@@ -1,5 +1,3 @@
-import sh from 'shell-exec';
-
 import {
   initializeResourceData,
   setUserTokenApiV1,
