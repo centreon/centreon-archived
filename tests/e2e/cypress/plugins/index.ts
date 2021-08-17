@@ -26,7 +26,7 @@ module.exports = (on) => {
         `docker exec -i ${env} date -r /etc/centreon-engine/services.cfg`,
       );
 
-      const twoMinutes = 45000;
+      const twoMinutes = 5000;
       return new Date().getTime() - new Date(stdout).getTime() < twoMinutes;
     },
   });

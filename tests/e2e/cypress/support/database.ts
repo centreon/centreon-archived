@@ -34,6 +34,7 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
 
         return cy
           .wrap(null)
+          .then(() => submitResultsViaClapi())
           .then(() => checkThatFixtureServicesExistInDatabase());
       }
 
@@ -65,7 +66,10 @@ const checkThatConfigurationIsExported = (): void => {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(stepWaitingTime, { log: false });
 
-        return cy.wrap(null).then(() => checkThatConfigurationIsExported());
+        return cy
+          .wrap(null)
+          .then(() => applyConfigurationViaClapi())
+          .then(() => checkThatConfigurationIsExported());
       }
 
       throw new Error(`No configuration export after ${timeout}ms`);
