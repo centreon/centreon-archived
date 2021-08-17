@@ -207,6 +207,23 @@ try {
     }
   }
 
+  stage('Bundle') {
+    def parallelSteps = [:]
+    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+    for (x in osBuilds) {
+      def osBuild = x
+      parallelSteps[osBuild] = {
+        node {
+          checkoutCentreonBuild(buildBranch)
+          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+        }
+      }
+    }
+    parallel parallelSteps
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Bundle stage failure.');
+    }
+  }
 
   stage('E2E tests') {
     def parallelSteps = [:]
