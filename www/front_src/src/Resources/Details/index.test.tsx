@@ -419,7 +419,7 @@ const currentDateIsoString = '2020-01-21T06:00:00.000Z';
 
 let context: ResourceContext;
 
-const setSelectedServiceResource = () => {
+const setSelectedServiceResource = (): void => {
   context.setSelectedResourceUuid(resourceServiceUuid);
   context.setSelectedResourceId(resourceServiceId);
   context.setSelectedResourceType(resourceServiceType);
@@ -427,7 +427,7 @@ const setSelectedServiceResource = () => {
   context.setSelectedResourceParentType(resourceHostType);
 };
 
-const setSelectedHostResource = () => {
+const setSelectedHostResource = (): void => {
   context.setSelectedResourceUuid(resourceHostUuid);
   context.setSelectedResourceId(resourceHostId);
   context.setSelectedResourceType(resourceHostType);
@@ -435,7 +435,7 @@ const setSelectedHostResource = () => {
   context.setSelectedResourceParentType(undefined);
 };
 
-const setSelectedMetaServiceResource = () => {
+const setSelectedMetaServiceResource = (): void => {
   context.setSelectedResourceUuid(resourceServiceUuid);
   context.setSelectedResourceId(resourceServiceId);
   context.setSelectedResourceType(metaServiceResourceType);

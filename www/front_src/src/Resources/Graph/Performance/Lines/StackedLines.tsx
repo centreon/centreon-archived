@@ -48,6 +48,7 @@ const StackLines = ({
           index,
           lines,
         ) as Line;
+
         return (
           <React.Fragment key={`stack-${prop('key', stack)}`}>
             <StackedAnchorPoint

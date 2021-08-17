@@ -6,13 +6,14 @@ import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Theme, Grid, GridSize, Paper } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { CreateCSSProperties } from '@material-ui/styles';
 
 import DetailsCard from '../DetailsCard';
 
 import { CardsLayout } from './models';
 
 const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
-  handler: ({ isDragging }) => ({
+  handler: ({ isDragging }): CreateCSSProperties => ({
     alignItems: 'center',
     cursor: isDragging ? 'grabbing' : 'grab',
     display: 'flex',
@@ -53,6 +54,7 @@ const Content = ({
 
   const getVariableXs = (): GridSize => {
     const variableXs = isNil(xs) ? 6 : xs;
+
     return (width > 950 ? variableXs / 2 : variableXs) as GridSize;
   };
 

@@ -30,6 +30,7 @@ class PollerStepThreeRoute extends Component {
     const { links } = this;
     const { pollerData, t } = this.props;
     const { generateStatus } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />

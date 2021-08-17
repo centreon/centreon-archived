@@ -10,7 +10,7 @@ interface Props {
 const exportToPng = async ({ element, title, ratio }: Props): Promise<void> => {
   const dateTime = new Date().toISOString().substring(0, 19);
 
-  const getTranslation = (size: number) => {
+  const getTranslation = (size: number): number => {
     return ((1 - ratio) * size) / 2;
   };
 

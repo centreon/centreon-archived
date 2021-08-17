@@ -84,6 +84,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   const retrieveTimeline = (): void => {
     if (or(isNil(timelineEndpoint), not(displayEventAnnotations))) {
       setTimeline([]);
+
       return;
     }
 

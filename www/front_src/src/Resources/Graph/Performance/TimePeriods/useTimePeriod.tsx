@@ -97,6 +97,7 @@ const useTimePeriod = ({
         customTimePeriod.end.toISOString(),
       ];
     }
+
     return [
       timePeriod.getStart().toISOString(),
       new Date(Date.now()).toISOString(),
@@ -159,7 +160,9 @@ const useTimePeriod = ({
     setResourceDetailsUpdated(false);
   };
 
-  const adjustTimePeriod = (adjustTimePeriodProps: AdjustTimePeriodProps) => {
+  const adjustTimePeriod = (
+    adjustTimePeriodProps: AdjustTimePeriodProps,
+  ): void => {
     setResourceDetailsUpdated(false);
     setCustomTimePeriod(getNewCustomTimePeriod(adjustTimePeriodProps));
     setSelectedTimePeriod(null);
