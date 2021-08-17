@@ -1,7 +1,10 @@
-import { submitResultsViaClapi } from './centreonData';
+import {
+  applyConfigurationViaClapi,
+  submitResultsViaClapi,
+} from './centreonData';
 
 const stepWaitingTime = 500;
-const timeout = 100000;
+const timeout = 10000;
 const maxSteps = timeout / stepWaitingTime;
 
 let stepCount = 0;
@@ -29,9 +32,9 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(stepWaitingTime, { log: false });
 
-        return submitResultsViaClapi().then(() =>
-          checkThatFixtureServicesExistInDatabase(),
-        );
+        return applyConfigurationViaClapi()
+          .then(() => submitResultsViaClapi())
+          .then(() => checkThatFixtureServicesExistInDatabase());
       }
 
       throw new Error(`No service found in the database after ${timeout}ms`);
