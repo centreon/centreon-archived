@@ -22,7 +22,7 @@ module.exports = (on) => {
 
   on('task', {
     checkConfigurationExport: async (env: string): Promise<boolean> => {
-      const pd = await sh(`docker exec -i ${env} ls  /etc/`);
+      const pd = await sh(`docker exec -i ${env} ls /etc/`);
 
       console.log(pd.stdout);
 
@@ -30,7 +30,7 @@ module.exports = (on) => {
         `docker exec -i ${env} date -r /etc/centreon-broker/central-broker.json`,
       );
 
-      console.log(new Date(stdout).getTime());
+      console.log(stdout);
       console.log(new Date());
 
       const twoMinutes = 5000;
