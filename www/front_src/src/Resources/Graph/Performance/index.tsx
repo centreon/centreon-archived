@@ -120,9 +120,9 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   graphTranslation: {
     columnGap: `${theme.spacing(1)}px`,
     display: 'grid',
-    gridTemplateColumns: ({ canAdjustTimePeriod }) =>
+    gridTemplateColumns: ({ canAdjustTimePeriod }): string =>
       canAdjustTimePeriod ? 'min-content auto min-content' : 'auto',
-    justifyContent: ({ canAdjustTimePeriod }) =>
+    justifyContent: ({ canAdjustTimePeriod }): string =>
       canAdjustTimePeriod ? 'space-between' : 'center',
     margin: theme.spacing(0, 1),
     width: '90%',
@@ -213,6 +213,7 @@ const PerformanceGraph = ({
             display: find(propEq('name', line.name), lineData)?.display ?? true,
           })),
         );
+
         return;
       }
       setLineData(newLineData);
@@ -336,7 +337,7 @@ const PerformanceGraph = ({
     );
   };
 
-  const shiftTime = (direction: TimeShiftDirection) => {
+  const shiftTime = (direction: TimeShiftDirection): void => {
     if (isNil(customTimePeriod)) {
       return;
     }
@@ -414,13 +415,13 @@ const PerformanceGraph = ({
                     open={Boolean(menuAnchor)}
                     onClose={closeSizeExportMenu}
                   >
-                    <MenuItem onClick={() => convertToPng(1)}>
+                    <MenuItem onClick={(): void => convertToPng(1)}>
                       {t(labelAsDisplayed)}
                     </MenuItem>
-                    <MenuItem onClick={() => convertToPng(0.75)}>
+                    <MenuItem onClick={(): void => convertToPng(0.75)}>
                       {t(labelMediumSize)}
                     </MenuItem>
-                    <MenuItem onClick={() => convertToPng(0.5)}>
+                    <MenuItem onClick={(): void => convertToPng(0.5)}>
                       {t(labelSmallSize)}
                     </MenuItem>
                   </Menu>

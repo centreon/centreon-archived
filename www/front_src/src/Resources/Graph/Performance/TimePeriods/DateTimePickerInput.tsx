@@ -46,7 +46,7 @@ const DateTimePickerInput = ({
       size="small"
       value={date}
       variant="inline"
-      onChange={(value) => setDate(new Date(value?.toDate() || 0))}
+      onChange={(value): void => setDate(new Date(value?.toDate() || 0))}
       onClose={changeDate({
         date,
         property,

@@ -68,7 +68,7 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
       icon={<MoreHorizIcon fontSize="small" />}
       title={t(labelShortcuts)}
     >
-      {() => (
+      {(): JSX.Element => (
         <List dense>
           {shortcuts.map(({ Icon, uri, name }) => (
             <Tooltip

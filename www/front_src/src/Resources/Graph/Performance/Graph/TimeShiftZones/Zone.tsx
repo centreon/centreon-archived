@@ -51,7 +51,7 @@ const TimeShiftZone = ({
             : graphWidth) + marginLeft
         }
         y={marginTop}
-        onClick={() => shiftTime?.(direction)}
+        onClick={(): void => shiftTime?.(direction)}
         onMouseLeave={onDirectionHover(null)}
         onMouseOver={onDirectionHover(direction)}
       />

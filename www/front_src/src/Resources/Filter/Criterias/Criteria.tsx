@@ -53,7 +53,7 @@ const CriteriaContent = ({
   };
 
   if (isNil(options)) {
-    const getEndpoint = ({ search, page }) =>
+    const getEndpoint = ({ search, page }): string =>
       buildAutocompleteEndpoint({
         limit: 10,
         page,
@@ -66,7 +66,7 @@ const CriteriaContent = ({
         field="name"
         getEndpoint={getEndpoint}
         value={value}
-        onChange={(_, updatedValue) => {
+        onChange={(_, updatedValue): void => {
           changeCriteria(updatedValue);
         }}
       />
@@ -81,7 +81,7 @@ const CriteriaContent = ({
       {...commonProps}
       options={translatedOptions}
       value={translatedValues}
-      onChange={(_, updatedValue) => {
+      onChange={(_, updatedValue): void => {
         changeCriteria(getUntranslated(updatedValue));
       }}
     />

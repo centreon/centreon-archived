@@ -13,6 +13,7 @@ import {
   Tooltip,
   Theme,
 } from '@material-ui/core';
+import { CreateCSSProperties } from '@material-ui/styles';
 
 import { timePeriods } from '../../../Details/tabs/Graph/models';
 import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
@@ -20,14 +21,18 @@ import { useResourceContext } from '../../../Context';
 
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
-const useStyles = makeStyles<Theme, { disablePaper: boolean }>((theme) => ({
+interface StylesProps {
+  disablePaper: boolean;
+}
+
+const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
   button: {
     fontSize: theme.typography.body2.fontSize,
   },
   buttonGroup: {
     alignSelf: 'center',
   },
-  header: ({ disablePaper }) => ({
+  header: ({ disablePaper }): CreateCSSProperties<StylesProps> => ({
     alignItems: 'center',
     backgroundColor: disablePaper ? 'transparent' : 'undefined',
     border: disablePaper ? 'unset' : 'undefined',
@@ -70,13 +75,14 @@ const TimePeriodButtonGroup = ({
     name: t(timePeriod.name),
   }));
 
-  const changeDate = ({ property, date }) =>
+  const changeDate = ({ property, date }): void =>
     changeCustomTimePeriod({ date, property });
 
   return (
     <ParentSize>
-      {({ width }) => {
+      {({ width }): JSX.Element => {
         const isCompact = lt(width, theme.breakpoints.values.sm);
+
         return (
           <Paper className={classes.header}>
             <ButtonGroup
@@ -95,7 +101,7 @@ const TimePeriodButtonGroup = ({
                       variant={
                         selectedTimePeriod?.id === id ? 'contained' : 'outlined'
                       }
-                      onClick={() => changeSelectedTimePeriod(id)}
+                      onClick={(): void => changeSelectedTimePeriod(id)}
                     >
                       {cond<number, string>([
                         [lte(theme.breakpoints.values.md), always(largeName)],

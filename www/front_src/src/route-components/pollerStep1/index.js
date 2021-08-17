@@ -61,6 +61,7 @@ class PollerStepOneRoute extends Component {
   render() {
     const { links } = this;
     const { waitList } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />
