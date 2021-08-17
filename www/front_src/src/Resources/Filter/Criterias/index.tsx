@@ -47,7 +47,7 @@ const CriteriasContent = ({
       popperPlacement="bottom-start"
       title={t(labelSearchOptions)}
     >
-      {() => (
+      {(): JSX.Element => (
         <Grid
           container
           alignItems="stretch"

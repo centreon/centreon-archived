@@ -90,7 +90,7 @@ const GraphColumn = ({
           )}
           label={labelGraph}
         >
-          {({ close }) => (
+          {({ close }): JSX.Element => (
             <Paper className={classes.graph}>
               <Graph
                 displayCompleteGraph={(): void => {

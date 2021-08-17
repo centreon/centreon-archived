@@ -59,12 +59,14 @@
       else if (!secondGlobalProp) secondGlobalProp = p;
       lastGlobalProp = p;
     }
+
     return lastGlobalProp;
   }
 
   const impt = systemJSPrototype.import;
   systemJSPrototype.import = function (id, parentUrl) {
     noteGlobalProps();
+
     return impt.call(this, id, parentUrl);
   };
 

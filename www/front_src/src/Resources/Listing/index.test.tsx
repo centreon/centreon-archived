@@ -68,6 +68,7 @@ const appState = {
 
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
+
   return new Array(entityCount).fill(0).map((_, index) => ({
     acknowledged: index % 2 === 0,
     duration: '1m',
@@ -236,7 +237,11 @@ describe(Listing, () => {
 
         await waitFor(() => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
-            getListingEndpoint({ sort: { [sortBy]: 'desc' } }),
+            getListingEndpoint({
+              sort: { [sortBy]: 'desc' },
+              states: [],
+              statuses: [],
+            }),
             cancelTokenRequestParam,
           );
         });
@@ -245,7 +250,11 @@ describe(Listing, () => {
 
         await waitFor(() =>
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
-            getListingEndpoint({ sort: { [sortBy]: 'asc' } }),
+            getListingEndpoint({
+              sort: { [sortBy]: 'asc' },
+              states: [],
+              statuses: [],
+            }),
             cancelTokenRequestParam,
           ),
         );

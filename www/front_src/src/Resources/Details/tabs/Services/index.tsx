@@ -94,7 +94,7 @@ const ServicesTabContent = ({
     });
   };
 
-  const changeTabGraphOptions = (graphOptions: GraphOptions) => {
+  const changeTabGraphOptions = (graphOptions: GraphOptions): void => {
     setServicesTabParameters({
       graphMode: tabParameters.services?.graphMode || false,
       options: {

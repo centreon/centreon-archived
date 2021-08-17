@@ -30,6 +30,7 @@ class ServerConfigurationWizardRoute extends Component {
 
   render() {
     const { links } = this;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />
