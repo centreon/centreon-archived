@@ -47,15 +47,17 @@ let configCheckStepCount = 0;
 const checkThatConfigurationIsExported = (): void => {
   cy.log('Checking that configuration is exported');
   cy.task('checkConfigurationExport', `${Cypress.env('dockerName')}`).then(
-    (): Cypress.Chainable<void | Cypress.Exec | null> | null => {
-      const configurationExported = false;
+    (exported): Cypress.Chainable<null> | null => {
+      // let configurationExported = false;
 
       configCheckStepCount += 1;
 
-      cy.log('Configuration exported', configurationExported);
+      // configurationExported = exported as boolean;
+
+      cy.log('Configuration exported', exported);
       cy.log('Configuration export check step count', configCheckStepCount);
 
-      if (configurationExported) {
+      if (exported) {
         return null;
       }
 
@@ -63,25 +65,7 @@ const checkThatConfigurationIsExported = (): void => {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(stepWaitingTime, { log: false });
 
-        return cy
-          .exec(
-            `docker exec -i ${Cypress.env(
-              'dockerName',
-            )} date -r /etc/centreon-engine/services.cfg`,
-          )
-          .then(({ stdout }) => {
-            cy.log('export date', new Date(stdout));
-
-            const twoMinutes = 10000;
-            if (
-              new Date().getTime() - new Date(stdout).getTime() <
-              twoMinutes
-            ) {
-              return null;
-            }
-
-            return checkThatConfigurationIsExported();
-          });
+        return cy.wrap(null).then(() => checkThatConfigurationIsExported());
       }
 
       throw new Error(`No configuration export after ${timeout}ms`);
