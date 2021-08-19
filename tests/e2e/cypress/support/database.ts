@@ -47,7 +47,7 @@ let configCheckStepCount = 0;
 
 const checkThatConfigurationIsExported = (): void => {
   cy.log('Checking that configuration is exported');
-  cy.exec(`bash -c docker exec -i ${Cypress.env('dockerName')} ls /etc/`)
+  cy.exec(`bash -c "whoami"`)
     .then((res) => {
       cy.log(res.stdout);
       return cy.exec(
