@@ -61,6 +61,7 @@ const checkThatConfigurationIsExported = (): void => {
 
     // configurationExported = exported as boolean;
 
+    cy.log(stdout);
     cy.log('Configuration exported', exported);
     cy.log('Configuration export check step count', configCheckStepCount);
 
