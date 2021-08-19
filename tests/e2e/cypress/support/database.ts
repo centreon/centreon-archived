@@ -74,7 +74,7 @@ const checkThatConfigurationIsExported = (): void => {
       cy.wait(stepWaitingTime, { log: false });
 
       // return cy.wrap(null)
-      applyConfigurationViaClapi().then(() =>
+      return applyConfigurationViaClapi().then(() =>
         checkThatConfigurationIsExported(),
       );
     }
