@@ -63,6 +63,7 @@ const createUploader = (action) => {
   let emit;
   const channel = eventChannel((emitter) => {
     emit = emitter;
+
     return () => {};
   });
 
@@ -133,6 +134,7 @@ function* uploadSource(action) {
   try {
     const res = yield call(() => uploadPromise);
     const data = yield res.data;
+
     return data;
   } catch (err) {
     throw err;

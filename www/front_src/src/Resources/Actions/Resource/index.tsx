@@ -280,13 +280,13 @@ const ResourceActionsContent = ({
         icon={<IconMore color="primary" fontSize="small" />}
         title={t(labelMoreActions) as string}
       >
-        {({ close }) => (
+        {({ close }): JSX.Element => (
           <>
             <ActionMenuItem
               disabled={disableDisacknowledge}
               label={labelDisacknowledge}
               permitted={isDisacknowledgePermitted}
-              onClick={() => {
+              onClick={(): void => {
                 close();
                 prepareToDisacknowledge();
               }}
@@ -295,7 +295,7 @@ const ResourceActionsContent = ({
               disabled={disableSubmitStatus}
               label={labelSubmitStatus}
               permitted={isSubmitStatusPermitted}
-              onClick={() => {
+              onClick={(): void => {
                 close();
                 prepareToSubmitStatus();
               }}
@@ -305,7 +305,7 @@ const ResourceActionsContent = ({
               disabled={disableAddComment}
               label={labelAddComment}
               permitted={isAddCommentPermitted}
-              onClick={() => {
+              onClick={(): void => {
                 close();
                 prepareToAddComment();
               }}

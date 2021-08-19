@@ -206,11 +206,11 @@ const getCriteriaValueSuggestions = ({
   selectedValues,
   criterias,
 }: CriteriaValueSuggestionsProps): Array<string> => {
-  const criteriaIds = map<CriteriaId, string>(
+  const criteriaNames = map<CriteriaId, string>(
     compose(getCriteriaQueryLanguageName, prop('id')),
   )(criterias);
 
-  return without(selectedValues, criteriaIds);
+  return without(selectedValues, criteriaNames);
 };
 
 const getAutocompleteSuggestions = ({
@@ -233,22 +233,20 @@ const getAutocompleteSuggestions = ({
   )(searchBeforeCursor) as string;
 
   const expressionCriteria = expressionBeforeCursor.split(':');
-  const criteriaName = head(expressionCriteria) as string;
-  const unmappedCriteriaName =
-    getCriteriaNameFromQueryLanguageName(criteriaName);
+  const criteriaQueryLanguageName = head(expressionCriteria) as string;
+  const criteriaName = getCriteriaNameFromQueryLanguageName(
+    criteriaQueryLanguageName,
+  );
   const expressionCriteriaValues = pipe(last, split(','))(expressionCriteria);
 
-  const hasCriteriaStaticValues = includes(
-    unmappedCriteriaName,
-    staticCriteriaNames,
-  );
+  const hasCriteriaStaticValues = includes(criteriaName, staticCriteriaNames);
 
-  if (isEmpty(unmappedCriteriaName)) {
+  if (isEmpty(criteriaName)) {
     return [];
   }
 
   if (includes(':', expressionBeforeCursor) && hasCriteriaStaticValues) {
-    const criterias = getSelectableCriteriasByName(unmappedCriteriaName);
+    const criterias = getSelectableCriteriasByName(criteriaName);
     const lastCriteriaValue = last(expressionCriteriaValues) || '';
 
     const criteriaValueSuggestions = getCriteriaValueSuggestions({
@@ -266,10 +264,7 @@ const getAutocompleteSuggestions = ({
       : filter(startsWith(lastCriteriaValue), criteriaValueSuggestions);
   }
 
-  return reject(
-    includes(__, search),
-    getCriteriaNameSuggestions(unmappedCriteriaName),
-  );
+  return reject(includes(__, search), getCriteriaNameSuggestions(criteriaName));
 };
 
 export { parse, build, getAutocompleteSuggestions, searchableFields };

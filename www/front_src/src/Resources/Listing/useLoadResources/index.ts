@@ -58,7 +58,9 @@ const useLoadResources = (): LoadResources => {
         }
       : undefined;
 
-    const getCriteriaIds = (name: string) => {
+    const getCriteriaIds = (
+      name: string,
+    ): Array<string | number> | undefined => {
       const criteriaValue = getCriteriaValue(name) as
         | Array<SelectEntry>
         | undefined;
@@ -116,6 +118,14 @@ const useLoadResources = (): LoadResources => {
       clearInterval(refreshIntervalRef.current);
     };
   }, []);
+
+  React.useEffect(() => {
+    if (isNil(details)) {
+      return;
+    }
+
+    initAutorefresh();
+  }, [isNil(details)]);
 
   React.useEffect(() => {
     if (isNil(page)) {

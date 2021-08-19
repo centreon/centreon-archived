@@ -125,7 +125,7 @@ const Filter = (): JSX.Element => {
     setAutocompleteAnchor(searchRef?.current as HTMLDivElement);
   }, [autoCompleteSuggestions]);
 
-  const acceptAutocompleteSuggestionAtIndex = (index: number) => {
+  const acceptAutocompleteSuggestionAtIndex = (index: number): void => {
     setNewFilter();
 
     const acceptedSuggestion = autoCompleteSuggestions[index];
@@ -303,7 +303,7 @@ const Filter = (): JSX.Element => {
     options,
   );
 
-  const closeSuggestionPopover = () => {
+  const closeSuggestionPopover = (): void => {
     setAutocompleteAnchor(null);
   };
 
@@ -332,12 +332,12 @@ const Filter = (): JSX.Element => {
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}
-                onBlur={() => setIsSearchFieldFocus(false)}
+                onBlur={(): void => setIsSearchFieldFocus(false)}
                 onChange={prepareSearch}
-                onClick={() => {
+                onClick={(): void => {
                   setCursorPosition(searchRef?.current?.selectionStart || 0);
                 }}
-                onFocus={() => setIsSearchFieldFocus(true)}
+                onFocus={(): void => setIsSearchFieldFocus(true)}
                 onKeyDown={inputKey}
               />
               <Popper
@@ -354,7 +354,7 @@ const Filter = (): JSX.Element => {
                       <MenuItem
                         key={suggestion}
                         selected={index === selectedSuggestionIndex}
-                        onClick={() => {
+                        onClick={(): void => {
                           acceptAutocompleteSuggestionAtIndex(index);
                           searchRef?.current?.focus();
                         }}

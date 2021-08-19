@@ -4,11 +4,14 @@ import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
+import { CreateCSSProperties } from '@material-ui/styles';
 
 import truncate from '../../truncate';
 
-const useStyles = makeStyles<Theme, Pick<Props, 'bold'>>(() => ({
-  information: ({ bold }) => ({
+type StylesProps = Pick<Props, 'bold'>;
+
+const useStyles = makeStyles<Theme, StylesProps>(() => ({
+  information: ({ bold }): CreateCSSProperties<StylesProps> => ({
     fontWeight: bold ? 600 : 'unset',
   }),
 }));

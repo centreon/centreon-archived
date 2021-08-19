@@ -54,6 +54,7 @@ class PollerStepTwoRoute extends Component {
     const { history, pollerData, setPollerWizard } = this.props;
     const postData = { ...data, ...pollerData };
     postData.server_type = 'poller';
+
     return this.wizardFormApi
       .post('', postData)
       .then((response) => {
@@ -73,6 +74,7 @@ class PollerStepTwoRoute extends Component {
     const { links } = this;
     const { pollerData } = this.props;
     const { pollers } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />

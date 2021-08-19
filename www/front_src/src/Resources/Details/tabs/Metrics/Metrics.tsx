@@ -71,7 +71,9 @@ const Metrics = ({
                   <SelectableResourceName
                     name={resource.parent?.name as string}
                     variant="body2"
-                    onSelect={() => selectResource(resource.parent as Resource)}
+                    onSelect={(): void =>
+                      selectResource(resource.parent as Resource)
+                    }
                   />
                 </div>
                 <div className={classes.iconValuePair}>
@@ -79,7 +81,7 @@ const Metrics = ({
                   <SelectableResourceName
                     name={resource.name}
                     variant="body2"
-                    onSelect={() => selectResource(resource)}
+                    onSelect={(): void => selectResource(resource)}
                   />
                 </div>
               </div>

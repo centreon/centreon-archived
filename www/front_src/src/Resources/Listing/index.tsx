@@ -107,7 +107,7 @@ const ResourceListing = (): JSX.Element => {
     SortOrder,
   ];
 
-  const getId = ({ uuid }) => uuid;
+  const getId = ({ uuid }: Resource): string => uuid;
 
   const resetColumns = (): void => {
     setSelectedColumnIds(defaultSelectedColumnIds);
@@ -126,11 +126,12 @@ const ResourceListing = (): JSX.Element => {
   const predefinedRowsSelection = [
     {
       label: `${t(labelStatus).toLowerCase()}:OK`,
-      rowCondition: ({ status }) => includes(status.name, okStatuses),
+      rowCondition: ({ status }): boolean => includes(status.name, okStatuses),
     },
     {
       label: `${t(labelStatus).toLowerCase()}:NOK`,
-      rowCondition: ({ status }) => not(includes(status.name, okStatuses)),
+      rowCondition: ({ status }): boolean =>
+        not(includes(status.name, okStatuses)),
     },
   ];
 
