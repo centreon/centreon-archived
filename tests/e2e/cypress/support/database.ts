@@ -48,13 +48,14 @@ let configCheckStepCount = 0;
 const checkThatConfigurationIsExported = (): void => {
   cy.log('Checking that configuration is exported');
   cy.exec(`bash -c docker exec -i ${Cypress.env('dockerName')} ls /etc/`)
-    .then(() =>
-      cy.exec(
-        `bash -c docker exec -i ${Cypress.env(
+    .then((res) => {
+      cy.log(res.stdout);
+      return cy.exec(
+        `docker exec -i ${Cypress.env(
           'dockerName',
-        )} date -r /etc/centreon-engine/hosts.cfg`,
-      ),
-    )
+        )} bash -c date -r /etc/centreon-engine/hosts.cfg`,
+      );
+    })
     .then(({ stdout }): Cypress.Chainable<null> | null => {
       // let configurationExported = false;
       configCheckStepCount += 1;
