@@ -47,40 +47,44 @@ let configCheckStepCount = 0;
 
 const checkThatConfigurationIsExported = (): void => {
   cy.log('Checking that configuration is exported');
-  cy.exec(
-    `bash -c docker exec -i ${Cypress.env(
-      'dockerName',
-    )} date -r /etc/centreon-engine/hosts.cfg`,
-  ).then(({ stdout }): Cypress.Chainable<null> | null => {
-    // let configurationExported = false;
-    configCheckStepCount += 1;
+  cy.exec(`bash -c docker exec -i ${Cypress.env('dockerName')} ls /etc/`)
+    .then(() =>
+      cy.exec(
+        `bash -c docker exec -i ${Cypress.env(
+          'dockerName',
+        )} date -r /etc/centreon-engine/hosts.cfg`,
+      ),
+    )
+    .then(({ stdout }): Cypress.Chainable<null> | null => {
+      // let configurationExported = false;
+      configCheckStepCount += 1;
 
-    const twoMinutes = 5000;
-    const exported =
-      new Date().getTime() - new Date(stdout).getTime() < twoMinutes;
+      const twoMinutes = 5000;
+      const exported =
+        new Date().getTime() - new Date(stdout).getTime() < twoMinutes;
 
-    // configurationExported = exported as boolean;
+      // configurationExported = exported as boolean;
 
-    cy.log(stdout);
-    cy.log('Configuration exported', exported);
-    cy.log('Configuration export check step count', configCheckStepCount);
+      cy.log(stdout);
+      cy.log('Configuration exported', exported);
+      cy.log('Configuration export check step count', configCheckStepCount);
 
-    if (exported) {
-      return null;
-    }
+      if (exported) {
+        return null;
+      }
 
-    if (configCheckStepCount < maxSteps) {
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(stepWaitingTime, { log: false });
+      if (configCheckStepCount < maxSteps) {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(stepWaitingTime, { log: false });
 
-      // return cy.wrap(null)
-      return applyConfigurationViaClapi().then(() =>
-        checkThatConfigurationIsExported(),
-      );
-    }
+        // return cy.wrap(null)
+        return applyConfigurationViaClapi().then(() =>
+          checkThatConfigurationIsExported(),
+        );
+      }
 
-    throw new Error(`No configuration export after ${timeout}ms`);
-  });
+      throw new Error(`No configuration export after ${timeout}ms`);
+    });
 };
 
 export {
