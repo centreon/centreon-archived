@@ -72,7 +72,10 @@ const checkThatConfigurationIsExported = (): void => {
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(stepWaitingTime, { log: false });
 
-      return cy.wrap(null).then(() => checkThatConfigurationIsExported());
+      // return cy.wrap(null)
+      applyConfigurationViaClapi().then(() =>
+        checkThatConfigurationIsExported(),
+      );
     }
 
     throw new Error(`No configuration export after ${timeout}ms`);
