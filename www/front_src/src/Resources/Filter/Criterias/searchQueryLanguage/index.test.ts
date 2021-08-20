@@ -1,4 +1,4 @@
-import { concat, pipe, prop } from 'ramda';
+import { concat, pipe, prop, toLower } from 'ramda';
 
 import {
   selectableResourceTypes,
@@ -82,7 +82,7 @@ describe(getAutocompleteSuggestions, () => {
     },
     {
       cursorPosition: 6,
-      expectedResult: selectableStates.map(prop('id')),
+      expectedResult: ['unhandled', 'acknowledged', 'in_downtime'],
       inputSearch: 'state:',
     },
     {
@@ -107,7 +107,10 @@ describe(getAutocompleteSuggestions, () => {
     },
     {
       cursorPosition: 23,
-      expectedResult: selectableStatuses.map(pipe(prop('id')), concat(',')),
+      expectedResult: selectableStatuses.map(
+        pipe(prop('id'), toLower),
+        concat(','),
+      ),
       inputSearch: 'state:unhandled status:',
     },
     {

@@ -443,7 +443,7 @@ describe(Filter, () => {
       'state:unhandled status:',
     );
 
-    userEvent.type(getByPlaceholderText(labelSearch), ' resource_type:');
+    userEvent.type(getByPlaceholderText(labelSearch), ' type:');
 
     userEvent.keyboard('{ArrowDown}');
 
