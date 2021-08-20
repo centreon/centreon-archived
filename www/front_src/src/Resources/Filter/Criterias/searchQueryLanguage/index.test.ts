@@ -1,10 +1,6 @@
 import { concat, pipe, prop, toLower } from 'ramda';
 
-import {
-  selectableResourceTypes,
-  selectableStates,
-  selectableStatuses,
-} from '../models';
+import { selectableResourceTypes, selectableStatuses } from '../models';
 
 import { build, parse, getAutocompleteSuggestions } from './index';
 
