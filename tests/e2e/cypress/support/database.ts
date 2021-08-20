@@ -5,7 +5,7 @@ import {
   submitResultsViaClapi,
 } from './centreonData';
 
-const stepWaitingTime = 500;
+const stepWaitingTime = 250;
 const pollingCheckTimeout = 100000;
 const maxSteps = pollingCheckTimeout / stepWaitingTime;
 
@@ -61,7 +61,7 @@ const checkThatConfigurationIsExported = (): void => {
   ).then(({ stdout }): Cypress.Chainable<null> | null => {
     configurationExportedCheckStepCount += 1;
 
-    const configurationExported = now - new Date(stdout).getTime() < 1000;
+    const configurationExported = now - new Date(stdout).getTime() < 500;
 
     cy.log('Configuration exported', configurationExported);
     cy.log(
