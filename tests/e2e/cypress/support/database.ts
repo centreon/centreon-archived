@@ -32,10 +32,12 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(stepWaitingTime, { log: false });
 
-        return cy
-          .wrap(null)
-          .then(() => submitResultsViaClapi())
-          .then(() => checkThatFixtureServicesExistInDatabase());
+        return (
+          cy
+            .wrap(null)
+            // .then(() => submitResultsViaClapi())
+            .then(() => checkThatFixtureServicesExistInDatabase())
+        );
       }
 
       throw new Error(`No service found in the database after ${timeout}ms`);
