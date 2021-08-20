@@ -179,34 +179,24 @@ const submitResultsViaClapi = (): Cypress.Chainable => {
   });
 };
 
+const insertFixture = (file: string): Cypress.Chainable => {
+  return cy.fixture(file).then(executeActionViaClapi);
+};
+
 const initializeResourceData = (): Cypress.Chainable => {
-  return cy
-    .fixture('resources/clapi/host1/01-add.json')
-    .then((raw) => executeActionViaClapi(raw))
-    .then(() => cy.fixture('resources/clapi/service1/01-add.json'))
-    .then((raw) => executeActionViaClapi(raw))
-    .then(() => cy.fixture('resources/clapi/service1/02-set-max-check.json'))
-    .then((raw) => executeActionViaClapi(raw))
-    .then(() =>
-      cy.fixture('resources/clapi/service1/03-disable-active-check.json'),
-    )
-    .then((raw) => executeActionViaClapi(raw))
-    .then(() =>
-      cy.fixture('resources/clapi/service1/04-enable-passive-check.json'),
-    )
-    .then((raw) => executeActionViaClapi(raw))
-    .then(() => cy.fixture('resources/clapi/service2/01-add.json'))
-    .then((raw) => executeActionViaClapi(raw))
-    .then(() => cy.fixture('resources/clapi/service2/02-set-max-check.json'))
-    .then((raw) => executeActionViaClapi(raw))
-    .then(() =>
-      cy.fixture('resources/clapi/service2/03-disable-active-check.json'),
-    )
-    .then((raw) => executeActionViaClapi(raw))
-    .then(() =>
-      cy.fixture('resources/clapi/service2/04-enable-passive-check.json'),
-    )
-    .then((raw) => executeActionViaClapi(raw));
+  const files = [
+    'resources/clapi/host1/01-add.json',
+    'resources/clapi/service1/01-add.json',
+    'resources/clapi/service1/02-set-max-check.json',
+    'resources/clapi/service1/03-disable-active-check.json',
+    'resources/clapi/service1/04-enable-passive-check.json',
+    'resources/clapi/service2/01-add.json',
+    'resources/clapi/service2/02-set-max-check.json',
+    'resources/clapi/service2/03-disable-active-check.json',
+    'resources/clapi/service2/04-enable-passive-check.json',
+  ];
+
+  return cy.wrap(Promise.all(files.map(insertFixture)));
 };
 
 const removeResourceData = (): Cypress.Chainable => {

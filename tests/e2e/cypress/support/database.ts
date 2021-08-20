@@ -1,7 +1,4 @@
-import {
-  applyConfigurationViaClapi,
-  submitResultsViaClapi,
-} from './centreonData';
+import { submitResultsViaClapi } from './centreonData';
 
 const stepWaitingTime = 500;
 const timeout = 100000;
@@ -10,14 +7,14 @@ const maxSteps = timeout / stepWaitingTime;
 let stepCount = 0;
 
 const checkThatFixtureServicesExistInDatabase = (): void => {
-  cy.log('Checking in database');
+  cy.log('Checking services in database');
 
-  const req = `SELECT COUNT(s.service_id) as count_services from services as s WHERE s.description LIKE '%service_test%' AND s.output LIKE '%submit_status_2%' AND s.enabled=1;`;
-  const cmd = `docker exec -i ${Cypress.env(
+  const query = `SELECT COUNT(s.service_id) as count_services from services as s WHERE s.description LIKE '%service_test%' AND s.output LIKE '%submit_status_2%' AND s.enabled=1;`;
+  const command = `docker exec -i ${Cypress.env(
     'dockerName',
-  )} mysql -ucentreon -pcentreon centreon_storage <<< "${req}"`;
+  )} mysql -ucentreon -pcentreon centreon_storage <<< "${query}"`;
 
-  cy.exec(cmd).then(({ stdout }): Cypress.Chainable<null> | null => {
+  cy.exec(command).then(({ stdout }): Cypress.Chainable<null> | null => {
     let foundServiceCount = 0;
 
     if (stdout !== '') {
@@ -61,10 +58,8 @@ const checkThatConfigurationIsExported = (): void => {
   ).then(({ stdout }): Cypress.Chainable<null> | null => {
     configCheckStepCount += 1;
 
-    const twoMinutes = 500;
-    const exported = now - new Date(stdout).getTime() < twoMinutes;
+    const exported = now - new Date(stdout).getTime() < 500;
 
-    cy.log(stdout);
     cy.log('Configuration exported', exported);
     cy.log('Configuration export check step count', configCheckStepCount);
 
