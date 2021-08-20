@@ -433,16 +433,14 @@ describe(Filter, () => {
 
     userEvent.tab();
 
-    expect(getByPlaceholderText(labelSearch)).toHaveValue(
-      'state:unhandled_problems',
-    );
+    expect(getByPlaceholderText(labelSearch)).toHaveValue('state:unhandled');
 
     userEvent.type(getByPlaceholderText(labelSearch), ' st');
 
     userEvent.tab();
 
     expect(getByPlaceholderText(labelSearch)).toHaveValue(
-      'state:unhandled_problems status:',
+      'state:unhandled status:',
     );
 
     userEvent.type(getByPlaceholderText(labelSearch), ' resource_type:');
@@ -452,7 +450,7 @@ describe(Filter, () => {
     userEvent.tab();
 
     expect(getByPlaceholderText(labelSearch)).toHaveValue(
-      'state:unhandled_problems status: resource_type:service',
+      'state:unhandled status: type:service',
     );
   });
 
@@ -502,7 +500,7 @@ describe(Filter, () => {
       const searchField = await findByPlaceholderText(labelSearch);
 
       expect(searchField).toHaveValue(
-        'resource_type:host state:acknowledged status:OK host_group:0|Linux-servers service_group:1|Web-access Search me',
+        'type:host state:acknowledged status:ok host_group:0|Linux-servers service_group:1|Web-access Search me',
       );
 
       userEvent.click(
@@ -621,7 +619,7 @@ describe(Filter, () => {
       expect(getByText('New filter')).toBeInTheDocument();
       expect(
         getByDisplayValue(
-          'resource_type:host state:acknowledged status:OK host_group:0|Linux-servers service_group:1|Web-access Search me',
+          'type:host state:acknowledged status:ok host_group:0|Linux-servers service_group:1|Web-access Search me',
         ),
       ).toBeInTheDocument();
 

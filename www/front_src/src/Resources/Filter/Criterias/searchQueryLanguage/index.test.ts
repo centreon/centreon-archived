@@ -91,24 +91,24 @@ describe(getAutocompleteSuggestions, () => {
       inputSearch: 'type:',
     },
     {
-      cursorPosition: 24,
+      cursorPosition: 15,
       expectedResult: [',acknowledged', ',in_downtime'],
-      inputSearch: 'state:unhandled_problems',
+      inputSearch: 'state:unhandled',
     },
     {
-      cursorPosition: 25,
+      cursorPosition: 16,
       expectedResult: ['acknowledged', 'in_downtime'],
-      inputSearch: 'state:unhandled_problems,',
+      inputSearch: 'state:unhandled,',
     },
     {
-      cursorPosition: 27,
+      cursorPosition: 18,
       expectedResult: ['status:'],
-      inputSearch: 'state:unhandled_problems st',
+      inputSearch: 'state:unhandled st',
     },
     {
-      cursorPosition: 33,
+      cursorPosition: 23,
       expectedResult: selectableStatuses.map(pipe(prop('id')), concat(',')),
-      inputSearch: 'state:unhandled_problems status:',
+      inputSearch: 'state:unhandled status:',
     },
     {
       cursorPosition: 14,
