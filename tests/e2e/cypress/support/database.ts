@@ -1,10 +1,12 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
+
 import { submitResultsViaClapi } from './centreonData';
 
 const stepWaitingTime = 500;
-const timeout = 100000;
-const maxSteps = timeout / stepWaitingTime;
+const pollingCheckTimeout = 100000;
+const maxSteps = pollingCheckTimeout / stepWaitingTime;
 
-let stepCount = 0;
+let servicesFoundStepCount = 0;
 
 const checkThatFixtureServicesExistInDatabase = (): void => {
   cy.log('Checking services in database');
@@ -21,18 +23,17 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
       foundServiceCount = parseInt(stdout.split('\n')[1], 10);
     }
 
-    stepCount += 1;
+    servicesFoundStepCount += 1;
 
     cy.log('Service count in database', foundServiceCount);
-    cy.log('Service database check step count', stepCount);
+    cy.log('Service database check step count', servicesFoundStepCount);
 
     if (foundServiceCount > 0) {
       return null;
     }
 
-    if (stepCount < maxSteps) {
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(stepWaitingTime, { log: false });
+    if (servicesFoundStepCount < maxSteps) {
+      cy.wait(stepWaitingTime);
 
       return cy
         .wrap(null)
@@ -40,11 +41,13 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
         .then(() => checkThatFixtureServicesExistInDatabase());
     }
 
-    throw new Error(`No service found in the database after ${timeout}ms`);
+    throw new Error(
+      `No service found in the database after ${pollingCheckTimeout}ms`,
+    );
   });
 };
 
-let configCheckStepCount = 0;
+let configurationExportedCheckStepCount = 0;
 
 const checkThatConfigurationIsExported = (): void => {
   const now = new Date().getTime();
@@ -56,25 +59,27 @@ const checkThatConfigurationIsExported = (): void => {
       'dockerName',
     )} date -r /etc/centreon-engine/hosts.cfg`,
   ).then(({ stdout }): Cypress.Chainable<null> | null => {
-    configCheckStepCount += 1;
+    configurationExportedCheckStepCount += 1;
 
-    const exported = now - new Date(stdout).getTime() < 1000;
+    const configurationExported = now - new Date(stdout).getTime() < 1000;
 
-    cy.log('Configuration exported', exported);
-    cy.log('Configuration export check step count', configCheckStepCount);
+    cy.log('Configuration exported', configurationExported);
+    cy.log(
+      'Configuration export check step count',
+      configurationExportedCheckStepCount,
+    );
 
-    if (exported) {
+    if (configurationExported) {
       return null;
     }
 
-    if (configCheckStepCount < maxSteps) {
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(stepWaitingTime, { log: false });
+    if (configurationExportedCheckStepCount < maxSteps) {
+      cy.wait(stepWaitingTime);
 
       return cy.wrap(null).then(() => checkThatConfigurationIsExported());
     }
 
-    throw new Error(`No configuration export after ${timeout}ms`);
+    throw new Error(`No configuration export after ${pollingCheckTimeout}ms`);
   });
 };
 
