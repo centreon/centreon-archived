@@ -38,4 +38,13 @@ class SerializerException extends \Exception
     {
         return new self(sprintf(_('There are not enough arguments to build the object %s'), $classname), 0, $ex);
     }
+
+    /**
+     * @param string $className
+     * @return self
+     */
+    public static function classNotFound(string $className): self
+    {
+        return new self(sprintf(_('Class %s not found'), $className));
+    }
 }

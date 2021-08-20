@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  * For more information : contact@centreon.com
- *Controller
+ *
  */
 declare(strict_types=1);
 
@@ -37,8 +37,10 @@ class ObjectConstructor implements ObjectConstructorInterface
 {
     /**
      * {@inheritDoc}
+     * @param array<string, mixed> $type
      * @throws SerializerException
      * @throws \ReflectionException
+     * @throws \Throwable
      */
     public function construct(
         DeserializationVisitorInterface $visitor,
@@ -49,7 +51,7 @@ class ObjectConstructor implements ObjectConstructorInterface
     ): ?object {
         $className = $metadata->name;
         if (!class_exists($className)) {
-            throw new \ReflectionException(sprintf(_('Class %s not found'), $className));
+            throw SerializerException::classNotFound($className);
         }
         $reflection = new \ReflectionClass($className);
         $constructor = $reflection->getConstructor();
