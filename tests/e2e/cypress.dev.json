@@ -2,7 +2,6 @@
   "testFiles": "**/*.feature",
   "ignoreTestFiles": ["*.js", "*.ts", "*.md"],
   "supportFile": "cypress/support/index.ts",
-  "pluginsFile": "cypress/plugins/index.ts",
   "video": true,
   "videosFolder": "cypress/results/dev/videos",
   "screenshotsFolder": "cypress/results/dev/screenshots",
