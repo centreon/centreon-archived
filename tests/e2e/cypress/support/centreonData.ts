@@ -154,9 +154,8 @@ const updateFixturesResult = (): Cypress.Chainable => {
     .then(({ results }) => {
       const timestampNow = Math.floor(Date.now() / 1000) - 15;
 
-      const submitResults = results.map((res) => {
-        res.updatetime = timestampNow.toString();
-        return res;
+      const submitResults = results.map((submittedResult) => {
+        return { ...submittedResult, updatetime: timestampNow.toString() };
       });
 
       return submitResults;

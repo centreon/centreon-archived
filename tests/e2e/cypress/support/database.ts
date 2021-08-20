@@ -1,6 +1,9 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 
-import { submitResultsViaClapi } from './centreonData';
+import {
+  applyConfigurationViaClapi,
+  submitResultsViaClapi,
+} from './centreonData';
 
 const stepWaitingTime = 500;
 const pollingCheckTimeout = 100000;
@@ -17,13 +20,10 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
   )} mysql -ucentreon -pcentreon centreon_storage <<< "${query}"`;
 
   cy.exec(command).then(({ stdout }): Cypress.Chainable<null> | null => {
-    let foundServiceCount = 0;
-
-    if (stdout !== '') {
-      foundServiceCount = parseInt(stdout.split('\n')[1], 10);
-    }
-
     servicesFoundStepCount += 1;
+
+    const output = stdout || '0';
+    const foundServiceCount = parseInt(output.split('\n')[1], 10);
 
     cy.log('Service count in database', foundServiceCount);
     cy.log('Service database check step count', servicesFoundStepCount);
@@ -76,7 +76,10 @@ const checkThatConfigurationIsExported = (): void => {
     if (configurationExportedCheckStepCount < maxSteps) {
       cy.wait(stepWaitingTime);
 
-      return cy.wrap(null).then(() => checkThatConfigurationIsExported());
+      return cy
+        .wrap(null)
+        .then(() => applyConfigurationViaClapi())
+        .then(() => checkThatConfigurationIsExported());
     }
 
     throw new Error(`No configuration export after ${pollingCheckTimeout}ms`);
