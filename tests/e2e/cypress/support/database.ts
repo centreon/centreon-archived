@@ -53,45 +53,34 @@ const checkThatConfigurationIsExported = (): void => {
   const now = new Date().getTime();
 
   cy.log('Checking that configuration is exported');
+
   cy.exec(
     `docker exec -i ${Cypress.env(
       'dockerName',
-    )} stat /etc/centreon-engine/hosts.cfg`,
-  )
-    .then(({ stdout }) => {
-      cy.log(stdout);
-      return cy.exec(
-        `docker exec -i ${Cypress.env(
-          'dockerName',
-        )} date -r /etc/centreon-engine/hosts.cfg`,
-      );
-    })
-    .then(({ stdout }): Cypress.Chainable<null> | null => {
-      configCheckStepCount += 1;
+    )} date -r /etc/centreon-engine/hosts.cfg`,
+  ).then(({ stdout }): Cypress.Chainable<null> | null => {
+    configCheckStepCount += 1;
 
-      const twoMinutes = 500;
-      const exported = now - new Date(stdout).getTime() < twoMinutes;
+    const twoMinutes = 500;
+    const exported = now - new Date(stdout).getTime() < twoMinutes;
 
-      cy.log(stdout);
-      cy.log('Configuration exported', exported);
-      cy.log('Configuration export check step count', configCheckStepCount);
+    cy.log(stdout);
+    cy.log('Configuration exported', exported);
+    cy.log('Configuration export check step count', configCheckStepCount);
 
-      if (exported) {
-        return null;
-      }
+    if (exported) {
+      return null;
+    }
 
-      if (configCheckStepCount < maxSteps) {
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(stepWaitingTime, { log: false });
+    if (configCheckStepCount < maxSteps) {
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(stepWaitingTime, { log: false });
 
-        return cy.wrap(null).then(() =>
-          // return applyConfigurationViaClapi().then(() =>
-          checkThatConfigurationIsExported(),
-        );
-      }
+      return cy.wrap(null).then(() => checkThatConfigurationIsExported());
+    }
 
-      throw new Error(`No configuration export after ${timeout}ms`);
-    });
+    throw new Error(`No configuration export after ${timeout}ms`);
+  });
 };
 
 export {
