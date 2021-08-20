@@ -37,12 +37,10 @@ const checkThatFixtureServicesExistInDatabase = (): void => {
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(stepWaitingTime, { log: false });
 
-      return (
-        cy
-          .wrap(null)
-          // .then(() => submitResultsViaClapi())
-          .then(() => checkThatFixtureServicesExistInDatabase())
-      );
+      return cy
+        .wrap(null)
+        .then(() => submitResultsViaClapi())
+        .then(() => checkThatFixtureServicesExistInDatabase());
     }
 
     throw new Error(`No service found in the database after ${timeout}ms`);
@@ -60,13 +58,14 @@ const checkThatConfigurationIsExported = (): void => {
       'dockerName',
     )} stat /etc/centreon-engine/hosts.cfg`,
   )
-    .then(() =>
-      cy.exec(
+    .then(({ stdout }) => {
+      cy.log(stdout);
+      return cy.exec(
         `docker exec -i ${Cypress.env(
           'dockerName',
         )} date -r /etc/centreon-engine/hosts.cfg`,
-      ),
-    )
+      );
+    })
     .then(({ stdout }): Cypress.Chainable<null> | null => {
       configCheckStepCount += 1;
 
