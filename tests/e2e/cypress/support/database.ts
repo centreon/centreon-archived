@@ -58,7 +58,7 @@ const checkThatConfigurationIsExported = (): void => {
   ).then(({ stdout }): Cypress.Chainable<null> | null => {
     configCheckStepCount += 1;
 
-    const exported = now - new Date(stdout).getTime() < 500;
+    const exported = now - new Date(stdout).getTime() < 1000;
 
     cy.log('Configuration exported', exported);
     cy.log('Configuration export check step count', configCheckStepCount);
