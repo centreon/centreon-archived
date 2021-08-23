@@ -333,7 +333,7 @@ class AcknowledgementController extends AbstractController
 
         // @todo check errors already sent for this
         if ($content === false) {
-            throw new \InvalidArgumentException(_('Invalid data sent'));
+            throw new AcknowledgementException('Error when decoding your sent data');
         }
 
         $errors = $entityValidator->validateEntity(
@@ -666,8 +666,7 @@ class AcknowledgementController extends AbstractController
         $contact = $this->getUser();
         $this->acknowledgementService->filterByContact($contact);
 
-        $payload = (string) $request->getContent();
-        $disacknowledgementPayload = json_decode($payload, true);
+        $disacknowledgementPayload = json_decode((string) $request->getContent(), true);
 
         if ($disacknowledgementPayload === false) {
             throw new AcknowledgementException('Error when decoding your sent data');

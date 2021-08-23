@@ -38,8 +38,14 @@ use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\In
 
 class AcknowledgementControllerTest extends TestCase
 {
+    /**
+     * @var Contact
+     */
     private $adminContact;
 
+    /**
+     * @var MonitoringResource
+     */
     private $hostResource;
     private $serviceResource;
 
