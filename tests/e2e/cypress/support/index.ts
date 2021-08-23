@@ -2,17 +2,24 @@ import {
   initializeResourceData,
   setUserTokenApiV1,
   setUserTokenApiV2,
-  submitResultApiClapi,
+  submitResultsViaClapi,
   removeResourceData,
-  applyCfgApi,
+  applyConfigurationViaClapi,
 } from './centreonData';
-import { countServicesDB } from './database';
+import {
+  checkThatConfigurationIsExported,
+  checkThatFixtureServicesExistInDatabase,
+} from './database';
 
 before(() => {
   setUserTokenApiV1();
   setUserTokenApiV2();
 
-  initializeResourceData().then(() => applyCfgApi());
+  initializeResourceData()
+    .then(() => applyConfigurationViaClapi())
+    .then(() => checkThatConfigurationIsExported())
+    .then(() => submitResultsViaClapi())
+    .then(() => checkThatFixtureServicesExistInDatabase());
 
   cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {
     cy.visit(`${Cypress.config().baseUrl}`);
@@ -22,11 +29,7 @@ before(() => {
       cy.get('input[placeholder="Password"]').type(userAdmin.password);
     });
 
-    cy.get('form')
-      .submit()
-      .then(() => {
-        submitResultApiClapi().then(() => countServicesDB());
-      });
+    cy.get('form').submit();
   });
 
   Cypress.Cookies.defaults({
@@ -36,6 +39,6 @@ before(() => {
 
 after(() => {
   setUserTokenApiV1().then(() => {
-    removeResourceData().then(() => applyCfgApi());
+    removeResourceData().then(() => applyConfigurationViaClapi());
   });
 });

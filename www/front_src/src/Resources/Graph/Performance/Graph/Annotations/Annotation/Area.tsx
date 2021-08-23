@@ -63,8 +63,10 @@ const AreaAnnotation = ({
       width={xEnd - xStart}
       x={xStart}
       y={yMargin + iconSize + 2}
-      onMouseEnter={() => setAnnotationHovered(() => prop('event', props))}
-      onMouseLeave={() => setAnnotationHovered(() => undefined)}
+      onMouseEnter={(): void =>
+        setAnnotationHovered(() => prop('event', props))
+      }
+      onMouseLeave={(): void => setAnnotationHovered(() => undefined)}
     />
   );
 

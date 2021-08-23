@@ -14,6 +14,7 @@ import {
   lte,
   not,
   pipe,
+  Pred,
   T,
   __,
 } from 'ramda';
@@ -51,7 +52,7 @@ export const useAnnotations = (graphWidth: number): Annotations => {
     TimelineEvent | undefined
   >(undefined);
 
-  const getIsBetween = ({ xStart, xEnd }) => {
+  const getIsBetween = ({ xStart, xEnd }): Pred => {
     const gteX = gte(__, xStart);
     const lteX = lte(__, xEnd);
 

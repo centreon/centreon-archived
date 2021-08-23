@@ -23,6 +23,7 @@ const navigationReducer = (state = initialState, action) => {
         href: window.location.href,
       });
       window.dispatchEvent(event);
+
       return state;
     default:
       return state;

@@ -24,8 +24,11 @@ interface Props {
   yScale: ScaleLinear<number, number>;
 }
 
+const test = 'data';
+
 const getStackedDates = (stackValues: Array<StackValue>): Array<Date> => {
-  const toTimeTick = (stackValue) => stackValue.data.timeTick;
+  const toTimeTick = (stackValue: StackValue): string =>
+    stackValue[test].timeTick;
   const toDate = (tick: string): Date => new Date(tick);
 
   return pipe(map(toTimeTick), map(toDate))(stackValues);
@@ -38,6 +41,7 @@ const getYAnchorPoint = ({
 }: Pick<Props, 'timeTick' | 'stackValues' | 'yScale'>): number => {
   const index = bisectDate(getStackedDates(stackValues), timeTick);
   const timeValue = stackValues[index];
+
   return yScale(timeValue[1] as number);
 };
 
