@@ -3,9 +3,6 @@ Feature: Actions on Resources
   I want to apply actions on the Resources
   So that my IT infrastructure stays sane
 
-  Background:
-    Given There are available resources
-
   Scenario: I can acknowledge a problematic Resource
     When I select the acknowledge action on a problematic Resource
     Then The problematic Resource is displayed as acknowledged
