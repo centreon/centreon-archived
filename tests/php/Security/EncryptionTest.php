@@ -94,8 +94,8 @@ class EncryptionTest extends TestCase
 
     public function testWarningOnBadHashAlgorihtmWhileEncryption()
     {
-        $this->expectException(Warning::class);
-        $this->expectExceptionMessage('openssl_cipher_iv_length(): Unknown cipher algorithm');
+        $this->expectException(\ValueError::class);
+        $this->expectExceptionMessage('openssl_cipher_iv_length(): Argument #1 ($cipher_algo) cannot be empty');
         $encryption = (new Encryption(''))
             ->setFirstKey($this->secondKey)
             ->setSecondKey($this->secondKey);
@@ -106,8 +106,8 @@ class EncryptionTest extends TestCase
 
     public function testWarningOnBadHashMethodWhileEncryption()
     {
-        $this->expectException(Warning::class);
-        $this->expectExceptionMessage('hash_hmac(): Unknown hashing algorithm:');
+        $this->expectException(\ValueError::class);
+        $this->expectExceptionMessage('hash_hmac(): Argument #1 ($algo) must be a valid cryptographic hashing algorithm');
         $encryption = (new Encryption('aes-256-cbc', ''))
             ->setFirstKey($this->secondKey)
             ->setSecondKey($this->secondKey);
@@ -140,8 +140,8 @@ class EncryptionTest extends TestCase
 
     public function testWarningOnBadHashAlgorihtmWhileDecryption()
     {
-        $this->expectException(Warning::class);
-        $this->expectExceptionMessage('openssl_cipher_iv_length(): Unknown cipher algorithm');
+        $this->expectException(\ValueError::class);
+        $this->expectExceptionMessage('openssl_cipher_iv_length(): Argument #1 ($cipher_algo) cannot be empty');
         $encryption = (new Encryption(''))
             ->setFirstKey($this->secondKey)
             ->setSecondKey($this->secondKey);
