@@ -11,14 +11,11 @@ import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/decoders';
 import PerformanceGraph from '..';
-import {
-  CustomTimePeriod,
-  TimePeriod,
-} from '../../../Details/tabs/Graph/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
-import { AdjustTimePeriodProps, GraphOptionId } from '../models';
+import { GraphOptionId } from '../models';
 import { useIntersection } from '../useGraphIntersection';
+import { useResourceContext } from '../../../Context';
 
 import { defaultGraphOptions, useGraphOptionsContext } from './useGraphOptions';
 
@@ -36,31 +33,28 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-  adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
-  customTimePeriod: CustomTimePeriod;
-  getIntervalDates: () => [string, string];
   graphHeight: number;
   limitLegendRows?: boolean;
-  periodQueryParameters: string;
   resource?: Resource | ResourceDetails;
-  resourceDetailsUpdated: boolean;
-  selectedTimePeriod: TimePeriod | null;
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
   resource,
-  selectedTimePeriod,
-  getIntervalDates,
-  periodQueryParameters,
   graphHeight,
-  customTimePeriod,
-  adjustTimePeriod,
-  resourceDetailsUpdated,
   limitLegendRows,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { alias } = useUserContext();
+
+  const {
+    customTimePeriod,
+    getIntervalDates,
+    periodQueryParameters,
+    adjustTimePeriod,
+    selectedTimePeriod,
+    resourceDetailsUpdated,
+  } = useResourceContext();
 
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
@@ -90,6 +84,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   const retrieveTimeline = (): void => {
     if (or(isNil(timelineEndpoint), not(displayEventAnnotations))) {
       setTimeline([]);
+
       return;
     }
 

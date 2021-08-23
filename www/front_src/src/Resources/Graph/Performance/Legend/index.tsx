@@ -17,13 +17,14 @@ import {
   Typography,
   makeStyles,
   useTheme,
-  fade,
+  alpha,
   Theme,
   Tooltip,
   Box,
   Button,
 } from '@material-ui/core';
 import BarChartIcon from '@material-ui/icons/BarChart';
+import { CreateCSSProperties } from '@material-ui/styles';
 
 import { ResourceContext, useResourceContext } from '../../../Context';
 import { Line } from '../models';
@@ -47,7 +48,7 @@ interface MakeStylesProps {
 const maxLinesDisplayed = 12;
 
 const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
-  caption: ({ panelWidth }) => ({
+  caption: ({ panelWidth }): CreateCSSProperties<MakeStylesProps> => ({
     lineHeight: 1.2,
     marginRight: theme.spacing(1),
     maxWidth: 0.85 * panelWidth,
@@ -63,7 +64,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
     gridTemplateColumns: 'min-content minmax(50px, 1fr)',
     marginBottom: theme.spacing(1),
   },
-  items: ({ limitLegendRows }) => ({
+  items: ({ limitLegendRows }): CreateCSSProperties<MakeStylesProps> => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
     justifyContent: 'center',
@@ -89,7 +90,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   },
   minMaxAvgValue: { fontWeight: 600 },
   normal: {
-    color: fade(theme.palette.common.black, 0.6),
+    color: alpha(theme.palette.common.black, 0.6),
   },
   toggable: {
     cursor: 'pointer',
@@ -137,6 +138,7 @@ const LegendContent = ({
     const metricName = includes('#', legendName)
       ? split('#')(legendName)[1]
       : legendName;
+
     return (
       <div>
         <Tooltip placement="top" title={legendName}>
@@ -173,7 +175,7 @@ const LegendContent = ({
 
           const markerColor = display
             ? color
-            : fade(theme.palette.text.disabled, 0.2);
+            : alpha(theme.palette.text.disabled, 0.2);
 
           const metric = find(
             equals(line.metric),
@@ -205,6 +207,7 @@ const LegendContent = ({
 
             if (event.ctrlKey || event.metaKey) {
               onToggle(metricLine);
+
               return;
             }
 

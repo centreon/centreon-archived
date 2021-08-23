@@ -3,13 +3,9 @@ import * as React from 'react';
 import { equals, includes, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme, fade } from '@material-ui/core';
+import { useTheme, alpha } from '@material-ui/core';
 
-import {
-  MemoizedListing as Listing,
-  Severity,
-  useSnackbar,
-} from '@centreon/ui';
+import { MemoizedListing as Listing, useSnackbar } from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
@@ -26,7 +22,7 @@ export const okStatuses = ['OK', 'UP'];
 const ResourceListing = (): JSX.Element => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
+  const { showWarningMessage } = useSnackbar();
 
   const {
     listing,
@@ -55,7 +51,11 @@ const ResourceListing = (): JSX.Element => {
   const { initAutorefreshAndLoad } = useLoadResources();
 
   const changeSort = ({ sortField, sortOrder }): void => {
-    setCriteriaAndNewFilter({ name: 'sort', value: [sortField, sortOrder] });
+    setCriteriaAndNewFilter({
+      apply: true,
+      name: 'sort',
+      value: [sortField, sortOrder],
+    });
   };
 
   const changeLimit = (value): void => {
@@ -75,7 +75,7 @@ const ResourceListing = (): JSX.Element => {
   };
 
   const resourceDetailsOpenCondition = {
-    color: fade(theme.palette.primary.main, 0.08),
+    color: alpha(theme.palette.primary.main, 0.08),
     condition: ({ uuid }): boolean => equals(uuid, selectedResourceUuid),
     name: 'detailsOpen',
   };
@@ -107,7 +107,7 @@ const ResourceListing = (): JSX.Element => {
     SortOrder,
   ];
 
-  const getId = ({ uuid }) => uuid;
+  const getId = ({ uuid }: Resource): string => uuid;
 
   const resetColumns = (): void => {
     setSelectedColumnIds(defaultSelectedColumnIds);
@@ -115,10 +115,7 @@ const ResourceListing = (): JSX.Element => {
 
   const selectColumns = (updatedColumnIds: Array<string>): void => {
     if (updatedColumnIds.length === 0) {
-      showMessage({
-        message: t(labelSelectAtLeastOneColumn),
-        severity: Severity.warning,
-      });
+      showWarningMessage(t(labelSelectAtLeastOneColumn));
 
       return;
     }
@@ -129,11 +126,12 @@ const ResourceListing = (): JSX.Element => {
   const predefinedRowsSelection = [
     {
       label: `${t(labelStatus).toLowerCase()}:OK`,
-      rowCondition: ({ status }) => includes(status.name, okStatuses),
+      rowCondition: ({ status }): boolean => includes(status.name, okStatuses),
     },
     {
       label: `${t(labelStatus).toLowerCase()}:NOK`,
-      rowCondition: ({ status }) => not(includes(status.name, okStatuses)),
+      rowCondition: ({ status }): boolean =>
+        not(includes(status.name, okStatuses)),
     },
   ];
 

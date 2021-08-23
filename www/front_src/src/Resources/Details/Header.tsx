@@ -14,13 +14,13 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import CopyIcon from '@material-ui/icons/FileCopy';
 import SettingsIcon from '@material-ui/icons/Settings';
+import { CreateCSSProperties } from '@material-ui/styles';
 
 import {
   StatusChip,
   SeverityCode,
   IconButton,
   useSnackbar,
-  Severity,
   copyToClipboard,
 } from '@centreon/ui';
 
@@ -44,7 +44,7 @@ interface MakeStylesProps {
 }
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
-  header: ({ displaySeverity }) => ({
+  header: ({ displaySeverity }): CreateCSSProperties<MakeStylesProps> => ({
     alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(2),
@@ -103,29 +103,23 @@ type Props = {
 const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
   const [resourceNameHovered, setResourceNameHovered] = React.useState(false);
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage, showErrorMessage } = useSnackbar();
   const classes = useStylesHeaderContent();
 
-  const hoverResourceName = () => {
+  const hoverResourceName = (): void => {
     setResourceNameHovered(true);
   };
 
-  const leaveResourceName = () => {
+  const leaveResourceName = (): void => {
     setResourceNameHovered(false);
   };
 
   const copyResourceLink = (): void => {
     try {
       copyToClipboard(window.location.href);
-      showMessage({
-        message: t(labelLinkCopied),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelLinkCopied));
     } catch (_) {
-      showMessage({
-        message: t(labelSomethingWentWrong),
-        severity: Severity.error,
-      });
+      showErrorMessage(t(labelSomethingWentWrong));
     }
   };
 
@@ -197,7 +191,7 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
             <SelectableResourceName
               name={details.parent.name}
               variant="caption"
-              onSelect={() => onSelectParent(details.parent)}
+              onSelect={(): void => onSelectParent(details.parent)}
             />
           </div>
         )}

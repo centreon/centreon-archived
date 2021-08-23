@@ -15,6 +15,7 @@ interface Props {
 
 const BaseWizard = ({ children }: Props): JSX.Element => {
   const classes = useStyles();
+
   return <div className={classes.page}>{children}</div>;
 };
 

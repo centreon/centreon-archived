@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
 import * as React from 'react';
 
 import { useSelector } from 'react-redux';
@@ -9,8 +8,6 @@ import {
   fireEvent,
   Matcher,
   act,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getByText,
 } from '@testing-library/react';
 import axios from 'axios';
 import {
@@ -31,6 +28,7 @@ import {
   isNil,
   last,
 } from 'ramda';
+import userEvent from '@testing-library/user-event';
 
 import { Column } from '@centreon/ui';
 
@@ -70,6 +68,7 @@ const appState = {
 
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
+
   return new Array(entityCount).fill(0).map((_, index) => ({
     acknowledged: index % 2 === 0,
     duration: '1m',
@@ -208,7 +207,7 @@ describe(Listing, () => {
   describe('column sorting', () => {
     afterEach(async () => {
       act(() => {
-        context.setFilter(unhandledProblemsFilter);
+        context.setCurrentFilter(unhandledProblemsFilter);
       });
 
       await waitFor(() => {
@@ -226,24 +225,36 @@ describe(Listing, () => {
       async (id, label, sortField) => {
         const { getByLabelText } = renderListing();
 
+        await waitFor(() => {
+          expect(mockedAxios.get).toHaveBeenCalled();
+        });
+
         mockedAxios.get.mockResolvedValue({ data: retrievedListing });
 
         const sortBy = (sortField || id) as string;
 
-        fireEvent.click(getByLabelText(`Column ${label}`));
+        userEvent.click(getByLabelText(`Column ${label}`));
 
         await waitFor(() => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
-            getListingEndpoint({ sort: { [sortBy]: 'desc' } }),
+            getListingEndpoint({
+              sort: { [sortBy]: 'desc' },
+              states: [],
+              statuses: [],
+            }),
             cancelTokenRequestParam,
           );
         });
 
-        fireEvent.click(getByLabelText(`Column ${label}`));
+        userEvent.click(getByLabelText(`Column ${label}`));
 
         await waitFor(() =>
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
-            getListingEndpoint({ sort: { [sortBy]: 'asc' } }),
+            getListingEndpoint({
+              sort: { [sortBy]: 'asc' },
+              states: [],
+              statuses: [],
+            }),
             cancelTokenRequestParam,
           ),
         );
@@ -442,10 +453,10 @@ describe(Listing, () => {
 
       fireEvent.click(getByTitle('Add columns').firstChild as HTMLElement);
 
-      const columnIds = find(propEq('id', columnId), columns);
-      const columnLabel = columnIds?.label as string;
+      const column = find(propEq('id', columnId), columns);
+      const columnLabel = column?.label as string;
 
-      const columnShortLabel = columnIds?.shortLabel as string;
+      const columnShortLabel = column?.shortLabel as string;
 
       const hasShortLabel = !isNil(columnShortLabel);
 
