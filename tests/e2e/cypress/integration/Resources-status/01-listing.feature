@@ -3,9 +3,6 @@ Feature: Filter a list of Resources
   I want to apply filter(s) on a list of Resources
   So that I can quickly view a specific group of these Resources
 
-  Background:
-    Given There are available resources
-
   Scenario: I first access to the page
     When I filter on unhandled problems
     Then Only non-ok resources are displayed
