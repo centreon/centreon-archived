@@ -11,7 +11,7 @@ import {
   setUserFilter,
   deleteUserFilter,
   setUserTokenApiV2,
-  resourcesMatching,
+  fixtureResourcesShouldBeDisplayed,
 } from '../../../support/centreonData';
 
 Before(() => {
@@ -23,14 +23,16 @@ Before(() => {
 });
 
 When('I filter on unhandled problems', () => cy.contains('Unhandled problems'));
-Then('Only non-ok resources are displayed', () => resourcesMatching());
+Then('Only non-ok resources are displayed', () =>
+  fixtureResourcesShouldBeDisplayed(),
+);
 
 When('I put in some criterias', () => {
   cy.get(searchInput).type(searchValue).type('{enter}');
 });
 Then(
   'only the Resources matching the selected criterias are displayed in the result',
-  () => resourcesMatching(),
+  () => fixtureResourcesShouldBeDisplayed(),
 );
 
 Given('a saved custom filter', () => {
@@ -43,7 +45,7 @@ When('I select the custom filter', () => cy.contains('E2E').click());
 
 Then(
   'only Resources matching the selected filter are displayed in the result',
-  () => resourcesMatching(),
+  () => fixtureResourcesShouldBeDisplayed(),
 );
 
 After(() => deleteUserFilter());
