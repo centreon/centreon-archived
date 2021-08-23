@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\FindMonitoringResources;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceServiceInterface;
 use Centreon\Domain\Monitoring\ResourceFilter;
 
@@ -33,6 +34,8 @@ use Centreon\Domain\Monitoring\ResourceFilter;
  */
 class FindMonitoringResources
 {
+    use LoggerTrait;
+
     /**
      * @var MonitoringResourceServiceInterface
      */
@@ -66,6 +69,15 @@ class FindMonitoringResources
     public function execute(ResourceFilter $filter): FindMonitoringResourcesResponse
     {
         $response = new FindMonitoringResourcesResponse();
+        $this->debug(
+            '[RESOURCES] Retrieving monitoring resources using filter',
+            [
+                'monitoring_resource_types' => $filter->getTypes(),
+                'monitoring_resource_statuses' => $filter->getStatuses(),
+                'monitoring_resource_states' => $filter->getStates(),
+                'monitoring_resource_monitoring_servers_ids' => $filter->getMonitoringServerIds()
+            ]
+        );
         $monitoringResources = ($this->contact->isAdmin())
             ? $this->monitoringResourceService->findAllWithoutAcl($filter)
             : $this->monitoringResourceService->findAllWithAcl($filter, $this->contact);

@@ -657,7 +657,7 @@ class AcknowledgementController extends AbstractController
     public function massDisacknowledgeResources(
         Request $request,
         MassiveDisacknowledgementValidatorInterface $massiveDisacknowledgementValidator
-    ): View {    {
+    ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
         /**
