@@ -23,20 +23,19 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator;
 
 use Centreon\Domain\Common\Assertion\Assertion;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MonitoringResourceValidatorInterface;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveDisacknowledgementValidatorInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validators;
 
-class MassiveDisacknowledgementValidator implements MassiveDisacknowledgementValidatorInterface
+class MassiveDisacknowledgementValidator implements Validators\Interfaces\MassiveDisacknowledgementValidatorInterface
 {
     /**
-     * @var MonitoringResourceValidatorInterface[] $monitoringResourceValidators
+     * @var Validators\Interfaces\MonitoringResourceValidatorInterface[] $monitoringResourceValidators
      */
     private $monitoringResourceValidators = [];
 
     /**
      * Contructor
      *
-     * @param iterable<MonitoringResourceValidatorInterface> $monitoringResourceValidators
+     * @param iterable<Validators\Interfaces\MonitoringResourceValidatorInterface> $monitoringResourceValidators
      */
     public function __construct(iterable $monitoringResourceValidators)
     {

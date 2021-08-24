@@ -27,7 +27,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceServiceInterface;
 use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource\DetailMetaServiceMonitoringResourceResponse;
+use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource as DetailMeta;
 
 /**
  * This class is designed to represent a use case to detail a service monitoring resource
@@ -78,12 +78,12 @@ class DetailMetaServiceMonitoringResource
     /**
      * Execute the use case for which this class was designed.
      *
-     * @return DetailMetaServiceMonitoringResourceResponse
+     * @return DetailMeta\DetailMetaServiceMonitoringResourceResponse
      * @throws \Centreon\Domain\Monitoring\MonitoringResource\Exception\MonitoringResourceException
      */
-    public function execute(ResourceFilter $filter): DetailMetaServiceMonitoringResourceResponse
+    public function execute(ResourceFilter $filter): DetailMeta\DetailMetaServiceMonitoringResourceResponse
     {
-        $response = new DetailMetaServiceMonitoringResourceResponse();
+        $response = new DetailMeta\DetailMetaServiceMonitoringResourceResponse();
         $monitoringResource = ($this->contact->isAdmin())
             ? $this->monitoringResourceService->findAllWithoutAcl($filter)
             : $this->monitoringResourceService->findAllWithAcl($filter, $this->contact);

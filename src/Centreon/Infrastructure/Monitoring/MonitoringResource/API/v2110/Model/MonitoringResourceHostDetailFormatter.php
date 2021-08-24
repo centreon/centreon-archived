@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Model;
 
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource\DetailHostMonitoringResourceResponse;
+use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource as DetailHost;
 use stdClass;
 
 /**
@@ -33,12 +33,12 @@ use stdClass;
 class MonitoringResourceHostDetailFormatter
 {
     /**
-     * @param DetailHostMonitoringResourceResponse $response
+     * @param DetailHost\DetailHostMonitoringResourceResponse $response
      * @param array<string, mixed> $responseLinks
      * @return \stdClass
      */
     public static function createFromResponse(
-        DetailHostMonitoringResourceResponse $response,
+        DetailHost\DetailHostMonitoringResourceResponse $response,
         array $responseLinks = []
     ): \stdClass {
         $hostMonitoringResourceDetail = $response->getHostMonitoringResourceDetail();

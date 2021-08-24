@@ -45,9 +45,9 @@ use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\FindMonitoringRe
 use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Model\MonitoringResourceHostDetailFormatter;
 use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Model\MonitoringResourceServiceDetailFormatter;
 use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Model\MonitoringResourceMetaServiceDetailFormatter;
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource\DetailHostMonitoringResource;
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource\DetailServiceMonitoringResource;
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource\DetailMetaServiceMonitoringResource;
+use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource as DetailMeta;
+use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource as DetailService;
+use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource as DetailHost;
 
 /**
  * Resource APIs for the Unified View page
@@ -127,12 +127,12 @@ class MonitoringResourceController extends AbstractController
      * Endpoint to get Host Monitoring Resource details
      *
      * @param integer $hostId
-     * @param DetailHostMonitoringResource $detailHostMonitoringResource
+     * @param DetailHost\DetailHostMonitoringResource $detailHostMonitoringResource
      * @return View
      */
     public function detailHost(
         int $hostId,
-        DetailHostMonitoringResource $detailHostMonitoringResource
+        DetailHost\DetailHostMonitoringResource $detailHostMonitoringResource
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -165,13 +165,13 @@ class MonitoringResourceController extends AbstractController
      *
      * @param int $hostId
      * @param int $serviceId
-     * @param DetailServiceMonitoringResource $detailServiceMonitoringResource
+     * @param DetailService\DetailServiceMonitoringResource $detailServiceMonitoringResource
      * @return View
      */
     public function detailService(
         int $hostId,
         int $serviceId,
-        DetailServiceMonitoringResource $detailServiceMonitoringResource
+        DetailService\DetailServiceMonitoringResource $detailServiceMonitoringResource
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -236,12 +236,12 @@ class MonitoringResourceController extends AbstractController
      * Endpoint to get Service Monitoring Resource details
      *
      * @param integer $metaId
-     * @param DetailMetaServiceMonitoringResource $detailMetaServiceMonitoringResource
+     * @param DetailMeta\DetailMetaServiceMonitoringResource $detailMetaServiceMonitoringResource
      * @return View
      */
     public function detailMetaService(
         int $metaId,
-        DetailMetaServiceMonitoringResource $detailMetaServiceMonitoringResource
+        DetailMeta\DetailMetaServiceMonitoringResource $detailMetaServiceMonitoringResource
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 

@@ -23,9 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator;
 
 use Centreon\Domain\Common\Assertion\Assertion;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MonitoringResourceValidatorInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validators;
 
-class ServiceResourceValidator implements MonitoringResourceValidatorInterface
+class ServiceResourceValidator implements Validators\Interfaces\MonitoringResourceValidatorInterface
 {
     /**
      * @var string $type Type of Monitoring Resource

@@ -107,6 +107,7 @@ class DetailServiceMonitoringResourceResponse
                 'execution_time' => $monitoringResource->getExecutionTime(),
                 'timezone' => $monitoringResource->getTimezone(),
                 'command_line' => $monitoringResource->getCommandLine(),
+                'has_graph_data' => $monitoringResource->hasGraphData()
             ];
         }
         return null;
