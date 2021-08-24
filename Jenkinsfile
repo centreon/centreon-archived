@@ -239,7 +239,7 @@ try {
       }
     }
 
-    if (env.BUILD == 'REFERENCE') {
+    if (env.BUILD == 'REFERENCE' || env.BUILD == 'QA') {
       build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
       build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
       build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
