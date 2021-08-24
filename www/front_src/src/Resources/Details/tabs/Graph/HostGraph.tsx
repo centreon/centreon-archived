@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { ListingModel, useMemoComponent, useRequest } from '@centreon/ui';
+import { ListingModel, useRequest } from '@centreon/ui';
 
 import { TabProps } from '..';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';

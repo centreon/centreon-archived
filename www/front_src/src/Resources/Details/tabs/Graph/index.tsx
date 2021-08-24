@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
-
 import { Theme, makeStyles } from '@material-ui/core';
 
 import { TabProps } from '..';

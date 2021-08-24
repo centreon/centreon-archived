@@ -622,7 +622,6 @@ describe(Details, () => {
       });
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
         expect(getByText(period) as HTMLElement).toBeEnabled();
       });
 

@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import { useRequest, ListingModel } from '@centreon/ui';
 
 import { TabProps } from '..';
