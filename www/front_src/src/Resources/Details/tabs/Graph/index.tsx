@@ -69,7 +69,7 @@ const GraphTabContent = ({
   return (
     <GraphOptionsContext.Provider value={graphOptions}>
       <div className={classes.container}>
-        {details?.type === 'service' ? (
+        {equals(details?.type, 'service') ? (
           <>
             <TimePeriodButtonGroup />
             <MousePositionContext.Provider value={mousePositionProps}>
