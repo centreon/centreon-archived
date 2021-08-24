@@ -214,9 +214,9 @@ default:
       paths: [ "%paths.base%/features/TrapsSNMPConfiguration.feature" ]
       contexts: [ TrapsSNMPConfigurationContext ]
 
-    ldap_manual_import:
-      paths: [ "%paths.base%/features/LdapManualImport.feature" ]
-      contexts: [ LdapManualImportContext ]
+    #ldap_manual_import:
+    #  paths: [ "%paths.base%/features/LdapManualImport.feature" ]
+    #  contexts: [ LdapManualImportContext ]
 
     modify_default_page_connexion:
       paths: [ "%paths.base%/features/ModifyDefaultPageConnection.feature" ]
