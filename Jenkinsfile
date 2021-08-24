@@ -443,7 +443,6 @@ try {
         error('Delivery stage failure.');
       }
     }
-  }
     if (env.BUILD == 'REFERENCE') {
       build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
       build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
