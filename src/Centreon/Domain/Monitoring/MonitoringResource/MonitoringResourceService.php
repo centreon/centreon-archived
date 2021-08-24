@@ -82,11 +82,7 @@ class MonitoringResourceService extends AbstractCentreonService implements Monit
     {
         parent::filterByContact($contact);
 
-        $accessGroups = $this->accessGroupRepository->findByContact($contact);
-
-        $this->resourceRepository
-            ->setContact($this->contact)
-            ->filterByAccessGroups($accessGroups);
+        $accessGroups = $this->accessGroupRepository->findByContact($contact);;
 
         $this->monitoringRepository
             ->setContact($this->contact)

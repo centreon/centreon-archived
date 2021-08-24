@@ -141,6 +141,7 @@ class MonitoringResourceFactoryRdb
                 ->setSeverityCode((int) $data['parent_status_severity_code']);
 
             $parent->setStatus($parentStatus);
+            $parent->setHasGraphData(false);
         }
 
         $monitoringResource->setParent($parent);

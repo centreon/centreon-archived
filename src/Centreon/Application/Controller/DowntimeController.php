@@ -41,7 +41,7 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveDowntimeValidatorInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validators;
 
 /**
  * This class is design to manage all API REST about downtime requests
@@ -639,7 +639,7 @@ class DowntimeController extends AbstractController
     public function massDowntimeResources(
         Request $request,
         SerializerInterface $serializer,
-        MassiveDowntimeValidatorInterface $massiveDowntimeValidator
+        Validators\Interfaces\MassiveDowntimeValidatorInterface $massiveDowntimeValidator
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 

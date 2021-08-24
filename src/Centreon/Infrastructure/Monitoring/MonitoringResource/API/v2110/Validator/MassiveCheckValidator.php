@@ -23,20 +23,19 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator;
 
 use Centreon\Domain\Common\Assertion\Assertion;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveCheckValidatorInterface;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MonitoringResourceValidatorInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validator;
 
-class MassiveCheckValidator implements MassiveCheckValidatorInterface
+class MassiveCheckValidator implements Validator\Interfaces\MassiveCheckValidatorInterface
 {
     /**
-     * @var MonitoringResourceValidatorInterface[] $monitoringResourceValidators
+     * @var Validator\Interfaces\MonitoringResourceValidatorInterface[] $monitoringResourceValidators
      */
     private $monitoringResourceValidators = [];
 
     /**
      * Constructor of MassiveCheckValidator
      *
-     * @param iterable<MonitoringResourceValidatorInterface> $monitoringResourceValidators
+     * @param iterable<Validator\Interfaces\MonitoringResourceValidatorInterface> $monitoringResourceValidators
      */
     public function __construct(iterable $monitoringResourceValidators)
     {

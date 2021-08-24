@@ -23,20 +23,19 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator;
 
 use Centreon\Domain\Common\Assertion\Assertion;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveDowntimeValidatorInterface;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MonitoringResourceValidatorInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validators;
 
-class MassiveDowntimeValidator implements MassiveDowntimeValidatorInterface
+class MassiveDowntimeValidator implements Validators\Interfaces\MassiveDowntimeValidatorInterface
 {
     /**
-     * @var MonitoringResourceValidatorInterface[] $monitoringResourceValidators
+     * @var Validators\Interfaces\MonitoringResourceValidatorInterface[] $monitoringResourceValidators
      */
     private $monitoringResourceValidators = [];
 
     /**
      * Constructor
      *
-     * @param iterable<MonitoringResourceValidatorInterface> $monitoringResourceValidators
+     * @param iterable<Validators\Interfaces\MonitoringResourceValidatorInterface> $monitoringResourceValidators
      */
     public function __construct(iterable $monitoringResourceValidators)
     {

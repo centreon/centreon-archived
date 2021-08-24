@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Context\Context;
 use Centreon\Domain\Contact\Contact;
@@ -39,8 +38,7 @@ use Centreon\Domain\Acknowledgement\AcknowledgementException;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveAcknowledgementValidatorInterface;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveDisacknowledgementValidatorInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validators;
 
 /**
  * Used to manage all requests of hosts acknowledgements
@@ -656,7 +654,7 @@ class AcknowledgementController extends AbstractController
      */
     public function massDisacknowledgeResources(
         Request $request,
-        MassiveDisacknowledgementValidatorInterface $massiveDisacknowledgementValidator
+        Validators\Interfaces\MassiveDisacknowledgementValidatorInterface $massiveDisacknowledgementValidator
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
@@ -727,7 +725,7 @@ class AcknowledgementController extends AbstractController
     public function massAcknowledgeResources(
         Request $request,
         SerializerInterface $serializer,
-        MassiveAcknowledgementValidatorInterface $massiveAcknowledgementValidator
+        Validators\Interfaces\MassiveAcknowledgementValidatorInterface $massiveAcknowledgementValidator
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 

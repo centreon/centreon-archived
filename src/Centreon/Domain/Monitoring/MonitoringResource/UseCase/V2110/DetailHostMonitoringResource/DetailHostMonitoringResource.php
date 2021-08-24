@@ -27,7 +27,7 @@ use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceServiceInterface;
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource\DetailHostMonitoringResourceResponse;
+use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource as DetailHost;
 
 /**
  * This class is designed to represent a use case to detail a host monitoring resource
@@ -71,12 +71,12 @@ class DetailHostMonitoringResource
     /**
      * Execute the use case for which this class was designed.
      *
-     * @return DetailHostMonitoringResourceResponse
+     * @return DetailHost\DetailHostMonitoringResourceResponse
      * @throws \Centreon\Domain\Monitoring\MonitoringResource\Exception\MonitoringResourceException
      */
-    public function execute(ResourceFilter $filter): DetailHostMonitoringResourceResponse
+    public function execute(ResourceFilter $filter): DetailHost\DetailHostMonitoringResourceResponse
     {
-        $response = new DetailHostMonitoringResourceResponse();
+        $response = new DetailHost\DetailHostMonitoringResourceResponse();
         $monitoringResource = ($this->contact->isAdmin())
             ? $this->monitoringResourceService->findAllWithoutAcl($filter)
             : $this->monitoringResourceService->findAllWithAcl($filter, $this->contact);

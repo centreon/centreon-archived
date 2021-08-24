@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Model;
 
 use stdClass;
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource\DetailMetaServiceMonitoringResourceResponse;
+use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource as DetailMeta;
 
 /**
  * This class is designed to create the MonitoringResourceV2110 entity
@@ -33,12 +33,12 @@ use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServic
 class MonitoringResourceMetaServiceDetailFormatter
 {
     /**
-     * @param DetailMetaServiceMonitoringResourceResponse $response
+     * @param DetailMeta\DetailMetaServiceMonitoringResourceResponse $response
      * @param array<string, mixed> $responseLinks
      * @return \stdClass
      */
     public static function createFromResponse(
-        DetailMetaServiceMonitoringResourceResponse $response,
+        DetailMeta\DetailMetaServiceMonitoringResourceResponse $response,
         array $responseLinks = []
     ): \stdClass {
         $metaServiceMonitoringResourceDetail = $response->getMetaServiceMonitoringResourceDetail();
