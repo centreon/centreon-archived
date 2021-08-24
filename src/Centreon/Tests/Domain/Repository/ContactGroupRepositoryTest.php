@@ -108,11 +108,16 @@ class ContactGroupRepositoryTest extends TestCase
     public function testGetPaginationList()
     {
         $result = $this->repository->getPaginationList();
+        $contactGroup = new ContactGroup();
+        if (array_key_exists('cg_id', $result[0]) && array_key_exists('cg_name', $result[0])) {
+            $contactGroup->setCgId($result[0]['cg_id']);
+            $contactGroup->setCgName($result[0]['cg_name']);
+        }
         $data = $this->datasets[0]['data'][0];
-        $entity = new ContactGroup();
-        $entity->setCgId($data['cg_id']);
-        $entity->setCgName($data['cg_name']);
-        $this->assertEquals([$entity], $result);
+        $expectedContactGroup = new ContactGroup();
+        $expectedContactGroup->setCgId($data['cg_id']);
+        $expectedContactGroup->setCgName($data['cg_name']);
+        $this->assertEquals([$expectedContactGroup], [$contactGroup]);
     }
 
     /**
@@ -128,11 +133,17 @@ class ContactGroupRepositoryTest extends TestCase
         $offset = 0;
         $result = $this->repository
             ->getPaginationList($filters, $limit, $offset, ['field' => 'cg_name', 'order' => 'ASC']);
+        $contactGroup = new ContactGroup();
+        if (array_key_exists('cg_id', $result[0]) && array_key_exists('cg_name', $result[0])) {
+            $contactGroup->setCgId($result[0]['cg_id']);
+            $contactGroup->setCgName($result[0]['cg_name']);
+        }
+
         $data = $this->datasets[1]['data'][0];
-        $entity = new ContactGroup();
-        $entity->setCgId($data['cg_id']);
-        $entity->setCgName($data['cg_name']);
-        $this->assertEquals([$entity], $result);
+        $expectedContactGroup = new ContactGroup();
+        $expectedContactGroup->setCgId($data['cg_id']);
+        $expectedContactGroup->setCgName($data['cg_name']);
+        $this->assertEquals([$expectedContactGroup], [$contactGroup]);
     }
 
     /**
