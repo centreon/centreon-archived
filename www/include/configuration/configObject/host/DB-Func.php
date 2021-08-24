@@ -2570,8 +2570,8 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_register':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1', '2', '3'])
-                        ? $inputValue[$inputName]
+                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1', '2', '3'])
+                        ? $inputValue
                         : null
                 ];
                 break;
