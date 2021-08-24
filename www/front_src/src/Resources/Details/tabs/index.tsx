@@ -58,7 +58,7 @@ const tabs: Array<Tab> = [
         return false;
       }
 
-      if (details.type === 'host') {
+      if (equals(details.type, 'host')){
         return true;
       }
 
