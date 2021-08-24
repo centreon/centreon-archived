@@ -1143,7 +1143,7 @@ describe(Details, () => {
     });
   });
 
-  it('displays the linked service graphs when the graph tab of a host is clicked', async () => {
+  it('displays the linked service graphs when the Graph tab of a host is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
