@@ -133,9 +133,10 @@ default:
       paths: [ "%paths.base%/features/BrokerConfiguration.feature" ]
       contexts: [ BrokerConfigurationContext ]
 
-    ldap:
-      paths: [ "%paths.base%/features/Ldap.feature" ]
-      contexts: [ LdapContext ]
+    ##FIXME
+    #ldap:
+    #  paths: [ "%paths.base%/features/Ldap.feature" ]
+    #  contexts: [ LdapContext ]
 
     custom_views_locked:
       paths: [ "%paths.base%/features/CustomViews/Locked.feature" ]
