@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { compose, equals, pipe, prop } from 'ramda';
+
 import { Theme, makeStyles } from '@material-ui/core';
 
 import { TabProps } from '..';
@@ -64,10 +66,12 @@ const GraphTabContent = ({
     options: tabParameters.graph?.options,
   });
 
+  const isService = equals('service', details?.type);
+
   return (
     <GraphOptionsContext.Provider value={graphOptions}>
       <div className={classes.container}>
-        {equals(details?.type, 'service') ? (
+        {isService ? (
           <>
             <TimePeriodButtonGroup />
             <MousePositionContext.Provider value={mousePositionProps}>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, find, propEq, invertObj, path } from 'ramda';
+import { isNil, find, propEq, invertObj, path, equals } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -58,7 +58,7 @@ const tabs: Array<Tab> = [
         return false;
       }
 
-      if (equals(details.type, 'host')){
+      if (equals(details.type, 'host')) {
         return true;
       }
 
