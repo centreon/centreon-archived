@@ -58,6 +58,10 @@ const tabs: Array<Tab> = [
         return false;
       }
 
+      if (details.type === 'host') {
+        return true;
+      }
+
       return !isNil(path(['links', 'endpoints', 'performance_graph'], details));
     },
     id: graphTabId,

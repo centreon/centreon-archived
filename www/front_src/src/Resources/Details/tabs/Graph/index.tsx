@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { isNil } from 'ramda';
+
 import { Theme, makeStyles } from '@material-ui/core';
 
 import { TabProps } from '..';
@@ -14,6 +16,8 @@ import useGraphOptions, {
 import useMousePosition, {
   MousePositionContext,
 } from '../../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
+
+import HostGraph from './HostGraph';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -65,13 +69,19 @@ const GraphTabContent = ({
   return (
     <GraphOptionsContext.Provider value={graphOptions}>
       <div className={classes.container}>
-        <TimePeriodButtonGroup />
-        <MousePositionContext.Provider value={mousePositionProps}>
-          <ExportablePerformanceGraphWithTimeline
-            graphHeight={280}
-            resource={details}
-          />
-        </MousePositionContext.Provider>
+        {details?.type === 'service' ? (
+          <>
+            <TimePeriodButtonGroup />
+            <MousePositionContext.Provider value={mousePositionProps}>
+              <ExportablePerformanceGraphWithTimeline
+                graphHeight={280}
+                resource={details}
+              />
+            </MousePositionContext.Provider>
+          </>
+        ) : (
+          <HostGraph details={details} />
+        )}
       </div>
     </GraphOptionsContext.Provider>
   );
