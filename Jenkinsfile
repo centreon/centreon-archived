@@ -180,7 +180,7 @@ stage('Source') {
       grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \\;"
     }
     featureFiles = sh(
-      script: "find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
+      script: "rm centreon-web/features/Ldap*.feature && find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
       returnStdout: true
     ).split()
   }
