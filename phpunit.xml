@@ -23,6 +23,13 @@
     <const name="_CENTREON_PATH_" value="./"/>
     <const name="_CENTREON_ETC_" value="./"/>
     <const name="_CENTREON_CACHEDIR_" value="./"/>
+    <const name="hostCentreon" value="localhost"/>
+    <const name="hostCentstorage" value="localhost"/>
+    <const name="password" value=""/>
+    <const name="user" value="centreon" />
+    <const name="db" value="centreon" />
+    <const name="dbcstg" value="centreon_storage" />
+    <const name="port" value="3306" />
     <server name="KERNEL_CLASS" value="App\Kernel"/>
     <!-- ###+ symfony/framework-bundle ### -->
     <env name="APP_ENV" value="test"/>
