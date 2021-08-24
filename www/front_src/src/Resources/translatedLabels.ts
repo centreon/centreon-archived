@@ -227,3 +227,4 @@ export const labelLastWeek = 'Last week';
 export const labelLastMonth = 'Last month';
 export const labelLastYear = 'Last year';
 export const labelBeforeLastYear = 'Before last year';
+export const labelServiceGraphs = 'Service graphs';
