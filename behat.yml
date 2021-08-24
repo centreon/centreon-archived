@@ -133,9 +133,10 @@ default:
       paths: [ "%paths.base%/features/BrokerConfiguration.feature" ]
       contexts: [ BrokerConfigurationContext ]
 
-    ldap:
-      paths: [ "%paths.base%/features/Ldap.feature" ]
-      contexts: [ LdapContext ]
+    ##FIXME
+    #ldap:
+    #  paths: [ "%paths.base%/features/Ldap.feature" ]
+    #  contexts: [ LdapContext ]
 
     custom_views_locked:
       paths: [ "%paths.base%/features/CustomViews/Locked.feature" ]
@@ -213,9 +214,9 @@ default:
       paths: [ "%paths.base%/features/TrapsSNMPConfiguration.feature" ]
       contexts: [ TrapsSNMPConfigurationContext ]
 
-    ldap_manual_import:
-      paths: [ "%paths.base%/features/LdapManualImport.feature" ]
-      contexts: [ LdapManualImportContext ]
+    #ldap_manual_import:
+    #  paths: [ "%paths.base%/features/LdapManualImport.feature" ]
+    #  contexts: [ LdapManualImportContext ]
 
     modify_default_page_connexion:
       paths: [ "%paths.base%/features/ModifyDefaultPageConnection.feature" ]
