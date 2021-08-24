@@ -16222,3 +16222,6 @@ msgstr "Options de recherche"
 
 msgid "The parameter \"%s\" must be an integer"
 msgstr "Le paramètre \"%s\" doit être un entier"
+
+msgid "Service graphs"
+msgstr "Graphiques de services"
