@@ -19,7 +19,7 @@
 	</ul>
     <div id="validFormTop">
 	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">
+	    <p class="oreonbutton">
             {if isset($form.submitC)}
                 {$form.submitC.html}
             {else}

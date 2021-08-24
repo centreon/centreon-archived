@@ -3,11 +3,11 @@
 	{if isset($pagePrev)}&nbsp;<a href="{$pagePrev}{if isset($host_name)}&host_name={$host_name}{/if}"><img src="./img/icons/rewind.png" title='{$previous}'></a>{/if}
 	{if isset($pageArr)}
 		{foreach key=key item=item from=$pageArr }
-		{if $pageArr[$key].num != $num}
-		&nbsp;<a href="{$pageArr[$key].url_page}{if isset($host_name)}&host_name={$host_name}{/if}" class="otherPageNumber">{$pageArr[$key].label_page}</a>
-		{else}
-		&nbsp;<b class="currentPageNumber">{$pageArr[$key].label_page}</b>
-		{/if}
+			{if $pageArr[$key].num != $num}
+				&nbsp;<a href="{$pageArr[$key].url_page}{if isset($host_name)}&host_name={$host_name}{/if}" class="otherPageNumber">{$pageArr[$key].label_page}</a>
+			{else}
+				&nbsp;<b class="currentPageNumber">{$pageArr[$key].label_page}</b>
+			{/if}
 		{/foreach}
 	{/if}
 	{if isset($pageNext)}&nbsp;<a href="{$pageNext}{if isset($host_name)}&host_name={$host_name}{/if}"><img src="./img/icons/fast_forward.png" title='{$next}'></a>{/if}
