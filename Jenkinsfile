@@ -48,7 +48,7 @@ stage('Source') {
       reportTitles: ''
     ])
     apiFeatureFiles = sh(script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
-    featureFiles = sh(script: 'find centreon-web/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
+    featureFiles = sh(script: 'sudo rm -rf Ldap*.feature && find centreon-web/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
   }
 }
 
