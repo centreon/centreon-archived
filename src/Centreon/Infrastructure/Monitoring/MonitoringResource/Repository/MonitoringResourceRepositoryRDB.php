@@ -27,6 +27,7 @@ use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
@@ -44,6 +45,8 @@ use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Model\Monit
  */
 final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implements MonitoringResourceRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @var SqlRequestParametersTranslator
      */
@@ -156,6 +159,7 @@ final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implem
      */
     private function findAllRequest(ResourceFilter $filter, array $accessGroups): array
     {
+        $this->info('Finding resources');
         $monitoringResources = [];
 
         $collector = new StatementCollector();
@@ -275,6 +279,14 @@ final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implem
             (int) $this->db->query('SELECT FOUND_ROWS()')->fetchColumn()
         );
 
+        $this->debug(
+            'Number of resources found',
+            [
+                'number' => $this->sqlRequestTranslator->getRequestParameters()->getTotal()
+            ]
+        );
+
+        $this->debug('Creating MonitoringResource entities');
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $monitoringResources[] = MonitoringResourceFactoryRdb::create($record);
         }

@@ -95,7 +95,7 @@ class FindMonitoringResourcesResponse
                 'status' => $this->statusToArray($monitoringResource->getStatus()),
                 'tries' => $monitoringResource->getTries(),
                 'duration' => $monitoringResource->getDuration(),
-                'links' => $this->linksToArray($monitoringResource->getLinks()),
+                'links' => $this->linksToArray($monitoringResource->getLinks())
             ];
         }
         return null;

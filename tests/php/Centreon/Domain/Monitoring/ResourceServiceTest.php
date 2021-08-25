@@ -23,11 +23,13 @@ namespace Tests\Centreon\Domain\Monitoring;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\Monitoring\MonitoringResource\MonitoringResourceService;
 use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceRepositoryInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\MonitoringResourceRepositoryRDB;
 
 class ResourceServiceTest extends TestCase
 {
@@ -52,10 +54,13 @@ class ResourceServiceTest extends TestCase
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
 
+        $monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
+
         $resourceService = new MonitoringResourceService(
             $monitoringResourceRepository,
             $contact,
-            $accessGroup
+            $accessGroup,
+            $monitoringRepository
         );
 
         $resourcesFound = $resourceService->findAllWithoutAcl(new ResourceFilter());

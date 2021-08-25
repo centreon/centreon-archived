@@ -211,49 +211,46 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildHostDetailsUri
      */
-/*     public function testBuildHostDetailsUri()
+    public function testBuildHostDetailsUri()
     {
         $resourceController = new MonitoringResourceController(
-            $this->monitoringService,
-            $this->resourceService,
             $this->urlGenerator,
-            $this->iconUrlNormalizer
+            $this->iconUrlNormalizer,
+            $this->monitoringService
         );
 
         $this->assertEquals(
             urldecode($resourceController->buildHostDetailsUri(1)),
             '/monitoring/resources?details={"type":"host","id":1,"tab":"details","uuid":"h1"}'
         );
-    } */
+    }
 
     /**
      * test buildHostUri
      */
- /*    public function testBuildHostUri()
+    public function testBuildHostUri()
     {
         $resourceController = new MonitoringResourceController(
-            $this->monitoringService,
-            $this->resourceService,
             $this->urlGenerator,
-            $this->iconUrlNormalizer
+            $this->iconUrlNormalizer,
+            $this->monitoringService
         );
 
         $this->assertEquals(
             urldecode($resourceController->buildHostUri(1, 'graph')),
             '/monitoring/resources?details={"type":"host","id":1,"tab":"graph","uuid":"h1"}'
         );
-    } */
+    }
 
     /**
      * test buildServiceDetailsUri
      */
-/*     public function testBuildServiceDetailsUri()
+    public function testBuildServiceDetailsUri()
     {
         $resourceController = new MonitoringResourceController(
-            $this->monitoringService,
-            $this->resourceService,
             $this->urlGenerator,
-            $this->iconUrlNormalizer
+            $this->iconUrlNormalizer,
+            $this->monitoringService
         );
 
         $this->assertEquals(
@@ -261,18 +258,17 @@ class MonitoringResourceControllerTest extends TestCase
             '/monitoring/resources?details=' .
             '{"parentType":"host","parentId":1,"type":"service","id":2,"tab":"details","uuid":"s2"}'
         );
-    } */
+    }
 
     /**
      * test buildServiceUri
      */
- /*  public function testBuildServiceUri()
+  public function testBuildServiceUri()
      {
         $resourceController = new MonitoringResourceController(
-            $this->monitoringService,
-            $this->resourceService,
             $this->urlGenerator,
-            $this->iconUrlNormalizer
+            $this->iconUrlNormalizer,
+            $this->monitoringService
         );
 
         $this->assertEquals(
@@ -280,5 +276,5 @@ class MonitoringResourceControllerTest extends TestCase
             '/monitoring/resources?details=' .
             '{"parentType":"host","parentId":1,"type":"service","id":2,"tab":"timeline","uuid":"s2"}'
         );
-    } */
+    }
 }
