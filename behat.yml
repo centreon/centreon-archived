@@ -206,9 +206,9 @@ default:
       contexts:
         - LanguageSelectionContext
 
-    ldap_configuration:
-      paths: [ "%paths.base%/features/LdapConfiguration.feature" ]
-      contexts: [ LdapConfigurationContext ]
+    #ldap_configuration:
+    #  paths: [ "%paths.base%/features/LdapConfiguration.feature" ]
+    #  contexts: [ LdapConfigurationContext ]
 
     traps_snmp_configuration:
       paths: [ "%paths.base%/features/TrapsSNMPConfiguration.feature" ]
