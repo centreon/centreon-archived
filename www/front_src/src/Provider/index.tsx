@@ -40,6 +40,7 @@ import {
   userEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
+import { userDecoder } from './decoder';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -63,6 +64,7 @@ const AppProvider = (): JSX.Element | null => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
+    decoder: userDecoder,
     request: getData,
   });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
@@ -110,6 +112,7 @@ const AppProvider = (): JSX.Element | null => {
         ]) => {
           setUser({
             alias: retrievedUser.alias,
+            isExportButtonEnabled: retrievedUser.isExportButtonEnabled,
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
             timezone: retrievedUser.timezone,
