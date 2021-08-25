@@ -15,7 +15,7 @@ parameters:
     api.version.latest: "21.10"
     debug_log_file: '%log_path%/centreon-web.log'
     debug_level: "%env(DEBUG_LEVEL)%"
-    env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
+    env(DEBUG_LEVEL): "100"
 
 services:
     _defaults:
