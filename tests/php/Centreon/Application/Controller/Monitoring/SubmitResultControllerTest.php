@@ -36,19 +36,55 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class SubmitResultControllerTest extends TestCase
 {
-    protected $adminContact;
-    protected $hostResource;
-    protected $serviceResource;
-    protected $correctJsonSubmitResult;
-    protected $wrongJsonSubmitResult;
-    protected $hostSubmitResultJson;
-    protected $serviceSubmitResultJson;
-    protected $serviceResult;
-    protected $submitResultService;
+    /**
+     * @var Contact
+     */
+    private $adminContact;
 
-    protected $container;
+    /**
+     * @var MonitoringResource
+     */
+    private $hostResource;
 
-    protected $request;
+    /**
+     * @var MonitoringResource
+     */
+    private $serviceResource;
+
+    /**
+     * @var string|false
+     */
+    private $correctJsonSubmitResult;
+
+    /**
+     * @var string|false
+     */
+    private $wrongJsonSubmitResult;
+
+    /**
+     * @var string|false
+     */
+    private $hostSubmitResultJson;
+
+    /**
+     * @var string|false
+     */
+    private $serviceSubmitResultJson;
+
+    /**
+     * @var SubmitResultService&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $submitResultService;
+
+    /**
+     * @var ContainerInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $container;
+
+    /**
+     * @var Request&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $request;
 
     protected function setUp(): void
     {
@@ -149,7 +185,7 @@ class SubmitResultControllerTest extends TestCase
                 $authorizationChecker,
                 $tokenStorage,
                 new class () {
-                    public function get()
+                    public function get(): string
                     {
                         return __DIR__ . '/../../../../../';
                     }
@@ -162,7 +198,7 @@ class SubmitResultControllerTest extends TestCase
     /**
      * Testing wrongly formatted JSON POST data for submitResultResources
      */
-    public function testSubmitResultResourcesBadJsonFormat()
+    public function testSubmitResultResourcesBadJsonFormat(): void
     {
         $submitResultController = new SubmitResultController($this->submitResultService);
         $submitResultController->setContainer($this->container);
@@ -178,7 +214,7 @@ class SubmitResultControllerTest extends TestCase
     /**
      * Testing with wrong property added to the POST JSON for submitResultResources
      */
-    public function testSubmitResultResourcesBadJsonProperties()
+    public function testSubmitResultResourcesBadJsonProperties(): void
     {
         $submitResultController = new SubmitResultController($this->submitResultService);
         $submitResultController->setContainer($this->container);
@@ -193,7 +229,7 @@ class SubmitResultControllerTest extends TestCase
     /**
      * Testing with a correct JSON POST data and successful submit for submitResultResources
      */
-    public function testSubmitResultResourcesSuccess()
+    public function testSubmitResultResourcesSuccess(): void
     {
         $this->submitResultService->expects($this->any())
             ->method('filterByContact')
@@ -213,7 +249,7 @@ class SubmitResultControllerTest extends TestCase
     /**
      * Tesring with wrongly formatted JSON POST data for submitResultHost
      */
-    public function testSubmitResultHostBadJsonFormat()
+    public function testSubmitResultHostBadJsonFormat(): void
     {
         $submitResultController = new SubmitResultController($this->submitResultService);
         $submitResultController->setContainer($this->container);
@@ -228,7 +264,7 @@ class SubmitResultControllerTest extends TestCase
     /**
      * Testing with wrong property added to the POST JSON for submitResultHost
      */
-    public function testSubmitResultHostBadJsonProperties()
+    public function testSubmitResultHostBadJsonProperties(): void
     {
         $submitResultController = new SubmitResultController($this->submitResultService);
         $submitResultController->setContainer($this->container);
@@ -243,7 +279,7 @@ class SubmitResultControllerTest extends TestCase
     /**
      * Testing with a correct JSON POST data and successful submit for submitResultHost
      */
-    public function testSubmitResultHostSuccess()
+    public function testSubmitResultHostSuccess(): void
     {
         $this->submitResultService->expects($this->any())
         ->method('filterByContact')
@@ -263,7 +299,7 @@ class SubmitResultControllerTest extends TestCase
     /**
      * Tesring with wrongly formatted JSON POST data for submitResultService
      */
-    public function testSubmitResultServiceBadJsonFormat()
+    public function testSubmitResultServiceBadJsonFormat(): void
     {
         $submitResultController = new SubmitResultController($this->submitResultService);
         $submitResultController->setContainer($this->container);
@@ -282,7 +318,7 @@ class SubmitResultControllerTest extends TestCase
     /**
      * Testing with wrong property added to the POST JSON for submitResultService
      */
-    public function testSubmitResultServiceBadJsonProperties()
+    public function testSubmitResultServiceBadJsonProperties(): void
     {
         $submitResultController = new SubmitResultController($this->submitResultService);
         $submitResultController->setContainer($this->container);
@@ -301,7 +337,7 @@ class SubmitResultControllerTest extends TestCase
     /**
      * Testing with a correct JSON POST data and successful submit for submitResultService
      */
-    public function testSubmitResultServiceSuccess()
+    public function testSubmitResultServiceSuccess(): void
     {
         $this->submitResultService->expects($this->any())
             ->method('filterByContact')
