@@ -71,27 +71,27 @@ class AcknowledgementServiceTest extends TestCase
     private $serviceAcknowledgement;
 
     /**
-     * @var AcknowledgementRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var AcknowledgementRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $acknowledgementRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var AccessGroupRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $accessGroupRepository;
 
     /**
-     * @var MonitoringRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var MonitoringRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $monitoringRepository;
 
     /**
-     * @var EngineServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var EngineServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $engineService;
 
     /**
-     * @var EntityValidator&\PHPUnit\Framework\MockObject\MockObject
+     * @var EntityValidator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $entityValidator;
 
@@ -324,7 +324,7 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
-	    /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore-next-line */
         $this->assertNull($acknowledgementService->addHostAcknowledgement($this->hostAcknowledgement));
     }
 
@@ -426,7 +426,7 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
-	    /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore-next-line */
         $this->assertNull($acknowledgementService->addServiceAcknowledgement($this->serviceAcknowledgement));
     }
 
@@ -604,7 +604,7 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
-	    /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore-next-line */
         $this->assertNull($acknowledgementService->disacknowledgeHost(1));
     }
 
@@ -707,7 +707,7 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
-	    /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore-next-line */
         $this->assertNull($acknowledgementService->disacknowledgeService(1, 1));
     }
 }

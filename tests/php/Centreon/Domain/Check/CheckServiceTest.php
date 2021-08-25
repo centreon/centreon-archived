@@ -80,22 +80,22 @@ class CheckServiceTest extends TestCase
     private $serviceResource;
 
     /**
-     * @var AccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var AccessGroupRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $accessGroupRepository;
 
     /**
-     * @var MonitoringRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var MonitoringRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $monitoringRepository;
 
     /**
-     * @var EngineServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var EngineServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $engineService;
 
     /**
-     * @var EntityValidator&\PHPUnit\Framework\MockObject\MockObject
+     * @var EntityValidator|\PHPUnit\Framework\MockObject\MockObject
      */
     private $entityValidator;
 

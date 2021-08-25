@@ -72,17 +72,17 @@ class SubmitResultControllerTest extends TestCase
     private $serviceSubmitResultJson;
 
     /**
-     * @var SubmitResultService&\PHPUnit\Framework\MockObject\MockObject
+     * @var SubmitResultService|\PHPUnit\Framework\MockObject\MockObject
      */
     private $submitResultService;
 
     /**
-     * @var ContainerInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ContainerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $container;
 
     /**
-     * @var Request&\PHPUnit\Framework\MockObject\MockObject
+     * @var Request|\PHPUnit\Framework\MockObject\MockObject
      */
     private $request;
 
