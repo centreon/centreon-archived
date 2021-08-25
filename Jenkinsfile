@@ -351,60 +351,60 @@ try {
     }
   }
 
-  if (isStableBuild()) {
-    stage('API integration tests') {
-      if (hasBackendChanges) {
-        def parallelSteps = [:]
-        for (x in apiFeatureFiles) {
-          def feature = x
-          parallelSteps[feature] = {
-            node {
-              checkoutCentreonBuild(buildBranch)
-              unstash 'tar-sources'
-              unstash 'vendor'
-              def acceptanceStatus = sh(
-                script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
-                returnStatus: true
-              )
-              junit 'xunit-reports/**/*.xml'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-                currentBuild.result = 'FAILURE'
-              archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
-            }
-          }
-        }
-        parallel parallelSteps
-        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error('API integration tests stage failure.');
-        }
-      }
-    }
-
-    stage('E2E tests') {
+  stage('API integration tests') {
+    if (hasBackendChanges) {
       def parallelSteps = [:]
-      for (x in e2eFeatureFiles) {
+      for (x in apiFeatureFiles) {
         def feature = x
         parallelSteps[feature] = {
           node {
             checkoutCentreonBuild(buildBranch)
             unstash 'tar-sources'
-            unstash 'cypress-node-modules'
-            timeout(time: 10, unit: 'MINUTES') {
-            def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
-            junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
+            unstash 'vendor'
+            def acceptanceStatus = sh(
+              script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
+              returnStatus: true
+            )
+            junit 'xunit-reports/**/*.xml'
             if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
               currentBuild.result = 'FAILURE'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
-            }
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
           }
         }
       }
       parallel parallelSteps
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('E2E tests stage failure.');
+        error('API integration tests stage failure.');
       }
     }
+  }
 
+  stage('E2E tests') {
+    def parallelSteps = [:]
+    for (x in e2eFeatureFiles) {
+      def feature = x
+      parallelSteps[feature] = {
+        node {
+          checkoutCentreonBuild(buildBranch)
+          unstash 'tar-sources'
+          unstash 'cypress-node-modules'
+          timeout(time: 10, unit: 'MINUTES') {
+          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
+          junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
+          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+            currentBuild.result = 'FAILURE'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
+          }
+        }
+      }
+    }
+    parallel parallelSteps
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('E2E tests stage failure.');
+    }
+  }
+  
+  if (isStableBuild()) {
     stage('Acceptance tests') {
       if (hasBackendChanges || hasFrontendChanges) {
         def parallelSteps = [:]
