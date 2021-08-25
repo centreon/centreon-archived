@@ -25,6 +25,7 @@ namespace Centreon\Domain\Monitoring\MonitoringResource;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
@@ -39,6 +40,8 @@ use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceR
  */
 class MonitoringResourceService extends AbstractCentreonService implements MonitoringResourceServiceInterface
 {
+    use LoggerTrait;
+
     /**
      * @var MonitoringResourceRepositoryInterface
      */
@@ -96,8 +99,17 @@ class MonitoringResourceService extends AbstractCentreonService implements Monit
      */
     public function findAllWithAcl(ResourceFilter $filter, ContactInterface $contact): array
     {
+        $this->info('Finding resources with connected user and provided filter');
+
         try {
             $accessGroups = $this->accessGroupRepository->findByContact($contact);
+            $this->debug(
+                'Retrieving resources using contact',
+                [
+                    'username' => $contact->getName(),
+                    'access_groups' => $accessGroups
+                ]
+            );
             return $this->monitoringResourceRepository->findAllByAccessGroups($filter, $accessGroups);
         } catch (\Throwable $ex) {
             throw MonitoringResourceException::findMonitoringResourcesException($ex);
@@ -109,6 +121,8 @@ class MonitoringResourceService extends AbstractCentreonService implements Monit
      */
     public function findAllWithoutAcl(ResourceFilter $filter): array
     {
+        $this->info('Finding resources with user admin and provided filter');
+
         try {
             return $this->monitoringResourceRepository->findAll($filter);
         } catch (\Throwable $ex) {

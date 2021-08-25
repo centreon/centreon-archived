@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Application\Normalizer\IconUrlNormalizer;
+use Centreon\Domain\Log\LoggerTrait;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
@@ -56,6 +57,8 @@ use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonito
  */
 class MonitoringResourceController extends AbstractController
 {
+    use LoggerTrait;
+
     /**
      * List of external parameters for list action
      *
@@ -175,6 +178,9 @@ class MonitoringResourceController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        $this->info('Getting detailed information for selected MetaService');
+        $this->debug('Selected service', ['hostId' => $hostId, 'serviceId' => $serviceId]);
+
         /**
          * @var Contact $contact
          */
@@ -182,15 +188,16 @@ class MonitoringResourceController extends AbstractController
 
         // Create a specific filter to only get the monitoring resource
         $filter = (new ResourceFilter())
-            ->setTypes([ResourceFilter::TYPE_SERVICE])
-            ->setHostIds([$hostId])
-            ->setServiceIds([$serviceId]);
+        ->setTypes([ResourceFilter::TYPE_SERVICE])
+        ->setHostIds([$hostId])
+        ->setServiceIds([$serviceId]);
 
         // Use case to get details of the monitoring resource
         $response = $detailServiceMonitoringResource->execute($filter);
 
         $serviceMonitoringResource = $response->getServiceMonitoringResourceDetail();
 
+        $this->info('Generating HyperMedias for the resource found');
         // Add Links to the monitoring resource
         $serviceMonitoringResourceLinks = $this->generateMonitoringResourceLinks(
             $serviceMonitoringResource,
@@ -205,6 +212,7 @@ class MonitoringResourceController extends AbstractController
             );
         }
 
+        $this->info('Hiding passwords in the command line found');
         // Hide password in commandLine
         if (
             $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND) ||
@@ -227,6 +235,7 @@ class MonitoringResourceController extends AbstractController
             $serviceMonitoringResource['command_line'] = null;
         }
 
+        $this->info('Formatting API response and retrieving data');
         return $this->view(
             MonitoringResourceServiceDetailFormatter::createFromResponse($response, $serviceMonitoringResourceLinks)
         );
@@ -245,6 +254,9 @@ class MonitoringResourceController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        $this->info('Getting detailed information for selected MetaService');
+        $this->debug('Selected MetaService', ['metaId' => $metaId]);
+
         /**
          * @var Contact $contact
          */
@@ -260,12 +272,14 @@ class MonitoringResourceController extends AbstractController
 
         $metaServiceMonitoringResource = $response->getMetaServiceMonitoringResourceDetail();
 
+        $this->info('Generating HyperMedias for the resource found');
         // Add Links to the monitoring resource
         $metaServiceMonitoringResourceLinks = $this->generateMonitoringResourceLinks(
             $metaServiceMonitoringResource,
             $contact
         );
 
+        $this->info('Formatting API response and retrieving data');
         return $this->view(
             MonitoringResourceMetaServiceDetailFormatter::createFromResponse(
                 $response,
@@ -341,8 +355,12 @@ class MonitoringResourceController extends AbstractController
             'json'
         );
 
+        $this->info('Filter correctly formatted and processed');
+        $this->debug('Content of the filter sent', ['filter' => $filterDataContent]);
+
         $response = $findMonitoringResources->execute($filter);
 
+        $this->info('Generating HyperMedias for resources found');
         // Loop on monitoring resources to add the links
         $monitoringResourceWithLinks = [];
         foreach ($response->getMonitoringResources() as $index => $monitoringResource) {
@@ -359,6 +377,7 @@ class MonitoringResourceController extends AbstractController
             }
         }
 
+        $this->info('Formatting API response and retrieving data');
         return $this->view(
             [
                 'result' => MonitoringResourceFormatter::createFromResponse($response, $monitoringResourceWithLinks),
@@ -392,7 +411,6 @@ class MonitoringResourceController extends AbstractController
                 ];
             }
         }
-
         return $links;
     }
 

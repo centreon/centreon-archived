@@ -33,7 +33,6 @@ use Centreon\Domain\Monitoring\ResourceFilter;
  */
 class FindMonitoringResources
 {
-
     /**
      * @var MonitoringResourceServiceInterface
      */
