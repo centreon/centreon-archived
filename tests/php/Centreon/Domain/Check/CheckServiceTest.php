@@ -39,23 +39,69 @@ use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 class CheckServiceTest extends TestCase
 {
-    protected $adminContact;
-    protected $aclContact;
+    /**
+     * @var Contact
+     */
+    private $adminContact;
 
-    protected $host;
-    protected $service;
+    /**
+     * @var Host
+     */
+    private $host;
 
-    protected $check;
-    protected $hostCheck;
-    protected $serviceCheck;
+    /**
+     * @var Service
+     */
+    private $service;
 
-    protected $hostResource;
-    protected $serviceResource;
+    /**
+     * @var Check
+     */
+    private $check;
 
-    protected $monitoringRepository;
-    protected $engineService;
-    protected $entityValidator;
+    /**
+     * @var Check
+     */
+    private $hostCheck;
 
+    /**
+     * @var Check
+     */
+    private $serviceCheck;
+
+    /**
+     * @var MonitoringResource
+     */
+    private $hostResource;
+
+    /**
+     * @var MonitoringResource
+     */
+    private $serviceResource;
+
+    /**
+     * @var AccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $accessGroupRepository;
+
+    /**
+     * @var MonitoringRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $monitoringRepository;
+
+    /**
+     * @var EngineServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $engineService;
+
+    /**
+     * @var EntityValidator&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $entityValidator;
+
+    /**
+     * @var ConstraintViolationList
+     */
     protected $violationList;
 
     protected function setUp(): void
@@ -64,11 +110,6 @@ class CheckServiceTest extends TestCase
             ->setId(1)
             ->setName('admin')
             ->setAdmin(true);
-
-        $this->aclContact = (new Contact())
-            ->setId(2)
-            ->setName('contact')
-            ->setAdmin(false);
 
         $this->host = (new Host())
             ->setId(1);
@@ -109,7 +150,7 @@ class CheckServiceTest extends TestCase
     /**
      * test checkHost with not well formated check
      */
-    public function testCheckHostNotValidatedCheck()
+    public function testCheckHostNotValidatedCheck(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -132,7 +173,7 @@ class CheckServiceTest extends TestCase
     /**
      * test checkHost with not found host
      */
-    public function testCheckHostNotFoundHost()
+    public function testCheckHostNotFoundHost(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -159,7 +200,7 @@ class CheckServiceTest extends TestCase
     /**
      * test checkHost which succeed
      */
-    public function testCheckHostSucceed()
+    public function testCheckHostSucceed(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -180,13 +221,14 @@ class CheckServiceTest extends TestCase
         );
         $checkService->filterByContact($this->adminContact);
 
+        /** @phpstan-ignore-next-line */
         $this->assertNull($checkService->checkHost($this->hostCheck));
     }
 
     /**
      * test checkService with not well formated check
      */
-    public function testCheckServiceNotValidatedCheck()
+    public function testCheckServiceNotValidatedCheck(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -209,7 +251,7 @@ class CheckServiceTest extends TestCase
     /**
      * test checkService with not found host
      */
-    public function testCheckServiceNotFoundHost()
+    public function testCheckServiceNotFoundHost(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -236,7 +278,7 @@ class CheckServiceTest extends TestCase
     /**
      * test checkService with not found host
      */
-    public function testCheckServiceNotFoundService()
+    public function testCheckServiceNotFoundService(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -267,7 +309,7 @@ class CheckServiceTest extends TestCase
     /**
      * test checkService which succeed
      */
-    public function testCheckServiceSucceed()
+    public function testCheckServiceSucceed(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -292,13 +334,14 @@ class CheckServiceTest extends TestCase
         );
         $checkService->filterByContact($this->adminContact);
 
+        /** @phpstan-ignore-next-line */
         $this->assertNull($checkService->checkService($this->serviceCheck));
     }
 
     /**
      * test checkResource with host not found
      */
-    public function testCheckResourceHostNotFound()
+    public function testCheckResourceHostNotFound(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneHost')
@@ -315,13 +358,14 @@ class CheckServiceTest extends TestCase
         $this->expectException(EntityNotFoundException::class);
         $this->expectExceptionMessage('Host 1 not found');
 
+        /** @phpstan-ignore-next-line */
         $this->assertNull($checkService->checkResource($this->check, $this->hostResource));
     }
 
     /**
      * test checkResource with service not found
      */
-    public function testCheckResourceServiceNotFound()
+    public function testCheckResourceServiceNotFound(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneHost')
@@ -342,13 +386,14 @@ class CheckServiceTest extends TestCase
         $this->expectException(EntityNotFoundException::class);
         $this->expectExceptionMessage('Service 1 (parent: 1) not found');
 
+        /** @phpstan-ignore-next-line */
         $this->assertNull($checkService->checkResource($this->check, $this->serviceResource));
     }
 
     /**
      * test checkResource on host which succeed
      */
-    public function testCheckResourceHostSucceed()
+    public function testCheckResourceHostSucceed(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneHost')
@@ -365,13 +410,14 @@ class CheckServiceTest extends TestCase
         );
         $checkService->filterByContact($this->adminContact);
 
+        /** @phpstan-ignore-next-line */
         $this->assertNull($checkService->checkResource($this->check, $this->hostResource));
     }
 
     /**
      * test checkResource on service which succeed
      */
-    public function testCheckResourceServiceSucceed()
+    public function testCheckResourceServiceSucceed(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneHost')
@@ -392,6 +438,7 @@ class CheckServiceTest extends TestCase
         );
         $checkService->filterByContact($this->adminContact);
 
+        /** @phpstan-ignore-next-line */
         $this->assertNull($checkService->checkResource($this->check, $this->serviceResource));
     }
 }

@@ -112,6 +112,7 @@ final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implem
 
     /**
      * @param iterable<Providers> $providers
+     * @throws \InvalidArgumentException
      * @return void
      */
     public function setProviders(iterable $providers): void
@@ -154,8 +155,6 @@ final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implem
      * @param ResourceFilter $filter
      * @param AccessGroup[] $accessGroups
      * @return MonitoringResource[]
-     * @throws AssertionFailedException
-     * @throws \InvalidArgumentException
      */
     private function findAllRequest(ResourceFilter $filter, array $accessGroups): array
     {
@@ -275,9 +274,11 @@ final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implem
 
         $statement->execute();
 
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $this->db->query('SELECT FOUND_ROWS()')->fetchColumn()
-        );
+        $countStatement = $this->db->query('SELECT FOUND_ROWS()');
+
+        if ($countStatement !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $countStatement->fetchColumn());
+        }
 
         $this->debug(
             'Number of resources found',

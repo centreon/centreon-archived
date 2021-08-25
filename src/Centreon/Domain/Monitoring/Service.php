@@ -255,9 +255,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param int $id
-     * @return Service
+     * @return self
      */
-    public function setId(int $id): Service
+    public function setId(int $id): self
     {
         $this->id = $id;
         return $this;
@@ -273,9 +273,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param string|null $checkCommand
-     * @return Service
+     * @return self
      */
-    public function setCheckCommand(?string $checkCommand): Service
+    public function setCheckCommand(?string $checkCommand): self
     {
         $this->checkCommand = $checkCommand;
         return $this;
@@ -291,9 +291,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param float|null $checkInterval
-     * @return Service
+     * @return self
      */
-    public function setCheckInterval(?float $checkInterval): Service
+    public function setCheckInterval(?float $checkInterval): self
     {
         $this->checkInterval = $checkInterval;
         return $this;
@@ -309,9 +309,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param string|null $checkPeriod
-     * @return Service
+     * @return self
      */
-    public function setCheckPeriod(?string $checkPeriod): Service
+    public function setCheckPeriod(?string $checkPeriod): self
     {
         $this->checkPeriod = $checkPeriod;
         return $this;
@@ -327,9 +327,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param int|null $checkType
-     * @return Service
+     * @return self
      */
-    public function setCheckType(?int $checkType): Service
+    public function setCheckType(?int $checkType): self
     {
         $this->checkType = $checkType;
         return $this;
@@ -345,9 +345,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param string|null $commandLine
-     * @return Service
+     * @return self
      */
-    public function setCommandLine(?string $commandLine): Service
+    public function setCommandLine(?string $commandLine): self
     {
         $this->commandLine = $commandLine;
         return $this;
@@ -363,9 +363,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param string $description
-     * @return Service
+     * @return self
      */
-    public function setDescription(string $description): Service
+    public function setDescription(string $description): self
     {
         $this->description = $description;
         return $this;
@@ -381,9 +381,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param string $displayName
-     * @return Service
+     * @return self
      */
-    public function setDisplayName(string $displayName): Service
+    public function setDisplayName(string $displayName): self
     {
         $this->displayName = $displayName;
         return $this;
@@ -399,9 +399,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param float|null $executionTime
-     * @return Service
+     * @return self
      */
-    public function setExecutionTime(?float $executionTime): Service
+    public function setExecutionTime(?float $executionTime): self
     {
         $this->executionTime = $executionTime;
         return $this;
@@ -417,9 +417,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param Host $host|null
-     * @return Service
+     * @return self
      */
-    public function setHost(?Host $host): Service
+    public function setHost(?Host $host): self
     {
         $this->host = $host;
         return $this;
@@ -435,9 +435,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param string|null $iconImage
-     * @return Service
+     * @return self
      */
-    public function setIconImage(?string $iconImage): Service
+    public function setIconImage(?string $iconImage): self
     {
         $this->iconImage = $iconImage;
         return $this;
@@ -469,9 +469,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param bool $isAcknowledged
-     * @return Service
+     * @return self
      */
-    public function setAcknowledged(bool $isAcknowledged): Service
+    public function setAcknowledged(bool $isAcknowledged): self
     {
         $this->isAcknowledged = $isAcknowledged;
         return $this;
@@ -496,9 +496,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param bool $isActiveCheck
-     * @return Service
+     * @return self
      */
-    public function setActiveCheck(bool $isActiveCheck): Service
+    public function setActiveCheck(bool $isActiveCheck): self
     {
         $this->isActiveCheck = $isActiveCheck;
         return $this;
@@ -514,9 +514,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param int $checkAttempt
-     * @return Service
+     * @return self
      */
-    public function setCheckAttempt(int $checkAttempt): Service
+    public function setCheckAttempt(int $checkAttempt): self
     {
         $this->checkAttempt = $checkAttempt;
         return $this;
@@ -532,9 +532,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param bool $isChecked
-     * @return Service
+     * @return self
      */
-    public function setChecked(bool $isChecked): Service
+    public function setChecked(bool $isChecked): self
     {
         $this->isChecked = $isChecked;
         return $this;
@@ -550,9 +550,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param int $scheduledDowntimeDepth
-     * @return Service
+     * @return self
      */
-    public function setScheduledDowntimeDepth(int $scheduledDowntimeDepth): Service
+    public function setScheduledDowntimeDepth(int $scheduledDowntimeDepth): self
     {
         $this->scheduledDowntimeDepth = $scheduledDowntimeDepth;
         return $this;
@@ -568,9 +568,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param int $state
-     * @return Service
+     * @return self
      */
-    public function setState(int $state): Service
+    public function setState(int $state): self
     {
         $this->state = $state;
         return $this;
@@ -586,9 +586,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param string $output
-     * @return Service
+     * @return self
      */
-    public function setOutput(string $output): Service
+    public function setOutput(string $output): self
     {
         $this->output = $output;
         return $this;
@@ -604,9 +604,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param string $performanceData
-     * @return Service
+     * @return self
      */
-    public function setPerformanceData(string $performanceData): Service
+    public function setPerformanceData(string $performanceData): self
     {
         $this->performanceData = $performanceData;
         return $this;
@@ -622,9 +622,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $lastCheck
-     * @return Service
+     * @return self
      */
-    public function setLastCheck(?\DateTime $lastCheck): Service
+    public function setLastCheck(?\DateTime $lastCheck): self
     {
         $this->lastCheck = $lastCheck;
         return $this;
@@ -640,9 +640,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $nextCheck
-     * @return Service|null
+     * @return self
      */
-    public function setNextCheck(?\DateTime $nextCheck): Service
+    public function setNextCheck(?\DateTime $nextCheck): self
     {
         $this->nextCheck = $nextCheck;
         return $this;
@@ -658,9 +658,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $lastUpdate
-     * @return Service
+     * @return self
      */
-    public function setLastUpdate(?\DateTime $lastUpdate): Service
+    public function setLastUpdate(?\DateTime $lastUpdate): self
     {
         $this->lastUpdate = $lastUpdate;
         return $this;
@@ -676,9 +676,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $lastStateChange
-     * @return Service
+     * @return self
      */
-    public function setLastStateChange(?\DateTime $lastStateChange): Service
+    public function setLastStateChange(?\DateTime $lastStateChange): self
     {
         $this->lastStateChange = $lastStateChange;
         return $this;
@@ -694,9 +694,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param float|null $latency
-     * @return Service
+     * @return self
      */
-    public function setLatency(?float $latency): Service
+    public function setLatency(?float $latency): self
     {
         $this->latency = $latency;
         return $this;
@@ -712,9 +712,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $lastHardStateChange
-     * @return Service
+     * @return self
      */
-    public function setLastHardStateChange(?\DateTime $lastHardStateChange): Service
+    public function setLastHardStateChange(?\DateTime $lastHardStateChange): self
     {
         $this->lastHardStateChange = $lastHardStateChange;
         return $this;
@@ -730,9 +730,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $lastNotification
-     * @return Service
+     * @return self
      */
-    public function setLastNotification(?\DateTime $lastNotification): Service
+    public function setLastNotification(?\DateTime $lastNotification): self
     {
         $this->lastNotification = $lastNotification;
         return $this;
@@ -748,9 +748,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $lastTimeCritical
-     * @return Service
+     * @return self
      */
-    public function setLastTimeCritical(?\DateTime $lastTimeCritical): Service
+    public function setLastTimeCritical(?\DateTime $lastTimeCritical): self
     {
         $this->lastTimeCritical = $lastTimeCritical;
         return $this;
@@ -766,9 +766,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $lastTimeOk
-     * @return Service
+     * @return self
      */
-    public function setLastTimeOk(?\DateTime $lastTimeOk): Service
+    public function setLastTimeOk(?\DateTime $lastTimeOk): self
     {
         $this->lastTimeOk = $lastTimeOk;
         return $this;
@@ -784,9 +784,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $lastTimeUnknown
-     * @return Service
+     * @return self
      */
-    public function setLastTimeUnknown(?\DateTime $lastTimeUnknown): Service
+    public function setLastTimeUnknown(?\DateTime $lastTimeUnknown): self
     {
         $this->lastTimeUnknown = $lastTimeUnknown;
         return $this;
@@ -802,9 +802,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $lastTimeWarning
-     * @return Service
+     * @return self
      */
-    public function setLastTimeWarning(?\DateTime $lastTimeWarning): Service
+    public function setLastTimeWarning(?\DateTime $lastTimeWarning): self
     {
         $this->lastTimeWarning = $lastTimeWarning;
         return $this;
@@ -820,9 +820,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param int $maxCheckAttempts
-     * @return Service
+     * @return self
      */
-    public function setMaxCheckAttempts(int $maxCheckAttempts): Service
+    public function setMaxCheckAttempts(int $maxCheckAttempts): self
     {
         $this->maxCheckAttempts = $maxCheckAttempts;
         return $this;
@@ -838,9 +838,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param int $stateType
-     * @return Service
+     * @return self
      */
-    public function setStateType(int $stateType): Service
+    public function setStateType(int $stateType): self
     {
         $this->stateType = $stateType;
         return $this;
@@ -856,9 +856,9 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param int|null $criticality
-     * @return Service
+     * @return self
      */
-    public function setCriticality(?int $criticality): Service
+    public function setCriticality(?int $criticality): self
     {
         $this->criticality = $criticality;
         return $this;
@@ -874,7 +874,7 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param Downtime[] $downtimes
-     * @return Service
+     * @return self
      */
     public function setDowntimes(array $downtimes): self
     {
@@ -892,7 +892,7 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param Acknowledgement|null $acknowledgement
-     * @return Service
+     * @return self
      */
     public function setAcknowledgement(?Acknowledgement $acknowledgement): self
     {
@@ -910,7 +910,7 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param bool|null $flapping
-     * @return Service
+     * @return self
      */
     public function setFlapping(?bool $flapping): self
     {
@@ -928,7 +928,7 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \Centreon\Domain\Monitoring\ResourceStatus|null $status
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return self
      */
     public function setStatus(?ResourceStatus $status): self
     {

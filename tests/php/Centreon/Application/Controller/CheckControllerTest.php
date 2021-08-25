@@ -39,20 +39,59 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class CheckControllerTest extends TestCase
 {
+    /**
+     * @var Contact
+     */
     protected $adminContact;
 
+    /**
+     * @var string|false
+     */
     protected $goodJsonCheck;
+
+    /**
+     * @var string|false
+     */
     protected $badJsonCheck;
+
+    /**
+     * @var CheckRequest
+     */
     protected $checkRequest;
+
+    /**
+     * @var Check
+     */
     protected $check;
+
+    /**
+     * @var MonitoringResource
+     */
     protected $hostResource;
+
+    /**
+     * @var MonitoringResource
+     */
     protected $serviceResource;
 
+    /**
+     * @var CheckServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $checkService;
 
+    /**
+     * @var ContainerInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $container;
 
+    /**
+     * @var Request&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $request;
+
+    /**
+     * @var SerializerInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $serializer;
 
     /**
@@ -145,7 +184,7 @@ class CheckControllerTest extends TestCase
                 $authorizationChecker,
                 $tokenStorage,
                 new class () {
-                    public function get()
+                    public function get(): string
                     {
                         return __DIR__ . '/../../../../../';
                     }
@@ -160,7 +199,7 @@ class CheckControllerTest extends TestCase
     /**
      * test checkResources which succeed
      */
-    public function testCheckResourcesSuccess()
+    public function testCheckResourcesSuccess(): void
     {
         $this->checkService->expects($this->any())
             ->method('filterByContact')
