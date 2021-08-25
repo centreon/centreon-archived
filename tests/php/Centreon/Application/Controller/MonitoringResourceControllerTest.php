@@ -43,23 +43,60 @@ use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceS
 
 class MonitoringResourceControllerTest extends TestCase
 {
-    protected $adminContact;
+    /**
+     * @var Contact&
+     */
+    private $adminContact;
 
-    protected $resource;
+    /**
+     * @var MonitoringResource
+     */
+    private $resource;
 
-    protected $timelineEvent;
+    /**
+     * @var MonitoringServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $monitoringService;
 
-    protected $monitoringService;
-    protected $resourceService;
-    protected $urlGenerator;
-    protected $iconUrlNormalizer;
+    /**
+     * @var MonitoringResourceServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $resourceService;
 
-    protected $container;
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
 
-    protected $requestParameters;
-    protected $request;
-    protected $serializer;
-    protected $entityValidator;
+    /**
+     * @var IconNormalizer&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $iconUrlNormalizer;
+
+    /**
+     * @var ContainerInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $container;
+
+    /**
+     * @var RequestParametersInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $requestParameters;
+
+    /**
+     * @var Request&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $request;
+
+    /**
+     * @var SerializerInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $serializer;
+
+    /**
+     * @var EntityValidator&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $entityValidator;
 
     protected function setUp(): void
     {
@@ -228,7 +265,7 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildHostUri
      */
-    public function testBuildHostUri()
+    public function testBuildHostUri(): void
     {
         $resourceController = new MonitoringResourceController(
             $this->urlGenerator,
@@ -245,7 +282,7 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildServiceDetailsUri
      */
-    public function testBuildServiceDetailsUri()
+    public function testBuildServiceDetailsUri(): void
     {
         $resourceController = new MonitoringResourceController(
             $this->urlGenerator,
@@ -263,7 +300,7 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildServiceUri
      */
-  public function testBuildServiceUri()
+  public function testBuildServiceUri(): void
      {
         $resourceController = new MonitoringResourceController(
             $this->urlGenerator,

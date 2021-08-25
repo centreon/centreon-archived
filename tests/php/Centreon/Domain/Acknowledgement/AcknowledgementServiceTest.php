@@ -40,22 +40,65 @@ use PHPUnit\Framework\TestCase;
 
 class AcknowledgementServiceTest extends TestCase
 {
-    protected $adminContact;
-    protected $aclContact;
+    /**
+     * @var Contact
+     */
+    private $adminContact;
 
-    protected $host;
-    protected $service;
+    /**
+     * @var Contact
+     */
+    private $aclContact;
 
-    protected $hostAcknowledgement;
-    protected $serviceAcknowledgement;
+    /**
+     * @var Host
+     */
+    private $host;
 
-    protected $acknowledgementRepository;
-    protected $accessGroupRepository;
-    protected $monitoringRepository;
-    protected $engineService;
-    protected $entityValidator;
+    /**
+     * @var Service
+     */
+    private $service;
 
-    protected $violationList;
+    /**
+     * @var Acknowledgement
+     */
+    private $hostAcknowledgement;
+
+    /**
+     * @var Acknowledgement
+     */
+    private $serviceAcknowledgement;
+
+    /**
+     * @var AcknowledgementRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $acknowledgementRepository;
+
+    /**
+     * @var AccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $accessGroupRepository;
+
+    /**
+     * @var MonitoringRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $monitoringRepository;
+
+    /**
+     * @var EngineServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $engineService;
+
+    /**
+     * @var EntityValidator&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $entityValidator;
+
+    /**
+     * @var ConstraintViolationList
+     */
+    private $violationList;
 
     protected function setUp(): void
     {
@@ -128,7 +171,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test findOneAcknowledgement with admin user
      */
-    public function testFindOneAcknowledgementWithAdminUser()
+    public function testFindOneAcknowledgementWithAdminUser(): void
     {
         $this->acknowledgementRepository->expects($this->once())
             ->method('findOneAcknowledgementForAdminUser')
@@ -150,7 +193,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test findOneAcknowledgement with acl user
      */
-    public function testFindOneAcknowledgementWithAclUser()
+    public function testFindOneAcknowledgementWithAclUser(): void
     {
         $this->acknowledgementRepository->expects($this->once())
             ->method('findOneAcknowledgementForNonAdminUser')
@@ -172,7 +215,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test findAcknowledgements with admin user
      */
-    public function testFindAcknowledgementsWithAdminUser()
+    public function testFindAcknowledgementsWithAdminUser(): void
     {
         $this->acknowledgementRepository->expects($this->once())
             ->method('findAcknowledgementsForAdminUser')
@@ -194,7 +237,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test findAcknowledgements with acl user
      */
-    public function testFindAcknowledgementsWithAclUser()
+    public function testFindAcknowledgementsWithAclUser(): void
     {
         $this->acknowledgementRepository->expects($this->once())
             ->method('findAcknowledgementsForNonAdminUser')
@@ -216,7 +259,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test addHostAcknowledgement which is not valid (eg: missing hostId)
      */
-    public function testAddHostAcknowledgementNotValidated()
+    public function testAddHostAcknowledgementNotValidated(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -237,7 +280,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test addHostAcknowledgement with not found host
      */
-    public function testAddHostAcknowledgementNotFoundHost()
+    public function testAddHostAcknowledgementNotFoundHost(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -261,7 +304,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test addHostAcknowledgement which succeed
      */
-    public function testAddHostAcknowledgementWhichSucceed()
+    public function testAddHostAcknowledgementWhichSucceed(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -281,13 +324,14 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
+	    /** @phpstan-ignore-next-line */
         $this->assertNull($acknowledgementService->addHostAcknowledgement($this->hostAcknowledgement));
     }
 
     /**
      * test addServiceAcknowledgement which is not validated
      */
-    public function testAddServiceAcknowledgementNotValidated()
+    public function testAddServiceAcknowledgementNotValidated(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -308,7 +352,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test addServiceAcknowledgement with not found service
      */
-    public function testAddServiceAcknowledgementNotFoundService()
+    public function testAddServiceAcknowledgementNotFoundService(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -332,7 +376,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test addServiceAcknowledgement with not found host
      */
-    public function testAddServiceAcknowledgementNotFoundHost()
+    public function testAddServiceAcknowledgementNotFoundHost(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -359,7 +403,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test addServiceAcknowledgement which succeed
      */
-    public function testAddServiceAcknowledgementWhichSucceed()
+    public function testAddServiceAcknowledgementWhichSucceed(): void
     {
         $this->entityValidator->expects($this->once())
             ->method('validate')
@@ -382,13 +426,14 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
+	    /** @phpstan-ignore-next-line */
         $this->assertNull($acknowledgementService->addServiceAcknowledgement($this->serviceAcknowledgement));
     }
 
     /**
      * test findHostsAcknowledgements
      */
-    public function testFindHostsAcknowledgements()
+    public function testFindHostsAcknowledgements(): void
     {
         $this->acknowledgementRepository->expects($this->once())
             ->method('findHostsAcknowledgements')
@@ -409,7 +454,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test findServicesAcknowledgements
      */
-    public function testFindServicesAcknowledgements()
+    public function testFindServicesAcknowledgements(): void
     {
         $this->acknowledgementRepository->expects($this->once())
             ->method('findServicesAcknowledgements')
@@ -430,7 +475,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test findAcknowledgementsByHost
      */
-    public function testFindAcknowledgementsByHost()
+    public function testFindAcknowledgementsByHost(): void
     {
         $this->acknowledgementRepository->expects($this->once())
             ->method('findAcknowledgementsByHost')
@@ -451,7 +496,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test findAcknowledgementsByService
      */
-    public function testFindAcknowledgementsByService()
+    public function testFindAcknowledgementsByService(): void
     {
         $this->acknowledgementRepository->expects($this->once())
             ->method('findAcknowledgementsByService')
@@ -472,7 +517,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test disacknowledgeHost with not found host
      */
-    public function testDisacknowledgeHostNotFoundHost()
+    public function testDisacknowledgeHostNotFoundHost(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneHost')
@@ -493,7 +538,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test disacknowledgeHost with not found acknowledgement
      */
-    public function testDisacknowledgeHostNotFoundAcknowledgement()
+    public function testDisacknowledgeHostNotFoundAcknowledgement(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneHost')
@@ -517,7 +562,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test disacknowledgeHost which is already disacknowledge
      */
-    public function testDisacknowledgeHostAlreadyDisacknowledged()
+    public function testDisacknowledgeHostAlreadyDisacknowledged(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneHost')
@@ -542,7 +587,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test disacknowledgeHost which succeed
      */
-    public function testDisacknowledgeHostSucceed()
+    public function testDisacknowledgeHostSucceed(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneHost')
@@ -559,13 +604,14 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
+	    /** @phpstan-ignore-next-line */
         $this->assertNull($acknowledgementService->disacknowledgeHost(1));
     }
 
     /**
      * test disacknowledgeService with not found service
      */
-    public function testDisacknowledgeServiceNotFoundService()
+    public function testDisacknowledgeServiceNotFoundService(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneservice')
@@ -586,7 +632,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test disacknowledgeService with not found acknowledgement
      */
-    public function testDisacknowledgeServiceNotFoundAcknowledgement()
+    public function testDisacknowledgeServiceNotFoundAcknowledgement(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneService')
@@ -613,7 +659,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test disacknowledgeService which is already disacknowledge
      */
-    public function testDisacknowledgeServiceAlreadyDisacknowledged()
+    public function testDisacknowledgeServiceAlreadyDisacknowledged(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneService')
@@ -641,7 +687,7 @@ class AcknowledgementServiceTest extends TestCase
     /**
      * test disacknowledgeService which succeed
      */
-    public function testDisacknowledgeServiceSucceed()
+    public function testDisacknowledgeServiceSucceed(): void
     {
         $this->monitoringRepository->expects($this->once())
             ->method('findOneService')
@@ -661,6 +707,7 @@ class AcknowledgementServiceTest extends TestCase
             $this->entityValidator
         );
 
+	    /** @phpstan-ignore-next-line */
         $this->assertNull($acknowledgementService->disacknowledgeService(1, 1));
     }
 }

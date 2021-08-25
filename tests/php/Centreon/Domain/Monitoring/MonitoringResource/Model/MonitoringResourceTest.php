@@ -88,7 +88,7 @@ class MonitoringResourceTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('One of the elements provided is not a Downtime instance');
 
-        (self::createEntity())->setDowntimes($downtimes);
+        (self::createEntity())->setDowntimes($downtimes); // @phpstan-ignore-line
     }
 
     /**
@@ -104,7 +104,7 @@ class MonitoringResourceTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('One of the elements provided is not a ResourceGroup type');
 
-        (self::createEntity())->setGroups($resourceGroups);
+        (self::createEntity())->setGroups($resourceGroups); // @phpstan-ignore-line
     }
 
     /**
