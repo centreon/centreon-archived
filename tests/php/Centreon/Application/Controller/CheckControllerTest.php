@@ -75,22 +75,22 @@ class CheckControllerTest extends TestCase
     protected $serviceResource;
 
     /**
-     * @var CheckServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var CheckServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $checkService;
 
     /**
-     * @var ContainerInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ContainerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $container;
 
     /**
-     * @var Request&\PHPUnit\Framework\MockObject\MockObject
+     * @var Request|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $request;
 
     /**
-     * @var SerializerInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var SerializerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $serializer;
 

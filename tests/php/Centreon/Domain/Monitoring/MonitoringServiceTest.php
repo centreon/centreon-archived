@@ -36,25 +36,25 @@ use PHPUnit\Framework\TestCase;
 class MonitoringServiceTest extends TestCase
 {
     /**
-     * @var MonitoringRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var MonitoringRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $monitoringRepository;
 
     /**
-     * @var AccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var AccessGroupRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $accessGroupRepository;
 
     /**
-     * @var ServiceConfigurationServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ServiceConfigurationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $serviceConfiguration;
     /**
-     * @var HostConfigurationServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var HostConfigurationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $hostConfiguration;
     /**
-     * @var MonitoringServerServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var MonitoringServerServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $monitoringServerService;
 

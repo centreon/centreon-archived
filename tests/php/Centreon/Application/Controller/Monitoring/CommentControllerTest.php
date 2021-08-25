@@ -73,22 +73,22 @@ class CommentControllerTest extends TestCase
     private $serviceCommentJson;
 
     /**
-     * @var CommentService&\PHPUnit\Framework\MockObject\MockObject
+     * @var CommentService|\PHPUnit\Framework\MockObject\MockObject
      */
     private $commentService;
 
     /**
-     * @var MonitoringService&\PHPUnit\Framework\MockObject\MockObject
+     * @var MonitoringService|\PHPUnit\Framework\MockObject\MockObject
      */
     private $monitoringService;
 
     /**
-     * @var ContainerInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ContainerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $container;
 
     /**
-     * @var Request&\PHPUnit\Framework\MockObject\MockObject
+     * @var Request|\PHPUnit\Framework\MockObject\MockObject
      */
     private $request;
 

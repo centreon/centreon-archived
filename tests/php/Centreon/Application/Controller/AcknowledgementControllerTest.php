@@ -34,7 +34,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveDisacknowledgementValidatorInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validator;
 
 class AcknowledgementControllerTest extends TestCase
 {
@@ -58,7 +58,7 @@ class AcknowledgementControllerTest extends TestCase
     private $request;
 
     /**
-     * @var MassiveDisacknowledgementValidatorInterface $massiveDisacknowledgementValidator
+     * @var Validator\Interfaces\MassiveDisacknowledgementValidatorInterface $massiveDisacknowledgementValidator
      */
     private $massiveDisacknowledgementValidator;
 
