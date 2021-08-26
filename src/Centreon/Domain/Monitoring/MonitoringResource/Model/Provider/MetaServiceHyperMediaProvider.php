@@ -48,12 +48,13 @@ class MetaServiceHyperMediaProvider extends HyperMediaProvider
      * @param Contact $contact
      * @return string
      */
-    public function generateConfigurationUri(int $metaId, Contact $contact): string
+    public function generateConfigurationUri(int $metaId, Contact $contact): ?string
     {
         $configurationUri = null;
         if (
             $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
             || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
+            || $contact->isAdmin()
         ) {
             $configurationUri = parent::getBaseUri()
                 . str_replace('{metaId}', (string) $metaId, static::METASERVICE_CONFIGURATION_URI);
@@ -68,10 +69,13 @@ class MetaServiceHyperMediaProvider extends HyperMediaProvider
      * @param Contact $contact
      * @return string
      */
-    public function generateEventLogsUri(array $parameters, Contact $contact): string
+    public function generateEventLogsUri(array $parameters, Contact $contact): ?string
     {
         $eventLogsUri = null;
-        if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
+        if (
+            $contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)
+            || $contact->isAdmin()
+        ) {
             $eventLogsUri = str_replace('{hostId}', (string) $parameters['hostId'], static::METASERVICE_EVENT_LOGS_URI);
             $eventLogsUri = str_replace('{serviceId}', (string) $parameters['serviceId'], (string) $eventLogsUri);
             $eventLogsUri = parent::getBaseUri() . $eventLogsUri;

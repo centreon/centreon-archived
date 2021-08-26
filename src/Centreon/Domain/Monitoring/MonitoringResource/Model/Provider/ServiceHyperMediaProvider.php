@@ -54,6 +54,7 @@ class ServiceHyperMediaProvider extends HyperMediaProvider
         if (
             $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
             || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
+            || $contact->isAdmin()
         ) {
             $configurationUri = parent::getBaseUri()
                 . str_replace('{serviceId}', (string) $serviceId, static::SERVICE_CONFIGURATION_URI);
@@ -71,7 +72,10 @@ class ServiceHyperMediaProvider extends HyperMediaProvider
     public function generateReportingUri(array $parameters, Contact $contact): ?string
     {
         $reportingUri = null;
-        if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)) {
+        if (
+            $contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)
+            || $contact->isAdmin()
+        ) {
             $reportingUri = str_replace('{hostId}', (string) $parameters['hostId'], static::SERVICE_REPORTING_URI);
             $reportingUri = str_replace('{serviceId}', (string) $parameters['serviceId'], (string) $reportingUri);
             $reportingUri = parent::getBaseUri() . $reportingUri;
@@ -89,7 +93,10 @@ class ServiceHyperMediaProvider extends HyperMediaProvider
     public function generateEventLogsUri(array $parameters, Contact $contact): ?string
     {
         $eventLogsUri = null;
-        if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
+        if (
+            $contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)
+            || $contact->isAdmin()
+        ) {
             $eventLogsUri = str_replace('{hostId}', (string) $parameters['hostId'], static::SERVICE_EVENT_LOGS_URI);
             $eventLogsUri = str_replace('{serviceId}', (string) $parameters['serviceId'], (string) $eventLogsUri);
             $eventLogsUri = parent::getBaseUri() . $eventLogsUri;

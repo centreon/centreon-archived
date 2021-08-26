@@ -120,6 +120,7 @@ class HostHyperMediaProvider extends HyperMediaProvider
         if (
             $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_WRITE)
             || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_READ)
+            || $contact->isAdmin()
         ) {
             $configurationUri = parent::getBaseUri()
                 . str_replace('{hostId}', (string) $hostId, static::HOST_CONFIGURATION_URI);
@@ -140,6 +141,7 @@ class HostHyperMediaProvider extends HyperMediaProvider
         if (
             $contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)
             || $contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)
+            || $contact->isAdmin()
         ) {
             $reportingUri = parent::getBaseUri()
                 . str_replace('{hostId}', (string) $hostId, static::HOST_REPORTING_URI);
@@ -160,6 +162,7 @@ class HostHyperMediaProvider extends HyperMediaProvider
         if (
             $contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)
             || $contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)
+            || $contact->isAdmin()
         ) {
             $logsUri = parent::getBaseUri() . str_replace('{hostId}', (string) $hostId, static::HOST_EVENT_LOGS_URI);
         }
