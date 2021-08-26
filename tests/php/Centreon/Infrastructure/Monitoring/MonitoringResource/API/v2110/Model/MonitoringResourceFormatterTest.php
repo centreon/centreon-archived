@@ -123,7 +123,7 @@ class MonitoringResourceFormatterTest extends TestCase
         $this->assertEquals(
             $oneMonitoringResource['parent']['flapping'],
             $monitoringResources[0]->parent['flapping']
-    );
+        );
         $this->assertEquals(
             $oneMonitoringResource['parent']['icon']['name'],
             $monitoringResources[0]->parent['icon']['name']

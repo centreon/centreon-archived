@@ -33,7 +33,7 @@ class MonitoringResourceFormatter
 {
     /**
      * @param FindMonitoringResourcesResponse $response
-     * @param array<int, array<string, array<string, array<string, string>|string>>> $responseLinks
+     * @param array<int, array<string, array<string, array<string, string|null>|string|null>>> $responseLinks
      * @return \stdClass[]
      */
     public static function createFromResponse(

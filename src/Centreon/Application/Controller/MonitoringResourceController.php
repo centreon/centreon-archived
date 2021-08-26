@@ -188,9 +188,9 @@ class MonitoringResourceController extends AbstractController
 
         // Create a specific filter to only get the monitoring resource
         $filter = (new ResourceFilter())
-        ->setTypes([ResourceFilter::TYPE_SERVICE])
-        ->setHostIds([$hostId])
-        ->setServiceIds([$serviceId]);
+            ->setTypes([ResourceFilter::TYPE_SERVICE])
+            ->setHostIds([$hostId])
+            ->setServiceIds([$serviceId]);
 
         // Use case to get details of the monitoring resource
         $response = $detailServiceMonitoringResource->execute($filter);
@@ -391,7 +391,7 @@ class MonitoringResourceController extends AbstractController
      *
      * @param array<string, mixed> $monitoringResource
      * @param Contact $contact
-     * @return array<string, array<string, string>>
+     * @return array<string, array<string, string|null>>
      */
     private function generateMonitoringResourceLinks(
         array $monitoringResource,
