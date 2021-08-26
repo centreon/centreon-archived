@@ -37,7 +37,7 @@ Feature:
         {
           "type": "service",
           "id": <serviceId>,
-          "name": <serviceDescription>
+          "name": <serviceDescription>,
           "parent": {
             "type": "host",
             "id": <hostId>,
