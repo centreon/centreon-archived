@@ -40,6 +40,7 @@ import { buildMonitoringServersEndpoint } from './api';
 import { exportAndReloadConfigurationEndpoint } from './api/endpoints';
 
 interface Props {
+  setIsExportingConfiguration: (isExporting: boolean) => void;
   total: number;
 }
 
@@ -86,7 +87,10 @@ const showExportAndReloadMessages = ({
     };
   }, {});
 
-const ExportConfiguration = ({ total }: Props): JSX.Element => {
+const ExportConfiguration = ({
+  total,
+  setIsExportingConfiguration,
+}: Props): JSX.Element => {
   const [monitoringServers, setMonitoringServers] = React.useState<
     Array<MonitoringServer>
   >([]);
@@ -111,8 +115,9 @@ const ExportConfiguration = ({ total }: Props): JSX.Element => {
   const loadMonitoringServers = (): Promise<ListingModel<MonitoringServer>> =>
     sendMonitoringServersRequest(buildMonitoringServersEndpoint(total));
 
-  const askBeforeExportConfiguration = (): void =>
+  const askBeforeExportConfiguration = (): void => {
     setAskingBeforeExportConfiguration(true);
+  };
 
   const closeConfirmDialog = (): void =>
     setAskingBeforeExportConfiguration(false);
@@ -162,6 +167,10 @@ const ExportConfiguration = ({ total }: Props): JSX.Element => {
     });
     closeConfirmDialog();
   };
+
+  React.useEffect(() => {
+    setIsExportingConfiguration(askingBeforeExportConfiguration);
+  }, [askingBeforeExportConfiguration]);
 
   React.useEffect((): void => {
     loadMonitoringServers().then(({ result }) => {

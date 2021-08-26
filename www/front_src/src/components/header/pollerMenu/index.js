@@ -101,6 +101,7 @@ class PollerMenu extends Component {
   state = {
     data: null,
     intervalApplied: false,
+    isExporting: false,
     toggled: false,
   };
 
@@ -157,6 +158,10 @@ class PollerMenu extends Component {
     this.setState({
       toggled: false,
     });
+  };
+
+  redirectsToPollersPage = () => {
+    this.closeSubmenu();
 
     this.props.history.push(
       `/main.php?p=${POLLER_CONFIGURATION_TOPOLOGY_PAGE}`,
@@ -165,11 +170,21 @@ class PollerMenu extends Component {
 
   // hide poller detailed data if click outside
   handleClick = (e) => {
-    if (!this.poller || this.poller.contains(e.target)) {
+    if (
+      !this.poller ||
+      this.poller.contains(e.target) ||
+      this.state.isExporting
+    ) {
       return;
     }
     this.setState({
       toggled: false,
+    });
+  };
+
+  setIsExportingConfiguration = (newIsExporting) => {
+    this.setState({
+      isExporting: newIsExporting,
     });
   };
 
@@ -297,7 +312,10 @@ class PollerMenu extends Component {
                 </Button>
               )}
             </ul>
-            <ExportConfiguration total={data.total} />
+            <ExportConfiguration
+              setIsExportingConfiguration={this.setIsExportingConfiguration}
+              total={data.total}
+            />
           </div>
           <div className={styles['submenu-padding']} />
         </div>
