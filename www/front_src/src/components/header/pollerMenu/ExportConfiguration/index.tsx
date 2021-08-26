@@ -17,8 +17,8 @@ import {
   getData,
   useRequest,
   ListingModel,
-  ConfirmDialog,
   useSnackbar,
+  Dialog,
 } from '@centreon/ui';
 
 import {
@@ -183,29 +183,28 @@ const ExportConfiguration = ({ total }: Props): JSX.Element => {
           {t(labelExportConfiguration)}
         </Button>
       </Paper>
-      <ConfirmDialog
+      <Dialog
         labelCancel={t(labelCancel)}
         labelConfirm={t(labelExportAndReload)}
-        labelMessage={
-          <div>
-            <Typography>
-              {t(labelThisWillExportAndReloadOnTheFollowingPollers)}:
-            </Typography>
-            <List dense className={classes.pollersList}>
-              {monitoringServers.map(({ name }) => (
-                <ListItem key={name}>
-                  <ListItemText className={classes.pollerText} primary={name} />
-                </ListItem>
-              ))}
-            </List>
-          </div>
-        }
         labelTitle={t(labelExportAndReloadTheConfiguration)}
         open={askingBeforeExportConfiguration}
         onCancel={closeConfirmDialog}
         onClose={closeConfirmDialog}
         onConfirm={confirmExportAndReload}
-      />
+      >
+        <div>
+          <Typography>
+            {t(labelThisWillExportAndReloadOnTheFollowingPollers)}:
+          </Typography>
+          <List dense className={classes.pollersList}>
+            {monitoringServers.map(({ name }) => (
+              <ListItem key={name}>
+                <ListItemText className={classes.pollerText} primary={name} />
+              </ListItem>
+            ))}
+          </List>
+        </div>
+      </Dialog>
     </>
   );
 };
