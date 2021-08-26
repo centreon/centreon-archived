@@ -66,4 +66,4 @@ const Resources = (): JSX.Element => {
   );
 };
 
-export default withSnackbar({ Component: Resources });
+export default Resources;

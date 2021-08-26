@@ -15,8 +15,6 @@ import queryString from 'query-string';
 
 import { withStyles, createStyles } from '@material-ui/core';
 
-import { ThemeProvider } from '@centreon/ui';
-
 import Header from './components/header';
 import { history } from './store';
 import NavigationComponent from './components/navigation';
@@ -151,36 +149,34 @@ class App extends Component<Props, State> {
     return (
       <Suspense fallback={<PageLoader />}>
         <ConnectedRouter history={history}>
-          <ThemeProvider>
-            <div className={classes.wrapper}>
-              {!min && <NavigationComponent />}
-              <Tooltip />
-              <div className={classes.content} id="content">
-                {!min && <Header />}
-                <div
-                  className={classes.fullScreenWrapper}
-                  id="fullscreen-wrapper"
+          <div className={classes.wrapper}>
+            {!min && <NavigationComponent />}
+            <Tooltip />
+            <div className={classes.content} id="content">
+              {!min && <Header />}
+              <div
+                className={classes.fullScreenWrapper}
+                id="fullscreen-wrapper"
+              >
+                <Fullscreen
+                  enabled={this.state.isFullscreenEnabled}
+                  onChange={(isFullscreenEnabled): void => {
+                    this.setState({ isFullscreenEnabled });
+                  }}
+                  onClose={this.removeFullscreenParams}
                 >
-                  <Fullscreen
-                    enabled={this.state.isFullscreenEnabled}
-                    onChange={(isFullscreenEnabled): void => {
-                      this.setState({ isFullscreenEnabled });
-                    }}
-                    onClose={this.removeFullscreenParams}
-                  >
-                    <div className={classes.mainContent}>
-                      <MainRouter />
-                    </div>
-                  </Fullscreen>
-                </div>
-                {!min && <Footer />}
+                  <div className={classes.mainContent}>
+                    <MainRouter />
+                  </div>
+                </Fullscreen>
               </div>
-              <span
-                className={footerStyles['full-screen']}
-                onClick={this.goFull}
-              />
+              {!min && <Footer />}
             </div>
-          </ThemeProvider>
+            <span
+              className={footerStyles['full-screen']}
+              onClick={this.goFull}
+            />
+          </div>
         </ConnectedRouter>
       </Suspense>
     );

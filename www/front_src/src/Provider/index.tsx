@@ -13,12 +13,12 @@ import isYesterday from 'dayjs/plugin/isYesterday';
 import weekday from 'dayjs/plugin/weekday';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { Provider } from 'react-redux';
+import { Provider as ReduxProvider } from 'react-redux';
 import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import { useRequest, getData } from '@centreon/ui';
+import { useRequest, getData, withSnackbar, ThemeProvider } from '@centreon/ui';
 import {
   Context,
   useUser,
@@ -55,7 +55,7 @@ const App = React.lazy(() => import('../App'));
 
 const store = createStore();
 
-const AppProvider = (): JSX.Element | null => {
+const AppProvider = (): JSX.Element => {
   const { user, setUser } = useUser();
   const { downtime, setDowntime } = useDowntime();
   const { refreshInterval, setRefreshInterval } = useRefreshInterval();
@@ -162,13 +162,21 @@ const AppProvider = (): JSX.Element | null => {
         refreshInterval,
       }}
     >
-      <Provider store={store}>
+      <ReduxProvider store={store}>
         <React.Suspense fallback={<PageLoader />}>
           <App />
         </React.Suspense>
-      </Provider>
+      </ReduxProvider>
     </Context.Provider>
   );
 };
 
-export default AppProvider;
+const AppProviderWithSnackbar = withSnackbar({ Component: AppProvider });
+
+const Provider = (): JSX.Element => (
+  <ThemeProvider>
+    <AppProviderWithSnackbar />
+  </ThemeProvider>
+);
+
+export default Provider;
