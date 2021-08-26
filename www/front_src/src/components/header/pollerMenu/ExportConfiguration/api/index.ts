@@ -14,5 +14,6 @@ export const buildMonitoringServersEndpoint = (limit: number): string =>
           value: `is_activate:1`,
         },
       },
+      sort: { name: 'ASC' },
     },
   });
