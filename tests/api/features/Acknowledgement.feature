@@ -21,6 +21,7 @@ Feature:
     And I store response values in:
       | name   | path         |
       | hostId | result[0].id |
+      | hostName | result[0].name |
     And I send a POST request to '/api/v21.10/monitoring/hosts/<hostId>/check' with body:
     """
     {}
@@ -38,7 +39,8 @@ Feature:
       "resources": [
         {
           "type": "host",
-          "id": <hostId>
+          "id": <hostId>,
+          "name": <hostName>
         }
       ]
     }
@@ -54,7 +56,8 @@ Feature:
       "resources": [
         {
           "type": "host",
-          "id": <hostId>
+          "id": <hostId>,
+          "name": <hostName>
         }
       ]
     }

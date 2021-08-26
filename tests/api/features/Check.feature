@@ -20,7 +20,9 @@ Feature:
     And I store response values in:
       | name      | path              |
       | hostId    | result[0].host.id |
+      | hostName  | result[0].host.name |
       | serviceId | result[0].id      |
+      | serviceDescription | result[0].description |
 
     When I send a POST request to '/api/v21.10/monitoring/resources/check' with body:
     """
@@ -29,13 +31,17 @@ Feature:
         {
           "type": "host",
           "id": <hostId>,
+          "name": <hostName>,
           "parent": null
         },
         {
           "type": "service",
           "id": <serviceId>,
+          "name": <serviceDescription>
           "parent": {
-            "id": <hostId>
+            "type": "host",
+            "id": <hostId>,
+            "name": <hostName>
           }
         }
       ]
