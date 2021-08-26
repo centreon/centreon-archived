@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { withSnackbar, ListingPage, WithPanel } from '@centreon/ui';
+import { ListingPage, WithPanel } from '@centreon/ui';
 
 import Context from './Context';
 import Filter from './Filter';
