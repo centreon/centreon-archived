@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { compose, equals, pipe, prop } from 'ramda';
+import { equals } from 'ramda';
 
 import { Theme, makeStyles } from '@material-ui/core';
 
