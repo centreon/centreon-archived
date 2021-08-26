@@ -21,10 +21,14 @@ import { withTranslation } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import { Button } from '@material-ui/core';
+
 import axios from '../../../axios';
 import styles from '../header.scss';
 import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../MenuLoader';
+
+import ExportConfiguration from './ExportConfiguration';
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901';
 
@@ -283,19 +287,17 @@ class PollerMenu extends Component {
                   })
                 : null}
               {allowPollerConfiguration /* display poller configuration button if user is allowed */ && (
-                <button
-                  className={classnames(
-                    styles.btn,
-                    styles['btn-big'],
-                    styles['btn-green'],
-                    styles['submenu-top-button'],
-                  )}
+                <Button
+                  size="small"
+                  style={{ marginTop: '8px' }}
+                  variant="contained"
                   onClick={this.closeSubmenu}
                 >
                   {t('Configure pollers')}
-                </button>
+                </Button>
               )}
             </ul>
+            <ExportConfiguration total={data.total} />
           </div>
           <div className={styles['submenu-padding']} />
         </div>
