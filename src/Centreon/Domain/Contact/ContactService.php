@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact;
 
+use Centreon\Domain\Contact\Exception\ContactServiceException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
@@ -82,5 +83,17 @@ class ContactService implements ContactServiceInterface
     public function findBySession(string $session): ?Contact
     {
         return $this->contactRepository->findBySession($session);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByAuthenticationToken(string $token): ?Contact
+    {
+        try {
+            return $this->contactRepository->findByAuthenticationToken($token);
+        } catch (\Exception $ex) {
+            throw ContactServiceException::errorWhileSearchingContact($ex);
+        }
     }
 }
