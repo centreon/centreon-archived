@@ -110,8 +110,8 @@ class AcknowledgementControllerTest extends TestCase
 
         $this->correctJsonDisackResources = json_encode($correctJsonDisackResources);
         $this->acknowledgementService = $this->createMock(AcknowledgementService::class);
-        $this->massiveDisacknowledgementValidator = $this->createMock(
-            MassiveDisacknowledgementValidatorInterface::class
+        $this->massiveDisacknowledgementValidator =$this->createMock(
+            Validator\Interfaces\MassiveDisacknowledgementValidatorInterface::class
         );
 
         $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
