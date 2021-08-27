@@ -38,6 +38,7 @@ use Centreon\Domain\Acknowledgement\AcknowledgementException;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validators;
 
 /**
@@ -47,6 +48,7 @@ use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as
  */
 class AcknowledgementController extends AbstractController
 {
+    use LoggerTrait;
     /**
      * @var AcknowledgementServiceInterface
      */
@@ -739,6 +741,7 @@ class AcknowledgementController extends AbstractController
         $payload = (string) $request->getContent();
         $acknowledgementPayload = json_decode($payload, true);
 
+        $this->info('Validating payload sent for acknowledgement request');
         if ($acknowledgementPayload === false) {
             throw new AcknowledgementException('Error when decoding your sent data');
         }
@@ -755,12 +758,31 @@ class AcknowledgementController extends AbstractController
             'json'
         );
 
+        $this->debug('Acknowledge sent by user', ['name' => $contact->getName(), 'is_admin' => $contact->isAdmin()]);
+
         // Get acknowledgement entity
         $acknowledgement = $ackRequest->getAcknowledgement();
+
+        $this->debug(
+            'Acknowledgement content',
+            [
+                'comment' => $acknowledgement->getComment(),
+                'with_services' => $acknowledgement->isWithServices(),
+                'is_notify_contacts' => $acknowledgement->isNotifyContacts()
+            ]
+        );
 
         // set default values [sticky, persistent_comment] to true
         $acknowledgement->setSticky(true);
         $acknowledgement->setPersistentComment(true);
+
+        $this->debug(
+            'Acknowledgement default values added',
+            [
+                'is_sticky' => $acknowledgement->isSticky(),
+                'is_persistent_comment' => $acknowledgement->isPersistentComment()
+            ]
+        );
 
         foreach ($ackRequest->getMonitoringResources() as $monitoringResource) {
             /**
@@ -773,6 +795,13 @@ class AcknowledgementController extends AbstractController
                         $acknowledgement->setWithServices(false);
                     }
 
+                    $this->debug(
+                        'Acknowledging resource',
+                        [
+                            'id' => $monitoringResource->getId(),
+                            'name' => $monitoringResource->getName()
+                        ]
+                    );
                     $this->acknowledgementService->acknowledgeResource(
                         $monitoringResource,
                         $acknowledgement
