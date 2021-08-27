@@ -345,6 +345,138 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/{monitoring_server_id}/generate:
+    get:
+      tags:
+        - Monitoring server
+      summary: "Generate the configuration of the monitoring server"
+      description: |
+        Generate and move the configuration files of the monitoring server
+      parameters:
+        - $ref: '#/components/parameters/MonitoringServerId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/{monitoring_server_id}/reload:
+    get:
+      tags:
+      - Monitoring server
+      summary: "Reload the configuration of the monitoring server"
+      description: |
+        Reload the configuration files of the monitoring server
+      parameters:
+      - $ref: '#/components/parameters/MonitoringServerId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/{monitoring_server_id}/generate_and_reload:
+    get:
+      tags:
+      - Monitoring server
+      summary: "Generate and reload the configuration of the monitoring server"
+      description: |
+        Generate, move and reload the configuration files of the monitoring server
+      parameters:
+      - $ref: '#/components/parameters/MonitoringServerId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/generate:
+    get:
+      tags:
+      - Monitoring server
+      summary: "Generate the configuration for all monitoring servers"
+      description: |
+        Generate and move the configuration files for all monitoring servers.
+
+        The process will stop at the first error.
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/reload:
+    get:
+      tags:
+      - Monitoring server
+      summary: "Reload the configuration for all monitoring servers"
+      description: |
+        Reload the configuration files for all monitoring servers.
+
+        The process will stop at the first error.
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/generate_and_reload:
+    get:
+      tags:
+      - Monitoring server
+      summary: "Generate and reload the configuration for all monitoring servers"
+      description: |
+        Generate, move and reload the configuration files for all monitoring servers.
+
+        The process will stop at the first error.
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/metaservices:
     get:
       tags:
@@ -3436,6 +3568,15 @@ components:
         type: integer
         format: int64
         example: 1
+    MonitoringServerId:
+      in: path
+      name: monitoring_server_id
+      description: "ID of the monitoring server (poller)"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
     AcknowledgementId:
       in: path
       name: acknowledgement_id
@@ -4039,6 +4180,22 @@ components:
           type: integer
           description: filter order
           example: 1
+    Configuration.MonitoringServer.GenerateReload:
+      type: object
+      properties:
+        status:
+          type: integer
+          enum: [0, 1]
+          format: int64
+          example: 1
+          description: |
+            Generation status
+             * `0` - Failed
+             * `1` - Success
+        message:
+          type: string
+          description: "Message status"
+          example: "Success"
     Configuration.MonitoringServerMain:
       type: object
       properties:

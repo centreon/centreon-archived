@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,16 +22,21 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller\Configuration;
 
-use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use FOS\RestBundle\Context\Context;
-use Centreon\Application\Controller\AbstractController;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\MonitoringServer\Exception\ConfigurationMonitoringServerException;
 use FOS\RestBundle\View\View;
+use FOS\RestBundle\Context\Context;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
-use Symfony\Component\HttpFoundation\Request;
+use Centreon\Application\Controller\AbstractController;
+use Centreon\Domain\MonitoringServer\UseCase\ReloadConfiguration;
+use Centreon\Domain\MonitoringServer\UseCase\GenerateConfiguration;
+use Centreon\Domain\MonitoringServer\UseCase\ReloadAllConfigurations;
+use Centreon\Domain\MonitoringServer\UseCase\GenerateAllConfigurations;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 
 /**
- * This class is designed to manage all requests concerning pollers
+ * This class is designed to manage all requests concerning monitoring servers
  *
  * @package Centreon\Application\Controller
  */
@@ -43,7 +48,6 @@ class MonitoringServerController extends AbstractController
     private $monitoringServerService;
 
     /**
-     * PollerController constructor.
      * @param MonitoringServerServiceInterface $monitoringServerService
      */
     public function __construct(MonitoringServerServiceInterface $monitoringServerService)
@@ -52,14 +56,13 @@ class MonitoringServerController extends AbstractController
     }
 
     /**
-     * Entry point to find the last hosts acknowledgements.
+     * Entry point to find a monitoring server
      *
      * @param RequestParametersInterface $requestParameters
-     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function findServer(RequestParametersInterface $requestParameters, Request $request): View
+    public function findServer(RequestParametersInterface $requestParameters): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
         $server = $this->monitoringServerService->findServers();
@@ -73,5 +76,113 @@ class MonitoringServerController extends AbstractController
                 'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
+    }
+
+    /**
+     * @param GenerateConfiguration $generateConfiguration
+     * @param int $monitoringServerId
+     * @return View
+     * @throws EntityNotFoundException
+     */
+    public function generateConfiguration(GenerateConfiguration $generateConfiguration, int $monitoringServerId): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+        $response = $generateConfiguration->execute($monitoringServerId);
+        return $this->view([
+            'status' => (int) $response->isSuccess(),
+            'message' => $response->getMessage()
+        ]);
+    }
+
+    /**
+     * @param GenerateAllConfigurations $generateAllConfigurations
+     * @return View
+     * @throws ConfigurationMonitoringServerException
+     */
+    public function generateAllConfigurations(GenerateAllConfigurations $generateAllConfigurations): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+        $response = $generateAllConfigurations->execute();
+        return $this->view([
+            'status' => (int) $response->isSuccess(),
+            'message' => $response->getMessage()
+        ]);
+    }
+
+    /**
+     * @param ReloadConfiguration $reloadConfiguration
+     * @param int $monitoringServerId
+     * @return View
+     * @throws EntityNotFoundException
+     */
+    public function reloadConfiguration(ReloadConfiguration $reloadConfiguration, int $monitoringServerId): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+        $response = $reloadConfiguration->execute($monitoringServerId);
+        return $this->view([
+            'status' => (int) $response->isSuccess(),
+            'message' => $response->getMessage()
+        ]);
+    }
+
+    /**
+     * @param ReloadAllConfigurations $reloadAllConfigurations
+     * @return View
+     * @throws ConfigurationMonitoringServerException
+     */
+    public function reloadAllConfigurations(ReloadAllConfigurations $reloadAllConfigurations): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+        $response = $reloadAllConfigurations->execute();
+        return $this->view([
+            'status' => (int) $response->isSuccess(),
+            'message' => $response->getMessage()
+        ]);
+    }
+
+    /**
+     * @param GenerateConfiguration $generateConfiguration
+     * @param ReloadConfiguration $reloadConfiguration
+     * @param int $monitoringServerId
+     * @return View
+     * @throws EntityNotFoundException
+     */
+    public function generateAndReloadConfiguration(
+        GenerateConfiguration $generateConfiguration,
+        ReloadConfiguration $reloadConfiguration,
+        int $monitoringServerId
+    ): View {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $response = $generateConfiguration->execute($monitoringServerId);
+        if ($response->isSuccess()) {
+            $response = $reloadConfiguration->execute($monitoringServerId);
+        }
+        return $this->view([
+            'status' => (int) $response->isSuccess(),
+            'message' => $response->getMessage()
+        ]);
+    }
+
+    /**
+     * @param GenerateAllConfigurations $generateAllConfigurations
+     * @param ReloadAllConfigurations $reloadAllConfigurations
+     * @return View
+     * @throws ConfigurationMonitoringServerException
+     */
+    public function generateAndReloadAllConfigurations(
+        GenerateAllConfigurations $generateAllConfigurations,
+        ReloadAllConfigurations $reloadAllConfigurations
+    ): View {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $response = $generateAllConfigurations->execute();
+        if ($response->isSuccess()) {
+            $response = $reloadAllConfigurations->execute();
+        }
+        return $this->view([
+            'status' => (int) $response->isSuccess(),
+            'message' => $response->getMessage()
+        ]);
     }
 }

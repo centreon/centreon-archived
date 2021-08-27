@@ -16222,3 +16222,33 @@ msgstr "Options de recherche"
 
 msgid "The parameter \"%s\" must be an integer"
 msgstr "Le paramètre \"%s\" doit être un entier"
+
+msgid "Error while searching contact"
+msgstr "Erreur lors de la recherche d'un contact"
+
+msgid "Monitoring server not found (#%d)"
+msgstr "Serveur de supervision non trouvé (#%d)"
+
+msgid "Generation error on monitoring server #%d: %s"
+msgstr "Erreur de génération sur le serveur de supervision #%d : %s"
+
+msgid "Reloading error on monitoring server #%d: %s"
+msgstr "Erreur de rechargement sur le serveur de supervision #%d : %s"
+
+msgid "Error on retrieving monitoring servers"
+msgstr "Erreur lors de la récupération des serveurs de supervision"
+
+msgid "Authentication token expired"
+msgstr "Le jeton d'authentification a expiré"
+
+msgid "Authentication token not found"
+msgstr "Jeton d'authentification non trouvé"
+
+msgid "Request failed"
+msgstr "La requête a échoué"
+
+msgid "Response empty"
+msgstr "Réponse vide"
+
+msgid "Unable to load the Symfony container"
+msgstr "Impossible de charger le conteneur Symfony"

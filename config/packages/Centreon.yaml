@@ -84,6 +84,9 @@ services:
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters
 
+    Security\Domain\Authentication\Interfaces\AuthenticationTokenServiceInterface:
+        class: Security\Domain\Authentication\AuthenticationTokenService
+
     # Icon configuration
     Centreon\Domain\Configuration\Icon\Interfaces\IconServiceInterface:
         class: Centreon\Domain\Configuration\Icon\IconService
@@ -103,6 +106,9 @@ services:
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
+
+    Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerConfigurationRepositoryInterface:
+        class: Centreon\Infrastructure\MonitoringServer\Repository\MonitoringServerConfigurationRepositoryApi
 
     # Platform topology register server
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface:

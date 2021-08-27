@@ -22,7 +22,6 @@
         "sensiolabs/security-checker": "^6.0",
         "squizlabs/php_codesniffer": "^3.5",
         "symfony/phpunit-bridge": "4.4.*",
-        "symfony/profiler-pack": "^1.0",
         "symfony/stopwatch": "^4.4",
         "symfony/twig-bundle": "^4.4",
         "symfony/var-dumper": "4.4.*",
@@ -64,10 +63,14 @@
         "symfony/monolog-bundle": "^3.7",
         "symfony/options-resolver": "4.4.*",
         "symfony/security-bundle": "4.4.*",
-        "symfony/serializer-pack": "^1.0",
         "symfony/translation": "4.4.*",
         "symfony/validator": "4.4.*",
-        "symfony/yaml": "4.4.*"
+        "symfony/yaml": "4.4.*",
+        "doctrine/annotations": "^1.0",
+        "phpdocumentor/reflection-docblock": "^5.2",
+        "symfony/property-access": "4.4.*",
+        "symfony/property-info": "4.4.*",
+        "symfony/serializer": "4.4.*"
     },
     "autoload": {
         "psr-4": {
