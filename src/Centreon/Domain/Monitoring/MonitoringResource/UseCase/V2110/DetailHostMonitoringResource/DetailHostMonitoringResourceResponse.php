@@ -103,7 +103,9 @@ class DetailHostMonitoringResourceResponse
                 'latency' => $monitoringResource->getLatency(),
                 'last_notification' => $monitoringResource->getLastNotification(),
                 'execution_time' => $monitoringResource->getExecutionTime(),
-                'timezone' => $monitoringResource->getTimezone()
+                'timezone' => $monitoringResource->getTimezone(),
+                'parent' => null,
+                'command_line' => $monitoringResource->getCommandLine(),
             ];
         }
         return null;

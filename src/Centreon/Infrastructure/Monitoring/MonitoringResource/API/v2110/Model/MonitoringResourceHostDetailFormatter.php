@@ -83,6 +83,8 @@ class MonitoringResourceHostDetailFormatter
         $newMonitoringResource->next_check = $hostMonitoringResourceDetail['next_check'];
         $newMonitoringResource->notification_number = $hostMonitoringResourceDetail['notification_number'];
         $newMonitoringResource->percent_state_change = $hostMonitoringResourceDetail['percent_state_change'];
+        $newMonitoringResource->parent = $hostMonitoringResourceDetail['parent'];
+        $newMonitoringResource->command_line = $hostMonitoringResourceDetail['command_line'];
 
         return $newMonitoringResource;
     }

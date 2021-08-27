@@ -23,15 +23,16 @@ declare(strict_types=1);
 namespace Tests\Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\API\Model;
 
 use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110 as UseCase;
 use Tests\Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResourceTest;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Model\MonitoringResourceMetaServiceDetailFormatter;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Model\MonitoringResourceHostDetailFormatter;
 
 /**
  * @package  Tests\Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\API\Model
  */
-class MonitoringResourceMetaServiceDetailFormatterTest extends TestCase
+class MonitoringResourceHostDetailFormatterTest extends TestCase
 {
     /**
      * @var MonitoringResource
@@ -41,10 +42,12 @@ class MonitoringResourceMetaServiceDetailFormatterTest extends TestCase
     protected function setUp(): void
     {
         $this->monitoringResource = (MonitoringResourceTest::createEntity())
-            ->setType('metaservice')
+            ->setType('host')
             ->setParent(null)
-            ->setServiceId(20)
-            ->setHostId(1);
+            ->setStatus((new ResourceStatus())
+                ->setCode(0)
+                ->setName(ResourceStatus::STATUS_NAME_UP)
+                ->setSeverityCode(ResourceStatus::SEVERITY_OK));
     }
 
     /**
@@ -52,8 +55,8 @@ class MonitoringResourceMetaServiceDetailFormatterTest extends TestCase
      */
     public function testCreateFromResponse(): void
     {
-        $response = new UseCase\DetailMetaServiceMonitoringResource\DetailMetaServiceMonitoringResourceResponse();
-        $response->setMetaServiceMonitoringResourceDetail($this->monitoringResource);
+        $response = new UseCase\DetailHostMonitoringResource\DetailHostMonitoringResourceResponse();
+        $response->setHostMonitoringResourceDetail($this->monitoringResource);
         $responseLinks = [
                 'endpoints' => [
                     'detail' => 'details_endpoint',
@@ -61,21 +64,21 @@ class MonitoringResourceMetaServiceDetailFormatterTest extends TestCase
                     'acknowledgement' => 'acknowledgement_endpoint',
                     'timeline' => 'timeline_endpoint',
                     'status_graph' => 'status_graph_endpoint',
-                    'performance_graph' => 'performance_graph_endpoint',
-                    'metric_list' => 'metric_list_endpoint'
+                    'performance_graph' => 'performance_graph_endpoint'
                 ],
                 'uris' => [
                     'configuration' => 'configuration_uri',
+                    'reporting' => 'reporting_uri',
                     'logs' => 'logs_uri'
                 ]
         ];
-        $monitoringResource = MonitoringResourceMetaServiceDetailFormatter::createFromResponse($response, $responseLinks);
+        $monitoringResource = MonitoringResourceHostDetailFormatter::createFromResponse($response, $responseLinks);
 
-        $monitoringResourceDetail = $response->getMetaServiceMonitoringResourceDetail();
+        $monitoringResourceDetail = $response->getHostMonitoringResourceDetail();
 
         $this->assertCount(
-            count($response->getMetaServiceMonitoringResourceDetail()),
-            $response->getMetaServiceMonitoringResourceDetail()
+            count($response->getHostMonitoringResourceDetail()),
+            $response->getHostMonitoringResourceDetail()
         );
 
         $this->assertEquals($monitoringResourceDetail['uuid'], $monitoringResource->uuid);
@@ -120,6 +123,10 @@ class MonitoringResourceMetaServiceDetailFormatterTest extends TestCase
             $monitoringResource->links['uris']['configuration']
         );
         $this->assertEquals(
+            $responseLinks['uris']['reporting'],
+            $monitoringResource->links['uris']['reporting']
+        );
+        $this->assertEquals(
             $responseLinks['endpoints']['detail'],
             $monitoringResource->links['endpoints']['detail']
         );
@@ -136,28 +143,12 @@ class MonitoringResourceMetaServiceDetailFormatterTest extends TestCase
             $monitoringResource->links['endpoints']['timeline']
         );
         $this->assertEquals(
-            $responseLinks['endpoints']['status_graph'],
-            $monitoringResource->links['endpoints']['status_graph']
-        );
-        $this->assertEquals(
-            $responseLinks['endpoints']['performance_graph'],
-            $monitoringResource->links['endpoints']['performance_graph']
-        );
-        $this->assertEquals(
-            $responseLinks['endpoints']['metric_list'],
-            $monitoringResource->links['endpoints']['metric_list']
-        );
-        $this->assertEquals(
             $monitoringResourceDetail['links']['externals']['action_url'],
             $monitoringResource->links['externals']['action_url']
         );
         $this->assertEquals(
             $monitoringResourceDetail['links']['externals']['notes'],
             $monitoringResource->links['externals']['notes']
-        );
-        $this->assertEquals(
-            $monitoringResourceDetail['calculation_type'],
-            $monitoringResource->calculation_type
         );
     }
 }

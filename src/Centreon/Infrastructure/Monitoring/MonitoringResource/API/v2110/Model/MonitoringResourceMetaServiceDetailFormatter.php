@@ -84,6 +84,7 @@ class MonitoringResourceMetaServiceDetailFormatter
         $newMonitoringResource->notification_number = $metaServiceMonitoringResourceDetail['notification_number'];
         $newMonitoringResource->percent_state_change = $metaServiceMonitoringResourceDetail['percent_state_change'];
         $newMonitoringResource->calculation_type = $metaServiceMonitoringResourceDetail['calculation_type'];
+        $newMonitoringResource->parent = $metaServiceMonitoringResourceDetail['parent'];
 
         return $newMonitoringResource;
     }
