@@ -152,9 +152,28 @@ class MonitoringResourceController extends AbstractController
         // Use case to get details of the monitoring resource
         $response = $detailHostMonitoringResource->execute($filter);
 
+        $hostMonitoringResource = $response->getHostMonitoringResourceDetail();
+
+        if (
+            $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND) ||
+            $contact->isAdmin()
+        ) {
+            try {
+                $host = (new Host())->setId($hostMonitoringResource['id'])
+                    ->setCheckCommand($hostMonitoringResource['command_line']);
+                $this->monitoring->hidePasswordInHostCommandLine($host);
+                $hostMonitoringResource['command_line'] = $host->getCheckCommand();
+            } catch (\Throwable $ex) {
+                $hostMonitoringResource['command_line'] =
+                    sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage());
+            }
+        } else {
+            $hostMonitoringResource['command_line'] = null;
+        }
+
         // Add Links to the monitoring resource
         $hostMonitoringResourceLinks = $this->generateMonitoringResourceLinks(
-            $response->getHostMonitoringResourceDetail(),
+            $hostMonitoringResource,
             $contact
         );
 
