@@ -174,7 +174,6 @@ class MonitoringResourceTest extends TestCase
             ->setCommandLine('/usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 -n 3 -w 200,20% -c 400,50%')
             ->setMonitoringServerName('Central')
             ->setTimeZone(':Europe/Paris')
-            ->setParent(null)
             ->setStatus((new ResourceStatus())
                 ->setCode(2)
                 ->setName(ResourceStatus::STATUS_NAME_CRITICAL)

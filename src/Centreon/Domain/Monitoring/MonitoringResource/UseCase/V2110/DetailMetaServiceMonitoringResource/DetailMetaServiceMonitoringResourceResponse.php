@@ -107,6 +107,7 @@ class DetailMetaServiceMonitoringResourceResponse
                 'timezone' => $monitoringResource->getTimezone(),
                 'command_line' => $monitoringResource->getCommandLine(),
                 'calculation_type' => $monitoringResource->getCalculationType(),
+                'parent' => null
             ];
         }
         return null;
