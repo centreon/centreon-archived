@@ -40,7 +40,8 @@ Feature:
         {
           "type": "host",
           "id": <hostId>,
-          "name": <hostName>
+          "name": <hostName>,
+          "parent": null
         }
       ]
     }
@@ -57,7 +58,8 @@ Feature:
         {
           "type": "host",
           "id": <hostId>,
-          "name": <hostName>
+          "name": <hostName>,
+          "parent": null
         }
       ]
     }
