@@ -299,7 +299,9 @@ describe(Actions, () => {
             with_services: true,
           },
 
-          resources: map(pick(['type', 'id', 'parent']), selectedResources),
+          resources: map(pick(['type', 'id', 'name', 'parent']),
+            selectedResources
+          ),
         },
         expect.anything(),
       ),
@@ -457,7 +459,7 @@ describe(Actions, () => {
             start_time: '2020-01-01T00:00:00Z',
             with_services: true,
           },
-          resources: map(pick(['type', 'id', 'parent']), selectedResources),
+          resources: map(pick(['type', 'id', 'name', 'parent']), selectedResources),
         },
         expect.anything(),
       ),
@@ -483,7 +485,7 @@ describe(Actions, () => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         checkEndpoint,
         {
-          resources: map(pick(['type', 'id', 'parent']), selectedResources),
+          resources: map(pick(['type', 'id', 'name', 'parent']), selectedResources),
         },
         expect.anything(),
       );

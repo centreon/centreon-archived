@@ -36,7 +36,7 @@ const acknowledgeResources =
           is_notify_contacts: params.notify,
           with_services: params.acknowledgeAttachedResources,
         },
-        resources: map(pick(['type', 'id', 'parent']), resources),
+        resources: map(pick(['type', 'id', 'name', 'parent']), resources),
       },
       { cancelToken },
     );
@@ -73,7 +73,7 @@ const setDowntimeOnResources =
           start_time: params.startTime,
           with_services: params.downtimeAttachedResources,
         },
-        resources: map(pick(['type', 'id', 'parent']), resources),
+        resources: map(pick(['type', 'id', 'name', 'parent']), resources),
       },
       { cancelToken },
     );
@@ -91,7 +91,7 @@ const checkResources = ({
   return axios.post(
     checkEndpoint,
     {
-      resources: map(pick(['type', 'id', 'parent']), resources),
+      resources: map(pick(['type', 'id', 'name', 'parent']), resources),
     },
     { cancelToken },
   );
@@ -117,7 +117,7 @@ const commentResources =
       commentEndpoint,
       {
         resources: resources.map((resource) => ({
-          ...pick(['id', 'type', 'parent'], resource),
+          ...pick(['id', 'type', 'name', 'parent'], resource),
           comment: parameters.comment,
           date: parameters.date,
         })),

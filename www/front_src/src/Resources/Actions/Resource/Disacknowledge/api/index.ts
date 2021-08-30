@@ -23,7 +23,7 @@ const disacknowledgeResources =
         disacknowledgement: {
           with_services: disacknowledgeAttachedResources,
         },
-        resources: map(pick(['type', 'id', 'parent']), resources),
+        resources: map(pick(['type', 'id', 'name', 'parent']), resources),
       },
     });
   };
