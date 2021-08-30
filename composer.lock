@@ -6662,16 +6662,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-delegate-authentication",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "da483a087d306a0bf35090505ca850628bb15675"
+                "reference": "05e43f3fc7ef2394039ab2adac0a539bffcaf4e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/da483a087d306a0bf35090505ca850628bb15675",
-                "reference": "da483a087d306a0bf35090505ca850628bb15675",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/05e43f3fc7ef2394039ab2adac0a539bffcaf4e3",
+                "reference": "05e43f3fc7ef2394039ab2adac0a539bffcaf4e3",
                 "shasum": ""
             },
             "require": {
@@ -6690,6 +6690,7 @@
                 "behat/mink": "Browser controller/emulator abstraction for PHP",
                 "behat/mink-selenium2-driver": "Mink driver using Selenium"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6718,7 +6719,7 @@
             ],
             "support": {
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
-                "source": "https://github.com/centreon/centreon-test-lib/tree/delegate-authentication"
+                "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
             "time": "2021-07-20T14:50:19+00:00"
         },
