@@ -186,3 +186,11 @@ Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource:
             type: bool
             groups:
                 - 'resource_main'
+        hostId:
+            type: int
+            groups:
+                - 'resource_main'
+        serviceId:
+            type: int
+            groups:
+                - 'resource_main'
