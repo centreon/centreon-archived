@@ -4290,7 +4290,6 @@ components:
           type: array
           items:
             allOf:
-              - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Host'
               - $ref: '#/components/schemas/Monitoring.Resource.Disacknowledge.Service'
     Acknowledgement.Disacknowledge.Bulk:
       type: object
@@ -4736,7 +4735,7 @@ components:
         type:
           type: string
           description: "Type of the resource"
-          example: "service|host"
+          example: "host"
         id:
           type: integer
           format: int32
@@ -4752,7 +4751,7 @@ components:
         type:
           type: string
           description: "Type of the resource"
-          example: "service|host"
+          example: "service"
         id:
           type: integer
           format: int32
@@ -4764,6 +4763,7 @@ components:
           example: "Ping"
         parent:
           type: object
+          nullable: true
           properties:
             id:
               type: integer
