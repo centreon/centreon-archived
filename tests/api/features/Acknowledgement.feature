@@ -43,15 +43,9 @@ Feature:
       ]
     }
     """
-<<<<<<< HEAD
     Then I wait to get 1 result from "/api/v21.10/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
 
     When I send a DELETE request to '/api/v21.10/monitoring/resources/acknowledgements' with body:
-=======
-    Then I wait to get 1 result from "/api/beta/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
-
-    When I send a DELETE request to '/api/beta/monitoring/resources/acknowledgements' with body:
->>>>>>> dc8cae143f (enh(authentication): Implement Delegated Authentication global mechanism with Local Provider (#9582))
     """
     {
       "disacknowledgement": {
@@ -65,8 +59,4 @@ Feature:
       ]
     }
     """
-<<<<<<< HEAD
     Then I wait to get 0 result from "/api/v21.10/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
-=======
-    Then I wait to get 0 result from "/api/beta/monitoring/hosts/<hostId>/acknowledgements" (tries: 30)
->>>>>>> dc8cae143f (enh(authentication): Implement Delegated Authentication global mechanism with Local Provider (#9582))
