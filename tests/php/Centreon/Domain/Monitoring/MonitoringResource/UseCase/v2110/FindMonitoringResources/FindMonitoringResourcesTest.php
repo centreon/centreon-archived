@@ -20,11 +20,12 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\Monitoring\MetaServiceConfiguration\UseCase\v2110\FindMonitoringResources;
+namespace Tests\Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\FindMonitoringResources;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Monitoring\ResourceFilter;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\Monitoring\MonitoringResource\MonitoringResourceService;
 use Tests\Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResourceTest;
 use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\FindMonitoringResources\FindMonitoringResources;
@@ -38,31 +39,16 @@ class FindMonitoringResourcesTest extends TestCase
      * @var MonitoringResourceService&\PHPUnit\Framework\MockObject\MockObject
      */
     private $monitoringResourceService;
+
     /**
      * @var MonitoringResource
      */
     private $monitoringResource;
 
-    /**
-     * @var ResourceFilter
-     */
-    private $resourceFilter;
-
     protected function setUp(): void
     {
         $this->monitoringResourceService = $this->createMock(MonitoringResourceService::class);
-        $this->monitoringResource = MonitoringResourceTest::createEntity();
-    }
-
-    /**
-     * @return FindMonitoringResources
-     */
-    private function createHostCategoryUseCase(): FindMonitoringResources
-    {
-        $contact = new Contact();
-        $contact->setAdmin(true);
-
-        return (new FindMonitoringResources($this->monitoringResourceService, $contact));
+        $this->monitoringResource = MonitoringResourceTest::createServiceMonitoringResourceEntity();
     }
 
     /**

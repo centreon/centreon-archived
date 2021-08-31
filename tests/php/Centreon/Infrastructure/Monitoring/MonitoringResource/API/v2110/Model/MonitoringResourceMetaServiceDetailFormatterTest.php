@@ -40,11 +40,12 @@ class MonitoringResourceMetaServiceDetailFormatterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->monitoringResource = (MonitoringResourceTest::createEntity())
+        $this->monitoringResource = (MonitoringResourceTest::createServiceMonitoringResourceEntity())
             ->setType('metaservice')
             ->setParent(null)
             ->setServiceId(20)
-            ->setHostId(1);
+            ->setHostId(1)
+            ->setCalculationType('average');
     }
 
     /**

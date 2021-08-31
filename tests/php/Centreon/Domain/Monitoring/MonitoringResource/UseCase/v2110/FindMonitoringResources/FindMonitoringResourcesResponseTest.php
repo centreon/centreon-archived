@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\Monitoring\MetaServiceConfiguration\UseCase\v2110\FindMonitoringResources;
 
-use Centreon\Domain\HostConfiguration\UseCase\V2110\HostCategory\FindHostCategoriesResponse;
 use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\FindMonitoringResources\FindMonitoringResourcesResponse;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResourceTest;
@@ -47,7 +46,7 @@ class FindMonitoringResourcesResponseTest extends TestCase
      */
     public function testNotEmptyResponse(): void
     {
-        $monitoringResource = MonitoringResourceTest::createEntity();
+        $monitoringResource = MonitoringResourceTest::createServiceMonitoringResourceEntity();
         $response = new FindMonitoringResourcesResponse();
         $response->setMonitoringResources([$monitoringResource]);
         $monitoringResources = $response->getMonitoringResources();

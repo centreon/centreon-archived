@@ -56,7 +56,7 @@ class MonitoringResourceTest extends TestCase
                 'MonitoringResource::name'
             )->getMessage()
         );
-        (self::createEntity())->setName($resourceName);
+        (self::createServiceMonitoringResourceEntity())->setName($resourceName);
     }
 
     /**
@@ -64,7 +64,7 @@ class MonitoringResourceTest extends TestCase
      */
     public function testUuidGeneration(): void
     {
-        $uuid = (self::createEntity())->getUuid();
+        $uuid = (self::createServiceMonitoringResourceEntity())->getUuid();
         $this->assertEquals('h1-s10', $uuid);
     }
 
@@ -75,7 +75,7 @@ class MonitoringResourceTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Invalid resource type %s', 'meta'));
-        (self::createEntity())->setType('meta');
+        (self::createServiceMonitoringResourceEntity())->setType('meta');
     }
 
     /**
@@ -91,7 +91,7 @@ class MonitoringResourceTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('One of the elements provided is not a Downtime instance');
 
-        (self::createEntity())->setDowntimes($downtimes); // @phpstan-ignore-line
+        (self::createServiceMonitoringResourceEntity())->setDowntimes($downtimes); // @phpstan-ignore-line
     }
 
     /**
@@ -107,7 +107,7 @@ class MonitoringResourceTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('One of the elements provided is not a ResourceGroup type');
 
-        (self::createEntity())->setGroups($resourceGroups); // @phpstan-ignore-line
+        (self::createServiceMonitoringResourceEntity())->setGroups($resourceGroups); // @phpstan-ignore-line
     }
 
     /**
@@ -115,7 +115,7 @@ class MonitoringResourceTest extends TestCase
      */
     public function testShortTypeGeneration(): void
     {
-        $serviceMonitoringResourceType = self::createEntity();
+        $serviceMonitoringResourceType = self::createServiceMonitoringResourceEntity();
         $hostMonitoringResourceType = $serviceMonitoringResourceType->getParent();
         $metaServiceMonitoringResourceType = new MonitoringResource(1, 'metaName', 'metaservice');
         $this->assertEquals('s', $serviceMonitoringResourceType->getShortType());
@@ -128,13 +128,13 @@ class MonitoringResourceTest extends TestCase
      * @throws \Assert\AssertionFailedException
      * @throws \InvalidArgumentException
      */
-    public static function createEntity(): MonitoringResource
+    public static function createHostMonitoringResourceEntity(): MonitoringResource
     {
         $externalLinks = (new ResourceExternalLinks())
             ->setNotes((new Notes('http://www.notes-url.com'))->setLabel('Notes Label'))
             ->setActionUrl('http://action-url.com');
 
-        $parentResource = (new MonitoringResource(1, 'parentResourceName', 'host'))
+        return (new MonitoringResource(1, 'parentResourceName', 'host'))
             ->setAlias('parentResourceAlias')
             ->setFqdn('localhost')
             ->setHostId(null)
@@ -173,6 +173,20 @@ class MonitoringResourceTest extends TestCase
             ->setHasGraphData(false)
             ->setLinks((new ResourceLinks())
                 ->setExternals($externalLinks));
+    }
+
+    /**
+     * @return MonitoringResource
+     * @throws \Assert\AssertionFailedException
+     * @throws \InvalidArgumentException
+     */
+    public static function createServiceMonitoringResourceEntity(): MonitoringResource
+    {
+        $externalLinks = (new ResourceExternalLinks())
+            ->setNotes((new Notes('http://www.notes-url.com'))->setLabel('Notes Label'))
+            ->setActionUrl('http://action-url.com');
+
+        $parentResource = MonitoringResourceTest::createHostMonitoringResourceEntity();
 
         return (new MonitoringResource(10, 'resourceName', 'service'))
             ->setAlias('resourceAlias')

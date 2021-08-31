@@ -41,13 +41,7 @@ class MonitoringResourceHostDetailFormatterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->monitoringResource = (MonitoringResourceTest::createEntity())
-            ->setType('host')
-            ->setParent(null)
-            ->setStatus((new ResourceStatus())
-                ->setCode(0)
-                ->setName(ResourceStatus::STATUS_NAME_UP)
-                ->setSeverityCode(ResourceStatus::SEVERITY_OK));
+        $this->monitoringResource = (MonitoringResourceTest::createHostMonitoringResourceEntity());
     }
 
     /**

@@ -40,7 +40,7 @@ class MonitoringResourceFormatterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->monitoringResource = MonitoringResourceTest::createEntity();
+        $this->monitoringResource = MonitoringResourceTest::createServiceMonitoringResourceEntity();
     }
 
     /**
