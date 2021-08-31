@@ -42,16 +42,11 @@ Feature:
     """
     And the configuration is generated and exported
     And I wait until service "test_service1" from host "test" is monitored
-<<<<<<< HEAD
     And I send a GET request to '/api/v21.10/monitoring/services?search={"$and":[{"host.name":"test"},{"service.description":"test_service1"}]}'
-=======
-    And I send a GET request to '/api/beta/monitoring/services?search={"$and":[{"host.name":"test"},{"service.description":"test_service1"}]}'
->>>>>>> dc8cae143f (enh(authentication): Implement Delegated Authentication global mechanism with Local Provider (#9582))
     And I store response values in:
       | name      | path              |
       | hostId    | result[0].host.id |
       | serviceId | result[0].id      |
-<<<<<<< HEAD
     And I send a POST request to '/api/v21.10/monitoring/hosts/<hostId>/services/<serviceId>/check' with body:
     """
     {}
@@ -59,14 +54,5 @@ Feature:
     And I wait to get 1 result from "/api/v21.10/monitoring/hosts/<hostId>/services/<serviceId>/timeline" (tries: 30)
 
     When I send a GET request to '/api/v21.10/monitoring/hosts/<hostId>/services/<serviceId>/timeline?search={"type":"event"}'
-=======
-    And I send a POST request to '/api/beta/monitoring/hosts/<hostId>/services/<serviceId>/check' with body:
-    """
-    {}
-    """
-    And I wait to get 1 result from "/api/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline" (tries: 30)
-
-    When I send a GET request to '/api/beta/monitoring/hosts/<hostId>/services/<serviceId>/timeline?search={"type":"event"}'
->>>>>>> dc8cae143f (enh(authentication): Implement Delegated Authentication global mechanism with Local Provider (#9582))
 
     Then the JSON node "result[0].status.name" should be equal to the string "UNKNOWN"
