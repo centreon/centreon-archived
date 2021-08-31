@@ -331,7 +331,7 @@ class Assertion
     }
 
     /**
-     * Assert that value is a boolean.
+     * Assert that value is a date.
      *
      * @param mixed $value Value to test
      * @param string $format date format handled by date()

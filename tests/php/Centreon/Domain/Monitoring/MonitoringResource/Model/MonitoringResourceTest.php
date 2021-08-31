@@ -29,6 +29,9 @@ use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\ResourceGroup;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
+use Centreon\Domain\Monitoring\Notes;
+use Centreon\Domain\Monitoring\ResourceExternalLinks;
+use Centreon\Domain\Monitoring\ResourceLinks;
 use Centreon\Domain\Monitoring\ResourceStatus;
 
 /**
@@ -127,6 +130,10 @@ class MonitoringResourceTest extends TestCase
      */
     public static function createEntity(): MonitoringResource
     {
+        $externalLinks = (new ResourceExternalLinks())
+            ->setNotes((new Notes('http://www.notes-url.com'))->setLabel('Notes Label'))
+            ->setActionUrl('http://action-url.com');
+
         $parentResource = (new MonitoringResource(1, 'parentResourceName', 'host'))
             ->setAlias('parentResourceAlias')
             ->setFqdn('localhost')
@@ -163,7 +170,9 @@ class MonitoringResourceTest extends TestCase
             ->setGroups([new ResourceGroup(1, 'resourceGroupName')])
             ->setCalculationType('average')
             ->setNotificationEnabled(true)
-            ->setHasGraphData(false);
+            ->setHasGraphData(false)
+            ->setLinks((new ResourceLinks())
+                ->setExternals($externalLinks));
 
         return (new MonitoringResource(10, 'resourceName', 'service'))
             ->setAlias('resourceAlias')
@@ -201,6 +210,8 @@ class MonitoringResourceTest extends TestCase
             ->setCalculationType('average')
             ->setNotificationEnabled(true)
             ->setHasGraphData(true)
+            ->setLinks((new ResourceLinks())
+                ->setExternals($externalLinks))
             ->setParent($parentResource);
     }
 }
