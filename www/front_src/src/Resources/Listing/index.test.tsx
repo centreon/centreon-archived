@@ -215,7 +215,7 @@ describe(Listing, () => {
       });
     });
 
-    it.each(
+    it.only.each(
       columns
         .filter(({ sortable }) => sortable !== false)
         .filter(({ id }) => includes(id, defaultSelectedColumnIds))
@@ -239,8 +239,6 @@ describe(Listing, () => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
               sort: { [sortBy]: 'desc' },
-              states: [],
-              statuses: [],
             }),
             cancelTokenRequestParam,
           );
@@ -252,8 +250,6 @@ describe(Listing, () => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
               sort: { [sortBy]: 'asc' },
-              states: [],
-              statuses: [],
             }),
             cancelTokenRequestParam,
           ),
