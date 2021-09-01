@@ -36,8 +36,6 @@ class ReloadAllConfigurations
 {
     use LoggerTrait;
 
-    public const SUCCESS_MESSAGE = 'Success';
-
     /**
      * @var MonitoringServerConfigurationRepositoryInterface
      */
@@ -61,10 +59,9 @@ class ReloadAllConfigurations
     }
 
     /**
-     * @return GenerateReloadConfigurationResponse
      * @throws ConfigurationMonitoringServerException
      */
-    public function execute(): GenerateReloadConfigurationResponse
+    public function execute(): void
     {
         try {
             $monitoringServers = $this->monitoringServerRepository->findServersWithRequestParameters();
@@ -72,9 +69,8 @@ class ReloadAllConfigurations
             throw ConfigurationMonitoringServerException::errorRetrievingMonitoringServers($ex);
         }
 
-        $message = self::SUCCESS_MESSAGE;
-        $isSuccess = true;
         $lastMonitoringServerId = 0;
+
         try {
             foreach ($monitoringServers as $monitoringServer) {
                 $lastMonitoringServerId = $monitoringServer->getId();
@@ -86,12 +82,10 @@ class ReloadAllConfigurations
                 }
             }
         } catch (\Exception $ex) {
-            $isSuccess = false;
-            $message = ConfigurationMonitoringServerException::errorOnReload(
+            throw ConfigurationMonitoringServerException::errorOnReload(
                 $lastMonitoringServerId,
                 $ex->getMessage()
-            )->getMessage();
+            );
         }
-        return new GenerateReloadConfigurationResponse($isSuccess, $message);
     }
 }

@@ -94,15 +94,13 @@ class GenerateConfigurationTest extends TestCase
             $this->monitoringServerRepository,
             $this->monitoringServerConfigurationRepository
         );
-        $response = $useCase->execute($this->monitoringServer->getId());
-        $this->assertFalse($response->isSuccess());
-        $this->assertEquals(
-            ConfigurationMonitoringServerException::errorOnGeneration(
-                $this->monitoringServer->getId(),
-                $repositoryException->getMessage()
-            )->getMessage(),
-            $response->getMessage()
-        );
+        $this->expectException(ConfigurationMonitoringServerException::class);
+        $this->expectExceptionMessage(ConfigurationMonitoringServerException::errorOnGeneration(
+            $this->monitoringServer->getId(),
+            $repositoryException->getMessage()
+        )->getMessage());
+
+        $useCase->execute($this->monitoringServer->getId());
     }
 
     public function testSuccess(): void
@@ -126,8 +124,6 @@ class GenerateConfigurationTest extends TestCase
             $this->monitoringServerRepository,
             $this->monitoringServerConfigurationRepository
         );
-        $response = $useCase->execute($this->monitoringServer->getId());
-        $this->assertTrue($response->isSuccess());
-        $this->assertEquals(GenerateConfiguration::SUCCESS_MESSAGE, $response->getMessage());
+        $useCase->execute($this->monitoringServer->getId());
     }
 }

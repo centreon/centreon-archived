@@ -36,8 +36,6 @@ class GenerateAllConfigurations
 {
     use LoggerTrait;
 
-    public const SUCCESS_MESSAGE = 'Success';
-
     /**
      * @var MonitoringServerConfigurationRepositoryInterface
      */
@@ -61,10 +59,9 @@ class GenerateAllConfigurations
     }
 
     /**
-     * @return GenerateReloadConfigurationResponse
      * @throws ConfigurationMonitoringServerException
      */
-    public function execute(): GenerateReloadConfigurationResponse
+    public function execute(): void
     {
         try {
             $monitoringServers = $this->monitoringServerRepository->findServersWithRequestParameters();
@@ -72,8 +69,6 @@ class GenerateAllConfigurations
             throw ConfigurationMonitoringServerException::errorRetrievingMonitoringServers($ex);
         }
 
-        $message = self::SUCCESS_MESSAGE;
-        $isSuccess = true;
         $lastMonitoringServerId = 0;
         try {
             foreach ($monitoringServers as $monitoringServer) {
@@ -88,12 +83,10 @@ class GenerateAllConfigurations
                 }
             }
         } catch (\Exception $ex) {
-            $isSuccess = false;
-            $message = ConfigurationMonitoringServerException::errorOnGeneration(
+            throw ConfigurationMonitoringServerException::errorOnGeneration(
                 $lastMonitoringServerId,
                 $ex->getMessage()
-            )->getMessage();
+            );
         }
-        return new GenerateReloadConfigurationResponse($isSuccess, $message);
     }
 }

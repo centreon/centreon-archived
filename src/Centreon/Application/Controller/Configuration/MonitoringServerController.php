@@ -42,6 +42,8 @@ use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface
  */
 class MonitoringServerController extends AbstractController
 {
+    private const SUCCESS_MESSAGE = 'Success';
+
     /**
      * @var MonitoringServerServiceInterface
      */
@@ -87,10 +89,18 @@ class MonitoringServerController extends AbstractController
     public function generateConfiguration(GenerateConfiguration $generateConfiguration, int $monitoringServerId): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $response = $generateConfiguration->execute($monitoringServerId);
+        $status = 1;
+        $message = self::SUCCESS_MESSAGE;
+        try {
+            $generateConfiguration->execute($monitoringServerId);
+        } catch (\Exception $ex) {
+            $status = 0;
+            $message = $ex->getMessage();
+        }
+
         return $this->view([
-            'status' => (int) $response->isSuccess(),
-            'message' => $response->getMessage()
+            'status' => $status,
+            'message' => $message
         ]);
     }
 
@@ -102,10 +112,18 @@ class MonitoringServerController extends AbstractController
     public function generateAllConfigurations(GenerateAllConfigurations $generateAllConfigurations): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $response = $generateAllConfigurations->execute();
+        $status = 1;
+        $message = self::SUCCESS_MESSAGE;
+        try {
+            $generateAllConfigurations->execute();
+        } catch (\Exception $ex) {
+            $status = 0;
+            $message = $ex->getMessage();
+        }
+
         return $this->view([
-            'status' => (int) $response->isSuccess(),
-            'message' => $response->getMessage()
+            'status' => $status,
+            'message' => $message
         ]);
     }
 
@@ -118,10 +136,18 @@ class MonitoringServerController extends AbstractController
     public function reloadConfiguration(ReloadConfiguration $reloadConfiguration, int $monitoringServerId): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $response = $reloadConfiguration->execute($monitoringServerId);
+        $status = 1;
+        $message = self::SUCCESS_MESSAGE;
+        try {
+            $reloadConfiguration->execute($monitoringServerId);
+        } catch (\Exception $ex) {
+            $status = 0;
+            $message = $ex->getMessage();
+        }
+
         return $this->view([
-            'status' => (int) $response->isSuccess(),
-            'message' => $response->getMessage()
+            'status' => $status,
+            'message' => $message
         ]);
     }
 
@@ -133,10 +159,17 @@ class MonitoringServerController extends AbstractController
     public function reloadAllConfigurations(ReloadAllConfigurations $reloadAllConfigurations): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $response = $reloadAllConfigurations->execute();
+        $status = 1;
+        $message = self::SUCCESS_MESSAGE;
+        try {
+            $reloadAllConfigurations->execute();
+        } catch (\Exception $ex) {
+            $status = 0;
+            $message = $ex->getMessage();
+        }
         return $this->view([
-            'status' => (int) $response->isSuccess(),
-            'message' => $response->getMessage()
+            'status' => $status,
+            'message' => $message
         ]);
     }
 
@@ -154,13 +187,18 @@ class MonitoringServerController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
-        $response = $generateConfiguration->execute($monitoringServerId);
-        if ($response->isSuccess()) {
-            $response = $reloadConfiguration->execute($monitoringServerId);
+        $status = 1;
+        $message = self::SUCCESS_MESSAGE;
+        try {
+            $generateConfiguration->execute($monitoringServerId);
+            $reloadConfiguration->execute($monitoringServerId);
+        } catch (\Exception $ex) {
+            $status = 0;
+            $message = $ex->getMessage();
         }
         return $this->view([
-            'status' => (int) $response->isSuccess(),
-            'message' => $response->getMessage()
+            'status' => $status,
+            'message' => $message
         ]);
     }
 
@@ -176,13 +214,18 @@ class MonitoringServerController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
-        $response = $generateAllConfigurations->execute();
-        if ($response->isSuccess()) {
-            $response = $reloadAllConfigurations->execute();
+        $status = 1;
+        $message = self::SUCCESS_MESSAGE;
+        try {
+            $generateAllConfigurations->execute();
+            $reloadAllConfigurations->execute();
+        } catch (\Exception $ex) {
+            $status = 0;
+            $message = $ex->getMessage();
         }
         return $this->view([
-            'status' => (int) $response->isSuccess(),
-            'message' => $response->getMessage()
+            'status' => $status,
+            'message' => $message
         ]);
     }
 }

@@ -36,8 +36,6 @@ class ReloadConfiguration
 {
     use LoggerTrait;
 
-    public const SUCCESS_MESSAGE = 'Success';
-
     /**
      * @var MonitoringServerRepositoryInterface
      */
@@ -62,13 +60,11 @@ class ReloadConfiguration
 
     /**
      * @param int $monitoringServerId
-     * @return GenerateReloadConfigurationResponse
      * @throws EntityNotFoundException
+     * @throws ConfigurationMonitoringServerException
      */
-    public function execute(int $monitoringServerId): GenerateReloadConfigurationResponse
+    public function execute(int $monitoringServerId): void
     {
-        $message = self::SUCCESS_MESSAGE;
-        $isSuccess = true;
         try {
             $monitoringServer = $this->monitoringServerRepository->findServer($monitoringServerId);
             if ($monitoringServer === null) {
@@ -79,12 +75,10 @@ class ReloadConfiguration
         } catch (EntityNotFoundException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
-            $isSuccess = false;
-            $message = ConfigurationMonitoringServerException::errorOnReload(
+            throw ConfigurationMonitoringServerException::errorOnReload(
                 $monitoringServerId,
                 $ex->getMessage()
-            )->getMessage();
+            );
         }
-        return new GenerateReloadConfigurationResponse($isSuccess, $message);
     }
 }

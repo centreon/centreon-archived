@@ -91,15 +91,13 @@ class GenerateAllConfigurationsTest extends TestCase
             $this->monitoringServerRepository,
             $this->monitoringServerConfigurationRepository
         );
-        $response = $useCase->execute();
-        $this->assertFalse($response->isSuccess());
-        $this->assertEquals(
-            ConfigurationMonitoringServerException::errorOnGeneration(
-                $monitoringServers[0]->getId(),
-                $repositoryException->getMessage()
-            )->getMessage(),
-            $response->getMessage()
-        );
+
+        $this->expectException(ConfigurationMonitoringServerException::class);
+        $this->expectExceptionMessage(ConfigurationMonitoringServerException::errorOnGeneration(
+            $monitoringServers[0]->getId(),
+            $repositoryException->getMessage()
+        )->getMessage());
+        $useCase->execute();
     }
 
     public function testSuccess(): void
@@ -125,8 +123,7 @@ class GenerateAllConfigurationsTest extends TestCase
             $this->monitoringServerRepository,
             $this->monitoringServerConfigurationRepository
         );
-        $response = $useCase->execute();
-        $this->assertTrue($response->isSuccess());
-        $this->assertEquals(GenerateAllConfigurations::SUCCESS_MESSAGE, $response->getMessage());
+
+        $useCase->execute();
     }
 }
