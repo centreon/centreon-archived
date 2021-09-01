@@ -91,15 +91,14 @@ class ReloadAllConfigurationsTest extends TestCase
             $this->monitoringServerRepository,
             $this->monitoringServerConfigurationRepository
         );
-        $response = $useCase->execute();
-        $this->assertFalse($response->isSuccess());
-        $this->assertEquals(
+        $this->expectException(ConfigurationMonitoringServerException::class);
+        $this->expectExceptionMessage(
             ConfigurationMonitoringServerException::errorOnReload(
                 $monitoringServers[0]->getId(),
                 $repositoryException->getMessage()
-            )->getMessage(),
-            $response->getMessage()
+            )->getMessage()
         );
+        $useCase->execute();
     }
 
     public function testSuccess(): void
@@ -120,8 +119,6 @@ class ReloadAllConfigurationsTest extends TestCase
             $this->monitoringServerRepository,
             $this->monitoringServerConfigurationRepository
         );
-        $response = $useCase->execute();
-        $this->assertTrue($response->isSuccess());
-        $this->assertEquals(ReloadAllConfigurations::SUCCESS_MESSAGE, $response->getMessage());
+        $useCase->execute();
     }
 }

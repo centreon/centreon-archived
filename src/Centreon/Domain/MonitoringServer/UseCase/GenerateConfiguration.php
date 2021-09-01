@@ -37,8 +37,6 @@ class GenerateConfiguration
 {
     use LoggerTrait;
 
-    public const SUCCESS_MESSAGE = 'Success';
-
     /**
      * @var MonitoringServerRepositoryInterface
      */
@@ -63,13 +61,11 @@ class GenerateConfiguration
 
     /**
      * @param int $monitoringServerId
-     * @return GenerateReloadConfigurationResponse
      * @throws EntityNotFoundException
+     * @throws ConfigurationMonitoringServerException
      */
-    public function execute(int $monitoringServerId): GenerateReloadConfigurationResponse
+    public function execute(int $monitoringServerId): void
     {
-        $message = self::SUCCESS_MESSAGE;
-        $isSuccess = true;
         try {
             $monitoringServer = $this->monitoringServerRepository->findServer($monitoringServerId);
             if ($monitoringServer === null) {
@@ -82,12 +78,10 @@ class GenerateConfiguration
         } catch (EntityNotFoundException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
-            $isSuccess = false;
-            $message = ConfigurationMonitoringServerException::errorOnGeneration(
+            throw ConfigurationMonitoringServerException::errorOnGeneration(
                 $monitoringServerId,
                 $ex->getMessage()
-            )->getMessage();
+            );
         }
-        return new GenerateReloadConfigurationResponse($isSuccess, $message);
     }
 }
