@@ -48,6 +48,7 @@ const ResourceListing = (): JSX.Element => {
     getCriteriaValue,
     selectedColumnIds,
     setSelectedColumnIds,
+    filter,
   } = useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
@@ -135,6 +136,7 @@ const ResourceListing = (): JSX.Element => {
       columns={columns}
       currentPage={(page || 1) - 1}
       getId={getId}
+      headerMemoProps={[filter]}
       limit={listing?.meta.limit}
       loading={loading}
       memoProps={[
