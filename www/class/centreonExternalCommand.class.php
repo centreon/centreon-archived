@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -59,6 +60,10 @@ class CentreonExternalCommand
     public $debug = 0;
     protected $userAlias;
     protected $userId;
+    /**
+     * @var int Max date for downtime dates defined at 31/12/2037 23:59:00
+     */
+    private $maxDate;
 
     /**
      * CentreonExternalCommand constructor.
@@ -86,6 +91,11 @@ class CentreonExternalCommand
             $this->userId = $centreon->user->get_id();
             $this->userAlias = $centreon->user->get_alias();
         }
+
+        $this->maxDate = (new \DateTime('', new \DateTimeZone("UTC")))
+            ->setDate(\Centreon\Domain\Downtime\Downtime::DOWNTIME_YEAR_MAX, 1, 1)
+            ->setTime(0, 0)
+            ->modify('- 1 minute')->getTimestamp();
     }
 
     /**
@@ -132,7 +142,11 @@ class CentreonExternalCommand
             if ($this->debug) {
                 print "COMMAND BEFORE SEND: $str_remote";
             }
-            $result = file_put_contents($varlib . '/centcore/' . microtime(true) . '-externalcommand.cmd', $str_remote, FILE_APPEND);
+            $result = file_put_contents(
+                $varlib . '/centcore/' . microtime(true) . '-externalcommand.cmd',
+                $str_remote,
+                FILE_APPEND
+            );
             $return_remote = ($result !== false) ? 0 : 1;
         }
 
@@ -525,7 +539,7 @@ class CentreonExternalCommand
         $start_time = $this->getDowntimeTimestampFromDate($start, $timezone, true);
         $end_time = $this->getDowntimeTimestampFromDate($end, $timezone, false);
 
-        if ($end_time == $start_time) {
+        if ($end_time == $start_time || $end_time > $this->maxDate || $start_time > $this->maxDate) {
             return;
         }
 
@@ -603,7 +617,7 @@ class CentreonExternalCommand
         $start_time = $this->getDowntimeTimestampFromDate($start, $timezone, true);
         $end_time = $this->getDowntimeTimestampFromDate($end, $timezone, false);
 
-        if ($end_time == $start_time) {
+        if ($end_time == $start_time || $end_time > $this->maxDate || $start_time > $this->maxDate) {
             return;
         }
 
