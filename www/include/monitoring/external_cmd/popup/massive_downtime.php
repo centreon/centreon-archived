@@ -38,6 +38,8 @@ if (!isset($centreon)) {
     exit();
 }
 
+const DOWNTIME_YEAR_MAX = \Centreon\Domain\Downtime\Downtime::DOWNTIME_YEAR_MAX;
+
 $select = array();
 if (isset($_GET['select'])) {
     foreach ($_GET['select'] as $key => $value) {
@@ -59,7 +61,6 @@ $tpl = new Smarty();
 $tpl = initSmartyTplForPopup($path, $tpl, './templates/', _CENTREON_PATH_);
 
 $form = new HTML_QuickFormCustom('select_form', 'GET', 'main.php');
-
 $form->addElement(
     'header',
     'title',
@@ -101,7 +102,6 @@ $form->addElement(
         'class' => 'datepicker'
     )
 );
-
 $form->addElement(
     'text',
     'start_time',
@@ -112,6 +112,7 @@ $form->addElement(
         'class' => 'timepicker',
     )
 );
+
 $form->addElement(
     'text',
     'end_time',
@@ -262,17 +263,13 @@ $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 
 $defaultFixed = "";
-if (isset($centreon->optGen['monitoring_dwt_fixed']) &&
-    $centreon->optGen['monitoring_dwt_fixed']
-) {
+if (isset($centreon->optGen['monitoring_dwt_fixed']) && $centreon->optGen['monitoring_dwt_fixed']) {
     $defaultFixed = "checked";
 }
 $tpl->assign('defaultFixed', $defaultFixed);
 
 $defaultSetDwtOnSvc = "";
-if (isset($centreon->optGen['monitoring_dwt_svc']) &&
-    $centreon->optGen['monitoring_dwt_svc']
-) {
+if (isset($centreon->optGen['monitoring_dwt_svc']) && $centreon->optGen['monitoring_dwt_svc']) {
     $defaultSetDwtOnSvc = "checked";
 }
 $tpl->assign('defaultSetDwtOnSvc', $defaultSetDwtOnSvc);
@@ -281,4 +278,5 @@ $tpl->assign('o', $o);
 $tpl->assign('p', $p);
 $tpl->assign('cmd', $cmd);
 $tpl->assign('select', $select);
+$tpl->assign('datePickerMaxYear', DOWNTIME_YEAR_MAX - 1);
 $tpl->display("massive_downtime.ihtml");
