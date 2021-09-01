@@ -42,7 +42,9 @@ class MassiveDisacknowledgementValidatorTest extends TestCase
     {
         $this->monitoringResourceValidator = $this->createMock(MonitoringResourceValidatorInterface::class);
         $monitoringResourceValidators = [$this->monitoringResourceValidator];
-        $this->massiveDisacknowledgementValidator = new MassiveDisacknowledgementValidator($monitoringResourceValidators);
+        $this->massiveDisacknowledgementValidator = new MassiveDisacknowledgementValidator(
+            $monitoringResourceValidators
+        );
     }
 
     /**

@@ -70,7 +70,10 @@ class MonitoringResourceMetaServiceDetailFormatterTest extends TestCase
                     'logs' => 'logs_uri'
                 ]
         ];
-        $monitoringResource = MonitoringResourceMetaServiceDetailFormatter::createFromResponse($response, $responseLinks);
+        $monitoringResource = MonitoringResourceMetaServiceDetailFormatter::createFromResponse(
+            $response,
+            $responseLinks
+        );
 
         $monitoringResourceDetail = $response->getMetaServiceMonitoringResourceDetail();
 

@@ -22,8 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource;
 
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource\DetailServiceMonitoringResource;
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource\DetailServiceMonitoringResourceResponse;
+use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource as UseCase;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResourceTest;
 
@@ -37,7 +36,7 @@ class DetailServiceMonitoringResourceResponseTest extends TestCase
      */
     public function testEmptyResponse(): void
     {
-        $response = new DetailServiceMonitoringResourceResponse();
+        $response = new UseCase\DetailServiceMonitoringResourceResponse();
         $monitoringResources = $response->getServiceMonitoringResourceDetail();
         $this->assertCount(0, $monitoringResources);
     }
@@ -48,7 +47,7 @@ class DetailServiceMonitoringResourceResponseTest extends TestCase
     public function testNotEmptyResponse(): void
     {
         $monitoringResource = MonitoringResourceTest::createServiceMonitoringResourceEntity();
-        $response = new DetailServiceMonitoringResourceResponse();
+        $response = new UseCase\DetailServiceMonitoringResourceResponse();
         $response->setServiceMonitoringResourceDetail($monitoringResource);
         $monitoringResourceDetail = $response->getServiceMonitoringResourceDetail();
 
@@ -70,7 +69,10 @@ class DetailServiceMonitoringResourceResponseTest extends TestCase
         $this->assertEquals($monitoringResource->getInDowntime(), $monitoringResourceDetail['in_downtime']);
         $this->assertEquals($monitoringResource->getInformation(), $monitoringResourceDetail['information']);
         $this->assertEquals($monitoringResource->getLastCheck(), $monitoringResourceDetail['last_check']);
-        $this->assertEquals($monitoringResource->getLastStatusChange(), $monitoringResourceDetail['last_status_change']);
+        $this->assertEquals(
+            $monitoringResource->getLastStatusChange(),
+            $monitoringResourceDetail['last_status_change']
+        );
         $this->assertEquals(
             $monitoringResource->getMonitoringServerName(),
             $monitoringResourceDetail['monitoring_server_name']
@@ -117,15 +119,39 @@ class DetailServiceMonitoringResourceResponseTest extends TestCase
         $this->assertEquals($parentMonitoringResource->getFqdn(), $parentMonitoringResourceResponse['fqdn']);
         $this->assertEquals($parentMonitoringResource->getServiceId(), $parentMonitoringResourceResponse['service_id']);
         $this->assertEquals($parentMonitoringResource->getHostId(), $parentMonitoringResourceResponse['host_id']);
-        $this->assertEquals($parentMonitoringResource->getAcknowledged(), $parentMonitoringResourceResponse['acknowledged']);
-        $this->assertEquals($parentMonitoringResource->getActiveChecks(), $parentMonitoringResourceResponse['active_checks']);
+        $this->assertEquals(
+            $parentMonitoringResource->getAcknowledged(),
+            $parentMonitoringResourceResponse['acknowledged']
+        );
+        $this->assertEquals(
+            $parentMonitoringResource->getActiveChecks(),
+            $parentMonitoringResourceResponse['active_checks']
+        );
         $this->assertEquals($parentMonitoringResource->getFlapping(), $parentMonitoringResourceResponse['flapping']);
-        $this->assertEquals($parentMonitoringResource->getIcon()->getName(), $parentMonitoringResourceResponse['icon']['name']);
-        $this->assertEquals($parentMonitoringResource->getIcon()->getUrl(), $parentMonitoringResourceResponse['icon']['url']);
-        $this->assertEquals($parentMonitoringResource->getInDowntime(), $parentMonitoringResourceResponse['in_downtime']);
-        $this->assertEquals($parentMonitoringResource->getInformation(), $parentMonitoringResourceResponse['information']);
-        $this->assertEquals($parentMonitoringResource->getLastCheck(), $parentMonitoringResourceResponse['last_check']);
-        $this->assertEquals($parentMonitoringResource->getLastStatusChange(), $parentMonitoringResourceResponse['last_status_change']);
+        $this->assertEquals(
+            $parentMonitoringResource->getIcon()->getName(),
+            $parentMonitoringResourceResponse['icon']['name']
+        );
+        $this->assertEquals(
+            $parentMonitoringResource->getIcon()->getUrl(),
+            $parentMonitoringResourceResponse['icon']['url']
+        );
+        $this->assertEquals(
+            $parentMonitoringResource->getInDowntime(),
+            $parentMonitoringResourceResponse['in_downtime']
+        );
+        $this->assertEquals(
+            $parentMonitoringResource->getInformation(),
+            $parentMonitoringResourceResponse['information']
+        );
+        $this->assertEquals(
+            $parentMonitoringResource->getLastCheck(),
+            $parentMonitoringResourceResponse['last_check']
+        );
+        $this->assertEquals(
+            $parentMonitoringResource->getLastStatusChange(),
+            $parentMonitoringResourceResponse['last_status_change']
+        );
         $this->assertEquals(
             $parentMonitoringResource->getMonitoringServerName(),
             $parentMonitoringResourceResponse['monitoring_server_name']
@@ -134,11 +160,26 @@ class DetailServiceMonitoringResourceResponseTest extends TestCase
             $parentMonitoringResource->isNotificationEnabled(),
             $parentMonitoringResourceResponse['notification_enabled']
         );
-        $this->assertEquals($parentMonitoringResource->getPassiveChecks(), $parentMonitoringResourceResponse['passive_checks']);
-        $this->assertEquals($parentMonitoringResource->getPerformanceData(), $parentMonitoringResourceResponse['performance_data']);
-        $this->assertEquals($parentMonitoringResource->getSeverityLevel(), $parentMonitoringResourceResponse['severity_level']);
-        $this->assertEquals($parentMonitoringResource->getStatus()->getCode(), $parentMonitoringResourceResponse['status']['code']);
-        $this->assertEquals($parentMonitoringResource->getStatus()->getName(), $parentMonitoringResourceResponse['status']['name']);
+        $this->assertEquals(
+            $parentMonitoringResource->getPassiveChecks(),
+            $parentMonitoringResourceResponse['passive_checks']
+        );
+        $this->assertEquals(
+            $parentMonitoringResource->getPerformanceData(),
+            $parentMonitoringResourceResponse['performance_data']
+        );
+        $this->assertEquals(
+            $parentMonitoringResource->getSeverityLevel(),
+            $parentMonitoringResourceResponse['severity_level']
+        );
+        $this->assertEquals(
+            $parentMonitoringResource->getStatus()->getCode(),
+            $parentMonitoringResourceResponse['status']['code']
+        );
+        $this->assertEquals(
+            $parentMonitoringResource->getStatus()->getName(),
+            $parentMonitoringResourceResponse['status']['name']
+        );
         $this->assertEquals(
             $parentMonitoringResource->getStatus()->getSeverityCode(),
             $parentMonitoringResourceResponse['status']['severity_code']

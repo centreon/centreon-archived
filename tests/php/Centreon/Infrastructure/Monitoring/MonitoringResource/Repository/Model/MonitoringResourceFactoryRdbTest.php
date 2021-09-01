@@ -39,20 +39,20 @@ class MonitoringResourceFactoryRdbTest extends TestCase
     protected function setUp(): void
     {
         $this->realTimeDatabaseData = [
-            "id" => "116", /** done */
-            "type" => "service",/** done */
-            "name" => "proc-sshd",/** done */
-            "alias" => null,/** done */
-            "fqdn" => null,/** done */
-            "host_id" => "27",/** done */
-            "service_id" => "116",/** done */
-            "status_code" => "2",/** done */
-            "status_name" => "CRITICAL",/** done */
-            "status_severity_code" => "1",/** done */
-            "icon_name" => "dog.png",/** done */
-            "icon_url" => "/centreon/img/dog.png",/** done */
-            "command_line" => "/usr/lib/centreon/plugins/centreon_linux_snmp.pl --plugin=os::linux::snmp::plugin ...",/** done */
-            "timezone" => null,/** done */
+            "id" => "116",
+            "type" => "service",
+            "name" => "proc-sshd",
+            "alias" => null,
+            "fqdn" => null,
+            "host_id" => "27",
+            "service_id" => "116",
+            "status_code" => "2",
+            "status_name" => "CRITICAL",
+            "status_severity_code" => "1",
+            "icon_name" => "dog.png",
+            "icon_url" => "/centreon/img/dog.png",
+            "command_line" => "/usr/lib/centreon/plugins/centreon_linux_snmp.pl --plugin=os::linux::snmp::plugin ...",
+            "timezone" => null,
             "parent_id" => "27",
             "parent_name" => "Centreon-Central",
             "parent_type" => "host",

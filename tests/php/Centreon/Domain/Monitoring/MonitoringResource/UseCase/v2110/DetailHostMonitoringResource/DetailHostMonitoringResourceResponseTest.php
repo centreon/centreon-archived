@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Tests\Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource;
 
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource\DetailHostMonitoringResourceResponse;
+use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource as UseCase;
 use PHPUnit\Framework\TestCase;
 use Tests\Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResourceTest;
 
@@ -36,7 +36,7 @@ class DetailHostMonitoringResourceResponseTest extends TestCase
      */
     public function testEmptyResponse(): void
     {
-        $response = new DetailHostMonitoringResourceResponse();
+        $response = new UseCase\DetailHostMonitoringResourceResponse();
         $monitoringResources = $response->getHostMonitoringResourceDetail();
         $this->assertCount(0, $monitoringResources);
     }
@@ -47,7 +47,7 @@ class DetailHostMonitoringResourceResponseTest extends TestCase
     public function testNotEmptyResponse(): void
     {
         $monitoringResource = MonitoringResourceTest::createHostMonitoringResourceEntity();
-        $response = new DetailHostMonitoringResourceResponse();
+        $response = new UseCase\DetailHostMonitoringResourceResponse();
         $response->setHostMonitoringResourceDetail($monitoringResource);
         $monitoringResourceDetail = $response->getHostMonitoringResourceDetail();
 
@@ -69,7 +69,10 @@ class DetailHostMonitoringResourceResponseTest extends TestCase
         $this->assertEquals($monitoringResource->getInDowntime(), $monitoringResourceDetail['in_downtime']);
         $this->assertEquals($monitoringResource->getInformation(), $monitoringResourceDetail['information']);
         $this->assertEquals($monitoringResource->getLastCheck(), $monitoringResourceDetail['last_check']);
-        $this->assertEquals($monitoringResource->getLastStatusChange(), $monitoringResourceDetail['last_status_change']);
+        $this->assertEquals(
+            $monitoringResource->getLastStatusChange(),
+            $monitoringResourceDetail['last_status_change']
+        );
         $this->assertEquals(
             $monitoringResource->getMonitoringServerName(),
             $monitoringResourceDetail['monitoring_server_name']

@@ -29,7 +29,7 @@ use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\Monitoring\MonitoringResource\MonitoringResourceService;
 use Tests\Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResourceTest;
-use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource\DetailHostMonitoringResource;
+use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource as UseCase;
 
 /**
  * @package Tests\Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource
@@ -70,7 +70,7 @@ class DetailHostMonitoringResourceTest extends TestCase
 
         $contact = new Contact();
         $contact->setAdmin(true);
-        $detailHostMonitoringResource = new DetailHostMonitoringResource(
+        $detailHostMonitoringResource = new UseCase\DetailHostMonitoringResource(
             $this->monitoringResourceService,
             $contact,
             $this->monitoringRepository
@@ -93,7 +93,7 @@ class DetailHostMonitoringResourceTest extends TestCase
 
         $contact = new Contact();
         $contact->setAdmin(false);
-        $detailHostMonitoringResource = new DetailHostMonitoringResource(
+        $detailHostMonitoringResource = new UseCase\DetailHostMonitoringResource(
             $this->monitoringResourceService,
             $contact,
             $this->monitoringRepository
