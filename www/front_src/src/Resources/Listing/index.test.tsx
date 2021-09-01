@@ -70,6 +70,7 @@ const appState = {
 
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
+
   return new Array(entityCount).fill(0).map((_, index) => ({
     acknowledged: index % 2 === 0,
     duration: '1m',
@@ -442,10 +443,10 @@ describe(Listing, () => {
 
       fireEvent.click(getByTitle('Add columns').firstChild as HTMLElement);
 
-      const columnIds = find(propEq('id', columnId), columns);
-      const columnLabel = columnIds?.label as string;
+      const column = find(propEq('id', columnId), columns);
+      const columnLabel = column?.label as string;
 
-      const columnShortLabel = columnIds?.shortLabel as string;
+      const columnShortLabel = column?.shortLabel as string;
 
       const hasShortLabel = !isNil(columnShortLabel);
 
