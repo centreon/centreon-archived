@@ -44,7 +44,8 @@ use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Model\Monit
  *
  * @package Centreon\Infrastructure\Monitoring\MonitoringResource\Repository
  */
-final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implements MonitoringResourceRepositoryInterface
+final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implements
+    MonitoringResourceRepositoryInterface
 {
     use LoggerTrait;
 
