@@ -547,7 +547,7 @@ if (
          */
         $tpl = new Smarty();
         $tpl = initSmartyTpl($path, $tpl, "template/");
-        $tpl->assign('dataPickerMaxYear', DOWNTIME_YEAR_MAX - 1);
+        $tpl->assign('datePickerMaxYear', DOWNTIME_YEAR_MAX - 1);
 
         /*
          * Apply a template definition

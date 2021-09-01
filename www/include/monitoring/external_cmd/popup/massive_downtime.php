@@ -278,5 +278,5 @@ $tpl->assign('o', $o);
 $tpl->assign('p', $p);
 $tpl->assign('cmd', $cmd);
 $tpl->assign('select', $select);
-$tpl->assign('dataPickerMaxYear', DOWNTIME_YEAR_MAX - 1);
+$tpl->assign('datePickerMaxYear', DOWNTIME_YEAR_MAX - 1);
 $tpl->display("massive_downtime.ihtml");
