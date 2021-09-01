@@ -47,14 +47,30 @@ class AcknowledgementControllerTest extends TestCase
      * @var MonitoringResource
      */
     private $hostResource;
+
+    /**
+     * @var MonitoringResource
+     */
     private $serviceResource;
 
+    /**
+     * @var string|false
+     */
     private $correctJsonDisackResources;
 
+    /**
+     * @var AcknowledgementService&\PHPUnit\Framework\MockObject\MockObject $acknowledgementService
+     */
     private $acknowledgementService;
 
+    /**
+     * @var ContainerInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
     private $container;
 
+    /**
+     * @var Request|\PHPUnit\Framework\MockObject\MockObject
+     */
     private $request;
 
     /**

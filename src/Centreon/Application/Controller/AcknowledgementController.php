@@ -49,6 +49,7 @@ use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as
 class AcknowledgementController extends AbstractController
 {
     use LoggerTrait;
+
     /**
      * @var AcknowledgementServiceInterface
      */

@@ -235,8 +235,8 @@ class MonitoringResource
      */
     private $calculationType;
 
-    /*
-     * @var bool
+    /**
+     * @var boolean
      */
     private $notificationEnabled = false;
 
