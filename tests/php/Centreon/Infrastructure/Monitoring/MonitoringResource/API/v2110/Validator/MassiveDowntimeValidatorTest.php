@@ -34,7 +34,7 @@ class MassiveDowntimeValidatorTest extends TestCase
     protected $massiveDowntimeValidator;
 
     /**
-     * @var MonitoringResourceValidatorInterface|\PHPUnit\Framework\MockObject\MockObject $monitoringResourceValidator
+     * @var MonitoringResourceValidatorInterface&\PHPUnit\Framework\MockObject\MockObject $monitoringResourceValidator
      */
     private $monitoringResourceValidator;
 

@@ -52,7 +52,7 @@ class HostHyperMediaProviderTest extends TestCase
     private $uriLinksExpected;
 
     /**
-     * @var UrlGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var UrlGeneratorInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $urlGenerator;
 
