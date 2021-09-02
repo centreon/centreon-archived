@@ -215,7 +215,7 @@ describe(Listing, () => {
       });
     });
 
-    it.only.each(
+    it.each(
       columns
         .filter(({ sortable }) => sortable !== false)
         .filter(({ id }) => includes(id, defaultSelectedColumnIds))
