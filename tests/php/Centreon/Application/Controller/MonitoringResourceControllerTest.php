@@ -21,25 +21,17 @@
 
 namespace Tests\Centreon\Application\Controller;
 
-use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
 use FOS\RestBundle\Context\Context;
 use Centreon\Domain\Contact\Contact;
 use Psr\Container\ContainerInterface;
-use JMS\Serializer\SerializerInterface;
-use Centreon\Domain\Entity\EntityValidator;
-use Symfony\Component\HttpFoundation\Request;
-use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Application\Normalizer\IconUrlNormalizer;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Application\Controller\MonitoringResourceController;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceServiceInterface;
 
 class MonitoringResourceControllerTest extends TestCase
 {
@@ -49,19 +41,9 @@ class MonitoringResourceControllerTest extends TestCase
     private $adminContact;
 
     /**
-     * @var MonitoringResource
-     */
-    private $resource;
-
-    /**
      * @var MonitoringServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $monitoringService;
-
-    /**
-     * @var MonitoringResourceServiceInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $resourceService;
 
     /**
      * @var UrlGeneratorInterface
@@ -69,7 +51,7 @@ class MonitoringResourceControllerTest extends TestCase
     private $urlGenerator;
 
     /**
-     * @var IconNormalizer|\PHPUnit\Framework\MockObject\MockObject
+     * @var IconUrlNormalizer|\PHPUnit\Framework\MockObject\MockObject
      */
     private $iconUrlNormalizer;
 
@@ -77,26 +59,6 @@ class MonitoringResourceControllerTest extends TestCase
      * @var ContainerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $container;
-
-    /**
-     * @var RequestParametersInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $requestParameters;
-
-    /**
-     * @var Request|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $request;
-
-    /**
-     * @var SerializerInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $serializer;
-
-    /**
-     * @var EntityValidator|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $entityValidator;
 
     protected function setUp(): void
     {
@@ -114,18 +76,7 @@ class MonitoringResourceControllerTest extends TestCase
         $this->adminContact->addTopologyRule(Contact::ROLE_MONITORING_EVENT_LOGS);
         $this->adminContact->addTopologyRule(Contact::ROLE_REPORTING_DASHBOARD_HOSTS);
 
-        $resourceStatus = (new ResourceStatus())
-            ->setCode(0)
-            ->setName('UP')
-            ->setSeverityCode(4);
-
-        $this->resource = (new MonitoringResource(1, 'host1', 'host'))
-            ->setIcon(null)
-            ->setParent(null)
-            ->setStatus($resourceStatus);
-
         $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
-        $this->resourceService = $this->createMock(MonitoringResourceServiceInterface::class);
         $this->urlGenerator = $kernel->getContainer()->get('router')->getRouter()->getGenerator();
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
@@ -156,94 +107,7 @@ class MonitoringResourceControllerTest extends TestCase
                 $authorizationChecker,
                 $tokenStorage
             );
-
-        $this->requestParameters = $this->createMock(RequestParametersInterface::class);
-        $this->request = $this->createMock(Request::class);
-        $this->serializer = $this->createMock(SerializerInterface::class);
-        $this->entityValidator = $this->createMock(EntityValidator::class);
     }
-
-    /**
-     * test getHostTimeline
-     */
-/*     public function testList()
-    {
-        $this->resourceService->expects($this->once())
-            ->method('filterByContact')
-            ->willReturn($this->resourceService);
-
-        $this->resourceService->expects($this->once())
-            ->method('findResources')
-            ->willReturn([$this->resource]);
-
-        $resourceController = new MonitoringResourceController(
-            $this->monitoringService,
-            $this->resourceService,
-            $this->urlGenerator,
-            $this->iconUrlNormalizer
-        );
-        $resourceController->setContainer($this->container);
-
-        $this->request->query = new class () {
-            public function all()
-            {
-                return [];
-            }
-        };
-
-        $this->serializer->expects($this->once())
-            ->method('deserialize')
-            ->willReturn(new ResourceFilter());
-
-        $view = $resourceController->list(
-            $this->requestParameters,
-            $this->request,
-            $this->serializer,
-            $this->entityValidator
-        );
-
-        $context = (new Context())
-            ->setGroups(MonitoringResourceController::SERIALIZER_GROUPS_LISTING)
-            ->enableMaxDepth();
-
-        $this->assertEquals(
-            $view,
-            View::create([
-                'result' => [$this->resource],
-                'meta' => []
-            ])->setContext($context)
-        ); */
-
-        /**
-         * @var ResourceEntity $resource
-         */
-/*         $resource = $view->getData()['result'][0];
-
-        $this->assertEquals($resource->getLinks()->getUris()->getConfiguration(), '/main.php?p=60101&o=c&host_id=1');
-        $this->assertEquals($resource->getLinks()->getUris()->getLogs(), '/main.php?p=20301&h=1');
-        $this->assertEquals($resource->getLinks()->getUris()->getReporting(), '/main.php?p=307&host=1');
-
-        $this->assertEquals(
-            $resource->getLinks()->getEndpoints()->getDetails(),
-            '/centreon/api/v21.10/monitoring/resources/hosts/1'
-        );
-        $this->assertEquals(
-            $resource->getLinks()->getEndpoints()->getTimeline(),
-            '/centreon/api/v21.10/monitoring/hosts/1/timeline'
-        );
-        $this->assertEquals(
-            $resource->getLinks()->getEndpoints()->getAcknowledgement(),
-            '/centreon/api/v21.10/monitoring/hosts/1/acknowledgements?limit=1'
-        );
-        $this->assertRegExp(
-            '#/centreon/api/v21.10/monitoring/hosts/1/downtimes\?'
-                . 'search=\{"\$and":\[\{"start_time":\{"\$lt":\d+\},"end_time":\{"\$gt":\d+\},'
-                . '"0":\{"\$or":\{"is_cancelled":\{"\$neq":1\},"deletion_time":\{"\$gt":\d+\}\}\}\}\]\}#',
-            urldecode($resource->getLinks()->getEndpoints()->getDowntime())
-        );
-        $this->assertNull($resource->getLinks()->getEndpoints()->getStatusGraph());
-        $this->assertNull($resource->getLinks()->getEndpoints()->getPerformanceGraph());
-    } */
 
     /**
      * test buildHostDetailsUri
