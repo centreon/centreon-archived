@@ -267,8 +267,8 @@ try {
             [parser: 'CHECKSTYLE', pattern: '.*///codestyle-be.xml$', reporter: 'Checkstyle'],
            // [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle'],
             //[parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
-          ]/*
-        ])
+          //]
+       /* ])
       }
 
       if (hasBackendChanges) {
