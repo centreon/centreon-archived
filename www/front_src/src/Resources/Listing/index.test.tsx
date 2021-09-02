@@ -239,8 +239,6 @@ describe(Listing, () => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
               sort: { [sortBy]: 'desc' },
-              states: [],
-              statuses: [],
             }),
             cancelTokenRequestParam,
           );
@@ -252,8 +250,6 @@ describe(Listing, () => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
               sort: { [sortBy]: 'asc' },
-              states: [],
-              statuses: [],
             }),
             cancelTokenRequestParam,
           ),

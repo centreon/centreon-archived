@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { isNil } from 'ramda';
-import { ParentSize } from '@visx/visx';
+import { Responsive } from '@visx/visx';
 
 import { styled, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -44,15 +44,13 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   }
 
   return (
-    <>
-      <ParentSize>
-        {({ width }): JSX.Element => (
-          <div>
-            <SortableCards details={details} panelWidth={width} />
-          </div>
-        )}
-      </ParentSize>
-    </>
+    <Responsive.ParentSize>
+      {({ width }): JSX.Element => (
+        <div>
+          <SortableCards details={details} panelWidth={width} />
+        </div>
+      )}
+    </Responsive.ParentSize>
   );
 };
 
