@@ -1,4 +1,4 @@
-import { scaleLinear } from '@visx/visx';
+import { Scale } from '@visx/visx';
 import { ScaleLinear } from 'd3-scale';
 import {
   map,
@@ -294,7 +294,7 @@ const getYScale = ({
   const scale = isLeftScale ? leftScale : rightScale;
 
   return invert
-    ? scaleLinear<number>({
+    ? Scale.scaleLinear<number>({
         domain: scale.domain().reverse(),
         nice: true,
         range: scale.range().reverse(),
