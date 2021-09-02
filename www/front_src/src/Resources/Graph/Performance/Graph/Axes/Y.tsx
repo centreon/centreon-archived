@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { AxisRight, AxisLeft } from '@visx/visx';
+import { Axis } from '@visx/visx';
 import { isNil } from 'ramda';
 import { ScaleLinear } from 'd3-scale';
 
@@ -63,7 +63,7 @@ const YAxes = ({
   return (
     <>
       {!hasMoreThanTwoUnits && <UnitLabel unit={firstUnit} x={0} />}
-      <AxisLeft
+      <Axis.AxisLeft
         numTicks={ticksCount}
         orientation="left"
         scale={leftScale}
@@ -78,7 +78,7 @@ const YAxes = ({
       />
       {hasTwoUnits && (
         <>
-          <AxisRight
+          <Axis.AxisRight
             left={graphWidth}
             numTicks={ticksCount}
             orientation="right"

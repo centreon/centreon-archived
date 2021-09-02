@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Line } from '@visx/visx';
+import { Shape } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
 import { prop } from 'ramda';
 
@@ -60,7 +60,7 @@ const LineAnnotation = ({
   const header = toDateTime(date);
 
   const line = (
-    <Line
+    <Shape.Line
       from={{ x: xIcon, y: yMargin + iconSize + 2 }}
       stroke={color}
       strokeOpacity={getStrokeOpacity(prop('event', props))}
