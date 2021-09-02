@@ -112,7 +112,7 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildHostDetailsUri
      */
-    public function testBuildHostDetailsUri()
+    public function testBuildHostDetailsUri(): void
     {
         $resourceController = new MonitoringResourceController(
             $this->urlGenerator,
@@ -146,7 +146,7 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildServiceDetailsUri
      */
-    public function testBuildServiceDetailsUri()
+    public function testBuildServiceDetailsUri(): void
     {
         $resourceController = new MonitoringResourceController(
             $this->urlGenerator,
@@ -164,7 +164,7 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildServiceUri
      */
-    public function testBuildServiceUri()
+    public function testBuildServiceUri(): void
     {
         $resourceController = new MonitoringResourceController(
             $this->urlGenerator,

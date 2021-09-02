@@ -22,8 +22,8 @@
 namespace Tests\Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator;
 
 use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\MassiveDisacknowledgementValidator;
-use Centreon\Domain\Common\Assertion\AssertionException;
 use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MonitoringResourceValidatorInterface;
+use Centreon\Domain\Common\Assertion\AssertionException;
 use PHPUnit\Framework\TestCase;
 
 class MassiveDisacknowledgementValidatorTest extends TestCase

@@ -34,7 +34,7 @@ class MassiveAcknowledgementValidatorTest extends TestCase
     protected $massiveAcknowledgementValidator;
 
     /**
-     * @var MonitoringResourceValidatorInterface|\PHPUnit\Framework\MockObject\MockObject $monitoringResourceValidator
+     * @var MonitoringResourceValidatorInterface&\PHPUnit\Framework\MockObject\MockObject $monitoringResourceValidator
      */
     private $monitoringResourceValidator;
 

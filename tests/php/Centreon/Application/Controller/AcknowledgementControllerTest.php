@@ -158,7 +158,7 @@ class AcknowledgementControllerTest extends TestCase
                 $authorizationChecker,
                 $tokenStorage,
                 new class () {
-                    public function get()
+                    public function get(): string
                     {
                         return __DIR__ . '/../../../../../';
                     }
