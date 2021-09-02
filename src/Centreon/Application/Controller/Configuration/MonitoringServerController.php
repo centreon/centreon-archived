@@ -34,6 +34,7 @@ use Centreon\Domain\MonitoringServer\UseCase\ReloadAllConfigurations;
 use Centreon\Domain\MonitoringServer\UseCase\GenerateAllConfigurations;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * This class is designed to manage all requests concerning monitoring servers
@@ -42,8 +43,6 @@ use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface
  */
 class MonitoringServerController extends AbstractController
 {
-    private const SUCCESS_MESSAGE = 'Success';
-
     /**
      * @var MonitoringServerServiceInterface
      */
@@ -85,23 +84,13 @@ class MonitoringServerController extends AbstractController
      * @param int $monitoringServerId
      * @return View
      * @throws EntityNotFoundException
+     * @throws ConfigurationMonitoringServerException
      */
     public function generateConfiguration(GenerateConfiguration $generateConfiguration, int $monitoringServerId): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $status = 1;
-        $message = self::SUCCESS_MESSAGE;
-        try {
-            $generateConfiguration->execute($monitoringServerId);
-        } catch (\Exception $ex) {
-            $status = 0;
-            $message = $ex->getMessage();
-        }
-
-        return $this->view([
-            'status' => $status,
-            'message' => $message
-        ]);
+        $generateConfiguration->execute($monitoringServerId);
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -112,19 +101,8 @@ class MonitoringServerController extends AbstractController
     public function generateAllConfigurations(GenerateAllConfigurations $generateAllConfigurations): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $status = 1;
-        $message = self::SUCCESS_MESSAGE;
-        try {
-            $generateAllConfigurations->execute();
-        } catch (\Exception $ex) {
-            $status = 0;
-            $message = $ex->getMessage();
-        }
-
-        return $this->view([
-            'status' => $status,
-            'message' => $message
-        ]);
+        $generateAllConfigurations->execute();
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -132,23 +110,13 @@ class MonitoringServerController extends AbstractController
      * @param int $monitoringServerId
      * @return View
      * @throws EntityNotFoundException
+     * @throws ConfigurationMonitoringServerException
      */
     public function reloadConfiguration(ReloadConfiguration $reloadConfiguration, int $monitoringServerId): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $status = 1;
-        $message = self::SUCCESS_MESSAGE;
-        try {
-            $reloadConfiguration->execute($monitoringServerId);
-        } catch (\Exception $ex) {
-            $status = 0;
-            $message = $ex->getMessage();
-        }
-
-        return $this->view([
-            'status' => $status,
-            'message' => $message
-        ]);
+        $reloadConfiguration->execute($monitoringServerId);
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -159,26 +127,19 @@ class MonitoringServerController extends AbstractController
     public function reloadAllConfigurations(ReloadAllConfigurations $reloadAllConfigurations): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $status = 1;
-        $message = self::SUCCESS_MESSAGE;
-        try {
-            $reloadAllConfigurations->execute();
-        } catch (\Exception $ex) {
-            $status = 0;
-            $message = $ex->getMessage();
-        }
-        return $this->view([
-            'status' => $status,
-            'message' => $message
-        ]);
+        $reloadAllConfigurations->execute();
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
+     * Generate and reload the configuration of a monitoring server.
+     *
      * @param GenerateConfiguration $generateConfiguration
      * @param ReloadConfiguration $reloadConfiguration
      * @param int $monitoringServerId
      * @return View
      * @throws EntityNotFoundException
+     * @throws ConfigurationMonitoringServerException
      */
     public function generateAndReloadConfiguration(
         GenerateConfiguration $generateConfiguration,
@@ -186,23 +147,14 @@ class MonitoringServerController extends AbstractController
         int $monitoringServerId
     ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-
-        $status = 1;
-        $message = self::SUCCESS_MESSAGE;
-        try {
-            $generateConfiguration->execute($monitoringServerId);
-            $reloadConfiguration->execute($monitoringServerId);
-        } catch (\Exception $ex) {
-            $status = 0;
-            $message = $ex->getMessage();
-        }
-        return $this->view([
-            'status' => $status,
-            'message' => $message
-        ]);
+        $generateConfiguration->execute($monitoringServerId);
+        $reloadConfiguration->execute($monitoringServerId);
+       return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
+     * Generate and reload all monitoring servers configurations.
+     *
      * @param GenerateAllConfigurations $generateAllConfigurations
      * @param ReloadAllConfigurations $reloadAllConfigurations
      * @return View
@@ -213,19 +165,8 @@ class MonitoringServerController extends AbstractController
         ReloadAllConfigurations $reloadAllConfigurations
     ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-
-        $status = 1;
-        $message = self::SUCCESS_MESSAGE;
-        try {
-            $generateAllConfigurations->execute();
-            $reloadAllConfigurations->execute();
-        } catch (\Exception $ex) {
-            $status = 0;
-            $message = $ex->getMessage();
-        }
-        return $this->view([
-            'status' => $status,
-            'message' => $message
-        ]);
+        $generateAllConfigurations->execute();
+        $reloadAllConfigurations->execute();
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 }
