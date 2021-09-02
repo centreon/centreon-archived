@@ -21,9 +21,8 @@
 
 namespace Tests\Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator;
 
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\MassiveAcknowledgementValidator;
 use Centreon\Domain\Common\Assertion\AssertionException;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MonitoringResourceValidatorInterface;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validator;
 use PHPUnit\Framework\TestCase;
 
 class MassiveAcknowledgementValidatorTest extends TestCase
@@ -40,9 +39,11 @@ class MassiveAcknowledgementValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->monitoringResourceValidator = $this->createMock(MonitoringResourceValidatorInterface::class);
+        $this->monitoringResourceValidator = $this->createMock(
+            Validator\Interfaces\MonitoringResourceValidatorInterface::class
+        );
         $monitoringResourceValidators = [$this->monitoringResourceValidator];
-        $this->massiveAcknowledgementValidator = new MassiveAcknowledgementValidator($monitoringResourceValidators);
+        $this->massiveAcknowledgementValidator = new Validator\MassiveAcknowledgementValidator($monitoringResourceValidators);
     }
 
     /**

@@ -21,9 +21,8 @@
 
 namespace Tests\Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator;
 
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\MassiveDowntimeValidator;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validator;
 use Centreon\Domain\Common\Assertion\AssertionException;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MonitoringResourceValidatorInterface;
 use PHPUnit\Framework\TestCase;
 
 class MassiveDowntimeValidatorTest extends TestCase
@@ -40,9 +39,11 @@ class MassiveDowntimeValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->monitoringResourceValidator = $this->createMock(MonitoringResourceValidatorInterface::class);
+        $this->monitoringResourceValidator = $this->createMock(
+            Validator\Interfaces\MonitoringResourceValidatorInterface::class
+        );
         $monitoringResourceValidators = [$this->monitoringResourceValidator];
-        $this->massiveDowntimeValidator = new MassiveDowntimeValidator($monitoringResourceValidators);
+        $this->massiveDowntimeValidator = new Validator\MassiveDowntimeValidator($monitoringResourceValidators);
     }
 
     /**
