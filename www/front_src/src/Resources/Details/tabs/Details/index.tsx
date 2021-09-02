@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { ParentSize } from '@visx/visx';
+import { Responsive } from '@visx/visx';
 
 import {
   Grid,
@@ -99,7 +99,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   };
 
   return (
-    <ParentSize>
+    <Responsive.ParentSize>
       {({ width }): JSX.Element => (
         <div className={classes.details}>
           <ExpandableCard
@@ -183,7 +183,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           )}
         </div>
       )}
-    </ParentSize>
+    </Responsive.ParentSize>
   );
 };
 

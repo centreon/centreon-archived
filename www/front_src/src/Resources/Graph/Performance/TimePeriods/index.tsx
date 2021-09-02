@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { always, cond, lt, lte, map, not, pick, T } from 'ramda';
-import { ParentSize } from '@visx/visx';
+import { Responsive } from '@visx/visx';
 
 import {
   Paper,
@@ -79,7 +79,7 @@ const TimePeriodButtonGroup = ({
     changeCustomTimePeriod({ date, property });
 
   return (
-    <ParentSize>
+    <Responsive.ParentSize>
       {({ width }): JSX.Element => {
         const isCompact = lt(width, theme.breakpoints.values.sm);
 
@@ -122,7 +122,7 @@ const TimePeriodButtonGroup = ({
           </Paper>
         );
       }}
-    </ParentSize>
+    </Responsive.ParentSize>
   );
 };
 
