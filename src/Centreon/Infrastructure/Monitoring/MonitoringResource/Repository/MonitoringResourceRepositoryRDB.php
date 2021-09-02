@@ -23,18 +23,19 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring\MonitoringResource\Repository;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Provider\Provider;
 use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Provider\ProviderInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceRepositoryInterface;
 use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Model\MonitoringResourceFactoryRdb;
@@ -113,7 +114,7 @@ final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implem
     }
 
     /**
-     * @param iterable<Providers> $providers
+     * @param iterable<Provider> $providers
      * @throws \InvalidArgumentException
      * @return void
      */
