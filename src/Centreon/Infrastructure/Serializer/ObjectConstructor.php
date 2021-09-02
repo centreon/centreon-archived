@@ -38,8 +38,10 @@ class ObjectConstructor implements ObjectConstructorInterface
 {
     /**
      * {@inheritDoc}
+     * @param array<string, mixed> $type
      * @throws SerializerException
      * @throws \ReflectionException
+     * @throws \Throwable
      */
     public function construct(
         DeserializationVisitorInterface $visitor,
