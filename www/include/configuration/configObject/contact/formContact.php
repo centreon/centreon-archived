@@ -648,6 +648,13 @@ if ($o == "c" && $centreon->user->get_id() == $cct["contact_id"]) {
     $form->freeze('contact_activate');
 }
 
+$platformDataSendingRadios = [
+    $form->createElement('radio', null, null, _('No'), '0'),
+    $form->createElement('radio', null, null, _('Yes'), '1'),
+    $form->createElement('radio', null, null, _('Anonymized'), '2')
+];
+$form->addGroup($platformDataSendingRadios, 'contact_platform_data_sending', _('Contextual assistance and associated data sending'), '&nbsp;');
+
 $form->addElement('hidden', 'contact_register');
 $form->setDefaults(array('contact_register' => '1'));
 

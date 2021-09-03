@@ -139,12 +139,13 @@ $form->addElement(
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'show_deprecated_pages', _("Show deprecated pages"), null, $attrsText);
 $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
-$form->addElement(
-    'select',
-    'contact_platform_data_sending',
-    _("Contextual assistance and associated data sending"),
-    $platformDataSending
-);
+
+$platformDataSendingRadios = [
+    $form->createElement('radio', null, null, _('No'), '0'),
+    $form->createElement('radio', null, null, _('Yes'), '1'),
+    $form->createElement('radio', null, null, _('Anonymized'), '2')
+];
+$form->addGroup($platformDataSendingRadios, 'contact_platform_data_sending', _('Contextual assistance and associated data sending'), '&nbsp;');
 
 
 /* ------------------------ Topology ---------------------------- */
