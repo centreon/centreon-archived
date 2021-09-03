@@ -16,6 +16,7 @@ parameters:
     debug_log_file: '%log_path%/centreon-web.log'
     debug_level: "%env(DEBUG_LEVEL)%"
     env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
+    curl.timeout: 60
 
 services:
     _defaults:
@@ -109,6 +110,9 @@ services:
 
     Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerConfigurationRepositoryInterface:
         class: Centreon\Infrastructure\MonitoringServer\Repository\MonitoringServerConfigurationRepositoryApi
+        calls:
+        - method: setTimeout
+          arguments: ['%curl.timeout%']
 
     # Platform topology register server
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface:

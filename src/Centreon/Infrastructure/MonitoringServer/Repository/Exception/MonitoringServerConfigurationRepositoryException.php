@@ -74,6 +74,14 @@ class MonitoringServerConfigurationRepositoryException extends RepositoryExcepti
     }
 
     /**
+     * @return self
+     */
+    public static function timeout(\Throwable $ex): self
+    {
+        return new self(_('Execution was too long and reached timeout'), 0, $ex);
+    }
+
+    /**
      * @param \Throwable $ex
      * @return self
      */
