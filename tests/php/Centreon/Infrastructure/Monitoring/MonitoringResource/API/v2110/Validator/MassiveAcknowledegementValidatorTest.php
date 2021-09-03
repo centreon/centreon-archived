@@ -43,7 +43,9 @@ class MassiveAcknowledgementValidatorTest extends TestCase
             Validator\Interfaces\MonitoringResourceValidatorInterface::class
         );
         $monitoringResourceValidators = [$this->monitoringResourceValidator];
-        $this->massiveAcknowledgementValidator = new Validator\MassiveAcknowledgementValidator($monitoringResourceValidators);
+        $this->massiveAcknowledgementValidator = new Validator\MassiveAcknowledgementValidator(
+            $monitoringResourceValidators
+        );
     }
 
     /**

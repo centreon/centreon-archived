@@ -119,8 +119,14 @@ class MonitoringResourceFactoryRdbTest extends TestCase
         $this->assertEquals($this->realTimeDatabaseData['timezone'], $monitoringResource->getTimezone());
 
         if ($monitoringResource->getStatus() !== null) {
-            $this->assertEquals($this->realTimeDatabaseData['status_code'], $monitoringResource->getStatus()->getCode());
-            $this->assertEquals($this->realTimeDatabaseData['status_name'], $monitoringResource->getStatus()->getName());
+            $this->assertEquals(
+                $this->realTimeDatabaseData['status_code'],
+                $monitoringResource->getStatus()->getCode()
+            );
+            $this->assertEquals(
+                $this->realTimeDatabaseData['status_name'],
+                $monitoringResource->getStatus()->getName()
+            );
             $this->assertEquals(
                 $this->realTimeDatabaseData['status_severity_code'],
                 $monitoringResource->getStatus()->getSeverityCode()
@@ -214,10 +220,22 @@ class MonitoringResourceFactoryRdbTest extends TestCase
 
         if ($monitoringResource->getParent() !== null) {
             $this->assertEquals($this->realTimeDatabaseData['parent_id'], $monitoringResource->getParent()->getId());
-            $this->assertEquals($this->realTimeDatabaseData['parent_name'], $monitoringResource->getParent()->getName());
-            $this->assertEquals($this->realTimeDatabaseData['parent_type'], $monitoringResource->getParent()->getType());
-            $this->assertEquals($this->realTimeDatabaseData['parent_alias'], $monitoringResource->getParent()->getAlias());
-            $this->assertEquals($this->realTimeDatabaseData['parent_fqdn'], $monitoringResource->getParent()->getFqdn());
+            $this->assertEquals(
+                $this->realTimeDatabaseData['parent_name'],
+                $monitoringResource->getParent()->getName()
+            );
+            $this->assertEquals(
+                $this->realTimeDatabaseData['parent_type'],
+                $monitoringResource->getParent()->getType()
+            );
+            $this->assertEquals(
+                $this->realTimeDatabaseData['parent_alias'],
+                $monitoringResource->getParent()->getAlias()
+            );
+            $this->assertEquals(
+                $this->realTimeDatabaseData['parent_fqdn'],
+                $monitoringResource->getParent()->getFqdn()
+            );
 
             if ($monitoringResource->getParent()->getIcon() !== null) {
                 $this->assertEquals(

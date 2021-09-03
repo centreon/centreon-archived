@@ -75,7 +75,10 @@ class FindMonitoringResourcesResponseTest extends TestCase
         $this->assertEquals($monitoringResource->getLastCheckAsString(), $monitoringResources[0]['last_check']);
 
         if ($monitoringResource->getLastStatusChange() !== null) {
-            $this->assertEquals($monitoringResource->getLastStatusChange(), $monitoringResources[0]['last_status_change']);
+            $this->assertEquals(
+                $monitoringResource->getLastStatusChange(),
+                $monitoringResources[0]['last_status_change']
+            );
         }
 
         $this->assertEquals(
@@ -123,12 +126,18 @@ class FindMonitoringResourcesResponseTest extends TestCase
         if ($parentMonitoringResource !== null) {
             $this->assertEquals($parentMonitoringResource->getId(), $monitoringResources[0]['parent']['id']);
             $this->assertEquals($parentMonitoringResource->getUuid(), $monitoringResources[0]['parent']['uuid']);
-            $this->assertEquals($parentMonitoringResource->getShortType(), $monitoringResources[0]['parent']['short_type']);
+            $this->assertEquals(
+                $parentMonitoringResource->getShortType(),
+                $monitoringResources[0]['parent']['short_type']
+            );
             $this->assertEquals($parentMonitoringResource->getName(), $monitoringResources[0]['parent']['name']);
             $this->assertEquals($parentMonitoringResource->getType(), $monitoringResources[0]['parent']['type']);
             $this->assertEquals($parentMonitoringResource->getAlias(), $monitoringResources[0]['parent']['alias']);
             $this->assertEquals($parentMonitoringResource->getFqdn(), $monitoringResources[0]['parent']['fqdn']);
-            $this->assertEquals($parentMonitoringResource->getServiceId(), $monitoringResources[0]['parent']['service_id']);
+            $this->assertEquals(
+                $parentMonitoringResource->getServiceId(),
+                $monitoringResources[0]['parent']['service_id']
+            );
             $this->assertEquals($parentMonitoringResource->getHostId(), $monitoringResources[0]['parent']['host_id']);
             $this->assertEquals(
                 $parentMonitoringResource->getAcknowledged(),
@@ -138,7 +147,10 @@ class FindMonitoringResourcesResponseTest extends TestCase
                 $parentMonitoringResource->getActiveChecks(),
                 $monitoringResources[0]['parent']['active_checks']
             );
-            $this->assertEquals($parentMonitoringResource->getFlapping(), $monitoringResources[0]['parent']['flapping']);
+            $this->assertEquals(
+                $parentMonitoringResource->getFlapping(),
+                $monitoringResources[0]['parent']['flapping']
+            );
 
             if ($parentMonitoringResource->getIcon() !== null) {
                 $this->assertEquals(
@@ -208,7 +220,10 @@ class FindMonitoringResourcesResponseTest extends TestCase
             }
 
             $this->assertEquals($parentMonitoringResource->getTries(), $monitoringResources[0]['parent']['tries']);
-            $this->assertEquals($parentMonitoringResource->getDuration(), $monitoringResources[0]['parent']['duration']);
+            $this->assertEquals(
+                $parentMonitoringResource->getDuration(),
+                $monitoringResources[0]['parent']['duration']
+            );
 
             if ($parentMonitoringResource->getLinks()->getExternals()->getNotes() !== null) {
                 $this->assertEquals(

@@ -97,8 +97,14 @@ class DetailHostMonitoringResourceResponseTest extends TestCase
         $this->assertEquals($monitoringResource->getSeverityLevel(), $monitoringResourceDetail['severity_level']);
 
         if ($monitoringResource->getStatus() !== null) {
-            $this->assertEquals($monitoringResource->getStatus()->getCode(), $monitoringResourceDetail['status']['code']);
-            $this->assertEquals($monitoringResource->getStatus()->getName(), $monitoringResourceDetail['status']['name']);
+            $this->assertEquals(
+                $monitoringResource->getStatus()->getCode(),
+                $monitoringResourceDetail['status']['code']
+            );
+            $this->assertEquals(
+                $monitoringResource->getStatus()->getName(),
+                $monitoringResourceDetail['status']['name']
+            );
             $this->assertEquals(
                 $monitoringResource->getStatus()->getSeverityCode(),
                 $monitoringResourceDetail['status']['severity_code']

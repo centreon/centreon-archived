@@ -18,7 +18,10 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
+
+// @phpstan-ignore-next-line
 namespace Tests\Centreon\Domain\Monitoring\DetailServiceMonitoringResource\UseCase\v2110\
     DetailServiceMonitoringResource;
 
