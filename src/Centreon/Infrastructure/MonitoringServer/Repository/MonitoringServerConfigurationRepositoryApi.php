@@ -25,6 +25,7 @@ namespace Centreon\Infrastructure\MonitoringServer\Repository;
 use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Log\LoggerTrait;
 use DateTime;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
@@ -66,6 +67,11 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
     private $serverUri;
 
     /**
+     * @var int
+     */
+    private $timeout = 60;
+
+    /**
      * @param ProxyServiceInterface $proxyService
      * @param AuthenticationTokenServiceInterface $authenticationTokenService
      * @param ContactInterface $contact
@@ -81,6 +87,18 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
         $this->contact = $contact;
         $this->authenticationTokenService = $authenticationTokenService;
         $this->httpClient = $httpClient;
+    }
+
+    /**
+     * To be used by the dependency injector to increase the timeout limit.
+     *
+     * @param int $timeout
+     * @return MonitoringServerConfigurationRepositoryApi
+     */
+    public function setTimeout(int $timeout): MonitoringServerConfigurationRepositoryApi
+    {
+        $this->timeout = $timeout;
+        return $this;
     }
 
     /**
@@ -157,6 +175,7 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             }
             $optionPayload['headers'] = ['X-AUTH-TOKEN' => $providerToken->getToken()];
             $optionPayload['body'] = $payloadBody;
+            $optionPayload['timeout'] = $this->timeout;
 
             $response = $this->httpClient->request('POST', $fullUriPath, $optionPayload);
             if ($response->getStatusCode() !== 200) {
@@ -178,6 +197,9 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
         } catch (\Assert\AssertionFailedException $ex) {
             throw MonitoringServerConfigurationRepositoryException::errorWhenInitializingApiUri();
         } catch (\Throwable $ex) {
+            if ($ex instanceof TransportException && strpos($ex->getMessage(), 'timeout') > 0) {
+                throw MonitoringServerConfigurationRepositoryException::timeout($ex);
+            }
             throw MonitoringServerConfigurationRepositoryException::unexpectedError($ex);
         }
     }
