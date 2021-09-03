@@ -19,7 +19,6 @@
  *
  */
 declare(strict_types=1);
-
 namespace Tests\Centreon\Domain\Monitoring\DetailServiceMonitoringResource\UseCase\v2110\
     DetailServiceMonitoringResource;
 

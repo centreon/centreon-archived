@@ -105,37 +105,44 @@ class MonitoringResourceFactoryRdbTest extends TestCase
         $this->assertEquals($this->realTimeDatabaseData['fqdn'], $monitoringResource->getFqdn());
         $this->assertEquals($this->realTimeDatabaseData['host_id'], $monitoringResource->getHostId());
         $this->assertEquals($this->realTimeDatabaseData['service_id'], $monitoringResource->getServiceId());
-        $this->assertEquals($this->realTimeDatabaseData['icon_name'], $monitoringResource->getIcon()->getName());
-        $this->assertEquals($this->realTimeDatabaseData['icon_url'], $monitoringResource->getIcon()->getUrl());
+
+        if ($monitoringResource->getIcon() !== null) {
+            $this->assertEquals($this->realTimeDatabaseData['icon_name'], $monitoringResource->getIcon()->getName());
+            $this->assertEquals($this->realTimeDatabaseData['icon_url'], $monitoringResource->getIcon()->getUrl());
+        }
+
         $this->assertEquals($this->realTimeDatabaseData['command_line'], $monitoringResource->getCommandLine());
         $this->assertEquals(
             $this->realTimeDatabaseData['monitoring_server_name'],
             $monitoringResource->getMonitoringServerName()
         );
         $this->assertEquals($this->realTimeDatabaseData['timezone'], $monitoringResource->getTimezone());
-        $this->assertEquals($this->realTimeDatabaseData['status_code'], $monitoringResource->getStatus()->getCode());
-        $this->assertEquals($this->realTimeDatabaseData['status_name'], $monitoringResource->getStatus()->getName());
-        $this->assertEquals(
-            $this->realTimeDatabaseData['status_severity_code'],
-            $monitoringResource->getStatus()->getSeverityCode()
-        );
-        $this->assertEquals(
-            $this->realTimeDatabaseData['status_severity_code'],
-            $monitoringResource->getStatus()->getSeverityCode()
-        );
+
+        if ($monitoringResource->getStatus() !== null) {
+            $this->assertEquals($this->realTimeDatabaseData['status_code'], $monitoringResource->getStatus()->getCode());
+            $this->assertEquals($this->realTimeDatabaseData['status_name'], $monitoringResource->getStatus()->getName());
+            $this->assertEquals(
+                $this->realTimeDatabaseData['status_severity_code'],
+                $monitoringResource->getStatus()->getSeverityCode()
+            );
+        }
 
         $this->assertEquals(
             $this->realTimeDatabaseData['action_url'],
             $monitoringResource->getLinks()->getExternals()->getActionUrl()
         );
-        $this->assertEquals(
-            $this->realTimeDatabaseData['notes_url'],
-            $monitoringResource->getLinks()->getExternals()->getNotes()->getUrl()
-        );
-        $this->assertEquals(
-            $this->realTimeDatabaseData['notes_label'],
-            $monitoringResource->getLinks()->getExternals()->getNotes()->getLabel()
-        );
+
+        if ($monitoringResource->getLinks()->getExternals()->getNotes() !== null) {
+            $this->assertEquals(
+                $this->realTimeDatabaseData['notes_url'],
+                $monitoringResource->getLinks()->getExternals()->getNotes()->getUrl()
+            );
+            $this->assertEquals(
+                $this->realTimeDatabaseData['notes_label'],
+                $monitoringResource->getLinks()->getExternals()->getNotes()->getLabel()
+            );
+        }
+
         $this->assertEquals((int) $this->realTimeDatabaseData['flapping'] === 1, $monitoringResource->getFlapping());
         $this->assertEquals(
             $this->realTimeDatabaseData['percent_state_change'],
@@ -159,27 +166,39 @@ class MonitoringResourceFactoryRdbTest extends TestCase
             $monitoringResource->getPassiveChecks()
         );
 
-        $this->assertEquals(
-            $this->realTimeDatabaseData['last_status_change'],
-            $monitoringResource->getLastStatusChange()->getTimestamp()
-        );
-        $this->assertEquals(
-            $this->realTimeDatabaseData['last_notification'],
-            $monitoringResource->getLastNotification()->getTimestamp()
-        );
+        if ($monitoringResource->getLastStatusChange() !== null) {
+            $this->assertEquals(
+                $this->realTimeDatabaseData['last_status_change'],
+                $monitoringResource->getLastStatusChange()->getTimestamp()
+            );
+        }
+
+        if ($monitoringResource->getLastNotification() !== null) {
+            $this->assertEquals(
+                $this->realTimeDatabaseData['last_notification'],
+                $monitoringResource->getLastNotification()->getTimestamp()
+            );
+        }
         $this->assertEquals(
             $this->realTimeDatabaseData['notification_number'],
             $monitoringResource->getNotificationNumber()
         );
         $this->assertEquals($this->realTimeDatabaseData['tries'], $monitoringResource->getTries());
-        $this->assertEquals(
-            $this->realTimeDatabaseData['last_check'],
-            $monitoringResource->getLastCheck()->getTimestamp()
-        );
-        $this->assertEquals(
-            $this->realTimeDatabaseData['next_check'],
-            $monitoringResource->getNextCheck()->getTimestamp()
-        );
+
+        if ($monitoringResource->getLastCheck() !== null) {
+            $this->assertEquals(
+                $this->realTimeDatabaseData['last_check'],
+                $monitoringResource->getLastCheck()->getTimestamp()
+            );
+        }
+
+        if ($monitoringResource->getNextCheck() !== null) {
+            $this->assertEquals(
+                $this->realTimeDatabaseData['next_check'],
+                $monitoringResource->getNextCheck()->getTimestamp()
+            );
+        }
+
         $this->assertEquals($this->realTimeDatabaseData['information'], $monitoringResource->getInformation());
         $this->assertEquals($this->realTimeDatabaseData['performance_data'], $monitoringResource->getPerformanceData());
         $this->assertEquals($this->realTimeDatabaseData['execution_time'], $monitoringResource->getExecutionTime());
@@ -193,30 +212,38 @@ class MonitoringResourceFactoryRdbTest extends TestCase
             $monitoringResource->hasGraphData()
         );
 
-        $this->assertEquals($this->realTimeDatabaseData['parent_id'], $monitoringResource->getParent()->getId());
-        $this->assertEquals($this->realTimeDatabaseData['parent_name'], $monitoringResource->getParent()->getName());
-        $this->assertEquals($this->realTimeDatabaseData['parent_type'], $monitoringResource->getParent()->getType());
-        $this->assertEquals($this->realTimeDatabaseData['parent_alias'], $monitoringResource->getParent()->getAlias());
-        $this->assertEquals($this->realTimeDatabaseData['parent_fqdn'], $monitoringResource->getParent()->getFqdn());
-        $this->assertEquals(
-            $this->realTimeDatabaseData['parent_icon_name'],
-            $monitoringResource->getParent()->getIcon()->getName()
-        );
-        $this->assertEquals(
-            $this->realTimeDatabaseData['parent_icon_url'],
-            $monitoringResource->getParent()->getIcon()->getUrl()
-        );
-        $this->assertEquals(
-            $this->realTimeDatabaseData['parent_status_code'],
-            $monitoringResource->getParent()->getStatus()->getCode()
-        );
-        $this->assertEquals(
-            $this->realTimeDatabaseData['parent_status_name'],
-            $monitoringResource->getParent()->getStatus()->getName()
-        );
-        $this->assertEquals(
-            $this->realTimeDatabaseData['parent_status_severity_code'],
-            $monitoringResource->getParent()->getStatus()->getSeverityCode()
-        );
+        if ($monitoringResource->getParent() !== null) {
+            $this->assertEquals($this->realTimeDatabaseData['parent_id'], $monitoringResource->getParent()->getId());
+            $this->assertEquals($this->realTimeDatabaseData['parent_name'], $monitoringResource->getParent()->getName());
+            $this->assertEquals($this->realTimeDatabaseData['parent_type'], $monitoringResource->getParent()->getType());
+            $this->assertEquals($this->realTimeDatabaseData['parent_alias'], $monitoringResource->getParent()->getAlias());
+            $this->assertEquals($this->realTimeDatabaseData['parent_fqdn'], $monitoringResource->getParent()->getFqdn());
+
+            if ($monitoringResource->getParent()->getIcon() !== null) {
+                $this->assertEquals(
+                    $this->realTimeDatabaseData['parent_icon_name'],
+                    $monitoringResource->getParent()->getIcon()->getName()
+                );
+                $this->assertEquals(
+                    $this->realTimeDatabaseData['parent_icon_url'],
+                    $monitoringResource->getParent()->getIcon()->getUrl()
+                );
+            }
+
+            if ($monitoringResource->getParent()->getStatus() !== null) {
+                $this->assertEquals(
+                    $this->realTimeDatabaseData['parent_status_code'],
+                    $monitoringResource->getParent()->getStatus()->getCode()
+                );
+                $this->assertEquals(
+                    $this->realTimeDatabaseData['parent_status_name'],
+                    $monitoringResource->getParent()->getStatus()->getName()
+                );
+                $this->assertEquals(
+                    $this->realTimeDatabaseData['parent_status_severity_code'],
+                    $monitoringResource->getParent()->getStatus()->getSeverityCode()
+                );
+            }
+        }
     }
 }

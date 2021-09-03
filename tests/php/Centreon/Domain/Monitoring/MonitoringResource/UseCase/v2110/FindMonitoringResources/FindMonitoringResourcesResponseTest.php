@@ -64,12 +64,20 @@ class FindMonitoringResourcesResponseTest extends TestCase
         $this->assertEquals($monitoringResource->getAcknowledged(), $monitoringResources[0]['acknowledged']);
         $this->assertEquals($monitoringResource->getActiveChecks(), $monitoringResources[0]['active_checks']);
         $this->assertEquals($monitoringResource->getFlapping(), $monitoringResources[0]['flapping']);
-        $this->assertEquals($monitoringResource->getIcon()->getName(), $monitoringResources[0]['icon']['name']);
-        $this->assertEquals($monitoringResource->getIcon()->getUrl(), $monitoringResources[0]['icon']['url']);
+
+        if ($monitoringResource->getIcon() !== null) {
+            $this->assertEquals($monitoringResource->getIcon()->getName(), $monitoringResources[0]['icon']['name']);
+            $this->assertEquals($monitoringResource->getIcon()->getUrl(), $monitoringResources[0]['icon']['url']);
+        }
+
         $this->assertEquals($monitoringResource->getInDowntime(), $monitoringResources[0]['in_downtime']);
         $this->assertEquals($monitoringResource->getInformation(), $monitoringResources[0]['information']);
         $this->assertEquals($monitoringResource->getLastCheckAsString(), $monitoringResources[0]['last_check']);
-        $this->assertEquals($monitoringResource->getLastStatusChange(), $monitoringResources[0]['last_status_change']);
+
+        if ($monitoringResource->getLastStatusChange() !== null) {
+            $this->assertEquals($monitoringResource->getLastStatusChange(), $monitoringResources[0]['last_status_change']);
+        }
+
         $this->assertEquals(
             $monitoringResource->getMonitoringServerName(),
             $monitoringResources[0]['monitoring_server_name']
@@ -81,116 +89,141 @@ class FindMonitoringResourcesResponseTest extends TestCase
         $this->assertEquals($monitoringResource->getPassiveChecks(), $monitoringResources[0]['passive_checks']);
         $this->assertEquals($monitoringResource->getPerformanceData(), $monitoringResources[0]['performance_data']);
         $this->assertEquals($monitoringResource->getSeverityLevel(), $monitoringResources[0]['severity_level']);
-        $this->assertEquals($monitoringResource->getStatus()->getCode(), $monitoringResources[0]['status']['code']);
-        $this->assertEquals($monitoringResource->getStatus()->getName(), $monitoringResources[0]['status']['name']);
-        $this->assertEquals(
-            $monitoringResource->getStatus()->getSeverityCode(),
-            $monitoringResources[0]['status']['severity_code']
-        );
+
+        if ($monitoringResource->getStatus() !== null) {
+            $this->assertEquals($monitoringResource->getStatus()->getCode(), $monitoringResources[0]['status']['code']);
+            $this->assertEquals($monitoringResource->getStatus()->getName(), $monitoringResources[0]['status']['name']);
+            $this->assertEquals(
+                $monitoringResource->getStatus()->getSeverityCode(),
+                $monitoringResources[0]['status']['severity_code']
+            );
+        }
+
         $this->assertEquals($monitoringResource->getTries(), $monitoringResources[0]['tries']);
         $this->assertEquals($monitoringResource->getDuration(), $monitoringResources[0]['duration']);
-        $this->assertEquals(
-            $monitoringResource->getLinks()->getExternals()->getNotes()->getUrl(),
-            $monitoringResources[0]['links']['externals']['notes']['url']
-        );
-        $this->assertEquals(
-            $monitoringResource->getLinks()->getExternals()->getNotes()->getLabel(),
-            $monitoringResources[0]['links']['externals']['notes']['label']
-        );
-        $this->assertEquals(
-            $monitoringResource->getLinks()->getExternals()->getActionUrl(),
-            $monitoringResources[0]['links']['externals']['action_url']
-        );
+
+        if ($monitoringResource->getLinks()->getExternals()->getNotes() !== null) {
+            $this->assertEquals(
+                $monitoringResource->getLinks()->getExternals()->getNotes()->getUrl(),
+                $monitoringResources[0]['links']['externals']['notes']['url']
+            );
+            $this->assertEquals(
+                $monitoringResource->getLinks()->getExternals()->getNotes()->getLabel(),
+                $monitoringResources[0]['links']['externals']['notes']['label']
+            );
+            $this->assertEquals(
+                $monitoringResource->getLinks()->getExternals()->getActionUrl(),
+                $monitoringResources[0]['links']['externals']['action_url']
+            );
+        }
 
         /** parent monitoring resource */
         $parentMonitoringResource = $monitoringResource->getParent();
-        $this->assertEquals($parentMonitoringResource->getId(), $monitoringResources[0]['parent']['id']);
-        $this->assertEquals($parentMonitoringResource->getUuid(), $monitoringResources[0]['parent']['uuid']);
-        $this->assertEquals($parentMonitoringResource->getShortType(), $monitoringResources[0]['parent']['short_type']);
-        $this->assertEquals($parentMonitoringResource->getName(), $monitoringResources[0]['parent']['name']);
-        $this->assertEquals($parentMonitoringResource->getType(), $monitoringResources[0]['parent']['type']);
-        $this->assertEquals($parentMonitoringResource->getAlias(), $monitoringResources[0]['parent']['alias']);
-        $this->assertEquals($parentMonitoringResource->getFqdn(), $monitoringResources[0]['parent']['fqdn']);
-        $this->assertEquals($parentMonitoringResource->getServiceId(), $monitoringResources[0]['parent']['service_id']);
-        $this->assertEquals($parentMonitoringResource->getHostId(), $monitoringResources[0]['parent']['host_id']);
-        $this->assertEquals(
-            $parentMonitoringResource->getAcknowledged(),
-            $monitoringResources[0]['parent']['acknowledged']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getActiveChecks(),
-            $monitoringResources[0]['parent']['active_checks']
-        );
-        $this->assertEquals($parentMonitoringResource->getFlapping(), $monitoringResources[0]['parent']['flapping']);
-        $this->assertEquals(
-            $parentMonitoringResource->getIcon()->getName(),
-            $monitoringResources[0]['parent']['icon']['name']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getIcon()->getUrl(),
-            $monitoringResources[0]['parent']['icon']['url']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getInDowntime(),
-            $monitoringResources[0]['parent']['in_downtime']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getInformation(),
-            $monitoringResources[0]['parent']['information']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getLastCheckAsString(),
-            $monitoringResources[0]['parent']['last_check']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getLastStatusChange(),
-            $monitoringResources[0]['parent']['last_status_change']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getMonitoringServerName(),
-            $monitoringResources[0]['parent']['monitoring_server_name']
-        );
-        $this->assertEquals(
-            $monitoringResource->isNotificationEnabled(),
-            $monitoringResources[0]['parent']['notification_enabled']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getPassiveChecks(),
-            $monitoringResources[0]['parent']['passive_checks']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getPerformanceData(),
-            $monitoringResources[0]['parent']['performance_data']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getSeverityLevel(),
-            $monitoringResources[0]['parent']['severity_level']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getStatus()->getCode(),
-            $monitoringResources[0]['parent']['status']['code']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getStatus()->getName(),
-            $monitoringResources[0]['parent']['status']['name']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getStatus()->getSeverityCode(),
-            $monitoringResources[0]['parent']['status']['severity_code']
-        );
-        $this->assertEquals($parentMonitoringResource->getTries(), $monitoringResources[0]['parent']['tries']);
-        $this->assertEquals($parentMonitoringResource->getDuration(), $monitoringResources[0]['parent']['duration']);
-        $this->assertEquals(
-            $parentMonitoringResource->getLinks()->getExternals()->getNotes()->getUrl(),
-            $monitoringResources[0]['parent']['links']['externals']['notes']['url']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getLinks()->getExternals()->getNotes()->getLabel(),
-            $monitoringResources[0]['parent']['links']['externals']['notes']['label']
-        );
-        $this->assertEquals(
-            $parentMonitoringResource->getLinks()->getExternals()->getActionUrl(),
-            $monitoringResources[0]['parent']['links']['externals']['action_url']
-        );
+
+        if ($parentMonitoringResource !== null) {
+            $this->assertEquals($parentMonitoringResource->getId(), $monitoringResources[0]['parent']['id']);
+            $this->assertEquals($parentMonitoringResource->getUuid(), $monitoringResources[0]['parent']['uuid']);
+            $this->assertEquals($parentMonitoringResource->getShortType(), $monitoringResources[0]['parent']['short_type']);
+            $this->assertEquals($parentMonitoringResource->getName(), $monitoringResources[0]['parent']['name']);
+            $this->assertEquals($parentMonitoringResource->getType(), $monitoringResources[0]['parent']['type']);
+            $this->assertEquals($parentMonitoringResource->getAlias(), $monitoringResources[0]['parent']['alias']);
+            $this->assertEquals($parentMonitoringResource->getFqdn(), $monitoringResources[0]['parent']['fqdn']);
+            $this->assertEquals($parentMonitoringResource->getServiceId(), $monitoringResources[0]['parent']['service_id']);
+            $this->assertEquals($parentMonitoringResource->getHostId(), $monitoringResources[0]['parent']['host_id']);
+            $this->assertEquals(
+                $parentMonitoringResource->getAcknowledged(),
+                $monitoringResources[0]['parent']['acknowledged']
+            );
+            $this->assertEquals(
+                $parentMonitoringResource->getActiveChecks(),
+                $monitoringResources[0]['parent']['active_checks']
+            );
+            $this->assertEquals($parentMonitoringResource->getFlapping(), $monitoringResources[0]['parent']['flapping']);
+
+            if ($parentMonitoringResource->getIcon() !== null) {
+                $this->assertEquals(
+                    $parentMonitoringResource->getIcon()->getName(),
+                    $monitoringResources[0]['parent']['icon']['name']
+                );
+                $this->assertEquals(
+                    $parentMonitoringResource->getIcon()->getUrl(),
+                    $monitoringResources[0]['parent']['icon']['url']
+                );
+            }
+
+            $this->assertEquals(
+                $parentMonitoringResource->getInDowntime(),
+                $monitoringResources[0]['parent']['in_downtime']
+            );
+            $this->assertEquals(
+                $parentMonitoringResource->getInformation(),
+                $monitoringResources[0]['parent']['information']
+            );
+            $this->assertEquals(
+                $parentMonitoringResource->getLastCheckAsString(),
+                $monitoringResources[0]['parent']['last_check']
+            );
+
+            if ($parentMonitoringResource->getLastStatusChange() !== null) {
+                $this->assertEquals(
+                    $parentMonitoringResource->getLastStatusChange(),
+                    $monitoringResources[0]['parent']['last_status_change']
+                );
+            }
+
+            $this->assertEquals(
+                $parentMonitoringResource->getMonitoringServerName(),
+                $monitoringResources[0]['parent']['monitoring_server_name']
+            );
+            $this->assertEquals(
+                $monitoringResource->isNotificationEnabled(),
+                $monitoringResources[0]['parent']['notification_enabled']
+            );
+            $this->assertEquals(
+                $parentMonitoringResource->getPassiveChecks(),
+                $monitoringResources[0]['parent']['passive_checks']
+            );
+            $this->assertEquals(
+                $parentMonitoringResource->getPerformanceData(),
+                $monitoringResources[0]['parent']['performance_data']
+            );
+            $this->assertEquals(
+                $parentMonitoringResource->getSeverityLevel(),
+                $monitoringResources[0]['parent']['severity_level']
+            );
+
+            if ($parentMonitoringResource->getStatus() !== null) {
+                $this->assertEquals(
+                    $parentMonitoringResource->getStatus()->getCode(),
+                    $monitoringResources[0]['parent']['status']['code']
+                );
+                $this->assertEquals(
+                    $parentMonitoringResource->getStatus()->getName(),
+                    $monitoringResources[0]['parent']['status']['name']
+                );
+                $this->assertEquals(
+                    $parentMonitoringResource->getStatus()->getSeverityCode(),
+                    $monitoringResources[0]['parent']['status']['severity_code']
+                );
+            }
+
+            $this->assertEquals($parentMonitoringResource->getTries(), $monitoringResources[0]['parent']['tries']);
+            $this->assertEquals($parentMonitoringResource->getDuration(), $monitoringResources[0]['parent']['duration']);
+
+            if ($parentMonitoringResource->getLinks()->getExternals()->getNotes() !== null) {
+                $this->assertEquals(
+                    $parentMonitoringResource->getLinks()->getExternals()->getNotes()->getUrl(),
+                    $monitoringResources[0]['parent']['links']['externals']['notes']['url']
+                );
+                $this->assertEquals(
+                    $parentMonitoringResource->getLinks()->getExternals()->getNotes()->getLabel(),
+                    $monitoringResources[0]['parent']['links']['externals']['notes']['label']
+                );
+                $this->assertEquals(
+                    $parentMonitoringResource->getLinks()->getExternals()->getActionUrl(),
+                    $monitoringResources[0]['parent']['links']['externals']['action_url']
+                );
+            }
+        }
     }
 }

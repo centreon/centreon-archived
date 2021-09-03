@@ -28,19 +28,19 @@ use PHPUnit\Framework\TestCase;
 class MassiveCheckValidatorTest extends TestCase
 {
     /**
-     * @var MassiveCheckValidator
+     * @var Validator\MassiveCheckValidator
      */
     protected $massiveCheckValidator;
 
     /**
-     * @var MonitoringResourceValidatorInterface&\PHPUnit\Framework\MockObject\MockObject $monitoringResourceValidator
+     * @var Validator\Interfaces\MonitoringResourceValidatorInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $monitoringResourceValidator;
 
     protected function setUp(): void
     {
         $this->monitoringResourceValidator = $this->createMock(
-            Validator\Interfaces\MonitoringResourceValidatorInterfaceMonitoringResourceValidatorInterface::class
+            Validator\Interfaces\MonitoringResourceValidatorInterface::class
         );
         $monitoringResourceValidators = [$this->monitoringResourceValidator];
         $this->massiveCheckValidator = new Validator\MassiveCheckValidator($monitoringResourceValidators);

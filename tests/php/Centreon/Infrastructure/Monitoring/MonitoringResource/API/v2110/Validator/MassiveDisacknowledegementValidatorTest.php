@@ -28,12 +28,12 @@ use PHPUnit\Framework\TestCase;
 class MassiveDisacknowledgementValidatorTest extends TestCase
 {
     /**
-     * @var MassiveDisacknowledgementValidator
+     * @var Validator\MassiveDisacknowledgementValidator
      */
     protected $massiveDisacknowledgementValidator;
 
     /**
-     * @var MonitoringResourceValidatorInterface&\PHPUnit\Framework\MockObject\MockObject $monitoringResourceValidator
+     * @var Validator\Interfaces\MonitoringResourceValidatorInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $monitoringResourceValidator;
 

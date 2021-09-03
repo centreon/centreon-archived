@@ -48,12 +48,12 @@ class ServiceProviderTest extends TestCase
     protected $requestParameters;
 
     /**
-     * @var ResourceFilter|null $resourceFilter
+     * @var ResourceFilter $resourceFilter
      */
     protected $resourceFilter;
 
     /**
-     * @var ServiceProvider|null $serviceProvider
+     * @var ServiceProvider $serviceProvider
      */
     protected $serviceProvider;
 

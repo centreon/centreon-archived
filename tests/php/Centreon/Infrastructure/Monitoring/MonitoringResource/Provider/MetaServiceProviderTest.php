@@ -48,12 +48,12 @@ class MetaServiceProviderTest extends TestCase
     protected $requestParameters;
 
     /**
-     * @var ResourceFilter|null $resourceFilter
+     * @var ResourceFilter $resourceFilter
      */
     protected $resourceFilter;
 
     /**
-     * @var MetaServiceProvider|null $metaServiceProvider
+     * @var MetaServiceProvider $metaServiceProvider
      */
     protected $metaServiceProvider;
 

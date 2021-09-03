@@ -118,9 +118,18 @@ class MonitoringResourceTest extends TestCase
         $serviceMonitoringResourceType = self::createServiceMonitoringResourceEntity();
         $hostMonitoringResourceType = $serviceMonitoringResourceType->getParent();
         $metaServiceMonitoringResourceType = new MonitoringResource(1, 'metaName', 'metaservice');
-        $this->assertEquals('s', $serviceMonitoringResourceType->getShortType());
-        $this->assertEquals('h', $hostMonitoringResourceType->getShortType());
-        $this->assertEquals('m', $metaServiceMonitoringResourceType->getShortType());
+
+        if ($serviceMonitoringResourceType->getShortType() !== null) {
+            $this->assertEquals('s', $serviceMonitoringResourceType->getShortType());
+        }
+
+        if ($hostMonitoringResourceType !== null && $hostMonitoringResourceType->getShortType() !== null) {
+            $this->assertEquals('h', $hostMonitoringResourceType->getShortType());
+        }
+
+        if ($metaServiceMonitoringResourceType->getShortType() !== null) {
+            $this->assertEquals('m', $metaServiceMonitoringResourceType->getShortType());
+        }
     }
 
     /**

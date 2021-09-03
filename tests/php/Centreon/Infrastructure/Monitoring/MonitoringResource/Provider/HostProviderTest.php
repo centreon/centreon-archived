@@ -48,12 +48,12 @@ class HostProviderTest extends TestCase
     protected $requestParameters;
 
     /**
-     * @var ResourceFilter|null $resourceFilter
+     * @var ResourceFilter $resourceFilter
      */
     protected $resourceFilter;
 
     /**
-     * @var HostProvider|null $hostProvider
+     * @var HostProvider $hostProvider
      */
     protected $hostProvider;
 

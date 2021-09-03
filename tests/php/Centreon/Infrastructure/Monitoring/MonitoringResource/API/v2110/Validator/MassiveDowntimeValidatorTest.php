@@ -28,12 +28,12 @@ use PHPUnit\Framework\TestCase;
 class MassiveDowntimeValidatorTest extends TestCase
 {
     /**
-     * @var MassiveDowntimeValidator
+     * @var Validator\MassiveDowntimeValidator
      */
     protected $massiveDowntimeValidator;
 
     /**
-     * @var MonitoringResourceValidatorInterface&\PHPUnit\Framework\MockObject\MockObject $monitoringResourceValidator
+     * @var Validator\Interfaces\MonitoringResourceValidatorInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $monitoringResourceValidator;
 
