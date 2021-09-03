@@ -97,6 +97,7 @@ $centreonConfFile = $centreonEtcPath . '/centreon.conf.php';
 $contents = file_get_contents('../../var/configFileTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfFile, $contents);
+chmod($centreonConfFile, 0640);
 
 /**
  * conf.pm
