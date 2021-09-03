@@ -419,8 +419,8 @@ class CheckController extends AbstractController
         $payload = (string) $request->getContent();
         $checkPayload = json_decode($payload, true);
 
-        if ($checkPayload === false) {
-            throw new CheckException('Error when decoding your sent data');
+        if (!is_array($checkPayload)) {
+            throw new \InvalidArgumentException(_('Error when decoding sent data'));
         }
 
         // validate the payload sent

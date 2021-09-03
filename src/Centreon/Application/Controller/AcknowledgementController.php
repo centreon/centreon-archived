@@ -333,8 +333,8 @@ class AcknowledgementController extends AbstractController
         $content = json_decode((string) $request->getContent(), true);
 
         // @todo check errors already sent for this
-        if ($content === false) {
-            throw new AcknowledgementException('Error when decoding your sent data');
+        if (!is_array($content)) {
+            throw new \InvalidArgumentException(_('Error when decoding sent data'));
         }
 
         $errors = $entityValidator->validateEntity(
@@ -669,8 +669,8 @@ class AcknowledgementController extends AbstractController
 
         $disacknowledgementPayload = json_decode((string) $request->getContent(), true);
 
-        if ($disacknowledgementPayload === false) {
-            throw new AcknowledgementException('Error when decoding your sent data');
+        if (!is_array($disacknowledgementPayload)) {
+            throw new \InvalidArgumentException(_('Error when decoding sent data'));
         }
 
         $massiveDisacknowledgementValidator->validateOrFail($disacknowledgementPayload);
@@ -742,9 +742,8 @@ class AcknowledgementController extends AbstractController
         $payload = (string) $request->getContent();
         $acknowledgementPayload = json_decode($payload, true);
 
-        $this->info('Validating payload sent for acknowledgement request');
-        if ($acknowledgementPayload === false) {
-            throw new AcknowledgementException('Error when decoding your sent data');
+        if (!is_array($acknowledgementPayload)) {
+            throw new \InvalidArgumentException(_('Error when decoding sent data'));
         }
 
         // validate the payload sent

@@ -651,8 +651,8 @@ class DowntimeController extends AbstractController
         $payload = (string) $request->getContent();
         $downtimePayload = json_decode($payload, true);
 
-        if ($downtimePayload === false) {
-            throw new DowntimeException('Error when decoding your sent data');
+        if (!is_array($downtimePayload)) {
+            throw new \InvalidArgumentException(_('Error when decoding sent data'));
         }
 
         $massiveDowntimeValidator->validateOrFail($downtimePayload);

@@ -35,7 +35,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
-use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Provider\Provider;
 use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Provider\ProviderInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceRepositoryInterface;
 use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Model\MonitoringResourceFactoryRdb;
@@ -114,7 +113,7 @@ final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implem
     }
 
     /**
-     * @param iterable<Provider> $providers
+     * @param iterable<ProviderInterface> $providers
      * @throws \InvalidArgumentException
      * @return void
      */

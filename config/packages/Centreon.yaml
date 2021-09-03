@@ -218,18 +218,6 @@ services:
             - method: setHyperMediaProviders
               arguments: [!tagged_iterator 'monitoring.monitoringresource.hypermediaproviders']
 
-    Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\FindMonitoringResources\FindMonitoringResources:
-        class: Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\FindMonitoringResources\FindMonitoringResources
-
-    Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource\DetailHostMonitoringResource:
-        class: Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource\DetailHostMonitoringResource
-
-    Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource\DetailServiceMonitoringResource:
-        class: Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource\DetailServiceMonitoringResource
-
-    Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource\DetailMetaServiceMonitoringResource:
-        class: Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource\DetailMetaServiceMonitoringResource
-
     # Validators
     Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveAcknowledgementValidatorInterface:
         class: Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\MassiveAcknowledgementValidator
