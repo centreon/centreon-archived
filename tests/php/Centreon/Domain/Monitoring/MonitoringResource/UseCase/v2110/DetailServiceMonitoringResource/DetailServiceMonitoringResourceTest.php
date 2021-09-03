@@ -21,9 +21,9 @@
 
 declare(strict_types=1);
 
-// @phpstan-ignore-next-line
-namespace Tests\Centreon\Domain\Monitoring\DetailServiceMonitoringResource\UseCase\v2110\
-    DetailServiceMonitoringResource;
+// @codingStandardsIgnoreStart
+namespace Tests\Centreon\Domain\Monitoring\DetailServiceMonitoringResource\UseCase\v2110\DetailServiceMonitoringResource;
+// @codingStandardsIgnoreEnd
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
