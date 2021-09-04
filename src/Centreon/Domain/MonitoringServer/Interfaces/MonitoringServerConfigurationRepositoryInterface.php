@@ -22,6 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
+use Centreon\Domain\Exception\TimeoutException;
+use Centreon\Domain\Repository\RepositoryException;
+
 /**
  * @package Centreon\Domain\MonitoringServer\Interfaces
  */
@@ -29,19 +32,22 @@ interface MonitoringServerConfigurationRepositoryInterface
 {
     /**
      * @param int $monitoringServerId
-     * @throws \Centreon\Domain\Repository\RepositoryException
+     * @throws RepositoryException
+     * @throws TimeoutException
      */
     public function generateConfiguration(int $monitoringServerId): void;
 
     /**
      * @param int $monitoringServerId
-     * @throws \Centreon\Domain\Repository\RepositoryException
+     * @throws RepositoryException
+     * @throws TimeoutException
      */
     public function moveExportFiles(int $monitoringServerId): void;
 
     /**
      * @param int $monitoringServerId
-     * @throws \Centreon\Domain\Repository\RepositoryException
+     * @throws RepositoryException
+     * @throws TimeoutException
      */
     public function reloadConfiguration(int $monitoringServerId): void;
 }

@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\MonitoringServer\UseCase;
 
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Exception\TimeoutException;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\MonitoringServer\Exception\ConfigurationMonitoringServerException;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
@@ -63,6 +64,7 @@ class GenerateConfiguration
      * @param int $monitoringServerId
      * @throws EntityNotFoundException
      * @throws ConfigurationMonitoringServerException
+     * @throws TimeoutException
      */
     public function execute(int $monitoringServerId): void
     {
@@ -75,7 +77,10 @@ class GenerateConfiguration
             $this->repository->generateConfiguration($monitoringServerId);
             $this->info('Move configuration files for monitoring server #' . $monitoringServerId);
             $this->repository->moveExportFiles($monitoringServerId);
-        } catch (EntityNotFoundException $ex) {
+        } catch (EntityNotFoundException | TimeoutException $ex) {
+            if ($ex instanceof TimeoutException) {
+                throw ConfigurationMonitoringServerException::timeout($monitoringServerId, $ex->getMessage());
+            }
             throw $ex;
         } catch (\Exception $ex) {
             throw ConfigurationMonitoringServerException::errorOnGeneration(

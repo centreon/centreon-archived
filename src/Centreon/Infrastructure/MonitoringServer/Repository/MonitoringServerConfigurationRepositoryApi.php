@@ -32,6 +32,7 @@ use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationTokenServiceInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerConfigurationRepositoryInterface;
 use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\Exception\TimeoutException;
 use Centreon\Infrastructure\MonitoringServer\Repository\Exception\MonitoringServerConfigurationRepositoryException;
 
 /**
@@ -144,6 +145,7 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
      * @param string $filePath
      * @param string $payloadBody
      * @throws RepositoryException
+     * @throws TimeoutException
      */
     private function callHttp(string $filePath, string $payloadBody): void
     {
@@ -175,7 +177,7 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             }
             $optionPayload['headers'] = ['X-AUTH-TOKEN' => $providerToken->getToken()];
             $optionPayload['body'] = $payloadBody;
-            $optionPayload['timeout'] = $this->timeout;
+            $optionPayload['timeout'] = 1;//$this->timeout;
 
             $response = $this->httpClient->request('POST', $fullUriPath, $optionPayload);
             if ($response->getStatusCode() !== 200) {
@@ -185,7 +187,7 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             $xml = $response->getContent();
             if (!empty($xml)) {
                 if (($element = simplexml_load_string($xml)) !== false) {
-                    if ((string) $element->statuscode !== '0') {
+                    if ((string) $element->statuscode !== '09') {
                         throw new RepositoryException((string) $element->error);
                     }
                 }
