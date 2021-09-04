@@ -16272,3 +16272,9 @@ msgstr "Réponse vide"
 
 msgid "Unable to load the Symfony container"
 msgstr "Impossible de charger le conteneur Symfony"
+
+msgid "Error on monitoring server #%d: %s"
+msgstr "Erreur sur le serveur de supervision #%d : %s"
+
+msgid "Execution was too long and reached timeout"
+msgstr "L'exécution a été trop longue et a atteint le délai d'attente"

@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\MonitoringServer\Repository\Exception;
 
+use Centreon\Domain\Exception\TimeoutException;
 use Centreon\Domain\Repository\RepositoryException;
 
 /**
@@ -74,11 +75,12 @@ class MonitoringServerConfigurationRepositoryException extends RepositoryExcepti
     }
 
     /**
-     * @return self
+     * @param \Throwable $ex
+     * @return TimeoutException
      */
-    public static function timeout(\Throwable $ex): self
+    public static function timeout(\Throwable $ex): TimeoutException
     {
-        return new self(_('Execution was too long and reached timeout'), 0, $ex);
+        return new TimeoutException(_('Execution was too long and reached timeout'), 0, $ex);
     }
 
     /**

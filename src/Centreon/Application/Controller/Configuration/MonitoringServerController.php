@@ -23,7 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller\Configuration;
 
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\MonitoringServer\Exception\ConfigurationMonitoringServerException;
+use Centreon\Domain\Exception\TimeoutException;
+use Centreon\Domain\Log\LoggerTrait;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Context\Context;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
@@ -43,6 +45,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class MonitoringServerController extends AbstractController
 {
+    use LoggerTrait;
+
     /**
      * @var MonitoringServerServiceInterface
      */
@@ -70,7 +74,6 @@ class MonitoringServerController extends AbstractController
         $context = (new Context())->setGroups([
             MonitoringServer::SERIALIZER_GROUP_MAIN,
         ]);
-
         return $this->view(
             [
                 'result' => $server,
@@ -84,24 +87,33 @@ class MonitoringServerController extends AbstractController
      * @param int $monitoringServerId
      * @return View
      * @throws EntityNotFoundException
-     * @throws ConfigurationMonitoringServerException
+     * @throws MonitoringServerException
      */
     public function generateConfiguration(GenerateConfiguration $generateConfiguration, int $monitoringServerId): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $generateConfiguration->execute($monitoringServerId);
+        $this->execute(
+            function () use ($generateConfiguration, $monitoringServerId) {
+                $generateConfiguration->execute($monitoringServerId);
+            }
+        );
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
      * @param GenerateAllConfigurations $generateAllConfigurations
      * @return View
-     * @throws ConfigurationMonitoringServerException
+     * @throws EntityNotFoundException
+     * @throws MonitoringServerException
      */
     public function generateAllConfigurations(GenerateAllConfigurations $generateAllConfigurations): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $generateAllConfigurations->execute();
+        $this->execute(
+            function () use ($generateAllConfigurations) {
+                $generateAllConfigurations->execute();
+            }
+        );
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
@@ -110,24 +122,33 @@ class MonitoringServerController extends AbstractController
      * @param int $monitoringServerId
      * @return View
      * @throws EntityNotFoundException
-     * @throws ConfigurationMonitoringServerException
+     * @throws MonitoringServerException
      */
     public function reloadConfiguration(ReloadConfiguration $reloadConfiguration, int $monitoringServerId): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $reloadConfiguration->execute($monitoringServerId);
+        $this->execute(
+            function () use ($reloadConfiguration, $monitoringServerId) {
+                $reloadConfiguration->execute($monitoringServerId);
+            }
+        );
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
      * @param ReloadAllConfigurations $reloadAllConfigurations
      * @return View
-     * @throws ConfigurationMonitoringServerException
+     * @throws EntityNotFoundException
+     * @throws MonitoringServerException
      */
     public function reloadAllConfigurations(ReloadAllConfigurations $reloadAllConfigurations): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $reloadAllConfigurations->execute();
+        $this->execute(
+            function () use ($reloadAllConfigurations) {
+                $reloadAllConfigurations->execute();
+            }
+        );
         return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
@@ -139,7 +160,7 @@ class MonitoringServerController extends AbstractController
      * @param int $monitoringServerId
      * @return View
      * @throws EntityNotFoundException
-     * @throws ConfigurationMonitoringServerException
+     * @throws MonitoringServerException
      */
     public function generateAndReloadConfiguration(
         GenerateConfiguration $generateConfiguration,
@@ -147,9 +168,13 @@ class MonitoringServerController extends AbstractController
         int $monitoringServerId
     ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $generateConfiguration->execute($monitoringServerId);
-        $reloadConfiguration->execute($monitoringServerId);
-       return $this->view(null, Response::HTTP_NO_CONTENT);
+        $this->execute(
+            function () use ($generateConfiguration, $reloadConfiguration, $monitoringServerId) {
+                $generateConfiguration->execute($monitoringServerId);
+                $reloadConfiguration->execute($monitoringServerId);
+            }
+        );
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -158,15 +183,45 @@ class MonitoringServerController extends AbstractController
      * @param GenerateAllConfigurations $generateAllConfigurations
      * @param ReloadAllConfigurations $reloadAllConfigurations
      * @return View
-     * @throws ConfigurationMonitoringServerException
+     * @throws EntityNotFoundException
+     * @throws MonitoringServerException
      */
     public function generateAndReloadAllConfigurations(
         GenerateAllConfigurations $generateAllConfigurations,
         ReloadAllConfigurations $reloadAllConfigurations
     ): View {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $generateAllConfigurations->execute();
-        $reloadAllConfigurations->execute();
+        $this->execute(
+            function () use ($generateAllConfigurations, $reloadAllConfigurations) {
+                $generateAllConfigurations->execute();
+                $reloadAllConfigurations->execute();
+            }
+        );
         return $this->view(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @param callable $callable
+     * @throws EntityNotFoundException
+     * @throws MonitoringServerException
+     */
+    private function execute(callable $callable): void
+    {
+        try {
+            $callable();
+        } catch (TimeoutException $ex) {
+            $this->error($ex->getMessage());
+            throw new MonitoringServerException(
+                'The operation timed out - please use the legacy export menu to workaround this problem'
+            );
+        } catch (EntityNotFoundException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            $this->error($ex->getMessage());
+            throw new MonitoringServerException(
+                'There was an consistency error in the exported files  - please use the legacy export menu to '
+                . 'troubleshoot'
+            );
+        }
     }
 }

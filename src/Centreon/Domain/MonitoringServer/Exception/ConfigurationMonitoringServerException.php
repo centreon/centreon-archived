@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\MonitoringServer\Exception;
 
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Exception\TimeoutException;
 
 /**
  * This class is designed to contain all exceptions concerning the generation and reloading of the monitoring server
@@ -70,5 +71,14 @@ class ConfigurationMonitoringServerException extends \Exception
     public static function errorRetrievingMonitoringServers(\Throwable $ex): self
     {
         return new self(_('Error on retrieving monitoring servers'));
+    }
+
+    /**
+     * @param string $message
+     * @return TimeoutException
+     */
+    public static function timeout(int $monitoringServerId, string $message): TimeoutException
+    {
+        return new TimeoutException(sprintf(_('Error on monitoring server #%d: %s'), $monitoringServerId, $message));
     }
 }

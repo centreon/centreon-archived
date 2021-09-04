@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer\UseCase;
 
+use Centreon\Domain\Exception\TimeoutException;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\MonitoringServer\Exception\ConfigurationMonitoringServerException;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
@@ -60,6 +61,7 @@ class ReloadAllConfigurations
 
     /**
      * @throws ConfigurationMonitoringServerException
+     * @throws \Centreon\Domain\Exception\TimeoutException
      */
     public function execute(): void
     {
@@ -81,6 +83,8 @@ class ReloadAllConfigurations
                     $this->error('Monitoring server id from repository is null');
                 }
             }
+        } catch (TimeoutException $ex) {
+            throw ConfigurationMonitoringServerException::timeout($lastMonitoringServerId, $ex->getMessage());
         } catch (\Exception $ex) {
             throw ConfigurationMonitoringServerException::errorOnReload(
                 $lastMonitoringServerId,

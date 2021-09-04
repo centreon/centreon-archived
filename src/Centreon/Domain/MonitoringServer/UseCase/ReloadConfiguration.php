@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer\UseCase;
 
+use Centreon\Domain\Exception\TimeoutException;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
@@ -62,6 +63,7 @@ class ReloadConfiguration
      * @param int $monitoringServerId
      * @throws EntityNotFoundException
      * @throws ConfigurationMonitoringServerException
+     * @throws TimeoutException
      */
     public function execute(int $monitoringServerId): void
     {
@@ -72,7 +74,10 @@ class ReloadConfiguration
             }
             $this->info('Reload configuration for monitoring server #' . $monitoringServerId);
             $this->repository->reloadConfiguration($monitoringServerId);
-        } catch (EntityNotFoundException $ex) {
+        } catch (EntityNotFoundException | TimeoutException $ex) {
+            if ($ex instanceof TimeoutException) {
+                throw ConfigurationMonitoringServerException::timeout($monitoringServerId, $ex->getMessage());
+            }
             throw $ex;
         } catch (\Exception $ex) {
             throw ConfigurationMonitoringServerException::errorOnReload(
