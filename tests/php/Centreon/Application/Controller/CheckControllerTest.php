@@ -28,7 +28,7 @@ use Centreon\Domain\Contact\Contact;
 use Psr\Container\ContainerInterface;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Centreon\Application\Request\CheckRequest;
+use Centreon\Infrastructure\Monitoring\Check\API\Model\MassCheckResourceRequest;
 use Centreon\Application\Controller\CheckController;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -55,9 +55,9 @@ class CheckControllerTest extends TestCase
     protected $badJsonCheck;
 
     /**
-     * @var CheckRequest
+     * @var MassCheckResourceRequest
      */
-    protected $checkRequest;
+    protected $massCheckResourceRequest;
 
     /**
      * @var Check
@@ -146,7 +146,7 @@ class CheckControllerTest extends TestCase
 
         $this->check = (new Check())
             ->setCheckTime(new \DateTime());
-        $this->checkRequest = (new CheckRequest())
+        $this->massCheckResourceRequest = (new MassCheckResourceRequest())
             ->setMonitoringResource([$this->hostResource, $this->serviceResource])
             ->setCheck($this->check);
 
@@ -207,7 +207,7 @@ class CheckControllerTest extends TestCase
 
         $this->serializer->expects($this->once())
             ->method('deserialize')
-            ->willReturn($this->checkRequest);
+            ->willReturn($this->massCheckResourceRequest);
 
         $checkController = new CheckController($this->checkService);
         $checkController->setContainer($this->container);

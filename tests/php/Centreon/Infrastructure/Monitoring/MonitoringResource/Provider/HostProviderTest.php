@@ -147,25 +147,4 @@ class HostProviderTest extends TestCase
 
         $this->assertFalse($shouldBeSearched);
     }
-
-    /**
-     * test excludeResourcesWithoutMetrics with one host
-     */
-    public function testExcludeResourcesWithoutMetrics(): void
-    {
-        $hostResource = new MonitoringResource(1, 'host1', 'host');
-        $serviceResource = (new MonitoringResource(1, 'service1', 'service'))
-            ->setParent($hostResource);
-        $metaServiceResource = new MonitoringResource(1, 'meta1', 'metaservice');
-
-        $resources = [$hostResource, $serviceResource, $metaServiceResource];
-
-        $filteredResources = $this->hostProvider->excludeResourcesWithoutMetrics($resources);
-
-        $this->assertCount(2, $filteredResources);
-
-        foreach ($filteredResources as $filteredResource) {
-            $this->assertNotEquals('host', $filteredResource->getType());
-        }
-    }
 }
