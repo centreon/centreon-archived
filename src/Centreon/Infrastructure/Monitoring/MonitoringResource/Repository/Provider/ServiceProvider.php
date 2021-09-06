@@ -33,12 +33,30 @@ use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorExcepti
 
 final class ServiceProvider extends Provider
 {
+    public const TYPE = 'service';
+
+    public const AVAILABLE_STATUSES = [
+        ResourceFilter::STATUS_OK => 0,
+        ResourceFilter::STATUS_WARNING => 1,
+        ResourceFilter::STATUS_CRITICAL => 2,
+        ResourceFilter::STATUS_UNKNOWN => 3,
+        ResourceFilter::STATUS_PENDING => 4,
+    ];
+
+    /**
+     * @inheritDoc
+     */
+    public function getAvailableStatuses(): array
+    {
+        return self::AVAILABLE_STATUSES;
+    }
+
     /**
      * @inheritDoc
      */
     public function shouldBeSearched(ResourceFilter $filter): bool
     {
-        if ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_SERVICE)) {
+        if ($filter->getTypes() && !$filter->hasType(self::TYPE)) {
             return false;
         }
 
@@ -46,7 +64,7 @@ final class ServiceProvider extends Provider
             $filter->getStatuses() &&
             !ResourceFilter::map(
                 $filter->getStatuses(),
-                ResourceFilter::MAP_STATUS_SERVICE
+                $this->getAvailableStatuses()
             )
         ) {
             return false;
@@ -254,7 +272,7 @@ final class ServiceProvider extends Provider
         }
 
         // apply the status filter to SQL query
-        $statuses = ResourceFilter::map($filter->getStatuses(), ResourceFilter::MAP_STATUS_SERVICE);
+        $statuses = ResourceFilter::map($filter->getStatuses(), $this->getAvailableStatuses());
         if ($statuses) {
             $statusList = [];
 
@@ -309,57 +327,5 @@ final class ServiceProvider extends Provider
         }
 
         return $sql;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function excludeResourcesWithoutMetrics(array $resources): array
-    {
-        $filteredResources = [];
-        $collector = new StatementCollector();
-        $where = [];
-        $serviceResources = [];
-
-        foreach ($resources as $key => $resource) {
-            if ($resource->getType() === MonitoringResource::TYPE_SERVICE) {
-                $where[] = "(i.host_id = :host_id_{$key} AND i.service_id = :service_id_{$key})";
-                $collector->addValue(":service_id_{$key}", $resource->getId(), \PDO::PARAM_INT);
-                $collector->addValue(":host_id_{$key}", $resource->getParent()->getId(), \PDO::PARAM_INT);
-                $serviceResources[] = $resource;
-            } else {
-                $filteredResources[] = $resource;
-            }
-        }
-
-        if (empty($serviceResources)) {
-            return $filteredResources;
-        }
-
-        $statement = $this->db->prepare(
-            $this->translateDbName(
-                'SELECT i.host_id, i.service_id
-                FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i
-                WHERE (' . implode(' OR ', $where) . ')
-                AND i.id = m.index_id
-                AND m.hidden = "0"
-                GROUP BY host_id, service_id'
-            )
-        );
-        $collector->bind($statement);
-        $statement->execute();
-
-        while ($row = $statement->fetch()) {
-            foreach ($serviceResources as $serviceResource) {
-                if (
-                    $serviceResource->getParent()->getId() === (int)$row['host_id']
-                    && $serviceResource->getId() === (int)$row['service_id']
-                ) {
-                    $filteredResources[] = $serviceResource;
-                }
-            }
-        }
-
-        return $filteredResources;
     }
 }

@@ -68,10 +68,9 @@ interface ProviderInterface
     ): string;
 
     /**
-     * Remove resources which do not have performance metrics
+     * Return the list of the available statuses for the provider
      *
-     * @param MonitoringResource[] $resources
-     * @return MonitoringResource[]
+     * @return array<string, int>
      */
-    public function excludeResourcesWithoutMetrics(array $resources): array;
+    public function getAvailableStatuses(): array;
 }

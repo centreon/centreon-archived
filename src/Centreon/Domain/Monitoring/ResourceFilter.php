@@ -29,9 +29,6 @@ namespace Centreon\Domain\Monitoring;
  */
 class ResourceFilter
 {
-    public const TYPE_SERVICE = 'service';
-    public const TYPE_HOST = 'host';
-    public const TYPE_META = 'metaservice';
 
     /**
      * Non-ok status in hard state , not acknowledged & not in downtime
@@ -66,21 +63,6 @@ class ResourceFilter
     public const STATUS_UNREACHABLE = 'UNREACHABLE';
     public const STATUS_UNKNOWN = 'UNKNOWN';
     public const STATUS_PENDING = 'PENDING';
-
-    public const MAP_STATUS_SERVICE = [
-        self::STATUS_OK => 0,
-        self::STATUS_WARNING => 1,
-        self::STATUS_CRITICAL => 2,
-        self::STATUS_UNKNOWN => 3,
-        self::STATUS_PENDING => 4,
-    ];
-
-    public const MAP_STATUS_HOST = [
-        self::STATUS_UP => 0,
-        self::STATUS_DOWN => 1,
-        self::STATUS_UNREACHABLE => 2,
-        self::STATUS_PENDING => 4,
-    ];
 
     /**
      * @var string[]

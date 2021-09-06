@@ -191,6 +191,9 @@ final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implem
             . 'FROM (';
 
         $subRequests = [];
+        /**
+         * @todo Compare what has been sent to the list of providers available through the getType() of the provider
+         */
         foreach ($this->providers as $provider) {
             if ($provider->shouldBeSearched($filter)) {
                 if (!empty($accessGroups)) {
@@ -293,18 +296,6 @@ final class MonitoringResourceRepositoryRDB extends AbstractRepositoryDRB implem
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $monitoringResources[] = MonitoringResourceFactoryRdb::create($record);
         }
-        return $monitoringResources;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function extractResourcesWithGraphData(array $monitoringResources): array
-    {
-        foreach ($this->providers as $provider) {
-            $monitoringResources = $provider->excludeResourcesWithoutMetrics($monitoringResources);
-        }
-
         return $monitoringResources;
     }
 }

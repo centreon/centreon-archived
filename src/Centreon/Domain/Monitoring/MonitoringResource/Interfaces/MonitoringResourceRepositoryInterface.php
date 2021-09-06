@@ -51,12 +51,4 @@ interface MonitoringResourceRepositoryInterface
      * @throws \Throwable
      */
     public function findAllByAccessGroups(ResourceFilter $filter, array $accessGroups): array;
-
-    /**
-     * Only returns MonitoringResources with graph data available.
-     *
-     * @param MonitoringResource[] $monitoringResources
-     * @return MonitoringResource[]
-     */
-    public function extractResourcesWithGraphData(array $monitoringResources): array;
 }

@@ -33,6 +33,23 @@ use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
 final class HostProvider extends Provider
 {
+    public const TYPE = 'host';
+
+    public const AVAILABLE_STATUSES = [
+        ResourceFilter::STATUS_UP => 0,
+        ResourceFilter::STATUS_DOWN => 1,
+        ResourceFilter::STATUS_UNREACHABLE => 2,
+        ResourceFilter::STATUS_PENDING => 4,
+    ];
+
+    /**
+     * @inheritDoc
+     */
+    public function getAvailableStatuses(): array
+    {
+        return self::AVAILABLE_STATUSES;
+    }
+
     /**
      * @inheritDoc
      */
@@ -40,10 +57,10 @@ final class HostProvider extends Provider
     {
         if (
             $this->hasOnlyServiceSearch()
-            || ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_HOST))
+            || ($filter->getTypes() && !$filter->hasType(self::TYPE))
             || ($filter->getStatuses() && !ResourceFilter::map(
                 $filter->getStatuses(),
-                ResourceFilter::MAP_STATUS_HOST
+                $this->getAvailableStatuses()
             ))
             || $filter->getServicegroupIds()
         ) {
@@ -211,7 +228,7 @@ final class HostProvider extends Provider
         }
 
         // apply the status filter to SQL query
-        $statuses = ResourceFilter::map($filter->getStatuses(), ResourceFilter::MAP_STATUS_HOST);
+        $statuses = ResourceFilter::map($filter->getStatuses(), $this->getAvailableStatuses());
         if ($statuses) {
             $statusList = [];
 
@@ -253,21 +270,5 @@ final class HostProvider extends Provider
         }
 
         return $sql;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function excludeResourcesWithoutMetrics(array $resources): array
-    {
-        $filteredResources = [];
-
-        foreach ($resources as $resource) {
-            if ($resource->getType() !== MonitoringResource::TYPE_HOST) {
-                $filteredResources[] = $resource;
-            }
-        }
-
-        return $filteredResources;
     }
 }

@@ -49,6 +49,9 @@ use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Model\Monito
 use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailMetaServiceMonitoringResource as DetailMeta;
 use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailServiceMonitoringResource as DetailService;
 use Centreon\Domain\Monitoring\MonitoringResource\UseCase\v2110\DetailHostMonitoringResource as DetailHost;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Provider\HostProvider;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Provider\MetaServiceProvider;
+use Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\Provider\ServiceProvider;
 
 /**
  * Resource APIs for the Unified View page
@@ -146,7 +149,7 @@ class MonitoringResourceController extends AbstractController
 
         // Create a specific filter to only get the monitoring resource
         $filter = (new ResourceFilter())
-            ->setTypes([ResourceFilter::TYPE_HOST])
+            ->setTypes([HostProvider::TYPE])
             ->setHostIds([$hostId]);
 
         // Use case to get details of the monitoring resource
@@ -207,7 +210,7 @@ class MonitoringResourceController extends AbstractController
 
         // Create a specific filter to only get the monitoring resource
         $filter = (new ResourceFilter())
-            ->setTypes([ResourceFilter::TYPE_SERVICE])
+            ->setTypes([ServiceProvider::TYPE])
             ->setHostIds([$hostId])
             ->setServiceIds([$serviceId]);
 
@@ -283,7 +286,7 @@ class MonitoringResourceController extends AbstractController
 
         // Create a specific filter to only get the monitoring resource
         $filter = (new ResourceFilter())
-            ->setTypes([ResourceFilter::TYPE_META])
+            ->setTypes([MetaServiceProvider::TYPE])
             ->setMetaServiceIds([$metaId]);
 
         // Use case to get details of the monitoring resource
@@ -350,7 +353,7 @@ class MonitoringResourceController extends AbstractController
             $filterData[$param] = json_decode($data, true) ?: $data;
         }
         // validate the filter data
-        $errors = $entityValidator->validateEntity(
+/*         $errors = $entityValidator->validateEntity(
             ResourceFilter::class,
             $filterData,
             ['Default'],
@@ -359,7 +362,7 @@ class MonitoringResourceController extends AbstractController
 
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
-        }
+        } */
 
         $filterDataContent = json_encode($filterData);
 

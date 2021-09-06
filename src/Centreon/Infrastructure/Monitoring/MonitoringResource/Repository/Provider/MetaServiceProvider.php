@@ -31,6 +31,24 @@ use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 
 final class MetaServiceProvider extends Provider
 {
+    public const TYPE = 'metaservice';
+
+    public const AVAILABLE_STATUSES = [
+        ResourceFilter::STATUS_OK => 0,
+        ResourceFilter::STATUS_WARNING => 1,
+        ResourceFilter::STATUS_CRITICAL => 2,
+        ResourceFilter::STATUS_UNKNOWN => 3,
+        ResourceFilter::STATUS_PENDING => 4,
+    ];
+
+    /**
+     * @inheritDoc
+     */
+    public function getAvailableStatuses(): array
+    {
+        return self::AVAILABLE_STATUSES;
+    }
+
     /**
      * @inheritDoc
      */
@@ -39,10 +57,10 @@ final class MetaServiceProvider extends Provider
         if (
             $this->hasOnlyHostSearch()
             || $this->hasOnlyServiceSearch()
-            || ($filter->getTypes() && !$filter->hasType(ResourceFilter::TYPE_META))
+            || ($filter->getTypes() && !$filter->hasType(self::TYPE))
             || ($filter->getStatuses() && !ResourceFilter::map(
                 $filter->getStatuses(),
-                ResourceFilter::MAP_STATUS_SERVICE
+                $this->getAvailableStatuses()
             ))
             || $filter->getHostgroupIds()
             || $filter->getServicegroupIds()
@@ -199,7 +217,7 @@ final class MetaServiceProvider extends Provider
         }
 
         // apply the status filter to SQL query
-        $statuses = ResourceFilter::map($filter->getStatuses(), ResourceFilter::MAP_STATUS_SERVICE);
+        $statuses = ResourceFilter::map($filter->getStatuses(), $this->getAvailableStatuses());
         if ($statuses) {
             $statusList = [];
 
@@ -227,54 +245,5 @@ final class MetaServiceProvider extends Provider
         }
 
         return $sql;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function excludeResourcesWithoutMetrics(array $resources): array
-    {
-        $filteredResources = [];
-        $collector = new StatementCollector();
-        $where = [];
-        $metaServiceResources = [];
-
-        foreach ($resources as $key => $resource) {
-            if ($resource->getType() === MonitoringResource::TYPE_META) {
-                $where[] = "(s.description = :service_description_{$key})";
-                $collector->addValue(":service_description_{$key}", 'meta_' . $resource->getId(), \PDO::PARAM_STR);
-                $metaServiceResources[] = $resource;
-            } else {
-                $filteredResources[] = $resource;
-            }
-        }
-
-        if (empty($metaServiceResources)) {
-            return $filteredResources;
-        }
-
-        $statement = $this->db->prepare(
-            $this->translateDbName(
-                'SELECT i.host_id, i.service_id, s.description
-                FROM `:dbstg`.metrics AS m, `:dbstg`.index_data AS i, `:dbstg`.services AS s
-                WHERE (' . implode(' OR ', $where) . ')
-                AND i.id = m.index_id
-                AND i.service_id = s.service_id
-                AND m.hidden = "0"
-                GROUP BY host_id, service_id'
-            )
-        );
-        $collector->bind($statement);
-        $statement->execute();
-
-        while ($row = $statement->fetch()) {
-            foreach ($metaServiceResources as $metaServiceResource) {
-                if ($metaServiceResource->getId() === (int)substr($row['description'], 5)) {
-                    $filteredResources[] = $metaServiceResource;
-                }
-            }
-        }
-
-        return $filteredResources;
     }
 }
