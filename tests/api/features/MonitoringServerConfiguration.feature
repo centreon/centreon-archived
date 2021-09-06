@@ -16,12 +16,10 @@ Feature:
     """
 
     When I want to generate the monitoring server configuration #1
-    Then the response code should be 200
-    And the response should be formatted like JSON format "configuration/monitoring-servers/generate_reload.json"
+    Then the response code should be 204
 
     When I want to reload the monitoring server configuration #1
-    Then the response code should be 200
-    And the response should be formatted like JSON format "configuration/monitoring-servers/generate_reload.json"
+    Then the response code should be 204
 
     And I wait until host "host_test" is monitored
     And I wait until service "service_ping" from host "host_test" is monitored

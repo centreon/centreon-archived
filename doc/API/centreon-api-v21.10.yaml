@@ -355,12 +355,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/MonitoringServerId'
       responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '204':
+          description: "Generation OK"
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -377,12 +373,8 @@ paths:
       parameters:
       - $ref: '#/components/parameters/MonitoringServerId'
       responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '204':
+          description: "Reload OK"
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -399,12 +391,8 @@ paths:
       parameters:
       - $ref: '#/components/parameters/MonitoringServerId'
       responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '204':
+          description: "Generation and reload OK"
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -421,12 +409,8 @@ paths:
 
         The process will stop at the first error.
       responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '204':
+          description: "Generation OK"
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -443,12 +427,8 @@ paths:
 
         The process will stop at the first error.
       responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '204':
+          description: "Reload OK"
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -465,12 +445,8 @@ paths:
 
         The process will stop at the first error.
       responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Configuration.MonitoringServer.GenerateReload'
+        '204':
+          description: "Generation and reload OK"
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -4180,22 +4156,6 @@ components:
           type: integer
           description: filter order
           example: 1
-    Configuration.MonitoringServer.GenerateReload:
-      type: object
-      properties:
-        status:
-          type: integer
-          enum: [0, 1]
-          format: int64
-          example: 1
-          description: |
-            Generation status
-             * `0` - Failed
-             * `1` - Success
-        message:
-          type: string
-          description: "Message status"
-          example: "Success"
     Configuration.MonitoringServerMain:
       type: object
       properties:
