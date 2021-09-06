@@ -68,6 +68,14 @@ $cgs = $acl->getContactGroupAclConf(
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
+try {
+    $licenseObject = $dependencyInjector['lm.license'];
+    $isLicenseValid = $licenseObject->validate(true);
+} catch (\Exception $ex) {
+    $isLicenseValid = false;
+}
+
+
 $initialValues = array();
 
 /*
@@ -650,9 +658,14 @@ if ($o == "c" && $centreon->user->get_id() == $cct["contact_id"]) {
 
 $platformDataSendingRadios = [
     $form->createElement('radio', null, null, _('No'), '0'),
-    $form->createElement('radio', null, null, _('Yes'), '1'),
+    $form->createElement('radio', null, null, _('Contact Details'), '1'),
     $form->createElement('radio', null, null, _('Anonymized'), '2')
 ];
+
+if ($isLicenseValid) {
+    unset($platformDataSendingRadios[0]);
+}
+
 $form->addGroup($platformDataSendingRadios, 'contact_platform_data_sending', _('Contextual assistance and associated data sending'), '&nbsp;');
 
 $form->addElement('hidden', 'contact_register');

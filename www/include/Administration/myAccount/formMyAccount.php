@@ -57,6 +57,13 @@ if (!isset($centreonFeature)) {
     $centreonFeature = new CentreonFeature($pearDB);
 }
 
+try {
+    $licenseObject = $dependencyInjector['lm.license'];
+    $isLicenseValid = $licenseObject->validate(true);
+} catch (\Exception $ex) {
+    $isLicenseValid = false;
+}
+
 /*
  * Database retrieve information for the User
  */
@@ -142,9 +149,14 @@ $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null
 
 $platformDataSendingRadios = [
     $form->createElement('radio', null, null, _('No'), '0'),
-    $form->createElement('radio', null, null, _('Yes'), '1'),
+    $form->createElement('radio', null, null, _('Contact Details'), '1'),
     $form->createElement('radio', null, null, _('Anonymized'), '2')
 ];
+
+if ($isLicenseValid) {
+    unset($platformDataSendingRadios[0]);
+}
+
 $form->addGroup($platformDataSendingRadios, 'contact_platform_data_sending', _('Contextual assistance and associated data sending'), '&nbsp;');
 
 
