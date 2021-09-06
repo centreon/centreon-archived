@@ -28,8 +28,11 @@ import {
   Theme,
   MenuItem,
   Menu,
+  Link,
+  ButtonGroup,
 } from '@material-ui/core';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
+import LaunchIcon from '@material-ui/icons/Launch';
 import { Skeleton } from '@material-ui/lab';
 
 import {
@@ -39,6 +42,7 @@ import {
   ContentWithCircularLoading,
   IconButton,
   useLocaleDateTimeFormat,
+  Button,
 } from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -51,6 +55,7 @@ import {
   labelSmallSize,
   labelMediumSize,
   labelNoDataForThisPeriod,
+  labelGoToPerformancePage,
 } from '../../translatedLabels';
 import {
   CustomTimePeriod,
@@ -96,6 +101,13 @@ interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
 }
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
+  buttonGroup: {
+    alignSelf: 'center',
+  },
+  buttonLink: {
+    background: 'transparent',
+    border: 'none',
+  },
   container: {
     display: 'grid',
     flexDirection: 'column',
@@ -107,9 +119,6 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     height: '100%',
     justifyItems: 'center',
     width: 'auto',
-  },
-  exportToPngButton: {
-    justifySelf: 'end',
   },
   graphHeader: {
     display: 'grid',
@@ -177,12 +186,36 @@ const PerformanceGraph = ({
   const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = React.useRef<number>(0);
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
+  const { format } = useLocaleDateTimeFormat();
 
   const openSizeExportMenu = (event: React.MouseEvent): void => {
     setMenuAnchor(event.currentTarget);
   };
   const closeSizeExportMenu = (): void => {
     setMenuAnchor(null);
+  };
+  const goToPerformancePage = (): string => {
+    const startTimestamp = format({
+      date: customTimePeriod?.start as Date,
+      formatString: 'X',
+    });
+    const endTimestamp = format({
+      date: customTimePeriod?.end as Date,
+      formatString: 'X',
+    });
+
+    const urlParameters = (): string => {
+      const params = new URLSearchParams({
+        end: endTimestamp,
+        mode: '0',
+        start: startTimestamp,
+        svc_id: `${resource.parent?.name};${resource.name}`,
+      });
+
+      return params.toString();
+    };
+
+    return `main.php?p=204&${urlParameters()}`;
   };
 
   const { selectedResourceId } = useResourceContext();
@@ -394,40 +427,56 @@ const PerformanceGraph = ({
             <Typography color="textPrimary" variant="body1">
               {title}
             </Typography>
-            <div className={classes.exportToPngButton}>
-              <ContentWithCircularLoading
-                alignCenter={false}
-                loading={exporting}
-                loadingIndicatorSize={16}
-              >
-                <>
+            <ButtonGroup className={classes.buttonGroup} size="small">
+              <Button className={classes.buttonLink}>
+                <Link
+                  aria-label={t(labelGoToPerformancePage)}
+                  href={goToPerformancePage()}
+                >
                   <IconButton
                     disableTouchRipple
-                    disabled={isNil(timeline)}
-                    title={t(labelExportToPng)}
-                    onClick={openSizeExportMenu}
+                    title={t(labelGoToPerformancePage)}
+                    onClick={goToPerformancePage}
                   >
-                    <SaveAsImageIcon style={{ fontSize: 18 }} />
+                    <LaunchIcon style={{ fontSize: 18 }} />
                   </IconButton>
-                  <Menu
-                    keepMounted
-                    anchorEl={menuAnchor}
-                    open={Boolean(menuAnchor)}
-                    onClose={closeSizeExportMenu}
-                  >
-                    <MenuItem onClick={(): void => convertToPng(1)}>
-                      {t(labelAsDisplayed)}
-                    </MenuItem>
-                    <MenuItem onClick={(): void => convertToPng(0.75)}>
-                      {t(labelMediumSize)}
-                    </MenuItem>
-                    <MenuItem onClick={(): void => convertToPng(0.5)}>
-                      {t(labelSmallSize)}
-                    </MenuItem>
-                  </Menu>
-                </>
-              </ContentWithCircularLoading>
-            </div>
+                </Link>
+              </Button>
+              <Button className={classes.buttonLink}>
+                <ContentWithCircularLoading
+                  alignCenter={false}
+                  loading={exporting}
+                  loadingIndicatorSize={16}
+                >
+                  <>
+                    <IconButton
+                      disableTouchRipple
+                      disabled={isNil(timeline)}
+                      title={t(labelExportToPng)}
+                      onClick={openSizeExportMenu}
+                    >
+                      <SaveAsImageIcon style={{ fontSize: 18 }} />
+                    </IconButton>
+                    <Menu
+                      keepMounted
+                      anchorEl={menuAnchor}
+                      open={Boolean(menuAnchor)}
+                      onClose={closeSizeExportMenu}
+                    >
+                      <MenuItem onClick={(): void => convertToPng(1)}>
+                        {t(labelAsDisplayed)}
+                      </MenuItem>
+                      <MenuItem onClick={(): void => convertToPng(0.75)}>
+                        {t(labelMediumSize)}
+                      </MenuItem>
+                      <MenuItem onClick={(): void => convertToPng(0.5)}>
+                        {t(labelSmallSize)}
+                      </MenuItem>
+                    </Menu>
+                  </>
+                </ContentWithCircularLoading>
+              </Button>
+            </ButtonGroup>
           </div>
         )}
 

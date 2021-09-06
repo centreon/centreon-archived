@@ -14640,6 +14640,9 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Export to png"
 #  msgstr ""
 
+#  msgid "Performance page"
+#  msgstr ""
+
 #  msgid "Parent"
 #  msgstr ""
 

@@ -15097,6 +15097,9 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Export to png"
 #  msgstr ""
 
+#  msgid "Performance page"
+#  msgstr ""
+
 #  msgid "Parent"
 #  msgstr ""
 
