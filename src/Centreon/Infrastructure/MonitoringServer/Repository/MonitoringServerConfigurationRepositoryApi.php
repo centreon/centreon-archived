@@ -177,7 +177,7 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             }
             $optionPayload['headers'] = ['X-AUTH-TOKEN' => $providerToken->getToken()];
             $optionPayload['body'] = $payloadBody;
-            $optionPayload['timeout'] = 1;//$this->timeout;
+            $optionPayload['timeout'] = $this->timeout;
 
             $response = $this->httpClient->request('POST', $fullUriPath, $optionPayload);
             if ($response->getStatusCode() !== 200) {
@@ -187,7 +187,7 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             $xml = $response->getContent();
             if (!empty($xml)) {
                 if (($element = simplexml_load_string($xml)) !== false) {
-                    if ((string) $element->statuscode !== '09') {
+                    if ((string) $element->statuscode !== '0') {
                         throw new RepositoryException((string) $element->error);
                     }
                 }
