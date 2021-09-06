@@ -1152,6 +1152,7 @@ function sanitizeFormContactParameters(array $ret): array
                 ];
                 break;
             case 'contact_enable_notifications':
+            case 'contact_platform_data_sending':
                 $bindParams[':' . $inputName] = [
                     \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1', '2'])
                         ? $inputValue[$inputName]
