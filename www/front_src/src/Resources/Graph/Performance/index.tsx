@@ -55,7 +55,7 @@ import {
   labelSmallSize,
   labelMediumSize,
   labelNoDataForThisPeriod,
-  labelGoToPerformancePage,
+  labelPerformancePage,
 } from '../../translatedLabels';
 import {
   CustomTimePeriod,
@@ -430,12 +430,12 @@ const PerformanceGraph = ({
             <ButtonGroup className={classes.buttonGroup} size="small">
               <Button className={classes.buttonLink}>
                 <Link
-                  aria-label={t(labelGoToPerformancePage)}
+                  aria-label={t(labelPerformancePage)}
                   href={goToPerformancePage()}
                 >
                   <IconButton
                     disableTouchRipple
-                    title={t(labelGoToPerformancePage)}
+                    title={t(labelPerformancePage)}
                     onClick={goToPerformancePage}
                   >
                     <LaunchIcon style={{ fontSize: 18 }} />
