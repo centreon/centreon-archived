@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@
  *
  */
 
-namespace Centreon\Application\Request;
+namespace Centreon\Infrastructure\Monitoring\Downtime\API\Model;
 
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
-class DowntimeRequest
+class MassDowntimeResourceRequest
 {
     /**
      * @var Downtime
@@ -46,9 +46,9 @@ class DowntimeRequest
 
     /**
      * @param Downtime $downtime
-     * @return DowntimeRequest
+     * @return self
      */
-    public function setDowntime(Downtime $downtime): DowntimeRequest
+    public function setDowntime(Downtime $downtime): self
     {
         $this->downtime = $downtime;
         return $this;
@@ -64,9 +64,9 @@ class DowntimeRequest
 
     /**
      * @param MonitoringResource[] $monitoringResources
-     * @return DowntimeRequest
+     * @return self
      */
-    public function setResources(array $monitoringResources): DowntimeRequest
+    public function setResources(array $monitoringResources): self
     {
         foreach ($monitoringResources as $monitoringResource) {
             if (!($monitoringResource instanceof MonitoringResource)) {

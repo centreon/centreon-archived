@@ -1,4 +1,4 @@
-Centreon\Application\Request\DowntimeRequest:
+Centreon\Infrastructure\Monitoring\Downtime\API\Model\MassDowntimeResourceRequest:
     properties:
         downtime:
             type: Centreon\Domain\Downtime\Downtime

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@
  *
  */
 
-namespace Centreon\Application\Request;
+namespace Centreon\Infrastructure\Monitoring\Check\API\Model;
 
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
-class CheckRequest
+class MassCheckResourceRequest
 {
     /**
      * resources
@@ -54,10 +54,9 @@ class CheckRequest
      * Set resources
      *
      * @param MonitoringResource[]  $monitoringResources
-     *
      * @return self
      */
-    public function setMonitoringResource(array $monitoringResources): CheckRequest
+    public function setMonitoringResource(array $monitoringResources): self
     {
         foreach ($monitoringResources as $monitoringResource) {
             if (!($monitoringResource instanceof MonitoringResource)) {
@@ -82,10 +81,9 @@ class CheckRequest
      * Set check
      *
      * @param Check $check check
-     *
      * @return self
      */
-    public function setCheck(Check $check): CheckRequest
+    public function setCheck(Check $check): self
     {
         $this->check = $check;
 

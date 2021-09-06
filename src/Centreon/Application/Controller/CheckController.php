@@ -23,11 +23,12 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller;
 
 use DateTime;
+use JsonSchema\Validator;
 use FOS\RestBundle\View\View;
 use Centreon\Domain\Check\Check;
 use Centreon\Domain\Contact\Contact;
+use JsonSchema\Constraints\Constraint;
 use JMS\Serializer\SerializerInterface;
-use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\Check\CheckException;
 use JMS\Serializer\DeserializationContext;
 use Centreon\Domain\Entity\EntityValidator;
@@ -37,6 +38,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Check\Interfaces\CheckServiceInterface;
+use Centreon\Domain\Log\LoggerTrait;
+use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveCheckValidatorInterface;
 
 /**
@@ -46,6 +50,13 @@ use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\In
  */
 class CheckController extends AbstractController
 {
+    use LoggerTrait;
+
+    private const VALIDATION_SCHEME_FOR_A_CHECK =
+        'config/json_validator/latest/Centreon/Check/Check.json';
+    private const VALIDATION_SCHEME_FOR_SEVERAL_CHECKS =
+        'config/json_validator/latest/Centreon/Check/Checks.json';
+
     // Groups for serialization
     public const SERIALIZER_GROUPS_HOST = ['check_host'];
     public const SERIALIZER_GROUPS_SERVICE = ['check_service'];
@@ -90,6 +101,11 @@ class CheckController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
+        /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_SEVERAL_CHECKS);
+
         $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_HOST_ADD);
 
         /**
@@ -121,6 +137,12 @@ class CheckController extends AbstractController
             try {
                 $this->checkService->checkHost($check);
             } catch (EntityNotFoundException $e) {
+                $this->warning(
+                    _('Check failed for the host'),
+                    [
+                        'id' => $check->getResourceId()
+                    ]
+                );
                 continue;
             }
         }
@@ -180,6 +202,11 @@ class CheckController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
+        /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_SEVERAL_CHECKS);
+
         $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_SERVICE);
 
         /**
@@ -211,6 +238,12 @@ class CheckController extends AbstractController
             try {
                 $this->checkService->checkService($check);
             } catch (EntityNotFoundException $e) {
+                $this->warning(
+                    _('Check failed for the service'),
+                    [
+                        'id' => $check->getResourceId()
+                    ]
+                );
                 continue;
             }
         }
@@ -243,6 +276,11 @@ class CheckController extends AbstractController
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_CHECK)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
+
+        /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_A_CHECK);
 
         $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_HOST_ADD);
 
@@ -304,6 +342,11 @@ class CheckController extends AbstractController
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
+        /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_A_CHECK);
+
         $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_SERVICE);
 
         /**
@@ -362,6 +405,11 @@ class CheckController extends AbstractController
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_CHECK)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
+
+        /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_A_CHECK);
 
         $context = DeserializationContext::create()->setGroups(self::SERIALIZER_GROUPS_SERVICE);
 
@@ -446,10 +494,59 @@ class CheckController extends AbstractController
                         ->checkResource($checkRequest->getCheck(), $monitoringResource);
                 }
             } catch (EntityNotFoundException $e) {
+                $this->warning(
+                    _('Check failed for the resource'),
+                    [
+                        'id' => $monitoringResource->getId(),
+                        'name' => $monitoringResource->getName(),
+                        'type' => $monitoringResource->getType()
+                    ]
+                );
                 continue;
             }
         }
 
         return $this->view();
+    }
+
+    /**
+     * This function will ensure that the POST data is valid regarding validation constraints defined.
+     *
+     * @param Request $request
+     * @param string $jsonValidatorFile
+     * @throws \InvalidArgumentException
+     */
+    private function validateOrFail(Request $request, string $jsonValidatorFile): void
+    {
+        $receivedData = json_decode((string) $request->getContent(), true);
+        if (!is_array($receivedData)) {
+            throw new \InvalidArgumentException(_('Error when decoding sent data'));
+        }
+        $centreonPath = $this->getParameter('centreon_path');
+
+        if (is_string($centreonPath) === false) {
+            throw new InvalidConfigurationException(
+                _('Failed to get centreon path in configuration')
+            );
+        }
+        /*
+        * Validate the content of the POST request against the JSON schema validator
+        */
+        $validator = new Validator();
+        $bodyContent = json_decode((string) $request->getContent());
+        $file = 'file://' . $centreonPath . $jsonValidatorFile;
+        $validator->validate(
+            $bodyContent,
+            (object) ['$ref' => $file],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if (!$validator->isValid()) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            throw new \InvalidArgumentException($message);
+        }
     }
 }

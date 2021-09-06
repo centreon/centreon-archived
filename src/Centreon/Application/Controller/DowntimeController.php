@@ -29,18 +29,15 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Downtime\Downtime;
 use JsonSchema\Constraints\Constraint;
 use JMS\Serializer\SerializerInterface;
-use Centreon\Domain\Entity\EntityValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Centreon\Domain\Downtime\DowntimeException;
-use Centreon\Domain\Monitoring\ResourceService;
-use Centreon\Application\Request\DowntimeRequest;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Centreon\Infrastructure\Monitoring\Downtime\API\Model\MassDowntimeResourceRequest;
 use Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator as Validators;
 
 /**
@@ -658,11 +655,11 @@ class DowntimeController extends AbstractController
         $massiveDowntimeValidator->validateOrFail($downtimePayload);
 
         /**
-         * @var DowntimeRequest $dtRequest
+         * @var MassDowntimeResourceRequest $dtRequest
          */
         $dtRequest = $serializer->deserialize(
             (string)$request->getContent(),
-            DowntimeRequest::class,
+            MassDowntimeResourceRequest::class,
             'json'
         );
 

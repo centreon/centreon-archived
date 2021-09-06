@@ -1,0 +1,34 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Add acknowledgements to services or hosts",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["resource_id"],
+        "properties": {
+            "resource_id": {
+                "type": "integer"
+            },
+            "parent_resource_id": {
+                "type": ["integer", "null"]
+            },
+            "is_persistent_comment" : {
+                "type": "boolean"
+            },
+            "is_notify_contacts": {
+                "type": "boolean"
+            },
+            "is_sticky": {
+                "type": "boolean"
+            },
+            "comment": {
+                "type": "string"
+            },
+            "with_services": {
+                "type": "boolean",
+                "default": false
+            }
+        }
+    }
+}

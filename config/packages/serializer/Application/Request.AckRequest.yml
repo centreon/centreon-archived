@@ -1,4 +1,4 @@
-Centreon\Application\Request\AckRequest:
+Centreon\Infrastructure\Monitoring\Acknowledgement\API\Model\MassAcknowledgeResourceRequest:
     properties:
         acknowledgement:
             type: Centreon\Domain\Acknowledgement\Acknowledgement

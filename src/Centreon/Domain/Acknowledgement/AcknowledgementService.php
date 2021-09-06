@@ -376,8 +376,8 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
                     throw new EntityNotFoundException(_('Host not found'));
                 }
                 $service = $this->monitoringRepository->findOneService(
-                    (int) $monitoringResource->getParent()->getId(),
-                    (int) $monitoringResource->getId()
+                    $monitoringResource->getParent()->getId(),
+                    $monitoringResource->getId()
                 );
                 if (is_null($service)) {
                     throw new EntityNotFoundException(

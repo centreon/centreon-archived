@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\Downtime;
+namespace Centreon\Infrastructure\Monitoring\Downtime\Repository;
 
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Downtime\Interfaces\DowntimeRepositoryInterface;

@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Add checks to services or hosts",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["resource_id"],
+        "properties": {
+            "resource_id": {
+                "type": "integer"
+            },
+            "parent_resource_id": {
+                "type": ["integer", "null"]
+            },
+            "is_forced": {
+                "type": "boolean"
+            },
+            "with_services": {
+                "type": "boolean",
+                "default": false
+            }
+        }
+    }
+}

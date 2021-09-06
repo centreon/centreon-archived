@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,12 @@
  */
 
 namespace Centreon\Application\Request;
+namespace Centreon\Infrastructure\Monitoring\Acknowledgement\API\Model;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource;
 
-class AckRequest
+class MassAcknowledgeResourceRequest
 {
     /**
      * @var Acknowledgement
@@ -46,9 +47,9 @@ class AckRequest
 
     /**
      * @param Acknowledgement $acknowledgement
-     * @return AckRequest
+     * @return self
      */
-    public function setAcknowledgement(Acknowledgement $acknowledgement): AckRequest
+    public function setAcknowledgement(Acknowledgement $acknowledgement): self
     {
         $this->acknowledgement = $acknowledgement;
         return $this;
@@ -64,9 +65,9 @@ class AckRequest
 
     /**
      * @param MonitoringResource[] $monitoringResources
-     * @return AckRequest
+     * @return self
      */
-    public function setMonitoringResources(array $monitoringResources): AckRequest
+    public function setMonitoringResources(array $monitoringResources): self
     {
         foreach ($monitoringResources as $monitoringResource) {
             if (!($monitoringResource instanceof MonitoringResource)) {

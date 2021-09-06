@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Add an acknowledgement to a host or a service",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "is_persistent_comment" : {
+            "type": "boolean"
+        },
+        "is_notify_contacts": {
+            "type": "boolean"
+        },
+        "is_sticky": {
+            "type": "boolean"
+        },
+        "comment": {
+            "type": "string"
+        },
+        "with_services": {
+            "type": "boolean",
+            "default": false
+        }
+    }
+}

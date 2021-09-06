@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Add check to a host",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "with_services": {
+            "type": "boolean"
+        },
+        "is_forced": {
+            "type": "boolean"
+        }
+    }
+}
