@@ -46,6 +46,7 @@ const ResourceListing = (): JSX.Element => {
     getCriteriaValue,
     selectedColumnIds,
     setSelectedColumnIds,
+    search,
   } = useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
@@ -107,7 +108,7 @@ const ResourceListing = (): JSX.Element => {
     SortOrder,
   ];
 
-  const getId = ({ uuid }) => uuid;
+  const getId = ({ uuid }: Resource): string => uuid;
 
   const resetColumns = (): void => {
     setSelectedColumnIds(defaultSelectedColumnIds);
@@ -126,11 +127,12 @@ const ResourceListing = (): JSX.Element => {
   const predefinedRowsSelection = [
     {
       label: `${t(labelStatus).toLowerCase()}:OK`,
-      rowCondition: ({ status }) => includes(status.name, okStatuses),
+      rowCondition: ({ status }): boolean => includes(status.name, okStatuses),
     },
     {
       label: `${t(labelStatus).toLowerCase()}:NOK`,
-      rowCondition: ({ status }) => not(includes(status.name, okStatuses)),
+      rowCondition: ({ status }): boolean =>
+        not(includes(status.name, okStatuses)),
     },
   ];
 
@@ -145,6 +147,7 @@ const ResourceListing = (): JSX.Element => {
       columns={columns}
       currentPage={(page || 1) - 1}
       getId={getId}
+      headerMemoProps={[search]}
       limit={listing?.meta.limit}
       loading={loading}
       memoProps={[

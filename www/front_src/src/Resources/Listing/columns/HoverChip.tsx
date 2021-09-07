@@ -24,9 +24,9 @@ const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
 
   const classes = useStyles();
 
-  const openTooltip = () => setIsChipHovered(true);
+  const openTooltip = (): void => setIsChipHovered(true);
 
-  const closeTooltip = () => setIsChipHovered(false);
+  const closeTooltip = (): void => setIsChipHovered(false);
 
   return (
     <Tooltip

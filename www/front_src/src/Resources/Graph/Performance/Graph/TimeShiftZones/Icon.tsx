@@ -44,7 +44,12 @@ const TimeShiftIcon = ({
     'aria-label': t(ariaLabel),
     className: classes.icon,
     height: timeShiftIconSize,
-    onClick: () => not(loading) && shiftTime?.(direction),
+    onClick: (): void => {
+      if (loading) {
+        return;
+      }
+      shiftTime?.(direction);
+    },
     width: timeShiftIconSize,
     x: xIcon,
     y: graphHeight / 2 - timeShiftIconSize / 2 + marginTop,

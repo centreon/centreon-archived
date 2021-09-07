@@ -415,6 +415,7 @@ class ExtensionsRoute extends Component {
         (entity) => entity.id === id,
       );
     }
+
     return extensions.result.widget.entities.find((entity) => entity.id === id);
   };
 

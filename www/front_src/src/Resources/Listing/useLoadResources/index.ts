@@ -58,7 +58,9 @@ const useLoadResources = (): LoadResources => {
         }
       : undefined;
 
-    const getCriteriaIds = (name: string) => {
+    const getCriteriaIds = (
+      name: string,
+    ): Array<string | number> | undefined => {
       const criteriaValue = getCriteriaValue(name) as
         | Array<SelectEntry>
         | undefined;

@@ -38,7 +38,7 @@ const useGraphOptions = ({
     ...options,
   });
 
-  const changeGraphOptions = (graphOptionId: GraphOptionId) => () => {
+  const changeGraphOptions = (graphOptionId: GraphOptionId) => (): void => {
     const newGraphOptions = {
       ...graphOptions,
       [graphOptionId]: {
