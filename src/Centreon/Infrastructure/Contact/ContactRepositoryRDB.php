@@ -148,8 +148,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $toplogySubquery =
             $contact->isAdmin()
             ? 'SELECT topology.topology_id, 1 AS access_right
-                FROM topology
-                WHERE topology.is_react = \'0\''
+                FROM topology'
             : 'SELECT topology.topology_id, acltr.access_right
                 FROM `:db`.contact contact
                 LEFT JOIN `:db`.contactgroup_contact_relation cgcr
@@ -165,8 +164,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                     ON acltr.acl_topo_id = agtr.acl_topology_id
                 INNER JOIN `:db`.topology
                     ON topology.topology_id = acltr.topology_topology_id
-                WHERE contact.contact_id = :contact_id
-                    AND topology.is_react = \'0\'';
+                WHERE contact.contact_id = :contact_id';
 
         $request =
             'SELECT topology.topology_name, topology.topology_page,
