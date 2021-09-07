@@ -2,10 +2,6 @@ Centreon\Infrastructure\Monitoring\Downtime\API\Model\MassDowntimeResourceReques
     properties:
         downtime:
             type: Centreon\Domain\Downtime\Downtime
-            groups:
-                - 'resource_dt'
         monitoringResources:
             type: array<Centreon\Domain\Monitoring\MonitoringResource\Model\MonitoringResource>
             serialized_name: 'resources'
-            groups:
-                - 'resource_dt'

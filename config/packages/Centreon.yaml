@@ -140,10 +140,6 @@ services:
     Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupRepositoryInterface:
         class: Centreon\Infrastructure\Monitoring\ServiceGroup\ServiceGroupRepositoryRDB
 
-    # Downtime
-    Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface:
-        class: Centreon\Domain\Downtime\DowntimeService
-
     # Engine
     Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface:
         class: Centreon\Infrastructure\Engine\EngineRepositoryFile
@@ -155,9 +151,6 @@ services:
     # API Acknowledgement
     Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementRepositoryInterface:
         class: Centreon\Infrastructure\Acknowledgement\AcknowledgementRepositoryRDB
-
-    Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface:
-        class: Centreon\Domain\Acknowledgement\AcknowledgementService
 
     # Metric
     Centreon\Domain\Monitoring\Metric\Interfaces\MetricServiceInterface:
@@ -204,6 +197,10 @@ services:
             tags: ['monitoring.monitoringresource.hypermediaproviders']
         Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MonitoringResourceValidatorInterface:
             tags: ['monitoring.monitoringresource.api.validators']
+        Centreon\Domain\Downtime\Interfaces\ResourceDowntimeInterface:
+            tags: ['resource.downtime']
+        Centreon\Domain\Acknowledgement\Interfaces\ResourceAcknowledgementInterface:
+            tags: ['resource.acknowledgement']
 
     Centreon\Domain\Monitoring\MonitoringResource\Interfaces\MonitoringResourceRepositoryInterface:
         class: Centreon\Infrastructure\Monitoring\MonitoringResource\Repository\MonitoringResourceRepositoryRDB
@@ -234,6 +231,20 @@ services:
     Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\Interfaces\MassiveCheckValidatorInterface:
         class: Centreon\Infrastructure\Monitoring\MonitoringResource\API\v2110\Validator\MassiveCheckValidator
         arguments: [!tagged_iterator 'monitoring.monitoringresource.api.validators']
+
+    # Downtime
+    Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface:
+        class: Centreon\Domain\Downtime\DowntimeService
+        calls:
+            - method: setResourcesDowntime
+              arguments: [!tagged_iterator 'resource.downtime']
+
+    # Acknowledgement
+    Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface:
+        class: Centreon\Domain\Acknowledgement\AcknowledgementService
+        calls:
+            - method: setResourcesAcknowledgement
+              arguments: [!tagged_iterator 'resource.acknowledgement']
 
     # Filters
     Centreon\Domain\Filter\Interfaces\FilterServiceInterface:
