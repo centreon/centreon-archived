@@ -98,6 +98,7 @@ $contents = file_get_contents('../../var/configFileTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfFile, $contents);
 chmod($centreonConfFile, 0660);
+chown($centreonConfFile, 'apache');
 
 /**
  * conf.pm
