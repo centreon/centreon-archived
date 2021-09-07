@@ -75,7 +75,7 @@ try {
     $isLicenseValid = false;
 }
 
-
+define('HTML_SPACEMENT', '&nbsp;');
 $initialValues = array();
 
 /*
@@ -340,7 +340,7 @@ if ($o == "mc") {
     $mc_mod_cg = array();
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_cg', null, _("Replacement"), '1');
-    $form->addGroup($mc_mod_cg, 'mc_mod_cg', _("Update mode"), '&nbsp;');
+    $form->addGroup($mc_mod_cg, 'mc_mod_cg', _("Update mode"), HTML_SPACEMENT);
     $form->setDefaults(array('mc_mod_cg' => '0'));
 }
 
@@ -360,7 +360,7 @@ $form->addElement('header', 'oreon', _("Centreon"));
 $tab = array();
 $tab[] = $form->createElement('radio', 'contact_oreon', null, _("Yes"), '1');
 $tab[] = $form->createElement('radio', 'contact_oreon', null, _("No"), '0');
-$form->addGroup($tab, 'contact_oreon', _("Reach Centreon Front-end"), '&nbsp;');
+$form->addGroup($tab, 'contact_oreon', _("Reach Centreon Front-end"), HTML_SPACEMENT);
 
 $form->addElement(
     'password',
@@ -388,17 +388,17 @@ if ($centreon->user->admin) {
     $tab = array();
     $tab[] = $form->createElement('radio', 'contact_admin', null, _("Yes"), '1');
     $tab[] = $form->createElement('radio', 'contact_admin', null, _("No"), '0');
-    $form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
+    $form->addGroup($tab, 'contact_admin', _("Admin"), HTML_SPACEMENT);
 
     $tab = array();
     $tab[] = $form->createElement('radio', 'reach_api', null, _("Yes"), '1');
     $tab[] = $form->createElement('radio', 'reach_api', null, _("No"), '0');
-    $form->addGroup($tab, 'reach_api', _("Reach API Configuration"), '&nbsp;');
+    $form->addGroup($tab, 'reach_api', _("Reach API Configuration"), HTML_SPACEMENT);
 
     $tab = array();
     $tab[] = $form->createElement('radio', 'reach_api_rt', null, _("Yes"), '1');
     $tab[] = $form->createElement('radio', 'reach_api_rt', null, _("No"), '0');
-    $form->addGroup($tab, 'reach_api_rt', _("Reach API Realtime"), '&nbsp;');
+    $form->addGroup($tab, 'reach_api_rt', _("Reach API Realtime"), HTML_SPACEMENT);
 }
 
 /**
@@ -408,7 +408,7 @@ if ($o == "mc") {
     $mc_mod_cg = array();
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_acl', null, _("Incremental"), '0');
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_acl', null, _("Replacement"), '1');
-    $form->addGroup($mc_mod_cg, 'mc_mod_acl', _("Update mode"), '&nbsp;');
+    $form->addGroup($mc_mod_cg, 'mc_mod_acl', _("Update mode"), HTML_SPACEMENT);
     $form->setDefaults(array('mc_mod_acl' => '0'));
 }
 
@@ -473,7 +473,7 @@ $tab = array();
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Default"), '2');
-$form->addGroup($tab, 'contact_enable_notifications', _("Enable Notifications"), '&nbsp;');
+$form->addGroup($tab, 'contact_enable_notifications', _("Enable Notifications"), HTML_SPACEMENT);
 if ($o != "mc") {
     $form->setDefaults(array('contact_enable_notifications' => '2'));
 }
@@ -485,42 +485,42 @@ $form->addElement('header', 'hostNotification', _("Host"));
 $hostNotifOpt[] = $form->createElement(
     'checkbox',
     'd',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Down"),
     array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);')
 );
 $hostNotifOpt[] = $form->createElement(
     'checkbox',
     'u',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Unreachable"),
     array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);')
 );
 $hostNotifOpt[] = $form->createElement(
     'checkbox',
     'r',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Recovery"),
     array('id' => 'hRecovery', 'onClick' => 'uncheckAllH(this);')
 );
 $hostNotifOpt[] = $form->createElement(
     'checkbox',
     'f',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Flapping"),
     array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);')
 );
 $hostNotifOpt[] = $form->createElement(
     'checkbox',
     's',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Downtime Scheduled"),
     array('id' => 'hScheduled', 'onClick' => 'uncheckAllH(this);')
 );
 $hostNotifOpt[] = $form->createElement(
     'checkbox',
     'n',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("None"),
     array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);')
 );
@@ -541,7 +541,7 @@ if ($o == "mc") {
     $mc_mod_hcmds = array();
     $mc_mod_hcmds[] = $form->createElement('radio', 'mc_mod_hcmds', null, _("Incremental"), '0');
     $mc_mod_hcmds[] = $form->createElement('radio', 'mc_mod_hcmds', null, _("Replacement"), '1');
-    $form->addGroup($mc_mod_hcmds, 'mc_mod_hcmds', _("Update mode"), '&nbsp;');
+    $form->addGroup($mc_mod_hcmds, 'mc_mod_hcmds', _("Update mode"), HTML_SPACEMENT);
     $form->setDefaults(array('mc_mod_hcmds' => '0'));
 }
 
@@ -565,49 +565,49 @@ $form->addElement('header', 'serviceNotification', _("Service"));
 $svNotifOpt[] = $form->createElement(
     'checkbox',
     'w',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Warning"),
     array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);')
 );
 $svNotifOpt[] = $form->createElement(
     'checkbox',
     'u',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Unknown"),
     array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);')
 );
 $svNotifOpt[] = $form->createElement(
     'checkbox',
     'c',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Critical"),
     array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);')
 );
 $svNotifOpt[] = $form->createElement(
     'checkbox',
     'r',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Recovery"),
     array('id' => 'sRecovery', 'onClick' => 'uncheckAllS(this);')
 );
 $svNotifOpt[] = $form->createElement(
     'checkbox',
     'f',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Flapping"),
     array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);')
 );
 $svNotifOpt[] = $form->createElement(
     'checkbox',
     's',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("Downtime Scheduled"),
     array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);')
 );
 $svNotifOpt[] = $form->createElement(
     'checkbox',
     'n',
-    '&nbsp;',
+    HTML_SPACEMENT,
     _("None"),
     array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);')
 );
@@ -627,7 +627,7 @@ if ($o == "mc") {
     $mc_mod_svcmds = array();
     $mc_mod_svcmds[] = $form->createElement('radio', 'mc_mod_svcmds', null, _("Incremental"), '0');
     $mc_mod_svcmds[] = $form->createElement('radio', 'mc_mod_svcmds', null, _("Replacement"), '1');
-    $form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
+    $form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), HTML_SPACEMENT);
     $form->setDefaults(array('mc_mod_svcmds' => '0'));
 }
 
@@ -651,7 +651,7 @@ $form->addElement('select2', 'contact_svNotifCmds', _("Service Notification Comm
 $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $cctActivation[] = $form->createElement('radio', 'contact_activate', null, _("Enabled"), '1');
 $cctActivation[] = $form->createElement('radio', 'contact_activate', null, _("Disabled"), '0');
-$form->addGroup($cctActivation, 'contact_activate', _("Status"), '&nbsp;');
+$form->addGroup($cctActivation, 'contact_activate', _("Status"), HTML_SPACEMENT);
 $form->setDefaults(array('contact_activate' => '1'));
 if ($o == "c" && $centreon->user->get_id() == $cct["contact_id"]) {
     $form->freeze('contact_activate');
@@ -671,7 +671,7 @@ $form->addGroup(
     $platformDataSendingRadios,
     'contact_platform_data_sending',
     _('Contextual assistance and associated data sending'),
-    '&nbsp;'
+    HTML_SPACEMENT
 );
 
 $form->addElement('hidden', 'contact_register');

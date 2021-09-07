@@ -184,7 +184,7 @@ function updateContact($contact_id = null)
     );
     $stmt->bindValue(
         ':contactDataSending',
-        array_key_exists('contact_platform_data_sending', $ret) ? (int) $ret['contact_platform_data_sending'] : null,
+        array_key_exists('contact_platform_data_sending', $ret) ? $ret['contact_platform_data_sending'] : null,
         \PDO::PARAM_STR
     );
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);

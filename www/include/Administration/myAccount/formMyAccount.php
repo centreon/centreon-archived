@@ -159,7 +159,8 @@ if ($isLicenseValid) {
 $form->addGroup(
     $platformDataSendingRadios,
     'contact_platform_data_sending',
-    _('Contextual assistance and associated data sending'), '&nbsp;'
+    _('Contextual assistance and associated data sending'),
+    '&nbsp;'
 );
 
 /* ------------------------ Topology ---------------------------- */
