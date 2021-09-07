@@ -19,7 +19,7 @@ import { ThemeProvider } from '@centreon/ui';
 
 import Header from './components/header';
 import { history } from './store';
-import NavigationComponent from './components/navigation';
+import Nagigation from './Navigation';
 import Tooltip from './components/tooltip';
 import Footer from './components/footer';
 import axios from './axios';
@@ -153,7 +153,7 @@ class App extends Component<Props, State> {
         <ConnectedRouter history={history}>
           <ThemeProvider>
             <div className={classes.wrapper}>
-              {!min && <NavigationComponent />}
+              {!min && <Nagigation />}
               <Tooltip />
               <div className={classes.content} id="content">
                 {!min && <Header />}

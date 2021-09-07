@@ -1,0 +1,45 @@
+.sidebar {
+  min-width: 45px;
+  max-width: 45px;
+  text-align: center;
+  background: #ededed;
+  transition: all .2s;
+  border-right: 1px solid #d1d2d4;
+  z-index: 99;
+  &-inner {
+    position: relative;
+  }
+  &.active {
+    min-width: 160px;
+    max-width: 160px;
+    .sidebar-toggle-wrap {
+      width: 160px;
+    }
+    .sidebar-toggle-icon {
+      transform: none;
+      background-position: 90%;
+    }
+  }
+  &-toggle {
+    &-wrap {
+      background: #ffffff;
+      width: 45px;
+      height: 30px;
+      position: fixed;
+      bottom: 0;
+      transition: all .2s;
+    }
+    &-icon {
+      background: url("../../img/icons/aside-menu-toggle-arrow.png") no-repeat center center;
+      transform: rotateY(180deg);
+      height: 30px;
+      display: inline-block;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      cursor: pointer;
+      width: 100%;
+      transition: all .2s;
+    }
+  }
+}
