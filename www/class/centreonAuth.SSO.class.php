@@ -354,12 +354,13 @@ class CentreonAuthSSO extends CentreonAuth
     /**
      * Connect to OpenId Connect and get token access
      *
-     * @param string $url          OpenId Connect Client Token endpoint
-     * @param string $redirectUri  OpenId Connect Redirect Url
-     * @param string $clientId     OpenId Connect Client ID
-     * @param string $clientSecret OpenId Connect Client Secret
-     * @param string $code         OpenId Connect Authorization Code
-     * @param bool   $verifyPeer   Disable SSL verify peer
+     * @param string $url             OpenId Connect Client Token endpoint
+     * @param string $redirectUri     OpenId Connect Redirect Url
+     * @param string $clientId        OpenId Connect Client ID
+     * @param string $clientSecret    OpenId Connect Client Secret
+     * @param string $code            OpenId Connect Authorization Code
+     * @param bool   $clientBasicAuth OpenId Connect use Basic Auth method
+     * @param bool   $verifyPeer      Disable SSL verify peer
      *
      * @return array|null
     */
@@ -523,12 +524,13 @@ class CentreonAuthSSO extends CentreonAuth
     /**
      * Refresh the OpenId Connect token
      *
-     * @param string      $url          OpenId Connect Introspection Token Endpoint
-     * @param string      $clientId     OpenId Connect Client ID
-     * @param string      $clientSecret OpenId Connect Client Secret
-     * @param string      $refreshToken OpenId Connect Refresh Token Access
-     * @param bool        $verifyPeer   Disable SSL verify peer
-     * @param string|null $scope        The scope
+     * @param string      $url             OpenId Connect Introspection Token Endpoint
+     * @param string      $clientId        OpenId Connect Client ID
+     * @param string      $clientSecret    OpenId Connect Client Secret
+     * @param string      $refreshToken    OpenId Connect Refresh Token Access
+     * @param bool        $clientBasicAuth OpenId Connect use Basic Auth method
+     * @param bool        $verifyPeer      Disable SSL verify peer
+     * @param string|null $scope           The scope
      *
      * @return array|null
      */
@@ -588,11 +590,12 @@ class CentreonAuthSSO extends CentreonAuth
     /**
      * Logout the OpenId session
      *
-     * @param string $url          OpenId Connect Introspection Token Endpoint
-     * @param string $clientId     OpenId Connect Client ID
-     * @param string $clientSecret OpenId Connect Client Secret
-     * @param string $refreshToken OpenId Connect Refresh Token Access
-     * @param bool   $verifyPeer   Disable SSL verify peer
+     * @param string $url             OpenId Connect Introspection Token Endpoint
+     * @param string $clientId        OpenId Connect Client ID
+     * @param string $clientSecret    OpenId Connect Client Secret
+     * @param string $refreshToken    OpenId Connect Refresh Token Access
+     * @param bool   $clientBasicAuth OpenId Connect use Basic Auth method
+     * @param bool   $verifyPeer      Disable SSL verify peer
      *
      * @return array|null
      */
