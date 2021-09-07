@@ -172,7 +172,7 @@
             </td>
         </tr>
         <tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
-        <tr class="list_two"><td class="FormRowField">{$form.contact_platform_data_sending.label}</td><td class="FormRowValue">{$form.contact_platform_data_sending.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="contact_platform_data_sending">{$form.contact_platform_data_sending.label}</td><td class="FormRowValue">{$form.contact_platform_data_sending.html}</td></tr>
         <tr class="list_one"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
         {if $o == "a" || $o == "c"}
             <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
