@@ -21,6 +21,7 @@ import {
   propOr,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router';
 
 import {
   makeStyles,
@@ -28,7 +29,6 @@ import {
   Theme,
   MenuItem,
   Menu,
-  Link,
   ButtonGroup,
 } from '@material-ui/core';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
@@ -177,6 +177,8 @@ const PerformanceGraph = ({
     graphHeight,
   });
   const { t } = useTranslation();
+  const { format } = useLocaleDateTimeFormat();
+  const history = useHistory();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
@@ -186,7 +188,6 @@ const PerformanceGraph = ({
   const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = React.useRef<number>(0);
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
-  const { format } = useLocaleDateTimeFormat();
 
   const openSizeExportMenu = (event: React.MouseEvent): void => {
     setMenuAnchor(event.currentTarget);
@@ -194,7 +195,7 @@ const PerformanceGraph = ({
   const closeSizeExportMenu = (): void => {
     setMenuAnchor(null);
   };
-  const goToPerformancePage = (): string => {
+  const goToPerformancePage = (): void => {
     const startTimestamp = format({
       date: customTimePeriod?.start as Date,
       formatString: 'X',
@@ -215,7 +216,7 @@ const PerformanceGraph = ({
       return params.toString();
     };
 
-    return `main.php?p=204&${urlParameters()}`;
+    history.push(`/main.php?p=204&${urlParameters()}`);
   };
 
   const { selectedResourceId } = useResourceContext();
@@ -428,20 +429,15 @@ const PerformanceGraph = ({
               {title}
             </Typography>
             <ButtonGroup className={classes.buttonGroup} size="small">
-              <Button className={classes.buttonLink}>
-                <Link
-                  aria-label={t(labelPerformancePage)}
-                  href={goToPerformancePage()}
-                >
-                  <IconButton
-                    disableTouchRipple
-                    title={t(labelPerformancePage)}
-                    onClick={goToPerformancePage}
-                  >
-                    <LaunchIcon style={{ fontSize: 18 }} />
-                  </IconButton>
-                </Link>
-              </Button>
+              <IconButton
+                disableTouchRipple
+                className={classes.buttonLink}
+                color="primary"
+                title={t(labelPerformancePage)}
+                onClick={goToPerformancePage}
+              >
+                <LaunchIcon style={{ fontSize: 18 }} />
+              </IconButton>
               <Button className={classes.buttonLink}>
                 <ContentWithCircularLoading
                   alignCenter={false}
