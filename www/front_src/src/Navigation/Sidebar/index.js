@@ -7,6 +7,9 @@ import React, { Component } from 'react';
 
 import clsx from 'clsx';
 
+import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
+
 import NavigationMenu from './Menu';
 import Logo from './Logo';
 import LogoMini from './Logo/LogoMini';
@@ -28,13 +31,23 @@ class Sidebar extends Component {
     const { navigationData, reactRoutes, style } = this.props;
     const { active } = this.state;
 
+    const arrowProps = {
+      fontSize: 'small',
+    };
+
     return (
       <nav
         className={clsx(styles.sidebar, styles[active ? 'active' : 'mini'])}
         id="sidebar"
         style={style}
       >
-        <div className={clsx(styles['sidebar-inner'])}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateRows: 'auto 1fr auto',
+            height: '100%',
+          }}
+        >
           {active ? (
             <Logo onClick={this.toggleNavigation} />
           ) : (
@@ -46,10 +59,18 @@ class Sidebar extends Component {
             sidebarActive={active}
           />
           <div
-            className={clsx(styles['sidebar-toggle-wrap'])}
+            style={{
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: active ? 'flex-end' : 'center',
+            }}
             onClick={this.toggleNavigation}
           >
-            <span className={clsx(styles['sidebar-toggle-icon'])} />
+            {active ? (
+              <ArrowBackIcon {...arrowProps} />
+            ) : (
+              <ArrowForwardIcon {...arrowProps} />
+            )}
           </div>
         </div>
       </nav>

@@ -27,10 +27,74 @@
       top: 50%;
       color: #242f3b;
     }
-
+    .iconmoon {
+      display: block;
+      padding: 7px 12px;
+      background-color: transparent;
+      &:before {
+        font-size: 24px;
+      }
+      &.icon {
+        &-home {
+          &:before {
+            content: "\e904";
+            color: rgba(0, 159, 152, 1);
+          }
+          &:hover:before {
+            content: "\e904";
+            color: $white-color;
+          }
+        }
+        &-monitoring {
+          &:before {
+            content: "\e907";
+            color: rgba(136, 189, 35, 1);
+          }
+          &:hover:before {
+            content: "\e907";
+            color: $white-color;
+          }
+        }
+        &-reporting {
+          &:before {
+            content: "\e909";
+            color: rgba(255, 162, 0, 1);
+          }
+          &:hover:before {
+            content: "\e909";
+            color: $white-color;
+          }
+        }
+        &-configuration {
+          &:before {
+            content: "\e902";
+            color: rgba(0, 159, 233, 1);
+          }
+          &:hover:before {
+            content: "\e902";
+            color: $white-color;
+          }
+        }
+        &-administration {
+          &:before {
+            content: "\e900";
+            color: rgba(43, 45,132, 1);
+          }
+          &:hover:before {
+            content: "\e900";
+            color: $white-color;
+          }
+        }
+      }
+    }
     &.active {
       .menu-item-name {
         color: $white-color;
+      }
+      .iconmoon {
+        &:before {
+          color: $white-color;
+        }
       }
     }
     &.active {
@@ -41,6 +105,11 @@
         .menu-item-name {
           color: $white-color;
         }
+        .iconmoon {
+          &:before {
+            color: $white-color;
+          }
+        }
       }
       &-85B446 {
         .menu-item-link {
@@ -48,6 +117,11 @@
         }
         .menu-item-name {
           color: $white-color;
+        }
+        .iconmoon {
+          &:before {
+            color: $white-color;
+          }
         }
       }
       &-E4932C {
@@ -57,6 +131,11 @@
         .menu-item-name {
           color: $white-color;
         }
+        .iconmoon {
+          &:before {
+            color: $white-color;
+          }
+        }
       }
       &-17387B {
         .menu-item-link {
@@ -64,6 +143,11 @@
         }
         .menu-item-name {
           color: $white-color;
+        }
+        .iconmoon {
+          &:before {
+            color: $white-color;
+          }
         }
       }
       &-319ED5 {
@@ -73,19 +157,13 @@
         .menu-item-name {
           color: $white-color;
         }
+        .iconmoon {
+          &:before {
+            color: $white-color;
+          }
+        }
       }
     }
-
-    .menu-item {
-      :hover {
-        color: $white-color;
-      }
-    }
-
-    .menu-item:hover > .menu-icon:hover {
-      color: $white-color;
-    }
-
     &:hover {
       .collapsed-items {
         display: block !important;
@@ -94,35 +172,35 @@
     &.color-2B9E93 {
       .menu-item-link {
         &:hover {
-          // background-color: $turquoise-centreon-darken;
+          background-color: $turquoise-centreon-darken;
         }
       }
     }
     &.color-85B446 {
       .menu-item-link {
         &:hover {
-          // background-color: $lime-centreon-darken;
+          background-color: $lime-centreon-darken;
         }
       }
     }
     &.color-E4932C {
       .menu-item-link {
         &:hover {
-          // background-color: $orange-centreon-darken;
+          background-color: $orange-centreon-darken;
         }
       }
     }
     &.color-17387B {
       .menu-item-link {
         &:hover {
-          // background-color: $darkblue-centreon-darken;
+          background-color: $darkblue-centreon-darken;
         }
       }
     }
     &.color-319ED5 {
       .menu-item-link {
         &:hover {
-          // background-color: $lightblue-centreon-darken;
+          background-color: $lightblue-centreon-darken;
         }
       }
     }
@@ -146,24 +224,32 @@
     &.collapsed-items {
       display: none;
       position: absolute;
-      // max-height: 100%;
-      overflow: scroll;
-      // max-height: 150px;
       top: 0;
       left: 100%;
       min-width: 155px;
-      // bottom: 0;
       width: 100%;
       -webkit-box-shadow: 3px 3px 3px 0 rgba(70,75,82,.5);
       box-shadow: 3px 3px 3px 0 rgba(70,75,82,.5);
       box-sizing: border-box;
       z-index: 99;
-      &.border {
-        border-left: 5px solid #10069F;
+      &.border-2B9E93 {
+        border-left: 5px solid $turquoise-centreon-primary;
+      }
+      &.border-85B446 {
+        border-left: 5px solid $lime-centreon-primary;
+      }
+      &.border-E4932C {
+        border-left: 5px solid $orange-centreon-primary;
+      }
+      &.border-17387B {
+        border-left: 5px solid $darkblue-centreon-primary;
+      }
+      &.border-319ED5 {
+        border-left: 5px solid $lightblue-centreon-primary;
       }
       &.towards-up {
-        // top: 0;
-        // bottom: auto;
+        top: 0;
+        bottom: auto;
       }
       &.towards-down {
         top: auto;
@@ -187,22 +273,21 @@
           &:hover {
             color: $white-color;
             background-image: none !important;
-            background-color: #10069F !important;
-            // &.color-2B9E93 {
-            //   background-color: $turquoise-centreon-darken !important;
-            // }
-            // &.color-85B446 {
-            //   background-color: $lime-centreon-darken !important;
-            // }
-            // &.color-E4932C {
-            //   background-color: $orange-centreon-darken !important;
-            // }
-            // &.color-17387B {
-            //   background-color: $darkblue-centreon-darken !important;
-            // }
-            // &.color-319ED5 {
-            //   background-color: $lightblue-centreon-darken !important;
-            // }
+            &.color-2B9E93 {
+              background-color: $turquoise-centreon-darken !important;
+            }
+            &.color-85B446 {
+              background-color: $lime-centreon-darken !important;
+            }
+            &.color-E4932C {
+              background-color: $orange-centreon-darken !important;
+            }
+            &.color-17387B {
+              background-color: $darkblue-centreon-darken !important;
+            }
+            &.color-319ED5 {
+              background-color: $lightblue-centreon-darken !important;
+            }
           }
         }
         > .collapsed-item-level-link {
@@ -358,6 +443,11 @@
   }
   &-big {
     .menu-item {
+      // display: flex;
+      // flex-direction: row;
+      // align-items: center;
+      // width: 100%;
+      
       &.active {
         .collapsed {
           &-items {

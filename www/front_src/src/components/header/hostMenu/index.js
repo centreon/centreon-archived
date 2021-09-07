@@ -20,6 +20,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
+import HostIcon from '@material-ui/icons/Dns';
+
 import {
   IconHeader,
   IconNumber,
@@ -146,8 +148,8 @@ class HostMenu extends Component {
       >
         <SubmenuHeader active={toggled} submenuType="top">
           <IconHeader
+            Icon={HostIcon}
             iconName={t('Hosts')}
-            iconType="hosts"
             onClick={this.toggle}
           >
             {data.pending > 0 && <span className={styles['custom-icon']} />}

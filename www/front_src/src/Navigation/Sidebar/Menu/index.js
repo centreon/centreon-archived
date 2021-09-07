@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable no-useless-concat */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/anchor-is-valid */
@@ -15,14 +16,7 @@ import clsx from 'clsx';
 import { Link as RouterLink } from 'react-router-dom';
 
 import Link from '@material-ui/core/Link';
-import {
-  Typography,
-  withStyles,
-  styled,
-  alpha,
-  Divider,
-  List,
-} from '@material-ui/core';
+import { Typography, withStyles, styled, alpha } from '@material-ui/core';
 
 import BoundingBox from './BoundingBox';
 import styles from './menu.scss';
@@ -32,18 +26,11 @@ const StyledLink = styled(Link)(() => ({
   textDecoration: 'none',
 }));
 
-// const useStyles = makeStyles((theme) => ({
-//   menuItem: {
-//     alignItems: 'center',
-//     display: 'flex',
-//     flexDirection: 'column',
-//   },
-// }));
-
 class NavigationMenu extends Component {
   state = {
     activeSecondLevel: null,
     doubleClickedLevel: null,
+    hoveredFirstLevel: null,
     hrefOfIframe: false,
     navigatedPageId: false,
   };
@@ -158,6 +145,13 @@ class NavigationMenu extends Component {
 
           const MenuIcon = icons[firstLevel.icon];
 
+          const { hoveredFirstLevel } = this.state;
+
+          const isFirstLevelHovered = hoveredFirstLevel === firstLevel.label;
+
+          const isFirstLevelHighlited =
+            isFirstLevelHovered || firstLevelIsActive;
+
           return (
             <li
               className={clsx(
@@ -170,9 +164,15 @@ class NavigationMenu extends Component {
               )}
               key={`firstLevel-${firstLevel.page}`}
             >
-              <span>
+              <span
+                className={clsx(styles['menu-item-link'])}
+                style={{ width: '100%' }}
+              >
                 <StyledLink
-                  className={classes.menuItem}
+                  className={clsx(
+                    // styles.iconmoon,
+                    styles[`icon-${firstLevel.icon}`],
+                  )}
                   component={RouterLink}
                   to={this.getUrlFromEntry(firstLevel)}
                   onClick={(e) => {
@@ -198,21 +198,49 @@ class NavigationMenu extends Component {
                     );
                   }}
                 >
-                  <div
-                    // className={clsx(styles['menu-item'])}
-                    classeName={classes.menuItem}
+                  <span
+                    className={clsx(styles['menu-item'])}
+                    style={{
+                      alignItems: 'center',
+                      display: 'flex',
+                      paddingLeft: 4,
+                    }}
+                    onMouseLeave={() =>
+                      this.setState({
+                        hoveredFirstLevel: null,
+                      })
+                    }
+                    onMouseOver={() =>
+                      this.setState({
+                        hoveredFirstLevel: firstLevel.label,
+                      })
+                    }
+                    // className={classes.menuItem}
                   >
                     <MenuIcon
                       // className={clsx(styles['menu-item-link'])}
                       className={classes.icon}
                       color="primary"
-                      fontSize="large"
-                      style={{}}
+                      // fontSize="large"
+                      style={{
+                        color: isFirstLevelHighlited
+                          ? '#FFFFFF'
+                          : firstLevel.color,
+
+                        fontSize: 28,
+                      }}
                     />
                     {sidebarActive && (
-                      <Typography>{firstLevel.label}</Typography>
+                      <Typography
+                        color="textPrimary"
+                        style={{
+                          color: isFirstLevelHighlited ? '#FFFFFF' : undefined,
+                        }}
+                      >
+                        {firstLevel.label}
+                      </Typography>
                     )}
-                  </div>
+                  </span>
                 </StyledLink>
               </span>
               <ul
@@ -220,7 +248,7 @@ class NavigationMenu extends Component {
                   styles.collapse,
                   styles['collapsed-items'],
                   styles['list-unstyled'],
-                  styles.border,
+                  styles[`border-${firstLevel.color}`],
                   styles[
                     activeIndex !== -1 &&
                     firstLevelIndex > activeIndex &&
@@ -271,7 +299,7 @@ class NavigationMenu extends Component {
                           }
                         }}
                       >
-                        <Typography variant="body2">
+                        <Typography style={{ fontSize: 11 }}>
                           {secondLevel.label}
                         </Typography>
                       </StyledLink>
@@ -280,9 +308,7 @@ class NavigationMenu extends Component {
                           let styleFor3rdLevel = {};
                           if (rectBox && rectBox.bottom < 1) {
                             styleFor3rdLevel = {
-                              // height: rectBox.offsetHeight + rectBox.bottom,
-                              // maxHeight: '100%',
-                              // overflow: 'auto',
+                              height: rectBox.offsetHeight + rectBox.bottom,
                             };
                           }
 
@@ -299,18 +325,14 @@ class NavigationMenu extends Component {
                                   key={`thirdLevelFragment-${group.label}`}
                                 >
                                   {secondLevel.groups.length > 1 ? (
-                                    <div>
-                                      <Typography
-                                        color="primary"
-                                        fontWeight="bold"
-                                        variant="body2"
-                                      >
-                                        {group.label}
-                                      </Typography>
-                                      <Divider />
-                                    </div>
-                                  ) : // </span>
-                                  null}
+                                    <span
+                                      className={clsx(
+                                        styles['collapsed-level-title'],
+                                      )}
+                                    >
+                                      <span>{group.label}</span>
+                                    </span>
+                                  ) : null}
                                   {group.children.map((thirdLevel) => {
                                     const thirdLevelIsActive =
                                       thirdLevel.toggled ||
@@ -343,7 +365,7 @@ class NavigationMenu extends Component {
                                             });
                                           }}
                                         >
-                                          <Typography variant="body2">
+                                          <Typography style={{ fontSize: 11 }}>
                                             {thirdLevel.label}
                                           </Typography>
                                         </StyledLink>
@@ -379,9 +401,6 @@ export default withStyles((theme) => ({
   },
 
   menuItem: {
-    '&:hover': {
-      background: alpha(theme.palette.primary.main, 0.2),
-    },
     alignItems: 'center',
     color: '#FFFFFF',
     display: 'flex',
