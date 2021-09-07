@@ -99,6 +99,7 @@ $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfFile, $contents);
 chmod($centreonConfFile, 0660);
 chown($centreonConfFile, 'apache');
+chgrp($centreonConfFile, 'apache');
 
 /**
  * conf.pm
