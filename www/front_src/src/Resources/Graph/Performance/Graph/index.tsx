@@ -2,15 +2,12 @@ import * as React from 'react';
 
 import { equals, isNil, identity, min, max, not, lt, gte } from 'ramda';
 import {
-  Line,
-  Bar,
-  scaleTime,
-  scaleLinear,
+  Shape,
+  Grid,
+  Scale,
   Group,
-  GridRows,
-  GridColumns,
-  useTooltip,
-  localPoint,
+  Tooltip as VisxTooltip,
+  Event,
 } from '@visx/visx';
 import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
@@ -75,9 +72,9 @@ const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
 
 const MemoizedAxes = React.memo(Axes, propsAreEqual);
-const MemoizedBar = React.memo(Bar, propsAreEqual);
-const MemoizedGridColumns = React.memo(GridColumns, propsAreEqual);
-const MemoizedGridRows = React.memo(GridRows, propsAreEqual);
+const MemoizedBar = React.memo(Shape.Bar, propsAreEqual);
+const MemoizedGridColumns = React.memo(Grid.GridColumns, propsAreEqual);
+const MemoizedGridRows = React.memo(Grid.GridRows, propsAreEqual);
 const MemoizedLines = React.memo(Lines, propsAreEqual);
 const MemoizedAnnotations = React.memo(Annotations, propsAreEqual);
 
@@ -171,7 +168,7 @@ const getScale = ({
 
   const upperRangeValue = minValue === maxValue && maxValue === 0 ? height : 0;
 
-  return scaleLinear<number>({
+  return Scale.scaleLinear<number>({
     domain: [minValue, maxValue],
     nice: true,
     range: [height, upperRangeValue],
@@ -250,7 +247,7 @@ const GraphContent = ({
 
   const xScale = React.useMemo(
     () =>
-      scaleTime<number>({
+      Scale.scaleTime<number>({
         domain: [
           getMin(timeSeries.map(getTime)),
           getMax(timeSeries.map(getTime)),
@@ -333,7 +330,7 @@ const GraphContent = ({
 
   const displayTooltip = (event): void => {
     setIsMouseOver(true);
-    const { x, y } = localPoint(event) || { x: 0, y: 0 };
+    const { x, y } = Event.localPoint(event) || { x: 0, y: 0 };
 
     const mouseX = x - margin.left;
 
@@ -406,7 +403,7 @@ const GraphContent = ({
       return;
     }
 
-    const { x, y } = localPoint(event) || { x: 0, y: 0 };
+    const { x, y } = Event.localPoint(event) || { x: 0, y: 0 };
 
     const { timeTick } = getTimeValue(x);
     const date = new Date(timeTick);
@@ -435,7 +432,7 @@ const GraphContent = ({
     if (isNil(onAddComment)) {
       return;
     }
-    const { x } = localPoint(event) || { x: 0 };
+    const { x } = Event.localPoint(event) || { x: 0 };
 
     const mouseX = x - margin.left;
 
@@ -474,7 +471,7 @@ const GraphContent = ({
             </div>
           )}
           <svg height={height} width="100%" onMouseUp={closeZoomPreview}>
-            <Group left={margin.left} top={margin.top}>
+            <Group.Group left={margin.left} top={margin.top}>
               <MemoizedGridRows
                 height={graphHeight}
                 scale={rightScale || leftScale}
@@ -523,14 +520,14 @@ const GraphContent = ({
               />
               {containsMetrics && (
                 <>
-                  <Line
+                  <Shape.Line
                     from={{ x: mousePositionX, y: 0 }}
                     pointerEvents="none"
                     stroke={grey[400]}
                     strokeWidth={1}
                     to={{ x: mousePositionX, y: graphHeight }}
                   />
-                  <Line
+                  <Shape.Line
                     from={{ x: 0, y: mousePositionY }}
                     pointerEvents="none"
                     stroke={grey[400]}
@@ -551,7 +548,7 @@ const GraphContent = ({
                 onMouseMove={displayTooltip}
                 onMouseUp={displayAddCommentTooltip}
               />
-            </Group>
+            </Group.Group>
             <TimeShiftContext.Provider
               value={{
                 canAdjustTimePeriod,
@@ -657,7 +654,7 @@ const Graph = (
     tooltipOpen: addCommentTooltipOpen,
     showTooltip: showAddCommentTooltip,
     hideTooltip: hideAddCommentTooltip,
-  } = useTooltip();
+  } = VisxTooltip.useTooltip();
   const { changeMetricsValue } = useMetricsValueContext();
 
   return (
