@@ -103,7 +103,6 @@ if ($o == "c") {
 $langs = array();
 $langs = getLangs();
 $attrsText = array("size" => "35");
-$platformDataSending = ["No", "Yes", "Anonymized"];
 
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Change my settings"));
