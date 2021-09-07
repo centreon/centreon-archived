@@ -122,7 +122,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   },
   graphHeader: {
     display: 'grid',
-    gridTemplateColumns: '0.1fr 1fr 0.1fr',
+    gridTemplateColumns: '0.4fr 1fr 0.4fr',
     justifyItems: 'center',
     width: '100%',
   },
