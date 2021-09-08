@@ -60,7 +60,6 @@ export interface GraphTabParameters {
 }
 
 export interface ServicesTabParameters {
-  graphMode: boolean;
   options: GraphOptions;
 }
 
