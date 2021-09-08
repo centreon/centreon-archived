@@ -108,6 +108,9 @@ $centreonConfPmFile = $centreonEtcPath . '/conf.pm';
 $contents = file_get_contents('../../var/configFilePmTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfPmFile, $contents);
+chmod($centreonConfPmFile, 0660);
+chown($centreonConfPmFile, 'centreon');
+chgrp($centreonConfPmFile, 'centreon');
 
 // specific additional mandatory parameters used by Gorgone.d in a full ZMQ mode
 array_push(
