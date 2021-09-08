@@ -67,6 +67,7 @@ import {
   labelCompactTimePeriod,
   labelCheck,
   labelShortcuts,
+  labelMonitoringServer,
   labelToday,
   labelYesterday,
   labelThisWeek,
@@ -478,6 +479,12 @@ const renderDetails = (
   { openTabId }: RenderDetailsProps = { openTabId: undefined },
 ): RenderResult => render(<DetailsTest openTabId={openTabId} />);
 
+const mockedLocalStorageGetItem = jest.fn();
+const mockedLocalStorageSetItem = jest.fn();
+
+Storage.prototype.getItem = mockedLocalStorageGetItem;
+Storage.prototype.setItem = mockedLocalStorageSetItem;
+
 describe(Details, () => {
   beforeEach(() => {
     mockDate.set(currentDateIsoString);
@@ -487,6 +494,8 @@ describe(Details, () => {
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+    mockedLocalStorageSetItem.mockReset();
+    mockedLocalStorageGetItem.mockReset();
     act(() => {
       context.clearSelectedResource();
     });
@@ -1470,6 +1479,35 @@ describe(Details, () => {
     expect(
       getByLabelText(`${labelConfigure}_${retrievedDetails.name}`),
     ).toHaveAttribute('href', '/configuration');
+  });
+
+  it('populates details tiles with values from localStorage if available', async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: retrievedDetails,
+    });
+
+    const { getByText, queryByText } = renderDetails();
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    mockedLocalStorageGetItem.mockReturnValue(
+      JSON.stringify([labelMonitoringServer, labelStatusInformation]),
+    );
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        context.getSelectedResourceDetailsEndpoint() as string,
+        expect.anything(),
+      );
+    });
+
+    expect(getByText(labelMonitoringServer)).toBeInTheDocument();
+    expect(getByText(labelStatusInformation)).toBeInTheDocument();
+
+    expect(queryByText(labelLastCheck)).not.toBeInTheDocument();
+    expect(queryByText(labelCommand)).not.toBeInTheDocument();
   });
 
   it('queries the performance graphs with the time period selected in the "Timeline" tab when the "Graph" tab is selected and the "Timeline" tab was selected', async () => {
