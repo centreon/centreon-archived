@@ -124,7 +124,8 @@ class CentreonAuthSSO extends CentreonAuth
             if (filter_var($this->ssoOptions['openid_connect_introspection_endpoint'], FILTER_VALIDATE_URL)) {
                 $introspectionEndpoint = rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
             } else {
-                $introspectionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
+                $introspectionEndpoint = $baseUrl
+                    . rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
             }
 
             if (!empty($this->ssoOptions['openid_connect_userinfo_endpoint'])) {
@@ -139,7 +140,8 @@ class CentreonAuthSSO extends CentreonAuth
                 if (filter_var($this->ssoOptions['openid_connect_end_session_endpoint'], FILTER_VALIDATE_URL)) {
                     $endSessionEndpoint = rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
                 } else {
-                    $endSessionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
+                    $endSessionEndpoint = $baseUrl
+                        . rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
                 }
             }
             $redirect = urlencode($redirectNoEncode);
