@@ -530,7 +530,7 @@ class CentreonAuthSSO extends CentreonAuth
         try {
             $result = $restHttp->call(
                 $url,
-                'POST',
+                'GET',
                 $data,
                 [$authentication],
                 true,
