@@ -23,13 +23,23 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   active?: boolean;
+  isCustomCard?: boolean;
   line: JSX.Element;
   title: string;
 }
 
-const DetailsCard = ({ title, line, active }: Props): JSX.Element => {
+const DetailsCard = ({
+  title,
+  line,
+  active,
+  isCustomCard = false,
+}: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  if (isCustomCard) {
+    return line;
+  }
 
   return (
     <Card className={classes.container}>

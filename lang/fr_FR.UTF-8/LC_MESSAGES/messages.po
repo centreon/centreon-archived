@@ -16228,3 +16228,6 @@ msgstr "Le paramètre \"%s\" doit être un entier"
 
 msgid "Contact Details"
 msgstr "Détails du Contact"
+
+msgid "Service graphs"
+msgstr "Graphiques de services"
