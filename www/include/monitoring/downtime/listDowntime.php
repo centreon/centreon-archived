@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -89,6 +89,12 @@ if (isset($_POST['SearchB'])) {
  */
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
+
+/**
+ * true: URIs will correspond to deprecated pages
+ * false: URIs will correspond to new page (Resource Status)
+ */
+$useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
 
 include_once "./class/centreonDB.class.php";
 
@@ -223,9 +229,16 @@ for ($i = 0; $data = $downtimesStatement->fetchRow(); $i++) {
         }
     } else {
         $tab_downtime_svc[$i]['host_name'] = $data['host_name'];
-        $tab_downtime_svc[$i]['h_details_uri'] = $resourceController->buildHostDetailsUri($data['host_id']);
+        $tab_downtime_svc[$i]['h_details_uri'] = $useDeprecatedPages
+            ? './main.php?p=20202&o=hd&host_name=' . $data['host_name']
+            : $resourceController->buildHostDetailsUri($data['host_id']);
         if ($data['service_description'] !== '') {
-            $tab_downtime_svc[$i]['s_details_uri'] = $resourceController->buildServiceDetailsUri(
+            $tab_downtime_svc[$i]['s_details_uri'] = $useDeprecatedPages
+            ? './main.php?p=202&o=svcd&host_name='
+                . $data['host_name']
+                . '&service_description='
+                . $data['service_description']
+            : $resourceController->buildServiceDetailsUri(
                 $data['host_id'],
                 $data['service_id']
             );

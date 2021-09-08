@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -59,6 +59,17 @@ $_SESSION['monitoring_serviceByHg_status_filter'] = $statusFilter;
 
 // Set Default Poller
 $obj->getDefaultFilters();
+
+/**
+ * @var Centreon $centreon
+ */
+$centreon = $_SESSION["centreon"];
+
+/**
+ * true: URIs will correspond to deprecated pages
+ * false: URIs will correspond to new page (Resource Status)
+ */
+$useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
 
 /*
  * Check Arguments From GET request
@@ -270,7 +281,9 @@ if (isset($tab_finalH)) {
                         $obj->XML->writeElement("svc_id", $serviceId);
                         $obj->XML->writeElement(
                             "s_details_uri",
-                            $resourceController->buildServiceDetailsUri($tabH[$host_name], $serviceId)
+                            $useDeprecatedPages
+                                ? 'main.php?o=svcd&p=202&host_name=' . $host_name . '&service_description=' . $svc
+                                : $resourceController->buildServiceDetailsUri($tabH[$host_name], $serviceId)
                         );
                         $obj->XML->endElement();
                     }
@@ -287,16 +300,23 @@ if (isset($tab_finalH)) {
                 $obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
                 $obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
                 $obj->XML->writeElement("hcount", $count);
-                $obj->XML->writeElement("h_details_uri", $resourceController->buildHostDetailsUri($tabH[$host_name]));
+                $obj->XML->writeElement(
+                    "h_details_uri",
+                    $useDeprecatedPages
+                        ? 'main.php?p=20201&o=hd&host_name=' . $host_name
+                        : $resourceController->buildHostDetailsUri($tabH[$host_name])
+                );
                 $obj->XML->writeElement(
                     "s_listing_uri",
-                    $resourceController->buildListingUri([
-                        'filter' => json_encode([
-                            'criterias' => [
-                                'search' => 'h.name:^' . $host_name . '$',
-                            ],
-                        ]),
-                    ])
+                    $useDeprecatedPages
+                        ? 'main.php?o=svc&p=20201&statusFilter=&host_search=' . $host_name
+                        : $resourceController->buildListingUri([
+                            'filter' => json_encode([
+                                'criterias' => [
+                                    'search' => 'h.name:^' . $host_name . '$',
+                                ],
+                            ]),
+                        ])
                 );
                 $obj->XML->endElement();
                 $count++;

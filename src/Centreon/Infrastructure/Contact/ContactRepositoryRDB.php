@@ -349,7 +349,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setAccessToApiConfiguration($contact['reach_api'] === '1')
             ->setTimezone(new \DateTimeZone($contactTimezoneName))
             ->setLocale($contactLocale)
-            ->setDefaultPage($page);
+            ->setDefaultPage($page)
+            ->setUseDeprecatedPages($contact['show_deprecated_pages'] === '1');
     }
 
     /**

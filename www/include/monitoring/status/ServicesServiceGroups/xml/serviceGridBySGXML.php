@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -54,6 +54,17 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 
 // Set Default Poller
 $obj->getDefaultFilters();
+
+/**
+ * @var Centreon $centreon
+ */
+$centreon = $_SESSION["centreon"];
+
+/**
+ * true: URIs will correspond to deprecated pages
+ * false: URIs will correspond to new page (Resource Status)
+ */
+$useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
 
 // Check Arguments From GET tab
 $o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
@@ -302,16 +313,23 @@ foreach ($aTab as $key => $element) {
         $obj->XML->writeElement("hcount", $host['hcount']);
         $obj->XML->writeElement("hs", $host['hs']);
         $obj->XML->writeElement("hc", $host['hc']);
-        $obj->XML->writeElement("h_details_uri", $resourceController->buildHostDetailsUri($host['hid']));
+        $obj->XML->writeElement(
+            "h_details_uri",
+            $useDeprecatedPages
+                ? 'main.php?p=20202&o=hd&host_name=' . $host['hn']
+                : $resourceController->buildHostDetailsUri($host['hid'])
+        );
         $obj->XML->writeElement(
             "s_listing_uri",
-            $resourceController->buildListingUri([
-                'filter' => json_encode([
-                    'criterias' => [
-                        'search' => 'h.name:^' . $host['hn'] . '$',
-                    ],
-                ]),
-            ])
+            $useDeprecatedPages
+                ? 'main.php?o=svc&p=20201&statusFilter=&host_search=' . $host['hn']
+                : $resourceController->buildListingUri([
+                    'filter' => json_encode([
+                        'criterias' => [
+                            'search' => 'h.name:^' . $host['hn'] . '$',
+                        ],
+                    ]),
+                ])
         );
         foreach ($host['service'] as $service) {
             $obj->XML->startElement("svc");
@@ -321,7 +339,12 @@ foreach ($aTab as $key => $element) {
             $obj->XML->writeElement("svc_id", $service['svc_id']);
             $obj->XML->writeElement(
                 "s_details_uri",
-                $resourceController->buildServiceDetailsUri($host['hid'], $service['svc_id'])
+                $useDeprecatedPages
+                    ? 'main.php?o=svcd&p=202&host_name='
+                        . $host['hn']
+                        . '&amp;service_description='
+                        . $service['sn']
+                    : $resourceController->buildServiceDetailsUri($host['hid'], $service['svc_id'])
             );
             $obj->XML->endElement();
         }

@@ -81,6 +81,12 @@ $resourceController = $kernel->getContainer()->get(
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
+/**
+ * true: URIs will correspond to deprecated pages
+ * false: URIs will correspond to new page (Resource Status)
+ */
+$useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
+
 /*
  * Smarty template Init
  */
@@ -155,12 +161,20 @@ for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $tab_comments_svc[$i]['data'],
         ['a', 'br', 'hr']
     );
-    $tab_comments_svc[$i]['h_details_uri'] = $resourceController->buildHostDetailsUri($data['host_id']);
+    $tab_comments_svc[$i]['h_details_uri'] = $useDeprecatedPages
+        ? 'main.php?p=20202&o=hd&host_name=' . $data['host_name']
+        : $resourceController->buildHostDetailsUri($data['host_id']);
+
     if ($data['service_description'] != '') {
-        $tab_comments_svc[$i]['s_details_uri'] = $resourceController->buildServiceDetailsUri(
-            $data['host_id'],
-            $data['service_id']
-        );
+        $tab_comments_svc[$i]['s_details_uri'] = $useDeprecatedPages
+            ? 'main.php?p=202&o=svcd&host_name='
+                . $data['host_name']
+                . '&service_description='
+                . $data['service_description']
+            : $resourceController->buildServiceDetailsUri(
+                $data['host_id'],
+                $data['service_id']
+            );
         $tab_comments_svc[$i]['service_description'] = htmlentities($data['service_description'], ENT_QUOTES, 'UTF-8');
         $tab_comments_svc[$i]['comment_type'] = 'SVC';
     } else {
