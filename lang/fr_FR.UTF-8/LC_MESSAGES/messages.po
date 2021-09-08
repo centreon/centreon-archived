@@ -15986,6 +15986,9 @@ msgstr "Afficher les évènements"
 msgid "Export to png"
 msgstr "Exporter comme png"
 
+#  msgid "Go to performance page"
+#  msgstr "Aller à la page de performance"
+
 msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
 msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas comporter plus de %d caractères mais n'en comporte que %d"
 
