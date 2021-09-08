@@ -791,18 +791,28 @@ function updateGeneralConfigData($gopt_id = null)
             ? $pearDB->escape($ret["openid_connect_redirect_url"]) : ""
     );
 
-    updateOption(
-        $pearDB,
-        "openid_connect_client_id",
-        isset($ret["openid_connect_client_id"]) && $ret["openid_connect_client_id"] != null
-            ? $pearDB->escape($ret["openid_connect_client_id"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_client_secret",
-        isset($ret["openid_connect_client_secret"]) && $ret["openid_connect_client_secret"] != null
-            ? $pearDB->escape($ret["openid_connect_client_secret"]) : ""
-    );
+    if (
+        isset($ret["openid_connect_client_id"])
+        && $ret["openid_connect_client_id"] !== CentreonAuth::PWS_OCCULTATION
+    ) {
+        updateOption(
+            $pearDB,
+            "openid_connect_client_id",
+            $pearDB->escape($ret["openid_connect_client_id"])
+        );
+    }
+
+    if (
+        isset($ret["openid_connect_client_secret"])
+        && $ret["openid_connect_client_secret"] !== CentreonAuth::PWS_OCCULTATION
+    ) {
+        updateOption(
+            $pearDB,
+            "openid_connect_client_secret",
+            $pearDB->escape($ret["openid_connect_client_secret"])
+        );
+    }
+
     updateOption(
         $pearDB,
         "openid_connect_client_basic_auth",

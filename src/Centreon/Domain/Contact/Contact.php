@@ -22,9 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Menu\Model\Page;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
 class Contact implements UserInterface, ContactInterface
 {
@@ -151,6 +152,11 @@ class Contact implements UserInterface, ContactInterface
      * @var string|null $locale locale of the user
      */
     private $locale;
+
+    /**
+     * @var Page|null
+     */
+    private $defaultPage;
 
     /**
      * @return int
@@ -547,5 +553,25 @@ class Contact implements UserInterface, ContactInterface
     public function getLocale(): ?string
     {
         return $this->locale;
+    }
+
+    /**
+     * @param Page|null $defaultPage
+     * @return self
+     */
+    public function setDefaultPage(?Page $defaultPage)
+    {
+        $this->defaultPage = $defaultPage;
+        return $this;
+    }
+
+    /**
+     * get user default page
+     *
+     * @return Page|null
+     */
+    public function getDefaultPage(): ?Page
+    {
+        return $this->defaultPage;
     }
 }

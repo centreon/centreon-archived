@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { ParentSize } from '@visx/visx';
+import { Responsive } from '@visx/visx';
 
 import {
   Grid,
@@ -17,7 +17,6 @@ import IconCopyFile from '@material-ui/icons/FileCopy';
 
 import {
   useSnackbar,
-  Severity,
   useLocaleDateTimeFormat,
   copyToClipboard,
 } from '@centreon/ui';
@@ -83,7 +82,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   const { toDateTime } = useLocaleDateTimeFormat();
   const classes = useStyles();
 
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage, showErrorMessage } = useSnackbar();
 
   if (isNil(details)) {
     return <LoadingSkeleton />;
@@ -93,20 +92,14 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
     try {
       copyToClipboard(details.command_line as string);
 
-      showMessage({
-        message: t(labelCommandCopied),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelCommandCopied));
     } catch (_) {
-      showMessage({
-        message: t(labelSomethingWentWrong),
-        severity: Severity.error,
-      });
+      showErrorMessage(t(labelSomethingWentWrong));
     }
   };
 
   return (
-    <ParentSize>
+    <Responsive.ParentSize>
       {({ width }): JSX.Element => (
         <div className={classes.details}>
           <ExpandableCard
@@ -190,7 +183,7 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
           )}
         </div>
       )}
-    </ParentSize>
+    </Responsive.ParentSize>
   );
 };
 

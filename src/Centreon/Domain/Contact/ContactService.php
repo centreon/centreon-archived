@@ -22,8 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 
 class ContactService implements ContactServiceInterface
 {
@@ -32,9 +34,46 @@ class ContactService implements ContactServiceInterface
      */
     private $contactRepository;
 
-    public function __construct(ContactRepositoryInterface $contactRepository)
+    /**
+     * @var MenuRepositoryInterface
+     */
+    private $menuRepository;
+
+    public function __construct(ContactRepositoryInterface $contactRepository, MenuRepositoryInterface $menuRepository)
     {
         $this->contactRepository = $contactRepository;
+        $this->menuRepository = $menuRepository;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addUser(ContactInterface $contact): void
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateUser(ContactInterface $contact): void
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findContact(int $id): ?Contact
+    {
+        return $this->contactRepository->findById($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function exists(ContactInterface $contact): bool
+    {
+        $contact = $this->contactRepository->findById($contact->getId());
+        return $contact !== null;
     }
 
     /**

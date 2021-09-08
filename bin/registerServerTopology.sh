@@ -10,7 +10,6 @@ CENTREON_BASE_URI=""
 INSECURE=""
 TEMPLATE_FILE=""
 API_TOKEN=""
-REMOTE_API_TOKEN=""
 RESPONSE_MESSAGE=""
 
 declare -A SUPPORTED_LOG_LEVEL=([INFO]=0 [ERROR]=1)
@@ -176,12 +175,6 @@ function log() {
 function parse_fqdn() {
   # extract the user (if any)
   userpass="$(echo $1 | grep @ | cut -d@ -f1)"
-  pass="$(echo $userpass | grep : | cut -d: -f2)"
-  if [ -n "$pass" ]; then
-    user="$(echo $userpass | grep : | cut -d: -f1)"
-  else
-    user=$userpass
-  fi
   url="$(echo ${1/${userpass}"@"/})"
   # extract the Scheme
   SCHEME="$(echo $url | grep :// | cut -d: -f1)"
@@ -212,12 +205,6 @@ function parse_fqdn() {
 function parse_current_node_fqdn() {
   # extract the user (if any)
   userpass="$(echo $1 | grep @ | cut -d@ -f1)"
-  pass="$(echo $userpass | grep : | cut -d: -f2)"
-  if [ -n "$pass" ]; then
-    user="$(echo $userpass | grep : | cut -d: -f1)"
-  else
-    user=$userpass
-  fi
   url="$(echo ${1/${userpass}"@"/})"
   # extract the Scheme
   SCHEME="$(echo $url | grep :// | cut -d: -f1)"

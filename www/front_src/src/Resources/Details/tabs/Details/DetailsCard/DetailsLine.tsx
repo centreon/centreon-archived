@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ParentSize } from '@visx/visx';
+import { Responsive } from '@visx/visx';
 
 import { Typography, Box, makeStyles } from '@material-ui/core';
 
@@ -21,7 +21,7 @@ const DetailsLine = ({ line }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <ParentSize parentSizeStyles={{ height: 'auto' }}>
+    <Responsive.ParentSize parentSizeStyles={{ height: 'auto' }}>
       {({ width }): JSX.Element => (
         <Typography component="div">
           <Box
@@ -35,7 +35,7 @@ const DetailsLine = ({ line }: Props): JSX.Element => {
           </Box>
         </Typography>
       )}
-    </ParentSize>
+    </Responsive.ParentSize>
   );
 };
 

@@ -18,36 +18,33 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
+use Centreon\Domain\Authentication\Model\Credentials;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Centreon\Domain\Authentication\UseCase\Logout;
+use Centreon\Domain\Authentication\UseCase\Authenticate;
+use Centreon\Domain\Authentication\UseCase\LogoutRequest;
+use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
+use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
+use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
+use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
+use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
+use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
+use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
+use Security\Infrastructure\Authentication\API\Model_2110\ApiAuthenticationFactory;
+use Security\Infrastructure\Authentication\API\Model_2110\ProvidersConfigurationsFactory;
 
 /**
  * @package Centreon\Application\Controller
  */
-class AuthenticationController extends AbstractFOSRestController
+class AuthenticationController extends AbstractController
 {
-    /**
-     * @var AuthenticationServiceInterface
-     */
-    private $auth;
-
-    /**
-     * LoginController constructor.
-     *
-     * @param AuthenticationServiceInterface $auth
-     */
-    public function __construct(AuthenticationServiceInterface $auth)
-    {
-        $this->auth = $auth;
-    }
-
     /**
      * Entry point used to identify yourself and retrieve an authentication token.
      * (If view_response_listener = true, we need to write the following
@@ -55,69 +52,97 @@ class AuthenticationController extends AbstractFOSRestController
      * necessary).
      *
      * @param Request $request
-     * @return array
-     * @throws \Exception
+     * @param AuthenticateApi $authenticate
+     * @param AuthenticateApiResponse $response
+     * @return View
      */
-    public function login(Request $request)
+    public function login(Request $request, AuthenticateApi $authenticate, AuthenticateApiResponse $response): View
     {
-        try {
-            // We take this opportunity to delete all expired tokens
-            $this->auth->deleteExpiredTokens();
-        } catch (\Exception $ex) {
-            // We don't propagate this error
-        }
-
-        $contentBody = json_decode($request->getContent(), true);
-        $username = $contentBody['security']['credentials']['login'] ?? '';
+        $contentBody = json_decode((string) $request->getContent(), true);
+        $login = $contentBody['security']['credentials']['login'] ?? '';
         $password = $contentBody['security']['credentials']['password'] ?? '';
-        $contact = $this->auth->findContactByCredentials($username, $password);
 
-        if (!$contact) {
-            return $this->view([
-                "code" => Response::HTTP_UNAUTHORIZED,
-                "message" => 'Invalid credentials'
-            ], Response::HTTP_UNAUTHORIZED);
-        }
+        $request = new AuthenticateApiRequest($login, $password);
+        $authenticate->execute($request, $response);
 
-        return $this->view([
-            'contact' => [
-                'id' => $contact->getId(),
-                'name' => $contact->getName(),
-                'alias' => $contact->getAlias(),
-                'email' => $contact->getEmail(),
-                'is_admin' => $contact->isAdmin()
-            ],
-            'security' => [
-                'token' => $this->auth->generateToken($contact->getAlias())
-            ]
-        ]);
+        return $this->view(ApiAuthenticationFactory::createFromResponse($response));
     }
 
     /**
      * Entry point used to delete an existing authentication token.
      *
      * @param Request $request
-     * @return array
+     * @param Logout $logout
+     * @return View
      * @throws \RestException
      */
-    public function logout(Request $request)
+    public function logout(Request $request, Logout $logout): View
     {
-        try {
-            // We take this opportunity to delete all expired tokens
-            $this->auth->deleteExpiredTokens();
-        } catch (\Exception $ex) {
-            // We don't propagate this error
-        }
+        $token = $request->headers->get('X-AUTH-TOKEN');
 
-        try {
-            $token = $request->headers->get('X-AUTH-TOKEN');
-            $this->auth->logout($token);
-
+        if ($token === null) {
             return $this->view([
-                'message' => 'Successful logout'
-            ]);
-        } catch (\Exception $ex) {
-            throw new \RestException($ex->getMessage(), $ex->getCode(), $ex);
+                "code" => Response::HTTP_UNAUTHORIZED,
+                "message" => 'Invalid credentials'
+            ], Response::HTTP_UNAUTHORIZED);
         }
+
+        $request = new LogoutRequest($token);
+        $logout->execute($request);
+
+        return $this->view([
+            'message' => 'Successful logout'
+        ]);
+    }
+
+    /**
+     * Returns the list of available providers.
+     * @param FindProvidersConfigurations $findProviderConfigurations
+     * @param FindProvidersConfigurationsResponse $response
+     * @return View
+     */
+    public function findProvidersConfigurations(
+        FindProvidersConfigurations $findProviderConfigurations,
+        FindProvidersConfigurationsResponse $response
+    ): View {
+        $findProviderConfigurations->execute($response);
+        return $this->view(ProvidersConfigurationsFactory::createFromResponse($response));
+    }
+
+    /**
+     * @param Request $request
+     * @param Authenticate $authenticate
+     * @param string $providerConfigurationName
+     * @param AuthenticateResponse $response
+     * @return View
+     */
+    public function authentication(
+        Request $request,
+        Authenticate $authenticate,
+        string $providerConfigurationName,
+        AuthenticateResponse $response
+    ): View {
+        // submitted from form directly
+        $data = $request->request->getIterator();
+        $referer = $request->headers->get('referer');
+        $clientIp = $request->getClientIp();
+        if ($clientIp === null) {
+            throw new \InvalidArgumentException('Invalid address');
+        }
+        if (empty($data['login']) || empty($data['password'])) {
+            throw new \InvalidArgumentException('Missing credentials parameters');
+        }
+        $credentials = new Credentials($data['login'], $data['password']);
+
+        $authenticateRequest = new AuthenticateRequest(
+            $credentials,
+            $providerConfigurationName,
+            $this->getBaseUri(),
+            $referer,
+            $clientIp
+        );
+
+        $authenticate->execute($authenticateRequest, $response);
+        return $this->view($response->getRedirectionUriApi());
     }
 }

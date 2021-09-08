@@ -1,11 +1,8 @@
 import * as React from 'react';
 
-import { path } from 'ramda';
-
 import { Theme, makeStyles } from '@material-ui/core';
 
 import { TabProps } from '..';
-import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { ResourceContext, useResourceContext } from '../../../Context';
@@ -51,62 +48,28 @@ const GraphTabContent = ({
 }: GraphTabContentProps): JSX.Element => {
   const classes = useStyles();
 
-  const {
-    selectedTimePeriod,
-    changeSelectedTimePeriod,
-    periodQueryParameters,
-    getIntervalDates,
-    customTimePeriod,
-    changeCustomTimePeriod,
-    adjustTimePeriod,
-    resourceDetailsUpdated,
-  } = useTimePeriod({
-    defaultGraphOptions: path(['graph', 'graphOptions'], tabParameters),
-    defaultSelectedCustomTimePeriod: path(
-      ['graph', 'selectedCustomTimePeriod'],
-      tabParameters,
-    ),
-    defaultSelectedTimePeriodId: path(
-      ['graph', 'selectedTimePeriodId'],
-      tabParameters,
-    ),
-    details,
-    onTimePeriodChange: setGraphTabParameters,
-  });
-
   const mousePositionProps = useMousePosition();
 
-  const changeTabGraphOptions = (graphOptions: GraphOptions) => {
+  const changeTabGraphOptions = (options: GraphOptions): void => {
     setGraphTabParameters({
       ...tabParameters.graph,
-      graphOptions,
+      options,
     });
   };
 
   const graphOptions = useGraphOptions({
     changeTabGraphOptions,
-    graphTabParameters: tabParameters.graph,
+    options: tabParameters.graph?.options,
   });
 
   return (
     <GraphOptionsContext.Provider value={graphOptions}>
       <div className={classes.container}>
-        <TimePeriodButtonGroup
-          changeCustomTimePeriod={changeCustomTimePeriod}
-          customTimePeriod={customTimePeriod}
-          selectedTimePeriodId={selectedTimePeriod?.id}
-          onChange={changeSelectedTimePeriod}
-        />
+        <TimePeriodButtonGroup />
         <MousePositionContext.Provider value={mousePositionProps}>
           <ExportablePerformanceGraphWithTimeline
-            adjustTimePeriod={adjustTimePeriod}
-            customTimePeriod={customTimePeriod}
-            getIntervalDates={getIntervalDates}
             graphHeight={280}
-            periodQueryParameters={periodQueryParameters}
             resource={details}
-            resourceDetailsUpdated={resourceDetailsUpdated}
-            selectedTimePeriod={selectedTimePeriod}
           />
         </MousePositionContext.Provider>
       </div>

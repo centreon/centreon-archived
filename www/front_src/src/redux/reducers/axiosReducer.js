@@ -15,6 +15,7 @@ const axiosReducer = (state = initialState, action) => {
           fileUploadProgress: {},
         };
       }
+
       return {
         ...state,
         fileUploadProgress: {

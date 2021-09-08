@@ -10,7 +10,6 @@ import {
   propEq,
   reject,
   set,
-  sortBy,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -23,16 +22,12 @@ import {
 
 import { labelNewFilter } from '../translatedLabels';
 
-import {
-  clearCachedFilter,
-  clearCachedFilterExpanded,
-  storeFilter,
-  storeFilterExpanded,
-} from './storedFilter';
+import { clearCachedFilter, storeFilter } from './storedFilter';
 import { listCustomFilters } from './api';
 import { listCustomFiltersDecoder } from './api/decoders';
 import {
   Criteria,
+  CriteriaDisplayProps,
   CriteriaValue,
   selectableCriterias,
 } from './Criterias/models';
@@ -44,34 +39,45 @@ import {
   resourceProblemsFilter,
   newFilter,
 } from './models';
-import { getDefaultFilter, getDefaultFilterExpanded } from './default';
+import { getDefaultFilter } from './default';
+import { build, parse } from './Criterias/searchQueryLanguage';
 
-type SearchDispatch = React.Dispatch<React.SetStateAction<string | undefined>>;
 type EditPanelOpenDitpach = React.Dispatch<React.SetStateAction<boolean>>;
 type CustomFiltersDispatch = React.Dispatch<
   React.SetStateAction<Array<Filter>>
 >;
 
 export interface FilterState {
+  appliedFilter: Filter;
+  applyCurrentFilter: () => void;
+  applyFilter: (filter: Filter) => void;
+  clearFilter: () => void;
+  currentFilter: Filter;
   customFilters: Array<Filter>;
   customFiltersLoading: boolean;
   editPanelOpen: boolean;
-  filter: Filter;
-  filterExpanded: boolean;
+  filterWithParsedSearch: Filter;
   filters: Array<Filter>;
   getCriteriaValue: (name: string) => CriteriaValue | undefined;
   getMultiSelectCriterias: () => Array<Criteria>;
   loadCustomFilters: () => Promise<Array<Filter>>;
-  nextSearch?: string;
+  search: string;
+  setAppliedFilter: (filter: Filter) => void;
   setCriteria: ({ name, value }: { name: string; value }) => void;
-  setCriteriaAndNewFilter: ({ name, value }: { name: string; value }) => void;
+  setCriteriaAndNewFilter: ({
+    name,
+    value,
+    apply,
+  }: {
+    apply?: boolean;
+    name: string;
+    value;
+  }) => void;
+  setCurrentFilter: (filter: Filter) => void;
   setCustomFilters: CustomFiltersDispatch;
   setEditPanelOpen: EditPanelOpenDitpach;
-  setFilter: (filter: Filter) => void;
   setNewFilter: () => void;
-  setNextSearch: SearchDispatch;
-  toggleFilterExpanded: () => void;
-  updatedFilter: Filter;
+  setSearch: (string) => void;
 }
 
 const useFilter = (): FilterState => {
@@ -84,22 +90,20 @@ const useFilter = (): FilterState => {
     request: listCustomFilters,
   });
 
-  const getDefaultCriterias = (): Array<Criteria> =>
-    getDefaultFilter().criterias;
-
-  const getDefaultSearchCriteria = (): Criteria =>
-    getDefaultCriterias().find(propEq('name', 'search')) as Criteria;
-
   const [customFilters, setCustomFilters] = React.useState<Array<Filter>>([]);
-  const [filter, setFilter] = React.useState(getDefaultFilter());
-  const [nextSearch, setNextSearch] = React.useState<string | undefined>(
-    getDefaultSearchCriteria().value as string,
-  );
-  const [filterExpanded, setFilterExpanded] = React.useState(
-    getDefaultFilterExpanded(),
-  );
+  const [currentFilter, setCurrentFilter] = React.useState(getDefaultFilter());
+  const [appliedFilter, setAppliedFilter] = React.useState(getDefaultFilter());
+  const [search, setSearch] = React.useState('');
 
   const [editPanelOpen, setEditPanelOpen] = React.useState<boolean>(false);
+
+  const filterWithParsedSearch = {
+    ...currentFilter,
+    criterias: [
+      ...parse(search),
+      find(propEq('name', 'sort'), currentFilter.criterias) as Criteria,
+    ],
+  };
 
   const loadCustomFilters = (): Promise<Array<Filter>> => {
     return sendListCustomFiltersRequest().then(({ result }) => {
@@ -110,10 +114,12 @@ const useFilter = (): FilterState => {
   };
 
   const getFilterWithUpdatedCriteria = ({ name, value }): Filter => {
-    const index = findIndex(propEq('name', name))(filter.criterias);
+    const index = findIndex(propEq('name', name))(
+      filterWithParsedSearch.criterias,
+    );
     const lens = lensPath(['criterias', index, 'value']);
 
-    return set(lens, value, filter);
+    return set(lens, value, filterWithParsedSearch);
   };
 
   const filters = [
@@ -127,40 +133,44 @@ const useFilter = (): FilterState => {
     loadCustomFilters();
   }, []);
 
-  const setCriteria = ({ name, value }): void => {
-    setFilter(getFilterWithUpdatedCriteria({ name, value }));
+  const setCriteria = ({ name, value = false }): void => {
+    setCurrentFilter(getFilterWithUpdatedCriteria({ name, value }));
   };
 
-  const setCriteriaAndNewFilter = ({ name, value }): void => {
-    const isCustomFilter = isCustom(filter);
-
-    setFilter({
+  const setCriteriaAndNewFilter = ({ name, value, apply = false }): void => {
+    const isCustomFilter = isCustom(currentFilter);
+    const updatedFilter = {
       ...getFilterWithUpdatedCriteria({ name, value }),
       ...(!isCustomFilter && newFilter),
-    });
+    };
+
+    setSearch(build(updatedFilter.criterias));
+
+    if (apply) {
+      applyFilter(updatedFilter);
+
+      return;
+    }
+
+    setCurrentFilter(updatedFilter);
   };
 
   useDeepCompareEffect(() => {
-    setCriteria({ name: 'search', value: nextSearch });
-  }, [...reject(propEq('name', 'search'), filter.criterias)]);
+    setSearch(build(currentFilter.criterias));
+  }, [currentFilter.criterias]);
 
   React.useEffect(() => {
-    const updatedFilter = getFilterWithUpdatedCriteria({
-      name: 'search',
-      value: nextSearch,
-    });
-
-    storeFilter(updatedFilter);
+    storeFilter(filterWithParsedSearch);
 
     const queryParameters = [
       {
         name: 'filter',
-        value: updatedFilter,
+        value: filterWithParsedSearch,
       },
     ];
 
     setUrlQueryParameters(queryParameters);
-  }, [filter, nextSearch]);
+  }, [filterWithParsedSearch]);
 
   React.useEffect(() => {
     if (!getUrlQueryParameters().fromTopCounter) {
@@ -174,43 +184,31 @@ const useFilter = (): FilterState => {
       },
     ]);
 
-    setFilter(getDefaultFilter());
-    const { criterias } = getDefaultFilter();
-    const search = find<Criteria>(propEq('name', 'search'))(criterias);
-    setNextSearch((search?.value as string) || '');
+    setCurrentFilter(getDefaultFilter());
   }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => (): void => {
     clearCachedFilter();
-    clearCachedFilterExpanded();
-  });
-
-  React.useEffect(() => {
-    setUrlQueryParameters([
-      {
-        name: 'filterExpanded',
-        value: filterExpanded,
-      },
-    ]);
-
-    storeFilterExpanded(filterExpanded);
-  }, [filterExpanded]);
-
-  const updatedFilter = getFilterWithUpdatedCriteria({
-    name: 'search',
-    value: nextSearch,
   });
 
   const setNewFilter = (): void => {
-    if (isCustom(filter)) {
+    if (isCustom(currentFilter)) {
       return;
     }
 
-    setFilter({ criterias: filter.criterias, id: '', name: t(labelNewFilter) });
+    const emptyFilter = {
+      criterias: currentFilter.criterias,
+      id: '',
+      name: t(labelNewFilter),
+    };
+
+    setCurrentFilter(emptyFilter);
   };
 
   const getCriteriaValue = (name: string): CriteriaValue | undefined => {
-    const criteria = find<Criteria>(propEq('name', name))(filter.criterias);
+    const criteria = find<Criteria>(propEq('name', name))(
+      filterWithParsedSearch.criterias,
+    );
 
     if (isNil(criteria)) {
       return undefined;
@@ -219,46 +217,55 @@ const useFilter = (): FilterState => {
     return criteria.value;
   };
 
+  const applyFilter = (filter: Filter): void => {
+    setCurrentFilter(filter);
+    setAppliedFilter(filter);
+    setSearch(build(filter.criterias));
+  };
+
+  const applyCurrentFilter = (): void => {
+    applyFilter(filterWithParsedSearch);
+  };
+
+  const clearFilter = (): void => {
+    applyFilter(allFilter);
+  };
+
   const getMultiSelectCriterias = (): Array<Criteria> => {
-    const getSelectableCriteriaByName = (name: string) =>
+    const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
       selectableCriterias[name];
 
-    const isNonSelectableCriteria = (criteria: Criteria) =>
+    const isNonSelectableCriteria = (criteria: Criteria): boolean =>
       pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
-
-    const getSortId = ({ name }: Criteria) =>
-      getSelectableCriteriaByName(name).sortId;
 
     return pipe(
       reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
-      sortBy(getSortId),
-    )(filter.criterias);
-  };
-
-  const toggleFilterExpanded = (): void => {
-    setFilterExpanded(!filterExpanded);
+    )(filterWithParsedSearch.criterias);
   };
 
   return {
+    appliedFilter,
+    applyCurrentFilter,
+    applyFilter,
+    clearFilter,
+    currentFilter,
     customFilters,
     customFiltersLoading,
     editPanelOpen,
-    filter,
-    filterExpanded,
+    filterWithParsedSearch,
     filters,
     getCriteriaValue,
     getMultiSelectCriterias,
     loadCustomFilters,
-    nextSearch,
+    search,
+    setAppliedFilter,
     setCriteria,
     setCriteriaAndNewFilter,
+    setCurrentFilter,
     setCustomFilters,
     setEditPanelOpen,
-    setFilter,
     setNewFilter,
-    setNextSearch,
-    toggleFilterExpanded,
-    updatedFilter,
+    setSearch,
   };
 };
 

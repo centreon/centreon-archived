@@ -140,6 +140,21 @@ class Assertion
     }
 
     /**
+     * Assert that a date is smaller as a given limit.
+     *
+     * @param \DateTime $value
+     * @param \DateTime $maxDate
+     * @param string|null $propertyPath
+     * @throws AssertionException
+     */
+    public static function maxDate(\DateTime $value, \DateTime $maxDate, string $propertyPath = null): void
+    {
+        if ($value->getTimestamp() > $maxDate->getTimestamp()) {
+            throw AssertionException::maxDate($value, $maxDate, $propertyPath);
+        }
+    }
+
+    /**
      * Determines if the value is greater or equal than given limit.
      *
      * @param int $value Value to test

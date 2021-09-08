@@ -113,6 +113,46 @@ if (
             array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"])
         );
 
+        // saving session token in security_token
+        $expirationSessionDelay = 120;
+        $delayStatement = $pearDB->prepare("SELECT value FROM options WHERE `key` = 'session_expire'");
+        $delayStatement->execute();
+        if (($result = $delayStatement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $expirationSessionDelay = $result['value'];
+        }
+        $securityTokenStatement = $pearDB->prepare(
+            "INSERT INTO security_token (`token`, `creation_date`, `expiration_date`) " .
+            "VALUES (:token, :createdAt, :expireAt)"
+        );
+        $securityTokenStatement->bindValue(":token", session_id(), \PDO::PARAM_STR);
+        $securityTokenStatement->bindValue(':createdAt', (new \DateTime())->getTimestamp(), \PDO::PARAM_INT);
+        $securityTokenStatement->bindValue(
+            ':expireAt',
+            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M'))->getTimestamp(),
+            \PDO::PARAM_INT
+        );
+        $securityTokenStatement->execute();
+
+        //saving session in security_authentication_tokens
+        $providerTokenId = (int) $pearDB->lastInsertId();
+
+        $configurationStatement = $pearDB->query("SELECT id from provider_configuration WHERE name='local'");
+        if (($result = $configurationStatement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $configurationId = (int) $result['id'];
+        } else {
+            throw new \Exception('No local provider found');
+        }
+        $securityAuthenticationTokenStatement = $pearDB->prepare(
+            "INSERT INTO security_authentication_tokens " .
+            "(`token`, `provider_token_id`, `provider_configuration_id`, `user_id`) VALUES " .
+            "(:token, :providerTokenId, :providerConfigurationId, :userId)"
+        );
+        $securityAuthenticationTokenStatement->bindValue(':token', session_id(), \PDO::PARAM_STR);
+        $securityAuthenticationTokenStatement->bindValue(':providerTokenId', $providerTokenId, \PDO::PARAM_INT);
+        $securityAuthenticationTokenStatement->bindValue(':providerConfigurationId', $configurationId, \PDO::PARAM_INT);
+        $securityAuthenticationTokenStatement->bindValue(':userId', $centreon->user->user_id, \PDO::PARAM_INT);
+        $securityAuthenticationTokenStatement->execute();
+
         if (!isset($_POST["submit"])) {
             $headerRedirection = "./main.php";
             if (!empty($_GET["p"])) {

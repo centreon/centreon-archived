@@ -35,20 +35,22 @@ const useMetricsValue = (isInViewPort?: boolean): MetricsValueState => {
   );
   const { format } = useLocaleDateTimeFormat();
 
-  const formatDate = () =>
+  const formatDate = (): string =>
     format({
       date: new Date(metricsValue?.timeValue.timeTick || 0),
       formatString: dateTimeFormat,
     });
 
-  const changeMetricsValue = ({ newMetricsValue }) => {
+  const changeMetricsValue = ({ newMetricsValue }): void => {
     if (not(isInViewPort)) {
       return;
     }
     setMetricsValue(newMetricsValue);
   };
 
-  const getFormattedMetricData = (metric: string) => {
+  const getFormattedMetricData = (
+    metric: string,
+  ): FormattedMetricData | null => {
     if (isNil(metricsValue)) {
       return null;
     }

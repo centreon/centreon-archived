@@ -5,7 +5,7 @@ import * as actions from '../actions/navigationActions';
 // by default, no one menu entry is allowed
 const initialState = {
   fetched: false,
-  items: [],
+  items: undefined,
 };
 
 const navigationReducer = (state = initialState, action) => {
@@ -23,6 +23,7 @@ const navigationReducer = (state = initialState, action) => {
         href: window.location.href,
       });
       window.dispatchEvent(event);
+
       return state;
     default:
       return state;

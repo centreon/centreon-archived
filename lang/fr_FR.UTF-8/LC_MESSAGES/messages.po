@@ -984,7 +984,7 @@ msgstr "Au"
 msgid ""
 "The form has not been submitted since 15 minutes. Please retry to resubmit"
 msgstr ""
-"Le formulaire n'a pas été enovyé depuis 15 minutes. Essayer de renvoyer "
+"Le formulaire n'a pas été envoyé depuis 15 minutes. Essayer de renvoyer "
 "celui-ci"
 
 #: centreon-web/www/lib/HTML/QuickForm.php:2078
@@ -15986,6 +15986,9 @@ msgstr "Afficher les évènements"
 msgid "Export to png"
 msgstr "Exporter comme png"
 
+#  msgid "Go to performance page"
+#  msgstr "Aller à la page de performance"
+
 msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
 msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas comporter plus de %d caractères mais n'en comporte que %d"
 
@@ -16145,6 +16148,39 @@ msgstr "Au moins une colonne doit être sélectionnée"
 msgid "The duration must be lesser than a year"
 msgstr "La durée doit être inférieure à une année"
 
+msgid "Authentication failed"
+msgstr "Authentification échouée"
+
+msgid "User cannot be logout"
+msgstr "L'utilisateur ne peut pas être déconnecté"
+
+msgid "User cannot be retrieved from the identity provider"
+msgstr "L'utilisateur ne peut pas être retrouvé depuis le fournisseur d'identification"
+
+msgid "Cannot create user"
+msgstr "Impossible de créer l'utilisateur"
+
+msgid "Error while deleting expired token"
+msgstr "Erreur lors de la suppression du jeton expiré"
+
+msgid "Error while adding authentication token"
+msgstr "Erreur lors de l'ajout du jeton d'authentification"
+
+msgid "Error while deleting session"
+msgstr "Erreur lors de la suppression de la session"
+
+msgid "Error while searching authentication tokens"
+msgstr "Erreur lors de la recherche des jetons d'authentification"
+
+msgid "Error while updating authentication tokens"
+msgstr "Erreur lors de la mise à jour des jetons d'authentification"
+
+msgid "Error while searching identity providers configurations"
+msgstr "Erreur lors de la recherche des configurations de fournisseurs d'identification"
+
+msgid "Unable to start Centreon legacy session"
+msgstr "Impossible de démarrer la session Centreon legacy"
+
 msgid "As displayed"
 msgstr "Comme affiché"
 
@@ -16159,3 +16195,33 @@ msgstr "Petite Taille"
 
 msgid "Action not permitted"
 msgstr "Action non autorisée"
+
+msgid "Missing mandatory parameter: '%s'"
+msgstr "Paramètre obligatoire manquant: '%s'"
+
+msgid "Error while searching provider configuration: '%s'"
+msgstr "Erreur pendant la recherche de configuration du fournisseur d'identification: '%s'"
+
+msgid "Please choose a date before %d"
+msgstr "Veuillez choisir une date avant %d"
+
+msgid "Year must be less than %d (%s)"
+msgstr "L'année doit être inférieure à %d (%s)"
+
+msgid "[%s] The date \"%s\" was expected to be at most %s"
+msgstr "[%s] La date \"%s\" devait être au maximum au %s"
+
+msgid "Scroll to top"
+msgstr "Défiler vers le haut"
+
+msgid "This week"
+msgstr "Cette semaine"
+
+msgid "Before last year"
+msgstr "Avant l'année dernière"
+
+msgid "Search options"
+msgstr "Options de recherche"
+
+msgid "The parameter \"%s\" must be an integer"
+msgstr "Le paramètre \"%s\" doit être un entier"

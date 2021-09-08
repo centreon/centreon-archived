@@ -7,12 +7,15 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
 def serie = '21.10'
 def maintenanceBranch = "${serie}.x"
+def qaBranch = "dev-${serie}.x"
 env.REF_BRANCH = 'master'
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
 } else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
   env.BUILD = 'REFERENCE'
+} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch)) {
+  env.BUILD = 'QA'
 } else {
   env.BUILD = 'CI'
 }
@@ -71,7 +74,7 @@ def acceptanceTag = ""
 ** Functions
 */
 def isStableBuild() {
-  return ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE'))
+  return ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE') || (env.BUILD == 'QA'))
 }
 
 def hasChanges(patterns) {
@@ -145,9 +148,10 @@ stage('Source') {
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
     stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
+    stash name: 'cypress-node-modules', includes: "cypress-node-modules.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'node_modules', includes: 'node_modules.tar.gz'
-    stash name: 'api-doc', includes: 'centreon-api-v2.html'
+    stash name: 'api-doc', includes: 'centreon-api-v21.10.html'
     publishHTML([
       allowMissing: false,
       keepAll: true,
@@ -163,14 +167,21 @@ stage('Source') {
       returnStdout: true
     ).split()
 
+    // get tests E2E feature files
+    e2eFeatureFiles = sh(
+      script: 'find centreon-web/tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
+      returnStdout: true
+    ).split()
+
     // get feature files
     def grepAcceptanceFiles = ""
     if (!hasBackendChanges && hasFrontendChanges) {
       acceptanceTag = "@reactjs"
       grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \\;"
     }
+    //FIXME : reintegrate ldap features after fixing them
     featureFiles = sh(
-      script: "find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
+      script: "rm centreon-web/features/Ldap*.feature && find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
       returnStdout: true
     ).split()
   }
@@ -228,8 +239,6 @@ try {
 
   stage('Quality gate') {
     node {
-      discoverGitReferenceBuild()
-
       if (hasBackendChanges) {
         unstash 'ut-be.xml'
         unstash 'coverage-be.xml'
@@ -264,12 +273,14 @@ try {
 
       if (hasBackendChanges) {
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
           trendChartType: 'NONE'
         )
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
@@ -279,6 +290,7 @@ try {
 
       if (hasFrontendChanges) {
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           failOnError: true,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
@@ -287,7 +299,6 @@ try {
         )
       }
       // sonarQube step to get qualityGate result
-      sleep 120
       def qualityGate = waitForQualityGate()
       if (qualityGate.status != 'OK') {
         error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
@@ -368,35 +379,60 @@ try {
     }
   }
 
-  stage('Acceptance tests') {
-    if (hasBackendChanges || hasFrontendChanges) {
-      def parallelSteps = [:]
-      for (x in featureFiles) {
-        def feature = x
-        parallelSteps[feature] = {
-          node {
-            checkoutCentreonBuild(buildBranch)
-            unstash 'tar-sources'
-            unstash 'vendor'
-            def acceptanceStatus = sh(
-              script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
-              returnStatus: true
-            )
-            junit 'xunit-reports/**/*.xml'
-            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-              currentBuild.result = 'FAILURE'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+  stage('E2E tests') {
+    def parallelSteps = [:]
+    for (x in e2eFeatureFiles) {
+      def feature = x
+      parallelSteps[feature] = {
+        node {
+          checkoutCentreonBuild(buildBranch)
+          unstash 'tar-sources'
+          unstash 'cypress-node-modules'
+          timeout(time: 10, unit: 'MINUTES') {
+          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
+          junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
+          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+            currentBuild.result = 'FAILURE'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
           }
         }
       }
-      parallel parallelSteps
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Critical tests stage failure.');
-      }
+    }
+    parallel parallelSteps
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('E2E tests stage failure.');
     }
   }
-
+  
   if (isStableBuild()) {
+    stage('Acceptance tests') {
+      if (hasBackendChanges || hasFrontendChanges) {
+        def parallelSteps = [:]
+        for (x in featureFiles) {
+          def feature = x
+          parallelSteps[feature] = {
+            node {
+              checkoutCentreonBuild(buildBranch)
+              unstash 'tar-sources'
+              unstash 'vendor'
+              def acceptanceStatus = sh(
+                script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
+                returnStatus: true
+              )
+              junit 'xunit-reports/**/*.xml'
+              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+                currentBuild.result = 'FAILURE'
+              archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+            }
+          }
+        }
+        parallel parallelSteps
+        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+          error('Critical tests stage failure.');
+        }
+      }
+    }
+
     stage('Delivery') {
       node {
         checkoutCentreonBuild(buildBranch)
@@ -409,7 +445,7 @@ try {
       }
     }
 
-    if (env.BUILD == 'REFERENCE') {
+    if (env.BUILD == 'REFERENCE' || env.BUILD == 'QA') {
       build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
       build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
       build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil, path, pathOr } from 'ramda';
+import { isNil, pathOr } from 'ramda';
 
 import GraphIcon from '@material-ui/icons/BarChart';
 import ListIcon from '@material-ui/icons/List';
@@ -18,10 +18,10 @@ import { listResources } from '../../../Listing/api';
 import { Resource } from '../../../models';
 import InfiniteScroll from '../../InfiniteScroll';
 import memoizeComponent from '../../../memoizedComponent';
-import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import { GraphOptions } from '../../models';
 import useGraphOptions, {
+  defaultGraphOptions,
   GraphOptionsContext,
 } from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
 
@@ -48,37 +48,6 @@ const ServicesTabContent = ({
   );
 
   const [canDisplayGraphs, setCanDisplayGraphs] = React.useState(false);
-
-  const {
-    selectedTimePeriod,
-    changeSelectedTimePeriod,
-    periodQueryParameters,
-    getIntervalDates,
-    customTimePeriod,
-    changeCustomTimePeriod,
-    adjustTimePeriod,
-    resourceDetailsUpdated,
-  } = useTimePeriod({
-    defaultGraphOptions: path(
-      ['services', 'graphTimePeriod', 'graphOptions'],
-      tabParameters,
-    ),
-    defaultSelectedCustomTimePeriod: path(
-      ['services', 'graphTimePeriod', 'selectedCustomTimePeriod'],
-      tabParameters,
-    ),
-    defaultSelectedTimePeriodId: path(
-      ['services', 'graphTimePeriod', 'selectedTimePeriodId'],
-      tabParameters,
-    ),
-    details,
-    onTimePeriodChange: (graphTimePeriod) => {
-      setServicesTabParameters({
-        graphMode,
-        graphTimePeriod,
-      });
-    },
-  });
 
   const { sendRequest, sending } = useRequest({
     request: listResources,
@@ -117,27 +86,27 @@ const ServicesTabContent = ({
 
     setServicesTabParameters({
       graphMode: mode,
-      graphTimePeriod: pathOr(
-        {},
-        ['services', 'graphTimePeriod'],
+      options: pathOr(
+        defaultGraphOptions,
+        ['services', 'options'],
         tabParameters,
       ),
     });
   };
 
-  const changeTabGraphOptions = (graphOptions: GraphOptions) => {
+  const changeTabGraphOptions = (graphOptions: GraphOptions): void => {
     setServicesTabParameters({
       graphMode: tabParameters.services?.graphMode || false,
-      graphTimePeriod: {
-        ...tabParameters.services?.graphTimePeriod,
-        graphOptions,
+      options: {
+        ...tabParameters.services?.options,
+        ...graphOptions,
       },
     });
   };
 
   const graphOptions = useGraphOptions({
     changeTabGraphOptions,
-    graphTabParameters: tabParameters.services?.graphTimePeriod,
+    options: tabParameters.services?.options,
   });
 
   React.useEffect(() => {
@@ -151,61 +120,47 @@ const ServicesTabContent = ({
   const loading = isNil(details) || sending;
 
   return (
-    <>
-      <IconButton
-        ariaLabel={t(labelSwitch)}
-        disabled={loading}
-        title={t(labelSwitch)}
-        onClick={switchMode}
+    <GraphOptionsContext.Provider value={graphOptions}>
+      <InfiniteScroll<Resource>
+        details={details}
+        filter={
+          graphMode ? <TimePeriodButtonGroup disabled={loading} /> : undefined
+        }
+        header={
+          <IconButton
+            ariaLabel={t(labelSwitch)}
+            disabled={loading}
+            title={t(labelSwitch)}
+            onClick={switchMode}
+          >
+            {switchIcon}
+          </IconButton>
+        }
+        limit={limit}
+        loading={sending}
+        loadingSkeleton={<LoadingSkeleton />}
+        preventReloadWhen={details?.type !== 'host'}
+        reloadDependencies={[graphMode]}
+        sendListingRequest={sendListingRequest}
       >
-        {switchIcon}
-      </IconButton>
-      <GraphOptionsContext.Provider value={graphOptions}>
-        <InfiniteScroll<Resource>
-          details={details}
-          filter={
-            graphMode ? (
-              <TimePeriodButtonGroup
-                changeCustomTimePeriod={changeCustomTimePeriod}
-                customTimePeriod={customTimePeriod}
-                disabled={loading}
-                selectedTimePeriodId={selectedTimePeriod?.id}
-                onChange={changeSelectedTimePeriod}
-              />
-            ) : undefined
-          }
-          limit={limit}
-          loading={sending}
-          loadingSkeleton={<LoadingSkeleton />}
-          preventReloadWhen={details?.type !== 'host'}
-          reloadDependencies={[graphMode]}
-          sendListingRequest={sendListingRequest}
-        >
-          {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
-            const displayGraphs = graphMode && canDisplayGraphs;
+        {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
+          const displayGraphs = graphMode && canDisplayGraphs;
 
-            return displayGraphs ? (
-              <ServiceGraphs
-                adjustTimePeriod={adjustTimePeriod}
-                customTimePeriod={customTimePeriod}
-                getIntervalDates={getIntervalDates}
-                infiniteScrollTriggerRef={infiniteScrollTriggerRef}
-                periodQueryParameters={periodQueryParameters}
-                resourceDetailsUpdated={resourceDetailsUpdated}
-                selectedTimePeriod={selectedTimePeriod}
-                services={entities}
-              />
-            ) : (
-              <ServiceList
-                infiniteScrollTriggerRef={infiniteScrollTriggerRef}
-                services={entities}
-                onSelectService={selectResource}
-              />
-            );
-          }}
-        </InfiniteScroll>
-      </GraphOptionsContext.Provider>
-    </>
+          return displayGraphs ? (
+            <ServiceGraphs
+              infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+              services={entities}
+            />
+          ) : (
+            <ServiceList
+              infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+              services={entities}
+              onSelectService={selectResource}
+            />
+          );
+        }}
+      </InfiniteScroll>
+    </GraphOptionsContext.Provider>
   );
 };
 

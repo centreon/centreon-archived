@@ -1,10 +1,10 @@
 import * as React from 'react';
 
 import { difference, min, max, isNil } from 'ramda';
-import { scaleLinear } from '@visx/visx';
+import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
-import { fade } from '@material-ui/core';
+import { alpha } from '@material-ui/core';
 
 import { Line, TimeValue } from '../models';
 import {
@@ -53,7 +53,7 @@ const getStackedYScale = ({
   const minRange = min(getMin(leftScale.range()), getMin(rightScale.range()));
   const maxRange = max(getMax(leftScale.range()), getMax(rightScale.range()));
 
-  return scaleLinear<number>({
+  return Scale.scaleLinear<number>({
     domain: [minDomain, maxDomain],
     nice: true,
     range: [maxRange, minRange],
@@ -69,7 +69,7 @@ export const getFillColor = ({
   transparency,
   areaColor,
 }: FillColor): string | undefined =>
-  transparency ? fade(areaColor, 1 - transparency * 0.01) : undefined;
+  transparency ? alpha(areaColor, 1 - transparency * 0.01) : undefined;
 
 const Lines = ({
   xScale,

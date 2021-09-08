@@ -291,9 +291,9 @@ if ($period_start != 'undefined' && $period_end != 'undefined') {
     $endTime = date('H:i', $period_end);
     $form->setDefaults(
         array(
-            'alternativeDateEndDate' => $startDay,
+            'alternativeDateStartDate' => $startDay,
             'StartTime' => $startTime,
-            'alternativeDateStartDate' => $endDay,
+            'alternativeDateEndDate' => $endDay,
             'EndTime' => $endTime
         )
     );

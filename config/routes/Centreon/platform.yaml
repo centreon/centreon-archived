@@ -2,18 +2,19 @@ centreon_application_platform_getversion:
   methods: GET
   path: /platform/versions
   controller: 'Centreon\Application\Controller\PlatformController::getVersions'
+  condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_platformtopology_addplatformtotopology:
   methods: POST
   path: /platform/topology
   controller: 'Centreon\Application\Controller\PlatformTopologyController::addPlatformToTopology'
-  condition: "request.attributes.get('version') >= 2.0"
+  condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_platformtopology_getcompleteplatformtopology:
   methods: GET
   path: /platform/topology
   controller: 'Centreon\Application\Controller\PlatformTopologyController::getPlatformJsonGraph'
-  condition: "request.attributes.get('version') >= 2.0"
+  condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_platformtopology_deleteplatform:
   methods: DELETE
@@ -21,10 +22,10 @@ centreon_application_platformtopology_deleteplatform:
   requirements:
     serverId: '\d+'
   controller: 'Centreon\Application\Controller\PlatformTopologyController::deletePlatform'
-  condition: "request.attributes.get('version') >= 2.0"
+  condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_platform_updateplatform:
   methods: PATCH
   path: /platform
   controller: 'Centreon\Application\Controller\PlatformController::updatePlatform'
-  condition: "request.attributes.get('version') >= 2.0"
+  condition: "request.attributes.get('version') >= 21.10"

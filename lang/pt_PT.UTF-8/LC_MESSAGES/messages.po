@@ -15084,6 +15084,9 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Export to png"
 #  msgstr ""
 
+#  msgid "Go to performance page"
+#  msgstr ""
+
 #  msgid "Parent"
 #  msgstr ""
 
@@ -15160,4 +15163,16 @@ msgstr "Erro ao remover tokens de um contato"
 # msgstr ""
 
 # msgid "Action not permitted"
+# msgstr ""
+
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
+# msgid "Search options"
 # msgstr ""

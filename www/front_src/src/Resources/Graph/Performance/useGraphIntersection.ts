@@ -29,7 +29,7 @@ export const useIntersection = (): GraphIntersectionState => {
       observer.current.observe(element);
     }
 
-    return () => {
+    return (): void => {
       observer.current?.disconnect();
     };
   }, [element]);
