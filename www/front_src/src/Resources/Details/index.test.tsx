@@ -54,7 +54,6 @@ import {
   labelAlias,
   labelGroups,
   labelAcknowledgement,
-  labelSwitchToGraph,
   labelDowntime,
   labelDisplayEvents,
   labelForward,
@@ -610,7 +609,15 @@ describe(Details, () => {
     async (period, startIsoString, timelineEventsLimit, periodId) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
-        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
+
+      if (!isNil(periodId)) {
+        mockedAxios.get.mockResolvedValueOnce({
+          data: retrievedPerformanceGraphData,
+        });
+      }
+
+      mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedTimeline })
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline });
@@ -621,6 +628,10 @@ describe(Details, () => {
 
       act(() => {
         setSelectedServiceResource();
+      });
+
+      await waitFor(() => {
+        expect(getByText(period) as HTMLElement).toBeEnabled();
       });
 
       userEvent.click(getByText(period) as HTMLElement);
@@ -736,10 +747,9 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText, getAllByLabelText, baseElement, debug, getByLabelText } =
-      renderDetails({
-        openTabId: timelineTabId,
-      });
+    const { getByText, getAllByLabelText, baseElement } = renderDetails({
+      openTabId: timelineTabId,
+    });
 
     act(() => {
       setSelectedServiceResource();
@@ -774,8 +784,6 @@ describe(Details, () => {
         expect.anything(),
       ),
     );
-
-    debug(getByLabelText('test'), 100000);
 
     expect(getByText(labelToday)).toBeInTheDocument();
 
@@ -979,7 +987,6 @@ describe(Details, () => {
 
     act(() => {
       context.setServicesTabParameters({
-        graphMode: true,
         options: defaultGraphOptions,
       });
     });
@@ -1011,7 +1018,6 @@ describe(Details, () => {
             },
           },
           services: {
-            graphMode: true,
             options: {
               displayEvents: {
                 id: 'displayEvents',
@@ -1135,13 +1141,12 @@ describe(Details, () => {
 
     act(() => {
       context.setServicesTabParameters({
-        graphMode: false,
         options: defaultGraphOptions,
       });
     });
   });
 
-  it('displays the linked service graphs when the service tab of a host is clicked and the graph mode is activated', async () => {
+  it('displays the linked service graphs when the Graph tab of a host is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -1153,17 +1158,14 @@ describe(Details, () => {
         data: retrievedServices,
       })
       .mockResolvedValueOnce({
-        data: retrievedServices,
-      })
-      .mockResolvedValueOnce({
         data: retrievedPerformanceGraphData,
       })
       .mockResolvedValueOnce({
         data: retrievedPerformanceGraphData,
       });
 
-    const { getByLabelText, findByText, getByText } = renderDetails({
-      openTabId: servicesTabId,
+    const { findByText, getByText } = renderDetails({
+      openTabId: graphTabId,
     });
 
     act(() => {
@@ -1174,13 +1176,7 @@ describe(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(2);
     });
 
-    fireEvent.click(
-      getByLabelText(labelSwitchToGraph).firstElementChild as HTMLElement,
-    );
-
     await findByText(retrievedPerformanceGraphData.global.title);
-
-    expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
     userEvent.click(getByText(label7Days).parentElement as HTMLElement);
 

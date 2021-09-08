@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, find, propEq, invertObj, path } from 'ramda';
+import { isNil, find, propEq, invertObj, path, equals } from 'ramda';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -56,6 +56,10 @@ const tabs: Array<Tab> = [
     getIsActive: (details: ResourceDetails): boolean => {
       if (isNil(details)) {
         return false;
+      }
+
+      if (equals(details.type, 'host')) {
+        return true;
       }
 
       return !isNil(path(['links', 'endpoints', 'performance_graph'], details));
