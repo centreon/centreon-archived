@@ -1877,7 +1877,7 @@ CREATE TABLE `servicegroup_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `session` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `session_id` varchar(256) DEFAULT NULL,
+  `session_id` varchar(255) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `current_page` int(11) DEFAULT NULL,
   `last_reload` bigint UNSIGNED DEFAULT NULL,

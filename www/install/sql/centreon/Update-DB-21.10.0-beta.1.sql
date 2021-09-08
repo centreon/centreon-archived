@@ -17,6 +17,10 @@ CREATE TABLE `provider_configuration` (
 INSERT INTO `provider_configuration` (type, name, is_active, is_forced)
 VALUES ('local', 'local', true, true);
 
+ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED,
+MODIFY `session_id` VARCHAR(255),
+ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE;
+
 CREATE TABLE `security_token` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `token` varchar(255) NOT NULL,
@@ -25,7 +29,8 @@ CREATE TABLE `security_token` (
   PRIMARY KEY (`id`),
   INDEX `token_index` (`token`),
   INDEX `expiration_index` (`expiration_date`),
-  UNIQUE KEY `unique_token` (`token`)
+  UNIQUE KEY `unique_token` (`token`),
+  CONSTRAINT `security_token_ibfk_1` FOREIGN KEY (`token`) REFERENCES `session` (`session_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (
@@ -49,5 +54,3 @@ CREATE TABLE `security_authentication_tokens` (
   CONSTRAINT `security_authentication_tokens_user_id_fk` FOREIGN KEY (`user_id`)
   REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED
