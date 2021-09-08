@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Bar } from '@visx/visx';
+import { Shape } from '@visx/visx';
 import { equals, negate } from 'ramda';
 
 import { alpha, makeStyles, useTheme } from '@material-ui/core';
@@ -36,7 +36,7 @@ const TimeShiftZone = ({
 
   return useMemoComponent({
     Component: (
-      <Bar
+      <Shape.Bar
         className={classes.translationZone}
         fill={
           equals(directionHovered, direction)
