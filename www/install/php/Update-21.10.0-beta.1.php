@@ -18,3 +18,35 @@
  * For more information : contact@centreon.com
  *
  */
+
+include_once __DIR__ . "/../../class/centreonLog.class.php";
+$centreonLog = new CentreonLog();
+
+//error specific content
+$versionOfTheUpgrade = 'UPGRADE - 21.04.2: ';
+
+$pearDB = new CentreonDB('centreon', 3, false);
+
+/**
+ * Query with transaction
+ */
+try {
+    $pearDB->beginTransaction();
+
+    if (!$pearDB->isColumnExist('contact', 'contact_platform_data_sending')) {
+        $pearDB->query(
+            "ALTER TABLE `contact` ADD COLUMN `contact_platform_data_sending` ENUM('0', '1', '2')"
+        );
+    }
+
+} catch (\Exception $e) {
+    $pearDB->rollBack();
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
