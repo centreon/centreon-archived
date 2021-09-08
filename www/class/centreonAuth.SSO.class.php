@@ -109,14 +109,41 @@ class CentreonAuthSSO extends CentreonAuth
 
             # Build endpoint urls
             $baseUrl = rtrim($this->ssoOptions['openid_connect_base_url'], "/");
-            $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
-            $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
-            $introspectionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
-            if (!empty($this->ssoOptions['openid_connect_userinfo_endpoint'])) {
-                $userInfoEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
+
+            if (filter_var($this->ssoOptions['openid_connect_authorization_endpoint'], FILTER_VALIDATE_URL)) {
+                $authEndpoint = rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
+            } else {
+                $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
             }
+
+            if (filter_var($this->ssoOptions['openid_connect_token_endpoint'], FILTER_VALIDATE_URL)) {
+                $tokenEndpoint = rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
+            } else {
+                $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
+            }
+
+            if (filter_var($this->ssoOptions['openid_connect_introspection_endpoint'], FILTER_VALIDATE_URL)) {
+                $introspectionEndpoint = rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
+            } else {
+                $introspectionEndpoint = $baseUrl
+                    . rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
+            }
+
+            if (!empty($this->ssoOptions['openid_connect_userinfo_endpoint'])) {
+                if (filter_var($this->ssoOptions['openid_connect_userinfo_endpoint'], FILTER_VALIDATE_URL)) {
+                    $userInfoEndpoint = rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
+                } else {
+                    $userInfoEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
+                }
+            }
+
             if (!empty($this->ssoOptions['openid_connect_end_session_endpoint'])) {
-                $endSessionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
+                if (filter_var($this->ssoOptions['openid_connect_end_session_endpoint'], FILTER_VALIDATE_URL)) {
+                    $endSessionEndpoint = rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
+                } else {
+                    $endSessionEndpoint = $baseUrl
+                        . rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
+                }
             }
             $redirect = urlencode($redirectNoEncode);
             $authUrl = $authEndpoint . "?client_id=" . $clientId . "&response_type=code&redirect_uri=" . $redirect;
