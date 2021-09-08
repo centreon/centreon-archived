@@ -110,6 +110,7 @@ const AppProvider = (): JSX.Element | null => {
         ]) => {
           setUser({
             alias: retrievedUser.alias,
+            isExportButtonEnabled: retrievedUser.isExportButtonEnabled,
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
             timezone: retrievedUser.timezone,
