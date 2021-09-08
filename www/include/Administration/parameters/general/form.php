@@ -50,6 +50,7 @@ $transcoKey = array(
     "display_autologin_shortcut" => "yes",
     "sso_enable" => "yes",
     "openid_connect_enable" => "yes",
+    "openid_connect_client_basic_auth" => "yes",
     "openid_connect_verify_peer" => "yes",
     "enable_gmt" => "yes",
     "strict_hostParent_poller_management" => "yes",
@@ -303,6 +304,14 @@ $form->addElement(
     'openid_connect_client_secret',
     _('Client Secret'),
     array('size' => 50, 'autocomplete' => 'off')
+);
+
+$openIdConnectClientBasicAuth[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
+$form->addGroup(
+    $openIdConnectClientBasicAuth,
+    'openid_connect_client_basic_auth',
+    _("Use Basic Auth for Token Endpoint Authentication"),
+    '&nbsp;&nbsp;'
 );
 
 $openIdConnectVerifyPeer[] = $form->createElement(
