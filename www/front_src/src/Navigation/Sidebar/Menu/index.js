@@ -169,10 +169,7 @@ class NavigationMenu extends Component {
                 style={{ width: '100%' }}
               >
                 <StyledLink
-                  className={clsx(
-                    // styles.iconmoon,
-                    styles[`icon-${firstLevel.icon}`],
-                  )}
+                  className={clsx(styles[`icon-${firstLevel.icon}`])}
                   component={RouterLink}
                   to={this.getUrlFromEntry(firstLevel)}
                   onClick={(e) => {
@@ -215,13 +212,10 @@ class NavigationMenu extends Component {
                         hoveredFirstLevel: firstLevel.label,
                       })
                     }
-                    // className={classes.menuItem}
                   >
                     <MenuIcon
-                      // className={clsx(styles['menu-item-link'])}
                       className={classes.icon}
                       color="primary"
-                      // fontSize="large"
                       style={{
                         color: isFirstLevelHighlited
                           ? '#FFFFFF'
@@ -325,13 +319,14 @@ class NavigationMenu extends Component {
                                   key={`thirdLevelFragment-${group.label}`}
                                 >
                                   {secondLevel.groups.length > 1 ? (
-                                    <span
+                                    <Typography
                                       className={clsx(
                                         styles['collapsed-level-title'],
                                       )}
+                                      variant="body1"
                                     >
-                                      <span>{group.label}</span>
-                                    </span>
+                                      {group.label}
+                                    </Typography>
                                   ) : null}
                                   {group.children.map((thirdLevel) => {
                                     const thirdLevelIsActive =

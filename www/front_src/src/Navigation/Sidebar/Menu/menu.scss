@@ -18,7 +18,6 @@
       cursor: pointer;
     }
     &-name {
-      font-family: $primary-font-regular;
       font-size: 0.84rem;
       vertical-align: middle;
       position: absolute;
@@ -264,7 +263,6 @@
           text-align: left;
           font-size: 0.7rem;
           color: $centreon-graphit;
-          font-family: $primary-font-regular;
           padding: 11px 10px 11px 28px;
           display: block;
           letter-spacing: -0.4px;
@@ -291,7 +289,6 @@
           }
         }
         > .collapsed-item-level-link {
-          // background-image: url("../../img/icons/aside-menu-arrows.png");
           background-repeat: no-repeat;
           background-position: 12px 9px;
           background-color: $grey-classic;
@@ -363,7 +360,6 @@
             text-align: left;
             font-size: .7rem;
             color: #242f3b;
-            font-family: $primary-font-regular;
             padding: 11px 10px 11px 28px;
             display: block;
             letter-spacing: -.4px;
@@ -409,29 +405,13 @@
           position: relative;
           margin: 0;
           text-align: center;
-          &:before {
-            content: " ";
-            height: 1px;
-            width: 100%;
-            background-color: #009fdf;
-            position: absolute;
-            display: block;
-            top: 10px;
-            left: 0;
-            right: 0;
-          }
-          span {
-            font-family: $primary-font-regular;
-            color: #009fdf;
-            background: $white-color;
-            font-variant: all-petite-caps;
-            font-size: .7rem;
-            position: relative;
-            line-height: 15px;
-            max-width: 115px;
-            display: inline-block;
-            padding: 0 3px 3px;
-          }
+          color: #009fdf;
+          background: $white-color;
+          font-variant: all-petite-caps;
+          font-size: .72rem;
+          position: relative;
+          line-height: 15px;
+          display: inline-block;
         }
       }
     }
@@ -442,12 +422,7 @@
     }
   }
   &-big {
-    .menu-item {
-      // display: flex;
-      // flex-direction: row;
-      // align-items: center;
-      // width: 100%;
-      
+    .menu-item {      
       &.active {
         .collapsed {
           &-items {
@@ -481,7 +456,6 @@
         > .collapsed-item-level-link {
           color: #242f3b;
           background-color: #f6f6f6;
-          // background-image: url("../../img/icons/aside-menu-arrows.png");
           background-repeat: no-repeat;
           background-position: 10px -93px;
           &:hover {
