@@ -1894,7 +1894,8 @@ CREATE TABLE `session` (
   `update_acl` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`(255)),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -2395,7 +2396,8 @@ CREATE TABLE `security_token` (
   PRIMARY KEY (`id`),
   INDEX `token_index` (`token`),
   INDEX `expiration_index` (`expiration_date`),
-  UNIQUE KEY `unique_token` (`token`)
+  UNIQUE KEY `unique_token` (`token`),
+  CONSTRAINT `security_token_ibfk_1` FOREIGN KEY (`token`) REFERENCES `session` (`session_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (
