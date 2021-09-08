@@ -38,7 +38,6 @@ try {
             "ALTER TABLE `contact` ADD COLUMN `contact_platform_data_sending` ENUM('0', '1', '2')"
         );
     }
-
 } catch (\Exception $e) {
     $pearDB->rollBack();
     $centreonLog->insertLog(
