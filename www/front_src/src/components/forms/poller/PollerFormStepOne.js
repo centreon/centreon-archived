@@ -174,7 +174,7 @@ class PollerFormStepOne extends Component {
               </Button>
             </div>
             {error ? (
-              <Typography style={{ color: '#d0021b' }} variant="body2">
+              <Typography color="error" variant="body2">
                 {error.message}
               </Typography>
             ) : null}
