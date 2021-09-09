@@ -281,7 +281,7 @@ class CentreonDowntime extends CentreonObject
         $p[':start_time'] = $tmp[1];
         $p[':end_time'] = $tmp[2];
         $p[':fixed'] = $tmp[3];
-        $p[':duration'] = $tmp[3] == 0 ? $tmp[4] : '';
+        $p[':duration'] = $tmp[3] == 0 ? $tmp[4] : null;
         $daysOfWeek = explode(',', strtolower($tmp[5]));
         $days = array();
         foreach ($daysOfWeek as $dayOfWeek) {
