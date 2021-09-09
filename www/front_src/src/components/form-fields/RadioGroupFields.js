@@ -11,11 +11,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { Radio, FormControlLabel } from '@material-ui/core';
+import { Radio, FormControlLabel, Typography } from '@material-ui/core';
 
 import styles from '../../styles/partials/form/_form.scss';
-
-import FieldMsg from './FieldMsg';
 
 const getValue = (item) => (item.value ? item.value : item);
 
@@ -43,7 +41,11 @@ const RadioGroupField = ({ options, className, label, meta, ...rest }) => {
   return (
     <div className={styles['form-group']}>
       {renderOptions({ ...rest, meta: { ...restMeta } })}
-      {touched && error ? <FieldMsg>{error}</FieldMsg> : null}
+      {touched && error ? (
+        <Typography style={{ color: '#d0021b' }} variant="body2">
+          {error}
+        </Typography>
+      ) : null}
     </div>
   );
 };

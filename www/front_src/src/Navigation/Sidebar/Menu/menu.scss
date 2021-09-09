@@ -26,66 +26,7 @@
       top: 50%;
       color: #242f3b;
     }
-    .iconmoon {
-      display: block;
-      padding: 7px 12px;
-      background-color: transparent;
-      &:before {
-        font-size: 24px;
-      }
-      &.icon {
-        &-home {
-          &:before {
-            content: "\e904";
-            color: rgba(0, 159, 152, 1);
-          }
-          &:hover:before {
-            content: "\e904";
-            color: $white-color;
-          }
-        }
-        &-monitoring {
-          &:before {
-            content: "\e907";
-            color: rgba(136, 189, 35, 1);
-          }
-          &:hover:before {
-            content: "\e907";
-            color: $white-color;
-          }
-        }
-        &-reporting {
-          &:before {
-            content: "\e909";
-            color: rgba(255, 162, 0, 1);
-          }
-          &:hover:before {
-            content: "\e909";
-            color: $white-color;
-          }
-        }
-        &-configuration {
-          &:before {
-            content: "\e902";
-            color: rgba(0, 159, 233, 1);
-          }
-          &:hover:before {
-            content: "\e902";
-            color: $white-color;
-          }
-        }
-        &-administration {
-          &:before {
-            content: "\e900";
-            color: rgba(43, 45,132, 1);
-          }
-          &:hover:before {
-            content: "\e900";
-            color: $white-color;
-          }
-        }
-      }
-    }
+   
     &.active {
       .menu-item-name {
         color: $white-color;
@@ -263,7 +204,7 @@
           text-align: left;
           font-size: 0.7rem;
           color: $centreon-graphit;
-          padding: 11px 10px 11px 28px;
+          padding: 10px;
           display: block;
           letter-spacing: -0.4px;
           background-color: transparent;

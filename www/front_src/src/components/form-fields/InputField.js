@@ -11,6 +11,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { Typography } from '@material-ui/core';
+
 import styles from '../../styles/partials/form/_form.scss';
 
 import fieldHoc from './hoc';
@@ -33,7 +35,7 @@ const InputField = ({
       })}
     >
       <label>
-        <span>{label}</span>
+        <Typography variant="body1">{label}</Typography>
         <span className={classnames(styles['label-option'], styles.required)}>
           {topRightLabel || null}
         </span>
@@ -46,7 +48,11 @@ const InputField = ({
         type={type}
         {...prepareInputProps(rest)}
       />
-      {error ? <div className={styles['invalid-feedback']}>{error}</div> : null}
+      {error ? (
+        <Typography style={{ color: '#d0021b' }} variant="body2">
+          {error}
+        </Typography>
+      ) : null}
     </div>
   );
 };

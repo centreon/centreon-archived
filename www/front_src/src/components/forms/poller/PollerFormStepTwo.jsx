@@ -11,6 +11,8 @@ import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
 import Select from 'react-select';
 
+import { Paper, Typography, Button } from '@material-ui/core';
+
 import styles from '../../../styles/partials/form/_form.scss';
 import SelectField from '../../form-fields/SelectField';
 import CheckboxField from '../../form-fields/CheckboxField';
@@ -80,14 +82,14 @@ class PollerFormStepTwo extends Component {
     const availableAdditionals = this.getAvailableAdditionals();
 
     return (
-      <div className={styles['form-wrapper']}>
+      <Paper className={styles['form-container']}>
         <div className={styles['form-inner']}>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             {pollers.length ? (
               <>
-                <h2 className={styles['form-title']}>
+                <Typography variant="h6">
                   {t('Attach poller to a master remote server')}
-                </h2>
+                </Typography>
                 <Field
                   component={SelectField}
                   name="linked_remote_master"
@@ -110,9 +112,9 @@ class PollerFormStepTwo extends Component {
             ) : null}
             {selectedMaster && pollers.length >= 2 ? (
               <>
-                <h2 className={styles['form-title']}>
+                <Typography variant="h6">
                   {t('Attach poller to additional remote servers')}
-                </h2>
+                </Typography>
                 <div className={styles['form-item']}>
                   <Field
                     isMulti
@@ -134,16 +136,23 @@ class PollerFormStepTwo extends Component {
               name="open_broker_flow"
             />
             <div className={styles['form-buttons']}>
-              <button className={styles.button} type="submit">
+              <Button
+                color="primary"
+                size="small"
+                type="submit"
+                variant="contained"
+              >
                 {t('Apply')}
-              </button>
+              </Button>
             </div>
             {error ? (
-              <div className={styles['error-block']}>{error.message}</div>
+              <Typography style={{ color: '#d0021b' }} variant="body2">
+                {error.message}
+              </Typography>
             ) : null}
           </form>
         </div>
-      </div>
+      </Paper>
     );
   }
 }

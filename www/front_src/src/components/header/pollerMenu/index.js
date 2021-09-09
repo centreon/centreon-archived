@@ -257,11 +257,11 @@ class PollerMenu extends Component {
 
                     return (
                       <li className={styles['submenu-top-item']} key={key}>
-                        <span className={styles['submenu-top-item-link']}>
-                          {message}
-                          <span className={styles['submenu-top-count']}>
+                        <span className={styles['submenu-item-link']}>
+                          <Typography variant="body2">{message} </Typography>
+                          <Typography variant="body2">
                             {issue.total ? issue.total : '...'}
-                          </span>
+                          </Typography>
                         </span>
                         {Object.entries(issue).map(([elem, values]) => {
                           if (values.poller) {
@@ -275,9 +275,8 @@ class PollerMenu extends Component {
 
                               return (
                                 <span
-                                  className={styles['submenu-top-item-link']}
+                                  className={styles['submenu-item-link']}
                                   key={poller.name}
-                                  style={{ padding: '0px 16px 17px' }}
                                 >
                                   <span
                                     className={classnames(
@@ -285,7 +284,9 @@ class PollerMenu extends Component {
                                       styles[color],
                                     )}
                                   >
-                                    {poller.name}
+                                    <Typography variant="body2">
+                                      {poller.name}
+                                    </Typography>
                                   </span>
                                 </span>
                               );

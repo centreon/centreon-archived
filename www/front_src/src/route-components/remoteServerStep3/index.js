@@ -107,7 +107,7 @@ class RemoteServerStepThreeRoute extends Component {
         <ProgressBar links={links} />
         <WizardFormInstallingStatus
           error={error}
-          formTitle={`${t('Finalizing Setup')}:`}
+          formTitle={`${t('Finalizing Setup')}`}
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
         />
