@@ -8,8 +8,9 @@
 import React, { Component } from 'react';
 
 import { Field, reduxForm as connectForm } from 'redux-form';
-import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
+
+import { Typography } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
 import InputField from '../../form-fields/InputField';
@@ -64,9 +65,9 @@ class RemoteServerFormStepOne extends Component {
       <div className={styles['form-wrapper']}>
         <div className={styles['form-inner']}>
           <div className={styles['form-heading']}>
-            <h2 className={classnames(styles['form-title'], styles['mb-2'])}>
+            <Typography variant="h6">
               {t('Remote Server Configuration')}
-            </h2>
+            </Typography>
           </div>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             <Field
