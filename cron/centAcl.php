@@ -230,7 +230,6 @@ try {
                 }
                 $pearDB->commit();
                 $res1->closeCursor();
-
             } catch (\PDOException $e) {
                 $pearDB->rollBack();
                 $centreonLog->insertLog(

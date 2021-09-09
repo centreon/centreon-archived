@@ -7231,3 +7231,11 @@ msgstr "URL complète permettant d'accéder à l'API du serveur central Centreon
 
 msgid "Allows to skip the SSL certificate check on the Centreon's central server."
 msgstr "Permet de ne pas vérifier le certificat SSL du serveur central Centreon."
+
+msgid ""
+"No: You don't consent to share your platform data. Contact Details: You consent to share your platform data including"
+"your alias and email. Anonymized: You consent to share your platform data, but your alias and email will be anonymized."
+msgstr ""
+"Non: Vous ne consentez pas à partager les informations de votre plateforme. Détails du Contact: Vous consentez"
+"à partager les informations de votre plateforme, y compris votre alias et email. Anonymisé: Vous consentez à partager"
+"les informations de votre plateforme, mais votre alias et votre email seront anonymisés."
