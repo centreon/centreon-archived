@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-prop-types */
+
 import * as React from 'react';
 
 import parse from 'html-react-parser';
@@ -31,7 +33,6 @@ interface DowntimeDetails {
   author_name: string;
   comment: string;
   end_time: Date | string;
-  // eslint-disable-next-line react/no-unused-prop-types
   id: number;
   is_fixed: boolean;
   start_time: Date | string;
@@ -70,7 +71,7 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       width: 150,
     },
     {
-      getContent: ({ end_time }): JSX.Element => (
+      getContent: ({ end_time }: DowntimeDetails): JSX.Element => (
         <span>{toDateTime(end_time)}</span>
       ),
       id: 'end_time',
@@ -82,10 +83,10 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
     {
       className: classes.comment,
 
-      getContent: (details: DowntimeDetails): JSX.Element => {
+      getContent: ({ comment }: DowntimeDetails): JSX.Element => {
         return (
           <span className={classes.comment}>
-            {parse(DOMPurify.sanitize(details.comment))}
+            {parse(DOMPurify.sanitize(comment))}
           </span>
         );
       },

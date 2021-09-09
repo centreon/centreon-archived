@@ -9,6 +9,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 
+import { Typography } from '@material-ui/core';
+
 import { history } from '../../store';
 
 import styles from './progressbar.scss';
@@ -39,7 +41,7 @@ class ProgressBar extends Component {
                         { [styles.prev]: link.prevActive },
                       )}
                     >
-                      {link.number}
+                      <Typography>{link.number}</Typography>
                     </span>
                   </li>
                 ))

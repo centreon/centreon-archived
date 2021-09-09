@@ -16,7 +16,8 @@ import clsx from 'clsx';
 import { Link as RouterLink } from 'react-router-dom';
 
 import Link from '@material-ui/core/Link';
-import { Typography, withStyles, styled, alpha } from '@material-ui/core';
+import { Typography, styled } from '@material-ui/core';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
 
 import BoundingBox from './BoundingBox';
 import styles from './menu.scss';
@@ -101,7 +102,7 @@ class NavigationMenu extends Component {
   };
 
   render() {
-    const { navigationData, sidebarActive, reactRoutes, classes } = this.props;
+    const { navigationData, sidebarActive, reactRoutes } = this.props;
     const {
       activeSecondLevel,
       doubleClickedLevel,
@@ -214,14 +215,13 @@ class NavigationMenu extends Component {
                     }
                   >
                     <MenuIcon
-                      className={classes.icon}
-                      color="primary"
                       style={{
                         color: isFirstLevelHighlited
                           ? '#FFFFFF'
-                          : firstLevel.color,
-
+                          : `#${firstLevel.color}`,
                         fontSize: 28,
+
+                        padding: 4,
                       }}
                     />
                     {sidebarActive && (
@@ -293,9 +293,25 @@ class NavigationMenu extends Component {
                           }
                         }}
                       >
-                        <Typography style={{ fontSize: 11 }}>
-                          {secondLevel.label}
-                        </Typography>
+                        <div
+                          style={{
+                            alignItems: 'center',
+                            display: 'grid',
+                            gridGap: 8,
+                            gridTemplateColumns: '1fr 10fr',
+                            justifyContent: 'flex-start',
+                            width: '100%',
+                          }}
+                        >
+                          {secondLevel.groups.length > 0 ? (
+                            <ArrowForwardIcon style={{ fontSize: 11 }} />
+                          ) : (
+                            <span />
+                          )}
+                          <Typography style={{ fontSize: 11 }}>
+                            {secondLevel.label}
+                          </Typography>
+                        </div>
                       </StyledLink>
                       <BoundingBox active>
                         {({ rectBox }) => {
@@ -385,22 +401,4 @@ class NavigationMenu extends Component {
   }
 }
 
-export default withStyles((theme) => ({
-  active: {
-    background: alpha(theme.palette.primary.main, 0.5),
-  },
-
-  icon: {
-    // color: firstLevel.color,
-    padding: 4,
-  },
-
-  menuItem: {
-    alignItems: 'center',
-    color: '#FFFFFF',
-    display: 'flex',
-    flexDirection: 'row',
-
-    justifyContent: 'center',
-  },
-}))(NavigationMenu);
+export default NavigationMenu;
