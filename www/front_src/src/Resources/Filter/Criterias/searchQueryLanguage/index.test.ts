@@ -1,15 +1,11 @@
-import { concat, pipe, prop } from 'ramda';
+import { concat, pipe, prop, toLower } from 'ramda';
 
-import {
-  selectableResourceTypes,
-  selectableStates,
-  selectableStatuses,
-} from '../models';
+import { selectableResourceTypes, selectableStatuses } from '../models';
 
 import { build, parse, getAutocompleteSuggestions } from './index';
 
 const search =
-  'resource_type:host,service state:unhandled_problems status:OK,UP host_group:53|Linux-Servers monitoring_server:1|Central h.name:centreon';
+  'type:host,service state:unhandled status:ok,up host_group:53|Linux-Servers monitoring_server:1|Central h.name:centreon';
 
 const parsedSearch = [
   {
@@ -82,33 +78,36 @@ describe(getAutocompleteSuggestions, () => {
     },
     {
       cursorPosition: 6,
-      expectedResult: selectableStates.map(prop('id')),
+      expectedResult: ['unhandled', 'acknowledged', 'in_downtime'],
       inputSearch: 'state:',
     },
     {
-      cursorPosition: 14,
+      cursorPosition: 5,
       expectedResult: selectableResourceTypes.map(prop('id')),
-      inputSearch: 'resource_type:',
+      inputSearch: 'type:',
     },
     {
-      cursorPosition: 24,
+      cursorPosition: 15,
       expectedResult: [',acknowledged', ',in_downtime'],
-      inputSearch: 'state:unhandled_problems',
+      inputSearch: 'state:unhandled',
     },
     {
-      cursorPosition: 25,
+      cursorPosition: 16,
       expectedResult: ['acknowledged', 'in_downtime'],
-      inputSearch: 'state:unhandled_problems,',
+      inputSearch: 'state:unhandled,',
     },
     {
-      cursorPosition: 27,
+      cursorPosition: 18,
       expectedResult: ['status:'],
-      inputSearch: 'state:unhandled_problems st',
+      inputSearch: 'state:unhandled st',
     },
     {
-      cursorPosition: 33,
-      expectedResult: selectableStatuses.map(pipe(prop('id')), concat(',')),
-      inputSearch: 'state:unhandled_problems status:',
+      cursorPosition: 23,
+      expectedResult: selectableStatuses.map(
+        pipe(prop('id'), toLower),
+        concat(','),
+      ),
+      inputSearch: 'state:unhandled status:',
     },
     {
       cursorPosition: 14,
