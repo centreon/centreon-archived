@@ -21,10 +21,10 @@ import {
   ExtensionDeletePopup,
 } from '@centreon/ui';
 
-import Hook from '../../../../components/Hook';
-import axios from '../../../../axios';
-import { fetchNavigationData } from '../../../../redux/actions/navigationActions';
-import { fetchExternalComponents } from '../../../../redux/actions/externalComponentsActions';
+import Hook from '../components/Hook';
+import axios from '../axios';
+import { fetchNavigationData } from '../redux/actions/navigationActions';
+import { fetchExternalComponents } from '../redux/actions/externalComponentsActions';
 
 class ExtensionsRoute extends Component {
   state = {

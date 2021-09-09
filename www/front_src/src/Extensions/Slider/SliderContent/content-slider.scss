@@ -1,0 +1,116 @@
+@import '../../global-sass-files/variables';
+@import '../../global-sass-files/mixins';
+
+// Content slider
+.content-slider {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  height: 400px;
+  overflow: hidden;
+  white-space: nowrap;
+  &-items {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    transition: transform ease-out 0.45s;
+  }
+  &-item {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+  &-wrapper {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    box-shadow: 1px 1px 5px 2px rgba(70, 75, 82, 0.2);
+  }
+  &-prev, &-next {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    @include center(both);
+    width: 12%;
+    color: #fff;
+    text-align: center;
+    z-index: 99;
+    cursor: pointer;
+    &-icon {
+      font-size: 40px;
+      cursor: pointer;
+      @media (max-width: 576px){
+        width: 18px;
+        height: 29px;
+        background-size: cover !important;
+      }
+    }
+  }
+  &-prev {
+    @include iconmoon;
+    left: 0;
+    &-icon {
+      &:after {
+        content: "\e917";
+        color: #dcdcdc;
+      }
+      &.white {
+        &:after {
+          color: $white-color;
+        }
+      }
+      &.gray {
+        &:after {
+          color: #606060;
+        }
+      }
+    }
+  }
+  &-next {
+    @include iconmoon;
+    right: 0;
+    transform: rotate(180deg);
+    &-icon {
+      &:after {
+        content: "\e917";
+        color: #dcdcdc;
+      }
+      &.white {
+        &:after {
+          color: $white-color;
+        }
+      }
+      &.gray {
+        &:after {
+          color: #606060;
+        }
+      }
+    }
+  }
+  &-indicators {
+    position: absolute;
+    bottom: 20px;
+    z-index: 99;
+    text-align: center;
+    left: 0;
+    right: 0;
+    @media (max-width: 576px){
+      bottom: 7px;
+    }
+    span {
+      width: 12px;
+      height: 12px;
+      background-color: #606060;
+      display: inline-block;
+      border-radius: 50%;
+      cursor: pointer;
+      margin-right: 15px;
+      &.active {
+        background-color: $white-color;
+        box-shadow: 1px 1px 4px 2px rgba(70, 75, 82, 0.5);
+      }
+    }
+  }
+}
