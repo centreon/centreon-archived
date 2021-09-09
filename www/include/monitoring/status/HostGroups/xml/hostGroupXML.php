@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -259,7 +260,8 @@ $ct = 0;
 
 if (isset($stats)) {
     foreach ($stats as $name => $stat) {
-        if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit))
+        if (
+            ($i < (($num + 1) * $limit) && $i >= (($num) * $limit))
             && ((isset($converTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl)))
             && $name != "meta_hostgroup"
         ) {

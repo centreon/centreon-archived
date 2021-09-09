@@ -1,4 +1,5 @@
 <?php
+
 $help = array();
 
 $help["contact_platform_data_sending"] = dgettext(
