@@ -1,13 +1,6 @@
 -- Drop legacy API authentication table
 DROP TABLE `ws_token`;
 
--- Purge all session and update "session_id" to fit type VARCHAR(255) of foreign keys
-DELETE * FROM session;
-
-ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED,
-MODIFY `session_id` VARCHAR(255),
-ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE;
-
 -- Create authentication tables and insert local configuration
 CREATE TABLE `provider_configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -30,8 +23,7 @@ CREATE TABLE `security_token` (
   PRIMARY KEY (`id`),
   INDEX `token_index` (`token`),
   INDEX `expiration_index` (`expiration_date`),
-  UNIQUE KEY `unique_token` (`token`),
-  CONSTRAINT `security_token_ibfk_1` FOREIGN KEY (`token`) REFERENCES `session` (`session_id`) ON DELETE CASCADE
+  UNIQUE KEY `unique_token` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (

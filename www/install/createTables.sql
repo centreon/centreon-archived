@@ -2398,7 +2398,6 @@ CREATE TABLE `security_token` (
   INDEX `token_index` (`token`),
   INDEX `expiration_index` (`expiration_date`),
   UNIQUE KEY `unique_token` (`token`),
-  CONSTRAINT `security_token_ibfk_1` FOREIGN KEY (`token`) REFERENCES `session` (`session_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (
