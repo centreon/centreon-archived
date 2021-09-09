@@ -70,7 +70,7 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
           </ContentWithCircularLoading>
         </p>
         {hasError && (
-          <Typography style={{ color: '#d0021b' }} variant="body2">
+          <Typography color="error" variant="body2">
             {error}
           </Typography>
         )}
