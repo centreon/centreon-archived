@@ -55,3 +55,5 @@ CREATE TABLE `security_authentication_tokens` (
   CONSTRAINT `security_authentication_tokens_user_id_fk` FOREIGN KEY (`user_id`)
   REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED;
