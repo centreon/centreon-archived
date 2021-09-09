@@ -103,7 +103,7 @@ class CentreonAuthSSO extends CentreonAuth
             $clientId = $this->ssoOptions['openid_connect_client_id'];
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
             if (empty($this->ssoOptions['openid_connect_redirect_url'])) {
-                $redirectNoEncode = '{$scheme}://{$hostname}:{$port}'
+                $redirectNoEncode = '{scheme}://{hostname}:{port}'
                 . rtim($this->ssoOptions['oreon_web_path'], "/") . "/" . 'index.php';
             } else {
                 $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
