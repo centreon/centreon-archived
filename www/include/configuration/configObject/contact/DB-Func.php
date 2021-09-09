@@ -228,7 +228,7 @@ function deleteContactInDB($contacts = array())
 
             $contactTokenStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
             $contactTokenStmt->execute();
-            while($rowContact = $contactTokenStmt->fetch()) {
+            while ($rowContact = $contactTokenStmt->fetch()) {
                 $deleteTokenStmt->bindValue(':token', $rowContact['token'], \PDO::PARAM_STR);
                 $deleteTokenStmt->execute();
             }
