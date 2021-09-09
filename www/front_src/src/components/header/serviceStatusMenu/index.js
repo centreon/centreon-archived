@@ -20,6 +20,8 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
+import ServiceIcon from '@material-ui/icons/RoomService';
+
 import {
   IconHeader,
   IconNumber,
@@ -151,8 +153,8 @@ class ServiceStatusMenu extends Component {
       >
         <SubmenuHeader active={toggled} submenuType="top">
           <IconHeader
+            Icon={ServiceIcon}
             iconName={t('Services')}
-            iconType="services"
             onClick={this.toggle}
           >
             {data.pending > 0 && <span className={styles['custom-icon']} />}
