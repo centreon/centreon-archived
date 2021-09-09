@@ -28,6 +28,7 @@
       font-size: 0.75rem;
       &:after {
         position: absolute;
+        top: 2px;
         right: 20px;
         content: "|";
         color: $white-color;

@@ -7,11 +7,11 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 
-import { Sidebar } from '@centreon/ui';
+import { menuSelector } from '../redux/selectors/navigation/menu';
+import { reactRoutesSelector } from '../redux/selectors/navigation/reactRoutes';
+import { fetchNavigationData } from '../redux/actions/navigationActions';
 
-import { menuSelector } from '../../redux/selectors/navigation/menu';
-import { reactRoutesSelector } from '../../redux/selectors/navigation/reactRoutes';
-import { fetchNavigationData } from '../../redux/actions/navigationActions';
+import Sidebar from './Sidebar';
 
 class Navigation extends Component {
   componentDidMount = () => {

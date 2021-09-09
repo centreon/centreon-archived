@@ -13,6 +13,11 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { Typography } from '@material-ui/core';
+import UserIcon from '@material-ui/icons/AccountCircle';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import CheckIcon from '@material-ui/icons/Check';
+
 import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
 import styles from '../header.scss';
 import Clock from '../clock';
@@ -123,8 +128,9 @@ class UserMenu extends Component {
       >
         <Clock />
         <div ref={(profile) => (this.profile = profile)}>
-          <span
-            className={classnames(styles.iconmoon, styles['icon-user'])}
+          <UserIcon
+            fontSize="large"
+            style={{ color: '#FFFFFF', cursor: 'pointer', marginLeft: 8 }}
             onClick={this.toggle}
           />
           <div className={classnames(styles.submenu, styles.profile)}>
@@ -138,11 +144,13 @@ class UserMenu extends Component {
                 <li className={styles['submenu-item']}>
                   <span className={styles['submenu-item-link']}>
                     <span className={styles['submenu-user-name']}>
-                      {fullname}
+                      <Typography variant="body2">{fullname}</Typography>
                     </span>
                     <span className={styles['submenu-user-type']}>
-                      {t('as')}
-                      {` ${username}`}
+                      <Typography variant="body2">
+                        {t('as')}
+                        {` ${username}`}
+                      </Typography>
                     </span>
                     {allowEditProfile && (
                       <Link
@@ -150,7 +158,9 @@ class UserMenu extends Component {
                         to={`/main.php?p=${EDIT_PROFILE_TOPOLOGY_PAGE}&o=c`}
                         onClick={this.toggle}
                       >
-                        {t('Edit profile')}
+                        <Typography variant="body2">
+                          {t('Edit profile')}
+                        </Typography>
                       </Link>
                     )}
                   </span>
@@ -162,12 +172,8 @@ class UserMenu extends Component {
                       onClick={this.onCopy}
                     >
                       {t('Copy autologin link')}
-                      <span
-                        className={classnames(
-                          styles['btn-logout-icon'],
-                          styles[copied ? 'icon-copied' : 'icon-copy'],
-                        )}
-                      />
+
+                      {copied ? <CheckIcon /> : <FileCopyIcon />}
                     </button>
                     <textarea
                       className={styles['hidden-input']}
