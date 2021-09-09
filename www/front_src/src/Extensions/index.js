@@ -12,19 +12,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { batchActions } from 'redux-batched-actions';
 
-import {
-  TopFilters,
-  Wrapper,
-  Button,
-  ExtensionsHolder,
-  ExtensionDetailsPopup,
-  ExtensionDeletePopup,
-} from '@centreon/ui';
+import { Button } from '@centreon/ui';
 
 import Hook from '../components/Hook';
 import axios from '../axios';
 import { fetchNavigationData } from '../redux/actions/navigationActions';
 import { fetchExternalComponents } from '../redux/actions/externalComponentsActions';
+
+import ExtensionsHolder from './ExtensionsHolder';
+import ExtensionDetailsPopup from './ExtensionDetailsPopup';
+import ExtensionDeletePopup from './ExtensionDeletePopup';
+import TopFilters from './TopFilters';
+import Wrapper from './Wrapper';
 
 class ExtensionsRoute extends Component {
   state = {

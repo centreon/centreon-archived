@@ -1,0 +1,78 @@
+@import '../global-sass-files/variables';
+@import '../global-sass-files/fonts';
+@import '../Button/button.scss';
+@import '../Title/custom-title.scss';
+
+// Extensions card
+.card {
+  &-item {
+    padding: 8px 28px 60px 8px;
+    position: relative;
+    border-radius: 5px;
+    min-height: 180px;
+    height: 100%;
+    box-sizing: border-box;
+    width: 100%;
+    cursor: pointer;
+    @media (max-width: 767px) {
+      margin-bottom: 12px;
+    }
+    &:hover {
+      background-color: #F9F9F9;
+    }
+    &-footer {
+      display: block;
+      position: absolute;
+      bottom: -1px;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 10px;
+      line-height: 14px;
+      font-family: $primary-font-regular;
+      color: $white-color;
+      &-green {
+        background-color: $content-green-color;
+      }
+      &-orange {
+        background-color: $content-orange-color;
+      }
+      &-red {
+        background-color: $content-red-color;
+      }
+      &-blue {
+        background-color: $content-blue-color;
+      }
+    }
+    &-bordered {
+      &-orange {
+        border: 1px solid $content-orange-color;
+      }
+      &-green {
+        border: 1px solid $content-green-color;
+      }
+      &-gray {
+        border: 1px solid #dadada;
+      }
+    }
+  }
+  &-inline {
+    display: inline-block;
+    margin: 5px;
+    height: 180px;
+    width: 220px;
+  }
+  .container__col-md-3 {
+    display: flex;
+  }
+  .custom-title {
+    &-label {
+      min-height: 0 !important;
+    }
+  }
+  .info {
+    position: absolute;
+  }
+}
