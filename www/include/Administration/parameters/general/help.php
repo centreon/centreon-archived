@@ -178,8 +178,8 @@ $help['openid_connect_login_claim'] = dgettext(
 );
 $help['openid_connect_redirect_url'] = dgettext(
     'help',
-    'Your OpenId Connect redirect url (this server, {$scheme}, {$hostname} and {$port} can be used for substitions,'
-    . ' default is {$scheme}://{$hostname}:{$port}/your_centreon_path/index.php if left empty).'
+    'Your OpenId Connect redirect url (this server, {scheme}, {hostname} and {port} can be used for substitions,'
+    . ' default is {scheme}://{hostname}:{port}/your_centreon_path/index.php if left empty).'
 );
 $help['openid_connect_client_id'] = dgettext(
     'help',
