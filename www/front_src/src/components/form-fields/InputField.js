@@ -49,7 +49,7 @@ const InputField = ({
         {...prepareInputProps(rest)}
       />
       {error ? (
-        <Typography style={{ color: '#d0021b' }} variant="body2">
+        <Typography color="error" variant="body2">
           {error}
         </Typography>
       ) : null}
