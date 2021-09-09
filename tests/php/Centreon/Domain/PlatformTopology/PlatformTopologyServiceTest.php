@@ -36,7 +36,7 @@ use Centreon\Domain\PlatformTopology\Model\PlatformPending;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
