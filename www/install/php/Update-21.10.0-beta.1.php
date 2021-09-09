@@ -33,6 +33,7 @@ $pearDB = new CentreonDB('centreon', 3, false);
 try {
     $pearDB->beginTransaction();
 
+    $errorMessage = 'Impossible to alter the table contact';
     if (!$pearDB->isColumnExist('contact', 'contact_platform_data_sending')) {
         $pearDB->query(
             "ALTER TABLE `contact` ADD COLUMN `contact_platform_data_sending` ENUM('0', '1', '2')"
