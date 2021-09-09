@@ -2397,7 +2397,7 @@ CREATE TABLE `security_token` (
   PRIMARY KEY (`id`),
   INDEX `token_index` (`token`),
   INDEX `expiration_index` (`expiration_date`),
-  UNIQUE KEY `unique_token` (`token`),
+  UNIQUE KEY `unique_token` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_authentication_tokens` (
