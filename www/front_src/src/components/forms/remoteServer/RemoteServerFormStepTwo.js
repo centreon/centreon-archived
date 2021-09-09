@@ -58,11 +58,11 @@ class RemoteServerFormStepTwo extends Component {
               {t('Apply')}
             </Button>
           </div>
-          {error ? (
-            <Typography style={{ color: '#d0021b' }} variant="body2">
+          {error && (
+            <Typography color="error" variant="body2">
               {error.message}
             </Typography>
-          ) : null}
+          )}
         </form>
       </Paper>
     );
