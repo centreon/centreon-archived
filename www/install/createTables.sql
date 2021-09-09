@@ -2348,7 +2348,7 @@ CREATE TABLE `platform_topology` (
     `name` varchar(255) NOT NULL,
     `type` varchar(255) NOT NULL,
     `parent_id` int(11),
-    `pending` enum('0','1') DEFAULT ('1'),
+    `pending` enum('0','1') DEFAULT '1',
     `server_id` int(11),
     PRIMARY KEY (`id`),
     CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
