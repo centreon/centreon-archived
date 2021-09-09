@@ -109,9 +109,9 @@ class CentreonAuthSSO extends CentreonAuth
                 $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
             }
             $redirectSubstitutions = [
-                '{$scheme}' => $_SERVER['REQUEST_SCHEME'],
-                '{$hostname}' => $_SERVER['SERVER_NAME'],
-                '{$port}' => $_SERVER['SERVER_PORT']
+                '{scheme}' => $_SERVER['REQUEST_SCHEME'],
+                '{hostname}' => $_SERVER['SERVER_NAME'],
+                '{port}' => $_SERVER['SERVER_PORT']
             ];
             $redirectNoEncode = strtr($redirectNoEncode, $redirectSubstitutions);
             $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
