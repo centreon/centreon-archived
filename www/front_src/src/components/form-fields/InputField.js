@@ -48,7 +48,7 @@ const InputField = ({
         type={type}
         {...prepareInputProps(rest)}
       />
-      {error ? (
+      {error && (
         <Typography color="error" variant="body2">
           {error}
         </Typography>
