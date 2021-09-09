@@ -14,10 +14,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { Typography } from '@material-ui/core';
+
 import styles from '../../styles/partials/form/_form.scss';
 
 import getErrorMsg from './getErrorMsg';
-import FieldMsg from './FieldMsg';
 
 let fid = 0;
 
@@ -77,7 +78,9 @@ const fieldHoc = (WrapComponent) => {
       } = this.props;
 
       return touched && error ? (
-        <FieldMsg>{getErrorMsg(error)}</FieldMsg>
+        <Typography style={{ color: '#d0021b' }} variant="body2">
+          {getErrorMsg(error)}
+        </Typography>
       ) : null;
     }
 
