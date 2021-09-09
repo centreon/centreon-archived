@@ -52,7 +52,7 @@ const InputField = ({
         <Typography color="error" variant="body2">
           {error}
         </Typography>
-      }
+      )}
     </div>
   );
 };
