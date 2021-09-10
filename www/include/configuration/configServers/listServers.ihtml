@@ -1,14 +1,33 @@
 {literal}
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <script type='text/javascript'>
-
     function applyConfiguration() {
         var pollers = [];
-        jQuery('form tr').not('.row_disabled').find('input[id^="poller_"]:checked').each(function(){
+        jQuery('form tr').not('.row_disabled').find('input[id^="poller_"]:checked').each(function() {
             pollers.push(this.id.substr(7));
         });
         window.location.href = "?p=60902&poller=" + pollers.join(',');
     }
+
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+
+    function hasPollersSelected(){
+        var nbSelectedPollers = jQuery('form tr').find('input[id^="poller_"]:checked').length;
+        var buttons = jQuery('form').find('button[name="delete_action"],button[name="duplicate_action"]');
+
+        if (nbSelectedPollers > 0) {
+            buttons.each(function() {
+                $(this).prop("disabled",false);
+            });
+        } else {
+            buttons.each(function() {
+                $(this).prop("disabled",true);
+            });
+        }
+    }
+    hasPollersSelected();
 
 </script>
 {/literal}
@@ -30,16 +49,24 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {if $mode_access == 'w'}
-                {$msg.options} {$form.o1.html}
-                &nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
-                <a href="./poller-wizard/1" target="_top" class="btc bt_info">{t}Add server with wizard{/t}</a>
-                {else}
-                &nbsp;
-                {/if}
                 {if $is_admin == 1 || $can_generate == 1}
-                    {$form.apply_configuration.html}
+                    <button type="button" class="{$exportBtn.class}" name="{$exportBtn.name}" onClick="{$exportBtn.onClickAction}">
+                        <span class="ui-icon ui-icon-white {$exportBtn.iconClass}"></span> {$exportBtn.text}
+                    </button>
+                {/if}
+                {if $mode_access == 'w'}
+                    <a href="{$wizardAddBtn.link}" class="{$wizardAddBtn.class}" target="_top">
+                        <span class="ui-icon ui-icon-white {$wizardAddBtn.iconClass}"></span> {$wizardAddBtn.text}
+                    </a>
+                    <a href="{$addBtn.link}" class="{$addBtn.class}">
+                        <span class="ui-icon ui-icon-white {$addBtn.iconClass}"></span> {$addBtn.text}
+                    </a>
+                    <button type="submit" class="{$duplicateBtn.class}" name="{$duplicateBtn.name}" onClick="{$duplicateBtn.onClickAction}">
+                        <span class="ui-icon ui-icon-white {$duplicateBtn.iconClass}"></span> {$duplicateBtn.text}
+                    </button>
+                    <button type="submit" class="{$deleteBtn.class}" name="{$deleteBtn.name}" onClick="{$deleteBtn.onClickAction}">
+                        <span class="ui-icon ui-icon-white {$deleteBtn.iconClass}"></span> {$deleteBtn.text}
+                    </button>
                 {/if}
             </td>
             <input name="p" value="{$p}" type="hidden">
@@ -115,15 +142,6 @@
     </table>
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
-            { if $mode_access == 'w' }
-            <td>
-                {$msg.options} {$form.o2.html}
-                &nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
-            </td>
-            { else }
-            <td>&nbsp;</td>
-            { /if }
             <input name="p" value="{$p}" type="hidden">
             {php}
                include('./include/common/pagination.php');
@@ -134,7 +152,7 @@
         </tr>
     </table>
 <input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
 {literal}
@@ -159,5 +177,9 @@
     setDisabledRowStyle();
     //formatting the tags containing a class isTimestamp
     formatDateMoment();
+
+    jQuery(document).ready(function () {
+        hasPollersSelected();
+    });
 </script>
 {/literal}
