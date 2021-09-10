@@ -15,7 +15,7 @@
         "behat/mink": "dev-master#a534fe7dac9525e8e10ca68e737c3d7e5058ec83",
         "behat/mink-extension": "^2.3",
         "behat/mink-selenium2-driver": "^1.4",
-        "centreon/centreon-test-lib": "dev-master",
+        "centreon/centreon-test-lib": "dev-MON-6671-redesign-poller-actions",
         "phpstan/phpstan": "^0.12.59",
         "phpstan/phpstan-beberlei-assert": "^0.12",
         "phpunit/phpunit": "^8.5",
