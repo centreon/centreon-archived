@@ -18,7 +18,7 @@ class GeneratePollerContext extends CentreonContext
         $this->pollers_page = new PollerConfigurationListingPage($this);
         $this->setConfirmBox(true);
         $this->pollers_page->selectEntry('Central');
-        $this->pollers_page->moreActions(PollerConfigurationListingPage::ACTION_DUPLICATE);
+        $this->pollers_page->duplicateAction();
         $this->pollers_page->enableEntry('Central_1');
     }
 
