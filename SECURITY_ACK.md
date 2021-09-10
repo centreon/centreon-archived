@@ -14,6 +14,7 @@ Centreon reserves the right to make final decisions regarding publishing acknowl
 
 <h3> 2021 </h3>
 
+* 2021/08/09 - [Amammad](https://huntr.dev/users/amammad) from [huntr-dev](https://huntr.dev/)
 * 2021/07/13 - [Gaurang Maheta](https://www.linkedin.com/in/gaurang883)
 * 2021/06/21 - [Bao Chau](https://www.linkedin.com/in/nhubaochau/) / CyRadar
 * 2021/04/07 - [Synacktiv](https://www.synacktiv.com/), Guillaume André and Théo Louis-Tisserand
