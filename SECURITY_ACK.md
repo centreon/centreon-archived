@@ -14,11 +14,16 @@ Centreon reserves the right to make final decisions regarding publishing acknowl
 
 <h3> 2021 </h3>
 
+* 2021/08/09 - [Amammad](https://huntr.dev/users/amammad) from [huntr-dev](https://huntr.dev/)
+* 2021/07/13 - [Gaurang Maheta](https://www.linkedin.com/in/gaurang883)
+* 2021/06/21 - [Bao Chau](https://www.linkedin.com/in/nhubaochau/) / CyRadar
 * 2021/04/07 - [Synacktiv](https://www.synacktiv.com/), Guillaume André and Théo Louis-Tisserand
 * 2021/03/23 - [Benoit Poulet](https://twitter.com/poulet_benoit)
+* 2021/02/22 - [Cody Sixteen](https://twitter.com/CodySixteen)
 * 2021/02/16 - [Sick Codes](https://twitter.com/sickcodes), [wabaf3t](https://twitter.com/wabafet1) and [d0rkerdevil](https://twitter.com/d0rkerdevil)
 * 2021/02/12 - [Alexandru Cucea](https://acucea.github.io/)
 
 <h3> 2020 </h3>
 
+* 2020/05/20 - [WELAN](https://welan.fr/)
 * 2020/01/06 - Matthew Bach / [TheCyberGeek](https://thecybergeek.co.uk/)
