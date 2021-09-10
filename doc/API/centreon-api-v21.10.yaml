@@ -559,7 +559,7 @@ paths:
                     nullable: true
                     description: Locale of the current user
                     example: en_US
-                  showDeprecatedPages:
+                  useDeprecatedPages:
                     type: boolean
                     description: Indicates if user wants to use deprecated monitoring pages
                     example: false
