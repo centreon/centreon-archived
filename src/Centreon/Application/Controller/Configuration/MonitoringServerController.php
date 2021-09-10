@@ -22,21 +22,26 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller\Configuration;
 
-use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\Exception\TimeoutException;
-use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Yaml\Yaml;
 use FOS\RestBundle\Context\Context;
+use Centreon\Domain\Log\LoggerTrait;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Exception\TimeoutException;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Application\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Centreon\Domain\MonitoringServer\UseCase\AddMonitoringServer;
 use Centreon\Domain\MonitoringServer\UseCase\ReloadConfiguration;
 use Centreon\Domain\MonitoringServer\UseCase\GenerateConfiguration;
 use Centreon\Domain\MonitoringServer\UseCase\ReloadAllConfigurations;
 use Centreon\Domain\MonitoringServer\UseCase\GenerateAllConfigurations;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
-use Symfony\Component\HttpFoundation\Response;
+use Centreon\Infrastructure\MonitoringServer\API\v2110\Validator\Interfaces\MonitoringServersDeclarationFileValidatorInterface;
 
 /**
  * This class is designed to manage all requests concerning monitoring servers
@@ -80,6 +85,24 @@ class MonitoringServerController extends AbstractController
                 'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
+    }
+
+    public function addServer(
+        Request $request,
+        GenerateConfiguration $generateConfiguration,
+        AddMonitoringServer $addMonitoringServer,
+        MonitoringServersDeclarationFileValidatorInterface $validator
+    ): View {
+        /**
+         * @var UploadedFile
+         */
+        $file = $request->files->get('monitoring-server-declaration');
+        if ($file !== null && $file instanceof UploadedFile) {
+            $fileContent = Yaml::parse((file_get_contents($file->getRealPath())));
+        }
+        $validator->validateOrFail($fileContent);
+        $addMonitoringServer->execute($fileContent);
+        return $this->view(null, Response::HTTP_CREATED);
     }
 
     /**

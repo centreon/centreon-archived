@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Common\Assertion;
 
 use Assert\Assertion as Assert;
+use Centreon\Domain\Common\Assertion\AssertionException;
 
 /**
  * This class is designed to allow the translation of error messages and provide them with a unique format.
@@ -236,5 +237,25 @@ class Assertion
             );
         }
         return $length;
+    }
+
+    /**
+     * Assert that the key exists.
+     *
+     * @param mixed $value Value to test
+     * @param mixed $key Key to check
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function keyExists($value, $key, string $propertyPath = null): void
+    {
+        Assert::keyExists(
+            $value,
+            $key,
+            function (array $parameters) {
+                return AssertionException::keyExists($parameters['propertyPath']);
+            },
+            $propertyPath
+        );
     }
 }

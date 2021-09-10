@@ -332,3 +332,7 @@ services:
     monolog.debug.handler:
         class: Centreon\Domain\Log\DebugFileHandler
         arguments: [ '@monolog.debug.formater', '%debug_log_file%', '%env(bool:APP_DEBUG)%', 664, '%debug_level%' ]
+
+    # Validator
+    Centreon\Infrastructure\MonitoringServer\API\v2110\Validator\Interfaces\MonitoringServersDeclarationFileValidatorInterface:
+     class: Centreon\Infrastructure\MonitoringServer\API\v2110\Validator\MonitoringServersDeclarationFileValidator

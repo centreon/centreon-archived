@@ -39,3 +39,9 @@ configuration_monitoring_server_generate_and_reload_all:
     path: /configuration/monitoring-servers/generate_and_reload
     controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::generateAndReloadAllConfigurations'
     condition: "request.attributes.get('version') >= 21.10"
+
+configuration_monitoring_server_add:
+    methods: POST
+    path: /configuration/monitoring-servers/add
+    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::addServer'
+    condition: "request.attributes.get('version') >= 21.10"
