@@ -39,6 +39,7 @@ const modules = [
   'centreon-autodiscovery-server',
   'centreon-bam-server',
   'centreon-augmented-services',
+  'centreon-map4-web-client',
 ];
 
 module.exports = merge(baseConfig, devConfig, {
