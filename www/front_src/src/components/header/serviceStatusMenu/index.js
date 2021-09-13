@@ -21,7 +21,6 @@ import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import ServiceIcon from '@material-ui/icons/RoomService';
-import { Badge } from '@material-ui/core';
 
 import {
   IconHeader,
