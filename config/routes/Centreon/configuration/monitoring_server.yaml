@@ -18,7 +18,7 @@ configuration_monitoring_server_reload:
 
 configuration_monitoring_server_generate_and_reload:
     methods: GET
-    path: /configuration/monitoring-servers/{monitoringServerId}/generate_and_reload
+    path: /configuration/monitoring-servers/{monitoringServerId}/generate-and-reload
     controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::generateAndReloadConfiguration'
     condition: "request.attributes.get('version') >= 21.10"
 
@@ -36,6 +36,6 @@ configuration_monitoring_server_reload_all:
 
 configuration_monitoring_server_generate_and_reload_all:
     methods: GET
-    path: /configuration/monitoring-servers/generate_and_reload
+    path: /configuration/monitoring-servers/generate-and-reload
     controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::generateAndReloadAllConfigurations'
     condition: "request.attributes.get('version') >= 21.10"
