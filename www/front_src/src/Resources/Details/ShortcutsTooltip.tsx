@@ -47,11 +47,6 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
 
   const shortcuts = [
     {
-      Icon: SettingsIcon,
-      name: labelConfigure,
-      uri: prop('configuration', resourceUris),
-    },
-    {
       Icon: LogsIcon,
       name: labelViewLogs,
       uri: prop('logs', resourceUris),
