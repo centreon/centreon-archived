@@ -4,7 +4,7 @@ import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 
-import { ButtonGroup, makeStyles, Menu, MenuItem } from '@material-ui/core';
+import { makeStyles, Menu, MenuItem } from '@material-ui/core';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
 import LaunchIcon from '@material-ui/icons/Launch';
 

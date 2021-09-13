@@ -34,11 +34,9 @@ import {
   getTime,
   getMin,
   getMax,
-  getLineForMetric,
   getDates,
   getUnits,
   getMetricValuesForUnit,
-  getMetrics,
   getMetricValuesForLines,
   getSortedStackedLines,
   getStackedMetricValues,
@@ -55,7 +53,6 @@ import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import memoizeComponent from '../../../memoizedComponent';
-import { useMousePositionContext } from '../ExportableGraphWithTimeline/useMousePosition';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
@@ -66,7 +63,7 @@ import TimeShiftZones, {
   TimeShiftContext,
   TimeShiftDirection,
 } from './TimeShiftZones';
-import { useMetricsValueContext } from './useMetricsValue';
+import { MousePosition, useMetricsValueContext } from './useMetricsValue';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -214,14 +211,14 @@ const GraphContent = ({
   const { canComment } = useAclQuery();
 
   const theme = useTheme();
-  const [isMouseOver, setIsMouseOver] = React.useState(false);
 
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
 
   const annotations = useAnnotations(graphWidth);
 
-  const { mousePosition, setMousePosition } = useMousePositionContext();
+  const { changeMousePositionAndMetricsValue, mousePosition } =
+    useMetricsValueContext();
 
   const hideAddCommentTooltipOnEspcapePress = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
@@ -307,29 +304,23 @@ const GraphContent = ({
     return timeSeries[index];
   };
 
-  const updateMetricsValue = ({ x }): void => {
-    const timeValue = getTimeValue(x);
-
-    const metrics = getMetrics(timeValue);
-
-    const metricsToDisplay = metrics.filter((metric) => {
-      const line = getLineForMetric({ lines, metric });
-
-      return !isNil(timeValue[metric]) && !isNil(line);
-    });
-
-    changeMetricsValue({
-      newMetricsValue: {
+  const updateMousePosition = (position: MousePosition): void => {
+    if (isNil(position)) {
+      changeMousePositionAndMetricsValue({
         base,
         lines,
-        metrics: metricsToDisplay,
-        timeValue,
-      },
-    });
+        position: null,
+        timeValue: null,
+      });
+
+      return;
+    }
+    const timeValue = getTimeValue(position[0]);
+
+    changeMousePositionAndMetricsValue({ base, lines, position, timeValue });
   };
 
   const displayTooltip = (event): void => {
-    setIsMouseOver(true);
     const { x, y } = Event.localPoint(event) || { x: 0, y: 0 };
 
     const mouseX = x - margin.left;
@@ -350,25 +341,10 @@ const GraphContent = ({
       return;
     }
 
-    updateMetricsValue({ x });
-    setMousePosition([x, y]);
+    const position: MousePosition = [x, y];
+
+    updateMousePosition(position);
   };
-
-  React.useEffect(() => {
-    if (isMouseOver) {
-      return;
-    }
-
-    if (isNil(mousePosition)) {
-      changeMetricsValue({ newMetricsValue: null });
-
-      return;
-    }
-
-    const [x] = mousePosition;
-
-    updateMetricsValue({ x });
-  }, [mousePosition]);
 
   const closeZoomPreview = (): void => {
     setZoomBoundaries(null);
@@ -376,9 +352,12 @@ const GraphContent = ({
   };
 
   const closeTooltip = (): void => {
-    changeMetricsValue({ newMetricsValue: null });
-    setIsMouseOver(false);
-    setMousePosition(null);
+    changeMousePositionAndMetricsValue({
+      base,
+      lines,
+      position: null,
+      timeValue: null,
+    });
     annotations.setAnnotationHovered(undefined);
 
     if (not(isNil(zoomPivotPosition))) {

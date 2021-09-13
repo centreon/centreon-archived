@@ -21,7 +21,6 @@ import {
   propOr,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router';
 
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -57,7 +56,6 @@ import {
 import { getTimeSeries, getLineData } from './timeSeries';
 import useMetricsValue, { MetricsValueContext } from './Graph/useMetricsValue';
 import { TimeShiftDirection } from './Graph/TimeShiftZones';
-import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 import MemoizedGraphActions from './GraphActions';
 
 interface Props {
