@@ -50,8 +50,8 @@ module.exports = merge(baseConfig, devConfig, {
     hot: true,
     port: devServerPort,
 
-    static: modules.map((module) => ({
-      directory: path.resolve(`${__dirname}/www/modules/${module}/static`),
+    static: modules.map((module, outputPath = 'static') => ({
+      directory: path.resolve(`${__dirname}/www/modules/${module}/${outputPath}`),
       publicPath,
       watch: true,
     })),
