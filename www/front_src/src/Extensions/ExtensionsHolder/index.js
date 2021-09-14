@@ -7,54 +7,54 @@
 
 import React from 'react';
 
-import { Button, ButtonAction } from '@centreon/ui';
+import DeleteIcon from '@material-ui/icons/Delete';
+import UpdateIcon from '@material-ui/icons/SystemUpdateAlt';
+import CheckIcon from '@material-ui/icons/Check';
+import InstallIcon from '@material-ui/icons/Add';
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Paper,
+  Button,
+  Typography,
+  Grid,
+  Chip,
+  LinearProgress,
+} from '@material-ui/core';
 
-import cardStyles from '../Card/card.scss';
 import Wrapper from '../Wrapper';
-import HorizontalLineContent from '../HorizontalLines/HorizontalLineContent';
-import Card from '../Card';
-import CardItem from '../Card/CardItem';
-// import IconInfo from '../Icon/IconInfo';
-import Title from '../Title';
-import Subtitle from '../Subtitle';
-import IconContent from '../Icon/IconContent';
-import ButtonAction from '../Button/ButtonAction';
 
 class ExtensionsHolder extends React.Component {
-  // remove "centreon" word from the begin of the module/widget description
   parseDescription = (description) => {
     return description.replace(/^centreon\s+(\w+)/i, (_, $1) => $1);
   };
 
-  // get CardItem props to display license information in footer
   getPropsFromLicense = (licenseInfo) => {
-    let licenseProps = {};
-
     if (licenseInfo && licenseInfo.required) {
       if (!licenseInfo.expiration_date) {
-        licenseProps = {
-          itemFooterColor: 'red',
-          itemFooterLabel: 'License required',
-        };
-      } else if (!isNaN(Date.parse(licenseInfo.expiration_date))) {
-        // @todo move this logic to centreon. Furthermore, it will facilitate translation
-        // @todo use moment to convert date in the proper format (locale and timezone from user)
-        const expirationDate = new Date(licenseInfo.expiration_date);
-        licenseProps = {
-          itemFooterColor: 'green',
-          itemFooterLabel: `License expires ${expirationDate
-            .toISOString()
-            .slice(0, 10)}`,
-        };
-      } else {
-        licenseProps = {
-          itemFooterColor: 'red',
-          itemFooterLabel: 'License not valid',
+        return {
+          color: '#f90026',
+          label: 'License required',
         };
       }
+      if (!isNaN(Date.parse(licenseInfo.expiration_date))) {
+        // @todo use moment to convert date in the proper format (locale and timezone from user)
+        const expirationDate = new Date(licenseInfo.expiration_date);
+
+        return {
+          color: '#84BD00',
+          label: `License expires ${expirationDate.toISOString().slice(0, 10)}`,
+        };
+      }
+
+      return {
+        color: '#f90026',
+        label: 'License not valid',
+      };
     }
 
-    return licenseProps;
+    return undefined;
   };
 
   render() {
@@ -63,143 +63,142 @@ class ExtensionsHolder extends React.Component {
       entities,
       onCardClicked,
       onDelete,
-      titleColor,
-      hrColor,
-      hrTitleColor,
       onInstall,
       onUpdate,
       updating,
       installing,
+      deletingEntityId,
       type,
     } = this.props;
 
     return (
       <Wrapper>
-        <HorizontalLineContent
-          hrColor={hrColor}
-          hrTitle={title}
-          hrTitleColor={hrTitleColor}
-        />
-        <Card>
-          <div>
-            {entities.map((entity) => {
-              return (
-                <div
-                  className={cardStyles['card-inline']}
-                  id={`${type}-${entity.id}`}
-                  key={entity.id}
-                  onClick={() => {
-                    onCardClicked(entity.id, type);
-                  }}
-                >
-                  <CardItem
-                    itemBorderColor={
-                      entity.version.installed
-                        ? !entity.version.outdated
-                          ? 'green'
-                          : 'orange'
-                        : 'gray'
-                    }
-                    {...this.getPropsFromLicense(entity.license)}
-                  >
-                    {entity.version.installed ? (
-                      <IconInfo
-                        iconColor="green"
-                        iconName="state"
-                        iconPosition="info-icon-position"
-                      />
-                    ) : null}
+        <Typography style={{ marginBottom: 8 }} variant="body1">
+          {title}
+        </Typography>
+        <Grid
+          container
+          alignItems="stretch"
+          spacing={2}
+          style={{ cursor: 'pointer' }}
+        >
+          {entities.map((entity) => {
+            const isLoading =
+              installing[entity.id] ||
+              updating[entity.id] ||
+              deletingEntityId === entity.id;
 
-                    <Title
-                      label={this.parseDescription(entity.description)}
-                      labelStyle={{ fontSize: '16px' }}
-                      title={entity.description}
-                      titleColor={titleColor}
-                    >
-                      <Subtitle label={`by ${entity.label}`} />
-                    </Title>
-                    <Button
-                      buttonType={
-                        entity.version.installed
-                          ? entity.version.outdated
-                            ? 'regular'
-                            : 'bordered'
-                          : 'regular'
-                      }
-                      color={
-                        entity.version.installed
-                          ? entity.version.outdated
-                            ? 'orange'
-                            : 'blue'
-                          : 'green'
-                      }
-                      customClass="button-card-position"
-                      label={
-                        (!entity.version.installed ? 'Available ' : '') +
-                        entity.version.available
-                      }
-                      style={{
-                        cursor: entity.version.installed
-                          ? 'default'
-                          : 'pointer',
-                        opacity:
-                          installing[entity.id] || updating[entity.id]
-                            ? '0.5'
-                            : 'inherit',
-                      }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const { id } = entity;
-                        const { version } = entity;
-                        if (version.outdated && !updating[entity.id]) {
-                          onUpdate(id, type);
-                        } else if (
-                          !version.installed &&
-                          !installing[entity.id]
-                        ) {
-                          onInstall(id, type);
-                        }
-                      }}
-                    >
-                      {!entity.version.installed ? (
-                        <IconContent
-                          customClass="content-icon-button"
-                          iconContentColor="white"
-                          iconContentType={`${
-                            installing[entity.id] ? 'update' : 'add'
-                          }`}
-                          loading={installing[entity.id]}
-                        />
-                      ) : entity.version.outdated ? (
-                        <IconContent
-                          customClass="content-icon-button"
-                          iconContentColor="white"
-                          iconContentType="update"
-                          loading={updating[entity.id]}
-                        />
-                      ) : null}
-                    </Button>
+            const licenseInfo = this.getPropsFromLicense(entity.license);
+
+            return (
+              <Grid
+                item
+                id={`${type}-${entity.id}`}
+                key={entity.id}
+                style={{ width: 200 }}
+                onClick={() => {
+                  onCardClicked(entity.id, type);
+                }}
+              >
+                <Card
+                  style={{ display: 'grid', height: '100%' }}
+                  variant="outlined"
+                >
+                  <div style={{ height: 10 }}>
+                    {isLoading && <LinearProgress />}
+                  </div>
+                  <CardContent>
+                    {/* {entity.version.installed ? <InfoIcon /> : null} */}
+
+                    <Typography style={{ fontWeight: 'bold' }} variant="body1">
+                      {this.parseDescription(entity.description)}
+                    </Typography>
+                    <Typography variant="body2">
+                      {`by ${entity.label}`}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
                     {entity.version.installed ? (
-                      <ButtonAction
-                        buttonActionType="delete"
-                        buttonIconType="delete"
-                        customPosition="button-action-card-position"
-                        iconColor="gray"
+                      <Chip
+                        avatar={
+                          entity.version.outdated ? (
+                            <UpdateIcon
+                              style={{
+                                color: '#FFFFFF',
+                                cursor: 'pointer',
+                              }}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                onUpdate(entity.id, type);
+                              }}
+                            />
+                          ) : (
+                            <CheckIcon style={{ color: '#FFFFFF' }} />
+                          )
+                        }
+                        deleteIcon={<DeleteIcon style={{ color: '#FFFFFF' }} />}
+                        disabled={isLoading}
+                        label={entity.version.current}
+                        style={{
+                          backgroundColor: entity.version.outdated
+                            ? '#FF9A13'
+                            : '#84BD00',
+                          color: '#FFFFFF',
+                        }}
+                        onDelete={() => onDelete(entity, type)}
+                      />
+                    ) : (
+                      <Button
+                        color="primary"
+                        disabled={isLoading}
+                        size="small"
+                        startIcon={!entity.version.installed && <InstallIcon />}
+                        variant="contained"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-
-                          onDelete(entity, type);
+                          const { id } = entity;
+                          const { version } = entity;
+                          if (version.outdated && !updating[entity.id]) {
+                            onUpdate(id, type);
+                          } else if (
+                            !version.installed &&
+                            !installing[entity.id]
+                          ) {
+                            onInstall(id, type);
+                          }
                         }}
-                      />
-                    ) : null}
-                  </CardItem>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
+                      >
+                        {entity.version.available}
+                      </Button>
+                    )}
+                  </CardActions>
+
+                  {licenseInfo && (
+                    <Paper
+                      square
+                      style={{
+                        alignItems: 'center',
+                        backgroundColor: licenseInfo.color,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'center',
+                      }}
+                      variant="outlined"
+                    >
+                      <Typography style={{ color: '#FFFFFF' }} variant="body2">
+                        {licenseInfo.label}
+                      </Typography>
+                    </Paper>
+                  )}
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+        {/* </Paper> */}
       </Wrapper>
     );
   }

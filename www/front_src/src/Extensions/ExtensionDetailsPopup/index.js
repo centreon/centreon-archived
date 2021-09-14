@@ -4,16 +4,24 @@
 
 import React from 'react';
 
-import clsx from 'clsx';
+import Carousel from 'react-material-ui-carousel';
+import { Responsive } from '@visx/visx';
 
-import styles from '../Popup/popup.scss';
-import Popup from '../Popup';
-import Slider from '../Slider/SliderContent';
-import IconContent from '../Icon/IconContent';
-import Title from '../Title';
-// import Button from '../Button';
-import HorizontalLine from '../HorizontalLines';
-import Description from '../Description';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import {
+  Chip,
+  Typography,
+  Divider,
+  Grid,
+  Button,
+  Link,
+} from '@material-ui/core';
+import UpdateIcon from '@material-ui/icons/SystemUpdateAlt';
+import DeleteIcon from '@material-ui/icons/Delete';
+import InstallIcon from '@material-ui/icons/Add';
+
+import { Dialog, IconButton } from '@centreon/ui';
 
 import {
   SliderSkeleton,
@@ -25,7 +33,6 @@ import {
 class ExtensionDetailPopup extends React.Component {
   render() {
     const {
-      type,
       modalDetails,
       onCloseClicked,
       onDeleteClicked,
@@ -40,97 +47,119 @@ class ExtensionDetailPopup extends React.Component {
     }
 
     return (
-      <Popup popupType="big">
-        {loading ? (
-          <SliderSkeleton animate={animate} />
-        ) : (
-          <Slider
-            images={!loading && modalDetails.images ? modalDetails.images : []}
-            type={type}
-          >
+      <Dialog
+        open
+        labelConfirm="Close"
+        onClose={onCloseClicked}
+        onConfirm={onCloseClicked}
+      >
+        <Grid container direction="column" spacing={2} style={{ width: 520 }}>
+          <Grid item>
+            <Responsive.ParentSize>
+              {({ width }) =>
+                loading ? (
+                  <SliderSkeleton animate={animate} width={width} />
+                ) : (
+                  <Carousel
+                    NextIcon={<ChevronRightIcon />}
+                    PrevIcon={<ChevronLeftIcon />}
+                    autoPlay={false}
+                  >
+                    {modalDetails.images.map((image) => (
+                      <img alt={image} key={image} src={image} width={width} />
+                    ))}
+                  </Carousel>
+                )
+              }
+            </Responsive.ParentSize>
             {modalDetails.version.installed && modalDetails.version.outdated ? (
-              <IconContent
-                customClass="content-icon-popup-wrapper"
-                iconContentColor="orange"
-                iconContentType="update"
+              <IconButton
                 onClick={() => {
                   onUpdateClicked(modalDetails.id, modalDetails.type);
                 }}
-              />
+              >
+                <UpdateIcon />
+              </IconButton>
             ) : null}
             {modalDetails.version.installed ? (
-              <IconContent
-                customClass="content-icon-popup-wrapper"
-                iconContentColor="red"
-                iconContentType="delete"
+              <Button
+                color="primary"
+                disabled={loading}
+                size="small"
+                startIcon={<DeleteIcon />}
+                variant="contained"
                 onClick={() => {
                   onDeleteClicked(modalDetails.id, modalDetails.type);
                 }}
-              />
+              >
+                Delete
+              </Button>
             ) : (
-              <IconContent
-                customClass="content-icon-popup-wrapper"
-                iconContentColor="green"
-                iconContentType="add"
+              <Button
+                color="primary"
+                disabled={!loading}
+                size="small"
+                startIcon={<InstallIcon />}
+                variant="contained"
                 onClick={() => {
                   onInstallClicked(modalDetails.id, modalDetails.type);
                 }}
-              />
+              >
+                Install
+              </Button>
             )}
-          </Slider>
-        )}
-        <div className={clsx(styles['popup-header'])}>
-          {loading ? (
-            <HeaderSkeleton animate={animate} />
-          ) : (
-            <>
-              <Title label={modalDetails.title} />
-              <Button
-                buttonType="regular"
-                color="blue"
-                label={
-                  (!modalDetails.version.installed ? 'Available ' : '') +
-                  modalDetails.version.available
-                }
-                style={{ cursor: 'default' }}
-              />
-              <Button
-                buttonType="bordered"
-                color="gray"
-                label={modalDetails.stability}
-                style={{ cursor: 'default', margin: '15px' }}
-              />
-            </>
-          )}
-        </div>
-        <HorizontalLine />
-        <div className={clsx(styles['popup-body'])}>
-          {loading ? (
-            <ContentSkeleton animate={animate} />
-          ) : (
-            <>
-              {modalDetails.last_update ? (
-                <Description date={`Last update ${modalDetails.last_update}`} />
-              ) : null}
-              <Description title="Description:" />
-              <Description text={modalDetails.description} />
-            </>
-          )}
-        </div>
-        <HorizontalLine />
-        <div className={clsx(styles['popup-footer'])}>
-          {loading ? (
-            <ReleaseNoteSkeleton animate={animate} />
-          ) : (
-            <Description link note={modalDetails.release_note} />
-          )}
-        </div>
-        <IconClose
-          iconPosition="icon-close-position-big"
-          iconType="big"
-          onClick={onCloseClicked}
-        />
-      </Popup>
+          </Grid>
+          <Grid item>
+            {loading ? (
+              <HeaderSkeleton animate={animate} />
+            ) : (
+              <>
+                <Typography variant="h5">{modalDetails.title}</Typography>
+                <Grid container spacing={1}>
+                  <Grid item>
+                    <Chip
+                      label={
+                        (!modalDetails.version.installed ? 'Available ' : '') +
+                        modalDetails.version.available
+                      }
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Chip label={modalDetails.stability} />
+                  </Grid>
+                </Grid>
+              </>
+            )}
+          </Grid>
+          <Grid item>
+            {loading ? (
+              <ContentSkeleton animate={animate} />
+            ) : (
+              <>
+                {modalDetails.last_update ? (
+                  <Typography variant="body1">{`Last update ${modalDetails.last_update}`}</Typography>
+                ) : null}
+                <Typography variant="h6">Description</Typography>
+                <Typography variant="body2">
+                  {modalDetails.description}
+                </Typography>
+              </>
+            )}
+          </Grid>
+          <Grid item>
+            <Divider />
+          </Grid>
+          <Grid item>
+            {loading ? (
+              <ReleaseNoteSkeleton animate={animate} />
+            ) : (
+              <Link href={modalDetails.release_note}>
+                {modalDetails.release_note}
+              </Link>
+            )}
+          </Grid>
+        </Grid>
+      </Dialog>
     );
   }
 }

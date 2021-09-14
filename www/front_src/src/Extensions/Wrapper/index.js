@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 
 import clsx from 'clsx';
 
-import styles from '../global-sass-files/_containers.scss';
+import styles from '../../global-sass-files/_containers.scss';
 
 class ExtensionsWrapper extends Component {
   render() {

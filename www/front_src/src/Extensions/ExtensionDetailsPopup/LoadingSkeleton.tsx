@@ -22,7 +22,10 @@ const BaseSkeleton = ({
   <Skeleton animation={animate ? 'wave' : false} {...props} />
 );
 
-export const SliderSkeleton = ({ animate = true }: Props): JSX.Element => {
+export const SliderSkeleton = ({
+  animate = true,
+  width,
+}: Props & { width }): JSX.Element => {
   const theme = useTheme();
 
   return (
@@ -30,7 +33,7 @@ export const SliderSkeleton = ({ animate = true }: Props): JSX.Element => {
       animate={animate}
       height={theme.spacing(50)}
       variant="rect"
-      width="100%"
+      width={width}
     />
   );
 };

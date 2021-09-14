@@ -12,7 +12,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { batchActions } from 'redux-batched-actions';
 
-import { Button } from '@centreon/ui';
+import UpdateIcon from '@material-ui/icons/SystemUpdateAlt';
+import InstallIcon from '@material-ui/icons/Add';
+import { Button } from '@material-ui/core';
 
 import Hook from '../components/Hook';
 import axios from '../axios';
@@ -27,6 +29,7 @@ import Wrapper from './Wrapper';
 
 class ExtensionsRoute extends Component {
   state = {
+    confirmedDeletingEntityId: null,
     deleteToggled: false,
     deletingEntity: false,
     extensionDetails: false,
@@ -288,6 +291,7 @@ class ExtensionsRoute extends Component {
     const { modalDetailsActive } = this.state;
     this.setState(
       {
+        confirmedDeletingEntityId: id,
         deleteToggled: false,
         deletingEntity: false,
         modalDetailsLoading: modalDetailsActive,
@@ -301,6 +305,9 @@ class ExtensionsRoute extends Component {
             },
           })
           .then(() => {
+            this.setState({
+              confirmedDeletingEntityId: null,
+            });
             this.getData();
             this.reloadNavigation();
             if (modalDetailsActive) {
@@ -461,20 +468,19 @@ class ExtensionsRoute extends Component {
           switches={[
             [
               {
-                customClass: 'container__col-md-4 container__col-xs-4',
+                switchTitle: 'Status',
+              },
+              {
                 filterKey: 'not_installed',
                 switchStatus: 'Not installed',
-                switchTitle: 'Status',
                 value: not_installed,
               },
               {
-                customClass: 'container__col-md-4 container__col-xs-4',
                 filterKey: 'installed',
                 switchStatus: 'Installed',
                 value: installed,
               },
               {
-                customClass: 'container__col-md-4 container__col-xs-4',
                 filterKey: 'updated',
                 switchStatus: 'Outdated',
                 value: updated,
@@ -482,14 +488,14 @@ class ExtensionsRoute extends Component {
             ],
             [
               {
-                customClass: 'container__col-sm-3 container__col-xs-4',
+                switchTitle: 'Type',
+              },
+              {
                 filterKey: 'modulesActive',
                 switchStatus: 'Module',
-                switchTitle: 'Type',
                 value: modulesActive,
               },
               {
-                customClass: 'container__col-sm-3 container__col-xs-4',
                 filterKey: 'widgetsActive',
                 switchStatus: 'Widget',
                 value: widgetsActive,
@@ -498,7 +504,7 @@ class ExtensionsRoute extends Component {
                 button: true,
                 buttonType: 'bordered',
                 color: 'black',
-                label: 'Clear Filters',
+                label: 'Clear',
                 onClick: this.clearFilters.bind(this),
               },
             ],
@@ -507,32 +513,32 @@ class ExtensionsRoute extends Component {
         />
         <Wrapper>
           <Button
-            buttonType="regular"
-            color="orange"
-            customClass="mr-2"
-            label={`${hasNoSelection ? 'Update all' : 'Update selection'}`}
-            style={{
-              opacity: '1',
-            }}
+            color="primary"
+            size="small"
+            startIcon={<UpdateIcon />}
+            variant="contained"
             onClick={this.runActionOnAllEntities.bind(
               this,
               'outdated',
               true,
               'extensionsUpdatingStatus',
             )}
-          />
+          >
+            {`${hasNoSelection ? 'Update all' : 'Update selection'}`}
+          </Button>
           <Button
-            buttonType="regular"
-            color="green"
-            customClass="mr-2"
-            label={`${hasNoSelection ? 'Install all' : 'Install selection'}`}
+            color="primary"
+            size="small"
+            startIcon={<InstallIcon />}
+            style={{ marginLeft: 8, marginRight: 8 }}
+            variant="contained"
             onClick={this.runActionOnAllEntities.bind(
               this,
               'installed',
               false,
               'extensionsInstallingStatus',
             )}
-          />
+          >{`${hasNoSelection ? 'Install all' : 'Install selection'}`}</Button>
           <Hook path="/administration/extensions/manager" />
         </Wrapper>
         {extensions.result && !nothingShown ? (
@@ -540,6 +546,7 @@ class ExtensionsRoute extends Component {
             {extensions.result.module &&
             (modulesActive || (!modulesActive && !widgetsActive)) ? (
               <ExtensionsHolder
+                deletingEntityId={this.state.confirmedDeletingEntityId}
                 entities={extensions.result.module.entities}
                 installing={extensionsInstallingStatus}
                 title="Modules"
@@ -554,6 +561,7 @@ class ExtensionsRoute extends Component {
             {extensions.result.widget &&
             (widgetsActive || (!modulesActive && !widgetsActive)) ? (
               <ExtensionsHolder
+                deletingEntityId={this.state.confirmedDeletingEntityId}
                 entities={extensions.result.widget.entities}
                 hrColor="blue"
                 hrTitleColor="blue"
