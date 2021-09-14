@@ -13,7 +13,7 @@ if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
 } else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
   env.BUILD = 'REFERENCE'
-} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch)) {
+} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch) || (env.BRANCH_NAME == stashing-rpms)) {
   env.BUILD = 'QA'
 } else {
   env.BUILD = 'CI'
@@ -187,7 +187,7 @@ stage('Source') {
 }
 
 try {
-  stage('Unit tests') {
+  stage('Unit tests // Packaging') {
     parallel 'frontend': {
       if (!hasFrontendChanges) {
         Utils.markStageSkippedForConditional('frontend')
@@ -231,7 +231,7 @@ try {
         }
       }
     },
-    'package centos7': {
+    'rpm packaging centos7': {
       node {
         checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
@@ -240,7 +240,7 @@ try {
         stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
       }
     },
-    'package centos8': {
+    'rpm packaging centos8': {
       node {
         checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
@@ -330,7 +330,7 @@ try {
   //   }
   // }
 
-  stage('Bundle') {
+  stage('Docker packaging') {
     def parallelSteps = [:]
     def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
     for (x in osBuilds) {
