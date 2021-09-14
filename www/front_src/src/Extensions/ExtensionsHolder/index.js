@@ -40,7 +40,6 @@ class ExtensionsHolder extends React.Component {
         };
       }
       if (!isNaN(Date.parse(licenseInfo.expiration_date))) {
-        // @todo use moment to convert date in the proper format (locale and timezone from user)
         const expirationDate = new Date(licenseInfo.expiration_date);
 
         return {
