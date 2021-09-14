@@ -119,7 +119,6 @@ class ExtensionsHolder extends React.Component {
                     {isLoading && <LinearProgress />}
                   </div>
                   <CardContent>
-
                     <Typography style={{ fontWeight: 'bold' }} variant="body1">
                       {this.parseDescription(entity.description)}
                     </Typography>

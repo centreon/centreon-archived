@@ -155,7 +155,7 @@ class ExtensionDetailPopup extends React.Component {
               <ReleaseNoteSkeleton animate={animate} />
             ) : (
               <Link href={modalDetails.release_note}>
-                {modalDetails.release_note}
+                <Typography>{modalDetails.release_note}</Typography>
               </Link>
             )}
           </Grid>
