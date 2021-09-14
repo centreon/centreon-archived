@@ -231,6 +231,24 @@ try {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
       }
+    },
+    'package centos7': {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
+        archiveArtifacts artifacts: "rpms-centos7.tar.gz"
+        stash name: "rpms-centos7", includes: 'output/*.rpm'
+      }
+    },
+    'package centos8': {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
+        archiveArtifacts artifacts: "rpms-centos8.tar.gz"
+        stash name: "rpms-centos8", includes: 'output/*.rpm'
+      }      
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests stage failure.');
@@ -310,26 +328,6 @@ try {
 
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error("Quality gate failure: ${qualityGate.status}.");
-    }
-  }
-
-  stage('Package') {
-    def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-    for (x in osBuilds) {
-      def osBuild = x
-      parallelSteps[osBuild] = {
-        node {
-          checkoutCentreonBuild(buildBranch)
-          unstash 'tar-sources'
-          sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh ${osBuild}"
-          archiveArtifacts artifacts: "rpms-${osBuild}.tar.gz"
-        }
-      }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Package stage failure.');
     }
   }
 
@@ -438,6 +436,8 @@ try {
         checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
         unstash 'api-doc'
+        unstash 'rpms-centos8'
+        unstash 'rpms-centos7'
         sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
