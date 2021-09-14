@@ -30,7 +30,7 @@ const RadioField = ({ checked, error, label, info, className, ...rest }) => (
 
     {error ? (
       <div className={styles['invalid-feedback']}>
-        <Typography style={{ color: '#d0021b' }} variant="body2">
+        <Typography color="error" variant="body2">
           {error}
         </Typography>
       </div>
