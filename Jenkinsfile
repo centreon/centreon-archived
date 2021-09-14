@@ -187,7 +187,7 @@ stage('Source') {
 }
 
 try {
-  stage('Unit tests // RPMs Packaging') {
+  stage('Unit tests // Sonar analysis // RPMs Packaging') {
     parallel 'frontend': {
       if (!hasFrontendChanges) {
         Utils.markStageSkippedForConditional('frontend')
