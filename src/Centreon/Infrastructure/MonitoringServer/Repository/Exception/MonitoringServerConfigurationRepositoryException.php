@@ -34,22 +34,6 @@ use Centreon\Domain\Repository\RepositoryException;
 class MonitoringServerConfigurationRepositoryException extends RepositoryException
 {
     /**
-     * @return self
-     */
-    public static function authenticationTokenExpired(): self
-    {
-        return new self(_('Authentication token expired'));
-    }
-
-    /**
-     * @return self
-     */
-    public static function authenticationTokenNotFound(): self
-    {
-        return new self(_('Authentication token not found'));
-    }
-
-    /**
      * @param int|null $errorCode
      * @return self
      */
@@ -89,6 +73,6 @@ class MonitoringServerConfigurationRepositoryException extends RepositoryExcepti
      */
     public static function unexpectedError(\Throwable $ex): self
     {
-        return new self($ex->getMessage(), (int) $ex->getCode(), $ex);
+        return new self($ex->getMessage(), $ex->getCode(), $ex);
     }
 }

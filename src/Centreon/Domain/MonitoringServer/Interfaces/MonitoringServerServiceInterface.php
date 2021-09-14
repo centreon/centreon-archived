@@ -87,7 +87,7 @@ interface MonitoringServerServiceInterface
     /**
      * Delete a monitoring server.
      *
-     * @param integer $monitoringServerId
+     * @param int $monitoringServerId
      * @throws MonitoringServerException
      */
     public function deleteServer(int $monitoringServerId): void;

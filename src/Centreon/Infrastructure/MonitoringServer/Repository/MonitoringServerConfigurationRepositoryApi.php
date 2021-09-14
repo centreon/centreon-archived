@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\MonitoringServer\Repository;
 
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Log\LoggerTrait;
 use DateTime;
@@ -146,6 +147,7 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
      * @param string $payloadBody
      * @throws RepositoryException
      * @throws TimeoutException
+     * @throws AuthenticationException
      */
     private function callHttp(string $filePath, string $payloadBody): void
     {
@@ -166,14 +168,14 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
 
             $authenticationTokens = $this->authenticationTokenService->findByContact($this->contact);
             if ($authenticationTokens === null) {
-                throw MonitoringServerConfigurationRepositoryException::authenticationTokenNotFound();
+                throw AuthenticationException::authenticationTokenNotFound();
             }
             $providerToken = $authenticationTokens->getProviderToken();
             if (
                 $providerToken->getExpirationDate() === null
                 || $providerToken->getExpirationDate()->getTimestamp() < (new DateTime())->getTimestamp()
             ) {
-                throw MonitoringServerConfigurationRepositoryException::authenticationTokenExpired();
+                throw AuthenticationException::authenticationTokenExpired();
             }
             $optionPayload['headers'] = ['X-AUTH-TOKEN' => $providerToken->getToken()];
             $optionPayload['body'] = $payloadBody;
@@ -194,7 +196,7 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             } else {
                 throw MonitoringServerConfigurationRepositoryException::responseEmpty();
             }
-        } catch (RepositoryException $ex) {
+        } catch (RepositoryException | AuthenticationException $ex) {
             throw $ex;
         } catch (\Assert\AssertionFailedException $ex) {
             throw MonitoringServerConfigurationRepositoryException::errorWhenInitializingApiUri();
