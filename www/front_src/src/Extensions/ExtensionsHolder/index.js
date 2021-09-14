@@ -119,7 +119,6 @@ class ExtensionsHolder extends React.Component {
                     {isLoading && <LinearProgress />}
                   </div>
                   <CardContent>
-                    {/* {entity.version.installed ? <InfoIcon /> : null} */}
 
                     <Typography style={{ fontWeight: 'bold' }} variant="body1">
                       {this.parseDescription(entity.description)}
