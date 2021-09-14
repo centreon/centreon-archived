@@ -4,7 +4,6 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 /*
 ** Variables.
 */
-properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
 def serie = '21.10'
 def maintenanceBranch = "${serie}.x"
 def qaBranch = "dev-${serie}.x"
@@ -238,7 +237,7 @@ try {
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: "rpms-centos7.tar.gz"
-        stash name: "rpms-centos7", includes: 'output/*.rpm'
+        stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
       }
     },
     'package centos8': {
@@ -247,7 +246,7 @@ try {
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
         archiveArtifacts artifacts: "rpms-centos8.tar.gz"
-        stash name: "rpms-centos8", includes: 'output/*.rpm'
+        stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
       }      
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
