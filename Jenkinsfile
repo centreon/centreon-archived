@@ -13,7 +13,7 @@ if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
 } else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
   env.BUILD = 'REFERENCE'
-} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch) || (env.BRANCH_NAME == 'stashing-rpms')) {
+} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch)) {
   env.BUILD = 'QA'
 } else {
   env.BUILD = 'CI'
@@ -369,22 +369,20 @@ try {
     }
   }
 
-if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
-  stage('Delivery') {
-    node {
-      checkoutCentreonBuild(buildBranch)
-      unstash 'tar-sources'
-      unstash 'api-doc'
-      unstash 'rpms-centos8'
-      unstash 'rpms-centos7'
-      sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
+    stage('Delivery') {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos8'
+        unstash 'rpms-centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure');
+      }
     }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Delivery stage failure');
-    }
-  }
-
-  if (isStableBuild()) {
     build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
     build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
     build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
