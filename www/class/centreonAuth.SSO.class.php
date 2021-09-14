@@ -94,7 +94,6 @@ class CentreonAuthSSO extends CentreonAuth
             && !empty($this->ssoOptions['openid_connect_authorization_endpoint'])
             && !empty($this->ssoOptions['openid_connect_token_endpoint'])
             && !empty($this->ssoOptions['openid_connect_introspection_endpoint'])
-            && !empty($this->ssoOptions['openid_connect_redirect_url'])
             && !empty($this->ssoOptions['openid_connect_client_id'])
             && !empty($this->ssoOptions['openid_connect_client_secret'])
         ) {
@@ -104,7 +103,18 @@ class CentreonAuthSSO extends CentreonAuth
             $clientBasicAuth = $this->ssoOptions['openid_connect_client_basic_auth'];
             $clientId = $this->ssoOptions['openid_connect_client_id'];
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
-            $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
+            if (empty($this->ssoOptions['openid_connect_redirect_url'])) {
+                $redirectNoEncode = '{scheme}://{hostname}:{port}'
+                . rtim($this->ssoOptions['oreon_web_path'], "/") . "/" . 'index.php';
+            } else {
+                $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
+            }
+            $redirectSubstitutions = [
+                '{scheme}' => $_SERVER['REQUEST_SCHEME'],
+                '{hostname}' => $_SERVER['SERVER_NAME'],
+                '{port}' => $_SERVER['SERVER_PORT']
+            ];
+            $redirectNoEncode = strtr($redirectNoEncode, $redirectSubstitutions);
             $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
 
             # Build endpoint urls
