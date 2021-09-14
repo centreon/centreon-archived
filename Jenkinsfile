@@ -263,6 +263,7 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: "rpms-centos7.tar.gz"
         stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
+        sh 'rm -rf output'
       }
     },
     'rpm packaging centos8': {
@@ -272,6 +273,7 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
         archiveArtifacts artifacts: "rpms-centos8.tar.gz"
         stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
+        sh 'rm -rf output'
       }      
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -308,7 +310,7 @@ try {
     stage('Delivery to unstable') {
       node {
         checkoutCentreonBuild(buildBranch)
-        rm -rf output
+        sh 'rm -rf output'
         unstash 'tar-sources'
         unstash 'api-doc'
         unstash 'rpms-centos8'
