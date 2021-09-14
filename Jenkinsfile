@@ -308,6 +308,7 @@ try {
     stage('Delivery to unstable') {
       node {
         checkoutCentreonBuild(buildBranch)
+        rm -rf output
         unstash 'tar-sources'
         unstash 'api-doc'
         unstash 'rpms-centos8'
@@ -340,10 +341,10 @@ try {
   stage('API // E2E Tests') {
     parallel 'API Tests': {
       if (hasBackendChanges) {
-        def parallelSteps = [:]
+        def apiparallelSteps = [:]
         for (x in apiFeatureFiles) {
           def feature = x
-          parallelSteps[feature] = {
+          apiparallelSteps[feature] = {
             node {
               checkoutCentreonBuild(buildBranch)
               unstash 'tar-sources'
@@ -359,14 +360,17 @@ try {
             }
           }
         }
-        parallel parallelSteps
+        parallel apiparallelSteps
+        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+          error('API tests stage failure');
+        }
       }
     },
     'E2E tests': {
-      def parallelSteps = [:]
+      def e2eparallelSteps = [:]
       for (x in e2eFeatureFiles) {
         def feature = x
-        parallelSteps[feature] = {
+        e2eparallelSteps[feature] = {
           node {
             checkoutCentreonBuild(buildBranch)
             unstash 'tar-sources'
@@ -381,17 +385,20 @@ try {
           }
         }
       }
-      parallel parallelSteps
+      parallel e2eparallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+          error('E2E tests stage failure');
+      }
     }
   }
 
   if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
     stage('Acceptance tests') {
       if (hasBackendChanges || hasFrontendChanges) {
-        def parallelSteps = [:]
+        def atparallelSteps = [:]
         for (x in featureFiles) {
           def feature = x
-          parallelSteps[feature] = {
+          atparallelSteps[feature] = {
             node {
               checkoutCentreonBuild(buildBranch)
               unstash 'tar-sources'
@@ -407,7 +414,7 @@ try {
             }
           }
         }
-        parallel parallelSteps
+        parallel atparallelSteps
         if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
           error('Critical tests stage failure');
         }
