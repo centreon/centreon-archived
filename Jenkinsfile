@@ -73,7 +73,7 @@ def acceptanceTag = ""
 ** Functions
 */
 def isStableBuild() {
-  return ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE') || (env.BUILD == 'QA'))
+  return ((env.BUILD == 'REFERENCE') || (env.BUILD == 'QA'))
 }
 
 def hasChanges(patterns) {
@@ -197,9 +197,15 @@ try {
           unstash 'tar-sources'
           unstash 'node_modules'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
+          recordIssues(
+            referenceJobName: "centreon-web/${env.REF_BRANCH}",
+            enabledForFailure: true,
+            failOnError: true,
+            qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+            tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
+            trendChartType: 'NONE'
+          )
           junit 'ut-fe.xml'
-          stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
-          stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
         }
       }
     },
@@ -212,11 +218,22 @@ try {
           unstash 'tar-sources'
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
+          //Recording issues in Jenkins job
+          recordIssues(
+            referenceJobName: "centreon-web/${env.REF_BRANCH}",
+            enabledForFailure: true,
+            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
+            trendChartType: 'NONE'
+          )
+          recordIssues(
+            referenceJobName: "centreon-web/${env.REF_BRANCH}",
+            enabledForFailure: true,
+            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
+            trendChartType: 'NONE'
+          )
           junit 'ut-be.xml'
-          stash name: 'ut-be.xml', includes: 'ut-be.xml'
-          stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
-          stash name: 'codestyle-be.xml', includes: 'codestyle-be.xml'
-          stash name: 'phpstan.xml', includes: 'phpstan.xml'
         }
       }
     },
@@ -228,6 +245,14 @@ try {
         sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
         withSonarQubeEnv('SonarQubeDev') {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+        }
+        // sonarQube step to get qualityGate result
+        def qualityGate = waitForQualityGate()
+        if (qualityGate.status != 'OK') {
+          error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+        }
+        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+          error("Quality gate failure: ${qualityGate.status}.");
         }
       }
     },
@@ -250,85 +275,33 @@ try {
       }      
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Unit tests stage failure.');
+      error('Unit tests // RPM Packaging Failure');
     }
   }
 
-  // stage('Quality gate') {
-  //   node {
-  //     if (hasBackendChanges) {
-  //       unstash 'ut-be.xml'
-  //       unstash 'coverage-be.xml'
-  //       unstash 'codestyle-be.xml'
-  //       unstash 'phpstan.xml'
-  //     }
-
-  //     if (hasFrontendChanges) {
-  //       unstash 'ut-fe.xml'
-  //       unstash 'codestyle-fe.xml'
-  //     }
-
-  //     if (env.CHANGE_ID) { // pull request to comment with coding style issues
-  //       ViolationsToGitHub([
-  //         repositoryName: 'centreon',
-  //         pullRequestId: env.CHANGE_ID,
-
-  //         createSingleFileComments: true,
-  //         commentOnlyChangedContent: true,
-  //         commentOnlyChangedFiles: true,
-  //         keepOldComments: false,
-
-  //         commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
-
-  //         violationConfigs: [
-  //           [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
-  //           [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle'],
-  //           [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
-  //         ]
-  //       ])
-  //     }
-
-  //     if (hasBackendChanges) {
-  //       recordIssues(
-  //         referenceJobName: "centreon-web/${env.REF_BRANCH}",
-  //         enabledForFailure: true,
-  //         qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-  //         tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
-  //         trendChartType: 'NONE'
-  //       )
-  //       recordIssues(
-  //         referenceJobName: "centreon-web/${env.REF_BRANCH}",
-  //         enabledForFailure: true,
-  //         qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-  //         tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
-  //         trendChartType: 'NONE'
-  //       )
-  //     }
-
-  //     if (hasFrontendChanges) {
-  //       recordIssues(
-  //         referenceJobName: "centreon-web/${env.REF_BRANCH}",
-  //         enabledForFailure: true,
-  //         failOnError: true,
-  //         qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-  //         tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
-  //         trendChartType: 'NONE'
-  //       )
-  //     }
-  //     // sonarQube step to get qualityGate result
-  //     def qualityGate = waitForQualityGate()
-  //     if (qualityGate.status != 'OK') {
-  //       error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
-  //     }
-  //     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-  //       error("Quality gate failure: ${qualityGate.status}.");
-  //     }
-  //   }
-
-  //   if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-  //     error("Quality gate failure: ${qualityGate.status}.");
-  //   }
-  // }
+  stage('Violations to Github') {
+    node {
+      if (env.CHANGE_ID) { // pull request to comment with coding style issues
+        ViolationsToGitHub([
+          repositoryName: 'centreon',
+          pullRequestId: env.CHANGE_ID,
+          createSingleFileComments: true,
+          commentOnlyChangedContent: true,
+          commentOnlyChangedFiles: true,
+          keepOldComments: false,
+          commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
+          violationConfigs: [
+            [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
+            [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle'],
+            [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
+          ]
+        ])
+      }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error("Reports stage failure");
+    }
+  }
 
   stage('Docker packaging') {
     def parallelSteps = [:]
@@ -395,7 +368,8 @@ try {
       parallel parallelSteps
     }
   }
-  
+
+if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
   stage('Delivery') {
     node {
       checkoutCentreonBuild(buildBranch)
@@ -406,11 +380,11 @@ try {
       sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Delivery stage failure.');
+      error('Delivery stage failure');
     }
   }
 
-  if (env.BUILD == 'REFERENCE' || env.BUILD == 'QA') {
+  if (isStableBuild()) {
     build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
     build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
     build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
