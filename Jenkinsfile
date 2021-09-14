@@ -13,7 +13,7 @@ if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
 } else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
   env.BUILD = 'REFERENCE'
-} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch) || (env.BRANCH_NAME == stashing-rpms)) {
+} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch) || (env.BRANCH_NAME == 'stashing-rpms')) {
   env.BUILD = 'QA'
 } else {
   env.BUILD = 'CI'
