@@ -208,7 +208,6 @@ class ExtensionsHolder extends React.Component {
             );
           })}
         </Grid>
-        {/* </Paper> */}
       </Wrapper>
     );
   }
