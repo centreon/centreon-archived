@@ -43,7 +43,6 @@ import {
 } from '../../Details/tabs/Graph/models';
 import { useResourceContext } from '../../Context';
 import { ResourceGraphMousePosition } from '../../Details/tabs/Services/Graphs';
-import memoizeComponent from '../../memoizedComponent';
 
 import Graph from './Graph';
 import Legend from './Legend';
@@ -94,7 +93,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     gridTemplateRows: ({ graphHeight, displayTitle }): string =>
       `${displayTitle ? 'min-content' : ''} ${theme.spacing(
         2,
-      )}px ${graphHeight}px auto`,
+      )}px ${graphHeight}px min-content`,
     height: '100%',
     width: 'auto',
   },
@@ -114,10 +113,6 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     margin: theme.spacing(0, 1),
     width: '90%',
   },
-  legend: {
-    height: '100%',
-    width: '100%',
-  },
   loadingContainer: {
     height: theme.spacing(2),
     width: theme.spacing(2),
@@ -127,6 +122,12 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     display: 'flex',
     height: '100%',
     justifyContent: 'center',
+  },
+  title: {
+    maxWidth: '100%',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 }));
 
@@ -211,6 +212,9 @@ const PerformanceGraph = ({
     const mousePosition = prop('mousePosition', metricsValueProps);
     if (isNil(mousePosition)) {
       updateResourceGraphMousePosition?.(null);
+      metricsValueProps.changeMetricsValue({ newMetricsValue: null });
+
+      return;
     }
     updateResourceGraphMousePosition?.({
       mousePosition,
@@ -367,7 +371,11 @@ const PerformanceGraph = ({
       {displayTitle && (
         <div className={classes.graphHeader}>
           <div />
-          <Typography color="textPrimary" variant="body1">
+          <Typography
+            className={classes.title}
+            color="textPrimary"
+            variant="body1"
+          >
             {title}
           </Typography>
           <MemoizedGraphActions
@@ -382,7 +390,9 @@ const PerformanceGraph = ({
 
       <div>
         {timeTick && containsMetrics && (
-          <Typography variant="body1">{toDateTime(timeTick)}</Typography>
+          <Typography align="center" variant="body1">
+            {toDateTime(timeTick)}
+          </Typography>
         )}
       </div>
       <MetricsValueContext.Provider value={metricsValueProps}>
@@ -412,35 +422,20 @@ const PerformanceGraph = ({
             )}
           </Responsive.ParentSize>
         </div>
-        <div className={classes.legend}>
-          <Legend
-            base={base as number}
-            displayCompleteGraph={displayCompleteGraph}
-            limitLegendRows={limitLegendRows}
-            lines={sortedLines}
-            toggable={toggableLegend}
-            onClearHighlight={clearHighlight}
-            onHighlight={highlightLine}
-            onSelect={selectMetricLine}
-            onToggle={toggleMetricLine}
-          />
-        </div>
+        <Legend
+          base={base as number}
+          displayCompleteGraph={displayCompleteGraph}
+          limitLegendRows={limitLegendRows}
+          lines={sortedLines}
+          toggable={toggableLegend}
+          onClearHighlight={clearHighlight}
+          onHighlight={highlightLine}
+          onSelect={selectMetricLine}
+          onToggle={toggleMetricLine}
+        />
       </MetricsValueContext.Provider>
     </div>
   );
 };
 
-const MemoizedPerformanceGraph = memoizeComponent<Props>({
-  Component: PerformanceGraph,
-  memoProps: [
-    'endpoint',
-    'graphHeight',
-    'timeline',
-    'resource',
-    'customTimePeriod',
-    'displayEventAnnotations',
-    'resourceGraphMousePosition',
-  ],
-});
-
-export default MemoizedPerformanceGraph;
+export default PerformanceGraph;

@@ -365,12 +365,7 @@ const GraphContent = ({
   };
 
   const closeTooltip = (): void => {
-    changeMousePositionAndMetricsValue({
-      base,
-      lines,
-      position: null,
-      timeValue: null,
-    });
+    updateMousePosition(null);
     annotations.setAnnotationHovered(undefined);
 
     if (not(isNil(zoomPivotPosition))) {
@@ -438,6 +433,10 @@ const GraphContent = ({
 
   React.useEffect((): void => {
     if (isNil(resourceGraphMousePosition)) {
+      changeMetricsValue({
+        newMetricsValue: null,
+      });
+
       return;
     }
     const { resourceId, mousePosition: mousePositionContext } =

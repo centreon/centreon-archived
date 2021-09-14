@@ -31,8 +31,12 @@ interface ChangeMousePositionAndMetricsValueProps {
   timeValue: TimeValue | null;
 }
 
+interface ChangeMetricsValueProps {
+  newMetricsValue: MetricsValue | null;
+}
+
 interface MetricsValueState {
-  changeMetricsValue: ({ newMetricsValue }) => void;
+  changeMetricsValue: ({ newMetricsValue }: ChangeMetricsValueProps) => void;
   changeMousePositionAndMetricsValue: (
     props: ChangeMousePositionAndMetricsValueProps,
   ) => void;
@@ -56,7 +60,9 @@ const useMetricsValue = (isInViewPort?: boolean): MetricsValueState => {
       formatString: dateTimeFormat,
     });
 
-  const changeMetricsValue = ({ newMetricsValue }): void => {
+  const changeMetricsValue = ({
+    newMetricsValue,
+  }: ChangeMetricsValueProps): void => {
     if (not(isInViewPort)) {
       return;
     }

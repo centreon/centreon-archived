@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { path, isNil, equals, last, pipe, not } from 'ramda';
 
+import { makeStyles } from '@material-ui/core';
+
 import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
 import { MousePosition } from '../../../Graph/Performance/Graph/useMetricsValue';
@@ -32,26 +34,31 @@ export interface ResourceGraphMousePosition {
   resourceId: string | number;
 }
 
+const useStyles = makeStyles((theme) => ({
+  graph: {
+    columnGap: '8px',
+    display: 'grid',
+    gridTemplateColumns: `repeat(auto-fill, minmax(${theme.spacing(
+      40,
+    )}px, auto))`,
+    rowGap: '8px',
+  },
+}));
+
 const ServiceGraphs = ({
   services,
   infiniteScrollTriggerRef,
 }: Props): JSX.Element => {
   const [resourceGraphMousePosition, setResourceGraphMousePosition] =
     React.useState<ResourceGraphMousePosition | null>(null);
+  const classes = useStyles();
 
   const servicesWithGraph = services.filter(
     pipe(path(['links', 'endpoints', 'performance_graph']), isNil, not),
   );
 
   return (
-    <div
-      style={{
-        columnGap: '8px',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(350px, auto))',
-        rowGap: '8px',
-      }}
-    >
+    <div className={classes.graph}>
       {servicesWithGraph.map((service) => {
         const { id } = service;
         const isLastService = equals(last(servicesWithGraph), service);
