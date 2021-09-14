@@ -279,6 +279,7 @@ try {
     }
   }
 
+
   stage('Violations to Github') {
     node {
       if (env.CHANGE_ID) { // pull request to comment with coding style issues
@@ -300,6 +301,39 @@ try {
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error("Reports stage failure");
+    }
+  }
+
+  if ((env.BUILD == 'CI')) {
+    stage('Delivery to unstable') {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos8'
+        unstash 'rpms-centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure');
+      }
+    } 
+  }
+  stage('Docker packaging') {
+    def parallelSteps = [:]
+    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+    for (x in osBuilds) {
+      def osBuild = x
+      parallelSteps[osBuild] = {
+        node {
+          checkoutCentreonBuild(buildBranch)
+          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+        }
+      }
+    }
+    parallel parallelSteps
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Bundle stage failure.');
     }
   }
 
@@ -381,8 +415,8 @@ try {
     }
   }  
 
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'CI')) {
-    stage('Delivery') {
+  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
+    stage('Delivery to unstable') {
       node {
         checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
@@ -397,23 +431,6 @@ try {
     } 
   }
 
-  stage('Docker packaging') {
-    def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-    for (x in osBuilds) {
-      def osBuild = x
-      parallelSteps[osBuild] = {
-        node {
-          checkoutCentreonBuild(buildBranch)
-          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
-        }
-      }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Bundle stage failure.');
-    }
-  }
   build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
   build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
   build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
