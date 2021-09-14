@@ -303,25 +303,7 @@ try {
     }
   }
 
-  stage('Docker packaging') {
-    def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-    for (x in osBuilds) {
-      def osBuild = x
-      parallelSteps[osBuild] = {
-        node {
-          checkoutCentreonBuild(buildBranch)
-          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
-        }
-      }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Bundle stage failure.');
-    }
-  }
-
-  stage('API // E2E') {
+  stage('API // E2E Tests') {
     parallel 'API Tests': {
       if (hasBackendChanges) {
         def parallelSteps = [:]
@@ -397,7 +379,9 @@ try {
         }
       }
     }
-    
+  }  
+
+  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'CI')) {
     stage('Delivery') {
       node {
         checkoutCentreonBuild(buildBranch)
@@ -410,14 +394,33 @@ try {
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Delivery stage failure');
       }
-    }
-    build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-pp-manager/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
+    } 
   }
+
+  stage('Docker packaging') {
+    def parallelSteps = [:]
+    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+    for (x in osBuilds) {
+      def osBuild = x
+      parallelSteps[osBuild] = {
+        node {
+          checkoutCentreonBuild(buildBranch)
+          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+        }
+      }
+    }
+    parallel parallelSteps
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Bundle stage failure.');
+    }
+  }
+  build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
+  build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
+  build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
+  build job: "centreon-pp-manager/${env.BRANCH_NAME}", wait: false
+  build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
+  build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
+
 } catch(e) {
   if (isStableBuild()) {
     slackSend channel: "#monitoring-metrology",
