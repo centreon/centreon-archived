@@ -27,7 +27,11 @@ import {
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
-import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
+import {
+  dateTimeFormat,
+  useLocaleDateTimeFormat,
+  useMemoComponent,
+} from '@centreon/ui';
 
 import { TimeValue, Line as LineModel, AdjustTimePeriodProps } from '../models';
 import {
@@ -41,6 +45,8 @@ import {
   getSortedStackedLines,
   getStackedMetricValues,
   hasUnitStackedLines,
+  getMetrics,
+  getLineForMetric,
 } from '../timeSeries';
 import Lines from '../Lines';
 import {
@@ -53,6 +59,7 @@ import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import memoizeComponent from '../../../memoizedComponent';
+import { ResourceGraphMousePosition } from '../../../Details/tabs/Services/Graphs';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
@@ -147,6 +154,7 @@ interface GraphContentProps {
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
+  resourceGraphMousePosition?: ResourceGraphMousePosition | null;
   shiftTime?: (direction: TimeShiftDirection) => void;
   showAddCommentTooltip: (args) => void;
   timeSeries: Array<TimeValue>;
@@ -197,6 +205,7 @@ const GraphContent = ({
   displayEventAnnotations,
   containsMetrics,
   changeMetricsValue,
+  resourceGraphMousePosition,
 }: GraphContentProps): JSX.Element => {
   const { t } = useTranslation();
   const classes = useStyles({ onAddComment });
@@ -208,6 +217,7 @@ const GraphContent = ({
   >(null);
   const [zoomBoundaries, setZoomBoundaries] =
     React.useState<ZoomBoundaries | null>(null);
+  const graphSvgRef = React.useRef<SVGSVGElement | null>(null);
   const { canComment } = useAclQuery();
 
   const theme = useTheme();
@@ -320,8 +330,11 @@ const GraphContent = ({
     changeMousePositionAndMetricsValue({ base, lines, position, timeValue });
   };
 
-  const displayTooltip = (event): void => {
-    const { x, y } = Event.localPoint(event) || { x: 0, y: 0 };
+  const displayTooltip = (event: React.MouseEvent): void => {
+    const { x, y } = Event.localPoint(
+      graphSvgRef.current as SVGSVGElement,
+      event,
+    ) || { x: 0, y: 0 };
 
     const mouseX = x - margin.left;
 
@@ -423,15 +436,51 @@ const GraphContent = ({
     hideAddCommentTooltip();
   };
 
-  const mousePositionX = (mousePosition?.[0] || 0) - margin.left;
-  const mousePositionY = (mousePosition?.[1] || 0) - margin.top;
+  React.useEffect((): void => {
+    if (isNil(resourceGraphMousePosition)) {
+      return;
+    }
+    const { resourceId, mousePosition: mousePositionContext } =
+      resourceGraphMousePosition;
+    if (
+      equals(resourceId, resource.id) ||
+      equals(mousePositionContext, mousePosition) ||
+      isNil(mousePositionContext)
+    ) {
+      return;
+    }
+
+    const timeValue = getTimeValue(mousePositionContext[0]);
+
+    const metrics = getMetrics(timeValue);
+
+    const metricsToDisplay = metrics.filter((metric) => {
+      const line = getLineForMetric({ lines, metric });
+
+      return !isNil(timeValue[metric]) && !isNil(line);
+    });
+
+    changeMetricsValue({
+      newMetricsValue: {
+        base,
+        lines,
+        metrics: metricsToDisplay,
+        timeValue,
+      },
+    });
+  }, [resourceGraphMousePosition]);
+
+  const position = mousePosition || resourceGraphMousePosition?.mousePosition;
+
+  const mousePositionX = (position?.[0] || 0) - margin.left;
+  const mousePositionY = (position?.[1] || 0) - margin.top;
 
   const zoomBarWidth = Math.abs(
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
   );
 
-  const mousePositionTimeTick = mousePosition
-    ? getTimeValue(mousePosition[0]).timeTick
+  const mousePositionTimeTick = position
+    ? getTimeValue(position[0]).timeTick
     : 0;
 
   const timeTick = containsMetrics ? new Date(mousePositionTimeTick) : null;
@@ -449,7 +498,12 @@ const GraphContent = ({
               <CircularProgress />
             </div>
           )}
-          <svg height={height} width="100%" onMouseUp={closeZoomPreview}>
+          <svg
+            height={height}
+            ref={graphSvgRef}
+            width="100%"
+            onMouseUp={closeZoomPreview}
+          >
             <Group.Group left={margin.left} top={margin.top}>
               <MemoizedGridRows
                 height={graphHeight}
@@ -497,24 +551,35 @@ const GraphContent = ({
                 x={zoomBoundaries?.start || 0}
                 y={0}
               />
-              {containsMetrics && (
-                <>
-                  <Shape.Line
-                    from={{ x: mousePositionX, y: 0 }}
-                    pointerEvents="none"
-                    stroke={grey[400]}
-                    strokeWidth={1}
-                    to={{ x: mousePositionX, y: graphHeight }}
-                  />
-                  <Shape.Line
-                    from={{ x: 0, y: mousePositionY }}
-                    pointerEvents="none"
-                    stroke={grey[400]}
-                    strokeWidth={1}
-                    to={{ x: graphWidth, y: mousePositionY }}
-                  />
-                </>
-              )}
+              {useMemoComponent({
+                Component:
+                  containsMetrics && position ? (
+                    <>
+                      <Shape.Line
+                        from={{ x: mousePositionX, y: 0 }}
+                        pointerEvents="none"
+                        stroke={grey[400]}
+                        strokeWidth={1}
+                        to={{ x: mousePositionX, y: graphHeight }}
+                      />
+                      <Shape.Line
+                        from={{ x: 0, y: mousePositionY }}
+                        pointerEvents="none"
+                        stroke={grey[400]}
+                        strokeWidth={1}
+                        to={{ x: graphWidth, y: mousePositionY }}
+                      />
+                    </>
+                  ) : (
+                    <></>
+                  ),
+                memoProps: [
+                  isNil(resourceGraphMousePosition) ||
+                  equals(resource.id, resourceGraphMousePosition?.resourceId)
+                    ? mousePosition
+                    : resourceGraphMousePosition,
+                ],
+              })}
               <MemoizedBar
                 className={classes.overlay}
                 fill="transparent"
@@ -606,6 +671,7 @@ const memoProps = [
   'displayEventAnnotations',
   'containsMetrics',
   'isInViewport',
+  'resourceGraphMousePosition',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({

@@ -42,6 +42,8 @@ import {
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
 import { useResourceContext } from '../../Context';
+import { ResourceGraphMousePosition } from '../../Details/tabs/Services/Graphs';
+import memoizeComponent from '../../memoizedComponent';
 
 import Graph from './Graph';
 import Legend from './Legend';
@@ -71,8 +73,12 @@ interface Props {
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
+  resourceGraphMousePosition?: ResourceGraphMousePosition | null;
   timeline?: Array<TimelineEvent>;
   toggableLegend?: boolean;
+  updateResourceGraphMousePosition?: (
+    resourceGraphMousePosition: ResourceGraphMousePosition | null,
+  ) => void;
   xAxisTickFormat?: string;
 }
 
@@ -90,7 +96,6 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
         2,
       )}px ${graphHeight}px auto`,
     height: '100%',
-    justifyItems: 'center',
     width: 'auto',
   },
   graphHeader: {
@@ -143,7 +148,9 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
-}: Props): JSX.Element | null => {
+  updateResourceGraphMousePosition,
+  resourceGraphMousePosition,
+}: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
     displayTitle,
@@ -199,6 +206,17 @@ const PerformanceGraph = ({
     }
     setLineData(undefined);
   }, [selectedResourceId]);
+
+  React.useEffect(() => {
+    const mousePosition = prop('mousePosition', metricsValueProps);
+    if (isNil(mousePosition)) {
+      updateResourceGraphMousePosition?.(null);
+    }
+    updateResourceGraphMousePosition?.({
+      mousePosition,
+      resourceId: resource.id,
+    });
+  }, [metricsValueProps.mousePosition]);
 
   React.useEffect(() => {
     if (isInViewport && performanceGraphRef.current && lineData) {
@@ -368,7 +386,7 @@ const PerformanceGraph = ({
         )}
       </div>
       <MetricsValueContext.Provider value={metricsValueProps}>
-        <>
+        <div>
           <Responsive.ParentSize>
             {({ width, height }): JSX.Element => (
               <Graph
@@ -383,6 +401,7 @@ const PerformanceGraph = ({
                   not(resourceDetailsUpdated) && sendingGetGraphDataRequest
                 }
                 resource={resource}
+                resourceGraphMousePosition={resourceGraphMousePosition}
                 shiftTime={shiftTime}
                 timeSeries={timeSeries}
                 timeline={timeline}
@@ -392,23 +411,36 @@ const PerformanceGraph = ({
               />
             )}
           </Responsive.ParentSize>
-          <div className={classes.legend}>
-            <Legend
-              base={base as number}
-              displayCompleteGraph={displayCompleteGraph}
-              limitLegendRows={limitLegendRows}
-              lines={sortedLines}
-              toggable={toggableLegend}
-              onClearHighlight={clearHighlight}
-              onHighlight={highlightLine}
-              onSelect={selectMetricLine}
-              onToggle={toggleMetricLine}
-            />
-          </div>
-        </>
+        </div>
+        <div className={classes.legend}>
+          <Legend
+            base={base as number}
+            displayCompleteGraph={displayCompleteGraph}
+            limitLegendRows={limitLegendRows}
+            lines={sortedLines}
+            toggable={toggableLegend}
+            onClearHighlight={clearHighlight}
+            onHighlight={highlightLine}
+            onSelect={selectMetricLine}
+            onToggle={toggleMetricLine}
+          />
+        </div>
       </MetricsValueContext.Provider>
     </div>
   );
 };
 
-export default PerformanceGraph;
+const MemoizedPerformanceGraph = memoizeComponent<Props>({
+  Component: PerformanceGraph,
+  memoProps: [
+    'endpoint',
+    'graphHeight',
+    'timeline',
+    'resource',
+    'customTimePeriod',
+    'displayEventAnnotations',
+    'resourceGraphMousePosition',
+  ],
+});
+
+export default MemoizedPerformanceGraph;

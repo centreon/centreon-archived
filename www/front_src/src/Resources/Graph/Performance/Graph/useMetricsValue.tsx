@@ -33,7 +33,9 @@ interface ChangeMousePositionAndMetricsValueProps {
 
 interface MetricsValueState {
   changeMetricsValue: ({ newMetricsValue }) => void;
-  changeMousePositionAndMetricsValue: (props) => void;
+  changeMousePositionAndMetricsValue: (
+    props: ChangeMousePositionAndMetricsValueProps,
+  ) => void;
   formatDate: () => string;
   getFormattedMetricData: (metric: string) => FormattedMetricData | null;
   metricsValue: MetricsValue | null;

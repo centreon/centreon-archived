@@ -2,13 +2,9 @@ import * as React from 'react';
 
 import { path, isNil, equals, last, pipe, not } from 'ramda';
 
-import { makeStyles } from '@material-ui/styles';
-
 import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
-import useMousePosition, {
-  MousePositionContext,
-} from '../../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
+import { MousePosition } from '../../../Graph/Performance/Graph/useMetricsValue';
 
 const MemoizedPerformanceGraph = React.memo(
   ExportablePerformanceGraphWithTimeline,
@@ -16,7 +12,13 @@ const MemoizedPerformanceGraph = React.memo(
     const prevResource = prevProps.resource;
     const nextResource = nextProps.resource;
 
-    return equals(prevResource?.id, nextResource?.id);
+    return (
+      equals(prevResource?.id, nextResource?.id) &&
+      equals(
+        prevProps.resourceGraphMousePosition,
+        nextProps.resourceGraphMousePosition,
+      )
+    );
   },
 );
 
@@ -25,43 +27,49 @@ interface Props {
   services: Array<Resource>;
 }
 
-const useStyles = makeStyles({
-  serviceGraph: {
-    display: 'contents',
-  },
-});
+export interface ResourceGraphMousePosition {
+  mousePosition: MousePosition;
+  resourceId: string | number;
+}
 
 const ServiceGraphs = ({
   services,
   infiniteScrollTriggerRef,
 }: Props): JSX.Element => {
-  const classes = useStyles();
-  const mousePositionProps = useMousePosition();
+  const [resourceGraphMousePosition, setResourceGraphMousePosition] =
+    React.useState<ResourceGraphMousePosition | null>(null);
 
   const servicesWithGraph = services.filter(
     pipe(path(['links', 'endpoints', 'performance_graph']), isNil, not),
   );
 
   return (
-    <>
-      <MousePositionContext.Provider value={mousePositionProps}>
-        {servicesWithGraph.map((service) => {
-          const { id } = service;
-          const isLastService = equals(last(servicesWithGraph), service);
+    <div
+      style={{
+        columnGap: '8px',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(350px, auto))',
+        rowGap: '8px',
+      }}
+    >
+      {servicesWithGraph.map((service) => {
+        const { id } = service;
+        const isLastService = equals(last(servicesWithGraph), service);
 
-          return (
-            <div className={classes.serviceGraph} key={id}>
-              <MemoizedPerformanceGraph
-                limitLegendRows
-                graphHeight={120}
-                resource={service}
-              />
-              {isLastService && <div ref={infiniteScrollTriggerRef} />}
-            </div>
-          );
-        })}
-      </MousePositionContext.Provider>
-    </>
+        return (
+          <div key={id}>
+            <MemoizedPerformanceGraph
+              limitLegendRows
+              graphHeight={120}
+              resource={service}
+              resourceGraphMousePosition={resourceGraphMousePosition}
+              updateResourceGraphMousePosition={setResourceGraphMousePosition}
+            />
+            {isLastService && <div ref={infiniteScrollTriggerRef} />}
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
