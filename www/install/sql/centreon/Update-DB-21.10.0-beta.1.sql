@@ -49,3 +49,6 @@ CREATE TABLE `security_authentication_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED;
+
+-- Add one-click export button column to contact
+ALTER TABLE `contact` ADD COLUMN `enable_one_click_export` enum('0','1') DEFAULT '0';

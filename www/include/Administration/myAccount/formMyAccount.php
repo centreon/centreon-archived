@@ -71,7 +71,7 @@ $cct = array();
 if ($o == "c") {
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
         contact_js_effects, contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type,
-        contact_platform_data_sending
+        contact_platform_data_sending, enable_one_click_export
         FROM contact WHERE contact_id = :id";
     $DBRESULT = $pearDB->prepare($query);
     $DBRESULT->bindValue(':id', $centreon->user->get_id(), \PDO::PARAM_INT);
@@ -145,6 +145,13 @@ $form->addElement(
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
 $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
+$form->addElement(
+    'checkbox',
+    'enable_one_click_export',
+    _("Enable the one-click export button for poller configuration [BETA]"),
+    null,
+    $attrsText
+);
 
 $platformDataSendingRadios = [
     $form->createElement('radio', null, null, _('No'), '0'),
@@ -466,6 +473,7 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
 $tpl->assign('featuresFlipping', (count($features) > 0));
+$tpl->assign('contactIsAdmin', $centreon->user->get_admin());
 
 /*
  * prepare help texts
@@ -476,6 +484,7 @@ foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
+
 $tpl->display("formMyAccount.ihtml");
 ?>
 <script type='text/javascript' src='./include/common/javascript/keygen.js'></script>
