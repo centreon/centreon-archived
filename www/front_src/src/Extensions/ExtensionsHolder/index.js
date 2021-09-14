@@ -21,6 +21,7 @@ import {
   Grid,
   Chip,
   LinearProgress,
+  Divider,
 } from '@material-ui/core';
 
 import Wrapper from '../Wrapper';
@@ -73,9 +74,20 @@ class ExtensionsHolder extends React.Component {
 
     return (
       <Wrapper>
-        <Typography style={{ marginBottom: 8 }} variant="body1">
-          {title}
-        </Typography>
+        <Grid
+          container
+          alignItems="center"
+          direction="row"
+          spacing={1}
+          style={{ marginBottom: 8, width: '100%' }}
+        >
+          <Grid item>
+            <Typography variant="body1">{title}</Typography>
+          </Grid>
+          <Grid item style={{ flexGrow: 1 }}>
+            <Divider style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)' }} />
+          </Grid>
+        </Grid>
         <Grid
           container
           alignItems="stretch"
