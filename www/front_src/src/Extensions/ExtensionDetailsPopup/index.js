@@ -63,6 +63,7 @@ class ExtensionDetailPopup extends React.Component {
                   <Carousel
                     NextIcon={<ChevronRightIcon />}
                     PrevIcon={<ChevronLeftIcon />}
+                    animation="slide"
                     autoPlay={false}
                   >
                     {modalDetails.images.map((image) => (
