@@ -545,6 +545,10 @@ paths:
                     nullable: true
                     description: Locale of the current user
                     example: en_US
+                  useDeprecatedPages:
+                    type: boolean
+                    description: Indicates if user wants to use deprecated monitoring pages
+                    example: false
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':

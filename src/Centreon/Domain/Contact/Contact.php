@@ -153,6 +153,13 @@ class Contact implements UserInterface, ContactInterface
     private $locale;
 
     /**
+     * Indicates if user uses deprecated pages
+     *
+     * @var bool
+     */
+    private $useDeprecatedPages;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -547,5 +554,26 @@ class Contact implements UserInterface, ContactInterface
     public function getLocale(): ?string
     {
         return $this->locale;
+    }
+
+    /**
+     * Indicates if user uses deprecated pages
+     *
+     * @return  bool
+     */
+    public function isUsingDeprecatedPages()
+    {
+        return $this->useDeprecatedPages;
+    }
+
+    /**
+     * @param  bool  $useDeprecatedPages  Indicates if user uses deprecated pages
+     * @return  self
+     */
+    public function setUseDeprecatedPages(bool $useDeprecatedPages)
+    {
+        $this->useDeprecatedPages = $useDeprecatedPages;
+
+        return $this;
     }
 }
