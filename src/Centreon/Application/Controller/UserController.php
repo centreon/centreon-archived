@@ -76,7 +76,8 @@ class UserController extends AbstractController
             'alias' => $user->getAlias(),
             'email' => $user->getEmail(),
             'timezone' => $user->getTimezone()->getName(),
-            'locale' => $user->getLocale()
+            'locale' => $user->getLocale(),
+            'use_deprecated_pages' => $user->isUsingDeprecatedPages()
         ]);
     }
 

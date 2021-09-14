@@ -135,7 +135,7 @@ $form->addElement(
     array('onclick' => 'generatePassword("aKey");', 'class' => 'btc bt_info')
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
-$form->addElement('checkbox', 'show_deprecated_pages', _("Show deprecated pages"), null, $attrsText);
+$form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
 $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
 
 
@@ -442,6 +442,16 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
 $tpl->assign('featuresFlipping', (count($features) > 0));
+
+/*
+ * prepare help texts
+ */
+$helptext = "";
+include_once("help.php");
+foreach ($help as $key => $text) {
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
+}
+$tpl->assign("helptext", $helptext);
 $tpl->display("formMyAccount.ihtml");
 ?>
 <script type='text/javascript' src='./include/common/javascript/keygen.js'></script>
