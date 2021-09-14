@@ -904,7 +904,6 @@ describe(Details, () => {
         links: {
           ...retrievedDetails.links,
           uris: {
-            configuration: '/configuration',
             logs: '/logs',
             reporting: '/reporting',
           },
@@ -924,10 +923,6 @@ describe(Details, () => {
 
     userEvent.click(getByLabelText(labelShortcuts).firstChild as HTMLElement);
 
-    expect(getAllByLabelText(labelConfigure)[0]).toHaveAttribute(
-      'href',
-      '/configuration',
-    );
     expect(getAllByLabelText(labelViewLogs)[0]).toHaveAttribute(
       'href',
       '/logs',
@@ -1443,7 +1438,7 @@ describe(Details, () => {
     });
   });
 
-  it('displays the resource configuration link when the resource name is hovered', async () => {
+  it('displays the resource configuration link', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
