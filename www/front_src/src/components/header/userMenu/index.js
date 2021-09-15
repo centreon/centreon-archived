@@ -26,6 +26,9 @@ import MenuLoader from '../../MenuLoader';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
+const labelLogout = 'Logout';
+const labelEditProfile = 'Edit profile';
+const labelUser = 'User';
 class UserMenu extends Component {
   userService = axios('internal.php?object=centreon_topcounter&action=user');
 
@@ -129,6 +132,7 @@ class UserMenu extends Component {
         <Clock />
         <div ref={(profile) => (this.profile = profile)}>
           <UserIcon
+            aria-label={labelUser}
             fontSize="large"
             style={{ color: '#FFFFFF', cursor: 'pointer', marginLeft: 8 }}
             onClick={this.toggle}
@@ -154,12 +158,13 @@ class UserMenu extends Component {
                     </span>
                     {allowEditProfile && (
                       <Link
+                        aria-label={t(labelEditProfile)}
                         className={styles['submenu-user-edit']}
                         to={`/main.php?p=${EDIT_PROFILE_TOPOLOGY_PAGE}&o=c`}
                         onClick={this.toggle}
                       >
                         <Typography variant="body2">
-                          {t('Edit profile')}
+                          {t(labelEditProfile)}
                         </Typography>
                       </Link>
                     )}
@@ -185,7 +190,11 @@ class UserMenu extends Component {
                 )}
               </ul>
               <div className={styles['submenu-content']}>
-                <a className={styles.logoutLink} href="index.php?disconnect=1">
+                <a
+                  aria-label={t(labelLogout)}
+                  className={styles.logoutLink}
+                  href="index.php?disconnect=1"
+                >
                   <button
                     className={classnames(
                       styles.btn,
@@ -193,7 +202,7 @@ class UserMenu extends Component {
                       styles.logout,
                     )}
                   >
-                    {t('Logout')}
+                    {t(labelLogout)}
                   </button>
                 </a>
               </div>
