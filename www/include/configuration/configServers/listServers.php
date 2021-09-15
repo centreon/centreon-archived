@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -179,7 +180,7 @@ foreach ($servers as $config) {
         "select[" . $config['id'] . "]",
         null,
         '',
-        array('id' => 'poller_' . $config['id'])
+        array('id' => 'poller_' . $config['id'], 'onClick' => 'hasPollersSelected();')
     );
     if ($config["ns_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=u&limit=" . $limit .
@@ -240,11 +241,12 @@ foreach ($servers as $config) {
         ? _('Remote Server')
         : $serverType;
 
-    if (isset($nagiosInfo[$config['id']]['is_currently_running'])
+    if (
+        isset($nagiosInfo[$config['id']]['is_currently_running'])
         && $nagiosInfo[$config['id']]['is_currently_running'] == 1
     ) {
-        $now = new DateTime;
-        $startDate = (new DateTime)->setTimestamp($nagiosInfo[$config['id']]['program_start_time']);
+        $now = new DateTime();
+        $startDate = (new DateTime())->setTimestamp($nagiosInfo[$config['id']]['program_start_time']);
         $interval = date_diff($now, $startDate);
         if (intval($interval->format('%a')) >= 2) {
             $uptime = $interval->format('%a days');
@@ -303,59 +305,66 @@ $tpl->assign(
 
 // Different messages we put in the template
 $tpl->assign(
-    'msg',
+    'wizardAddBtn',
     array(
-        "addL" => "main.php?p=" . $p . "&o=a",
-        "addT" => _("Add"),
-        "delConfirm" => _("Do you confirm the deletion ?")
+        "link" => "./poller-wizard/1",
+        "text" => _("Add"),
+        "class" => "btc bt-poller-action bt_success",
+        "iconClass" => "ui-icon-plus"
     )
 );
 
-// Toolbar select
-?>
-<script type="text/javascript">
-    function setO(_i) {
-        document.forms['form'].elements['o'].value = _i;
-    }
-</script>
-<?php
+$tpl->assign(
+    'addBtn',
+    array(
+        "link" => "main.php?p=" . $p . "&o=a",
+        "text" => _("Add (advanced)"),
+        "class" => "btc bt-poller-action bt_success",
+        "iconClass" => "ui-icon-plus"
+    )
+);
 
-foreach (array('o1', 'o2') as $option) {
-    $attrs = array(
-        'onchange' => "javascript: " .
+
+$tpl->assign(
+    'duplicateBtn',
+    array(
+        "text" => _("Duplicate"),
+        "class" => "btc bt-poller-action bt_success",
+        "name" => "duplicate_action",
+        "iconClass" => "ui-icon-copy",
+        "onClickAction" => "javascript: " .
             " var bChecked = isChecked(); " .
-            " if (this.form.elements['" . $option . "'].selectedIndex != 0 && !bChecked) {" .
-            " alert('" . _("Please select one or more items") . "'); return false;} " .
-            " if (this.form.elements['" . $option . "'].selectedIndex == 1 && confirm('" .
-            _("Do you confirm the duplication ?") . "')) {" .
-            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
-            "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('" .
-            _("Do you confirm the deletion ?") . "')) {" .
-            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
-            ""
-    );
-    $form->addElement(
-        'select',
-        $option,
-        null,
-        array(
-            null => _("More actions..."),
-            "m" => _("Duplicate"),
-            "d" => _("Delete")
-        ),
-        $attrs
-    );
-    $form->setDefaults(array($option => null));
-    $o1 = $form->getElement($option);
-    $o1->setValue(null);
-}
+            " if (!bChecked) { alert('" . _("Please select one or more items") . "'); return false;} " .
+            " if (confirm('" . _("Do you confirm the duplication ?") . "')) { setO('m'); submit();} "
+    )
+);
 
-// Apply configuration button
-$form->addElement(
-    'button',
-    'apply_configuration',
-    _("Export configuration"),
-    array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info')
+$tpl->assign(
+    'deleteBtn',
+    array(
+        "text" => _("Delete"),
+        "class" => "btc bt-poller-action bt_danger",
+        "name" => "delete_action",
+        "iconClass" => "ui-icon-trash",
+        "onClickAction" => "javascript: " .
+            " var bChecked = isChecked(); " .
+            " if (!bChecked) { alert('" . _("Please select one or more items") . "'); return false;} " .
+            " if (confirm('" .
+            _("You are about to delete one or more pollers.\\nThis action is IRREVERSIBLE.\\n" .
+            "Do you confirm the deletion ?") .
+            "')) { setO('d'); submit();} "
+    )
+);
+
+$tpl->assign(
+    'exportBtn',
+    array(
+        "text" => _("Export configuration"),
+        "class" => "btc bt-poller-action bt_info",
+        "name" => "apply_configuration",
+        "iconClass" => "ui-icon-extlink",
+        "onClickAction" => "applyConfiguration();"
+    )
 );
 
 $tpl->assign('limit', $limit);

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -349,7 +350,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setAccessToApiConfiguration($contact['reach_api'] === '1')
             ->setTimezone(new \DateTimeZone($contactTimezoneName))
             ->setLocale($contactLocale)
-            ->setDefaultPage($page);
+            ->setDefaultPage($page)
+            ->setUseDeprecatedPages($contact['show_deprecated_pages'] === '1');
     }
 
     /**
