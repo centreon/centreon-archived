@@ -43,7 +43,6 @@ import {
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
 import { getAutocompleteSuggestions } from './Criterias/searchQueryLanguage';
-import { clearCachedFilter } from './storedFilter';
 
 const useStyles = makeStyles((theme) => ({
   autocompletePopper: {
