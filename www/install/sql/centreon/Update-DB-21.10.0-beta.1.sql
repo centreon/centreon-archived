@@ -50,4 +50,4 @@ CREATE TABLE `security_authentication_tokens` (
   REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED;
+ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED
