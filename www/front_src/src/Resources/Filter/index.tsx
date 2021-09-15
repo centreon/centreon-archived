@@ -14,6 +14,7 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
+import CloseIcon from '@material-ui/icons/Cancel';
 import {
   ClickAwayListener,
   makeStyles,
@@ -329,7 +330,7 @@ const Filter = (): JSX.Element => {
             <div>
               <SearchField
                 fullWidth
-                icon={<CancelIcon Onclick={clearFilter} />}
+                EndAdornment={(): JSX.Element => <CloseIcon />}
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}
