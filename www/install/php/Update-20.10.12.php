@@ -23,7 +23,7 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 //error specific content
-$versionOfTheUpgrade = 'UPGRADE - 20.10.11: ';
+$versionOfTheUpgrade = 'UPGRADE - 20.10.12: ';
 
 $pearDB = new CentreonDB('centreon', 3, false);
 
@@ -33,10 +33,21 @@ $pearDB = new CentreonDB('centreon', 3, false);
 try {
     $pearDB->beginTransaction();
 
-    $errorMessage = 'Impossible to alter the table contact';
-    if (!$pearDB->isColumnExist('contact', 'contact_platform_data_sending')) {
+    //Purge all session.
+    $errorMessage = 'Impossible to purge the table session';
+    $pearDB->query("DELETE * FROM `session`");
+
+    $errorMessage = 'Impossible to purge the table ws_token';
+    $pearDB->query("DELETE * FROM `ws_token`");
+
+    $constraintStatement = $pearDB->query(
+        "SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME='session_ibfk_1'"
+    );
+    if (($constraint = $constraintStatement->fetch()) && $constraint['count'] === 0) {
+        $errorMessage = 'Impossible to add Delete Cascade constraint on the table session';
         $pearDB->query(
-            "ALTER TABLE `contact` ADD COLUMN `contact_platform_data_sending` ENUM('0', '1', '2')"
+            "ALTER TABLE `session` ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) " .
+            "REFERENCES `contact` (`contact_id`) ON DELETE CASCADE"
         );
     }
 
