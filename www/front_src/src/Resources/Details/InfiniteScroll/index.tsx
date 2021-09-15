@@ -209,8 +209,6 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       return;
     }
 
-    setEntities(undefined);
-
     reload();
   };
 
