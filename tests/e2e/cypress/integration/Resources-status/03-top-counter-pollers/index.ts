@@ -11,4 +11,9 @@ When(
 
 Then('I see the list of pollers configuration', () => {
   cy.location('search').should('equal', '?p=60901');
+
+  cy.get('iframe')
+    .iframe()
+    .find('button[name="apply_configuration"]')
+    .should('contain', 'Export configuration');
 });
