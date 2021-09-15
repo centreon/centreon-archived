@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "..",
     "esModuleInterop": true,
-    "types": ["cypress", "node"],
+    "types": ["cypress", "node", "./support"],
   },
   "include": [
     "**/*.ts"

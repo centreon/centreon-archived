@@ -10,6 +10,7 @@ import {
   checkThatConfigurationIsExported,
   checkThatFixtureServicesExistInDatabase,
 } from './database';
+import './commands';
 
 before(() => {
   setUserTokenApiV1();
