@@ -611,6 +611,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  id:
+                    type: integer
+                    description: Contact ID
+                    example: 1
                   name:
                     type: string
                     description: Name of the current user
@@ -632,6 +636,20 @@ paths:
                     nullable: true
                     description: Locale of the current user
                     example: en_US
+                  is_admin:
+                    type: boolean
+                    description: If the current user is an administrator
+                    example: true
+                  platform_data_sending:
+                    type: integer
+                    description: |
+                      If the current user is allowed to send platform data
+
+                      0: No
+
+                      1: Contact details (email and name will be shown)
+
+                      2: Anonymous (email and name will be anonymized)
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':

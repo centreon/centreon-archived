@@ -82,11 +82,14 @@ class UserController extends AbstractController
         $user = $this->getUser();
 
         return $this->view([
+            'id' => $user->getId(),
             'name' => $user->getName(),
             'alias' => $user->getAlias(),
             'email' => $user->getEmail(),
             'timezone' => $user->getTimezone()->getName(),
-            'locale' => $user->getLocale()
+            'locale' => $user->getLocale(),
+            'is_admin' => $user->isAdmin(),
+            'platform_data_sending' => $user->getPlatformDataSending(),
         ]);
     }
 

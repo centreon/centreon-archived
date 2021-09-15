@@ -54,11 +54,15 @@
             </div>
         {$form.hidden}
         </form>
-        {literal}
         <script type="text/javascript">
+            {literal}
             jQuery(() => {
                 jQuery('form[name="login"]').submit(() => {
                     jQuery('input[type="submit"]').prop('disabled', true)
+
+                    /**
+                     * Local Provider Request.
+                     */
                     jQuery.ajax({
                         url: '/centreon/authentication/providers/configurations/local',
                         data: JSON.stringify({
@@ -68,7 +72,139 @@
                         method: 'POST',
                         contentType: 'application/json'
                     }).done((res) => {
-                        window.location.href = res.redirect_uri
+                        let redirectUri = res.redirect_uri;
+                        let platformDataCached = JSON.parse(localStorage.getItem('platformData'));
+                        console.log(platformDataCached);
+                        /**
+                         * User parameters Request.
+                         */
+                        jQuery.ajax({
+                            url: '/centreon/api/v21.10/configuration/users/current/parameters',
+                            method: 'GET',
+                            contentType: 'application/json'
+                        }).done((res) => {
+                            /**
+                             * If user doesn't consent to send data platform, redirect him to his redirection page.
+                             */
+                            if (
+                                res.platform_data_sending === 0
+                            ) {
+                                window.location.href = redirectUri
+                            }
+
+                            /**
+                             * Initiate variables for data Sending.
+                             */
+                            {/literal}
+                            let uuid = `{$uuid}`;
+                            let nbHosts = parseInt(`{$stats.nb_hosts}`);
+                            let nbServices = parseInt(`{$stats.nb_services}`);
+                            let nbServers = parseInt(`{$stats.nb_central}`)
+                                + parseInt(`{$stats.nb_pollers}`)
+                                + parseInt(`{$stats.nb_remotes}`);
+                            let isRemote = `{$isRemote}`;
+                            let licenseProduct = `{$productLicense}`;
+                            let licenseClient = `{$licenseClientName}`;
+                            {literal}
+                            let platformData = {
+                                cacheGenerationDate: new Date().toISOString(),
+                                visitor: {
+                                    id: null,
+                                    email: null,
+                                    full_name: null,
+                                    role: null,
+                                    anonymous: true
+                                },
+                                account: {
+                                    name: licenseClient ? licenseClient : null,
+                                    uuid: uuid,
+                                    serverType: isRemote ? 'remote' : 'central',
+                                    licenseType: licenseProduct ? licenseProduct : null,
+                                    versionMajor: null,
+                                    versionMinor: null,
+                                    nb_hosts: nbHosts,
+                                    nb_services: nbServices,
+                                    nb_servers: nbServers,
+                                }
+                            };
+
+                            /**
+                             * Anonymize user informations.
+                             */
+                            if (res.platform_data_sending === 2) {
+                                platformData.visitor.email = Math.random().toString(36).substring(2, 15)
+                                    + Math.random().toString(36).substring(2, 15);
+                                platformData.visitor.full_name = Math.random().toString(36).substring(2, 15)
+                                    + Math.random().toString(36).substring(2, 15);
+                            } else {
+                                platformData.visitor.anonymous = false;
+                                platformData.visitor.email = res.email;
+                                platformData.visitor.full_name = res.name;
+                            }
+
+                            /**
+                             * Generate id based on first letters of company name, first letters of uuid, and contact id.
+                             */
+                            platformData.visitor.id = platformData.account.name
+                                ? platformData.account.name.substr(0,10) + '-' + uuid.substr(0,8) + '-' + res.id
+                                : uuid.substr(0,8) + '-' + res.id
+
+                            if (res.is_admin) {
+                                platformData.visitor.role = 'admin'
+                            }
+
+                            /**
+                             * Platform versions Request.
+                             */
+                            jQuery.ajax({
+                                url: '/centreon/api/v21.10/platform/versions',
+                                method: 'GET',
+                                contentType: 'application/json'
+                            }).done((res) => {
+                                platformData.account.versionMajor = res.web.major + '.' + res.web.minor
+                                platformData.account.versionMinor = res.web.version
+
+                                /**
+                                 * User ACL Actions Request.
+                                 */
+                                jQuery.ajax({
+                                    url: '/centreon/api/v21.10/users/acl/actions',
+                                    method: 'GET',
+                                    contentType: 'application/json'
+                                }).done((res) => {
+
+                                    /**
+                                     * Check if the user has at least one ACL action.
+                                     * If so, the user is an operator.
+                                     */
+                                    const aclActions = [
+                                        ...Object.values(res.host),
+                                        ...Object.values(res.metaservice),
+                                        ...Object.values(res.service)
+                                    ];
+                                    if (!aclActions.includes(true)) {
+                                        platformData.visitor.role = 'user'
+                                    } else if (aclActions.includes(true) && platformData.visitor.role !== 'admin') {
+                                        platformData.visitor.role = 'operator'
+                                    }
+
+                                    /**
+                                     * Save data in local storage and redirect user.
+                                     */
+                                    localStorage.setItem('platformData', JSON.stringify(platformData))
+                                    // window.location.href = redirectUri
+                                }).fail((err) => {
+                                    jQuery('span.msg').text('Unable to get ACLs.')
+                                    jQuery('div.error_msg').css('visibility', '')
+                                })
+                            }).fail((err) => {
+                                jQuery('span.msg').text('Unable to get platform versions.')
+                                jQuery('div.error_msg').css('visibility', '')
+                            })
+                        }).fail((err) => {
+                            jQuery('span.msg').text('Unable to get contact informations.')
+                            jQuery('div.error_msg').css('visibility', '')
+                        })
                     }).fail((err) => {
                         jQuery('span.msg').text('Your credentials are incorrect.')
                         jQuery('div.error_msg').css('visibility', '')

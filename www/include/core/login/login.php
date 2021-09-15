@@ -1,5 +1,8 @@
 <?php
 
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
 /*
  * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -50,6 +53,56 @@ $openIdConnectEnabled = $result->fetch()["value"];
 
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_mode' LIMIT 1");
 $openIdConnectMode = $result->fetch()["value"];
+
+/**
+ * Getting Platform Type.
+ */
+$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+$isRemote = false;
+if ($row = $result->fetch()) {
+    $isRemote = $row['value'] === 'yes';
+}
+
+/**
+ * Getting Centreon UUID.
+ */
+$centreonUUID = new CentreonUUID($pearDB);
+$uuid = $centreonUUID->getUUID();
+
+/**
+ * Getting Platform statistics.
+ */
+$output = new ConsoleOutput();
+$logger = new ConsoleLogger($output);
+$centreonStats = new CentreonStatistics($logger);
+$stats = $centreonStats->getPlatformInfo();
+
+/**
+ * Getting License informations.
+ */
+$productLicense = 'Open Source';
+$licenseClientName = null;
+try {
+    $centreonModules = ['epp', 'bam', 'map', 'mbi'];
+    $licenseObject = $dependencyInjector['lm.license'];
+    $licenseInformation = [];
+    foreach ($centreonModules as $module) {
+        $licenseObject->setProduct($module);
+        $isLicenseValid = $licenseObject->validate(false);
+        if ($isLicenseValid && !empty($licenseObject->getData())) {
+            $licenseInformation[$module] = $licenseObject->getData();
+            $licenseClientName = $licenseInformation[$module]['client']['name'];
+            if ($module === 'epp') {
+                $productLicense = 'IT Edition';
+            }
+            if (in_array($module, ['mbi', 'bam', 'map'])) {
+                $productLicense = 'Business Edition';
+            }
+        }
+    }
+} catch (\Exception $ex) {
+    error_log($ex->getMessage());
+}
 
 /**
  * Defining Login Form
@@ -126,6 +179,14 @@ $tpl->assign('centreonVersion', 'v. ' . $release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
 $tpl->assign('openIdConnectEnabled', $openIdConnectEnabled);
 $tpl->assign('openIdConnectMode', $openIdConnectMode);
+$tpl->assign('uuid', $uuid);
+$tpl->assign('stats', $stats);
+$tpl->assign('isRemote', $isRemote);
+$tpl->assign('productLicense', $productLicense);
+if (!empty($licenseInformation)) {
+    $tpl->assign('licenseClientName', $licenseClientName);
+}
+
 
 // Redirect User
 $redirect = filter_input(
