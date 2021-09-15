@@ -160,17 +160,12 @@ stage('Source') {
       reportTitles: ''
     ])
 
-    // get api feature files
+    // get api and e2e feature files
     apiFeatureFiles = sh(
-      script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
+      script: 'find centreon-web/tests/api/features tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
       returnStdout: true
     ).split()
 
-    // get tests E2E feature files
-    e2eFeatureFiles = sh(
-      script: 'find centreon-web/tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
-      returnStdout: true
-    ).split()
 
     // get feature files
     def grepAcceptanceFiles = ""
@@ -341,9 +336,6 @@ try {
     }
   }
 
-  stage('API // E2E Tests') {
-
-  }
   stage('API // E2E Tests') {
     if (hasBackendChanges) {
       def apiparallelSteps = [:]
