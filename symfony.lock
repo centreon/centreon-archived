@@ -59,12 +59,6 @@
     "enshrined/svg-sanitize": {
         "version": "0.14.0"
     },
-    "friends-of-behat/mink": {
-        "version": "v1.9.0"
-    },
-    "friends-of-behat/mink-extension": {
-        "version": "v2.5.0"
-    },
     "friendsofsymfony/rest-bundle": {
         "version": "2.2",
         "recipe": {
@@ -205,9 +199,6 @@
     "phpunit/php-file-iterator": {
         "version": "2.0.4"
     },
-    "phpunit/php-invoker": {
-        "version": "3.1.1"
-    },
     "phpunit/php-text-template": {
         "version": "1.2.1"
     },
@@ -240,9 +231,6 @@
     "psr/container": {
         "version": "1.1.1"
     },
-    "psr/event-dispatcher": {
-        "version": "1.0.0"
-    },
     "psr/http-client": {
         "version": "1.0.1"
     },
@@ -264,29 +252,17 @@
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },
-    "respect/stringifier": {
-        "version": "0.2.0"
-    },
     "respect/validation": {
         "version": "1.1.31"
     },
     "riverline/multipart-parser": {
         "version": "2.0.8"
     },
-    "sebastian/cli-parser": {
-        "version": "1.0.1"
-    },
-    "sebastian/code-unit": {
-        "version": "1.0.8"
-    },
     "sebastian/code-unit-reverse-lookup": {
         "version": "1.0.2"
     },
     "sebastian/comparator": {
         "version": "3.0.3"
-    },
-    "sebastian/complexity": {
-        "version": "2.0.2"
     },
     "sebastian/diff": {
         "version": "3.0.3"
@@ -299,9 +275,6 @@
     },
     "sebastian/global-state": {
         "version": "3.0.1"
-    },
-    "sebastian/lines-of-code": {
-        "version": "1.0.3"
     },
     "sebastian/object-enumerator": {
         "version": "3.0.4"
@@ -499,9 +472,6 @@
     "symfony/options-resolver": {
         "version": "v4.4.25"
     },
-    "symfony/password-hasher": {
-        "version": "v5.3.4"
-    },
     "symfony/phpunit-bridge": {
         "version": "4.3",
         "recipe": {
@@ -516,9 +486,6 @@
             "phpunit.xml.dist",
             "tests/bootstrap.php"
         ]
-    },
-    "symfony/polyfill-intl-grapheme": {
-        "version": "v1.23.1"
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.23.0"
@@ -599,9 +566,6 @@
     },
     "symfony/stopwatch": {
         "version": "v4.4.25"
-    },
-    "symfony/string": {
-        "version": "v5.3.3"
     },
     "symfony/translation": {
         "version": "3.3",
