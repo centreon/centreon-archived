@@ -104,6 +104,7 @@ const getPollerStatusIcon = (t) => (issues) => {
   );
 };
 
+const labelPollers = 'Pollers';
 class PollerMenu extends Component {
   pollerService = axios(
     'internal.php?object=centreon_topcounter&action=pollersListIssues',
@@ -216,13 +217,14 @@ class PollerMenu extends Component {
         >
           <PollerIcon style={{ color: '#FFFFFF' }} />
           <span className={styles['wrap-left-icon__name']}>
-            <Typography variant="caption">{t('Pollers')}</Typography>
+            <Typography variant="caption">{t(labelPollers)}</Typography>
           </span>
         </span>
 
         {statusIcon}
 
         <ExpandPollerMenuIcon
+          aria-label={t(labelPollers)}
           style={{ color: '#FFFFFF', cursor: 'pointer' }}
           onClick={this.toggle}
         />
