@@ -43,6 +43,7 @@ import {
 } from './models';
 import SelectFilter from './Fields/SelectFilter';
 import { getAutocompleteSuggestions } from './Criterias/searchQueryLanguage';
+import { clearCachedFilter } from './storedFilter';
 
 const useStyles = makeStyles((theme) => ({
   autocompletePopper: {
@@ -329,6 +330,7 @@ const Filter = (): JSX.Element => {
             <div>
               <SearchField
                 fullWidth
+                icon={<CancelIcon Onclick={clearFilter} />}
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}
