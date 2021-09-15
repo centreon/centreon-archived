@@ -322,6 +322,7 @@ try {
       }
     } 
   }
+
   stage('Docker packaging') {
     def parallelSteps = [:]
     def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
@@ -341,34 +342,29 @@ try {
   }
 
   stage('API // E2E Tests') {
-    parallel 'API Tests': {
-      if (hasBackendChanges) {
-        def apiparallelSteps = [:]
-        for (x in apiFeatureFiles) {
-          def feature = x
-          apiparallelSteps[feature] = {
-            node {
-              checkoutCentreonBuild(buildBranch)
-              unstash 'tar-sources'
-              unstash 'vendor'
-              def acceptanceStatus = sh(
-                script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
-                returnStatus: true
-              )
-              junit 'xunit-reports/**/*.xml'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-                currentBuild.result = 'FAILURE'
-              archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
-            }
+
+  }
+  stage('API // E2E Tests') {
+    if (hasBackendChanges) {
+      def apiparallelSteps = [:]
+      for (x in apiFeatureFiles) {
+        def feature = x
+        apiparallelSteps[feature] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            unstash 'tar-sources'
+            unstash 'vendor'
+            def acceptanceStatus = sh(
+              script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
+              returnStatus: true
+            )
+            junit 'xunit-reports/**/*.xml'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              currentBuild.result = 'FAILURE'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
           }
         }
-        parallel apiparallelSteps
-        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error('API tests stage failure');
-        }
       }
-    },
-    'E2E tests': {
       def e2eparallelSteps = [:]
       for (x in e2eFeatureFiles) {
         def feature = x
@@ -387,9 +383,10 @@ try {
           }
         }
       }
+      parallel apiparallelSteps
       parallel e2eparallelSteps
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error('E2E tests stage failure');
+          error('E2E // API tests stage failure');
       }
     }
   }
