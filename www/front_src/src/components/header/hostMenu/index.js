@@ -20,6 +20,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
+import HostIcon from '@material-ui/icons/Dns';
+
 import {
   IconHeader,
   IconNumber,
@@ -139,6 +141,8 @@ class HostMenu extends Component {
       return <MenuLoader width={27} />;
     }
 
+    const hasPendingHosts = data.pending > 0;
+
     return (
       <div
         className={`${styles.wrapper} wrap-right-hosts`}
@@ -146,12 +150,11 @@ class HostMenu extends Component {
       >
         <SubmenuHeader active={toggled} submenuType="top">
           <IconHeader
+            Icon={HostIcon}
             iconName={t('Hosts')}
-            iconType="hosts"
+            pending={hasPendingHosts}
             onClick={this.toggle}
-          >
-            {data.pending > 0 && <span className={styles['custom-icon']} />}
-          </IconHeader>
+          />
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to={getHostResourcesUrl({

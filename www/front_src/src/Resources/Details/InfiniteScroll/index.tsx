@@ -60,10 +60,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'sticky',
   },
   filter: {
-    width: '100%',
-  },
-  header: {
-    marginBottom: theme.spacing(),
+    marginTop: theme.spacing(),
     width: '100%',
   },
   progress: {
@@ -76,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
     left: 0,
     overflow: 'auto',
     padding: theme.spacing(2),
+    paddingTop: theme.spacing(1),
     position: 'absolute',
     right: 0,
     top: 0,
@@ -86,7 +84,6 @@ interface Props<TEntity> {
   children: (props) => JSX.Element;
   details?: ResourceDetails;
   filter?: JSX.Element;
-  header?: JSX.Element;
   limit: number;
   loading: boolean;
   loadingSkeleton: JSX.Element;
@@ -103,7 +100,6 @@ type InfiniteScrollContentProps<TEntity> = Props<TEntity> &
 const InfiniteScrollContent = <TEntity extends { id: number }>({
   limit,
   filter,
-  header,
   details,
   reloadDependencies = [],
   loadingSkeleton,
@@ -209,8 +205,6 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       return;
     }
 
-    setEntities(undefined);
-
     reload();
   };
 
@@ -237,7 +231,6 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       onScroll={scroll}
     >
       <div className={classes.container}>
-        <div className={classes.header}>{header}</div>
         <div className={classes.filter}>{filter}</div>
         <div className={classes.progress}>
           {loading && not(isNil(entities)) && (

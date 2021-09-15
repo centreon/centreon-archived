@@ -6,6 +6,8 @@ import React from 'react';
 
 import classnames from 'classnames';
 
+import { Typography } from '@material-ui/core';
+
 import styles from '../../styles/partials/form/_form.scss';
 
 import { prepareInputProps } from './utils';
@@ -33,13 +35,9 @@ const RadioField = ({ checked, error, label, info, className, ...rest }) => (
     </label>
 
     {error ? (
-      <div className={styles['invalid-feedback']}>
-        <div
-          className={classnames(styles.field__msg, styles['field__msg--error'])}
-        >
-          {error}
-        </div>
-      </div>
+      <Typography style={{ color: '#d0021b' }} variant="body2">
+        {error}
+      </Typography>
     ) : null}
   </div>
 );

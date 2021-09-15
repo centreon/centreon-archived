@@ -4,7 +4,6 @@
   padding-bottom: 39px;
   padding-left:24px;
   padding-right:24px;
-  background: $white-color;
   max-width: 890px;
   margin: 0 auto;
   &-items {
@@ -38,21 +37,21 @@
     display: block;
     width: 33px;
     height: 33px;
-    line-height: 33px;
+    display: flex;
+   justify-content: center;
+     align-items: center;
     text-align: center;
     border: 1px solid #cdcdcd;
-    font-family: $primary-font-light;
-    font-size: 0.75rem;
     color: #cdcdcd;
     box-sizing: border-box;
     &.active {
-      background: $lightblue-centreon-primary;
+      background: #10069F;
       color: $white-color;
       border: none;
       &.prev {
         background: $white-color;
-        color: $lightblue-centreon-primary;
-        border: 1px solid $lightblue-centreon-primary;
+        color: #10069F;
+        border: 1px solid #10069F;
       }
     }
   }

@@ -16,18 +16,18 @@
       &-icon {
         &.pollers {
           cursor: pointer;
-          position: absolute !important;
-          left: 20px;
-          top: 6px;
         }
         &:first-child {
           margin-right: 11px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
         }
         &__name {
           display: block;
           font-size: 0.6875rem;
           color: $white-color;
-          font-family: $primary-font-light;
           text-transform: lowercase;
          }
          &.round {
@@ -51,10 +51,11 @@
       &-pollers {
         position: relative;
         box-sizing: border-box;
-        padding: 10px 21px 11px 63px;
+        padding: 6px 6px 6px 16px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        justify-content: center;
         &.submenu-active {
           background-color: #000915;
           .submenu {
@@ -68,7 +69,6 @@
         &.round {
           font-size: .875rem;
           padding: 0px 5px;
-          font-family: $primary-font-bold;
           position: relative;
           color: $white-color;
           overflow: hidden;
@@ -86,7 +86,6 @@
           }
           .number {
             font-size: 0.875rem;
-            font-family: $primary-font-bold;
             position: relative;
             text-decoration: none;
             > span {
@@ -216,13 +215,11 @@
       display: block;
       font-size: 0.6875rem;
       color: $white-color;
-      font-family: $primary-font-light;
       text-transform: lowercase;
       }
     }
     &-date,
     &-time {
-      font-family: $primary-font-light;
       color: $white-color;
       font-size: 0.8125rem;
       display: block;
@@ -261,8 +258,9 @@
     &-item {
       &-link {
         padding: 10px;
-        display: block;
-        font-family: $primary-font-light;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
         background-color: #232f39;
         color: $white-color;
         text-decoration: none;
@@ -280,7 +278,6 @@
         text-overflow: ellipsis;
       }
       .submenu-user-edit {
-        font-family: $primary-font-light;
         margin-left: 4px;
         color: $white-color;
         float: right;
@@ -290,18 +287,19 @@
         font-size: .785rem;
         color: #ffa225;
         text-decoration: none;
-        font-family: $primary-font-light;
         text-align: left;
         line-height: 31px;
         border-radius: 16px;
         border: 1px solid rgba(255, 161, 37, 1);
         background-color: transparent;
         margin: 0 auto;
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         width: 95%;
         outline: none;
         position: relative;
-        padding: 5px 27px 5px 10px;
+        padding: 2px 15px 2px 15px;
         box-sizing: border-box;
         &:hover {
           color: rgb(0,9,22);
@@ -345,7 +343,6 @@
         .submenu-top-count {
           display: block;
           padding: 10px;
-          font-family: $primary-font-light;
           color: $white-color;
           font-size: .8rem;
           padding-left: 15px;
@@ -357,27 +354,7 @@
       }
     }
   }
-  .custom-icon {
-    top: 17px;
-    right: -1px;
-    width: 7px;
-    height: 7px;
-    border-radius: 3px;
-    background-color: #29d1d3;
-    position: absolute;
-  }
-  .toggle-submenu-arrow {
-    background: url("../../img/icons/submenu-arrows-stripe.png") no-repeat center center;
-    display: inline-block;
-    width: 28px;
-    height: 37px;
-    background-position: 7px -40px;
-    vertical-align: middle;
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    top: 8px;
-  }
+
   .submenu-active {
     .submenu {
       display: block;
@@ -441,7 +418,6 @@
   padding-left: 15px !important;
   font-size: .8rem;
   color: $white-color;
-  font-family: $primary-font-light;
   margin-top: 10px;
   padding-right: 25px !important;
   position: relative;

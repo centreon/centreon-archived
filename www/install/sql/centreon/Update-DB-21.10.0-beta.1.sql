@@ -1,9 +1,7 @@
 -- Drop legacy API authentication table
-
 DROP TABLE `ws_token`;
 
 -- Create authentication tables and insert local configuration
-
 CREATE TABLE `provider_configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL,
@@ -50,4 +48,4 @@ CREATE TABLE `security_authentication_tokens` (
   REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED
+ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED;

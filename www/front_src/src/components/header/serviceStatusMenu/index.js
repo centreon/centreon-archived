@@ -20,6 +20,8 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
+import ServiceIcon from '@material-ui/icons/RoomService';
+
 import {
   IconHeader,
   IconNumber,
@@ -144,6 +146,8 @@ class ServiceStatusMenu extends Component {
       return <MenuLoader width={33} />;
     }
 
+    const hasPendingServices = data.pending > 0;
+
     return (
       <div
         className={`${styles.wrapper} wrap-right-services`}
@@ -151,12 +155,11 @@ class ServiceStatusMenu extends Component {
       >
         <SubmenuHeader active={toggled} submenuType="top">
           <IconHeader
+            Icon={ServiceIcon}
             iconName={t('Services')}
-            iconType="services"
+            pending={hasPendingServices}
             onClick={this.toggle}
-          >
-            {data.pending > 0 && <span className={styles['custom-icon']} />}
-          </IconHeader>
+          />
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to={getServiceResourcesUrl({

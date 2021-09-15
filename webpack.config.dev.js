@@ -44,15 +44,16 @@ const modules = [
 module.exports = merge(baseConfig, devConfig, {
   devServer: {
     compress: true,
-    contentBase: modules.map((module) =>
-      path.resolve(`${__dirname}/www/modules/${module}/static`),
-    ),
     headers: { 'Access-Control-Allow-Origin': '*' },
     host: '0.0.0.0',
     hot: true,
     port: devServerPort,
-    publicPath,
-    watchContentBase: true,
+
+    static: modules.map((module) => ({
+      directory: path.resolve(`${__dirname}/www/modules/${module}/static`),
+      publicPath,
+      watch: true,
+    })),
   },
   output,
   plugins,

@@ -863,6 +863,10 @@ msgstr "Sélectionné"
 msgid "Add"
 msgstr "Ajouter"
 
+#: centreon-web/www/include/configuration/configServers/listServers.php:318
+msgid "Add (advanced)"
+msgstr "Ajouter (avancé)"
+
 #: centreon-web/www/class/centreonConfigCentreonBroker.php:390
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:260
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:276
@@ -1924,6 +1928,10 @@ msgstr "Mise à jour"
 #: centreon-web/www/install/smarty_translate.php:351
 msgid "Do you confirm the deletion?"
 msgstr "Confirmez-vous la suppression ?"
+
+#: centreon-web/www/include/configuration/configServers/listServers.php:351
+msgid "You are about to delete one or more pollers.\\nThis action is IRREVERSIBLE.\\nDo you confirm the deletion ?"
+msgstr "Vous êtes sur le point de supprimer un ou plusieurs collecteurs.\\nCette action est IRREVERSIBLE.\\nConfirmez-vous la suppression ?"
 
 #: centreon-web/www/install/smarty_translate.php:354
 #: centreon-web/www/install/smarty_translate.php:357
@@ -15868,8 +15876,8 @@ msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
 msgid "deprecated"
 msgstr "déprécié"
 
-msgid "Show deprecated pages"
-msgstr "Afficher les pages dépréciées"
+msgid "Use deprecated pages"
+msgstr "Utiliser les pages dépréciées"
 
 msgid "Error when adding services to the host %d"
 msgstr "Erreur lors de l'ajout de services à l'hôte %d"
@@ -15985,6 +15993,9 @@ msgstr "Afficher les évènements"
 
 msgid "Export to png"
 msgstr "Exporter comme png"
+
+#  msgid "Go to performance page"
+#  msgstr "Aller à la page de performance"
 
 msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
 msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas comporter plus de %d caractères mais n'en comporte que %d"
@@ -16222,3 +16233,9 @@ msgstr "Options de recherche"
 
 msgid "The parameter \"%s\" must be an integer"
 msgstr "Le paramètre \"%s\" doit être un entier"
+
+msgid "Contact Details"
+msgstr "Détails du Contact"
+
+msgid "Service graphs"
+msgstr "Graphiques de services"

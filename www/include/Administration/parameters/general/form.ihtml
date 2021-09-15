@@ -200,6 +200,12 @@
     </tr>
     <tr class="list_two">
         <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_client_basic_auth">{$form.openid_connect_client_basic_auth.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_client_basic_auth.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
             <img class="helpTooltip" name="openid_connect_verify_peer">{$form.openid_connect_verify_peer.label}
         </td>
         <td class="FormRowValue">{$form.openid_connect_verify_peer.html}</td>

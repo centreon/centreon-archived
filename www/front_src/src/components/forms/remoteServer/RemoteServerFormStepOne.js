@@ -8,8 +8,9 @@
 import React, { Component } from 'react';
 
 import { Field, reduxForm as connectForm } from 'redux-form';
-import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
+
+import { Paper, Typography, Button } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
 import InputField from '../../form-fields/InputField';
@@ -61,188 +62,191 @@ class RemoteServerFormStepOne extends Component {
     const { inputTypeManual } = this.state;
 
     return (
-      <div className={styles['form-wrapper']}>
-        <div className={styles['form-inner']}>
-          <div className={styles['form-heading']}>
-            <h2 className={classnames(styles['form-title'], styles['mb-2'])}>
-              {t('Remote Server Configuration')}
-            </h2>
-          </div>
-          <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-            <Field
-              checked={inputTypeManual}
-              component={RadioField}
-              label={t('Create new Remote Server')}
-              name="inputTypeManual"
-              onChange={() => {
-                this.onManualInputChanged(true);
-              }}
-            />
-            {inputTypeManual ? (
-              <div>
-                <Field
-                  component={InputField}
-                  label={`${t('Server Name')}:`}
-                  name="server_name"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Server IP address')}:`}
-                  name="server_ip"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Database username')}:`}
-                  name="db_user"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Database password')}:`}
-                  name="db_password"
-                  placeholder=""
-                  type="password"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t(
-                    'Centreon Central IP address, as seen by this server',
-                  )}:`}
-                  name="centreon_central_ip"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Centreon Web Folder on Remote')}:`}
-                  name="centreon_folder"
-                  placeholder="/centreon/"
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={CheckboxField}
-                  label={t('Do not check SSL certificate validation')}
-                  name="no_check_certificate"
-                />
-                <Field
-                  component={CheckboxField}
-                  label={t(
-                    'Do not use configured proxy to connect to this server',
-                  )}
-                  name="no_proxy"
-                />
-              </div>
-            ) : null}
-
-            <Field
-              checked={!inputTypeManual}
-              component={RadioField}
-              label={`${t('Select a Remote Server')}:`}
-              name="inputTypeManual"
-              onClick={() => {
-                this.onManualInputChanged(false);
-              }}
-            />
-            {!inputTypeManual ? (
-              <div>
-                {waitList ? (
-                  <Field
-                    required
-                    component={SelectField}
-                    label={`${t('Select Pending Remote Links')}:`}
-                    name="server_ip"
-                    options={[
-                      {
-                        disabled: true,
-                        selected: true,
-                        text: t('Select IP'),
-                        value: '',
-                      },
-                    ].concat(
-                      waitList.map((c) => ({ text: c.ip, value: c.ip })),
-                    )}
-                    onChange={this.handleChange}
-                  />
-                ) : null}
-                <Field
-                  component={InputField}
-                  label={`${t('Server Name')}:`}
-                  name="server_name"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Database username')}:`}
-                  name="db_user"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Database password')}:`}
-                  name="db_password"
-                  placeholder=""
-                  type="password"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t(
-                    'Centreon Central IP address, as seen by this server',
-                  )}:`}
-                  name="centreon_central_ip"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Centreon Web Folder on Remote')}:`}
-                  name="centreon_folder"
-                  placeholder="/centreon/"
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={CheckboxField}
-                  label={t('Do not check SSL certificate validation')}
-                  name="no_check_certificate"
-                />
-                <Field
-                  component={CheckboxField}
-                  label={t(
-                    'Do not use configured proxy to connect to this server',
-                  )}
-                  name="no_proxy"
-                />
-              </div>
-            ) : null}
-
-            <div className={styles['form-buttons']}>
-              <button className={styles.button} type="submit">
-                {t('Next')}
-              </button>
-            </div>
-            {error ? (
-              <div className={styles['error-block']}>{error.message}</div>
-            ) : null}
-          </form>
+      <Paper className={styles['form-container']}>
+        <div className={styles['form-heading']}>
+          <Typography variant="h6">
+            {t('Remote Server Configuration')}
+          </Typography>
         </div>
-      </div>
+        <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+          <Field
+            checked={inputTypeManual}
+            component={RadioField}
+            label={t('Create new Remote Server')}
+            name="inputTypeManual"
+            onChange={() => {
+              this.onManualInputChanged(true);
+            }}
+          />
+          {inputTypeManual ? (
+            <div>
+              <Field
+                component={InputField}
+                label={`${t('Server Name')}`}
+                name="server_name"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t('Server IP address')}`}
+                name="server_ip"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t('Database username')}`}
+                name="db_user"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t('Database password')}`}
+                name="db_password"
+                placeholder=""
+                type="password"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t(
+                  'Centreon Central IP address, as seen by this server',
+                )}`}
+                name="centreon_central_ip"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t('Centreon Web Folder on Remote')}`}
+                name="centreon_folder"
+                placeholder="/centreon/"
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={CheckboxField}
+                label={t('Do not check SSL certificate validation')}
+                name="no_check_certificate"
+              />
+              <Field
+                component={CheckboxField}
+                label={t(
+                  'Do not use configured proxy to connect to this server',
+                )}
+                name="no_proxy"
+              />
+            </div>
+          ) : null}
+
+          <Field
+            checked={!inputTypeManual}
+            component={RadioField}
+            label={`${t('Select a Remote Server')}`}
+            name="inputTypeManual"
+            onClick={() => {
+              this.onManualInputChanged(false);
+            }}
+          />
+          {!inputTypeManual ? (
+            <div>
+              {waitList ? (
+                <Field
+                  required
+                  component={SelectField}
+                  label={`${t('Select Pending Remote Links')}`}
+                  name="server_ip"
+                  options={[
+                    {
+                      disabled: true,
+                      selected: true,
+                      text: t('Select IP'),
+                      value: '',
+                    },
+                  ].concat(waitList.map((c) => ({ text: c.ip, value: c.ip })))}
+                  onChange={this.handleChange}
+                />
+              ) : null}
+              <Field
+                component={InputField}
+                label={`${t('Server Name')}`}
+                name="server_name"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t('Database username')}`}
+                name="db_user"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t('Database password')}`}
+                name="db_password"
+                placeholder=""
+                type="password"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t(
+                  'Centreon Central IP address, as seen by this server',
+                )}:`}
+                name="centreon_central_ip"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t('Centreon Web Folder on Remote')}`}
+                name="centreon_folder"
+                placeholder="/centreon/"
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={CheckboxField}
+                label={t('Do not check SSL certificate validation')}
+                name="no_check_certificate"
+              />
+              <Field
+                component={CheckboxField}
+                label={t(
+                  'Do not use configured proxy to connect to this server',
+                )}
+                name="no_proxy"
+              />
+            </div>
+          ) : null}
+
+          <div className={styles['form-buttons']}>
+            <Button
+              color="primary"
+              size="small"
+              type="submit"
+              variant="contained"
+            >
+              {t('Next')}
+            </Button>
+          </div>
+          {error ? (
+            <Typography color="error" variant="body2">
+              {error.message}
+            </Typography>
+          ) : null}
+        </form>
+      </Paper>
     );
   }
 }

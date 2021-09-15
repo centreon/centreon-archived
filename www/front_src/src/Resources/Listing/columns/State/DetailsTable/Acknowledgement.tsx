@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import * as React from 'react';
 
 import parse from 'html-react-parser';
@@ -28,14 +29,17 @@ const useStyles = makeStyles({
 });
 
 interface AcknowledgementDetails {
+  author_name: string;
   comment: string;
-  // eslint-disable-next-line react/no-unused-prop-types
+  entry_time: Date | string;
   id: number;
+  is_persistent_comment: boolean;
+  is_sticky: boolean;
 }
 
-type Props = Pick<DetailsTableProps, 'endpoint'>;
-
-const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
+const AcknowledgementDetailsTable = ({
+  endpoint,
+}: Pick<DetailsTableProps, 'endpoint'>): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -43,21 +47,23 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
 
   const columns = [
     {
-      getContent: ({ author_name }): string => author_name,
+      getContent: ({ author_name }: AcknowledgementDetails): string =>
+        author_name,
       id: 'author',
       label: t(labelAuthor),
       type: ColumnType.string,
       width: 100,
     },
     {
-      getContent: ({ entry_time }): string => toDateTime(entry_time),
+      getContent: ({ entry_time }: AcknowledgementDetails): string =>
+        toDateTime(entry_time),
       id: 'entry_time',
       label: t(labelEntryTime),
       type: ColumnType.string,
       width: 150,
     },
     {
-      getContent: ({ is_persistent_comment }): string =>
+      getContent: ({ is_persistent_comment }: AcknowledgementDetails): string =>
         t(getYesNoLabel(is_persistent_comment)),
       id: 'is_persistent',
       label: t(labelPersistent),
@@ -65,7 +71,8 @@ const AcknowledgementDetailsTable = ({ endpoint }: Props): JSX.Element => {
       width: 100,
     },
     {
-      getContent: ({ is_sticky }): string => t(getYesNoLabel(is_sticky)),
+      getContent: ({ is_sticky }: AcknowledgementDetails): string =>
+        t(getYesNoLabel(is_sticky)),
       id: 'is_sticky',
       label: t(labelSticky),
       type: ColumnType.string,

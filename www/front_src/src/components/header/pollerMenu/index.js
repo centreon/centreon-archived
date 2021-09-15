@@ -21,6 +21,13 @@ import { withTranslation } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import PollerIcon from '@material-ui/icons/DeviceHub';
+import StorageIcon from '@material-ui/icons/Storage';
+import { Typography } from '@material-ui/core';
+import LatencyIcon from '@material-ui/icons/Speed';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+
 import axios from '../../../axios';
 import styles from '../header.scss';
 import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
@@ -55,7 +62,10 @@ const getPollerStatusIcon = (t) => (issues) => {
         )}
       >
         <span
-          className={classnames(styles.iconmoon, styles['icon-database'])}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
           title={
             databaseClass === 'green'
               ? t('OK: all database poller updates are active')
@@ -63,7 +73,9 @@ const getPollerStatusIcon = (t) => (issues) => {
                   'Some database poller updates are not active; check your configuration',
                 )
           }
-        />
+        >
+          <StorageIcon />
+        </span>
       </span>
       <span
         className={classnames(
@@ -73,7 +85,10 @@ const getPollerStatusIcon = (t) => (issues) => {
         )}
       >
         <span
-          className={classnames(styles.iconmoon, styles['icon-clock'])}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
           title={
             latencyClass === 'green'
               ? t('OK: no latency detected on your platform')
@@ -81,7 +96,9 @@ const getPollerStatusIcon = (t) => (issues) => {
                   'Latency detected, check configuration for better optimization',
                 )
           }
-        />
+        >
+          <LatencyIcon />
+        </span>
       </span>
     </>
   );
@@ -184,6 +201,8 @@ class PollerMenu extends Component {
 
     const statusIcon = getPollerStatusIcon(t)(data.issues);
 
+    const ExpandPollerMenuIcon = toggled ? ExpandLessIcon : ExpandMoreIcon;
+
     return (
       <div
         className={classnames(styles['wrap-left-pollers'], {
@@ -191,26 +210,23 @@ class PollerMenu extends Component {
         })}
         ref={(poller) => (this.poller = poller)}
       >
+        <span
+          className={classnames(styles['wrap-left-icon'], styles.pollers)}
+          onClick={this.toggle}
+        >
+          <PollerIcon style={{ color: '#FFFFFF' }} />
+          <span className={styles['wrap-left-icon__name']}>
+            <Typography variant="caption">{t('Pollers')}</Typography>
+          </span>
+        </span>
+
         {statusIcon}
-        <div>
-          <span
-            className={classnames(styles['wrap-left-icon'], styles.pollers)}
-            onClick={this.toggle}
-          >
-            <span
-              className={classnames(styles.iconmoon, styles['icon-poller'])}
-            />
-            <span className={styles['wrap-left-icon__name']}>
-              {t('Pollers')}
-            </span>
-          </span>
-          <span
-            className={styles['toggle-submenu-arrow']}
-            onClick={this.toggle}
-          >
-            {this.props.children}
-          </span>
-        </div>
+
+        <ExpandPollerMenuIcon
+          style={{ color: '#FFFFFF', cursor: 'pointer' }}
+          onClick={this.toggle}
+        />
+        <span>{this.props.children}</span>
         <div className={classnames(styles.submenu, styles.pollers)}>
           <div className={styles['submenu-content']}>
             <ul
@@ -221,10 +237,10 @@ class PollerMenu extends Component {
             >
               <li className={styles['submenu-item']}>
                 <span className={styles['submenu-item-link']}>
-                  {t('All pollers')}
-                  <span className={styles['submenu-count']}>
+                  <Typography variant="body2">{t('All pollers')}</Typography>
+                  <Typography variant="body2">
                     {data.total ? data.total : '...'}
-                  </span>
+                  </Typography>
                 </span>
               </li>
               {data.issues
@@ -241,11 +257,11 @@ class PollerMenu extends Component {
 
                     return (
                       <li className={styles['submenu-top-item']} key={key}>
-                        <span className={styles['submenu-top-item-link']}>
-                          {message}
-                          <span className={styles['submenu-top-count']}>
+                        <span className={styles['submenu-item-link']}>
+                          <Typography variant="body2">{message} </Typography>
+                          <Typography variant="body2">
                             {issue.total ? issue.total : '...'}
-                          </span>
+                          </Typography>
                         </span>
                         {Object.entries(issue).map(([elem, values]) => {
                           if (values.poller) {
@@ -259,9 +275,8 @@ class PollerMenu extends Component {
 
                               return (
                                 <span
-                                  className={styles['submenu-top-item-link']}
+                                  className={styles['submenu-item-link']}
                                   key={poller.name}
-                                  style={{ padding: '0px 16px 17px' }}
                                 >
                                   <span
                                     className={classnames(
@@ -269,7 +284,9 @@ class PollerMenu extends Component {
                                       styles[color],
                                     )}
                                   >
-                                    {poller.name}
+                                    <Typography variant="body2">
+                                      {poller.name}
+                                    </Typography>
                                   </span>
                                 </span>
                               );

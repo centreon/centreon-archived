@@ -35,7 +35,7 @@ class PollerStepThreeRoute extends Component {
       <BaseWizard>
         <ProgressBar links={links} />
         <WizardFormInstallingStatus
-          formTitle={`${t('Finalizing Setup')}:`}
+          formTitle={`${t('Finalizing Setup')}`}
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
         />

@@ -57,13 +57,21 @@ if (!isset($centreonFeature)) {
     $centreonFeature = new CentreonFeature($pearDB);
 }
 
+try {
+    $licenseObject = $dependencyInjector['lm.license'];
+    $isLicenseValid = $licenseObject->validate(true);
+} catch (\Exception $ex) {
+    $isLicenseValid = false;
+}
+
 /*
  * Database retrieve information for the User
  */
 $cct = array();
 if ($o == "c") {
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
-        contact_js_effects, contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type
+        contact_js_effects, contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type,
+        contact_platform_data_sending
         FROM contact WHERE contact_id = :id";
     $DBRESULT = $pearDB->prepare($query);
     $DBRESULT->bindValue(':id', $centreon->user->get_id(), \PDO::PARAM_INT);
@@ -135,11 +143,27 @@ $form->addElement(
     array('onclick' => 'generatePassword("aKey");', 'class' => 'btc bt_info')
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
-$form->addElement('checkbox', 'show_deprecated_pages', _("Show deprecated pages"), null, $attrsText);
+$form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
 $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
 
+$platformDataSendingRadios = [
+    $form->createElement('radio', null, null, _('No'), '0'),
+    $form->createElement('radio', null, null, _('Contact Details'), '1'),
+    $form->createElement('radio', null, null, _('Anonymized'), '2')
+];
 
-/* ------------------------ Topoogy ---------------------------- */
+if ($isLicenseValid) {
+    unset($platformDataSendingRadios[0]);
+}
+
+$form->addGroup(
+    $platformDataSendingRadios,
+    'contact_platform_data_sending',
+    _('Contextual assistance and associated data sending'),
+    '&nbsp;'
+);
+
+/* ------------------------ Topology ---------------------------- */
 $pages = [];
 $aclUser = $centreon->user->lcaTStr;
 if (!empty($aclUser)) {
@@ -442,6 +466,16 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
 $tpl->assign('featuresFlipping', (count($features) > 0));
+
+/*
+ * prepare help texts
+ */
+$helptext = "";
+include_once("help.php");
+foreach ($help as $key => $text) {
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
+}
+$tpl->assign("helptext", $helptext);
 $tpl->display("formMyAccount.ihtml");
 ?>
 <script type='text/javascript' src='./include/common/javascript/keygen.js'></script>

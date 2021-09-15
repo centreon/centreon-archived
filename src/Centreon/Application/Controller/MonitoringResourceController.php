@@ -863,6 +863,31 @@ class MonitoringResourceController extends AbstractController
     }
 
     /**
+     * Build uri to access meta service panel
+     *
+     * @param integer $metaId
+     * @param string $tab tab name
+     * @return string
+     */
+    public function buildMetaServiceDetailsUri(int $metaId, string $tab = self::TAB_DETAILS_NAME): string
+    {
+        if (!in_array($tab, static::ALLOWED_TABS)) {
+            throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
+        }
+
+        return $this->buildListingUri([
+            'details' => json_encode([
+                'parentType' => null,
+                'parentId' => null,
+                'type' => ResourceEntity::TYPE_META,
+                'id' => $metaId,
+                'tab' => $tab,
+                'uuid' => 'm' . $metaId
+            ]),
+        ]);
+    }
+
+    /**
      * Build uri to access listing page of resources with specific parameters
      *
      * @param array $parameters
