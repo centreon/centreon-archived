@@ -112,13 +112,6 @@ $help["addressx"] = dgettext(
     "must be supported by your notification plugins."
 );
 
-$help["contact_platform_data_sending"] = dgettext(
-    "help",
-    "No: You don't consent to share your platform data. " .
-    "Contact Details: You consent to share your platform data including your alias and email. " .
-    "Anonymized: You consent to share your platform data, but your alias and email will be anonymized."
-);
-
 /*
  * unsupported in Centreon
  */
