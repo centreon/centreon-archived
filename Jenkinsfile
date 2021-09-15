@@ -439,14 +439,14 @@ try {
         error('Delivery stage failure');
       }
     } 
-  }
 
-  build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
-  build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
-  build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
-  build job: "centreon-pp-manager/${env.BRANCH_NAME}", wait: false
-  build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
-  build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
+    build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
+    build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
+    build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
+    build job: "centreon-pp-manager/${env.BRANCH_NAME}", wait: false
+    build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
+    build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
+  }
 
 } catch(e) {
   if (isStableBuild()) {
