@@ -170,15 +170,9 @@ stage('Source') {
       returnStdout: true
     ).split()
 
-    // get feature files
-    def grepAcceptanceFiles = ""
-    if (!hasBackendChanges && hasFrontendChanges) {
-      acceptanceTag = "@reactjs"
-      grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \\;"
-    }
     //FIXME : reintegrate ldap features after fixing them
     featureFiles = sh(
-      script: "rm centreon-web/features/Ldap*.feature && find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
+      script: "rm centreon-web/features/Ldap*.feature && find centreon-web/features -type f -name '*.feature' | sed -e 's#centreon-web/features/##g' | sort",
       returnStdout: true
     ).split()
   }
