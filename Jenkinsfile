@@ -160,12 +160,17 @@ stage('Source') {
       reportTitles: ''
     ])
 
-    // get api and e2e feature files
+    // get api feature files
     apiFeatureFiles = sh(
-      script: 'find centreon-web/tests/api/features tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
+      script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort',
       returnStdout: true
     ).split()
 
+    // get tests E2E feature files
+    e2eFeatureFiles = sh(
+      script: 'find centreon-web/tests/e2e/cypress/integration -type f -name "*.feature" -printf "%P\n" | sort',
+      returnStdout: true
+    ).split()
 
     // get feature files
     def grepAcceptanceFiles = ""
@@ -336,31 +341,36 @@ try {
     }
   }
 
-  stage('API // E2E Tests') {
-    if (hasBackendChanges) {
-      def apiparallelSteps = [:]
-      for (x in apiFeatureFiles) {
-        def feature = x
-        apiparallelSteps[feature] = {
-          node {
-            checkoutCentreonBuild(buildBranch)
-            unstash 'tar-sources'
-            unstash 'vendor'
-            def acceptanceStatus = sh(
-              script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
-              returnStatus: true
-            )
-            junit 'xunit-reports/**/*.xml'
-            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-              currentBuild.result = 'FAILURE'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+   stage('API // E2E') {
+    parallel 'API Tests': {
+      if (hasBackendChanges) {
+        def parallelSteps = [:]
+        for (x in apiFeatureFiles) {
+          def feature = x
+          parallelSteps[feature] = {
+            node {
+              checkoutCentreonBuild(buildBranch)
+              unstash 'tar-sources'
+              unstash 'vendor'
+              def acceptanceStatus = sh(
+                script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
+                returnStatus: true
+              )
+              junit 'xunit-reports/**/*.xml'
+              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+                currentBuild.result = 'FAILURE'
+              archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+            }
           }
         }
+        parallel parallelSteps
       }
-      def e2eparallelSteps = [:]
+    },
+    'E2E tests': {
+      def parallelSteps = [:]
       for (x in e2eFeatureFiles) {
         def feature = x
-        e2eparallelSteps[feature] = {
+        parallelSteps[feature] = {
           node {
             checkoutCentreonBuild(buildBranch)
             unstash 'tar-sources'
@@ -375,11 +385,7 @@ try {
           }
         }
       }
-      parallel apiparallelSteps
-      parallel e2eparallelSteps
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error('E2E // API tests stage failure');
-      }
+      parallel parallelSteps
     }
   }
 
