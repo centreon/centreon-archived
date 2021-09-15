@@ -66,7 +66,7 @@ class DebugFileHandler extends StreamHandler
      * @param array<string, mixed> $record
      * @throws \LogicException
      */
-    protected function write(array $record)
+    protected function write(array $record): void
     {
         if ($this->isActivate) {
             parent::write($record);
