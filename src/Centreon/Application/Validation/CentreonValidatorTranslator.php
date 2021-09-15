@@ -1,7 +1,6 @@
 <?php
-
 /*
- * Copyright 2005-2021 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,14 +36,19 @@
 
 namespace Centreon\Application\Validation;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Translation\TranslatorInterface as DeprecatedTranslatorInterface;
 
 /**
  * The interface Symfony\Component\Translation\TranslatorInterface will be deprecated
  * since Symfony 4.2 (use Symfony\Contracts\Translation\TranslatorInterface instead)
  * and will be removed on version 5.0
+ *
+ * @todo remove implementation of Symfony\Component\Translation\TranslatorInterface interface
+ * @todo remove transChoice, setLocale, and getLocale methods
  */
-class CentreonValidatorTranslator implements TranslatorInterface
+class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTranslatorInterface
 {
 
     /**
@@ -59,5 +63,38 @@ class CentreonValidatorTranslator implements TranslatorInterface
         }
 
         return $message;
+    }
+
+    /**
+     * Remove when upgrading to 5.0 version of symfony/validator package
+     *
+     * @codeCoverageIgnore
+     * {@inheritdoc}
+     */
+    public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
+    {
+        // ...
+    }
+
+    /**
+     * Remove when upgrading to 5.0 version of symfony/validator package
+     *
+     * @codeCoverageIgnore
+     * {@inheritdoc}
+     */
+    public function setLocale($locale)
+    {
+        // ...
+    }
+
+    /**
+     * Remove when upgrading to 5.0 version of symfony/validator package
+     *
+     * @codeCoverageIgnore
+     * {@inheritdoc}
+     */
+    public function getLocale()
+    {
+        // ...
     }
 }

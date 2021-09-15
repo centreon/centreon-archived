@@ -11,6 +11,6 @@ framework:
     session:
         enabled: true
         use_cookies: true
+        handler_id: null
         cookie_secure: 'auto'
-        storage_factory_id: session.storage.factory.php_bridge
-        handler_id: session.handler.native_file
+        storage_id: 'session.storage.native'

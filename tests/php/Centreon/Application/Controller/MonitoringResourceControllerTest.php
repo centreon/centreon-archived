@@ -203,7 +203,7 @@ class MonitoringResourceControllerTest extends TestCase
             $resource->getLinks()->getEndpoints()->getAcknowledgement(),
             '/centreon/api/v21.10/monitoring/hosts/1/acknowledgements?limit=1'
         );
-        $this->assertMatchesRegularExpression(
+        $this->assertRegExp(
             '#/centreon/api/v21.10/monitoring/hosts/1/downtimes\?'
                 . 'search=\{"\$and":\[\{"start_time":\{"\$lt":\d+\},"end_time":\{"\$gt":\d+\},'
                 . '"0":\{"\$or":\{"is_cancelled":\{"\$neq":1\},"deletion_time":\{"\$gt":\d+\}\}\}\}\]\}#',
