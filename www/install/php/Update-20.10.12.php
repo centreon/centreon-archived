@@ -35,10 +35,10 @@ try {
 
     //Purge all session.
     $errorMessage = 'Impossible to purge the table session';
-    $pearDB->query("DELETE * FROM `session`");
+    $pearDB->query("DELETE FROM `session`");
 
     $errorMessage = 'Impossible to purge the table ws_token';
-    $pearDB->query("DELETE * FROM `ws_token`");
+    $pearDB->query("DELETE FROM `ws_token`");
 
     $constraintStatement = $pearDB->query(
         "SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME='session_ibfk_1'"
