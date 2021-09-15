@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import clsx from 'clsx';
 import {
-  concat,
   equals,
   find,
   gt,

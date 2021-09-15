@@ -15,7 +15,6 @@ export const useIntersection = (): GraphIntersectionState => {
 
   React.useEffect(() => {
     if (observer.current) {
-      console.log('heyy');
       observer.current.disconnect();
     }
 
@@ -31,7 +30,6 @@ export const useIntersection = (): GraphIntersectionState => {
     }
 
     return (): void => {
-      console.log('heyy2');
       observer.current?.disconnect();
     };
   }, [element]);
