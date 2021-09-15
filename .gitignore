@@ -66,3 +66,5 @@ www/widgets
 !www/widgets/require.php
 
 .DS_store
+
+.lighthouseci
