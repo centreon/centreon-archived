@@ -23,8 +23,7 @@ import {
   Popper,
 } from '@material-ui/core';
 
-import IconButton from '@centreon/centreon-frontend/packages/centreon-ui/src/Button/';
-import { MemoizedFilter, SearchField } from '@centreon/ui';
+import { MemoizedFilter, SearchField, IconButton } from '@centreon/ui';
 
 import {
   labelStateFilter,
