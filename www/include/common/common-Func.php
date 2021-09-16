@@ -62,7 +62,7 @@ function isUserAdmin($sid = null)
     }
 
 
-    $DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact 
+    $DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact
 WHERE session.session_id = ? AND contact.contact_id = session.user_id", CentreonDB::escape($sid));
     $admin = $DBRESULT->fetchRow();
     $DBRESULT->closeCursor();
@@ -92,7 +92,7 @@ function getUserIdFromSID($sid = null)
         return;
     }
     global $pearDB;
-    $DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact 
+    $DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact
 WHERE session.session_id = ? AND contact.contact_id = session.user_id", CentreonDB::escape($sid));
     $admin = $DBRESULT->fetchRow();
     unset($DBRESULT);
@@ -944,14 +944,14 @@ function getMyServiceGroupActivateServices($sg_id = null, $access = null)
 				      WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "'
                                       AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id
                                       AND service.service_id = servicegroup_relation.service_service_id
-                                      AND servicegroup_relation.host_host_id = host.host_id 
+                                      AND servicegroup_relation.host_host_id = host.host_id
                                       AND servicegroup_relation.host_host_id IS NOT NULL
                                       AND service.service_activate = '1'
                                       UNION
                                       SELECT service_description, service_id, h.host_id as host_host_id, host_name
-                                      FROM servicegroup_relation, service, hostgroup, hostgroup_relation hgr, host h 
-                                      WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "' 
-                                      AND service.service_id = servicegroup_relation.service_service_id 
+                                      FROM servicegroup_relation, service, hostgroup, hostgroup_relation hgr, host h
+                                      WHERE servicegroup_sg_id = '" . CentreonDB::escape($sg_id) . "'
+                                      AND service.service_id = servicegroup_relation.service_service_id
                                       AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id
                                       AND servicegroup_relation.hostgroup_hg_id IS NOT NULL
                                       AND service.service_activate = '1'
@@ -1596,7 +1596,7 @@ function getMyHostID($host_name = null)
     }
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT host_id FROM host WHERE host_name = '" . $pearDB->escape($host_name) . "' 
+    $DBRESULT = $pearDB->query("SELECT host_id FROM host WHERE host_name = '" . $pearDB->escape($host_name) . "'
 			OR host_name = '" . $pearDB->escape(utf8_encode($host_name)) . "'LIMIT 1");
     if ($DBRESULT->rowCount()) {
         $row = $DBRESULT->fetchRow();
@@ -1899,7 +1899,7 @@ function HG_has_one_or_more_host($hg_id, $hgHCache, $hgHgCache, $is_admin, $lca)
             }
             if ($hostIdString) {
                 $DBRESULT2 = $pearDBO->query("SELECT host_id, service_id
-                                                          FROM index_data 
+                                                          FROM index_data
                                                           WHERE host_id IN ($hostIdString)");
                 $result = false;
                 while ($row = $DBRESULT2->fetchRow()) {
@@ -2345,4 +2345,47 @@ function isNotEmptyAfterStringSanitize($test): bool
     } else {
         return true;
     }
+}
+
+/**
+ * Remove too old CSRF tokens (> 15min)
+ */
+function purgeTokens(){
+    foreach ($_SESSION['x-centreon-token-generated-at'] as $key => $value) {
+        $elapsedTime = time() - $value;
+
+        if ($elapsedTime > (15 * 60)) {
+            $tokenKey = array_search((string)$key, $_SESSION['x-centreon-token']);
+            unset($_SESSION['x-centreon-token'][$tokenKey]);
+            unset($_SESSION['x-centreon-token-generated-at'][(string)$key]);
+        }
+    }
+}
+
+/**
+ * Check CRSF token validity
+ *
+ * @return boolean
+ */
+function isCSRFTokenValid(){
+    $isValid = false;
+
+    purgeTokens();
+
+    if (isset($_POST['centreon_token']) && in_array($_POST['centreon_token'], $_SESSION['x-centreon-token'])) {
+        $key = array_search((string)$_POST['centreon_token'], $_SESSION['x-centreon-token']);
+        unset($_SESSION['x-centreon-token'][$key]);
+        unset($_SESSION['x-centreon-token-generated-at'][(string)$_POST['centreon_token']]);
+        $isValid = true;
+    }
+    return $isValid;
+}
+
+/**
+ * Display error message for unvalid form (CSRF token unvalid or too old)
+ */
+function unvalidFormMessage(){
+    echo "<div class='msg' align='center'>" .
+        _("The form has not been submitted since 15 minutes. Please retry to resubmit") .
+        "<a href='' OnLoad = windows.location(); alt='reload'> " . _("here") . "</a></div>";
 }
