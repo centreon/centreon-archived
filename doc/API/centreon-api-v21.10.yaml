@@ -4477,12 +4477,24 @@ components:
           example: "Acknowledged by admin"
         with_services:
           type: boolean
-          description: "Indicates whether we should acknowledge the host-related services"
+          description: "Indicates whether or not we should acknowledge the host-related services."
           example: true
+          default: true
         is_notify_contacts:
           type: boolean
-          description: "Indicates whether notification is sent to the contacts linked to the host or service"
+          description: "Indicates whether or not notification is sent to the contacts linked to the host or service."
           example: false
+          default: true
+        is_persistent_comment:
+          type: boolean
+          description: "Indicates if the acknowledgment will be maintained in case a restart of the scheduler occurs."
+          example: false
+          default: true
+        is_sticky:
+          type: boolean
+          description: "Indicates if the acknowledgment will be maintained in case of non-OK status change."
+          example: false
+          default: true
     Disacknowledgement.Resource:
       type: object
       properties:
