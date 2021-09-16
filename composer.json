@@ -18,11 +18,10 @@
         "centreon/centreon-test-lib": "dev-MON-7343-php8",
         "phpstan/phpstan": "^0.12.59",
         "phpstan/phpstan-beberlei-assert": "^0.12",
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^9.5",
         "sensiolabs/security-checker": "^6.0",
         "squizlabs/php_codesniffer": "^3.5",
         "symfony/phpunit-bridge": "4.4.*",
-        "symfony/profiler-pack": "^1.0",
         "symfony/stopwatch": "^4.4",
         "symfony/twig-bundle": "^4.4",
         "symfony/var-dumper": "4.4.*",
@@ -32,10 +31,10 @@
         "zircote/swagger-php": "^3.0"
     },
     "require": {
-        "beberlei/assert": "v3.3.0",
-        "curl/curl" : "^1.5",
+        "beberlei/assert": "^3.3",
+        "curl/curl" : "^2.3",
         "dragonmantank/cron-expression": "3.1.0",
-        "enshrined/svg-sanitize": "^0.14.0",
+        "enshrined/svg-sanitize": "^0.14",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
@@ -64,10 +63,14 @@
         "symfony/monolog-bundle": "^3.7",
         "symfony/options-resolver": "4.4.*",
         "symfony/security-bundle": "4.4.*",
-        "symfony/serializer-pack": "^1.0",
         "symfony/translation": "4.4.*",
         "symfony/validator": "4.4.*",
-        "symfony/yaml": "4.4.*"
+        "symfony/yaml": "4.4.*",
+        "doctrine/annotations": "^1.0",
+        "phpdocumentor/reflection-docblock": "^5.2",
+        "symfony/property-access": "4.4.*",
+        "symfony/property-info": "4.4.*",
+        "symfony/serializer": "4.4.*"
     },
     "autoload": {
         "psr-4": {

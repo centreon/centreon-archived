@@ -85,7 +85,7 @@ class YamlConfigurationLoader
             } elseif ($value instanceof TaggedValue && $value->getTag() === self::INCLUDE_TOKEN) {
                 $fileToLoad = $value->getValue();
                 if ($fileToLoad[0] !== DIRECTORY_SEPARATOR) {
-                    $fileToLoad = $currentDirectory . '/' . $fileToLoad;
+                    $fileToLoad = $currentDirectory . DIRECTORY_SEPARATOR . $fileToLoad;
                 }
                 $dataToIterate = $this->loadFile($fileToLoad);
 
@@ -93,10 +93,10 @@ class YamlConfigurationLoader
                     $configuration[$key] = $this->iterateConfiguration(
                         $dataToIterate,
                         realpath(dirname($fileToLoad)),
-                        $historyLoadedFile . ':' . realpath($fileToLoad)
+                        $historyLoadedFile . '::' . realpath($fileToLoad)
                     );
                 } else {
-                    $loadedFile = explode(':', $historyLoadedFile);
+                    $loadedFile = explode('::', $historyLoadedFile);
                     throw new \Exception('Loop detected in file ' . array_pop($loadedFile));
                 }
             }
@@ -116,7 +116,7 @@ class YamlConfigurationLoader
     private function isLoopDetected(string $fileToLoad, string $historyLoadedFile): bool
     {
         $fileToLoad = realpath($fileToLoad);
-        $loadedFile = explode(':', $historyLoadedFile);
+        $loadedFile = explode('::', $historyLoadedFile);
 
         return in_array($fileToLoad, $loadedFile);
     }

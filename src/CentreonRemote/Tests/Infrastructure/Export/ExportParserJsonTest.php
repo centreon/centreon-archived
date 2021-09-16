@@ -97,7 +97,7 @@ class ExportParserJsonTest extends TestCase
     {
         $this->parser->dump([], 'vfs://tmp/test.json');
 
-        $this->assertFileNotExists('vfs://tmp/test.json');
+        $this->assertFileDoesNotExist('vfs://tmp/test.json');
     }
 
     /**

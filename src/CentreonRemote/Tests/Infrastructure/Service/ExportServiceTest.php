@@ -124,7 +124,7 @@ class ExportServiceTest extends TestCase
         $this->export->export($commitment);
 
         // @todo replace system('rm -rf vfs://...')
-        // $this->assertFileNotExists("{$path}/test.txt");
+        // $this->assertFileDoesNotExist("{$path}/test.txt");
 
         $this->assertFileExists("{$path}/manifest.json");
     }
