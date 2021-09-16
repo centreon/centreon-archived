@@ -150,20 +150,8 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
         junit 'ut-be.xml,ut-fe.xml'
       }
-<<<<<<< HEAD
-    }
-
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error("Quality gate failure: ${qualityGate.status}.");
-    }
-  }
-
-  stage('Package') {
-    parallel 'centos7': {
-=======
     },
     'packaging centos7': {
->>>>>>> 2bdc3e7... enh(ci): new pipeline workflow
       node {
         checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
