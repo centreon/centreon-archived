@@ -63,11 +63,6 @@ class Contact implements UserInterface, ContactInterface
     public const ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE = 'ROLE_CONFIGURATION_POLLERS_POLLERS_RW';
     public const ROLE_CONFIGURATION_MONITORING_SERVER_READ = 'ROLE_CONFIGURATION_POLLERS_POLLERS_R';
 
-    // Platform Data Sending
-    public const PLATFORM_DATA_SENDING_NO = 0;
-    public const PLATFORM_DATA_SENDING_CONTACT_DETAILS = 1;
-    public const PLATFORM_DATA_SENDING_ANONYMIZED = 2;
-
     /**
      * @var string
      */
