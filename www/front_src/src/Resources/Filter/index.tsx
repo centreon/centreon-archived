@@ -23,7 +23,7 @@ import {
   Popper,
 } from '@material-ui/core';
 
-import IconButton from '@centreon/centreon-frontend';
+import IconButton from '@centreon/centreon-frontend/packages/centreon-ui/src/Button/';
 import { MemoizedFilter, SearchField } from '@centreon/ui';
 
 import {
@@ -50,6 +50,10 @@ import { getAutocompleteSuggestions } from './Criterias/searchQueryLanguage';
 const useStyles = makeStyles((theme) => ({
   autocompletePopper: {
     zIndex: theme.zIndex.tooltip,
+  },
+  clearFilter: {
+    padding: 'revert',
+    position: 'inherit',
   },
   container: {
     alignItems: 'center',
@@ -336,6 +340,7 @@ const Filter = (): JSX.Element => {
                 EndAdornment={(): JSX.Element => (
                   <IconButton
                     ariaLabel={t(labelClearFilter)}
+                    className={classes.clearFilter}
                     size="small"
                     title={t(labelClearFilter)}
                     onClick={clearFilter}
