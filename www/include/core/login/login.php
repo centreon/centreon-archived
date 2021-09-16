@@ -127,7 +127,6 @@ $tpl->assign('currentDate', date("d/m/Y"));
 $tpl->assign('openIdConnectEnabled', $openIdConnectEnabled);
 $tpl->assign('openIdConnectMode', $openIdConnectMode);
 
-
 // Redirect User
 $redirect = filter_input(
     INPUT_GET,

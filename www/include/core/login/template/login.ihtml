@@ -55,8 +55,6 @@
         {$form.hidden}
         </form>
         <script type="text/javascript">
-            let sendStatistics = Boolean({$sendStatistics});
-            {literal}
             jQuery(() => {
                 jQuery('form[name="login"]').submit(() => {
                     jQuery('input[type="submit"]').prop('disabled', true)
@@ -69,7 +67,7 @@
                         method: 'POST',
                         contentType: 'application/json'
                     }).done((res) => {
-                        window.location.href = res.redirect_uri;
+                        window.location.href = res.redirect_uri
                     }).fail((err) => {
                         jQuery('span.msg').text('Your credentials are incorrect.')
                         jQuery('div.error_msg').css('visibility', '')
