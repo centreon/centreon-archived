@@ -1,37 +1,67 @@
-import org.apache.tools.ant.types.selectors.SelectorUtils
-import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
-
 /*
 ** Variables.
 */
-properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
 def serie = '20.10'
 def maintenanceBranch = "${serie}.x"
+def qaBranch = "dev-${serie}.x"
 env.REF_BRANCH = 'master'
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
 } else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
   env.BUILD = 'REFERENCE'
+} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch)) {
+  env.BUILD = 'QA'
 } else {
   env.BUILD = 'CI'
 }
 def apiFeatureFiles = []
 def featureFiles = []
+def buildBranch = env.BRANCH_NAME
+if (env.CHANGE_BRANCH) {
+  buildBranch = env.CHANGE_BRANCH
+}
+
+/*
+** Functions
+*/
+def isStableBuild() {
+  return ((env.BUILD == 'REFERENCE') || (env.BUILD == 'QA'))
+}
+
+def checkoutCentreonBuild(buildBranch) {
+  def getCentreonBuildGitConfiguration = { branchName -> [
+    $class: 'GitSCM',
+    branches: [[name: "refs/heads/${branchName}"]],
+    doGenerateSubmoduleConfigurations: false,
+    userRemoteConfigs: [[
+      $class: 'UserRemoteConfig',
+      url: "ssh://git@github.com/centreon/centreon-build.git"
+    ]]
+  ]}
+
+  dir('centreon-build') {
+    try {
+      checkout(getCentreonBuildGitConfiguration(buildBranch))
+    } catch(e) {
+      echo "branch '${buildBranch}' does not exist in centreon-build, then fallback to master"
+      checkout(getCentreonBuildGitConfiguration('master'))
+    }
+  }
+}
 
 /*
 ** Pipeline code.
 */
-stage('Source') {
+stage('Deliver sources') {
   node {
-    sh 'setup_centreon_build.sh'
+    checkoutCentreonBuild(buildBranch)
     dir('centreon-web') {
       checkout scm
     }
     // git repository is stored for the Sonar analysis below.
     sh 'tar czf centreon-web-git.tar.gz centreon-web'
     stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
-    // resuming process
     sh "./centreon-build/jobs/web/${serie}/mon-web-source.sh"
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
@@ -53,10 +83,10 @@ stage('Source') {
 }
 
 try {
-  stage('Unit tests') {
-    parallel 'centos7': {
+  stage('Unit tests // RPM Packaging // Sonar analysis') {
+    parallel 'unit tests centos7': {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
         junit 'ut-be.xml,ut-fe.xml'
@@ -113,13 +143,14 @@ try {
         }
       }
     },
-    'centos8': {
+    'unit tests centos8': {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
         junit 'ut-be.xml,ut-fe.xml'
       }
+<<<<<<< HEAD
     }
 
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -129,36 +160,60 @@ try {
 
   stage('Package') {
     parallel 'centos7': {
+=======
+    },
+    'packaging centos7': {
+>>>>>>> 2bdc3e7... enh(ci): new pipeline workflow
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
-        archiveArtifacts artifacts: 'rpms-centos7.tar.gz'
+        archiveArtifacts artifacts: "rpms-centos7.tar.gz"
+        stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
+        sh 'rm -rf output'      
       }
     },
-    'centos8': {
+    'packaging centos8': {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
-        archiveArtifacts artifacts: 'rpms-centos8.tar.gz'
+        archiveArtifacts artifacts: "rpms-centos8.tar.gz"
+        stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
+        sh 'rm -rf output'
       }
-    }
+    }    
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Package stage failure.');
+      error("Quality gate failure: ${qualityGate.status}.");
     }
   }
 
-  stage('Bundle') {
-    parallel 'centos7': {
+  if ((env.BUILD == 'CI') || (env.BUILD == 'QA')) {
+    stage('Delivery to unstable') {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild(buildBranch)
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos7'
+        unstash 'rpms-centos8'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure.');
+      }
+    }
+  }
+
+  stage('Docker creation') {
+    parallel 'Docker centos7': {
+      node {
+        checkoutCentreonBuild(buildBranch)
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
     },
-    'centos8': {
+    'Docker centos8': {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild(buildBranch)
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
       }
     }
@@ -173,7 +228,7 @@ try {
       def feature = x
       parallelSteps[feature] = {
         node {
-          sh 'setup_centreon_build.sh'
+          checkoutCentreonBuild(buildBranch)
           unstash 'tar-sources'
           unstash 'vendor'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
@@ -196,7 +251,7 @@ try {
       def feature = x
       parallelSteps[feature] = {
         node {
-          sh 'setup_centreon_build.sh'
+          checkoutCentreonBuild(buildBranch)
           unstash 'tar-sources'
           unstash 'vendor'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
@@ -213,12 +268,14 @@ try {
     }
   }
 
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
     stage('Delivery') {
       node {
-        sh 'setup_centreon_build.sh'
+        checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
         unstash 'api-doc'
+        unstash 'rpms-centos7'
+        unstash 'rpms-centos8'
         sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
