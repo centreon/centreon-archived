@@ -52,6 +52,7 @@ if($sendStatisticsResult === false || $sendStatisticsResult["value"] == "0") {
 } else {
     $sendStatistics = '1';
 }
+
 /**
  * Getting Platform Type.
  */
@@ -231,9 +232,6 @@ if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
             localStorage.getItem('centreonPlatformData') === null
             || JSON.parse(localStorage.getItem('centreonPlatformData')).cacheGenerationDate + (24 * 60 * 60 * 1000) < Date.now()
         ) {
-            /**
-             * User parameters Request.
-             */
             const userParametersRequest = jQuery.ajax({
                 url: '/centreon/api/v21.10/configuration/users/current/parameters',
                 method: 'GET',
@@ -291,6 +289,9 @@ if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
                         }
                     };
 
+                    /**
+                     * Create unique id based on company name, uuid and contact id
+                     */
                     platformData.visitor.id = platformData.account.name
                         ? platformData.account.name.substr(0,10) + '-' + uuid.substr(0,8) + '-' + userParameters.id
                         : uuid.substr(0,8) + '-' + userParameters.id;
@@ -302,21 +303,25 @@ if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
                     platformData.account.versionMajor = platformVersions.web.major + '.' + platformVersions.web.minor;
                     platformData.account.versionMinor = platformVersions.web.version;
 
+                    /**
+                     * Define role based on ACL actions
+                     * If user as at least one action rule in ACL, then set role to operator, else to user
+                     */
                     const aclActions = [
-                            ...Object.values(aclActionsRes.host),
-                            ...Object.values(aclActionsRes.metaservice),
-                            ...Object.values(aclActionsRes.service)
-                        ];
-                        if (!aclActions.includes(true)) {
-                            platformData.visitor.role = 'user';
-                        } else if (aclActions.includes(true) && platformData.visitor.role !== 'admin') {
-                            platformData.visitor.role = 'operator';
-                        }
+                        ...Object.values(aclActionsRes.host),
+                        ...Object.values(aclActionsRes.metaservice),
+                        ...Object.values(aclActionsRes.service)
+                    ];
+                    if (!aclActions.includes(true)) {
+                        platformData.visitor.role = 'user';
+                    } else if (aclActions.includes(true) && platformData.visitor.role !== 'admin') {
+                        platformData.visitor.role = 'operator';
+                    }
 
-                        /**
-                         * Save data in local storage and redirect user.
-                         */
-                        localStorage.setItem('centreonPlatformData', JSON.stringify(platformData));
+                    /**
+                     * Save data in local storage and redirect user.
+                     */
+                    localStorage.setItem('centreonPlatformData', JSON.stringify(platformData));
                 }
             )
         }
