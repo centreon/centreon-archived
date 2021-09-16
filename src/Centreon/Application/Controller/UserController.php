@@ -88,8 +88,7 @@ class UserController extends AbstractController
             'email' => $user->getEmail(),
             'timezone' => $user->getTimezone()->getName(),
             'locale' => $user->getLocale(),
-            'is_admin' => $user->isAdmin(),
-            'platform_data_sending' => $user->getPlatformDataSending(),
+            'is_admin' => $user->isAdmin()
         ]);
     }
 

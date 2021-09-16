@@ -640,16 +640,6 @@ paths:
                     type: boolean
                     description: If the current user is an administrator
                     example: true
-                  platform_data_sending:
-                    type: integer
-                    description: |
-                      If the current user is allowed to send platform data
-
-                      0: No
-
-                      1: Contact details (email and name will be shown)
-
-                      2: Anonymous (email and name will be anonymized)
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
