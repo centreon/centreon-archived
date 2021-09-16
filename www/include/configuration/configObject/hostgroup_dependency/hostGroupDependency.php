@@ -80,14 +80,22 @@ switch ($o) {
         require_once($path . "formHostGroupDependency.php");
         break;
     case "m": # Duplicate n Dependencies
-        multipleHostGroupDependencyInDB(
-            is_array($select) ? $select : [],
-            is_array($dupNbr) ? $dupNbr : []
-        );
+        if (isCSRFTokenValid()) {
+            multipleHostGroupDependencyInDB(
+                is_array($select) ? $select : [],
+                is_array($dupNbr) ? $dupNbr : []
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostGroupDependency.php");
         break;
     case "d": # Delete n Dependency
-        deleteHostGroupDependencyInDB(is_array($select) ? $select : []);
+        if (isCSRFTokenValid()) {
+            deleteHostGroupDependencyInDB(is_array($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostGroupDependency.php");
         break;
     default:
