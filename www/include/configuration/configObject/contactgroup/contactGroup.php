@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -111,37 +112,50 @@ switch ($o) {
         /*
          * Activate a contactgroup
          */
-        enableContactGroupInDB($cg_id);
+        if (isCSRFTokenValid()) {
+            enableContactGroupInDB($cg_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContactGroup.php");
         break;
     case "u":
         /*
          * Desactivate a contactgroup
          */
-        disableContactGroupInDB($cg_id);
+        if (isCSRFTokenValid()) {
+            disableContactGroupInDB($cg_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContactGroup.php");
         break;
     case "m":
         /*
          * Duplicate n contact group
          */
-        multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        if (isCSRFTokenValid()) {
+            multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContactGroup.php");
         break;
     case "d":
         /*
-         *
+         * Delete a contact group
          */
-        deleteContactGroupInDB(isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            deleteContactGroupInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContactGroup.php");
         break;
     case "dn":
         require_once $path . 'displayNotification.php';
         break;
     default:
-        /*
-         * Delete n contact group
-         */
         require_once($path . "listContactGroup.php");
         break;
 }

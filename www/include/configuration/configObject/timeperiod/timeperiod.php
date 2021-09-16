@@ -75,14 +75,22 @@ switch ($o) {
         require_once($path . "renderTimeperiod.php");
         break;
     case "m": // Duplicate n Timeperiods
-        multipleTimeperiodInDB(
-            is_array($select) ? $select : array(),
-            is_array($dupNbr) ? $dupNbr : array()
-        );
+        if (isCSRFTokenValid()) {
+            multipleTimeperiodInDB(
+                is_array($select) ? $select : array(),
+                is_array($dupNbr) ? $dupNbr : array()
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listTimeperiod.php");
         break;
     case "d": // Delete n Timeperiods
-        deleteTimeperiodInDB(is_array($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            deleteTimeperiodInDB(is_array($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listTimeperiod.php");
         break;
     default:
