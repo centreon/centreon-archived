@@ -54,6 +54,7 @@
             </div>
         {$form.hidden}
         </form>
+        {literal}
         <script type="text/javascript">
             jQuery(() => {
                 jQuery('form[name="login"]').submit(() => {

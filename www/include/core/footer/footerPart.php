@@ -33,6 +33,9 @@
  *
  */
 
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
 if (!isset($centreon)) {
     exit;
 }
@@ -67,8 +70,8 @@ $uuid = $centreonUUID->getUUID();
 /**
  * Getting Platform statistics.
  */
-$output = new Symfony\Component\Console\Output\ConsoleOutput();
-$logger = new Symfony\Component\Console\Logger\ConsoleLogger($output);
+$output = new ConsoleOutput();
+$logger = new ConsoleLogger($output);
 $centreonStats = new CentreonStatistics($logger);
 $stats = $centreonStats->getPlatformInfo();
 
@@ -522,9 +525,6 @@ if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
 
 </html>
 <?php
-
-use Symfony\Component\Console\Logger\ConsoleLogger;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 /*
  * Close all DB handler
