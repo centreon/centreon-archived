@@ -272,7 +272,7 @@ $tpl->assign("end", $limit);
 $tpl->assign("pagin_page", _("Page"));
 if (isset($_GET["order"])) {
     $tpl->assign("order", $_GET["order"] === "DESC" ? "DESC" : "ASC");
-}else {
+} else {
     $tpl->assign("order", "ASC");
 }
 $tpl->assign("tab_order", $tab_order);
