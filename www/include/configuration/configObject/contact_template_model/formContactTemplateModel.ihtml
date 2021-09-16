@@ -37,7 +37,7 @@
         {if $o != "mc"}
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_name"> {$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
-        {/if}       
+        {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_template_id.label}</td><td class="FormRowValue">{$form.contact_template_id.html}</td></tr>
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
@@ -118,14 +118,14 @@
     <div id="validForm">
     {if $o == "a" || $o == "c" || $o == "mc"}
         <p class="oreonbutton">
-{if isset($form.submitC)}
-    {$form.submitC.html}
-{elseif isset($form.submitMC)}
-    {$form.submitMC.html}
-{else}
-    {$form.submitA.html}
-{/if}
-&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        {if isset($form.submitC)}
+            {$form.submitC.html}
+        {elseif isset($form.submitMC)}
+            {$form.submitMC.html}
+        {else}
+            {$form.submitA.html}
+        {/if}
+        &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
     {else if $o == "w"}
         <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
     {/if}

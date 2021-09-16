@@ -11,7 +11,7 @@
 			<li class="b" id='c7'><a href="#" onclick="javascript:montre('7');">{$sort7}</a></li>
 		</ul>
         <div id="validFormTop">
-        {if $o == "a" || $o == "c"}
+		{if $o == "a" || $o == "c"}
             <p class="oreonbutton">
 				{if isset($form.submitC)}
 					{$form.submitC.html}
@@ -20,9 +20,9 @@
 				{/if}
 				&nbsp;&nbsp;&nbsp;{$form.reset.html}
 			</p>
-        {else if $o == "w"}
-            <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
-        {/if}
+		{else if $o == "w"}
+			<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
+		{/if}
         </div>
 	</div>
 	<div id='tab1' class='tab'>

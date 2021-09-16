@@ -1,14 +1,14 @@
 {$form.javascript}
 <form {$form.attributes}>
 	<div id="validFormTop">
-	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">
-{if isset($form.submitC)}
-    {$form.submitC.html}
-{else}
-    {$form.submitA.html}
-{/if}
-&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+    {if $o == "a" || $o == "c"}
+        <p class="oreonbutton">
+        {if isset($form.submitC)}
+            {$form.submitC.html}
+        {else}
+            {$form.submitA.html}
+        {/if}
+        &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 	{/if}
