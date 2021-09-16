@@ -640,6 +640,10 @@ paths:
                     type: boolean
                     description: If the current user is an administrator
                     example: true
+                  useDeprecatedPages:
+                    type: boolean
+                    description: Indicates if user wants to use deprecated monitoring pages
+                    example: false
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':

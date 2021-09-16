@@ -146,6 +146,8 @@ class ServiceStatusMenu extends Component {
       return <MenuLoader width={33} />;
     }
 
+    const hasPendingServices = data.pending > 0;
+
     return (
       <div
         className={`${styles.wrapper} wrap-right-services`}
@@ -155,10 +157,9 @@ class ServiceStatusMenu extends Component {
           <IconHeader
             Icon={ServiceIcon}
             iconName={t('Services')}
+            pending={hasPendingServices}
             onClick={this.toggle}
-          >
-            {data.pending > 0 && <span className={styles['custom-icon']} />}
-          </IconHeader>
+          />
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to={getServiceResourcesUrl({

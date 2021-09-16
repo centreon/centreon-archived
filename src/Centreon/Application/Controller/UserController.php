@@ -89,6 +89,7 @@ class UserController extends AbstractController
             'timezone' => $user->getTimezone()->getName(),
             'locale' => $user->getLocale(),
             'is_admin' => $user->isAdmin()
+            'use_deprecated_pages' => $user->isUsingDeprecatedPages()
         ]);
     }
 
