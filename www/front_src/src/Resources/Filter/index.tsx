@@ -23,7 +23,12 @@ import {
   Popper,
 } from '@material-ui/core';
 
+<<<<<<< HEAD
 import { MemoizedFilter, SearchField, IconButton } from '@centreon/ui';
+=======
+import IconButton from '@centreon/centreon-frontend';
+import { MemoizedFilter, SearchField } from '@centreon/ui';
+>>>>>>> 8609bbc458... Clear filter by one click
 
 import {
   labelStateFilter,
@@ -339,7 +344,10 @@ const Filter = (): JSX.Element => {
                 EndAdornment={(): JSX.Element => (
                   <IconButton
                     ariaLabel={t(labelClearFilter)}
+<<<<<<< HEAD
                     className={classes.clearFilter}
+=======
+>>>>>>> 8609bbc458... Clear filter by one click
                     size="small"
                     title={t(labelClearFilter)}
                     onClick={clearFilter}
