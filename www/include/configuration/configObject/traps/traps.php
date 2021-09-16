@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -95,14 +96,22 @@ switch ($o) {
         }
         break;
     case TRAP_DUPLICATE:
-        if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
-            $trapObj->duplicate($selectIds, $duplicateNbr);
+        if (isCSRFTokenValid()) {
+            if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
+                $trapObj->duplicate($selectIds, $duplicateNbr);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listTraps.php");
         break;
     case TRAP_DELETE:
-        if (!in_array(false, $selectIds)) {
-            $trapObj->delete($selectIds);
+        if (isCSRFTokenValid()) {
+            if (!in_array(false, $selectIds)) {
+                $trapObj->delete($selectIds);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listTraps.php");
         break; #
