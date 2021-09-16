@@ -86,27 +86,51 @@ switch ($o) {
         require_once($path . "formHostTemplateModel.php");
         break; #Add a host template model
     case HOST_TEMPLATE_ACTIVATION:
-        enableHostInDB($host_id);
+        if (isCSRFTokenValid()) {
+            enableHostInDB($host_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break; #Activate a host template model
     case HOST_TEMPLATE_MASSIVE_ACTIVATION:
-        enableHostInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            enableHostInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break;
     case HOST_TEMPLATE_DEACTIVATION:
-        disableHostInDB($host_id);
+        if (isCSRFTokenValid()) {
+            disableHostInDB($host_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break; #Desactivate a host template model
     case HOST_TEMPLATE_MASSIVE_DEACTIVATION:
-        disableHostInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            disableHostInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break;
     case HOST_TEMPLATE_DUPLICATION:
-        multipleHostInDB(isset($select) ? $select : array(), $dupNbr);
+        if (isCSRFTokenValid()) {
+            multipleHostInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break; #Duplicate n host template model
     case HOST_TEMPLATE_DELETION:
-        deleteHostInDB(isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            deleteHostInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break; #Delete n host template models
     default:

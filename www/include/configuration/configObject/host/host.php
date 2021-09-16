@@ -109,30 +109,54 @@ switch ($o) {
         require_once($path . "formHost.php");
         break;
     case HOST_ACTIVATION:
-        enableHostInDB($host_id);
+        if (isCSRFTokenValid()) {
+            enableHostInDB($host_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break; #Activate a host
     case HOST_MASSIVE_ACTIVATION:
-        enableHostInDB(null, $select ?? []);
+        if (isCSRFTokenValid()) {
+            enableHostInDB(null, $select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break;
     case HOST_DEACTIVATION:
-        disableHostInDB($host_id);
+        if (isCSRFTokenValid()) {
+            disableHostInDB($host_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break; #Desactivate a host
     case HOST_MASSIVE_DEACTIVATION:
-        disableHostInDB(null, $select ?? []);
+        if (isCSRFTokenValid()) {
+            disableHostInDB(null, $select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break;
     case HOST_DUPLICATION:
-        multipleHostInDB($select ?? [], $dupNbr);
+        if (isCSRFTokenValid()) {
+            multipleHostInDB($select ?? [], $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         $hgs = $acl->getHostGroupAclConf(null, 'broker');
         $aclHostString = $acl->getHostsString('ID', $dbmon);
         $aclPollerString = $acl->getPollerString();
         require_once($path . "listHost.php");
         break;
     case HOST_DELETION:
-        deleteHostInDB($select ?? []);
+        if (isCSRFTokenValid()) {
+            deleteHostInDB($select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break;
     case HOST_SERVICE_DEPLOYMENT:

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -89,23 +90,43 @@ switch ($o) {
         require_once($path . "formHostGroup.php");
         break; #Modify a Hostgroup
     case "s":
-        enableHostGroupInDB($hg_id);
+        if (isCSRFTokenValid()) {
+            enableHostGroupInDB($hg_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostGroup.php");
         break; #Activate a Hostgroup
     case "ms":
-        enableHostGroupInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            enableHostGroupInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostGroup.php");
         break;
     case "u":
-        disableHostGroupInDB($hg_id);
+        if (isCSRFTokenValid()) {
+            disableHostGroupInDB($hg_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostGroup.php");
         break; #Desactivate a Hostgroup
     case "mu":
-        disableHostGroupInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            disableHostGroupInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostGroup.php");
         break;
     case "m":
-        multipleHostGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        if (isCSRFTokenValid()) {
+            multipleHostGroupInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         $acl = $centreon->user->access;
         $hgs = $acl->getHostGroupAclConf(null, 'broker');
         $hgString = implode(',', array_map('mywrap', array_keys($hgs)));
@@ -113,7 +134,11 @@ switch ($o) {
         require_once($path . "listHostGroup.php");
         break; #Duplicate n Host grou
     case "d":
-        deleteHostGroupInDB(isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            deleteHostGroupInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostGroup.php");
         break; #Delete n Host group
     default:
