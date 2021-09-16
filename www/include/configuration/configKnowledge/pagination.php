@@ -270,11 +270,10 @@ $tpl->assign("limite", isset($limite) ? $limite : null);
 $tpl->assign("begin", $num);
 $tpl->assign("end", $limit);
 $tpl->assign("pagin_page", _("Page"));
-if (isset($_GET["order"])) {
-    $tpl->assign("order", $_GET["order"] === "DESC" ? "DESC" : "ASC");
-} else {
-    $tpl->assign("order", "ASC");
-}
+$tpl->assign(
+    "order",
+    isset($_GET["order"]) && $_GET["order"] === "DESC" ? "DESC" : "ASC"
+);
 $tpl->assign("tab_order", $tab_order);
 $tpl->assign('form', $renderer->toArray());
 
