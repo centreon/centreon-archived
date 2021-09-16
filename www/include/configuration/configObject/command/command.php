@@ -101,33 +101,57 @@ if ($min) {
             require_once($path . "formCommand.php");
             break;
         case "m": // Duplicate n Commands
-            multipleCommandInDB(
-                is_array($select) ? $select : array(),
-                is_array($dupNbr) ? $dupNbr : array()
-            );
+            if (isCSRFTokenValid()) {
+                multipleCommandInDB(
+                    is_array($select) ? $select : array(),
+                    is_array($dupNbr) ? $dupNbr : array()
+                );
+            } else {
+                unvalidFormMessage();
+            }
             require_once($path . "listCommand.php");
             break;
         case "d": // Delete n Commands
-            deleteCommandInDB(is_array($select) ? $select : array());
+            if (isCSRFTokenValid()) {
+                deleteCommandInDB(is_array($select) ? $select : array());
+            } else {
+                unvalidFormMessage();
+            }
             require_once($path . "listCommand.php");
             break;
         case "me":
-            changeCommandStatus(null, is_array($select) ? $select : array(), 1);
+            if (isCSRFTokenValid()) {
+                changeCommandStatus(null, is_array($select) ? $select : array(), 1);
+            } else {
+                unvalidFormMessage();
+            }
             require_once($path . "listCommand.php");
             break;
         case "md":
-            changeCommandStatus(null, is_array($select) ? $select : array(), 0);
+            if (isCSRFTokenValid()) {
+                changeCommandStatus(null, is_array($select) ? $select : array(), 0);
+            } else {
+                unvalidFormMessage();
+            }
             require_once($path . "listCommand.php");
             break;
         case "en":
-            if ($command_id !== false) {
-                changeCommandStatus($command_id, null, 1);
+            if (isCSRFTokenValid()) {
+                if ($command_id !== false) {
+                    changeCommandStatus($command_id, null, 1);
+                }
+            } else {
+                unvalidFormMessage();
             }
             require_once($path . "listCommand.php");
             break;
         case "di":
-            if ($command_id !== false) {
-                changeCommandStatus($command_id, null, 0);
+            if (isCSRFTokenValid()) {
+                if ($command_id !== false) {
+                    changeCommandStatus($command_id, null, 0);
+                }
+            } else {
+                unvalidFormMessage();
             }
             require_once($path . "listCommand.php");
             break;
