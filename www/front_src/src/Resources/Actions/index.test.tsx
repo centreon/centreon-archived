@@ -47,6 +47,7 @@ import {
   labelCritical,
   labelUnknown,
   labelAddComment,
+  labelPersistent,
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
@@ -280,8 +281,10 @@ describe(Actions, () => {
     fireEvent.click(getByText(labelAcknowledge));
 
     const notifyCheckbox = await findByLabelText(labelNotify);
+    const persistentCheckbox = await findByLabelText(labelPersistent);
 
     fireEvent.click(notifyCheckbox);
+    fireEvent.click(persistentCheckbox);
     fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
@@ -296,6 +299,8 @@ describe(Actions, () => {
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
             is_notify_contacts: true,
+            is_persistent_comment: true,
+            is_sticky: false,
             with_services: true,
           },
 
