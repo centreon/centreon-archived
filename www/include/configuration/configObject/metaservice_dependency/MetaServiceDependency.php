@@ -75,14 +75,22 @@ switch ($o) {
         require_once($path . "formMetaServiceDependency.php");
         break;
     case "m": # Duplicate n Meta Services
-        multipleMetaServiceDependencyInDB(
-            is_array($select) ? $select : array(),
-            is_array($dupNbr) ? $dupNbr : array()
-        );
+        if (isCSRFTokenValid()) {
+            multipleMetaServiceDependencyInDB(
+                is_array($select) ? $select : array(),
+                is_array($dupNbr) ? $dupNbr : array()
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listMetaServiceDependency.php");
         break;
     case "d": # Delete n Meta Service
-        deleteMetaServiceDependencyInDB(is_array($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            deleteMetaServiceDependencyInDB(is_array($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listMetaServiceDependency.php");
         break;
     default:

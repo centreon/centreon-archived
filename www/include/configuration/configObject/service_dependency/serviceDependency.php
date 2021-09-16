@@ -79,14 +79,22 @@ switch ($o) {
         require_once($path . "formServiceDependency.php");
         break;
     case "m": # Duplicate n Dependencies
-        multipleServiceDependencyInDB(
-            is_array($select) ? $select : array(),
-            is_array($dupNbr) ? $dupNbr : array()
-        );
+        if (isCSRFTokenValid()) {
+            multipleServiceDependencyInDB(
+                is_array($select) ? $select : array(),
+                is_array($dupNbr) ? $dupNbr : array()
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceDependency.php");
         break;
     case "d": # Delete n Dependencies
-        deleteServiceDependencyInDB(is_array($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            deleteServiceDependencyInDB(is_array($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceDependency.php");
         break;
     default:
