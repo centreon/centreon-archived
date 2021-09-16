@@ -16239,3 +16239,6 @@ msgstr "Détails du Contact"
 
 msgid "Service graphs"
 msgstr "Graphiques de services"
+
+msgid "Clear filter"
+msgstr "Réinitialiser le filtre"

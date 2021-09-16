@@ -23,6 +23,7 @@ import {
   Popper,
 } from '@material-ui/core';
 
+import IconButton from '@centreon/centreon-frontend';
 import { MemoizedFilter, SearchField } from '@centreon/ui';
 
 import {
@@ -30,6 +31,7 @@ import {
   labelSearch,
   labelNewFilter,
   labelMyFilters,
+  labelClearFilter,
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
 
@@ -72,6 +74,7 @@ const Filter = (): JSX.Element => {
     currentFilter,
     search,
     applyCurrentFilter,
+    clearFilter,
   } = useResourceContext();
 
   const [isSearchFieldFocus, setIsSearchFieldFocus] = React.useState(false);
@@ -330,7 +333,16 @@ const Filter = (): JSX.Element => {
             <div>
               <SearchField
                 fullWidth
-                EndAdornment={(): JSX.Element => <CloseIcon />}
+                EndAdornment={(): JSX.Element => (
+                  <IconButton
+                    ariaLabel={t(labelClearFilter)}
+                    size="small"
+                    title={t(labelClearFilter)}
+                    onClick={clearFilter}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                )}
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}
