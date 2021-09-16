@@ -36,7 +36,7 @@ const formatMetricValue = ({
     .format(`0.[00]${formatSuffix}`)
     .replace(/\s|i|B/g, '');
 
-  if (and(lt(value, 0), base1024)) {
+  if (lt(value, 0)) {
     return `-${formattedMetricValue}`;
   }
 
