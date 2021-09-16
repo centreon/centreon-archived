@@ -95,27 +95,51 @@ switch ($o) {
         require_once($path . "formServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_ACTIVATION:
-        enableServiceInDB($service_id);
+        if (isCSRFTokenValid()) {
+            enableServiceInDB($service_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_MASSIVE_ACTIVATION:
-        enableServiceInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            enableServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_DEACTIVATION:
-        disableServiceInDB($service_id);
+        if (isCSRFTokenValid()) {
+            disableServiceInDB($service_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_MASSIVE_DEACTIVATION:
-        disableServiceInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            disableServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_DUPLICATION:
-        multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+        if (isCSRFTokenValid()) {
+            multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_DELETION:
-        deleteServiceInDB(isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            deleteServiceInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     default:
