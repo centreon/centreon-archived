@@ -92,7 +92,7 @@ class ContactGroupRepositoryTest extends TestCase
     /**
      * Test the method checkListOfIds
      */
-    public function testCheckListOfIds()
+    public function testCheckListOfIds(): void
     {
         $this->checkListOfIdsTrait(
             ContactGroupRepository::class,
@@ -105,7 +105,7 @@ class ContactGroupRepositoryTest extends TestCase
     /**
      * Test the method getPaginationList
      */
-    public function testGetPaginationList()
+    public function testGetPaginationList(): void
     {
         $result = $this->repository->getPaginationList();
         $contactGroup = new ContactGroup();
@@ -123,7 +123,7 @@ class ContactGroupRepositoryTest extends TestCase
     /**
      * Test the method getPaginationList with a different set of arguments
      */
-    public function testGetPaginationListWithArguments()
+    public function testGetPaginationListWithArguments(): void
     {
         $filters = [
             'search' => 'name',
@@ -149,7 +149,7 @@ class ContactGroupRepositoryTest extends TestCase
     /**
      * Test the method getPaginationTotal
      */
-    public function testGetPaginationListTotal()
+    public function testGetPaginationListTotal(): void
     {
         $total = (int)$this->datasets[2]['data'][0]['number'];
         $result = $this->repository->getPaginationListTotal();
