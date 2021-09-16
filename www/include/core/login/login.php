@@ -54,6 +54,13 @@ $openIdConnectEnabled = $result->fetch()["value"];
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_mode' LIMIT 1");
 $openIdConnectMode = $result->fetch()["value"];
 
+$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics' LIMIT 1");
+$sendStatisticsResult = $result->fetch();
+if($sendStatisticsResult === false || $sendStatisticsResult["value"] == "0") {
+    $sendStatistics = false;
+} else {
+    $sendStatistics = true;
+}
 /**
  * Getting Platform Type.
  */
@@ -186,7 +193,7 @@ $tpl->assign('productLicense', $productLicense);
 if (!empty($licenseInformation)) {
     $tpl->assign('licenseClientName', $licenseClientName);
 }
-
+$tpl->assign('sendStatistics', $sendStatistics);
 
 // Redirect User
 $redirect = filter_input(
