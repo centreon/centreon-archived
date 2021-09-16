@@ -164,11 +164,6 @@ class Contact implements UserInterface, ContactInterface
     private $defaultPage;
 
     /**
-     * @var int|null
-     */
-    private $platformDataSending;
-
-    /**
      * @return int
      */
     public function getId(): int
@@ -583,25 +578,5 @@ class Contact implements UserInterface, ContactInterface
     public function getDefaultPage(): ?Page
     {
         return $this->defaultPage;
-    }
-
-    /**
-     * @param int|null $platformDataSending
-     * @return self
-     */
-    public function setPlatformDataSending(?int $platformDataSending): self
-    {
-        $this->platformDataSending = $platformDataSending;
-        return $this;
-    }
-
-    /**
-     * get platform data sending right
-     *
-     * @return integer|null
-     */
-    public function getPlatformDataSending(): ?int
-    {
-        return $this->platformDataSending;
     }
 }
