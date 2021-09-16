@@ -381,7 +381,7 @@ try {
       }
       parallel parallelSteps
     }
-
+  }
   if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
     stage('Acceptance tests') {
       if (hasBackendChanges || hasFrontendChanges) {
