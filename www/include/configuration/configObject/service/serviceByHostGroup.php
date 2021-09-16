@@ -108,35 +108,67 @@ switch ($o) {
         require_once($path . "formService.php");
         break;
     case SERVICE_DIVISION:
-        divideGroupedServiceInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            divideGroupedServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceByHostGroup.php");
         break;
     case SERVICE_MOVE_TO_HOST:
-        divideGroupedServiceInDB(null, isset($select) ? $select : array(), 1);
+        if (isCSRFTokenValid()) {
+            divideGroupedServiceInDB(null, isset($select) ? $select : array(), 1);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceByHostGroup.php");
         break;
     case SERVICE_ACTIVATION:
-        enableServiceInDB($service_id);
+        if (isCSRFTokenValid()) {
+            enableServiceInDB($service_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceByHostGroup.php");
         break;
     case SERVICE_MASSIVE_ACTIVATION:
-        enableServiceInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            enableServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceByHostGroup.php");
         break;
     case SERVICE_DEACTIVATION:
-        disableServiceInDB($service_id);
+        if (isCSRFTokenValid()) {
+            disableServiceInDB($service_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceByHostGroup.php");
         break;
     case SERVICE_MASSIVE_DEACTIVATION:
-        disableServiceInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            disableServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceByHostGroup.php");
         break;
     case SERVICE_DUPLICATION:
-        multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+        if (isCSRFTokenValid()) {
+            multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceByHostGroup.php");
         break;
     case SERVICE_DELETION:
-        deleteServiceInDB(isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            deleteServiceInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceByHostGroup.php");
         break;
     default:

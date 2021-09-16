@@ -77,30 +77,54 @@ switch ($o) {
         require_once($path . "formServiceCategories.php");
         break;
     case "s": # Activate a ServiceCategories
-        enableServiceCategorieInDB($sc_id);
+        if (isCSRFTokenValid()) {
+            enableServiceCategorieInDB($sc_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
         break;
     case "ms":
-        enableServiceCategorieInDB(null, is_array($select) ? $select : []);
+        if (isCSRFTokenValid()) {
+            enableServiceCategorieInDB(null, is_array($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
         break;
     case "u": # Desactivate a service category
-        disableServiceCategorieInDB($sc_id);
+        if (isCSRFTokenValid()) {
+            disableServiceCategorieInDB($sc_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
         break;
     case "mu":
-        disableServiceCategorieInDB(null, is_array($select) ? $select : []);
+        if (isCSRFTokenValid()) {
+            disableServiceCategorieInDB(null, is_array($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
         break;
     case "m": # Duplicate n service categories
-        multipleServiceCategorieInDB(
-            is_array($select) ? $select : [],
-            is_array($dupNbr) ? $dupNbr : []
-        );
+        if (isCSRFTokenValid()) {
+            multipleServiceCategorieInDB(
+                is_array($select) ? $select : [],
+                is_array($dupNbr) ? $dupNbr : []
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
         break;
     case "d": # Delete n service categories
-        deleteServiceCategorieInDB(is_array($select) ? $select : []);
+        if (isCSRFTokenValid()) {
+            deleteServiceCategorieInDB(is_array($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
         break;
     default:
