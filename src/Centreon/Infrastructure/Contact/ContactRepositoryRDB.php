@@ -322,10 +322,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ? $this->parseLocaleFromContactLang($contact['contact_lang'])
             : null;
 
-        $contactPlatformDataSending = isset($contact['contact_platform_data_sending'])
-            ? (int) $contact['contact_platform_data_sending']
-            : null;
-
         $page = null;
         if ($contact['default_page'] !== null) {
             $page = new Page(
@@ -353,8 +349,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setAccessToApiConfiguration($contact['reach_api'] === '1')
             ->setTimezone(new \DateTimeZone($contactTimezoneName))
             ->setLocale($contactLocale)
-            ->setDefaultPage($page)
-            ->setPlatformDataSending($contactPlatformDataSending);
+            ->setDefaultPage($page);
     }
 
     /**
