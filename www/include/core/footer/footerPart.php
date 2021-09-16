@@ -198,27 +198,28 @@ if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
     <script type="text/javascript">
         myToggleAll(0, false);
     </script>
-    <?php } else {
+<?php } else {
     if (!$centreon->user->showDiv("footer")) {
-    ?>
+?>
         <script type="text/javascript">
             new Effect.toggle('footer', 'blind', {
                 duration: 0
             });
-        </script> <?php
-                }
-            }
+        </script>
+<?php
+    }
+}
 
-            /*
- * Create Data Flow
- */
-            $cdata = CentreonData::getInstance();
-            $jsdata = $cdata->getJsData();
-            foreach ($jsdata as $k => $val) {
-                echo "<span class=\"data hide\" id=\"" . $k . "\" data-" . $k . "=\"" . $val . "\"></span>";
-            }
+    /*
+    * Create Data Flow
+    */
+    $cdata = CentreonData::getInstance();
+    $jsdata = $cdata->getJsData();
+    foreach ($jsdata as $k => $val) {
+        echo "<span class=\"data hide\" id=\"" . $k . "\" data-" . $k . "=\"" . $val . "\"></span>";
+    }
 
-                    ?>
+?>
 
 <script type='text/javascript'>
     let sendStatistics = Boolean(<?= $sendStatistics ?>);
@@ -269,6 +270,7 @@ if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
                     let licenseClient = "<?= $licenseClientName ?>";
                     let platformData = {
                         cacheGenerationDate: Date.now(),
+                        excludeAllText: true,
                         visitor: {
                             id: null,
                             role: null,
