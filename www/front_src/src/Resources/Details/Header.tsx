@@ -64,11 +64,11 @@ const useStylesHeaderContent = makeStyles((theme) => ({
     gridTemplateColumns: 'auto minmax(0, 1fr)',
   },
   resourceName: {
-    columnGap: theme.spacing(0.5),
+    alignItems: 'center',
+    columnGap: theme.spacing(1),
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, min-content)',
-    height: theme.spacing(3),
-    width: 'min-content',
+    gridTemplateColumns: 'minmax(auto, min-content) min-content',
+    height: '100%',
   },
   resourceNameConfigurationIcon: {
     alignSelf: 'center',
@@ -77,6 +77,15 @@ const useStylesHeaderContent = makeStyles((theme) => ({
   },
   resourceNameConfigurationLink: {
     height: theme.spacing(2.5),
+  },
+  resourceNameContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%',
+  },
+  resourceNameTooltip: {
+    maxWidth: 'none',
   },
   truncated: {
     overflow: 'hidden',
@@ -101,18 +110,9 @@ type Props = {
 } & DetailsSectionProps;
 
 const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
-  const [resourceNameHovered, setResourceNameHovered] = React.useState(false);
   const { t } = useTranslation();
   const { showSuccessMessage, showErrorMessage } = useSnackbar();
   const classes = useStylesHeaderContent();
-
-  const hoverResourceName = (): void => {
-    setResourceNameHovered(true);
-  };
-
-  const leaveResourceName = (): void => {
-    setResourceNameHovered(false);
-  };
 
   const copyResourceLink = (): void => {
     try {
@@ -154,32 +154,34 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
         label={t(details.status.name)}
         severityCode={details.status.severity_code}
       />
-      <div>
+      <div className={classes.resourceNameContainer}>
         <div
           aria-label={`${details.name}_hover`}
           className={classes.resourceName}
-          onMouseEnter={hoverResourceName}
-          onMouseLeave={leaveResourceName}
         >
-          <Typography className={classes.truncated}>{details.name}</Typography>
-          <div className={classes.resourceNameConfigurationIcon}>
-            {resourceNameHovered && (
-              <Tooltip title={resourceConfigurationUriTitle}>
-                <div>
-                  <Link
-                    aria-label={`${t(labelConfigure)}_${details.name}`}
-                    className={classes.resourceNameConfigurationLink}
-                    href={resourceConfigurationUri}
-                  >
-                    <SettingsIcon
-                      color={resourceConfigurationIconColor}
-                      fontSize="small"
-                    />
-                  </Link>
-                </div>
-              </Tooltip>
-            )}
-          </div>
+          <Tooltip
+            classes={{ tooltip: classes.resourceNameTooltip }}
+            placement="top"
+            title={details.name}
+          >
+            <Typography className={classes.truncated}>
+              {details.name}
+            </Typography>
+          </Tooltip>
+          <Tooltip title={resourceConfigurationUriTitle}>
+            <div className={classes.resourceNameConfigurationIcon}>
+              <Link
+                aria-label={`${t(labelConfigure)}_${details.name}`}
+                className={classes.resourceNameConfigurationLink}
+                href={resourceConfigurationUri}
+              >
+                <SettingsIcon
+                  color={resourceConfigurationIconColor}
+                  fontSize="small"
+                />
+              </Link>
+            </div>
+          </Tooltip>
         </div>
         {hasPath(['parent', 'status'], details) && (
           <div className={classes.parent}>

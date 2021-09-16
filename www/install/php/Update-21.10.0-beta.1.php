@@ -18,3 +18,45 @@
  * For more information : contact@centreon.com
  *
  */
+
+include_once __DIR__ . "/../../class/centreonLog.class.php";
+$centreonLog = new CentreonLog();
+
+//error specific content
+$versionOfTheUpgrade = 'UPGRADE - 21.10.0-beta.1: ';
+
+$pearDB = new CentreonDB('centreon', 3, false);
+
+/**
+ * Query with transaction
+ */
+try {
+    $pearDB->beginTransaction();
+
+    //Purge all session.
+    $errorMessage = 'Impossible to purge the table session';
+    $pearDB->query("DELETE * FROM `session`");
+
+    $constraintStatement = $pearDB->query(
+        "SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME='session_ibfk_1'"
+    );
+    if (($constraint = $constraintStatement->fetch()) && $constraint['count'] === 0) {
+        $errorMessage = 'Impossible to add Delete Cascade constraint on the table session';
+        $pearDB->query(
+            "ALTER TABLE `session` ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) " .
+            "REFERENCES `contact` (`contact_id`) ON DELETE CASCADE"
+        );
+    }
+
+    $pearDB->commit();
+} catch (\Exception $e) {
+    $pearDB->rollBack();
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
