@@ -54,6 +54,9 @@ $openIdConnectEnabled = $result->fetch()["value"];
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_mode' LIMIT 1");
 $openIdConnectMode = $result->fetch()["value"];
 
+/**
+ * Check if CEIP is enabled.
+ */
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics' LIMIT 1");
 $sendStatisticsResult = $result->fetch();
 if($sendStatisticsResult === false || $sendStatisticsResult["value"] == "0") {

@@ -56,7 +56,6 @@
         </form>
         <script type="text/javascript">
             let sendStatistics = Boolean({$sendStatistics});
-            console.log(sendStatistics);
             {literal}
             jQuery(() => {
                 jQuery('form[name="login"]').submit(() => {
@@ -75,11 +74,12 @@
                         contentType: 'application/json'
                     }).done((res) => {
                         let redirectUri = res.redirect_uri;
-                        let cacheValidationDate = (Date.now()) + (24 * 60 * 60 * 1000);
-                        if (sendStatistics === true) {
+                        if (
+                            sendStatistics === true
+                        ) {
                             if (
                                 localStorage.getItem('platformData') === null
-                                || (JSON.parse(localStorage.getItem('platformData')).platformData.cacheGenerationDate + (24 * 60 * 60 * 1000)) > Date.now()
+                                || JSON.parse(localStorage.getItem('platformData')).cacheGenerationDate + (24 * 60 * 60 * 1000) < Date.now()
                             ) {
                                 /**
                                  * User parameters Request.
@@ -121,7 +121,6 @@
                                             nb_servers: nbServers,
                                         }
                                     };
-                                    console.log(dateYesterday);
                                     console.log(platformData.cacheGenerationDate);
                                     /**
                                      * Generate id based on first letters of company name, first letters of uuid, and contact id.
@@ -173,7 +172,7 @@
                                              * Save data in local storage and redirect user.
                                              */
                                             localStorage.setItem('platformData', JSON.stringify(platformData));
-                                            // window.location.href = redirectUri
+                                            window.location.href = redirectUri
                                         }).fail((err) => {
                                             jQuery('span.msg').text('Unable to get ACLs.')
                                             jQuery('div.error_msg').css('visibility', '')
@@ -187,12 +186,12 @@
                                     jQuery('div.error_msg').css('visibility', '')
                                 })
                             }
-                            // window.location.href = redirectUri
+                            window.location.href = redirectUri
                         } else {
                             if(localStorage.getItem('platformData') !== null) {
                                 localStorage.removeItem('platformData');
                             }
-                            // window.location.href = redirectUri
+                            window.location.href = redirectUri
                         }
                     }).fail((err) => {
                         jQuery('span.msg').text('Your credentials are incorrect.')
