@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2009 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -82,27 +83,51 @@ switch ($o) {
         require_once($path . "formHostCategories.php");
         break;
     case "s":
-        enableHostCategoriesInDB($hc_id);
+        if (isCSRFTokenValid()) {
+            enableHostCategoriesInDB($hc_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostCategories.php");
         break;
     case "ms":
-        enableHostCategoriesInDB(null, isset($select) ? $select : []);
+        if (isCSRFTokenValid()) {
+            enableHostCategoriesInDB(null, isset($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostCategories.php");
         break;
     case "u":
-        disableHostCategoriesInDB($hc_id);
+        if (isCSRFTokenValid()) {
+            disableHostCategoriesInDB($hc_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostCategories.php");
         break;
     case "mu":
-        disableHostCategoriesInDB(null, isset($select) ? $select : []);
+        if (isCSRFTokenValid()) {
+            disableHostCategoriesInDB(null, isset($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostCategories.php");
         break;
     case "m":
-        multipleHostCategoriesInDB(isset($select) ? $select : [], $dupNbr);
+        if (isCSRFTokenValid()) {
+            multipleHostCategoriesInDB(isset($select) ? $select : [], $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostCategories.php");
         break;
     case "d":
-        deleteHostCategoriesInDB(isset($select) ? $select : []);
+        if (isCSRFTokenValid()) {
+            deleteHostCategoriesInDB(isset($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostCategories.php");
         break;
     default:
