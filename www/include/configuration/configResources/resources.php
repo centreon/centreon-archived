@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -63,7 +64,7 @@ $action = filter_var(
     $_POST['o1'] ?? $_POST['o2'] ?? null,
     FILTER_VALIDATE_REGEXP,
     array(
-        "options" => array("regexp"=>"/([a|c|d|m|s|u|w]{1})/")
+        "options" => array("regexp" => "/([a|c|d|m|s|u|w]{1})/")
     )
 );
 if ($action !== false) {
@@ -129,8 +130,12 @@ switch ($o) {
         /*
          * Activate a Resource
          */
-        if ($resourceId !== false) {
-            enableResourceInDB($resourceId);
+        if (isCSRFTokenValid()) {
+            if ($resourceId !== false) {
+                enableResourceInDB($resourceId);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listResources.php");
         break;
@@ -138,8 +143,12 @@ switch ($o) {
         /*
          * Desactivate a Resource
          */
-        if ($resourceId !== false) {
-            disableResourceInDB($resourceId);
+        if (isCSRFTokenValid()) {
+            if ($resourceId !== false) {
+                disableResourceInDB($resourceId);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listResources.php");
         break;
@@ -147,11 +156,15 @@ switch ($o) {
         /*
          * Duplicate n resources only if data sent are correctly typed
          */
-        if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
-            multipleResourceInDB(
-                $selectIds,
-                $duplicateNbr
-            );
+        if (isCSRFTokenValid()) {
+            if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
+                multipleResourceInDB(
+                    $selectIds,
+                    $duplicateNbr
+                );
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listResources.php");
         break;
@@ -159,8 +172,12 @@ switch ($o) {
         /*
          * Delete n resources only if data sent are correctly typed
          */
-        if (!in_array(false, $selectIds)) {
-            deleteResourceInDB($selectIds);
+        if (isCSRFTokenValid()) {
+            if (!in_array(false, $selectIds)) {
+                deleteResourceInDB($selectIds);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listResources.php");
         break;

@@ -99,26 +99,42 @@ switch ($o) {
         require_once($path . "formServers.php");
         break;
     case SERVER_ENABLE:
-        if ($server_id !== false) {
-            enableServerInDB($server_id);
+        if (isCSRFTokenValid()) {
+            if ($server_id !== false) {
+                enableServerInDB($server_id);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listServers.php");
         break;
     case SERVER_DISABLE:
-        if ($server_id !== false) {
-            disableServerInDB($server_id);
+        if (isCSRFTokenValid()) {
+            if ($server_id !== false) {
+                disableServerInDB($server_id);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listServers.php");
         break;
     case SERVER_DUPLICATE:
-        if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
-            duplicateServer($select, $dupNbr);
+        if (isCSRFTokenValid()) {
+            if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
+                duplicateServer($select, $dupNbr);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listServers.php");
         break;
     case SERVER_DELETE:
-        if (!in_array(false, $select)) {
-            deleteServerInDB($select);
+        if (isCSRFTokenValid()) {
+            if (!in_array(false, $select)) {
+                deleteServerInDB($select);
+            }
+        } else {
+            unvalidFormMessage();
         }
     //then require the same file than default
     default:
