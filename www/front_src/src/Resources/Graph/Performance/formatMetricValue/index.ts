@@ -1,5 +1,5 @@
 import numeral from 'numeral';
-import { and, isNil, lt } from 'ramda';
+import { isNil, lt } from 'ramda';
 
 interface FormatMetricValueProps {
   base?: number;
