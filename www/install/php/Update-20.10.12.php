@@ -51,6 +51,9 @@ try {
         );
     }
 
+    $errorMessage = "Impossible to drop column 'contact_platform_data_sending' from 'contact' table";
+    $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_platform_data_sending`");
+
     $pearDB->commit();
 } catch (\Exception $e) {
     $pearDB->rollBack();
