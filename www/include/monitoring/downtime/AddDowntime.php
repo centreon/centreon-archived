@@ -317,9 +317,9 @@ if (
     $form->registerRule('checkYearMax', 'callback', 'checkYearMax');
 
     $form->addRule('end', _("Required Field"), 'required');
-    $form->addRule('end', sprintf(_("Please choose a date before %d"), DOWNTIME_YEAR_MAX), 'checkYearMax');
+    $form->addRule('alternativeDateEnd', sprintf(_("Please choose a date before %d"), DOWNTIME_YEAR_MAX), 'checkYearMax');
     $form->addRule('start', _("Required Field"), 'required');
-    $form->addRule('start', sprintf(_("Please choose a date before %d"), DOWNTIME_YEAR_MAX), 'checkYearMax');
+    $form->addRule('alternativeDateStart', sprintf(_("Please choose a date before %d"), DOWNTIME_YEAR_MAX), 'checkYearMax');
     $form->addRule('end_time', _("Required Field"), 'required');
     $form->addRule('start_time', _("Required Field"), 'required');
     $form->addRule('comment', _("Required Field"), 'required');
