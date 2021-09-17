@@ -144,8 +144,7 @@ function updateContact($contact_id = null)
           'default_page = :defaultPage, ' .
           'contact_js_effects = :contactJsEffects, ' .
           'show_deprecated_pages = :showDeprecatedPages, ' .
-          'contact_autologin_key = :contactAutologinKey, ' .
-          'contact_platform_data_sending = :contactDataSending';
+          'contact_autologin_key = :contactAutologinKey';
     $password_encrypted = null;
     if (!empty($ret['contact_passwd'])) {
         $rq .= ', contact_passwd = :contactPasswd';
@@ -181,11 +180,6 @@ function updateContact($contact_id = null)
         ':contactLocation',
         !empty($ret['contact_location']) ? $ret['contact_location'] : null,
         \PDO::PARAM_INT
-    );
-    $stmt->bindValue(
-        ':contactDataSending',
-        array_key_exists('contact_platform_data_sending', $ret) ? $ret['contact_platform_data_sending'] : null,
-        \PDO::PARAM_STR
     );
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
     $stmt->bindValue(':contactJsEffects', isset($ret['contact_js_effects']) ? 1 : 0, \PDO::PARAM_STR);
