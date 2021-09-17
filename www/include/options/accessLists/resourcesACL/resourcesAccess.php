@@ -77,27 +77,51 @@ switch ($o) {
         require_once(__DIR__ . '/formResourcesAccess.php');
         break; #Modify a LCA
     case "s":
-        enableLCAInDB($aclId);
+        if (isCSRFTokenValid()) {
+            enableLCAInDB($aclId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Activate a LCA
     case "ms":
-        enableLCAInDB(null, $select);
+        if (isCSRFTokenValid()) {
+            enableLCAInDB(null, $select);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Activate n LCA
     case "u":
-        disableLCAInDB($aclId);
+        if (isCSRFTokenValid()) {
+            disableLCAInDB($aclId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Desactivate a LCA
     case "mu":
-        disableLCAInDB(null, $select);
+        if (isCSRFTokenValid()) {
+            disableLCAInDB(null, $select);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Desactivate n LCA
     case "m":
-        multipleLCAInDB($select, $dupNbr);
+        if (isCSRFTokenValid()) {
+            multipleLCAInDB($select, $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Duplicate n LCAs
     case "d":
-        deleteLCAInDB($select);
+        if (isCSRFTokenValid()) {
+            deleteLCAInDB($select);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Delete n LCAs
     case "t":
