@@ -16,12 +16,13 @@
  * limitations under the License.
  *
  * For more information : contact@centreon.com
- *Controller
+ *
  */
 declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Serializer;
 
+use Centreon\Infrastructure\Serializer\Exception\SerializerException;
 use JMS\Serializer\Construction\ObjectConstructorInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\ClassMetadata;
@@ -35,7 +36,11 @@ use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 class ObjectConstructor implements ObjectConstructorInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @param array<string, mixed> $type
+     * @throws SerializerException
+     * @throws \ReflectionException
+     * @throws \Throwable
      */
     public function construct(
         DeserializationVisitorInterface $visitor,
@@ -45,6 +50,31 @@ class ObjectConstructor implements ObjectConstructorInterface
         DeserializationContext $context
     ): ?object {
         $className = $metadata->name;
-        return new $className();
+        if (!class_exists($className)) {
+            throw SerializerException::classNotFound($className);
+        }
+        $reflection = new \ReflectionClass($className);
+        $constructor = $reflection->getConstructor();
+        if ($constructor !== null && $constructor->getNumberOfParameters() > 0) {
+            $parameters = $constructor->getParameters();
+            $constructorParameters = [];
+            foreach ($parameters as $parameter) {
+                if (array_key_exists($parameter->getName(), $data)) {
+                    $constructorParameters[$parameter->getPosition()] = $data[$parameter->getName()];
+                } elseif ($parameter->isOptional() === true) {
+                    $constructorParameters[$parameter->getPosition()] = $parameter->getDefaultValue();
+                }
+            }
+            try {
+                return $reflection->newInstanceArgs($constructorParameters);
+            } catch (\Throwable $ex) {
+                if ($ex instanceof \ArgumentCountError) {
+                    throw SerializerException::notEnoughConstructorArguments($className, $ex);
+                }
+                throw $ex;
+            }
+        } else {
+            return new $className();
+        }
     }
 }
