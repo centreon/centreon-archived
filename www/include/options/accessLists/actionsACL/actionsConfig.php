@@ -79,27 +79,51 @@ switch ($o) {
         require_once(__DIR__ .  "/formActionsAccess.php");
         break; #Modify an Actions Access
     case "s":
-        enableActionInDB($aclActionId);
+        if (isCSRFTokenValid()) {
+            enableActionInDB($aclActionId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Activate an Actions Access
     case "ms":
-        enableActionInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            enableActionInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Activate an Actions Access
     case "u":
-        disableActionInDB($aclActionId);
+        if (isCSRFTokenValid()) {
+            disableActionInDB($aclActionId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Desactivate an an Actions Access
     case "mu":
-        disableActionInDB(null, isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            disableActionInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Desactivate n Actions Access
     case "m":
-        multipleActionInDB(isset($select) ? $select : array(), $dupNbr);
+        if (isCSRFTokenValid()) {
+            multipleActionInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Duplicate n Actions Access
     case "d":
-        deleteActionInDB(isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            deleteActionInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Delete n Actions Access
     default:
