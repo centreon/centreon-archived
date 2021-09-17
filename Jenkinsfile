@@ -116,18 +116,21 @@ try {
 
         discoverGitReferenceBuild()
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
           trendChartType: 'NONE'
         )
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
           trendChartType: 'NONE'
         )
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           failOnError: true,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
