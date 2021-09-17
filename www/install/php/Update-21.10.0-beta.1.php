@@ -33,12 +33,30 @@ $pearDB = new CentreonDB('centreon', 3, false);
 try {
     $pearDB->beginTransaction();
 
+<<<<<<< HEAD
     $errorMessage = 'Impossible to alter the table contact';
     if (!$pearDB->isColumnExist('contact', 'contact_platform_data_sending')) {
         $pearDB->query(
             "ALTER TABLE `contact` ADD COLUMN `contact_platform_data_sending` ENUM('0', '1', '2')"
         );
     }
+=======
+    //Purge all session.
+    $errorMessage = 'Impossible to purge the table session';
+    $pearDB->query("DELETE * FROM `session`");
+
+    $constraintStatement = $pearDB->query(
+        "SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME='session_ibfk_1'"
+    );
+    if (($constraint = $constraintStatement->fetch()) && $constraint['count'] === 0) {
+        $errorMessage = 'Impossible to add Delete Cascade constraint on the table session';
+        $pearDB->query(
+            "ALTER TABLE `session` ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) " .
+            "REFERENCES `contact` (`contact_id`) ON DELETE CASCADE"
+        );
+    }
+
+>>>>>>> ed92a5156c (feat(Product Adoption): revert commit (#10136))
     $pearDB->commit();
 } catch (\Exception $e) {
     $pearDB->rollBack();
