@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -72,7 +73,7 @@ $serverString = trim($acl->getPollerString());
 $allowedBrokerConf = array();
 
 if ($serverString != "''" && !empty($serverString)) {
-    $sql = "SELECT config_id FROM cfg_centreonbroker WHERE ns_nagios_server IN (".$serverString.")";
+    $sql = "SELECT config_id FROM cfg_centreonbroker WHERE ns_nagios_server IN (" . $serverString . ")";
     $res = $pearDB->query($sql);
     while ($row = $res->fetchRow()) {
         $allowedBrokerConf[$row['config_id']] = true;
@@ -92,22 +93,38 @@ switch ($o) {
         break; // modify CentreonBroker
 
     case "s":
-        enableCentreonBrokerInDB($id);
+        if (isCSRFTokenValid()) {
+            enableCentreonBrokerInDB($id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listCentreonBroker.php");
         break; // Activate a CentreonBroker CFG
 
     case "u":
-        disablCentreonBrokerInDB($id);
+        if (isCSRFTokenValid()) {
+            disablCentreonBrokerInDB($id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listCentreonBroker.php");
         break; // Desactivate a CentreonBroker CFG
 
     case "m":
-        multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
+        if (isCSRFTokenValid()) {
+            multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listCentreonBroker.php");
         break; // Duplicate n CentreonBroker CFGs
 
     case "d":
-        deleteCentreonBrokerInDB(isset($select) ? $select : array());
+        if (isCSRFTokenValid()) {
+            deleteCentreonBrokerInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listCentreonBroker.php");
         break; // Delete n CentreonBroker CFG
 
