@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
 
-import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { useMemoComponent } from '@centreon/centreon-ui';
 
 import { timePeriods } from '../../../Details/tabs/Graph/models';
 import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
