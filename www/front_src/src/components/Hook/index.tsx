@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import { equals } from 'ramda';
 
 import { dynamicImport } from '../../helpers/dynamicImport';
-import centreonAxios from '../../axios';
 import MenuLoader from '../MenuLoader';
 
 interface Props {
@@ -37,7 +36,7 @@ const LoadableHooks = ({
 
           return (
             <React.Suspense fallback={<MenuLoader width={29} />} key={path}>
-              <HookComponent centreonAxios={centreonAxios} {...rest} />
+              <HookComponent {...rest} />
             </React.Suspense>
           );
         })}
