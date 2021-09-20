@@ -46,18 +46,18 @@ require_once("./class/centreonData.class.php");
  * Check if CEIP is enabled.
  */
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics' LIMIT 1");
-$sendStatisticsResult = $result->fetch();
-if($sendStatisticsResult === false || $sendStatisticsResult["value"] == "0") {
-    $sendStatistics = '0';
-} else {
+
+if (($sendStatisticsResult = $result->fetch()) && $sendStatisticsResult["value"] == "1") {
     $sendStatistics = '1';
+} else {
+    $sendStatistics = '0';
 }
 
 /**
  * Getting Platform Type.
  */
 $result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
-$isRemote = false;
+$isRemote = '0';
 if ($row = $result->fetch()) {
     $isRemote = $row['value'] === 'yes' ? '1' : '0';
 }
