@@ -34,9 +34,7 @@ const reactRoutes = [
     path: routeMap.serverConfigurationWizard,
   },
   {
-    comp: React.lazy(() =>
-      import('../route-components/administration/extensions/manager'),
-    ),
+    comp: React.lazy(() => import('../Extensions')),
     path: routeMap.extensionsManagerPage,
   },
   {
