@@ -180,6 +180,11 @@ class Resource
     /**
      * @var \DateTime|null
      */
+    private $lastTimeWithNoIssue;
+
+    /**
+     * @var \DateTime|null
+     */
     private $lastNotification;
 
     /**
@@ -769,6 +774,24 @@ class Resource
     {
         $this->lastStatusChange = $lastStatusChange;
 
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastTimeWithNoIssue(): ?\DateTime
+    {
+        return $this->lastTimeWithNoIssue;
+    }
+
+    /**
+     * @param \DateTime|null $lastTimeWithNoIssue
+     * @return self
+     */
+    public function setLastTimeWithNoIssue(?\DateTime $lastTimeWithNoIssue): self
+    {
+        $this->lastTimeWithNoIssue = $lastTimeWithNoIssue;
         return $this;
     }
 

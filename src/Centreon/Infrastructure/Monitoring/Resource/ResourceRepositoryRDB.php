@@ -184,7 +184,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.tries, resource.last_check, resource.next_check, '
             . 'resource.information, resource.performance_data, '
             . 'resource.execution_time, resource.latency, '
-            . 'resource.notification_enabled '
+            . 'resource.notification_enabled, resource.last_time_with_no_issue '
             . 'FROM (';
 
         $subRequests = [];
