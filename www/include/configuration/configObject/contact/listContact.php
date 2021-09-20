@@ -235,6 +235,11 @@ $refreshLdapBadge = array(0 => "");
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$form->createSecurityToken();
+$centreonToken = is_array($form->getElementValue('centreon_token')) ?
+    end($form->getElementValue('centreon_token')) :
+    $form->getElementValue('centreon_token');
+
 foreach ($contacts as $contact) {
     if ($centreon->user->get_id() == $contact['contact_id']) {
         $selectedElements = $form->addElement(
@@ -252,13 +257,15 @@ foreach ($contacts as $contact) {
         if ($contact["contact_activate"]) {
             $moptions .= "<a href='main.php?p=" . $p . "&contact_id=" . $contact['contact_id'] .
                 "&o=u&limit=" . $limit . "&num=" . $num . "&search=" . $searchContact .
+                "&centreon_token=" . $centreonToken .
                 "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='" .
                 _("Disabled") . "'></a>&nbsp;&nbsp;";
         } else {
             $moptions .= "<a href='main.php?p=" . $p . "&contact_id=" . $contact['contact_id'] .
                 "&o=s&limit=" . $limit . "&num=" . $num . "&search=" . $searchContact .
+                "&centreon_token=" . $centreonToken .
                 "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" .
-                _("Enabled") . "'></a>&nbsp;&nbsp;";
+                 _("Enabled") . "'></a>&nbsp;&nbsp;";
         }
     } else {
         $moptions .= "&nbsp;&nbsp;";

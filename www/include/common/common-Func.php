@@ -2371,10 +2371,11 @@ function isCSRFTokenValid(){
 
     purgeTokens();
 
-    if (isset($_POST['centreon_token']) && in_array($_POST['centreon_token'], $_SESSION['x-centreon-token'])) {
-        $key = array_search((string)$_POST['centreon_token'], $_SESSION['x-centreon-token']);
+    $token = $_POST['centreon_token'] ?? $_GET['centreon_token'] ?? null;
+    if ($token !== null && in_array($token, $_SESSION['x-centreon-token'])) {
+        $key = array_search((string)$token, $_SESSION['x-centreon-token']);
         unset($_SESSION['x-centreon-token'][$key]);
-        unset($_SESSION['x-centreon-token-generated-at'][(string)$_POST['centreon_token']]);
+        unset($_SESSION['x-centreon-token-generated-at'][(string)$token]);
         $isValid = true;
     }
     return $isValid;
@@ -2386,5 +2387,5 @@ function isCSRFTokenValid(){
 function unvalidFormMessage(){
     echo "<div class='msg' align='center'>" .
         _("The form has not been submitted since 15 minutes. Please retry to resubmit") .
-        "<a href='' OnLoad = windows.location(); alt='reload'> " . _("here") . "</a></div>";
+        "</div>";
 }

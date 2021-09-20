@@ -206,7 +206,7 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case DUPLICATE_CONTACTS:
-        if (!isCSRFTokenValid()) {
+        if (isCSRFTokenValid()) {
             $eventDispatcher->notify(
                 'contact.form',
                 EventDispatcher::EVENT_DUPLICATE,
