@@ -9,7 +9,6 @@ import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
 import LaunchIcon from '@material-ui/icons/Launch';
 
 import {
-  Button,
   ContentWithCircularLoading,
   useLocaleDateTimeFormat,
   IconButton,
@@ -116,40 +115,38 @@ const GraphActions = ({
       >
         <LaunchIcon style={{ fontSize: 18 }} />
       </IconButton>
-      <Button className={classes.buttonLink}>
-        <ContentWithCircularLoading
-          alignCenter={false}
-          loading={exporting}
-          loadingIndicatorSize={16}
-        >
-          <>
-            <IconButton
-              disableTouchRipple
-              disabled={isNil(timeline)}
-              title={t(labelExportToPng)}
-              onClick={openSizeExportMenu}
-            >
-              <SaveAsImageIcon style={{ fontSize: 18 }} />
-            </IconButton>
-            <Menu
-              keepMounted
-              anchorEl={menuAnchor}
-              open={Boolean(menuAnchor)}
-              onClose={closeSizeExportMenu}
-            >
-              <MenuItem onClick={(): void => convertToPng(1)}>
-                {t(labelAsDisplayed)}
-              </MenuItem>
-              <MenuItem onClick={(): void => convertToPng(0.75)}>
-                {t(labelMediumSize)}
-              </MenuItem>
-              <MenuItem onClick={(): void => convertToPng(0.5)}>
-                {t(labelSmallSize)}
-              </MenuItem>
-            </Menu>
-          </>
-        </ContentWithCircularLoading>
-      </Button>
+      <ContentWithCircularLoading
+        alignCenter={false}
+        loading={exporting}
+        loadingIndicatorSize={16}
+      >
+        <>
+          <IconButton
+            disableTouchRipple
+            disabled={isNil(timeline)}
+            title={t(labelExportToPng)}
+            onClick={openSizeExportMenu}
+          >
+            <SaveAsImageIcon style={{ fontSize: 18 }} />
+          </IconButton>
+          <Menu
+            keepMounted
+            anchorEl={menuAnchor}
+            open={Boolean(menuAnchor)}
+            onClose={closeSizeExportMenu}
+          >
+            <MenuItem onClick={(): void => convertToPng(1)}>
+              {t(labelAsDisplayed)}
+            </MenuItem>
+            <MenuItem onClick={(): void => convertToPng(0.75)}>
+              {t(labelMediumSize)}
+            </MenuItem>
+            <MenuItem onClick={(): void => convertToPng(0.5)}>
+              {t(labelSmallSize)}
+            </MenuItem>
+          </Menu>
+        </>
+      </ContentWithCircularLoading>
     </div>
   );
 };
