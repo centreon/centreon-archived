@@ -13,7 +13,8 @@ import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 
-import { withStyles, createStyles } from '@material-ui/core';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import { withStyles, createStyles, Fab } from '@material-ui/core';
 
 import { ThemeProvider } from '@centreon/ui';
 
@@ -23,7 +24,6 @@ import Nagigation from './Navigation';
 import Footer from './components/footer';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
-import footerStyles from './components/footer/footer.scss';
 import PageLoader from './components/PageLoader';
 
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
@@ -43,6 +43,12 @@ const styles = createStyles({
     height: '100%',
     overflow: 'hidden',
     width: '100%',
+  },
+  fullscreenButton: {
+    bottom: '10px',
+    position: 'absolute',
+    right: '20px',
+    zIndex: 1500,
   },
   mainContent: {
     backgroundcolor: 'white',
@@ -173,10 +179,14 @@ class App extends Component<Props, State> {
                 </div>
                 {!min && <Footer />}
               </div>
-              <span
-                className={footerStyles['full-screen']}
+              <Fab
+                className={classes.fullscreenButton}
+                color="default"
+                size="small"
                 onClick={this.goFull}
-              />
+              >
+                <FullscreenIcon />
+              </Fab>
             </div>
           </ThemeProvider>
         </ConnectedRouter>
