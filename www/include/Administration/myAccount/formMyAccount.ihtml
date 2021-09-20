@@ -46,7 +46,6 @@
             <tr class="list_two"><td class="FormRowField">{$form.default_page.label}</td><td class="FormRowValue">{$form.default_page.html}</td></tr>
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="show_deprecated_pages">{$form.show_deprecated_pages.label}</td><td class="FormRowValue">{$form.show_deprecated_pages.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.contact_js_effects.label}</td><td class="FormRowValue">{$form.contact_js_effects.html}</td></tr>
-            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_platform_data_sending">{$form.contact_platform_data_sending.label}</td><td class="FormRowValue">{$form.contact_platform_data_sending.html}</td></tr>
             <tr class="list_lvl_1">
                 <td class="ListColLvl1_name" colspan="2">
                     <h4>{t}Authentication{/t}</h4>
