@@ -20,7 +20,6 @@ import { ThemeProvider } from '@centreon/ui';
 import Header from './components/header';
 import { history } from './store';
 import Nagigation from './Navigation';
-import Tooltip from './components/tooltip';
 import Footer from './components/footer';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
@@ -154,7 +153,6 @@ class App extends Component<Props, State> {
           <ThemeProvider>
             <div className={classes.wrapper}>
               {!min && <Nagigation />}
-              <Tooltip />
               <div className={classes.content} id="content">
                 {!min && <Header />}
                 <div
