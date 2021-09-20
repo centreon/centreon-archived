@@ -46,6 +46,9 @@
             <tr class="list_two"><td class="FormRowField">{$form.default_page.label}</td><td class="FormRowValue">{$form.default_page.html}</td></tr>
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="show_deprecated_pages">{$form.show_deprecated_pages.label}</td><td class="FormRowValue">{$form.show_deprecated_pages.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.contact_js_effects.label}</td><td class="FormRowValue">{$form.contact_js_effects.html}</td></tr>
+            {if $contactIsAdmin}
+            <tr class="list_one"><td class="FormRowField">{$form.enable_one_click_export.label}</td><td class="FormRowValue">{$form.enable_one_click_export.html}</td></tr>
+            {/if}
             <tr class="list_lvl_1">
                 <td class="ListColLvl1_name" colspan="2">
                     <h4>{t}Authentication{/t}</h4>
